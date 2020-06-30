@@ -121,8 +121,12 @@ export default function FinanceReports() {
             <div className="col reportPreviewSecLeft">
               <div
                 className="row inner-top-search"
-                style={{ padding: "15px 0", marginTop: -15 }}
+                style={{ padding: "15px 0", marginBottom: 0 }}
               >
+                <div className="col-12">
+                  <h3>Report Name Here</h3>
+                  <hr></hr>
+                </div>
                 <AlgaehAutoComplete
                   div={{ className: "col-4" }}
                   label={{
@@ -178,23 +182,30 @@ export default function FinanceReports() {
                 />
               </div>
 
-              <Spin
-                spinning={loading}
-                tip="Please wait report data is fetching.."
-                delay={500}
-              >
-                {selected === "TB" ? (
-                  <i className="fas fa-file-download" onClick={onExportExcel} />
-                ) : null}
-                <ReportMain
-                  selected={selected}
-                  dates={dates}
-                  finOptions={finOptions}
-                  layout={layout}
-                  organization={organization}
-                  downloadExcel={onExportExcel}
-                />
-              </Spin>
+              <div className="row">
+                {" "}
+                <Spin
+                  spinning={loading}
+                  tip="Please wait report data is fetching.."
+                  delay={500}
+                  className="abc"
+                >
+                  {selected === "TB" ? (
+                    <i
+                      className="fas fa-file-download"
+                      onClick={onExportExcel}
+                    />
+                  ) : null}
+                  <ReportMain
+                    selected={selected}
+                    dates={dates}
+                    finOptions={finOptions}
+                    layout={layout}
+                    organization={organization}
+                    downloadExcel={onExportExcel}
+                  />
+                </Spin>
+              </div>
             </div>
             <ToolBar
               selected={selected}

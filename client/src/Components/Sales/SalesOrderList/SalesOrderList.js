@@ -1,7 +1,7 @@
 import React, { Component } from "react";
-// import { withRouter } from "react-router-dom";
-// import { connect } from "react-redux";
-// import { bindActionCreators } from "redux";
+import { withRouter } from "react-router-dom";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
 
 import "./SalesOrderList.scss";
 import "./../../../styles/site.scss";
@@ -21,10 +21,10 @@ import {
   AlgaehDateHandler
 } from "../../Wrapper/algaehWrapper";
 import moment from "moment";
-// import { AlgaehActions } from "../../../actions/algaehActions";
+import { AlgaehActions } from "../../../actions/algaehActions";
 import GlobalVariables from "../../../utils/GlobalVariables.json";
 
-export default class SalesOrderList extends Component {
+class SalesOrderList extends Component {
   constructor(props) {
     super(props);
     this.state = {};
@@ -57,6 +57,15 @@ export default class SalesOrderList extends Component {
         () => getSalesOrderList(this)
       );
     }
+
+    this.props.getHospitalDetails({
+      uri: "/organization/getOrganization",
+      method: "GET",
+      redux: {
+        type: "HOSPITAL_DETAILS_GET_DATA",
+        mappingName: "hospitaldetails",
+      },
+    });
 
     // this.props.getCustomerMaster({
     //   uri: "/customer/getCustomerMaster",
@@ -353,21 +362,21 @@ export default class SalesOrderList extends Component {
   }
 }
 
-// function mapStateToProps(state) {
-//   return {
-//     customer_data: state.customer_data
-//   };
-// }
+function mapStateToProps(state) {
+  return {
+    hospitaldetails: state.hospitaldetails
+  };
+}
 
-// function mapDispatchToProps(dispatch) {
-//   return bindActionCreators(
-//     {
-//       getCustomerMaster: AlgaehActions
-//     },
-//     dispatch
-//   );
-// }
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators(
+    {
+      getHospitalDetails: AlgaehActions
+    },
+    dispatch
+  );
+}
 
-// export default withRouter(
-//   connect(mapStateToProps, mapDispatchToProps)(SalesOrderList)
-// );
+export default withRouter(
+  connect(mapStateToProps, mapDispatchToProps)(SalesOrderList)
+);

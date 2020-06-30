@@ -269,6 +269,26 @@
       }
     ]
   },
+  "RequisitionEntry1": {
+    "ReqEntry": [
+      {
+        "fieldName": "material_requisition_number",
+        "label": "Requisition Number"
+      },
+      {
+        "fieldName": "requistion_date",
+        "label": "Requisition Date"
+      },
+      {
+        "fieldName": "from_location",
+        "label": "From Location"
+      },
+      {
+        "fieldName": "to_location",
+        "label": "To Location"
+      }
+    ]
+  },
   "AdjustmentEntry": {
     "AdjEntry": [
       {

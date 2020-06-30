@@ -122,7 +122,7 @@ export default {
           decimal_places,
           from_date: input.from_date,
           to_date: input.to_date,
-          display_column_by: input.display_column_b,
+          display_column_by: input.display_column_by,
         };
 
         if (PL) {
@@ -552,7 +552,7 @@ function cashFlow_monthly_yearly(options) {
         decimal_places,
         from_date,
         to_date,
-        display_column_b,
+        display_column_by,
       } = options;
 
       const columns = [];
@@ -560,9 +560,9 @@ function cashFlow_monthly_yearly(options) {
       let dateStart = moment(from_date);
       let dateEnd = moment(to_date);
 
-      if (display_column_b == "M") {
+      if (display_column_by == "M") {
         const months_Array = [];
-        while (dateEnd > dateStart) {
+        while (dateEnd >= dateStart) {
           months_Array.push({
             month_name: dateStart.format("MMM, YYYY"),
             startOfMonth: moment(dateStart)
@@ -575,6 +575,7 @@ function cashFlow_monthly_yearly(options) {
         }
 
         const months_len = months_Array.length;
+
         if (months_len > 1) {
           for (let i = 0; i < months_len; i++) {
             if (i == 0) {

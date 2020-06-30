@@ -1724,4 +1724,10 @@ td {
     }
   }
 }
+
+.ant-calendar-picker-container,
+.ant-select-dropdown {
+  z-index: 99999 !important;
+}
+
 //App Arabic Version End Here //

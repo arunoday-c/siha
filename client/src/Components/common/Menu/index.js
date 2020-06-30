@@ -10,6 +10,7 @@ import { algaehApiCall } from "../../../utils/algaehApiCall";
 import BreadCrum from "./breadcrum";
 import localSrc from "./algaehlogo.png";
 import i18next from "algaeh-react-components/translation/i18next";
+import { Badge } from "antd";
 
 function NavBars(props) {
   const {
@@ -29,6 +30,7 @@ function NavBars(props) {
   const [showMenu, setShowMenu] = useState(false);
   const [openNotif, setOpenNotif] = useState(false);
   const [selectedMenu, setSelectedMenu] = useState(undefined);
+  const [count, setCount] = useState(null);
 
   useEffect(() => {
     if (Object.keys(userToken).length === 0) {
@@ -52,6 +54,9 @@ function NavBars(props) {
         return item;
       });
     });
+    if (socket.connected) {
+      socket.on("count", (res) => setCount(res));
+    }
   }, []);
 
   function showMenuClick() {
@@ -59,6 +64,10 @@ function NavBars(props) {
   }
 
   function showNotification() {
+    if (socket.connected && !openNotif) {
+      socket.emit("seen");
+      setCount(null);
+    }
     setOpenNotif((state) => !state);
   }
 
@@ -154,6 +163,7 @@ function NavBars(props) {
           // disabled={openNotif}
           onClick={showNotification}
         >
+          {count ? <Badge count={count} /> : null}
           <i className="fas fa-bell fa-lg" />
         </button>
         <div className="dropdown navTopbar-dropdown">

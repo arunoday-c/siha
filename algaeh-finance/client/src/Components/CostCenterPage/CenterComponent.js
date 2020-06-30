@@ -3,7 +3,7 @@ import "./costcenter.scss";
 import {
   AlgaehDataGrid,
   AlgaehModal,
-  AlgaehButton
+  AlgaehButton,
 } from "algaeh-react-components";
 import CostCenterComponent from "../costCenterComponent";
 
@@ -39,23 +39,33 @@ export default memo(function CenterComponent({ data }) {
           maskClosable={false}
           onCancel={closeEdit}
           footer={null}
+          className="costCenterModal"
         >
-          <CostCenterComponent
-            noborder={false}
-            orgUrl="/organization/getOrganization"
-            propBranchID={current.cost_center_id}
-            propCenterID={current.hospital_id}
-            render={values => (
-              <div className="col-12 modalCustomFooter">
-                <AlgaehButton type="default" onClick={() => closeEdit(values)}>
-                  Cancel
-                </AlgaehButton>{" "}
-                <AlgaehButton type="primary" onClick={() => closeEdit(values)}>
-                  Update
-                </AlgaehButton>{" "}
-              </div>
-            )}
-          />
+          <div className="row">
+            {" "}
+            <CostCenterComponent
+              noborder={false}
+              orgUrl="/organization/getOrganization"
+              propBranchID={current.cost_center_id}
+              propCenterID={current.hospital_id}
+              render={(values) => (
+                <div className="col-12 modalCustomFooter">
+                  <AlgaehButton
+                    type="default"
+                    onClick={() => closeEdit(values)}
+                  >
+                    Cancel
+                  </AlgaehButton>{" "}
+                  <AlgaehButton
+                    type="primary"
+                    onClick={() => closeEdit(values)}
+                  >
+                    Update
+                  </AlgaehButton>{" "}
+                </div>
+              )}
+            />
+          </div>
         </AlgaehModal>
       ) : null}
       <div className="col-12">
@@ -73,26 +83,26 @@ export default memo(function CenterComponent({ data }) {
                   title: "Action",
                   key: "key",
                   align: "center",
-                  displayTemplate: EditButton
+                  displayTemplate: EditButton,
                 },
                 {
                   key: "hospital_name",
                   title: "Branch",
                   filtered: true,
-                  align: "center"
+                  align: "center",
                 },
                 {
                   key: "cost_center",
                   title: "Cost Center",
                   filtered: true,
-                  align: "center"
-                }
+                  align: "center",
+                },
               ]}
               loading={false}
               isEditable={false}
               filter={false}
               dataSource={{
-                data
+                data,
               }}
               rowUnique="cost_center_id"
               xaxis={1500}

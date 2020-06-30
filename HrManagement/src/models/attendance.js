@@ -5107,7 +5107,7 @@ export default {
                          case  when E.exit_date  between date(?) and date(?) then 'Y' else 'N' end as partial_attendance 
 
                           from hims_d_employee E  ${deptStr} left join hims_f_salary S on E.hims_d_employee_id =S.employee_id and  
-                          S.year=? and S.month=?
+                          S.year=? and S.month=? and S.salary_type='NS'
                           where E.hospital_id=? and E.record_status='A' and E.employee_status<>'I' and 
                           E.date_of_joining <= date(?) and
                           (E.exit_date is null or E.exit_date >date(?) )  and E.suspend_salary <>'Y'  
@@ -5159,6 +5159,7 @@ export default {
                     })
                     .then((result) => {
                       _mysql.releaseConnection();
+                      console.log("result----", result);
                       if (result[0].length > 0) {
                         const allEmployees = result[0];
                         const allLeaves = result[1];
@@ -5177,7 +5178,7 @@ export default {
                       } else {
                         req.records = {
                           message:
-                            "Salary Already Processed or No Employes Found",
+                            "Salary Already Processed or No Employees Found",
                           invalid_input: true,
                         };
                         next();
@@ -5195,7 +5196,7 @@ export default {
                         case  when E.exit_date  between date(?) and  
                         date(?) then 'Y' else 'N' end as partial_attendance 
                         from hims_d_employee E  ${deptStr} left join hims_f_salary S on E.hims_d_employee_id =S.employee_id and  
-                        S.year=? and S.month=? left join    hims_f_project_roster PR on E.hims_d_employee_id=PR.employee_id
+                        S.year=? and S.month=?  and S.salary_type='NS' left join    hims_f_project_roster PR on E.hims_d_employee_id=PR.employee_id
                         and  PR.attendance_date between date(?) and date(?) 
                         left join  hims_d_project P on P.hims_d_project_id=PR.project_id
                         where E.hospital_id=? and E.record_status='A' and E.employee_status<>'I' and 
@@ -5248,10 +5249,11 @@ export default {
                         from_date,
                         to_date,
                       ],
-                      printQuery: false,
+                      printQuery: true,
                     })
                     .then((result) => {
                       _mysql.releaseConnection();
+                      console.log("Here result----", result);
                       if (result[0].length > 0) {
                         const allEmployees = result[0];
                         const allLeaves = result[1];
@@ -5272,7 +5274,7 @@ export default {
                       } else {
                         req.records = {
                           message:
-                            "Salary Already Processed or No Employes Found",
+                            "Salary Already Processed or No Employee Found",
                           invalid_input: true,
                         };
                         next();
@@ -5506,7 +5508,7 @@ export default {
                              case when   '${options["ramzan_eligible_category"]}'='ALL'  and G.ramzan_timing='Y' then 'Y' when E.religion_id=1 and G.ramzan_timing='Y' then 'Y'
                             else 'N' end as ramzan_enployee
                             from hims_d_employee E  ${deptStr} left join hims_f_salary S on E.hims_d_employee_id =S.employee_id and  
-                            S.year=? and S.month=?
+                            S.year=? and S.month=? and S.salary_type='NS'
                             left join hims_d_employee_group G on E.employee_group_id=G.hims_d_employee_group_id
                             where E.hospital_id=? and E.record_status='A' and E.employee_status<>'I' and 
                             E.date_of_joining <= date(?) and
@@ -5627,7 +5629,7 @@ export default {
                           from hims_d_employee E  ${deptStr} 
                           left join hims_d_employee_group G on E.employee_group_id=G.hims_d_employee_group_id
                           left join hims_f_salary S on E.hims_d_employee_id =S.employee_id and  
-                          S.year=? and S.month=? left join    hims_f_project_roster PR on E.hims_d_employee_id=PR.employee_id
+                          S.year=? and S.month=? and S.salary_type='NS' left join    hims_f_project_roster PR on E.hims_d_employee_id=PR.employee_id
                           and  PR.attendance_date between date(?) and date(?) 
                           left join  hims_d_project P on P.hims_d_project_id=PR.project_id
                           where E.hospital_id=? and E.record_status='A' and E.employee_status<>'I' and 
@@ -9018,7 +9020,7 @@ function processBulkAtt_Normal(data) {
         from hims_f_daily_time_sheet TS inner join hims_d_employee E on TS.employee_id=E.hims_d_employee_id and E.suspend_salary <>'Y' \
         inner join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id\          
          left join hims_f_salary S on E.hims_d_employee_id =S.employee_id and  
-        S.year=? and S.month=? where    (E.exit_date is null or E.exit_date >date(?) ) and 
+        S.year=? and S.month=? and S.salary_type='NS' where    (E.exit_date is null or E.exit_date >date(?) ) and 
         E.date_of_joining<= date(?) and ( S.salary_processed is null or  S.salary_processed='N')  and TS.hospital_id=? and TS.year=? and TS.month=?    ${strQry.replace(
           /employee_id/gi,
           "TS.employee_id"
@@ -9033,7 +9035,7 @@ function processBulkAtt_Normal(data) {
             input.month,
             total_no_Days,
           ],
-          printQuery: false,
+          printQuery: true,
         })
         .then((partialAtt) => {
           if (partialAtt.length > 0) {
@@ -9056,7 +9058,7 @@ function processBulkAtt_Normal(data) {
           from hims_f_daily_time_sheet TS inner join hims_d_employee E on TS.employee_id=E.hims_d_employee_id and E.suspend_salary <>'Y' \
           inner join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id\          
            left join hims_f_salary S on E.hims_d_employee_id =S.employee_id and  
-          S.year=? and S.month=? where   ( S.salary_processed is null or  S.salary_processed='N')  and TS.hospital_id=? and TS.year=? and TS.month=?    ${strQry.replace(
+          S.year=? and S.month=? and S.salary_type='NS' where   ( S.salary_processed is null or  S.salary_processed='N')  and TS.hospital_id=? and TS.year=? and TS.month=?    ${strQry.replace(
             /employee_id/gi,
             "TS.employee_id"
           )};`,
@@ -9070,7 +9072,7 @@ function processBulkAtt_Normal(data) {
                   input.year,
                   input.month,
                 ],
-                printQuery: false,
+                printQuery: true,
               })
               .then((result) => {
                 // const AttenResult = result;
@@ -9541,7 +9543,7 @@ function processBulkAtt_Normal(data) {
                       includeValues: insurtColumns,
                       values: dailyAttendance,
                       bulkInsertOrUpdate: true,
-                      printQuery: false,
+                      printQuery: true,
                     })
                     .then((insertResult) => {
                       let projectQry = "";
@@ -9612,7 +9614,7 @@ function processBulkAtt_Normal(data) {
         from hims_f_daily_attendance DA\
         inner join hims_d_employee E on DA.employee_id=E.hims_d_employee_id  and E.suspend_salary <>'Y' 
              ${deptStr}      left join hims_f_salary S on E.hims_d_employee_id =S.employee_id and  
-             S.year=? and S.month=?  where ( S.salary_processed is null or  S.salary_processed='N') and  \
+             S.year=? and S.month=? and S.salary_type='NS' where ( S.salary_processed is null or  S.salary_processed='N') and  \
         DA.hospital_id=?  and DA.year=? and DA.month=? and (E.exit_date is null or E.exit_date >date(?) ) ${strQry.replace(
           /employee_id/gi,
           "DA.employee_id"
@@ -9796,7 +9798,7 @@ where month=? and year=? group by employee_id;  ${projectQry}       `,
                               values: attResult,
                               includeValues: insurtColumns,
                               bulkInsertOrUpdate: true,
-                              printQuery: false,
+                              printQuery: true,
                             })
                             .then((result) => {
                               if (options.attendance_type == "DMP") {

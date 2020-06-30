@@ -1,6 +1,5 @@
 import { swalMessage } from "../../../../utils/algaehApiCall";
 
-
 const texthandle = ($this, context, e) => {
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
@@ -13,7 +12,6 @@ const texthandle = ($this, context, e) => {
       [name]: value,
     });
   }
-
 };
 
 const numberchangeTexts = ($this, context, e) => {
@@ -23,7 +21,7 @@ const numberchangeTexts = ($this, context, e) => {
   if (value < 0) {
     swalMessage({
       title: "Cannot be less than Zero",
-      type: "warning"
+      type: "warning",
     });
   } else {
     $this.setState({
@@ -38,58 +36,81 @@ const numberchangeTexts = ($this, context, e) => {
 };
 
 const itemchangeText = ($this, context, e) => {
-
-  let name = e.name || e.target.name;
-  let value = e.value || e.target.value;
+  let name = e.item_description;
+  // let name = e.name || e.target.name;
+  // let value = e.value || e.target.value;
 
   if ($this.state.quotation_for === "PHR") {
     $this.setState({
-      [name]: value,
-      phar_item_category: e.selected.category_id,
-      pharmacy_uom_id: e.selected.purchase_uom_id,
-      phar_item_group: e.selected.group_id,
-      addItemButton: false
+      // [name]: value,
+      // phar_item_category: e.selected.category_id,
+      // pharmacy_uom_id: e.selected.purchase_uom_id,
+      // phar_item_group: e.selected.group_id,
+      // addItemButton: false,
+      phar_item_category: e.category_id,
+      pharmacy_uom_id: e.purchase_uom_id,
+      phar_item_id: e.hims_d_item_master_id,
+
+      phar_item_group: e.group_id,
+      addItemButton: false,
     });
 
     if (context !== undefined) {
       context.updateState({
-        [name]: value,
-        phar_item_category: e.selected.category_id,
-        pharmacy_uom_id: e.selected.purchase_uom_id,
-        phar_item_group: e.selected.group_id,
+        // [name]: value,
+        // phar_item_category: e.selected.category_id,
+        // pharmacy_uom_id: e.selected.purchase_uom_id,
+        // phar_item_group: e.selected.group_id,
+        // addItemButton: false,
+        // quantity: 0,
+        phar_item_category: e.category_id,
+        pharmacy_uom_id: e.purchase_uom_id,
+        phar_item_id: e.hims_d_item_master_id,
+
+        phar_item_group: e.group_id,
         addItemButton: false,
-        quantity: 0
+        quantity: 0,
       });
     }
   } else {
     $this.setState({
-      [name]: value,
-      inv_item_category_id: e.selected.category_id,
-      inventory_uom_id: e.selected.purchase_uom_id,
-      inv_item_group_id: e.selected.group_id,
-      addItemButton: false
+      // [name]: value,
+      // inv_item_category_id: e.selected.category_id,
+      // inventory_uom_id: e.selected.purchase_uom_id,
+      // inv_item_group_id: e.selected.group_id,
+      // addItemButton: false,
+      inv_item_category_id: e.category_id,
+      inventory_uom_id: e.purchase_uom_id,
+      inv_item_id: e.hims_d_inventory_item_master_id,
+
+      inv_item_group_id: e.group_id,
+      addItemButton: false,
     });
 
     if (context !== undefined) {
       context.updateState({
-        [name]: value,
-        inv_item_category_id: e.selected.category_id,
-        inventory_uom_id: e.selected.purchase_uom_id,
-        inv_item_group_id: e.selected.group_id,
+        // [name]: value,
+        // inv_item_category_id: e.selected.category_id,
+        // inventory_uom_id: e.selected.purchase_uom_id,
+        // inv_item_group_id: e.selected.group_id,
+        // addItemButton: false,
+        // quantity: 0,
+        inv_item_category_id: e.category_id,
+        inventory_uom_id: e.purchase_uom_id,
+        inv_item_group_id: e.group_id,
+        inv_item_id: e.hims_d_inventory_item_master_id,
         addItemButton: false,
-        quantity: 0
+        quantity: 0,
       });
     }
   }
-
-
 };
 
 const AddItems = ($this, context) => {
   if ($this.state.quantity === 0) {
     swalMessage({
       title: "Please enter Quantity Required .",
-      type: "warning"
+      type: "warning",
     });
   } else {
     let ItemInput = {
@@ -102,17 +123,17 @@ const AddItems = ($this, context) => {
       pharmacy_uom_id: $this.state.pharmacy_uom_id,
       inventory_uom_id: $this.state.inventory_uom_id,
       quantity: $this.state.quantity,
-      itm_notes: $this.state.itm_notes
+      itm_notes: $this.state.itm_notes,
     };
     let quotation_detail = $this.state.quotation_detail;
     quotation_detail.push(ItemInput);
     if (context !== undefined) {
       context.updateState({
         quotation_detail: quotation_detail,
-        saveEnable: false
+        saveEnable: false,
       });
     }
-    clearItemData($this, context)
+    clearItemData($this, context);
   }
 };
 
@@ -123,11 +144,9 @@ const deleteQuotationDetail = ($this, context, row) => {
   if (context !== undefined) {
     context.updateState({
       quotation_detail: quotation_detail,
-      saveEnable: quotation_detail.length > 0 ? false : true
+      saveEnable: quotation_detail.length > 0 ? false : true,
     });
   }
-
-
 };
 const gridNumHandler = ($this, row, e) => {
   let name = e.name || e.target.name;
@@ -136,12 +155,12 @@ const gridNumHandler = ($this, row, e) => {
   if (parseFloat(value) > parseFloat(row.total_quantity)) {
     swalMessage({
       title: "Authorize Quantity cannot be greater than Ordered Quantity.",
-      type: "warning"
+      type: "warning",
     });
   } else if (value < 0) {
     swalMessage({
       title: "Authorize Quantity cannot be less than Zero",
-      type: "warning"
+      type: "warning",
     });
   } else {
     let extended_price = 0;
@@ -158,16 +177,16 @@ const gridNumHandler = ($this, row, e) => {
       net_extended_cost: extended_price,
       unit_cost: unit_cost,
       tax_amount: tax_amount,
-      total_amount: total_amount
+      total_amount: total_amount,
     });
   }
 };
 
 const clearItemData = ($this, context) => {
-
   $this.setState({
     phar_item_id: null,
     inv_item_id: null,
+    item_description: "",
     phar_item_category: null,
     inv_item_category_id: null,
     phar_item_group: null,
@@ -176,12 +195,13 @@ const clearItemData = ($this, context) => {
     inventory_uom_id: null,
     quantity: 0,
     addItemButton: true,
-    itm_notes: null
+    itm_notes: null,
   });
   if (context !== undefined) {
     context.updateState({
       phar_item_id: null,
       inv_item_id: null,
+      item_description: "",
       phar_item_category: null,
       inv_item_category_id: null,
       phar_item_group: null,
@@ -190,11 +210,10 @@ const clearItemData = ($this, context) => {
       inventory_uom_id: null,
       quantity: 0,
       addItemButton: true,
-      itm_notes: null
+      itm_notes: null,
     });
   }
-}
-
+};
 
 export {
   itemchangeText,
@@ -202,5 +221,5 @@ export {
   AddItems,
   deleteQuotationDetail,
   gridNumHandler,
-  texthandle
+  texthandle,
 };

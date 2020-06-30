@@ -1,4 +1,4 @@
-import mongoose, { Schema, mongo } from "mongoose";
+import mongoose, { Schema } from "mongoose";
 
 const notSchema = new Schema(
   {
@@ -8,10 +8,11 @@ const notSchema = new Schema(
     title: String,
     pageToRedirect: String,
     fromUserId: Number,
-    fromModule: String
+    fromModule: String,
+    isSeen: { type: Boolean, default: false },
   },
   {
-    timestamps: true
+    timestamps: true,
   }
 );
 

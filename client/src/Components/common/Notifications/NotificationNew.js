@@ -34,6 +34,7 @@ export default function Notification({ open, handlePanel }) {
         state.unshift(notobj);
         return [...state];
       });
+      socket.emit("acknowledge", notobj);
       if (!doNot) {
         window.audio_feedback.play();
         notification.info({
@@ -55,7 +56,6 @@ export default function Notification({ open, handlePanel }) {
 
       socket.once("authenticated", (data) => {
         setAuthed(true);
-        console.log(data, "after auth");
         socket.emit("getAll");
       });
 
@@ -99,7 +99,11 @@ export default function Notification({ open, handlePanel }) {
       socket.on("removed", (removed) => {
         setList((state) => {
           const current = state.filter((item) => item._id !== removed._id);
-          return current;
+          return [...current];
+        });
+        setToday((state) => {
+          const current = state.filter((item) => item._id !== removed._id);
+          return [...current];
         });
       });
     }

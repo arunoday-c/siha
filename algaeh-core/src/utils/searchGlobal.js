@@ -648,13 +648,12 @@ let algaehSearchConfig = (searchName, req) => {
         searchName: "InventryForMaterialRequsition",
         searchQuery:
           "select SQL_CALC_FOUND_ROWS IM.hims_d_inventory_item_master_id, IM.item_description, IM.category_id, \
-          IM.stocking_uom_id,IM.sales_uom_id,IM.item_uom_id,IM.purchase_uom_id,IM.purchase_cost,IM.service_id, IM.group_id, IC.category_desc,SR.vat_percent,\
-          IG.group_description, PU.uom_description,SR.standard_fee from hims_d_inventory_item_master IM, \
-          hims_d_inventory_tem_category IC, hims_d_inventory_item_group IG, hims_d_inventory_uom PU, \
-           hims_d_services SR where IM.category_id = IC.hims_d_inventory_tem_category_id and \
+          IM.stocking_uom_id,IM.sales_uom_id,IM.item_uom_id,IM.purchase_uom_id,IM.purchase_cost, IM.group_id, IC.category_desc,\
+          IG.group_description, PU.uom_description from hims_d_inventory_item_master IM, \
+          hims_d_inventory_tem_category IC, hims_d_inventory_item_group IG, hims_d_inventory_uom PU \
+          where IM.category_id = IC.hims_d_inventory_tem_category_id and \
           IM.group_id = IG.hims_d_inventory_item_group_id and IM.stocking_uom_id=PU.hims_d_inventory_uom_id and \
-          IM.service_id= SR.hims_d_services_id and IM.item_status='A' and \
-          IM.record_status='A' and IC.record_status='A' and IG.record_status='A'",
+           IM.item_status='A' and IM.record_status='A' and IC.record_status='A' and IG.record_status='A'",
         orderBy: "IM.hims_d_inventory_item_master_id desc",
         inputSequence: [
           "inventory_location_id",

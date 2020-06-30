@@ -237,7 +237,7 @@ export default function EmployeeFilter(props) {
       props.loadFunc(inputs);
     } else {
       swalMessage({
-        title: "Please select a hospital",
+        title: "Please select a Branch",
         type: "warning",
       });
     }
