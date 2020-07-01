@@ -1,5 +1,10 @@
 import React, { memo, useState, useContext, useEffect } from "react";
-import { Switch, AlgaehAutoComplete, Input } from "algaeh-react-components";
+import {
+  Switch,
+  AlgaehAutoComplete,
+  Input,
+  AlgaehFormGroup,
+} from "algaeh-react-components";
 import { MainContext } from "algaeh-react-components/context";
 
 export default memo(function () {
@@ -43,72 +48,77 @@ export default memo(function () {
   return (
     <div className="row">
       <div className="col-12">
-        <table>
-          <tbody>
-            <tr>
-              <td> Remeber search dropdown </td>
-              <td>
+        <div className="portlet portlet-bordered margin-bottom-15 margin-top-15">
+          <div className="portlet-title">
+            <div className="caption">
+              <h3 className="caption-subject">User Preferences</h3>
+            </div>
+            <div className="actions"></div>
+          </div>
+          <div className="portlet-body">
+            <div className="row">
+              <div className="col">
+                <label>Remeber search dropdown</label>{" "}
                 <Switch
+                  className="ant-switch-block"
                   name="searchBarDropDown"
                   checkedChildren={<i className="fa fa-check"></i>}
                   unCheckedChildren={<i className="fa fa-times"></i>}
                   checked={searchBarDropDown}
                   onChange={onChnageSwitch}
                 ></Switch>
-              </td>
-            </tr>
-            <tr>
-              <td> Notification sound </td>
-              <td>
+              </div>
+              <div className="col">
+                <label>Notification Sound</label>{" "}
                 <Switch
+                  className="ant-switch-block"
                   name="notificationSound"
                   checkedChildren={<i className="fa fa-check"></i>}
                   unCheckedChildren={<i className="fa fa-times"></i>}
                   checked={notificationSound}
                   onChange={onChnageSwitch}
                 ></Switch>
-              </td>
-            </tr>
-            <tr>
-              <td>Default Landing Page</td>
-              <td>
-                <AlgaehAutoComplete
-                  div={{ className: "col" }}
-                  label={{}}
-                  selector={{
-                    dataSource: {
-                      data: screens,
-                      valueField: "algaeh_app_screens_id",
-                      textField: "screen_name",
-                    },
-                  }}
-                />
-              </td>
-            </tr>
-            <tr>
-              <td>Screen TimeOut</td>
-              <td>
-                <Input defaultValue="20" />
-              </td>
-            </tr>
-            <tr>
-              <td>Default language</td>
-              <td>
-                <AlgaehAutoComplete
-                  div={{ className: "col" }}
-                  label={{}}
-                  selector={{
-                    dataSource: {
-                      data: language,
-                      valueField: "lang_short",
-                      textField: "lang",
-                    },
-                  }}
-                />
-              </td>
-            </tr>
-          </tbody>
-        </table>
+              </div>
+              <AlgaehAutoComplete
+                div={{ className: "col" }}
+                label={{ forceLabel: "Default Landing Page" }}
+                selector={{
+                  dataSource: {
+                    data: screens,
+                    valueField: "algaeh_app_screens_id",
+                    textField: "screen_name",
+                  },
+                }}
+              />
+              <AlgaehFormGroup
+                div={{ className: "col" }}
+                label={{
+                  forceLabel: "Screen TimeOut	",
+                  isImp: false,
+                }}
+                textBox={{
+                  type: "number",
+                  value: "",
+                  className: "form-control",
+                  placeholder: "0",
+                  autoComplete: false,
+                }}
+              />
+
+              <AlgaehAutoComplete
+                div={{ className: "col" }}
+                label={{ forceLabel: "Default language" }}
+                selector={{
+                  dataSource: {
+                    data: language,
+                    valueField: "lang_short",
+                    textField: "lang",
+                  },
+                }}
+              />
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

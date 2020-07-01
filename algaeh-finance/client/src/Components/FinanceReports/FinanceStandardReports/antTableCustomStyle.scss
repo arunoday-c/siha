@@ -51,6 +51,13 @@
         min-width: 210px !important;
         // background: #edfffd !important;
         border-right: 1px solid #d3d3d3 !important;
+        .pointer {
+          font-weight: bold;
+        }
+        .pointer + span {
+          font-weight: bold;
+          margin-left: 5px;
+        }
       }
     }
     tfoot {
