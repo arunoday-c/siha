@@ -121,7 +121,7 @@ export default function FinanceReports() {
             <div className="col reportPreviewSecLeft">
               <div
                 className="row inner-top-search"
-                style={{ padding: "15px 0", marginBottom: 0 }}
+                style={{ padding: "15px 0", marginBottom: 0, border: "none" }}
               >
                 <div className="col-12">
                   <h3>Report Name Here</h3>

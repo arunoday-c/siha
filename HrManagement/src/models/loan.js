@@ -32,7 +32,7 @@ export default {
             "select E.employee_code, E.full_name, LA.loan_amount, LA.approved_amount, LA.start_month, LA.start_year, \
              LA.loan_tenure, LA.pending_tenure, LA.installment_amount, LA.pending_loan, L.loan_description, LA.hims_f_loan_application_id from hims_f_loan_application LA \
              inner join hims_d_employee E on E.hims_d_employee_id=LA.employee_id \
-             inner join hims_d_loan L on L.hims_d_loan_id=LA.loan_id where E.hospital_id=? " +
+             inner join hims_d_loan L on L.hims_d_loan_id=LA.loan_id where loan_authorized <> 'REJ' and E.hospital_id=? " +
             strQry,
           values: [input.hospital_id],
           printQuery: true,

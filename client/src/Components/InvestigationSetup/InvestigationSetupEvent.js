@@ -7,7 +7,7 @@ const texthandle = ($this, e) => {
 
   $this.setState(
     {
-      [name]: value
+      [name]: value,
     },
     () => {
       getInvestigations($this, $this);
@@ -15,7 +15,7 @@ const texthandle = ($this, e) => {
   );
 };
 
-const getInvestigations = $this => {
+const getInvestigations = ($this) => {
   let Obj = {};
 
   if ($this.state.category_id !== null) {
@@ -35,14 +35,12 @@ const getInvestigations = $this => {
     Obj = { ...Obj, ...{ hims_d_investigation_test_id: $this.state.test_id } };
   }
 
-
-
   algaehApiCall({
     uri: "/investigation/getInvestigTestList",
     module: "laboratory",
     method: "GET",
     data: Obj,
-    onSuccess: response => {
+    onSuccess: (response) => {
       // console.log("from update", response.data);
 
       if (response.data.success === true) {
@@ -55,7 +53,8 @@ const getInvestigations = $this => {
               category_id: firstRecordSet.category_id,
               cpt_id: firstRecordSet.cpt_id,
               description: firstRecordSet.description,
-              external_facility_required: firstRecordSet.external_facility_required,
+              external_facility_required:
+                firstRecordSet.external_facility_required,
               facility_description: firstRecordSet.facility_description,
               film_category: firstRecordSet.film_category,
               film_used: firstRecordSet.film_used,
@@ -71,18 +70,25 @@ const getInvestigations = $this => {
               short_description: firstRecordSet.short_description,
               specimen_id: firstRecordSet.specimen_id,
               services_id: firstRecordSet.services_id,
+              service_name: firstRecordSet.service_name,
               hims_m_lab_specimen_id: firstRecordSet.hims_m_lab_specimen_id,
-              analytes_required: firstRecordSet.test_section === "M" ? false : true,
+              analytes_required:
+                firstRecordSet.test_section === "M" ? false : true,
               container_id: firstRecordSet.container_id,
-              analytes: firstRecordSet.hims_m_lab_analyte_id === null ? [] : g.getSource(),
-              RadTemplate: firstRecordSet.hims_d_rad_template_detail_id === null ? [] : g.getSource()
+              analytes:
+                firstRecordSet.hims_m_lab_analyte_id === null
+                  ? []
+                  : g.getSource(),
+              RadTemplate:
+                firstRecordSet.hims_d_rad_template_detail_id === null
+                  ? []
+                  : g.getSource(),
             };
           })
           .toArray();
-        $this.setState({ investigations_data: _Investigations })
-
+        $this.setState({ investigations_data: _Investigations });
       }
-    }
+    },
   });
 
   $this.props.getInvestigationDetails({
@@ -92,8 +98,8 @@ const getInvestigations = $this => {
     data: Obj,
     redux: {
       type: "INSURANCE_PROVIDER_GET_DATA",
-      mappingName: "investigationdetails"
-    }
+      mappingName: "investigationdetails",
+    },
   });
 };
 
@@ -101,7 +107,7 @@ const EditInvestigationTest = ($this, row) => {
   $this.setState({
     hims_d_investigation_test_id: row.hims_d_investigation_test_id,
     isOpen: !$this.state.isOpen,
-    InvestigationPop: row
+    InvestigationPop: row,
   });
 
   $this.props.getTestCategory({
@@ -111,8 +117,8 @@ const EditInvestigationTest = ($this, row) => {
     data: { investigation_type: row.investigation_type },
     redux: {
       type: "TESTCATEGORY_GET_DATA",
-      mappingName: "testcategory"
-    }
+      mappingName: "testcategory",
+    },
   });
 };
 

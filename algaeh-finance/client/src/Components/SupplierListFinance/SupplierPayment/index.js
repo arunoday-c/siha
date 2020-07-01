@@ -6,7 +6,7 @@ import { LedgerReport } from "../../InvoiceCommon";
 import { getInvoicesForSupplier } from "./SupPaymentEvents";
 import { Button, Spin } from "antd";
 
-export default memo(function(props) {
+export default memo(function (props) {
   const location = useLocation();
   const history = useHistory();
   const [visible, setvisible] = useState(false);
@@ -15,7 +15,7 @@ export default memo(function(props) {
     over_due: "0.00",
     total_receivable: "0.00",
     past_payments: "0.00",
-    day_end_pending: "0"
+    day_end_pending: "0",
   });
 
   const [loading, setLoading] = useState(false);
@@ -25,31 +25,31 @@ export default memo(function(props) {
       setLoading(true);
       const { finance_account_child_id } = location.state.data;
       getInvoicesForSupplier(finance_account_child_id)
-        .then(res => {
+        .then((res) => {
           if (res.data.success) {
             const { result } = res.data;
             setData(result.result);
-            setInfo(state => ({
+            setInfo((state) => ({
               ...state,
               over_due: result.over_due,
               total_receivable: result.total_receivable,
               past_payments: result.past_payments,
-              day_end_pending: result.day_end_pending
+              day_end_pending: result.day_end_pending,
             }));
             setLoading(false);
           }
         })
-        .catch(e => {
+        .catch((e) => {
           setLoading(false);
           AlgaehMessagePop({
             type: "Error",
-            display: e.message
+            display: e.message,
           });
         });
     }
   }, [location.state]);
 
-  const receive = row => {
+  const receive = (row) => {
     return (
       <Button
         disabled={row.invoice_status === "closed"}
@@ -57,7 +57,7 @@ export default memo(function(props) {
         onClick={() =>
           history.push("/JournalVoucher", {
             data: row,
-            type: "supplier"
+            type: "supplier",
           })
         }
       >
@@ -91,7 +91,7 @@ export default memo(function(props) {
                       className="btn btn-default"
                       onClick={() =>
                         history.push("/DayEndProcess", {
-                          data: location.state.data
+                          data: location.state.data,
                         })
                       }
                     >
@@ -107,61 +107,61 @@ export default memo(function(props) {
                           fieldName: "invoice_date",
                           label: "Date",
                           sortable: true,
-                          filterable: true
+                          filterable: true,
                         },
                         {
                           fieldName: "invoice_no",
                           label: "Invoice No",
                           sortable: true,
-                          filterable: true
+                          filterable: true,
                         },
                         {
                           fieldName: "narration",
                           label: "Description",
-                          filterable: true
+                          filterable: true,
                         },
                         {
                           fieldName: "due_date",
                           label: "Due Date",
                           sortable: true,
-                          filterable: true
+                          filterable: true,
                         },
                         {
                           fieldName: "invoice_amount",
                           label: "Invoice Amount",
                           sortable: true,
-                          filterable: true
+                          filterable: true,
                         },
                         {
                           fieldName: "settled_amount",
                           label: "Paid Amount",
                           sortable: true,
-                          filterable: true
+                          filterable: true,
                         },
                         {
                           fieldName: "balance_amount",
                           label: "Balance Amount",
                           sortable: true,
-                          filterable: true
+                          filterable: true,
                         },
                         {
                           fieldName: "invoice_status",
                           label: "Status",
-                          displayTemplate: row =>
+                          displayTemplate: (row) =>
                             row.invoice_status.toUpperCase(),
                           sortable: true,
-                          filterable: true
+                          filterable: true,
                         },
                         {
                           fieldName: "last_modified",
                           label: "Last Modified Date",
                           sortable: true,
-                          filterable: true
+                          filterable: true,
                         },
                         {
                           label: "Action",
-                          displayTemplate: receive
-                        }
+                          displayTemplate: receive,
+                        },
                       ]}
                       height="80vh"
                       // rowUnique="finance_voucher_header_id"

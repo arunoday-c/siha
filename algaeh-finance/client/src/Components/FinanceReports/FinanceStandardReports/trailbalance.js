@@ -64,6 +64,7 @@ export default function TrailBalaceReport({
           </div>
           <div className="reportTableStyle" style={{ border: "none" }}>
             <AlgaehTable
+              className="reportGridPlain"
               data={accounts || []}
               columns={[
                 {

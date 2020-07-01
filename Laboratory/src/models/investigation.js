@@ -38,23 +38,24 @@ export default {
           query:
             "select hims_d_investigation_test_id, T.test_code, T.description, services_id, R.hims_d_rad_template_detail_id, \
              R.template_name, R.template_html, T.investigation_type, lab_section_id, send_out_test, available_in_house, restrict_order, restrict_by, external_facility_required, facility_description,  priority, cpt_id, category_id, film_category, screening_test, film_used, A.analyte_id,  A.hims_m_lab_analyte_id, A.critical_low, A.gender, A.from_age, A.to_age, A.age_type, A.critical_high,  TC.test_section, A.normal_low, A.normal_high, \
-             S.specimen_id, S.hims_m_lab_specimen_id, S.container_id from hims_d_investigation_test T \
+             S.specimen_id, S.hims_m_lab_specimen_id, S.container_id,SER.service_name from hims_d_investigation_test T \
              left  join  hims_d_rad_template_detail R on T.hims_d_investigation_test_id = R.test_id \
              left join hims_m_lab_specimen S on S.test_id = T.hims_d_investigation_test_id  \
              left join hims_m_lab_analyte A on A.test_id=T.hims_d_investigation_test_id \
              left join hims_d_test_category TC on TC.hims_d_test_category_id = T.category_id \
+             inner join hims_d_services as SER on T.services_id = SER.hims_d_services_id \
              where 1=1" +
             _stringData,
           values: inputValues,
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           utilities.logger().log("result: ", result);
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -98,12 +99,12 @@ export default {
             input.screening_test,
             input.film_used,
             req.userIdentity.algaeh_d_app_user_id,
-            req.userIdentity.algaeh_d_app_user_id
+            req.userIdentity.algaeh_d_app_user_id,
           ],
 
-          printQuery: true
+          printQuery: true,
         })
-        .then(results => {
+        .then((results) => {
           utilities.logger().log("results: ", results);
           utilities
             .logger()
@@ -122,11 +123,11 @@ export default {
                   input.container_id,
                   input.container_code,
                   req.userIdentity.algaeh_d_app_user_id,
-                  req.userIdentity.algaeh_d_app_user_id
+                  req.userIdentity.algaeh_d_app_user_id,
                 ],
-                printQuery: true
+                printQuery: true,
               })
-              .then(spResult => {
+              .then((spResult) => {
                 if (spResult.insertId != null) {
                   if (req.body.analytes.length > 0) {
                     utilities.logger().log("spResult: ", spResult);
@@ -141,7 +142,7 @@ export default {
                       "critical_low",
                       "critical_high",
                       "normal_low",
-                      "normal_high"
+                      "normal_high",
                     ];
 
                     _mysql
@@ -152,12 +153,12 @@ export default {
                         extraValues: {
                           test_id: req.body.test_id,
                           created_by: req.userIdentity.algaeh_d_app_user_id,
-                          updated_by: req.userIdentity.algaeh_d_app_user_id
+                          updated_by: req.userIdentity.algaeh_d_app_user_id,
                         },
                         bulkInsertOrUpdate: true,
-                        printQuery: true
+                        printQuery: true,
                       })
-                      .then(analyteResult => {
+                      .then((analyteResult) => {
                         utilities
                           .logger()
                           .log("analyteResult: ", analyteResult);
@@ -167,7 +168,7 @@ export default {
                           next();
                         });
                       })
-                      .catch(e => {
+                      .catch((e) => {
                         _mysql.rollBackTransaction(() => {
                           next(e);
                         });
@@ -181,7 +182,7 @@ export default {
                   }
                 }
               })
-              .catch(e => {
+              .catch((e) => {
                 _mysql.rollBackTransaction(() => {
                   next(e);
                 });
@@ -193,7 +194,7 @@ export default {
             const IncludeValues = [
               "template_name",
               "template_html",
-              "template_status"
+              "template_status",
             ];
 
             utilities.logger().log("RadTemplate: ", input.RadTemplate);
@@ -206,12 +207,12 @@ export default {
                 extraValues: {
                   test_id: req.body.test_id,
                   created_by: req.userIdentity.algaeh_d_app_user_id,
-                  updated_by: req.userIdentity.algaeh_d_app_user_id
+                  updated_by: req.userIdentity.algaeh_d_app_user_id,
                 },
                 bulkInsertOrUpdate: true,
-                printQuery: true
+                printQuery: true,
               })
-              .then(radiolgyResult => {
+              .then((radiolgyResult) => {
                 utilities.logger().log("radiolgyResult: ", radiolgyResult);
                 _mysql.commitTransaction(() => {
                   _mysql.releaseConnection();
@@ -219,14 +220,14 @@ export default {
                   next();
                 });
               })
-              .catch(e => {
+              .catch((e) => {
                 _mysql.rollBackTransaction(() => {
                   next(e);
                 });
               });
           }
         })
-        .catch(e => {
+        .catch((e) => {
           _mysql.rollBackTransaction(() => {
             next(e);
           });
@@ -273,11 +274,11 @@ export default {
             inputParam.film_used,
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
-            inputParam.hims_d_investigation_test_id
+            inputParam.hims_d_investigation_test_id,
           ],
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           if (result != null && inputParam.investigation_type == "L") {
             let execute_query = {};
             utilities
@@ -297,9 +298,9 @@ export default {
                   inputParam.container_id,
                   inputParam.container_code,
                   req.userIdentity.algaeh_d_app_user_id,
-                  req.userIdentity.algaeh_d_app_user_id
+                  req.userIdentity.algaeh_d_app_user_id,
                 ],
-                printQuery: true
+                printQuery: true,
               };
             } else {
               execute_query = {
@@ -312,16 +313,16 @@ export default {
                   inputParam.container_code,
                   new Date(),
                   req.userIdentity.algaeh_d_app_user_id,
-                  inputParam.hims_m_lab_specimen_id
+                  inputParam.hims_m_lab_specimen_id,
                 ],
-                printQuery: true
+                printQuery: true,
               };
             }
 
             utilities.logger().log("execute_query: ", execute_query);
             _mysql
               .executeQuery(execute_query)
-              .then(resultSpc => {
+              .then((resultSpc) => {
                 utilities.logger().log("resultSpc: ", resultSpc);
                 new Promise((resolve, reject) => {
                   try {
@@ -338,7 +339,7 @@ export default {
                         "critical_low",
                         "critical_high",
                         "normal_low",
-                        "normal_high"
+                        "normal_high",
                       ];
 
                       _mysql
@@ -348,15 +349,15 @@ export default {
                           includeValues: IncludeValues,
                           extraValues: {
                             created_by: req.userIdentity.algaeh_d_app_user_id,
-                            updated_by: req.userIdentity.algaeh_d_app_user_id
+                            updated_by: req.userIdentity.algaeh_d_app_user_id,
                           },
                           bulkInsertOrUpdate: true,
-                          printQuery: true
+                          printQuery: true,
                         })
-                        .then(InsAnalyteResult => {
+                        .then((InsAnalyteResult) => {
                           return resolve(InsAnalyteResult);
                         })
-                        .catch(e => {
+                        .catch((e) => {
                           reject(e);
                         });
                     } else {
@@ -366,7 +367,7 @@ export default {
                     reject(e);
                   }
                 })
-                  .then(results => {
+                  .then((results) => {
                     if (inputParam.update_analytes.length != 0) {
                       let update_analytes = req.body.update_analytes;
                       let qry = "";
@@ -392,23 +393,23 @@ export default {
                             update_analytes[i].gender,
                             moment().format("YYYY-MM-DD HH:mm"),
                             req.userIdentity.algaeh_d_app_user_id,
-                            update_analytes[i].hims_m_lab_analyte_id
+                            update_analytes[i].hims_m_lab_analyte_id,
                           ]
                         );
                       }
                       _mysql
                         .executeQuery({
                           query: qry,
-                          printQuery: true
+                          printQuery: true,
                         })
-                        .then(result_anlyt => {
+                        .then((result_anlyt) => {
                           _mysql.commitTransaction(() => {
                             _mysql.releaseConnection();
                             req.records = result_anlyt;
                             next();
                           });
                         })
-                        .catch(e => {
+                        .catch((e) => {
                           _mysql.rollBackTransaction(() => {
                             next(e);
                           });
@@ -421,13 +422,13 @@ export default {
                       });
                     }
                   })
-                  .catch(e => {
+                  .catch((e) => {
                     _mysql.rollBackTransaction(() => {
                       next(e);
                     });
                   });
               })
-              .catch(e => {
+              .catch((e) => {
                 utilities.logger().log("Error: ", e);
                 _mysql.rollBackTransaction(() => {
                   next(e);
@@ -440,7 +441,7 @@ export default {
                   const IncludeValues = [
                     "template_name",
                     "test_id",
-                    "template_html"
+                    "template_html",
                   ];
 
                   _mysql
@@ -451,15 +452,15 @@ export default {
                       includeValues: IncludeValues,
                       extraValues: {
                         created_by: req.userIdentity.algaeh_d_app_user_id,
-                        updated_by: req.userIdentity.algaeh_d_app_user_id
+                        updated_by: req.userIdentity.algaeh_d_app_user_id,
                       },
                       bulkInsertOrUpdate: true,
-                      printQuery: true
+                      printQuery: true,
                     })
-                    .then(radiolgyResult => {
+                    .then((radiolgyResult) => {
                       return resolve(radiolgyResult);
                     })
-                    .catch(e => {
+                    .catch((e) => {
                       reject(e);
                     });
                 } else {
@@ -469,7 +470,7 @@ export default {
                 reject(e);
               }
             })
-              .then(result => {
+              .then((result) => {
                 if (inputParam.update_rad_temp.length != 0) {
                   let update_rad_temp = req.body.update_rad_temp;
                   let qry = "";
@@ -485,23 +486,23 @@ export default {
                         update_rad_temp[i].record_status,
                         moment().format("YYYY-MM-DD HH:mm"),
                         req.userIdentity.algaeh_d_app_user_id,
-                        update_rad_temp[i].hims_d_rad_template_detail_id
+                        update_rad_temp[i].hims_d_rad_template_detail_id,
                       ]
                     );
                   }
                   _mysql
                     .executeQuery({
                       query: qry,
-                      printQuery: true
+                      printQuery: true,
                     })
-                    .then(result_rad_update => {
+                    .then((result_rad_update) => {
                       _mysql.commitTransaction(() => {
                         _mysql.releaseConnection();
                         req.records = result_rad_update;
                         next();
                       });
                     })
-                    .catch(e => {
+                    .catch((e) => {
                       _mysql.rollBackTransaction(() => {
                         next(e);
                       });
@@ -514,14 +515,14 @@ export default {
                   });
                 }
               })
-              .catch(e => {
+              .catch((e) => {
                 _mysql.rollBackTransaction(() => {
                   next(e);
                 });
               });
           }
         })
-        .catch(e => {
+        .catch((e) => {
           _mysql.rollBackTransaction(() => {
             next(e);
           });
@@ -542,9 +543,9 @@ export default {
             query:
               "delete from hims_m_lab_analyte where hims_m_lab_analyte_id=?",
             values: [req.body.hims_m_lab_analyte_id],
-            printQuery: true
+            printQuery: true,
           })
-          .then(result => {
+          .then((result) => {
             // utilities.logger().log("result: ", result);
             _mysql.releaseConnection();
 
@@ -552,14 +553,14 @@ export default {
 
             next();
           })
-          .catch(error => {
+          .catch((error) => {
             _mysql.releaseConnection();
             next(error);
           });
       } else {
         req.records = {
           invalid_input: true,
-          message: "Please provide valid input"
+          message: "Please provide valid input",
         };
         next();
       }
@@ -577,9 +578,9 @@ export default {
             query:
               "delete from hims_d_rad_template_detail where hims_d_rad_template_detail_id=?",
             values: [req.body.hims_d_rad_template_detail_id],
-            printQuery: true
+            printQuery: true,
           })
-          .then(result => {
+          .then((result) => {
             // utilities.logger().log("result: ", result);
             _mysql.releaseConnection();
 
@@ -587,14 +588,14 @@ export default {
 
             next();
           })
-          .catch(error => {
+          .catch((error) => {
             _mysql.releaseConnection();
             next(error);
           });
       } else {
         req.records = {
           invalid_input: true,
-          message: "Please provide valid input"
+          message: "Please provide valid input",
         };
         next();
       }
@@ -603,7 +604,6 @@ export default {
       next(e);
     }
   },
-
 
   addTestComments: (req, res, next) => {
     let inputParam = req.body;
@@ -622,16 +622,16 @@ export default {
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
             new Date(),
-            req.userIdentity.algaeh_d_app_user_id
+            req.userIdentity.algaeh_d_app_user_id,
           ],
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -655,16 +655,16 @@ export default {
             inputParam.comment_status,
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
-            inputParam.hims_d_investigation_test_comments_id
+            inputParam.hims_d_investigation_test_comments_id,
           ],
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -676,10 +676,13 @@ export default {
 
   getTestComments: (req, res, next) => {
     const _mysql = new algaehMysql();
-    let strQuery = ""
+    let strQuery = "";
 
-    if (req.query.comment_status !== null && req.query.comment_status !== undefined) {
-      strQuery = ` and comment_status = '${req.query.comment_status}'`
+    if (
+      req.query.comment_status !== null &&
+      req.query.comment_status !== undefined
+    ) {
+      strQuery = ` and comment_status = '${req.query.comment_status}'`;
     }
 
     try {
@@ -690,14 +693,14 @@ export default {
             strQuery +
             "order by hims_d_investigation_test_comments_id desc ",
           values: [req.query.investigation_test_id],
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -705,5 +708,5 @@ export default {
       _mysql.releaseConnection();
       next(e);
     }
-  }
+  },
 };

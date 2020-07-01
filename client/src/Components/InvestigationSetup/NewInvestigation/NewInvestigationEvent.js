@@ -12,11 +12,11 @@ const texthandle = ($this, ctrl, e) => {
     let analytes_required = e.selected.test_section === "M" ? false : true;
     $this.setState({
       [name]: value,
-      analytes_required: analytes_required
+      analytes_required: analytes_required,
     });
   } else {
     $this.setState({
-      [name]: value
+      [name]: value,
     });
   }
   if (name === "investigation_type") {
@@ -28,14 +28,14 @@ const texthandle = ($this, ctrl, e) => {
         data: { investigation_type: value },
         redux: {
           type: "TESTCATEGORY_GET_DATA",
-          mappingName: "testcategory"
-        }
+          mappingName: "testcategory",
+        },
       });
     });
   }
 };
 
-const Validations = $this => {
+const Validations = ($this) => {
   let isError = false;
   // if ($this.state.test_code === null) {
   //   isError = true;
@@ -51,7 +51,7 @@ const Validations = $this => {
     isError = true;
     swalMessage({
       type: "error",
-      title: "Test Name Cannot be blank."
+      title: "Test Name Cannot be blank.",
     });
 
     document.querySelector("[name='description']").focus();
@@ -60,7 +60,7 @@ const Validations = $this => {
     isError = true;
     swalMessage({
       type: "error",
-      title: "Service Cannot be blank."
+      title: "Service Cannot be blank.",
     });
     document.querySelector("[name='services_id']").focus();
     return isError;
@@ -69,7 +69,7 @@ const Validations = $this => {
       isError = true;
       swalMessage({
         type: "error",
-        title: "Specimen Cannot be blank."
+        title: "Specimen Cannot be blank.",
       });
       document.querySelector("[name='specimen_id']").focus();
       return isError;
@@ -77,7 +77,7 @@ const Validations = $this => {
       isError = true;
       swalMessage({
         type: "error",
-        title: "Container Cannot be blank."
+        title: "Container Cannot be blank.",
       });
       document.querySelector("[name='container_id']").focus();
       return isError;
@@ -88,7 +88,7 @@ const Validations = $this => {
       isError = true;
       swalMessage({
         type: "error",
-        title: "Atleast One Analytes to be add."
+        title: "Atleast One Analytes to be add.",
       });
 
       return isError;
@@ -96,7 +96,7 @@ const Validations = $this => {
       isError = true;
       swalMessage({
         type: "error",
-        title: "Category Cannot be blank."
+        title: "Category Cannot be blank.",
       });
       document.querySelector("[name='category_id']").focus();
       return isError;
@@ -125,19 +125,19 @@ const InsertLabTest = ($this, e) => {
         uri: "/investigation/addInvestigationTest",
         module: "laboratory",
         data: $this.state,
-        onSuccess: response => {
+        onSuccess: (response) => {
           console.log("from add", response.data);
           if (response.data.success === true) {
             swalMessage({
               type: "success",
-              title: "Saved successfully . ."
+              title: "Saved successfully . .",
             });
             let IOputs = InvestigationIOputs.inputParam();
             $this.setState({ ...$this.state, ...IOputs }, () => {
               $this.props.onClose && $this.props.onClose(true);
             });
           }
-        }
+        },
       });
     } else {
       algaehApiCall({
@@ -145,40 +145,61 @@ const InsertLabTest = ($this, e) => {
         module: "laboratory",
         data: $this.state,
         method: "PUT",
-        onSuccess: response => {
+        onSuccess: (response) => {
           console.log("from update", response.data);
           if (response.data.success === true) {
             swalMessage({
               type: "success",
-              title: "Updated successfully . ."
+              title: "Updated successfully . .",
             });
             let IOputs = InvestigationIOputs.inputParam();
             $this.setState({ ...$this.state, ...IOputs }, () => {
               $this.props.onClose && $this.props.onClose(true);
             });
           }
-        }
+        },
       });
     }
   }
 };
 
-const CptCodesSearch = $this => {
+const CptCodesSearch = ($this) => {
   AlgaehSearch({
     searchGrid: {
-      columns: spotlightSearch.Services.CptCodes
+      columns: spotlightSearch.Services.CptCodes,
     },
     searchName: "CptCodes",
     uri: "/gloabelSearch/get",
     onContainsChange: (text, serchBy, callBack) => {
       callBack(text);
     },
-    onRowSelect: row => {
+    onRowSelect: (row) => {
       $this.setState({
         cpt_id: row.hims_d_cpt_code_id,
-        cpt_code_data: row.cpt_code
+        cpt_code_data: row.cpt_code,
       });
-    }
+    },
   });
 };
-export { texthandle, InsertLabTest, CptCodesSearch };
+const ServiceTypeSearch = ($this) => {
+  AlgaehSearch({
+    searchGrid: {
+      columns: [
+        { fieldName: "service_code", label: "Service Code" },
+        { fieldName: "service_name", label: "Service Name" },
+      ],
+    },
+    searchName: "serviceTypes",
+    uri: "/gloabelSearch/get",
+    onContainsChange: (text, serchBy, callBack) => {
+      callBack(text);
+    },
+    onRowSelect: (row) => {
+      $this.setState({
+        services_id: row.hims_d_services_id,
+        service_name: row.service_name,
+      });
+    },
+  });
+};
+export { texthandle, InsertLabTest, CptCodesSearch, ServiceTypeSearch };
