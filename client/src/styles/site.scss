@@ -953,7 +953,9 @@ textarea {
     border: 1px solid #d9ae58;
   }
 }
-
+.ant-switch-block {
+  display: block;
+}
 //input field disabled style
 input[type="text"]:disabled,
 input[type="number"]:disabled,
