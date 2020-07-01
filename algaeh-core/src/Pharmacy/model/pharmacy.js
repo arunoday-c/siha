@@ -3,6 +3,9 @@ import utils from "../../utils";
 import extend from "extend";
 import httpStatus from "../../utils/httpStatus";
 import logUtils from "../../utils/logging";
+import algaehMysql from "algaeh-mysql";
+
+const keyPath = require("algaeh-keys/keys");
 
 const { debugFunction, debugLog } = logUtils;
 const { whereCondition, releaseDBConnection, jsonArrayToObject } = utils;
@@ -22,7 +25,7 @@ let addItemMaster = (req, res, next) => {
       if (error) {
         next(error);
       }
-      connection.beginTransaction(error => {
+      connection.beginTransaction((error) => {
         if (error) {
           connection.rollback(() => {
             releaseDBConnection(db, connection);
@@ -60,7 +63,7 @@ let addItemMaster = (req, res, next) => {
             new Date(),
             input.created_by,
             new Date(),
-            input.updated_by
+            input.updated_by,
           ],
           (error, result) => {
             if (error) {
@@ -81,7 +84,7 @@ let addItemMaster = (req, res, next) => {
                 "conversion_factor",
 
                 "created_by",
-                "updated_by"
+                "updated_by",
               ];
 
               connection.query(
@@ -93,8 +96,8 @@ let addItemMaster = (req, res, next) => {
                     sampleInputObject: insurtColumns,
                     arrayObj: req.body.detail_item_uom,
                     newFieldToInsert: [result.insertId, new Date(), new Date()],
-                    req: req
-                  })
+                    req: req,
+                  }),
                 ],
                 (error, detailResult) => {
                   if (error) {
@@ -104,7 +107,7 @@ let addItemMaster = (req, res, next) => {
                     });
                   }
 
-                  connection.commit(error => {
+                  connection.commit((error) => {
                     if (error) {
                       connection.rollback(() => {
                         releaseDBConnection(db, connection);
@@ -154,7 +157,7 @@ let addItemCategory = (req, res, next) => {
           new Date(),
           input.created_by,
           new Date(),
-          input.updated_by
+          input.updated_by,
         ],
         (error, result) => {
           releaseDBConnection(db, connection);
@@ -192,7 +195,7 @@ let addItemGeneric = (req, res, next) => {
           new Date(),
           input.created_by,
           new Date(),
-          input.updated_by
+          input.updated_by,
         ],
         (error, result) => {
           releaseDBConnection(db, connection);
@@ -232,7 +235,7 @@ let addItemGroup = (req, res, next) => {
           input.created_by,
           new Date(),
           input.updated_by,
-          new Date()
+          new Date(),
         ],
         (error, result) => {
           releaseDBConnection(db, connection);
@@ -271,7 +274,7 @@ let addPharmacyUom = (req, res, next) => {
           new Date(),
           input.created_by,
           new Date(),
-          input.updated_by
+          input.updated_by,
         ],
         (error, result) => {
           releaseDBConnection(db, connection);
@@ -312,7 +315,7 @@ let addPharmacyLocation = (req, res, next) => {
           new Date(),
           input.created_by,
           new Date(),
-          input.updated_by
+          input.updated_by,
         ],
         (error, result) => {
           releaseDBConnection(db, connection);
@@ -332,7 +335,7 @@ let addPharmacyLocation = (req, res, next) => {
 //created by irfan: to get item master
 let getItemMaster = (req, res, next) => {
   let selectWhere = {
-    hims_d_item_master_id: "ALL"
+    hims_d_item_master_id: "ALL",
   };
   try {
     if (req.db == null) {
@@ -397,7 +400,7 @@ let getItemMasterAndItemUom = (req, res, next) => {
 //created by irfan: to get item category
 let getItemCategory = (req, res, next) => {
   let selectWhere = {
-    hims_d_item_category_id: "ALL"
+    hims_d_item_category_id: "ALL",
   };
   try {
     if (req.db == null) {
@@ -431,7 +434,7 @@ let getItemCategory = (req, res, next) => {
 //created by irfan: to get item Generic
 let getItemGeneric = (req, res, next) => {
   let selectWhere = {
-    hims_d_item_generic_id: "ALL"
+    hims_d_item_generic_id: "ALL",
   };
   try {
     if (req.db == null) {
@@ -465,7 +468,7 @@ let getItemGeneric = (req, res, next) => {
 //created by irfan: to get item Generic
 let getItemGroup = (req, res, next) => {
   let selectWhere = {
-    hims_d_item_group_id: "ALL"
+    hims_d_item_group_id: "ALL",
   };
   try {
     if (req.db == null) {
@@ -499,7 +502,7 @@ let getItemGroup = (req, res, next) => {
 //created by irfan: to get get Pharmacy Uom
 let getPharmacyUom = (req, res, next) => {
   let selectWhere = {
-    hims_d_pharmacy_uom_id: "ALL"
+    hims_d_pharmacy_uom_id: "ALL",
   };
   try {
     if (req.db == null) {
@@ -533,7 +536,7 @@ let getPharmacyUom = (req, res, next) => {
 //created by irfan: to get Pharmacy Location
 let getPharmacyLocation = (req, res, next) => {
   let selectWhere = {
-    hims_d_pharmacy_location_id: "ALL"
+    hims_d_pharmacy_location_id: "ALL",
   };
   try {
     if (req.db == null) {
@@ -586,7 +589,7 @@ let updateItemCategory = (req, res, next) => {
           new Date(),
           input.updated_by,
           input.record_status,
-          input.hims_d_item_category_id
+          input.hims_d_item_category_id,
         ],
         (error, result) => {
           connection.release();
@@ -625,7 +628,7 @@ let updateItemGroup = (req, res, next) => {
           input.updated_by,
           new Date(),
           input.record_status,
-          input.hims_d_item_group_id
+          input.hims_d_item_group_id,
         ],
         (error, result) => {
           connection.release();
@@ -663,7 +666,7 @@ let updateItemGeneric = (req, res, next) => {
           new Date(),
           input.updated_by,
           input.record_status,
-          input.hims_d_item_generic_id
+          input.hims_d_item_generic_id,
         ],
         (error, result) => {
           connection.release();
@@ -700,7 +703,7 @@ let updatePharmacyUom = (req, res, next) => {
           new Date(),
           input.updated_by,
           input.record_status,
-          input.hims_d_pharmacy_uom_id
+          input.hims_d_pharmacy_uom_id,
         ],
         (error, result) => {
           connection.release();
@@ -740,7 +743,7 @@ let updatePharmacyLocation = (req, res, next) => {
           new Date(),
           input.updated_by,
           input.record_status,
-          input.hims_d_pharmacy_location_id
+          input.hims_d_pharmacy_location_id,
         ],
         (error, result) => {
           connection.release();
@@ -772,7 +775,7 @@ let updateItemMasterAndUom = (req, res, next) => {
       if (error) {
         next(error);
       }
-      connection.beginTransaction(error => {
+      connection.beginTransaction((error) => {
         if (error) {
           connection.rollback(() => {
             releaseDBConnection(db, connection);
@@ -809,7 +812,7 @@ let updateItemMasterAndUom = (req, res, next) => {
           new Date(),
           input.updated_by,
           input.record_status,
-          input.hims_d_item_master_id
+          input.hims_d_item_master_id,
         ];
 
         connection.query(queryBuilder, inputs, (error, result) => {
@@ -830,7 +833,7 @@ let updateItemMasterAndUom = (req, res, next) => {
                     "stocking_uom",
                     "conversion_factor",
                     "created_by",
-                    "updated_by"
+                    "updated_by",
                   ];
 
                   connection.query(
@@ -842,8 +845,8 @@ let updateItemMasterAndUom = (req, res, next) => {
                         sampleInputObject: insurtColumns,
                         arrayObj: req.body.insertItemUomMap,
                         newFieldToInsert: [new Date(), new Date()],
-                        req: req
-                      })
+                        req: req,
+                      }),
                     ],
                     (error, insertUomMapResult) => {
                       if (error) {
@@ -861,7 +864,7 @@ let updateItemMasterAndUom = (req, res, next) => {
               } catch (e) {
                 reject(e);
               }
-            }).then(results => {
+            }).then((results) => {
               debugLog("inside uom map then");
 
               if (input.updateUomMapResult.length != 0) {
@@ -898,7 +901,7 @@ let updateItemMasterAndUom = (req, res, next) => {
                     });
                   }
 
-                  connection.commit(error => {
+                  connection.commit((error) => {
                     if (error) {
                       connection.rollback(() => {
                         releaseDBConnection(db, connection);
@@ -911,7 +914,7 @@ let updateItemMasterAndUom = (req, res, next) => {
                   });
                 });
               } else {
-                connection.commit(error => {
+                connection.commit((error) => {
                   if (error) {
                     connection.rollback(() => {
                       releaseDBConnection(db, connection);
@@ -925,7 +928,7 @@ let updateItemMasterAndUom = (req, res, next) => {
               }
             });
           } else {
-            connection.commit(error => {
+            connection.commit((error) => {
               if (error) {
                 connection.rollback(() => {
                   releaseDBConnection(db, connection);
@@ -967,7 +970,7 @@ let updateItemForm = (req, res, next) => {
           new Date(),
           input.updated_by,
           input.record_status,
-          input.hims_d_item_form_id
+          input.hims_d_item_form_id,
         ],
         (error, result) => {
           connection.release();
@@ -1006,7 +1009,7 @@ let updateItemStorage = (req, res, next) => {
           new Date(),
           input.updated_by,
           input.record_status,
-          input.hims_d_item_storage_id
+          input.hims_d_item_storage_id,
         ],
         (error, result) => {
           connection.release();
@@ -1026,7 +1029,7 @@ let updateItemStorage = (req, res, next) => {
 //created by Nowshad: to get item category
 let getItemForm = (req, res, next) => {
   let selectWhere = {
-    hims_d_item_form_id: "ALL"
+    hims_d_item_form_id: "ALL",
   };
   try {
     if (req.db == null) {
@@ -1060,7 +1063,7 @@ let getItemForm = (req, res, next) => {
 //created by Nowshad: to get item category
 let getItemStorage = (req, res, next) => {
   let selectWhere = {
-    hims_d_item_storage_id: "ALL"
+    hims_d_item_storage_id: "ALL",
   };
 
   try {
@@ -1115,7 +1118,7 @@ let addItemForm = (req, res, next) => {
           new Date(),
           input.created_by,
           new Date(),
-          input.updated_by
+          input.updated_by,
         ],
         (error, result) => {
           releaseDBConnection(db, connection);
@@ -1155,7 +1158,7 @@ let addItemStorage = (req, res, next) => {
           new Date(),
           input.created_by,
           new Date(),
-          input.updated_by
+          input.updated_by,
         ],
         (error, result) => {
           releaseDBConnection(db, connection);
@@ -1175,47 +1178,67 @@ let addItemStorage = (req, res, next) => {
 //Location Permission
 //created by Nowshad: to add Location Permission
 let addLocationPermission = (req, res, next) => {
+  const _mysql = new algaehMysql({ path: keyPath });
+  // try {
+  //   if (req.db == null) {
+  //     next(httpStatus.dataBaseNotInitilizedError());
+  //   }
+  //   let db = req.db;
+  //   let input = extend({}, req.body);
+
+  //   db.getConnection((error, connection) => {
+  //     if (error) {
+  //       next(error);
+  //     }
+
+  //     connection.query(
+  let input = req.body;
   try {
-    if (req.db == null) {
-      next(httpStatus.dataBaseNotInitilizedError());
-    }
-    let db = req.db;
-    let input = extend({}, req.body);
-
-    db.getConnection((error, connection) => {
-      if (error) {
-        next(error);
-      }
-
-      connection.query(
-        "INSERT INTO `hims_m_location_permission` (`user_id`, `location_id`, `allow`,`created_date`,`created_by`)\
+    _mysql
+      .executeQuery({
+        query:
+          "INSERT INTO `hims_m_location_permission` (`user_id`, `location_id`, `allow`,`created_date`,`created_by`)\
         VALUE(?,?,?,?,?)",
-        [
+        values: [
           input.user_id,
           input.location_id,
           input.allow,
           new Date(),
-          input.created_by
+          input.created_by,
         ],
-        (error, result) => {
-          releaseDBConnection(db, connection);
-          if (error) {
-            next(error);
-          }
-          req.records = result;
-          next();
-        }
-      );
-    });
+      })
+      .then((result) => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch((error) => {
+        _mysql.releaseConnection();
+        next(error);
+      });
   } catch (e) {
+    _mysql.releaseConnection();
     next(e);
   }
+  //       (error, result) => {
+  //         releaseDBConnection(db, connection);
+  //         if (error) {
+  //           next(error);
+  //         }
+  //         req.records = result;
+  //         next();
+  //       }
+  //     );
+  //   });
+  // } catch (e) {
+  //   next(e);
+  // }
 };
 
 //created by Nowshad: to get Location Permission
 let getLocationPermission = (req, res, next) => {
   let selectWhere = {
-    hims_m_location_permission_id: "ALL"
+    hims_m_location_permission_id: "ALL",
   };
 
   try {
@@ -1273,7 +1296,7 @@ let updateLocationPermission = (req, res, next) => {
           new Date(),
           input.updated_by,
           input.record_status,
-          input.hims_m_location_permission_id
+          input.hims_m_location_permission_id,
         ],
         (error, result) => {
           connection.release();
@@ -1320,5 +1343,5 @@ export default {
   updateItemStorage,
   getItemMasterAndItemUom,
   updateItemMasterAndUom,
-  updateLocationPermission
+  updateLocationPermission,
 };
