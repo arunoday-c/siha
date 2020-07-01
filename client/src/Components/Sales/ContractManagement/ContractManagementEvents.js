@@ -76,7 +76,7 @@ const ClearData = ($this, e) => {
     organizations: [],
     quotation_ref_numb: null,
     saveEnable: true,
-
+    editMode: false,
     service_name: "",
     services_id: null,
     service_frequency: null,
@@ -401,6 +401,7 @@ const deleteComment = ($this, row) => {
 
   $this.setState({
     comment_list: comment_list,
+    saveEnable: true,
   });
 };
 
