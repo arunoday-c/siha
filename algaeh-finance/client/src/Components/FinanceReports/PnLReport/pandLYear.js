@@ -74,8 +74,8 @@ function PLYear({ data, layout }) {
       {incomeExpenceData.length ? (
         <>
           <AlgaehTable
-            className="treeGridPL"
-            height="65vh"
+            className="reportGridPlain"
+            // height="65vh"
             columns={columns}
             data={incomeExpenceData}
             footer={true}

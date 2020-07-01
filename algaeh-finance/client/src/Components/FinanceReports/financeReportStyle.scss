@@ -185,14 +185,12 @@
   }
   .ant-spin-nested-loading {
     background: #fff;
-    border-top: none;
-    border: 1px solid #d3d3d3;
     border-radius: 2px;
     min-height: 76vh;
     padding: 0 15px 15px;
     width: 100%;
     .inner-top-search {
-      padding: 15px;
+      padding-bottom: 15px;
     }
   }
   .inner-top-search {

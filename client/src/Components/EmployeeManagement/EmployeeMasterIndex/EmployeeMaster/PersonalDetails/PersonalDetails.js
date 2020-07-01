@@ -23,6 +23,7 @@ import AlgaehFile from "../../../../Wrapper/algaehFileUpload";
 import { getCookie } from "../../../../../utils/algaehApiCall";
 import { MainContext } from "algaeh-react-components/context";
 import { algaehApiCall } from "../../../../../utils/algaehApiCall";
+import AlgaehLoader from "../../../../Wrapper/fullPageLoader";
 import { AlgaehFormGroup, RawSecurityElement } from "algaeh-react-components";
 import MaskedInput from "react-maskedinput";
 // import Enumerable from "linq";
@@ -30,15 +31,15 @@ import MaskedInput from "react-maskedinput";
 class PersonalDetails extends Component {
   constructor(props) {
     super(props);
-    this.initCall();
 
     this.state = {
       samechecked: "N",
       selectedLang: getCookie("Language"),
       HIMS_Active: false,
       FldEditable: true,
-      identity_no: "1111 1111 1111 1111",
+      identity_no: "",
       identity_card: "",
+      masked_identity: "",
     };
   }
 
@@ -65,6 +66,9 @@ class PersonalDetails extends Component {
   }
   static contextType = MainContext;
   componentDidMount() {
+    this.initCall();
+
+    AlgaehLoader({ show: true });
     const userToken = this.context.userToken;
     const HIMS_Active =
       userToken.product_type === "HIMS_ERP" ||
@@ -140,6 +144,10 @@ class PersonalDetails extends Component {
         },
       });
     }
+
+    setTimeout(() => {
+      AlgaehLoader({ show: false });
+    }, 2000);
 
     RawSecurityElement({ elementCode: "FLD_EDT_PER" }).then((result) => {
       if (result === "hide") {
@@ -441,25 +449,38 @@ class PersonalDetails extends Component {
                     />
                     <div className="col-lg-2 col-md-2 col-sm-12 ">
                       <label className="styleLabel"> ENTER ID NUMBER</label>
-                      <div className="ui input txt-fld">
-                        <MaskedInput
-                          className=""
-                          placeholder={
-                            this.state.identity_no === null ||
-                            this.state.identity_no === ""
-                              ? ""
-                              : "eg: " + this.state.identity_no
-                          }
-                          mask={
-                            this.state.identity_no === null ||
-                            this.state.identity_no === ""
-                              ? "####################"
-                              : this.state.identity_no
-                          }
-                          name="identity_card"
-                          size="20"
+
+                      {this.state.masked_identity ? (
+                        <div className="ui input txt-fld">
+                          <MaskedInput
+                            mask={this.state.masked_identity}
+                            className="form-control"
+                            placeholder={"eg: " + this.state.masked_identity}
+                            name="identity_no"
+                            value={this.state.identity_no}
+                            guide={false}
+                            id="my-input-id"
+                            onBlur={() => {}}
+                            onChange={texthandle.bind(this, this)}
+                          />
+                        </div>
+                      ) : (
+                        <AlagehFormGroup
+                          // div={{ className: "col-lg-2 col-md-2 col-sm-12" }}
+
+                          textBox={{
+                            className: "txt-fld",
+                            name: "identity_no",
+                            value: this.state.identity_no,
+                            events: {
+                              onChange: texthandle.bind(this, this),
+                            },
+                            others: {
+                              placeholder: "Enter ID Number",
+                            },
+                          }}
                         />
-                      </div>
+                      )}
                     </div>
 
                     {/* <AlagehFormGroup

@@ -217,7 +217,7 @@ export default function PnLReport({ layout, finOptions, organization, style }) {
     <>
       {/* <Button onClick={loadExcel}>Excel</Button> */}
 
-      <div className="row inner-top-search" style={{ paddingBottom: 20 }}>
+      <div className="row inner-top-search">
         <i
           className="fas fa-file-download"
           onClick={onLoad}
@@ -313,7 +313,7 @@ export default function PnLReport({ layout, finOptions, organization, style }) {
             disabled={!columnType}
             data-name="preview"
             loading={loading}
-            style={{ marginTop: 15 }}
+            style={{ marginTop: 16 }}
           >
             Preview
           </AlgaehButton>

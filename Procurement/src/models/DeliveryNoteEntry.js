@@ -668,7 +668,7 @@ export default {
             hims_f_procurement_po_header PH inner join hims_d_vendor V on PH.vendor_id = V.hims_d_vendor_id \
             left join hims_d_pharmacy_location PL on PH.pharmcy_location_id = PL.hims_d_pharmacy_location_id\
             left join hims_d_inventory_location IL on PH.inventory_location_id = IL.hims_d_inventory_location_id   where DN.purchase_order_id=PH.hims_f_procurement_po_header_id \
-            and DN.hospital_id=?  and DN.delivery_note_number=?; \
+            and DN.delivery_note_number=?; \
             select D.*,CASE H.dn_from WHEN 'INV' then II.item_description else PI.item_description end as \
             item_description,CASE H.dn_from WHEN 'INV' then IU.uom_description else PU.uom_description end as \
             uom_description  from hims_f_procurement_dn_header H  inner join hims_f_procurement_dn_detail D\
@@ -677,17 +677,14 @@ export default {
             left join hims_d_inventory_item_master II on D.inv_item_id= II.hims_d_inventory_item_master_id\
             left join hims_d_pharmacy_uom PU on D.pharmacy_uom_id= PU.hims_d_pharmacy_uom_id\
             left join hims_d_inventory_uom IU on D.inventory_uom_id= IU.hims_d_inventory_uom_id\
-            where H.hospital_id=?  and delivery_note_number=?;\
+            where delivery_note_number=?;\
             select B.* from hims_f_procurement_dn_header H  inner join hims_f_procurement_dn_detail D\
             on H.hims_f_procurement_dn_header_id= D. hims_f_procurement_dn_header_id\
             inner join hims_f_procurement_dn_batches B on D.hims_f_procurement_dn_detail_id=B.hims_f_procurement_dn_detail_id\
-            where H.hospital_id=?  and H.delivery_note_number=?;",
+            where H.delivery_note_number=?;",
           values: [
-            req.userIdentity.hospital_id,
             req.query.delivery_note_number,
-            req.userIdentity.hospital_id,
             req.query.delivery_note_number,
-            req.userIdentity.hospital_id,
             req.query.delivery_note_number,
           ],
           printQuery: true,

@@ -4,7 +4,7 @@ import SortableTree, {
   getNodeAtPath,
   addNodeUnderParent,
   removeNodeAtPath,
-  toggleExpandedForAll
+  toggleExpandedForAll,
 } from "react-sortable-tree";
 import AddNewAccount from "../AddNewAccount/AddNewAccount";
 import {
@@ -13,7 +13,7 @@ import {
   // Input,
   // Icon,
   // DatePicker,
-  AlgaehTable
+  AlgaehTable,
 } from "algaeh-react-components";
 import ReportLauncher from "../AccountReport";
 // import Charts from "../Charts";
@@ -24,7 +24,7 @@ import {
   isPositive,
   renameAccount,
   // getChartData,
-  getGridChildNodes
+  getGridChildNodes,
 } from ".././FinanceAccountEvent";
 
 import "../alice.scss";
@@ -66,7 +66,7 @@ function TreeComponent({ assetCode, title, inDrawer }) {
           treeData: treeData,
           path: path,
           getNodeKey: ({ treeIndex }) => treeIndex,
-          ignoreCollapsed: true
+          ignoreCollapsed: true,
         });
         let getNodeKey = ({ node: object, treeIndex: number }) => {
           return number;
@@ -81,7 +81,7 @@ function TreeComponent({ assetCode, title, inDrawer }) {
           newNode: addedNode,
           expandParent: true,
           parentKey: parentKey,
-          getNodeKey: ({ treeIndex }) => treeIndex
+          getNodeKey: ({ treeIndex }) => treeIndex,
         });
         resolve(newTree);
       } catch (e) {
@@ -100,18 +100,18 @@ function TreeComponent({ assetCode, title, inDrawer }) {
         setNewAccount(false);
         AlgaehMessagePop({
           type: "success",
-          display: "Renamed successfull"
+          display: "Renamed successfull",
         });
         setSearchQuery(input.child_name);
       })
-      .catch(error => {
+      .catch((error) => {
         console.log("error", error);
         stopLoad();
         setShowPopup(false);
         setNewAccount(false);
         AlgaehMessagePop({
           type: "error",
-          display: error
+          display: error,
         });
       });
   }
@@ -124,22 +124,22 @@ function TreeComponent({ assetCode, title, inDrawer }) {
           head_id,
           finance_account_child_id,
           leafnode,
-          finance_account_head_id
+          finance_account_head_id,
         } = node;
         removeAccount({
           head_id: leafnode === "N" ? finance_account_head_id : head_id,
           child_id: finance_account_child_id,
-          leaf_node: leafnode
+          leaf_node: leafnode,
         })
           .then(() => {
             const removeNodeData = removeNodeAtPath({
               treeData,
               path: path,
-              getNodeKey: ({ treeIndex }) => treeIndex
+              getNodeKey: ({ treeIndex }) => treeIndex,
             });
             resolve(removeNodeData);
           })
-          .catch(error => {
+          .catch((error) => {
             reject(error);
           });
       } catch (e) {
@@ -149,7 +149,7 @@ function TreeComponent({ assetCode, title, inDrawer }) {
   }
 
   function loadAccount() {
-    getAccounts(assetCode, data => {
+    getAccounts(assetCode, (data) => {
       if (Array.isArray(data)) {
         if (data.length > 0) {
           const firstData = data[0];
@@ -192,7 +192,7 @@ function TreeComponent({ assetCode, title, inDrawer }) {
       setIsAccountHead(false);
     } else {
       if (e !== undefined) {
-        addNode(selectedNode, { treeData }, e).then(newTree => {
+        addNode(selectedNode, { treeData }, e).then((newTree) => {
           setTreeData(newTree.treeData);
           setIsAccountHead(false);
         });
@@ -218,7 +218,7 @@ function TreeComponent({ assetCode, title, inDrawer }) {
     );
   };
 
-  const generateNodeProps = rowInfo => {
+  const generateNodeProps = (rowInfo) => {
     const { node } = rowInfo;
     return {
       buttons: [
@@ -280,19 +280,19 @@ function TreeComponent({ assetCode, title, inDrawer }) {
               <AlgaehConfirm
                 title="Are you sure want to delete ?"
                 placement="topLeft"
-                onConfirm={e => {
+                onConfirm={(e) => {
                   removeNode(rowInfo)
-                    .then(newTree => {
+                    .then((newTree) => {
                       setTreeData(newTree);
                       AlgaehMessagePop({
                         type: "success",
-                        display: "Account deleted successfully"
+                        display: "Account deleted successfully",
                       });
                     })
-                    .catch(error => {
+                    .catch((error) => {
                       AlgaehMessagePop({
                         type: "error",
-                        display: error
+                        display: error,
                       });
                     });
                 }}
@@ -304,16 +304,16 @@ function TreeComponent({ assetCode, title, inDrawer }) {
               </AlgaehConfirm>
             </li>
           </ul>
-        </div>
+        </div>,
       ],
       style: {
         height: "50px",
-        minWidth: "150px"
+        minWidth: "150px",
       },
       title: (
         <>
           <span>
-            {node.full_name}
+            {node.full_name === null ? node.label : node.full_name}
             {/* {node.leafnode === "Y" ? null : (
               <> /{node.children === undefined ? 0 : node.children.length}</>
             )} */}
@@ -339,7 +339,7 @@ function TreeComponent({ assetCode, title, inDrawer }) {
           ? "systemGen"
           : node.leafnode === "Y"
           ? ""
-          : "accGroup"
+          : "accGroup",
     };
   };
 
@@ -421,13 +421,13 @@ function TreeComponent({ assetCode, title, inDrawer }) {
   // }
 
   function expandAllNodes() {
-    setTreeData(dtl => {
+    setTreeData((dtl) => {
       return toggleExpandedForAll({
         treeData: dtl,
-        expanded: !expandAll
+        expanded: !expandAll,
       });
     });
-    setExpandAll(expan => {
+    setExpandAll((expan) => {
       return !expan;
     });
   }
@@ -435,26 +435,26 @@ function TreeComponent({ assetCode, title, inDrawer }) {
     setLoadingGridData(true);
     if (gridData.length === 0) {
       getGridChildNodes({ root_id: assetCode })
-        .then(result => {
+        .then((result) => {
           setLoadingGridData(false);
           setGridData(() => {
             return [...result.ledgers];
           });
-          setLayout(result => {
+          setLayout((result) => {
             return result === "tree" ? "grid" : "tree";
           });
         })
-        .catch(error => {
+        .catch((error) => {
           setLoadingGridData(false);
           setGridData([]);
           AlgaehMessagePop({ type: "error", display: error });
-          setLayout(result => {
+          setLayout((result) => {
             return result === "tree" ? "grid" : "tree";
           });
         });
     } else {
       setLoadingGridData(false);
-      setLayout(result => {
+      setLayout((result) => {
         return result === "tree" ? "grid" : "tree";
       });
     }
@@ -539,8 +539,8 @@ function TreeComponent({ assetCode, title, inDrawer }) {
                     setSelectedNode({
                       node: {
                         finance_account_head_id: financeHeadId,
-                        parent_acc_id: assetCode
-                      }
+                        parent_acc_id: assetCode,
+                      },
                     });
                     setShowPopup(true);
                     setIsAccountHead(true);
@@ -555,7 +555,7 @@ function TreeComponent({ assetCode, title, inDrawer }) {
                   type="text"
                   placeholder="Search Account Heads"
                   value={searchQuery}
-                  onChange={e => {
+                  onChange={(e) => {
                     setSearchQuery(e.target.value);
                   }}
                 />
@@ -595,18 +595,18 @@ function TreeComponent({ assetCode, title, inDrawer }) {
                     <div className="treeNodeWrapper">
                       <SortableTree
                         treeData={treeData}
-                        onChange={treeData => {
+                        onChange={(treeData) => {
                           setTreeData(treeData);
                         }}
                         isVirtualized={true}
-                        canDrag={rowInfo => {
+                        canDrag={(rowInfo) => {
                           return rowInfo.node.canDrag === true ? true : false;
                         }}
                         generateNodeProps={generateNodeProps}
                         searchMethod={searchMethod}
                         searchQuery={searchQuery}
                         searchFocusOffset={searchFocusIndex}
-                        searchFinishCallback={matches => {
+                        searchFinishCallback={(matches) => {
                           setSearchFocusIndex(
                             matches.length > 0
                               ? searchFocusIndex % matches.length
@@ -629,23 +629,23 @@ function TreeComponent({ assetCode, title, inDrawer }) {
                               {
                                 fieldName: "ledger_code",
                                 label: "Ledger Code",
-                                filterable: true
+                                filterable: true,
                               },
                               {
                                 fieldName: "child_name",
                                 label: "Ledger Name",
-                                filterable: true
+                                filterable: true,
                               },
                               {
                                 fieldName: "arabic_child_name",
                                 label: "Ledger Arabic",
-                                filterable: true
+                                filterable: true,
                               },
                               {
                                 fieldName: "closing_balance",
                                 label: "Closing Balance",
-                                filterable: true
-                              }
+                                filterable: true,
+                              },
                             ]}
                             data={gridData}
                             // hasFooter={true}
