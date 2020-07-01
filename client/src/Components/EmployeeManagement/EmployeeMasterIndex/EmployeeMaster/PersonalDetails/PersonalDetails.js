@@ -54,7 +54,6 @@ class PersonalDetails extends Component {
         keyFieldName: "hims_d_employee_id",
       },
       onSuccess: (response) => {
-        debugger;
         if (response.data.success === true) {
           const placeHolder =
             response.data.records.length > 0 ? response.data.records[0] : {};
