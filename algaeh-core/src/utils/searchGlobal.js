@@ -1,6 +1,8 @@
 import { LINQ } from "node-linq";
+import searchGlobal1 from "./searchGlobal1";
 let algaehSearchConfig = (searchName, req) => {
   const hospitalId = req.userIdentity.hospital_id;
+  const search_global1 = searchGlobal1({ hospitalId });
   let queries = {
     algaehSeach: [
       {
@@ -1005,6 +1007,7 @@ let algaehSearchConfig = (searchName, req) => {
           hospitalId,
         orderBy: "V.hims_f_patient_visit_id desc",
       },
+      ...search_global1,
     ],
   };
 

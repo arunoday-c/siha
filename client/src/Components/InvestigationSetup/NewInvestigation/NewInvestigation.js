@@ -15,6 +15,7 @@ import {
   texthandle,
   InsertLabTest,
   CptCodesSearch,
+  ServiceTypeSearch,
 } from "./NewInvestigationEvent";
 import variableJson from "../../../utils/GlobalVariables.json";
 import { AlgaehActions } from "../../../actions/algaehActions";
@@ -36,20 +37,20 @@ class NewInvestigation extends PureComponent {
   componentDidMount() {
     let IOputs = InvestigationIOputs.inputParam();
     this.setState({ ...IOputs });
-    if (
-      this.props.ingservices === undefined ||
-      this.props.ingservices.length === 0
-    ) {
-      this.props.getServices({
-        uri: "/serviceType/getService",
-        module: "masterSettings",
-        method: "GET",
-        redux: {
-          type: "SERVICES_GET_DATA",
-          mappingName: "ingservices",
-        },
-      });
-    }
+    // if (
+    //   this.props.ingservices === undefined ||
+    //   this.props.ingservices.length === 0
+    // ) {
+    //   this.props.getServices({
+    //     uri: "/serviceType/getService",
+    //     module: "masterSettings",
+    //     method: "GET",
+    //     redux: {
+    //       type: "SERVICES_GET_DATA",
+    //       mappingName: "ingservices",
+    //     },
+    //   });
+    // }
   }
 
   static getDerivedStateFromProps(props, state) {
@@ -159,7 +160,18 @@ class NewInvestigation extends PureComponent {
                           },
                         }}
                       />
-                      <AlagehAutoComplete
+                      <div className="col-6 globalSearchCntr">
+                        <AlgaehLabel
+                          label={{ fieldName: "services_id", isImp: true }}
+                        />
+                        <h6 onClick={ServiceTypeSearch.bind(this, this)}>
+                          {this.state.service_name
+                            ? this.state.service_name
+                            : "Search Services"}
+                          <i className="fas fa-search fa-lg"></i>
+                        </h6>
+                      </div>
+                      {/* <AlagehAutoComplete
                         div={{ className: "col-6 mandatory" }}
                         label={{
                           fieldName: "services_id",
@@ -182,7 +194,7 @@ class NewInvestigation extends PureComponent {
                             tabIndex: "3",
                           },
                         }}
-                      />{" "}
+                      /> */}
                       <AlagehAutoComplete
                         div={{ className: "col-6 mandatory form-group" }}
                         label={{
