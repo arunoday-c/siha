@@ -24,7 +24,7 @@ export default memo(function QuickSearch(props) {
     setVisible(false);
   }
 
-  const linkCol = row => {
+  const linkCol = (row) => {
     return (
       <Button type="link" onClick={() => onSelect(row)}>
         {row.voucher_no}
@@ -49,48 +49,49 @@ export default memo(function QuickSearch(props) {
                   <div className="row">
                     <div className="col-lg-12 customCheckboxGrid">
                       <AlgaehTable
+                        className="reportGridPlain"
                         columns={[
                           {
                             fieldName: "invoice_date",
                             label: "Date",
-                            sortable: true
+                            sortable: true,
                           },
                           {
                             fieldName: "voucher_type",
                             label: "Type",
                             sortable: true,
-                            filterable: true
+                            filterable: true,
                           },
                           {
                             fieldName: "voucher_no",
                             label: "Voucher No",
                             sortable: true,
                             filterable: true,
-                            displayTemplate: linkCol
+                            displayTemplate: linkCol,
                           },
                           {
                             fieldName: "narration",
                             label: "Description",
                             sortable: true,
-                            filterable: true
+                            filterable: true,
                           },
                           {
                             fieldName: "invoice_no",
                             label: "Invoice No",
                             sortable: true,
-                            filterable: true
+                            filterable: true,
                           },
                           {
                             fieldName: "amount",
                             label: "Amount",
                             sortable: true,
-                            filterable: true
+                            filterable: true,
                           },
                           {
                             fieldName: "updated_date",
                             label: "Last Modified Date",
-                            sortable: true
-                          }
+                            sortable: true,
+                          },
                         ]}
                         // height="80vh"
                         isFilterable={true}

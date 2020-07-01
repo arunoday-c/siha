@@ -11,19 +11,19 @@ function CustomerList(props) {
   const [customer_receivables, setCustomerReceivables] = useState([]);
   const [info, setInfo] = useState({
     over_due: "0.00",
-    total_receivable: "0.00"
+    total_receivable: "0.00",
   });
 
   useEffect(() => {
     LoadCustomerReceivables()
-      .then(data => {
+      .then((data) => {
         setCustomerReceivables(data.result);
         setInfo({ ...data });
       })
-      .catch(error => {
+      .catch((error) => {
         AlgaehMessagePop({
           type: "error",
-          display: error
+          display: error,
         });
       });
   }, []);
@@ -35,11 +35,12 @@ function CustomerList(props) {
         <div className="row">
           <div className="col-12">
             <div className="portlet portlet-bordered margin-bottom-15">
-              <div className="portlet-label">
+              <div className="portlet-title">
                 <div className="caption">
                   <h3 className="caption-subject">Customer List</h3>
-                </div>
+                </div>{" "}
                 <div className="actions">
+                  {" "}
                   <button
                     className="btn btn-primary"
                     onClick={() => {
@@ -48,57 +49,50 @@ function CustomerList(props) {
                   >
                     <i className="fas fa-plus"></i>
                   </button>
-                  {/* <button className="btn btn-default">
-                    <i className="fas fa-print"></i>
-                  </button>
-                  <button className="btn btn-default">
-                    <i className="fas fa-share-square"></i>
-                  </button>
-                  <button className="btn btn-default">
-                    <i className="fas fa-cog"></i>
-                  </button> */}
                 </div>
               </div>
-              <div className="row">
-                <div className="col-lg-12 customCheckboxGrid">
-                  <AlgaehTable
-                    columns={[
-                      {
-                        label: "Customer / Company",
-                        sortable: true,
-                        fieldName: "child_name",
-                        filterable: true,
-                        displayTemplate: record => {
-                          return (
-                            <Button
-                              type="link"
-                              onClick={() =>
-                                history.push("/CustomerPayment", {
-                                  data: record
-                                })
-                              }
-                            >
-                              {record.child_name}
-                            </Button>
-                          );
-                        }
-                      },
-                      {
-                        label: "Balance",
-                        sortable: true,
-                        fieldName: "balance_amount",
-                        others: {
-                          width: 200
-                        }
-                      }
-                    ]}
-                    height="80vh"
-                    isFilterable={true}
-                    // rowUnique="finance_voucher_header_id"
-                    row_unique_id="finance_voucher_header_id"
-                    // dataSource={{ data: customer_receivables }}
-                    data={customer_receivables || []}
-                  />
+              <div className="portlet-body">
+                <div className="row">
+                  <div className="col-lg-12 customCheckboxGrid">
+                    <AlgaehTable
+                      columns={[
+                        {
+                          label: "Customer / Company",
+                          sortable: true,
+                          fieldName: "child_name",
+                          filterable: true,
+                          displayTemplate: (record) => {
+                            return (
+                              <Button
+                                type="link"
+                                onClick={() =>
+                                  history.push("/CustomerPayment", {
+                                    data: record,
+                                  })
+                                }
+                              >
+                                {record.child_name}
+                              </Button>
+                            );
+                          },
+                        },
+                        {
+                          label: "Balance",
+                          sortable: true,
+                          fieldName: "balance_amount",
+                          others: {
+                            width: 200,
+                          },
+                        },
+                      ]}
+                      height="80vh"
+                      isFilterable={true}
+                      // rowUnique="finance_voucher_header_id"
+                      row_unique_id="finance_voucher_header_id"
+                      // dataSource={{ data: customer_receivables }}
+                      data={customer_receivables || []}
+                    />
+                  </div>
                 </div>
               </div>
             </div>

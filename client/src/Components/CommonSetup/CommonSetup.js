@@ -9,9 +9,9 @@ import PatientType from "./PatientType/PatientType.js";
 import VisaType from "./VisaType/VisaType.js";
 import IDType from "./IDType/IDType";
 import VisitType from "./VisitType/VisitType";
+import InsuranceCardClass from "./InsuranceCardClass/InsuranceCardClass";
 import { AlgaehLabel } from "../Wrapper/algaehWrapper";
 import { AlgaehActions } from "../../actions/algaehActions";
-import InsuranceCardClass from "./InsuranceCardClass/InsuranceCardClass";
 import { MainContext } from "algaeh-react-components/context";
 
 class CommonSetup extends Component {

@@ -70,8 +70,8 @@ function PnLCostCenter({ data, layout }) {
         <h3>Profit & Loss - Cost Centre</h3>
       </div>
       <AlgaehTable
-        className="treeGridPL"
-        height="75vh"
+        className="reportGridPlain"
+        // height="75vh"
         columns={columns}
         data={incomeExpenceData}
         footer={true}
