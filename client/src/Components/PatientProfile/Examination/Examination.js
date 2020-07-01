@@ -4,11 +4,11 @@ import {
   AlagehFormGroup,
   AlgaehDataGrid,
   AlagehAutoComplete,
-  AlgaehModalPopUp
+  AlgaehModalPopUp,
 } from "../../Wrapper/algaehWrapper";
 import {
   getAllDepartmentBased,
-  getPatientPhysicalExamination
+  getPatientPhysicalExamination,
 } from "./ExaminationHandlers";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
@@ -17,7 +17,7 @@ import { AlgaehActions } from "../../../actions/algaehActions";
 import {
   algaehApiCall,
   cancelRequest,
-  swalMessage
+  swalMessage,
 } from "../../../utils/algaehApiCall";
 import swal from "sweetalert2";
 import Enumerable from "linq";
@@ -33,7 +33,7 @@ class Examination extends Component {
       patientPhysicalExamination: [],
       specilityDetail: [],
       specilitySubDetail: [],
-      examination_type: "S"
+      examination_type: "S",
     };
     this.handleClose = this.handleClose.bind(this);
     if (
@@ -51,7 +51,7 @@ class Examination extends Component {
 
   texthandle(e) {
     this.setState({
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
   }
 
@@ -61,16 +61,16 @@ class Examination extends Component {
       uri: "/doctorsWorkBench/updatePatientPhysicalExam",
       data: data,
       method: "PUT",
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           swalMessage({
             title: "Record updated successfully . .",
-            type: "success"
+            type: "success",
           });
 
           getPatientPhysicalExamination(this);
         }
-      }
+      },
     });
   }
   componentWillUnmount() {
@@ -98,13 +98,10 @@ class Examination extends Component {
       confirmButtonText: "Yes",
       confirmButtonColor: "#",
       cancelButtonColor: "#d33",
-      cancelButtonText: "No"
-    }).then(willDelete => {
+      cancelButtonText: "No",
+    }).then((willDelete) => {
       if (willDelete.value) {
-        const {
-          current_patient,
-          episode_id
-        } = Window.global;
+        const { current_patient, episode_id } = Window.global;
         algaehApiCall({
           uri: "/doctorsWorkBench/updatePatientPhysicalExam",
           method: "PUT",
@@ -116,17 +113,17 @@ class Examination extends Component {
             exam_subdetails_id: row.hims_d_physical_examination_subdetails_id,
             comments: row.comments,
             record_status: "I",
-            hims_f_episode_examination_id: row.hims_f_episode_examination_id
+            hims_f_episode_examination_id: row.hims_f_episode_examination_id,
           },
-          onSuccess: response => {
+          onSuccess: (response) => {
             if (response.data.success) {
               getPatientPhysicalExamination(this);
               swalMessage({
                 title: "Examination deleted successfully . .",
-                type: "success"
+                type: "success",
               });
             }
-          }
+          },
         });
       }
     });
@@ -141,12 +138,11 @@ class Examination extends Component {
       hims_d_physical_examination_details_id: null,
       hims_d_physical_examination_subdetails_id: null,
       examination_comment: "",
-      ...clear
+      ...clear,
     });
   }
 
   addExaminationToPatient() {
-    debugger
     const { current_patient, episode_id } = Window.global;
     algaehApiCall({
       uri: "/doctorsWorkBench/addPatientPhysicalExamination",
@@ -158,18 +154,18 @@ class Examination extends Component {
         exam_details_id: this.state.hims_d_physical_examination_details_id,
         exam_subdetails_id: this.state
           .hims_d_physical_examination_subdetails_id,
-        comments: this.state.examination_comment
+        comments: this.state.examination_comment,
       },
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           getPatientPhysicalExamination(this);
           this.resetExmnState(true);
           swalMessage({
             title: "Examination added successfully . .",
-            type: "success"
+            type: "success",
           });
         }
-      }
+      },
     });
   }
 
@@ -192,10 +188,10 @@ class Examination extends Component {
     const _examination_type = e.target.checked ? "G" : "S";
     getAllDepartmentBased({
       that: this,
-      inputData: { allDept: _examination_type }
+      inputData: { allDept: _examination_type },
     });
     this.setState({
-      examination_type: _examination_type
+      examination_type: _examination_type,
     });
   }
   onChangePhysicalExamination(selected) {
@@ -206,11 +202,11 @@ class Examination extends Component {
           return {
             hims_d_physical_examination_details_id: k,
             detail_description: _firs.dtl_description,
-            list: g.getSource()
+            list: g.getSource(),
           };
         })
         .toArray(),
-      hims_d_physical_examination_header_id: selected.value
+      hims_d_physical_examination_header_id: selected.value,
     });
   }
   onChangePhysicalExamitionDetail(selected) {
@@ -223,12 +219,12 @@ class Examination extends Component {
             const _firs = Enumerable.from(g.getSource()).firstOrDefault();
             return {
               hims_d_physical_examination_subdetails_id: k,
-              sub_detail_description: _firs.sub_dtl_description
+              sub_detail_description: _firs.sub_dtl_description,
             };
           }
         )
         .toArray(),
-      hims_d_physical_examination_details_id: selected.value
+      hims_d_physical_examination_details_id: selected.value,
     });
   }
   onClearPhysicalExam() {
@@ -237,35 +233,35 @@ class Examination extends Component {
       hims_d_physical_examination_details_id: null,
       hims_d_physical_examination_subdetails_id: null,
       specilityDetail: [],
-      specilitySubDetail: []
+      specilitySubDetail: [],
     });
   }
   onClearPhysicalExamDetail() {
     this.setState({
       hims_d_physical_examination_details_id: null,
       hims_d_physical_examination_subdetails_id: null,
-      specilitySubDetail: []
+      specilitySubDetail: [],
     });
   }
   render() {
     const _specility =
       this.props.allexaminations !== undefined &&
-        this.props.allexaminations.length !== 0
+      this.props.allexaminations.length !== 0
         ? Enumerable.from(this.props.allexaminations)
-          //    .where(w => w.examination_type === this.state.examination_type)
-          .groupBy(
-            "$.hims_d_physical_examination_header_id",
-            null,
-            (k, g) => {
-              return {
-                hims_d_physical_examination_header_id: k,
-                description: Enumerable.from(g.getSource()).firstOrDefault()
-                  .description,
-                list: g.getSource()
-              };
-            }
-          )
-          .toArray()
+            //    .where(w => w.examination_type === this.state.examination_type)
+            .groupBy(
+              "$.hims_d_physical_examination_header_id",
+              null,
+              (k, g) => {
+                return {
+                  hims_d_physical_examination_header_id: k,
+                  description: Enumerable.from(g.getSource()).firstOrDefault()
+                    .description,
+                  list: g.getSource(),
+                };
+              }
+            )
+            .toArray()
         : [];
     return (
       <React.Fragment>
@@ -273,7 +269,7 @@ class Examination extends Component {
 
         <AlgaehModalPopUp
           events={{
-            onClose: this.handleClose.bind(this)
+            onClose: this.handleClose.bind(this),
           }}
           title="Add Examination"
           openPopup={this.props.openExamnModal}
@@ -299,7 +295,7 @@ class Examination extends Component {
                     <AlagehAutoComplete
                       div={{ className: "col-lg-12" }}
                       label={{
-                        fieldName: "exmn_type"
+                        fieldName: "exmn_type",
                       }}
                       selector={{
                         name: "hims_d_physical_examination_header_id",
@@ -308,17 +304,17 @@ class Examination extends Component {
                         dataSource: {
                           textField: "description",
                           valueField: "hims_d_physical_examination_header_id",
-                          data: _specility
+                          data: _specility,
                         },
                         onChange: this.onChangePhysicalExamination.bind(this),
-                        onClear: this.onClearPhysicalExam.bind(this)
+                        onClear: this.onClearPhysicalExam.bind(this),
                       }}
                     />
 
                     <AlagehAutoComplete
                       div={{ className: "col-lg-12 margin-top-15" }}
                       label={{
-                        fieldName: "exmn_desc"
+                        fieldName: "exmn_desc",
                       }}
                       selector={{
                         name: "hims_d_physical_examination_details_id",
@@ -328,19 +324,19 @@ class Examination extends Component {
                         dataSource: {
                           textField: "detail_description",
                           valueField: "hims_d_physical_examination_details_id",
-                          data: this.state.specilityDetail
+                          data: this.state.specilityDetail,
                         },
                         onChange: this.onChangePhysicalExamitionDetail.bind(
                           this
                         ),
-                        onClear: this.onClearPhysicalExamDetail.bind(this)
+                        onClear: this.onClearPhysicalExamDetail.bind(this),
                       }}
                     />
 
                     <AlagehAutoComplete
                       div={{ className: "col-lg-12 margin-top-15" }}
                       label={{
-                        fieldName: "exmn"
+                        fieldName: "exmn",
                       }}
                       selector={{
                         name: "hims_d_physical_examination_subdetails_id",
@@ -351,9 +347,9 @@ class Examination extends Component {
                           textField: "sub_detail_description",
                           valueField:
                             "hims_d_physical_examination_subdetails_id",
-                          data: this.state.specilitySubDetail
+                          data: this.state.specilitySubDetail,
                         },
-                        onChange: this.dropDownHandle.bind(this)
+                        onChange: this.dropDownHandle.bind(this),
                       }}
                     />
 
@@ -361,19 +357,19 @@ class Examination extends Component {
                       div={{ className: "col-lg-12 margin-top-15" }}
                       label={{
                         fieldName: "comments",
-                        isImp: false
+                        isImp: false,
                       }}
                       textBox={{
                         className: "txt-fld",
                         name: "examination_comment",
                         others: {
                           multiline: true,
-                          rows: "4"
+                          rows: "4",
                         },
                         value: this.state.examination_comment,
                         events: {
-                          onChange: this.texthandle.bind(this)
-                        }
+                          onChange: this.texthandle.bind(this),
+                        },
                       }}
                     />
                   </div>
@@ -388,23 +384,23 @@ class Examination extends Component {
                       {
                         fieldName: "header_description",
                         label: "Examination Type",
-                        disabled: true
+                        disabled: true,
                       },
                       {
                         fieldName: "detail_description",
                         label: "Examination Description",
-                        disabled: true
+                        disabled: true,
                       },
                       {
                         fieldName: "subdetail_description",
                         label: "Examination",
-                        disabled: true
+                        disabled: true,
                       },
 
                       {
                         fieldName: "comments",
                         label: "Comments",
-                        editorTemplate: row => {
+                        editorTemplate: (row) => {
                           return (
                             <AlagehFormGroup
                               div={{}}
@@ -413,24 +409,24 @@ class Examination extends Component {
                                 className: "txt-fld",
                                 name: "comments",
                                 events: {
-                                  onChange: this.texthandler.bind(this, row)
-                                }
+                                  onChange: this.texthandler.bind(this, row),
+                                },
                               }}
                             />
                           );
-                        }
-                      }
+                        },
+                      },
                     ]}
                     keyId="hims_f_episode_examination_id"
                     dataSource={{
-                      data: this.props.all_patient_examinations
+                      data: this.props.all_patient_examinations,
                     }}
                     isEditable={true}
                     paging={{ page: 0, rowsPerPage: 10 }}
                     events={{
                       onDelete: this.deletePatientExamn.bind(this),
-                      onEdit: row => { },
-                      onDone: this.updateExamination.bind(this)
+                      onEdit: (row) => {},
+                      onDone: this.updateExamination.bind(this),
                     }}
                   />
                 </div>
@@ -445,6 +441,11 @@ class Examination extends Component {
                     onClick={this.addExaminationToPatient.bind(this)}
                     type="button"
                     className="btn btn-primary"
+                    disabled={
+                      this.state.hims_d_physical_examination_header_id
+                        ? false
+                        : true
+                    }
                   >
                     Add Examination
                   </button>
@@ -477,7 +478,7 @@ class Examination extends Component {
 function mapStateToProps(state) {
   return {
     allexaminations: state.allexaminations,
-    all_patient_examinations: state.all_patient_examinations
+    all_patient_examinations: state.all_patient_examinations,
   };
 }
 
@@ -485,7 +486,7 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
       getAllDepartmentBased: AlgaehActions,
-      getPatientPhysicalExamination: AlgaehActions
+      getPatientPhysicalExamination: AlgaehActions,
     },
     dispatch
   );
