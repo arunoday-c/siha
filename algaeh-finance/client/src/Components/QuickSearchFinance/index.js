@@ -46,60 +46,65 @@ export default memo(function QuickSearch(props) {
             <div className="row">
               <div className="col-12">
                 <div className="portlet portlet-bordered margin-bottom-15">
-                  <div className="row">
-                    <div className="col-lg-12 customCheckboxGrid">
-                      <AlgaehTable
-                        className="reportGridPlain"
-                        columns={[
-                          {
-                            fieldName: "invoice_date",
-                            label: "Date",
-                            sortable: true,
-                          },
-                          {
-                            fieldName: "voucher_type",
-                            label: "Type",
-                            sortable: true,
-                            filterable: true,
-                          },
-                          {
-                            fieldName: "voucher_no",
-                            label: "Voucher No",
-                            sortable: true,
-                            filterable: true,
-                            displayTemplate: linkCol,
-                          },
-                          {
-                            fieldName: "narration",
-                            label: "Description",
-                            sortable: true,
-                            filterable: true,
-                          },
-                          {
-                            fieldName: "invoice_no",
-                            label: "Invoice No",
-                            sortable: true,
-                            filterable: true,
-                          },
-                          {
-                            fieldName: "amount",
-                            label: "Amount",
-                            sortable: true,
-                            filterable: true,
-                          },
-                          {
-                            fieldName: "updated_date",
-                            label: "Last Modified Date",
-                            sortable: true,
-                          },
-                        ]}
-                        // height="80vh"
-                        isFilterable={true}
-                        // rowUnique="finance_voucher_header_id"
-                        row_unique_id="finance_voucher_header_id"
-                        // dataSource={{ data: data }}
-                        data={data || []}
-                      />
+                  {" "}
+                  <div className="portlet-body">
+                    <div className="row">
+                      <div
+                        className="col-lg-12 customCheckboxGrid"
+                        id="quickSearchGrid"
+                      >
+                        <AlgaehTable
+                          columns={[
+                            {
+                              fieldName: "invoice_date",
+                              label: "Date",
+                              sortable: true,
+                            },
+                            {
+                              fieldName: "voucher_type",
+                              label: "Type",
+                              sortable: true,
+                              filterable: true,
+                            },
+                            {
+                              fieldName: "voucher_no",
+                              label: "Voucher No",
+                              sortable: true,
+                              filterable: true,
+                              displayTemplate: linkCol,
+                            },
+                            {
+                              fieldName: "narration",
+                              label: "Description",
+                              sortable: true,
+                              filterable: true,
+                            },
+                            {
+                              fieldName: "invoice_no",
+                              label: "Invoice No",
+                              sortable: true,
+                              filterable: true,
+                            },
+                            {
+                              fieldName: "amount",
+                              label: "Amount",
+                              sortable: true,
+                              filterable: true,
+                            },
+                            {
+                              fieldName: "updated_date",
+                              label: "Last Modified Date",
+                              sortable: true,
+                            },
+                          ]}
+                          // height="80vh"
+                          isFilterable={true}
+                          // rowUnique="finance_voucher_header_id"
+                          row_unique_id="finance_voucher_header_id"
+                          // dataSource={{ data: data }}
+                          data={data || []}
+                        />
+                      </div>
                     </div>
                   </div>
                 </div>

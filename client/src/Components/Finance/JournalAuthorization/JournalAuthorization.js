@@ -7,7 +7,7 @@ import {
   AlagehFormGroup,
   AlagehAutoComplete,
   AlgaehDateHandler,
-  AlgaehModalPopUp
+  AlgaehModalPopUp,
 } from "../../Wrapper/algaehWrapper";
 
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
@@ -21,8 +21,8 @@ const modules = [
       { name: "Advance", value: "2" },
       { name: "Refund", value: "3" },
       { name: "Cancel", value: "4" },
-      { name: "Credit", value: "5" }
-    ]
+      { name: "Credit", value: "5" },
+    ],
   },
   {
     name: "Pharmacy",
@@ -39,8 +39,8 @@ const modules = [
       { name: "Adjustment", value: "28" },
       { name: "Shipment", value: "29" },
       { name: "Credit Settlement", value: "30" },
-      { name: "Consumption", value: "31" }
-    ]
+      { name: "Consumption", value: "31" },
+    ],
   },
   {
     name: "Inventory",
@@ -54,8 +54,8 @@ const modules = [
       { name: "Transfer", value: "45" },
       { name: "Adjustment", value: "46" },
       { name: "Shipment", value: "47" },
-      { name: "Consumption", value: "48" }
-    ]
+      { name: "Consumption", value: "48" },
+    ],
   },
   {
     name: "Insurance",
@@ -64,10 +64,10 @@ const modules = [
       { name: "Invoice", value: "51" },
       { name: "Receipt", value: "52" },
       { name: "Adjustment", value: "53" },
-      { name: "Resubmission", value: "54" }
-    ]
+      { name: "Resubmission", value: "54" },
+    ],
   },
-  { name: "IP Bill", value: "IP" }
+  { name: "IP Bill", value: "IP" },
 ];
 
 class JournalAuthorization extends Component {
@@ -79,7 +79,7 @@ class JournalAuthorization extends Component {
       from_date: undefined,
       to_date: undefined,
       openPopup: false,
-      popUpRecords: {}
+      popUpRecords: {},
     };
     this.selectedDayEndIds = [];
   }
@@ -91,12 +91,12 @@ class JournalAuthorization extends Component {
         data: { from_date: this.state.from_date, to_date: this.state.to_date },
         method: "GET",
         module: "finance",
-        onSuccess: response => {
+        onSuccess: (response) => {
           this.setState({ dayEnd: response.data.result });
         },
-        onCatch: error => {
+        onCatch: (error) => {
           swalMessage({ title: error, type: "error" });
-        }
+        },
       });
     } catch (e) {
       console.error(e);
@@ -109,13 +109,13 @@ class JournalAuthorization extends Component {
         data: { finance_day_end_header_ids: this.selectedDayEndIds },
         method: "POST",
         module: "finance",
-        onSuccess: response => {
+        onSuccess: (response) => {
           swalMessage({ type: "success", title: "Successfully Posted" });
           this.getDayEndProcess();
         },
-        onCatch: error => {
+        onCatch: (error) => {
           swalMessage({ title: error, type: "error" });
-        }
+        },
       });
     } catch (e) {
       console.error(e);
@@ -126,13 +126,13 @@ class JournalAuthorization extends Component {
       case "modules":
         this.setState({
           trans_type: value.selected.trans_type,
-          [value.name]: value.value
+          [value.name]: value.value,
         });
         break;
 
       default:
         this.setState({
-          [value.name]: value.value
+          [value.name]: value.value,
         });
         break;
     }
@@ -144,7 +144,7 @@ class JournalAuthorization extends Component {
         data: { day_end_header_id: row.finance_day_end_header_id },
         method: "GET",
         module: "finance",
-        onSuccess: response => {
+        onSuccess: (response) => {
           const { result, success, message } = response.data;
           if (success === true) {
             that.setState({ popUpRecords: result, openPopup: true });
@@ -153,9 +153,9 @@ class JournalAuthorization extends Component {
             swalMessage({ title: message, type: "error" });
           }
         },
-        onCatch: error => {
+        onCatch: (error) => {
           swalMessage({ title: error, type: "error" });
-        }
+        },
       });
     } catch (e) {
       swalMessage({ title: e, type: "error" });
@@ -171,7 +171,7 @@ class JournalAuthorization extends Component {
           events={{
             onClose: () => {
               this.setState({ popUpRecords: {}, openPopup: false });
-            }
+            },
           }}
         >
           {" "}
@@ -180,7 +180,7 @@ class JournalAuthorization extends Component {
               <div className="col-2">
                 <AlgaehLabel
                   label={{
-                    forceLabel: "Cash"
+                    forceLabel: "Cash",
                   }}
                 />
                 <h6>{this.state.popUpRecords.cash}</h6>
@@ -188,7 +188,7 @@ class JournalAuthorization extends Component {
               <div className="col-2">
                 <AlgaehLabel
                   label={{
-                    forceLabel: "Card"
+                    forceLabel: "Card",
                   }}
                 />
                 <h6>{this.state.popUpRecords.card}</h6>
@@ -196,7 +196,7 @@ class JournalAuthorization extends Component {
               <div className="col-2">
                 <AlgaehLabel
                   label={{
-                    forceLabel: "Cheque"
+                    forceLabel: "Cheque",
                   }}
                 />
                 <h6>{this.state.popUpRecords.cheque}</h6>
@@ -209,43 +209,45 @@ class JournalAuthorization extends Component {
                       fieldName: "to_account",
                       label: (
                         <AlgaehLabel label={{ forceLabel: "To Account" }} />
-                      )
+                      ),
                     },
 
                     {
                       fieldName: "payment_type",
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Payment Type" }} />
-                      )
+                      ),
                     },
                     {
                       fieldName: "payment_date",
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Payment Date" }} />
-                      )
+                      ),
                     },
                     {
                       fieldName: "credit_amount",
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Credit Amount" }} />
-                      )
+                      ),
                     },
                     {
                       fieldName: "debit_amount",
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Debit Amount" }} />
-                      )
+                      ),
                     },
                     {
                       fieldName: "narration",
-                      label: <AlgaehLabel label={{ forceLabel: "Narration" }} />
-                    }
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Narration" }} />
+                      ),
+                    },
                   ]}
                   dataSource={{
                     data:
                       this.state.popUpRecords.entries === undefined
                         ? []
-                        : this.state.popUpRecords.entries
+                        : this.state.popUpRecords.entries,
                   }}
                   isEditable={false}
                   paging={{ page: 0, rowsPerPage: 10 }}
@@ -259,7 +261,7 @@ class JournalAuthorization extends Component {
                 <button
                   type="button"
                   className="btn btn-default"
-                  onClick={e => {
+                  onClick={(e) => {
                     this.setState({ popUpRecords: {}, openPopup: false });
                   }}
                 >
@@ -285,10 +287,10 @@ class JournalAuthorization extends Component {
                   dataSource: {
                     textField: "name",
                     valueField: "value",
-                    data: modules
+                    data: modules,
                   },
                   onChange: this.dropDownHandle.bind(this),
-                  onClear: null
+                  onClear: null,
                 }}
               />
               <AlagehAutoComplete
@@ -301,14 +303,14 @@ class JournalAuthorization extends Component {
                   dataSource: {
                     textField: "name",
                     valueField: "value",
-                    data: this.state.trans_type
+                    data: this.state.trans_type,
                   },
                   onChange: this.dropDownHandle.bind(this),
                   onClear: () => {
                     this.setState({
-                      trans_type: null
+                      trans_type: null,
                     });
-                  }
+                  },
                 }}
               />
               <AlgaehDateHandler
@@ -316,15 +318,15 @@ class JournalAuthorization extends Component {
                 label={{ forceLabel: "From Date" }}
                 textBox={{
                   className: "txt-fld",
-                  name: "from_date"
+                  name: "from_date",
                 }}
                 events={{
-                  onChange: selectedDate => {
+                  onChange: (selectedDate) => {
                     this.setState({
                       from_date: selectedDate,
-                      to_date: undefined
+                      to_date: undefined,
                     });
-                  }
+                  },
                 }}
                 value={this.state.from_date}
               />
@@ -334,33 +336,33 @@ class JournalAuthorization extends Component {
                 label={{ forceLabel: "To Date" }}
                 textBox={{
                   className: "txt-fld",
-                  name: "to_date"
+                  name: "to_date",
                 }}
                 {...(this.state.from_date !== undefined
                   ? { minDate: new Date(this.state.from_date) }
                   : {})}
                 events={{
-                  onChange: selectedDate => {
+                  onChange: (selectedDate) => {
                     this.setState({ to_date: selectedDate });
-                  }
+                  },
                 }}
                 value={this.state.to_date}
               />
               <AlagehFormGroup
                 div={{ className: "col" }}
                 label={{
-                  forceLabel: "Transaction No."
+                  forceLabel: "Transaction No.",
                 }}
                 textBox={{
                   className: "txt-fld",
                   name: "batchno",
                   value: this.state.batchno,
                   events: {
-                    onChange: null
+                    onChange: null,
                   },
                   others: {
                     // disabled: true
-                  }
+                  },
                 }}
               />
               <div className="col">
@@ -379,117 +381,127 @@ class JournalAuthorization extends Component {
         <div className="row">
           <div className="col-lg-12">
             <div className="portlet portlet-bordered margin-bottom-15">
-              <div className="row">
-                <div
-                  className="col-lg-12 customCheckboxGrid"
-                  id="dayEndProcessCntr"
-                >
-                  <AlgaehDataGrid
-                    id="dayEndProcessGrid"
-                    columns={[
-                      {
-                        fieldName: "select_id",
-                        label: <AlgaehLabel label={{ forceLabel: "Select" }} />,
-                        displayTemplate: row => (
-                          <>
-                            {" "}
-                            <span style={{ padding: 6 }}>
-                              <input
-                                type="checkbox"
-                                onClick={e => {
-                                  if (e.target.checked === true) {
-                                    this.selectedDayEndIds.push(
-                                      row.finance_day_end_header_id
-                                    );
-                                  } else {
-                                    const itemExists = this.selectedDayEndIds.findIndex(
-                                      f => f === row.finance_day_end_header_id
-                                    );
-                                    this.selectedDayEndIds.splice(
-                                      itemExists,
-                                      1
-                                    );
-                                  }
+              {" "}
+              <div className="portlet-body">
+                <div className="row">
+                  <div
+                    className="col-lg-12 customCheckboxGrid"
+                    id="dayEndProcessCntr"
+                  >
+                    <AlgaehDataGrid
+                      id="dayEndProcessGrid"
+                      columns={[
+                        {
+                          fieldName: "select_id",
+                          label: (
+                            <AlgaehLabel label={{ forceLabel: "Select" }} />
+                          ),
+                          displayTemplate: (row) => (
+                            <>
+                              {" "}
+                              <span style={{ padding: 6 }}>
+                                <input
+                                  type="checkbox"
+                                  onClick={(e) => {
+                                    if (e.target.checked === true) {
+                                      this.selectedDayEndIds.push(
+                                        row.finance_day_end_header_id
+                                      );
+                                    } else {
+                                      const itemExists = this.selectedDayEndIds.findIndex(
+                                        (f) =>
+                                          f === row.finance_day_end_header_id
+                                      );
+                                      this.selectedDayEndIds.splice(
+                                        itemExists,
+                                        1
+                                      );
+                                    }
+                                  }}
+                                />
+                                {/* <label for="">gfgh</label> */}
+                              </span>
+                              <i
+                                className="fas fa-eye"
+                                onClick={() => {
+                                  this.onOpenPreviewPopUP(row, this);
+                                  // this.setState({openPopup:true});
                                 }}
-                              />
-                              {/* <label for="">gfgh</label> */}
-                            </span>
-                            <i
-                              className="fas fa-eye"
-                              onClick={() => {
-                                this.onOpenPreviewPopUP(row, this);
-                                // this.setState({openPopup:true});
-                              }}
-                            ></i>
-                          </>
-                        ),
-                        others: {
-                          maxWidth: 80
-                        }
-                      },
+                              ></i>
+                            </>
+                          ),
+                          others: {
+                            maxWidth: 80,
+                          },
+                        },
 
-                      {
-                        fieldName: "document_number",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "Document No." }} />
-                        ),
-                        disabled: true
-                      },
-                      {
-                        fieldName: "transaction_date",
-                        label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "Document  Date" }}
-                          />
-                        )
-                      },
+                        {
+                          fieldName: "document_number",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Document No." }}
+                            />
+                          ),
+                          disabled: true,
+                        },
+                        {
+                          fieldName: "transaction_date",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Document  Date" }}
+                            />
+                          ),
+                        },
 
-                      {
-                        fieldName: "transaction_type",
-                        label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "Transaction Type" }}
-                          />
-                        ),
-                        disabled: true
-                      },
-                      {
-                        fieldName: "amount",
-                        label: <AlgaehLabel label={{ forceLabel: "Amount" }} />
-                      },
+                        {
+                          fieldName: "transaction_type",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Transaction Type" }}
+                            />
+                          ),
+                          disabled: true,
+                        },
+                        {
+                          fieldName: "amount",
+                          label: (
+                            <AlgaehLabel label={{ forceLabel: "Amount" }} />
+                          ),
+                        },
 
-                      {
-                        fieldName: "screen_name",
-                        label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "From Document" }}
-                          />
-                        ),
-                        disabled: true
-                      }
-                    ]}
-                    keyId="finance_day_end_header_id"
-                    dataSource={{
-                      data: this.state.dayEnd
-                    }}
-                    isEditable={false}
-                    paging={{ page: 0, rowsPerPage: 20 }}
-                  />
+                        {
+                          fieldName: "screen_name",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "From Document" }}
+                            />
+                          ),
+                          disabled: true,
+                        },
+                      ]}
+                      keyId="finance_day_end_header_id"
+                      dataSource={{
+                        data: this.state.dayEnd,
+                      }}
+                      isEditable={false}
+                      paging={{ page: 0, rowsPerPage: 20 }}
+                    />
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-        <div className="hptl-phase1-footer">
-          <div className="row">
-            <div className="col">
-              {" "}
-              <button
-                className="btn btn-primary"
-                onClick={this.postDayEndProcess.bind(this)}
-              >
-                Authorize
-              </button>
+          <div className="hptl-phase1-footer">
+            <div className="row">
+              <div className="col">
+                {" "}
+                <button
+                  className="btn btn-primary"
+                  onClick={this.postDayEndProcess.bind(this)}
+                >
+                  Authorize
+                </button>
+              </div>
             </div>
           </div>
         </div>

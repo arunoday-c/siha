@@ -6,17 +6,17 @@ import {
   AlgaehAutoComplete,
   AlgaehModal,
   AlgaehFormGroup,
-  AlgaehDateHandler
+  AlgaehDateHandler,
 } from "algaeh-react-components";
 import Details from "./details";
 import {
   LoadVouchersToAuthorize,
   ApproveReject,
-  LoadVoucherDetails
+  LoadVoucherDetails,
 } from "./event";
 let rejectText = "";
 let finance_voucher_header_id = "";
-export default memo(function(props) {
+export default memo(function (props) {
   const [data, setData] = useState([]);
   const [visible, setVisibale] = useState(false);
   const [rowDetails, setRowDetails] = useState([]);
@@ -29,7 +29,7 @@ export default memo(function(props) {
   const paymentTemplates = [
     { key: "payment_mode", title: "Payment Mode" },
     { key: "ref_no", title: "Reference No" },
-    { key: "cheque_date", title: "Cheque Date" }
+    { key: "cheque_date", title: "Cheque Date" },
   ];
   // useEffect(() => {
   //   LoadVouchersToAuthorize()
@@ -53,7 +53,7 @@ export default memo(function(props) {
       setLoading(false);
       AlgaehMessagePop({
         type: "info",
-        display: "Please select Level"
+        display: "Please select Level",
       });
       return;
     }
@@ -64,15 +64,15 @@ export default memo(function(props) {
     }
 
     LoadVouchersToAuthorize({ auth_level: level, ...others })
-      .then(result => {
+      .then((result) => {
         setLoading(false);
         setData(result);
       })
-      .catch(error => {
+      .catch((error) => {
         setLoading(false);
         AlgaehMessagePop({
           type: "error",
-          display: error
+          display: error,
         });
       });
   };
@@ -87,16 +87,16 @@ export default memo(function(props) {
       if (level === undefined) {
         AlgaehMessagePop({
           type: "info",
-          display: "Level can not be blank"
+          display: "Level can not be blank",
         });
         return;
       }
       ApproveReject({
         voucher_header_id: record.finance_voucher_header_id,
         auth_status: "A",
-        auth_level: level
+        auth_level: level,
       })
-        .then(result => {
+        .then((result) => {
           let others = { auth_status: status };
           if (dates !== undefined && dates.length > 0) {
             others["from_date"] = dates[0];
@@ -104,27 +104,27 @@ export default memo(function(props) {
           }
           LoadVouchersToAuthorize({
             auth_level: level,
-            ...others
+            ...others,
           })
-            .then(result => {
+            .then((result) => {
               setData(result);
             })
-            .catch(error => {
+            .catch((error) => {
               AlgaehMessagePop({
                 type: "error",
-                display: error
+                display: error,
               });
             });
 
           AlgaehMessagePop({
             type: "success",
-            display: "Successfully approved"
+            display: "Successfully approved",
           });
         })
-        .catch(error => {
+        .catch((error) => {
           AlgaehMessagePop({
             type: "error",
-            display: error
+            display: error,
           });
         });
     }
@@ -133,7 +133,7 @@ export default memo(function(props) {
       if (level === undefined) {
         AlgaehMessagePop({
           type: "info",
-          display: "Level can not be blank"
+          display: "Level can not be blank",
         });
         return;
       }
@@ -168,7 +168,7 @@ export default memo(function(props) {
     if (rejectText === "") {
       AlgaehMessagePop({
         type: "info",
-        display: "With out reason you con't save"
+        display: "With out reason you con't save",
       });
       return;
     }
@@ -176,37 +176,37 @@ export default memo(function(props) {
       voucher_header_id: finance_voucher_header_id,
       auth_status: "R",
       auth_level: level,
-      rejected_reason: rejectText
+      rejected_reason: rejectText,
     })
-      .then(result => {
+      .then((result) => {
         let others = { auth_status: status };
         if (dates !== undefined && dates.length > 0) {
           others["from_date"] = dates[0];
           others["to_date"] = dates[1];
         }
         LoadVouchersToAuthorize({ auth_level: level, ...others })
-          .then(result => {
+          .then((result) => {
             setData(result);
             setRejectVisible(false);
             finance_voucher_header_id = "";
             rejectText = "";
           })
-          .catch(error => {
+          .catch((error) => {
             AlgaehMessagePop({
               type: "error",
-              display: error
+              display: error,
             });
           });
 
         AlgaehMessagePop({
           type: "success",
-          display: "Successfully approved"
+          display: "Successfully approved",
         });
       })
-      .catch(error => {
+      .catch((error) => {
         AlgaehMessagePop({
           type: "error",
-          display: error
+          display: error,
         });
       });
   }
@@ -223,17 +223,17 @@ export default memo(function(props) {
       icon="search"
       onClick={() => {
         LoadVoucherDetails({
-          finance_voucher_header_id: record["finance_voucher_header_id"]
+          finance_voucher_header_id: record["finance_voucher_header_id"],
         })
-          .then(result => {
+          .then((result) => {
             setVoucherNo(text);
             setRowDetails(result);
             setVisibale(true);
           })
-          .catch(error => {
+          .catch((error) => {
             AlgaehMessagePop({
               type: "error",
-              display: error
+              display: error,
             });
           });
       }}
@@ -262,12 +262,12 @@ export default memo(function(props) {
           multiline={true}
           textBox={{
             row: 3,
-            defaultValue: rejectText
+            defaultValue: rejectText,
           }}
           events={{
-            onChange: e => {
+            onChange: (e) => {
               rejectText = e.target.value;
-            }
+            },
           }}
         />
       </AlgaehModal>
@@ -285,53 +285,53 @@ export default memo(function(props) {
         <div className="row inner-top-search" style={{ paddingBottom: 10 }}>
           <AlgaehAutoComplete
             div={{
-              className: "col-2"
+              className: "col-2",
             }}
             label={{
-              forceLabel: "Levels"
+              forceLabel: "Levels",
             }}
             selector={{
               dataSource: {
                 data: [
                   { text: "Level1", value: "1" },
-                  { text: "Level2", value: "2" }
+                  { text: "Level2", value: "2" },
                 ],
                 valueField: "value",
-                textField: "text"
+                textField: "text",
               },
               value: level,
-              onChange: selected => {
+              onChange: (selected) => {
                 setLevel(selected.value);
               },
               onClear: () => {
                 setLevel(undefined);
-              }
+              },
             }}
           />
           <AlgaehAutoComplete
             div={{
-              className: "col-2"
+              className: "col-2",
             }}
             label={{
-              forceLabel: "Record Status"
+              forceLabel: "Record Status",
             }}
             selector={{
               dataSource: {
                 data: [
                   { text: "Pending", value: "P" },
                   { text: "Rejected", value: "R" },
-                  { text: "Approved", value: "A" }
+                  { text: "Approved", value: "A" },
                 ],
                 valueField: "value",
-                textField: "text"
+                textField: "text",
               },
               value: status,
-              onChange: selected => {
+              onChange: (selected) => {
                 setStatus(selected.value);
               },
               onClear: () => {
                 setStatus(undefined);
-              }
+              },
             }}
           />
           <AlgaehDateHandler
@@ -339,12 +339,12 @@ export default memo(function(props) {
             label={{ forceLabel: "Selected Range" }}
             type="range"
             textBox={{
-              value: dates
+              value: dates,
             }}
             events={{
-              onChange: selected => {
+              onChange: (selected) => {
                 setDates(selected);
-              }
+              },
             }}
           />
           <div className="col">
@@ -362,35 +362,42 @@ export default memo(function(props) {
         <div className="row">
           <div className="col-12">
             <div className="portlet portlet-bordered margin-bottom-15">
-              <div className="row">
-                <div className="col-lg-12 customCheckboxGrid">
-                  <AlgaehDataGrid
-                    columns={[
-                      {
-                        key: "id",
-                        title: "Actions",
-                        displayTemplate: actions,
-                        others: {
-                          width: 100
-                        }
-                      },
-                      {
-                        key: "voucher_no",
-                        title: "Voucher Number",
-                        sortable: true,
-                        displayTemplate: voucherCol
-                      },
-                      { key: "voucher_type", title: "Voucher Type" },
-                      { key: "payment_date", title: "Payment Date" },
-                      ...paymentTemplates,
-                      { key: "amount", title: "Amount" },
-                      { key: "narration", title: "Narration" },
-                      { key: "entered_by", title: "Enterd By", filtered: true }
-                    ]}
-                    height="40vh"
-                    rowUnique="finance_voucher_header_id"
-                    dataSource={{ data: data }}
-                  ></AlgaehDataGrid>
+              {" "}
+              <div className="portlet-body">
+                <div className="row">
+                  <div className="col-lg-12 customCheckboxGrid">
+                    <AlgaehDataGrid
+                      columns={[
+                        {
+                          key: "id",
+                          title: "Actions",
+                          displayTemplate: actions,
+                          others: {
+                            width: 100,
+                          },
+                        },
+                        {
+                          key: "voucher_no",
+                          title: "Voucher Number",
+                          sortable: true,
+                          displayTemplate: voucherCol,
+                        },
+                        { key: "voucher_type", title: "Voucher Type" },
+                        { key: "payment_date", title: "Payment Date" },
+                        ...paymentTemplates,
+                        { key: "amount", title: "Amount" },
+                        { key: "narration", title: "Narration" },
+                        {
+                          key: "entered_by",
+                          title: "Enterd By",
+                          filtered: true,
+                        },
+                      ]}
+                      height="40vh"
+                      rowUnique="finance_voucher_header_id"
+                      dataSource={{ data: data }}
+                    ></AlgaehDataGrid>
+                  </div>
                 </div>
               </div>
             </div>
