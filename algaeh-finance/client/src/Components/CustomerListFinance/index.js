@@ -53,7 +53,10 @@ function CustomerList(props) {
               </div>
               <div className="portlet-body">
                 <div className="row">
-                  <div className="col-lg-12 customCheckboxGrid">
+                  <div
+                    className="col-lg-12 customCheckboxGrid"
+                    id="customerGrid_Cntr"
+                  >
                     <AlgaehTable
                       columns={[
                         {
@@ -63,7 +66,8 @@ function CustomerList(props) {
                           filterable: true,
                           displayTemplate: (record) => {
                             return (
-                              <Button
+                              <p
+                                className="p-link"
                                 type="link"
                                 onClick={() =>
                                   history.push("/CustomerPayment", {
@@ -72,7 +76,7 @@ function CustomerList(props) {
                                 }
                               >
                                 {record.child_name}
-                              </Button>
+                              </p>
                             );
                           },
                         },
@@ -82,10 +86,11 @@ function CustomerList(props) {
                           fieldName: "balance_amount",
                           others: {
                             width: 200,
+                            style: { textAlign: "right" },
                           },
                         },
                       ]}
-                      height="80vh"
+                      // height="80vh"
                       isFilterable={true}
                       // rowUnique="finance_voucher_header_id"
                       row_unique_id="finance_voucher_header_id"
