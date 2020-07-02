@@ -747,7 +747,7 @@ export default class BranchMaster extends Component {
         : this.state.searchText === "" && this.state.filterArray.length === 0
         ? this.state.allBranches
         : this.state.filterArray;
-    const departments =
+    let departments =
       this.state.searchSubBranchText !== "" &&
       this.state.filterdDepartmentArray.length === 0
         ? this.state.filterdDepartmentArray
@@ -755,6 +755,7 @@ export default class BranchMaster extends Component {
           this.state.filterdDepartmentArray.length === 0
         ? this.state.allDepartments
         : this.state.filterdDepartmentArray;
+    departments = departments.filter((f) => f !== undefined);
 
     return (
       <div className="BranchMaster">
@@ -1044,6 +1045,7 @@ export default class BranchMaster extends Component {
                   <div className="col-12">
                     <ul className="deptUl">
                       {departments.map((data, index) => {
+                        debugger;
                         return (
                           <li key={data.hims_d_department_id}>
                             {" "}
