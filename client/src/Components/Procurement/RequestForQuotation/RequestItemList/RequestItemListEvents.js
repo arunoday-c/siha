@@ -1,5 +1,3 @@
-import { swalMessage } from "../../../../utils/algaehApiCall";
-
 const texthandle = ($this, context, e) => {
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
@@ -106,49 +104,7 @@ const itemchangeText = ($this, context, e) => {
   }
 };
 
-const AddItems = ($this, context) => {
-  if ($this.state.quantity === 0) {
-    swalMessage({
-      title: "Please enter Quantity Required .",
-      type: "warning",
-    });
-  } else {
-    let ItemInput = {
-      phar_item_category: $this.state.phar_item_category,
-      phar_item_group: $this.state.phar_item_group,
-      phar_item_id: $this.state.phar_item_id,
-      inv_item_category_id: $this.state.inv_item_category_id,
-      inv_item_group_id: $this.state.inv_item_group_id,
-      inv_item_id: $this.state.inv_item_id,
-      pharmacy_uom_id: $this.state.pharmacy_uom_id,
-      inventory_uom_id: $this.state.inventory_uom_id,
-      quantity: $this.state.quantity,
-      itm_notes: $this.state.itm_notes,
-    };
-    let quotation_detail = $this.state.quotation_detail;
-    quotation_detail.push(ItemInput);
-    if (context !== undefined) {
-      context.updateState({
-        quotation_detail: quotation_detail,
-        saveEnable: false,
-      });
-    }
-    clearItemData($this, context);
-  }
-};
-
-const deleteQuotationDetail = ($this, context, row) => {
-  let quotation_detail = $this.state.quotation_detail;
-
-  quotation_detail.splice(row.rowIdx, 1);
-  if (context !== undefined) {
-    context.updateState({
-      quotation_detail: quotation_detail,
-      saveEnable: quotation_detail.length > 0 ? false : true,
-    });
-  }
-};
-const gridNumHandler = ($this, row, e) => {
+export const gridNumHandler = ($this, row, e) => {
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
 
@@ -182,44 +138,35 @@ const gridNumHandler = ($this, row, e) => {
   }
 };
 
-const clearItemData = ($this, context) => {
-  $this.setState({
-    phar_item_id: null,
-    inv_item_id: null,
-    item_description: "",
-    phar_item_category: null,
-    inv_item_category_id: null,
-    phar_item_group: null,
-    inv_item_group_id: null,
-    pharmacy_uom_id: null,
-    inventory_uom_id: null,
-    quantity: 0,
-    addItemButton: true,
-    itm_notes: null,
-  });
-  if (context !== undefined) {
-    context.updateState({
-      phar_item_id: null,
-      inv_item_id: null,
-      item_description: "",
-      phar_item_category: null,
-      inv_item_category_id: null,
-      phar_item_group: null,
-      inv_item_group_id: null,
-      pharmacy_uom_id: null,
-      inventory_uom_id: null,
-      quantity: 0,
-      addItemButton: true,
-      itm_notes: null,
-    });
-  }
-};
-
-export {
-  itemchangeText,
-  numberchangeTexts,
-  AddItems,
-  deleteQuotationDetail,
-  gridNumHandler,
-  texthandle,
-};
+// const clearItemData = ($this, context) => {
+//   $this.setState({
+//     phar_item_id: null,
+//     inv_item_id: null,
+//     item_description: "",
+//     phar_item_category: null,
+//     inv_item_category_id: null,
+//     phar_item_group: null,
+//     inv_item_group_id: null,
+//     pharmacy_uom_id: null,
+//     inventory_uom_id: null,
+//     quantity: 0,
+//     addItemButton: true,
+//     itm_notes: null,
+//   });
+//   if (context !== undefined) {
+//     context.updateState({
+//       phar_item_id: null,
+//       inv_item_id: null,
+//       item_description: "",
+//       phar_item_category: null,
+//       inv_item_category_id: null,
+//       phar_item_group: null,
+//       inv_item_group_id: null,
+//       pharmacy_uom_id: null,
+//       inventory_uom_id: null,
+//       quantity: 0,
+//       addItemButton: true,
+//       itm_notes: null,
+//     });
+//   }
+// };

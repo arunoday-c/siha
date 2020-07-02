@@ -123,7 +123,7 @@ export default function AgingReport({ style, result, layout, type, dates }) {
         </div>
 
         <AlgaehTable
-          className="reportTableStyle"
+          className="reportGridPlain"
           columns={[
             {
               fieldName: "customer",

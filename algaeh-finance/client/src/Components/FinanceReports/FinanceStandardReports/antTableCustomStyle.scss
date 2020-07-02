@@ -15,26 +15,58 @@
     }
   }
 }
-.treeGridPL {
+.reportGridPlain {
   border: 1px solid #dedede;
+  max-height: max-content !important;
   table {
     min-width: calc(100vw - 70px) !important;
     thead {
-      th.fixed {
-        z-index: 999 !important;
-        border-right: 1px solid #00a895 !important;
-      }
       th {
+        background: #fff !important;
+        text-align: right !important;
+        border: none !important;
+        border-bottom: 1px solid #d3d3d3 !important;
         span {
           white-space: nowrap !important !important;
         }
+        &:first-child {
+          text-align: left !important;
+        }
+      }
+      th.fixed {
+        z-index: 999 !important;
+        border-right: 1px solid #d3d3d3 !important;
+        text-align: left !important;
       }
     }
     tbody {
+      td {
+        border: none !important;
+        text-align: right !important;
+        &:first-child {
+          text-align: left !important;
+        }
+      }
       td.fixed {
         min-width: 210px !important;
-        background: #edfffd !important;
-        border-right: 1px solid #00a895 !important;
+        // background: #edfffd !important;
+        border-right: 1px solid #d3d3d3 !important;
+        .pointer {
+          font-weight: bold;
+        }
+        .pointer + span {
+          font-weight: bold;
+          margin-left: 5px;
+        }
+      }
+    }
+    tfoot {
+      td {
+        border: none !important;
+        text-align: right !important;
+        &:first-child {
+          text-align: left !important;
+        }
       }
     }
   }

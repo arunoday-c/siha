@@ -121,6 +121,7 @@ export default memo(function (props) {
         <Empty description="No data to show." />
       ) : (
         <AlgaehTable
+          className="reportGridPlain"
           columns={columns}
           data={data}
           row_unique_id="child_id"

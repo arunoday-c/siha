@@ -22,28 +22,28 @@ const updateLocationPermission = ($this, data) => {
     module: "pharmacy",
     data: data,
     method: "PUT",
-    onSuccess: response => {
+    onSuccess: (response) => {
       if (response.data.success) {
         getLocationPermission($this);
         swalMessage({
           title: "Record Updated Successfully . .",
-          type: "success"
+          type: "success",
         });
       }
     },
-    onFailure: error => {}
+    onFailure: (error) => {},
   });
 };
 
-const getLocationPermission = $this => {
+const getLocationPermission = ($this) => {
   $this.props.getLocationPermission({
     uri: "/pharmacy/getLocationPermission",
     module: "pharmacy",
     method: "GET",
     redux: {
       type: "LOCATION_PERMISSION_GET_DATA",
-      mappingName: "locationpermission"
-    }
+      mappingName: "locationpermission",
+    },
   });
 };
 
@@ -55,31 +55,31 @@ const showconfirmDialog = ($this, row) => {
     confirmButtonText: "Yes",
     confirmButtonColor: "#44b8bd",
     cancelButtonColor: "#d33",
-    cancelButtonText: "No"
-  }).then(willDelete => {
+    cancelButtonText: "No",
+  }).then((willDelete) => {
     if (willDelete.value) {
       let data = {
         hims_m_location_permission_id: row.hims_m_location_permission_id,
         user_id: row.user_id,
         location_id: row.location_id,
         allow: row.allow,
-        record_status: "I"
+        record_status: "I",
       };
       algaehApiCall({
         uri: "/pharmacy/updateLocationPermission",
         module: "pharmacy",
         data: data,
         method: "PUT",
-        onSuccess: response => {
+        onSuccess: (response) => {
           if (response.data.success) {
             swalMessage({
               title: "Record Deleted Successfully",
-              type: "success"
+              type: "success",
             });
             getLocationPermission($this);
           }
         },
-        onFailure: error => {}
+        onFailure: (error) => {},
       });
     }
   });
@@ -96,25 +96,26 @@ const insertLocationPermission = ($this, e) => {
       algaehApiCall({
         uri: "/pharmacy/addLocationPermission",
         // module:"pharmacy",
+        // method: "POST",
         data: $this.state,
-        onSuccess: response => {
-          if (response.data.success === true) {
-            //Handle Successful Add here
 
+        onSuccess: (response) => {
+          if (response.data.success) {
+            //Handle Successful Add here
+            getLocationPermission($this);
             $this.setState(
               {
                 hims_m_location_permission_id: null,
                 user_id: null,
                 location_id: null,
                 allow: "Y",
-                allowLocation: true
+                allowLocation: true,
               },
               () => {
                 getLocationPermission($this);
-
                 swalMessage({
                   title: "Added Successfully ..",
-                  type: "success"
+                  type: "success",
                 });
               }
             );
@@ -122,14 +123,14 @@ const insertLocationPermission = ($this, e) => {
             //Handle unsuccessful Add here.
           }
         },
-        onFailure: error => {
+        onFailure: (error) => {
           swalMessage({
             title: error.message,
-            type: "error"
+            type: "error",
           });
-        }
+        },
       });
-    }
+    },
   });
 };
 
@@ -140,7 +141,7 @@ const allowHandle = ($this, e) => {
   }
   $this.setState({
     allow: allow,
-    allowLocation: !$this.state.allowLocation
+    allowLocation: !$this.state.allowLocation,
   });
 };
 
@@ -151,5 +152,5 @@ export {
   updateLocationPermission,
   deleteLocationPermission,
   getLocationPermission,
-  allowHandle
+  allowHandle,
 };
