@@ -8,7 +8,13 @@ import { handleFile } from "../FinanceReportEvents";
 import { AlgaehMessagePop } from "algaeh-react-components";
 import { getItem, tokenDecode } from "algaeh-react-components/storage";
 import jwtDecode from "jwt-decode";
-export default function BalanceSheet({ style, footer, layout, dates }) {
+export default function BalanceSheet({
+  style,
+  footer,
+  layout,
+  dates,
+  selectedFilter,
+}) {
   const createPrintObject = useRef(undefined);
   const [data, setData] = useState([]);
   // const [hospitalDetails, setHospitalDeytails] = useState([]);
