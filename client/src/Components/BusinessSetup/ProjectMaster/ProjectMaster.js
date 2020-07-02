@@ -318,41 +318,41 @@ class EmployeeGroups extends Component {
                       id="projectMasterGrid"
                       data-validate="projectMasterGrid"
                       columns={[
-                        // {
-                        //   fieldName: "add_component",
+                        {
+                          fieldName: "add_component",
 
-                        //   label: (
-                        //     <AlgaehLabel label={{ forceLabel: "Components" }} />
-                        //   ),
+                          label: (
+                            <AlgaehLabel label={{ forceLabel: "Components" }} />
+                          ),
 
-                        //   displayTemplate: (row) => {
-                        //     return (
-                        //       <i
-                        //         className="fas fa-plus"
-                        //         onClick={this.addProjectComponent.bind(
-                        //           this,
-                        //           row
-                        //         )}
-                        //       />
-                        //     );
-                        //   },
-                        //   editorTemplate: (row) => {
-                        //     return (
-                        //       <i
-                        //         className="fas fa-plus"
-                        //         onClick={this.addProjectComponent.bind(
-                        //           this,
-                        //           row
-                        //         )}
-                        //       />
-                        //     );
-                        //   },
-                        //   others: {
-                        //     style: {
-                        //       textAlign: "center",
-                        //     },
-                        //   },
-                        // },
+                          displayTemplate: (row) => {
+                            return (
+                              <i
+                                className="fas fa-plus"
+                                onClick={this.addProjectComponent.bind(
+                                  this,
+                                  row
+                                )}
+                              />
+                            );
+                          },
+                          editorTemplate: (row) => {
+                            return (
+                              <i
+                                className="fas fa-plus"
+                                onClick={this.addProjectComponent.bind(
+                                  this,
+                                  row
+                                )}
+                              />
+                            );
+                          },
+                          others: {
+                            style: {
+                              textAlign: "center",
+                            },
+                          },
+                        },
                         {
                           fieldName: "project_code",
                           label: <AlgaehLabel label={{ forceLabel: "Code" }} />,
@@ -581,7 +581,7 @@ class EmployeeGroups extends Component {
                       paging={{ page: 0, rowsPerPage: 20 }}
                       filter={true}
                       events={{
-                        onEdit: () => {},
+                        onEdit: () => { },
                         onDelete: this.deleteEmployeeGroups.bind(this),
                         onDone: this.updateProjectMaster.bind(this),
                       }}
