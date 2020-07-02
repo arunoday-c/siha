@@ -34,7 +34,7 @@ import {
   getCtrlCode,
   employeeSearch,
   getCostCenters,
-  saveDocument,
+  updateContract,
 } from "./ContractManagementEvents";
 import Options from "../../../Options.json";
 import moment from "moment";
@@ -728,7 +728,11 @@ class ContractManagement extends Component {
                           ]}
                           keyId="service_type_id"
                           dataSource={{
-                            data: this.state.contract_services,
+                            data: this.state.editMode
+                              ? this.state.contract_services.filter(
+                                  (item) => item.record_status === "A"
+                                )
+                              : this.state.contract_services,
                           }}
                           paging={{ page: 0, rowsPerPage: 10 }}
                         />
@@ -869,7 +873,7 @@ class ContractManagement extends Component {
                       disabled={this.state.dataExists && !this.state.editMode}
                     />
                   </div>
-                  {this.state.dataExists ? null : (
+                  {this.state.dataExists && !this.state.editMode ? null : (
                     <div className="col" style={{ textAlign: "right" }}>
                       <button
                         type="button"
@@ -921,7 +925,7 @@ class ContractManagement extends Component {
                 <button
                   type="button"
                   className="btn btn-primary"
-                  onClick={() => {}}
+                  onClick={updateContract.bind(this)}
                   disabled={this.state.saveEnable}
                 >
                   <AlgaehLabel

@@ -20,16 +20,14 @@ export default function SalesQuotation() {
       });
     }
   );
-  api.post(
-    `/addContractManagement`,
-    addContractManagement,
-    (req, res, next) => {
-      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
-        success: true,
-        records: req.records,
-      });
-    }
-  );
+
+  api.get(`/getContractManagement`, getContractManagement, (req, res, next) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: req.records,
+    });
+  });
+
   api.put(
     "/updateContractManagement",
     updateContractManagement,

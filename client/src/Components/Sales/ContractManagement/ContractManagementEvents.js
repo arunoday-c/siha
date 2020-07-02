@@ -6,7 +6,7 @@ import AlgaehSearch from "../../Wrapper/globalSearch";
 import spotlightSearch from "../../../Search/spotlightSearch.json";
 import { newAlgaehApi } from "../../../hooks";
 
-const texthandle = ($this, ctrl, e) => {
+export const texthandle = ($this, ctrl, e) => {
   e = ctrl || e;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
@@ -16,23 +16,26 @@ const texthandle = ($this, ctrl, e) => {
       $this.setState({
         [name]: value,
         selected_terms_conditions: e.selected.terms_cond_description,
+        saveEnable: !value,
       });
       break;
     case "project_id":
       $this.setState({
         [name]: value,
         organizations: e.selected.branches,
+        saveEnable: !value,
       });
       break;
     default:
       $this.setState({
         [name]: value,
+        saveEnable: !value,
       });
       break;
   }
 };
 
-const datehandle = ($this, ctrl, e) => {
+export const datehandle = ($this, ctrl, e) => {
   let intFailure = false;
   if (e === "start_date") {
     if (Date.parse($this.state.end_date) < Date.parse(moment(ctrl)._d)) {
@@ -59,7 +62,7 @@ const datehandle = ($this, ctrl, e) => {
   }
 };
 
-const ClearData = ($this, e) => {
+export const ClearData = ($this, e) => {
   let IOputs = {
     hims_f_contract_management_id: null,
     contract_number: null,
@@ -96,78 +99,129 @@ const ClearData = ($this, e) => {
   $this.setState(IOputs);
 };
 
-const SaveContract = ($this) => {
-  if ($this.state.dataExists) {
-    saveDocument(
-      $this.state.contract_files,
-      $this.state.contract_number,
-      $this.state.hims_f_contract_management_id,
-      $this
-    );
-  } else {
-    AlgaehValidation({
-      querySelector: "data-validate='HeaderDiv'",
-      alertTypeIcon: "warning",
-      onSuccess: () => {
-        if ($this.HRMNGMT_Active) {
-          if ($this.state.incharge_employee_id === null) {
-            swalMessage({
-              type: "warning",
-              title: "Please select Incharge Employee",
-            });
-            return;
-          }
+export const SaveContract = ($this) => {
+  AlgaehValidation({
+    querySelector: "data-validate='HeaderDiv'",
+    alertTypeIcon: "warning",
+    onSuccess: () => {
+      if ($this.HRMNGMT_Active) {
+        if ($this.state.incharge_employee_id === null) {
+          swalMessage({
+            type: "warning",
+            title: "Please select Incharge Employee",
+          });
+          return;
         }
+      }
 
-        AlgaehLoader({ show: true });
-        $this.state.terms_conditions = $this.state.comment_list.join("<br/>");
-        algaehApiCall({
-          uri: "/ContractManagement/addContractManagement",
-          module: "sales",
-          method: "POST",
-          data: $this.state,
-          onSuccess: (response) => {
-            if (response.data.success) {
-              $this.setState({
-                contract_number: response.data.records.contract_number,
-                hims_f_contract_management_id:
-                  response.data.records.hims_f_contract_management_id,
-                saveEnable: true,
-                dataExists: true,
-              });
-              saveDocument(
-                $this.state.contract_files,
-                response.data.records.contract_number,
+      AlgaehLoader({ show: true });
+      $this.state.terms_conditions = $this.state.comment_list.join("<br/>");
+      algaehApiCall({
+        uri: "/ContractManagement/addContractManagement",
+        module: "sales",
+        method: "POST",
+        data: $this.state,
+        onSuccess: (response) => {
+          if (response.data.success) {
+            $this.setState({
+              contract_number: response.data.records.contract_number,
+              hims_f_contract_management_id:
                 response.data.records.hims_f_contract_management_id,
-                $this
-              );
-              swalMessage({
-                type: "success",
-                title: "Saved successfully ...",
-              });
-              AlgaehLoader({ show: false });
-            } else {
-              AlgaehLoader({ show: false });
-              swalMessage({
-                type: "error",
-                title: response.data.records.message,
-              });
-            }
-          },
-          onFailure: (error) => {
+              saveEnable: true,
+              dataExists: true,
+            });
+            saveDocument(
+              $this.state.contract_files,
+              response.data.records.contract_number,
+              response.data.records.hims_f_contract_management_id,
+              $this
+            );
+            swalMessage({
+              type: "success",
+              title: "Saved successfully ...",
+            });
+            AlgaehLoader({ show: false });
+          } else {
             AlgaehLoader({ show: false });
             swalMessage({
-              title: error.message,
               type: "error",
+              title: response.data.records.message,
             });
-          },
-        });
-      },
-    });
-  }
+          }
+        },
+        onFailure: (error) => {
+          AlgaehLoader({ show: false });
+          swalMessage({
+            title: error.message,
+            type: "error",
+          });
+        },
+      });
+    },
+  });
 };
 
-function saveDocument(files = [], contract_no, contract_id, $this) {
+export function updateContract() {
+  AlgaehValidation({
+    querySelector: "data-validate='HeaderDiv'",
+    alertTypeIcon: "warning",
+    onSuccess: () => {
+      if (this.HRMNGMT_Active) {
+        if (this.state.incharge_employee_id === null) {
+          swalMessage({
+            type: "warning",
+            title: "Please select Incharge Employee",
+          });
+          return;
+        }
+      }
+
+      AlgaehLoader({ show: true });
+      this.state.terms_conditions = this.state.comment_list.join("<br/>");
+      algaehApiCall({
+        uri: "/ContractManagement/updateContractManagement",
+        module: "sales",
+        method: "PUT",
+        data: this.state,
+        onSuccess: (response) => {
+          if (response.data.success) {
+            this.setState({
+              saveEnable: true,
+              dataExists: true,
+              editMode: false,
+            });
+            saveDocument(
+              this.state.contract_files,
+              this.state.contract_number,
+              this.state.hims_f_contract_management_id,
+              this
+            );
+            swalMessage({
+              type: "success",
+              title: "Saved successfully ...",
+            });
+            AlgaehLoader({ show: false });
+          } else {
+            AlgaehLoader({ show: false });
+            swalMessage({
+              type: "error",
+              title: response.data.records.message,
+            });
+          }
+        },
+        onFailure: (error) => {
+          AlgaehLoader({ show: false });
+          swalMessage({
+            title: error.message,
+            type: "error",
+          });
+        },
+      });
+    },
+  });
+}
+
+export function saveDocument(files = [], contract_no, contract_id, $this) {
   const formData = new FormData();
   formData.append("contract_no", contract_no);
   formData.append("contract_id", contract_id);
@@ -185,7 +239,7 @@ function saveDocument(files = [], contract_no, contract_id, $this) {
     .catch((e) => console.log(e));
 }
 
-function getDocuments(contract_no, $this) {
+export function getDocuments(contract_no, $this) {
   newAlgaehApi({
     uri: "/getContractDoc",
     module: "documentManagement",
@@ -218,7 +272,7 @@ function getDocuments(contract_no, $this) {
     });
 }
 
-const getCtrlCode = ($this, docNumber, row) => {
+export const getCtrlCode = ($this, docNumber, row) => {
   AlgaehLoader({ show: true });
 
   algaehApiCall({
@@ -256,7 +310,7 @@ const getCtrlCode = ($this, docNumber, row) => {
   });
 };
 
-const generateContractReport = (data) => {
+export const generateContractReport = (data) => {
   console.log("data:", data);
   algaehApiCall({
     uri: "/report",
@@ -291,7 +345,7 @@ const generateContractReport = (data) => {
   });
 };
 
-const dateValidate = ($this, value, event) => {
+export const dateValidate = ($this, value, event) => {
   let inRange = moment(value).isBefore(moment().format("YYYY-MM-DD"));
   if (inRange) {
     swalMessage({
@@ -305,7 +359,7 @@ const dateValidate = ($this, value, event) => {
   }
 };
 
-const servicechangeText = ($this, e, ctrl) => {
+export const servicechangeText = ($this, e, ctrl) => {
   let name = ctrl;
 
   let value = e.hims_d_services_id;
@@ -318,18 +372,22 @@ const servicechangeText = ($this, e, ctrl) => {
   });
 };
 
-const deleteContarctServices = ($this, row) => {
-  let contract_services = $this.state.contract_services;
+export const deleteContarctServices = ($this, row) => {
+  let { contract_services } = $this.state;
   let _index = contract_services.indexOf(row);
-  contract_services.splice(_index, 1);
+  if ($this.state.editMode) {
+    contract_services[_index].record_status = "I";
+  } else {
+    contract_services.splice(_index, 1);
+  }
 
   $this.setState({
-    contract_services: contract_services,
+    contract_services,
     saveEnable: contract_services.length > 0 ? false : true,
   });
 };
 
-const AddSerices = ($this) => {
+export const AddSerices = ($this) => {
   if (
     $this.state.service_price === "" ||
     $this.state.service_price === null ||
@@ -357,6 +415,7 @@ const AddSerices = ($this) => {
     service_frequency: $this.state.service_frequency,
     service_price: $this.state.service_price,
     comments: $this.state.comments,
+    record_status: "A",
   };
   let contract_services = $this.state.contract_services;
 
@@ -373,7 +432,7 @@ const AddSerices = ($this) => {
   });
 };
 
-const addToTermCondition = ($this) => {
+export const addToTermCondition = ($this) => {
   if (
     $this.state.hims_f_terms_condition_id === null &&
     $this.state.selected_terms_conditions === ""
@@ -394,7 +453,7 @@ const addToTermCondition = ($this) => {
   });
 };
 
-const deleteComment = ($this, row) => {
+export const deleteComment = ($this, row) => {
   let comment_list = $this.state.comment_list;
   let _index = comment_list.indexOf(row);
   comment_list.splice(_index, 1);
@@ -405,7 +464,7 @@ const deleteComment = ($this, row) => {
   });
 };
 
-const employeeSearch = ($this) => {
+export const employeeSearch = ($this) => {
   AlgaehSearch({
     searchGrid: {
       columns: spotlightSearch.Employee_details.employee,
@@ -425,7 +484,7 @@ const employeeSearch = ($this) => {
   });
 };
 
-const getCostCenters = ($this) => {
+export const getCostCenters = ($this) => {
   algaehApiCall({
     uri: "/finance_masters/getCostCenters",
     method: "GET",
@@ -437,22 +496,4 @@ const getCostCenters = ($this) => {
       }
     },
   });
-};
-
-export {
-  texthandle,
-  datehandle,
-  ClearData,
-  SaveContract,
-  getCtrlCode,
-  generateContractReport,
-  dateValidate,
-  servicechangeText,
-  deleteContarctServices,
-  AddSerices,
-  addToTermCondition,
-  deleteComment,
-  employeeSearch,
-  getCostCenters,
-  saveDocument,
 };
