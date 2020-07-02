@@ -41,7 +41,7 @@ function CustomerList(props) {
             <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-title">
                 <div className="caption">
-                  <h3 className="caption-subject">Customer List</h3>
+                  <h3 className="caption-subject">Supplier List</h3>
                 </div>{" "}
                 <div className="actions">
                   {" "}
@@ -57,7 +57,10 @@ function CustomerList(props) {
               </div>
               <div className="portlet-body">
                 <div className="row">
-                  <div className="col-lg-12 customCheckboxGrid">
+                  <div
+                    className="col-lg-12 customCheckboxGrid"
+                    id="supplierGrid_Cntr"
+                  >
                     <AlgaehTable
                       columns={[
                         {
@@ -68,8 +71,9 @@ function CustomerList(props) {
                           filtered: true,
                           displayTemplate: (record) => {
                             return (
-                              <Button
-                                type="link"
+                              <p
+                                className="p-link"
+                                // type="link"
                                 onClick={() =>
                                   history.push("/SupplierPayment", {
                                     data: record,
@@ -77,7 +81,7 @@ function CustomerList(props) {
                                 }
                               >
                                 {record.child_name}
-                              </Button>
+                              </p>
                             );
                           },
                         },
