@@ -218,12 +218,6 @@ export default function PnLReport({ layout, finOptions, organization, style }) {
       {/* <Button onClick={loadExcel}>Excel</Button> */}
 
       <div className="row inner-top-search">
-        <i
-          className="fas fa-file-download"
-          onClick={onLoad}
-          disabled={!columnType}
-          data-name="excel"
-        />
         <AlgaehAutoComplete
           div={{ className: "col-3" }}
           label={{
@@ -326,6 +320,18 @@ export default function PnLReport({ layout, finOptions, organization, style }) {
         >
           Download Excel
         </AlgaehButton> */}
+      </div>
+      <div className="row">
+        <div className="col-12 reportHeaderAction">
+          <span>
+            <i
+              className="fas fa-file-download"
+              onClick={onLoad}
+              disabled={!columnType}
+              data-name="excel"
+            />
+          </span>
+        </div>
       </div>
       {!data ? (
         <div style={{ textAlign: "center" }}>

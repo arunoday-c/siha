@@ -81,6 +81,19 @@
         }
         &:nth-child(odd) {
           background-color: #f7f7f7;
+          td {
+            &:first-child {
+              background-color: #f7f7f7;
+            }
+          }
+        }
+        &:nth-child(even) {
+          background-color: #fff;
+          td {
+            &:first-child {
+              background-color: #fff;
+            }
+          }
         }
       }
     }
