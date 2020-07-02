@@ -54,9 +54,14 @@
 
                     </tr>
                     {{/each }}
+                    <tr class="footerTotalDown">
+                        <td colspan="7">Total Item Amount</td>
+                        <td class="numberFld">{{total_item_amount}}</td>
+                    </tr>
                 </tbody>
             </table>
         </section>
+
         {{/ifCond}}
 
         {{#ifCond sales_quotation_services.length '>' 0 }}
@@ -96,10 +101,15 @@
 
                     </tr>
                     {{/each }}
+                    <tr class="footerTotalDown">
+                        <td colspan="7">Total Service Amount</td>
+                        <td class="numberFld">{{total_service_amount}}</td>
+                    </tr>
                 </tbody>
             </table>
         </section>
         {{/ifCond}}
+
         <section>
 
             <h4> Terms & Conditions: </h4>
