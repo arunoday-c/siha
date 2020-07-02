@@ -79,6 +79,7 @@ function PnLCostCenter({ data, layout }) {
           return totals[field];
         }}
         expandAll={layout.expand}
+        pagination={false}
       />
     </>
   );

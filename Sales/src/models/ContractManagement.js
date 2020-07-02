@@ -239,3 +239,84 @@ export function getOrderListGenContract(req, res, next) {
     next(e);
   }
 }
+export function updateContractManagement(req, res, next) {
+  const _mysql = new algaehMysql();
+  const {
+    hims_f_contract_management_id,
+    contract_date,
+    customer_id,
+    start_date,
+    end_date,
+    contract_code,
+    quotation_ref_numb,
+    terms_conditions,
+    incharge_employee_id,
+    notification_days1,
+    notification_days2,
+    project_id,
+    hospital_id,
+    contract_services,
+  } = req.body;
+  const { algaeh_d_app_user_id } = req.userIdentity;
+  try {
+    _mysql
+      .executeQueryWithTransaction({
+        query: `update hims_f_contract_management set contract_date=?,
+      start_date=?,end_date=?,contract_code=?,quotation_ref_numb=?,terms_conditions=?,
+      incharge_employee_id=?,notification_days1=?,notification_days2=?,project_id=?,hospital_id=?
+      updated_date=?,updated_by=? where hims_f_contract_management_id=?`,
+        values: [
+          contract_date,
+          start_date,
+          end_date,
+          contract_code,
+          quotation_ref_numb,
+          terms_conditions,
+          incharge_employee_id,
+          notification_days1,
+          notification_days2,
+          project_id,
+          hospital_id,
+          new Date(),
+          algaeh_d_app_user_id,
+          hims_f_contract_management_id,
+        ],
+        printQuery: true,
+      })
+      .then((result) => {
+        _mysql
+          .executeQuery({
+            query: `update hims_f_contract_management_services set ? where hims_f_contract_management_services_id=?`,
+            values: contract_services,
+            where: ["hims_f_contract_management_services_id"],
+            excludeValues: ["contract_management_id"],
+            extraValues: {
+              updated_by: algaeh_d_app_user_id,
+              updated_date: new Date(),
+            },
+            bulkInsertOrUpdate: true,
+            printQuery: true,
+          })
+          .then((details) => {
+            _mysql.commitTransaction(() => {
+              _mysql.releaseConnection();
+              next();
+            });
+          })
+          .catch((error) => {
+            _mysql.rollBackTransaction(() => {
+              next(error);
+            });
+          });
+      })
+      .catch((error) => {
+        _mysql.rollBackTransaction(() => {
+          next(error);
+        });
+      });
+  } catch (e) {
+    _mysql.rollBackTransaction(() => {
+      next(e);
+    });
+  }
+}
