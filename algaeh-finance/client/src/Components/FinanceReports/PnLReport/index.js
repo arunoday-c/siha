@@ -12,7 +12,13 @@ import { getYears } from "../../../utils/GlobalFunctions";
 import { handleFile } from "../FinanceReportEvents";
 const yearList = getYears();
 
-export default function PnLReport({ layout, finOptions, organization, style }) {
+export default function PnLReport({
+  layout,
+  finOptions,
+  organization,
+  style,
+  selectedFilter,
+}) {
   const [columnType, setColumnType] = useState("by_year");
   const [year, setYear] = useState(new Date().getFullYear());
   const [costCenters, setCostCenters] = useState([]);
@@ -29,9 +35,11 @@ export default function PnLReport({ layout, finOptions, organization, style }) {
         (el) => el.hims_d_hospital_id === parseInt(branch_id, 10)
       );
       setCostCenters(required.cost_centers);
+      const { filterKey } = selectedFilter;
+      setColumnType(filterKey);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [branch_id]);
+  }, [branch_id, selectedFilter]);
 
   function handleDropDown(_, value, name) {
     switch (name) {
@@ -218,12 +226,6 @@ export default function PnLReport({ layout, finOptions, organization, style }) {
       {/* <Button onClick={loadExcel}>Excel</Button> */}
 
       <div className="row inner-top-search">
-        <i
-          className="fas fa-file-download"
-          onClick={onLoad}
-          disabled={!columnType}
-          data-name="excel"
-        />
         <AlgaehAutoComplete
           div={{ className: "col-3" }}
           label={{
@@ -326,6 +328,18 @@ export default function PnLReport({ layout, finOptions, organization, style }) {
         >
           Download Excel
         </AlgaehButton> */}
+      </div>
+      <div className="row">
+        <div className="col-12 reportHeaderAction">
+          <span>
+            <i
+              className="fas fa-file-download"
+              onClick={onLoad}
+              disabled={!columnType}
+              data-name="excel"
+            />
+          </span>
+        </div>
       </div>
       {!data ? (
         <div style={{ textAlign: "center" }}>

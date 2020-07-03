@@ -79,7 +79,12 @@ export default memo(function (props) {
           <div className="row">
             <div className="col-12">
               <div className="portlet portlet-bordered margin-bottom-15">
-                <div className="portlet-label">
+                <div className="portlet-title">
+                  <div className="caption">
+                    <h3 className="caption-subject">
+                      Supplier Payment Details
+                    </h3>
+                  </div>{" "}
                   <div className="actions">
                     <button
                       className="btn btn-default"
@@ -99,77 +104,82 @@ export default memo(function (props) {
                     </button>
                   </div>
                 </div>
-                <div className="row">
-                  <div className="col-lg-12 customCheckboxGrid">
-                    <AlgaehTable
-                      columns={[
-                        {
-                          fieldName: "invoice_date",
-                          label: "Date",
-                          sortable: true,
-                          filterable: true,
-                        },
-                        {
-                          fieldName: "invoice_no",
-                          label: "Invoice No",
-                          sortable: true,
-                          filterable: true,
-                        },
-                        {
-                          fieldName: "narration",
-                          label: "Description",
-                          filterable: true,
-                        },
-                        {
-                          fieldName: "due_date",
-                          label: "Due Date",
-                          sortable: true,
-                          filterable: true,
-                        },
-                        {
-                          fieldName: "invoice_amount",
-                          label: "Invoice Amount",
-                          sortable: true,
-                          filterable: true,
-                        },
-                        {
-                          fieldName: "settled_amount",
-                          label: "Paid Amount",
-                          sortable: true,
-                          filterable: true,
-                        },
-                        {
-                          fieldName: "balance_amount",
-                          label: "Balance Amount",
-                          sortable: true,
-                          filterable: true,
-                        },
-                        {
-                          fieldName: "invoice_status",
-                          label: "Status",
-                          displayTemplate: (row) =>
-                            row.invoice_status.toUpperCase(),
-                          sortable: true,
-                          filterable: true,
-                        },
-                        {
-                          fieldName: "last_modified",
-                          label: "Last Modified Date",
-                          sortable: true,
-                          filterable: true,
-                        },
-                        {
-                          label: "Action",
-                          displayTemplate: receive,
-                        },
-                      ]}
-                      height="80vh"
-                      // rowUnique="finance_voucher_header_id"
-                      isFilterable={true}
-                      row_unique_id="finance_voucher_header_id"
-                      // dataSource={{ data: data }}
-                      data={data}
-                    />
+                <div className="portlet-body">
+                  <div className="row">
+                    <div
+                      className="col-lg-12 customCheckboxGrid"
+                      id="supplierDetailGrid_Cntr"
+                    >
+                      <AlgaehTable
+                        columns={[
+                          {
+                            fieldName: "invoice_date",
+                            label: "Date",
+                            sortable: true,
+                            filterable: true,
+                          },
+                          {
+                            fieldName: "invoice_no",
+                            label: "Invoice No",
+                            sortable: true,
+                            filterable: true,
+                          },
+                          {
+                            fieldName: "narration",
+                            label: "Description",
+                            filterable: true,
+                          },
+                          {
+                            fieldName: "due_date",
+                            label: "Due Date",
+                            sortable: true,
+                            filterable: true,
+                          },
+                          {
+                            fieldName: "invoice_amount",
+                            label: "Invoice Amount",
+                            sortable: true,
+                            filterable: true,
+                          },
+                          {
+                            fieldName: "settled_amount",
+                            label: "Paid Amount",
+                            sortable: true,
+                            filterable: true,
+                          },
+                          {
+                            fieldName: "balance_amount",
+                            label: "Balance Amount",
+                            sortable: true,
+                            filterable: true,
+                          },
+                          {
+                            fieldName: "invoice_status",
+                            label: "Status",
+                            displayTemplate: (row) =>
+                              row.invoice_status.toUpperCase(),
+                            sortable: true,
+                            filterable: true,
+                          },
+                          {
+                            fieldName: "last_modified",
+                            label: "Last Modified Date",
+                            sortable: true,
+                            filterable: true,
+                          },
+                          {
+                            label: "Action",
+                            displayTemplate: receive,
+                          },
+                        ]}
+                        height="80vh"
+                        // rowUnique="finance_voucher_header_id"
+                        isFilterable={true}
+                        row_unique_id="finance_voucher_header_id"
+                        // dataSource={{ data: data }}
+                        data={data}
+                      />
+                    </div>
                   </div>
                 </div>
               </div>

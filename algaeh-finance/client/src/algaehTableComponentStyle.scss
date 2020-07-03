@@ -7,6 +7,10 @@
     overflow: auto;
     min-height: 10vh;
     max-height: 40vh;
+    border: 1px solid #d6d6d6;
+    border-radius: 3px;
+    font-size: 0.9rem;
+    background: #fff;
     table {
       width: 100%;
       margin: auto;
@@ -19,7 +23,6 @@
     th,
     td {
       padding: 5px 10px;
-      border: 1px solid rgba(0, 0, 0, 0.05);
       background: #fff;
       vertical-align: top;
       min-width: 80px;
@@ -38,23 +41,58 @@
         }
         span {
           white-space: nowrap !important;
+          font-size: 0.85rem;
+          text-transform: uppercase;
+          vertical-align: inherit;
+          font-weight: 500;
         }
       }
       .filterEnable {
         th {
           top: 33px !important;
           z-index: 9;
+          background: #ccc !important;
+          input {
+            padding: 0.3em !important;
+            border: 1px solid #8c8c8c !important;
+          }
         }
       }
     }
     tbody {
-      td {
-        .pointer {
-          font-size: 1.3rem;
-          margin-left: 10px;
-          cursor: pointer;
-          &:hover {
-            color: #00a796;
+      tr {
+        td {
+          .pointer {
+            font-size: 1.3rem;
+            margin-left: 10px;
+            cursor: pointer;
+            &:hover {
+              color: #00a796;
+            }
+          }
+          overflow: inherit !important;
+          white-space: inherit !important;
+          background: none;
+          border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+          border-right: 1px solid rgba(0, 0, 0, 0.05);
+          &:last-child {
+            border-right: none;
+          }
+        }
+        &:nth-child(odd) {
+          background-color: #f7f7f7;
+          td {
+            &:first-child {
+              background-color: #f7f7f7;
+            }
+          }
+        }
+        &:nth-child(even) {
+          background-color: #fff;
+          td {
+            &:first-child {
+              background-color: #fff;
+            }
           }
         }
       }
@@ -83,6 +121,13 @@
       position: -webkit-sticky;
       position: sticky;
       z-index: 5;
+    }
+    .p-link {
+      color: #1a0dab;
+      &:hover {
+        text-decoration: underline;
+        cursor: pointer;
+      }
     }
   }
   .paginationCntr {
@@ -139,6 +184,30 @@
         font-size: 1rem;
         margin-top: 3px;
       }
+    }
+  }
+}
+#customerDetailGrid_Cntr,
+#supplierDetailGrid_Cntr {
+  .newStickyGrid {
+    .table-scroll {
+      min-height: 62vh;
+    }
+  }
+}
+#customerGrid_Cntr,
+#supplierGrid_Cntr {
+  .newStickyGrid {
+    .table-scroll {
+      min-height: 62vh;
+    }
+  }
+}
+
+#quickSearchGrid {
+  .newStickyGrid {
+    .table-scroll {
+      min-height: 70vh;
     }
   }
 }

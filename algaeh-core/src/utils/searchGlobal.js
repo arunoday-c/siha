@@ -68,7 +68,7 @@ let algaehSearchConfig = (searchName, req) => {
           pv.patient_id, pv.hims_f_patient_visit_id, \
           pv.insured, pv.sec_insured,pv.episode_id FROM hims_f_patient,hims_f_patient_visit pv where  \
           pv.patient_id=hims_f_patient.hims_d_patient_id and pv.record_status='A' and\
-          date(pv.visit_expiery_date) > date(now()) and pv.hospital_id=" +
+          date(pv.visit_expiery_date) >= date(now()) and pv.hospital_id=" +
           hospitalId,
         orderBy: "pv.hims_f_patient_visit_id desc",
       },
@@ -709,14 +709,14 @@ let algaehSearchConfig = (searchName, req) => {
             where hims_d_services_id not in\
             (SELECT services_id FROM hims_d_services_insurance as I,hims_d_service_type as T where  \
             insurance_id=? and {mapper} and I.service_type_id = T.hims_d_service_type_id and \
-            I.service_type_id in (2,5,11)) and {mapper} \
-            and S.service_type_id in (2,5,11) \
+            I.service_type_id in (2,5,11,15,6)) and {mapper} \
+            and S.service_type_id in (2,5,11,15,6) \
             union all\
             SELECT service_name,service_type_id,I.services_id as hims_d_services_id, covered,pre_approval, \
             T.service_type, TEST.hims_d_investigation_test_id FROM hims_d_services_insurance as I \
             inner join hims_d_service_type AS T on I.service_type_id = T.hims_d_service_type_id \
             left join hims_d_investigation_test TEST on TEST.services_id = I.services_id\
-            where  insurance_id=? and {mapper} and I.service_type_id in (2,5,11)",
+            where  insurance_id=? and {mapper} and I.service_type_id in (2,5,11,15,6)",
         orderBy: "hims_d_services_id desc",
         inputSequence: ["insurance_id", "insurance_id"],
       },
