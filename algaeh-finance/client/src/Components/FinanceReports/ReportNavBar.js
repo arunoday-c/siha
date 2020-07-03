@@ -54,8 +54,13 @@ export default function ReportNavBar({
       <h6>Favourite Reports</h6>
       <ul className="menuListUl">
         {REPORT_LIST.map((item) => (
-          <li className={selectedClass(item.key)}>
-            <span onClick={() => setSelected(item.key)}>{item.title}</span>
+          <li>
+            <span
+              className={selectedClass(item.key)}
+              onClick={() => setSelected(item.key)}
+            >
+              {item.title}
+            </span>
             {RenderChildren(item.children, (selected) => {
               setSelected(item.key);
               setSelectedFilter({ filterKey: selected.key });
@@ -74,8 +79,10 @@ function RenderChildren(children, callBack) {
       <ul>
         {children.map((item, index) => {
           return (
-            <li key={index} onClick={() => callBack(item)}>
-              {item.title}
+            <li>
+              <span key={index} onClick={() => callBack(item)}>
+                {item.title}
+              </span>
             </li>
           );
         })}
