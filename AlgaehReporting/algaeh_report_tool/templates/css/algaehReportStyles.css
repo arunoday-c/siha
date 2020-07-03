@@ -1,9 +1,10 @@
 body {
-  font-family: "Segoe UI", sans-serif;
+  font-family: "Calibri", sans-serif;
   font-size: 11px;
 }
 
 .print-body {
+  font-family: "Calibri", sans-serif;
   border-right: 0 !important;
   padding: 0 15px 0 !important;
   margin-top: -5px;
@@ -32,13 +33,17 @@ body {
 .tableTotal,
 .tableForLabelSignature,
 .tableNoBorder,
-.tableNoBorder2 {
+.tableNoBorder2,
+.tableDotPrint1,
+.tableDotPrint2 {
   width: 100%;
   border-collapse: collapse;
 }
 
 .print-body .tableForLabel tbody,
-.print-body .tableNoBorder tbody {
+.print-body .tableNoBorder tbody,
+.print-body .tableDotPrint1 tbody,
+.print-body .tableDotPrint2 tbody {
   margin: 0;
   padding: 0;
 }
@@ -55,6 +60,43 @@ body {
   padding: 3px;
   margin: 0;
   font-size: 11px;
+}
+.print-body .tableDotPrint1 tr {
+  border-bottom: 1px dotted #ccc;
+}
+.print-body .tableDotPrint1 td {
+  border: none;
+  padding: 3px;
+  margin: 0;
+  font-size: 11px;
+}
+
+.print-body .tableDotPrint2 td {
+  border: none;
+  padding: 3px;
+  margin: 0;
+  font-size: 11px;
+}
+
+.print-body .tableDotPrint2 thead tr {
+  border-bottom: 1px dotted #ccc;
+  font-size: 11px;
+}
+
+.print-body .tableDotPrint2 th p {
+  font-size: 11px;
+  padding: 0;
+  margin: 3px 0 0;
+}
+
+.print-body .tableDotPrint2 td {
+  border: none;
+  padding: 3px;
+  margin: 0;
+  font-size: 11px;
+}
+.print-body .tableDotPrint2 .tblFooter tr {
+  border-bottom: 1px dotted #ccc;
 }
 
 .print-body .tableForLabel td span {

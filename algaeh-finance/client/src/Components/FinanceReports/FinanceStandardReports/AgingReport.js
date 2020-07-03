@@ -96,14 +96,25 @@ export default function AgingReport({ style, result, layout, type, dates }) {
 
   return (
     <>
-      <ReactToPrint
-        trigger={() => <i className="fas fa-print" />}
-        content={() => createPrintObject.current}
-        removeAfterPrint={true}
-        bodyClass="reportPreviewSecLeft"
-        pageStyle="printing"
-      />
-      <i className="fas fa-file-download" onClick={() => loadReport(true)} />
+      <div className="row">
+        <div className="col-12 reportHeaderAction">
+          <span>
+            <ReactToPrint
+              trigger={() => <i className="fas fa-print" />}
+              content={() => createPrintObject.current}
+              removeAfterPrint={true}
+              bodyClass="reportPreviewSecLeft"
+              pageStyle="printing"
+            />
+          </span>
+          <span>
+            <i
+              className="fas fa-file-download"
+              onClick={() => loadReport(true)}
+            />
+          </span>
+        </div>
+      </div>
       <div ref={createPrintObject}>
         <div className="financeReportHeader">
           <div>

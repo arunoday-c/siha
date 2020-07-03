@@ -8,7 +8,13 @@ import { handleFile } from "../FinanceReportEvents";
 import { AlgaehMessagePop } from "algaeh-react-components";
 import { getItem, tokenDecode } from "algaeh-react-components/storage";
 import jwtDecode from "jwt-decode";
-export default function BalanceSheet({ style, footer, layout, dates }) {
+export default function BalanceSheet({
+  style,
+  footer,
+  layout,
+  dates,
+  selectedFilter,
+}) {
   const createPrintObject = useRef(undefined);
   const [data, setData] = useState([]);
   // const [hospitalDetails, setHospitalDeytails] = useState([]);
@@ -107,12 +113,21 @@ export default function BalanceSheet({ style, footer, layout, dates }) {
 
   return (
     <>
-      <ReactToPrint
-        trigger={() => <i className="fas fa-print" />}
-        content={() => createPrintObject.current}
-        removeAfterPrint={true}
-        bodyClass="reportPreviewSecLeft"
-        pageStyle="@media print {
+      <div className="row">
+        <div className="col-12 reportHeaderAction">
+          <span>
+            <i
+              className="fas fa-file-download"
+              onClick={() => loadBalanceSheet(true)}
+            />
+          </span>
+          <span>
+            <ReactToPrint
+              trigger={() => <i className="fas fa-print" />}
+              content={() => createPrintObject.current}
+              removeAfterPrint={true}
+              bodyClass="reportPreviewSecLeft"
+              pageStyle="@media print {
               html, body {
                 height: initial !important;
                 overflow: initial !important;
@@ -124,7 +139,11 @@ export default function BalanceSheet({ style, footer, layout, dates }) {
               size: auto;
               margin: 20mm;
             }"
-      />
+            />
+          </span>
+        </div>
+      </div>
+
       {/* <AlgaehButton
         onClick={() => loadBalanceSheet(true)}
         className="btn btn-default"
@@ -158,10 +177,6 @@ export default function BalanceSheet({ style, footer, layout, dates }) {
         />
       </div> */}
       <div ref={createPrintObject}>
-        <i
-          className="fas fa-file-download"
-          onClick={() => loadBalanceSheet(true)}
-        />
         <div className="financeReportHeader">
           <div>
             {organization_name}

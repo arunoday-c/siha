@@ -270,7 +270,7 @@ class AddPatientForm extends Component {
                           others: {
                             disabled: this.state.existingPatient,
                             tabIndex: "2",
-                          }
+                          },
                         }}
                         events={{
                           onBlur: texthandle.bind(this, this),
@@ -456,7 +456,7 @@ class AddPatientForm extends Component {
                         }}
                         label={{
                           // fieldName: "AGEMM",
-                          forceLabel: "*",
+                          forceLabel: ".",
                           isImp: false,
                         }}
                         textBox={{
@@ -488,7 +488,7 @@ class AddPatientForm extends Component {
                         }}
                         label={{
                           // fieldName: "AGEDD",
-                          forceLabel: "*",
+                          forceLabel: ".",
                           isImp: false,
                         }}
                         textBox={{

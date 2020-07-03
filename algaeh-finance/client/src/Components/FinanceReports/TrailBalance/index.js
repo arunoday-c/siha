@@ -66,40 +66,45 @@ export default function TrailBalance({ layout, dates, finOptions }) {
 
   return (
     <>
-      <AlgaehAutoComplete
-        div={{ className: "col-4" }}
-        label={{
-          forceLabel: "Layout Type",
-          isImp: true,
-        }}
-        selector={{
-          name: "type",
-          value: type,
-          dataSource: {
-            data: [
-              {
-                name: "Table",
-                value: "table",
-              },
-              {
-                name: "Tree",
-                value: "tree",
-              },
-            ],
-            valueField: "value",
-            textField: "name",
-          },
-          onChange: (_, value) => {
-            setType(value);
-          },
-        }}
-      />
-      <ReactToPrint
-        trigger={() => <i className="fas fa-print" />}
-        content={() => createPrintObject.current}
-        removeAfterPrint={true}
-        bodyClass="reportPreviewSecLeft"
-        pageStyle="@media print {
+      <div className="row inner-top-search">
+        <AlgaehAutoComplete
+          div={{ className: "col-4" }}
+          label={{
+            forceLabel: "Layout Type",
+            isImp: true,
+          }}
+          selector={{
+            name: "type",
+            value: type,
+            dataSource: {
+              data: [
+                {
+                  name: "Table",
+                  value: "table",
+                },
+                {
+                  name: "Tree",
+                  value: "tree",
+                },
+              ],
+              valueField: "value",
+              textField: "name",
+            },
+            onChange: (_, value) => {
+              setType(value);
+            },
+          }}
+        />
+      </div>
+      <div className="row">
+        <div className="col-12 reportHeaderAction">
+          <span>
+            <ReactToPrint
+              trigger={() => <i className="fas fa-print" />}
+              content={() => createPrintObject.current}
+              removeAfterPrint={true}
+              bodyClass="reportPreviewSecLeft"
+              pageStyle="@media print {
           html, body {
             height: initial !important;
             overflow: initial !important;
@@ -111,7 +116,10 @@ export default function TrailBalance({ layout, dates, finOptions }) {
           size: auto;
           margin: 20mm;
         }"
-      />
+            />
+          </span>
+        </div>
+      </div>
       <Spin spinning={loading}>{renderReport()}</Spin>
     </>
   );

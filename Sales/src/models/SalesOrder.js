@@ -4,28 +4,30 @@ import mysql from "mysql";
 export function getSalesOrder(req, res, next) {
     const _mysql = new algaehMysql();
     try {
-        let strQuery = ""
+        let strQuery = "";
         if (req.query.HRMNGMT_Active === "true") {
-            strQuery = "SELECT SO.*, C.customer_name, E.full_name as employee_name, SQ.sales_quotation_number, CM.contract_number from hims_f_sales_order SO \
+            strQuery =
+                "SELECT SO.*, C.customer_name, E.full_name as employee_name, SQ.sales_quotation_number, CM.contract_number from hims_f_sales_order SO \
                         left join  hims_f_sales_quotation SQ on  SO.sales_quotation_id = SQ.hims_f_sales_quotation_id \
                         left join  hims_f_contract_management CM on  SO.contract_id = CM.hims_f_contract_management_id \
                         inner join  hims_d_customer C on  SO.customer_id = C.hims_d_customer_id \
                         inner join  hims_d_employee E on  SO.sales_person_id = E.hims_d_employee_id \
-                        where SO.sales_order_number =? "
+                        where SO.sales_order_number =? ";
         } else {
-            strQuery = "SELECT SO.*, C.customer_name, SQ.sales_quotation_number, CM.contract_number from hims_f_sales_order SO \
+            strQuery =
+                "SELECT SO.*, C.customer_name, SQ.sales_quotation_number, CM.contract_number from hims_f_sales_order SO \
                         left join  hims_f_sales_quotation SQ on  SO.sales_quotation_id = SQ.hims_f_sales_quotation_id \
                         left join  hims_f_contract_management CM on  SO.contract_id = CM.hims_f_contract_management_id \
                         inner join  hims_d_customer C on  SO.customer_id = C.hims_d_customer_id \
-                        where SO.sales_order_number =? "
+                        where SO.sales_order_number =? ";
         }
         _mysql
             .executeQuery({
                 query: strQuery,
                 values: [req.query.sales_order_number],
-                printQuery: true
+                printQuery: true,
             })
-            .then(headerResult => {
+            .then((headerResult) => {
                 if (headerResult.length != 0) {
                     let strQuery = "";
 
@@ -46,17 +48,17 @@ export function getSalesOrder(req, res, next) {
                     _mysql
                         .executeQuery({
                             query: strQuery,
-                            printQuery: true
+                            printQuery: true,
                         })
-                        .then(order_detail => {
+                        .then((order_detail) => {
                             _mysql.releaseConnection();
                             req.records = {
                                 ...headerResult[0],
-                                ...{ order_detail }
+                                ...{ order_detail },
                             };
                             next();
                         })
-                        .catch(error => {
+                        .catch((error) => {
                             _mysql.releaseConnection();
                             next(error);
                         });
@@ -66,7 +68,7 @@ export function getSalesOrder(req, res, next) {
                     next();
                 }
             })
-            .catch(error => {
+            .catch((error) => {
                 _mysql.releaseConnection();
                 next(error);
             });
@@ -74,19 +76,19 @@ export function getSalesOrder(req, res, next) {
         _mysql.releaseConnection();
         next(e);
     }
-};
+}
 export function addSalesOrder(req, res, next) {
     const _mysql = new algaehMysql();
 
     try {
         let buffer = "";
-        req.on("data", chunk => {
+        req.on("data", (chunk) => {
             buffer += chunk.toString();
         });
 
         req.on("end", () => {
             let input = JSON.parse(buffer);
-            req.body = input
+            req.body = input;
             // let input = req.body;
             let sales_order_number = "";
             // const utilities = new algaehUtilities();
@@ -96,9 +98,9 @@ export function addSalesOrder(req, res, next) {
                 .generateRunningNumber({
                     user_id: req.userIdentity.algaeh_d_app_user_id,
                     numgen_codes: ["SALES_ORDER"],
-                    table_name: "hims_f_sales_numgen"
+                    table_name: "hims_f_sales_numgen",
                 })
-                .then(generatedNumbers => {
+                .then((generatedNumbers) => {
                     sales_order_number = generatedNumbers.SALES_ORDER;
 
                     _mysql
@@ -134,12 +136,12 @@ export function addSalesOrder(req, res, next) {
                                 req.userIdentity.algaeh_d_app_user_id,
                                 new Date(),
                                 req.userIdentity.algaeh_d_app_user_id,
-                                input.hospital_id
+                                input.hospital_id,
                             ],
-                            printQuery: true
+                            printQuery: true,
                         })
-                        .then(headerResult => {
-                            console.log("headerResult", headerResult);
+                        .then((headerResult) => {
+                            // console.log("headerResult", headerResult);
                             let IncludeValues = [];
                             if (input.sales_order_items.length > 0) {
                                 IncludeValues = [
@@ -153,41 +155,40 @@ export function addSalesOrder(req, res, next) {
                                     "net_extended_cost",
                                     "tax_percentage",
                                     "tax_amount",
-                                    "total_amount"
+                                    "total_amount",
+                                    "quantity_outstanding",
                                 ];
 
                                 _mysql
                                     .executeQuery({
-                                        query:
-                                            "INSERT INTO hims_f_sales_order_items(??) VALUES ?",
+                                        query: "INSERT INTO hims_f_sales_order_items(??) VALUES ?",
                                         values: input.sales_order_items,
                                         includeValues: IncludeValues,
                                         extraValues: {
-                                            sales_order_id: headerResult.insertId
+                                            sales_order_id: headerResult.insertId,
                                         },
                                         bulkInsertOrUpdate: true,
-                                        printQuery: true
+                                        printQuery: true,
                                     })
-                                    .then(detailResult => {
-
+                                    .then((detailResult) => {
                                         if (input.sales_quotation_id !== null) {
                                             updateSalesQuotation({
                                                 input: input,
                                                 _mysql: _mysql,
                                                 next: next,
-                                                req: req
+                                                req: req,
                                             })
-                                                .then(update_sales_quotation => {
+                                                .then((update_sales_quotation) => {
                                                     _mysql.commitTransaction(() => {
                                                         _mysql.releaseConnection();
                                                         req.records = {
                                                             sales_order_number: sales_order_number,
-                                                            hims_f_sales_order_id: headerResult.insertId
+                                                            hims_f_sales_order_id: headerResult.insertId,
                                                         };
                                                         return next();
                                                     });
                                                 })
-                                                .catch(error => {
+                                                .catch((error) => {
                                                     _mysql.rollBackTransaction(() => {
                                                         next(error);
                                                     });
@@ -197,13 +198,13 @@ export function addSalesOrder(req, res, next) {
                                                 _mysql.releaseConnection();
                                                 req.records = {
                                                     sales_order_number: sales_order_number,
-                                                    hims_f_sales_order_id: headerResult.insertId
+                                                    hims_f_sales_order_id: headerResult.insertId,
                                                 };
                                                 return next();
                                             });
                                         }
                                     })
-                                    .catch(error => {
+                                    .catch((error) => {
                                         _mysql.rollBackTransaction(() => {
                                             next(error);
                                         });
@@ -221,7 +222,7 @@ export function addSalesOrder(req, res, next) {
                                     "tax_percentage",
                                     "tax_amount",
                                     "total_amount",
-                                    "comments"
+                                    "comments",
                                 ];
 
                                 _mysql
@@ -231,30 +232,30 @@ export function addSalesOrder(req, res, next) {
                                         values: input.sales_order_services,
                                         includeValues: IncludeValues,
                                         extraValues: {
-                                            sales_order_id: headerResult.insertId
+                                            sales_order_id: headerResult.insertId,
                                         },
                                         bulkInsertOrUpdate: true,
-                                        printQuery: true
+                                        printQuery: true,
                                     })
-                                    .then(detailResult => {
+                                    .then((detailResult) => {
                                         if (input.sales_quotation_id !== null) {
                                             updateSalesQuotation({
                                                 input: input,
                                                 _mysql: _mysql,
                                                 next: next,
-                                                req: req
+                                                req: req,
                                             })
-                                                .then(update_sales_quotation => {
+                                                .then((update_sales_quotation) => {
                                                     _mysql.commitTransaction(() => {
                                                         _mysql.releaseConnection();
                                                         req.records = {
                                                             sales_order_number: sales_order_number,
-                                                            hims_f_sales_order_id: headerResult.insertId
+                                                            hims_f_sales_order_id: headerResult.insertId,
                                                         };
                                                         return next();
                                                     });
                                                 })
-                                                .catch(error => {
+                                                .catch((error) => {
                                                     _mysql.rollBackTransaction(() => {
                                                         next(error);
                                                     });
@@ -264,26 +265,26 @@ export function addSalesOrder(req, res, next) {
                                                 _mysql.releaseConnection();
                                                 req.records = {
                                                     sales_order_number: sales_order_number,
-                                                    hims_f_sales_order_id: headerResult.insertId
+                                                    hims_f_sales_order_id: headerResult.insertId,
                                                 };
                                                 return next();
                                             });
                                         }
                                     })
-                                    .catch(error => {
+                                    .catch((error) => {
                                         _mysql.rollBackTransaction(() => {
                                             next(error);
                                         });
                                     });
                             }
                         })
-                        .catch(e => {
+                        .catch((e) => {
                             _mysql.rollBackTransaction(() => {
                                 next(e);
                             });
                         });
                 })
-                .catch(e => {
+                .catch((e) => {
                     _mysql.rollBackTransaction(() => {
                         next(e);
                     });
@@ -294,38 +295,39 @@ export function addSalesOrder(req, res, next) {
             next(e);
         });
     }
-};
-
+}
 
 export function getSalesQuotationForOrder(req, res, next) {
     const _mysql = new algaehMysql();
     // const utilities = new algaehUtilities();
     try {
-        console.log("getSalesQuotationForOrder: ", req.query.HRMNGMT_Active)
-        let strQuery = ""
+        console.log("getSalesQuotationForOrder: ", req.query.HRMNGMT_Active);
+        let strQuery = "";
         if (req.query.HRMNGMT_Active === "true") {
-            strQuery = "SELECT SQ.*, C.customer_name, E.full_name as employee_name from hims_f_sales_quotation SQ \
+            strQuery =
+                "SELECT SQ.*, C.customer_name, E.full_name as employee_name from hims_f_sales_quotation SQ \
             inner join  hims_d_customer C on  SQ.customer_id = C.hims_d_customer_id \
             inner join  hims_d_employee E on  SQ.sales_person_id = E.hims_d_employee_id \
-            where SQ.sales_quotation_number =? "
+            where SQ.sales_quotation_number =? ";
         } else {
-            strQuery = "SELECT SQ.*, C.customer_name from hims_f_sales_quotation SQ \
+            strQuery =
+                "SELECT SQ.*, C.customer_name from hims_f_sales_quotation SQ \
             inner join  hims_d_customer C on  SQ.customer_id = C.hims_d_customer_id \
-            where SQ.sales_quotation_number =? "
+            where SQ.sales_quotation_number =? ";
         }
         _mysql
             .executeQuery({
                 query: strQuery,
                 values: [req.query.sales_quotation_number],
-                printQuery: true
+                printQuery: true,
             })
-            .then(headerResult => {
+            .then((headerResult) => {
                 if (headerResult.length != 0) {
                     let strQuery = "";
 
                     if (req.query.sales_order_mode == "I") {
                         strQuery = mysql.format(
-                            "select QI.*, IM.item_description, IU.uom_description, 0 as quantity_outstanding \
+                            "select QI.*, IM.item_description, IU.uom_description, quantity as quantity_outstanding \
                             from hims_f_sales_quotation_items QI \
                             inner join hims_d_inventory_item_master IM on IM.hims_d_inventory_item_master_id = QI.item_id \
                             inner join hims_d_inventory_uom IU on IU.hims_d_inventory_uom_id = QI.uom_id \
@@ -343,17 +345,17 @@ export function getSalesQuotationForOrder(req, res, next) {
                     _mysql
                         .executeQuery({
                             query: strQuery,
-                            printQuery: true
+                            printQuery: true,
                         })
-                        .then(qutation_detail => {
+                        .then((qutation_detail) => {
                             _mysql.releaseConnection();
                             req.records = {
                                 ...headerResult[0],
-                                ...{ qutation_detail }
+                                ...{ qutation_detail },
                             };
                             next();
                         })
-                        .catch(error => {
+                        .catch((error) => {
                             _mysql.releaseConnection();
                             next(error);
                         });
@@ -363,7 +365,7 @@ export function getSalesQuotationForOrder(req, res, next) {
                     next();
                 }
             })
-            .catch(error => {
+            .catch((error) => {
                 _mysql.releaseConnection();
                 next(error);
             });
@@ -371,15 +373,14 @@ export function getSalesQuotationForOrder(req, res, next) {
         _mysql.releaseConnection();
         next(e);
     }
-};
-
+}
 
 export function getSalesOrderList(req, res, next) {
     const _mysql = new algaehMysql();
     // const utilities = new algaehUtilities();
     try {
-        console.log("getSalesQuotation: ")
-        let _strAppend = ""
+        console.log("getSalesQuotation: ");
+        let _strAppend = "";
         let inputParam = req.query;
         if (
             req.query.from_date != "null" &&
@@ -394,11 +395,14 @@ export function getSalesOrderList(req, res, next) {
         }
 
         if (req.query.customer_id > 0) {
-            _strAppend += ` and customer_id= '${req.query.customer_id}'`
+            _strAppend += ` and customer_id= '${req.query.customer_id}'`;
         }
 
-        if (req.query.sales_order_number !== null && req.query.sales_order_number !== undefined) {
-            _strAppend += ` and sales_order_number= '${req.query.sales_order_number}'`
+        if (
+            req.query.sales_order_number !== null &&
+            req.query.sales_order_number !== undefined
+        ) {
+            _strAppend += ` and sales_order_number= '${req.query.sales_order_number}'`;
         }
 
         if (inputParam.status == null || inputParam.status == "0") {
@@ -408,7 +412,8 @@ export function getSalesOrderList(req, res, next) {
             _strAppend += " and authorize1 = 'N' and cancelled='N'";
         } else if (inputParam.status == "2") {
             //Pending To Authorize 2
-            _strAppend += " and authorize1 = 'Y' and authorize2 = 'N' and cancelled='N'";
+            _strAppend +=
+                " and authorize1 = 'Y' and authorize2 = 'N' and cancelled='N'";
         } else if (inputParam.status == "3") {
             _strAppend +=
                 " and authorize1 = 'Y' and authorize2 = 'Y' and is_completed='N' and cancelled='N'";
@@ -422,16 +427,17 @@ export function getSalesOrderList(req, res, next) {
             .executeQuery({
                 query:
                     "SELECT SO.*, C.customer_name from hims_f_sales_order SO, hims_d_customer C  \
-                where SO.customer_id = C.hims_d_customer_id " + _strAppend + " order by hims_f_sales_order_id desc",
-                printQuery: true
+                where SO.customer_id = C.hims_d_customer_id " +
+                    _strAppend +
+                    " order by hims_f_sales_order_id desc",
+                printQuery: true,
             })
-            .then(headerResult => {
-
+            .then((headerResult) => {
                 _mysql.releaseConnection();
                 req.records = headerResult;
                 next();
             })
-            .catch(error => {
+            .catch((error) => {
                 _mysql.releaseConnection();
                 next(error);
             });
@@ -439,7 +445,7 @@ export function getSalesOrderList(req, res, next) {
         _mysql.releaseConnection();
         next(e);
     }
-};
+}
 
 export function updateSalesOrderEntry(req, res, next) {
     const _mysql = new algaehMysql();
@@ -447,13 +453,13 @@ export function updateSalesOrderEntry(req, res, next) {
 
     try {
         let buffer = "";
-        req.on("data", chunk => {
+        req.on("data", (chunk) => {
             buffer += chunk.toString();
         });
 
         req.on("end", () => {
             let inputParam = JSON.parse(buffer);
-            req.body = inputParam
+            req.body = inputParam;
             req.mySQl = _mysql;
             // let inputParam = { ...req.body };
 
@@ -469,11 +475,11 @@ export function updateSalesOrderEntry(req, res, next) {
                         inputParam.authorize2,
                         new Date(),
                         req.userIdentity.algaeh_d_app_user_id,
-                        inputParam.hims_f_sales_order_id
+                        inputParam.hims_f_sales_order_id,
                     ],
-                    printQuery: true
+                    printQuery: true,
                 })
-                .then(headerResult => {
+                .then((headerResult) => {
                     if (headerResult != null) {
                         let details = [];
 
@@ -481,7 +487,7 @@ export function updateSalesOrderEntry(req, res, next) {
 
                         if (inputParam.sales_order_mode === "I") {
                             details = inputParam.sales_order_items;
-                            console.log("details", details)
+                            console.log("details", details);
                             for (let i = 0; i < details.length; i++) {
                                 qry += mysql.format(
                                     "UPDATE hims_f_sales_order_items SET `quantity`=?, extended_cost = ?, \
@@ -496,7 +502,7 @@ export function updateSalesOrderEntry(req, res, next) {
                                         details[i].tax_amount,
                                         details[i].total_amount,
                                         details[i].quantity_outstanding,
-                                        details[i].hims_f_sales_order_items_id
+                                        details[i].hims_f_sales_order_items_id,
                                     ]
                                 );
 
@@ -519,7 +525,7 @@ export function updateSalesOrderEntry(req, res, next) {
                                         details[i].net_extended_cost,
                                         details[i].tax_amount,
                                         details[i].total_amount,
-                                        details[i].hims_f_sales_order_services_id
+                                        details[i].hims_f_sales_order_services_id,
                                     ]
                                 );
 
@@ -532,16 +538,16 @@ export function updateSalesOrderEntry(req, res, next) {
                             _mysql
                                 .executeQuery({
                                     query: qry,
-                                    printQuery: true
+                                    printQuery: true,
                                 })
-                                .then(detailResult => {
+                                .then((detailResult) => {
                                     _mysql.commitTransaction(() => {
                                         _mysql.releaseConnection();
                                         req.records = detailResult;
                                         next();
                                     });
                                 })
-                                .catch(e => {
+                                .catch((e) => {
                                     _mysql.rollBackTransaction(() => {
                                         next(e);
                                     });
@@ -554,7 +560,7 @@ export function updateSalesOrderEntry(req, res, next) {
                         });
                     }
                 })
-                .catch(e => {
+                .catch((e) => {
                     _mysql.rollBackTransaction(() => {
                         next(e);
                     });
@@ -583,27 +589,28 @@ export function cancelSalesServiceOrder(req, res, next) {
                 values: [
                     new Date(),
                     req.userIdentity.algaeh_d_app_user_id,
-                    inputParam.hims_f_sales_order_id
+                    inputParam.hims_f_sales_order_id,
                 ],
-                printQuery: true
+                printQuery: true,
             })
-            .then(headerResult => {
+            .then((headerResult) => {
                 if (headerResult != null) {
                     if (inputParam.sales_quotation_id !== null) {
                         _mysql
                             .executeQuery({
-                                query: "update hims_f_sales_quotation set quote_services_status='G' where hims_f_sales_quotation_id=?",
+                                query:
+                                    "update hims_f_sales_quotation set quote_services_status='G' where hims_f_sales_quotation_id=?",
                                 values: [inputParam.sales_quotation_id],
-                                printQuery: true
+                                printQuery: true,
                             })
-                            .then(detailResult => {
+                            .then((detailResult) => {
                                 _mysql.commitTransaction(() => {
                                     _mysql.releaseConnection();
                                     req.records = detailResult;
                                     next();
                                 });
                             })
-                            .catch(e => {
+                            .catch((e) => {
                                 _mysql.rollBackTransaction(() => {
                                     next(e);
                                 });
@@ -615,7 +622,6 @@ export function cancelSalesServiceOrder(req, res, next) {
                             next();
                         });
                     }
-
                 } else {
                     _mysql.rollBackTransaction(() => {
                         req.records = {};
@@ -623,7 +629,7 @@ export function cancelSalesServiceOrder(req, res, next) {
                     });
                 }
             })
-            .catch(e => {
+            .catch((e) => {
                 _mysql.rollBackTransaction(() => {
                     next(e);
                 });
@@ -638,15 +644,16 @@ export function cancelSalesServiceOrder(req, res, next) {
 export function ValidateContract(req, res, next) {
     const _mysql = new algaehMysql();
     try {
-        console.log("ValidateContract: ")
+        console.log("ValidateContract: ");
         _mysql
             .executeQuery({
-                query: "select max(start_date) as start_date, max(end_date) as end_date \
+                query:
+                    "select max(start_date) as start_date, max(end_date) as end_date \
                 from hims_f_contract_management where customer_id=?;",
                 values: [req.query.customer_id],
-                printQuery: true
+                printQuery: true,
             })
-            .then(result => {
+            .then((result) => {
                 const today = new Date();
                 const start_date = new Date(result[0].start_date);
                 const end_date = new Date(result[0].end_date);
@@ -661,12 +668,12 @@ export function ValidateContract(req, res, next) {
                 } else {
                     req.records = {
                         invalid_input: true,
-                        message: "Please provide valid absent id"
+                        message: "Please provide valid absent id",
                     };
                     next();
                 }
             })
-            .catch(error => {
+            .catch((error) => {
                 _mysql.releaseConnection();
                 next(error);
             });
@@ -674,25 +681,25 @@ export function ValidateContract(req, res, next) {
         _mysql.releaseConnection();
         next(e);
     }
-};
-
+}
 
 function updateSalesQuotation(options) {
     return new Promise((resolve, reject) => {
         try {
             let input = options.input;
             let _mysql = options._mysql;
-            let req = options.req
+            let req = options.req;
 
             _mysql
                 .executeQuery({
-                    query: "select hims_f_sales_quotation_id, quote_items_status, quote_services_status \
+                    query:
+                        "select hims_f_sales_quotation_id, quote_items_status, quote_services_status \
                     from hims_f_sales_quotation where hims_f_sales_quotation_id=?",
                     values: [input.sales_quotation_id],
-                    printQuery: true
+                    printQuery: true,
                 })
-                .then(result => {
-                    let strQuery = ""
+                .then((result) => {
+                    let strQuery = "";
                     if (input.sales_order_mode === "I") {
                         if (result[0].quote_services_status !== "G") {
                             strQuery = mysql.format(
@@ -701,7 +708,7 @@ function updateSalesQuotation(options) {
                                 [
                                     new Date(),
                                     req.userIdentity.algaeh_d_app_user_id,
-                                    input.sales_quotation_id
+                                    input.sales_quotation_id,
                                 ]
                             );
                         } else if (result[0].quote_services_status === "G") {
@@ -711,7 +718,7 @@ function updateSalesQuotation(options) {
                                 [
                                     new Date(),
                                     req.userIdentity.algaeh_d_app_user_id,
-                                    input.sales_quotation_id
+                                    input.sales_quotation_id,
                                 ]
                             );
                         }
@@ -723,7 +730,7 @@ function updateSalesQuotation(options) {
                                 [
                                     new Date(),
                                     req.userIdentity.algaeh_d_app_user_id,
-                                    input.sales_quotation_id
+                                    input.sales_quotation_id,
                                 ]
                             );
                         } else if (result[0].quote_items_status === "G") {
@@ -733,7 +740,7 @@ function updateSalesQuotation(options) {
                                 [
                                     new Date(),
                                     req.userIdentity.algaeh_d_app_user_id,
-                                    input.sales_quotation_id
+                                    input.sales_quotation_id,
                                 ]
                             );
                         }
@@ -742,23 +749,22 @@ function updateSalesQuotation(options) {
                     _mysql
                         .executeQuery({
                             query: strQuery,
-                            printQuery: true
+                            printQuery: true,
                         })
-                        .then(update_Result => {
-                            resolve()
+                        .then((update_Result) => {
+                            resolve();
                         })
-                        .catch(error => {
+                        .catch((error) => {
                             reject(error);
                         });
                 })
-                .catch(error => {
+                .catch((error) => {
                     reject(error);
                 });
-
         } catch (e) {
             reject(e);
         }
-    }).catch(e => {
+    }).catch((e) => {
         options.next(e);
     });
 }
@@ -766,43 +772,46 @@ function updateSalesQuotation(options) {
 export function getContractSalesOrder(req, res, next) {
     const _mysql = new algaehMysql();
     try {
-        console.log("getContractManagement: ")
-        let strQuery = ""
+        console.log("getContractManagement: ");
+        let strQuery = "";
         if (req.query.HRMNGMT_Active === "true") {
-            strQuery = "SELECT CM.* , E.full_name as employee_name, CM.incharge_employee_id as sales_person_id, \
+            strQuery =
+                "SELECT CM.* , E.full_name as employee_name, CM.incharge_employee_id as sales_person_id, \
             C.payment_terms from hims_f_contract_management CM \
             inner join  hims_d_employee E on  CM.incharge_employee_id = E.hims_d_employee_id \
             inner join  hims_d_customer C on  CM.customer_id = C.hims_d_customer_id \
-            where CM.contract_number =? "
+            where CM.contract_number =? ";
         } else {
-            strQuery = "SELECT * from hims_f_contract_management CM where contract_number =? "
+            strQuery =
+                "SELECT * from hims_f_contract_management CM where contract_number =? ";
         }
 
         _mysql
             .executeQuery({
                 query: strQuery,
                 values: [req.query.contract_number],
-                printQuery: true
+                printQuery: true,
             })
-            .then(headerResult => {
+            .then((headerResult) => {
                 if (headerResult.length != 0) {
                     _mysql
                         .executeQuery({
-                            query: "select QS.*, S.service_name, S.vat_percent as tax_percentage from hims_f_contract_management_services QS \
+                            query:
+                                "select QS.*, S.service_name, S.vat_percent as tax_percentage from hims_f_contract_management_services QS \
                             inner join hims_d_services S on S.hims_d_services_id = QS.services_id \
                             where contract_management_id=?;",
                             values: [headerResult[0].hims_f_contract_management_id],
-                            printQuery: true
+                            printQuery: true,
                         })
-                        .then(contract_services => {
+                        .then((contract_services) => {
                             _mysql.releaseConnection();
                             req.records = {
                                 ...headerResult[0],
-                                ...{ contract_services }
+                                ...{ contract_services },
                             };
                             next();
                         })
-                        .catch(error => {
+                        .catch((error) => {
                             _mysql.releaseConnection();
                             next(error);
                         });
@@ -812,7 +821,7 @@ export function getContractSalesOrder(req, res, next) {
                     next();
                 }
             })
-            .catch(error => {
+            .catch((error) => {
                 _mysql.releaseConnection();
                 next(error);
             });
@@ -820,4 +829,4 @@ export function getContractSalesOrder(req, res, next) {
         _mysql.releaseConnection();
         next(e);
     }
-};
+}

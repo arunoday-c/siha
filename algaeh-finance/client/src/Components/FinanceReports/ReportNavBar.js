@@ -1,6 +1,10 @@
 import React from "react";
 
-export default function ReportNavBar({ setSelected, selected }) {
+export default function ReportNavBar({
+  setSelected,
+  selected,
+  setSelectedFilter,
+}) {
   function selectedClass(report) {
     return report === selected ? "active" : "";
   }
@@ -13,6 +17,11 @@ export default function ReportNavBar({ setSelected, selected }) {
     {
       key: "PL",
       title: "Profit and Loss",
+      children: [
+        { key: "by_year", title: "Period" },
+        { key: "by_center", title: "Cost Center" },
+        { key: "total", title: "Total" },
+      ],
     },
     {
       key: "TB",
@@ -45,14 +54,39 @@ export default function ReportNavBar({ setSelected, selected }) {
       <h6>Favourite Reports</h6>
       <ul className="menuListUl">
         {REPORT_LIST.map((item) => (
-          <li
-            className={selectedClass(item.key)}
-            onClick={() => setSelected(item.key)}
-          >
-            {item.title}
+          <li>
+            <span
+              className={selectedClass(item.key)}
+              onClick={() => setSelected(item.key)}
+            >
+              {item.title}
+            </span>
+            {RenderChildren(item.children, (selected) => {
+              setSelected(item.key);
+              setSelectedFilter({ filterKey: selected.key });
+            })}
           </li>
         ))}
       </ul>
     </div>
   );
+}
+function RenderChildren(children, callBack) {
+  if (children === undefined) {
+    return null;
+  } else {
+    return (
+      <ul>
+        {children.map((item, index) => {
+          return (
+            <li>
+              <span key={index} onClick={() => callBack(item)}>
+                {item.title}
+              </span>
+            </li>
+          );
+        })}
+      </ul>
+    );
+  }
 }
