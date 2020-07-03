@@ -8,7 +8,7 @@ import MyContext from "../../../utils/MyContext";
 import {
   AlgaehLabel,
   AlagehAutoComplete,
-  AlgaehDateHandler
+  AlgaehDateHandler,
 } from "../../Wrapper/algaehWrapper";
 import Options from "../../../Options.json";
 import moment from "moment";
@@ -22,7 +22,7 @@ import {
   SaveVendorQuotationEnrty,
   getCtrlCode,
   generateVendorQuotation,
-  getVendorMaster
+  getVendorMaster,
 } from "./VendorsQuotationEvents";
 import { MainContext } from "algaeh-react-components/context";
 
@@ -46,7 +46,7 @@ class VendorsQuotation extends Component {
       dataExitst: false,
       ReqData: true,
       saveEnable: true,
-      decimal_place: 0
+      decimal_place: 0,
     };
     this.baseState = this.state;
     getVendorMaster(this, this);
@@ -58,15 +58,15 @@ class VendorsQuotation extends Component {
 
     this.setState({
       decimal_place: userToken.decimal_places,
-    })
+    });
   }
   render() {
     const class_finder =
       this.state.dataExitst === true
         ? " disableFinder"
         : this.state.ReqData === true
-          ? " disableFinder"
-          : "";
+        ? " disableFinder"
+        : "";
     return (
       <div>
         <BreadCrumb
@@ -82,52 +82,52 @@ class VendorsQuotation extends Component {
                 <AlgaehLabel
                   label={{
                     forceLabel: "Home",
-                    align: "ltr"
+                    align: "ltr",
                   }}
                 />
-              )
+              ),
             },
             {
               pageName: (
                 <AlgaehLabel
                   label={{ forceLabel: "Vendor Quotation", align: "ltr" }}
                 />
-              )
-            }
+              ),
+            },
           ]}
           soptlightSearch={{
             label: (
               <AlgaehLabel
                 label={{
                   forceLabel: "Vendor Quotation Number",
-                  returnText: true
+                  returnText: true,
                 }}
               />
             ),
             value: this.state.vendor_quotation_number,
             selectValue: "vendor_quotation_number",
             events: {
-              onChange: getCtrlCode.bind(this, this)
+              onChange: getCtrlCode.bind(this, this),
             },
             jsonFile: {
               fileName: "spotlightSearch",
-              fieldName: "Purchase.VendorQuotation"
+              fieldName: "Purchase.VendorQuotation",
             },
-            searchName: "VendorQuotation"
+            searchName: "VendorQuotation",
           }}
           userArea={
             <div className="row">
               <div className="col">
                 <AlgaehLabel
                   label={{
-                    forceLabel: "Transaction Date"
+                    forceLabel: "Transaction Date",
                   }}
                 />
                 <h6>
                   {this.state.vendor_quotation_date
                     ? moment(this.state.vendor_quotation_date).format(
-                      Options.dateFormat
-                    )
+                        Options.dateFormat
+                      )
                     : Options.dateFormat}
                 </h6>
               </div>
@@ -136,17 +136,17 @@ class VendorsQuotation extends Component {
           printArea={
             this.state.hims_f_procurement_vendor_quotation_header_id !== null
               ? {
-                menuitems: [
-                  {
-                    label: "Print Vendor Quotation",
-                    events: {
-                      onClick: () => {
-                        generateVendorQuotation(this.state);
-                      }
-                    }
-                  }
-                ]
-              }
+                  menuitems: [
+                    {
+                      label: "Print Vendor Quotation",
+                      events: {
+                        onClick: () => {
+                          generateVendorQuotation(this.state);
+                        },
+                      },
+                    },
+                  ],
+                }
               : ""
           }
           selectedLang={this.state.selectedLang}
@@ -168,18 +168,18 @@ class VendorsQuotation extends Component {
                     dataSource: {
                       textField: "vendor_name",
                       valueField: "hims_d_vendor_id",
-                      data: this.props.povendors
+                      data: this.props.povendors,
                     },
                     others: {
                       disabled:
-                        this.state.quotation_detail.length > 0 ? true : false
+                        this.state.quotation_detail.length > 0 ? true : false,
                     },
                     onChange: vendortexthandle.bind(this, this),
                     onClear: () => {
                       this.setState({
-                        vendor_id: null
+                        vendor_id: null,
                       });
-                    }
+                    },
                   }}
                 />
 
@@ -244,12 +244,12 @@ class VendorsQuotation extends Component {
                     dataSource: {
                       textField: "name",
                       valueField: "value",
-                      data: GlobalVariables.PO_FROM
+                      data: GlobalVariables.PO_FROM,
                     },
                     others: {
-                      disabled: true
+                      disabled: true,
                     },
-                    onChange: null
+                    onChange: null,
                   }}
                 />
 
@@ -260,11 +260,11 @@ class VendorsQuotation extends Component {
                   label={{ forceLabel: "Expected Arrival" }}
                   textBox={{
                     className: "txt-fld",
-                    name: "expected_date"
+                    name: "expected_date",
                   }}
                   minDate={new Date()}
                   events={{
-                    onChange: null
+                    onChange: null,
                   }}
                   disabled={true}
                   value={this.state.expected_date}
@@ -276,12 +276,12 @@ class VendorsQuotation extends Component {
           <MyContext.Provider
             value={{
               state: this.state,
-              updateState: obj => {
+              updateState: (obj) => {
                 this.setState({ ...obj });
-              }
+              },
             }}
           >
-            <ItemList RequestQuotation={this.state} />
+            <ItemList />
           </MyContext.Provider>
         </div>
 
@@ -297,7 +297,7 @@ class VendorsQuotation extends Component {
                 <AlgaehLabel
                   label={{
                     forceLabel: "Save",
-                    returnText: true
+                    returnText: true,
                   }}
                 />
               </button>
@@ -326,7 +326,7 @@ function mapStateToProps(state) {
     poitemcategory: state.poitemcategory,
     poitemgroup: state.poitemgroup,
     poitemuom: state.poitemuom,
-    povendors: state.povendors
+    povendors: state.povendors,
   };
 }
 
@@ -337,7 +337,7 @@ function mapDispatchToProps(dispatch) {
       getItemCategory: AlgaehActions,
       getItemGroup: AlgaehActions,
       getItemUOM: AlgaehActions,
-      getVendorMaster: AlgaehActions
+      getVendorMaster: AlgaehActions,
     },
     dispatch
   );

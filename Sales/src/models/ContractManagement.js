@@ -3,7 +3,6 @@ import algaehMysql from "algaeh-mysql";
 export function getContractManagement(req, res, next) {
   const _mysql = new algaehMysql();
   try {
-    console.log("getContractManagement: ");
     let strQuery = "";
     if (req.query.HRMNGMT_Active === "true") {
       strQuery =
@@ -28,7 +27,7 @@ export function getContractManagement(req, res, next) {
               query:
                 "select QS.*, S.service_name from hims_f_contract_management_services QS \
                             inner join hims_d_services S on S.hims_d_services_id = QS.services_id \
-                            where contract_management_id=?;",
+                            where contract_management_id=? and QS.record_status='A';",
               values: [headerResult[0].hims_f_contract_management_id],
               printQuery: true,
             })
@@ -263,7 +262,7 @@ export function updateContractManagement(req, res, next) {
       .executeQueryWithTransaction({
         query: `update hims_f_contract_management set contract_date=?,
       start_date=?,end_date=?,contract_code=?,quotation_ref_numb=?,terms_conditions=?,
-      incharge_employee_id=?,notification_days1=?,notification_days2=?,project_id=?,hospital_id=?
+      incharge_employee_id=?,notification_days1=?,notification_days2=?,project_id=?,hospital_id=?,
       updated_date=?,updated_by=? where hims_f_contract_management_id=?`,
         values: [
           contract_date,
@@ -289,7 +288,12 @@ export function updateContractManagement(req, res, next) {
             query: `update hims_f_contract_management_services set ? where hims_f_contract_management_services_id=?`,
             values: contract_services,
             where: ["hims_f_contract_management_services_id"],
-            excludeValues: ["contract_management_id"],
+            excludeValues: [
+              "contract_management_id",
+              "service_name",
+              "created_by",
+              "created_date",
+            ],
             extraValues: {
               updated_by: algaeh_d_app_user_id,
               updated_date: new Date(),
@@ -298,6 +302,7 @@ export function updateContractManagement(req, res, next) {
             printQuery: true,
           })
           .then((details) => {
+            console.log(details, "details");
             _mysql.commitTransaction(() => {
               _mysql.releaseConnection();
               next();

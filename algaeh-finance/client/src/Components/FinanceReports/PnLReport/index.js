@@ -12,7 +12,13 @@ import { getYears } from "../../../utils/GlobalFunctions";
 import { handleFile } from "../FinanceReportEvents";
 const yearList = getYears();
 
-export default function PnLReport({ layout, finOptions, organization, style }) {
+export default function PnLReport({
+  layout,
+  finOptions,
+  organization,
+  style,
+  selectedFilter,
+}) {
   const [columnType, setColumnType] = useState("by_year");
   const [year, setYear] = useState(new Date().getFullYear());
   const [costCenters, setCostCenters] = useState([]);
@@ -29,9 +35,11 @@ export default function PnLReport({ layout, finOptions, organization, style }) {
         (el) => el.hims_d_hospital_id === parseInt(branch_id, 10)
       );
       setCostCenters(required.cost_centers);
+      const { filterKey } = selectedFilter;
+      setColumnType(filterKey);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [branch_id]);
+  }, [branch_id, selectedFilter]);
 
   function handleDropDown(_, value, name) {
     switch (name) {

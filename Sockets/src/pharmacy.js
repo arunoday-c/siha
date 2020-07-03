@@ -15,7 +15,7 @@ export default function pharmacy(io) {
         _mysql.releaseConnection();
         console.log(result, typeof result[0]["count(*)"], "result");
         if (result[0]["count(*)"] != 0) {
-          const msg = `You have ${result[0]["count(*)"]} items that are going to expiry soon.asd`;
+          const msg = `You have ${result[0]["count(*)"]} items that are going to expiry soon.`;
           const create = await createNotification({
             message: msg,
             module: "phcy",
