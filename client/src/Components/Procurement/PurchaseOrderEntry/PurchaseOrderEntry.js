@@ -90,15 +90,15 @@ class PurchaseOrderEntry extends Component {
       this.state.po_from === null
         ? []
         : Enumerable.from(this.props.polocations)
-          .where((w) => w.location_type === "WH")
-          .toArray();
+            .where((w) => w.location_type === "WH")
+            .toArray();
 
     const class_finder =
       this.state.dataFinder === true
         ? " disableFinder"
         : this.state.ReqData === true
-          ? " disableFinder"
-          : "";
+        ? " disableFinder"
+        : "";
     return (
       <div>
         <BreadCrumb
@@ -172,64 +172,64 @@ class PurchaseOrderEntry extends Component {
                       <span className="badge badge-danger">Not Posted</span>
                     ) : this.state.authorize1 === "Y" &&
                       this.state.authorize2 === "Y" ? (
-                          <span className="badge badge-success">Authorized</span>
-                        ) : this.state.authorize1 === "Y" &&
-                          this.state.authorize2 === "N" ? (
-                            <span className="badge badge-danger">
-                              Posted/Pending For Authorize
+                      <span className="badge badge-success">Authorized</span>
+                    ) : this.state.authorize1 === "Y" &&
+                      this.state.authorize2 === "N" ? (
+                      <span className="badge badge-danger">
+                        Posted/Pending For Authorize
                       </span>
-                          ) : this.state.authorize1 === "N" &&
-                            this.state.authorize2 === "N" ? (
-                              <span className="badge badge-danger">
-                                Posted/Pending For Authorize
+                    ) : this.state.authorize1 === "N" &&
+                      this.state.authorize2 === "N" ? (
+                      <span className="badge badge-danger">
+                        Posted/Pending For Authorize
                       </span>
-                            ) : (
-                              <span className="badge badge-danger">
-                                Posted/Pending For Authorize
+                    ) : (
+                      <span className="badge badge-danger">
+                        Posted/Pending For Authorize
                       </span>
-                            )}
+                    )}
                   </h6>
                 </div>
               ) : this.state.dataExitst === false &&
                 this.state.purchase_number !== null ? (
-                    <div className="col">
-                      <AlgaehLabel
-                        label={{
-                          forceLabel: "PO Status",
-                        }}
-                      />
+                <div className="col">
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "PO Status",
+                    }}
+                  />
 
-                      <h6>
-                        <span className="badge badge-danger">
-                          Send for Authorization pending
+                  <h6>
+                    <span className="badge badge-danger">
+                      Send for Authorization pending
                     </span>
-                      </h6>
-                    </div>
-                  ) : null}
+                  </h6>
+                </div>
+              ) : null}
             </div>
           }
           printArea={
             this.state.purchase_number !== null
               ? {
-                menuitems: [
-                  {
-                    label: "Receipt for Internal",
-                    events: {
-                      onClick: () => {
-                        generatePOReceipt(this.state);
+                  menuitems: [
+                    {
+                      label: "Receipt for Internal",
+                      events: {
+                        onClick: () => {
+                          generatePOReceipt(this.state);
+                        },
                       },
                     },
-                  },
-                  {
-                    label: "Receipt for Vendor",
-                    events: {
-                      onClick: () => {
-                        generatePOReceiptNoPrice(this.state);
+                    {
+                      label: "Receipt for Vendor",
+                      events: {
+                        onClick: () => {
+                          generatePOReceiptNoPrice(this.state);
+                        },
                       },
                     },
-                  },
-                ],
-              }
+                  ],
+                }
               : ""
           }
           selectedLang={this.state.selectedLang}
@@ -501,8 +501,8 @@ class PurchaseOrderEntry extends Component {
                         this.state.authBtnEnable === true
                           ? true
                           : this.state.authorize1 === "Y"
-                            ? true
-                            : false
+                          ? true
+                          : false
                       }
                       onClick={AuthorizePOEntry.bind(
                         this,
@@ -530,8 +530,8 @@ class PurchaseOrderEntry extends Component {
                         this.state.authBtnEnable === true
                           ? true
                           : this.state.authorize2 === "Y"
-                            ? true
-                            : false
+                          ? true
+                          : false
                       }
                       onClick={AuthorizePOEntry.bind(
                         this,
