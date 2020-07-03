@@ -13,14 +13,14 @@ import {
   setAge,
   countryStatehandle,
   hijriOnChange,
-  companyHandle
+  companyHandle,
 } from "./UpdatePatientEvent.js";
 import MyContext from "../../../utils/MyContext.js";
 
 import {
   AlgaehDateHandler,
   AlagehFormGroup,
-  AlagehAutoComplete
+  AlagehAutoComplete,
 } from "../../Wrapper/algaehWrapper";
 import AlgaehHijriDatePicker from "algaeh-react-components/components/datehandler";
 
@@ -39,7 +39,7 @@ class UpdatePatientForm extends Component {
       DOBError: false,
       DOB: 0,
       CurrentDate: new Date(),
-      requied_emp_id: null
+      requied_emp_id: null,
       // patientImage: undefined
     };
     this.widthImg = "";
@@ -57,8 +57,8 @@ class UpdatePatientForm extends Component {
     const userToken = this.context.userToken;
 
     this.setState({
-      requied_emp_id: userToken.requied_emp_id
-    })
+      requied_emp_id: userToken.requied_emp_id,
+    });
 
     if (this.props.titles === undefined || this.props.titles.length === 0) {
       this.props.getTitles({
@@ -66,8 +66,8 @@ class UpdatePatientForm extends Component {
         method: "GET",
         redux: {
           type: "TITLE_GET_DATA",
-          mappingName: "titles"
-        }
+          mappingName: "titles",
+        },
       });
     }
     if (
@@ -79,8 +79,8 @@ class UpdatePatientForm extends Component {
         method: "GET",
         redux: {
           type: "NAT_GET_DATA",
-          mappingName: "nationalities"
-        }
+          mappingName: "nationalities",
+        },
       });
     }
     if (this.props.idtypes === undefined || this.props.idtypes.length === 0) {
@@ -91,8 +91,8 @@ class UpdatePatientForm extends Component {
         method: "GET",
         redux: {
           type: "IDTYPE_GET_DATA",
-          mappingName: "idtypes"
-        }
+          mappingName: "idtypes",
+        },
       });
     }
     if (
@@ -104,8 +104,8 @@ class UpdatePatientForm extends Component {
         method: "GET",
         redux: {
           type: "RELGE_GET_DATA",
-          mappingName: "relegions"
-        }
+          mappingName: "relegions",
+        },
       });
     }
 
@@ -118,8 +118,8 @@ class UpdatePatientForm extends Component {
         method: "GET",
         redux: {
           type: "CTRY_GET_DATA",
-          mappingName: "countries"
-        }
+          mappingName: "countries",
+        },
       });
     }
     if (
@@ -133,8 +133,8 @@ class UpdatePatientForm extends Component {
         method: "GET",
         redux: {
           type: "VISA_GET_DATA",
-          mappingName: "visatypes"
-        }
+          mappingName: "visatypes",
+        },
       });
     }
 
@@ -149,8 +149,8 @@ class UpdatePatientForm extends Component {
         method: "GET",
         redux: {
           type: "PATIENT_TYPE_GET_DATA",
-          mappingName: "patienttype"
-        }
+          mappingName: "patienttype",
+        },
       });
     }
 
@@ -160,8 +160,8 @@ class UpdatePatientForm extends Component {
       method: "GET",
       redux: {
         type: "INSURANCE_PROVIDER_GET_DATA",
-        mappingName: "insurarProviders"
-      }
+        mappingName: "insurarProviders",
+      },
     });
 
     this.getStateCity(this);
@@ -172,25 +172,25 @@ class UpdatePatientForm extends Component {
       if (this.state.country_id === null) return;
       if (this.state.country_id !== nextProps.country_id) {
         let country = Enumerable.from(this.props.countries)
-          .where(w => w.hims_d_country_id === this.state.country_id)
+          .where((w) => w.hims_d_country_id === this.state.country_id)
           .firstOrDefault();
         let states = country !== undefined ? country.states : [];
         if (this.props.countries !== undefined && states.length !== 0) {
           if (nextProps.state_id !== this.state.state_id) {
             let cities = Enumerable.from(states)
-              .where(w => w.hims_d_state_id === this.state.state_id)
+              .where((w) => w.hims_d_state_id === this.state.state_id)
               .firstOrDefault();
             if (cities !== undefined) {
               this.setState({
                 countrystates: states,
                 cities: cities.cities,
                 state_id: this.state.state_id,
-                city_id: this.state.city_id
+                city_id: this.state.city_id,
               });
             } else {
               this.setState({
                 countrystates: states,
-                state_id: this.state.state_id
+                state_id: this.state.state_id,
               });
             }
           }
@@ -203,24 +203,24 @@ class UpdatePatientForm extends Component {
     if (this.state.country_id === null) return;
 
     let country = Enumerable.from(this.props.countries)
-      .where(w => w.hims_d_country_id === parseInt(this.state.country_id, 10))
+      .where((w) => w.hims_d_country_id === parseInt(this.state.country_id, 10))
       .firstOrDefault();
     let states = country !== undefined ? country.states : [];
     if (this.props.countries !== undefined && states.length !== 0) {
       let cities = Enumerable.from(states)
-        .where(w => w.hims_d_state_id === parseInt(this.state.state_id, 10))
+        .where((w) => w.hims_d_state_id === parseInt(this.state.state_id, 10))
         .firstOrDefault();
       if (cities !== undefined) {
         this.setState({
           countrystates: states,
           cities: cities.cities,
           state_id: this.state.state_id,
-          city_id: this.state.city_id
+          city_id: this.state.city_id,
         });
       } else {
         this.setState({
           countrystates: states,
-          state_id: this.state.state_id
+          state_id: this.state.state_id,
         });
       }
     }
@@ -232,11 +232,10 @@ class UpdatePatientForm extends Component {
     }
   }
   render() {
-
     return (
       <React.Fragment>
         <MyContext.Consumer>
-          {context => (
+          {(context) => (
             <div
               className="hptl-phase1-add-patient-form margin-top-15"
               data-validate="demographicDetails"
@@ -249,7 +248,7 @@ class UpdatePatientForm extends Component {
                         div={{ className: "col-lg-2 mandatory" }}
                         label={{
                           fieldName: "title_id",
-                          isImp: true
+                          isImp: true,
                         }}
                         selector={{
                           name: "title_id",
@@ -261,19 +260,19 @@ class UpdatePatientForm extends Component {
                                 ? "title"
                                 : "arabic_title",
                             valueField: "his_d_title_id",
-                            data: this.props.titles
+                            data: this.props.titles,
                           },
                           onChange: titlehandle.bind(this, this),
                           onClear: () => {
                             this.setState({
                               gender: null,
                               title_id: null,
-                              saveEnable: true
+                              saveEnable: true,
                             });
                           },
                           others: {
-                            tabIndex: "1"
-                          }
+                            tabIndex: "1",
+                          },
                         }}
                       />
 
@@ -281,7 +280,7 @@ class UpdatePatientForm extends Component {
                         div={{ className: "col-lg-4 mandatory" }}
                         label={{
                           fieldName: "full_name",
-                          isImp: true
+                          isImp: true,
                         }}
                         textBox={{
                           className: "txt-fld",
@@ -293,18 +292,18 @@ class UpdatePatientForm extends Component {
                           others: {
                             onBlur: texthandle.bind(this, this),
                             tabIndex: "2",
-                            placeholder: "Enter Full Name"
-                          }
+                            placeholder: "Enter Full Name",
+                          },
                         }}
                       />
 
                       <AlagehFormGroup
                         div={{
-                          className: "col-lg-4 mandatory arabic-txt-fld"
+                          className: "col-lg-4 mandatory arabic-txt-fld",
                         }}
                         label={{
                           fieldName: "arabic_name",
-                          isImp: true
+                          isImp: true,
                         }}
                         textBox={{
                           className: "txt-fld",
@@ -317,8 +316,8 @@ class UpdatePatientForm extends Component {
                             onBlur: texthandle.bind(this, this),
                             tabIndex: "3",
                             placeholder: "أدخل الاسم العربي",
-                            id: "arabicName"
-                          }
+                            id: "arabicName",
+                          },
                         }}
                       />
 
@@ -326,7 +325,7 @@ class UpdatePatientForm extends Component {
                         div={{ className: "col-lg-2 mandatory" }}
                         label={{
                           fieldName: "gender",
-                          isImp: true
+                          isImp: true,
                         }}
                         selector={{
                           name: "gender",
@@ -338,12 +337,12 @@ class UpdatePatientForm extends Component {
                                 ? "name"
                                 : "arabic_name",
                             valueField: "value",
-                            data: variableJson.FORMAT_GENDER
+                            data: variableJson.FORMAT_GENDER,
                           },
                           onChange: texthandle.bind(this, this),
                           others: {
-                            tabIndex: "4"
-                          }
+                            tabIndex: "4",
+                          },
                         }}
                       />
                     </div>
@@ -351,16 +350,16 @@ class UpdatePatientForm extends Component {
                       <AlgaehDateHandler
                         div={{
                           className: "col-lg-3 mandatory",
-                          tabIndex: "5"
+                          tabIndex: "5",
                         }}
                         label={{ fieldName: "date_of_birth", isImp: true }}
                         textBox={{
                           className: "txt-fld",
-                          name: "date_of_birth"
+                          name: "date_of_birth",
                         }}
                         maxDate={new Date()}
                         events={{
-                          onChange: calculateAge.bind(this, this)
+                          onChange: calculateAge.bind(this, this),
                         }}
                         disabled={this.state.existingPatient}
                         value={
@@ -387,27 +386,27 @@ class UpdatePatientForm extends Component {
                         div={{
                           className: "col mandatory ageYear",
                           others: {
-                            style: { paddingRight: 0 }
-                          }
+                            style: { paddingRight: 0 },
+                          },
                         }}
                         label={{
                           fieldName: "age",
-                          isImp: true
+                          isImp: true,
                         }}
                         textBox={{
                           value: this.state.age,
                           className: "txt-fld",
                           name: "age",
                           number: {
-                            thousandSeparator: ","
+                            thousandSeparator: ",",
                           },
                           dontAllowKeys: ["-", "e", "."],
                           events: {
-                            onChange: setAge.bind(this, this)
+                            onChange: setAge.bind(this, this),
                           },
                           others: {
-                            tabIndex: "7"
-                          }
+                            tabIndex: "7",
+                          },
                         }}
                       />
 
@@ -415,28 +414,27 @@ class UpdatePatientForm extends Component {
                         div={{
                           className: "col mandatory  ageMonth",
                           others: {
-                            style: { paddingLeft: 5, paddingRight: 5 }
-                          }
+                            style: { paddingLeft: 5, paddingRight: 5 },
+                          },
                         }}
                         label={{
-                          // fieldName: "AGEMM",
-                          forceLabel: "",
-                          isImp: false
+                          forceLabel: ".",
+                          // isImp: true,
                         }}
                         textBox={{
                           value: this.state.AGEMM,
                           className: "txt-fld",
                           name: "AGEMM",
                           number: {
-                            thousandSeparator: ","
+                            thousandSeparator: ",",
                           },
                           dontAllowKeys: ["-", "e", "."],
                           events: {
-                            onChange: setAge.bind(this, this)
+                            onChange: setAge.bind(this, this),
                           },
                           others: {
-                            tabIndex: "8"
-                          }
+                            tabIndex: "8",
+                          },
                         }}
                       />
 
@@ -444,28 +442,27 @@ class UpdatePatientForm extends Component {
                         div={{
                           className: "col mandatory   ageDay",
                           others: {
-                            style: { paddingLeft: 0 }
-                          }
+                            style: { paddingLeft: 0 },
+                          },
                         }}
                         label={{
-                          // fieldName: "AGEDD",
-                          forceLabel: "",
-                          isImp: false
+                          forceLabel: ".",
+                          // isImp: true,
                         }}
                         textBox={{
                           value: this.state.AGEDD,
                           className: "txt-fld",
                           name: "AGEDD",
                           number: {
-                            thousandSeparator: ","
+                            thousandSeparator: ",",
                           },
                           dontAllowKeys: ["-", "e", "."],
                           events: {
-                            onChange: setAge.bind(this, this)
+                            onChange: setAge.bind(this, this),
                           },
                           others: {
-                            tabIndex: "9"
-                          }
+                            tabIndex: "9",
+                          },
                         }}
                       />
 
@@ -473,25 +470,25 @@ class UpdatePatientForm extends Component {
                         div={{ className: "col-3 mandatory" }}
                         label={{
                           fieldName: "contact_number",
-                          isImp: true
+                          isImp: true,
                         }}
                         textBox={{
                           value: this.state.contact_number,
                           className: "txt-fld",
                           name: "contact_number",
                           number: {
-                            allowNegative: false
+                            allowNegative: false,
                           },
                           events: {
-                            onChange: texthandle.bind(this, this)
+                            onChange: texthandle.bind(this, this),
                           },
                           dontAllowKeys: ["-", "e", "."],
                           others: {
                             onBlur: texthandle.bind(this, this),
                             tabIndex: "10",
                             placeholder: "(+01)123-456-7890",
-                            type: "number"
-                          }
+                            type: "number",
+                          },
                         }}
                       />
                     </div>
@@ -500,7 +497,7 @@ class UpdatePatientForm extends Component {
                         div={{ className: "col-lg-3 mandatory" }}
                         label={{
                           fieldName: "patient_type",
-                          isImp: true
+                          isImp: true,
                         }}
                         selector={{
                           name: "patient_type",
@@ -513,19 +510,19 @@ class UpdatePatientForm extends Component {
                                 ? "patitent_type_desc"
                                 : "arabic_patitent_type_desc",
                             valueField: "hims_d_patient_type_id",
-                            data: this.props.patienttype
+                            data: this.props.patienttype,
                           },
                           onChange: texthandle.bind(this, this),
                           others: {
-                            tabIndex: "11"
-                          }
+                            tabIndex: "11",
+                          },
                         }}
                       />
                       <AlagehAutoComplete
                         div={{ className: "col-lg-3 mandatory" }}
                         label={{
                           fieldName: "country_id",
-                          isImp: true
+                          isImp: true,
                         }}
                         selector={{
                           name: "country_id",
@@ -537,19 +534,19 @@ class UpdatePatientForm extends Component {
                                 ? "country_name"
                                 : "arabic_country_name",
                             valueField: "hims_d_country_id",
-                            data: this.props.countries
+                            data: this.props.countries,
                           },
                           onChange: countryStatehandle.bind(this, this),
                           others: {
-                            tabIndex: "12"
-                          }
+                            tabIndex: "12",
+                          },
                         }}
                       />
                       <AlagehAutoComplete
                         div={{ className: "col-lg-3 mandatory" }}
                         label={{
                           fieldName: "nationality_id",
-                          isImp: true
+                          isImp: true,
                         }}
                         selector={{
                           name: "nationality_id",
@@ -561,12 +558,12 @@ class UpdatePatientForm extends Component {
                                 ? "nationality"
                                 : "arabic_nationality",
                             valueField: "hims_d_nationality_id",
-                            data: this.props.nationalities
+                            data: this.props.nationalities,
                           },
                           onChange: texthandle.bind(this, this),
                           others: {
-                            tabIndex: "13"
-                          }
+                            tabIndex: "13",
+                          },
                         }}
                       />
                       {this.state.requied_emp_id === "Y" ? (
@@ -574,19 +571,19 @@ class UpdatePatientForm extends Component {
                           div={{ className: "col-3 form-group mandatory" }}
                           label={{
                             fieldName: "employee_id",
-                            isImp: true
+                            isImp: true,
                           }}
                           textBox={{
                             className: "txt-fld",
                             name: "employee_id",
                             value: this.state.employee_id,
                             events: {
-                              onChange: texthandle.bind(this, this)
+                              onChange: texthandle.bind(this, this),
                             },
                             others: {
                               type: "text",
-                              tabIndex: "14"
-                            }
+                              tabIndex: "14",
+                            },
                           }}
                         />
                       ) : null}
@@ -594,11 +591,11 @@ class UpdatePatientForm extends Component {
                     <div className="row paddin-bottom-5">
                       <AlagehAutoComplete
                         div={{
-                          className: "col-lg-3"
+                          className: "col-lg-3",
                         }}
                         label={{
                           fieldName: "marital_status",
-                          isImp: false
+                          isImp: false,
                         }}
                         selector={{
                           name: "marital_status",
@@ -610,19 +607,19 @@ class UpdatePatientForm extends Component {
                                 ? "name"
                                 : "arabic_name",
                             valueField: "value",
-                            data: variableJson.FORMAT_MARTIALSTS
+                            data: variableJson.FORMAT_MARTIALSTS,
                           },
                           onChange: texthandle.bind(this, this),
                           others: {
-                            tabIndex: "17"
-                          }
+                            tabIndex: "17",
+                          },
                         }}
                       />
                       <AlagehAutoComplete
                         div={{ className: "col-lg-3" }}
                         label={{
                           fieldName: "religion_id",
-                          isImp: false
+                          isImp: false,
                         }}
                         selector={{
                           name: "religion_id",
@@ -634,18 +631,18 @@ class UpdatePatientForm extends Component {
                                 ? "religion_name"
                                 : "arabic_religion_name",
                             valueField: "hims_d_religion_id",
-                            data: this.props.relegions
+                            data: this.props.relegions,
                           },
                           onChange: texthandle.bind(this, this),
                           others: {
-                            tabIndex: "18"
-                          }
+                            tabIndex: "18",
+                          },
                         }}
                       />
                       <AlagehAutoComplete
                         div={{ className: "col-lg-3" }}
                         label={{
-                          fieldName: "visa_type_id"
+                          fieldName: "visa_type_id",
                         }}
                         selector={{
                           name: "visa_type_id",
@@ -658,19 +655,19 @@ class UpdatePatientForm extends Component {
                                 ? "visa_type"
                                 : "arabic_visa_type",
                             valueField: "hims_d_visa_type_id",
-                            data: this.props.visatypes
+                            data: this.props.visatypes,
                           },
                           onChange: texthandle.bind(this, this),
                           others: {
-                            tabIndex: "19"
-                          }
+                            tabIndex: "19",
+                          },
                         }}
                       />
                       <AlagehAutoComplete
                         div={{ className: "col-lg-3" }}
                         label={{
                           fieldName: "state_id",
-                          isImp: false
+                          isImp: false,
                         }}
                         selector={{
                           name: "state_id",
@@ -682,12 +679,12 @@ class UpdatePatientForm extends Component {
                                 ? "state_name"
                                 : "arabic_state_name",
                             valueField: "hims_d_state_id",
-                            data: this.state.countrystates
+                            data: this.state.countrystates,
                           },
                           onChange: countryStatehandle.bind(this, this),
                           others: {
-                            tabIndex: "20"
-                          }
+                            tabIndex: "20",
+                          },
                         }}
                       />
                     </div>
@@ -697,7 +694,7 @@ class UpdatePatientForm extends Component {
                         div={{ className: "col-lg-3" }}
                         label={{
                           fieldName: "city_id",
-                          isImp: false
+                          isImp: false,
                         }}
                         selector={{
                           name: "city_id",
@@ -709,31 +706,31 @@ class UpdatePatientForm extends Component {
                                 ? "city_name"
                                 : "city_arabic_name",
                             valueField: "hims_d_city_id",
-                            data: this.state.cities
+                            data: this.state.cities,
                           },
                           onChange: texthandle.bind(this, this),
                           others: {
-                            tabIndex: "21"
-                          }
+                            tabIndex: "21",
+                          },
                         }}
                       />
                       <AlagehFormGroup
                         div={{ className: "col-lg-6" }}
                         label={{
-                          fieldName: "address1"
+                          fieldName: "address1",
                         }}
                         textBox={{
                           className: "txt-fld",
                           name: "address1",
                           value: this.state.address1,
                           events: {
-                            onChange: texthandle.bind(this, this)
+                            onChange: texthandle.bind(this, this),
                           },
                           others: {
                             onBlur: texthandle.bind(this, this),
                             placeholder: "Enter Full Address 1",
-                            tabIndex: "22"
-                          }
+                            tabIndex: "22",
+                          },
                         }}
                       />
 
@@ -747,14 +744,14 @@ class UpdatePatientForm extends Component {
                           dataSource: {
                             textField: "insurance_provider_name",
                             valueField: "hims_d_insurance_provider_id",
-                            data: this.props.insurarProviders
+                            data: this.props.insurarProviders,
                           },
                           onChange: companyHandle.bind(this, this, context),
                           onClear: () => {
                             this.setState({
-                              hims_d_insurance_provider_id: null
+                              hims_d_insurance_provider_id: null,
                             });
-                          }
+                          },
                         }}
                       />
                     </div>
@@ -766,7 +763,7 @@ class UpdatePatientForm extends Component {
                     >
                       <div className="col-lg-5 patientRegImg">
                         <AlgaehFileUploader
-                          ref={patientImage => {
+                          ref={(patientImage) => {
                             this.patientImage = patientImage;
                           }}
                           name="patientImage"
@@ -780,7 +777,7 @@ class UpdatePatientForm extends Component {
                               this,
                               context,
                               "patientImage"
-                            )
+                            ),
                           }}
                           renderPrevState={this.state.patientImage}
                           forceRefresh={this.state.forceRefresh}
@@ -788,7 +785,7 @@ class UpdatePatientForm extends Component {
                       </div>
                       <div className="col-lg-7 patientRegId">
                         <AlgaehFileUploader
-                          ref={patientIdCard => {
+                          ref={(patientIdCard) => {
                             this.patientIdCard = patientIdCard;
                           }}
                           noImage="ID-card"
@@ -803,7 +800,7 @@ class UpdatePatientForm extends Component {
                               this,
                               context,
                               "patientIdCard"
-                            )
+                            ),
                           }}
                           renderPrevState={this.state.patientIdCard}
                           forceRefresh={this.state.forceRefresh}
@@ -821,7 +818,7 @@ class UpdatePatientForm extends Component {
                         div={{ className: "col-lg-5 mandatory" }}
                         label={{
                           fieldName: "primary_identity_id",
-                          isImp: true
+                          isImp: true,
                         }}
                         selector={{
                           name: "primary_identity_id",
@@ -833,12 +830,12 @@ class UpdatePatientForm extends Component {
                                 ? "identity_document_name"
                                 : "arabic_identity_document_name",
                             valueField: "hims_d_identity_document_id",
-                            data: this.props.idtypes
+                            data: this.props.idtypes,
                           },
                           onChange: texthandle.bind(this, this),
                           others: {
-                            tabIndex: "15"
-                          }
+                            tabIndex: "15",
+                          },
                         }}
                       />
 
@@ -846,20 +843,20 @@ class UpdatePatientForm extends Component {
                         div={{ className: "col-lg-7 mandatory" }}
                         label={{
                           fieldName: "primary_id_no",
-                          isImp: true
+                          isImp: true,
                         }}
                         textBox={{
                           className: "txt-fld",
                           name: "primary_id_no",
                           value: this.state.primary_id_no,
                           events: {
-                            onChange: texthandle.bind(this, this)
+                            onChange: texthandle.bind(this, this),
                           },
                           others: {
                             onBlur: texthandle.bind(this, this),
                             tabIndex: "16",
-                            placeholder: "Enter ID Number"
-                          }
+                            placeholder: "Enter ID Number",
+                          },
                         }}
                       />
                     </div>
@@ -870,92 +867,92 @@ class UpdatePatientForm extends Component {
                   <AlagehFormGroup
                     div={{ className: "col" }}
                     label={{
-                      fieldName: "secondary_contact_number"
+                      fieldName: "secondary_contact_number",
                     }}
                     textBox={{
                       value: this.state.secondary_contact_number,
                       className: "txt-fld",
                       name: "secondary_contact_number",
                       events: {
-                        onChange: texthandle.bind(this, this)
+                        onChange: texthandle.bind(this, this),
                       },
                       others: {
                         placeholder: "(+01)123-456-7890",
-                        type: "number"
-                      }
+                        type: "number",
+                      },
                     }}
                   />
 
                   <AlagehFormGroup
                     div={{ className: "col" }}
                     label={{
-                      fieldName: "emergency_contact_number"
+                      fieldName: "emergency_contact_number",
                     }}
                     textBox={{
                       value: this.state.emergency_contact_number,
                       className: "txt-fld",
                       name: "emergency_contact_number",
                       events: {
-                        onChange: texthandle.bind(this, this)
+                        onChange: texthandle.bind(this, this),
                       },
                       others: {
                         placeholder: "(+01)123-456-7890",
-                        type: "number"
-                      }
+                        type: "number",
+                      },
                     }}
                   />
 
                   <AlagehFormGroup
                     div={{ className: "col" }}
                     label={{
-                      fieldName: "emergency_contact_name"
+                      fieldName: "emergency_contact_name",
                     }}
                     textBox={{
                       value: this.state.emergency_contact_name,
                       className: "txt-fld",
                       name: "emergency_contact_name",
                       events: {
-                        onChange: texthandle.bind(this, this)
+                        onChange: texthandle.bind(this, this),
                       },
                       others: {
-                        disabled: this.state.existingPatient
-                      }
+                        disabled: this.state.existingPatient,
+                      },
                     }}
                   />
 
                   <AlagehFormGroup
                     div={{ className: "col" }}
                     label={{
-                      fieldName: "relationship_with_patient"
+                      fieldName: "relationship_with_patient",
                     }}
                     textBox={{
                       value: this.state.relationship_with_patient,
                       className: "txt-fld",
                       name: "relationship_with_patient",
                       events: {
-                        onChange: texthandle.bind(this, this)
+                        onChange: texthandle.bind(this, this),
                       },
                       others: {
-                        disabled: this.state.existingPatient
-                      }
+                        disabled: this.state.existingPatient,
+                      },
                     }}
                   />
                   <AlagehFormGroup
                     div={{ className: "col" }}
                     label={{
-                      fieldName: "email"
+                      fieldName: "email",
                     }}
                     textBox={{
                       value: this.state.email,
                       className: "txt-fld",
                       name: "email",
                       events: {
-                        onChange: texthandle.bind(this, this)
+                        onChange: texthandle.bind(this, this),
                       },
                       others: {
                         placeholder: "Enter Email Address",
-                        type: "email"
-                      }
+                        type: "email",
+                      },
                     }}
                   />
                 </div>
@@ -963,32 +960,32 @@ class UpdatePatientForm extends Component {
                   <AlagehFormGroup
                     div={{ className: "col-lg-3" }}
                     label={{
-                      fieldName: "postal_code"
+                      fieldName: "postal_code",
                     }}
                     textBox={{
                       className: "txt-fld",
                       name: "postal_code",
                       value: this.state.postal_code,
                       events: {
-                        onChange: texthandle.bind(this, this)
-                      }
+                        onChange: texthandle.bind(this, this),
+                      },
                     }}
                   />
                   <AlagehFormGroup
                     div={{ className: "col" }}
                     label={{
-                      fieldName: "address2"
+                      fieldName: "address2",
                     }}
                     textBox={{
                       className: "txt-fld",
                       name: "address2",
                       value: this.state.address2,
                       events: {
-                        onChange: texthandle.bind(this, this)
+                        onChange: texthandle.bind(this, this),
                       },
                       others: {
-                        placeholder: "Enter Full Address 2"
-                      }
+                        placeholder: "Enter Full Address 2",
+                      },
                     }}
                   />
                 </div>
@@ -1014,7 +1011,7 @@ function mapStateToProps(state) {
     visatypes: state.visatypes,
     patienttype: state.patienttype,
     hospitaldetails: state.hospitaldetails,
-    insurarProviders: state.insurarProviders
+    insurarProviders: state.insurarProviders,
   };
 }
 
@@ -1031,15 +1028,12 @@ function mapDispatchToProps(dispatch) {
       getVisatypes: AlgaehActions,
       getPatientType: AlgaehActions,
       getHospitalDetails: AlgaehActions,
-      getInsuranceProviders: AlgaehActions
+      getInsuranceProviders: AlgaehActions,
     },
     dispatch
   );
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(UpdatePatientForm)
+  connect(mapStateToProps, mapDispatchToProps)(UpdatePatientForm)
 );
