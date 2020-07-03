@@ -527,7 +527,7 @@ const radioChange = ($this, context, e) => {
 
       if (value === "Y") {
         PatType = "I";
-        saveEnable = true;
+        // saveEnable = true;
         if ($this.state.doctor_id === null) {
           ProcessInsure = true;
         } else {
