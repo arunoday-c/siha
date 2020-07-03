@@ -5,6 +5,7 @@ import jwtDecode from "jwt-decode";
 import { newAlgaehApi } from "../../../hooks";
 import { AlgaehMessagePop, AlgaehAutoComplete } from "algaeh-react-components";
 import Details from "./detailreport";
+import ReactToPrint from "react-to-print";
 export function Cashflow({ dates, layout }) {
   const [organisation, setOrganisation] = useState({});
   const [displayColumn, setDisplayColumn] = useState("T");
@@ -40,8 +41,8 @@ export function Cashflow({ dates, layout }) {
     setDisplayColumn(value);
   }
   return (
-    <div className="row">
-      <div className="col-12">
+    <>
+      <div className="row inner-top-search">
         <AlgaehAutoComplete
           div={{ className: "col-4" }}
           label={{
@@ -64,26 +65,52 @@ export function Cashflow({ dates, layout }) {
           }}
         />
       </div>
-      <div className="col-12">
-        <div className="financeReportHeader">
-          <div>{organization_name}</div>
-          <div>
-            {address1}, {address2}
-          </div>
-          <hr></hr>
-          <h3>Cashflow Report</h3>
-          <p>
-            As on: <b>{moment(dates[1]).format("D/M/Y")}</b>
-          </p>
+      <div className="row">
+        <div className="col-12 reportHeaderAction">
+          {/* <span>
+            <ReactToPrint
+              trigger={() => <i className="fas fa-print" />}
+              content={() => createPrintObject.current}
+              removeAfterPrint={true}
+              bodyClass="reportPreviewSecLeft"
+              pageStyle="@media print {
+          html, body {
+            height: initial !important;
+            overflow: initial !important;
+            -webkit-print-color-adjust: exact;
+          }
+        }
+        
+        @page {
+          size: auto;
+          margin: 20mm;
+        }"
+            />
+          </span> */}
         </div>
       </div>
-      <div className="col-12">
-        <Details
-          from_date={from_date}
-          to_date={to_date}
-          display_column_by={displayColumn}
-        />
+      <div className="row">
+        <div className="col-12">
+          <div className="financeReportHeader">
+            <div>{organization_name}</div>
+            <div>
+              {address1}, {address2}
+            </div>
+            <hr></hr>
+            <h3>Cashflow Report</h3>
+            <p>
+              As on: <b>{moment(dates[1]).format("D/M/Y")}</b>
+            </p>
+          </div>
+        </div>
+        <div className="col-12">
+          <Details
+            from_date={from_date}
+            to_date={to_date}
+            display_column_by={displayColumn}
+          />
+        </div>
       </div>
-    </div>
+    </>
   );
 }

@@ -10,7 +10,7 @@ import {
   AlgaehDataGrid,
   AlgaehLabel,
   AlagehFormGroup,
-  AlagehAutoComplete
+  // AlagehAutoComplete
 } from "../../../Wrapper/algaehWrapper";
 import DisplayOPBilling from "../../../BillDetails/BillDetails";
 import {
@@ -35,6 +35,7 @@ import Enumerable from "linq";
 import _ from "lodash";
 import AlgaehAutoSearch from "../../../Wrapper/autoSearch";
 import spotlightSearch from "../../../../Search/spotlightSearch.json";
+import AlgaehLoader from "../../../Wrapper/fullPageLoader";
 
 class AddOPBillingForm extends Component {
   constructor(props) {
@@ -105,6 +106,7 @@ class AddOPBillingForm extends Component {
           this.state.s_service_type !== null &&
           this.state.s_service !== null
         ) {
+          AlgaehLoader({ show: true });
           let applydiscount = false;
           let serviceInput = [
             {
@@ -182,10 +184,12 @@ class AddOPBillingForm extends Component {
                           }
 
                           context.updateState({ ...response.data.records });
+                          AlgaehLoader({ show: false });
                         }
                       }
                     },
                     onFailure: error => {
+                      AlgaehLoader({ show: false });
                       swalMessage({
                         title: error.message,
                         type: "error"
@@ -196,6 +200,7 @@ class AddOPBillingForm extends Component {
               }
             },
             onFailure: error => {
+              AlgaehLoader({ show: false });
               swalMessage({
                 title: error.message,
                 type: "error"

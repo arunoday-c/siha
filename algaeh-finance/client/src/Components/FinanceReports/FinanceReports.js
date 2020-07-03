@@ -28,7 +28,7 @@ function layoutReducer(state, action) {
     case "expand":
       return { ...state, expand: true };
     case "collapse":
-      return { ...state, expand: false };
+      return { ...state, expand: true };
     default:
       return state;
   }
@@ -38,10 +38,11 @@ export default function FinanceReports() {
   const [loading, setLoading] = useState(true);
   const [finOptions, setFinOptions] = useState(null);
   const [selected, setSelected] = useState("BS");
+  const [selectedFilter, setSelectedFilter] = useState({});
   const [organization, setOrganization] = useState([]);
   const [layout, layoutDispatch] = useReducer(layoutReducer, {
     cols: 24,
-    expand: false,
+    expand: true,
   });
   const [period, setPeriod] = useState("TMTD");
   const [dates, setDates] = useState(undefined);
@@ -117,7 +118,11 @@ export default function FinanceReports() {
       <div className="row">
         <div className="col-12">
           <div className="row ">
-            <ReportNavBar setSelected={setSelected} selected={selected} />
+            <ReportNavBar
+              setSelected={setSelected}
+              setSelectedFilter={setSelectedFilter}
+              selected={selected}
+            />
             <div className="col reportPreviewSecLeft">
               <div
                 className="row inner-top-search"
@@ -198,6 +203,7 @@ export default function FinanceReports() {
                   ) : null}
                   <ReportMain
                     selected={selected}
+                    selectedFilter={selectedFilter}
                     dates={dates}
                     finOptions={finOptions}
                     layout={layout}

@@ -581,7 +581,7 @@ class EmployeeGroups extends Component {
                       paging={{ page: 0, rowsPerPage: 20 }}
                       filter={true}
                       events={{
-                        onEdit: () => {},
+                        onEdit: () => { },
                         onDelete: this.deleteEmployeeGroups.bind(this),
                         onDone: this.updateProjectMaster.bind(this),
                       }}

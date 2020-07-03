@@ -34,7 +34,7 @@ import {
   getCtrlCode,
   employeeSearch,
   getCostCenters,
-  saveDocument,
+  updateContract,
 } from "./ContractManagementEvents";
 import Options from "../../../Options.json";
 import moment from "moment";
@@ -74,6 +74,7 @@ class ContractManagement extends Component {
       comment_list: [],
 
       dataExists: false,
+      editMode: false,
       hospital_id: null,
 
       employee_name: null,
@@ -102,9 +103,7 @@ class ContractManagement extends Component {
       userToken.product_type === "HRMS" ||
       userToken.product_type === "HRMS_ERP" ||
       userToken.product_type === "FINANCE_ERP" ||
-      userToken.product_type === "NO_FINANCE"
-        ? true
-        : false;
+      userToken.product_type === "NO_FINANCE";
 
     this.props.getCustomerMaster({
       uri: "/customer/getCustomerMaster",
@@ -129,7 +128,6 @@ class ContractManagement extends Component {
   }
 
   downloadDoc = (doc) => {
-    console.log(doc);
     const link = document.createElement("a");
     link.download = doc.filename;
     link.href = `data:${doc.filetype};base64,${doc.document}`;
@@ -302,7 +300,7 @@ class ContractManagement extends Component {
                   },
                   value: this.state.contract_code,
                   others: {
-                    disabled: this.state.dataExists,
+                    disabled: this.state.dataExists && !this.state.editMode,
                   },
                 }}
               />
@@ -320,7 +318,7 @@ class ContractManagement extends Component {
                   },
                   value: this.state.quotation_ref_numb,
                   others: {
-                    disabled: this.state.dataExists,
+                    disabled: this.state.dataExists && !this.state.editMode,
                   },
                 }}
               />
@@ -337,7 +335,7 @@ class ContractManagement extends Component {
                   onChange: datehandle.bind(this, this),
                   // onBlur: dateValidate.bind(this, this),
                 }}
-                disabled={this.state.dataExists}
+                disabled={this.state.dataExists && !this.state.editMode}
                 value={this.state.start_date}
               />
 
@@ -353,7 +351,7 @@ class ContractManagement extends Component {
                   onChange: datehandle.bind(this, this),
                   onBlur: dateValidate.bind(this, this),
                 }}
-                disabled={this.state.dataExists}
+                disabled={this.state.dataExists && !this.state.editMode}
                 value={this.state.end_date}
               />
 
@@ -394,7 +392,7 @@ class ContractManagement extends Component {
                         onChange: texthandle.bind(this, this),
                       },
                       others: {
-                        disabled: this.state.dataExists,
+                        disabled: this.state.dataExists && !this.state.editMode,
                         placeholder: "30",
                       },
                     }}
@@ -418,7 +416,7 @@ class ContractManagement extends Component {
                         onChange: texthandle.bind(this, this),
                       },
                       others: {
-                        disabled: this.state.dataExists,
+                        disabled: this.state.dataExists && !this.state.editMode,
                         placeholder: "60",
                       },
                     }}
@@ -442,7 +440,7 @@ class ContractManagement extends Component {
                   },
                   onChange: texthandle.bind(this, this),
                   others: {
-                    disabled: this.state.dataExists,
+                    disabled: this.state.dataExists && !this.state.editMode,
                   },
                   onClear: () => {
                     this.setState({
@@ -471,7 +469,7 @@ class ContractManagement extends Component {
                   },
                   onChange: texthandle.bind(this, this),
                   others: {
-                    disabled: this.state.dataExists,
+                    disabled: this.state.dataExists && !this.state.editMode,
                   },
                   onClear: () => {
                     this.setState({
@@ -544,7 +542,8 @@ class ContractManagement extends Component {
                           });
                         }}
                         others={{
-                          disabled: this.state.dataExists,
+                          disabled:
+                            this.state.dataExists && !this.state.editMode,
                         }}
                       />
                       <AlagehAutoComplete
@@ -562,7 +561,8 @@ class ContractManagement extends Component {
                           },
                           onChange: texthandle.bind(this, this),
                           others: {
-                            disabled: this.state.dataExitst,
+                            disabled:
+                              this.state.dataExists && !this.state.editMode,
                             tabIndex: "4",
                           },
                           onClear: () => {
@@ -643,12 +643,16 @@ class ContractManagement extends Component {
                                   >
                                     <i
                                       style={{
-                                        pointerEvents: this.state.dataExists
-                                          ? "none"
-                                          : "",
-                                        opacity: this.state.dataExists
-                                          ? "0.1"
-                                          : "",
+                                        pointerEvents:
+                                          this.state.dataExists &&
+                                          !this.state.editMode
+                                            ? "none"
+                                            : "",
+                                        opacity:
+                                          this.state.dataExists &&
+                                          !this.state.editMode
+                                            ? "0.1"
+                                            : "",
                                       }}
                                       className="fas fa-trash-alt"
                                     />
@@ -724,7 +728,11 @@ class ContractManagement extends Component {
                           ]}
                           keyId="service_type_id"
                           dataSource={{
-                            data: this.state.contract_services,
+                            data: this.state.editMode
+                              ? this.state.contract_services.filter(
+                                  (item) => item.record_status === "A"
+                                )
+                              : this.state.contract_services,
                           }}
                           paging={{ page: 0, rowsPerPage: 10 }}
                         />
@@ -846,7 +854,7 @@ class ContractManagement extends Component {
                       },
                       autoComplete: "off",
                       others: {
-                        disabled: this.state.dataExists,
+                        disabled: this.state.dataExists && !this.state.editMode,
                       },
                     }}
                   />
@@ -862,10 +870,10 @@ class ContractManagement extends Component {
                       value={this.state.selected_terms_conditions}
                       name="selected_terms_conditions"
                       onChange={texthandle.bind(this, this)}
-                      disabled={this.state.dataExists}
+                      disabled={this.state.dataExists && !this.state.editMode}
                     />
                   </div>
-                  {this.state.dataExists ? null : (
+                  {this.state.dataExists && !this.state.editMode ? null : (
                     <div className="col" style={{ textAlign: "right" }}>
                       <button
                         type="button"
@@ -886,7 +894,8 @@ class ContractManagement extends Component {
                               <React.Fragment key={index}>
                                 <li key={index}>
                                   <span>{row}</span>
-                                  {this.state.dataExists ? null : (
+                                  {this.state.dataExists &&
+                                  !this.state.editMode ? null : (
                                     <i
                                       className="fas fa-times"
                                       onClick={deleteComment.bind(
@@ -912,19 +921,35 @@ class ContractManagement extends Component {
         <div className="hptl-phase1-footer">
           <div className="row">
             <div className="col-lg-12">
-              <button
-                type="button"
-                className="btn btn-primary"
-                onClick={SaveContract.bind(this, this)}
-                disabled={this.state.saveEnable}
-              >
-                <AlgaehLabel
-                  label={{
-                    forceLabel: "Save Contract",
-                    returnText: true,
-                  }}
-                />
-              </button>
+              {this.state.editMode ? (
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  onClick={updateContract.bind(this)}
+                  disabled={this.state.saveEnable}
+                >
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Update Contract",
+                      returnText: true,
+                    }}
+                  />
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  onClick={SaveContract.bind(this, this)}
+                  disabled={this.state.saveEnable}
+                >
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Save Contract",
+                      returnText: true,
+                    }}
+                  />
+                </button>
+              )}
 
               <button
                 type="button"
@@ -936,6 +961,17 @@ class ContractManagement extends Component {
                   label={{ forceLabel: "Clear", returnText: true }}
                 />
               </button>
+              {this.state.dataExists && (
+                <button
+                  type="button"
+                  className="btn btn-outline-primary"
+                  onClick={() => this.setState({ editMode: true })}
+                >
+                  <AlgaehLabel
+                    label={{ forceLabel: "Edit Contract", returnText: true }}
+                  />
+                </button>
+              )}
             </div>
           </div>
         </div>

@@ -7,6 +7,7 @@ import PnLReport from "./PnLReport";
 import { Cashflow } from "./Cashflow";
 
 export default function ReportMain({
+  selectedFilter,
   selected,
   dates,
   layout,
@@ -15,10 +16,17 @@ export default function ReportMain({
 }) {
   switch (selected) {
     case "BS":
-      return <Balance layout={layout} dates={dates} />;
+      return (
+        <Balance
+          selectedFilter={selectedFilter}
+          layout={layout}
+          dates={dates}
+        />
+      );
     case "PL":
       return (
         <PnLReport
+          selectedFilter={selectedFilter}
           layout={layout}
           finOptions={finOptions}
           organization={organization}

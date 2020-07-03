@@ -4,7 +4,7 @@ import {
   AlgaehDataGrid,
   AlgaehLabel,
   AlgaehDateHandler,
-  AlgaehModalPopUp
+  AlgaehModalPopUp,
 } from "../../Wrapper/algaehWrapper";
 import ButtonType from "../../Wrapper/algaehButton";
 import moment from "moment";
@@ -15,21 +15,17 @@ export default class DentalLab extends Component {
     super(props);
     this.state = {
       OpenForm: false,
-      from_due_date: moment()
-        .add(-1, "months")
-        .format("YYYY-MM-DD"),
-      to_due_date: moment()
-        .add(2, "months")
-        .format("YYYY-MM-DD"),
+      from_due_date: moment().add(-1, "months").format("YYYY-MM-DD"),
+      to_due_date: moment().add(2, "months").format("YYYY-MM-DD"),
       loading_request_list: false,
       request_list: [],
-      openDentalModal: false
+      openDentalModal: false,
     };
   }
 
   openDentalModalHandler(e, cntr) {
     this.setState({
-      openDentalModal: true
+      openDentalModal: true,
     });
   }
   componentDidMount() {
@@ -38,7 +34,7 @@ export default class DentalLab extends Component {
   loadRequestList() {
     this.setState(
       {
-        loading_request_list: true
+        loading_request_list: true,
       },
       () => {
         const that = this;
@@ -47,38 +43,38 @@ export default class DentalLab extends Component {
           method: "GET",
           data: {
             from_due_date: that.state.from_due_date,
-            to_due_date: that.state.to_due_date
+            to_due_date: that.state.to_due_date,
           },
-          onSuccess: response => {
+          onSuccess: (response) => {
             if (response.data.success) {
               if (response.data.records.length === 0) {
                 swalMessage({
                   title: "No records Found",
-                  type: "info"
+                  type: "info",
                 });
               }
 
               that.setState({
                 loading_request_list: false,
-                request_list: response.data.records
+                request_list: response.data.records,
               });
             } else {
               that.setState({
                 loading_request_list: false,
-                request_list: []
+                request_list: [],
               });
               swalMessage({
                 title: response.data.message,
-                type: "error"
+                type: "error",
               });
             }
           },
-          onCatch: error => {
+          onCatch: (error) => {
             that.setState({
               loading_request_list: false,
-              request_list: []
+              request_list: [],
             });
-          }
+          },
         });
       }
     );
@@ -92,9 +88,9 @@ export default class DentalLab extends Component {
           events={{
             onClose: () => {
               this.setState({
-                openDentalModal: false
+                openDentalModal: false,
               });
-            }
+            },
           }}
         >
           <div className="popupInner" data-validate="addDentalPlanDiv">
@@ -102,7 +98,7 @@ export default class DentalLab extends Component {
               <div className="row">
                 <div className="col-12 popRightDiv">
                   <div className="col-lg-7">
-                    <img src={DentalImage} height="400" width="400" />
+                    <img alt="" src={DentalImage} height="400" width="400" />
                   </div>
                 </div>
               </div>
@@ -118,15 +114,15 @@ export default class DentalLab extends Component {
                 label={{ forceLabel: "From Expected Date", isImp: false }}
                 textBox={{
                   className: "txt-fld",
-                  name: "from_due_date"
+                  name: "from_due_date",
                 }}
                 maxDate={new Date()}
                 events={{
-                  onChange: selectedDate => {
+                  onChange: (selectedDate) => {
                     this.setState({
-                      from_due_date: selectedDate
+                      from_due_date: selectedDate,
                     });
-                  }
+                  },
                 }}
                 value={this.state.from_due_date}
               />
@@ -136,22 +132,22 @@ export default class DentalLab extends Component {
                 label={{ forceLabel: "To Expected Date", isImp: false }}
                 textBox={{
                   className: "txt-fld",
-                  name: "to_due_date"
+                  name: "to_due_date",
                 }}
                 maxDate={new Date()}
                 events={{
-                  onChange: selectedDate => {
+                  onChange: (selectedDate) => {
                     this.setState({
-                      to_due_date: selectedDate
+                      to_due_date: selectedDate,
                     });
-                  }
+                  },
                 }}
                 value={this.state.to_due_date}
               />
               <ButtonType
                 label={{
                   forceLabel: "Load",
-                  returnText: true
+                  returnText: true,
                 }}
                 loading={this.state.loading_request_list}
               />
@@ -187,7 +183,7 @@ export default class DentalLab extends Component {
                             label: (
                               <AlgaehLabel label={{ forceLabel: "Actions" }} />
                             ),
-                            displayTemplate: row => (
+                            displayTemplate: (row) => (
                               <button
                                 onClick={this.openDentalModalHandler.bind(
                                   this,
@@ -201,8 +197,8 @@ export default class DentalLab extends Component {
                               maxWidth: 100,
                               resizable: false,
                               filterable: false,
-                              style: { textAlign: "center" }
-                            }
+                              style: { textAlign: "center" },
+                            },
                           },
                           {
                             fieldName: "patient_code",
@@ -210,7 +206,7 @@ export default class DentalLab extends Component {
                               <AlgaehLabel
                                 label={{ forceLabel: "MRN Number" }}
                               />
-                            )
+                            ),
                           },
                           {
                             fieldName: "patient_name",
@@ -218,7 +214,7 @@ export default class DentalLab extends Component {
                               <AlgaehLabel
                                 label={{ forceLabel: "Patient Name" }}
                               />
-                            )
+                            ),
                           },
                           {
                             fieldName: "employee_name",
@@ -226,7 +222,7 @@ export default class DentalLab extends Component {
                               <AlgaehLabel
                                 label={{ forceLabel: "Doctor Name" }}
                               />
-                            )
+                            ),
                           },
                           {
                             fieldName: "plan_name",
@@ -234,7 +230,7 @@ export default class DentalLab extends Component {
                               <AlgaehLabel
                                 label={{ forceLabel: "Procedure Name" }}
                               />
-                            )
+                            ),
                           },
                           {
                             fieldName: "due_date",
@@ -242,14 +238,14 @@ export default class DentalLab extends Component {
                               <AlgaehLabel
                                 label={{ forceLabel: "Expected Date" }}
                               />
-                            )
+                            ),
                           },
                           {
                             fieldName: "work_status",
                             label: (
                               <AlgaehLabel label={{ forceLabel: "Status" }} />
                             ),
-                            displayTemplate: row => (
+                            displayTemplate: (row) => (
                               <label>
                                 {row.work_status === "WIP"
                                   ? "Work In Progress"
@@ -257,8 +253,8 @@ export default class DentalLab extends Component {
                                   ? "Pending"
                                   : "Completed"}{" "}
                               </label>
-                            )
-                          }
+                            ),
+                          },
                         ]}
                         keyId="dental_lab"
                         dataSource={{ data: this.state.request_list }}

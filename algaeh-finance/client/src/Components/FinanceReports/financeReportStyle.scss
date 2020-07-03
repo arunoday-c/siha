@@ -1,3 +1,5 @@
+@import "../../styles/algaehCssVariables.scss";
+
 .topBarCostCenter {
   padding: 15px;
   border-bottom: 1px solid #d3d3d3;
@@ -23,10 +25,39 @@
     list-style: none;
     li {
       margin: 0;
-      padding: 6px 15px;
-      list-style: inside;
+      padding: 0;
+      list-style: none;
       border-left: 1px solid #d3d3d3;
       cursor: pointer;
+      ul {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        background: #fff;
+        border-bottom: 1px solid #dadada;
+        border-top: 1px solid #dadada;
+        li {
+          margin: 0;
+          padding: 0;
+          list-style: none;
+          span {
+            padding: 7px 10px 7px 20px;
+            width: 100%;
+            display: block;
+            border-bottom: 1px dotted #e7e7e7;
+            &:hover {
+              background: #00a796;
+              color: #fff;
+              border-bottom: 1px solid #007468;
+            }
+          }
+        }
+      }
+    }
+    span {
+      padding: 7px 10px;
+      width: 100%;
+      display: block;
       &:hover {
         background: #00a796;
         color: #fff;
@@ -44,23 +75,26 @@
   background: #e9e9e9;
   overflow: auto;
   max-height: 93vh;
-  i.fa-print {
-    position: absolute;
-    right: 3rem;
-    top: 0;
-    font-size: 2rem;
-    padding: 10px;
-    border: 1px solid #d3d3d3;
-    cursor: pointer;
-  }
-  i.fa-file-download {
-    position: absolute;
-    right: 0;
-    top: 18px;
-    font-size: 2rem;
-    padding: 10px;
-    border: 1px solid #d3d3d3;
-    cursor: pointer;
+  .reportHeaderAction {
+    border-top: 1px dashed lighten($color-black, 80%);
+    border-bottom: 1px solid #cccccc;
+    padding: 5px 15px;
+    background: #f9f9f9;
+    margin-bottom: 10px;
+    span {
+      float: right;
+      font-size: 1.3rem;
+      padding: 3px;
+      border: 1px solid #d3d3d3;
+      cursor: pointer;
+      border-radius: 50px;
+      width: 36px;
+      height: 36px;
+      text-align: center;
+      vertical-align: middle;
+      line-height: 27px;
+      margin-left: 5px;
+    }
   }
   .reportTableStyle {
     width: 100%;
@@ -191,10 +225,14 @@
     width: 100%;
     .inner-top-search {
       padding-bottom: 15px;
+      margin-bottom: 0;
+      border: none;
     }
   }
   .inner-top-search {
-    background-color: #f9f9f9;
+    background-color: #f3f3f3;
+    margin-bottom: 0;
+    border: none;
   }
   .financeReportHeader {
     text-align: center;

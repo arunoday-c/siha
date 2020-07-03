@@ -852,6 +852,11 @@ const appRoutes = [
     component: <FinanceFragment path="SupplierPayment" />,
   },
   {
+    path: "/PrePayment",
+    isExactPath: true,
+    component: <FinanceFragment path="PrePayment" />,
+  },
+  {
     path: "/NurseWorkbench",
     isExactPath: true,
     component: <NurseWorkbench />,
