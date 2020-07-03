@@ -25,7 +25,7 @@ export default {
           query:
             "select hims_d_patient_id,patient_code,registration_date,first_name,middle_name,\
             last_name,full_name,arabic_name,gender,date_of_birth,age,marital_status,\
-            contact_number,nationality_id ,N.nationality,secondary_contact_number,email,emergency_contact_name,emergency_contact_number,\
+            contact_number,P.nationality_id ,N.nationality,secondary_contact_number,email,emergency_contact_name,emergency_contact_number,\
             relationship_with_patient,postal_code,\
             primary_identity_id,DOC.identity_document_name as primary_document_name,\
             primary_id_no,secondary_id_no,photo_file,primary_id_file,\
