@@ -113,12 +113,21 @@ export default function BalanceSheet({
 
   return (
     <>
-      <ReactToPrint
-        trigger={() => <i className="fas fa-print" />}
-        content={() => createPrintObject.current}
-        removeAfterPrint={true}
-        bodyClass="reportPreviewSecLeft"
-        pageStyle="@media print {
+      <div className="row">
+        <div className="col-12 reportHeaderAction">
+          <span>
+            <i
+              className="fas fa-file-download"
+              onClick={() => loadBalanceSheet(true)}
+            />
+          </span>
+          <span>
+            <ReactToPrint
+              trigger={() => <i className="fas fa-print" />}
+              content={() => createPrintObject.current}
+              removeAfterPrint={true}
+              bodyClass="reportPreviewSecLeft"
+              pageStyle="@media print {
               html, body {
                 height: initial !important;
                 overflow: initial !important;
@@ -130,7 +139,11 @@ export default function BalanceSheet({
               size: auto;
               margin: 20mm;
             }"
-      />
+            />
+          </span>
+        </div>
+      </div>
+
       {/* <AlgaehButton
         onClick={() => loadBalanceSheet(true)}
         className="btn btn-default"
@@ -164,10 +177,6 @@ export default function BalanceSheet({
         />
       </div> */}
       <div ref={createPrintObject}>
-        <i
-          className="fas fa-file-download"
-          onClick={() => loadBalanceSheet(true)}
-        />
         <div className="financeReportHeader">
           <div>
             {organization_name}
