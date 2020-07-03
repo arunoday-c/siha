@@ -191,8 +191,8 @@ export default {
 
                     req.records = {
                       columns,
-                      income: incomeRes,
-                      Direct_expense: DirectRes[0]["children"],
+                      income: incomeRes[0],
+                      Direct_expense: DirectRes[0]["children"][0],
                       Indirect_expense: IndirectRes[0]["children"],
                       gross_profit,
                       net_profit,
