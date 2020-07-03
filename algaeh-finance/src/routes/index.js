@@ -8,6 +8,7 @@ import finance_customer from "../controllers/finance_customer";
 import finance_supplier from "../controllers/finance_supplier";
 import quick_search from "../controllers/quick_search";
 import cashFlowStatement from "../controllers/cashFlowStatement";
+import pl_comparison from "../controllers/pl_comparison";
 
 const router = express();
 router.use("/finance", finance());
@@ -18,5 +19,6 @@ router.use("/finance_customer", finance_customer());
 router.use("/finance_supplier", finance_supplier());
 router.use("/quick_search", quick_search());
 router.use("/cashFlowStatement", cashFlowStatement());
+router.use("/pl_comparison", pl_comparison());
 
 export default router;
