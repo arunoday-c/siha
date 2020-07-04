@@ -26,9 +26,9 @@
                     <td class="textArbRht" style="width:20%">العنوان</td>
                 </tr>
                 <tr>
-                    <td class="textEngLft" style="width:20%">PO No.</td>
+                    <td class="textEngLft" style="width:20%">PO No./Contarct No.</td>
                     <td colspan="2" class="textEngCtr" style="width:60%"><b>{{customer_po_no}}</b></td>
-                    <td class="textArbRht" style="width:20%">:رقم الطلب</td>
+                    <td class="textArbRht" style="width:20%">:رقم الاتصال/رقم الطلب</td>
                 </tr>
                 <tr>
                     <td class="textEngLft" style="width:20%">VAT No.</td>
@@ -45,8 +45,8 @@
                 <thead>
                     <tr>
                         <th>Sl No.</th>
-                        <th>Item Code</th>
-                        <th>Item Name</th>
+                        <th>Item Code/ رمز الصنف</th>
+                        <th>Item Name/ اسم البند</th>
                         <th>Quantity/ الكمية</th>
                         <th>Rate/ سعر الوحدة</th>
                         <th>Vat %/ الضريبة</th>
@@ -63,7 +63,7 @@
                         <td>{{dispatch_quantity}}</td>
 
                         <td>{{unit_cost}}</td>
-                        <td>{{tax_percentage}}</td>
+                        <td>{{tax_percentage}}%</td>
                         {{!-- <td>{{extended_cost}}</td>
                         <td>{{discount_percentage}}</td>
                         <td>{{discount_amount}}</td>
@@ -81,14 +81,19 @@
                 {{!-- <td colspan="9">Net Total</td>
                     <td class="numberFld">{{net_payable}}</td> --}}
                 <tr class="footerTotalDown">
-                    <td class="textEngLft" style="width:20%">Total Amount Before VAT</td>
-                    <td colspan="7" class="textArbRht" style="width:60%">{{net_total}}</td>
-                    <td class="textArbRht" style="width:20%">الإجمالى قبل ضريبة القيمه المضافة</td>
+                    <td class="textEngLft" style="width:10%">Total Amount Before VAT</td>
+                    <td colspan="7" class="textArbRht" style="width:50%">{{net_total}}</td>
+                    <td class="textArbRht" style="width:10%">الإجمالى قبل ضريبة القيمه المضافة</td>
                 </tr>
                 <tr class="footerTotalDown">
-                    <td class="textEngLft" style="width:20%">VAT</td>
+                    <td class="textEngLft" style="width:10%">Discount</td>
+                    <td colspan="7" class="textArbRht" style="width:50%">{{discount_amount}}</td>
+                    <td class="textArbRht" style="width:10%">خصم</td>
+                </tr>
+                <tr class="footerTotalDown">
+                    <td class="textEngLft" style="width:20%">VAT for non-exempt Items</td>
                     <td colspan="7" class="textArbRht" style="width:60%">{{total_tax}}</td>
-                    <td class="textArbRht" style="width:20%">قيمة الضريبة المضافة</td>
+                    <td class="textArbRht" style="width:20%">قيمة الضريبة المضافة </td>
                 </tr>
                 <tr class="footerTotalDown">
                     <td class="textEngLft" style="width:20%">Total Including VAT</td>
@@ -96,7 +101,7 @@
                     <td class="textArbRht" style="width:20%">الإجمالي بعد ضريبة القيمة المضافة</td>
                 </tr>
                 <tr class="footerTotalDown">
-                    <td class="textEngLft" style="width:20%">Outstanding Balance {{SAR}}</td>
+                    <td class="textEngLft" style="width:20%">Outstanding Balance (SAR)</td>
                     <td colspan="7" class="textArbRht" style="width:60%">{{net_payable}}</td>
                     <td class="textArbRht" style="width:20%">الرصيد المستحق بالريال السعودي</td>
                 </tr>

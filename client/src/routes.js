@@ -1,4 +1,4 @@
-import React, { Suspense } from "react";
+import React, { Suspense, useContext } from "react";
 import { Switch, Route, BrowserRouter } from "react-router-dom";
 import { retry } from "./utils/GlobalFunctions";
 import { IdleManager } from "./Components/common/IdleManager";
@@ -6,6 +6,8 @@ import Login from "./Components/Login/Login";
 import Layout from "./Components/common/layout";
 import Experiment from "./Components/Experiment";
 import ConcurrentTest from "./Components/concurrent-test";
+import { MainContext } from "algaeh-react-components/context";
+
 const HISDashboard = React.lazy(() =>
   retry(() => import("./Components/Dashboard/Dashboard"))
 );
@@ -1325,9 +1327,12 @@ const appRoutes = [
 ];
 
 function Routes() {
+  const context = useContext(MainContext);
+  const { userToken } = context;
   return (
     <BrowserRouter>
-      <IdleManager />
+      {Object.entries(userToken).length ? <IdleManager /> : null}
+
       <Switch>
         {appRoutes.map((routeItem, idx) => {
           // const others = routeItem.others === undefined ? {} : routeItem.others;

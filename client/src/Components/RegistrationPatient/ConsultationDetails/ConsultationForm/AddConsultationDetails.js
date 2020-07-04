@@ -3,12 +3,12 @@ import AlgaehLoader from "../../../Wrapper/fullPageLoader";
 import Enumerable from "linq";
 import {
   SetBulkState,
-  AlgaehValidation
+  AlgaehValidation,
 } from "../../../../utils/GlobalFunctions";
 import moment from "moment";
 
 const DeptselectedHandeler = ($this, context, e) => {
-  let primary_policy_num = $this.state.primary_policy_num
+  let primary_policy_num = $this.state.primary_policy_num;
   SetBulkState({
     state: $this,
     callback: () => {
@@ -16,15 +16,13 @@ const DeptselectedHandeler = ($this, context, e) => {
         alertTypeIcon: "warning",
         querySelector: "data-validate='demographicDetails'",
         onSuccess: () => {
-          if (
-            $this.state.visit_type === null
-          ) {
+          if ($this.state.visit_type === null) {
             context.updateState({
-              [e.name]: null
+              [e.name]: null,
             });
             swalMessage({
               title: "Please select Visit Type.",
-              type: "error"
+              type: "error",
             });
             document.querySelector("[name='visit_type']").focus();
             return;
@@ -38,15 +36,15 @@ const DeptselectedHandeler = ($this, context, e) => {
               $this.state.primary_card_number === "")
           ) {
             context.updateState({
-              [e.name]: null
+              [e.name]: null,
             });
             swalMessage({
               title: "Please select the primary insurance details properly.",
-              type: "error"
+              type: "error",
             });
           } else {
             let dept = Enumerable.from($this.props.deptanddoctors.departmets)
-              .where(w => w.sub_department_id === e.value)
+              .where((w) => w.sub_department_id === e.value)
               .firstOrDefault();
 
             $this.setState({
@@ -97,24 +95,24 @@ const DeptselectedHandeler = ($this, context, e) => {
                 sub_total_amount: null,
                 total_amount: null,
                 total_tax: null,
-                unbalanced_amount: 0
+                unbalanced_amount: 0,
               });
             }
           }
         },
         onCatch: () => {
           $this.setState({
-            [e.name]: null
+            [e.name]: null,
           });
           if (context !== null) {
             context.updateState({
               ...$this.state,
-              [e.name]: null
+              [e.name]: null,
             });
           }
-        }
+        },
       });
-    }
+    },
   });
 };
 
@@ -153,10 +151,10 @@ export const clearBillDetails = (context, ...args) => {
     sub_total_amount: null,
     total_amount: null,
     total_tax: null,
-    unbalanced_amount: 0
+    unbalanced_amount: 0,
   };
 
-  args.forEach(arg => {
+  args.forEach((arg) => {
     delete removeObj[arg];
   });
 
@@ -164,7 +162,7 @@ export const clearBillDetails = (context, ...args) => {
 };
 
 const selectedHandeler = ($this, context, e) => {
-  let primary_policy_num = $this.state.primary_policy_num
+  let primary_policy_num = $this.state.primary_policy_num;
   SetBulkState({
     state: $this,
     callback: () => {
@@ -181,28 +179,27 @@ const selectedHandeler = ($this, context, e) => {
               $this.state.primary_card_number === "")
           ) {
             context.updateState({
-              [e.name]: null
+              [e.name]: null,
             });
             swalMessage({
               title: "Please select the primary insurance details properly.",
-              type: "error"
+              type: "error",
             });
           } else {
-            debugger
             $this.setState(
               {
                 [e.name]: e.value,
                 visittypeselect: false,
                 consultation: e.selected.consultation,
                 primary_policy_num: primary_policy_num,
-                unbalanced_amount: 0
+                unbalanced_amount: 0,
               },
               () => {
                 if (context !== null) {
                   context.updateState({
                     ...$this.state,
                     primary_policy_num: primary_policy_num,
-                    unbalanced_amount: 0
+                    unbalanced_amount: 0,
                   });
                 }
 
@@ -212,8 +209,8 @@ const selectedHandeler = ($this, context, e) => {
                   method: "GET",
                   redux: {
                     type: "DEPT_DOCTOR_GET_DATA",
-                    mappingName: "deptanddoctors"
-                  }
+                    mappingName: "deptanddoctors",
+                  },
                 });
               }
             );
@@ -221,24 +218,24 @@ const selectedHandeler = ($this, context, e) => {
         },
         onCatch: () => {
           $this.setState({
-            [e.name]: null
+            [e.name]: null,
           });
           if (context !== null) {
             context.updateState({
               ...$this.state,
               [e.name]: null,
               primary_policy_num: primary_policy_num,
-              unbalanced_amount: 0
+              unbalanced_amount: 0,
             });
           }
-        }
+        },
       });
-    }
+    },
   });
 };
 
 const doctorselectedHandeler = ($this, context, e) => {
-  let primary_policy_num = $this.state.primary_policy_num
+  let primary_policy_num = $this.state.primary_policy_num;
   SetBulkState({
     state: $this,
     callback: () => {
@@ -246,15 +243,13 @@ const doctorselectedHandeler = ($this, context, e) => {
         alertTypeIcon: "warning",
         querySelector: "data-validate='demographicDetails'",
         onSuccess: () => {
-          if (
-            $this.state.visit_type === null
-          ) {
+          if ($this.state.visit_type === null) {
             context.updateState({
-              [e.name]: null
+              [e.name]: null,
             });
             swalMessage({
               title: "Please select Visit Type.",
-              type: "error"
+              type: "error",
             });
             document.querySelector("[name='visit_type']").focus();
             return;
@@ -269,17 +264,17 @@ const doctorselectedHandeler = ($this, context, e) => {
           ) {
             $this.setState(
               {
-                [e.name]: null
+                [e.name]: null,
               },
               () => {
                 context.updateState({
                   [e.name]: null,
-                  primary_policy_num: primary_policy_num
+                  primary_policy_num: primary_policy_num,
                 });
                 swalMessage({
                   title:
                     "Please select the primary insurance details properly.",
-                  type: "error"
+                  type: "error",
                 });
               }
             );
@@ -301,19 +296,19 @@ const doctorselectedHandeler = ($this, context, e) => {
               let intputObj = {
                 sub_department_id: sub_department_id,
                 doctor_id: e.value,
-                patient_id: $this.state.patient_id
+                patient_id: $this.state.patient_id,
               };
               algaehApiCall({
                 uri: "/visit/checkVisitExists",
                 module: "frontDesk",
                 method: "get",
                 data: intputObj,
-                onSuccess: response => {
+                onSuccess: (response) => {
                   if (response.data.success === true) {
                     if (response.data.records.length > 0) {
                       swalMessage({
                         title: "Visit already exists for select Doctor",
-                        type: "warning"
+                        type: "warning",
                       });
                     } else {
                       $this.setState(
@@ -329,13 +324,15 @@ const doctorselectedHandeler = ($this, context, e) => {
                           sub_department_id: sub_department_id,
                           department_type: department_type,
                           department_id: department_id,
-                          primary_policy_num: primary_policy_num
+                          primary_policy_num: primary_policy_num,
                         },
                         () => {
-                          if ($this.state.existing_plan !== "Y" && $this.state.consultation !== "N") {
+                          if (
+                            $this.state.existing_plan !== "Y" &&
+                            $this.state.consultation !== "N"
+                          ) {
                             generateBillDetails($this, context);
                           }
-
                         }
                       );
                       if (context !== null) {
@@ -351,38 +348,38 @@ const doctorselectedHandeler = ($this, context, e) => {
                           sub_department_id: sub_department_id,
                           department_type: department_type,
                           department_id: department_id,
-                          primary_policy_num: primary_policy_num
+                          primary_policy_num: primary_policy_num,
                         });
                       }
                     }
                   } else {
                     $this.setState(
                       {
-                        [e.name]: null
+                        [e.name]: null,
                       },
                       () => {
                         swalMessage({
                           title: response.data.message,
-                          type: "warning"
+                          type: "warning",
                         });
                       }
                     );
                   }
                 },
-                onFailure: error => {
+                onFailure: (error) => {
                   swalMessage({
                     title: error.message,
-                    type: "error"
+                    type: "error",
                   });
-                }
+                },
               });
             } else {
               $this.setState({
-                [e.name]: null
+                [e.name]: null,
               });
               swalMessage({
                 title: "No Service defined for the selected doctor.",
-                type: "warning"
+                type: "warning",
               });
             }
           } else {
@@ -400,7 +397,7 @@ const doctorselectedHandeler = ($this, context, e) => {
                   sub_department_id: sub_department_id,
                   department_type: department_type,
                   department_id: department_id,
-                  primary_policy_num: primary_policy_num
+                  primary_policy_num: primary_policy_num,
                 },
                 () => {
                   if ($this.state.consultation !== "N") {
@@ -421,53 +418,53 @@ const doctorselectedHandeler = ($this, context, e) => {
                   sub_department_id: sub_department_id,
                   department_type: department_type,
                   department_id: department_id,
-                  primary_policy_num: primary_policy_num
+                  primary_policy_num: primary_policy_num,
                 });
               }
             } else {
               $this.setState({
-                [e.name]: null
+                [e.name]: null,
               });
               if (context !== null) {
                 context.updateState({
                   [e.name]: e.value,
-                  primary_policy_num: primary_policy_num
+                  primary_policy_num: primary_policy_num,
                 });
               }
               swalMessage({
                 title: "No Service defined for the selected doctor.",
-                type: "warning"
+                type: "warning",
               });
             }
           }
         },
         onCatch: () => {
           $this.setState({
-            [e.name]: null
+            [e.name]: null,
           });
           if (context !== null) {
             context.updateState({
               ...$this.state,
-              [e.name]: null
+              [e.name]: null,
             });
           }
-        }
+        },
       });
-    }
+    },
   });
 };
 
 const generateBillDetails = ($this, context) => {
   let zeroBill = false;
   let DoctorVisits = Enumerable.from($this.state.visitDetails)
-    .where(w => w.doctor_id === $this.state.doctor_id)
+    .where((w) => w.doctor_id === $this.state.doctor_id)
     .toArray();
 
   let FollowUp = false;
   let currentDate = moment(new Date()).format("YYYY-MM-DD");
   let expiryDate = 0;
   if (DoctorVisits.length > 0) {
-    expiryDate = Enumerable.from(DoctorVisits).max(s => s.visit_expiery_date);
+    expiryDate = Enumerable.from(DoctorVisits).max((s) => s.visit_expiery_date);
   }
 
   if (
@@ -497,24 +494,21 @@ const generateBillDetails = ($this, context) => {
       secondary_insurance_provider_id:
         $this.state.secondary_insurance_provider_id,
       secondary_network_id: $this.state.secondary_network_id,
-      secondary_network_office_id: $this.state.secondary_network_office_id
-    }
+      secondary_network_office_id: $this.state.secondary_network_office_id,
+    },
   ];
 
   AlgaehLoader({ show: true });
-
 
   algaehApiCall({
     uri: "/billing/getBillDetails",
     module: "billing",
     method: "POST",
     data: serviceInput,
-    onSuccess: response => {
+    onSuccess: (response) => {
       if (response.data.success) {
-
         response.data.records.follow_up = FollowUp;
         response.data.records.existing_treat = zeroBill;
-
 
         if (context !== null) {
           context.updateState({ ...response.data.records });
@@ -525,11 +519,12 @@ const generateBillDetails = ($this, context) => {
           module: "billing",
           method: "POST",
           data: response.data.records,
-          onSuccess: response => {
+          onSuccess: (response) => {
             if (response.data.success) {
               if ($this.state.default_pay_type === "CD") {
-                response.data.records.card_amount = response.data.records.receiveable_amount
-                response.data.records.cash_amount = 0
+                response.data.records.card_amount =
+                  response.data.records.receiveable_amount;
+                response.data.records.cash_amount = 0;
               }
               // response.data.records.Cashchecked =
               //   $this.state.default_pay_type.default_pay_type === "CH" ? true : false
@@ -542,23 +537,23 @@ const generateBillDetails = ($this, context) => {
 
             AlgaehLoader({ show: false });
           },
-          onFailure: error => {
+          onFailure: (error) => {
             AlgaehLoader({ show: false });
             swalMessage({
               title: error.message,
-              type: "error"
+              type: "error",
             });
-          }
+          },
         });
       }
     },
-    onFailure: error => {
+    onFailure: (error) => {
       AlgaehLoader({ show: false });
       swalMessage({
         title: error.message,
-        type: "error"
+        type: "error",
       });
-    }
+    },
   });
 };
 
@@ -568,19 +563,19 @@ const radioChange = ($this, context, e) => {
   if (name === "maternity_patient_yes") {
     $this.setState({
       maternity_patient: value,
-      checked_maternity_patient: !$this.state.checked_maternity_patient
+      checked_maternity_patient: !$this.state.checked_maternity_patient,
     });
     if (context !== null) {
       context.updateState({
         maternity_patient: value,
-        checked_maternity_patient: !$this.state.checked_maternity_patient
+        checked_maternity_patient: !$this.state.checked_maternity_patient,
       });
     }
   } else if (name === "existing_plan") {
     if ($this.state.doctor_id === null) {
       swalMessage({
         title: "Select The doctor...",
-        type: "warning"
+        type: "warning",
       });
       return;
     }
@@ -592,7 +587,7 @@ const radioChange = ($this, context, e) => {
     $this.setState(
       {
         [name]: value,
-        checked_existing_plan: checked_existing_plan
+        checked_existing_plan: checked_existing_plan,
       },
       () => {
         getTreatementPlans($this);
@@ -604,7 +599,7 @@ const radioChange = ($this, context, e) => {
     if (context !== null) {
       context.updateState({
         [name]: value,
-        checked_existing_plan: checked_existing_plan
+        checked_existing_plan: checked_existing_plan,
       });
     }
   } else if (name === "eligible") {
@@ -615,29 +610,29 @@ const radioChange = ($this, context, e) => {
     }
     $this.setState({
       eligible: value,
-      checked_eligible: checked_eligible
+      checked_eligible: checked_eligible,
     });
     if (context !== null) {
       context.updateState({
         eligible: value,
-        checked_eligible: checked_eligible
+        checked_eligible: checked_eligible,
       });
     }
   }
 };
 
-const getTreatementPlans = $this => {
+const getTreatementPlans = ($this) => {
   $this.props.getTreatmentPlan({
     uri: "/dental/getTreatmentPlan",
     method: "GET",
     data: {
       patient_id: $this.state.hims_d_patient_id,
-      plan_status: "O"
+      plan_status: "O",
     },
     redux: {
       type: "DENTAL_PLAN_DATA",
-      mappingName: "dentalplans"
-    }
+      mappingName: "dentalplans",
+    },
   });
 };
 
@@ -646,12 +641,12 @@ const texthandle = ($this, context, e) => {
   let value = e.value || e.target.value;
 
   $this.setState({
-    [name]: value
+    [name]: value,
   });
 
   if (context !== null) {
     context.updateState({
-      [name]: value
+      [name]: value,
     });
   }
 };
@@ -661,5 +656,6 @@ export {
   selectedHandeler,
   doctorselectedHandeler,
   radioChange,
-  texthandle
+  texthandle,
+  generateBillDetails,
 };

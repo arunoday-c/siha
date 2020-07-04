@@ -120,7 +120,7 @@ export function getSalesOrderItem(req, res, next) {
               COALESCE(LOC.avgcost, LOCAD.avgcost) as avgcost,COALESCE(LOC.item_type, LOCAD.item_type) as item_type,
               COALESCE(LOC.sale_price, LOCAD.sale_price) as sale_price,COALESCE(LOC.sales_uom, LOCAD.sales_uom) as sales_uom,
               IM.hims_d_inventory_item_master_id, IM.item_description,IM.category_id as item_category_id, IM.group_id as item_group_id,
-              PU.uom_description from hims_f_sales_order_items D
+              PU.uom_description, 0 as dispatch_quantity from hims_f_sales_order_items D
               inner join hims_d_inventory_uom PU  on PU.hims_d_inventory_uom_id=D.uom_id
               inner join hims_d_inventory_item_master IM  on IM.hims_d_inventory_item_master_id=D.item_id
               left join hims_m_inventory_item_location LOC  on D.item_id=LOC.item_id
@@ -168,7 +168,6 @@ export function getSalesOrderItem(req, res, next) {
                     item_id,
                     uom_id,
                     quantity_outstanding,
-                    unit_cost,
                     item_description,
                     uom_description,
                     unit_cost,
