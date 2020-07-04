@@ -136,17 +136,17 @@ const ReceiptSearch = ($this, e) => {
     $this.state.po_return_from === "PHR" &&
     $this.state.pharmcy_location_id !== null
   ) {
-    Inputs += " and pharmcy_location_id = " + $this.state.pharmcy_location_id;
+    Inputs += " and GH.pharmcy_location_id = " + $this.state.pharmcy_location_id;
   } else if (
     $this.state.po_return_from === "INV" &&
     $this.state.inventory_location_id !== null
   ) {
     Inputs +=
-      " and inventory_location_id = " + $this.state.inventory_location_id;
+      " and GH.inventory_location_id = " + $this.state.inventory_location_id;
   }
 
   if ($this.state.vendor_id !== null) {
-    Inputs += " and vendor_id = " + $this.state.vendor_id;
+    Inputs += " and GH.vendor_id = " + $this.state.vendor_id;
   }
 
   AlgaehSearch({

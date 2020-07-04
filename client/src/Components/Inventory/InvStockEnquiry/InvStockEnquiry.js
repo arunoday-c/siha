@@ -265,7 +265,7 @@ class InvStockEnquiry extends Component {
 
 
                   {
-                    fieldName: "item_id",
+                    fieldName: "item_description",
                     label: <AlgaehLabel label={{ forceLabel: "Item Name" }} />,
                     displayTemplate: row => {
                       let display =
@@ -282,9 +282,7 @@ class InvStockEnquiry extends Component {
                           className="pat-code"
                           onClick={getBatchWiseData.bind(this, this, row)}
                         >
-                          {display !== undefined && display.length !== 0
-                            ? display[0].item_description
-                            : ""}
+                          {row.item_description}
                         </span>
                       );
                     },
