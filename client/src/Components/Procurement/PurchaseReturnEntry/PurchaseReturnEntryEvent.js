@@ -146,7 +146,7 @@ const ReceiptSearch = ($this, e) => {
   }
 
   if ($this.state.vendor_id !== null) {
-    Inputs += " and vendor_id = " + $this.state.vendor_id;
+    Inputs += " and GH.vendor_id = " + $this.state.vendor_id;
   }
 
   AlgaehSearch({

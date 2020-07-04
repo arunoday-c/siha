@@ -12,8 +12,8 @@
 
   .small-top-left {
     display: block;
-    font-size: 7px;
-    margin-top: 7px;
+    font-size: 9px;
+    margin-top: 9px;
   }
 
   .barcodeLineBulk hr {
@@ -50,7 +50,7 @@
   {{#each header}}<div class="print-body" style="page-break-before: always; page-break-after: always;margin: 0;">
 
     <div class="barcodeLineBulk">
-      <small class="small-top-left">{{item_description}}</small>
+      <b><small class="small-top-left">{{item_description}}</small></b>
       <img src={{barcode "code128" print_barcode false }} />
       <small class="small-left"><b>{{sales_price}}</b></small>
       <small class="small-right">{{print_barcode}}</small>
