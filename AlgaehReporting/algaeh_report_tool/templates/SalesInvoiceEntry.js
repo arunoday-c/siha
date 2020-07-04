@@ -3,7 +3,7 @@ const executePDF = function executePDFMethod(options) {
     return new Promise(function (resolve, reject) {
         try {
             const _ = options.loadash;
-            // const utilities = new algaehUtilities();
+            const moment = options.moment;
 
             let input = {};
             const params = options.args.reportParams;
@@ -38,7 +38,7 @@ const executePDF = function executePDFMethod(options) {
                     inner join hims_d_customer C on H.customer_id = C.hims_d_customer_id
                     inner join hims_f_sales_order SO on H.sales_order_id = SO.hims_f_sales_order_id
                     where H.invoice_number=?;                    
-                    select B.*, IM.item_code,IM.item_description from
+                    select B.*, IM.item_code,IM.item_description, ROUND(B.tax_percentage, 0) as tax_percentage from
                     hims_f_sales_invoice_header IH 
                     inner join  hims_f_sales_invoice_detail ID on IH.hims_f_sales_invoice_header_id=ID.sales_invoice_header_id  
                     inner join hims_f_sales_dispatch_note_header H  on ID.dispatch_note_header_id=H.hims_f_dispatch_note_header_id 
@@ -52,7 +52,7 @@ const executePDF = function executePDFMethod(options) {
                         input.invoice_number,
                         input.invoice_number
                     ],
-                    printQuery: false
+                    printQuery: true
                 })
                 .then(result => {
                     const grn_details = result[0];
@@ -111,6 +111,9 @@ const executePDF = function executePDFMethod(options) {
 
                     resolve({
                         ...grn_details[0],
+                        invoice_date: moment(grn_details[0].invoice_date).format(
+                            "YYYY-MM-DD"
+                        ),
                         // invoice_number: outputArray[0].invoice_number,
                         // sales_order_date: outputArray[0].sales_order_date,
                         // location_description: outputArray[0].location_description,
