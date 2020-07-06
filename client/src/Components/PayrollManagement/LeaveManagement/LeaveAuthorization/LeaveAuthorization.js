@@ -269,6 +269,7 @@ export default class LeaveAuthorization extends Component {
             ...this.state.currLeavAppln,
             auth_level: this.state.auth_level,
           }}
+          hospitals={this.state.hospitals || []}
           type={this.state.type}
         />
         <div className="col-12">
