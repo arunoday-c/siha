@@ -211,6 +211,8 @@ class LoanAuthorization extends Component {
         <LoanModal
           open={this.state.openAuth}
           data={this.state.selRow}
+          hospitals={this.state.hospitals}
+          hospital_id={this.state.hospital_id}
           onClose={this.closeModal.bind(this)}
           auth_level={this.state.auth_level}
         />

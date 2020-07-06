@@ -45,7 +45,7 @@ inner join hims_d_employee E on U.employee_id=E.hims_d_employee_id;`,
   });
 }
 
-async function getAuthLoanEmps(level) {
+async function getAuthLoanEmps(socket, level, employee) {
   const _mysql = new algaehMysql();
 
   const res = await _mysql.executeQuery({
@@ -56,7 +56,7 @@ async function getAuthLoanEmps(level) {
     inner join hims_d_employee E on U.employee_id=E.hims_d_employee_id;`,
   });
   const empIds = res.map((item) => item.employee_id);
-  const secondMsg = `New Loan Request waiting for level ${level} authorization`;
+  const secondMsg = `${employee.name}(${employee.code})'s ${employee.loan_desc} Request is waiting for level ${level} authorization. Branch: ${employee.branch}`;
 
   const save = await Promise.all(
     empIds.map((id) =>
@@ -132,7 +132,7 @@ function selfSocket(socket) {
     });
   });
 
-  socket.on("/loan/authorized", async (emp_id, level) => {
+  socket.on("/loan/authorized", async (emp_id, level, employee) => {
     try {
       const msg = `Your loan request has been accepted by Level ${level}`;
       const doc = await createNotification({
@@ -142,7 +142,7 @@ function selfSocket(socket) {
       });
       socket.to(`${emp_id}`).emit("notification", doc);
       if (level < 3) {
-        await getAuthLoanEmps(level + 1);
+        await getAuthLoanEmps(socket, level + 1, employee);
       }
     } catch (error) {
       console.log(error);

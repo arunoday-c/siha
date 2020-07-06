@@ -104,7 +104,6 @@ class LeaveAuthDetail extends Component {
     const [branch] = this.props.hospitals.filter(
       (item) => item.hims_d_hospital_id === this.state.data.hospital_id
     );
-    debugger;
 
     algaehApiCall({
       uri: "/leave/authorizeLeave",
@@ -114,7 +113,6 @@ class LeaveAuthDetail extends Component {
       onSuccess: (res) => {
         if (res.data.success) {
           if (type === "A") {
-            debugger;
             if (this.context.socket.connected) {
               this.context.socket.emit(
                 "/leave/authorized",
