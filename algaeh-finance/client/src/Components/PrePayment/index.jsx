@@ -44,7 +44,7 @@ export default function index() {
             title: (
               <AlgaehLabel
                 label={{
-                  forceLabel: "Prepayment List",
+                  forceLabel: "Prepayment Auth List",
                 }}
               />
             ),
