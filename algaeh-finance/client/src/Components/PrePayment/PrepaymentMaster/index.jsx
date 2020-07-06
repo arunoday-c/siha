@@ -13,7 +13,7 @@ export function PrepaymentMaster() {
   return (
     <div>
       <div className="row inner-top-search">
-        <AlgaehFormGroup
+        {/* <AlgaehFormGroup
           div={{
             className: "col form-group",
           }}
@@ -27,7 +27,7 @@ export function PrepaymentMaster() {
             placeholder: "",
             value: "",
           }}
-        />{" "}
+        />{" "} */}
         <AlgaehFormGroup
           div={{
             className: "col-3 form-group",
@@ -87,7 +87,7 @@ export function PrepaymentMaster() {
           <div className="portlet portlet-bordered margin-bottom-15">
             <div className="portlet-title">
               <div className="caption">
-                <h3 className="caption-subject">Journal Voucher List </h3>
+                <h3 className="caption-subject">Prepayment Master List</h3>
               </div>
               <div className="actions"></div>
             </div>
@@ -95,12 +95,24 @@ export function PrepaymentMaster() {
               <AlgaehDataGrid
                 columns={[
                   {
-                    key: "slno",
-                    title: "Sl No.",
+                    key: "prePayDesc",
+                    title: "Prepayment Desc.",
                     sortable: true,
-                    others: {
-                      width: 80,
-                    },
+                  },
+                  {
+                    key: "prePayDur",
+                    title: "Duration (Month)",
+                    sortable: true,
+                  },
+                  {
+                    key: "prePayCreditGL",
+                    title: "Prepayment Credit GL",
+                    sortable: true,
+                  },
+                  {
+                    key: "prePayDebitGL",
+                    title: "Prepayment Debit GL",
+                    sortable: true,
                   },
                 ]}
                 loading={false}
@@ -109,7 +121,7 @@ export function PrepaymentMaster() {
                 dataSource={{
                   data: [],
                 }}
-                rowUnique="slno"
+                rowUnique="prePayDesc"
                 events={{}}
                 others={{}}
               />
