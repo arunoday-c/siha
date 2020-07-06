@@ -14,7 +14,11 @@ import algaehMysql from "algaeh-mysql";
   status - emitted to notify the user whether his service request is either authorized or rejected 
 */
 
-async function getAuthLeaveEmps(level) {
+async function getAuthLeaveEmps(
+  socket,
+  level,
+  employee = { name: "", code: "", branch: "", leave_desc: "" }
+) {
   const _mysql = new algaehMysql();
 
   const res = await _mysql.executeQuery({
@@ -25,7 +29,7 @@ inner join algaeh_d_app_user U on UM.user_id=U.algaeh_d_app_user_id
 inner join hims_d_employee E on U.employee_id=E.hims_d_employee_id;`,
   });
   const empIds = res.map((item) => item.employee_id);
-  const secondMsg = `New Leave Request waiting for level ${level} authorization`;
+  const secondMsg = `${employee.name}(${employee.code})'s ${employee.leave_desc} Request is waiting for level ${level} authorization. Branch: ${employee.branch}`;
 
   const save = await Promise.all(
     empIds.map((id) =>
@@ -84,22 +88,25 @@ function selfSocket(socket) {
       .catch(() => console.log(err));
   });
 
-  socket.on("/leave/authorized", async (emp_id, leave_date, level) => {
-    try {
-      const msg = `Your request for leave on ${leave_date} has been authorized by Level ${level}`;
-      const doc = await createNotification({
-        user_id: emp_id,
-        message: msg,
-        title: "HR Management",
-      });
-      socket.to(`${emp_id}`).emit("notification", doc);
-      if (level < 3) {
-        await getAuthLeaveEmps(level + 1);
+  socket.on(
+    "/leave/authorized",
+    async (emp_id, leave_date, level, employee) => {
+      try {
+        const msg = `Your request for leave on ${leave_date} has been authorized by Level ${level}`;
+        const doc = await createNotification({
+          user_id: emp_id,
+          message: msg,
+          title: "HR Management",
+        });
+        socket.to(`${emp_id}`).emit("notification", doc);
+        if (level < 3) {
+          await getAuthLeaveEmps(socket, level + 1, employee);
+        }
+      } catch (error) {
+        console.error(error);
       }
-    } catch (error) {
-      console.error(error);
     }
-  });
+  );
 
   socket.on("/leave/rejected", (emp_id, leave_date, level) => {
     const msg = `Your request for leave on ${leave_date} has been rejected by Level ${level}`;
