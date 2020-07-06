@@ -361,7 +361,7 @@ class AddOPBillingForm extends Component {
 
     if (details.length === 1) {
       swalMessage({
-        title: "Min. 1 Service requiried in bill.",
+        title: "Minimum 1 Service requiried in bill.",
         type: "warning",
       });
       return;
