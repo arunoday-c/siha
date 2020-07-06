@@ -83,7 +83,7 @@ export default function Income({ hospital_id, RECEIPT_TYPE }) {
           {
             className: "col-2 form-group mandatory",
             type: "dropdown",
-
+            name: "hospital_id",
             initialLoad: true,
             isImp: true,
             label: "Branch",
@@ -189,15 +189,11 @@ export default function Income({ hospital_id, RECEIPT_TYPE }) {
                 let reportQuery =
                   currentValue.value === "OP"
                     ? "opBillReceipt"
-                    : // : currentValue.value === "POS"
-                    // ? "posReceipt"
-                    currentValue.value === "AD"
-                    ? "advanceReceipt"
-                    : currentValue.value === "OPC"
-                    ? "opCreditReceipt"
-                    : // : currentValue.value === "POSC"
-                      // ? "posCreditReceipt"
-                      "";
+                    : currentValue.value === "AD"
+                      ? "advanceReceipt"
+                      : currentValue.value === "OPC"
+                        ? "opCreditReceipt"
+                        : "";
                 callback({ reportQuery: reportQuery });
               }
             }

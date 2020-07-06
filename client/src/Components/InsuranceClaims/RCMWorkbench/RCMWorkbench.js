@@ -48,7 +48,7 @@ class RCMWorkbench extends Component {
           },
           () => {
             algaehApiCall({
-              uri: "/insurance/getSubInsuraces",
+              uri: "/insurance/getSubInsurance",
               module: "insurance",
               method: "GET",
               data: {
@@ -61,7 +61,7 @@ class RCMWorkbench extends Component {
                   });
                 }
               },
-              onError: error => {}
+              onError: error => { }
             });
           }
         );
@@ -175,7 +175,7 @@ class RCMWorkbench extends Component {
           });
         }
       },
-      onError: error => {}
+      onError: error => { }
     });
   }
 
@@ -255,8 +255,8 @@ class RCMWorkbench extends Component {
         //   "<iframe src= '" + url + "' width='100%' height='100%' />"
         // );
         const urlBlob = URL.createObjectURL(res.data);
-      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Algaeh Merdge`;
-      window.open(origin);
+        const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Algaeh Merdge`;
+        window.open(origin);
         // window.document.title = "Algaeh Merdge";
         AlgaehLoader({ show: false });
       },
@@ -288,12 +288,12 @@ class RCMWorkbench extends Component {
   openReviewSubmit() {
     this.validatedClaims.length === 0
       ? swalMessage({
-          title: "please select atleast one invoice to submit",
-          type: "warning"
-        })
+        title: "please select atleast one invoice to submit",
+        type: "warning"
+      })
       : this.setState({
-          openSubmit: true
-        });
+        openSubmit: true
+      });
   }
 
   handleClose() {
@@ -399,8 +399,8 @@ class RCMWorkbench extends Component {
         // link.setAttribute("download", ".pdf");
         // link.click();
         const urlBlob = URL.createObjectURL(res.data);
-      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename= Prevalidation`;
-      window.open(origin);
+        const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename= Prevalidation`;
+        window.open(origin);
       }
     });
   }
@@ -667,12 +667,12 @@ class RCMWorkbench extends Component {
                               {row.claim_validated === "V"
                                 ? "Validated"
                                 : row.claim_validated === "E"
-                                ? "Error"
-                                : row.claim_validated === "X"
-                                ? "XML Generated"
-                                : row.claim_validated === "P"
-                                ? "Pending"
-                                : "----"}
+                                  ? "Error"
+                                  : row.claim_validated === "X"
+                                    ? "XML Generated"
+                                    : row.claim_validated === "P"
+                                      ? "Pending"
+                                      : "----"}
                             </span>
                           );
                         }
@@ -815,14 +815,14 @@ class RCMWorkbench extends Component {
                     filter={true}
                     isEditable={false}
                     paging={{ page: 0, rowsPerPage: 20 }}
-                    // events={{
-                    //   onDelete: deletePosDetail.bind(this, this, context),
-                    //   onEdit: row => {},
-                    //   onDone: updatePosDetail.bind(this, this)
-                    // }}
-                    // onRowSelect={row => {
-                    //   getItemLocationStock(this, row);
-                    // }}
+                  // events={{
+                  //   onDelete: deletePosDetail.bind(this, this, context),
+                  //   onEdit: row => {},
+                  //   onDone: updatePosDetail.bind(this, this)
+                  // }}
+                  // onRowSelect={row => {
+                  //   getItemLocationStock(this, row);
+                  // }}
                   />
                 </div>
               </div>
