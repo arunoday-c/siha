@@ -1045,7 +1045,6 @@ export default class BranchMaster extends Component {
                   <div className="col-12">
                     <ul className="deptUl">
                       {departments.map((data, index) => {
-                        debugger;
                         return (
                           <li key={data.hims_d_department_id}>
                             {" "}
