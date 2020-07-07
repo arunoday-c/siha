@@ -433,7 +433,11 @@ const SaveSalesOrderEnrty = ($this) => {
                 dataExists: true,
                 grid_edit: true,
               },
-              () => $this.saveDocument()
+              () => {
+                if ($this.state.invoice_files.length) {
+                  $this.saveDocument();
+                }
+              }
             );
             swalMessage({
               type: "success",
