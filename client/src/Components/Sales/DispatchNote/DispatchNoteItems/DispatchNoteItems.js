@@ -251,10 +251,10 @@ class DispatchNoteItems extends Component {
                                 this.props.inventoryitemcategory === undefined
                                   ? []
                                   : this.props.inventoryitemcategory.filter(
-                                      (f) =>
-                                        f.hims_d_inventory_tem_category_id ===
-                                        row.item_category_id
-                                    );
+                                    (f) =>
+                                      f.hims_d_inventory_tem_category_id ===
+                                      row.item_category_id
+                                  );
 
                               return (
                                 <span>
@@ -281,10 +281,10 @@ class DispatchNoteItems extends Component {
                                 this.props.inventoryitemgroup === undefined
                                   ? []
                                   : this.props.inventoryitemgroup.filter(
-                                      (f) =>
-                                        f.hims_d_inventory_item_group_id ===
-                                        row.item_group_id
-                                    );
+                                    (f) =>
+                                      f.hims_d_inventory_item_group_id ===
+                                      row.item_group_id
+                                  );
 
                               return (
                                 <span>
@@ -433,185 +433,185 @@ class DispatchNoteItems extends Component {
                   </div>
                 </div>
               ) : (
-                <div className="col-8" style={{ paddingLeft: 0 }}>
-                  <div className="portlet portlet-bordered margin-bottom-15">
-                    <div className="row">
-                      <div className="col">
-                        <AlgaehLabel label={{ forceLabel: "Item Name" }} />
-                        <h6>{item_name ? item_name : "----------"}</h6>
-                      </div>
-
-                      <div className="col">
-                        <AlgaehLabel label={{ forceLabel: "Required Qty" }} />
-                        <h6>{qty_auth ? qty_auth : "----------"}</h6>
-                      </div>
-
-                      {this.state.stock_enable === true ? (
-                        <div className="col">
-                          <AlgaehLabel
-                            label={{ forceLabel: "Stock Not Available" }}
-                          />
-                        </div>
-                      ) : null}
-                    </div>
-                    {qty_auth < this.state.dispatched_quantity
-                      ? "Greater than required qty"
-                      : null}
-                    <div className="portlet-body">
+                  <div className="col-8" style={{ paddingLeft: 0 }}>
+                    <div className="portlet portlet-bordered margin-bottom-15">
                       <div className="row">
-                        <div
-                          className="col-12"
-                          id="dispatchItemGridDetail_Cntr"
-                        >
-                          <AlgaehDataGrid
-                            id="dispatchItemGridDetail"
-                            datavalidate="dispatchItemGridDetail"
-                            columns={[
-                              {
-                                fieldName: "batchno",
-                                label: (
-                                  <AlgaehLabel
-                                    label={{ forceLabel: "Batch No" }}
-                                  />
-                                ),
-                              },
-                              {
-                                fieldName: "qtyhand",
-                                label: (
-                                  <AlgaehLabel
-                                    label={{
-                                      forceLabel: "Qty in Hand",
-                                    }}
-                                  />
-                                ),
-                              },
-                              {
-                                fieldName: "expiry_date",
-                                label: (
-                                  <AlgaehLabel
-                                    label={{ forceLabel: "Expiry Date" }}
-                                  />
-                                ),
-                                displayTemplate: (row) => {
-                                  return (
-                                    <span>
-                                      {dateFormater(this, row.expiry_date)}
-                                    </span>
-                                  );
+                        <div className="col">
+                          <AlgaehLabel label={{ forceLabel: "Item Name" }} />
+                          <h6>{item_name ? item_name : "----------"}</h6>
+                        </div>
+
+                        <div className="col">
+                          <AlgaehLabel label={{ forceLabel: "Required Qty" }} />
+                          <h6>{qty_auth ? qty_auth : "----------"}</h6>
+                        </div>
+
+                        {this.state.stock_enable === true ? (
+                          <div className="col">
+                            <AlgaehLabel
+                              label={{ forceLabel: "Stock Not Available" }}
+                            />
+                          </div>
+                        ) : null}
+                      </div>
+                      {qty_auth < this.state.dispatched_quantity
+                        ? "Greater than required qty"
+                        : null}
+                      <div className="portlet-body">
+                        <div className="row">
+                          <div
+                            className="col-12"
+                            id="dispatchItemGridDetail_Cntr"
+                          >
+                            <AlgaehDataGrid
+                              id="dispatchItemGridDetail"
+                              datavalidate="dispatchItemGridDetail"
+                              columns={[
+                                {
+                                  fieldName: "batchno",
+                                  label: (
+                                    <AlgaehLabel
+                                      label={{ forceLabel: "Batch No" }}
+                                    />
+                                  ),
                                 },
-                              },
-                              {
-                                fieldName: "dispatch_quantity",
-                                label: (
-                                  <AlgaehLabel
-                                    label={{
-                                      forceLabel: "Selected Quantity",
-                                    }}
-                                  />
-                                ),
-                                displayTemplate: (row) => {
-                                  return (
-                                    <AlagehFormGroup
-                                      div={{}}
-                                      textBox={{
-                                        number: {
-                                          allowNegative: false,
-                                          thousandSeparator: ",",
-                                        },
-                                        dontAllowKeys: ["-", "e", "."],
-                                        value: row.dispatch_quantity,
-                                        className: "txt-fld",
-                                        name: "dispatch_quantity",
-                                        events: {
-                                          onChange: onchangegridcol.bind(
-                                            this,
-                                            this,
-                                            context,
-                                            row
-                                          ),
-                                        },
-                                        others: {
-                                          algaeh_required: "true",
-                                          errormessage:
-                                            "Please enter Transferred Quantity ..",
-                                          checkvalidation:
-                                            "value ==='' || value ==='0'",
-                                        },
+                                {
+                                  fieldName: "qtyhand",
+                                  label: (
+                                    <AlgaehLabel
+                                      label={{
+                                        forceLabel: "Qty in Hand",
                                       }}
                                     />
-                                  );
+                                  ),
                                 },
-                              },
-                              {
-                                fieldName: "ext_amount",
-                                label: (
-                                  <AlgaehLabel
-                                    label={{
-                                      forceLabel: "Ext. Cost",
-                                    }}
-                                  />
-                                ),
-                                displayTemplate: (row) => {
-                                  if (row.sale_price && row.dispatch_quantity) {
+                                {
+                                  fieldName: "expiry_date",
+                                  label: (
+                                    <AlgaehLabel
+                                      label={{ forceLabel: "Expiry Date" }}
+                                    />
+                                  ),
+                                  displayTemplate: (row) => {
                                     return (
-                                      parseFloat(row.sale_price) *
-                                      parseFloat(row.dispatch_quantity)
+                                      <span>
+                                        {dateFormater(this, row.expiry_date)}
+                                      </span>
                                     );
-                                  }
+                                  },
                                 },
-                              },
-                            ]}
-                            keyId=""
-                            dataSource={{
-                              data:
-                                this.state.item_details == null
-                                  ? []
-                                  : this.state.item_details.batches,
-                            }}
-                            isEditable={false}
-                            paging={{ page: 0, rowsPerPage: 10 }}
-                            events={{}}
-                            others={{}}
-                          />
+                                {
+                                  fieldName: "dispatch_quantity",
+                                  label: (
+                                    <AlgaehLabel
+                                      label={{
+                                        forceLabel: "Selected Quantity",
+                                      }}
+                                    />
+                                  ),
+                                  displayTemplate: (row) => {
+                                    return (
+                                      <AlagehFormGroup
+                                        div={{}}
+                                        textBox={{
+                                          number: {
+                                            allowNegative: false,
+                                            thousandSeparator: ",",
+                                          },
+                                          dontAllowKeys: ["-", "e", "."],
+                                          value: row.dispatch_quantity,
+                                          className: "txt-fld",
+                                          name: "dispatch_quantity",
+                                          events: {
+                                            onChange: onchangegridcol.bind(
+                                              this,
+                                              this,
+                                              context,
+                                              row
+                                            ),
+                                          },
+                                          others: {
+                                            algaeh_required: "true",
+                                            errormessage:
+                                              "Please enter Transferred Quantity ..",
+                                            checkvalidation:
+                                              "value ==='' || value ==='0'",
+                                          },
+                                        }}
+                                      />
+                                    );
+                                  },
+                                },
+                                {
+                                  fieldName: "ext_amount",
+                                  label: (
+                                    <AlgaehLabel
+                                      label={{
+                                        forceLabel: "Ext. Cost",
+                                      }}
+                                    />
+                                  ),
+                                  displayTemplate: (row) => {
+                                    if (row.sale_price && row.dispatch_quantity) {
+                                      return (
+                                        parseFloat(parseFloat(row.sale_price) *
+                                          parseFloat(row.dispatch_quantity)).toFixed(this.state.decimal_place)
+                                      );
+                                    }
+                                  },
+                                },
+                              ]}
+                              keyId=""
+                              dataSource={{
+                                data:
+                                  this.state.item_details == null
+                                    ? []
+                                    : this.state.item_details.batches,
+                              }}
+                              isEditable={false}
+                              paging={{ page: 0, rowsPerPage: 10 }}
+                              events={{}}
+                              others={{}}
+                            />
+                          </div>
                         </div>
                       </div>
-                    </div>
-                    <div className="row">
-                      <div className="col">
-                        <AlgaehLabel label={{ forceLabel: "Selected Qty" }} />
-                        <h6>
-                          {this.state.dispatched_quantity
-                            ? this.state.dispatched_quantity
-                            : "----------"}
-                        </h6>
-                      </div>
+                      <div className="row">
+                        <div className="col">
+                          <AlgaehLabel label={{ forceLabel: "Selected Qty" }} />
+                          <h6>
+                            {this.state.dispatched_quantity
+                              ? this.state.dispatched_quantity
+                              : "----------"}
+                          </h6>
+                        </div>
 
-                      <div className="col">
-                        <button
-                          type="button"
-                          className="btn btn-primary"
-                          onClick={AddSelectedBatches.bind(this, this, context)}
-                          style={{
-                            marginTop: 8,
-                            float: "right",
-                            marginLeft: 10,
-                          }}
-                        >
-                          Save
+                        <div className="col">
+                          <button
+                            type="button"
+                            className="btn btn-primary"
+                            onClick={AddSelectedBatches.bind(this, this, context)}
+                            style={{
+                              marginTop: 8,
+                              float: "right",
+                              marginLeft: 10,
+                            }}
+                          >
+                            Save
                         </button>
-                        <button
-                          type="button"
-                          className="btn btn-default"
-                          onClick={this.CloseOrent.bind(this, context)}
-                          style={{ marginTop: 8, float: "right" }}
-                        >
-                          Close
+                          <button
+                            type="button"
+                            className="btn btn-default"
+                            onClick={this.CloseOrent.bind(this, context)}
+                            style={{ marginTop: 8, float: "right" }}
+                          >
+                            Close
                         </button>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              )}
+                )}
             </>
           )}
         </MyContext.Consumer>
