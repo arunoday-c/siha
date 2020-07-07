@@ -161,7 +161,7 @@ const itemchangeText = ($this, e, ctrl) => {
 const AddItems = ($this, context) => {
   if ($this.state.customer_id === null) {
     swalMessage({
-      title: "Please Customer.",
+      title: "Please select a Customer.",
       type: "warning",
     });
     return;
