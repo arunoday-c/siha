@@ -569,7 +569,7 @@ const getData = ($this, po_from) => {
         type: "ITEM_CATEGORY_GET_DATA",
         mappingName: "poitemcategory",
       },
-      afterSuccess: (data) => {},
+      afterSuccess: (data) => { },
     });
 
     $this.props.getItemGroup({
@@ -1005,6 +1005,33 @@ const getPOOptions = ($this) => {
   });
 };
 
+const CancelPOEntry = ($this) => {
+  algaehApiCall({
+    uri: "/PurchaseOrderEntry/cancelPurchaseOrderEntry",
+    module: "procurement",
+    data: { hims_f_procurement_po_header_id: $this.state.hims_f_procurement_po_header_id },
+    method: "PUT",
+    onSuccess: (response) => {
+      if (response.data.success === true) {
+
+        getCtrlCode($this, $this.state.purchase_number)
+        swalMessage({
+          title: "Cancelled successfully . .",
+          type: "success",
+        });
+      }
+      AlgaehLoader({ show: false });
+    },
+    onFailure: (error) => {
+      AlgaehLoader({ show: false });
+      swalMessage({
+        title: error.message,
+        type: "error",
+      });
+    },
+  });
+};
+
 export {
   texthandle,
   poforhandle,
@@ -1025,4 +1052,5 @@ export {
   VendorQuotationSearch,
   getPOOptions,
   getData,
+  CancelPOEntry
 };

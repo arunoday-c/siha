@@ -5057,6 +5057,10 @@
     {
       "name": "Delivery Completed",
       "value": "4"
+    },
+    {
+      "name": "Cancelled",
+      "value": "5"
     }
   ],
   "COMPARISON": [

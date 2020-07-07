@@ -565,14 +565,16 @@ export default {
 
       let strQuery =
         "SELECT PO.*,V.vendor_name,E.full_name, case \
+          when cancelled='Y'  then 'PO Rejected'\
           when  is_posted = 'Y' and authorize1 = 'N' then 'Autorization 1 Pending'\
           when authorize1 = 'Y' and authorize2 = 'N'  then 'Final Autorization Pending'\
           when authorize1 = 'Y' and authorize2 = 'Y' and is_completed='N'  then 'Delivery Pending'\
-          when is_completed='Y'  then 'Delivery Completed' end status from  hims_f_procurement_po_header PO \
+          when is_completed='Y'  then 'Delivery Completed' end status \
+          from  hims_f_procurement_po_header PO \
           inner join hims_d_vendor V on PO.vendor_id = V.hims_d_vendor_id \
           inner join algaeh_d_app_user US on PO.created_by = US.algaeh_d_app_user_id \
           inner join hims_d_employee E on US.employee_id = E.hims_d_employee_id \
-          where cancelled='N' ";
+          where 1=1 ";
 
       if (req.query.from_date != null) {
         strQuery +=
@@ -604,15 +606,17 @@ export default {
         strQuery += "";
       } else if (inputParam.status == "1") {
         //Pending To Authorize 1
-        strQuery += " and is_posted = 'Y' and authorize1 = 'N'";
+        strQuery += " and is_posted = 'Y' and authorize1 = 'N' and cancelled = 'N'";
       } else if (inputParam.status == "2") {
         //Pending To Authorize 2
-        strQuery += " and authorize1 = 'Y' and authorize2 = 'N'";
+        strQuery += " and authorize1 = 'Y' and authorize2 = 'N' and cancelled = 'N'";
       } else if (inputParam.status == "3") {
         strQuery +=
-          " and authorize1 = 'Y' and authorize2 = 'Y' and is_completed='N'";
+          " and authorize1 = 'Y' and authorize2 = 'Y' and is_completed='N' and cancelled = 'N'";
       } else if (inputParam.status == "4") {
         strQuery += " and is_completed='Y'";
+      } else if (inputParam.status == "5") {
+        strQuery += " and cancelled = 'Y'";
       }
 
       // if (inputParam.status == null || inputParam.status == "0") {
@@ -963,4 +967,33 @@ export default {
       next(e);
     }
   },
+  cancelPurchaseOrderEntry: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    try {
+      _mysql
+        .executeQuery({
+          query:
+            "UPDATE hims_f_procurement_po_header set cancelled = 'Y', cancel_by = ? , cancel_date = ? \
+            WHERE `hims_f_procurement_po_header_id`=?;",
+          values: [
+            req.userIdentity.algaeh_d_app_user_id,
+            new Date(),
+            req.body.hims_f_procurement_po_header_id,
+          ],
+          printQuery: true,
+        })
+        .then((headerResult) => {
+          _mysql.releaseConnection();
+          req.records = headerResult;
+          next();
+        })
+        .catch((error) => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  }
 };
