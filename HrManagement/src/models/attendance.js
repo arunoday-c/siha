@@ -5002,7 +5002,7 @@ export default {
           })
           .then((opts) => {
             const options = opts[0];
-            console.log("options:", options);
+
             if (
               options.attendance_type == "DM" ||
               options.attendance_type == "DMP"
@@ -5105,13 +5105,10 @@ export default {
                     .executeQuery({
                       query: `select E.hims_d_employee_id ,E.employee_code,E.exit_date , E.full_name,E.religion_id, E.date_of_joining,
                          case  when E.exit_date  between date(?) and date(?) then 'Y' else 'N' end as partial_attendance 
-
-                          from hims_d_employee E  ${deptStr} left join hims_f_salary S on E.hims_d_employee_id =S.employee_id and  
-                          S.year=? and S.month=? and S.salary_type='NS'
+                          from hims_d_employee E  ${deptStr}  
                           where E.hospital_id=? and E.record_status='A' and E.employee_status<>'I' and 
                           E.date_of_joining <= date(?) and
-                          (E.exit_date is null or E.exit_date >date(?) )  and E.suspend_salary <>'Y'  
-                          and ( S.salary_processed is null or  S.salary_processed='N') ${strQry}  ;                
+                          (E.exit_date is null or E.exit_date >date(?) )  and E.suspend_salary <>'Y'    ${strQry}  ;                
                           
                           select hims_f_leave_application_id,employee_id,leave_application_code,from_leave_session,
                           case L.leave_type when 'P' then 'PL' when 'U' then 'UL'  end as leave_type,
@@ -5133,8 +5130,7 @@ export default {
                       values: [
                         from_date,
                         to_date,
-                        input.year,
-                        parseInt(input.month),
+
                         input.branch_id,
                         to_date,
                         from_date,
@@ -5159,7 +5155,7 @@ export default {
                     })
                     .then((result) => {
                       _mysql.releaseConnection();
-                      console.log("result----", result);
+
                       if (result[0].length > 0) {
                         const allEmployees = result[0];
                         const allLeaves = result[1];
@@ -5195,14 +5191,13 @@ export default {
                         E.date_of_joining,PR.project_id,PR.attendance_date,P.project_desc,
                         case  when E.exit_date  between date(?) and  
                         date(?) then 'Y' else 'N' end as partial_attendance 
-                        from hims_d_employee E  ${deptStr} left join hims_f_salary S on E.hims_d_employee_id =S.employee_id and  
-                        S.year=? and S.month=?  and S.salary_type='NS' left join    hims_f_project_roster PR on E.hims_d_employee_id=PR.employee_id
+                        from hims_d_employee E  ${deptStr}   left join    hims_f_project_roster PR on E.hims_d_employee_id=PR.employee_id
                         and  PR.attendance_date between date(?) and date(?) 
                         left join  hims_d_project P on P.hims_d_project_id=PR.project_id
                         where E.hospital_id=? and E.record_status='A' and E.employee_status<>'I' and 
                         E.date_of_joining <= date(?) and
                         (E.exit_date is null or E.exit_date >date(?) )  and E.suspend_salary <>'Y'  
-                        and ( S.salary_processed is null or  S.salary_processed='N') ${strQry}  ;                
+                       ${strQry}  ;                
                         
                         select hims_f_leave_application_id,employee_id,leave_application_code,from_leave_session,
                         case L.leave_type when 'P' then 'PL' when 'U' then 'UL'  end as leave_type,
@@ -5225,8 +5220,7 @@ export default {
                       values: [
                         from_date,
                         to_date,
-                        input.year,
-                        parseInt(input.month),
+
                         from_date,
                         to_date,
                         input.branch_id,
@@ -5253,7 +5247,7 @@ export default {
                     })
                     .then((result) => {
                       _mysql.releaseConnection();
-                      console.log("Here result----", result);
+
                       if (result[0].length > 0) {
                         const allEmployees = result[0];
                         const allLeaves = result[1];
@@ -6543,11 +6537,10 @@ function insertTimeSheet(
   singleEmployee
 ) {
   const utilities = new algaehUtilities();
-  console.log("zero");
+
   let insertArray = [];
   try {
     if (singleEmployee == "N") {
-      console.log("one");
       for (let i = 0; i < biometricData.length; i++) {
         if (
           biometricData[i]["in_time"] != null &&
@@ -10873,7 +10866,6 @@ function processBulkAtt_with_cutoff(data) {
 
                         //END-CURRENT MONTH AFTER CUTTOFF
                       } else {
-                        console.log("ONEEE");
                         for (let i = 0; i < len; i++) {
                           if (
                             AttenResult[i]["attendance_date"] <

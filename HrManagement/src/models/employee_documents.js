@@ -14,14 +14,14 @@ export default {
                  when dependent_type ='GU' then 'Gaurdain' when dependent_type ='SO' then 'Son' \
                  when dependent_type ='DG' then 'Daugther' end dependent_type   \
                    FROM hims_d_employee_dependents where employee_id=? and record_status ='A'",
-          values: [input.employee_id]
+          values: [input.employee_id],
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -36,14 +36,14 @@ export default {
       _mysql
         .executeQuery({
           query:
-            "SELECT hospital_name as dependent_name,hims_d_hospital_id as hims_d_employee_dependents_id,hospital_code, 'Company' as dependent_type FROM hims_d_hospital where hosital_status='A'"
+            "SELECT hospital_name as dependent_name,hims_d_hospital_id as hims_d_employee_dependents_id,hospital_code, 'Company' as dependent_type FROM hims_d_hospital where hosital_status='A'",
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -61,14 +61,14 @@ export default {
           query:
             "select hims_d_document_type_id,document_description \
             from hims_d_document_type where document_type_status='A' and record_status='A' and document_type=?",
-          values: [input.document_type]
+          values: [input.document_type],
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -99,15 +99,15 @@ export default {
             req.userIdentity.algaeh_d_app_user_id,
             new Date(),
             input.document_type_name,
-            req.userIdentity.hospital_id
-          ]
+            req.userIdentity.hospital_id,
+          ],
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -119,8 +119,9 @@ export default {
   getDocumentsDetails: (req, res, next) => {
     const _mysql = new algaehMysql();
     const input = req.query;
+    console.log("result", input);
     let appendString = "";
-    if (input.dependent_id == "null") {
+    if (input.dependent_id == "null" || !input.dependent_id) {
       appendString = " and dependent_id is null";
     } else {
       appendString = " and dependent_id ='" + input.dependent_id + "'";
@@ -134,14 +135,14 @@ export default {
           where document_type=? and employee_id=? " +
             appendString,
           values: [input.document_type, input.employee_id],
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -149,5 +150,5 @@ export default {
       _mysql.releaseConnection();
       next(e);
     }
-  }
+  },
 };
