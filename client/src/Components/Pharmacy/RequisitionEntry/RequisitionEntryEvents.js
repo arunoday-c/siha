@@ -26,9 +26,9 @@ const getCtrlCode = ($this, docNumber) => {
       data: { material_requisition_number: docNumber },
       redux: {
         type: "POS_ENTRY_GET_DATA",
-        mappingName: "requisitionentry"
+        mappingName: "requisitionentry",
       },
-      afterSuccess: data => {
+      afterSuccess: (data) => {
         data.cannotDelete = true;
         if (
           $this.props.material_requisition_number !== undefined &&
@@ -65,7 +65,7 @@ const getCtrlCode = ($this, docNumber) => {
         data.ItemDisable = true;
         $this.setState(data, () => {});
         AlgaehLoader({ show: false });
-      }
+      },
     });
   });
 };
@@ -75,13 +75,13 @@ const ClearData = ($this, e) => {
   $this.setState(IOputs);
 };
 
-const SaveRequisitionEntry = $this => {
+const SaveRequisitionEntry = ($this) => {
   AlgaehLoader({ show: true });
   algaehApiCall({
     uri: "/requisitionEntry/addrequisitionEntry",
     module: "pharmacy",
     data: $this.state,
-    onSuccess: response => {
+    onSuccess: (response) => {
       if (response.data.success === true) {
         $this.setState({
           material_requisition_number:
@@ -89,24 +89,24 @@ const SaveRequisitionEntry = $this => {
           saveEnable: true,
           addItemButton: true,
           ItemDisable: true,
-          cannotDelete: true
+          cannotDelete: true,
           // authorizeEnable: false
         });
 
         swalMessage({
           title: "Saved successfully . .",
-          type: "success"
+          type: "success",
         });
       }
       AlgaehLoader({ show: false });
     },
-    onFailure: error => {
+    onFailure: (error) => {
       AlgaehLoader({ show: false });
       swalMessage({
         title: error.message,
-        type: "error"
+        type: "error",
       });
-    }
+    },
   });
 };
 
@@ -116,7 +116,7 @@ const generateMaterialReqPhar = (data, rpt_name, rpt_desc) => {
     method: "GET",
     module: "reports",
     headers: {
-      Accept: "blob"
+      Accept: "blob",
     },
     others: { responseType: "blob" },
     data: {
@@ -125,32 +125,32 @@ const generateMaterialReqPhar = (data, rpt_name, rpt_desc) => {
         reportParams: [
           {
             name: "material_requisition_number",
-            value: data.material_requisition_number
-          }
+            value: data.material_requisition_number,
+          },
         ],
-        outputFileType: "PDF"
-      }
+        outputFileType: "PDF",
+      },
     },
-    onSuccess: res => {
+    onSuccess: (res) => {
       const urlBlob = URL.createObjectURL(res.data);
-      const reportName = `${ data.material_requisition_number}-Material Requisition - Pharmacy`
+      const reportName = `${data.material_requisition_number}-Material Requisition - Pharmacy`;
       const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename= ${reportName}`;
       window.open(origin);
       // window.document.title = "Material Requisition - Pharmacy";
-    }
+    },
   });
 };
 
 const AuthorizeRequisitionEntry = ($this, authorize) => {
   let auth_qty = Enumerable.from($this.state.pharmacy_stock_detail).any(
-    w =>
+    (w) =>
       parseFloat(w.quantity_authorized) === 0 || w.quantity_authorized === null
   );
 
   if (auth_qty === true) {
     swalMessage({
       title: "Please enter Authorize Quantity.",
-      type: "warning"
+      type: "warning",
     });
     return;
   }
@@ -181,27 +181,27 @@ const AuthorizeRequisitionEntry = ($this, authorize) => {
     module: "pharmacy",
     data: $this.state,
     method: "PUT",
-    onSuccess: response => {
+    onSuccess: (response) => {
       if (response.data.success === true) {
         $this.setState({
           postEnable: true,
           authorize1: authorize1,
-          authorie2: authorize2
+          authorie2: authorize2,
         });
         swalMessage({
           title: "Authorized successfully . .",
-          type: "success"
+          type: "success",
         });
       }
       AlgaehLoader({ show: false });
     },
-    onFailure: error => {
+    onFailure: (error) => {
       AlgaehLoader({ show: false });
       swalMessage({
         title: error.message,
-        type: "error"
+        type: "error",
       });
-    }
+    },
   });
 };
 
@@ -216,7 +216,7 @@ const LocationchangeTexts = ($this, location, ctrl, e) => {
       $this.setState({ [name]: null, [type]: null }, () => {
         swalMessage({
           title: "From Location and To Location Cannot be Same ",
-          type: "error"
+          type: "error",
         });
       });
     } else {
@@ -234,7 +234,7 @@ const LocationchangeTexts = ($this, location, ctrl, e) => {
 
         item_uom: null,
         from_qtyhand: 0,
-        to_qtyhand: 0
+        to_qtyhand: 0,
       });
     }
   } else if (location === "To") {
@@ -243,7 +243,7 @@ const LocationchangeTexts = ($this, location, ctrl, e) => {
       $this.setState({ [name]: null, [type]: null }, () => {
         swalMessage({
           title: "From Location and To Location Cannot be Same ",
-          type: "error"
+          type: "error",
         });
       });
     } else {
@@ -259,7 +259,7 @@ const LocationchangeTexts = ($this, location, ctrl, e) => {
         transaction_qty: null,
         item_uom: null,
         from_qtyhand: 0,
-        to_qtyhand: 0
+        to_qtyhand: 0,
       });
     }
   }
@@ -272,5 +272,5 @@ export {
   SaveRequisitionEntry,
   AuthorizeRequisitionEntry,
   LocationchangeTexts,
-  generateMaterialReqPhar
+  generateMaterialReqPhar,
 };

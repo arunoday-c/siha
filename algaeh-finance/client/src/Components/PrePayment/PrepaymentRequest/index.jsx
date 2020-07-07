@@ -17,7 +17,7 @@ export function PrepaymentRequest() {
         <AlgaehAutoComplete
           div={{ className: "col form-group" }}
           label={{
-            forceLabel: "Select Employee GL",
+            forceLabel: "Select EmployeeL",
             isImp: true,
           }}
           selector={{

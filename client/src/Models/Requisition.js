@@ -45,7 +45,8 @@ export default {
 
       item_category_id: null,
       item_group_id: null,
-      item_id: null,
+      // item_id: null,
+      // item_description: null,
       quantity_required: 0,
 
       item_uom: null,
@@ -67,8 +68,9 @@ export default {
       authorizeEnable: true,
       cannotDelete: false,
       transaction_qty: null,
-      requisition_auth_level: null
+      requisition_auth_level: null,
+      item_description: "",
     };
     return output;
-  }
+  },
 };
