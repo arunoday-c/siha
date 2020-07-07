@@ -140,6 +140,25 @@ class EmployeeDocuments extends Component {
         });
     }
   }
+  onSaved() {
+    eventLogic()
+      .getSaveDocument({
+        document_type: this.state.document_type,
+        employee_id: this.state.employee_id,
+        // dependent_id: item.hims_d_employee_dependents_id,
+      })
+      .then((result) => {
+        this.setState({
+          document_grid: result,
+        });
+      })
+      .catch((error) => {
+        swalMessage({
+          title: error.message,
+          type: "error",
+        });
+      });
+  }
   onHandleDocumentForClick(item, e) {
     this.setState(
       {
@@ -208,7 +227,6 @@ class EmployeeDocuments extends Component {
     eventLogic()
       .getEmployeeDependents({ employee_id: row.hims_d_employee_id })
       .then((result) => {
-        debugger;
         this.setState({
           document_for_list: result,
         });
@@ -293,6 +311,43 @@ class EmployeeDocuments extends Component {
       hospital_id: userToken.hims_d_hospital_id,
     });
   }
+  downloadSelectedFile(row) {
+    const { download_uniq_id, document_name, document_type } = row;
+    //for preview
+    // const { hostname, port, protocol } = window.location;
+    // const _port = port === "" ? "/documentManagement" : `:3006`;
+    // const fileType = "Employees";
+    // const url = `${protocol}//${hostname}${_port}/api/v1/Document/get?fileType=${fileType}&destinationName=${download_uniq_id}`;
+    //--end
+    algaehApiCall({
+      uri: "/Document/get",
+      method: "GET",
+      module: "documentManagement",
+      fileType: "Employees",
+      headers: {
+        Accept: "blob",
+      },
+      data: {
+        fileType: "Employees",
+        destinationName: download_uniq_id,
+      },
+      others: { responseType: "blob" },
+      onSuccess: (response) => {
+        debugger;
+        const { data } = response;
+        const url = URL.createObjectURL(data);
+        let a = document.createElement("a");
+        a.href = url;
+        const cleanFileName = document_name.split(".");
+        a.download = `${cleanFileName[0]}.${data.type}`;
+        a.click();
+      },
+      onCatch: (error) => {
+        console.error(error);
+      },
+    });
+  }
+
   render() {
     return (
       <div className="EmployeeDocumentsScreen row">
@@ -467,8 +522,8 @@ class EmployeeDocuments extends Component {
                         ),
                         displayTemplate: (row) => (
                           <button
-                            onClick={(e) => {
-                              console.log("row", row);
+                            onClick={() => {
+                              this.downloadSelectedFile(row);
                             }}
                           >
                             Download
@@ -541,6 +596,7 @@ class EmployeeDocuments extends Component {
                           componentType={item.document_description}
                           afterSave={(result) => {
                             this.afterPassPortSave(result);
+                            this.onSaved();
                           }}
                         />
                       </div>
