@@ -15,9 +15,9 @@ export function PrepaymentRequest() {
       {" "}
       <div className="row inner-top-search">
         <AlgaehAutoComplete
-          div={{ className: "col form-group" }}
+          div={{ className: "col-2 form-group" }}
           label={{
-            forceLabel: "Select EmployeeL",
+            forceLabel: "Branch",
             isImp: true,
           }}
           selector={{
@@ -26,9 +26,31 @@ export function PrepaymentRequest() {
           }}
         />
         <AlgaehAutoComplete
-          div={{ className: "col form-group" }}
+          div={{ className: "col-2 form-group" }}
           label={{
-            forceLabel: "Select Prepayment Type",
+            forceLabel: "Cost Center",
+            isImp: true,
+          }}
+          selector={{
+            value: "",
+            dataSource: {},
+          }}
+        />
+        <AlgaehAutoComplete
+          div={{ className: "col-2 form-group" }}
+          label={{
+            forceLabel: "Prepayment Type",
+            isImp: true,
+          }}
+          selector={{
+            value: "",
+            dataSource: {},
+          }}
+        />
+        <AlgaehAutoComplete
+          div={{ className: "col-2 form-group" }}
+          label={{
+            forceLabel: " Employee",
             isImp: true,
           }}
           selector={{
@@ -38,7 +60,7 @@ export function PrepaymentRequest() {
         />
         <AlgaehFormGroup
           div={{
-            className: "col form-group",
+            className: "col-2 form-group",
           }}
           label={{
             forceLabel: "Prepayment Amt.",
@@ -68,7 +90,7 @@ export function PrepaymentRequest() {
         />{" "}
         <AlgaehDateHandler
           div={{
-            className: "col-2 algaeh-date-fld",
+            className: "col-2 algaeh-date-fld form-group",
           }}
           label={{
             forceLabel: "End Date",
@@ -83,7 +105,7 @@ export function PrepaymentRequest() {
           // maxDate={moment().add(1, "days")}
         />
         <div className="col">
-          <button className="btn btn-primary bttn-sm" style={{ marginTop: 17 }}>
+          <button className="btn btn-primary bttn-sm" style={{ marginTop: 19 }}>
             Add to list
           </button>
         </div>

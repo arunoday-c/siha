@@ -15,9 +15,9 @@ export function PrepaymentList() {
       {" "}
       <div className="row inner-top-search">
         <AlgaehAutoComplete
-          div={{ className: "col form-group" }}
+          div={{ className: "col-2 form-group" }}
           label={{
-            forceLabel: "Select Employee",
+            forceLabel: "Branch",
             isImp: true,
           }}
           selector={{
@@ -26,9 +26,31 @@ export function PrepaymentList() {
           }}
         />
         <AlgaehAutoComplete
-          div={{ className: "col form-group" }}
+          div={{ className: "col-2 form-group" }}
           label={{
-            forceLabel: "Select Prepayment Type",
+            forceLabel: "Cost Center",
+            isImp: true,
+          }}
+          selector={{
+            value: "",
+            dataSource: {},
+          }}
+        />
+        <AlgaehAutoComplete
+          div={{ className: "col-2 form-group" }}
+          label={{
+            forceLabel: "Prepayment Type",
+            isImp: true,
+          }}
+          selector={{
+            value: "",
+            dataSource: {},
+          }}
+        />
+        <AlgaehAutoComplete
+          div={{ className: "col-2 form-group" }}
+          label={{
+            forceLabel: "Prepayment Type",
             isImp: true,
           }}
           selector={{
@@ -38,7 +60,7 @@ export function PrepaymentList() {
         />
         <AlgaehDateHandler
           div={{
-            className: "col-2 algaeh-date-fld",
+            className: "col-2 algaeh-date-fld  form-group",
           }}
           label={{
             forceLabel: "Start Date",
@@ -51,8 +73,27 @@ export function PrepaymentList() {
           }}
           // maxDate={moment().add(1, "days")}
         />{" "}
+        <AlgaehDateHandler
+          div={{
+            className: "col-2 algaeh-date-fld",
+          }}
+          label={{
+            forceLabel: "End Date",
+            isImp: true,
+          }}
+          textBox={{
+            name: "",
+            className: "form-control",
+            value: "",
+          }}
+          // others={{ disabled: true }}
+          // maxDate={moment().add(1, "days")}
+        />
         <div className="col">
-          <button className="btn btn-primary bttn-sm" style={{ marginTop: 17 }}>
+          <button
+            className="btn btn-primary bttn-sm"
+            style={{ marginBottom: 10 }}
+          >
             Load
           </button>
         </div>
