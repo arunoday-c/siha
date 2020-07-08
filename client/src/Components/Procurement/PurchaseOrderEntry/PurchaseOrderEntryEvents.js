@@ -6,6 +6,7 @@ import AlgaehSearch from "../../Wrapper/globalSearch";
 import spotlightSearch from "../../../Search/spotlightSearch.json";
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
 import POEntry from "../../../Models/POEntry";
+import swal from "sweetalert2";
 
 let texthandlerInterval = null;
 
@@ -1006,30 +1007,43 @@ const getPOOptions = ($this) => {
 };
 
 const CancelPOEntry = ($this) => {
-  algaehApiCall({
-    uri: "/PurchaseOrderEntry/cancelPurchaseOrderEntry",
-    module: "procurement",
-    data: { hims_f_procurement_po_header_id: $this.state.hims_f_procurement_po_header_id },
-    method: "PUT",
-    onSuccess: (response) => {
-      if (response.data.success === true) {
+  swal({
+    title: "Are you Sure you want to Reject?",
+    type: "warning",
+    showCancelButton: true,
+    confirmButtonText: "Yes",
+    confirmButtonColor: "#44b8bd",
+    cancelButtonColor: "#d33",
+    cancelButtonText: "No",
+  }).then((willReject) => {
+    if (willReject.value) {
+      AlgaehLoader({ show: true });
+      algaehApiCall({
+        uri: "/PurchaseOrderEntry/cancelPurchaseOrderEntry",
+        module: "procurement",
+        data: { hims_f_procurement_po_header_id: $this.state.hims_f_procurement_po_header_id },
+        method: "PUT",
+        onSuccess: (response) => {
+          if (response.data.success === true) {
 
-        getCtrlCode($this, $this.state.purchase_number)
-        swalMessage({
-          title: "Cancelled successfully . .",
-          type: "success",
-        });
-      }
-      AlgaehLoader({ show: false });
-    },
-    onFailure: (error) => {
-      AlgaehLoader({ show: false });
-      swalMessage({
-        title: error.message,
-        type: "error",
+            getCtrlCode($this, $this.state.purchase_number)
+            swalMessage({
+              title: "Cancelled successfully . .",
+              type: "success",
+            });
+          }
+        },
+        onFailure: (error) => {
+          AlgaehLoader({ show: false });
+          swalMessage({
+            title: error.message,
+            type: "error",
+          });
+        },
       });
-    },
+    }
   });
+
 };
 
 export {

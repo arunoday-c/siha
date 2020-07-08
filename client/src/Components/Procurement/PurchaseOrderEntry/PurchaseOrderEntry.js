@@ -502,7 +502,7 @@ class PurchaseOrderEntry extends Component {
                       disabled={
                         this.state.authBtnEnable === true
                           ? true
-                          : this.state.authorize1 === "Y" && this.state.cancelled === "Y"
+                          : this.state.authorize1 === "Y" || this.state.cancelled === "Y"
                             ? true
                             : false
                       }
@@ -531,7 +531,7 @@ class PurchaseOrderEntry extends Component {
                       disabled={
                         this.state.authBtnEnable === true
                           ? true
-                          : this.state.authorize2 === "Y" && this.state.cancelled === "Y"
+                          : this.state.authorize2 === "Y" || this.state.cancelled === "Y"
                             ? true
                             : false
                       }
