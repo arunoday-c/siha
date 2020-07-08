@@ -781,7 +781,7 @@ class OfficalDetails extends Component {
                     </div>
                     <AlgaehDateHandler
                       div={{ className: "col-3" }}
-                      label={{ forceLabel: "Date of Exit" }}
+                      label={{ forceLabel: "Date of Exit/Last Working Day" }}
                       textBox={{
                         className: "txt-fld",
                         name: "exit_date",

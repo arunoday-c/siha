@@ -285,151 +285,189 @@ class IDType extends Component {
   render() {
     return (
       <div className="id_type">
-        <div className="row inner-top-search">
-          <AlagehFormGroup
-            div={{ className: "col-1  form-group mandatory" }}
-            label={{
-              fieldName: "type_code",
-              isImp: true,
-            }}
-            textBox={{
-              className: "txt-fld",
-              name: "identity_document_code",
-              value: this.state.identity_document_code,
-              events: {
-                onChange: this.changeTexts.bind(this),
-              },
-              others: {
-                tabIndex: "1",
-                placeholder: this.state.identity_document_code_placeHolder,
-              },
-            }}
-          />
+        <div className="row">
+          <div className="col-3">
+            <div className="portlet portlet-bordered margin-bottom-15 margin-top-15">
+              <div className="portlet-body">
+                <div className="row">
+                  <AlagehFormGroup
+                    div={{ className: "col-12  form-group mandatory" }}
+                    label={{
+                      fieldName: "type_code",
+                      isImp: true,
+                    }}
+                    textBox={{
+                      className: "txt-fld",
+                      name: "identity_document_code",
+                      value: this.state.identity_document_code,
+                      events: {
+                        onChange: this.changeTexts.bind(this),
+                      },
+                      others: {
+                        tabIndex: "1",
+                        placeholder: this.state
+                          .identity_document_code_placeHolder,
+                      },
+                    }}
+                  />
 
-          <AlagehFormGroup
-            div={{ className: "col form-group mandatory" }}
-            label={{
-              fieldName: "type_desc",
-              isImp: true,
-            }}
-            textBox={{
-              className: "txt-fld",
-              name: "identity_document_name",
-              value: this.state.identity_document_name,
-              events: {
-                onChange: this.changeTexts.bind(this),
-              },
-            }}
-          />
+                  <AlagehFormGroup
+                    div={{ className: "col-12 form-group mandatory" }}
+                    label={{
+                      forceLabel: "ID Name",
+                      isImp: true,
+                    }}
+                    textBox={{
+                      className: "txt-fld",
+                      name: "identity_document_name",
+                      value: this.state.identity_document_name,
+                      events: {
+                        onChange: this.changeTexts.bind(this),
+                      },
+                    }}
+                  />
 
-          <AlagehFormGroup
-            div={{ className: "col form-group mandatory arabic-txt-fld" }}
-            label={{
-              fieldName: "arabic_type_desc",
-              isImp: true,
-            }}
-            textBox={{
-              className: "txt-fld",
-              name: "arabic_identity_document_name",
-              value: this.state.arabic_identity_document_name,
-              events: {
-                onChange: this.changeTexts.bind(this),
-              },
-            }}
-          />
-          <AlagehAutoComplete
-            div={{
-              className: "col-lg-2 col-md-2 col-sm-12 form-group",
-            }}
-            label={{
-              forceLabel: "Nationality",
-              // isImp: true,
-            }}
-            selector={{
-              name: "nationality_id",
-              className: "select-fld",
-              value: this.state.nationality_id,
-              dataSource: {
-                textField: "nationality",
-                valueField: "hims_d_nationality_id",
-                data: this.state.countries,
-              },
-              onChange: this.texthandle.bind(this),
-              onClear: () => {
-                this.setState({
-                  nationality: null,
-                });
-              },
-            }}
-          />
-          {/* <AlagehFormGroup
-           
-            label={{
-              fieldName: "Masked Identity",
-              // isImp: true,
-            }}
-            textBox={{
-              className: "txt-fld",
-              name: "masked_identity",
-              value: this.state.masked_identity,
-              events: {
-                onChange: this.changeTexts.bind(this),
-              },
-            }}
-          /> */}
-          <div className="col-lg-2 col-md-2 col-sm-12 form-group">
-            <label className="styleLabel">MASKED IDENTITY</label>
-            <div className="ui input txt-fld">
-              <Input
-                placeholder="MASKING IDENTITY"
-                // className="col-3  form-group"
+                  <AlagehFormGroup
+                    div={{
+                      className: "col-12 form-group mandatory arabic-txt-fld",
+                    }}
+                    label={{
+                      forceLabel: "ID Arabic Name",
+                      isImp: true,
+                    }}
+                    textBox={{
+                      className: "txt-fld",
+                      name: "arabic_identity_document_name",
+                      value: this.state.arabic_identity_document_name,
+                      events: {
+                        onChange: this.changeTexts.bind(this),
+                      },
+                    }}
+                  />
+                  <AlagehAutoComplete
+                    div={{
+                      className: "col-12 form-group",
+                    }}
+                    label={{
+                      forceLabel: "Nationality",
+                      // isImp: true,
+                    }}
+                    selector={{
+                      name: "nationality_id",
+                      className: "select-fld",
+                      value: this.state.nationality_id,
+                      dataSource: {
+                        textField: "nationality",
+                        valueField: "hims_d_nationality_id",
+                        data: this.state.countries,
+                      },
+                      onChange: this.texthandle.bind(this),
+                      onClear: () => {
+                        this.setState({
+                          nationality: null,
+                        });
+                      },
+                    }}
+                  />
 
-                name="masked_identity"
-                value={this.state.masked_identity}
-                onChange={this.changeTexts.bind(this)}
-                suffix={
-                  <Tooltip title={this.ToolTipText}>
-                    <i className="fas fa-info-circle"></i>
-                  </Tooltip>
-                }
-              />
+                  <div className="col-6 form-group">
+                    <label className="styleLabel">ID Format</label>
+                    <div className="ui input txt-fld">
+                      <Input
+                        placeholder="##-####-####"
+                        // className="col-3  form-group"
+
+                        name="masked_identity"
+                        value={this.state.masked_identity}
+                        onChange={this.changeTexts.bind(this)}
+                        suffix={
+                          <Tooltip title={this.ToolTipText}>
+                            <i className="fas fa-info-circle"></i>
+                          </Tooltip>
+                        }
+                      />
+                    </div>
+                  </div>
+                  <div className="col-6 form-group">
+                    <label>Notify Expiry</label>
+                    <div className="customCheckbox">
+                      <label className="checkbox inline">
+                        <input type="checkbox" value="" name="" />
+                        <span>Yes</span>
+                      </label>
+                    </div>
+                  </div>
+                  <AlagehFormGroup
+                    div={{
+                      className: "col-12 form-group mandatory",
+                    }}
+                    label={{
+                      forceLabel: "Notify before (days)",
+                      isImp: false,
+                    }}
+                    textBox={{
+                      className: "txt-fld",
+                      name: "",
+                      value: "",
+                      events: {},
+                      others: { placeholder: "0", type: "number" },
+                    }}
+                  />
+                  <AlagehAutoComplete
+                    div={{
+                      className: "col-12 form-group",
+                    }}
+                    label={{
+                      forceLabel: "Notify User 1",
+                      // isImp: true,
+                    }}
+                    selector={{
+                      name: "",
+                      className: "select-fld",
+                      value: "",
+                      dataSource: {
+                        textField: "",
+                        valueField: "",
+                        data: [],
+                      },
+                      // onChange: this.texthandle.bind(this),
+                    }}
+                  />
+                  <AlagehAutoComplete
+                    div={{
+                      className: "col-12 form-group",
+                    }}
+                    label={{
+                      forceLabel: "Notify User 2",
+                      // isImp: true,
+                    }}
+                    selector={{
+                      name: "",
+                      className: "select-fld",
+                      value: "",
+                      dataSource: {
+                        textField: "",
+                        valueField: "",
+                        data: [],
+                      },
+                      // onChange: this.texthandle.bind(this),
+                    }}
+                  />
+
+                  <div className="col-12" style={{ textAlign: "right" }}>
+                    <button
+                      onClick={this.addIDType.bind(this)}
+                      className="btn btn-primary"
+                    >
+                      Add to List
+                    </button>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-
-          {/* <AlagehAutoComplete
-            div={{
-              className: "col-lg-2 col-md-2 col-sm-12 form-group mandatory",
-            }}
-            label={{
-              forceLabel: "Nationality",
-              isImp: true,
-            }}
-            selector={{
-              name: "nationality",
-              className: "select-fld",
-              // value: this.state.nationality,
-              dataSource: {
-                textField: "nationality",
-                valueField: "",
-                data: [],
-              },
-              // onChange: texthandle.bind(this, this),
-            }}
-          /> */}
-
-          <div className="col-1" style={{ marginTop: 19, textAlign: "right" }}>
-            <button
-              onClick={this.addIDType.bind(this)}
-              className="btn btn-primary"
-            >
-              Add to List
-            </button>
-          </div>
-        </div>
-
-        <div className="row">
-          <div className="col-12">
-            <div className="portlet portlet-bordered margin-bottom-15">
+          <div className="col-9">
+            <div className="portlet portlet-bordered margin-bottom-15 margin-top-15">
               <div className="portlet-body">
                 <div className="row">
                   <div className="col" data-validate="idDiv">
@@ -577,9 +615,7 @@ class IDType extends Component {
                         {
                           fieldName: "masked_identity",
                           label: (
-                            <AlgaehLabel
-                              label={{ fieldName: "Masked Identity" }}
-                            />
+                            <AlgaehLabel label={{ fieldName: "ID Format" }} />
                           ),
                           editorTemplate: (row) => {
                             return (
@@ -695,6 +731,38 @@ class IDType extends Component {
                               />
                             );
                           },
+                        },
+                        {
+                          fieldName: "",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Notify Expiry" }}
+                            />
+                          ),
+                        },
+                        {
+                          fieldName: "",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Notify Before" }}
+                            />
+                          ),
+                        },
+                        {
+                          fieldName: "",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Notify User 1" }}
+                            />
+                          ),
+                        },
+                        {
+                          fieldName: "",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Notify User 2" }}
+                            />
+                          ),
                         },
                       ]}
                       keyId="identity_document_code"
