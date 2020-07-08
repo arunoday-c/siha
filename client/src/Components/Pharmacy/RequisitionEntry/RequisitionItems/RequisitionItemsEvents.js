@@ -71,6 +71,8 @@ const itemchangeText = ($this, context, e) => {
           });
           $this.setState({
             [name]: value,
+            item_description: e.selected.item_description,
+
             item_category_id: e.selected.category_id,
             item_uom: e.selected.sales_uom_id,
             item_id: e.hims_d_item_master_id,
@@ -84,6 +86,8 @@ const itemchangeText = ($this, context, e) => {
           if (context !== undefined) {
             context.updateState({
               [name]: value,
+              item_description: e.selected.item_description,
+
               item_category_id: e.selected.category_id,
               item_uom: e.selected.sales_uom_id,
               item_id: e.hims_d_item_master_id,
@@ -132,6 +136,8 @@ const itemchangeText = ($this, context, e) => {
           });
           $this.setState({
             [name]: value,
+            item_description: e.item_description,
+
             item_category_id: e.category_id,
             item_uom: e.sales_uom_id,
             item_id: e.hims_d_item_master_id,
@@ -157,6 +163,8 @@ const itemchangeText = ($this, context, e) => {
           if (context !== undefined) {
             context.updateState({
               [name]: value,
+              item_description: e.item_description,
+
               item_category_id: e.category_id,
               item_uom: e.sales_uom_id,
               item_id: e.hims_d_item_master_id,
@@ -179,7 +187,6 @@ const itemchangeText = ($this, context, e) => {
 };
 
 const AddItems = ($this, context) => {
-  debugger;
   if (
     $this.state.from_location_id === null ||
     $this.state.to_location_id === null
@@ -218,6 +225,8 @@ const AddItems = ($this, context) => {
       quantity_authorized: 0,
       item_uom: $this.state.item_uom,
       from_qtyhand: $this.state.from_qtyhand,
+      item_description: $this.state.item_description,
+
       to_qtyhand: $this.state.to_qtyhand,
       quantity_outstanding: 0,
     };
@@ -233,6 +242,7 @@ const AddItems = ($this, context) => {
       item_uom: null,
       from_qtyhand: 0,
       to_qtyhand: 0,
+      item_description: "",
     });
 
     if (context !== undefined) {
@@ -247,6 +257,7 @@ const AddItems = ($this, context) => {
         item_uom: null,
         from_qtyhand: 0,
         to_qtyhand: 0,
+        item_description: "",
       });
     }
   }

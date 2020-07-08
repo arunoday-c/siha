@@ -108,7 +108,7 @@ let authUser = (req, res, next) => {
     _mysql
       .executeQuery({
         query:
-          "SELECT  algaeh_d_app_user_id, username, user_display_name,  locked, user_type,login_attempts,\
+          "SELECT  algaeh_d_app_user_id, username, user_display_name,  employee_code, locked, user_type,login_attempts,\
      password_expiry_rule, algaeh_m_role_user_mappings_id,app_d_app_roles_id,app_group_id,\
      role_code, role_name, role_discreption, role_type,loan_authorize_privilege,leave_authorize_privilege,finance_authorize_privilege,edit_monthly_attendance,\
      algaeh_d_app_group_id, app_group_code, app_group_name, app_group_desc, group_type, \
@@ -164,7 +164,7 @@ let apiAuthentication = (req, res, next) => {
     _mysql
       .executeQuery({
         query:
-          "SELECT algaeh_d_app_user_id, username, user_display_name,P.password as gatepass,  locked, user_type,login_attempts,\
+          "SELECT algaeh_d_app_user_id, username, user_display_name,employee_code,P.password as gatepass,  locked, user_type,login_attempts,\
          password_expiry_rule, algaeh_m_role_user_mappings_id,app_d_app_roles_id,app_group_id,\
          role_code, role_name, role_discreption, role_type,loan_authorize_privilege,leave_authorize_privilege,edit_monthly_attendance,\
          algaeh_d_app_group_id, app_group_code, app_group_name, app_group_desc, group_type, \

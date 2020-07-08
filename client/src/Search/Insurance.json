@@ -12,7 +12,7 @@
     "label": "Network Type"
   },
   {
-    "fieldName": "insurance_type",
+    "fieldName": "insurance_type_d",
     "label": "Company Type"
   },
   {

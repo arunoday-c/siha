@@ -59,18 +59,18 @@ const texthandle = ($this, ctrl, e) => {
         tax_percent: 0,
         organizations: [],
         contract_number: null,
-        contract_id: null
+        contract_id: null,
       });
       break;
     case "project_id":
       $this.setState({
         [name]: value,
-        organizations: e.selected.branches
+        organizations: e.selected.branches,
       });
       break;
     default:
       $this.setState({
-        [name]: value
+        [name]: value,
       });
       break;
   }
@@ -83,7 +83,7 @@ const customerTexthandle = ($this, e) => {
   if ($this.state.sales_order_mode === "I") {
     $this.setState({
       [name]: value,
-      payment_terms: e.selected.payment_terms
+      payment_terms: e.selected.payment_terms,
     });
   } else {
     AlgaehLoader({ show: true });
@@ -92,32 +92,32 @@ const customerTexthandle = ($this, e) => {
       module: "sales",
       method: "GET",
       data: { customer_id: value },
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           $this.setState({
             [name]: value,
-            payment_terms: e.selected.payment_terms
+            payment_terms: e.selected.payment_terms,
           });
         } else {
           $this.setState({
             [name]: null,
-            payment_terms: null
+            payment_terms: null,
           });
           swalMessage({
             title:
               "Selected Customer contract expired. Please contact customer for renewal.",
-            type: "warning"
+            type: "warning",
           });
         }
         AlgaehLoader({ show: false });
-      }
+      },
     });
   }
 };
 
 const datehandle = ($this, ctrl, e) => {
   $this.setState({
-    [e]: moment(ctrl)._d
+    [e]: moment(ctrl)._d,
   });
 };
 
@@ -132,7 +132,7 @@ const SalesQuotationSearch = ($this, e) => {
       : " quote_services_status='G'";
   AlgaehSearch({
     searchGrid: {
-      columns: spotlightSearch.Sales.SalesQuotation
+      columns: spotlightSearch.Sales.SalesQuotation,
     },
     searchName: "SalesQuotation",
     uri: "/gloabelSearch/get",
@@ -141,7 +141,7 @@ const SalesQuotationSearch = ($this, e) => {
     onContainsChange: (text, serchBy, callBack) => {
       callBack(text);
     },
-    onRowSelect: row => {
+    onRowSelect: (row) => {
       AlgaehLoader({ show: true });
       algaehApiCall({
         uri: "/SalesOrder/getSalesQuotationForOrder",
@@ -150,9 +150,9 @@ const SalesQuotationSearch = ($this, e) => {
         data: {
           sales_quotation_number: row.sales_quotation_number,
           sales_order_mode: $this.state.sales_order_mode,
-          HRMNGMT_Active: $this.HRMNGMT_Active
+          HRMNGMT_Active: $this.HRMNGMT_Active,
         },
-        onSuccess: response => {
+        onSuccess: (response) => {
           if (response.data.success) {
             let data = response.data.records;
             if (data.qutation_detail.length === 0) {
@@ -161,13 +161,13 @@ const SalesQuotationSearch = ($this, e) => {
                 swalMessage({
                   title:
                     "Selcted Quotation Has no Item Details, Select proper Quotation",
-                  type: "warning"
+                  type: "warning",
                 });
               } else {
                 swalMessage({
                   title:
                     "Selcted Quotation Has no Service Details, Select proper Quotation",
-                  type: "warning"
+                  type: "warning",
                 });
               }
               return;
@@ -185,21 +185,21 @@ const SalesQuotationSearch = ($this, e) => {
             data.grid_edit = false;
             data.tax_percentage = data.vat_percentage;
 
-            data.sub_total = _.sumBy(data.qutation_detail, s =>
+            data.sub_total = _.sumBy(data.qutation_detail, (s) =>
               parseFloat(s.extended_cost)
             );
-            data.discount_amount = _.sumBy(data.qutation_detail, s =>
+            data.discount_amount = _.sumBy(data.qutation_detail, (s) =>
               parseFloat(s.discount_amount)
             );
-            data.net_total = _.sumBy(data.qutation_detail, s =>
+            data.net_total = _.sumBy(data.qutation_detail, (s) =>
               parseFloat(s.net_extended_cost)
             );
 
-            data.total_tax = _.sumBy(data.qutation_detail, s =>
+            data.total_tax = _.sumBy(data.qutation_detail, (s) =>
               parseFloat(s.tax_amount)
             );
 
-            data.net_payable = _.sumBy(data.qutation_detail, s =>
+            data.net_payable = _.sumBy(data.qutation_detail, (s) =>
               parseFloat(s.total_amount)
             );
 
@@ -208,15 +208,15 @@ const SalesQuotationSearch = ($this, e) => {
           }
           AlgaehLoader({ show: false });
         },
-        onFailure: error => {
+        onFailure: (error) => {
           AlgaehLoader({ show: false });
           swalMessage({
             title: error.message,
-            type: "error"
+            type: "error",
           });
-        }
+        },
       });
-    }
+    },
   });
 };
 
@@ -231,7 +231,7 @@ const ContractSearch = ($this, e) => {
   //     : " quote_services_status='G'";
   AlgaehSearch({
     searchGrid: {
-      columns: spotlightSearch.Sales.ContractMang
+      columns: spotlightSearch.Sales.ContractMang,
     },
     searchName: "ContractMang",
     uri: "/gloabelSearch/get",
@@ -240,7 +240,7 @@ const ContractSearch = ($this, e) => {
     onContainsChange: (text, serchBy, callBack) => {
       callBack(text);
     },
-    onRowSelect: row => {
+    onRowSelect: (row) => {
       AlgaehLoader({ show: true });
       algaehApiCall({
         uri: "/SalesOrder/getContractSalesOrder",
@@ -248,13 +248,13 @@ const ContractSearch = ($this, e) => {
         method: "GET",
         data: {
           contract_number: row.contract_number,
-          HRMNGMT_Active: $this.HRMNGMT_Active
+          HRMNGMT_Active: $this.HRMNGMT_Active,
         },
-        onSuccess: response => {
+        onSuccess: (response) => {
           if (response.data.success) {
             let data = response.data.records;
-            data.sales_order_services = data.contract_services
-            debugger
+            data.sales_order_services = data.contract_services;
+            debugger;
 
             data.contract_id = data.hims_f_contract_management_id;
             data.saveEnable = false;
@@ -262,36 +262,40 @@ const ContractSearch = ($this, e) => {
             data.grid_edit = false;
 
             for (let i = 0; i < data.sales_order_services.length; i++) {
-              data.sales_order_services[i].quantity = 1
-              data.sales_order_services[i].unit_cost = data.sales_order_services[i].service_price
-              data.sales_order_services[i].extended_cost = data.sales_order_services[i].service_price
-              data.sales_order_services[i].discount_percentage = 0
-              data.sales_order_services[i].discount_amount = 0
-              data.sales_order_services[i].net_extended_cost = data.sales_order_services[i].service_price
+              data.sales_order_services[i].quantity = 1;
+              data.sales_order_services[i].unit_cost =
+                data.sales_order_services[i].service_price;
+              data.sales_order_services[i].extended_cost =
+                data.sales_order_services[i].service_price;
+              data.sales_order_services[i].discount_percentage = 0;
+              data.sales_order_services[i].discount_amount = 0;
+              data.sales_order_services[i].net_extended_cost =
+                data.sales_order_services[i].service_price;
               data.sales_order_services[i].tax_amount =
                 (parseFloat(data.sales_order_services[i].service_price) *
-                  parseFloat(data.sales_order_services[i].tax_percentage)) / 100;
+                  parseFloat(data.sales_order_services[i].tax_percentage)) /
+                100;
 
               data.sales_order_services[i].total_amount =
                 parseFloat(data.sales_order_services[i].service_price) +
                 parseFloat(data.sales_order_services[i].tax_amount);
             }
 
-            data.sub_total = _.sumBy(data.sales_order_services, s =>
+            data.sub_total = _.sumBy(data.sales_order_services, (s) =>
               parseFloat(s.extended_cost)
             );
-            data.discount_amount = _.sumBy(data.sales_order_services, s =>
+            data.discount_amount = _.sumBy(data.sales_order_services, (s) =>
               parseFloat(s.discount_amount)
             );
-            data.net_total = _.sumBy(data.sales_order_services, s =>
+            data.net_total = _.sumBy(data.sales_order_services, (s) =>
               parseFloat(s.net_extended_cost)
             );
 
-            data.total_tax = _.sumBy(data.sales_order_services, s =>
+            data.total_tax = _.sumBy(data.sales_order_services, (s) =>
               parseFloat(s.tax_amount)
             );
 
-            data.net_payable = _.sumBy(data.sales_order_services, s =>
+            data.net_payable = _.sumBy(data.sales_order_services, (s) =>
               parseFloat(s.total_amount)
             );
 
@@ -300,15 +304,15 @@ const ContractSearch = ($this, e) => {
           }
           AlgaehLoader({ show: false });
         },
-        onFailure: error => {
+        onFailure: (error) => {
           AlgaehLoader({ show: false });
           swalMessage({
             title: error.message,
-            type: "error"
+            type: "error",
           });
-        }
+        },
       });
-    }
+    },
   });
 };
 
@@ -336,12 +340,14 @@ const ClearData = ($this, e) => {
     project_id: null,
     customer_po_no: null,
     tax_percentage: null,
-
+    invoice_files: [],
+    invoice_docs: [],
+    docChanged: false,
     sales_order_items: [],
     sales_order_services: [],
     saveEnable: true,
     dataExists: false,
-    dataExitst: false,
+
     hospital_id: null,
     sales_person_id: null,
     employee_name: null,
@@ -361,14 +367,14 @@ const ClearData = ($this, e) => {
     selectedData: false,
     organizations: [],
     contract_number: null,
-    contract_id: null
+    contract_id: null,
     // services_required: "N"
   };
 
   $this.setState(IOputs);
 };
 
-const SaveSalesOrderEnrty = $this => {
+const SaveSalesOrderEnrty = ($this) => {
   AlgaehValidation({
     querySelector: "data-validate='HeaderDiv'",
     alertTypeIcon: "warning",
@@ -376,7 +382,7 @@ const SaveSalesOrderEnrty = $this => {
       if ($this.HRMNGMT_Active && $this.state.sales_person_id === null) {
         swalMessage({
           type: "warning",
-          title: "Please select Sales Person"
+          title: "Please select Sales Person",
         });
         return;
       }
@@ -385,24 +391,24 @@ const SaveSalesOrderEnrty = $this => {
           ? $this.state.sales_order_items
           : $this.state.sales_order_services;
       let qty_exists = Enumerable.from(order_detail).any(
-        w => parseFloat(w.quantity) === 0 || w.quantity === ""
+        (w) => parseFloat(w.quantity) === 0 || w.quantity === ""
       );
       if (qty_exists === true) {
         swalMessage({
           title: "Please enter Quantity in the List.",
-          type: "warning"
+          type: "warning",
         });
         return;
       }
       $this.state.quote_validity = moment(
         $this.state.quote_validity,
         "YYYY-MM-DD"
-      ).format("YYYY-MM-DD")
+      ).format("YYYY-MM-DD");
 
       $this.state.delivery_date = moment(
         $this.state.delivery_date,
         "YYYY-MM-DD"
-      ).format("YYYY-MM-DD")
+      ).format("YYYY-MM-DD");
       const settings = { header: undefined, footer: undefined };
 
       AlgaehLoader({ show: true });
@@ -414,40 +420,47 @@ const SaveSalesOrderEnrty = $this => {
         method: "POST",
         header: {
           "content-type": "application/octet-stream",
-          ...settings
+          ...settings,
         },
-        onSuccess: response => {
+        onSuccess: (response) => {
           if (response.data.success) {
-            $this.setState({
-              sales_order_number: response.data.records.sales_order_number,
-              hims_f_sales_order_id:
-                response.data.records.hims_f_sales_order_id,
-              saveEnable: true,
-              dataExists: true,
-              grid_edit: true
-            });
+            $this.setState(
+              {
+                sales_order_number: response.data.records.sales_order_number,
+                hims_f_sales_order_id:
+                  response.data.records.hims_f_sales_order_id,
+                saveEnable: true,
+                dataExists: true,
+                grid_edit: true,
+              },
+              () => {
+                if ($this.state.invoice_files.length) {
+                  $this.saveDocument();
+                }
+              }
+            );
             swalMessage({
               type: "success",
-              title: "Saved successfully ..."
+              title: "Saved successfully ...",
             });
             AlgaehLoader({ show: false });
           } else {
             AlgaehLoader({ show: false });
             swalMessage({
               type: "error",
-              title: response.data.records.message
+              title: response.data.records.message,
             });
           }
         },
-        onFailure: error => {
+        onFailure: (error) => {
           AlgaehLoader({ show: false });
           swalMessage({
             title: error.message,
-            type: "error"
+            type: "error",
           });
-        }
+        },
       });
-    }
+    },
   });
 };
 
@@ -459,9 +472,9 @@ const getCtrlCode = ($this, docNumber) => {
     method: "GET",
     data: {
       sales_order_number: docNumber,
-      HRMNGMT_Active: $this.HRMNGMT_Active
+      HRMNGMT_Active: $this.HRMNGMT_Active,
     },
-    onSuccess: response => {
+    onSuccess: (response) => {
       if (response.data.success) {
         let data = response.data.records;
 
@@ -490,7 +503,6 @@ const getCtrlCode = ($this, docNumber) => {
         }
         data.saveEnable = true;
         data.dataExists = true;
-        data.dataExitst = true;
 
         data.addedItem = true;
         data.selectedData = true;
@@ -499,28 +511,30 @@ const getCtrlCode = ($this, docNumber) => {
         // );
         data.organizations = $this.props.hospitaldetails;
 
-        $this.setState(data);
+        $this.setState(data, () => {
+          $this.getDocuments();
+        });
       }
       AlgaehLoader({ show: false });
     },
-    onFailure: error => {
+    onFailure: (error) => {
       AlgaehLoader({ show: false });
       swalMessage({
         title: error.message,
-        type: "error"
+        type: "error",
       });
-    }
+    },
   });
 };
 
-const generateSalesOrderReport = data => {
+const generateSalesOrderReport = (data) => {
   // console.log("data:", data);
   algaehApiCall({
     uri: "/report",
     method: "GET",
     module: "reports",
     headers: {
-      Accept: "blob"
+      Accept: "blob",
     },
     others: { responseType: "blob" },
     data: {
@@ -532,19 +546,19 @@ const generateSalesOrderReport = data => {
         reportParams: [
           {
             name: "sales_order_number",
-            value: data.sales_order_number
-          }
+            value: data.sales_order_number,
+          },
         ],
-        outputFileType: "PDF"
-      }
+        outputFileType: "PDF",
+      },
     },
-    onSuccess: res => {
+    onSuccess: (res) => {
       const urlBlob = URL.createObjectURL(res.data);
-      const reportName = `${data.sales_order_number}-Sales Order Report`
+      const reportName = `${data.sales_order_number}-Sales Order Report`;
       const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=${reportName}`;
       window.open(origin);
       // window.document.title = "Sales Order";
-    }
+    },
   });
 };
 
@@ -580,26 +594,26 @@ const generateSalesOrderReport = data => {
 //   });
 // };
 
-const getSalesOptions = $this => {
+const getSalesOptions = ($this) => {
   algaehApiCall({
     uri: "/SalesSettings/getSalesOptions",
     method: "GET",
     module: "sales",
-    onSuccess: res => {
+    onSuccess: (res) => {
       if (res.data.success) {
         $this.setState({
           services_required: res.data.records[0].services_required,
-          sales_order_auth_level: res.data.records[0].sales_order_auth_level
+          sales_order_auth_level: res.data.records[0].sales_order_auth_level,
         });
       }
-    }
+    },
   });
 };
 
-const employeeSearch = $this => {
+const employeeSearch = ($this) => {
   AlgaehSearch({
     searchGrid: {
-      columns: spotlightSearch.Employee_details.employee
+      columns: spotlightSearch.Employee_details.employee,
     },
     searchName: "employee_branch_wise",
     uri: "/gloabelSearch/get",
@@ -607,12 +621,12 @@ const employeeSearch = $this => {
     onContainsChange: (text, serchBy, callBack) => {
       callBack(text);
     },
-    onRowSelect: row => {
+    onRowSelect: (row) => {
       $this.setState({
         employee_name: row.full_name,
-        sales_person_id: row.hims_d_employee_id
+        sales_person_id: row.hims_d_employee_id,
       });
-    }
+    },
   });
 };
 
@@ -621,11 +635,11 @@ const dateValidate = ($this, value, event) => {
   if (inRange) {
     swalMessage({
       title: "Selected Date cannot be past Date.",
-      type: "warning"
+      type: "warning",
     });
     event.target.focus();
     $this.setState({
-      [event.target.name]: null
+      [event.target.name]: null,
     });
   }
 };
@@ -638,16 +652,16 @@ const AuthorizeOrderEntry = ($this, authorize) => {
   if (order_detail.length === 0) {
     swalMessage({
       title: "Atleast One item is required to Authorize Order.",
-      type: "warning"
+      type: "warning",
     });
   }
   let qty_exists = Enumerable.from(order_detail).any(
-    w => parseFloat(w.quantity) === 0 || w.quantity === ""
+    (w) => parseFloat(w.quantity) === 0 || w.quantity === ""
   );
   if (qty_exists === true) {
     swalMessage({
       title: "Please enter Quantity.",
-      type: "warning"
+      type: "warning",
     });
     return;
   }
@@ -682,70 +696,70 @@ const AuthorizeOrderEntry = ($this, authorize) => {
     data: Buffer.from(JSON.stringify($this.state), "utf8"),
     header: {
       "content-type": "application/octet-stream",
-      ...settings
+      ...settings,
     },
-    onSuccess: response => {
+    onSuccess: (response) => {
       if (response.data.success === true) {
         $this.setState({
           authorize1: authorize1,
-          authorize2: authorize2
+          authorize2: authorize2,
         });
         swalMessage({
           title: "Authorized successfully . .",
-          type: "success"
+          type: "success",
         });
       }
       AlgaehLoader({ show: false });
     },
-    onFailure: error => {
+    onFailure: (error) => {
       AlgaehLoader({ show: false });
       swalMessage({
         title: error.message,
-        type: "error"
+        type: "error",
       });
-    }
+    },
   });
 };
 
-const CancelSalesServiceOrder = $this => {
+const CancelSalesServiceOrder = ($this) => {
   algaehApiCall({
     uri: "/SalesOrder/cancelSalesServiceOrder",
     module: "sales",
     data: $this.state,
     method: "PUT",
-    onSuccess: response => {
+    onSuccess: (response) => {
       if (response.data.success === true) {
         swalMessage({
           title: "Cancelled successfully . .",
-          type: "success"
+          type: "success",
         });
         $this.setState({
-          cancelDisable: true
+          cancelDisable: true,
         });
       }
       AlgaehLoader({ show: false });
     },
-    onFailure: error => {
+    onFailure: (error) => {
       AlgaehLoader({ show: false });
       swalMessage({
         title: error.message,
-        type: "error"
+        type: "error",
       });
-    }
+    },
   });
 };
 
-const getCostCenters = $this => {
+const getCostCenters = ($this) => {
   algaehApiCall({
     uri: "/finance_masters/getCostCenters",
     method: "GET",
     module: "finance",
 
-    onSuccess: response => {
+    onSuccess: (response) => {
       if (response.data.success === true) {
         $this.setState({ cost_projects: response.data.result });
       }
-    }
+    },
   });
 };
 export {
@@ -763,5 +777,5 @@ export {
   AuthorizeOrderEntry,
   CancelSalesServiceOrder,
   getCostCenters,
-  ContractSearch
+  ContractSearch,
 };
