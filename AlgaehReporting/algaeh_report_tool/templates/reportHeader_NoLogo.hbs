@@ -1,0 +1,96 @@
+<style type="text/css">
+    .reportHeaderCntr {
+
+        width: 100%;
+        border-collapse: collapse;
+        margin: 0 18px;
+        text-align: center;
+        font-family: Arial, sans-serif;
+        font-weight: normal;
+    }
+
+    .reportHeaderCntr th {
+        border: 0.5px solid #ccc;
+        padding: 0 5px;
+        margin: 0;
+        font-size: 8px;
+
+    }
+
+    .hospitalLogo {
+        text-align: center;
+        width: 100px;
+    }
+
+    .hospitalLogo img {
+        margin: 0;
+        padding: 0;
+        border: none;
+        width: 100px;
+        height: auto;
+    }
+
+    .reportHeaderCntr h4 {
+        font-size: 11px;
+        margin: 3px 0;
+        padding: 0;
+    }
+
+    .reportHeaderCntr p {
+        margin: 3px 0;
+        padding: 0;
+    }
+
+
+    .showFilterValue {
+        width: 100%;
+    }
+
+    .showFilterValue span {
+        font-size: 7px !important;
+        font-weight: bold;
+        display: inline-block;
+        padding: 3px 5px;
+        border-left: 1px solid #ccc;
+        text-align: left;
+    }
+
+    .showFilterValue span:first-child {
+        border-left: none;
+    }
+
+    .showFilterValue small {
+        display: block;
+        font-size: 6px !important;
+        color: #ccc;
+    }
+</style>
+
+<body>
+
+    <table class="reportHeaderCntr">
+        {{!-- <tr>
+            <th>
+                <div class="hospitalLogo"><img src="{{imageSource 'images/clientLogo.png'}}" /></div>
+                <div class="hospitalAddress">
+                    <h4>{{{report_name_for_header}}}</h4>
+                    <p>{{hospital_address}}</p>
+                    <p>Date: {{currentDateTime 'date'}}</p>
+                </div>
+
+            </th>
+        </tr> data:image/png;base64,{{logoUrl "1" "ORG"}}--}}
+
+        <tr>
+            {{!-- <th rowspan="3" class="hospitalLogo" >
+
+            </th> --}}
+            <th style="border:none;">
+                <h4>{{{report_name_for_header}}}</h4>
+            </th>
+        </tr>
+
+
+    </table>
+
+</body>

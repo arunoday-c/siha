@@ -2704,40 +2704,39 @@ export default {
                   }
 
                   //If primary and secondary exists
-                } else {
-                  // insurance_provider_ids
-                  // console.log("insurance_provider_ids", is_insurance.length)
-                  // if (FollowUp === true) {
-                  //   unit_cost =
-                  //     unit_cost != 0
-                  //       ? parseFloat(unit_cost)
-                  //       : parseFloat(records.followup_free_fee);
-                  // } else {
-                  //   if (is_insurance.length > 0) {
-                  //     unit_cost = parseFloat(policydtls.gross_amt);
-
-                  //   } else {
-                  //     unit_cost =
-                  //       from_pos == "Y"
-                  //         ? parseFloat(unit_cost)
-                  //         : unit_cost != 0
-                  //           ? parseFloat(unit_cost)
-                  //           : parseFloat(records.standard_fee);
-                  //   }
-                  // }
+                } else {                  
+                  console.log("insurance_provider_ids", is_insurance.length)
                   if (FollowUp === true) {
                     unit_cost =
                       unit_cost != 0
                         ? parseFloat(unit_cost)
                         : parseFloat(records.followup_free_fee);
                   } else {
-                    unit_cost =
-                      from_pos == "Y"
-                        ? parseFloat(unit_cost)
-                        : unit_cost != 0
+                    if (is_insurance.length > 0) {
+                      unit_cost = parseFloat(policydtls.gross_amt);
+
+                    } else {
+                      unit_cost =
+                        from_pos == "Y"
                           ? parseFloat(unit_cost)
-                          : parseFloat(records.standard_fee);
+                          : unit_cost != 0
+                            ? parseFloat(unit_cost)
+                            : parseFloat(records.standard_fee);
+                    }
                   }
+                  // if (FollowUp === true) {
+                  //   unit_cost =
+                  //     unit_cost != 0
+                  //       ? parseFloat(unit_cost)
+                  //       : parseFloat(records.followup_free_fee);
+                  // } else {
+                  //   unit_cost =
+                  //     from_pos == "Y"
+                  //       ? parseFloat(unit_cost)
+                  //       : unit_cost != 0
+                  //         ? parseFloat(unit_cost)
+                  //         : parseFloat(records.standard_fee);
+                  // }
 
                   // if (conversion_factor != 0) {
                   //   unit_cost = unit_cost * conversion_factor;
