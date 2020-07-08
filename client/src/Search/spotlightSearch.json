@@ -874,10 +874,6 @@
       {
         "fieldName": "item_code",
         "label": "Item Code"
-      },
-      {
-        "fieldName": "barcode",
-        "label": "Bar Code"
       }
     ],
     "Pharmacyitemmaster": [
