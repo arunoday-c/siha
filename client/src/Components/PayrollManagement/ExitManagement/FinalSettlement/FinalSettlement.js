@@ -190,7 +190,7 @@ class FinalSettlement extends Component {
   }
   setTotalEarnings() {
     let total_earnings = Enumerable.from(this.state.earningList).sum((s) =>
-      parseInt(s.amount, 10)
+      parseFloat(s.amount)
     );
     this.setState(
       {
@@ -204,7 +204,7 @@ class FinalSettlement extends Component {
 
   setTotalDeductions() {
     let total_deductions = Enumerable.from(this.state.deductingList).sum((s) =>
-      parseInt(s.amount, 10)
+      parseFloat(s.amount)
     );
 
     this.setState(
@@ -1187,6 +1187,16 @@ class FinalSettlement extends Component {
                 <button
                   type="button"
                   className="btn btn-primary"
+                  onClick={this.saveFinalSettlement.bind(this)}
+                  disabled={this.state.disableSave}
+                >
+                  <AlgaehLabel
+                    label={{ forceLabel: "Save", returnText: true }}
+                  />
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-other"
                   onClick={this.saveFinalSettlement.bind(this)}
                   disabled={this.state.disableSave}
                 >
