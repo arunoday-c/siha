@@ -484,16 +484,16 @@ const getCtrlCode = ($this, docNumber) => {
 
 const getData = ($this, po_from) => {
   if (po_from === "PHR") {
-    // $this.props.getItems({
-    //   uri: "/pharmacy/getItemMaster",
-    //   data: { item_status: "A" },
-    //   module: "pharmacy",
-    //   method: "GET",
-    //   redux: {
-    //     type: "ITEM_GET_DATA",
-    //     mappingName: "poitemlist",
-    //   },
-    // });
+    $this.props.getItems({
+      uri: "/pharmacy/getItemMaster",
+      data: { item_status: "A" },
+      module: "pharmacy",
+      method: "GET",
+      redux: {
+        type: "ITEM_GET_DATA",
+        mappingName: "poitemlist",
+      },
+    });
 
     $this.props.getLocation({
       uri: "/pharmacy/getPharmacyLocation",
@@ -538,16 +538,16 @@ const getData = ($this, po_from) => {
       },
     });
   } else if (po_from === "INV") {
-    // $this.props.getItems({
-    //   uri: "/inventory/getItemMaster",
-    //   data: { item_status: "A" },
-    //   module: "inventory",
-    //   method: "GET",
-    //   redux: {
-    //     type: "ITEM_GET_DATA",
-    //     mappingName: "poitemlist",
-    //   },
-    // });
+    $this.props.getItems({
+      uri: "/inventory/getItemMaster",
+      data: { item_status: "A" },
+      module: "inventory",
+      method: "GET",
+      redux: {
+        type: "ITEM_GET_DATA",
+        mappingName: "poitemlist",
+      },
+    });
 
     $this.props.getLocation({
       uri: "/inventory/getInventoryLocation",
@@ -570,7 +570,7 @@ const getData = ($this, po_from) => {
         type: "ITEM_CATEGORY_GET_DATA",
         mappingName: "poitemcategory",
       },
-      afterSuccess: (data) => { },
+      afterSuccess: (data) => {},
     });
 
     $this.props.getItemGroup({
@@ -1021,12 +1021,14 @@ const CancelPOEntry = ($this) => {
       algaehApiCall({
         uri: "/PurchaseOrderEntry/cancelPurchaseOrderEntry",
         module: "procurement",
-        data: { hims_f_procurement_po_header_id: $this.state.hims_f_procurement_po_header_id },
+        data: {
+          hims_f_procurement_po_header_id:
+            $this.state.hims_f_procurement_po_header_id,
+        },
         method: "PUT",
         onSuccess: (response) => {
           if (response.data.success === true) {
-
-            getCtrlCode($this, $this.state.purchase_number)
+            getCtrlCode($this, $this.state.purchase_number);
             swalMessage({
               title: "Cancelled successfully . .",
               type: "success",
@@ -1043,7 +1045,6 @@ const CancelPOEntry = ($this) => {
       });
     }
   });
-
 };
 
 export {
@@ -1066,5 +1067,5 @@ export {
   VendorQuotationSearch,
   getPOOptions,
   getData,
-  CancelPOEntry
+  CancelPOEntry,
 };
