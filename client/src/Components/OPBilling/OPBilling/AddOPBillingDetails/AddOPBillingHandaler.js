@@ -41,7 +41,6 @@ const serviceTypeHandeler = ($this, context, e) => {
 };
 
 const serviceHandeler = ($this, context, e) => {
-  debugger
   if ((e.service_type_id === 5 || e.service_type_id === 11) && e.hims_d_investigation_test_id === null) {
     $this.setState({
       s_service: null,

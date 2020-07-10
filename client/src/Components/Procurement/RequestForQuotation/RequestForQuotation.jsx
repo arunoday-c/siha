@@ -27,7 +27,9 @@ import {
   clearItemDetails,
   dateValidate,
   setDataFromRequest,
+  getData
 } from "./RequestForQuotationEvents";
+import { RawSecurityComponent } from "algaeh-react-components";
 
 class RequestForQuotation extends Component {
   constructor(props) {
@@ -45,16 +47,38 @@ class RequestForQuotation extends Component {
       this.props.quotation_detail.length !== 0
     ) {
       setDataFromRequest(this);
+    } else {
+      let quotation_for = "", bothExisits = true
+      RawSecurityComponent({ componentCode: "REQ_INVENTORY" }).then(
+        (result) => {
+          if (result === "show") {
+            getData(this, "INV");
+            quotation_for = "INV"
+            bothExisits = false
+          }
+        }
+      );
+
+      RawSecurityComponent({ componentCode: "REQ_PHARMACY" }).then(
+        (result) => {
+          if (result === "show") {
+            getData(this, "PHR");
+            quotation_for = "PHR"
+            bothExisits = bothExisits === false ? false : true
+          } else {
+            bothExisits = true
+          }
+          this.setState({
+            quotation_for: quotation_for,
+            bothExisits: bothExisits
+          });
+
+        }
+      );
     }
   }
 
   render() {
-    const class_finder =
-      this.state.dataExitst === true
-        ? " disableFinder"
-        : this.state.ReqData === true
-        ? " disableFinder"
-        : "";
     return (
       <div>
         <BreadCrumb
@@ -111,8 +135,8 @@ class RequestForQuotation extends Component {
                 <h6>
                   {this.state.quotation_date
                     ? moment(this.state.quotation_date).format(
-                        Options.dateFormat
-                      )
+                      Options.dateFormat
+                    )
                     : Options.dateFormat}
                 </h6>
               </div>
@@ -121,17 +145,17 @@ class RequestForQuotation extends Component {
           printArea={
             this.state.hims_f_procurement_req_quotation_header_id !== null
               ? {
-                  menuitems: [
-                    {
-                      label: "Print Quotation",
-                      events: {
-                        onClick: () => {
-                          generateRequestQuotation(this.state);
-                        },
+                menuitems: [
+                  {
+                    label: "Print Quotation",
+                    events: {
+                      onClick: () => {
+                        generateRequestQuotation(this.state);
                       },
                     },
-                  ],
-                }
+                  },
+                ],
+              }
               : ""
           }
           selectedLang={this.state.selectedLang}
@@ -157,7 +181,7 @@ class RequestForQuotation extends Component {
                     },
                     others: {
                       disabled:
-                        this.state.quotation_detail.length > 0 ? true : false,
+                        this.state.bothExisits ? true : this.state.quotation_detail.length > 0 ? true : false,
                     },
                     onChange: poforhandle.bind(this, this),
                     onClear: () => {
@@ -169,7 +193,7 @@ class RequestForQuotation extends Component {
                   }}
                 />
 
-                <div className={"col-3 globalSearchCntr" + class_finder}>
+                <div className={"col-3 globalSearchCntr"}>
                   <AlgaehLabel
                     label={{ forceLabel: "Search Requisition No." }}
                   />

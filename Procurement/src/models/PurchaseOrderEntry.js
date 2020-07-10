@@ -769,9 +769,7 @@ export default {
     const _options = req.connection == null ? {} : req.connection;
     const _mysql = new algaehMysql(_options);
     try {
-      const utilities = new algaehUtilities();
-      utilities.logger().log("updatePOEntry: ");
-      const details = req.body.pharmacy_stock_detail;
+      const details = req.body.po_entry_detail;
 
       let qry = "";
 
@@ -792,11 +790,8 @@ export default {
           printQuery: true,
         })
         .then((detailResult) => {
-          // _mysql.commitTransaction(() => {
-          //   _mysql.releaseConnection();
           req.data = req.records.purchase_number;
           next();
-          // });
         })
         .catch((e) => {
           _mysql.rollBackTransaction(() => {
@@ -814,22 +809,30 @@ export default {
     const _options = req.connection == null ? {} : req.connection;
     const _mysql = new algaehMysql(_options);
     try {
-      const utilities = new algaehUtilities();
-      utilities.logger().log("updatePOEntry: ");
-
-      const details = req.body.inventory_stock_detail;
+      console.log("updateInvReqEntry")
       let qry = "";
-
-      for (let i = 0; i < details.length; i++) {
+      if (req.body.po_type === "PR") {
         qry += mysql.format(
-          "UPDATE hims_f_inventory_material_detail SET `po_created_date`=?, po_created='Y', po_created_quantity=?\
-              where `hims_f_inventory_material_detail_id`=? ;",
+          "UPDATE hims_f_inventory_material_header SET is_completed='Y' ,`completed_date`=? \
+          where `hims_f_inventory_material_header_id`=? ;",
           [
             new Date(),
-            details[i].total_quantity,
-            details[i].inventory_requisition_id,
+            req.body.inv_requisition_id
           ]
         );
+      } else {
+        const details = req.body.po_entry_detail;
+        for (let i = 0; i < details.length; i++) {
+          qry += mysql.format(
+            "UPDATE hims_f_inventory_material_detail SET `po_created_date`=?, po_created='Y', po_created_quantity=?\
+              where `hims_f_inventory_material_detail_id`=? ;",
+            [
+              new Date(),
+              details[i].total_quantity,
+              details[i].inventory_requisition_id,
+            ]
+          );
+        }
       }
       _mysql
         .executeQuery({
@@ -837,11 +840,8 @@ export default {
           printQuery: true,
         })
         .then((detailResult) => {
-          // _mysql.commitTransaction(() => {
-          //   _mysql.releaseConnection();
           req.data = req.records.purchase_number;
           next();
-          // });
         })
         .catch((e) => {
           _mysql.rollBackTransaction(() => {

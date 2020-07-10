@@ -141,7 +141,7 @@ export default function eventsLogEmployeeDocument() {
           data: data,
           cancelRequestId: "getdocuments",
           onSuccess: (response) => {
-            debugger;
+
             if (response.data.success) {
               let data = response.data.records;
               resolve(data);

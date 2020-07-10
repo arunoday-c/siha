@@ -93,7 +93,7 @@ class ScreenAssignment extends Component {
     }
 
     const filterd = this.state.assignedScreenElements.filter((f) => {
-      debugger;
+
       return f.screen_name.toLowerCase().includes(value);
     });
 
@@ -150,7 +150,7 @@ class ScreenAssignment extends Component {
   }
 
   onClickElementClick(data, e) {
-    debugger;
+
     const { checked } = e.target;
     data.checked = checked;
   }
@@ -185,16 +185,16 @@ class ScreenAssignment extends Component {
       this.state.searchText !== "" && this.state.filterArray.length === 0
         ? this.state.filterArray
         : this.state.searchText === "" && this.state.filterArray.length === 0
-        ? this.state.ScreenList
-        : this.state.filterArray;
+          ? this.state.ScreenList
+          : this.state.filterArray;
     const assignedRoles =
       this.state.searchRollText !== "" &&
-      this.state.filterArrayRoles.length === 0
+        this.state.filterArrayRoles.length === 0
         ? this.state.filterArrayRoles
         : this.state.searchRollText === "" &&
           this.state.filterArrayRoles.length === 0
-        ? this.state.assignedScreenElements
-        : this.state.filterArrayRoles;
+          ? this.state.assignedScreenElements
+          : this.state.filterArrayRoles;
     return (
       <div className="screen_assignment">
         <div className="row inner-top-search">
@@ -502,31 +502,31 @@ class ScreenAssignment extends Component {
                                                     </Checkbox>
                                                   </li>
                                                 ) : (
-                                                  <React.Fragment>
-                                                    {stages.map((stage) => {
-                                                      const {
-                                                        checked,
-                                                        value,
-                                                        text,
-                                                      } = stage;
-                                                      return (
-                                                        <li key={value}>
-                                                          <Checkbox
-                                                            defaultChecked={
-                                                              checked
-                                                            }
-                                                            onChange={this.onClickElementClick.bind(
-                                                              this,
-                                                              stage
-                                                            )}
-                                                          >
-                                                            {text}
-                                                          </Checkbox>
-                                                        </li>
-                                                      );
-                                                    })}
-                                                  </React.Fragment>
-                                                )}
+                                                    <React.Fragment>
+                                                      {stages.map((stage) => {
+                                                        const {
+                                                          checked,
+                                                          value,
+                                                          text,
+                                                        } = stage;
+                                                        return (
+                                                          <li key={value}>
+                                                            <Checkbox
+                                                              defaultChecked={
+                                                                checked
+                                                              }
+                                                              onChange={this.onClickElementClick.bind(
+                                                                this,
+                                                                stage
+                                                              )}
+                                                            >
+                                                              {text}
+                                                            </Checkbox>
+                                                          </li>
+                                                        );
+                                                      })}
+                                                    </React.Fragment>
+                                                  )}
                                               </React.Fragment>
                                             );
                                           })}
@@ -556,12 +556,12 @@ class ScreenAssignment extends Component {
             </div>
           </div>
         ) : (
-          <div className="selectGroupRole">
-            {" "}
-            <h5>Select a Group & Role</h5>
-            <p>To the define Screens/Component/Element/Authorizations</p>
-          </div>
-        )}
+            <div className="selectGroupRole">
+              {" "}
+              <h5>Select a Group & Role</h5>
+              <p>To the define Screens/Component/Element/Authorizations</p>
+            </div>
+          )}
       </div>
     );
   }

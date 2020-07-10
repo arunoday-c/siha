@@ -72,7 +72,7 @@ class UpdatePatientDetails extends Component {
     SetBulkState({
       state: this,
       callback: () => {
-        debugger
+
         // AlgaehValidation({
         //   alertTypeIcon: "warning",
         //   querySelector: "data-validate='demographicDetails'",
@@ -157,7 +157,7 @@ class UpdatePatientDetails extends Component {
                 Promise.all(_arrayImages).then(result => {
                   AlgaehLoader({ show: false });
                   let IOputs = PatRegIOputs.inputParam();
-                  debugger
+
                   let tes = response.data.records.patient_code
                   const patient_code = patientdata.hims_d_patient_id === null ? response.data.records.patient_code : this.state.patient_code
                   this.setState(IOputs, () => {
@@ -233,9 +233,9 @@ class UpdatePatientDetails extends Component {
   onClose = e => {
     let IOputs = PatRegIOputs.inputParam();
     const exits_state = extend({}, this.state);
-    debugger
+
     this.setState(IOputs, () => {
-      debugger
+
       this.props.onClose && this.props.onClose({ data: false, patient_code: exits_state.patient_code });
     });
   };

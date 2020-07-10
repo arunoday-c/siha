@@ -260,7 +260,7 @@ const AddDeductionComponent = ($this, e) => {
         });
         return;
       }
-      debugger;
+
       // let formulaCal = $this.state.deduct_formula;
       // if ($this.state.deduct_calculation_method === "FO") {
       //   var notExists = [];
@@ -1038,7 +1038,7 @@ const CalculateBasedonFormula = ($this, from, callBack) => {
       // checkAnyCharacter.forEach((element) => {
       //   formulaCal = formulaCal.replace(element, "0");
       // });
-      // debugger;
+      // 
       if (dependentCompoennt === true) {
         if (typeof callBack === "function") {
           swalMessage({

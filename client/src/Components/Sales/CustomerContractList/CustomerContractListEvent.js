@@ -17,7 +17,7 @@ const getContractList = $this => {
     if ($this.state.customer_id) {
         inpObj.customer_id = $this.state.customer_id;
     }
-    debugger
+
 
     algaehApiCall({
         uri: "/ContractManagement/getContractManagementList",
@@ -25,7 +25,7 @@ const getContractList = $this => {
         method: "GET",
         data: inpObj,
         onSuccess: response => {
-            debugger
+
             if (response.data.success) {
                 // let data = response.data.records;
 
@@ -116,14 +116,14 @@ const ShowOrdersOfContarct = ($this, row) => {
     if ($this.state.customer_id) {
         inpObj.customer_id = row.customer_id;
     }
-    debugger
+
     algaehApiCall({
         uri: "/ContractManagement/getOrderListGenContract",
         method: "GET",
         data: inpObj,
         module: "sales",
         onSuccess: (res) => {
-            debugger
+
             if (res.data.success) {
                 $this.setState({
                     order_list: res.data.records,

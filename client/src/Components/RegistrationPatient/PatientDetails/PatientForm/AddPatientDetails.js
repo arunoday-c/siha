@@ -323,7 +323,7 @@ const validateAge = ($this, e) => {
   }
 };
 export function hijriOnChange($this, e) {
-  debugger;
+
   const { gregorianDate } = e.target;
   if (gregorianDate === undefined || gregorianDate === "") {
     return;

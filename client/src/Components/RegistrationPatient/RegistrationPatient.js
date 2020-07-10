@@ -226,7 +226,7 @@ class RegistrationPatient extends Component {
         UpdatepatientDetail: !this.state.UpdatepatientDetail,
       },
       () => {
-        debugger
+
         if (e.data === true) {
           AlgaehLoader({ show: true });
           getCtrlCode(this, e.patient_code);

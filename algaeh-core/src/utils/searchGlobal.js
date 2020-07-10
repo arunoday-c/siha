@@ -189,12 +189,12 @@ let algaehSearchConfig = (searchName, req) => {
         searchName: "InvREQEntry",
         searchQuery:
           "select SQL_CALC_FOUND_ROWS RH.*,date(RH.requistion_date) as requistion_date,\
-          FPL.location_description  as 'from_location_description', \
-          TPL.location_description as 'to_location_description' from hims_f_inventory_material_header RH,\
-          hims_d_inventory_location FPL, hims_d_inventory_location TPL \
-          where FPL.hims_d_inventory_location_id = RH.from_location_id and \
-          RH.to_location_id = TPL.hims_d_inventory_location_id and  RH.hospital_id=" +
-          hospitalId,
+          CASE RH.requistion_type WHEN 'PR' then 'Purchase Request' else 'Material Request' end as requistion_type, \
+          FPL.location_description  as 'FPL.location_description', \
+          TPL.location_description as 'TPL.location_description' from hims_f_inventory_material_header RH\
+          inner join hims_d_inventory_location FPL on FPL.hims_d_inventory_location_id = RH.from_location_id \
+          left join hims_d_inventory_location TPL on RH.to_location_id = TPL.hims_d_inventory_location_id \
+          where 1=1 ",
         orderBy: "hims_f_inventory_material_header_id desc",
       },
       {
@@ -225,12 +225,11 @@ let algaehSearchConfig = (searchName, req) => {
         searchName: "InvPOEntry",
         searchQuery:
           "select SQL_CALC_FOUND_ROWS RH.*, date(RH.requistion_date) as requistion_date, \
-        FPL.location_description as from_location, \
-        TPL.location_description as to_location from hims_f_inventory_material_header RH,\
-        hims_d_inventory_location FPL, hims_d_inventory_location TPL \
-        where FPL.hims_d_inventory_location_id = RH.from_location_id and \
-        RH.to_location_id = TPL.hims_d_inventory_location_id and RH.authorize1 = 'Y' and RH.authorie2 = 'Y'\
-        and RH.is_completed = 'N' and RH.cancelled='N' ",
+        FPL.location_description as 'FPL.location_description', \
+        TPL.location_description as 'TPL.location_description' from hims_f_inventory_material_header RH \
+        inner join hims_d_inventory_location FPL on FPL.hims_d_inventory_location_id = RH.from_location_id  \
+        left join hims_d_inventory_location TPL on RH.to_location_id = TPL.hims_d_inventory_location_id \
+        where  RH.authorize1 = 'Y' and RH.authorie2 = 'Y' and RH.is_completed = 'N' and RH.cancelled='N' ",
         orderBy: "hims_f_inventory_material_header_id desc",
       },
       {
@@ -924,9 +923,10 @@ let algaehSearchConfig = (searchName, req) => {
         searchName: "VendorQuotation",
         searchQuery:
           "select SQL_CALC_FOUND_ROWS VH.*, CASE VH.quotation_for \
-          WHEN 'INV' then 'Inventory' else 'Pharmacy' end as quotation_for, RQ.quotation_number from \
-          hims_f_procurement_vendor_quotation_header VH, hims_f_procurement_req_quotation_header RQ \
-          where VH.req_quotation_header_id = RQ.hims_f_procurement_req_quotation_header_id ",
+          WHEN 'INV' then 'Inventory' else 'Pharmacy' end as quotation_for, RQ.quotation_number, V.vendor_name from \
+          hims_f_procurement_vendor_quotation_header VH, hims_f_procurement_req_quotation_header RQ, hims_d_vendor V \
+          where VH.req_quotation_header_id = RQ.hims_f_procurement_req_quotation_header_id \
+          and VH.vendor_id = V.hims_d_vendor_id",
         orderBy: "hims_f_procurement_vendor_quotation_header_id desc",
       },
       {

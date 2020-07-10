@@ -331,7 +331,7 @@ const dateFormater = (value) => {
 
 const datehandlegrid = ($this, row, ctrl, e) => {
   row[e] = moment(ctrl)._d;
-  debugger;
+
   if (e === "hijri_valid_date") {
     row.valid_upto = ctrl;
     row.update();

@@ -82,6 +82,7 @@ export default {
       is_posted: "N",
       dataPosted: true,
       delete_stock_detail: [],
+      bothExisits: true
     };
     return output;
   },

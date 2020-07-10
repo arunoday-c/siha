@@ -62,7 +62,6 @@ class SubInsurance extends PureComponent {
   static contextType = MainContext;
 
   componentDidMount() {
-    debugger;
     this.isFinance =
       this.context.userToken.product_type === "HIMS_ERP" ||
       this.context.userToken.product_type === "FINANCE_ERP";
@@ -495,7 +494,7 @@ class SubInsurance extends PureComponent {
                             ] = this.state.finance_providers.filter(
                               (item) =>
                                 item.finance_account_child_id ===
-                                  row.finance_account_child_id &&
+                                row.finance_account_child_id &&
                                 item.head_id === row.head_id
                             );
                             return current ? current.child_name : "";
@@ -578,7 +577,7 @@ class SubInsurance extends PureComponent {
                       paging={{ page: 0, rowsPerPage: 10 }}
                       events={{
                         onDelete: deleteSubInsurance.bind(this, this),
-                        onEdit: (row) => {},
+                        onEdit: (row) => { },
                         onDone: updateSubInsurance.bind(this, this),
                       }}
                     />

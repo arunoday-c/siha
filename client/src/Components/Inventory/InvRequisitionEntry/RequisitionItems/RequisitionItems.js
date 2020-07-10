@@ -137,6 +137,9 @@ class RequisitionItems extends Component {
                               quantity: null,
                               // barcode: null,
                               addItemButton: false,
+                              group_description: null,
+                              uom_description: null,
+                              category_desc: null
                             });
                           }}
                           others={{
@@ -173,19 +176,21 @@ class RequisitionItems extends Component {
                               : "-----------"}
                           </h6>
                         </div>
-                        <div className="col-6">
-                          <AlgaehLabel
-                            label={{
-                              forceLabel: "To Loc. In Hand",
-                            }}
-                          />
-                          <h6>
-                            {this.state.to_qtyhand
-                              ? this.state.to_qtyhand
-                              : "-----------"}
-                          </h6>
-                        </div>
-                        <AlagehAutoComplete
+                        {this.state.requistion_type === "MR" ?
+                          <div className="col-6">
+                            <AlgaehLabel
+                              label={{
+                                forceLabel: "To Loc. In Hand",
+                              }}
+                            />
+                            <h6>
+                              {this.state.to_qtyhand
+                                ? this.state.to_qtyhand
+                                : "-----------"}
+                            </h6>
+                          </div>
+                          : <div className="col-6"></div>}
+                        {/* <AlagehAutoComplete
                           div={{ className: "col-6" }}
                           label={{ forceLabel: "UOM", isImp: true }}
                           selector={{
@@ -203,9 +208,46 @@ class RequisitionItems extends Component {
 
                             onChange: UomchangeTexts.bind(this, this),
                           }}
-                        />
+                        /> */}
+                        <div className="col-6">
+                          <AlgaehLabel
+                            label={{
+                              forceLabel: "UOM",
+                            }}
+                          />
+                          <h6>
+                            {this.state.uom_description
+                              ? this.state.uom_description
+                              : "-----------"}
+                          </h6>
+                        </div>
 
-                        <AlagehAutoComplete
+                        <div className="col-6">
+                          <AlgaehLabel
+                            label={{
+                              forceLabel: "Category",
+                            }}
+                          />
+                          <h6>
+                            {this.state.category_desc
+                              ? this.state.category_desc
+                              : "-----------"}
+                          </h6>
+                        </div>
+                        <div className="col-6">
+                          <AlgaehLabel
+                            label={{
+                              forceLabel: "Group",
+                            }}
+                          />
+                          <h6>
+                            {this.state.group_description
+                              ? this.state.group_description
+                              : "-----------"}
+                          </h6>
+                        </div>
+
+                        {/* <AlagehAutoComplete
                           div={{ className: "col-6" }}
                           label={{ forceLabel: "Item Category" }}
                           selector={{
@@ -240,7 +282,7 @@ class RequisitionItems extends Component {
                             },
                             onChange: null,
                           }}
-                        />
+                        /> */}
 
                         {this.props.requisition_auth === true ? null : (
                           <div className="col-3">
@@ -355,15 +397,15 @@ class RequisitionItems extends Component {
                                   this.props.inventoryitemlist === undefined
                                     ? []
                                     : this.props.inventoryitemlist.filter(
-                                        (f) =>
-                                          f.hims_d_inventory_item_master_id ===
-                                          row.item_id
-                                      );
+                                      (f) =>
+                                        f.hims_d_inventory_item_master_id ===
+                                        row.item_id
+                                    );
 
                                 return (
                                   <span>
                                     {display !== undefined &&
-                                    display.length !== 0
+                                      display.length !== 0
                                       ? display[0].item_description
                                       : ""}
                                   </span>
@@ -384,10 +426,10 @@ class RequisitionItems extends Component {
                                   this.props.inventoryitemcategory === undefined
                                     ? []
                                     : this.props.inventoryitemcategory.filter(
-                                        (f) =>
-                                          f.hims_d_inventory_tem_category_id ===
-                                          row.item_category_id
-                                      );
+                                      (f) =>
+                                        f.hims_d_inventory_tem_category_id ===
+                                        row.item_category_id
+                                    );
 
                                 return (
                                   <span>
@@ -412,10 +454,10 @@ class RequisitionItems extends Component {
                                   this.props.inventoryitemgroup === undefined
                                     ? []
                                     : this.props.inventoryitemgroup.filter(
-                                        (f) =>
-                                          f.hims_d_inventory_item_group_id ===
-                                          row.item_group_id
-                                      );
+                                      (f) =>
+                                        f.hims_d_inventory_item_group_id ===
+                                        row.item_group_id
+                                    );
 
                                 return (
                                   <span>
@@ -438,10 +480,10 @@ class RequisitionItems extends Component {
                                   this.props.inventoryitemuom === undefined
                                     ? []
                                     : this.props.inventoryitemuom.filter(
-                                        (f) =>
-                                          f.hims_d_inventory_uom_id ===
-                                          row.item_uom
-                                      );
+                                      (f) =>
+                                        f.hims_d_inventory_uom_id ===
+                                        row.item_uom
+                                    );
 
                                 return (
                                   <span>
@@ -510,28 +552,28 @@ class RequisitionItems extends Component {
                                 return this.state.authorizeEnable ? (
                                   parseFloat(row.quantity_authorized)
                                 ) : (
-                                  <AlagehFormGroup
-                                    div={{}}
-                                    textBox={{
-                                      number: { allowNegative: false },
-                                      value:
-                                        row.quantity_authorized !== ""
-                                          ? parseFloat(row.quantity_authorized)
-                                          : "",
-                                      className: "txt-fld",
-                                      name: "quantity_authorized",
-                                      dontAllowKeys: ["-", "e", "."],
-                                      events: {
-                                        onChange: onchangegridcol.bind(
-                                          this,
-                                          this,
-                                          context,
-                                          row
-                                        ),
-                                      },
-                                    }}
-                                  />
-                                );
+                                    <AlagehFormGroup
+                                      div={{}}
+                                      textBox={{
+                                        number: { allowNegative: false },
+                                        value:
+                                          row.quantity_authorized !== ""
+                                            ? parseFloat(row.quantity_authorized)
+                                            : "",
+                                        className: "txt-fld",
+                                        name: "quantity_authorized",
+                                        dontAllowKeys: ["-", "e", "."],
+                                        events: {
+                                          onChange: onchangegridcol.bind(
+                                            this,
+                                            this,
+                                            context,
+                                            row
+                                          ),
+                                        },
+                                      }}
+                                    />
+                                  );
                               },
                             },
                             {

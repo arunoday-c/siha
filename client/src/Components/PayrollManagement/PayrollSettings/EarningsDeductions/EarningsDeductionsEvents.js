@@ -44,7 +44,6 @@ const onEditHandler = ($this, row) => {
 };
 
 const compDownHandler = ($this, value) => {
-  debugger
   if ($this.FIN_Active === true) {
     if (value.value === "A") {
       getFinanceHeaders($this, 1);

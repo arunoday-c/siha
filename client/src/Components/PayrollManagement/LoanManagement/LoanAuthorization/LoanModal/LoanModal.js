@@ -132,7 +132,6 @@ class LoanModal extends Component {
             (item) => item.id === this.props.hospital_id
           );
 
-          debugger;
           algaehApiCall({
             uri: "/loan/authorizeLoan",
             module: "hrManagement",
@@ -383,8 +382,8 @@ class LoanModal extends Component {
                           ) : row.loan_authorized === "IS" ? (
                             <span className="badge badge-success">Issued</span>
                           ) : (
-                            "------"
-                          )}
+                                    "------"
+                                  )}
                         </span>
                       );
                     },

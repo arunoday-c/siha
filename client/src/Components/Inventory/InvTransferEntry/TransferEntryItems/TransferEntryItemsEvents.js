@@ -472,7 +472,6 @@ const AddSelectedBatches = ($this, context) => {
           parseFloat(f.quantity_transfer) !== 0 && f.quantity_transfer !== null
         );
       });
-      debugger;
       const _index = _stock_detail.indexOf($this.state.item_details);
       _stock_detail[_index] = $this.state.item_details;
       delete details.batches;

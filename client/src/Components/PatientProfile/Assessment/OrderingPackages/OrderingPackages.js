@@ -186,7 +186,6 @@ class OrderingPackages extends Component {
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
-    debugger
 
     if (
       nextProps.existinginsurance !== undefined &&

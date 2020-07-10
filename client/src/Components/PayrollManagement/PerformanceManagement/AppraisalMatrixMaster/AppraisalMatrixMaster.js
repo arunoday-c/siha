@@ -186,7 +186,6 @@ export default function AppraisalMatrixMaster() {
             title: "Record updated successfully",
             type: "success",
           });
-          debugger;
           setKpiData((state) => {
             const ans = state.filter(
               (item) => item.hrms_d_kpi_master_id !== data.hrms_d_kpi_master_id

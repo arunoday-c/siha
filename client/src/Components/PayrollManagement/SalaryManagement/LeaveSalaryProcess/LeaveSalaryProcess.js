@@ -198,7 +198,7 @@ class LeaveSalaryProcess extends Component {
   }
 
   render() {
-    debugger;
+
     return (
       <div className="leave_en_auth row">
         <div className="col-12">
@@ -258,8 +258,8 @@ class LeaveSalaryProcess extends Component {
               <h6>
                 {this.state.leave_salary_date
                   ? moment(this.state.leave_salary_date).format(
-                      Options.dateFormat
-                    )
+                    Options.dateFormat
+                  )
                   : Options.dateFormat}
               </h6>
             </div>
@@ -343,8 +343,8 @@ class LeaveSalaryProcess extends Component {
                     ) : this.state.status === "CAN" ? (
                       <span className="badge badge-danger">Cancelled</span>
                     ) : (
-                      ""
-                    )}{" "}
+                            ""
+                          )}{" "}
                   </>
                 ) : null}
               </div>

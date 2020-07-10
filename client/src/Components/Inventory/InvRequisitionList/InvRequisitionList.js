@@ -161,7 +161,7 @@ class InvRequisitionList extends Component {
                     onClear: () => {
                       this.setState({
                         from_location_id: null
-                      });
+                      }, () => getRequisitionList(this));
                     }
                   }}
                 />
@@ -182,7 +182,7 @@ class InvRequisitionList extends Component {
                     onClear: () => {
                       this.setState({
                         to_location_id: null
-                      });
+                      }, () => getRequisitionList(this));
                     }
                   }}
                 />
@@ -203,7 +203,7 @@ class InvRequisitionList extends Component {
                     onClear: () => {
                       this.setState({
                         status: null
-                      });
+                      }, () => getRequisitionList(this));
                     }
                   }}
                 />
@@ -265,7 +265,7 @@ class InvRequisitionList extends Component {
                                   });
                                 }}
                               />
-                              {row.trans_pending === true ? (
+                              {row.trans_pending === true && row.requistion_type === "MR" ? (
                                 <i
                                   className="fa fa-exchange-alt"
                                   onClick={() => {
@@ -288,6 +288,47 @@ class InvRequisitionList extends Component {
                         }
                       },
                       {
+                        fieldName: "status",
+                        label: <AlgaehLabel label={{ forceLabel: "Status" }} />,
+                        displayTemplate: (row) => {
+                          return (row.is_completed && row.requistion_type === "MR") === "Y" ? (
+                            <span className="badge badge-success">
+                              Transfer Completed
+                            </span>
+                          ) : (row.is_completed === "Y" && row.requistion_type === "PR") ? (
+                            <span className="badge badge-success">
+                              PO Generated
+                            </span>
+                          ) : (row.authorize1 === 'Y' && row.authorie2 === 'Y' && row.is_completed === 'N' && row.requistion_type === "MR") ? (
+                            <span className="badge badge-warning">
+                              Transfer Pending
+                            </span>
+                          ) : (row.authorize1 === 'Y' && row.authorie2 === 'Y' && row.is_completed === 'N' && row.requistion_type === "PR") ? (
+                            <span className="badge badge-warning">
+                              PO Not Generated
+                              </span>
+                          ) : (row.authorize1 === 'N' && row.authorie2 === 'N') ? (
+                            <span className="badge badge-danger">
+                              Auth 1 Pending
+                            </span>
+                          ) : (row.authorize1 === 'Y' && row.authorie2 === 'N') ? (
+                            <span className="badge badge-danger">
+                              Auth 2 Pending
+                            </span>
+                          ) : row.status === null ? (
+                            <span className="badge badge-danger">
+                              Send for Authorization pending
+                            </span>
+                          ) : null;
+                        },
+
+                        others: {
+                          maxWidth: 150,
+                          resizable: false,
+                          style: { textAlign: "center" },
+                        },
+                      },
+                      {
                         fieldName: "material_requisition_number",
                         label: (
                           <AlgaehLabel
@@ -300,6 +341,20 @@ class InvRequisitionList extends Component {
                           style: { textAlign: "center" }
                         }
                       },
+                      {
+                        fieldName: "req_type",
+                        label: (
+                          <AlgaehLabel
+                            label={{ forceLabel: "Requisition Type" }}
+                          />
+                        ),
+                        disabled: true,
+                        others: {
+                          resizable: false,
+                          style: { textAlign: "center" }
+                        }
+                      },
+
                       {
                         fieldName: "requistion_date",
                         label: (

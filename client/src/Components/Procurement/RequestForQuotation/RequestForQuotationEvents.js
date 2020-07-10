@@ -4,6 +4,7 @@ import AlgaehSearch from "../../Wrapper/globalSearch";
 import spotlightSearch from "../../../Search/spotlightSearch.json";
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
 import RequestQuotation from "../../../Models/RequestQuotation";
+import { RawSecurityComponent } from "algaeh-react-components";
 
 const texthandle = ($this, e) => {
   let name = e.name || e.target.name;
@@ -28,7 +29,7 @@ const poforhandle = ($this, e) => {
 const RequisitionSearch = ($this, e) => {
   AlgaehSearch({
     searchGrid: {
-      columns: spotlightSearch.RequisitionEntry1.ReqEntry,
+      columns: spotlightSearch.RequisitionEntry.ReqEntry,
     },
     searchName:
       $this.state.quotation_for === "PHR" ? "PhrPOEntry" : "InvPOEntry",
@@ -105,8 +106,32 @@ const ClearData = ($this, e) => {
   let IOputs = RequestQuotation.inputParam();
 
   IOputs.dataExitst = false;
-  $this.setState(IOputs);
   clearItemDetails($this);
+
+  let bothExisits = true
+
+  RawSecurityComponent({ componentCode: "PUR_ORD_INVENTORY" }).then(
+    (result) => {
+      if (result === "show") {
+        getData($this, "INV");
+        bothExisits = false
+        IOputs.quotation_for = "INV"
+      }
+    }
+  );
+
+  RawSecurityComponent({ componentCode: "PUR_ORD_PHARMACY" }).then(
+    (result) => {
+      if (result === "show") {
+        getData($this, "PHR");
+        IOputs.bothExisits = bothExisits === false ? false : true
+        IOputs.quotation_for = "PHR"
+      } else {
+        IOputs.bothExisits = true
+      }
+      $this.setState(IOputs);
+    }
+  );
 };
 
 const clearItemDetails = ($this) => {
@@ -274,7 +299,7 @@ const getData = ($this, quotation_for) => {
         type: "ITEM_CATEGORY_GET_DATA",
         mappingName: "poitemcategory",
       },
-      afterSuccess: (data) => {},
+      afterSuccess: (data) => { },
     });
 
     $this.props.getItemGroup({
@@ -375,4 +400,5 @@ export {
   clearItemDetails,
   dateValidate,
   setDataFromRequest,
+  getData
 };

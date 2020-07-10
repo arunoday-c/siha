@@ -200,7 +200,6 @@ const discounthandle = ($this, context, ctrl, e) => {
   let sheet_discount_percentage = 0;
   let sheet_discount_amount = 0;
 
-  debugger
 
   if (e.target.name === "sheet_discount_percentage") {
     sheet_discount_percentage =

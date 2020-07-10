@@ -254,7 +254,7 @@ const ContractSearch = ($this, e) => {
           if (response.data.success) {
             let data = response.data.records;
             data.sales_order_services = data.contract_services;
-            debugger;
+
 
             data.contract_id = data.hims_f_contract_management_id;
             data.saveEnable = false;

@@ -518,7 +518,7 @@ const getHrmsOptions = ($this) => {
     module: "hrManagement",
     onSuccess: (res) => {
       if (res.data.success) {
-        debugger;
+
         $this.setState({ hrms_options: res.data.result[0] });
       }
     },

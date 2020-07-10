@@ -66,11 +66,13 @@ class PurchaseOrderEntry extends Component {
     ) {
       getCtrlCode(this, this.props.purchase_number);
     } else {
+      let po_from = "", bothExisits = true
       RawSecurityComponent({ componentCode: "PUR_ORD_INVENTORY" }).then(
         (result) => {
           if (result === "show") {
             getData(this, "INV");
-            this.setState({ po_from: "INV" });
+            po_from = "INV"
+            bothExisits = false
           }
         }
       );
@@ -79,8 +81,16 @@ class PurchaseOrderEntry extends Component {
         (result) => {
           if (result === "show") {
             getData(this, "PHR");
-            this.setState({ po_from: "PHR" });
+            po_from = "PHR"
+            bothExisits = bothExisits === false ? false : true
+          } else {
+            bothExisits = true
           }
+          this.setState({
+            po_from: po_from,
+            bothExisits: bothExisits
+          });
+
         }
       );
     }
@@ -281,7 +291,7 @@ class PurchaseOrderEntry extends Component {
                       data: GlobalVariables.PO_FROM,
                     },
                     others: {
-                      disabled: true,
+                      disabled: this.state.bothExisits,
                     },
                     onChange: poforhandle.bind(this, this),
                     onClear: () => {
@@ -355,7 +365,7 @@ class PurchaseOrderEntry extends Component {
                   }}
                 />
 
-                {this.state.po_type === "MR" ? (
+                {this.state.po_type === "MR" || this.state.po_type === "PR" ? (
                   <div className={"col-2 globalSearchCntr" + class_finder}>
                     <AlgaehLabel
                       label={{ forceLabel: "Search Requisition No." }}
@@ -403,6 +413,7 @@ class PurchaseOrderEntry extends Component {
                         payment_terms: null,
                       });
                     },
+                    autoComplete: "off"
                   }}
                 />
 
