@@ -736,7 +736,7 @@ class IDType extends Component {
                         },
 
                         {
-                          fieldName: "nationality_id",
+                          fieldName: "nationality_name",
                           label: (
                             <AlgaehLabel
                               label={{ forceLabel: "Nationality" }}

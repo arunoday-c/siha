@@ -752,6 +752,7 @@ class OfficalDetails extends Component {
                         forceLabel: "Notice Period",
                         isImp: false,
                       }}
+                      date_of_resignation
                       textBox={{
                         value: this.state.notice_period,
                         className: "txt-fld",

@@ -153,7 +153,7 @@ export default {
                 return { ...item, employees };
               });
               _mysql.releaseConnection();
-
+              console.log("records", records);
               req.records = records;
               next();
               _mysql.releaseConnection();
