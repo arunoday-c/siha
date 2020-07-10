@@ -390,20 +390,12 @@ let algaehSearchConfig = (searchName, req) => {
       },
       {
         searchName: "exit_employees",
-        searchQuery:
-          "select SQL_CALC_FOUND_ROWS hims_d_employee_id, employee_code, biometric_id, title_id, full_name, arabic_name, employee_designation_id,\
-           sex, religion_id, marital_status, date_of_birth, date_of_joining, date_of_resignation, reliving_date,\
-            notice_period, exit_date, employe_exit_type, appointment_type, employee_type, present_address, present_address2,\
-             present_pincode, present_city_id, present_state_id, present_country_id, permanent_address, permanent_address2,\
-              permanent_pincode, permanent_city_id, permanent_state_id, permanent_country_id, primary_contact_no, secondary_contact_no,\
-               email, nationality, emergency_contact_person, emergency_contact_no, blood_group, isdoctor, license_number, employee_status,\
-                inactive_date, exclude_machine_data, company_bank_id, employee_bank_name, employee_bank_ifsc_code, employee_account_number,\
-                 mode_of_payment, accomodation_provided, late_coming_rule, leave_salary_process, pf_applicable,\
-                  airfare_process, entitled_daily_ot, suspend_salary, last_salary_process_date, gratuity_applicable,\
-                   contract_type, employee_group_id, weekoff_from, overtime_group_id, reporting_to_id, sub_department_id,\
-                    hospital_id, gross_salary, yearly_gross_salary, total_earnings, total_deductions, total_contributions,\
-                     net_salary, cost_to_company, effective_start_date, effective_end_date, created_date, created_by, updated_date, updated_by from hims_d_employee\
-                     where record_status='A' and employee_status in('R','T','E') ",
+        searchQuery: `select SQL_CALC_FOUND_ROWS hims_d_employee_id, employee_code, title_id, full_name, E.arabic_name, 
+                     S.sub_department_name,E.sub_department_id,D.designation
+                     from hims_d_employee as E
+                     inner join hims_d_sub_department as S on S.hims_d_sub_department_id =E.sub_department_id
+                     inner join hims_d_designation as D on D.hims_d_designation_id =E.employee_designation_id
+                     where E.record_status='A' and employee_status in('R','T','E')`,
         orderBy: "hims_d_employee_id desc",
       },
       {

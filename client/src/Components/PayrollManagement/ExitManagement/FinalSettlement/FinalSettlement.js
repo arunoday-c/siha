@@ -96,6 +96,7 @@ class FinalSettlement extends Component {
       this.setState({
         loading: true,
       });
+
       AlgaehLoader({ show: true });
       algaehApiCall({
         uri: "/finalsettlement",
@@ -107,31 +108,67 @@ class FinalSettlement extends Component {
 
         onSuccess: (res) => {
           if (res.data.success) {
-            if (res.data.result.flag !== undefined) {
-              this.setState(
-                {
-                  ...res.data.result,
-                },
-                () => {
-                  this.setNetEarnings();
-                  this.setNetDeductions();
-                  this.setTotalEarnings();
-                  this.setTotalDeductions();
-                }
-              );
-            } else {
-              this.setState(
-                {
-                  data: res.data.result,
-                  disableSave: false,
-                  loading: false,
-                },
-                () => {
-                  this.setNetEarnings();
-                  this.setNetDeductions();
-                }
-              );
+            const currentData = this.state.data;
+            let dtl = res.data.result;
+            let datas = res.data.result.data;
+            const disabled = datas === undefined ? { disableSave: false } : {};
+            let ttl =
+              datas === undefined
+                ? {
+                    total_leave_encash_amount: dtl.total_leave_encash_amount,
+                    gratuity_amount: dtl.gratuity_amount,
+                    total_salary: dtl.total_salary,
+                    total_loan_amount: dtl.total_loan_amount,
+                    loans: dtl.loans,
+                  }
+                : {};
+            if (datas !== undefined) {
+              if (datas.loans === undefined) {
+                ttl["loans"] = dtl.loans;
+              }
             }
+            this.setState(
+              {
+                ...dtl,
+                data: {
+                  ...currentData,
+                  ...datas,
+                  ...ttl,
+                },
+                ...disabled,
+              },
+              () => {
+                this.setTotalEarnings();
+                this.setTotalDeductions();
+                this.setNetEarnings();
+                this.setNetDeductions();
+              }
+            );
+            // if (res.data.result.flag !== undefined) {
+            //   this.setState(
+            //     {
+            //       ...res.data.result,
+            //     },
+            //     () => {
+            //       this.setNetEarnings();
+            //       this.setNetDeductions();
+            //       this.setTotalEarnings();
+            //       this.setTotalDeductions();
+            //     }
+            //   );
+            // } else {
+            //   this.setState(
+            //     {
+            //       data: res.data.result,
+            //       disableSave: false,
+            //       loading: false,
+            //     },
+            //     () => {
+            //       this.setNetEarnings();
+            //       this.setNetDeductions();
+            //     }
+            //   );
+            // }
             AlgaehLoader({ show: false });
           }
         },
@@ -151,9 +188,21 @@ class FinalSettlement extends Component {
   setNetEarnings() {
     let net_earnings =
       parseFloat(this.state.total_earnings) +
-      parseFloat(this.state.data.total_leave_encash_amount) +
-      parseFloat(this.state.data.gratuity_amount) +
-      parseFloat(this.state.data.total_salary);
+      parseFloat(
+        this.state.data.total_leave_encash_amount === undefined
+          ? 0
+          : this.state.data.total_leave_encash_amount
+      ) +
+      parseFloat(
+        this.state.data.gratuity_amount === undefined
+          ? 0
+          : this.state.data.gratuity_amount
+      ) +
+      parseFloat(
+        this.state.data.total_salary === undefined
+          ? 0
+          : this.state.data.total_salary
+      );
 
     this.setState(
       {
@@ -168,7 +217,11 @@ class FinalSettlement extends Component {
   setNetDeductions() {
     let net_deduction =
       parseFloat(this.state.total_deductions) +
-      parseFloat(this.state.data.total_loan_amount);
+      parseFloat(
+        this.state.data.total_loan_amount === undefined
+          ? 0
+          : this.state.data.total_loan_amount
+      );
 
     this.setState(
       {
@@ -217,10 +270,16 @@ class FinalSettlement extends Component {
     );
   }
 
-  saveFinalSettlement() {
+  saveFinalSettlement(e) {
+    const url =
+      e.currentTarget.getAttribute("typeof") === "save"
+        ? "/finalsettlement/finalSettlementSave"
+        : "/finalsettlement/save";
+
     let data = this.state.data;
 
     let send_data = {
+      hims_f_final_settlement_header_id: data.hims_f_final_settlement_header_id,
       employee_id: data.hims_d_employee_id,
       total_amount: this.state.net_amount,
       total_earnings: this.state.total_earnings,
@@ -244,8 +303,9 @@ class FinalSettlement extends Component {
     };
 
     AlgaehLoader({ show: true });
+
     algaehApiCall({
-      uri: "/finalsettlement/save",
+      uri: url,
       method: "POST",
       module: "hrManagement",
       data: send_data,
@@ -274,10 +334,11 @@ class FinalSettlement extends Component {
     this.setState({
       hims_d_employee_id: null,
       employee_name: null,
-      earnings: [],
-      deductions: [],
+      // earnings: [],
+      // deductions: [],
       deductingList: [],
       earningList: [],
+      loans: [],
       data: {
         loans: [],
       },
@@ -512,7 +573,7 @@ class FinalSettlement extends Component {
     }
 
     let input_data = " hospital_id=" + this.state.hospital_id;
-
+    //this.clearState();
     AlgaehSearch({
       searchGrid: {
         columns: spotlightSearch.Employee_details.employee,
@@ -524,10 +585,18 @@ class FinalSettlement extends Component {
         callBack(text);
       },
       onRowSelect: (row) => {
+        const dta = this.state.data;
         this.setState(
           {
             employee_name: row.full_name,
             hims_d_employee_id: row.hims_d_employee_id,
+            data: {
+              ...dta,
+              hims_d_employee_id: row.hims_d_employee_id,
+              employee_code: row.employee_code,
+              full_name: row.full_name,
+              sub_department_name: row.sub_department_name,
+            },
           },
           () => {
             this.loadFinalSettlement(this);
@@ -662,7 +731,7 @@ class FinalSettlement extends Component {
             <h6>{FsData.employee_code ? FsData.employee_code : "-------"}</h6>
           </div>
 
-          <div className="col-4">
+          <div className="col">
             <label className="style_Label ">Employee Name</label>
             <h6>{FsData.full_name ? FsData.full_name : "-------"}</h6>
           </div>
@@ -675,11 +744,13 @@ class FinalSettlement extends Component {
                 : "-------"}
             </h6>
           </div>
-          <div className="col form-group">
-            <h3 style={{ paddingTop: "19px" }}>
-              <font color="green">{this.state.flag}</font>
-            </h3>
-          </div>
+          {this.state.flag !== "" ? (
+            <div className="col form-group">
+              <h3 style={{ paddingTop: "19px" }}>
+                <font color="green">{this.state.flag}</font>
+              </h3>
+            </div>
+          ) : null}
         </div>
         <div className="row" style={{ marginTop: 120 }}>
           <div className="col-8">
@@ -1042,7 +1113,7 @@ class FinalSettlement extends Component {
                               // }
                             },
                           ]}
-                          keyId="deduction_id"
+                          keyId="loan_id"
                           dataSource={{
                             data: this.state.data.loans,
                           }}
@@ -1187,6 +1258,7 @@ class FinalSettlement extends Component {
                 <button
                   type="button"
                   className="btn btn-primary"
+                  typeof="save"
                   onClick={this.saveFinalSettlement.bind(this)}
                   disabled={this.state.disableSave}
                 >
@@ -1197,6 +1269,7 @@ class FinalSettlement extends Component {
                 <button
                   type="button"
                   className="btn btn-other"
+                  typeof="final"
                   onClick={this.saveFinalSettlement.bind(this)}
                   disabled={this.state.disableSave}
                 >
