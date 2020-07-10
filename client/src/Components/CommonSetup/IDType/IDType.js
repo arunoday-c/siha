@@ -219,9 +219,9 @@ class IDType extends Component {
     });
   }
 
-  showconfirmDialog(id) {
+  showconfirmDialog(id, name) {
     swal({
-      title: "Are you sure you want to delete this ID Types?",
+      title: `Are you sure you want to delete this ${name}?`,
       type: "warning",
       showCancelButton: true,
       confirmButtonText: "Yes",
@@ -266,7 +266,10 @@ class IDType extends Component {
   }
 
   deleteIDType(row) {
-    this.showconfirmDialog(row.hims_d_identity_document_id);
+    this.showconfirmDialog(
+      row.hims_d_identity_document_id,
+      row.identity_document_name
+    );
   }
 
   shouldComponentUpdate(nextProps, nextState) {
