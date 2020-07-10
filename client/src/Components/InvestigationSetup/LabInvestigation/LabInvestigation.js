@@ -8,7 +8,7 @@ import "./../../../styles/site.scss";
 import {
   AlgaehDataGrid,
   AlgaehLabel,
-  AlagehAutoComplete
+  AlagehAutoComplete,
 } from "../../Wrapper/algaehWrapper";
 import {
   texthandle,
@@ -16,7 +16,7 @@ import {
   analyteidhandle,
   AddAnalytes,
   updateLabInvestigation,
-  deleteLabAnalyte
+  deleteLabAnalyte,
 } from "./LabInvestigationEvent";
 import variableJson from "../../../utils/GlobalVariables.json";
 import { AlgaehActions } from "../../../actions/algaehActions";
@@ -42,8 +42,8 @@ class LabInvestigation extends Component {
         method: "GET",
         redux: {
           type: "SECTION_GET_DATA",
-          mappingName: "labsection"
-        }
+          mappingName: "labsection",
+        },
       });
     }
 
@@ -57,8 +57,8 @@ class LabInvestigation extends Component {
         method: "GET",
         redux: {
           type: "SPECIMEN_GET_DATA",
-          mappingName: "labspecimen"
-        }
+          mappingName: "labspecimen",
+        },
       });
     }
 
@@ -72,8 +72,8 @@ class LabInvestigation extends Component {
         method: "GET",
         redux: {
           type: "ANALYTES_GET_DATA",
-          mappingName: "labanalytes"
-        }
+          mappingName: "labanalytes",
+        },
       });
     }
     if (
@@ -86,8 +86,8 @@ class LabInvestigation extends Component {
         method: "GET",
         redux: {
           type: "CONTAINER_GET_DATA",
-          mappingName: "labcontainer"
-        }
+          mappingName: "labcontainer",
+        },
       });
     }
   }
@@ -113,7 +113,7 @@ class LabInvestigation extends Component {
                 div={{ className: "col-12 mandatory form-group" }}
                 label={{
                   fieldName: "specimen_id",
-                  isImp: true
+                  isImp: true,
                 }}
                 selector={{
                   name: "specimen_id",
@@ -122,19 +122,19 @@ class LabInvestigation extends Component {
                   dataSource: {
                     textField: "SpeDescription",
                     valueField: "hims_d_lab_specimen_id",
-                    data: this.props.labspecimen
+                    data: this.props.labspecimen,
                   },
                   onChange: this.texthandle,
                   others: {
-                    tabIndex: "5"
-                  }
+                    tabIndex: "5",
+                  },
                 }}
               />
               <AlagehAutoComplete
                 div={{ className: "col-12 mandatory form-group" }}
                 label={{
                   fieldName: "container_id",
-                  isImp: true
+                  isImp: true,
                 }}
                 selector={{
                   name: "container_id",
@@ -143,19 +143,19 @@ class LabInvestigation extends Component {
                   dataSource: {
                     textField: "ConDescription",
                     valueField: "hims_d_lab_container_id",
-                    data: this.props.labcontainer
+                    data: this.props.labcontainer,
                   },
                   onChange: this.containeridhandle,
                   others: {
-                    tabIndex: "6"
-                  }
+                    tabIndex: "6",
+                  },
                 }}
               />
               <AlagehAutoComplete
                 div={{ className: "col-12 mandatory form-group" }}
                 label={{
                   fieldName: "available_in_house",
-                  isImp: true
+                  isImp: true,
                 }}
                 selector={{
                   name: "available_in_house",
@@ -165,18 +165,18 @@ class LabInvestigation extends Component {
                     textField:
                       state.selectedLang === "en" ? "name" : "arabic_name",
                     valueField: "value",
-                    data: variableJson.FORMAT_YESNO
+                    data: variableJson.FORMAT_YESNO,
                   },
                   onChange: this.texthandle,
                   others: {
-                    tabIndex: "7"
-                  }
+                    tabIndex: "7",
+                  },
                 }}
               />
               <AlagehAutoComplete
                 div={{ className: "col-12 form-group" }}
                 label={{
-                  fieldName: "send_out_test"
+                  fieldName: "send_out_test",
                 }}
                 selector={{
                   name: "send_out_test",
@@ -186,9 +186,9 @@ class LabInvestigation extends Component {
                     textField:
                       state.selectedLang === "en" ? "name" : "arabic_name",
                     valueField: "value",
-                    data: variableJson.FORMAT_YESNO
+                    data: variableJson.FORMAT_YESNO,
                   },
-                  onChange: this.texthandle
+                  onChange: this.texthandle,
                 }}
               />
             </div>
@@ -204,7 +204,7 @@ class LabInvestigation extends Component {
                     div={{ className: "col-8 mandatory" }}
                     label={{
                       fieldName: "analyte_id",
-                      isImp: true
+                      isImp: true,
                     }}
                     selector={{
                       name: "analyte_id",
@@ -213,9 +213,9 @@ class LabInvestigation extends Component {
                       dataSource: {
                         textField: "AnaDescription",
                         valueField: "hims_d_lab_analytes_id",
-                        data: this.props.labanalytes
+                        data: this.props.labanalytes,
                       },
-                      onChange: this.analyteidhandle
+                      onChange: this.analyteidhandle,
                     }}
                   />
 
@@ -238,15 +238,15 @@ class LabInvestigation extends Component {
                           label: (
                             <AlgaehLabel label={{ fieldName: "analytes_id" }} />
                           ),
-                          displayTemplate: row => {
+                          displayTemplate: (row) => {
                             let display =
                               this.props.labanalytes === undefined
                                 ? []
                                 : this.props.labanalytes.filter(
-                                  f =>
-                                    f.hims_d_lab_analytes_id ===
-                                    row.analyte_id
-                                );
+                                    (f) =>
+                                      f.hims_d_lab_analytes_id ===
+                                      row.analyte_id
+                                  );
 
                             return (
                               <span>
@@ -256,15 +256,15 @@ class LabInvestigation extends Component {
                               </span>
                             );
                           },
-                          editorTemplate: row => {
+                          editorTemplate: (row) => {
                             let display =
                               this.props.labanalytes === undefined
                                 ? []
                                 : this.props.labanalytes.filter(
-                                  f =>
-                                    f.hims_d_lab_analytes_id ===
-                                    row.analyte_id
-                                );
+                                    (f) =>
+                                      f.hims_d_lab_analytes_id ===
+                                      row.analyte_id
+                                  );
 
                             return (
                               <span>
@@ -273,19 +273,25 @@ class LabInvestigation extends Component {
                                   : ""}
                               </span>
                             );
-                          }
-                        }
+                          },
+                          others: {
+                            minWidth: 400,
+                          },
+                        },
                       ]}
                       keyId="analyte_id"
                       dataSource={{
-                        data: state.analytes
+                        data: state.analytes,
                       }}
                       isEditable={true}
+                      actions={{
+                        allowEdit: false,
+                      }}
                       paging={{ page: 0, rowsPerPage: 10 }}
                       events={{
                         onDelete: this.deleteLabAnalyte,
-                        onEdit: row => { },
-                        onDone: this.updateLabInvestigation
+                        onEdit: (row) => {},
+                        onDone: this.updateLabInvestigation,
                       }}
                     />
                   </div>
@@ -304,7 +310,7 @@ function mapStateToProps(state) {
     labspecimen: state.labspecimen,
     labsection: state.labsection,
     labanalytes: state.labanalytes,
-    labcontainer: state.labcontainer
+    labcontainer: state.labcontainer,
   };
 }
 
@@ -314,7 +320,7 @@ function mapDispatchToProps(dispatch) {
       getLabsection: AlgaehActions,
       getLabSpecimen: AlgaehActions,
       getLabAnalytes: AlgaehActions,
-      getLabContainer: AlgaehActions
+      getLabContainer: AlgaehActions,
     },
     dispatch
   );
