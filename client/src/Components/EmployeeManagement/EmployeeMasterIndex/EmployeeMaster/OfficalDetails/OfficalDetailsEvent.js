@@ -25,6 +25,7 @@ const texthandle = ($this, e) => {
         _notice = {
           reliving_date: res_date,
           exit_date: res_date,
+
           [name]: value,
         };
       $this.setState(_notice);
@@ -93,6 +94,10 @@ const datehandle = ($this, ctrl, e) => {
     if ($this.state.notice_period !== null) {
       _notice = {
         reliving_date: moment(ctrl).add(
+          parseFloat($this.state.notice_period),
+          "days"
+        )._d,
+        exit_date: moment(ctrl).add(
           parseFloat($this.state.notice_period),
           "days"
         )._d,
