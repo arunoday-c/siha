@@ -242,6 +242,7 @@ class OPBilling extends Component {
           }
 
           data.billDetails = false;
+          data.company_payble = data.company_payable
 
           if (data.insured === "Y") {
             $this.props.getPatientInsurance({
