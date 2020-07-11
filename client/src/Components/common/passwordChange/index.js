@@ -4,8 +4,9 @@ import {
   AlgaehModal,
   AlgaehFormGroup,
   AlgaehMessagePop,
-  Icon
+  // Icon
 } from "algaeh-react-components";
+import { InfoCircleOutlined } from "@ant-design/icons";
 import { algaehApiCall } from "../../../utils/algaehApiCall";
 function ChangePassword(props) {
   const { showPasswordChange, onVisibityChange, history } = props;
@@ -27,7 +28,7 @@ function ChangePassword(props) {
         ) {
           AlgaehMessagePop({
             display: "Password is mandatory",
-            type: "info"
+            type: "info",
           });
           return;
         }
@@ -35,7 +36,7 @@ function ChangePassword(props) {
         if (notMatching === true) {
           AlgaehMessagePop({
             display: "Password is not matching",
-            type: "info"
+            type: "info",
           });
           return;
         }
@@ -44,30 +45,30 @@ function ChangePassword(props) {
           method: "PUT",
           data: {
             password: newPassword,
-            oldPassword: currentPassword
+            oldPassword: currentPassword,
           },
-          onSuccess: res => {
+          onSuccess: (res) => {
             if (res.data.success === true) {
               algaehApiCall({
                 uri: "/apiAuth/logout",
                 method: "GET",
                 onSuccess: () => {
                   history.push("/");
-                }
+                },
               });
             } else {
               AlgaehMessagePop({
                 display: res.data.records.message,
-                type: "error"
+                type: "error",
               });
             }
           },
-          onCatch: error => {
+          onCatch: (error) => {
             AlgaehMessagePop({
               display: error,
-              type: "error"
+              type: "error",
             });
-          }
+          },
         });
       }}
       onCancel={() => {
@@ -78,49 +79,49 @@ function ChangePassword(props) {
         div={{ className: "col-12 form-group" }}
         label={{
           forceLabel: "Current Password",
-          isImp: false
+          isImp: false,
         }}
         textBox={{
           type: "password",
           className: "txt-fld",
           name: "current_pwd",
           defaultValue: currentPassword,
-          onChange: e => {
+          onChange: (e) => {
             currentPassword = e.target.value;
-          }
+          },
         }}
       />
       <AlgaehFormGroup
         div={{ className: "col-12 form-group" }}
         label={{
           forceLabel: "New Password",
-          isImp: false
+          isImp: false,
         }}
         textBox={{
           className: "txt-fld",
           type: "password",
           name: "pwd",
           defaultValue: newPassword,
-          onChange: e => {
+          onChange: (e) => {
             newPassword = e.target.value;
-          }
+          },
         }}
       />
       <AlgaehFormGroup
         div={{ className: "col-12 form-group" }}
         label={{
           forceLabel: "Confirm New Password",
-          isImp: false
+          isImp: false,
         }}
         textBox={{
           className: "txt-fld",
           type: "password",
           name: "cf_pwd",
           defaultValue: confirmPassword,
-          onChange: e => {
+          onChange: (e) => {
             confirmPassword = e.target.value;
           },
-          onBlur: e => {
+          onBlur: (e) => {
             if (newPassword !== confirmPassword) {
               notMatching = true;
               e.target.classList.add("faltRed");
@@ -128,12 +129,13 @@ function ChangePassword(props) {
               notMatching = false;
               e.target.classList.remove("faltRed");
             }
-          }
+          },
         }}
       />
       <p>
-        <Icon type="info-circle" /> &nbsp; Changing Password automatically load
-        login screen.
+        <InfoCircleOutlined />
+        {/* <Icon type="info-circle" /> */}
+        &nbsp; Changing Password automatically load login screen.
       </p>
     </AlgaehModal>
   );
