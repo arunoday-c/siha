@@ -233,8 +233,8 @@ class TransferEntryItems extends Component {
                           <h6>
                             {this.state.expiry_date
                               ? moment(this.state.expiry_date).format(
-                                Options.dateFormat
-                              )
+                                  Options.dateFormat
+                                )
                               : "-----------"}
                           </h6>
                         </div>
@@ -248,8 +248,8 @@ class TransferEntryItems extends Component {
                           <h6>
                             {this.state.qtyhand
                               ? this.state.qtyhand +
-                              " " +
-                              this.state.uom_description
+                                " " +
+                                this.state.uom_description
                               : "-----------"}
                           </h6>
                         </div>
@@ -374,15 +374,15 @@ class TransferEntryItems extends Component {
                                   this.props.inventoryitemlist === undefined
                                     ? []
                                     : this.props.inventoryitemlist.filter(
-                                      (f) =>
-                                        f.hims_d_inventory_item_master_id ===
-                                        row.item_id
-                                    );
+                                        (f) =>
+                                          f.hims_d_inventory_item_master_id ===
+                                          row.item_id
+                                      );
 
                                 return (
                                   <span>
                                     {display !== undefined &&
-                                      display.length !== 0
+                                    display.length !== 0
                                       ? display[0].item_description
                                       : ""}
                                   </span>
@@ -393,15 +393,15 @@ class TransferEntryItems extends Component {
                                   this.props.inventoryitemlist === undefined
                                     ? []
                                     : this.props.inventoryitemlist.filter(
-                                      (f) =>
-                                        f.hims_d_inventory_item_master_id ===
-                                        row.item_id
-                                    );
+                                        (f) =>
+                                          f.hims_d_inventory_item_master_id ===
+                                          row.item_id
+                                      );
 
                                 return (
                                   <span>
                                     {display !== undefined &&
-                                      display.length !== 0
+                                    display.length !== 0
                                       ? display[0].item_description
                                       : ""}
                                   </span>
@@ -424,10 +424,10 @@ class TransferEntryItems extends Component {
                                   this.props.inventoryitemcategory === undefined
                                     ? []
                                     : this.props.inventoryitemcategory.filter(
-                                      (f) =>
-                                        f.hims_d_inventory_tem_category_id ===
-                                        row.item_category_id
-                                    );
+                                        (f) =>
+                                          f.hims_d_inventory_tem_category_id ===
+                                          row.item_category_id
+                                      );
 
                                 return (
                                   <span>
@@ -442,10 +442,10 @@ class TransferEntryItems extends Component {
                                   this.props.inventoryitemcategory === undefined
                                     ? []
                                     : this.props.inventoryitemcategory.filter(
-                                      (f) =>
-                                        f.hims_d_inventory_tem_category_id ===
-                                        row.item_category_id
-                                    );
+                                        (f) =>
+                                          f.hims_d_inventory_tem_category_id ===
+                                          row.item_category_id
+                                      );
 
                                 return (
                                   <span>
@@ -472,10 +472,10 @@ class TransferEntryItems extends Component {
                                   this.props.inventoryitemgroup === undefined
                                     ? []
                                     : this.props.inventoryitemgroup.filter(
-                                      (f) =>
-                                        f.hims_d_inventory_item_group_id ===
-                                        row.item_group_id
-                                    );
+                                        (f) =>
+                                          f.hims_d_inventory_item_group_id ===
+                                          row.item_group_id
+                                      );
 
                                 return (
                                   <span>
@@ -490,10 +490,10 @@ class TransferEntryItems extends Component {
                                   this.props.inventoryitemgroup === undefined
                                     ? []
                                     : this.props.inventoryitemgroup.filter(
-                                      (f) =>
-                                        f.hims_d_inventory_item_group_id ===
-                                        row.item_group_id
-                                    );
+                                        (f) =>
+                                          f.hims_d_inventory_item_group_id ===
+                                          row.item_group_id
+                                      );
 
                                 return (
                                   <span>
@@ -556,10 +556,10 @@ class TransferEntryItems extends Component {
                                   this.props.inventoryitemuom === undefined
                                     ? []
                                     : this.props.inventoryitemuom.filter(
-                                      (f) =>
-                                        f.hims_d_inventory_uom_id ===
-                                        row.uom_transferred_id
-                                    );
+                                        (f) =>
+                                          f.hims_d_inventory_uom_id ===
+                                          row.uom_transferred_id
+                                      );
 
                                 return (
                                   <span>
@@ -574,10 +574,10 @@ class TransferEntryItems extends Component {
                                   this.props.inventoryitemuom === undefined
                                     ? []
                                     : this.props.inventoryitemuom.filter(
-                                      (f) =>
-                                        f.hims_d_inventory_uom_id ===
-                                        row.uom_transferred_id
-                                    );
+                                        (f) =>
+                                          f.hims_d_inventory_uom_id ===
+                                          row.uom_transferred_id
+                                      );
 
                                 return (
                                   <span>
@@ -615,34 +615,34 @@ class TransferEntryItems extends Component {
                                   row.ack_quantity !== "" ? (
                                     parseFloat(row.ack_quantity)
                                   ) : (
-                                      ""
-                                    )
+                                    ""
+                                  )
                                 ) : (
-                                    <AlagehFormGroup
-                                      div={{}}
-                                      textBox={{
-                                        number: {
-                                          allowNegative: false,
-                                          thousandSeparator: ",",
-                                        },
-                                        dontAllowKeys: ["-", "e", "."],
-                                        value:
-                                          row.ack_quantity !== ""
-                                            ? parseFloat(row.ack_quantity)
-                                            : "",
-                                        className: "txt-fld",
-                                        name: "ack_quantity",
-                                        events: {
-                                          onChange: onchangegridcolauthqty.bind(
-                                            this,
-                                            this,
-                                            context,
-                                            row
-                                          ),
-                                        },
-                                      }}
-                                    />
-                                  );
+                                  <AlagehFormGroup
+                                    div={{}}
+                                    textBox={{
+                                      number: {
+                                        allowNegative: false,
+                                        thousandSeparator: ",",
+                                      },
+                                      dontAllowKeys: ["-", "e", "."],
+                                      value:
+                                        row.ack_quantity !== ""
+                                          ? parseFloat(row.ack_quantity)
+                                          : "",
+                                      className: "txt-fld",
+                                      name: "ack_quantity",
+                                      events: {
+                                        onChange: onchangegridcolauthqty.bind(
+                                          this,
+                                          this,
+                                          context,
+                                          row
+                                        ),
+                                      },
+                                    }}
+                                  />
+                                );
                               },
                             },
                           ]}
@@ -677,352 +677,492 @@ class TransferEntryItems extends Component {
                   </div>
                 </div>
               ) : (
-                  <div className="row">
-                    <div className="col-4">
-                      <h4 style={{ marginBottom: 4 }}>Requested Items</h4>
-                      <ul className="reqTransList">
-                        {this.state.stock_detail.map((item, index) => {
-                          return (
-                            <li key={index}>
-                              <div className="itemReq">
-                                <h6>{item.item_description}</h6>
-                                <span>
-                                  UOM: <span>{item.uom_description}</span>
-                                </span>
-                                <span>
-                                  Req. Qty:
+                <div className="row">
+                  <div className="col-4">
+                    <h4 style={{ marginBottom: 4 }}>Requested Items</h4>
+                    <ul className="reqTransList">
+                      {this.state.stock_detail.map((item, index) => {
+                        return (
+                          <li key={index}>
+                            <div className="itemReq">
+                              <h6>{item.item_description}</h6>
+                              <span>
+                                UOM: <span>{item.uom_description}</span>
+                              </span>
+                              <span>
+                                Req. Qty:
                                 <span>{item.quantity_authorized}</span>
-                                </span>
+                              </span>
 
-                                <span>
-                                  Trans. Qty:
+                              <span>
+                                Trans. Qty:
                                 <span>{item.quantity_transferred}</span>
-                                </span>
-                                <span>
-                                  Out Std. Qty:
+                              </span>
+                              <span>
+                                Out Std. Qty:
                                 <span>{item.quantity_outstanding}</span>
-                                </span>
+                              </span>
 
-                                <span>
-                                  Trans. Till Date:
+                              <span>
+                                Trans. Till Date:
                                 <span>{item.transfer_to_date}</span>
-                                </span>
-                              </div>
-                              <div className="itemAction">
-                                <span>
-                                  <i
-                                    className="fas fa-pen"
-                                    style={{
-                                      pointerEvents:
-                                        this.state.cannotEdit === true
-                                          ? "none"
-                                          : "",
-                                      opacity:
-                                        this.state.cannotEdit === true
-                                          ? "0.1"
-                                          : "",
-                                    }}
-                                    onClick={this.ChangesOrent.bind(
-                                      this,
-                                      context,
-                                      item
-                                    )}
+                              </span>
+                            </div>
+                            <div className="itemAction">
+                              <span>
+                                <i
+                                  className="fas fa-pen"
+                                  style={{
+                                    pointerEvents:
+                                      this.state.cannotEdit === true
+                                        ? "none"
+                                        : "",
+                                    opacity:
+                                      this.state.cannotEdit === true
+                                        ? "0.1"
+                                        : "",
+                                  }}
+                                  onClick={this.ChangesOrent.bind(
+                                    this,
+                                    context,
+                                    item
+                                  )}
+                                />
+                              </span>
+                            </div>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  </div>
+
+                  {this.state.batch_detail_view === false ? (
+                    <div className="col-8">
+                      <div className="portlet portlet-bordered margin-bottom-15">
+                        <div className="portlet-body" id="REQ_details_Cntr">
+                          <AlgaehDataGrid
+                            id="REQ_details"
+                            columns={[
+                              {
+                                fieldName: "item_id",
+                                label: (
+                                  <AlgaehLabel
+                                    label={{ forceLabel: "Item Name" }}
                                   />
-                                </span>
-                              </div>
-                            </li>
-                          );
-                        })}
-                      </ul>
-                    </div>
-
-                    {this.state.batch_detail_view === false ? (
-                      <div className="col-8">
-                        <div className="portlet portlet-bordered margin-bottom-15">
-                          <div className="portlet-body" id="REQ_details_Cntr">
-                            <AlgaehDataGrid
-                              id="REQ_details"
-                              columns={[
-                                {
-                                  fieldName: "item_id",
-                                  label: (
-                                    <AlgaehLabel
-                                      label={{ forceLabel: "Item Name" }}
-                                    />
-                                  ),
-                                  displayTemplate: (row) => {
-                                    let display =
-                                      this.props.inventoryitemlist === undefined
-                                        ? []
-                                        : this.props.inventoryitemlist.filter(
+                                ),
+                                displayTemplate: (row) => {
+                                  let display =
+                                    this.props.inventoryitemlist === undefined
+                                      ? []
+                                      : this.props.inventoryitemlist.filter(
                                           (f) =>
                                             f.hims_d_inventory_item_master_id ===
                                             row.item_id
                                         );
 
-                                    return (
-                                      <span>
-                                        {display !== undefined &&
-                                          display.length !== 0
-                                          ? display[0].item_description
-                                          : ""}
-                                      </span>
-                                    );
-                                  },
-                                  editorTemplate: (row) => {
-                                    let display =
-                                      this.props.inventoryitemlist === undefined
-                                        ? []
-                                        : this.props.inventoryitemlist.filter(
+                                  return (
+                                    <span>
+                                      {display !== undefined &&
+                                      display.length !== 0
+                                        ? display[0].item_description
+                                        : ""}
+                                    </span>
+                                  );
+                                },
+                                editorTemplate: (row) => {
+                                  let display =
+                                    this.props.inventoryitemlist === undefined
+                                      ? []
+                                      : this.props.inventoryitemlist.filter(
                                           (f) =>
                                             f.hims_d_inventory_item_master_id ===
                                             row.item_id
                                         );
 
-                                    return (
-                                      <span>
-                                        {display !== undefined &&
-                                          display.length !== 0
-                                          ? display[0].item_description
-                                          : ""}
-                                      </span>
-                                    );
-                                  },
-                                  others: { minWidth: 150 },
+                                  return (
+                                    <span>
+                                      {display !== undefined &&
+                                      display.length !== 0
+                                        ? display[0].item_description
+                                        : ""}
+                                    </span>
+                                  );
                                 },
+                                others: { minWidth: 150 },
+                              },
 
-                                {
-                                  fieldName: "item_category_id",
-                                  label: (
-                                    <AlgaehLabel
-                                      label={{ forceLabel: "Item Category" }}
-                                    />
-                                  ),
-                                  displayTemplate: (row) => {
-                                    let display =
-                                      this.props.inventoryitemcategory ===
-                                        undefined
-                                        ? []
-                                        : this.props.inventoryitemcategory.filter(
+                              {
+                                fieldName: "item_category_id",
+                                label: (
+                                  <AlgaehLabel
+                                    label={{ forceLabel: "Item Category" }}
+                                  />
+                                ),
+                                displayTemplate: (row) => {
+                                  let display =
+                                    this.props.inventoryitemcategory ===
+                                    undefined
+                                      ? []
+                                      : this.props.inventoryitemcategory.filter(
                                           (f) =>
                                             f.hims_d_inventory_tem_category_id ===
                                             row.item_category_id
                                         );
 
-                                    return (
-                                      <span>
-                                        {display !== null && display.length !== 0
-                                          ? display[0].category_desc
-                                          : ""}
-                                      </span>
-                                    );
-                                  },
-                                  editorTemplate: (row) => {
-                                    let display =
-                                      this.props.inventoryitemcategory ===
-                                        undefined
-                                        ? []
-                                        : this.props.inventoryitemcategory.filter(
+                                  return (
+                                    <span>
+                                      {display !== null && display.length !== 0
+                                        ? display[0].category_desc
+                                        : ""}
+                                    </span>
+                                  );
+                                },
+                                editorTemplate: (row) => {
+                                  let display =
+                                    this.props.inventoryitemcategory ===
+                                    undefined
+                                      ? []
+                                      : this.props.inventoryitemcategory.filter(
                                           (f) =>
                                             f.hims_d_inventory_tem_category_id ===
                                             row.item_category_id
                                         );
 
-                                    return (
-                                      <span>
-                                        {display !== null && display.length !== 0
-                                          ? display[0].category_desc
-                                          : ""}
-                                      </span>
-                                    );
-                                  },
-                                  others: { minWidth: 250 },
+                                  return (
+                                    <span>
+                                      {display !== null && display.length !== 0
+                                        ? display[0].category_desc
+                                        : ""}
+                                    </span>
+                                  );
                                 },
+                                others: { minWidth: 250 },
+                              },
 
-                                {
-                                  fieldName: "item_group_id",
-                                  label: (
-                                    <AlgaehLabel
-                                      label={{ forceLabel: "Item Group" }}
-                                    />
-                                  ),
-                                  displayTemplate: (row) => {
-                                    let display =
-                                      this.props.inventoryitemgroup === undefined
-                                        ? []
-                                        : this.props.inventoryitemgroup.filter(
+                              {
+                                fieldName: "item_group_id",
+                                label: (
+                                  <AlgaehLabel
+                                    label={{ forceLabel: "Item Group" }}
+                                  />
+                                ),
+                                displayTemplate: (row) => {
+                                  let display =
+                                    this.props.inventoryitemgroup === undefined
+                                      ? []
+                                      : this.props.inventoryitemgroup.filter(
                                           (f) =>
                                             f.hims_d_inventory_item_group_id ===
                                             row.item_group_id
                                         );
 
-                                    return (
-                                      <span>
-                                        {display !== null && display.length !== 0
-                                          ? display[0].group_description
-                                          : ""}
-                                      </span>
-                                    );
-                                  },
-                                  editorTemplate: (row) => {
-                                    let display =
-                                      this.props.inventoryitemgroup === undefined
-                                        ? []
-                                        : this.props.inventoryitemgroup.filter(
+                                  return (
+                                    <span>
+                                      {display !== null && display.length !== 0
+                                        ? display[0].group_description
+                                        : ""}
+                                    </span>
+                                  );
+                                },
+                                editorTemplate: (row) => {
+                                  let display =
+                                    this.props.inventoryitemgroup === undefined
+                                      ? []
+                                      : this.props.inventoryitemgroup.filter(
                                           (f) =>
                                             f.hims_d_inventory_item_group_id ===
                                             row.item_group_id
                                         );
 
-                                    return (
-                                      <span>
-                                        {display !== null && display.length !== 0
-                                          ? display[0].group_description
-                                          : ""}
-                                      </span>
-                                    );
-                                  },
-                                  others: { minWidth: 150 },
+                                  return (
+                                    <span>
+                                      {display !== null && display.length !== 0
+                                        ? display[0].group_description
+                                        : ""}
+                                    </span>
+                                  );
                                 },
+                                others: { minWidth: 150 },
+                              },
 
-                                {
-                                  fieldName: "batchno",
-                                  label: (
-                                    <AlgaehLabel
-                                      label={{ forceLabel: "Batch No." }}
-                                    />
-                                  ),
-                                  others: {
-                                    minWidth: 150,
-                                  },
+                              {
+                                fieldName: "batchno",
+                                label: (
+                                  <AlgaehLabel
+                                    label={{ forceLabel: "Batch No." }}
+                                  />
+                                ),
+                                others: {
+                                  minWidth: 150,
                                 },
+                              },
 
-                                {
-                                  fieldName: "expiry_date",
-                                  label: (
-                                    <AlgaehLabel
-                                      label={{ forceLabel: "Expiry Date" }}
-                                    />
-                                  ),
-                                  displayTemplate: (row) => {
-                                    return (
-                                      <span>
-                                        {row.expiry_date !== null
-                                          ? dateFormater(this, row.expiry_date)
-                                          : null}
-                                      </span>
-                                    );
-                                  },
-                                  editorTemplate: (row) => {
-                                    return (
-                                      <span>
-                                        {row.expiry_date !== null
-                                          ? dateFormater(this, row.expiry_date)
-                                          : null}
-                                      </span>
-                                    );
-                                  },
+                              {
+                                fieldName: "expiry_date",
+                                label: (
+                                  <AlgaehLabel
+                                    label={{ forceLabel: "Expiry Date" }}
+                                  />
+                                ),
+                                displayTemplate: (row) => {
+                                  return (
+                                    <span>
+                                      {row.expiry_date !== null
+                                        ? dateFormater(this, row.expiry_date)
+                                        : null}
+                                    </span>
+                                  );
                                 },
-                                {
-                                  fieldName: "uom_requested_name",
-                                  label: (
-                                    <AlgaehLabel label={{ forceLabel: "UOM" }} />
-                                  ),
-                                  // displayTemplate: (row) => {                                  
-                                  //   let display =
-                                  //     this.props.inventoryitemuom === undefined
-                                  //       ? []
-                                  //       : this.props.inventoryitemuom.filter(
-                                  //           (f) =>
-                                  //             f.hims_d_inventory_uom_id ===
-                                  //             row.uom_requested_id
-                                  //         );
+                                editorTemplate: (row) => {
+                                  return (
+                                    <span>
+                                      {row.expiry_date !== null
+                                        ? dateFormater(this, row.expiry_date)
+                                        : null}
+                                    </span>
+                                  );
+                                },
+                              },
+                              {
+                                fieldName: "uom_description",
+                                label: (
+                                  <AlgaehLabel label={{ forceLabel: "UOM" }} />
+                                ),
+                                // displayTemplate: (row) => {
+                                //   let display =
+                                //     this.props.inventoryitemuom === undefined
+                                //       ? []
+                                //       : this.props.inventoryitemuom.filter(
+                                //           (f) =>
+                                //             f.hims_d_inventory_uom_id ===
+                                //             row.uom_requested_id
+                                //         );
 
-                                  //   return (
-                                  //     <span>
-                                  //       {display !== null && display.length !== 0
-                                  //         ? display[0].uom_description
-                                  //         : ""}
-                                  //     </span>
-                                  //   );
-                                  // },
-                                  // editorTemplate: (row) => {
+                                //   return (
+                                //     <span>
+                                //       {display !== null && display.length !== 0
+                                //         ? display[0].uom_description
+                                //         : ""}
+                                //     </span>
+                                //   );
+                                // },
+                                // editorTemplate: (row) => {
 
-                                  // let display =
-                                  //   this.props.inventoryitemuom === undefined
-                                  //     ? []
-                                  //     : this.props.inventoryitemuom.filter(
-                                  //         (f) =>
-                                  //           f.hims_d_inventory_uom_id ===
-                                  //           row.uom_requested_id
-                                  //       );
+                                // let display =
+                                //   this.props.inventoryitemuom === undefined
+                                //     ? []
+                                //     : this.props.inventoryitemuom.filter(
+                                //         (f) =>
+                                //           f.hims_d_inventory_uom_id ===
+                                //           row.uom_requested_id
+                                //       );
 
-                                  // return (
-                                  //   <span>
-                                  //     {display !== null && display.length !== 0
-                                  //       ? display[0].uom_description
-                                  //       : ""}
-                                  //   </span>
-                                  // );
-                                  //},
+                                // return (
+                                //   <span>
+                                //     {display !== null && display.length !== 0
+                                //       ? display[0].uom_description
+                                //       : ""}
+                                //   </span>
+                                // );
+                                //},
+                              },
+                              {
+                                fieldName: "quantity_transfer",
+                                label: (
+                                  <AlgaehLabel
+                                    label={{
+                                      forceLabel: "Qty Transfered",
+                                    }}
+                                  />
+                                ),
+                                others: {
+                                  minWidth: 130,
                                 },
-                                {
-                                  fieldName: "quantity_transfer",
-                                  label: (
-                                    <AlgaehLabel
-                                      label={{
-                                        forceLabel: "Qty Transfered",
-                                      }}
-                                    />
-                                  ),
-                                  others: {
-                                    minWidth: 130,
-                                  },
-                                },
+                              },
 
-                                {
-                                  fieldName: "quantity_requested",
-                                  label: (
-                                    <AlgaehLabel
-                                      label={{ forceLabel: "Qty Requested" }}
-                                    />
-                                  ),
-                                  disabled: true,
-                                  others: {
-                                    minWidth: 130,
-                                  },
+                              {
+                                fieldName: "quantity_requested",
+                                label: (
+                                  <AlgaehLabel
+                                    label={{ forceLabel: "Qty Requested" }}
+                                  />
+                                ),
+                                disabled: true,
+                                others: {
+                                  minWidth: 130,
                                 },
-                                {
-                                  fieldName: "quantity_authorized",
-                                  label: (
-                                    <AlgaehLabel
-                                      label={{
-                                        forceLabel: "Qty Authorized",
-                                      }}
-                                    />
-                                  ),
-                                  disabled: true,
-                                  others: {
-                                    minWidth: 140,
-                                  },
+                              },
+                              {
+                                fieldName: "quantity_authorized",
+                                label: (
+                                  <AlgaehLabel
+                                    label={{
+                                      forceLabel: "Qty Authorized",
+                                    }}
+                                  />
+                                ),
+                                disabled: true,
+                                others: {
+                                  minWidth: 140,
                                 },
-                                {
-                                  fieldName: "ack_quantity",
-                                  label: (
-                                    <AlgaehLabel
-                                      label={{
-                                        forceLabel: "Acknowledge Qty",
-                                      }}
-                                    />
-                                  ),
-                                  displayTemplate: (row) => {
-                                    return this.state.ack_done === "Y" ? (
-                                      row.ack_quantity !== "" ? (
-                                        parseFloat(row.ack_quantity)
-                                      ) : (
-                                          ""
-                                        )
+                              },
+                              {
+                                fieldName: "ack_quantity",
+                                label: (
+                                  <AlgaehLabel
+                                    label={{
+                                      forceLabel: "Acknowledge Qty",
+                                    }}
+                                  />
+                                ),
+                                displayTemplate: (row) => {
+                                  return this.state.ack_done === "Y" ? (
+                                    row.ack_quantity !== "" ? (
+                                      parseFloat(row.ack_quantity)
                                     ) : (
+                                      ""
+                                    )
+                                  ) : (
+                                    <AlagehFormGroup
+                                      div={{}}
+                                      textBox={{
+                                        number: {
+                                          allowNegative: false,
+                                          thousandSeparator: ",",
+                                        },
+                                        dontAllowKeys: ["-", "e", "."],
+                                        value:
+                                          row.ack_quantity !== ""
+                                            ? parseFloat(row.ack_quantity)
+                                            : "",
+                                        className: "txt-fld",
+                                        name: "ack_quantity",
+                                        events: {
+                                          onChange: onchangegridcolauthqty.bind(
+                                            this,
+                                            this,
+                                            context,
+                                            row
+                                          ),
+                                        },
+                                      }}
+                                    />
+                                  );
+                                },
+                              },
+                            ]}
+                            keyId="service_type_id"
+                            dataSource={{
+                              data: this.state.inventory_stock_detail,
+                            }}
+                            isEditable={false}
+                            byForceEvents={true}
+                            paging={{ page: 0, rowsPerPage: 10 }}
+                            datavalidate="id='INVTRANS_details'"
+                            events={{
+                              onDelete: deleteTransEntryDetail.bind(
+                                this,
+                                this,
+                                context
+                              ),
+                              onEdit: EditGrid.bind(this, this, context),
+                              onCancel: CancelGrid.bind(this, this, context),
+                              onDone: updateTransEntryDetail.bind(
+                                this,
+                                this,
+                                context
+                              ),
+                            }}
+                            onRowSelect={(row) => {
+                              getItemLocationStock(this, row);
+                            }}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="col-8" style={{ paddingLeft: 0 }}>
+                      <div className="portlet portlet-bordered margin-bottom-15">
+                        <div className="row">
+                          <div className="col">
+                            <AlgaehLabel label={{ forceLabel: "Item Name" }} />
+                            <h6>{item_name ? item_name : "----------"}</h6>
+                          </div>
+
+                          <div className="col">
+                            <AlgaehLabel
+                              label={{ forceLabel: "Required Qty" }}
+                            />
+                            <h6>{qty_auth ? qty_auth : "----------"}</h6>
+                          </div>
+                          {this.state.stock_enable === true ? (
+                            <div className="col">
+                              <AlgaehLabel
+                                label={{
+                                  forceLabel: "Stock Not Available",
+                                  className: "noStock",
+                                }}
+                              />
+                            </div>
+                          ) : null}
+                        </div>
+                        {qty_auth < this.state.quantity_transferred
+                          ? "Greater than required qty"
+                          : null}
+                        <div className="portlet-body">
+                          <div className="row">
+                            <div
+                              className="col-12"
+                              id="itemTransferMapGrid_Cntr"
+                            >
+                              <AlgaehDataGrid
+                                id="itemTransferMapGrid"
+                                datavalidate="itemTransferMapGrid"
+                                columns={[
+                                  {
+                                    fieldName: "batchno",
+                                    label: (
+                                      <AlgaehLabel
+                                        label={{ forceLabel: "Batch No" }}
+                                      />
+                                    ),
+                                  },
+                                  {
+                                    fieldName: "qtyhand",
+                                    label: (
+                                      <AlgaehLabel
+                                        label={{
+                                          forceLabel: "Qantity in Hand",
+                                        }}
+                                      />
+                                    ),
+                                  },
+                                  {
+                                    fieldName: "expiry_date",
+                                    label: (
+                                      <AlgaehLabel
+                                        label={{ forceLabel: "Expiry Date" }}
+                                      />
+                                    ),
+                                    displayTemplate: (row) => {
+                                      return (
+                                        <span>
+                                          {dateFormater(this, row.expiry_date)}
+                                        </span>
+                                      );
+                                    },
+                                  },
+                                  {
+                                    fieldName: "quantity_transfer",
+                                    label: (
+                                      <AlgaehLabel
+                                        label={{
+                                          forceLabel: "Transfering Qty",
+                                        }}
+                                      />
+                                    ),
+                                    displayTemplate: (row) => {
+                                      return (
                                         <AlagehFormGroup
                                           div={{}}
                                           textBox={{
@@ -1031,229 +1171,89 @@ class TransferEntryItems extends Component {
                                               thousandSeparator: ",",
                                             },
                                             dontAllowKeys: ["-", "e", "."],
-                                            value:
-                                              row.ack_quantity !== ""
-                                                ? parseFloat(row.ack_quantity)
-                                                : "",
+                                            value: row.quantity_transfer,
                                             className: "txt-fld",
-                                            name: "ack_quantity",
+                                            name: "quantity_transfer",
                                             events: {
-                                              onChange: onchangegridcolauthqty.bind(
+                                              onChange: onchangegridcol.bind(
                                                 this,
                                                 this,
                                                 context,
                                                 row
                                               ),
                                             },
+                                            others: {
+                                              algaeh_required: "true",
+                                              errormessage:
+                                                "Please enter Transferred Quantity ..",
+                                              checkvalidation:
+                                                "value ==='' || value ==='0'",
+                                            },
                                           }}
                                         />
                                       );
+                                    },
                                   },
-                                },
-                              ]}
-                              keyId="service_type_id"
-                              dataSource={{
-                                data: this.state.inventory_stock_detail,
-                              }}
-                              isEditable={false}
-                              byForceEvents={true}
-                              paging={{ page: 0, rowsPerPage: 10 }}
-                              datavalidate="id='INVTRANS_details'"
-                              events={{
-                                onDelete: deleteTransEntryDetail.bind(
-                                  this,
-                                  this,
-                                  context
-                                ),
-                                onEdit: EditGrid.bind(this, this, context),
-                                onCancel: CancelGrid.bind(this, this, context),
-                                onDone: updateTransEntryDetail.bind(
-                                  this,
-                                  this,
-                                  context
-                                ),
-                              }}
-                              onRowSelect={(row) => {
-                                getItemLocationStock(this, row);
-                              }}
+                                ]}
+                                keyId=""
+                                dataSource={{
+                                  data:
+                                    this.state.item_details == null
+                                      ? []
+                                      : this.state.item_details.batches,
+                                }}
+                                isEditable={false}
+                                paging={{ page: 0, rowsPerPage: 10 }}
+                                events={{}}
+                                others={{}}
+                              />
+                            </div>
+                          </div>
+                        </div>
+                        <div className="row">
+                          <div className="col">
+                            <AlgaehLabel
+                              label={{ forceLabel: "Transfer Qty" }}
                             />
+                            <h6>
+                              {this.state.quantity_transferred
+                                ? this.state.quantity_transferred
+                                : "----------"}
+                            </h6>
+                          </div>
+
+                          <div className="col">
+                            <button
+                              type="button"
+                              className="btn btn-primary"
+                              onClick={AddSelectedBatches.bind(
+                                this,
+                                this,
+                                context
+                              )}
+                              style={{
+                                marginTop: 8,
+                                float: "right",
+                                marginLeft: 10,
+                              }}
+                            >
+                              Save
+                            </button>
+                            <button
+                              type="button"
+                              className="btn btn-default"
+                              onClick={this.CloseOrent.bind(this, context)}
+                              style={{ marginTop: 8, float: "right" }}
+                            >
+                              Close
+                            </button>
                           </div>
                         </div>
                       </div>
-                    ) : (
-                        <div className="col-8" style={{ paddingLeft: 0 }}>
-                          <div className="portlet portlet-bordered margin-bottom-15">
-                            <div className="row">
-                              <div className="col">
-                                <AlgaehLabel label={{ forceLabel: "Item Name" }} />
-                                <h6>{item_name ? item_name : "----------"}</h6>
-                              </div>
-
-                              <div className="col">
-                                <AlgaehLabel
-                                  label={{ forceLabel: "Required Qty" }}
-                                />
-                                <h6>{qty_auth ? qty_auth : "----------"}</h6>
-                              </div>
-                              {this.state.stock_enable === true ? (
-                                <div className="col">
-                                  <AlgaehLabel
-                                    label={{
-                                      forceLabel: "Stock Not Available",
-                                      className: "noStock",
-                                    }}
-                                  />
-                                </div>
-                              ) : null}
-                            </div>
-                            {qty_auth < this.state.quantity_transferred
-                              ? "Greater than required qty"
-                              : null}
-                            <div className="portlet-body">
-                              <div className="row">
-                                <div
-                                  className="col-12"
-                                  id="itemTransferMapGrid_Cntr"
-                                >
-                                  <AlgaehDataGrid
-                                    id="itemTransferMapGrid"
-                                    datavalidate="itemTransferMapGrid"
-                                    columns={[
-                                      {
-                                        fieldName: "batchno",
-                                        label: (
-                                          <AlgaehLabel
-                                            label={{ forceLabel: "Batch No" }}
-                                          />
-                                        ),
-                                      },
-                                      {
-                                        fieldName: "qtyhand",
-                                        label: (
-                                          <AlgaehLabel
-                                            label={{
-                                              forceLabel: "Qantity in Hand",
-                                            }}
-                                          />
-                                        ),
-                                      },
-                                      {
-                                        fieldName: "expiry_date",
-                                        label: (
-                                          <AlgaehLabel
-                                            label={{ forceLabel: "Expiry Date" }}
-                                          />
-                                        ),
-                                        displayTemplate: (row) => {
-                                          return (
-                                            <span>
-                                              {dateFormater(this, row.expiry_date)}
-                                            </span>
-                                          );
-                                        },
-                                      },
-                                      {
-                                        fieldName: "quantity_transfer",
-                                        label: (
-                                          <AlgaehLabel
-                                            label={{
-                                              forceLabel: "Transfering Qty",
-                                            }}
-                                          />
-                                        ),
-                                        displayTemplate: (row) => {
-                                          return (
-                                            <AlagehFormGroup
-                                              div={{}}
-                                              textBox={{
-                                                number: {
-                                                  allowNegative: false,
-                                                  thousandSeparator: ",",
-                                                },
-                                                dontAllowKeys: ["-", "e", "."],
-                                                value: row.quantity_transfer,
-                                                className: "txt-fld",
-                                                name: "quantity_transfer",
-                                                events: {
-                                                  onChange: onchangegridcol.bind(
-                                                    this,
-                                                    this,
-                                                    context,
-                                                    row
-                                                  ),
-                                                },
-                                                others: {
-                                                  algaeh_required: "true",
-                                                  errormessage:
-                                                    "Please enter Transferred Quantity ..",
-                                                  checkvalidation:
-                                                    "value ==='' || value ==='0'",
-                                                },
-                                              }}
-                                            />
-                                          );
-                                        },
-                                      },
-                                    ]}
-                                    keyId=""
-                                    dataSource={{
-                                      data:
-                                        this.state.item_details == null
-                                          ? []
-                                          : this.state.item_details.batches,
-                                    }}
-                                    isEditable={false}
-                                    paging={{ page: 0, rowsPerPage: 10 }}
-                                    events={{}}
-                                    others={{}}
-                                  />
-                                </div>
-                              </div>
-                            </div>
-                            <div className="row">
-                              <div className="col">
-                                <AlgaehLabel
-                                  label={{ forceLabel: "Transfer Qty" }}
-                                />
-                                <h6>
-                                  {this.state.quantity_transferred
-                                    ? this.state.quantity_transferred
-                                    : "----------"}
-                                </h6>
-                              </div>
-
-                              <div className="col">
-                                <button
-                                  type="button"
-                                  className="btn btn-primary"
-                                  onClick={AddSelectedBatches.bind(
-                                    this,
-                                    this,
-                                    context
-                                  )}
-                                  style={{
-                                    marginTop: 8,
-                                    float: "right",
-                                    marginLeft: 10,
-                                  }}
-                                >
-                                  Save
-                            </button>
-                                <button
-                                  type="button"
-                                  className="btn btn-default"
-                                  onClick={this.CloseOrent.bind(this, context)}
-                                  style={{ marginTop: 8, float: "right" }}
-                                >
-                                  Close
-                            </button>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      )}
-                  </div>
-                )}
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           )}
         </MyContext.Consumer>
