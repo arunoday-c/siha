@@ -24,6 +24,8 @@ const SupplierPayment = lazy(() =>
   import("./Components/SupplierListFinance/SupplierPayment")
 );
 
+const PrePayment = lazy(() => import("./Components/PrePayment"));
+
 const JournalAuthorization = lazy(() =>
   import("./Components/JournalAuthorization")
 );
@@ -46,6 +48,7 @@ export default function Routes(props) {
           <Route path="/CustomerPayment" component={CustomerPayment} />
           <Route path="/SupplierListFinance" component={SupplierListFinance} />
           <Route path="/SupplierPayment" component={SupplierPayment} />
+          <Route path="/PrePayment" component={PrePayment} />
           <Route
             path="/JournalAuthorization"
             component={JournalAuthorization}

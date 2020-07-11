@@ -12,7 +12,7 @@ const texthandle = ($this, context, e) => {
   let value = e.value || e.target.value;
 
   $this.setState({
-    [name]: value
+    [name]: value,
   });
 
   clearInterval(texthandlerInterval);
@@ -45,7 +45,7 @@ const clearinsurancehandle = ($this, context, e) => {
     card_holder_age: null,
     card_holder_gender: null,
     card_class: null,
-    ProcessInsure: ProcessInsure
+    ProcessInsure: ProcessInsure,
   });
 
   if (context !== null) {
@@ -62,7 +62,7 @@ const clearinsurancehandle = ($this, context, e) => {
       card_holder_age: null,
       card_holder_gender: null,
       card_class: null,
-      ProcessInsure: ProcessInsure
+      ProcessInsure: ProcessInsure,
     });
   }
 };
@@ -77,7 +77,7 @@ const insurancehandle = ($this, context, e) => {
   if (e.selected.network_id === $this.state.secondary_network_id) {
     swalMessage({
       title: "Primary and Secondary Insurance Plan cannot be same.",
-      type: "warning"
+      type: "warning",
     });
   } else {
     $this.setState(
@@ -92,7 +92,7 @@ const insurancehandle = ($this, context, e) => {
         primary_effective_start_date: e.selected.primary_effective_start_date,
         primary_effective_end_date: e.selected.primary_effective_end_date,
         card_holder_name: e.selected.card_holder_name,
-        ProcessInsure: ProcessInsure
+        ProcessInsure: ProcessInsure,
       },
       () => {
         if ($this.state.doctor_id !== null) {
@@ -113,7 +113,7 @@ const insurancehandle = ($this, context, e) => {
         primary_network_office_id:
           e.selected.hims_d_insurance_network_office_id,
         card_holder_name: e.selected.card_holder_name,
-        ProcessInsure: ProcessInsure
+        ProcessInsure: ProcessInsure,
       });
     }
   }
@@ -121,7 +121,7 @@ const insurancehandle = ($this, context, e) => {
 
 const datehandle = ($this, context, ctrl, e) => {
   $this.setState({
-    [e]: moment(ctrl)._d
+    [e]: moment(ctrl)._d,
   });
 
   clearInterval(texthandlerInterval);
@@ -146,11 +146,11 @@ const enddatehandle = ($this, context, ctrl, e) => {
       confirmButtonText: "Yes",
       confirmButtonColor: "#44b8bd",
       cancelButtonColor: "#d33",
-      cancelButtonText: "No"
-    }).then(willProceed => {
+      cancelButtonText: "No",
+    }).then((willProceed) => {
       if (willProceed.value) {
         $this.setState({
-          [e]: moment(ctrl)._d
+          [e]: moment(ctrl)._d,
         });
 
         clearInterval(texthandlerInterval);
@@ -164,7 +164,7 @@ const enddatehandle = ($this, context, ctrl, e) => {
     });
   } else {
     $this.setState({
-      [e]: moment(ctrl)._d
+      [e]: moment(ctrl)._d,
     });
 
     clearInterval(texthandlerInterval);
@@ -186,7 +186,7 @@ const InsuranceDetails = ($this, context, e) => {
   }
   AlgaehSearch({
     searchGrid: {
-      columns: Insurance
+      columns: Insurance,
     },
     searchName: "insurance",
     uri: "/gloabelSearch/get",
@@ -194,13 +194,13 @@ const InsuranceDetails = ($this, context, e) => {
     onContainsChange: (text, serchBy, callBack) => {
       callBack(text);
     },
-    onRowSelect: row => {
+    onRowSelect: (row) => {
       if (
         $this.state.secondary_network_id === row.hims_d_insurance_network_id
       ) {
         swalMessage({
           title: "Primary and Secondary Insurance Plan cannot be same.",
-          type: "warning"
+          type: "warning",
         });
       } else {
         if (
@@ -215,8 +215,8 @@ const InsuranceDetails = ($this, context, e) => {
             confirmButtonText: "Yes",
             confirmButtonColor: "#44b8bd",
             cancelButtonColor: "#d33",
-            cancelButtonText: "No"
-          }).then(willProceed => {
+            cancelButtonText: "No",
+          }).then((willProceed) => {
             if (willProceed.value) {
               let mappingName = "";
 
@@ -237,7 +237,7 @@ const InsuranceDetails = ($this, context, e) => {
                 primary_card_number: row.card_number,
                 primary_effective_start_date: row.net_effective_start_date,
                 // primary_effective_end_date: row.net_effective_end_date,
-                primary_effective_end_date: row.effective_end_date
+                primary_effective_end_date: row.effective_end_date,
               };
 
               let insObj = $this.props.existinsurance || [];
@@ -256,9 +256,9 @@ const InsuranceDetails = ($this, context, e) => {
                 redux: {
                   type: "PRIMARY_INSURANCE_DATA",
                   mappingName: mappingName,
-                  data: insObj
+                  data: insObj,
                 },
-                afterSuccess: data => {
+                afterSuccess: (data) => {
                   $this.setState(
                     {
                       primary_insurance_provider_id:
@@ -274,7 +274,7 @@ const InsuranceDetails = ($this, context, e) => {
                       primary_effective_end_date: row.net_effective_start_date,
                       insurance_effective_end_date: row.effective_end_date,
                       insurance_type: row.insurance_type,
-                      ProcessInsure: ProcessInsure
+                      ProcessInsure: ProcessInsure,
                     },
                     () => {
                       if ($this.state.doctor_id !== null) {
@@ -298,10 +298,10 @@ const InsuranceDetails = ($this, context, e) => {
                       primary_effective_end_date: row.net_effective_end_date,
                       insurance_effective_end_date: row.effective_end_date,
                       insurance_type: row.insurance_type,
-                      ProcessInsure: ProcessInsure
+                      ProcessInsure: ProcessInsure,
                     });
                   }
-                }
+                },
               });
             }
           });
@@ -324,7 +324,7 @@ const InsuranceDetails = ($this, context, e) => {
             insurance_effective_end_date: row.effective_end_date,
             insurance_type: row.insurance_type,
             primary_card_number: row.card_number,
-            policy_number: row.policy_number
+            policy_number: row.policy_number,
           };
           let insObj = $this.props.existinsurance || [];
           if (
@@ -342,9 +342,9 @@ const InsuranceDetails = ($this, context, e) => {
             redux: {
               type: "PRIMARY_INSURANCE_DATA",
               mappingName: mappingName,
-              data: insObj
+              data: insObj,
             },
-            afterSuccess: data => {
+            afterSuccess: (data) => {
               $this.setState(
                 {
                   primary_insurance_provider_id:
@@ -359,7 +359,7 @@ const InsuranceDetails = ($this, context, e) => {
                   primary_effective_end_date: row.net_effective_end_date,
                   insurance_effective_end_date: row.effective_end_date,
                   insurance_type: row.insurance_type,
-                  ProcessInsure: ProcessInsure
+                  ProcessInsure: ProcessInsure,
                 },
                 () => {
                   if ($this.state.doctor_id !== null) {
@@ -382,14 +382,14 @@ const InsuranceDetails = ($this, context, e) => {
                   primary_effective_end_date: row.net_effective_end_date,
                   insurance_effective_end_date: row.effective_end_date,
                   insurance_type: row.insurance_type,
-                  ProcessInsure: ProcessInsure
+                  ProcessInsure: ProcessInsure,
                 });
               }
-            }
+            },
           });
         }
       }
-    }
+    },
   });
 };
 
@@ -402,7 +402,7 @@ const ProcessInsurance = ($this, context) => {
   ) {
     swalMessage({
       title: "Please select the primary insurance details properly.",
-      type: "error"
+      type: "error",
     });
   } else if (
     $this.state.sec_insured === "Y" &&
@@ -412,10 +412,10 @@ const ProcessInsurance = ($this, context) => {
   ) {
     swalMessage({
       title: "Please select the secondary insurance details properly.",
-      type: "error"
+      type: "error",
     });
   } else {
-    if ($this.state.consultation !== "Y") {
+    if ($this.state.consultation !== "N") {
       let serviceInput = [
         {
           insured: $this.state.insured,
@@ -430,8 +430,8 @@ const ProcessInsurance = ($this, context) => {
             $this.state.secondary_insurance_provider_id,
           secondary_network_id: $this.state.secondary_network_id,
           secondary_network_office_id: $this.state.secondary_network_office_id,
-          FollowUp: $this.state.follow_up
-        }
+          FollowUp: $this.state.follow_up,
+        },
       ];
 
       AlgaehLoader({ show: true });
@@ -440,7 +440,7 @@ const ProcessInsurance = ($this, context) => {
         module: "billing",
         method: "POST",
         data: serviceInput,
-        onSuccess: response => {
+        onSuccess: (response) => {
           if (response.data.success) {
             // response.data.records.billdetails[0].insured =
             //   response.data.records.billdetails[0].insurance_yesno;
@@ -454,13 +454,14 @@ const ProcessInsurance = ($this, context) => {
               module: "billing",
               method: "POST",
               data: response.data.records,
-              onSuccess: response => {
+              onSuccess: (response) => {
                 if (response.data.success) {
                   response.data.records.saveEnable = false;
                   response.data.records.ProcessInsure = true;
                   if ($this.state.default_pay_type === "CD") {
-                    response.data.records.card_amount = response.data.records.receiveable_amount
-                    response.data.records.cash_amount = 0
+                    response.data.records.card_amount =
+                      response.data.records.receiveable_amount;
+                    response.data.records.cash_amount = 0;
                   }
 
                   $this.setState({ ...response.data.records });
@@ -470,23 +471,23 @@ const ProcessInsurance = ($this, context) => {
                 }
                 AlgaehLoader({ show: false });
               },
-              onFailure: error => {
+              onFailure: (error) => {
                 AlgaehLoader({ show: false });
                 swalMessage({
                   title: error.message,
-                  type: "error"
+                  type: "error",
                 });
-              }
+              },
             });
           }
         },
-        onFailure: error => {
+        onFailure: (error) => {
           AlgaehLoader({ show: false });
           swalMessage({
             title: error.message,
-            type: "error"
+            type: "error",
           });
-        }
+        },
       });
     }
   }
@@ -501,12 +502,13 @@ const radioChange = ($this, context, e) => {
       if (
         $this.state.full_name === null ||
         $this.state.full_name === "" ||
-        ($this.state.arabic_name === null || $this.state.arabic_name === "") ||
+        $this.state.arabic_name === null ||
+        $this.state.arabic_name === "" ||
         $this.state.title_id === null ||
         $this.state.gender === null ||
         $this.state.primary_identity_id === null ||
-        ($this.state.primary_id_no === null ||
-          $this.state.primary_id_no === "") ||
+        $this.state.primary_id_no === null ||
+        $this.state.primary_id_no === "" ||
         $this.state.nationality_id === null ||
         $this.state.country_id === null ||
         $this.state.contact_number === null ||
@@ -514,7 +516,7 @@ const radioChange = ($this, context, e) => {
       ) {
         swalMessage({
           type: "warning",
-          title: "Enter the Demographic Details."
+          title: "Enter the Demographic Details.",
         });
 
         return;
@@ -525,7 +527,7 @@ const radioChange = ($this, context, e) => {
 
       if (value === "Y") {
         PatType = "I";
-        saveEnable = true;
+        // saveEnable = true;
         if ($this.state.doctor_id === null) {
           ProcessInsure = true;
         } else {
@@ -538,12 +540,12 @@ const radioChange = ($this, context, e) => {
             module: "frontDesk",
             method: "GET",
             data: {
-              patient_id: $this.state.hims_d_patient_id
+              patient_id: $this.state.hims_d_patient_id,
             },
             redux: {
               type: "EXIT_INSURANCE_GET_DATA",
-              mappingName: "existinsurance"
-            }
+              mappingName: "existinsurance",
+            },
           });
         }
       } else {
@@ -555,16 +557,16 @@ const radioChange = ($this, context, e) => {
           redux: {
             type: "PRIMARY_INSURANCE_DATA",
             mappingName: "primaryinsurance",
-            data: []
-          }
+            data: [],
+          },
         });
 
         $this.props.setSelectedInsurance({
           redux: {
             type: "EXIT_INSURANCE_GET_DATA",
             mappingName: "existinsurance",
-            data: []
-          }
+            data: [],
+          },
         });
       }
 
@@ -582,7 +584,7 @@ const radioChange = ($this, context, e) => {
           primary_card_number: null,
           primary_effective_start_date: null,
           primary_effective_end_date: null,
-          patInsuranceFrontImg: undefined
+          patInsuranceFrontImg: undefined,
         },
         () => {
           if (value !== "Y") {
@@ -612,22 +614,22 @@ const radioChange = ($this, context, e) => {
           patInsuranceFrontImg: undefined,
           eligible: "N",
           eligible_reference_number: null,
-          checked_eligible: false
+          checked_eligible: false,
         });
       }
-    }
+    },
   });
 };
 
-const getInsuranceCardClass = $this => {
+const getInsuranceCardClass = ($this) => {
   $this.props.getInsuranceCardClass({
     uri: "/InsuranceCardClass/getInsuranceCardClass",
     module: "masterSettings",
     method: "GET",
     redux: {
       type: "INSURSNCE_CARD_CLASS_GET_DATA",
-      mappingName: "insurancecardclass"
-    }
+      mappingName: "insurancecardclass",
+    },
   });
 };
 export {
@@ -638,5 +640,5 @@ export {
   radioChange,
   enddatehandle,
   getInsuranceCardClass,
-  clearinsurancehandle
+  clearinsurancehandle,
 };

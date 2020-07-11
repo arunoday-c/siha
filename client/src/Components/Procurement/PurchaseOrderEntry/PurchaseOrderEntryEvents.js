@@ -6,6 +6,7 @@ import AlgaehSearch from "../../Wrapper/globalSearch";
 import spotlightSearch from "../../../Search/spotlightSearch.json";
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
 import POEntry from "../../../Models/POEntry";
+import swal from "sweetalert2";
 
 let texthandlerInterval = null;
 
@@ -133,11 +134,11 @@ const datehandle = ($this, ctrl, e) => {
 const RequisitionSearch = ($this, e) => {
   AlgaehSearch({
     searchGrid: {
-      columns: spotlightSearch.RequisitionEntry.ReqEntry,
+      columns: $this.state.po_type === "MR" ? spotlightSearch.RequisitionEntry.ReqEntry : spotlightSearch.RequisitionEntry.ReqPOEntry,
     },
     searchName: $this.state.po_from === "PHR" ? "PhrPOEntry" : "InvPOEntry",
     uri: "/gloabelSearch/get",
-
+    inputs: "requistion_type = '" + $this.state.po_type + "'",
     onContainsChange: (text, serchBy, callBack) => {
       callBack(text);
     },
@@ -281,28 +282,37 @@ const ClearData = ($this, e) => {
   let IOputs = POEntry.inputParam();
   IOputs.dataExitst = false;
   delete IOputs.po_from;
-  $this.setState(IOputs);
+
   clearItemDetails($this);
   getPOOptions($this);
+  let bothExisits = true
+
   RawSecurityComponent({ componentCode: "PUR_ORD_INVENTORY" }).then(
     (result) => {
       if (result === "show") {
         getData($this, "INV");
-        $this.setState({ po_from: "INV" });
+        bothExisits = false
+        IOputs.po_from = "INV"
       }
     }
   );
 
-  RawSecurityComponent({ componentCode: "PUR_ORD_PHARMACY" }).then((result) => {
-    if (result === "show") {
-      getData($this, "PHR");
-      $this.setState({ po_from: "PHR" });
+  RawSecurityComponent({ componentCode: "PUR_ORD_PHARMACY" }).then(
+    (result) => {
+      if (result === "show") {
+        getData($this, "PHR");
+        IOputs.bothExisits = bothExisits === false ? false : true
+        IOputs.po_from = "PHR"
+      } else {
+        IOputs.bothExisits = true
+      }
+      $this.setState(IOputs);
     }
-  });
+  );
+
 };
 
 const SavePOEnrty = ($this, from) => {
-  debugger;
   AlgaehLoader({ show: true });
   if ($this.state.po_from === "PHR") {
     $this.state.po_entry_detail = $this.state.pharmacy_stock_detail;
@@ -351,7 +361,7 @@ const SavePOEnrty = ($this, from) => {
     "net_payable",
     "po_entry_detail",
     "delete_stock_detail",
-    "is_posted",
+    "is_posted"
   ];
   let sendJsonBody = {};
   procumentInputs.forEach((item) => {
@@ -483,16 +493,16 @@ const getCtrlCode = ($this, docNumber) => {
 
 const getData = ($this, po_from) => {
   if (po_from === "PHR") {
-    // $this.props.getItems({
-    //   uri: "/pharmacy/getItemMaster",
-    //   data: { item_status: "A" },
-    //   module: "pharmacy",
-    //   method: "GET",
-    //   redux: {
-    //     type: "ITEM_GET_DATA",
-    //     mappingName: "poitemlist",
-    //   },
-    // });
+    $this.props.getItems({
+      uri: "/pharmacy/getItemMaster",
+      data: { item_status: "A" },
+      module: "pharmacy",
+      method: "GET",
+      redux: {
+        type: "ITEM_GET_DATA",
+        mappingName: "poitemlist",
+      },
+    });
 
     $this.props.getLocation({
       uri: "/pharmacy/getPharmacyLocation",
@@ -537,16 +547,16 @@ const getData = ($this, po_from) => {
       },
     });
   } else if (po_from === "INV") {
-    // $this.props.getItems({
-    //   uri: "/inventory/getItemMaster",
-    //   data: { item_status: "A" },
-    //   module: "inventory",
-    //   method: "GET",
-    //   redux: {
-    //     type: "ITEM_GET_DATA",
-    //     mappingName: "poitemlist",
-    //   },
-    // });
+    $this.props.getItems({
+      uri: "/inventory/getItemMaster",
+      data: { item_status: "A" },
+      module: "inventory",
+      method: "GET",
+      redux: {
+        type: "ITEM_GET_DATA",
+        mappingName: "poitemlist",
+      },
+    });
 
     $this.props.getLocation({
       uri: "/inventory/getInventoryLocation",
@@ -569,7 +579,7 @@ const getData = ($this, po_from) => {
         type: "ITEM_CATEGORY_GET_DATA",
         mappingName: "poitemcategory",
       },
-      afterSuccess: (data) => {},
+      afterSuccess: (data) => { },
     });
 
     $this.props.getItemGroup({
@@ -1005,6 +1015,47 @@ const getPOOptions = ($this) => {
   });
 };
 
+const CancelPOEntry = ($this) => {
+  swal({
+    title: "Are you Sure you want to Reject?",
+    type: "warning",
+    showCancelButton: true,
+    confirmButtonText: "Yes",
+    confirmButtonColor: "#44b8bd",
+    cancelButtonColor: "#d33",
+    cancelButtonText: "No",
+  }).then((willReject) => {
+    if (willReject.value) {
+      AlgaehLoader({ show: true });
+      algaehApiCall({
+        uri: "/PurchaseOrderEntry/cancelPurchaseOrderEntry",
+        module: "procurement",
+        data: {
+          hims_f_procurement_po_header_id:
+            $this.state.hims_f_procurement_po_header_id,
+        },
+        method: "PUT",
+        onSuccess: (response) => {
+          if (response.data.success === true) {
+            getCtrlCode($this, $this.state.purchase_number);
+            swalMessage({
+              title: "Cancelled successfully . .",
+              type: "success",
+            });
+          }
+        },
+        onFailure: (error) => {
+          AlgaehLoader({ show: false });
+          swalMessage({
+            title: error.message,
+            type: "error",
+          });
+        },
+      });
+    }
+  });
+};
+
 export {
   texthandle,
   poforhandle,
@@ -1025,4 +1076,5 @@ export {
   VendorQuotationSearch,
   getPOOptions,
   getData,
+  CancelPOEntry,
 };

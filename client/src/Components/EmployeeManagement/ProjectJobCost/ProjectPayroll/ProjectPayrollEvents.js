@@ -11,7 +11,7 @@ export default function ProjectPayrollEvents() {
       let name = e.name || e.target.name;
       let value = e.value || e.target.value;
       // let currency_code = e.target.currency_code;
-      debugger;
+
       $this.setState({
         [name]: value,
         currency_code: e.selected.currency_code,
@@ -70,7 +70,7 @@ export default function ProjectPayrollEvents() {
       });
     },
     openSalaryComponents: ($this, row) => {
-      debugger;
+
       const salaryprocess_Earning = Enumerable.from(
         $this.state.project_payroll_detail
       )
@@ -115,7 +115,7 @@ export default function ProjectPayrollEvents() {
         data: inputObj,
         method: "GET",
         onSuccess: (response) => {
-          debugger;
+
           if (response.data.records.pjc_array.length > 0) {
             let data = response.data.records;
             $this.setState({
@@ -126,7 +126,7 @@ export default function ProjectPayrollEvents() {
               noEmployees: data.no_employees,
               no_projects: data.no_projects,
             });
-            debugger;
+
           } else {
             AlgaehLoader({ show: false });
             swalMessage({

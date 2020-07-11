@@ -70,7 +70,6 @@ const getCtrlCode = ($this, docNumber, row, from) => {
             data.postEnable = false;
           }
 
-          debugger
           if (data.ack_done === "Y") {
             data.ackTran = true;
           } else {

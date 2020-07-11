@@ -27,6 +27,7 @@ import {
   VendorQuotationSearch,
   getPOOptions,
   getData,
+  CancelPOEntry
 } from "./PurchaseOrderEntryEvents";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import POEntry from "../../../Models/POEntry";
@@ -65,11 +66,13 @@ class PurchaseOrderEntry extends Component {
     ) {
       getCtrlCode(this, this.props.purchase_number);
     } else {
+      let po_from = "", bothExisits = true
       RawSecurityComponent({ componentCode: "PUR_ORD_INVENTORY" }).then(
         (result) => {
           if (result === "show") {
             getData(this, "INV");
-            this.setState({ po_from: "INV" });
+            po_from = "INV"
+            bothExisits = false
           }
         }
       );
@@ -78,8 +81,16 @@ class PurchaseOrderEntry extends Component {
         (result) => {
           if (result === "show") {
             getData(this, "PHR");
-            this.setState({ po_from: "PHR" });
+            po_from = "PHR"
+            bothExisits = bothExisits === false ? false : true
+          } else {
+            bothExisits = true
           }
+          this.setState({
+            po_from: po_from,
+            bothExisits: bothExisits
+          });
+
         }
       );
     }
@@ -170,24 +181,25 @@ class PurchaseOrderEntry extends Component {
                   <h6>
                     {this.state.is_posted === "N" ? (
                       <span className="badge badge-danger">Not Posted</span>
-                    ) : this.state.authorize1 === "Y" &&
-                      this.state.authorize2 === "Y" ? (
-                          <span className="badge badge-success">Authorized</span>
-                        ) : this.state.authorize1 === "Y" &&
-                          this.state.authorize2 === "N" ? (
-                            <span className="badge badge-danger">
-                              Posted/Pending For Authorize
-                      </span>
-                          ) : this.state.authorize1 === "N" &&
+                    ) : this.state.cancelled === "Y" ? (<span className="badge badge-danger">Rejected</span>)
+                        : this.state.authorize1 === "Y" &&
+                          this.state.authorize2 === "Y" ? (
+                            <span className="badge badge-success">Authorized</span>
+                          ) : this.state.authorize1 === "Y" &&
                             this.state.authorize2 === "N" ? (
                               <span className="badge badge-danger">
                                 Posted/Pending For Authorize
-                      </span>
-                            ) : (
-                              <span className="badge badge-danger">
-                                Posted/Pending For Authorize
-                      </span>
-                            )}
+                              </span>
+                            ) : this.state.authorize1 === "N" &&
+                              this.state.authorize2 === "N" ? (
+                                <span className="badge badge-danger">
+                                  Posted/Pending For Authorize
+                                </span>
+                              ) : (
+                                <span className="badge badge-danger">
+                                  Posted/Pending For Authorize
+                                </span>
+                              )}
                   </h6>
                 </div>
               ) : this.state.dataExitst === false &&
@@ -279,7 +291,7 @@ class PurchaseOrderEntry extends Component {
                       data: GlobalVariables.PO_FROM,
                     },
                     others: {
-                      disabled: true,
+                      disabled: this.state.bothExisits,
                     },
                     onChange: poforhandle.bind(this, this),
                     onClear: () => {
@@ -353,7 +365,7 @@ class PurchaseOrderEntry extends Component {
                   }}
                 />
 
-                {this.state.po_type === "MR" ? (
+                {this.state.po_type === "MR" || this.state.po_type === "PR" ? (
                   <div className={"col-2 globalSearchCntr" + class_finder}>
                     <AlgaehLabel
                       label={{ forceLabel: "Search Requisition No." }}
@@ -401,6 +413,7 @@ class PurchaseOrderEntry extends Component {
                         payment_terms: null,
                       });
                     },
+                    autoComplete: "off"
                   }}
                 />
 
@@ -500,7 +513,7 @@ class PurchaseOrderEntry extends Component {
                       disabled={
                         this.state.authBtnEnable === true
                           ? true
-                          : this.state.authorize1 === "Y"
+                          : this.state.authorize1 === "Y" || this.state.cancelled === "Y"
                             ? true
                             : false
                       }
@@ -529,7 +542,7 @@ class PurchaseOrderEntry extends Component {
                       disabled={
                         this.state.authBtnEnable === true
                           ? true
-                          : this.state.authorize2 === "Y"
+                          : this.state.authorize2 === "Y" || this.state.cancelled === "Y"
                             ? true
                             : false
                       }
@@ -550,6 +563,26 @@ class PurchaseOrderEntry extends Component {
                     </button>
                   ) : null}
                 </AlgaehSecurityComponent>
+
+                {this.props.purchase_auth === true ? (
+                  <button
+                    type="button"
+                    className="btn btn-other"
+                    disabled={
+                      this.state.authorize2 === "Y" && this.state.authorize2 === "Y" || this.state.cancelled === "Y"
+                        ? true
+                        : false
+                    }
+                    onClick={CancelPOEntry.bind(this, this)}
+                  >
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Reject",
+                        returnText: true,
+                      }}
+                    />
+                  </button>
+                ) : null}
               </div>
             </div>
           </div>

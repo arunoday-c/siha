@@ -12,8 +12,12 @@
                         <th>Designation</th>
                         <th>Basic Hrs</th>
                         <th>Basic Amt.</th>
-                        {{!-- <th>OT Hrs (ot / w_ot / h_ot)</th>
-                        <th>OT Amt. (ot / w_ot / h_ot)</th> --}}
+                        <th>N.OT Hr. </th>
+                        <th>N.OT Amt. </th>
+                        <th>W.OT Hr.</th>
+                        <th>W.OT Amt.</th>
+                        <th>H.OT Hr.</th>
+                        <th>H.OT Amt</th>
                         <th>Total OT Hrs</th>
                         <th>Total OT Amt.</th>
                         <th>Total Hrs</th>
@@ -30,8 +34,18 @@
                         <td>{{designation}}</td>
                         <td>{{basic_hours}}</td>
                         <td style="text-align: right;">{{basic_cost}}</td>
-                        {{!-- <td>{{ot_hours}} / {{wot_hours}} / {{hot_hours}}</td>
-                        <td style="text-align: right;">{{ot_cost}} / {{wot_cost}} / {{hot_cost}}</td> --}}
+
+
+                        <td>{{ot_hours}}</td>
+                        <td>{{ot_cost}}</td>
+                        <td>{{wot_hours}}</td>
+                        <td>{{wot_cost}}</td>
+                        <td>{{hot_hours}}</td>
+                        <td>{{hot_cost}}</td>
+
+
+                        {{!-- <td>{{ot_hours}} / {{wot_hours}} / {{hot_hours}}</td> --}}
+                        {{!-- <td style="text-align: right;">{{ot_cost}} / {{wot_cost}} / {{hot_cost}}</td> --}}
                         <td>{{total_ot_hours}}</td>
                         <td>{{total_ot_cost}}</td>
                         <td>{{total_hours}}</td>

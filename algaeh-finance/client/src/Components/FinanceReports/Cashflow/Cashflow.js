@@ -67,7 +67,7 @@ export function Cashflow({ dates, layout }) {
       </div>
       <div className="row">
         <div className="col-12 reportHeaderAction">
-          <span>
+          {/* <span>
             <ReactToPrint
               trigger={() => <i className="fas fa-print" />}
               content={() => createPrintObject.current}
@@ -86,7 +86,7 @@ export function Cashflow({ dates, layout }) {
           margin: 20mm;
         }"
             />
-          </span>
+          </span> */}
         </div>
       </div>
       <div className="row">

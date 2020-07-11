@@ -51,6 +51,7 @@ let algaehSearchConfig = (searchName, req) => {
         searchQuery:
           "select SQL_CALC_FOUND_ROWS Ins.hims_d_insurance_provider_id,Ins.insurance_provider_name, Ins.effective_end_date,Ins.effective_start_date,\
           sIns.hims_d_insurance_sub_id, sIns.insurance_sub_name,Ins.insurance_type,\
+          CASE WHEN Ins.insurance_type='I' THEN 'Insurance' else 'Corporate Client' END as insurance_type_d,\
           net.hims_d_insurance_network_id,  net.network_type, net.effective_start_date as net_effective_start_date, net.effective_end_date as net_effective_end_date, \
           netoff.hims_d_insurance_network_office_id, netoff.policy_number from \
           (((hims_d_insurance_network_office netoff INNER JOIN  hims_d_insurance_network net \
@@ -188,12 +189,12 @@ let algaehSearchConfig = (searchName, req) => {
         searchName: "InvREQEntry",
         searchQuery:
           "select SQL_CALC_FOUND_ROWS RH.*,date(RH.requistion_date) as requistion_date,\
-          FPL.location_description  as 'from_location_description', \
-          TPL.location_description as 'to_location_description' from hims_f_inventory_material_header RH,\
-          hims_d_inventory_location FPL, hims_d_inventory_location TPL \
-          where FPL.hims_d_inventory_location_id = RH.from_location_id and \
-          RH.to_location_id = TPL.hims_d_inventory_location_id and  RH.hospital_id=" +
-          hospitalId,
+          CASE RH.requistion_type WHEN 'PR' then 'Purchase Request' else 'Material Request' end as requistion_type, \
+          FPL.location_description  as 'FPL.location_description', \
+          TPL.location_description as 'TPL.location_description' from hims_f_inventory_material_header RH\
+          inner join hims_d_inventory_location FPL on FPL.hims_d_inventory_location_id = RH.from_location_id \
+          left join hims_d_inventory_location TPL on RH.to_location_id = TPL.hims_d_inventory_location_id \
+          where 1=1 ",
         orderBy: "hims_f_inventory_material_header_id desc",
       },
       {
@@ -224,12 +225,11 @@ let algaehSearchConfig = (searchName, req) => {
         searchName: "InvPOEntry",
         searchQuery:
           "select SQL_CALC_FOUND_ROWS RH.*, date(RH.requistion_date) as requistion_date, \
-        FPL.location_description as from_location, \
-        TPL.location_description as to_location from hims_f_inventory_material_header RH,\
-        hims_d_inventory_location FPL, hims_d_inventory_location TPL \
-        where FPL.hims_d_inventory_location_id = RH.from_location_id and \
-        RH.to_location_id = TPL.hims_d_inventory_location_id and RH.authorize1 = 'Y' and RH.authorie2 = 'Y'\
-        and RH.is_completed = 'N' and RH.cancelled='N' ",
+        FPL.location_description as 'FPL.location_description', \
+        TPL.location_description as 'TPL.location_description' from hims_f_inventory_material_header RH \
+        inner join hims_d_inventory_location FPL on FPL.hims_d_inventory_location_id = RH.from_location_id  \
+        left join hims_d_inventory_location TPL on RH.to_location_id = TPL.hims_d_inventory_location_id \
+        where  RH.authorize1 = 'Y' and RH.authorie2 = 'Y' and RH.is_completed = 'N' and RH.cancelled='N' ",
         orderBy: "hims_f_inventory_material_header_id desc",
       },
       {
@@ -389,20 +389,12 @@ let algaehSearchConfig = (searchName, req) => {
       },
       {
         searchName: "exit_employees",
-        searchQuery:
-          "select SQL_CALC_FOUND_ROWS hims_d_employee_id, employee_code, biometric_id, title_id, full_name, arabic_name, employee_designation_id,\
-           sex, religion_id, marital_status, date_of_birth, date_of_joining, date_of_resignation, reliving_date,\
-            notice_period, exit_date, employe_exit_type, appointment_type, employee_type, present_address, present_address2,\
-             present_pincode, present_city_id, present_state_id, present_country_id, permanent_address, permanent_address2,\
-              permanent_pincode, permanent_city_id, permanent_state_id, permanent_country_id, primary_contact_no, secondary_contact_no,\
-               email, nationality, emergency_contact_person, emergency_contact_no, blood_group, isdoctor, license_number, employee_status,\
-                inactive_date, exclude_machine_data, company_bank_id, employee_bank_name, employee_bank_ifsc_code, employee_account_number,\
-                 mode_of_payment, accomodation_provided, late_coming_rule, leave_salary_process, pf_applicable,\
-                  airfare_process, entitled_daily_ot, suspend_salary, last_salary_process_date, gratuity_applicable,\
-                   contract_type, employee_group_id, weekoff_from, overtime_group_id, reporting_to_id, sub_department_id,\
-                    hospital_id, gross_salary, yearly_gross_salary, total_earnings, total_deductions, total_contributions,\
-                     net_salary, cost_to_company, effective_start_date, effective_end_date, created_date, created_by, updated_date, updated_by from hims_d_employee\
-                     where record_status='A' and employee_status in('R','T','E') ",
+        searchQuery: `select SQL_CALC_FOUND_ROWS hims_d_employee_id, employee_code, title_id, full_name, E.arabic_name, 
+                     S.sub_department_name,E.sub_department_id,D.designation
+                     from hims_d_employee as E
+                     inner join hims_d_sub_department as S on S.hims_d_sub_department_id =E.sub_department_id
+                     inner join hims_d_designation as D on D.hims_d_designation_id =E.employee_designation_id
+                     where E.record_status='A' and employee_status in('R','T','E')`,
         orderBy: "hims_d_employee_id desc",
       },
       {
@@ -667,13 +659,14 @@ let algaehSearchConfig = (searchName, req) => {
       {
         searchName: "tranitemmaster",
         searchQuery:
-          "select SQL_CALC_FOUND_ROWS IM.hims_d_inventory_item_master_id, IM.item_description, IM.category_id, IM.sales_uom_id, IM.service_id, IM.group_id, IC.category_desc, IG.group_description, PU.uom_description,\
-          SR.standard_fee, IL.sale_price, IL.avgcost, IM.stocking_uom_id, STOCK_UOM.uom_description as stocking_uom \
+          "select SQL_CALC_FOUND_ROWS IM.hims_d_inventory_item_master_id, IM.item_description, IM.category_id, \
+          IM.sales_uom_id, IM.service_id, IM.group_id, IC.category_desc, IG.group_description, PU.uom_description,\
+          IL.sale_price, IL.avgcost, IM.stocking_uom_id, STOCK_UOM.uom_description as stocking_uom \
           from hims_d_inventory_item_master IM, hims_d_inventory_tem_category IC,\
-          hims_d_inventory_item_group IG, hims_d_inventory_uom PU, hims_d_services SR, \
+          hims_d_inventory_item_group IG, hims_d_inventory_uom PU,  \
           hims_m_inventory_item_location IL, hims_d_inventory_uom STOCK_UOM where IL.item_id = IM.hims_d_inventory_item_master_id and \
           IM.category_id = IC.hims_d_inventory_tem_category_id and IM.group_id = IG.hims_d_inventory_item_group_id \
-          and IM.sales_uom_id=PU.hims_d_inventory_uom_id and IM.service_id= SR.hims_d_services_id and\
+          and IM.sales_uom_id=PU.hims_d_inventory_uom_id and\
           IM.stocking_uom_id=STOCK_UOM.hims_d_inventory_uom_id and IM.item_status='A' and IM.record_status='A' and \
           IC.record_status='A' and IG.record_status='A' and IL.inventory_location_id=? ",
         orderBy: "IM.hims_d_inventory_item_master_id desc",
@@ -930,9 +923,10 @@ let algaehSearchConfig = (searchName, req) => {
         searchName: "VendorQuotation",
         searchQuery:
           "select SQL_CALC_FOUND_ROWS VH.*, CASE VH.quotation_for \
-          WHEN 'INV' then 'Inventory' else 'Pharmacy' end as quotation_for, RQ.quotation_number from \
-          hims_f_procurement_vendor_quotation_header VH, hims_f_procurement_req_quotation_header RQ \
-          where VH.req_quotation_header_id = RQ.hims_f_procurement_req_quotation_header_id ",
+          WHEN 'INV' then 'Inventory' else 'Pharmacy' end as quotation_for, RQ.quotation_number, V.vendor_name from \
+          hims_f_procurement_vendor_quotation_header VH, hims_f_procurement_req_quotation_header RQ, hims_d_vendor V \
+          where VH.req_quotation_header_id = RQ.hims_f_procurement_req_quotation_header_id \
+          and VH.vendor_id = V.hims_d_vendor_id",
         orderBy: "hims_f_procurement_vendor_quotation_header_id desc",
       },
       {

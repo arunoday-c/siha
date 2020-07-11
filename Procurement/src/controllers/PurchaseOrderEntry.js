@@ -16,6 +16,7 @@ const {
   raiseRequestForPO,
   getraiseRequestForPO,
   postPurchaseOrderEntry,
+  cancelPurchaseOrderEntry,
   releaseDB
 } = purchaseModels;
 
@@ -136,6 +137,17 @@ export default () => {
       });
     }
   );
+  api.put(
+    "/cancelPurchaseOrderEntry",
+    cancelPurchaseOrderEntry,
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records
+      });
+    }
+  );
+
 
   return api;
 };

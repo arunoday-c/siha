@@ -598,10 +598,10 @@ export default {
                         "YYYY-MM-DD"
                       )}', authorized_by=${
                         req.userIdentity.algaeh_d_app_user_id
-                      }\
+                        }\
                   where record_status='A' and loan_authorized='PEN' and hims_f_loan_application_id=${
-                    input.hims_f_loan_application_id
-                  }`;
+                        input.hims_f_loan_application_id
+                        }`;
                     }
 
                     //---------------
@@ -667,14 +667,14 @@ export default {
   //created by irfan: to
   addLoanReciept: (req, res, next) => {
     let input = req.body;
-
+    const _mysql = new algaehMysql();
     _mysql
       .executeQueryWithTransaction({
         query:
           "INSERT INTO `hims_f_employee_reciepts` (employee_id,reciepts_type,recievable_amount,\
             write_off_amount,loan_application_id,remarks,balance_amount,reciepts_mode,cheque_number,\
-             created_date, created_by, updated_date, updated_by,hospital_id=?)\
-            VALUE(?,?,?,?,?,?,?,?,?,  ?,?,?,?)",
+             created_date, created_by, updated_date, updated_by,hospital_id)\
+            VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
         values: [
           input.employee_id,
           input.reciepts_type,
@@ -725,7 +725,7 @@ export default {
                     printQuery: true,
                   })
                   .then((updateResult) => {
-                    mysql.commitTransaction(() => {
+                    _mysql.commitTransaction(() => {
                       _mysql.releaseConnection();
                       req.records = updateResult;
                       next();

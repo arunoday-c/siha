@@ -242,6 +242,7 @@ class OPBilling extends Component {
           }
 
           data.billDetails = false;
+          data.company_payble = data.company_payable
 
           if (data.insured === "Y") {
             $this.props.getPatientInsurance({
@@ -503,6 +504,7 @@ class OPBilling extends Component {
           patient_id={this.state.patient_id}
           visit_id={this.state.visit_id}
           provider_id={this.state.incharge_or_provider}
+          existinsurance={this.props.existinsurance}
           from="Billing"
         />
 

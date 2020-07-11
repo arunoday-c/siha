@@ -26,6 +26,10 @@ import RequisitionIOputs from "../../../Models/InventoryRequisition";
 import Options from "../../../Options.json";
 import _ from "lodash";
 import { MainContext } from "algaeh-react-components/context";
+import {
+  AlgaehSecurityComponent,
+  RawSecurityComponent,
+} from "algaeh-react-components";
 
 class InvRequisitionEntry extends Component {
   constructor(props) {
@@ -86,7 +90,33 @@ class InvRequisitionEntry extends Component {
       this.props.material_requisition_number.length !== 0
     ) {
       getCtrlCode(this, this.props.material_requisition_number);
+    } else {
+      let bothExisits = true, requistion_type = ""
+      RawSecurityComponent({ componentCode: "MET_REQ_INVENTORY" }).then(
+        (result) => {
+          if (result === "show") {
+            bothExisits = false
+            requistion_type = "MR"
+          }
+        }
+      );
+
+      RawSecurityComponent({ componentCode: "PUR_REQ_INVENTORY" }).then(
+        (result) => {
+          if (result === "show") {
+            requistion_type = "PR"
+            bothExisits = bothExisits === false ? false : true
+          } else {
+            bothExisits = true
+          }
+          this.setState({
+            requistion_type: requistion_type,
+            bothExisits: bothExisits
+          });
+        }
+      );
     }
+
     this.getInventoryOptions();
   }
 
@@ -116,12 +146,12 @@ class InvRequisitionEntry extends Component {
   }
 
   render() {
-    const invuserwiselocations = _.filter(
-      this.props.invuserwiselocations,
-      f => {
-        return f.location_type !== "WH";
-      }
-    );
+    // const invuserwiselocations = _.filter(
+    //   this.props.invuserwiselocations,
+    //   f => {
+    //     return f.location_type !== "WH";
+    //   }
+    // );
 
     return (
       <React.Fragment>
@@ -282,7 +312,7 @@ class InvRequisitionEntry extends Component {
                     dataSource: {
                       textField: "location_description",
                       valueField: "hims_d_inventory_location_id",
-                      data: invuserwiselocations
+                      data: this.props.invuserwiselocations
                     },
                     others: {
                       disabled: this.state.addedItem
@@ -327,7 +357,7 @@ class InvRequisitionEntry extends Component {
                       data: GlobalVariables.FORMAT_POS_REQUISITION_TYPE
                     },
                     others: {
-                      disabled: true
+                      disabled: this.state.bothExisits
                       // this.state.from_location_type === "MS" ? false : true
                     },
 
@@ -341,54 +371,57 @@ class InvRequisitionEntry extends Component {
                 />
               </div>
             </div>
-            <div className="col-lg-4">
-              <div className="row">
-                <AlagehAutoComplete
-                  div={{ className: "col-lg-6" }}
-                  label={{ forceLabel: "Request To Location" }}
-                  selector={{
-                    name: "to_location_id",
-                    className: "select-fld",
-                    value: this.state.to_location_id,
-                    dataSource: {
-                      textField: "location_description",
-                      valueField: "hims_d_inventory_location_id",
-                      data: this.props.inventoryreqlocations
-                    },
-                    others: {
-                      disabled:
-                        this.state.requistion_type === "PR"
-                          ? true
-                          : this.state.addedItem
-                    },
-                    onChange: LocationchangeTexts.bind(this, this, "To"),
-                    onClear: () => {
-                      this.setState({
-                        to_location_id: null,
-                        to_location_type: null
-                      });
-                    }
-                  }}
-                />
-
-                <div className="col-lg-6">
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "To Location Type"
+            {this.state.requistion_type === "MR" ?
+              <div className="col-lg-4">
+                <div className="row">
+                  <AlagehAutoComplete
+                    div={{ className: "col-lg-6" }}
+                    label={{ forceLabel: "Request To Location" }}
+                    selector={{
+                      name: "to_location_id",
+                      className: "select-fld",
+                      value: this.state.to_location_id,
+                      dataSource: {
+                        textField: "location_description",
+                        valueField: "hims_d_inventory_location_id",
+                        data: this.props.inventoryreqlocations
+                      },
+                      others: {
+                        disabled:
+                          this.state.requistion_type === "PR"
+                            ? true
+                            : this.state.addedItem
+                      },
+                      onChange: LocationchangeTexts.bind(this, this, "To"),
+                      onClear: () => {
+                        this.setState({
+                          to_location_id: null,
+                          to_location_type: null
+                        });
+                      }
                     }}
                   />
-                  <h6>
-                    {this.state.to_location_type
-                      ? this.state.to_location_type === "WH"
-                        ? "Warehouse"
-                        : this.state.to_location_type === "MS"
-                          ? "Main Store"
-                          : "Sub Store"
-                      : "To Location Type"}
-                  </h6>
+
+                  <div className="col-lg-6">
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "To Location Type"
+                      }}
+                    />
+                    <h6>
+                      {this.state.to_location_type
+                        ? this.state.to_location_type === "WH"
+                          ? "Warehouse"
+                          : this.state.to_location_type === "MS"
+                            ? "Main Store"
+                            : "Sub Store"
+                        : "To Location Type"}
+                    </h6>
+                  </div>
                 </div>
               </div>
-            </div>
+              : null}
+
           </div>
 
           <div className="hptl-phase1-requisition-form">

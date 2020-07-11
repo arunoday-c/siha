@@ -736,7 +736,7 @@ class UpdatePatientForm extends Component {
 
                       <AlagehAutoComplete
                         div={{ className: "col" }}
-                        label={{ isImp: true, forceLabel: "Company Name" }}
+                        label={{ isImp: false, forceLabel: "Company Name" }}
                         selector={{
                           name: "hims_d_insurance_provider_id",
                           className: "select-fld",

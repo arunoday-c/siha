@@ -38,15 +38,27 @@ const itemchangeText = ($this, context, e) => {
   // let name = e.name || e.target.name;
   let name = e.item_description;
 
-  if (
-    $this.state.from_location_id === null ||
-    $this.state.to_location_id === null
-  ) {
-    swalMessage({
-      title: "Please select From and To Location.",
-      type: "warning",
-    });
-    return;
+  if ($this.state.requistion_type === "PR") {
+    if (
+      $this.state.from_location_id === null
+    ) {
+      swalMessage({
+        title: "Please select From and To Location.",
+        type: "warning",
+      });
+      return;
+    }
+  } else {
+    if (
+      $this.state.from_location_id === null ||
+      $this.state.to_location_id === null
+    ) {
+      swalMessage({
+        title: "Please select From and To Location.",
+        type: "warning",
+      });
+      return;
+    }
   }
   if ($this.state.requistion_type === "PR") {
     AlgaehLoader({ show: true });
@@ -83,25 +95,13 @@ const itemchangeText = ($this, context, e) => {
             quantity: 1,
             barcode: e.barcode,
             addItemButton: false,
+            group_description: e.group_description,
+            uom_description: e.uom_description,
+            category_desc: e.category_desc,
 
             ItemUOM: data,
-            uom_description: data[0].uom_description,
+            uom_description: data[0].uom_description
           });
-          // $this.setState({
-          //   [name]: value,
-          //   item_description: e.selected.item_description,
-          //   item_code: e.selected.item_code,
-          //   item_category_id: e.selected.category_id,
-          //   item_uom: e.selected.sales_uom_id,
-
-          //   item_group_id: e.selected.group_id,
-          //   quantity: 1,
-          //   barcode: e.selected.barcode,
-          //   addItemButton: false,
-
-          //   ItemUOM: data,
-          //   uom_description: data[0].uom_description,
-          // });
 
           if (context !== undefined) {
             context.updateState({
@@ -117,25 +117,13 @@ const itemchangeText = ($this, context, e) => {
               quantity: 1,
               addItemButton: false,
 
+              group_description: e.group_description,
+              uom_description: e.uom_description,
+              category_desc: e.category_desc,
+
               ItemUOM: data,
             });
           }
-          // if (context !== undefined) {
-          //   context.updateState({
-          //     [name]: value,
-          //     item_description: e.selected.item_description,
-          //     item_code: e.selected.item_code,
-          //     item_category_id: e.selected.category_id,
-          //     item_uom: e.selected.sales_uom_id,
-
-          //     item_group_id: e.selected.group_id,
-          //     barcode: e.selected.barcode,
-          //     quantity: 1,
-          //     addItemButton: false,
-
-          //     ItemUOM: data,
-          //   });
-          // }
         } else {
           swalMessage({
             title: "No Stock Avaiable for selected Item.",
@@ -192,25 +180,14 @@ const itemchangeText = ($this, context, e) => {
             quantity: 1,
             barcode: e.barcode,
             addItemButton: false,
+            group_description: e.group_description,
+            uom_description: e.uom_description,
+            category_desc: e.category_desc,
 
             ItemUOM: data,
             uom_description: data[0].uom_description,
           });
-          // $this.setState({
-          //   [name]: value,
-          //   item_description: e.selected.item_description,
-          //   item_code: e.selected.item_code,
-          //   item_category_id: e.selected.category_id,
-          //   item_uom: e.selected.sales_uom_id,
 
-          //   item_group_id: e.selected.group_id,
-          //   quantity: 1,
-          //   barcode: e.selected.barcode,
-          //   addItemButton: false,
-
-          //   ItemUOM: data,
-          //   uom_description: data[0].uom_description,
-          // });
 
           if (context !== undefined) {
             context.updateState({
@@ -221,6 +198,10 @@ const itemchangeText = ($this, context, e) => {
               item_uom: e.sales_uom_id,
               item_id: e.hims_d_inventory_item_master_id,
 
+              group_description: e.group_description,
+              uom_description: e.uom_description,
+              category_desc: e.category_desc,
+
               item_group_id: e.group_id,
               barcode: e.barcode,
               quantity: 1,
@@ -229,22 +210,7 @@ const itemchangeText = ($this, context, e) => {
               ItemUOM: data,
             });
           }
-          // if (context !== undefined) {
-          //   context.updateState({
-          //     [name]: value,
-          //     item_description: e.selected.item_description,
-          //     item_code: e.selected.item_code,
-          //     item_category_id: e.selected.category_id,
-          //     item_uom: e.selected.sales_uom_id,
 
-          //     item_group_id: e.selected.group_id,
-          //     barcode: e.selected.barcode,
-          //     quantity: 1,
-          //     addItemButton: false,
-
-          //     ItemUOM: data,
-          //   });
-          // }
         } else {
           swalMessage({
             title: "No Stock Avaiable for selected Item.",
@@ -257,15 +223,27 @@ const itemchangeText = ($this, context, e) => {
 };
 
 const AddItems = ($this, context) => {
-  if (
-    $this.state.from_location_id === null ||
-    $this.state.to_location_id === null
-  ) {
-    swalMessage({
-      title: "Please select From and To Location.",
-      type: "warning",
-    });
-    return;
+  if ($this.state.requistion_type === "PR") {
+    if (
+      $this.state.from_location_id === null
+    ) {
+      swalMessage({
+        title: "Please select From and To Location.",
+        type: "warning",
+      });
+      return;
+    }
+  } else {
+    if (
+      $this.state.from_location_id === null ||
+      $this.state.to_location_id === null
+    ) {
+      swalMessage({
+        title: "Please select From and To Location.",
+        type: "warning",
+      });
+      return;
+    }
   }
 
   if ($this.state.item_id === null) {
@@ -311,6 +289,9 @@ const AddItems = ($this, context) => {
       from_qtyhand: 0,
       to_qtyhand: 0,
       item_description: "",
+      group_description: null,
+      uom_description: null,
+      category_desc: null
     });
 
     if (context !== undefined) {
@@ -328,6 +309,10 @@ const AddItems = ($this, context) => {
         from_qtyhand: 0,
         to_qtyhand: 0,
         item_description: "",
+        group_description: null,
+        uom_description: null,
+        category_desc: null
+
       });
     }
   }
@@ -351,8 +336,8 @@ const deleteRequisitionDetail = ($this, context, row) => {
     $this.props.requisition_auth === true
       ? true
       : inventory_stock_detail.length > 0
-      ? false
-      : true;
+        ? false
+        : true;
   let authBtnEnable = inventory_stock_detail.length > 0 ? false : true;
 
   $this.setState({ inventory_stock_detail: inventory_stock_detail });

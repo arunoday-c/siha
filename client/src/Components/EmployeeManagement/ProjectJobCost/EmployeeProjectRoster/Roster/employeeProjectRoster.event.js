@@ -68,7 +68,7 @@ export function getProjects(hospital_id) {
         onSuccess: response => {
 
           const { success, records, message } = response.data;
-          debugger
+
           if (success === true) {
             resolve(records);
           } else {

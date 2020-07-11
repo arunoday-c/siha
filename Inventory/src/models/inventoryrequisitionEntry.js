@@ -304,7 +304,7 @@ export default {
       let inputParam = req.query;
 
       let strQuery =
-        "SELECT * from  hims_f_inventory_material_header\
+        "SELECT *, CASE requistion_type WHEN 'PR' then 'Purchase Request' else 'Material Request' end as req_type  from  hims_f_inventory_material_header\
             where cancelled='N' ";
 
       if (req.query.from_date != null) {

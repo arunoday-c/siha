@@ -69,27 +69,27 @@ class LoginUsers extends Component {
 
     const HIMS_Active =
       userToken.product_type === "HIMS_ERP" ||
-      userToken.product_type === "HIMS_CLINICAL" ||
-      userToken.product_type === "NO_FINANCE"
+        userToken.product_type === "HIMS_CLINICAL" ||
+        userToken.product_type === "NO_FINANCE"
         ? true
         : false;
 
     const HRMS_Active =
       userToken.product_type === "HIMS_ERP" ||
-      userToken.product_type === "HRMS" ||
-      userToken.product_type === "HRMS_ERP" ||
-      userToken.product_type === "FINANCE_ERP" ||
-      userToken.product_type === "NO_FINANCE"
+        userToken.product_type === "HRMS" ||
+        userToken.product_type === "HRMS_ERP" ||
+        userToken.product_type === "FINANCE_ERP" ||
+        userToken.product_type === "NO_FINANCE"
         ? true
         : false;
     let USER_TYPE =
       HIMS_Active === true && HRMS_Active === true
         ? HIMS_HR_USER_TYPE
         : HIMS_Active === true
-        ? HIMS_USER_TYPE
-        : HRMS_Active === true
-        ? HR_USER_TYPE
-        : [];
+          ? HIMS_USER_TYPE
+          : HRMS_Active === true
+            ? HR_USER_TYPE
+            : [];
     if (userToken.user_type !== "SU") {
       USER_TYPE = USER_TYPE.filter((f) => f.value !== "AD");
     }
@@ -114,8 +114,8 @@ class LoginUsers extends Component {
       data.work_email !== null && data.work_email !== ""
         ? data.work_email
         : data.email !== null && data.email !== ""
-        ? data.email
-        : "";
+          ? data.email
+          : "";
     const username = data.full_name.split(" ")[0].toLowerCase();
 
     this.setState(
@@ -393,7 +393,7 @@ class LoginUsers extends Component {
     //       loaduserNameCheck: false
     //     },
     //     () => {
-    //       debugger;
+    //       
     //       target.focus();
     //     }
     //   );
@@ -466,7 +466,7 @@ class LoginUsers extends Component {
     AlgaehValidation({
       alertTypeIcon: "warning",
       onSuccess: () => {
-        // debugger;
+        // 
       },
     });
   }
@@ -519,7 +519,7 @@ class LoginUsers extends Component {
                 });
               }
             },
-            onError: (error) => {},
+            onError: (error) => { },
           });
         } else {
           // let branch_data = _.filter(
@@ -662,8 +662,8 @@ class LoginUsers extends Component {
     const email = !!row.work_email
       ? row.work_email
       : !!row.email
-      ? row.email
-      : "";
+        ? row.email
+        : "";
     this.setState({
       algaeh_d_app_user_id: row.algaeh_d_app_user_id,
       username: row.username,
@@ -915,10 +915,10 @@ class LoginUsers extends Component {
                                 This username is taken, Try Another.
                               </span>
                             ) : (
-                              <span className=" badge badge-success">
-                                This username is available.
+                                <span className=" badge badge-success">
+                                  This username is available.
                               </span>
-                            )}
+                              )}
                           </div>
                           <div className="col-12 form-group userSuggcntr">
                             <p>Suggested Username</p>
@@ -953,36 +953,36 @@ class LoginUsers extends Component {
                       ) : null}
 
                       {this.state.user_type === "AD" &&
-                      this.state.current_user_type !== "SU" &&
-                      this.state.editData === true ? (
-                        <div className="col-6 form-group">
-                          <AlgaehLabel
+                        this.state.current_user_type !== "SU" &&
+                        this.state.editData === true ? (
+                          <div className="col-6 form-group">
+                            <AlgaehLabel
+                              label={{
+                                forceLabel: "User Type",
+                              }}
+                            />
+                            <h6>Admin</h6>
+                          </div>
+                        ) : (
+                          <AlagehAutoComplete
+                            div={{ className: "col-6 form-group" }}
                             label={{
                               forceLabel: "User Type",
+                              isImp: true,
+                            }}
+                            selector={{
+                              name: "user_type",
+                              className: "select-fld",
+                              value: this.state.user_type,
+                              dataSource: {
+                                textField: "name",
+                                valueField: "value",
+                                data: this.state.PR_USER_TYPE,
+                              },
+                              onChange: this.dropDownHandler.bind(this),
                             }}
                           />
-                          <h6>Admin</h6>
-                        </div>
-                      ) : (
-                        <AlagehAutoComplete
-                          div={{ className: "col-6 form-group" }}
-                          label={{
-                            forceLabel: "User Type",
-                            isImp: true,
-                          }}
-                          selector={{
-                            name: "user_type",
-                            className: "select-fld",
-                            value: this.state.user_type,
-                            dataSource: {
-                              textField: "name",
-                              valueField: "value",
-                              data: this.state.PR_USER_TYPE,
-                            },
-                            onChange: this.dropDownHandler.bind(this),
-                          }}
-                        />
-                      )}
+                        )}
                       <AlagehAutoComplete
                         div={{ className: "col-6 form-group" }}
                         label={{
@@ -1090,15 +1090,15 @@ class LoginUsers extends Component {
                                     name="modules"
                                     checked={
                                       this.state.hospital_id ===
-                                      data.hims_d_hospital_id
+                                        data.hims_d_hospital_id
                                         ? true
                                         : data.checked === undefined
-                                        ? false
-                                        : data.checked
+                                          ? false
+                                          : data.checked
                                     }
                                     disabled={
                                       this.state.hospital_id ===
-                                      data.hims_d_hospital_id
+                                        data.hims_d_hospital_id
                                         ? true
                                         : false
                                     }
@@ -1140,12 +1140,12 @@ class LoginUsers extends Component {
                                 }}
                               />
                             ) : (
-                              <AlgaehLabel
-                                label={{
-                                  forceLabel: "Update",
-                                }}
-                              />
-                            )}
+                                <AlgaehLabel
+                                  label={{
+                                    forceLabel: "Update",
+                                  }}
+                                />
+                              )}
                           </button>
                         </AlgaehSecurityElement>
                       </div>
@@ -1269,8 +1269,8 @@ class LoginUsers extends Component {
                             let x =
                               row.user_type !== "AD"
                                 ? Enumerable.from(this.state.PR_USER_TYPE)
-                                    .where((w) => w.value === row.user_type)
-                                    .firstOrDefault()
+                                  .where((w) => w.value === row.user_type)
+                                  .firstOrDefault()
                                 : { name: "Admin" };
                             return (
                               <span>
@@ -1294,8 +1294,8 @@ class LoginUsers extends Component {
                             return row.user_status === "A"
                               ? "Active"
                               : row.user_status === "I"
-                              ? "Inactive"
-                              : "----------";
+                                ? "Inactive"
+                                : "----------";
                           },
                         },
                       ]}

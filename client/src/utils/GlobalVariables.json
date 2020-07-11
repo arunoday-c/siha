@@ -5007,19 +5007,19 @@
       "value": "0"
     },
     {
-      "name": "Pending To Authorize 1",
+      "name": "Pending For Authorize 1",
       "value": "1"
     },
     {
-      "name": "Pending To Authorize 2",
+      "name": "Pending For Authorize 2",
       "value": "2"
     },
     {
-      "name": "Transfer Pending",
+      "name": "Pending",
       "value": "3"
     },
     {
-      "name": "Transfer Completed",
+      "name": "Completed",
       "value": "4"
     }
   ],
@@ -5043,11 +5043,11 @@
       "value": "0"
     },
     {
-      "name": "Pending To Authorize 1",
+      "name": "Pending For Authorize 1",
       "value": "1"
     },
     {
-      "name": "Pending To Authorize 2",
+      "name": "Pending For Authorize 2",
       "value": "2"
     },
     {
@@ -5057,6 +5057,10 @@
     {
       "name": "Delivery Completed",
       "value": "4"
+    },
+    {
+      "name": "Rejected",
+      "value": "5"
     }
   ],
   "COMPARISON": [
@@ -5265,6 +5269,10 @@
       "value": "D"
     },
     {
+      "name": "Purchase Requisition",
+      "value": "PR"
+    },
+    {
       "name": "Material Requisition",
       "value": "MR"
     },
@@ -5305,11 +5313,11 @@
       "value": "0"
     },
     {
-      "name": "Pending To Authorize 1",
+      "name": "Pending For Authorize 1",
       "value": "1"
     },
     {
-      "name": "Pending To Authorize 2",
+      "name": "Pending For Authorize 2",
       "value": "2"
     },
     {

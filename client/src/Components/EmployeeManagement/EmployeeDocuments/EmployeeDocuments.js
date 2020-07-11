@@ -1,12 +1,21 @@
 import React, { Component } from "react";
 import "./EmployeeDocuments.scss";
+import { MainContext } from "algaeh-react-components/context";
+
 import {
   AlgaehLabel,
   AlagehAutoComplete,
-  AlgaehDataGrid
+  AlgaehDataGrid,
 } from "../../Wrapper/algaehWrapper";
-import { swalMessage, cancelRequest } from "../../../utils/algaehApiCall";
+import {
+  algaehApiCall,
+  swalMessage,
+  cancelRequest,
+} from "../../../utils/algaehApiCall";
 import eventLogic from "./eventsLogic/employeeDocumentLogic";
+import AlgaehSearch from "../../Wrapper/globalSearch";
+import spotlightSearch from "../../../Search/spotlightSearch.json";
+
 const AlgaehFileUploader = React.memo(
   React.lazy(() => import("../../Wrapper/algaehFileUpload"))
 );
@@ -22,8 +31,11 @@ class EmployeeDocuments extends Component {
       employee_id: undefined,
       document_for_list: [],
       selected_id: undefined,
-      document_type_list: []
+      document_type_list: [],
+      hospital_id: null,
     };
+    this.getHospitals();
+    this.getEmployees();
   }
   afterPassPortSave(rawData) {
     let details = this.state.document_grid;
@@ -45,43 +57,43 @@ class EmployeeDocuments extends Component {
         document_name: rawData.fileName,
         dependent_id: this.state.selected_id,
         download_uniq_id: rawData.uniqueID,
-        document_type_name: _document_type_name
+        document_type_name: _document_type_name,
       })
-      .then(result => {
+      .then((result) => {
         details.push({
           document_name: rawData.fileName,
           document_type_name: _document_type_name,
-          download_doc: rawData.uniqueID
+          download_doc: rawData.uniqueID,
         });
         this.setState({
-          document_grid: details
+          document_grid: details,
         });
         swalMessage({
           title: "Successfully done",
-          type: "success"
+          type: "success",
         });
       })
-      .catch(error => {
+      .catch((error) => {
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
       });
   }
   onChangeDocTypeHandler(e) {
     eventLogic()
       .getDocumentTypes({
-        document_type: e.value
+        document_type: e.value,
       })
-      .then(result => {
+      .then((result) => {
         this.setState({
-          document_type_list: result
+          document_type_list: result,
         });
       })
-      .catch(error => {
+      .catch((error) => {
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
       });
 
@@ -89,103 +101,253 @@ class EmployeeDocuments extends Component {
       if (this.state.employee_list.length === 0) {
         eventLogic()
           .getEmployeeDetails()
-          .then(result => {
+          .then((result) => {
             this.setState({
               document_type: e.value,
               disable_employee: false,
               employee_list: result,
-              document_for_list: []
+              document_for_list: [],
             });
           })
-          .catch(error => {
+          .catch((error) => {
             swalMessage({
               title: error.message,
-              type: "error"
+              type: "error",
             });
           });
+      } else {
+        this.setState({
+          document_type: e.value,
+          document_for_list: [],
+        });
       }
     } else {
       eventLogic()
         .getCompanyDependents()
-        .then(result => {
+        .then((result) => {
           this.setState({
             document_type: e.value,
             disable_employee: true,
             employee_id: undefined,
-            document_for_list: result
+            document_for_list: result,
           });
         })
-        .catch(error => {
+        .catch((error) => {
           swalMessage({
             title: error.message,
-            type: "error"
+            type: "error",
           });
         });
     }
   }
+  onSaved() {
+    eventLogic()
+      .getSaveDocument({
+        document_type: this.state.document_type,
+        employee_id: this.state.employee_id,
+        // dependent_id: item.hims_d_employee_dependents_id,
+      })
+      .then((result) => {
+        this.setState({
+          document_grid: result,
+        });
+      })
+      .catch((error) => {
+        swalMessage({
+          title: error.message,
+          type: "error",
+        });
+      });
+  }
   onHandleDocumentForClick(item, e) {
     this.setState(
       {
-        selected_id: item.hims_d_employee_dependents_id
+        selected_id: item.hims_d_employee_dependents_id,
       },
       () => {
         eventLogic()
           .getSaveDocument({
             document_type: this.state.document_type,
             employee_id: this.state.employee_id,
-            dependent_id: item.hims_d_employee_dependents_id
+            dependent_id: item.hims_d_employee_dependents_id,
           })
-          .then(result => {
+          .then((result) => {
             this.setState({
-              document_grid: result
+              document_grid: result,
             });
           })
-          .catch(error => {
+          .catch((error) => {
             swalMessage({
               title: error.message,
-              type: "error"
+              type: "error",
             });
           });
       }
     );
+  }
+  dropDownHandler(value) {
+    this.setState({
+      [value.name]: value.value,
+    });
   }
   onClearDocTypeHandler(e) {
     this.setState({
       selected_id: undefined,
       document_for_list: [],
       employee_id: undefined,
-      disable_employee: true
+      disable_employee: true,
+      document_type: undefined,
     });
   }
   onClearEmployeeHandler(e) {
     this.setState({
       selected_id: undefined,
       document_for_list: [],
-      employee_id: undefined
+      employee_id: undefined,
     });
   }
-  onChangeEmployeeHandler(e) {
+  // onChangeEmployeeHandler(e) {
+  //   
+  //   eventLogic()
+  //     .getEmployeeDependents({ employee_id: e.value })
+  //     .then((result) => {
+  //       this.setState({
+  //         employee_id: e.value,
+  //         document_for_list: result,
+  //       });
+  //     })
+  //     .catch((error) => {
+  //       swalMessage({
+  //         title: error.message,
+  //         type: "error",
+  //       });
+  //     });
+  // }
+  onChangeEmployeeHandler(row) {
     eventLogic()
-      .getEmployeeDependents({ employee_id: e.value })
-      .then(result => {
+      .getEmployeeDependents({ employee_id: row.hims_d_employee_id })
+      .then((result) => {
         this.setState({
-          employee_id: e.value,
-          document_for_list: result
+          document_for_list: result,
         });
       })
-      .catch(error => {
+      .catch((error) => {
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
       });
   }
+
+  getEmployees() {
+    algaehApiCall({
+      uri: "/employee/get",
+      module: "hrManagement",
+      method: "GET",
+      onSuccess: (res) => {
+        if (res.data.success) {
+          this.setState({
+            employees: res.data.records,
+          });
+        }
+      },
+
+      onFailure: (err) => { },
+    });
+  }
+
+  getHospitals() {
+    algaehApiCall({
+      uri: "/organization/getOrganizationByUser",
+      method: "GET",
+      onSuccess: (res) => {
+        if (res.data.success) {
+          this.setState({
+            hospitals: res.data.records,
+          });
+        }
+      },
+
+      onFailure: (err) => { },
+    });
+  }
+
+  employeeSearch() {
+    AlgaehSearch({
+      searchGrid: {
+        columns: spotlightSearch.Employee_details.employee,
+      },
+      searchName: "employee_branch_wise",
+      uri: "/gloabelSearch/get",
+      inputs: "hospital_id = " + this.state.hospital_id,
+      onContainsChange: (text, serchBy, callBack) => {
+        callBack(text);
+      },
+      onRowSelect: (row) => {
+        this.setState(
+          {
+            employee_name: row.full_name,
+            employee_id: row.hims_d_employee_id,
+          },
+          () => {
+            this.onChangeEmployeeHandler(row);
+          }
+        );
+      },
+    });
+  }
+
   componentWillUnmount() {
     cancelRequest("getEmployees");
     cancelRequest("employeeDependents");
     cancelRequest("companyDependents");
     cancelRequest("types");
   }
+  static contextType = MainContext;
+  componentDidMount() {
+    const userToken = this.context.userToken;
+
+    this.setState({
+      hospital_id: userToken.hims_d_hospital_id,
+    });
+  }
+  downloadSelectedFile(row) {
+    const { download_uniq_id, document_name, document_type } = row;
+    //for preview
+    // const { hostname, port, protocol } = window.location;
+    // const _port = port === "" ? "/documentManagement" : `:3006`;
+    // const fileType = "Employees";
+    // const url = `${protocol}//${hostname}${_port}/api/v1/Document/get?fileType=${fileType}&destinationName=${download_uniq_id}`;
+    //--end
+    algaehApiCall({
+      uri: "/Document/get",
+      method: "GET",
+      module: "documentManagement",
+      fileType: "Employees",
+      headers: {
+        Accept: "blob",
+      },
+      data: {
+        fileType: "Employees",
+        destinationName: download_uniq_id,
+      },
+      others: { responseType: "blob" },
+      onSuccess: (response) => {
+
+        const { data } = response;
+        const url = URL.createObjectURL(data);
+        let a = document.createElement("a");
+        a.href = url;
+        const cleanFileName = document_name.split(".");
+        a.download = `${cleanFileName[0]}.${data.type}`;
+        a.click();
+      },
+      onCatch: (error) => {
+        console.error(error);
+      },
+    });
+  }
+
   render() {
     return (
       <div className="EmployeeDocumentsScreen row">
@@ -195,7 +357,7 @@ class EmployeeDocuments extends Component {
               div={{ className: "col form-group mandatory" }}
               label={{
                 forceLabel: "Documents For",
-                isImp: true
+                isImp: true,
               }}
               selector={{
                 name: "document_type",
@@ -204,17 +366,53 @@ class EmployeeDocuments extends Component {
                 dataSource: {
                   data: [
                     { text: "Employee", value: "E" },
-                    { text: "Company", value: "C" }
+                    { text: "Company", value: "C" },
                   ],
                   textField: "text",
-                  valueField: "value"
+                  valueField: "value",
                 },
                 onChange: this.onChangeDocTypeHandler.bind(this),
                 onClear: this.onClearDocTypeHandler.bind(this),
-                autoComplete: "off"
+                autoComplete: "off",
               }}
             />
-            <AlagehAutoComplete
+            {this.state.document_type === "E" ? (
+              <AlagehAutoComplete
+                div={{ className: "col-2 form-group mandatory" }}
+                label={{
+                  forceLabel: "Branch",
+                  isImp: true,
+                }}
+                selector={{
+                  name: "hospital_id",
+                  className: "select-fld",
+                  value: this.state.hospital_id,
+                  dataSource: {
+                    textField: "hospital_name",
+                    valueField: "hims_d_hospital_id",
+                    data: this.state.hospitals,
+                  },
+
+                  onChange: this.dropDownHandler.bind(this),
+                }}
+                showLoading={true}
+              />
+            ) : null}
+            {this.state.document_type === "E" ? (
+              <div className="col-2 globalSearchCntr">
+                <AlgaehLabel label={{ forceLabel: "Search Employee" }} />
+
+                <h6 onClick={this.employeeSearch.bind(this)}>
+                  {/* {this.state.emp_name ? this.state.emp_name : "------"} */}
+                  {this.state.employee_name
+                    ? this.state.employee_name
+                    : "Search Employee"}
+                  <i className="fas fa-search fa-lg"></i>
+                </h6>
+              </div>
+            ) : null}
+
+            {/* <AlagehAutoComplete
               div={{ className: "col form-group mandatory" }}
               label={{
                 forceLabel: "Select Employee",
@@ -236,7 +434,7 @@ class EmployeeDocuments extends Component {
                 },
                 autoComplete: "off"
               }}
-            />
+            /> */}
             <div className="col form-group">
               <button style={{ marginTop: 19 }} className="btn btn-default">
                 Load
@@ -261,7 +459,7 @@ class EmployeeDocuments extends Component {
                     className={
                       "list-group-item d-flex justify-content-between align-items-center" +
                       (this.state.selected_id ===
-                      item.hims_d_employee_dependents_id
+                        item.hims_d_employee_dependents_id
                         ? " active"
                         : "")
                     }
@@ -304,8 +502,8 @@ class EmployeeDocuments extends Component {
                           />
                         ),
                         others: {
-                          maxWidth: 200
-                        }
+                          maxWidth: 200,
+                        },
                       },
                       {
                         fieldName: "document_name",
@@ -313,7 +511,7 @@ class EmployeeDocuments extends Component {
                           <AlgaehLabel
                             label={{ forceLabel: "Document Name" }}
                           />
-                        )
+                        ),
                       },
                       {
                         fieldName: "View_Download",
@@ -322,28 +520,28 @@ class EmployeeDocuments extends Component {
                             label={{ forceLabel: "View/ Download" }}
                           />
                         ),
-                        displayTemplate: row => (
+                        displayTemplate: (row) => (
                           <button
-                            onClick={e => {
-                              console.log("row", row);
+                            onClick={() => {
+                              this.downloadSelectedFile(row);
                             }}
                           >
                             Download
                           </button>
                         ),
                         others: {
-                          maxWidth: 150
-                        }
-                      }
+                          maxWidth: 150,
+                        },
+                      },
                     ]}
                     keyId="documentManagement"
                     dataSource={{ data: this.state.document_grid }}
                     isEditable={true}
                     paging={{ page: 0, rowsPerPage: 20 }}
                     events={{
-                      onDelete: rows => {}, //deleteDeptUser.bind(this, this),
-                      onEdit: row => {},
-                      onDone: rows => {} //updateDeptUser.bind(this, this)
+                      onDelete: (rows) => { }, //deleteDeptUser.bind(this, this),
+                      onEdit: (row) => { },
+                      onDone: (rows) => { }, //updateDeptUser.bind(this, this)
                     }}
                   />
                 </div>
@@ -357,51 +555,52 @@ class EmployeeDocuments extends Component {
               <div className="row">
                 {this.state.selected_id !== undefined
                   ? this.state.document_type_list.map((item, index) => (
-                      <div className="col" key={index}>
-                        <AlgaehFileUploader
-                          name={"attach_" + item.hims_d_document_type_id}
-                          textAltMessage={item.document_description}
-                          showActions={true}
-                          serviceParameters={{
-                            uniqueID:
-                              (this.state.selected_id === null
-                                ? "Me"
-                                : this.state.selected_id) +
-                              "_" +
-                              this.state.document_type +
-                              (this.state.employee_id !== undefined
-                                ? "_" + this.state.employee_id
-                                : "") +
-                              "_" +
-                              item.hims_d_document_type_id +
-                              "_" +
-                              item.document_description,
-                            destinationName:
-                              (this.state.selected_id === null
-                                ? "Me"
-                                : this.state.selected_id) +
-                              "_" +
-                              this.state.document_type +
-                              (this.state.employee_id !== undefined
-                                ? "_" + this.state.employee_id
-                                : "") +
-                              "_" +
-                              item.hims_d_document_type_id +
-                              "_" +
-                              item.document_description,
-                            fileType:
-                              this.state.document_type === "C"
-                                ? "Company"
-                                : "Employees"
-                          }}
-                          onlyDragDrop={true}
-                          componentType={item.document_description}
-                          afterSave={result => {
-                            this.afterPassPortSave(result);
-                          }}
-                        />
-                      </div>
-                    ))
+                    <div className="col" key={index}>
+                      <AlgaehFileUploader
+                        name={"attach_" + item.hims_d_document_type_id}
+                        textAltMessage={item.document_description}
+                        showActions={true}
+                        serviceParameters={{
+                          uniqueID:
+                            (this.state.selected_id === null
+                              ? "Me"
+                              : this.state.selected_id) +
+                            "_" +
+                            this.state.document_type +
+                            (this.state.employee_id !== undefined
+                              ? "_" + this.state.employee_id
+                              : "") +
+                            "_" +
+                            item.hims_d_document_type_id +
+                            "_" +
+                            item.document_description,
+                          destinationName:
+                            (this.state.selected_id === null
+                              ? "Me"
+                              : this.state.selected_id) +
+                            "_" +
+                            this.state.document_type +
+                            (this.state.employee_id !== undefined
+                              ? "_" + this.state.employee_id
+                              : "") +
+                            "_" +
+                            item.hims_d_document_type_id +
+                            "_" +
+                            item.document_description,
+                          fileType:
+                            this.state.document_type === "C"
+                              ? "Company"
+                              : "Employees",
+                        }}
+                        onlyDragDrop={true}
+                        componentType={item.document_description}
+                        afterSave={(result) => {
+                          this.afterPassPortSave(result);
+                          this.onSaved();
+                        }}
+                      />
+                    </div>
+                  ))
                   : null}
               </div>
             </div>

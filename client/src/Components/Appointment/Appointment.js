@@ -513,7 +513,6 @@ class Appointment extends PureComponent {
           method: "GET",
           data: send_data,
           onSuccess: (response) => {
-            debugger;
             algaehLoader({ show: false });
             if (response.data.success && response.data.records.length > 0) {
               const dataArray = Array.isArray(response.data.records)
@@ -526,7 +525,7 @@ class Appointment extends PureComponent {
               // this.setState(
               //   { appointmentSchedule: response.data.records },
               //   () => {
-              //     debugger;
+              //
               //     this.setState({
               //       slot:
               //         this.state.appointmentSchedule !== undefined

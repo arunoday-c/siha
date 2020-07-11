@@ -93,7 +93,6 @@ class ItemLocationReorder extends Component {
   }
 
   updateLocationReorder(row) {
-    debugger;
     algaehApiCall({
       uri: "/inventory/updateInvLocationReorder",
       module: "inventory",
@@ -130,7 +129,7 @@ class ItemLocationReorder extends Component {
     return (
       <div
         className="ReorderQtyMasterinventoryScreen"
-        // style={{ marginTop: 10 }}
+      // style={{ marginTop: 10 }}
       >
         <AlgaehModalPopUp
           class="ReorderLocationWisePopup"
@@ -219,10 +218,10 @@ class ItemLocationReorder extends Component {
                             this.props.inventorylocations === undefined
                               ? []
                               : this.props.inventorylocations.filter(
-                                  (f) =>
-                                    f.hims_d_inventory_location_id ===
-                                    row.location_id
-                                );
+                                (f) =>
+                                  f.hims_d_inventory_location_id ===
+                                  row.location_id
+                              );
 
                           return (
                             <span>
@@ -237,10 +236,10 @@ class ItemLocationReorder extends Component {
                             this.props.inventorylocations === undefined
                               ? []
                               : this.props.inventorylocations.filter(
-                                  (f) =>
-                                    f.hims_d_inventory_location_id ===
-                                    row.location_id
-                                );
+                                (f) =>
+                                  f.hims_d_inventory_location_id ===
+                                  row.location_id
+                              );
 
                           return (
                             <span>
@@ -303,8 +302,8 @@ class ItemLocationReorder extends Component {
                     }}
                     paging={{ page: 0, rowsPerPage: 10 }}
                     events={{
-                      onEdit: () => {},
-                      onDelete: () => {},
+                      onEdit: () => { },
+                      onDelete: () => { },
                       onDone: this.updateLocationReorder.bind(this),
                     }}
                   />

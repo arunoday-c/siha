@@ -158,8 +158,7 @@ export default {
 
           if (appResult.length > 0) {
             str = `,head_id= ${inputParam.head_id},child_id= 
-            ${inputParam.child_id},
-            insurance_head_id= ${inputParam.insurance_head_id},insurance_child_id=${inputParam.insurance_child_id} `;
+            ${inputParam.child_id}`;
           }
 
           _mysql

@@ -230,7 +230,7 @@ const AddSerices = ($this, context) => {
 };
 
 const deleteSalesDetail = ($this, context, row) => {
-    debugger
+
     let detele_services = $this.state.detele_services;
     let sales_quotation_services = $this.state.sales_quotation_services;
     const _index = sales_quotation_services.indexOf(row);

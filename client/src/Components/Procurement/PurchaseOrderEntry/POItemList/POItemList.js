@@ -28,7 +28,7 @@ import {
   GridAssignData,
   EditGrid,
   CancelGrid,
-  extendCostHandle
+  extendCostHandle,
 } from "./POItemListEvents";
 import { GetAmountFormart } from "../../../../utils/GlobalFunctions";
 
@@ -42,7 +42,6 @@ class POItemList extends Component {
 
   UNSAFE_componentWillMount() {
     let InputOutput = this.props.POEntry;
-    // debugger;
     this.setState({ ...this.state, ...InputOutput });
   }
 
@@ -385,224 +384,230 @@ class POItemList extends Component {
                                 />
                               ),
                               displayTemplate: (row) => {
-                                return row.item_description;
-                                // let display;
+                                let display;
 
-                                // this.state.po_from === "PHR"
-                                //   ? (display =
-                                //       this.props.poitemlist === undefined
-                                //         ? []
-                                //         : this.props.poitemlist.filter(
-                                //             (f) =>
-                                //               f.hims_d_item_master_id ===
-                                //               row.phar_item_id
-                                //           ))
-                                //   : (display =
-                                //       this.props.poitemlist === undefined
-                                //         ? []
-                                //         : this.props.poitemlist.filter(
-                                //             (f) =>
-                                //               f.hims_d_inventory_item_master_id ===
-                                //               row.inv_item_id
-                                //           ));
-
-                                // return (
-                                //   <span>
-                                //     {display !== undefined &&
-                                //     display.length !== 0
-                                //       ? display[0].item_description
-                                //       : ""}
-                                //   </span>
-                                // );
+                                this.state.po_from === "PHR"
+                                  ? (display =
+                                    this.props.poitemlist === undefined
+                                      ? []
+                                      : this.props.poitemlist.filter(
+                                        (f) =>
+                                          f.hims_d_item_master_id ===
+                                          row.phar_item_id
+                                      ))
+                                  : (display =
+                                    this.props.poitemlist === undefined
+                                      ? []
+                                      : this.props.poitemlist.filter(
+                                        (f) =>
+                                          f.hims_d_inventory_item_master_id ===
+                                          row.inv_item_id
+                                      ));
+                                return (
+                                  row.item_description || (
+                                    <span>
+                                      {display !== undefined &&
+                                        display.length !== 0
+                                        ? display[0].item_description
+                                        : ""}
+                                    </span>
+                                  )
+                                );
                               },
                               editorTemplate: (row) => {
-                                return row.item_description;
-                                //   let display;
+                                let display;
 
-                                //   this.state.po_from === "PHR"
-                                //     ? (display =
-                                //         this.props.poitemlist === undefined
-                                //           ? []
-                                //           : this.props.poitemlist.filter(
-                                //               (f) =>
-                                //                 f.hims_d_item_master_id ===
-                                //                 row.phar_item_id
-                                //             ))
-                                //     : (display =
-                                //         this.props.poitemlist === undefined
-                                //           ? []
-                                //           : this.props.poitemlist.filter(
-                                //               (f) =>
-                                //                 f.hims_d_inventory_item_master_id ===
-                                //                 row.inv_item_id
-                                //             ));
+                                this.state.po_from === "PHR"
+                                  ? (display =
+                                    this.props.poitemlist === undefined
+                                      ? []
+                                      : this.props.poitemlist.filter(
+                                        (f) =>
+                                          f.hims_d_item_master_id ===
+                                          row.phar_item_id
+                                      ))
+                                  : (display =
+                                    this.props.poitemlist === undefined
+                                      ? []
+                                      : this.props.poitemlist.filter(
+                                        (f) =>
+                                          f.hims_d_inventory_item_master_id ===
+                                          row.inv_item_id
+                                      ));
 
-                                //   return (
-                                //     <span>
-                                //       {display !== undefined &&
-                                //       display.length !== 0
-                                //         ? display[0].item_description
-                                //         : ""}
-                                //     </span>
-                                //   );
-                                // },
-                                // others: {
-                                //   minWidth: 150,
-                                // },
+                                return (
+                                  row.item_description || (
+                                    <span>
+                                      {display !== undefined &&
+                                        display.length !== 0
+                                        ? display[0].item_description
+                                        : ""}
+                                    </span>
+                                  )
+                                );
+                              },
+                              others: {
+                                minWidth: 150,
                               },
                             },
                             {
                               fieldName: "category_desc",
-                              // fieldName:
-                              //   this.state.po_from === "PHR"
-                              //     ? "phar_item_category"
-                              //     : "inv_item_category_id",
+
                               label: (
                                 <AlgaehLabel
                                   label={{ forceLabel: "Item Category" }}
                                 />
                               ),
-                              editorTemplate: (row) => {
-                                return row.category_desc;
+
+                              displayTemplate: (row) => {
+                                if (row.category_desc) {
+                                  return row.category_desc;
+                                } else {
+                                  let display;
+
+                                  this.state.po_from === "PHR"
+                                    ? (display =
+                                      this.props.poitemcategory === undefined
+                                        ? []
+                                        : this.props.poitemcategory.filter(
+                                          (f) =>
+                                            f.hims_d_item_category_id ===
+                                            row.phar_item_category
+                                        ))
+                                    : (display =
+                                      this.props.poitemcategory === undefined
+                                        ? []
+                                        : this.props.poitemcategory.filter(
+                                          (f) =>
+                                            f.hims_d_inventory_tem_category_id ===
+                                            row.inv_item_category_id
+                                        ));
+
+                                  return (
+                                    <span>
+                                      {display !== undefined &&
+                                        display.length !== 0
+                                        ? display[0].category_desc
+                                        : ""}
+                                    </span>
+                                  );
+                                }
                               },
-                              // displayTemplate: (row) => {
-                              //   let display;
+                              editorTemplate: (row) => {
+                                if (row.category_desc) {
+                                  return row.category_desc;
+                                } else {
+                                  let display;
 
-                              //   this.state.po_from === "PHR"
-                              //     ? (display =
-                              //         this.props.poitemcategory === undefined
-                              //           ? []
-                              //           : this.props.poitemcategory.filter(
-                              //               (f) =>
-                              //                 f.hims_d_item_category_id ===
-                              //                 row.phar_item_category
-                              //             ))
-                              //     : (display =
-                              //         this.props.poitemcategory === undefined
-                              //           ? []
-                              //           : this.props.poitemcategory.filter(
-                              //               (f) =>
-                              //                 f.hims_d_inventory_tem_category_id ===
-                              //                 row.inv_item_category_id
-                              //             ));
+                                  this.state.po_from === "PHR"
+                                    ? (display =
+                                      this.props.poitemcategory === undefined
+                                        ? []
+                                        : this.props.poitemcategory.filter(
+                                          (f) =>
+                                            f.hims_d_item_category_id ===
+                                            row.phar_item_category
+                                        ))
+                                    : (display =
+                                      this.props.poitemcategory === undefined
+                                        ? []
+                                        : this.props.poitemcategory.filter(
+                                          (f) =>
+                                            f.hims_d_inventory_tem_category_id ===
+                                            row.inv_item_category_id
+                                        ));
 
-                              //   return (
-                              //     <span>
-                              //       {display !== undefined &&
-                              //       display.length !== 0
-                              //         ? display[0].category_desc
-                              //         : ""}
-                              //     </span>
-                              //   );
-                              // },
-                              // editorTemplate: (row) => {
-                              //   let display;
-
-                              //   this.state.po_from === "PHR"
-                              //     ? (display =
-                              //         this.props.poitemcategory === undefined
-                              //           ? []
-                              //           : this.props.poitemcategory.filter(
-                              //               (f) =>
-                              //                 f.hims_d_item_category_id ===
-                              //                 row.phar_item_category
-                              //             ))
-                              //     : (display =
-                              //         this.props.poitemcategory === undefined
-                              //           ? []
-                              //           : this.props.poitemcategory.filter(
-                              //               (f) =>
-                              //                 f.hims_d_inventory_tem_category_id ===
-                              //                 row.inv_item_category_id
-                              //             ));
-
-                              //   return (
-                              //     <span>
-                              //       {display !== undefined &&
-                              //       display.length !== 0
-                              //         ? display[0].category_desc
-                              //         : ""}
-                              //     </span>
-                              //   );
-                              // },
+                                  return (
+                                    <span>
+                                      {display !== undefined &&
+                                        display.length !== 0
+                                        ? display[0].category_desc
+                                        : ""}
+                                    </span>
+                                  );
+                                }
+                              },
                               others: {
                                 minWidth: 250,
                               },
                             },
                             {
                               fieldName: "group_description",
-                              // fieldName:
-                              //   this.state.po_from === "PHR"
-                              //     ? "phar_item_group"
-                              //     : "inv_item_group_id",
+
                               label: (
                                 <AlgaehLabel
                                   label={{ forceLabel: "Item Group" }}
                                 />
                               ),
-                              editorTemplate: (row) => {
-                                return row.group_description;
+
+                              displayTemplate: (row) => {
+                                if (row.group_description) {
+                                  return row.group_description;
+                                } else {
+                                  let display;
+
+                                  this.state.po_from === "PHR"
+                                    ? (display =
+                                      this.props.poitemgroup === undefined
+                                        ? []
+                                        : this.props.poitemgroup.filter(
+                                          (f) =>
+                                            f.hims_d_item_group_id ===
+                                            row.phar_item_group
+                                        ))
+                                    : (display =
+                                      this.props.poitemgroup === undefined
+                                        ? []
+                                        : this.props.poitemgroup.filter(
+                                          (f) =>
+                                            f.hims_d_inventory_item_group_id ===
+                                            row.inv_item_group_id
+                                        ));
+
+                                  return (
+                                    <span>
+                                      {display !== undefined &&
+                                        display.length !== 0
+                                        ? display[0].group_description
+                                        : ""}
+                                    </span>
+                                  );
+                                }
                               },
-                              // displayTemplate: (row) => {
-                              //   let display;
+                              editorTemplate: (row) => {
+                                if (row.group_description) {
+                                  return row.group_description;
+                                } else {
+                                  let display;
 
-                              //   this.state.po_from === "PHR"
-                              //     ? (display =
-                              //         this.props.poitemgroup === undefined
-                              //           ? []
-                              //           : this.props.poitemgroup.filter(
-                              //               (f) =>
-                              //                 f.hims_d_item_group_id ===
-                              //                 row.phar_item_group
-                              //             ))
-                              //     : (display =
-                              //         this.props.poitemgroup === undefined
-                              //           ? []
-                              //           : this.props.poitemgroup.filter(
-                              //               (f) =>
-                              //                 f.hims_d_inventory_item_group_id ===
-                              //                 row.inv_item_group_id
-                              //             ));
+                                  this.state.po_from === "PHR"
+                                    ? (display =
+                                      this.props.poitemgroup === undefined
+                                        ? []
+                                        : this.props.poitemgroup.filter(
+                                          (f) =>
+                                            f.hims_d_item_group_id ===
+                                            row.phar_item_group
+                                        ))
+                                    : (display =
+                                      this.props.poitemgroup === undefined
+                                        ? []
+                                        : this.props.poitemgroup.filter(
+                                          (f) =>
+                                            f.hims_d_inventory_item_group_id ===
+                                            row.inv_item_group_id
+                                        ));
 
-                              //   return (
-                              //     <span>
-                              //       {display !== undefined &&
-                              //       display.length !== 0
-                              //         ? display[0].group_description
-                              //         : ""}
-                              //     </span>
-                              //   );
-                              // },
-                              // editorTemplate: (row) => {
-                              //   let display;
-
-                              //   this.state.po_from === "PHR"
-                              //     ? (display =
-                              //         this.props.poitemgroup === undefined
-                              //           ? []
-                              //           : this.props.poitemgroup.filter(
-                              //               (f) =>
-                              //                 f.hims_d_item_group_id ===
-                              //                 row.phar_item_group
-                              //             ))
-                              //     : (display =
-                              //         this.props.poitemgroup === undefined
-                              //           ? []
-                              //           : this.props.poitemgroup.filter(
-                              //               (f) =>
-                              //                 f.hims_d_inventory_item_group_id ===
-                              //                 row.inv_item_group_id
-                              //             ));
-
-                              //   return (
-                              //     <span>
-                              //       {display !== undefined &&
-                              //       display.length !== 0
-                              //         ? display[0].group_description
-                              //         : ""}
-                              //     </span>
-                              //   );
-                              // },
+                                  return (
+                                    <span>
+                                      {display !== undefined &&
+                                        display.length !== 0
+                                        ? display[0].group_description
+                                        : ""}
+                                    </span>
+                                  );
+                                }
+                              },
                             },
 
                             {

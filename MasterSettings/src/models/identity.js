@@ -1,21 +1,27 @@
 import algaehMysql from "algaeh-mysql";
+
 export default {
   addIdentity: (req, res, next) => {
     let inputParam = req.body;
+
+    const employeeIds = inputParam.employeeIDs.join(",");
     const _mysql = new algaehMysql();
     try {
       _mysql
         .executeQuery({
           query:
-            "INSERT INTO `hims_d_identity_document` (`identity_document_code`, `identity_document_name`,`arabic_identity_document_name`,`nationality_id`,`masked_identity` \
+            "INSERT INTO `hims_d_identity_document` (`identity_document_code`, `identity_document_name`,`arabic_identity_document_name`,`nationality_id`,`masked_identity`,`notify_expiry`,`notify_before`,`employees_id`  \
             , `created_by` ,`created_date`) \
-         VALUES ( ?, ?, ?, ?, ?,?,?)",
+         VALUES ( ?, ?, ?, ?, ?,?,?,?,?,?)",
           values: [
             inputParam.identity_document_code,
             inputParam.identity_document_name,
             inputParam.arabic_identity_document_name,
             inputParam.nationality_id,
             inputParam.masked_identity,
+            inputParam.notify_expiry,
+            inputParam.notify_before,
+            employeeIds,
             req.userIdentity.algaeh_d_app_user_id,
             new Date(),
           ],
@@ -38,12 +44,14 @@ export default {
 
   updateIdentity: (req, res, next) => {
     let inputParam = req.body;
+
+    const employeeIds = inputParam.employeeIDs.join(",");
     const _mysql = new algaehMysql();
     try {
       _mysql
         .executeQuery({
           query:
-            "UPDATE `hims_d_identity_document` SET  `identity_document_name`=?, `arabic_identity_document_name` = ?,`nationality_id` = ?,`masked_identity` = ?,\
+            "UPDATE `hims_d_identity_document` SET  `identity_document_name`=?, `arabic_identity_document_name` = ?,`nationality_id` = ?,`masked_identity` = ?,`notify_expiry` = ?,`notify_before` = ?,`employees_id` = ?,\
           `updated_by`=?, `updated_date`=? ,`identity_status` = ? \
           WHERE `record_status`='A' AND `hims_d_identity_document_id`=?;",
           values: [
@@ -51,6 +59,9 @@ export default {
             inputParam.arabic_identity_document_name,
             inputParam.nationality_id,
             inputParam.masked_identity,
+            inputParam.notify_expiry,
+            inputParam.notify_before,
+            employeeIds,
             req.userIdentity.algaeh_d_app_user_id,
             new Date(),
             inputParam.identity_status,
@@ -93,7 +104,7 @@ export default {
       _mysql
         .executeQuery({
           query:
-            "SELECT `hims_d_identity_document_id`, `identity_document_code`, `identity_document_name`, `arabic_identity_document_name`,ID.`nationality_id`,`masked_identity`, `identity_status`\
+            "SELECT `hims_d_identity_document_id`, `identity_document_code`, `identity_document_name`, `arabic_identity_document_name`,ID.`nationality_id`,`masked_identity`, `identity_status`,`employees_id`,`notify_expiry`,`notify_before`\
           ,N.nationality as nationality_name FROM `hims_d_identity_document` as ID left join \
           hims_d_nationality as N on ID.nationality_id = N.hims_d_nationality_id  WHERE ID.record_status ='A' " +
             _strAppend, //+
@@ -103,9 +114,57 @@ export default {
           printQuery: true,
         })
         .then((result) => {
-          _mysql.releaseConnection();
-          req.records = result;
-          next();
+          const array = result
+            .map((f) => f.employees_id)
+            .filter((f) => {
+              return f !== null;
+            })
+            .join()
+            .split(",");
+
+          _mysql
+            .executeQuery({
+              query: `SELECT hims_d_employee_id,full_name,arabic_name,employee_code from hims_d_employee where hims_d_employee_id in (?)`,
+              values: [array],
+              printQuery: true,
+            })
+            .then((res) => {
+              const records = result.map((item) => {
+                let employeeNames = {};
+                let employees = [];
+                if (item.employees_id !== null) {
+                  const employeeIds = item.employees_id.split(",");
+                  employeeIds.forEach((m) => {
+                    const itm = res.find(
+                      (f) => String(f.hims_d_employee_id) === m
+                    );
+
+                    if (itm != undefined) {
+                      employees.push({
+                        full_name: itm.full_name,
+                        arabic_name: itm.arabic_name,
+                        hims_d_employee_id: m,
+                        employee_code: itm.employee_code,
+                      });
+                    }
+                  });
+                }
+
+                return { ...item, employees };
+              });
+              _mysql.releaseConnection();
+              console.log("records", records);
+              req.records = records;
+              next();
+              _mysql.releaseConnection();
+              req.records = res;
+
+              next();
+            })
+            .catch((error) => {
+              _mysql.releaseConnection();
+              next(error);
+            });
         })
         .catch((error) => {
           _mysql.releaseConnection();

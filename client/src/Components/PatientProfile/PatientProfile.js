@@ -82,7 +82,7 @@ class PatientProfile extends Component {
           this.state.firstLaunch === undefined ? this.props.firstLaunch : false,
         patient_code:
           this.props.patient_profile !== undefined &&
-            this.props.patient_profile.length > 0
+          this.props.patient_profile.length > 0
             ? this.props.patient_profile[0].patient_code
             : "",
         chart_type: patientDetails["chart_type"],
@@ -263,12 +263,12 @@ class PatientProfile extends Component {
                   k === "F"
                     ? "Food"
                     : k === "A"
-                      ? "Airborne"
-                      : k === "AI"
-                        ? "Animal  &  Insect"
-                        : k === "C"
-                          ? "Chemical & Others"
-                          : "",
+                    ? "Airborne"
+                    : k === "AI"
+                    ? "Animal  &  Insect"
+                    : k === "C"
+                    ? "Chemical & Others"
+                    : "",
                 allergyList: g.getSource(),
               };
             })
@@ -298,13 +298,13 @@ class PatientProfile extends Component {
     // let significant_signs = Window.global["significant_signs"];
     const _Vitals =
       this.props.patient_vitals !== undefined &&
-        this.props.patient_vitals.length > 0
+      this.props.patient_vitals.length > 0
         ? Enumerable.from(this.props.patient_vitals)
-          .groupBy("$.visit_date", null, (k, g) => {
-            return g.getSource();
-          })
-          .orderBy((g) => g.visit_date)
-          .lastOrDefault()
+            .groupBy("$.visit_date", null, (k, g) => {
+              return g.getSource();
+            })
+            .orderBy((g) => g.visit_date)
+            .lastOrDefault()
         : [];
 
     if (chief_complaint === null || chief_complaint.length < 4) {
@@ -363,13 +363,13 @@ class PatientProfile extends Component {
     // let significant_signs = Window.global["significant_signs"];
     const _Vitals =
       this.props.patient_vitals !== undefined &&
-        this.props.patient_vitals.length > 0
+      this.props.patient_vitals.length > 0
         ? Enumerable.from(this.props.patient_vitals)
-          .groupBy("$.visit_date", null, (k, g) => {
-            return g.getSource();
-          })
-          .orderBy((g) => g.visit_date)
-          .lastOrDefault()
+            .groupBy("$.visit_date", null, (k, g) => {
+              return g.getSource();
+            })
+            .orderBy((g) => g.visit_date)
+            .lastOrDefault()
         : [];
 
     if (
@@ -432,13 +432,13 @@ class PatientProfile extends Component {
     // let significant_signs = Window.global["significant_signs"];
     const _Vitals =
       this.props.patient_vitals !== undefined &&
-        this.props.patient_vitals.length > 0
+      this.props.patient_vitals.length > 0
         ? Enumerable.from(this.props.patient_vitals)
-          .groupBy("$.visit_date", null, (k, g) => {
-            return g.getSource();
-          })
-          .orderBy((g) => g.visit_date)
-          .lastOrDefault()
+            .groupBy("$.visit_date", null, (k, g) => {
+              return g.getSource();
+            })
+            .orderBy((g) => g.visit_date)
+            .lastOrDefault()
         : [];
 
     if (
@@ -566,7 +566,6 @@ class PatientProfile extends Component {
   }
 
   OpenMrdHandler(e) {
-
     // let chief_complaint = Window.global["chief_complaint"];
     // let significant_signs = Window.global["significant_signs"];
     // const _Vitals =
@@ -640,17 +639,17 @@ class PatientProfile extends Component {
   render() {
     const _pat_profile =
       this.props.patient_profile !== undefined &&
-        this.props.patient_profile.length > 0
+      this.props.patient_profile.length > 0
         ? this.props.patient_profile[0]
         : {};
 
     const _Vitals =
       this.props.patient_vitals !== undefined &&
-        this.props.patient_vitals.length > 0
+      this.props.patient_vitals.length > 0
         ? _.chain(this.props.patient_vitals)
-          .uniqBy((u) => u.vital_id)
-          .orderBy((o) => o.sequence_order)
-          .value()
+            .uniqBy((u) => u.vital_id)
+            .orderBy((o) => o.sequence_order)
+            .value()
         : [];
 
     const _patient_allergies = this.state.patientAllergies;
@@ -666,11 +665,11 @@ class PatientProfile extends Component {
     return (
       <div className="row patientProfile">
         <div className="patientInfo-Top box-shadow-normal">
-          <div className="backBtn">
+          {/* <div className="backBtn">
             <button
               id="btn-outer-component-load"
               className="d-none"
-            //  onClick={this.setPatientGlobalParameters.bind(this)}
+                onClick={this.setPatientGlobalParameters.bind(this)}
             />
             <button
               onClick={this.renderBackButton.bind(this)}
@@ -680,7 +679,7 @@ class PatientProfile extends Component {
               <i className="fas fa-angle-double-left fa-lg" />
               Back
             </button>
-          </div>
+          </div> */}
           <div className="patientImg">
             <AlgaehFile
               name="attach_photo"
@@ -718,8 +717,8 @@ class PatientProfile extends Component {
                 {_pat_profile.payment_type === "I"
                   ? "Insurance"
                   : _pat_profile.payment_type === "S"
-                    ? "Self"
-                    : ""}
+                  ? "Self"
+                  : ""}
               </b>
             </span>
           </div>
@@ -796,10 +795,10 @@ class PatientProfile extends Component {
                   <span>OCAF Report</span>
                 </li>
               ) : (
-                    <li onClick={this.openUCAFReport.bind(this, _pat_profile)}>
-                      <span>UCAF Report</span>
-                    </li>
-                  )}
+                <li onClick={this.openUCAFReport.bind(this, _pat_profile)}>
+                  <span>UCAF Report</span>
+                </li>
+              )}
             </ul>
           </div>
         </div>
@@ -906,23 +905,23 @@ class PatientProfile extends Component {
                                     {allergy.onset === "O"
                                       ? allergy.onset_date
                                       : allergy.onset === "A"
-                                        ? "Adulthood"
-                                        : allergy.onset === "C"
-                                          ? "Childhood"
-                                          : allergy.onset === "P"
-                                            ? "Pre Terms"
-                                            : allergy.onset === "T"
-                                              ? "Teenage"
-                                              : ""}
+                                      ? "Adulthood"
+                                      : allergy.onset === "C"
+                                      ? "Childhood"
+                                      : allergy.onset === "P"
+                                      ? "Pre Terms"
+                                      : allergy.onset === "T"
+                                      ? "Teenage"
+                                      : ""}
                                   </td>
                                   <td>
                                     {allergy.severity === "MO"
                                       ? "Moderate"
                                       : allergy.severity === "MI"
-                                        ? "Mild"
-                                        : allergy.severity === "SE"
-                                          ? "Severe"
-                                          : ""}
+                                      ? "Mild"
+                                      : allergy.severity === "SE"
+                                      ? "Severe"
+                                      : ""}
                                   </td>
                                   <td>{allergy.comment}</td>
                                 </tr>

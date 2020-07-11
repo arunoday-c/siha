@@ -24,7 +24,7 @@ export default {
       purchase_created_lines: 0,
 
       status: "PEN",
-      requistion_type: "MR",
+      requistion_type: "PR",
       no_of_transfers: 0,
       no_of_po: 0,
       authorize1: "N",
@@ -73,6 +73,11 @@ export default {
       transaction_qty: null,
       requisition_auth_level: null,
       item_description: "",
+      bothExisits: true,
+
+      group_description: null,
+      uom_description: null,
+      category_desc: null
     };
     return output;
   },

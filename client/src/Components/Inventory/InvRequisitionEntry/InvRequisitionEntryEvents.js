@@ -2,6 +2,7 @@ import AlgaehLoader from "../../Wrapper/fullPageLoader";
 import RequisitionIOputs from "../../../Models/InventoryRequisition";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import Enumerable from "linq";
+import { RawSecurityComponent } from "algaeh-react-components";
 
 const requisitionEvent = ($this, ctrl, e) => {
   e = ctrl || e;
@@ -67,7 +68,28 @@ const getCtrlCode = ($this, docNumber) => {
 
 const ClearData = ($this, e) => {
   let IOputs = RequisitionIOputs.inputParam();
-  $this.setState(IOputs);
+  let bothExisits = true
+  RawSecurityComponent({ componentCode: "MET_REQ_INVENTORY" }).then(
+    (result) => {
+      if (result === "show") {
+        bothExisits = false
+        IOputs.requistion_type = "MR";
+      }
+    }
+  );
+
+  RawSecurityComponent({ componentCode: "PUR_REQ_INVENTORY" }).then(
+    (result) => {
+
+      if (result === "show") {
+        IOputs.requistion_type = "PR"
+        IOputs.bothExisits = bothExisits === false ? false : true
+        $this.setState(IOputs);
+      } else {
+        $this.setState(IOputs);
+      }
+    }
+  );
 };
 
 const SaveRequisitionEntry = $this => {
@@ -215,7 +237,7 @@ const LocationchangeTexts = ($this, location, ctrl, e) => {
       $this.setState({
         [name]: value,
         from_location_type: e.selected.location_type,
-        requistion_type: "MR",
+        // requistion_type: "MR",
         from_location_name: e.selected.location_description,
 
         item_category_id: null,

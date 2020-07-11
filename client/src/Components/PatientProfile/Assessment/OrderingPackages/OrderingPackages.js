@@ -186,6 +186,7 @@ class OrderingPackages extends Component {
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
+
     if (
       nextProps.existinginsurance !== undefined &&
       nextProps.existinginsurance.length !== 0
@@ -198,6 +199,18 @@ class OrderingPackages extends Component {
       output.provider_id = this.props.provider_id;
       output.vat_applicable = this.props.vat_applicable;
       this.setState({ ...output });
+    } else if (
+      nextProps.existinsurance !== undefined &&
+      nextProps.existinsurance.length !== 0
+    ) {
+      let output_ins = nextProps.existinsurance[0];
+      output_ins.insured = "Y";
+      output_ins.patient_id = this.props.patient_id;
+      output_ins.visit_id = this.props.visit_id;
+      output_ins.doctor_id = this.props.provider_id;
+      output_ins.provider_id = this.props.provider_id;
+      output_ins.vat_applicable = this.props.vat_applicable;
+      this.setState({ ...output_ins });
     } else {
       this.setState({
         insured: "N",
@@ -223,7 +236,7 @@ class OrderingPackages extends Component {
     });
   }
 
-  ShowPackageDetail(row) {    
+  ShowPackageDetail(row) {
     this.setState({
       isOpenItems: !this.state.isOpenItems,
       package_detail: row,

@@ -127,6 +127,11 @@ class LoanModal extends Component {
             auth_level: this.props.auth_level,
             approved_amount: this.state.approved_amount,
           };
+
+          const [branch] = this.props.hospitals.filter(
+            (item) => item.id === this.props.hospital_id
+          );
+
           algaehApiCall({
             uri: "/loan/authorizeLoan",
             module: "hrManagement",
@@ -143,7 +148,13 @@ class LoanModal extends Component {
                     this.loadAuthSock.emit(
                       "/loan/authorized",
                       this.state.employee_id,
-                      this.props.auth_level
+                      this.props.auth_level,
+                      {
+                        name: this.state.employee_name,
+                        code: this.state.employee_code,
+                        loan_desc: this.state.loan_description,
+                        branch: branch.hospital_name,
+                      }
                     );
                   }
                 } else if (type === "R") {
@@ -371,8 +382,8 @@ class LoanModal extends Component {
                           ) : row.loan_authorized === "IS" ? (
                             <span className="badge badge-success">Issued</span>
                           ) : (
-                            "------"
-                          )}
+                                    "------"
+                                  )}
                         </span>
                       );
                     },

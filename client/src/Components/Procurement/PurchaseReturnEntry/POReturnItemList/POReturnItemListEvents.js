@@ -50,14 +50,14 @@ const discounthandle = ($this, context, ctrl, e) => {
         value === ""
           ? 0
           : (parseFloat($this.state.extended_price) * sub_discount_percentage) /
-            100;
+          100;
     } else {
       sub_discount_amount = value === "" ? "" : parseFloat(value);
       sub_discount_percentage =
         value === ""
           ? 0
           : (sub_discount_amount / parseFloat($this.state.extended_price)) *
-            100;
+          100;
 
       sub_discount_percentage = sub_discount_percentage.toFixed(3);
     }
@@ -309,7 +309,7 @@ const itemchangeText = ($this, context, e) => {
 };
 
 const AddItems = ($this, context) => {
-  debugger;
+
   if ($this.state.order_quantity === 0) {
     swalMessage({
       title: "Please enter Quantity Required .",

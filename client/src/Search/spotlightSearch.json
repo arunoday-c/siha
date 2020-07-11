@@ -267,6 +267,20 @@
         "fieldName": "to_location",
         "label": "To Location"
       }
+    ],
+    "ReqPOEntry": [
+      {
+        "fieldName": "material_requisition_number",
+        "label": "Requisition Number"
+      },
+      {
+        "fieldName": "requistion_date",
+        "label": "Requisition Date"
+      },
+      {
+        "fieldName": "FPL.location_description",
+        "label": "From Location"
+      }
     ]
   },
   "RequisitionEntry1": {
@@ -476,6 +490,10 @@
       {
         "fieldName": "vendor_quotation_date",
         "label": "Transaction Date"
+      },
+      {
+        "fieldName": "vendor_name",
+        "label": "Vendor Name"
       },
       {
         "fieldName": "quotation_for",

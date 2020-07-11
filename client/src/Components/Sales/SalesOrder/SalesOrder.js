@@ -5,15 +5,19 @@ import { bindActionCreators } from "redux";
 import "./SalesOrder.scss";
 import BreadCrumb from "../../common/BreadCrumb/BreadCrumb";
 import MyContext from "../../../utils/MyContext";
+import { swalMessage } from "../../../utils/algaehApiCall";
 import {
   AlgaehLabel,
   AlagehFormGroup,
   AlagehAutoComplete,
   AlgaehDateHandler,
 } from "../../Wrapper/algaehWrapper";
+import AlgaehLoader from "../../Wrapper/fullPageLoader";
+
 import Options from "../../../Options.json";
 import moment from "moment";
 import GlobalVariables from "../../../utils/GlobalVariables.json";
+import { newAlgaehApi } from "../../../hooks";
 import {
   customerTexthandle,
   texthandle,
@@ -31,12 +35,16 @@ import {
   getCostCenters,
   ContractSearch,
 } from "./SalesOrderEvents";
+import { Upload, Modal } from "antd";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import { GetAmountFormart } from "../../../utils/GlobalFunctions";
 import { MainContext } from "algaeh-react-components/context";
 import SalesOrdListItems from "./SalesOrdListItems/SalesOrdListItems";
 import SalesOrdListService from "./SalesOrdListService/SalesOrdListService";
 import { AlgaehSecurityComponent } from "algaeh-react-components";
+
+const { Dragger } = Upload;
+const { confirm } = Modal;
 
 class SalesOrder extends Component {
   constructor(props) {
@@ -45,6 +53,8 @@ class SalesOrder extends Component {
     this.HRMNGMT_Active = false;
 
     this.state = {
+      invoice_files: [],
+      invoice_docs: [],
       hims_f_sales_order_id: null,
       sales_quotation_number: null,
       sales_quotation_id: null,
@@ -72,6 +82,7 @@ class SalesOrder extends Component {
       sales_order_services: [],
       decimal_place: null,
       saveEnable: true,
+      docChanged: false,
       dataExists: false,
       hospital_id: null,
       services_required: "N",
@@ -86,11 +97,11 @@ class SalesOrder extends Component {
       contract_number: null,
       contract_id: null,
     };
-    getSalesOptions(this, this);
   }
 
   static contextType = MainContext;
   componentDidMount() {
+    getSalesOptions(this);
     const userToken = this.context.userToken;
 
     this.setState({
@@ -100,10 +111,10 @@ class SalesOrder extends Component {
 
     this.HRMNGMT_Active =
       userToken.product_type === "HIMS_ERP" ||
-        userToken.product_type === "HRMS" ||
-        userToken.product_type === "HRMS_ERP" ||
-        userToken.product_type === "FINANCE_ERP" ||
-        userToken.product_type === "NO_FINANCE"
+      userToken.product_type === "HRMS" ||
+      userToken.product_type === "HRMS_ERP" ||
+      userToken.product_type === "FINANCE_ERP" ||
+      userToken.product_type === "NO_FINANCE"
         ? true
         : false;
     if (this.props.itemlist === undefined || this.props.itemlist.length === 0) {
@@ -158,6 +169,116 @@ class SalesOrder extends Component {
       getCtrlCode(this, this.props.sales_order_number);
     }
   }
+
+  getDocuments = () => {
+    newAlgaehApi({
+      uri: "/getInvoiceDoc",
+      module: "documentManagement",
+      method: "GET",
+      data: {
+        serial_no: this.state.sales_order_number,
+      },
+    })
+      .then((res) => {
+        if (res.data.success) {
+          let { data } = res.data;
+          this.setState(
+            {
+              invoice_docs: data,
+              invoice_files: [],
+              saveEnable: this.state.dataExists,
+              docChanged: false,
+            },
+            () => {
+              AlgaehLoader({ show: false });
+            }
+          );
+        }
+      })
+      .catch((e) => {
+        AlgaehLoader({ show: false });
+        swalMessage({
+          title: e.message,
+          type: "error",
+        });
+      });
+  };
+
+  saveDocument = (files = [], number, id) => {
+    if (this.state.is_completed !== "Y") {
+      const formData = new FormData();
+      formData.append("serial_no", number || this.state.sales_order_number);
+      formData.append("invoice_id", id || this.state.hims_f_sales_order_id);
+      if (files.length) {
+        files.forEach((file, index) => {
+          formData.append(`file_${index}`, file, file.name);
+        });
+      } else {
+        this.state.invoice_files.forEach((file, index) => {
+          formData.append(`file_${index}`, file, file.name);
+        });
+      }
+      newAlgaehApi({
+        uri: "/saveInvoiceDoc",
+        data: formData,
+        extraHeaders: { "Content-Type": "multipart/form-data" },
+        method: "POST",
+        module: "documentManagement",
+      })
+        .then((value) => this.getDocuments(number))
+        .catch((e) => console.log(e));
+    } else {
+      swalMessage({
+        title: "Can't upload attachments for completed orders",
+        type: "error",
+      });
+    }
+  };
+
+  downloadDoc = (doc) => {
+    const link = document.createElement("a");
+    link.download = doc.filename;
+    link.href = `data:${doc.filetype};base64,${doc.document}`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  deleteDoc = (doc) => {
+    const self = this;
+    confirm({
+      title: `Are you sure you want to delete this file?`,
+      content: `${doc.filename}`,
+      icon: <i className="fa fa-trash"></i>,
+      okText: "Yes",
+      okType: "danger",
+      cancelText: "No",
+      onOk() {
+        self.onDelete(doc);
+      },
+      onCancel() {
+        console.log("Cancel");
+      },
+    });
+  };
+
+  onDelete = (doc) => {
+    newAlgaehApi({
+      uri: "/deleteInvoiceDoc",
+      method: "DELETE",
+      module: "documentManagement",
+      data: { id: doc._id },
+    }).then((res) => {
+      if (res.data.success) {
+        this.setState((state) => {
+          const invoice_docs = state.invoice_docs.filter(
+            (item) => item._id !== doc._id
+          );
+          return { invoice_docs };
+        });
+      }
+    });
+  };
 
   render() {
     const class_finder = this.state.dataExists === true ? " disableFinder" : "";
@@ -218,8 +339,8 @@ class SalesOrder extends Component {
                 <h6>
                   {this.state.sales_order_date
                     ? moment(this.state.sales_order_date).format(
-                      Options.dateFormat
-                    )
+                        Options.dateFormat
+                      )
                     : Options.dateFormat}
                 </h6>
               </div>
@@ -237,29 +358,29 @@ class SalesOrder extends Component {
                     ) : this.state.authorize1 === "Y" &&
                       this.state.authorize2 === "Y" &&
                       this.state.is_completed === "N" ? (
-                          <span className="badge badge-success">
-                            Authorized / Dispatch Pending
+                      <span className="badge badge-success">
+                        Authorized / Dispatch Pending
                       </span>
-                        ) : this.state.authorize1 === "Y" &&
-                          this.state.authorize2 === "N" ? (
-                            <span className="badge badge-danger">
-                              Authorized 2 Pending
+                    ) : this.state.authorize1 === "Y" &&
+                      this.state.authorize2 === "N" ? (
+                      <span className="badge badge-danger">
+                        Authorized 2 Pending
                       </span>
-                          ) : this.state.authorize1 === "N" &&
-                            this.state.authorize2 === "N" ? (
-                              <span className="badge badge-danger">Pending</span>
-                            ) : this.state.is_completed === "Y" &&
-                              this.state.invoice_generated === "N" ? (
-                                <span className="badge badge-danger">
-                                  Invoice Generation Pending
+                    ) : this.state.authorize1 === "N" &&
+                      this.state.authorize2 === "N" ? (
+                      <span className="badge badge-danger">Pending</span>
+                    ) : this.state.is_completed === "Y" &&
+                      this.state.invoice_generated === "N" ? (
+                      <span className="badge badge-danger">
+                        Invoice Generation Pending
                       </span>
-                              ) : this.state.invoice_generated === "Y" ? (
-                                <span className="badge badge-success">
-                                  Invoice Generated
+                    ) : this.state.invoice_generated === "Y" ? (
+                      <span className="badge badge-success">
+                        Invoice Generated
                       </span>
-                              ) : (
-                                  <span className="badge badge-danger">Pending</span>
-                                )}
+                    ) : (
+                      <span className="badge badge-danger">Pending</span>
+                    )}
                   </h6>
                 </div>
               ) : null}
@@ -268,17 +389,17 @@ class SalesOrder extends Component {
           printArea={
             this.state.sales_order_number !== null
               ? {
-                menuitems: [
-                  {
-                    label: "Sales Order Report",
-                    events: {
-                      onClick: () => {
-                        generateSalesOrderReport(this.state);
+                  menuitems: [
+                    {
+                      label: "Sales Order Report",
+                      events: {
+                        onClick: () => {
+                          generateSalesOrderReport(this.state);
+                        },
                       },
                     },
-                  },
-                ],
-              }
+                  ],
+                }
               : ""
           }
           selectedLang={this.state.selectedLang}
@@ -339,16 +460,16 @@ class SalesOrder extends Component {
                     </h6>
                   </div>
                 ) : (
-                    <div className={"col globalSearchCntr" + class_finder}>
-                      <AlgaehLabel label={{ forceLabel: "Contract No." }} />
-                      <h6 onClick={ContractSearch.bind(this, this)}>
-                        {this.state.contract_number
-                          ? this.state.contract_number
-                          : "Contract No."}
-                        <i className="fas fa-search fa-lg"></i>
-                      </h6>
-                    </div>
-                  )}
+                  <div className={"col globalSearchCntr" + class_finder}>
+                    <AlgaehLabel label={{ forceLabel: "Contract No." }} />
+                    <h6 onClick={ContractSearch.bind(this, this)}>
+                      {this.state.contract_number
+                        ? this.state.contract_number
+                        : "Contract No."}
+                      <i className="fas fa-search fa-lg"></i>
+                    </h6>
+                  </div>
+                )}
 
                 <AlagehAutoComplete
                   div={{ className: "col form-group mandatory" }}
@@ -417,25 +538,25 @@ class SalesOrder extends Component {
                     </h6>
                   </div>
                 ) : (
-                    <AlagehFormGroup
-                      div={{ className: "col" }}
-                      label={{
-                        forceLabel: "Name of Sales Person",
-                        isImp: false,
-                      }}
-                      textBox={{
-                        className: "txt-fld",
-                        name: "sales_man",
-                        value: this.state.sales_man,
-                        events: {
-                          onChange: texthandle.bind(this, this),
-                        },
-                        others: {
-                          disabled: this.state.dataExists,
-                        },
-                      }}
-                    />
-                  )}
+                  <AlagehFormGroup
+                    div={{ className: "col" }}
+                    label={{
+                      forceLabel: "Name of Sales Person",
+                      isImp: false,
+                    }}
+                    textBox={{
+                      className: "txt-fld",
+                      name: "sales_man",
+                      value: this.state.sales_man,
+                      events: {
+                        onChange: texthandle.bind(this, this),
+                      },
+                      others: {
+                        disabled: this.state.dataExists,
+                      },
+                    }}
+                  />
+                )}
               </div>
               <div className="row">
                 {this.state.sales_order_mode === "I" ? (
@@ -567,12 +688,92 @@ class SalesOrder extends Component {
               {this.state.sales_order_mode === "S" ? (
                 <SalesOrdListService SALESIOputs={this.state} />
               ) : (
-                  <SalesOrdListItems
-                    SALESIOputs={this.state}
-                    sales_order_number={this.props.sales_order_number}
-                  />
-                )}
+                <SalesOrdListItems
+                  SALESIOputs={this.state}
+                  sales_order_number={this.props.sales_order_number}
+                />
+              )}
             </MyContext.Provider>
+          </div>
+        </div>
+
+        <div
+          className="portlet portlet-bordered margin-top-15"
+          style={{ marginBottom: 50 }}
+        >
+          <div className="portlet-title">
+            <div className="caption">
+              <h3 className="caption-subject">Attachments</h3>
+            </div>
+          </div>
+          <div className="portlet-body">
+            <div className="row">
+              <div className="col-4">
+                {" "}
+                <Dragger
+                  accept=".doc,.docx,application/msword,.pdf"
+                  name="contract_file"
+                  multiple={false}
+                  onRemove={() => {
+                    this.setState((state) => {
+                      return {
+                        invoice_files: [],
+                        docChanged: false,
+                        // saveEnable: state.dataExists && !newFileList.length,
+                      };
+                    });
+                  }}
+                  beforeUpload={(file) => {
+                    this.setState((state) => ({
+                      invoice_files: [file],
+                      docChanged: true,
+
+                      // saveEnable: false,
+                    }));
+                    return false;
+                  }}
+                  fileList={this.state.invoice_files}
+                >
+                  <p className="upload-drag-icon">
+                    <i className="fas fa-file-upload"></i>
+                  </p>
+                  <p className="ant-upload-text">
+                    {this.state.contract_file
+                      ? `Click or Drag a file to replace the current file`
+                      : `Click or Drag a file to this area to upload`}
+                  </p>
+                </Dragger>
+              </div>
+              <div className="col-8">
+                <div className="row">
+                  <div className="col-12">
+                    <ul className="contractAttachmentList">
+                      {this.state.invoice_docs.length ? (
+                        this.state.invoice_docs.map((doc) => (
+                          <li>
+                            <b> {doc.filename} </b>
+                            <span>
+                              <i
+                                className="fas fa-download"
+                                onClick={() => this.downloadDoc(doc)}
+                              ></i>
+                              <i
+                                className="fas fa-trash"
+                                onClick={() => this.deleteDoc(doc)}
+                              ></i>
+                            </span>
+                          </li>
+                        ))
+                      ) : (
+                        <div className="col-12" key={1}>
+                          <p>No Attachments Available</p>
+                        </div>
+                      )}
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -649,7 +850,38 @@ class SalesOrder extends Component {
         <div className="hptl-phase1-footer">
           <div className="row">
             <div className="col-lg-12">
-              <button
+              {this.state.dataExists &&
+              this.state.docChanged &&
+              this.state.is_completed !== "Y" ? (
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  onClick={this.saveDocument}
+                  disabled={!this.state.docChanged}
+                >
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Update Documents",
+                      returnText: true,
+                    }}
+                  />
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  onClick={SaveSalesOrderEnrty.bind(this, this)}
+                  disabled={this.state.saveEnable}
+                >
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Save Order",
+                      returnText: true,
+                    }}
+                  />
+                </button>
+              )}
+              {/* <button
                 type="button"
                 className="btn btn-primary"
                 onClick={SaveSalesOrderEnrty.bind(this, this)}
@@ -661,7 +893,7 @@ class SalesOrder extends Component {
                     returnText: true,
                   }}
                 />
-              </button>
+              </button> */}
 
               <button
                 type="button"
@@ -700,8 +932,8 @@ class SalesOrder extends Component {
                             ? true
                             : this.state.authorize1 === "Y" &&
                               this.state.authorize2 === "Y"
-                              ? true
-                              : false
+                            ? true
+                            : false
                         }
                         onClick={AuthorizeOrderEntry.bind(
                           this,
@@ -717,8 +949,8 @@ class SalesOrder extends Component {
                               this.state.authorize1 === "N"
                                 ? "Authorize 1"
                                 : this.state.sales_order_auth_level === "2"
-                                  ? "Authorize 2"
-                                  : "Authorize 1",
+                                ? "Authorize 2"
+                                : "Authorize 1",
                             returnText: true,
                           }}
                         />
@@ -740,7 +972,7 @@ function mapStateToProps(state) {
     itemlist: state.itemlist,
     itemuom: state.itemuom,
     customer_data: state.customer_data,
-    hospitaldetails: state.hospitaldetails
+    hospitaldetails: state.hospitaldetails,
   };
 }
 
@@ -750,7 +982,7 @@ function mapDispatchToProps(dispatch) {
       getItems: AlgaehActions,
       getItemUOM: AlgaehActions,
       getCustomerMaster: AlgaehActions,
-      getHospitalDetails: AlgaehActions
+      getHospitalDetails: AlgaehActions,
     },
     dispatch
   );

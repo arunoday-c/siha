@@ -160,8 +160,7 @@ const getAnalytes = ($this) => {
       // console.timeEnd("lab");
       if (response.data.success) {
         // let data = response.data.records;
-        // for (let i = 0; i < data.length; i++) {
-        //   debugger;
+        // for (let i = 0; i < data.length; i++) {        
         //   data[i].hims_f_lab_order_id = $this.state.hims_f_lab_order_id;
         //   if (data[i].status === "E" || data[i].status === "N") {
         //     data[i].validate = "N";

@@ -49,7 +49,7 @@ export default class SalesQuotationTransfer extends PureComponent {
     }
 
     transferPerson() {
-        debugger
+
         if (this.state.new_sales_person_id === null) {
             swalMessage({
                 title: "Please select Transfer Person",

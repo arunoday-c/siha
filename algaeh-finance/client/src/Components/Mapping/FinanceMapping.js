@@ -71,7 +71,7 @@ export default function Mapping(props) {
   return (
     <div className="FinanceMappingScreen">
       <div className="row margin-top-15 margin-bottom-15">
-        <div className="col-12">
+        <div className="col">
           <div className="portlet portlet-bordered margin-bottom-15">
             <div className="portlet-title">
               {/* <div className="caption">
@@ -121,7 +121,9 @@ export default function Mapping(props) {
               </div>
             </div>
           </div>
-        </div>
+        </div>{" "}
+        {/* <div className="col-4">fgfgfg</div>
+        <div className="col-4">fgfgfg</div> */}
       </div>
       <div className="hptl-phase1-footer">
         <div className="row">

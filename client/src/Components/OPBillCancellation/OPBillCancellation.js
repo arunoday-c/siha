@@ -176,7 +176,6 @@ class OPBillCancellation extends Component {
         Inputobj.pay_type = "P";
         Inputobj.ScreenCode = getCookie("ScreenCode");
         AlgaehLoader({ show: true });
-        debugger;
         algaehApiCall({
           uri: "/opBillCancellation/addOpBillCancellation",
           module: "billing",
@@ -273,17 +272,17 @@ class OPBillCancellation extends Component {
           printArea={
             this.state.bill_cancel_number !== null
               ? {
-                  menuitems: [
-                    {
-                      label: "Print Receipt",
-                      events: {
-                        onClick: () => {
-                          generateReceipt(this, this);
-                        },
+                menuitems: [
+                  {
+                    label: "Print Receipt",
+                    events: {
+                      onClick: () => {
+                        generateReceipt(this, this);
                       },
                     },
-                  ],
-                }
+                  },
+                ],
+              }
               : ""
           }
           selectedLang={this.state.selectedLang}

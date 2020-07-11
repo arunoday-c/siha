@@ -752,6 +752,7 @@ class OfficalDetails extends Component {
                         forceLabel: "Notice Period",
                         isImp: false,
                       }}
+                      date_of_resignation
                       textBox={{
                         value: this.state.notice_period,
                         className: "txt-fld",
@@ -781,7 +782,7 @@ class OfficalDetails extends Component {
                     </div>
                     <AlgaehDateHandler
                       div={{ className: "col-3" }}
-                      label={{ forceLabel: "Date of Exit" }}
+                      label={{ forceLabel: "Date of Exit/Last Working Day" }}
                       textBox={{
                         className: "txt-fld",
                         name: "exit_date",

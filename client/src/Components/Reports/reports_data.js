@@ -11,6 +11,7 @@ import {
   EMP_FORMAT_GENDER,
   DATE_OF_JOIN,
   EMPLOYEE_TYPE,
+  RECEIPT_TYPE
 } from "../../utils/GlobalVariables.json";
 import { getYears } from "../../utils/GlobalFunctions";
 import { algaehApiCall } from "../../utils/algaehApiCall";
@@ -46,7 +47,7 @@ export default function loadActiveReports(
           result = Insurance({ algaehApiCall });
           break;
         case "income":
-          result = Income({ hospital_id: hims_d_hospital_id, algaehApiCall });
+          result = Income({ hospital_id: hims_d_hospital_id, RECEIPT_TYPE, algaehApiCall });
           break;
         case "hr":
           result = Hr({

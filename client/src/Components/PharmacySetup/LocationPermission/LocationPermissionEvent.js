@@ -95,7 +95,7 @@ const insertLocationPermission = ($this, e) => {
     onSuccess: () => {
       algaehApiCall({
         uri: "/pharmacy/addLocationPermission",
-        // module:"pharmacy",
+        module: "pharmacy",
         // method: "POST",
         data: $this.state,
 

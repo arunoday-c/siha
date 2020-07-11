@@ -1122,7 +1122,7 @@ export default {
           } else {
             _mysql.commitTransaction(() => {
               _mysql.releaseConnection();
-              req.records = leaveEncash_header;
+              req.records = leave_salary_header;
               next();
             });
           }
@@ -1172,7 +1172,7 @@ export default {
               });
           } else {
             _mysql.releaseConnection();
-            req.records = leaveEncash_header;
+            req.records = leave_master;
             next();
           }
         })

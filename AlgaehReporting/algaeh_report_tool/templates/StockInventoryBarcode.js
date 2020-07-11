@@ -16,7 +16,8 @@ const executePDF = function executePDFMethod(options) {
         otherObj.push({
           sales_price: s_price,
           item_description: header.item_description,
-          print_barcode: header.barcode
+          print_barcode: header.barcode,
+          expiry_date: header.expirydt === null ? "" : header.expirydt
         });
       }
       const result = {

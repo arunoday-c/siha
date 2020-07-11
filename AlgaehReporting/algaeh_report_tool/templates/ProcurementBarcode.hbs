@@ -12,7 +12,7 @@
 
   .small-top-left {
     display: block;
-    font-size: 7px;
+    font-size: 8px;
     margin-top: 7px;
   }
 
@@ -51,7 +51,7 @@
 
     <div class="barcodeLineBulk">
 
-      <small class="small-top-left">{{item_description}}</small>
+      <b><small class="small-top-left">{{item_description}}</small></b>
       <img src={{barcode "code128" print_barcode false }} />
       <small class="small-left"><b>{{sales_price}}</b></small>
       <small class="small-right">{{print_barcode}}</small>

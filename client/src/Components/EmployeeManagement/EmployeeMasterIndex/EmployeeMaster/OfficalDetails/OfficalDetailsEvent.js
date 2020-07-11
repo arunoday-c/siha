@@ -18,13 +18,16 @@ const texthandle = ($this, e) => {
         });
         return;
       }
-      _notice = {
-        reliving_date: moment($this.state.date_of_resignation).add(
+      const res_date = moment($this.state.date_of_resignation).add(
           value,
           "days"
         )._d,
-        [name]: value,
-      };
+        _notice = {
+          reliving_date: res_date,
+          exit_date: res_date,
+
+          [name]: value,
+        };
       $this.setState(_notice);
       break;
     case "sub_department_id":
@@ -55,11 +58,11 @@ const texthandle = ($this, e) => {
     case "appointment_type":
       $this.setState({
         [name]: value,
-        agency_id: null
+        agency_id: null,
       });
       $this.props.EmpMasterIOputs.updateEmployeeTabs({
         [name]: value,
-        agency_id: null
+        agency_id: null,
       });
       break;
 
@@ -91,6 +94,10 @@ const datehandle = ($this, ctrl, e) => {
     if ($this.state.notice_period !== null) {
       _notice = {
         reliving_date: moment(ctrl).add(
+          parseFloat($this.state.notice_period),
+          "days"
+        )._d,
+        exit_date: moment(ctrl).add(
           parseFloat($this.state.notice_period),
           "days"
         )._d,
@@ -174,14 +181,12 @@ const ondiscountChange = ($this, e) => {
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
 
-
-
   if (parseFloat(value) > 100) {
     swalMessage({
       title: "Discount % cannot be greater than 100.",
-      type: "warning"
+      type: "warning",
     });
-    value = 0
+    value = 0;
   }
   $this.setState({
     [name]: value,
@@ -189,7 +194,6 @@ const ondiscountChange = ($this, e) => {
   $this.props.EmpMasterIOputs.updateEmployeeTabs({
     [name]: value,
   });
-
 };
 
 export {
@@ -200,5 +204,5 @@ export {
   dateFormater,
   bankEventhandle,
   otEntitleHandaler,
-  ondiscountChange
+  ondiscountChange,
 };

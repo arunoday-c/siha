@@ -20,6 +20,8 @@ export function Organization(props) {
   const [loadingUpdate, setLoadingUpdate] = useState(false);
   const [org_image, setOrgImage] = useState(undefined);
   const [app_logo, setAppLogo] = useState(undefined);
+  const [seal_logo, setSealLogo] = useState(undefined);
+
   const [loadingOrgImage, setLoadingOrgImage] = useState(false);
   const { countryMaster } = props;
   const { userToken } = useContext(MainContext);
@@ -44,6 +46,18 @@ export function Organization(props) {
             LoadLogo({
               image_id: records.hims_d_organization_id,
               logo_type: "ORG",
+            })
+          );
+          setAppLogo(
+            LoadLogo({
+              image_id: records.hims_d_organization_id,
+              logo_type: "APP",
+            })
+          );
+          setSealLogo(
+            LoadLogo({
+              image_id: records.hims_d_organization_id,
+              logo_type: "SEAL",
             })
           );
         } else {
@@ -157,6 +171,19 @@ export function Organization(props) {
       });
     }
   }
+  function onSealLogoHandleChange(info) {
+    if (info.file.status === "uploading") {
+      setLoadingOrgImage(true);
+      return;
+    }
+    if (info.file.status === "done") {
+      // Get this url from response in real world.
+      getBase64(info.file.originFileObj, (imageUrl) => {
+        setSealLogo(imageUrl);
+        setLoadingOrgImage(false);
+      });
+    }
+  }
 
   function employeeSearch() {
     AlgaehSearch({
@@ -208,80 +235,112 @@ export function Organization(props) {
           <div className="portlet-body">
             <div className="row">
               <div className="col-3">
-                <Upload
-                  name="org_image"
-                  listType="picture-card"
-                  showUploadList={false}
-                  onChange={onImageHandleChange}
-                  data={{ image_id: hims_d_organization_id, logo_type: "ORG" }}
-                  action={logoUrl({ uri: "/Document/saveLogo" })}
-                  accept=".png"
-                  className="orgImageUpload"
-                >
-                  {/* <img
-                src={
-                  org_image
-                    ? org_image
-                    : `${loadLogo({
+                <div className="row">
+                  <div className="col-12">
+                    <label>Logo For Application</label>
+                    <Upload
+                      name="org_image"
+                      listType="picture-card"
+                      showUploadList={false}
+                      onChange={onLogoHandleChange}
+                      data={{
+                        image_id: hims_d_organization_id,
+                        logo_type: "APP",
+                      }}
+                      action={logoUrl({ uri: "/Document/saveLogo" })}
+                      accept=".png"
+                      className="orgImageUpload"
+                    >
+                      {app_logo ? (
+                        <img
+                          src={app_logo}
+                          alt="avatar"
+                          style={{ width: "100%" }}
+                        />
+                      ) : (
+                        <>
+                          <LoadLogo
+                            key="app"
+                            input={{
+                              image_id: hims_d_organization_id,
+                              logo_type: "APP",
+                            }}
+                          />
+                          {uploadButton}
+                        </>
+                      )}
+                    </Upload>
+                  </div>
+                  <div className="col-12">
+                    <label>Logo For Report</label>
+                    <Upload
+                      name="org_image"
+                      listType="picture-card"
+                      showUploadList={false}
+                      onChange={onImageHandleChange}
+                      data={{
                         image_id: hims_d_organization_id,
                         logo_type: "ORG",
-                      })}`
-                }
-                alt=""
-                style={{ width: "100%" }}
-              />
-              {uploadButton} */}
-                  {org_image ? (
-                    <img
-                      src={org_image}
-                      alt="avatar"
-                      style={{ width: "100%" }}
-                    />
-                  ) : (
-                    <>
-                      <LoadLogo
-                        input={{
-                          image_id: hims_d_organization_id,
-                          logo_type: "ORG",
-                        }}
-                      />
-                      {uploadButton}
-                    </>
-                  )}
-                </Upload>
-                <br></br>{" "}
-                <Upload
-                  name="org_image"
-                  listType="picture-card"
-                  showUploadList={false}
-                  onChange={onLogoHandleChange}
-                  data={{
-                    image_id: hims_d_organization_id,
-                    logo_type: "APP",
-                  }}
-                  action={logoUrl({ uri: "/Document/saveLogo" })}
-                  accept=".png"
-                  className="orgImageUpload"
-                >
-                  {app_logo ? (
-                    <img
-                      src={app_logo}
-                      alt="avatar"
-                      style={{ width: "100%" }}
-                    />
-                  ) : (
-                    <>
-                      <LoadLogo
-                        key="app"
-                        input={{
-                          image_id: hims_d_organization_id,
-                          logo_type: "APP",
-                        }}
-                      />
-                      {uploadButton}
-                    </>
-                  )}
-                </Upload>
+                      }}
+                      action={logoUrl({ uri: "/Document/saveLogo" })}
+                      accept=".png"
+                      className="orgImageUpload"
+                    >
+                      {org_image ? (
+                        <img
+                          src={org_image}
+                          alt="avatar"
+                          style={{ width: "100%" }}
+                        />
+                      ) : (
+                        <>
+                          <LoadLogo
+                            input={{
+                              image_id: hims_d_organization_id,
+                              logo_type: "ORG",
+                            }}
+                          />
+                          {uploadButton}
+                        </>
+                      )}
+                    </Upload>
+                  </div>
+                  <div className="col-12">
+                    <label>Seal For Report</label>
+                    <Upload
+                      name="org_image"
+                      listType="picture-card"
+                      showUploadList={false}
+                      onChange={onSealLogoHandleChange}
+                      data={{
+                        image_id: hims_d_organization_id,
+                        logo_type: "SEAL",
+                      }}
+                      action={logoUrl({ uri: "/Document/saveLogo" })}
+                      accept=".png"
+                      className="orgImageUpload"
+                    >
+                      {seal_logo ? (
+                        <img
+                          src={seal_logo}
+                          alt="avatar"
+                          style={{ width: "100%" }}
+                        />
+                      ) : (
+                        <>
+                          <LoadLogo
+                            key="seal"
+                            input={{
+                              image_id: hims_d_organization_id,
+                              logo_type: "SEAL",
+                            }}
+                          />
+                          {uploadButton}
+                        </>
+                      )}
+                    </Upload>
+                  </div>
+                </div>
               </div>{" "}
               <div className="col-9">
                 {" "}
