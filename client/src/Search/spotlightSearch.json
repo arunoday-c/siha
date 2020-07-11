@@ -260,11 +260,11 @@
         "label": "Requisition Date"
       },
       {
-        "fieldName": "FPL.location_description",
+        "fieldName": "from_location",
         "label": "From Location"
       },
       {
-        "fieldName": "TPL.location_description",
+        "fieldName": "to_location",
         "label": "To Location"
       }
     ],
