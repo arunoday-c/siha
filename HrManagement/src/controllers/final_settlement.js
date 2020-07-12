@@ -7,6 +7,8 @@ const {
   finalSettlemntAdd,
   generateAccountingEntry,
   finalSettlementSave,
+  deleteEarnings,
+  deleteDeductions,
 } = final_settlement;
 
 export default () => {
@@ -34,5 +36,17 @@ export default () => {
       });
     }
   );
+  api.delete("/deleteEarnings", deleteEarnings, (req, res) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      message: "deleted successfully",
+    });
+  });
+  api.delete("/deleteDeductions", deleteDeductions, (req, res) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      message: "deleted successfully",
+    });
+  });
   return api;
 };

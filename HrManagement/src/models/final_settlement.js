@@ -13,9 +13,13 @@ export default {
         .executeQuery({
           query:
             "SELECT hims_f_final_settlement_header_id,total_amount,total_earnings,total_deductions,total_loans as total_loan_amount,\
-              total_salary,total_leave_encash as total_leave_encash_amount, COALESCE(end_of_service_id,(select  COALESCE(payable_amount,0)  from hims_f_end_of_service where employee_id=?))  as gratuity_amount,\
-              forfiet,remarks,final_settlement_status,COALESCE(end_of_service_id,(select hims_f_end_of_service_id from hims_f_end_of_service where employee_id=?)) as end_of_service_id FROM hims_f_final_settlement_header where employee_id=?; \
-              select salary_type from hims_f_salary where employee_id=?; \
+              total_salary, case  total_leave_encash when 0 or total_leave_encash is null then \
+              (select total_amount from hims_f_leave_encash_header where employee_id=?) else  total_leave_encash end as total_leave_encash_amount,\
+                CASE total_eos when 0 or total_eos is null then (select  COALESCE(payable_amount,0)  from hims_f_end_of_service where employee_id=?) \
+              else total_eos end  as gratuity_amount,\
+              forfiet,remarks,final_settlement_status,COALESCE(end_of_service_id,(select hims_f_end_of_service_id from hims_f_end_of_service where employee_id=?)) as end_of_service_id, \
+                COALESCE(leave_encashment_id,(select hims_f_leave_encash_header_id from hims_f_leave_encash_header where employee_id=?)) as hims_f_leave_encash_header_id FROM hims_f_final_settlement_header where employee_id=?; \
+              select salary_type,hims_f_salary_id,COALESCE(net_salary,0)total_salary from hims_f_salary where employee_id=? and salary_type='FS'; \
               select  E.date_of_joining,E.hims_d_employee_id,E.date_of_resignation,E.employee_status,\
               E.employee_code,E.full_name,E.arabic_name,E.sex,E.employee_type ,E.title_id,T.title ,T.arabic_title,\
               E.sub_department_id,E.employee_designation_id,E.date_of_birth,SD.sub_department_name,\
@@ -29,13 +33,16 @@ export default {
             _input.employee_id,
             _input.employee_id,
             _input.employee_id,
+            _input.employee_id,
+            _input.employee_id,
           ],
           printQuery: true,
         })
         .then((headerresult) => {
           const _header = headerresult[0];
-
           const _employee = headerresult[1];
+          const emp = headerresult[2];
+          [2];
           // utilities.logger().log("_header: ", _header);
           if (_header.length === 0) {
             // const previusMonthYear = moment()
@@ -50,11 +57,11 @@ export default {
                   "select employee_id,loan_id,application_reason,hims_f_loan_application_id,approved_amount, \
                   loan_amount, installment_amount,pending_loan,loan_tenure,start_month,start_year, \
                   loan_application_date,L.loan_description from hims_f_loan_application, hims_d_loan L \
-                  where loan_authorized = 'IS' and loan_closed='N' and loan_amount >0 and employee_id=? \
+                  where loan_authorized = 'IS' and loan_closed='N' and pending_loan >0 and employee_id=? \
                   and L.hims_d_loan_id=hims_f_loan_application.loan_id; \
                   select gratuity_in_final_settle from hims_d_end_of_service_options;\
-                  select hims_f_salary_id, sum(net_salary)total_salary from hims_f_salary where employee_id=? \
-                  and salary_settled='N' and salary_paid='N' group by hims_f_salary_id; \
+                  select hims_f_salary_id, COALESCE(net_salary,0)total_salary from hims_f_salary where employee_id=? \
+                  and salary_type ='FS'; \
                   SELECT hims_f_leave_encash_header_id, sum(total_amount)total_leave_amount FROM hims_f_leave_encash_header \
                   where employee_id =? and authorized='APR' group by hims_f_leave_encash_header_id; \
                   select  E.date_of_joining,E.hims_d_employee_id,E.date_of_resignation,E.employee_status,\
@@ -118,6 +125,7 @@ export default {
                     }
                     req.records = {
                       ..._.first(result[4], 0),
+                      employee_status: _.first(emp, 0)["employee_status"],
                       loans: _loanList,
                       total_loan_amount: _total_loan_amount,
                       hims_f_salary_id: _hims_f_salary_id,
@@ -181,6 +189,7 @@ export default {
                     hims_d_employee_id: _input.employee_id,
                     ..._.first(_header, 0),
                     ..._.first(_employee, 0),
+                    employee_status: _.first(emp, 0)["employee_status"],
                   },
                   isEnable: true,
                   // _header[0]["final_settlement_status"] === "SET" ||
@@ -397,7 +406,7 @@ export default {
         .executeQueryWithTransaction({
           query: `update hims_f_final_settlement_header set total_amount=?,total_earnings=?,
       total_deductions=?,total_loans=?,total_salary=?,remarks=?,updated_by=?,updated_date=?,
-      final_settlement_status=?,posted=?,posted_date=?,posted_by=?
+      final_settlement_status=?,posted=?,posted_date=?,posted_by=?,employee_status=?
       where hims_f_final_settlement_header_id=?;`,
           values: [
             _input.total_amount,
@@ -412,6 +421,7 @@ export default {
             "Y",
             new Date(),
             algaeh_d_app_user_id,
+            _input.employee_status,
             hims_f_final_settlement_header_id,
           ],
           printQuery: true,
@@ -625,48 +635,59 @@ export default {
                   null,
                   hospital_id,
                 ],
+                printQuery: true,
               })
               .then((header_result) => {
                 req.body.final_settlement = generatedNumbers.FINAL_SETTLEMENT;
                 req.body.hims_f_final_settlement_header_id =
                   header_result.insertId;
                 let query = "";
-                for (let i = 0; i < loans.length; i++) {
-                  query += _mysql.mysqlQueryFormat(
-                    "insert into hims_f_final_settle_loan_details(`final_settlement_header_id`,\
-          `loan_application_id`,`balance_amount`) values(?,?,?);",
-                    [
-                      header_result.insertId,
-                      loans[i].hims_f_loan_application_id,
-                      loans[i].pending_loan,
-                    ]
-                  );
+                if (Array.isArray(loans)) {
+                  for (let i = 0; i < loans.length; i++) {
+                    query += _mysql.mysqlQueryFormat(
+                      "insert into hims_f_final_settle_loan_details(`final_settlement_header_id`,\
+                        `loan_application_id`,`balance_amount`) values(?,?,?);",
+                      [
+                        header_result.insertId,
+                        loans[i].hims_f_loan_application_id,
+                        loans[i].pending_loan,
+                      ]
+                    );
+                  }
                 }
-                for (let e = 0; e < earnings.length; e++) {
-                  query += _mysql.mysqlQueryFormat(
-                    "insert into hims_f_final_settle_earnings_detail(`final_settlement_header`,\
+                if (Array.isArray(earnings)) {
+                  for (let e = 0; e < earnings.length; e++) {
+                    query += _mysql.mysqlQueryFormat(
+                      "insert into hims_f_final_settle_earnings_detail(`final_settlement_header`,\
             `earnings_id`,`amount`) values(?,?,?);",
-                    [
-                      header_result.insertId,
-                      earnings[e].earnings_id,
-                      earnings[e].amount,
-                    ]
-                  );
+                      [
+                        header_result.insertId,
+                        earnings[e].earnings_id,
+                        earnings[e].amount,
+                      ]
+                    );
+                  }
                 }
-                for (let d = 0; d < deductions.length; d++) {
-                  query += _mysql.mysqlQueryFormat(
-                    "insert into hims_f_final_settle_deductions_detail(`final_settlement_header_id`,\
+                if (Array.isArray(deductions)) {
+                  for (let d = 0; d < deductions.length; d++) {
+                    query += _mysql.mysqlQueryFormat(
+                      "insert into hims_f_final_settle_deductions_detail(`final_settlement_header_id`,\
             `deductions_id`,`amount`) values(?,?,?);",
-                    [
-                      header_result.insertId,
-                      deductions[d].deductions_id,
-                      deductions[d].amount,
-                    ]
-                  );
+                      [
+                        header_result.insertId,
+                        deductions[d].deductions_id,
+                        deductions[d].amount,
+                      ]
+                    );
+                  }
+                }
+                if (query === "") {
+                  query = "select 1";
                 }
                 _mysql
                   .executeQuery({
                     query: query,
+                    printQuery: true,
                   })
                   .then((rest) => {
                     _mysql.commitTransaction((error, result) => {
@@ -701,7 +722,9 @@ export default {
         _mysql
           .executeQueryWithTransaction({
             query: `update hims_f_final_settlement_header set total_amount=?,total_earnings=?,
-          total_deductions=?,total_loans=?,total_salary=?,remarks=?,updated_by=?,updated_date=?
+          total_deductions=?,total_loans=?,total_salary=?,remarks=?,updated_by=?,updated_date=?,
+          end_of_service_id=?,total_eos=?,leave_encashment_id=?,total_leave_encash=?,salary_id=?,
+          employee_status=?
           where hims_f_final_settlement_header_id=?;`,
             values: [
               _input.total_amount,
@@ -712,6 +735,12 @@ export default {
               _input.remarks,
               algaeh_d_app_user_id,
               new Date(),
+              _input.end_of_service_id,
+              _input.gratuity_amount,
+              _input.hims_f_leave_encash_header_id,
+              _input.total_leave_encash_amount,
+              _input.hims_f_salary_id,
+              _input.employee_status,
               hims_f_final_settlement_header_id,
             ],
             printQuery: true,
@@ -799,7 +828,9 @@ export default {
                 }
               }
             }
-
+            if (insertQuery === "" && updateQuery === "") {
+              insertQuery = "select 1;";
+            }
             _mysql
               .executeQuery({
                 query: `${insertQuery}${updateQuery}`,
@@ -1081,6 +1112,90 @@ export default {
       _mysql.rollBackTransaction(() => {
         next(e);
       });
+    }
+  },
+  deleteEarnings: (req, res, next) => {
+    const {
+      hims_f_final_settle_earnings_detail_id,
+      hims_f_final_settlement_header_id,
+    } = req.body;
+    const _mysql = new algaehMysql();
+    try {
+      _mysql
+        .executeQuery({
+          query: `select final_settlement_status from hims_f_final_settlement_header where hims_f_final_settlement_header_id=?`,
+          values: [hims_f_final_settlement_header_id],
+        })
+        .then((result) => {
+          const status = result[0]["final_settlement_status"];
+          if (status === "PEN") {
+            _mysql
+              .executeQuery({
+                query: `delete from hims_f_final_settle_earnings_detail where hims_f_final_settle_earnings_detail_id=?`,
+                values: [hims_f_final_settle_earnings_detail_id],
+              })
+              .then((result) => {
+                _mysql.releaseConnection();
+                next();
+              })
+              .catch((error) => {
+                _mysql.releaseConnection();
+                next(error);
+              });
+          } else {
+            _mysql.releaseConnection();
+            next(new Error("Not able to delete"));
+          }
+        })
+        .catch((error) => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
+  deleteDeductions: (req, res, next) => {
+    const {
+      hims_f_final_settle_deductions_detail_id,
+      hims_f_final_settlement_header_id,
+    } = req.body;
+    const _mysql = new algaehMysql();
+    try {
+      _mysql
+        .executeQuery({
+          query: `select final_settlement_status from hims_f_final_settlement_header where hims_f_final_settlement_header_id=?`,
+          values: [hims_f_final_settlement_header_id],
+        })
+        .then((result) => {
+          const status = result[0]["final_settlement_status"];
+          if (status === "PEN") {
+            _mysql
+              .executeQuery({
+                query: `delete from hims_f_final_settle_deductions_detail where hims_f_final_settle_deductions_detail_id=?`,
+                values: [hims_f_final_settle_deductions_detail_id],
+              })
+              .then((result) => {
+                _mysql.releaseConnection();
+                next();
+              })
+              .catch((error) => {
+                _mysql.releaseConnection();
+                next(error);
+              });
+          } else {
+            _mysql.releaseConnection();
+            next(new Error("Not able to delete"));
+          }
+        })
+        .catch((error) => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
     }
   },
 };

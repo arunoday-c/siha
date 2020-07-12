@@ -1,5 +1,4 @@
 {{{importStyle 'css/algaehReportStyles.css'}}}
-{{#each result}}
 
 <body>
     <div class="print-body" style="page-break-before: always; page-break-after: always; margin-right:15px">
@@ -17,8 +16,9 @@
 
                     <td><label class="textEnLft">Sub Department: </label><span class="valueText">
                             {{sub_department_name}}</span></td>
-                    <td><label class="textEnLft">Date of Joining</label><span class="valueText">{{DOJ}}</span>
-                    <td><label class="textEnLft">Date of Exit:</label><span class="valueText">{{DOE}}</span>
+                    <td><label class="textEnLft">Date of Joining</label><span
+                            class="valueText">{{date_of_joining}}</span>
+                    <td><label class="textEnLft">Date of Exit:</label><span class="valueText">{{exit_date}}</span>
                     </td>
 
                     <td><label class="textEnLft">Salary Month & Year:</label><span class="valueText">{{month}} -
@@ -32,89 +32,52 @@
             <table class="tableForData" cell-padding="0" style="width:49.8%;margin-right:0.2%;float:left;">
                 <thead>
                     <tr>
+                        <th style="width: 20%">Type</th>
                         <th style="width: 60%">Salary Earnigns</th>
-                        <th style="width: 40%">Amount</th>
+                        <th style="width: 20%">Amount</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {{#each emp_earnings}}
+                    {{#each earningsData}}
                     <tr>
-                        <td style="height: 25px;" valign="top">{{earning_description}}</td>
-                        <td style="height: 25px;" valign="top" class="numberFld">{{earning_amount}}</td>
+                        <td style="height: 25px;" valign="middle">{{salary_type}}</td>
+                        <td style="height: 25px;" valign="middle" class="txtFld">{{earning_deduction_description}}</td>
+                        <td style="height: 25px;" valign="middle" class="numberFld">{{amount}}</td>
                     </tr>
                     {{/each}}
-
+                    {{!-- 
                     <tr class="footerTotalDown">
                         <td>Total</td>
                         <td class="numberFld">{{total_earnings}}</td>
-                    </tr>
+                    </tr> --}}
                 </tbody>
             </table>
             <table class="tableForData" cell-padding="0" style="width:49.8%;margin-left:0.2%;float:right;">
                 <thead>
                     <tr>
+                        <th style="width: 20%">Type</th>
                         <th style="width: 60%">Salary Deductions</th>
-                        <th style="width: 40%">Amount</th>
+                        <th style="width: 20%">Amount</th>
                     </tr>
                 </thead>
                 <tbody>
 
-                    {{#each emp_deductions}}
+                    {{#each deductionData}}
                     <tr>
-                        <td style="height: 25px;">{{deduction_description}}</td>
-                        <td style="height: 25px;" class="numberFld">{{deduction_amount}}</td>
+                        <td style="height: 25px;" valign="middle">{{salary_type}}</td>
+                        <td style="height: 25px;" valign="middle" class="txtFld">{{earning_deduction_description}}</td>
+                        <td style="height: 25px;" valign="middle" class="numberFld">{{amount}}</td>
                     </tr>
                     {{/each}}
 
-                    <tr class="footerTotalDown">
+                    {{!-- <tr class="footerTotalDown">
                         <td>Total</td>
                         <td class="numberFld">{{total_deductions}}</td>
-                    </tr>
+                    </tr> --}}
 
                 </tbody>
             </table>
         </section>
-        {{!-- <br />
-        <section style="border:1px solid #ccc;border-bottom:2px dashed #ccc;">
-            <table class="tableForData" cell-padding="0" style="width:49.8%;margin-right:0.2%;float:left;">
-                <thead>
-                    <tr>
-                        <th style="width: 60%">Earnigns</th>
-                        <th style="width: 40%">Amount</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {{#each emp_other_earnings}}
-                    <tr>
-                        <td style="height: 25px;" valign="top">{{earning_name}}</td>
-                        <td style="height: 25px;" valign="top" class="numberFld">{{amount}}</td>
-                    </tr>
-                    {{/each}}
-
-
-                </tbody>
-            </table>
-            <table class="tableForData" cell-padding="0" style="width:49.8%;margin-left:0.2%;float:right;">
-                <thead>
-                    <tr>
-                        <th style="width: 60%">Deductions</th>
-                        <th style="width: 40%">Amount</th>
-                    </tr>
-                </thead>
-                <tbody>
-
-                    {{#each emp_other_deductions}}
-                    <tr>
-                        <td style="height: 25px;">{{deduction_name}}</td>
-                        <td style="height: 25px;" class="numberFld">{{deduction_amount}}</td>
-                    </tr>
-                    {{/each}}
-
-
-
-                </tbody>
-            </table>
-        </section> --}}
         <br />
         <section>
 
@@ -125,27 +88,27 @@
                 </tr>
                 <tr class="footerTotalUp">
                     <td class="numberFld">Total Other Earnings</td>
-                    <td class="numberFld" colspan="3">{{total_other_earnings}}</td>
+                    <td class="numberFld" colspan="3">{{total_earnings}}</td>
                 </tr>
                 <tr class="footerTotalUp">
                     <td class="numberFld">Total Leave Encashment</td>
-                    <td class="numberFld" colspan="3">{{total_leave_encash_amount}}</td>
+                    <td class="numberFld" colspan="3">{{total_leave_encash}}</td>
                 </tr>
                 <tr class="footerTotalUp" style="border-bottom:1px solid #000">
                     <td class="numberFld">Total Gratuity</td>
-                    <td class="numberFld" colspan="3">{{total_gratuity_amount}}</td>
+                    <td class="numberFld" colspan="3">{{total_eos}}</td>
                 </tr>
                 <tr class="footerTotalUp">
                     <td class="numberFld">Total Other Deductions</td>
-                    <td class="numberFld" colspan="3">(-) {{total_other_deductions}}</td>
+                    <td class="numberFld" colspan="3">(-) {{total_deductions}}</td>
                 </tr>
                 <tr class="footerTotalUp">
                     <td class="numberFld">Pending Loan</td>
-                    <td class="numberFld" colspan="3">(-) {{total_loan_amount}}</td>
+                    <td class="numberFld" colspan="3">(-) {{total_loans}}</td>
                 </tr>
                 <tr class="footerTotalDown">
                     <td class="numberFld">Final Settlement Amount</td>
-                    <td class="numberFld" colspan="3">{{final_payble}}</td>
+                    <td class="numberFld" colspan="3">{{total_amount}}</td>
                 </tr>
                 <tr class="footerTotalDown">
                     <td class="numberFld">In Words</td>
@@ -183,4 +146,3 @@
         <p style="text-align: center">This is a system generated payslip on {{currentDateTime 'date'}}. </p>
     </div>
 </body>
-{{/each }}
