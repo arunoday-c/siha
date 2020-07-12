@@ -17,7 +17,7 @@
 }
 .reportGridPlain {
   border: 1px solid #dedede;
-  max-height: max-content !important;
+  max-height: 35vh !important;
   table {
     min-width: calc(100vw - 70px) !important;
     thead {
@@ -25,9 +25,9 @@
         background: #fff !important;
         text-align: right !important;
         border: none !important;
-        border-bottom: 1px solid #d3d3d3 !important;
+        border-bottom: 2px solid #cecece !important;
         span {
-          white-space: nowrap !important !important;
+          white-space: nowrap !important;
         }
         &:first-child {
           text-align: left !important;
@@ -40,6 +40,13 @@
       }
     }
     tbody {
+      tr {
+        &:nth-child(odd) {
+          td {
+            background-color: #fff !important;
+          }
+        }
+      }
       td {
         border: none !important;
         text-align: right !important;
