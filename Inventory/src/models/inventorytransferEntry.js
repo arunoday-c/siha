@@ -135,7 +135,12 @@ export default {
                         w.transfer_detail_id ==
                         t_details[m]["hims_f_inventory_transfer_detail_id"]
                     )
-                    .Select((s) => s)
+                    .Select((s) => {
+                      return {
+                        ...s,
+                        uom_description: t_details[m]["uom_description"],
+                      };
+                    })
                     .ToArray();
 
                   temp.push({
@@ -324,7 +329,7 @@ export default {
         let transfer_number = "";
 
         // const utilities = new algaehUtilities();
-        console.log("addtransferEntry: ");
+        // console.log("addtransferEntry: ");
 
         _mysql
           .generateRunningNumber({
@@ -383,8 +388,8 @@ export default {
                 req.body.transaction_id = headerResult.insertId;
                 req.body.year = year;
                 req.body.period = period;
-                console.log("headerResult: ", headerResult.insertId);
-                console.log("length: ", input.stock_detail.length);
+                // console.log("headerResult: ", headerResult.insertId);
+                // console.log("length: ", input.stock_detail.length);
 
                 for (let i = 0; i < input.stock_detail.length; i++) {
                   _mysql
@@ -460,7 +465,7 @@ export default {
                         })
                         .then((subResult) => {
                           if (i == input.stock_detail.length - 1) {
-                            console.log("done: ", i);
+                            // console.log("done: ", i);
                             req.connection = {
                               connection: _mysql.connection,
                               isTransactionConnection:
@@ -710,7 +715,7 @@ export default {
                       quantity_outstanding,
                       item_description,
                       uom_description,
-                      unit_cost
+                      unit_cost,
                     } = detail[0];
                     return {
                       hims_f_inventory_material_detail_id,
@@ -727,7 +732,12 @@ export default {
                       item_description,
                       uom_description,
                       unit_cost,
-                      batches: detail.filter((f) => f.qtyhand > 0 && f.inventory_location_id === inputParam.from_location_id),
+                      batches: detail.filter(
+                        (f) =>
+                          f.qtyhand > 0 &&
+                          f.inventory_location_id ===
+                            inputParam.from_location_id
+                      ),
                     };
                   })
                   .value();
@@ -906,7 +916,7 @@ export default {
             "select product_type from hims_d_organization where hims_d_organization_id=1 limit 1;",
         })
         .then((result) => {
-          console.log("result", result);
+          // console.log("result", result);
           if (
             result[0]["product_type"] == "HIMS_ERP" ||
             result[0]["product_type"] == "FINANCE_ERP"
@@ -938,7 +948,7 @@ export default {
                     ? result_data[1][0].hims_d_sub_department_id
                     : null;
                 const decimal_places = req.userIdentity.decimal_places;
-                console.log("headerResult", headerResult);
+                // console.log("headerResult", headerResult);
                 let transfered_cost = _.sumBy(headerResult, (s) =>
                   parseFloat(s.transfered_cost)
                 );
