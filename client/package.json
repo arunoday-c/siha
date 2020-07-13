@@ -3,7 +3,6 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@ant-design/icons": "^4.2.1",
     "@craco/craco": "^5.4.0",
     "@toast-ui/react-image-editor": "^1.0.0",
     "agentkeepalive": "^4.0.0",
