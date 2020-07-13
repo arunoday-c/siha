@@ -26,7 +26,7 @@ import {
 } from "../../Wrapper/algaehWrapper";
 import moment from "moment";
 import { AlgaehActions } from "../../../actions/algaehActions";
-import { MainContext } from "algaeh-react-components/context";
+import { MainContext } from "algaeh-react-components";
 import { AlgaehSecurityComponent } from "algaeh-react-components";
 import SalesQuotationTransfer from "./SalesQuotationTransfer";
 

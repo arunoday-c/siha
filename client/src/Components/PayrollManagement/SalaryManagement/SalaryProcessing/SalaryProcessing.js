@@ -7,14 +7,11 @@ import "./SalaryProcessing.scss";
 import {
   AlgaehLabel,
   AlagehAutoComplete,
-  AlgaehDataGrid
+  AlgaehDataGrid,
 } from "../../../Wrapper/algaehWrapper";
 import GlobalVariables from "../../../../utils/GlobalVariables.json";
-import {
-  getYears,
-  getAmountFormart
-} from "../../../../utils/GlobalFunctions";
-import { MainContext } from "algaeh-react-components/context";
+import { getYears, getAmountFormart } from "../../../../utils/GlobalFunctions";
+import { MainContext } from "algaeh-react-components";
 
 import {
   texthandle,
@@ -23,7 +20,7 @@ import {
   ClearData,
   employeeSearch,
   openSalaryComponents,
-  closeSalaryComponents
+  closeSalaryComponents,
 } from "./SalaryProcessingEvents.js";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import moment from "moment";
@@ -67,14 +64,14 @@ class SalaryProcessing extends Component {
       net_salary: null,
       salary_dates: null,
       isOpen: false,
-      dis_employee_name: null
+      dis_employee_name: null,
     };
   }
   static contextType = MainContext;
   componentDidMount() {
     const userToken = this.context.userToken;
     this.setState({
-      hospital_id: userToken.hims_d_hospital_id
+      hospital_id: userToken.hims_d_hospital_id,
     });
     if (
       this.props.organizations === undefined ||
@@ -85,8 +82,8 @@ class SalaryProcessing extends Component {
         method: "GET",
         redux: {
           type: "ORGS_GET_DATA",
-          mappingName: "organizations"
-        }
+          mappingName: "organizations",
+        },
       });
     }
 
@@ -98,13 +95,13 @@ class SalaryProcessing extends Component {
         uri: "/department/get/subdepartment",
         module: "masterSettings",
         data: {
-          sub_department_status: "A"
+          sub_department_status: "A",
         },
         method: "GET",
         redux: {
           type: "SUB_DEPT_GET_DATA",
-          mappingName: "subdepartment"
-        }
+          mappingName: "subdepartment",
+        },
       });
     }
 
@@ -119,8 +116,8 @@ class SalaryProcessing extends Component {
 
         redux: {
           type: "EMPLY_GET_DATA",
-          mappingName: "all_employees"
-        }
+          mappingName: "all_employees",
+        },
       });
     }
   }
@@ -129,13 +126,9 @@ class SalaryProcessing extends Component {
     let yearAndMonth = this.state.year + "-" + this.state.month;
 
     let salary_dates =
-      moment(yearAndMonth)
-        .startOf("month")
-        .format("DD-MM-YYYY") +
+      moment(yearAndMonth).startOf("month").format("DD-MM-YYYY") +
       " / " +
-      moment(yearAndMonth)
-        .endOf("month")
-        .format("DD-MM-YYYY");
+      moment(yearAndMonth).endOf("month").format("DD-MM-YYYY");
 
     let allYears = getYears();
 
@@ -147,7 +140,7 @@ class SalaryProcessing extends Component {
               div={{ className: "col" }}
               label={{
                 forceLabel: "Select a Month.",
-                isImp: true
+                isImp: true,
               }}
               selector={{
                 sort: "off",
@@ -157,14 +150,14 @@ class SalaryProcessing extends Component {
                 dataSource: {
                   textField: "name",
                   valueField: "value",
-                  data: GlobalVariables.MONTHS
+                  data: GlobalVariables.MONTHS,
                 },
                 onChange: texthandle.bind(this, this),
                 onClear: () => {
                   this.setState({
-                    month: null
+                    month: null,
                   });
-                }
+                },
               }}
             />
 
@@ -172,7 +165,7 @@ class SalaryProcessing extends Component {
               div={{ className: "col" }}
               label={{
                 forceLabel: "Select a Year.",
-                isImp: true
+                isImp: true,
               }}
               selector={{
                 name: "year",
@@ -181,15 +174,15 @@ class SalaryProcessing extends Component {
                 dataSource: {
                   textField: "name",
                   valueField: "value",
-                  data: allYears
+                  data: allYears,
                 },
                 onChange: texthandle.bind(this, this),
 
                 onClear: () => {
                   this.setState({
-                    year: null
+                    year: null,
                   });
-                }
+                },
               }}
             />
 
@@ -216,7 +209,7 @@ class SalaryProcessing extends Component {
               div={{ className: "col" }}
               label={{
                 forceLabel: "Select a Branch.",
-                isImp: true
+                isImp: true,
               }}
               selector={{
                 name: "hospital_id",
@@ -225,14 +218,14 @@ class SalaryProcessing extends Component {
                 dataSource: {
                   textField: "hospital_name",
                   valueField: "hims_d_hospital_id",
-                  data: this.props.organizations
+                  data: this.props.organizations,
                 },
                 onChange: texthandle.bind(this, this),
                 onClear: () => {
                   this.setState({
-                    hospital_id: null
+                    hospital_id: null,
                   });
-                }
+                },
               }}
             />
 
@@ -240,7 +233,7 @@ class SalaryProcessing extends Component {
               div={{ className: "col" }}
               label={{
                 forceLabel: "Select a Sub Dept.",
-                isImp: false
+                isImp: false,
               }}
               selector={{
                 name: "sub_department_id",
@@ -249,14 +242,14 @@ class SalaryProcessing extends Component {
                 dataSource: {
                   textField: "sub_department_name",
                   valueField: "hims_d_sub_department_id",
-                  data: this.props.subdepartment
+                  data: this.props.subdepartment,
                 },
                 onChange: texthandle.bind(this, this),
                 onClear: () => {
                   this.setState({
-                    sub_department_id: null
+                    sub_department_id: null,
                   });
-                }
+                },
               }}
             />
 
@@ -266,7 +259,7 @@ class SalaryProcessing extends Component {
                 style={{
                   border: " 1px solid #ced4d9",
                   borderRadius: 5,
-                  marginLeft: 0
+                  marginLeft: 0,
                 }}
               >
                 <div className="col">
@@ -286,7 +279,7 @@ class SalaryProcessing extends Component {
                     style={{
                       paddingTop: 17,
                       paddingLeft: 3,
-                      cursor: "pointer"
+                      cursor: "pointer",
                     }}
                     onClick={employeeSearch.bind(this, this)}
                   />
@@ -298,7 +291,7 @@ class SalaryProcessing extends Component {
               div={{ className: "col" }}
               label={{
                 forceLabel: "Salary Type.",
-                isImp: false
+                isImp: false,
               }}
               selector={{
                 name: "salary_type",
@@ -307,12 +300,12 @@ class SalaryProcessing extends Component {
                 dataSource: {
                   textField: "name",
                   valueField: "value",
-                  data: GlobalVariables.SALARY_TYPE
+                  data: GlobalVariables.SALARY_TYPE,
                 },
                 onChange: texthandle.bind(this, this),
                 others: {
-                  tabIndex: "2"
-                }
+                  tabIndex: "2",
+                },
               }}
             />
 
@@ -360,11 +353,11 @@ class SalaryProcessing extends Component {
                                 label: (
                                   <AlgaehLabel
                                     label={{
-                                      forceLabel: "Action"
+                                      forceLabel: "Action",
                                     }}
                                   />
                                 ),
-                                displayTemplate: row => {
+                                displayTemplate: (row) => {
                                   return (
                                     <span>
                                       <i
@@ -381,8 +374,8 @@ class SalaryProcessing extends Component {
                                 },
                                 others: {
                                   minWidth: 50,
-                                  filterable: false
-                                }
+                                  filterable: false,
+                                },
                               },
                               // {
                               //   fieldName: "",
@@ -428,21 +421,21 @@ class SalaryProcessing extends Component {
                                 label: (
                                   <AlgaehLabel
                                     label={{
-                                      forceLabel: "Salary Finalized"
+                                      forceLabel: "Salary Finalized",
                                     }}
                                   />
                                 ),
-                                displayTemplate: row => {
+                                displayTemplate: (row) => {
                                   return row.salary_processed === "N" ? (
                                     <span className="badge badge-warning">
                                       No
                                     </span>
                                   ) : (
-                                      <span className="badge badge-success">
-                                        Yes
+                                    <span className="badge badge-success">
+                                      Yes
                                     </span>
-                                    );
-                                }
+                                  );
+                                },
                               },
                               {
                                 fieldName: "salary_paid",
@@ -450,84 +443,84 @@ class SalaryProcessing extends Component {
                                 label: (
                                   <AlgaehLabel
                                     label={{
-                                      forceLabel: "Salary Paid"
+                                      forceLabel: "Salary Paid",
                                     }}
                                   />
                                 ),
-                                displayTemplate: row => {
+                                displayTemplate: (row) => {
                                   return row.salary_paid === "N" ? (
                                     <span className="badge badge-warning">
                                       No
                                     </span>
                                   ) : (
-                                      <span className="badge badge-success">
-                                        Yes
+                                    <span className="badge badge-success">
+                                      Yes
                                     </span>
-                                    );
-                                }
+                                  );
+                                },
                               },
                               {
                                 fieldName: "salary_number",
                                 label: (
                                   <AlgaehLabel
                                     label={{
-                                      forceLabel: "Salary Number"
+                                      forceLabel: "Salary Number",
                                     }}
                                   />
                                 ),
                                 others: {
-                                  minWidth: 180
-                                }
+                                  minWidth: 180,
+                                },
                               },
                               {
                                 fieldName: "employee_code",
                                 label: (
                                   <AlgaehLabel
                                     label={{
-                                      forceLabel: "Employee Code"
+                                      forceLabel: "Employee Code",
                                     }}
                                   />
-                                )
+                                ),
                               },
                               {
                                 fieldName: "full_name",
                                 label: (
                                   <AlgaehLabel
                                     label={{
-                                      forceLabel: "Employee Name"
+                                      forceLabel: "Employee Name",
                                     }}
                                   />
                                 ),
                                 others: {
-                                  maxWidth: 280
-                                }
+                                  maxWidth: 280,
+                                },
                               },
                               {
                                 fieldName: "present_days",
                                 label: (
                                   <AlgaehLabel
                                     label={{
-                                      forceLabel: "Present days"
+                                      forceLabel: "Present days",
                                     }}
                                   />
-                                )
+                                ),
                               },
                               {
                                 fieldName: "advance_due",
                                 label: (
                                   <AlgaehLabel
                                     label={{
-                                      forceLabel: "Advance"
+                                      forceLabel: "Advance",
                                     }}
                                   />
                                 ),
-                                displayTemplate: row => {
+                                displayTemplate: (row) => {
                                   return (
                                     <span>
                                       {getAmountFormart(row.advance_due)}
                                     </span>
                                   );
-                                }
+                                },
                               },
                               {
                                 fieldName: "loan_due_amount",
@@ -535,17 +528,17 @@ class SalaryProcessing extends Component {
                                 label: (
                                   <AlgaehLabel
                                     label={{
-                                      forceLabel: "Loan Due Amount"
+                                      forceLabel: "Loan Due Amount",
                                     }}
                                   />
                                 ),
-                                displayTemplate: row => {
+                                displayTemplate: (row) => {
                                   return (
                                     <span>
                                       {getAmountFormart(row.loan_due_amount)}
                                     </span>
                                   );
-                                }
+                                },
                               },
                               {
                                 fieldName: "loan_payable_amount",
@@ -553,11 +546,11 @@ class SalaryProcessing extends Component {
                                 label: (
                                   <AlgaehLabel
                                     label={{
-                                      forceLabel: "Loan Payable Amount"
+                                      forceLabel: "Loan Payable Amount",
                                     }}
                                   />
                                 ),
-                                displayTemplate: row => {
+                                displayTemplate: (row) => {
                                   return (
                                     <span>
                                       {getAmountFormart(
@@ -565,37 +558,37 @@ class SalaryProcessing extends Component {
                                       )}
                                     </span>
                                   );
-                                }
+                                },
                               },
                               {
                                 fieldName: "net_salary",
                                 label: (
                                   <AlgaehLabel
                                     label={{
-                                      forceLabel: "Total Amount"
+                                      forceLabel: "Total Amount",
                                     }}
                                   />
                                 ),
-                                displayTemplate: row => {
+                                displayTemplate: (row) => {
                                   return (
                                     <span>
                                       {getAmountFormart(row.net_salary)}
                                     </span>
                                   );
-                                }
-                              }
+                                },
+                              },
                             ]}
                             keyId="algaeh_d_module_id"
                             dataSource={{
-                              data: this.state.salaryprocess_header
+                              data: this.state.salaryprocess_header,
                             }}
                             filter={true}
                             isEditable={false}
                             paging={{ page: 0, rowsPerPage: 20 }}
                             events={{
-                              onEdit: () => { },
-                              onDelete: () => { },
-                              onDone: () => { }
+                              onEdit: () => {},
+                              onDelete: () => {},
+                              onDone: () => {},
                             }}
                           />
                         </div>
@@ -647,7 +640,7 @@ function mapStateToProps(state) {
   return {
     subdepartment: state.subdepartment,
     organizations: state.organizations,
-    all_employees: state.all_employees
+    all_employees: state.all_employees,
   };
 }
 
@@ -656,15 +649,12 @@ function mapDispatchToProps(dispatch) {
     {
       getSubDepartment: AlgaehActions,
       getOrganizations: AlgaehActions,
-      getEmployees: AlgaehActions
+      getEmployees: AlgaehActions,
     },
     dispatch
   );
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(SalaryProcessing)
+  connect(mapStateToProps, mapDispatchToProps)(SalaryProcessing)
 );

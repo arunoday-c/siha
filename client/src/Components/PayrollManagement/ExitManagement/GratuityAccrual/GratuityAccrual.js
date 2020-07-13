@@ -16,7 +16,7 @@ import {
   employeeSearch,
   ClearData,
 } from "./GratuityAccrualEvent";
-import { MainContext } from "algaeh-react-components/context";
+import { MainContext } from "algaeh-react-components";
 import { algaehApiCall } from "../../../../utils/algaehApiCall";
 
 export default class GratuityAccrual extends Component {

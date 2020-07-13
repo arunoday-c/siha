@@ -1,9 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import "../AlgaehmainPage/AlgaehmainPage.scss";
 import Menu from "../Menu";
-
-import { MainContext } from "algaeh-react-components/context";
-import { getItem, tokenDecode } from "algaeh-react-components/storage";
+import { MainContext, getItem, tokenDecode } from "algaeh-react-components";
 export default function Layout({ path, noSecurityCheck, children }) {
   const {
     userLanguage,

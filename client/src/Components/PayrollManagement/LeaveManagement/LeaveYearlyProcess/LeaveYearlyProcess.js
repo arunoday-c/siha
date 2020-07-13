@@ -17,7 +17,7 @@ import spotlightSearch from "../../../../Search/spotlightSearch.json";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import { getYears } from "../../../../utils/GlobalFunctions";
 import YearlyLeaveDetail from "./YearlyLeaveDetail/YearlyLeaveDetail";
-import { MainContext } from "algaeh-react-components/context";
+import { MainContext } from "algaeh-react-components";
 import { AlgaehSecurityElement } from "algaeh-react-components";
 
 class LeaveYearlyProcess extends Component {

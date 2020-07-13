@@ -9,7 +9,7 @@ import {
 } from "../../../../Wrapper/algaehWrapper";
 import variableJson from "../../../../../utils/GlobalVariables.json";
 // import { algaehApiCall } from "../../../../../utils/algaehApiCall";
-import AlgaehHijriDatePicker from "algaeh-react-components/components/datehandler";
+import { AlgaehHijriDatePicker } from "algaeh-react-components";
 
 import {
   texthandle,

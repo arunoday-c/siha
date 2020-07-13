@@ -21,7 +21,7 @@ import { AlgaehActions } from "../../../actions/algaehActions";
 import DNEntry from "../../../Models/DNEntry";
 import MyContext from "../../../utils/MyContext";
 // import _ from "lodash";
-import { MainContext } from "algaeh-react-components/context";
+import { MainContext } from "algaeh-react-components";
 
 // vendortexthandle,
 //   loctexthandle,

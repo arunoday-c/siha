@@ -6,7 +6,7 @@ import {
   AlagehAutoComplete,
   AlgaehDataGrid,
 } from "../../../Wrapper/algaehWrapper";
-import { MainContext } from "algaeh-react-components/context";
+import { MainContext } from "algaeh-react-components";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import Enumerable from "linq";
 import { AlgaehValidation } from "../../../../utils/GlobalFunctions";

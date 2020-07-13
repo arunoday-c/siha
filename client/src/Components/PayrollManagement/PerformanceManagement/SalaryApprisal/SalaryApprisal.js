@@ -6,7 +6,7 @@ import { bindActionCreators } from "redux";
 import "./salary_apprsl.scss";
 
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
-import { MainContext } from "algaeh-react-components/context";
+import { MainContext } from "algaeh-react-components";
 import {
   AlagehFormGroup,
   AlagehAutoComplete,

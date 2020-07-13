@@ -9,23 +9,23 @@ import "../../../styles/site.scss";
 import {
   CollectSample,
   printBarcode,
-  onchangegridcol
+  onchangegridcol,
 } from "./SampleCollectionEvent";
 import {
   AlgaehLabel,
   AlgaehDataGrid,
   AlgaehModalPopUp,
-  AlagehAutoComplete
+  AlagehAutoComplete,
 } from "../../Wrapper/algaehWrapper";
 import { AlgaehActions } from "../../../actions/algaehActions";
-import { MainContext } from "algaeh-react-components/context";
+import { MainContext } from "algaeh-react-components";
 
 class SampleCollectionPatient extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
       collected: true,
-      hospital_id: null
+      hospital_id: null,
     };
   }
 
@@ -34,7 +34,7 @@ class SampleCollectionPatient extends PureComponent {
     const userToken = this.context.userToken;
 
     this.setState({
-      hospital_id: userToken.hims_d_hospital_id
+      hospital_id: userToken.hims_d_hospital_id,
     });
     if (
       this.props.deptanddoctors === undefined ||
@@ -46,8 +46,8 @@ class SampleCollectionPatient extends PureComponent {
         method: "GET",
         redux: {
           type: "DEPT_DOCTOR_GET_DATA",
-          mappingName: "deptanddoctors"
-        }
+          mappingName: "deptanddoctors",
+        },
       });
     }
     if (
@@ -60,8 +60,8 @@ class SampleCollectionPatient extends PureComponent {
         method: "GET",
         redux: {
           type: "SPECIMEN_GET_DATA",
-          mappingName: "labspecimen"
-        }
+          mappingName: "labspecimen",
+        },
       });
     }
 
@@ -74,8 +74,8 @@ class SampleCollectionPatient extends PureComponent {
         method: "GET",
         redux: {
           type: "USER_DETAILS_GET_DATA",
-          mappingName: "userdrtails"
-        }
+          mappingName: "userdrtails",
+        },
       });
     }
   }
@@ -86,7 +86,7 @@ class SampleCollectionPatient extends PureComponent {
     }
   }
 
-  onClose = e => {
+  onClose = (e) => {
     this.props.onClose && this.props.onClose(e);
   };
 
@@ -96,20 +96,20 @@ class SampleCollectionPatient extends PureComponent {
         <div>
           <AlgaehModalPopUp
             events={{
-              onClose: this.onClose.bind(this)
+              onClose: this.onClose.bind(this),
             }}
             title="Specimen Collections"
             openPopup={this.props.open}
           >
             <MyContext.Consumer>
-              {context => (
+              {(context) => (
                 <div>
                   <div className="col-lg-12 popupInner">
                     <div className="row form-details">
                       <div className="col-lg-2">
                         <AlgaehLabel
                           label={{
-                            fieldName: "patient_code"
+                            fieldName: "patient_code",
                           }}
                         />
                         <h6>
@@ -121,7 +121,7 @@ class SampleCollectionPatient extends PureComponent {
                       <div className="col">
                         <AlgaehLabel
                           label={{
-                            fieldName: "patient_name"
+                            fieldName: "patient_name",
                           }}
                         />
                         <h6>
@@ -134,7 +134,7 @@ class SampleCollectionPatient extends PureComponent {
                       <div className="col">
                         <AlgaehLabel
                           label={{
-                            fieldName: "ordered_by"
+                            fieldName: "ordered_by",
                           }}
                         />
                         <h6>
@@ -146,7 +146,7 @@ class SampleCollectionPatient extends PureComponent {
                       <div className="col-lg-3">
                         <AlgaehLabel
                           label={{
-                            fieldName: "ordered_date"
+                            fieldName: "ordered_date",
                           }}
                         />
                         <h6>
@@ -173,7 +173,7 @@ class SampleCollectionPatient extends PureComponent {
                                     label={{ fieldName: "action" }}
                                   />
                                 ),
-                                displayTemplate: row => {
+                                displayTemplate: (row) => {
                                   return (
                                     <span>
                                       {row.collected !== "Y" ? (
@@ -182,7 +182,7 @@ class SampleCollectionPatient extends PureComponent {
                                             pointerEvents:
                                               row.billed === "N" ? "none" : "",
                                             opacity:
-                                              row.billed === "N" ? "0.1" : ""
+                                              row.billed === "N" ? "0.1" : "",
                                           }}
                                           className="fas fa-check"
                                           onClick={CollectSample.bind(
@@ -208,8 +208,8 @@ class SampleCollectionPatient extends PureComponent {
                                 others: {
                                   maxWidth: 70,
                                   resizable: false,
-                                  style: { textAlign: "center" }
-                                }
+                                  style: { textAlign: "center" },
+                                },
                               },
                               {
                                 fieldName: "billed",
@@ -218,15 +218,15 @@ class SampleCollectionPatient extends PureComponent {
                                     label={{ fieldName: "billed" }}
                                   />
                                 ),
-                                displayTemplate: row => {
+                                displayTemplate: (row) => {
                                   return row.billed === "N"
                                     ? "Not Billed"
                                     : "Billed";
                                 },
                                 others: {
                                   resizable: false,
-                                  style: { textAlign: "center" }
-                                }
+                                  style: { textAlign: "center" },
+                                },
                               },
                               {
                                 fieldName: "test_type",
@@ -235,7 +235,7 @@ class SampleCollectionPatient extends PureComponent {
                                     label={{ fieldName: "proiorty" }}
                                   />
                                 ),
-                                displayTemplate: row => {
+                                displayTemplate: (row) => {
                                   return (
                                     <span>
                                       {row.test_type === "S"
@@ -247,8 +247,8 @@ class SampleCollectionPatient extends PureComponent {
                                 disabled: true,
                                 others: {
                                   resizable: false,
-                                  style: { textAlign: "center" }
-                                }
+                                  style: { textAlign: "center" },
+                                },
                               },
                               {
                                 fieldName: "service_code",
@@ -259,8 +259,8 @@ class SampleCollectionPatient extends PureComponent {
                                 ),
                                 others: {
                                   resizable: false,
-                                  style: { textAlign: "center" }
-                                }
+                                  style: { textAlign: "center" },
+                                },
                               },
                               {
                                 fieldName: "service_name",
@@ -272,8 +272,8 @@ class SampleCollectionPatient extends PureComponent {
                                 others: {
                                   minWidth: 250,
                                   resizable: false,
-                                  style: { textAlign: "center" }
-                                }
+                                  style: { textAlign: "center" },
+                                },
                               },
                               {
                                 fieldName: "sample_id",
@@ -282,12 +282,12 @@ class SampleCollectionPatient extends PureComponent {
                                     label={{ fieldName: "specimen_name" }}
                                   />
                                 ),
-                                displayTemplate: row => {
+                                displayTemplate: (row) => {
                                   let display =
                                     this.props.labspecimen === undefined
                                       ? []
                                       : this.props.labspecimen.filter(
-                                          f =>
+                                          (f) =>
                                             f.hims_d_lab_specimen_id ===
                                             row.sample_id
                                         );
@@ -308,13 +308,13 @@ class SampleCollectionPatient extends PureComponent {
                                         dataSource: {
                                           textField: "SpeDescription",
                                           valueField: "hims_d_lab_specimen_id",
-                                          data: this.props.labspecimen
+                                          data: this.props.labspecimen,
                                         },
                                         onChange: onchangegridcol.bind(
                                           this,
                                           this,
                                           row
-                                        )
+                                        ),
                                       }}
                                     />
                                   );
@@ -322,8 +322,8 @@ class SampleCollectionPatient extends PureComponent {
                                 others: {
                                   maxWidth: 200,
                                   resizable: false,
-                                  style: { textAlign: "center" }
-                                }
+                                  style: { textAlign: "center" },
+                                },
                               },
                               {
                                 fieldName: "collected",
@@ -332,7 +332,7 @@ class SampleCollectionPatient extends PureComponent {
                                     label={{ fieldName: "collected" }}
                                   />
                                 ),
-                                displayTemplate: row => {
+                                displayTemplate: (row) => {
                                   return row.collected === "Y" ? (
                                     <span
                                       className="badge badge-success
@@ -345,7 +345,7 @@ class SampleCollectionPatient extends PureComponent {
                                       No
                                     </span>
                                   );
-                                }
+                                },
                                 // others: {
                                 //   resizable: false,
                                 //   style: { textAlign: "center" }
@@ -358,12 +358,12 @@ class SampleCollectionPatient extends PureComponent {
                                     label={{ fieldName: "collected_by" }}
                                   />
                                 ),
-                                displayTemplate: row => {
+                                displayTemplate: (row) => {
                                   let display =
                                     this.props.userdrtails === undefined
                                       ? []
                                       : this.props.userdrtails.filter(
-                                          f =>
+                                          (f) =>
                                             f.algaeh_d_app_user_id ===
                                             row.collected_by
                                         );
@@ -378,8 +378,8 @@ class SampleCollectionPatient extends PureComponent {
                                 },
                                 others: {
                                   resizable: false,
-                                  style: { textAlign: "center" }
-                                }
+                                  style: { textAlign: "center" },
+                                },
                               },
                               {
                                 fieldName: "collected_date",
@@ -388,7 +388,7 @@ class SampleCollectionPatient extends PureComponent {
                                     label={{ fieldName: "collected_date" }}
                                   />
                                 ),
-                                displayTemplate: row => {
+                                displayTemplate: (row) => {
                                   return (
                                     <span>
                                       {moment(row.collected_date).isValid()
@@ -401,8 +401,8 @@ class SampleCollectionPatient extends PureComponent {
                                 },
                                 others: {
                                   resizable: false,
-                                  style: { textAlign: "center" }
-                                }
+                                  style: { textAlign: "center" },
+                                },
                               },
                               {
                                 fieldName: "remarks",
@@ -414,13 +414,13 @@ class SampleCollectionPatient extends PureComponent {
                                 others: {
                                   maxWidth: 200,
                                   resizable: false,
-                                  style: { textAlign: "center" }
-                                }
-                              }
+                                  style: { textAlign: "center" },
+                                },
+                              },
                             ]}
                             keyId="service_code"
                             dataSource={{
-                              data: this.state.test_details
+                              data: this.state.test_details,
                             }}
                             noDataText="No sample for collection"
                             // isEditable={true}
@@ -437,7 +437,7 @@ class SampleCollectionPatient extends PureComponent {
                         <div className="col-lg-12">
                           <button
                             className="btn btn-default"
-                            onClick={e => {
+                            onClick={(e) => {
                               this.onClose(e);
                             }}
                           >
@@ -460,7 +460,7 @@ function mapStateToProps(state) {
   return {
     deptanddoctors: state.deptanddoctors,
     labspecimen: state.labspecimen,
-    userdrtails: state.userdrtails
+    userdrtails: state.userdrtails,
   };
 }
 
@@ -469,7 +469,7 @@ function mapDispatchToProps(dispatch) {
     {
       getDepartmentsandDoctors: AlgaehActions,
       getLabSpecimen: AlgaehActions,
-      getUserDetails: AlgaehActions
+      getUserDetails: AlgaehActions,
     },
     dispatch
   );

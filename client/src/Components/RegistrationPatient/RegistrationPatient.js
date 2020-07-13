@@ -53,7 +53,7 @@ import { SetBulkState } from "../../utils/GlobalFunctions";
 import PackageUtilize from "../PatientProfile/PackageUtilize/PackageUtilize";
 import UpdatePatientPopup from "../UpdatePatientDetails/UpdatePatientPopup";
 import _ from "lodash";
-import { MainContext } from "algaeh-react-components/context";
+import { MainContext } from "algaeh-react-components";
 
 const emptyObject = extend(
   PatRegIOputs.inputParam(),
@@ -226,7 +226,6 @@ class RegistrationPatient extends Component {
         UpdatepatientDetail: !this.state.UpdatepatientDetail,
       },
       () => {
-
         if (e.data === true) {
           AlgaehLoader({ show: true });
           getCtrlCode(this, e.patient_code);
@@ -815,8 +814,8 @@ class RegistrationPatient extends Component {
                 <h6>
                   {this.state.registration_date
                     ? moment(this.state.registration_date).format(
-                      Options.dateFormat
-                    )
+                        Options.dateFormat
+                      )
                     : Options.dateFormat}
                 </h6>
               </div>
@@ -829,28 +828,28 @@ class RegistrationPatient extends Component {
           }}
           printArea={
             this.state.patient_code !== null &&
-              this.state.patient_code !== undefined &&
-              this.state.patient_code !== ""
+            this.state.patient_code !== undefined &&
+            this.state.patient_code !== ""
               ? {
-                menuitems: [
-                  {
-                    label: "ID Card",
-                    events: {
-                      onClick: () => {
-                        generateIdCard(this, this);
+                  menuitems: [
+                    {
+                      label: "ID Card",
+                      events: {
+                        onClick: () => {
+                          generateIdCard(this, this);
+                        },
                       },
                     },
-                  },
-                  {
-                    label: "Advance/Refund Receipt",
-                    events: {
-                      onClick: () => {
-                        showAdvanceRefundList(this, this);
+                    {
+                      label: "Advance/Refund Receipt",
+                      events: {
+                        onClick: () => {
+                          showAdvanceRefundList(this, this);
+                        },
                       },
                     },
-                  },
-                ],
-              }
+                  ],
+                }
               : ""
           }
           selectedLang={this.state.selectedLang}
@@ -1041,7 +1040,7 @@ class RegistrationPatient extends Component {
             </div>
           </MyContext.Provider>
         </div>
-        {this.state.consultation === "Y" ?
+        {this.state.consultation === "Y" ? (
           <CSSTransition
             in={this.state.popUpGenereted}
             classNames={{
@@ -1093,20 +1092,20 @@ class RegistrationPatient extends Component {
                     onClick={generateReceipt.bind(this, this)}
                   >
                     Print Receipt
-                </button>
+                  </button>
                   <button
                     type="button"
                     className="btn btn-default"
                     onClick={closePopup.bind(this, this)}
                   >
                     Close
-                </button>
+                  </button>
                   <button
                     className="btn btn-default"
                     onClick={generateIdCard.bind(this, this)}
                   >
                     Print Card
-                </button>
+                  </button>
 
                   {/* <button
                 className="btn btn-default"
@@ -1117,8 +1116,8 @@ class RegistrationPatient extends Component {
                 </div>
               </div>
             </div>
-          </CSSTransition> : null}
-
+          </CSSTransition>
+        ) : null}
       </div>
     );
   }

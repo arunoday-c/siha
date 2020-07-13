@@ -15,7 +15,7 @@ import moment from "moment";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import ProjectPayrollEvents from "./ProjectPayrollEvents";
 import GlobalVariables from "../../../../utils/GlobalVariables.json";
-import { MainContext } from "algaeh-react-components/context";
+import { MainContext } from "algaeh-react-components";
 import ProjectPayrollSalaryBreakup from "./ProjectPayrollSalaryBreakup";
 // import { getBranchDetails, getHospitals } from "./ProjectPayrollEvents";
 

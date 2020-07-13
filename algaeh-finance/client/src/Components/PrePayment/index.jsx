@@ -5,14 +5,9 @@ import { PrepaymentRequest } from "./PrepaymentRequest";
 import { PrepaymentList } from "./PrepaymentList";
 import { PrepaymentProcess } from "./PrepaymentProcess";
 
-import {
-  AlgaehTabs,
-  AlgaehLabel,
-  AlagehFormGroup,
-  AlagehAutoComplete,
-} from "algaeh-react-components";
+import { AlgaehTabs, AlgaehLabel } from "algaeh-react-components";
 
-export default function index() {
+export default function PrePayment() {
   return (
     <div className="PrepaymentModule">
       <AlgaehTabs

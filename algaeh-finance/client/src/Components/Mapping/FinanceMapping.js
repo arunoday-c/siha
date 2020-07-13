@@ -93,7 +93,11 @@ export default function Mapping(props) {
                       treeDefaultExpandAll: true,
                       onChange: (val) => update(val, item.account),
                       name: item.account,
-                      data: accountHeads[item.root_id] || accountHeads[1],
+                      data: [
+                        ...accountHeads[1],
+                        ...accountHeads[2],
+                        ...accountHeads[5],
+                      ],
                       textField: "label",
                       valueField: (node) => {
                         if (node["leafnode"] === "Y") {

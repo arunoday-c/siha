@@ -15,7 +15,7 @@ import ConsumptionItems from "./ConsumptionItems/ConsumptionItems";
 import MyContext from "../../../utils/MyContext";
 import ConsumptionIOputs from "../../../Models/InventoryConsumption";
 import Options from "../../../Options.json";
-import { MainContext } from "algaeh-react-components/context";
+import { MainContext } from "algaeh-react-components";
 
 class InvConsumptionEntry extends Component {
   constructor(props) {
@@ -42,8 +42,8 @@ class InvConsumptionEntry extends Component {
         data: { item_status: "A" },
         redux: {
           type: "ITEM_GET_DATA",
-          mappingName: "inventoryitemlist"
-        }
+          mappingName: "inventoryitemlist",
+        },
       });
     }
     if (
@@ -56,8 +56,8 @@ class InvConsumptionEntry extends Component {
         method: "GET",
         redux: {
           type: "LOCATIOS_GET_DATA",
-          mappingName: "inventoryreqlocations"
-        }
+          mappingName: "inventoryreqlocations",
+        },
       });
     }
 
@@ -67,12 +67,12 @@ class InvConsumptionEntry extends Component {
       method: "GET",
       data: {
         location_status: "A",
-        hospital_id: userToken.hims_d_hospital_id
+        hospital_id: userToken.hims_d_hospital_id,
       },
       redux: {
         type: "LOCATIOS_GET_DATA",
-        mappingName: "invuserwiselocations"
-      }
+        mappingName: "invuserwiselocations",
+      },
     });
 
     if (
@@ -117,18 +117,18 @@ class InvConsumptionEntry extends Component {
                   <AlgaehLabel
                     label={{
                       forceLabel: "Home",
-                      align: "ltr"
+                      align: "ltr",
                     }}
                   />
-                )
+                ),
               },
               {
                 pageName: (
                   <AlgaehLabel
                     label={{ forceLabel: "Consumption Entry", align: "ltr" }}
                   />
-                )
-              }
+                ),
+              },
             ]}
             soptlightSearch={{
               label: (
@@ -139,27 +139,27 @@ class InvConsumptionEntry extends Component {
               value: this.state.consumption_number,
               selectValue: "consumption_number",
               events: {
-                onChange: this.getCtrlCode.bind(this)
+                onChange: this.getCtrlCode.bind(this),
               },
               jsonFile: {
                 fileName: "spotlightSearch",
-                fieldName: "ConsumptionEntry.InvConsEntry"
+                fieldName: "ConsumptionEntry.InvConsEntry",
               },
-              searchName: "InvConsEntry"
+              searchName: "InvConsEntry",
             }}
             userArea={
               <div className="row">
                 <div className="col">
                   <AlgaehLabel
                     label={{
-                      forceLabel: "Consumption Date"
+                      forceLabel: "Consumption Date",
                     }}
                   />
                   <h6>
                     {this.state.consumption_date
                       ? moment(this.state.consumption_date).format(
-                        Options.dateFormat
-                      )
+                          Options.dateFormat
+                        )
                       : Options.dateFormat}
                   </h6>
                 </div>
@@ -168,19 +168,19 @@ class InvConsumptionEntry extends Component {
             printArea={
               this.state.hims_f_inventory_consumption_header_id !== null
                 ? {
-                  menuitems: [
-                    {
-                      label: "Print Receipt",
-                      events: {
-                        onClick: () => {
-                          ConsumptionItemsEvents().generateConsumptionRecpt(
-                            this.state.consumption_number
-                          );
-                        }
-                      }
-                    }
-                  ]
-                }
+                    menuitems: [
+                      {
+                        label: "Print Receipt",
+                        events: {
+                          onClick: () => {
+                            ConsumptionItemsEvents().generateConsumptionRecpt(
+                              this.state.consumption_number
+                            );
+                          },
+                        },
+                      },
+                    ],
+                  }
                 : ""
             }
             selectedLang={this.state.selectedLang}
@@ -203,19 +203,19 @@ class InvConsumptionEntry extends Component {
                     dataSource: {
                       textField: "location_description",
                       valueField: "hims_d_inventory_location_id",
-                      data: this.props.invuserwiselocations
+                      data: this.props.invuserwiselocations,
                     },
                     others: {
-                      disabled: this.state.addedItem
+                      disabled: this.state.addedItem,
                     },
-                    onChange: this.LocationchangeTexts.bind(this)
+                    onChange: this.LocationchangeTexts.bind(this),
                   }}
                 />
 
                 <div className="col-lg-4">
                   <AlgaehLabel
                     label={{
-                      forceLabel: "Location Type"
+                      forceLabel: "Location Type",
                     }}
                   />
                   <h6>
@@ -223,8 +223,8 @@ class InvConsumptionEntry extends Component {
                       ? this.state.location_type === "WH"
                         ? "Warehouse"
                         : this.state.location_type === "MS"
-                          ? "Main Store"
-                          : "Sub Store"
+                        ? "Main Store"
+                        : "Sub Store"
                       : "Location Type"}
                   </h6>
                 </div>
@@ -236,9 +236,9 @@ class InvConsumptionEntry extends Component {
             <MyContext.Provider
               value={{
                 state: this.state,
-                updateState: obj => {
+                updateState: (obj) => {
                   this.setState({ ...obj });
-                }
+                },
               }}
             >
               <ConsumptionItems ConsumptionIOputs={this.state} />
@@ -283,7 +283,7 @@ function mapStateToProps(state) {
     inventoryitemlist: state.inventoryitemlist,
     inventoryreqlocations: state.inventoryreqlocations,
     inventoryrequisitionentry: state.inventoryrequisitionentry,
-    invuserwiselocations: state.invuserwiselocations
+    invuserwiselocations: state.invuserwiselocations,
   };
 }
 
@@ -293,7 +293,7 @@ function mapDispatchToProps(dispatch) {
       getItems: AlgaehActions,
       getLocation: AlgaehActions,
       getRequisitionEntry: AlgaehActions,
-      getUserLocationPermission: AlgaehActions
+      getUserLocationPermission: AlgaehActions,
     },
     dispatch
   );

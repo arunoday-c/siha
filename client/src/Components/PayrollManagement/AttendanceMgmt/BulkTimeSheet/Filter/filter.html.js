@@ -19,7 +19,7 @@ import {
 } from "./filter.events";
 import moment from "moment";
 import spotlightSearch from "../../../../../Search/spotlightSearch.json";
-import { MainContext } from "algaeh-react-components/context";
+import { MainContext } from "algaeh-react-components";
 import { AlgaehSecurityElement } from "algaeh-react-components";
 export default function Filter(props) {
   let fileInput = React.createRef();

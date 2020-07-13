@@ -4,7 +4,7 @@ import "./reports.scss";
 // import { AlagehAutoComplete } from "../Wrapper/algaehWrapper";
 import loadActiveReports from "./reports_data";
 import AlgaehReport from "../Wrapper/printReports";
-import { MainContext } from "algaeh-react-components/context";
+import { MainContext } from "algaeh-react-components";
 import { AlgaehSecurityComponent } from "algaeh-react-components";
 class Reports extends Component {
   constructor(props) {
@@ -13,7 +13,7 @@ class Reports extends Component {
       itemList: [],
       module: "",
       showSelector: false,
-      excel: "false"
+      excel: "false",
     };
   }
   static contextType = MainContext;
@@ -21,7 +21,7 @@ class Reports extends Component {
     this.setState({
       [value.name]: value.value,
       itemList: value.selected.submenu,
-      excel: value.selected.excel
+      excel: value.selected.excel,
     });
   }
 
@@ -33,11 +33,11 @@ class Reports extends Component {
     // console.log("useParams", this.props.match);
     const { match } = this.props;
     loadActiveReports(userToken, selectedMenu, match.params.name).then(
-      result => {
+      (result) => {
         this.setState({
           // [value.name]: value.value,
           itemList: result.submenu,
-          excel: result.excel
+          excel: result.excel,
         });
       }
     );
@@ -48,11 +48,11 @@ class Reports extends Component {
     if (prevProps.match.params.name !== match.params.name) {
       const { userToken, selectedMenu } = this.context;
       loadActiveReports(userToken, selectedMenu, match.params.name).then(
-        result => {
+        (result) => {
           this.setState({
             // [value.name]: value.value,
             itemList: result.submenu,
-            excel: result.excel
+            excel: result.excel,
           });
         }
       );
@@ -107,7 +107,7 @@ class Reports extends Component {
                           template_name: item.template_name,
                           reportQuery: item.reportQuery,
                           requireIframe: item.requireIframe,
-                          fileName: item.template_name
+                          fileName: item.template_name,
                         };
                         if (
                           item.pageSize !== undefined &&
@@ -125,8 +125,8 @@ class Reports extends Component {
                         AlgaehReport({
                           report: pageProperies,
                           plotUI: {
-                            paramters: item.reportParameters
-                          }
+                            paramters: item.reportParameters,
+                          },
                         });
                       }}
                     >

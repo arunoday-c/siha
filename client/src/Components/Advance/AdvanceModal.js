@@ -11,7 +11,7 @@ import {
   AlagehFormGroup,
   AlagehAutoComplete,
   AlgaehDateHandler,
-  AlgaehModalPopUp
+  AlgaehModalPopUp,
 } from "../Wrapper/algaehWrapper";
 
 import { getLabelFromLanguage } from "../../utils/GlobalFunctions";
@@ -24,7 +24,7 @@ import {
   checkcashhandaler,
   checkcardhandaler,
   Validations,
-  getCashiersAndShiftMAP
+  getCashiersAndShiftMAP,
 } from "./AdvanceModalHandaler";
 
 import AdvRefunIOputs from "../../Models/AdvanceRefund";
@@ -33,11 +33,11 @@ import { GetAmountFormart } from "../../utils/GlobalFunctions";
 import {
   algaehApiCall,
   swalMessage,
-  getCookie
+  getCookie,
 } from "../../utils/algaehApiCall.js";
 import { AlgaehActions } from "../../actions/algaehActions";
 import MyContext from "../../utils/MyContext";
-import { MainContext } from "algaeh-react-components/context";
+import { MainContext } from "algaeh-react-components";
 
 class AddAdvanceModal extends PureComponent {
   constructor(props) {
@@ -51,26 +51,25 @@ class AddAdvanceModal extends PureComponent {
 
     const userToken = this.context.userToken;
 
-    IOputs.Cashchecked = userToken.default_pay_type === "CH" ? true : false
-    IOputs.Cardchecked = userToken.default_pay_type === "CD" ? true : false
-    IOputs.default_pay_type = userToken.default_pay_type
+    IOputs.Cashchecked = userToken.default_pay_type === "CH" ? true : false;
+    IOputs.Cardchecked = userToken.default_pay_type === "CD" ? true : false;
+    IOputs.default_pay_type = userToken.default_pay_type;
 
     this.setState(IOputs);
   }
 
   UNSAFE_componentWillReceiveProps(newProps) {
     if (newProps.PackageAdvance === undefined) {
-
-      let Cashchecked = false
-      let Cardchecked = false
-      let cash_amount = 0
+      let Cashchecked = false;
+      let Cardchecked = false;
+      let cash_amount = 0;
       if (newProps.inputsparameters.transaction_type === "RF") {
         Cashchecked = true;
         Cardchecked = false;
         cash_amount = newProps.inputsparameters.advance_amount;
       } else {
-        Cashchecked = this.state.default_pay_type === "CH" ? true : false
-        Cardchecked = this.state.default_pay_type === "CD" ? true : false
+        Cashchecked = this.state.default_pay_type === "CH" ? true : false;
+        Cardchecked = this.state.default_pay_type === "CD" ? true : false;
       }
       let lang_sets = "en_comp";
       if (Window.global.selectedLang === "ar") {
@@ -82,7 +81,7 @@ class AddAdvanceModal extends PureComponent {
         Cashchecked: Cashchecked,
         Cardchecked: Cardchecked,
         cash_amount: cash_amount,
-        total_amount: cash_amount
+        total_amount: cash_amount,
       });
     }
     getCashiersAndShiftMAP(this, this);
@@ -96,8 +95,8 @@ class AddAdvanceModal extends PureComponent {
         method: "GET",
         redux: {
           type: "CTRY_GET_DATA",
-          mappingName: "shifts"
-        }
+          mappingName: "shifts",
+        },
       });
     }
     // if (this.props.counters === undefined || this.props.counters.length === 0) {
@@ -118,18 +117,18 @@ class AddAdvanceModal extends PureComponent {
       uri: "/userPreferences/get",
       data: {
         screenName: _screenName,
-        identifier: "Counter"
+        identifier: "Counter",
       },
       method: "GET",
-      onSuccess: response => {
+      onSuccess: (response) => {
         this.setState({
-          counter_id: response.data.records.selectedValue
+          counter_id: response.data.records.selectedValue,
         });
-      }
+      },
     });
   }
 
-  onClose = e => {
+  onClose = (e) => {
     let IOputs = AdvRefunIOputs.inputParam();
     this.setState(IOputs, () => {
       this.props.onClose && this.props.onClose(e);
@@ -148,7 +147,7 @@ class AddAdvanceModal extends PureComponent {
           pay_type: this.state.pay_cash,
           amount: this.state.cash_amount,
           updated_date: null,
-          card_type: null
+          card_type: null,
         });
       }
       if (this.state.card_amount > 0) {
@@ -159,7 +158,7 @@ class AddAdvanceModal extends PureComponent {
           pay_type: this.state.pay_card,
           amount: this.state.card_amount,
           updated_date: null,
-          card_type: null
+          card_type: null,
         });
       }
       if (this.state.cheque_amount > 0) {
@@ -170,7 +169,7 @@ class AddAdvanceModal extends PureComponent {
           pay_type: this.state.pay_cheque,
           amount: this.state.cheque_amount,
           updated_date: null,
-          card_type: null
+          card_type: null,
         });
       }
       let package_id = null;
@@ -185,7 +184,7 @@ class AddAdvanceModal extends PureComponent {
           transaction_type: this.props.inputsparameters.transaction_type,
           pay_type: this.props.inputsparameters.pay_type,
           advance_amount: this.state.total_amount,
-          package_id: package_id
+          package_id: package_id,
         },
         () => {
           callback(this);
@@ -204,12 +203,12 @@ class AddAdvanceModal extends PureComponent {
       swalMessage({
         title:
           "Collecting Amount Cannot be less than mini. package advance amount",
-        type: "warning"
+        type: "warning",
       });
       return;
     }
     if (!err) {
-      this.GenerateReciept($this => {
+      this.GenerateReciept(($this) => {
         AlgaehLoader({ show: true });
 
         if ($this.props.PackageAdvance === true) {
@@ -218,7 +217,7 @@ class AddAdvanceModal extends PureComponent {
             module: "billing",
             method: "POST",
             data: $this.state,
-            onSuccess: response => {
+            onSuccess: (response) => {
               AlgaehLoader({ show: false });
               if (response.data.success) {
                 let data = response.data.records;
@@ -228,28 +227,28 @@ class AddAdvanceModal extends PureComponent {
                 //   this.props.onClose && this.props.onClose(e);
                 // });
                 $this.setState({
-                  receipt_number: data.receipt_number
+                  receipt_number: data.receipt_number,
                 });
 
                 swalMessage({
                   title: "Advance Collected Successfully.",
-                  type: "success"
+                  type: "success",
                 });
 
                 context.updateState({
-                  advance_amount: data.total_advance_amount
+                  advance_amount: data.total_advance_amount,
                   // AdvanceOpen: false,
                   // RefundOpen: false
                 });
               }
             },
-            onFailure: error => {
+            onFailure: (error) => {
               AlgaehLoader({ show: false });
               swalMessage({
                 title: error.message,
-                type: "error"
+                type: "error",
               });
-            }
+            },
           });
         } else {
           $this.state.ScreenCode = getCookie("ScreenCode");
@@ -258,12 +257,12 @@ class AddAdvanceModal extends PureComponent {
             module: "billing",
             method: "POST",
             data: $this.state,
-            onSuccess: response => {
+            onSuccess: (response) => {
               AlgaehLoader({ show: false });
               if (response.data.success) {
                 let data = response.data.records;
                 $this.setState({
-                  receipt_number: data.receipt_number
+                  receipt_number: data.receipt_number,
                 });
 
                 // let IOputs = AdvRefunIOputs.inputParam();
@@ -272,7 +271,7 @@ class AddAdvanceModal extends PureComponent {
                 //   this.props.onClose && this.props.onClose(e);
                 // });
                 context.updateState({
-                  advance_amount: data.total_advance_amount
+                  advance_amount: data.total_advance_amount,
                   // AdvanceOpen: false,
                   // RefundOpen: false
                 });
@@ -280,28 +279,28 @@ class AddAdvanceModal extends PureComponent {
                 if (this.props.Advance === true) {
                   swalMessage({
                     title: "Advance Collected Successfully.",
-                    type: "success"
+                    type: "success",
                   });
                 } else {
                   swalMessage({
                     title: "Refunded Successfully.",
-                    type: "success"
+                    type: "success",
                   });
                 }
               } else {
                 swalMessage({
                   title: response.data.records.message,
-                  type: "error"
+                  type: "error",
                 });
               }
             },
-            onFailure: error => {
+            onFailure: (error) => {
               AlgaehLoader({ show: false });
               swalMessage({
                 title: error.message,
-                type: "error"
+                type: "error",
               });
-            }
+            },
           });
         }
       });
@@ -314,11 +313,11 @@ class AddAdvanceModal extends PureComponent {
     return (
       <React.Fragment>
         <MyContext.Consumer>
-          {context => (
+          {(context) => (
             <div>
               <AlgaehModalPopUp
                 events={{
-                  onClose: this.onClose.bind(this)
+                  onClose: this.onClose.bind(this),
                 }}
                 title={this.props.HeaderCaption}
                 openPopup={this.props.show}
@@ -329,7 +328,7 @@ class AddAdvanceModal extends PureComponent {
                     <div className="col">
                       <AlgaehLabel
                         label={{
-                          fieldName: "patient_code"
+                          fieldName: "patient_code",
                         }}
                       />
                       <h6>
@@ -341,7 +340,7 @@ class AddAdvanceModal extends PureComponent {
                     <div className="col">
                       <AlgaehLabel
                         label={{
-                          fieldName: "full_name"
+                          fieldName: "full_name",
                         }}
                       />
                       <h6>
@@ -357,7 +356,7 @@ class AddAdvanceModal extends PureComponent {
                       div={{ className: "col-lg-3 mandatory" }}
                       label={{
                         fieldName: "shift_id",
-                        isImp: true
+                        isImp: true,
                       }}
                       selector={{
                         name: "shift_id",
@@ -369,9 +368,9 @@ class AddAdvanceModal extends PureComponent {
                               ? "shift_description"
                               : "arabic_name",
                           valueField: "hims_d_shift_id",
-                          data: this.props.shifts
+                          data: this.props.shifts,
                         },
-                        onChange: texthandle.bind(this, this, context)
+                        onChange: texthandle.bind(this, this, context),
                       }}
                     />
 
@@ -379,14 +378,14 @@ class AddAdvanceModal extends PureComponent {
                       <div className="col">
                         <AlgaehLabel
                           label={{
-                            forceLabel: "Mini. Package Advance To Take"
+                            forceLabel: "Mini. Package Advance To Take",
                           }}
                         />
                         <h6>
                           {this.props.inputsparameters.collect_advance
                             ? GetAmountFormart(
-                              this.props.inputsparameters.collect_advance
-                            )
+                                this.props.inputsparameters.collect_advance
+                              )
                             : GetAmountFormart("0")}
                         </h6>
                       </div>
@@ -428,7 +427,12 @@ class AddAdvanceModal extends PureComponent {
                           name="Pay by Cash"
                           checked={this.state.Cashchecked}
                           onChange={checkcashhandaler.bind(this, this)}
-                          disabled={this.props.inputsparameters.transaction_type === "RF" ? true : false}
+                          disabled={
+                            this.props.inputsparameters.transaction_type ===
+                            "RF"
+                              ? true
+                              : false
+                          }
                         />
 
                         <span style={{ fontSize: "0.8rem" }}>
@@ -441,7 +445,7 @@ class AddAdvanceModal extends PureComponent {
                       div={{ className: "col-lg-2 mandatory" }}
                       label={{
                         fieldName: "amount",
-                        isImp: true
+                        isImp: true,
                       }}
                       textBox={{
                         decimal: { allowNegative: false },
@@ -451,12 +455,12 @@ class AddAdvanceModal extends PureComponent {
                         error: this.state.errorInCash,
                         value: this.state.cash_amount,
                         events: {
-                          onChange: cashtexthandle.bind(this, this)
+                          onChange: cashtexthandle.bind(this, this),
                         },
                         others: {
                           disabled: !this.state.Cashchecked,
-                          placeholder: "0.00"
-                        }
+                          placeholder: "0.00",
+                        },
                       }}
                     />
                   </div>
@@ -481,7 +485,7 @@ class AddAdvanceModal extends PureComponent {
                             />
                             <span style={{ fontSize: "0.8rem" }}>
                               {getLabelFromLanguage({
-                                fieldName: "payby_card"
+                                fieldName: "payby_card",
                               })}
                             </span>
                           </label>
@@ -515,7 +519,7 @@ class AddAdvanceModal extends PureComponent {
                           div={{ className: "col-lg-2" }}
                           label={{
                             fieldName: "amount",
-                            isImp: true
+                            isImp: true,
                           }}
                           textBox={{
                             disabled: !this.state.Cardchecked,
@@ -525,18 +529,18 @@ class AddAdvanceModal extends PureComponent {
                             error: this.state.errorInCard,
                             value: this.state.card_amount,
                             events: {
-                              onChange: cardtexthandle.bind(this, this)
+                              onChange: cardtexthandle.bind(this, this),
                             },
                             others: {
                               disabled: !this.state.Cardchecked,
-                              placeholder: "0.00"
-                            }
+                              placeholder: "0.00",
+                            },
                           }}
                         />
                         <AlagehFormGroup
                           div={{ className: "col-lg-3" }}
                           label={{
-                            fieldName: "card_check_number"
+                            fieldName: "card_check_number",
                           }}
                           textBox={{
                             disabled: !this.state.Cardchecked,
@@ -544,28 +548,28 @@ class AddAdvanceModal extends PureComponent {
                             name: "card_number",
                             value: this.state.card_number,
                             events: {
-                              onChange: texthandle.bind(this, this)
+                              onChange: texthandle.bind(this, this),
                             },
                             others: {
                               disabled: !this.state.Cardchecked,
-                              placeholder: "0000-0000-0000-0000"
-                            }
+                              placeholder: "0000-0000-0000-0000",
+                            },
                           }}
                         />
 
                         <AlgaehDateHandler
                           div={{ className: "col-lg-2" }}
                           label={{
-                            fieldName: "expiry_date"
+                            fieldName: "expiry_date",
                           }}
                           textBox={{
                             className: "txt-fld",
-                            name: "card_date"
+                            name: "card_date",
                           }}
                           disabled={!this.state.Cardchecked}
                           minDate={new Date()}
                           events={{
-                            onChange: datehandle.bind(this, this)
+                            onChange: datehandle.bind(this, this),
                           }}
                           value={this.state.card_date}
                         />
@@ -661,14 +665,14 @@ class AddAdvanceModal extends PureComponent {
                     <div className="col-lg-3">
                       <AlgaehLabel
                         label={{
-                          fieldName: "advance_amount"
+                          fieldName: "advance_amount",
                         }}
                       />
                       <h6>
                         {this.props.inputsparameters.advance_amount
                           ? GetAmountFormart(
-                            this.props.inputsparameters.advance_amount
-                          )
+                              this.props.inputsparameters.advance_amount
+                            )
                           : GetAmountFormart("0")}
                       </h6>
                     </div>
@@ -676,7 +680,7 @@ class AddAdvanceModal extends PureComponent {
                     <div className="col-lg-3">
                       <AlgaehLabel
                         label={{
-                          fieldName: "total_amount"
+                          fieldName: "total_amount",
                         }}
                       />
                       <h6>{GetAmountFormart(this.state.total_amount)}</h6>
@@ -684,7 +688,7 @@ class AddAdvanceModal extends PureComponent {
                     <div className="col-lg-3">
                       <AlgaehLabel
                         label={{
-                          fieldName: "receipt_number"
+                          fieldName: "receipt_number",
                         }}
                       />
                       <h6>
@@ -696,7 +700,7 @@ class AddAdvanceModal extends PureComponent {
                     <div className="col-lg-3">
                       <AlgaehLabel
                         label={{
-                          fieldName: "receipt_date"
+                          fieldName: "receipt_date",
                         }}
                       />
                       <h6>
@@ -721,7 +725,7 @@ class AddAdvanceModal extends PureComponent {
                         <button
                           type="button"
                           className="btn btn-default"
-                          onClick={e => {
+                          onClick={(e) => {
                             this.onClose(e);
                           }}
                         >
@@ -744,7 +748,7 @@ class AddAdvanceModal extends PureComponent {
 function mapStateToProps(state) {
   return {
     shifts: state.shifts,
-    bankscards: state.bankscards
+    bankscards: state.bankscards,
     // counters: state.counters
   };
 }
@@ -752,7 +756,7 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getShifts: AlgaehActions
+      getShifts: AlgaehActions,
       // getCounters: AlgaehActions
     },
     dispatch

@@ -27,7 +27,7 @@ import {
   // selectAllBranches,
 } from "./EmployeeMasterIndexEvent";
 // import variableJson from "../../../utils/GlobalVariables.json";
-import { MainContext } from "algaeh-react-components/context";
+import { MainContext } from "algaeh-react-components";
 import _ from "lodash";
 
 class EmployeeMasterIndex extends Component {

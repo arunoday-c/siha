@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
-import { MainContext } from "algaeh-react-components/context";
+import { MainContext } from "algaeh-react-components";
 import "./defaultlandingPage.scss";
-export default function() {
+export default function () {
   const { userToken, userLanguage } = useContext(MainContext);
   return (
     <div className="noLandingPage">

@@ -21,7 +21,7 @@ import { getYears } from "../../../../utils/GlobalFunctions";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import moment from "moment";
 import AlgaehSearch from "../../../Wrapper/globalSearch";
-import { MainContext } from "algaeh-react-components/context";
+import { MainContext } from "algaeh-react-components";
 import { AlgaehSecurityElement } from "algaeh-react-components";
 
 import swal from "sweetalert2";

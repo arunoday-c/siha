@@ -1,7 +1,7 @@
 import React, { memo, useState } from "react";
 import { useHistory } from "react-router-dom";
-import { setItem } from "algaeh-react-components/storage";
-// import { MainContext } from "algaeh-react-components/context";
+import { setItem } from "algaeh-react-components";
+// import { MainContext } from "algaeh-react-components";
 import { setCookie } from "../../../utils/algaehApiCall";
 
 export default memo(function ({

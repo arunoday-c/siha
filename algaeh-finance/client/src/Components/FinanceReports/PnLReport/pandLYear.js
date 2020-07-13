@@ -1,6 +1,6 @@
 import React, { memo, useEffect, useState } from "react";
 import moment from "moment";
-import { getItem, tokenDecode } from "algaeh-react-components/storage";
+import { getItem, tokenDecode } from "algaeh-react-components";
 import jwtDecode from "jwt-decode";
 import { newAlgaehApi } from "../../../hooks";
 

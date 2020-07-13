@@ -19,7 +19,7 @@ import Options from "../../../../Options.json";
 import { AlgaehValidation } from "../../../../utils/GlobalFunctions";
 import { swalMessage } from "../../../../utils/algaehApiCall";
 import GlobalVariables from "../../../../utils/GlobalVariables.json";
-import { MainContext } from "algaeh-react-components/context";
+import { MainContext } from "algaeh-react-components";
 import { AlgaehSecurityElement } from "algaeh-react-components";
 const handlers = ManualAttendanceEvents();
 

@@ -13,7 +13,7 @@ import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import Enumerable from "linq";
 import GlobalVariables from "../../../../utils/GlobalVariables.json";
 import LeaveAuthDetail from "./LeaveAuthDetail/LeaveAuthDetail";
-import { MainContext } from "algaeh-react-components/context";
+import { MainContext } from "algaeh-react-components";
 export default class LeaveAuthorization extends Component {
   constructor(props) {
     super(props);
@@ -76,7 +76,7 @@ export default class LeaveAuthorization extends Component {
             employee_name: row.full_name,
             hims_d_employee_id: row.hims_d_employee_id,
           },
-          () => { }
+          () => {}
         );
       },
     });
@@ -205,8 +205,8 @@ export default class LeaveAuthorization extends Component {
           let auth_level =
             res.data.records.auth_levels.length > 0
               ? Enumerable.from(res.data.records.auth_levels).maxBy(
-                (w) => w.value
-              )
+                  (w) => w.value
+                )
               : null;
 
           this.setState({
@@ -242,7 +242,7 @@ export default class LeaveAuthorization extends Component {
         }
       },
 
-      onFailure: (err) => { },
+      onFailure: (err) => {},
     });
   }
 
@@ -429,8 +429,8 @@ export default class LeaveAuthorization extends Component {
                 {!this.state.loading ? (
                   <span>Load</span>
                 ) : (
-                    <i className="fas fa-spinner fa-spin" />
-                  )}
+                  <i className="fas fa-spinner fa-spin" />
+                )}
               </button>
             </div>
           </div>
@@ -491,8 +491,8 @@ export default class LeaveAuthorization extends Component {
                               }}
                             />
                           ) : (
-                                "------"
-                              );
+                            "------"
+                          );
                         },
                         others: {
                           filterable: false,
@@ -522,8 +522,8 @@ export default class LeaveAuthorization extends Component {
                                   Cancelled
                                 </span>
                               ) : (
-                                        "------"
-                                      )}
+                                "------"
+                              )}
                             </span>
                           );
                         },
@@ -552,8 +552,8 @@ export default class LeaveAuthorization extends Component {
                               {row.employee_code}
                             </span>
                           ) : (
-                              <span>{row.employee_code}</span>
-                            );
+                            <span>{row.employee_code}</span>
+                          );
                         },
                         className: (row) => {
                           return row.status !== "REJ" && row.status !== "CAN"
@@ -652,9 +652,9 @@ export default class LeaveAuthorization extends Component {
                     loading={this.state.loading}
                     paging={{ page: 0, rowsPerPage: 10 }}
                     events={{
-                      onEdit: () => { },
-                      onDone: () => { },
-                      onDelete: () => { },
+                      onEdit: () => {},
+                      onDone: () => {},
+                      onDelete: () => {},
                     }}
                   />
                 </div>

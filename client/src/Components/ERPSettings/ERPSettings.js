@@ -19,7 +19,7 @@ import {
   checkBoxEvent,
 } from "./ERPSettingsEvents";
 
-import { MainContext } from "algaeh-react-components/context";
+import { MainContext } from "algaeh-react-components";
 export default class ERPSettings extends Component {
   constructor(props) {
     super(props);

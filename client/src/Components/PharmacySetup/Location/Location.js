@@ -7,7 +7,7 @@ import {
   AlagehFormGroup,
   AlgaehDataGrid,
   AlagehAutoComplete,
-  AlgaehLabel
+  AlgaehLabel,
 } from "../../Wrapper/algaehWrapper";
 import GlobalVariables from "../../../utils/GlobalVariables";
 
@@ -21,11 +21,11 @@ import {
   deleteLocation,
   getLocation,
   allowPos,
-  GITLoacation
+  GITLoacation,
 } from "./LocationEvents";
 import Options from "../../../Options.json";
 import moment from "moment";
-import { MainContext } from "algaeh-react-components/context";
+import { MainContext } from "algaeh-react-components";
 
 class Location extends Component {
   constructor(props) {
@@ -40,7 +40,7 @@ class Location extends Component {
       allow_pos: "N",
       gitloaction: false,
       git_location: "N",
-      phar_loactions: []
+      phar_loactions: [],
     };
     this.baseState = this.state;
   }
@@ -50,16 +50,15 @@ class Location extends Component {
     const userToken = this.context.userToken;
 
     this.setState({
-      hospital_id: userToken.hims_d_hospital_id
-    })
+      hospital_id: userToken.hims_d_hospital_id,
+    });
     let prevLang = getCookie("Language");
 
     this.setState({
-      selectedLang: prevLang
+      selectedLang: prevLang,
     });
 
     getLocation(this, this);
-
 
     if (
       this.props.organizations === undefined ||
@@ -70,8 +69,8 @@ class Location extends Component {
         method: "GET",
         redux: {
           type: "ORGS_GET_DATA",
-          mappingName: "organizations"
-        }
+          mappingName: "organizations",
+        },
       });
     }
   }
@@ -91,7 +90,7 @@ class Location extends Component {
             div={{ className: "col-2 form-group mandatory" }}
             label={{
               forceLabel: "Branch",
-              isImp: true
+              isImp: true,
             }}
             selector={{
               name: "hospital_id",
@@ -100,21 +99,21 @@ class Location extends Component {
               dataSource: {
                 textField: "hospital_name",
                 valueField: "hims_d_hospital_id",
-                data: this.props.organizations
+                data: this.props.organizations,
               },
               onChange: changeTexts.bind(this, this),
               onClear: () => {
                 this.setState({
-                  hospital_id: null
+                  hospital_id: null,
                 });
-              }
+              },
             }}
           />
           <AlagehAutoComplete
             div={{ className: "col-2 form-group mandatory" }}
             label={{
               fieldName: "location_type",
-              isImp: true
+              isImp: true,
             }}
             selector={{
               name: "location_type",
@@ -123,21 +122,21 @@ class Location extends Component {
               dataSource: {
                 textField: "name",
                 valueField: "value",
-                data: GlobalVariables.FORMAT_PHARMACY_STORE
+                data: GlobalVariables.FORMAT_PHARMACY_STORE,
               },
               onChange: changeTexts.bind(this, this),
               onClear: () => {
                 this.setState({
-                  location_type: null
+                  location_type: null,
                 });
-              }
+              },
             }}
           />
           <AlagehFormGroup
             div={{ className: "col-2 form-group mandatory" }}
             label={{
               forceLabel: "Enter Location Name",
-              isImp: true
+              isImp: true,
             }}
             textBox={{
               className: "txt-fld",
@@ -145,8 +144,8 @@ class Location extends Component {
               value: this.state.location_description,
 
               events: {
-                onChange: changeTexts.bind(this, this)
-              }
+                onChange: changeTexts.bind(this, this),
+              },
             }}
           />
           <div className="col-2">
@@ -179,7 +178,6 @@ class Location extends Component {
               </label>
             </div>
           </div>
-
           {/* <div
               className="customCheckbox col-lg-2"
               style={{ border: "none", marginTop: "19px" }}
@@ -217,7 +215,7 @@ class Location extends Component {
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Location Name" }} />
                       ),
-                      editorTemplate: row => {
+                      editorTemplate: (row) => {
                         return (
                           <AlagehFormGroup
                             div={{}}
@@ -226,51 +224,51 @@ class Location extends Component {
                               className: "txt-fld",
                               name: "location_description",
                               events: {
-                                onChange: onchangegridcol.bind(this, this, row)
+                                onChange: onchangegridcol.bind(this, this, row),
                               },
                               others: {
                                 errormessage: "Description - cannot be blank",
-                                required: true
-                              }
+                                required: true,
+                              },
                             }}
                           />
                         );
-                      }
+                      },
                     },
                     {
                       fieldName: "location_type",
                       label: (
                         <AlgaehLabel label={{ fieldName: "location_type" }} />
                       ),
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         return row.location_type === "WH"
                           ? "Warehouse"
                           : row.location_type === "MS"
-                            ? "Main Store"
-                            : row.location_type === "SS"
-                              ? "Sub Store"
-                              : null;
+                          ? "Main Store"
+                          : row.location_type === "SS"
+                          ? "Sub Store"
+                          : null;
                       },
-                      editorTemplate: row => {
+                      editorTemplate: (row) => {
                         return row.location_type === "WH"
                           ? "Warehouse"
                           : row.location_type === "MS"
-                            ? "Main Store"
-                            : row.location_type === "SS"
-                              ? "Sub Store"
-                              : null;
-                      }
+                          ? "Main Store"
+                          : row.location_type === "SS"
+                          ? "Sub Store"
+                          : null;
+                      },
                     },
                     {
                       fieldName: "hospital_id",
                       label: <AlgaehLabel label={{ forceLabel: "Branch" }} />,
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         let display =
                           this.props.organizations === undefined
                             ? []
                             : this.props.organizations.filter(
-                              f => f.hims_d_hospital_id === row.hospital_id
-                            );
+                                (f) => f.hims_d_hospital_id === row.hospital_id
+                              );
 
                         return (
                           <span>
@@ -280,7 +278,7 @@ class Location extends Component {
                           </span>
                         );
                       },
-                      editorTemplate: row => {
+                      editorTemplate: (row) => {
                         return (
                           <AlagehAutoComplete
                             div={{}}
@@ -291,32 +289,32 @@ class Location extends Component {
                               dataSource: {
                                 textField: "hospital_name",
                                 valueField: "hims_d_hospital_id",
-                                data: this.props.organizations
+                                data: this.props.organizations,
                               },
                               onChange: onchangegridcol.bind(this, this, row),
                               others: {
                                 errormessage:
                                   "Division/Branch - cannot be blank",
-                                required: true
-                              }
+                                required: true,
+                              },
                             }}
                           />
                         );
-                      }
+                      },
                     },
                     {
                       fieldName: "allow_pos",
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Show in POS" }} />
                       ),
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         return row.allow_pos === "N"
                           ? "No"
                           : row.allow_pos === "Y"
-                            ? "Yes"
-                            : null;
+                          ? "Yes"
+                          : null;
                       },
-                      editorTemplate: row => {
+                      editorTemplate: (row) => {
                         return (
                           <AlagehAutoComplete
                             div={{}}
@@ -327,31 +325,31 @@ class Location extends Component {
                               dataSource: {
                                 textField: "name",
                                 valueField: "value",
-                                data: GlobalVariables.FORMAT_YESNO
+                                data: GlobalVariables.FORMAT_YESNO,
                               },
                               onChange: onchangegridcol.bind(this, this, row),
                               others: {
                                 errormessage: "Allow POS - cannot be blank",
-                                required: true
-                              }
+                                required: true,
+                              },
                             }}
                           />
                         );
-                      }
+                      },
                     },
                     {
                       fieldName: "git_location",
                       label: (
                         <AlgaehLabel label={{ forceLabel: "GIT Location" }} />
                       ),
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         return row.git_location === "N"
                           ? "No"
                           : row.git_location === "Y"
-                            ? "Yes"
-                            : null;
+                          ? "Yes"
+                          : null;
                       },
-                      editorTemplate: row => {
+                      editorTemplate: (row) => {
                         return (
                           <AlagehAutoComplete
                             div={{}}
@@ -362,17 +360,17 @@ class Location extends Component {
                               dataSource: {
                                 textField: "name",
                                 valueField: "value",
-                                data: GlobalVariables.FORMAT_YESNO
+                                data: GlobalVariables.FORMAT_YESNO,
                               },
                               onChange: onchangegridcol.bind(this, this, row),
                               others: {
                                 errormessage: "GIT Location - cannot be blank",
-                                required: true
-                              }
+                                required: true,
+                              },
                             }}
                           />
                         );
-                      }
+                      },
                     },
 
                     {
@@ -380,13 +378,13 @@ class Location extends Component {
                       label: (
                         <AlgaehLabel label={{ fieldName: "created_by" }} />
                       ),
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         let display =
                           this.props.userdrtails === undefined
                             ? []
                             : this.props.userdrtails.filter(
-                              f => f.algaeh_d_app_user_id === row.created_by
-                            );
+                                (f) => f.algaeh_d_app_user_id === row.created_by
+                              );
 
                         return (
                           <span>
@@ -397,13 +395,13 @@ class Location extends Component {
                         );
                       },
 
-                      editorTemplate: row => {
+                      editorTemplate: (row) => {
                         let display =
                           this.props.userdrtails === undefined
                             ? []
                             : this.props.userdrtails.filter(
-                              f => f.algaeh_d_app_user_id === row.created_by
-                            );
+                                (f) => f.algaeh_d_app_user_id === row.created_by
+                              );
 
                         return (
                           <span>
@@ -412,36 +410,36 @@ class Location extends Component {
                               : ""}
                           </span>
                         );
-                      }
+                      },
                     },
                     {
                       fieldName: "created_date",
                       label: (
                         <AlgaehLabel label={{ fieldName: "created_date" }} />
                       ),
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         return (
                           <span>{this.dateFormater(row.created_date)}</span>
                         );
                       },
 
-                      editorTemplate: row => {
+                      editorTemplate: (row) => {
                         return (
                           <span>{this.dateFormater(row.created_date)}</span>
                         );
-                      }
+                      },
                     },
                     {
                       fieldName: "location_status",
                       label: (
                         <AlgaehLabel label={{ fieldName: "inv_status" }} />
                       ),
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         return row.location_status === "A"
                           ? "Active"
                           : "Inactive";
                       },
-                      editorTemplate: row => {
+                      editorTemplate: (row) => {
                         return (
                           <AlagehAutoComplete
                             div={{}}
@@ -452,32 +450,31 @@ class Location extends Component {
                               dataSource: {
                                 textField: "name",
                                 valueField: "value",
-                                data: GlobalVariables.FORMAT_STATUS
+                                data: GlobalVariables.FORMAT_STATUS,
                               },
                               onChange: onchangegridcol.bind(this, this, row),
                               others: {
                                 errormessage: "Status - cannot be blank",
-                                required: true
-                              }
+                                required: true,
+                              },
                             }}
                           />
                         );
-                      }
-                    }
+                      },
+                    },
                   ]}
                   keyId="hims_d_pharmacy_location_id"
                   dataSource={{
-                    data:
-                      this.state.phar_loactions
+                    data: this.state.phar_loactions,
                   }}
                   isEditable={true}
                   filter={true}
                   paging={{ page: 0, rowsPerPage: 10 }}
                   events={{
                     onDelete: deleteLocation.bind(this, this),
-                    onEdit: row => { },
+                    onEdit: (row) => {},
 
-                    onDone: updateLocation.bind(this, this)
+                    onDone: updateLocation.bind(this, this),
                   }}
                 />
               </div>
@@ -493,7 +490,7 @@ function mapStateToProps(state) {
   return {
     location: state.location,
     userdrtails: state.userdrtails,
-    organizations: state.organizations
+    organizations: state.organizations,
   };
 }
 
@@ -501,15 +498,12 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
       getLocation: AlgaehActions,
-      getOrganizations: AlgaehActions
+      getOrganizations: AlgaehActions,
     },
     dispatch
   );
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(Location)
+  connect(mapStateToProps, mapDispatchToProps)(Location)
 );

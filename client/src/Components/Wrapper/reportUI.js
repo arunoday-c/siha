@@ -1,13 +1,13 @@
 import React, { Component } from "react";
 import {
   successfulMessage,
-  AlgaehValidation
+  AlgaehValidation,
 } from "../../utils/GlobalFunctions";
 import { AlagehAutoComplete } from "../Wrapper/algaehWrapper";
 import {
   algaehApiCall,
   cancelRequest,
-  swalMessage
+  swalMessage,
 } from "../../utils/algaehApiCall";
 import { accessReport } from "../Wrapper/printReports";
 import Enumerable from "linq";
@@ -15,7 +15,7 @@ import ReactDOM from "react-dom";
 import AlgaehSearch from "../Wrapper/globalSearch";
 import ButtonType from "../Wrapper/algaehButton";
 import moment from "moment";
-import { MainContext } from "algaeh-react-components/context";
+import { MainContext } from "algaeh-react-components";
 // import {AlgaehReportViewer} from "algaeh-react-components";
 // import { Document, Page } from "react-pdf/dist/entry.parcel";
 export default class ReportUI extends Component {
@@ -35,7 +35,7 @@ export default class ReportUI extends Component {
       report_name: null,
       base64Pdf: undefined,
       pageOrentation: "landscape",
-      pageSize: "A3"
+      pageSize: "A3",
     };
 
     if (props.options !== undefined && props.options.plotUI !== undefined) {
@@ -45,43 +45,43 @@ export default class ReportUI extends Component {
       ) {
         this.callApiForParameters(
           Enumerable.from(props.options.plotUI.paramters)
-            .where(w => w.link !== undefined)
-            .select(s => {
+            .where((w) => w.link !== undefined)
+            .select((s) => {
               return {
                 ...s.link,
                 ...{ method: "GET" },
                 ...{
-                  onSuccess: response => {
+                  onSuccess: (response) => {
                     if (response.data.success) {
                       const manupulateResult = s.manupulation;
                       if (typeof manupulateResult === "function") {
                         manupulateResult(response.data, this, s.name + "_list");
                       } else {
                         if (s.link.schema !== undefined) {
-                          s.link.schema.map(sch => {
+                          s.link.schema.map((sch) => {
                             this.setState({
                               [sch.name + "_list"]: eval(
                                 "response.data.records." + sch.response
-                              )
+                              ),
                             });
                           });
                         } else {
                           this.setState({
-                            [s.name + "_list"]: response.data.records
+                            [s.name + "_list"]: response.data.records,
                           });
                         }
                       }
                     }
-                  }
-                }
+                  },
+                },
               };
             })
             .toArray()
         );
 
         Enumerable.from(props.options.plotUI.paramters)
-          .where(w => w.value !== undefined)
-          .select(s => {
+          .where((w) => w.value !== undefined)
+          .select((s) => {
             if (s.type === "date" || s.type === "time") {
               this.state.parameterCollection[s.name] = moment(
                 s.value,
@@ -91,7 +91,7 @@ export default class ReportUI extends Component {
               this.state.parameterCollection[s.name] = s.value;
             }
             return {
-              [s.name]: s.value
+              [s.name]: s.value,
             };
           })
           .toArray();
@@ -114,7 +114,7 @@ export default class ReportUI extends Component {
     if (this.state.hasTable) {
       document
         .querySelectorAll("[algaeh-report-table='true']")
-        .forEach(item => {
+        .forEach((item) => {
           item.removeEventListener(
             "scroll",
             function (e) {
@@ -130,7 +130,7 @@ export default class ReportUI extends Component {
   componentDidMount() {
     console.log("contextType", this.context);
     this.setState({
-      openPopup: true
+      openPopup: true,
     });
   }
   internallyCallAPI(parametes) {
@@ -138,35 +138,35 @@ export default class ReportUI extends Component {
       ...parametes,
       ...{ method: "GET" },
       ...{
-        onSuccess: response => {
+        onSuccess: (response) => {
           if (response.data.success) {
             if (parametes.link.schema !== undefined) {
-              parametes.link.schema.map(sch => {
+              parametes.link.schema.map((sch) => {
                 this.setState({
                   [sch.name + "_list"]: eval(
                     "response.data.records." + sch.response
-                  )
+                  ),
                 });
               });
             } else {
               this.setState({
-                [parametes.name + "_list"]: response.data.records
+                [parametes.name + "_list"]: response.data.records,
               });
             }
           }
-        }
-      }
+        },
+      },
     });
   }
 
   UNSAFE_componentWillReceiveProps(props) {
     this.setState({
       openPopup: true,
-      reportQuery: props.options.report.reportQuery
+      reportQuery: props.options.report.reportQuery,
     });
   }
 
-  handleClose = e => {
+  handleClose = (e) => {
     ReactDOM.unmountComponentAtNode(document.getElementById("reportWindow"));
   };
 
@@ -178,14 +178,14 @@ export default class ReportUI extends Component {
       error
     );
     successfulMessage({
-      message: error
+      message: error,
     });
   }
   componentDidUpdate(prevProps, prevState, snapshot) {
     if (this.state.hasTable) {
       document
         .querySelectorAll("[algaeh-report-table='true']")
-        .forEach(item => {
+        .forEach((item) => {
           item.addEventListener("scroll", function (e) {
             e.target.previousElementSibling.scrollLeft = e.target.scrollLeft;
             e.target.nextElementSibling.scrollLeft = e.target.scrollLeft;
@@ -203,7 +203,7 @@ export default class ReportUI extends Component {
       alertTypeIcon: "warning",
       pageState: this,
       clickedElement: loader.props,
-      onSuccess: that => {
+      onSuccess: (that) => {
         const report_type = loader.props.others.reporttype;
         if (
           that.props.options !== undefined &&
@@ -214,7 +214,7 @@ export default class ReportUI extends Component {
             "report_generation_interface"
           );
           let parameters = [];
-          element.querySelectorAll("input").forEach(item => {
+          element.querySelectorAll("input").forEach((item) => {
             if (item.name !== undefined) {
               let label = item.parentElement.parentElement.querySelector(
                 "label"
@@ -233,13 +233,13 @@ export default class ReportUI extends Component {
                 labelValue === ""
                   ? {}
                   : {
-                    label: label.replace("*", ""),
-                    labelValue: labelValue
-                  };
+                      label: label.replace("*", ""),
+                      labelValue: labelValue,
+                    };
               parameters.push({
                 name: item.name,
                 value: data,
-                ...filter
+                ...filter,
               });
             }
           });
@@ -247,7 +247,7 @@ export default class ReportUI extends Component {
           const reportProperties = {
             ...that.props.options.report,
             pageSize: that.state.pageSize,
-            pageOrentation: that.state.pageOrentation
+            pageOrentation: that.state.pageOrentation,
           };
 
           const urlChange =
@@ -258,29 +258,29 @@ export default class ReportUI extends Component {
             module: "reports",
             method: "GET",
             headers: {
-              Accept: "blob"
+              Accept: "blob",
             },
             others: { responseType: "blob" },
             data: {
               report: {
                 ...reportProperties,
-                reportParams: parameters
-              }
+                reportParams: parameters,
+              },
             },
-            onSuccess: response => {
+            onSuccess: (response) => {
               const urlBlob = URL.createObjectURL(response.data);
               if (report_type === "preview") {
                 const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=${reportProperties.displayName}`;
                 window.open(origin);
                 loader.setState({
-                  loading: false
+                  loading: false,
                 });
               } else {
                 const a = document.createElement("a");
                 a.href = urlBlob;
                 a.download = `${that.props.options.report.displayName}.${
                   report_type === "excel" ? "xlsx" : "pdf"
-                  }`;
+                }`;
                 a.click();
               }
 
@@ -319,9 +319,9 @@ export default class ReportUI extends Component {
               //   a.click();
               // }
             },
-            onCatch: error => {
+            onCatch: (error) => {
               loader.setState({
-                loading: false
+                loading: false,
               });
               var reader = new FileReader();
               reader.onload = function () {
@@ -329,12 +329,12 @@ export default class ReportUI extends Component {
                 const parse = JSON.parse(reader.result);
                 swalMessage({
                   type: "error",
-                  title: parse !== undefined ? parse.message : parse
+                  title: parse !== undefined ? parse.message : parse,
                 });
               };
               if (error.response !== undefined)
                 reader.readAsText(error.response.data);
-            }
+            },
           });
         } else {
           const _reportQuery =
@@ -369,12 +369,12 @@ export default class ReportUI extends Component {
             method: "GET",
             inputs: querString,
             ..._module,
-            onSuccess: response => {
+            onSuccess: (response) => {
               let buttonDisable = true;
               if (response.data.success === true) {
                 new Promise((resolve, reject) => {
                   resolve(response.data.records);
-                }).then(data => {
+                }).then((data) => {
                   if (Array.isArray(data)) {
                     if (data.length > 0) {
                       buttonDisable = false;
@@ -397,20 +397,20 @@ export default class ReportUI extends Component {
                   that.setState({
                     _htmlString: _htm,
                     hasTable: _hasTable,
-                    buttonDisable: buttonDisable
+                    buttonDisable: buttonDisable,
                   });
                 });
               }
-            }
+            },
           });
         }
-      }
+      },
     });
   }
   cancelReportRequest(e) {
     this.setState(
       {
-        loading: false
+        loading: false,
       },
       () => {
         cancelRequest("reportCancel");
@@ -419,13 +419,13 @@ export default class ReportUI extends Component {
   }
   dropDownHandle(e) {
     const _hasEvents = Enumerable.from(this.props.options.plotUI.paramters)
-      .where(w => w.name === e.name)
+      .where((w) => w.name === e.name)
       .firstOrDefault().events;
     if (_hasEvents !== undefined) {
       if (_hasEvents.onChange !== undefined) {
         let that = this;
 
-        _hasEvents.onChange(this, e, options => {
+        _hasEvents.onChange(this, e, (options) => {
           that.setState(options);
         });
       }
@@ -440,14 +440,14 @@ export default class ReportUI extends Component {
         parameterCollection: {
           ...this.state.parameterCollection,
           [e.name]: e.value,
-          [e.name + "_text"]: _inputText
-        }
+          [e.name + "_text"]: _inputText,
+        },
       });
     }
   }
   dropDownOnClear(e) {
     const _hasEvents = Enumerable.from(this.props.options.plotUI.paramters)
-      .where(w => w.name === e)
+      .where((w) => w.name === e)
       .firstOrDefault().events;
     if (_hasEvents !== undefined) {
       if (typeof _hasEvents.onClear === "function") {
@@ -463,35 +463,35 @@ export default class ReportUI extends Component {
   searchButton(e) {
     const _name = e.currentTarget.getAttribute("surrounds");
     const _hasSearch = Enumerable.from(this.props.options.plotUI.paramters)
-      .where(w => w.name === _name)
+      .where((w) => w.name === _name)
       .firstOrDefault();
     AlgaehSearch({
       searchGrid: {
-        columns: _hasSearch.search.columns
+        columns: _hasSearch.search.columns,
       },
       searchName: _hasSearch.search.searchName,
       uri: "/gloabelSearch/get",
       onContainsChange: (text, serchBy, callBack) => {
         callBack(text);
       },
-      onRowSelect: row => {
+      onRowSelect: (row) => {
         if (
           _hasSearch.search.schema !== undefined &&
           _hasSearch.search.schema.length > 0
         ) {
-          _hasSearch.search.schema.map(item => {
+          _hasSearch.search.schema.map((item) => {
             this.setState({ [item.name]: row[item.response] });
           });
         } else {
           this.setState({ [_name]: row[_name] });
         }
-      }
+      },
     });
   }
   checkBoxRadioHandle(e) {
     const _name = e.currentTarget.name;
     const _hasEvents = Enumerable.from(this.props.options.plotUI.paramters)
-      .where(w => w.name === _name)
+      .where((w) => w.name === _name)
       .firstOrDefault().events;
     if (_hasEvents !== undefined) {
       if (_hasEvents.onChange !== undefined) {
@@ -503,8 +503,8 @@ export default class ReportUI extends Component {
       this.setState({
         parameterCollection: {
           ...this.state.parameterCollection,
-          [_name + "_checked"]: _checked
-        }
+          [_name + "_checked"]: _checked,
+        },
       });
     }
   }
@@ -512,7 +512,7 @@ export default class ReportUI extends Component {
   textBoxHandle(e) {
     const _name = e.currentTarget.name;
     const _hasEvents = Enumerable.from(this.props.options.plotUI.paramters)
-      .where(w => w.name === _name)
+      .where((w) => w.name === _name)
       .firstOrDefault().events;
     if (_hasEvents !== undefined) {
       if (_hasEvents.onChange !== undefined) {
@@ -522,14 +522,14 @@ export default class ReportUI extends Component {
       this.setState({
         parameterCollection: {
           ...this.state.parameterCollection,
-          [_name]: e.currentTarget.value
-        }
+          [_name]: e.currentTarget.value,
+        },
       });
     }
   }
   datePickerHandler(selectedDate) {
     const _hasEvents = Enumerable.from(this.props.options.plotUI.paramters)
-      .where(w => w.name === selectedDate.name)
+      .where((w) => w.name === selectedDate.name)
       .firstOrDefault().events;
     if (_hasEvents !== undefined) {
       if (_hasEvents.onChange !== undefined) {
@@ -539,8 +539,8 @@ export default class ReportUI extends Component {
       this.setState({
         parameterCollection: {
           ...this.state.parameterCollection,
-          [selectedDate.name]: selectedDate.value
-        }
+          [selectedDate.name]: selectedDate.value,
+        },
       });
     }
 
@@ -551,7 +551,7 @@ export default class ReportUI extends Component {
   handleChange(event) {
     console.log(event);
     this.setState({
-      [event.name]: event.value
+      [event.name]: event.value,
     });
   }
   generateInputParameters() {
@@ -560,7 +560,7 @@ export default class ReportUI extends Component {
     const {
       AlagehAutoComplete,
       AlagehFormGroup,
-      AlgaehDateHandler
+      AlgaehDateHandler,
     } = require("./algaehWrapper");
     for (let i = 0; i < _parameters.length; i++) {
       const _param = _parameters[i];
@@ -586,7 +586,7 @@ export default class ReportUI extends Component {
                 isImp:
                   _param.isImp === undefined || _param.isImp === false
                     ? false
-                    : _param.isImp
+                    : _param.isImp,
               }}
               selector={{
                 name: _param.name,
@@ -595,11 +595,11 @@ export default class ReportUI extends Component {
                 dataSource: {
                   textField: _param.dataSource.textField,
                   valueField: _param.dataSource.valueField,
-                  data: _data
+                  data: _data,
                 },
                 onChange: this.dropDownHandle.bind(this),
                 onClear: this.dropDownOnClear.bind(this),
-                ..._param.others
+                ..._param.others,
               }}
             />
           );
@@ -616,15 +616,15 @@ export default class ReportUI extends Component {
                 isImp:
                   _param.isImp === undefined || _param.isImp === false
                     ? false
-                    : _param.isImp
+                    : _param.isImp,
               }}
               textBox={{
                 className: "txt-fld",
-                name: _param.name
+                name: _param.name,
               }}
               {..._param.others}
               events={{
-                onChange: this.datePickerHandler.bind(this)
+                onChange: this.datePickerHandler.bind(this),
               }}
               value={this.state.parameterCollection[_param.name]}
             />
@@ -640,15 +640,15 @@ export default class ReportUI extends Component {
               label={{
                 fieldName: _param.name,
                 forceLabel: _param.label,
-                isImp: _param.isImp !== undefined ? false : _param.isImp
+                isImp: _param.isImp !== undefined ? false : _param.isImp,
               }}
               textBox={{
                 className: "txt-fld",
-                name: _param.name
+                name: _param.name,
               }}
               {..._param.others}
               events={{
-                onChange: this.datePickerHandler.bind(this)
+                onChange: this.datePickerHandler.bind(this),
               }}
               value={this.state.parameterCollection[_param.name]}
             />
@@ -662,14 +662,14 @@ export default class ReportUI extends Component {
                 label={{
                   fieldName: _param.name,
                   forceLabel: _param.label,
-                  isImp: _param.isImp !== undefined ? false : _param.isImp
+                  isImp: _param.isImp !== undefined ? false : _param.isImp,
                 }}
                 textBox={{
                   className: "txt-fld",
                   name: _param.name,
 
                   value: this.state.parameterCollection[_param.name],
-                  ..._param.others
+                  ..._param.others,
                 }}
               />
               <div className="col-1">
@@ -679,7 +679,7 @@ export default class ReportUI extends Component {
                   className="fas fa-search"
                   style={{
                     cursor: "pointer",
-                    marginTop: "28px"
+                    marginTop: "28px",
                   }}
                 />
               </div>
@@ -742,16 +742,16 @@ export default class ReportUI extends Component {
               label={{
                 fieldName: _param.name,
                 forceLabel: _param.label,
-                isImp: _param.isImp !== undefined ? false : _param.isImp
+                isImp: _param.isImp !== undefined ? false : _param.isImp,
               }}
               textBox={{
                 className: "txt-fld",
                 name: _param.name,
                 value: this.state.parameterCollection[_param.name],
                 events: {
-                  onChange: this.textBoxHandle.bind(this)
+                  onChange: this.textBoxHandle.bind(this),
                 },
-                ..._param.others
+                ..._param.others,
               }}
             />
           );
@@ -797,36 +797,36 @@ export default class ReportUI extends Component {
             <div />
             <div>
               {this.props.options !== undefined &&
-                this.props.options.plotUI !== undefined ? (
-                  <React.Fragment>
-                    <div id="report_generation_interface">
-                      {/* {this.props.options.plotUI.paramters()} */}
+              this.props.options.plotUI !== undefined ? (
+                <React.Fragment>
+                  <div id="report_generation_interface">
+                    {/* {this.props.options.plotUI.paramters()} */}
 
-                      <div
-                        className="col-lg-12 margin-top-15"
-                        data-validate="parameters-data"
-                      >
-                        <h5>
-                          <b>Apply Filters</b>
-                        </h5>
-                        <div className="row">
-                          {this.generateInputParameters()}
-                        </div>
+                    <div
+                      className="col-lg-12 margin-top-15"
+                      data-validate="parameters-data"
+                    >
+                      <h5>
+                        <b>Apply Filters</b>
+                      </h5>
+                      <div className="row">
+                        {this.generateInputParameters()}
                       </div>
+                    </div>
 
-                      {/* <div className="col-12">
+                    {/* <div className="col-12">
                       <div className="row reportActionBtns">
                       
                       </div>
                     </div> */}
-                    </div>
-                  </React.Fragment>
-                ) : null}
+                  </div>
+                </React.Fragment>
+              ) : null}
               {this.props.plotui !== undefined ? this.props.plotui : null}
             </div>
             <div
               className="popupInner "
-              ref={el => (this.algehPrintRef = el)}
+              ref={(el) => (this.algehPrintRef = el)}
               style={{ minHeight: "30vh" }}
             >
               {/*this.props.options !== undefined &&
@@ -870,7 +870,7 @@ export default class ReportUI extends Component {
                   <AlagehAutoComplete
                     div={{ className: "col-2" }}
                     label={{
-                      forceLabel: "Page Size"
+                      forceLabel: "Page Size",
                     }}
                     selector={{
                       name: "pageSize",
@@ -883,16 +883,16 @@ export default class ReportUI extends Component {
                           { name: "A1", pageSize: "A1" },
                           { name: "A2", pageSize: "A2" },
                           { name: "A3", pageSize: "A3" },
-                          { name: "A4", pageSize: "A4" }
-                        ]
+                          { name: "A4", pageSize: "A4" },
+                        ],
                       },
-                      onChange: this.handleChange.bind(this)
+                      onChange: this.handleChange.bind(this),
                     }}
                   />
                   <AlagehAutoComplete
                     div={{ className: "col-2" }}
                     label={{
-                      forceLabel: "Page Layout"
+                      forceLabel: "Page Layout",
                     }}
                     selector={{
                       name: "pageOrentation",
@@ -904,12 +904,12 @@ export default class ReportUI extends Component {
                         data: [
                           {
                             name: "Landscape",
-                            value: "landscape"
+                            value: "landscape",
                           },
-                          { name: "Potrait", value: "potrait" }
-                        ]
+                          { name: "Potrait", value: "potrait" },
+                        ],
                       },
-                      onChange: this.handleChange.bind(this)
+                      onChange: this.handleChange.bind(this),
                     }}
                   />
                 </div>
@@ -926,10 +926,10 @@ export default class ReportUI extends Component {
                       onClick={this.generateReport.bind(this, this)}
                       label={{
                         forceLabel: "  Preview Report",
-                        returnText: true
+                        returnText: true,
                       }}
                       others={{
-                        reporttype: "preview"
+                        reporttype: "preview",
                       }}
                     />{" "}
                     <ButtonType
@@ -937,10 +937,10 @@ export default class ReportUI extends Component {
                       onClick={this.generateReport.bind(this, this)}
                       label={{
                         forceLabel: "  Download as PDF",
-                        returnText: true
+                        returnText: true,
                       }}
                       others={{
-                        reporttype: "pdf"
+                        reporttype: "pdf",
                       }}
                     />
                     {this.props.options.report.excel === "true" ? (
@@ -949,10 +949,10 @@ export default class ReportUI extends Component {
                         onClick={this.generateReport.bind(this, this)}
                         label={{
                           forceLabel: "  Download as Excel",
-                          returnText: true
+                          returnText: true,
                         }}
                         others={{
-                          reporttype: "excel"
+                          reporttype: "excel",
                         }}
                       />
                     ) : null}{" "}
