@@ -18,7 +18,8 @@ const executePDF = function executePDFMethod(options) {
           query: `select H.hospital_name,E.full_name,E.arabic_name,
 E.employee_code,DE.designation, SD.sub_department_name,
 E.exit_date,E.date_of_joining,E.date_of_resignation,FL.final_settlement_number,
-FL.final_settlement_status,FL.settled_date,FL.total_amount,
+case FL.final_settlement_status when 'PEN' then 'Pending for Authorize' when 'AUT' then 'Authorized'
+else 'Settled' end as final_settlement_status,FL.settled_date,FL.total_amount,
 FL.total_earnings,FL.total_deductions,FL.total_loans,FL.total_salary,
 FL.total_eos,FL.total_leave_encash,FL.forfiet,FL.remarks,FL.posted,
 FL.posted_date,FL.posted_by,FL.cancelled,FL.cancelled_by,FL.cancelled_date,

@@ -4,11 +4,12 @@
     <div class="print-body" style="page-break-before: always; page-break-after: always; margin-right:15px">
         <section>
             <table class="tableForLabel labelBlock" cell-padding="0">
+
                 <tr>
                     <td><label class="textEnLft">Branch: </label><span class="valueText">{{hospital_name}}</span></td>
                     <td><label class="textEnLft">Employee Code:</label><span class="valueText">{{employee_code}}</span>
                     </td>
-                    <td colspan="3"><label class="textEnLft">Employee Name:</label><span
+                    <td colspan="2"><label class="textEnLft">Employee Name:</label><span
                             class="valueText">{{full_name}}</span></td>
                 </tr>
                 <tr>
@@ -21,8 +22,17 @@
                     <td><label class="textEnLft">Date of Exit:</label><span class="valueText">{{exit_date}}</span>
                     </td>
 
-                    <td><label class="textEnLft">Salary Month & Year:</label><span class="valueText">{{month}} -
-                            {{year}}</span></td>
+                    {{!-- <td><label class="textEnLft">Salary Month & Year:</label><span class="valueText">{{month}} -
+                            {{year}}</span></td> --}}
+                </tr>
+                <tr>
+                    <td><label class="textEnLft">Settlement No: </label><span
+                            class="valueText">{{final_settlement_number}}</span></td>
+
+                    <td colspan="3"><label class="textEnLft">Status & Date:</label><span
+                            class="valueText">{{final_settlement_status}} / {{settled_date}}</span></td>
+                    {{!-- <td><label class="textEnLft">Settlemnt Date:</label><span class="valueText"></span>
+                    </td> --}}
                 </tr>
 
             </table>
@@ -83,27 +93,27 @@
 
             <table class="tableForData">
                 <tr class="footerTotalUp">
-                    <td class="numberFld">Total Salary</td>
+                    <td class="numberFld">Net Salary</td>
                     <td class="numberFld" width="29.5%" colspan="3">{{total_salary}}</td>
                 </tr>
                 <tr class="footerTotalUp">
-                    <td class="numberFld">Total Other Earnings</td>
+                    <td class="numberFld">Total Misc Earnings</td>
                     <td class="numberFld" colspan="3">{{total_earnings}}</td>
                 </tr>
                 <tr class="footerTotalUp">
-                    <td class="numberFld">Total Leave Encashment</td>
+                    <td class="numberFld">Net Leave Encashment</td>
                     <td class="numberFld" colspan="3">{{total_leave_encash}}</td>
                 </tr>
                 <tr class="footerTotalUp" style="border-bottom:1px solid #000">
-                    <td class="numberFld">Total Gratuity</td>
+                    <td class="numberFld">Net Gratuity</td>
                     <td class="numberFld" colspan="3">{{total_eos}}</td>
                 </tr>
                 <tr class="footerTotalUp">
-                    <td class="numberFld">Total Other Deductions</td>
+                    <td class="numberFld">Total Misc Deductions</td>
                     <td class="numberFld" colspan="3">(-) {{total_deductions}}</td>
                 </tr>
                 <tr class="footerTotalUp">
-                    <td class="numberFld">Pending Loan</td>
+                    <td class="numberFld">Net Loan</td>
                     <td class="numberFld" colspan="3">(-) {{total_loans}}</td>
                 </tr>
                 <tr class="footerTotalDown">

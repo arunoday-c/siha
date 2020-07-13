@@ -7,7 +7,9 @@ const {
   getCompanyDependents,
   getDocumentTypes,
   saveDocument,
-  getDocumentsDetails
+  getDocumentsDetails,
+  deleteDocument,
+  updateDocument,
 } = empDocModels;
 
 export default () => {
@@ -17,7 +19,7 @@ export default () => {
     const _result = req.records;
     res.status(utilities.httpStatus().ok).json({
       success: true,
-      records: _result
+      records: _result,
     });
     delete req.records;
   });
@@ -25,7 +27,7 @@ export default () => {
     const _result = req.records;
     res.status(utilities.httpStatus().ok).json({
       success: true,
-      records: _result
+      records: _result,
     });
     delete req.records;
   });
@@ -33,7 +35,7 @@ export default () => {
     const _result = req.records;
     res.status(utilities.httpStatus().ok).json({
       success: true,
-      records: _result
+      records: _result,
     });
     delete req.records;
   });
@@ -41,7 +43,7 @@ export default () => {
     const _result = req.records;
     res.status(utilities.httpStatus().ok).json({
       success: true,
-      records: _result
+      records: _result,
     });
     delete req.records;
   });
@@ -49,7 +51,23 @@ export default () => {
     const _result = req.records;
     res.status(utilities.httpStatus().ok).json({
       success: true,
-      records: _result
+      records: _result,
+    });
+    delete req.records;
+  });
+  api.delete("/deleteDocument", deleteDocument, (req, res, next) => {
+    const _result = req.records;
+    res.status(utilities.httpStatus().ok).json({
+      success: true,
+      records: _result,
+    });
+    delete req.records;
+  });
+  api.put("/updateDocument", updateDocument, (req, res, next) => {
+    const _result = req.records;
+    res.status(utilities.httpStatus().ok).json({
+      success: true,
+      records: _result,
     });
     delete req.records;
   });
