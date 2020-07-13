@@ -11,7 +11,7 @@ import {
   AlgaehLabel,
   AlgaehDataGrid,
   AlagehFormGroup,
-  AlgaehDateHandler
+  AlgaehDateHandler,
 } from "../../Wrapper/algaehWrapper";
 import {
   deleteNetWorkPlan,
@@ -19,7 +19,7 @@ import {
   onchangegridcol,
   onchangegridnumber,
   gridDatehandle,
-  dateValidate
+  dateValidate,
 } from "./NetworkPlanListEvent.js";
 import { AlgaehActions } from "../../../actions/algaehActions";
 
@@ -28,7 +28,7 @@ class NetworkPlanList extends PureComponent {
     super(props);
     this.state = {
       network_plan: [],
-      selectedLang: this.props.selectedLang
+      selectedLang: this.props.selectedLang,
     };
   }
 
@@ -44,12 +44,12 @@ class NetworkPlanList extends PureComponent {
           method: "GET",
           printInput: true,
           data: {
-            insurance_provider_id: this.props.insurance_provider_id
+            insurance_provider_id: this.props.insurance_provider_id,
           },
           redux: {
             type: "SUB_INSURANCE_GET_DATA",
-            mappingName: "subinsuranceprovider"
-          }
+            mappingName: "subinsuranceprovider",
+          },
         });
       }
 
@@ -62,8 +62,8 @@ class NetworkPlanList extends PureComponent {
           method: "GET",
           redux: {
             type: "HOSPITAL_DETAILS_GET_DATA",
-            mappingName: "hospitaldetails"
-          }
+            mappingName: "hospitaldetails",
+          },
         });
       }
     }
@@ -73,7 +73,7 @@ class NetworkPlanList extends PureComponent {
     if (newProps.insurance_provider_id !== undefined) {
       this.setState({
         network_plan: newProps.networkandplans,
-        insurance_provider_id: newProps.insurance_provider_id
+        insurance_provider_id: newProps.insurance_provider_id,
       });
     }
   }
@@ -91,13 +91,14 @@ class NetworkPlanList extends PureComponent {
             {
               fieldName: "insurance_sub_id",
               label: <AlgaehLabel label={{ fieldName: "insurance_sub_id" }} />,
-              displayTemplate: row => {
+              displayTemplate: (row) => {
                 let display =
                   this.props.subinsuranceprovider === undefined
                     ? []
                     : this.props.subinsuranceprovider.filter(
-                      f => f.hims_d_insurance_sub_id === row.insurance_sub_id
-                    );
+                        (f) =>
+                          f.hims_d_insurance_sub_id === row.insurance_sub_id
+                      );
 
                 return (
                   <span>
@@ -109,13 +110,14 @@ class NetworkPlanList extends PureComponent {
                   </span>
                 );
               },
-              editorTemplate: row => {
+              editorTemplate: (row) => {
                 let display =
                   this.props.subinsuranceprovider === undefined
                     ? []
                     : this.props.subinsuranceprovider.filter(
-                      f => f.hims_d_insurance_sub_id === row.insurance_sub_id
-                    );
+                        (f) =>
+                          f.hims_d_insurance_sub_id === row.insurance_sub_id
+                      );
 
                 return (
                   <span>
@@ -126,19 +128,19 @@ class NetworkPlanList extends PureComponent {
                       : ""}
                   </span>
                 );
-              }
+              },
             },
 
             {
               fieldName: "hospital_id",
               label: <AlgaehLabel label={{ fieldName: "hospital_id" }} />,
-              displayTemplate: row => {
+              displayTemplate: (row) => {
                 let display =
                   this.props.hospitaldetails === undefined
                     ? []
                     : this.props.hospitaldetails.filter(
-                      f => f.hims_d_hospital_id === row.hospital_id
-                    );
+                        (f) => f.hims_d_hospital_id === row.hospital_id
+                      );
 
                 return (
                   <span>
@@ -150,13 +152,13 @@ class NetworkPlanList extends PureComponent {
                   </span>
                 );
               },
-              editorTemplate: row => {
+              editorTemplate: (row) => {
                 let display =
                   this.props.hospitaldetails === undefined
                     ? []
                     : this.props.hospitaldetails.filter(
-                      f => f.hims_d_hospital_id === row.hospital_id
-                    );
+                        (f) => f.hims_d_hospital_id === row.hospital_id
+                      );
 
                 return (
                   <span>
@@ -167,17 +169,17 @@ class NetworkPlanList extends PureComponent {
                       : ""}
                   </span>
                 );
-              }
+              },
             },
             {
               fieldName: "network_type",
               label: <AlgaehLabel label={{ fieldName: "network_type" }} />,
-              disabled: true
+              disabled: true,
             },
             {
               fieldName: "policy_number",
               label: <AlgaehLabel label={{ fieldName: "policy_number" }} />,
-              editorTemplate: row => {
+              editorTemplate: (row) => {
                 return (
                   <AlagehFormGroup
                     div={{}}
@@ -186,17 +188,17 @@ class NetworkPlanList extends PureComponent {
                       className: "txt-fld",
                       name: "policy_number",
                       events: {
-                        onChange: onchangegridcol.bind(this, this, row)
-                      }
+                        onChange: onchangegridcol.bind(this, this, row),
+                      },
                     }}
                   />
                 );
-              }
+              },
             },
             {
               fieldName: "employer",
               label: <AlgaehLabel label={{ fieldName: "employer" }} />,
-              editorTemplate: row => {
+              editorTemplate: (row) => {
                 return (
                   <AlagehFormGroup
                     div={{}}
@@ -205,73 +207,73 @@ class NetworkPlanList extends PureComponent {
                       className: "txt-fld",
                       name: "employer",
                       events: {
-                        onChange: onchangegridcol.bind(this, this, row)
-                      }
+                        onChange: onchangegridcol.bind(this, this, row),
+                      },
                     }}
                   />
                 );
-              }
+              },
             },
             {
               fieldName: "effective_start_date",
               label: (
                 <AlgaehLabel label={{ fieldName: "effective_start_date" }} />
               ),
-              displayTemplate: row => {
+              displayTemplate: (row) => {
                 return (
                   <span>{this.dateFormater(row.effective_start_date)}</span>
                 );
               },
-              editorTemplate: row => {
+              editorTemplate: (row) => {
                 return (
                   <AlgaehDateHandler
                     div={{}}
                     textBox={{
                       className: "txt-fld",
-                      name: "effective_start_date"
+                      name: "effective_start_date",
                     }}
                     maxDate={new Date()}
                     events={{
                       onChange: gridDatehandle.bind(this, this, row),
-                      onBlur: dateValidate.bind(this, this, row)
+                      onBlur: dateValidate.bind(this, this, row),
                     }}
                     value={row.effective_start_date}
                   />
                 );
               },
-              others: { minWidth: 130 }
+              others: { minWidth: 130 },
             },
             {
               fieldName: "effective_end_date",
               label: (
                 <AlgaehLabel label={{ fieldName: "effective_end_date" }} />
               ),
-              displayTemplate: row => {
+              displayTemplate: (row) => {
                 return <span>{this.dateFormater(row.effective_end_date)}</span>;
               },
-              editorTemplate: row => {
+              editorTemplate: (row) => {
                 return (
                   <AlgaehDateHandler
                     div={{}}
                     textBox={{
                       className: "txt-fld",
-                      name: "effective_end_date"
+                      name: "effective_end_date",
                     }}
                     maxDate={new Date()}
                     events={{
                       onChange: gridDatehandle.bind(this, this, row),
-                      onBlur: dateValidate.bind(this, this, row)
+                      onBlur: dateValidate.bind(this, this, row),
                     }}
                     value={row.effective_end_date}
                   />
                 );
               },
-              others: { minWidth: 130 }
+              others: { minWidth: 130 },
             },
             {
               fieldName: "preapp_limit",
               label: <AlgaehLabel label={{ fieldName: "preapp_limit" }} />,
-              editorTemplate: row => {
+              editorTemplate: (row) => {
                 return (
                   <AlagehFormGroup
                     div={{}}
@@ -281,26 +283,26 @@ class NetworkPlanList extends PureComponent {
                       className: "txt-fld",
                       name: "preapp_limit",
                       events: {
-                        onChange: onchangegridnumber.bind(this, this, row)
-                      }
+                        onChange: onchangegridnumber.bind(this, this, row),
+                      },
                     }}
                   />
                 );
-              }
+              },
             },
             {
               fieldName: "price_from",
               label: <AlgaehLabel label={{ fieldName: "price_from" }} />,
-              displayTemplate: row => {
+              displayTemplate: (row) => {
                 return row.price_from === "S"
                   ? "Company Level Service Price"
                   : "Policy Level Service Price ";
               },
-              editorTemplate: row => {
+              editorTemplate: (row) => {
                 return row.price_from === "S"
                   ? "Company Level Service Price"
                   : "Policy Level Service Price ";
-              }
+              },
             },
             ///Changes
             // {
@@ -328,7 +330,7 @@ class NetworkPlanList extends PureComponent {
               label: (
                 <AlgaehLabel label={{ fieldName: "copay_consultation" }} />
               ),
-              editorTemplate: row => {
+              editorTemplate: (row) => {
                 return (
                   <AlagehFormGroup
                     div={{}}
@@ -338,12 +340,12 @@ class NetworkPlanList extends PureComponent {
                       className: "txt-fld",
                       name: "copay_consultation",
                       events: {
-                        onChange: onchangegridnumber.bind(this, this, row)
-                      }
+                        onChange: onchangegridnumber.bind(this, this, row),
+                      },
                     }}
                   />
                 );
-              }
+              },
             },
             // {
             //   fieldName: "max_value",
@@ -388,7 +390,7 @@ class NetworkPlanList extends PureComponent {
             {
               fieldName: "copay_percent",
               label: <AlgaehLabel label={{ fieldName: "copay_percent" }} />,
-              editorTemplate: row => {
+              editorTemplate: (row) => {
                 return (
                   <AlagehFormGroup
                     div={{}}
@@ -398,12 +400,12 @@ class NetworkPlanList extends PureComponent {
                       className: "txt-fld",
                       name: "copay_percent",
                       events: {
-                        onChange: onchangegridnumber.bind(this, this, row)
-                      }
+                        onChange: onchangegridnumber.bind(this, this, row),
+                      },
                     }}
                   />
                 );
-              }
+              },
             },
 
             //
@@ -451,7 +453,7 @@ class NetworkPlanList extends PureComponent {
             {
               fieldName: "copay_percent_rad",
               label: <AlgaehLabel label={{ fieldName: "copay_percent_rad" }} />,
-              editorTemplate: row => {
+              editorTemplate: (row) => {
                 return (
                   <AlagehFormGroup
                     div={{}}
@@ -461,12 +463,12 @@ class NetworkPlanList extends PureComponent {
                       className: "txt-fld",
                       name: "copay_percent_rad",
                       events: {
-                        onChange: onchangegridnumber.bind(this, this, row)
-                      }
+                        onChange: onchangegridnumber.bind(this, this, row),
+                      },
                     }}
                   />
                 );
-              }
+              },
             },
             // {
             //   fieldName: "rad_max",
@@ -511,7 +513,7 @@ class NetworkPlanList extends PureComponent {
             {
               fieldName: "copay_percent_trt",
               label: <AlgaehLabel label={{ fieldName: "copay_percent_trt" }} />,
-              editorTemplate: row => {
+              editorTemplate: (row) => {
                 return (
                   <AlagehFormGroup
                     div={{}}
@@ -521,17 +523,17 @@ class NetworkPlanList extends PureComponent {
                       className: "txt-fld",
                       name: "copay_percent_trt",
                       events: {
-                        onChange: onchangegridnumber.bind(this, this, row)
-                      }
+                        onChange: onchangegridnumber.bind(this, this, row),
+                      },
                     }}
                   />
                 );
-              }
+              },
             },
             {
               fieldName: "trt_max",
               label: <AlgaehLabel label={{ fieldName: "trt_max" }} />,
-              editorTemplate: row => {
+              editorTemplate: (row) => {
                 return (
                   <AlagehFormGroup
                     div={{}}
@@ -541,12 +543,12 @@ class NetworkPlanList extends PureComponent {
                       className: "txt-fld",
                       name: "trt_max",
                       events: {
-                        onChange: onchangegridnumber.bind(this, this, row)
-                      }
+                        onChange: onchangegridnumber.bind(this, this, row),
+                      },
                     }}
                   />
                 );
-              }
+              },
             },
             // {
             //   fieldName: "deductible_dental",
@@ -636,7 +638,7 @@ class NetworkPlanList extends PureComponent {
             {
               fieldName: "copay_medicine",
               label: <AlgaehLabel label={{ fieldName: "copay_medicine" }} />,
-              editorTemplate: row => {
+              editorTemplate: (row) => {
                 return (
                   <AlagehFormGroup
                     div={{}}
@@ -646,13 +648,13 @@ class NetworkPlanList extends PureComponent {
                       className: "txt-fld",
                       name: "copay_medicine",
                       events: {
-                        onChange: onchangegridnumber.bind(this, this, row)
-                      }
+                        onChange: onchangegridnumber.bind(this, this, row),
+                      },
                     }}
                   />
                 );
-              }
-            }
+              },
+            },
             // {
             //   fieldName: "medicine_max",
             //   label: <AlgaehLabel label={{ fieldName: "medicine_max" }} />,
@@ -676,14 +678,16 @@ class NetworkPlanList extends PureComponent {
           ]}
           keyId="network_type"
           dataSource={{
-            data: this.state.network_plan
+            data: this.state.network_plan,
           }}
           isEditable={true}
           paging={{ page: 0, rowsPerPage: 10 }}
           events={{
-            onDelete: deleteNetWorkPlan.bind(this, this),
-            onEdit: row => { },
-            onDone: UpdateNetworkPlan.bind(this, this)
+            onDelete: () => {
+              this.deleteNetWorkPlan.bind(this);
+            },
+            onEdit: (row) => {},
+            onDone: UpdateNetworkPlan.bind(this, this),
           }}
           filter={true}
         />
@@ -696,7 +700,7 @@ function mapStateToProps(state) {
   return {
     networkandplans: state.networkandplans,
     subinsuranceprovider: state.subinsuranceprovider,
-    hospitaldetails: state.hospitaldetails
+    hospitaldetails: state.hospitaldetails,
   };
 }
 
@@ -705,15 +709,12 @@ function mapDispatchToProps(dispatch) {
     {
       getNetworkPlans: AlgaehActions,
       getSubInsuranceDetails: AlgaehActions,
-      getHospitalDetails: AlgaehActions
+      getHospitalDetails: AlgaehActions,
     },
     dispatch
   );
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(NetworkPlanList)
+  connect(mapStateToProps, mapDispatchToProps)(NetworkPlanList)
 );

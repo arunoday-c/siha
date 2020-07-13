@@ -280,7 +280,36 @@ class FinalSettlement extends Component {
       }
     );
   }
-
+  sendForpayment(url, send_data) {
+    algaehApiCall({
+      uri: url,
+      method: "POST",
+      module: "hrManagement",
+      data: send_data,
+      onSuccess: (res) => {
+        if (res.data.success) {
+          swalMessage({
+            title: `${
+              url === "/finalsettlement/finalSettlementSave"
+                ? "Saved Successfully"
+                : "Final Settlement Recorded"
+            }`,
+            type: "success",
+          });
+          this.setState({
+            disableSave: true,
+          });
+        }
+        AlgaehLoader({ show: false });
+      },
+      onFailure: (err) => {
+        swalMessage({
+          title: err,
+          type: "error",
+        });
+      },
+    });
+  }
   saveFinalSettlement(e) {
     const url =
       e.currentTarget.getAttribute("typeof") === "save"
@@ -315,32 +344,49 @@ class FinalSettlement extends Component {
       deductions: this.state.deductingList,
       ScreenCode: getCookie("ScreenCode"),
     };
+    if (url === "/finalsettlement/finalSettlementSave") {
+      this.sendForpayment(url, send_data);
+      return;
+    }
 
-    AlgaehLoader({ show: true });
-
-    algaehApiCall({
-      uri: url,
-      method: "POST",
-      module: "hrManagement",
-      data: send_data,
-      onSuccess: (res) => {
-        if (res.data.success) {
-          swalMessage({
-            title: "Final Settlement Recorded",
-            type: "success",
-          });
-          this.setState({
-            disableSave: true,
-          });
-        }
-        AlgaehLoader({ show: false });
-      },
-      onFailure: (err) => {
-        swalMessage({
-          title: err,
-          type: "error",
-        });
-      },
+    swal({
+      title: `Are you sure?`,
+      text: `Once send for payment not allow to revert back.`,
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes",
+      confirmButtonColor: "#44b8bd",
+      cancelButtonColor: "#d33",
+      cancelButtonText: "No",
+    }).then((willConfirm) => {
+      if (willConfirm.value) {
+        AlgaehLoader({ show: true });
+        // algaehApiCall({
+        //   uri: url,
+        //   method: "POST",
+        //   module: "hrManagement",
+        //   data: send_data,
+        //   onSuccess: (res) => {
+        //     if (res.data.success) {
+        //       swalMessage({
+        //         title: "Final Settlement Recorded",
+        //         type: "success",
+        //       });
+        //       this.setState({
+        //         disableSave: true,
+        //       });
+        //     }
+        //     AlgaehLoader({ show: false });
+        //   },
+        //   onFailure: (err) => {
+        //     swalMessage({
+        //       title: err,
+        //       type: "error",
+        //     });
+        //   },
+        // });
+        this.sendForpayment(url, send_data);
+      }
     });
   }
 
@@ -1381,13 +1427,7 @@ class FinalSettlement extends Component {
                   className="btn btn-other"
                   typeof="final"
                   onClick={this.saveFinalSettlement.bind(this)}
-                  disabled={
-                    this.state.flag === "Pending" ||
-                    this.state.flag === undefined ||
-                    this.state.flag === ""
-                      ? false
-                      : true
-                  }
+                  disabled={this.state.flag === "Pending" ? false : true}
                 >
                   <AlgaehLabel
                     label={{ forceLabel: "Send for Payment", returnText: true }}
