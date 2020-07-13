@@ -7,7 +7,7 @@ import { newAlgaehApi } from "../../../hooks";
 
 import { algaehApiCall } from "../../../utils/algaehApiCall";
 import { handleFile } from "../FinanceReportEvents";
-import { getItem, tokenDecode } from "algaeh-react-components/storage";
+import { getItem, tokenDecode } from "algaeh-react-components";
 import moment from "moment";
 import jwtDecode from "jwt-decode";
 import { AlgaehTable, AlgaehMessagePop } from "algaeh-react-components";

@@ -5,9 +5,8 @@ import {
   AlgaehAutoComplete,
   AlgaehDataGrid,
   AlgaehTreeSearch,
-  AlgaehMessagePop,
-  AlgaehFormGroupGrid,
   AlgaehButton,
+  
 } from "algaeh-react-components";
 export function PrepaymentMaster() {
   return (
@@ -37,6 +36,7 @@ export function PrepaymentMaster() {
             isImp: true,
           }}
           textBox={{
+            name: "prepayment_desc"
             type: "text",
             className: "form-control",
             placeholder: "",
@@ -50,6 +50,7 @@ export function PrepaymentMaster() {
             isImp: true,
           }}
           selector={{
+            name: "prepayment_duration",
             value: "",
             dataSource: {},
           }}
@@ -95,22 +96,22 @@ export function PrepaymentMaster() {
               <AlgaehDataGrid
                 columns={[
                   {
-                    key: "prePayDesc",
+                    key: "prepayment_desc",
                     title: "Prepayment Desc.",
                     sortable: true,
                   },
                   {
-                    key: "prePayDur",
+                    key: "prepayment_duration",
                     title: "Duration (Month)",
                     sortable: true,
                   },
                   {
-                    key: "prePayCreditGL",
+                    key: "prepayment_head_id",
                     title: "Prepayment Credit GL",
                     sortable: true,
                   },
                   {
-                    key: "prePayDebitGL",
+                    key: "expense_head_id",
                     title: "Prepayment Debit GL",
                     sortable: true,
                   },
@@ -121,7 +122,7 @@ export function PrepaymentMaster() {
                 dataSource={{
                   data: [],
                 }}
-                rowUnique="prePayDesc"
+                rowUnique="finance_d_prepayment_type_id"
                 events={{}}
                 others={{}}
               />

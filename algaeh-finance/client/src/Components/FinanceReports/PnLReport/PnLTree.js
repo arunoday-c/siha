@@ -2,7 +2,7 @@ import React, { useRef, useEffect, useState } from "react";
 import { Row, Col } from "antd";
 // import ReactToPrint from "react-to-print";
 import { PlotUI } from "../FinanceStandardReports/plotui";
-import { getItem, tokenDecode } from "algaeh-react-components/storage";
+import { getItem, tokenDecode } from "algaeh-react-components";
 import jwtDecode from "jwt-decode";
 import moment from "moment";
 import { newAlgaehApi } from "../../../hooks";
