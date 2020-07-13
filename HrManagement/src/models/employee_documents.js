@@ -116,10 +116,70 @@ export default {
       next(e);
     }
   },
+  deleteDocument: (req, res, next) => {
+    const _mysql = new algaehMysql();
+
+    return new Promise((resolve, reject) => {
+      try {
+        let input = { ...req.body };
+
+        _mysql
+          .executeQuery({
+            query:
+              "DELETE FROM hims_f_employee_documents  WHERE hims_f_employee_documents_id=?",
+            values: [input.hims_f_employee_documents_id],
+          })
+          .then((result) => {
+            resolve();
+          })
+          .catch((e) => {
+            next(e);
+            reject(e);
+          });
+      } catch (e) {
+        reject(e);
+        next(e);
+      }
+    }).catch((e) => {
+      _mysql.releaseConnection();
+      next(e);
+    });
+  },
+  updateDocument: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    const input = req.body;
+    try {
+      _mysql
+        .executeQuery({
+          query:
+            "UPDATE  hims_f_employee_documents SET document_name=?,create_by=?,created_date=?,update_by=?,update_date=?   WHERE hims_f_employee_documents_id=?",
+          values: [
+            input.document_name,
+            req.userIdentity.algaeh_d_app_user_id,
+            new Date(),
+            req.userIdentity.algaeh_d_app_user_id,
+            new Date(),
+            input.hims_f_employee_documents_id,
+          ],
+        })
+        .then((result) => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch((error) => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
   getDocumentsDetails: (req, res, next) => {
     const _mysql = new algaehMysql();
     const input = req.query;
-    console.log("result", input);
+
     let appendString = "";
     if (input.dependent_id == "null" || !input.dependent_id) {
       appendString = " and dependent_id is null";

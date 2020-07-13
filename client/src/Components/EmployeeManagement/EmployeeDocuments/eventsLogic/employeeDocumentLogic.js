@@ -1,5 +1,6 @@
 import { algaehApiCall } from "../../../../utils/algaehApiCall";
 import _ from "lodash";
+
 export default function eventsLogEmployeeDocument() {
   return {
     getEmployeeDetails: () => {
@@ -141,13 +142,49 @@ export default function eventsLogEmployeeDocument() {
           data: data,
           cancelRequestId: "getdocuments",
           onSuccess: (response) => {
-
             if (response.data.success) {
               let data = response.data.records;
               resolve(data);
             } else {
               resolve([]);
             }
+          },
+          onFailure: (error) => {
+            reject(error);
+          },
+        });
+      });
+    },
+
+    deleteSavedDocument: (data) => {
+      return new Promise((resolve, reject) => {
+        algaehApiCall({
+          uri: "/documents/deleteDocument",
+          module: "hrManagement",
+          method: "DELETE",
+          data: data,
+          cancelRequestId: "deleteDocument",
+          onSuccess: (response) => {
+            if (response.data.success) {
+              resolve();
+            }
+          },
+          onFailure: (error) => {
+            reject(error);
+          },
+        });
+      });
+    },
+    deleteDocument: (data) => {
+      return new Promise((resolve, reject) => {
+        algaehApiCall({
+          uri: "/Document/delete",
+          module: "documentManagement",
+          method: "DELETE",
+          data: data,
+          cancelRequestId: "deleteDocument",
+          onSuccess: (response) => {
+            resolve();
           },
           onFailure: (error) => {
             reject(error);
