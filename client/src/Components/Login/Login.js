@@ -7,12 +7,8 @@ import {
   AlgaehButton,
   Input,
 } from "algaeh-react-components";
-import { MainContext } from "algaeh-react-components/context";
-import {
-  setItem,
-  clearItem,
-  removeItem,
-} from "algaeh-react-components/storage";
+import { MainContext } from "algaeh-react-components";
+import { setItem, clearItem, removeItem } from "algaeh-react-components";
 import Swal from "sweetalert2";
 // import { AlagehAutoComplete } from "../Wrapper/algaehWrapper";
 import { AlagehFormGroup } from "../Wrapper/algaehWrapper";

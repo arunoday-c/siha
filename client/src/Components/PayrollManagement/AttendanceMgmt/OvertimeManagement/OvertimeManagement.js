@@ -26,7 +26,7 @@ import {
   DisplayDateFormat,
   InsertOTManagement,
 } from "./OvertimeManagementEvent";
-import { MainContext } from "algaeh-react-components/context";
+import { MainContext } from "algaeh-react-components";
 
 class OvertimeManagement extends Component {
   constructor(props) {

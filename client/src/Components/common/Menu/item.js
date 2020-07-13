@@ -1,7 +1,7 @@
 import React, { useState, useContext, memo } from "react";
 import { useHistory } from "react-router-dom";
-import { MainContext } from "algaeh-react-components/context";
-import { setItem } from "algaeh-react-components/storage";
+import { MainContext } from "algaeh-react-components";
+import { setItem } from "algaeh-react-components";
 import { setCookie } from "../../../utils/algaehApiCall";
 import { Drawer } from "algaeh-react-components";
 function MenuItems({ showMenu, onVisibityChange, openModule, openScreen }) {

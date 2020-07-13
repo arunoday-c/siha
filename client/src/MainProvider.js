@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { MainContext } from "algaeh-react-components/context";
+import { MainContext } from "algaeh-react-components";
 import socket from "./sockets";
-export default function(props) {
+export default function (props) {
   const { children } = props;
   const [menu, setMenu] = useState([]);
   const [language, setLanguage] = useState("en");
@@ -57,7 +57,7 @@ export default function(props) {
         setUserToken,
         setElementsItems,
         setUserPreferencesData,
-        clearAll
+        clearAll,
       }}
     >
       {children}

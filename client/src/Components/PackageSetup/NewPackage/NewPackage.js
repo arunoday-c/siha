@@ -16,7 +16,7 @@ import NewPackageEvent from "./NewPackageEvent";
 import { AlgaehActions } from "../../../actions/algaehActions";
 
 import { GetAmountFormart } from "../../../utils/GlobalFunctions";
-import { MainContext } from "algaeh-react-components/context";
+import { MainContext } from "algaeh-react-components";
 import GlobalVariables from "../../../utils/GlobalVariables";
 
 class NewPackage extends PureComponent {

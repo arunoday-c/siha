@@ -20,9 +20,8 @@ import {
 } from "../../../../utils/GlobalFunctions";
 import swal from "sweetalert2";
 import AlgaehLoader from "../../../Wrapper/fullPageLoader";
-import { MainContext } from "algaeh-react-components/context";
+import { MainContext } from "algaeh-react-components";
 import { AlgaehSecurityElement } from "algaeh-react-components";
-import { reject } from "lodash";
 
 class FinalSettlement extends Component {
   constructor(props) {
@@ -112,7 +111,6 @@ class FinalSettlement extends Component {
             const currentData = this.state.data;
             let dtl = res.data.result;
             let datas = res.data.result.data;
-            // let eos = {};
             const disabled = datas === undefined ? { disableSave: false } : {};
             let ttl =
               datas === undefined
@@ -122,17 +120,12 @@ class FinalSettlement extends Component {
                     total_salary: dtl.total_salary,
                     total_loan_amount: dtl.total_loan_amount,
                     loans: dtl.loans,
-                    hims_f_salary_id: dtl.hims_f_salary_id,
                   }
                 : {};
             if (datas !== undefined) {
               if (datas.loans === undefined) {
                 ttl["loans"] = dtl.loans;
               }
-              // eos = {
-              //   end_of_service_id: datas.end_of_service_id,
-              //   gratuity_amount: datas.gratuity_amount,
-              // };
             }
             this.setState(
               {
@@ -143,7 +136,6 @@ class FinalSettlement extends Component {
                   ...ttl,
                 },
                 ...disabled,
-                // ...eos,
               },
               () => {
                 this.setTotalEarnings();
@@ -197,20 +189,17 @@ class FinalSettlement extends Component {
     let net_earnings =
       parseFloat(this.state.total_earnings) +
       parseFloat(
-        this.state.data.total_leave_encash_amount === undefined ||
-          this.state.data.total_leave_encash_amount === null
+        this.state.data.total_leave_encash_amount === undefined
           ? 0
           : this.state.data.total_leave_encash_amount
       ) +
       parseFloat(
-        this.state.data.gratuity_amount === undefined ||
-          this.state.data.gratuity_amount === null
+        this.state.data.gratuity_amount === undefined
           ? 0
           : this.state.data.gratuity_amount
       ) +
       parseFloat(
-        this.state.data.total_salary === undefined ||
-          this.state.data.total_salary === null
+        this.state.data.total_salary === undefined
           ? 0
           : this.state.data.total_salary
       );
@@ -327,10 +316,7 @@ class FinalSettlement extends Component {
       total_loans: data.total_loan_amount,
       hims_f_salary_id: data.hims_f_salary_id,
       total_salary: data.total_salary,
-      end_of_service_id:
-        data.hims_f_end_of_service_id === undefined
-          ? data.end_of_service_id
-          : data.hims_f_end_of_service_id,
+      end_of_service_id: data.hims_f_end_of_service_id,
       gratuity_amount: data.gratuity_amount,
       hims_f_leave_encash_header_id: data.hims_f_leave_encash_header_id,
       total_leave_encash_amount: data.total_leave_encash_amount,
@@ -390,33 +376,27 @@ class FinalSettlement extends Component {
     });
   }
 
-  clearState(callBack) {
-    this.setState(
-      {
-        hims_d_employee_id: null,
-        employee_name: null,
-        // earnings: [],
-        // deductions: [],
-        deductingList: [],
-        earningList: [],
+  clearState() {
+    this.setState({
+      hims_d_employee_id: null,
+      employee_name: null,
+      // earnings: [],
+      // deductions: [],
+      deductingList: [],
+      earningList: [],
+      loans: [],
+      data: {
         loans: [],
-        data: {
-          loans: [],
-        },
-        disableSave: true,
-        total_earnings: 0,
-        total_deductions: 0,
-        net_earnings: 0,
-        net_deductions: 0,
-        net_amount: 0,
-        isEnable: true,
-        flag: undefined,
-        remarks: "",
       },
-      () => {
-        if (typeof callBack === "function") callBack();
-      }
-    );
+      disableSave: true,
+      total_earnings: 0,
+      total_deductions: 0,
+      net_earnings: 0,
+      net_deductions: 0,
+      net_amount: 0,
+      isEnable: true,
+      flag: undefined,
+    });
   }
 
   dropDownHandler(value) {
@@ -444,37 +424,6 @@ class FinalSettlement extends Component {
         });
         break;
     }
-  }
-
-  deleteEarningsDeductions(data, keyField, itsEarning) {
-    return new Promise((resolve, reject) => {
-      try {
-        if (data[keyField] === undefined) {
-          resolve();
-          return;
-        }
-        const url =
-          itsEarning === true
-            ? "/finalsettlement/deleteEarnings"
-            : "/finalsettlement/deleteDeductions";
-        algaehApiCall({
-          uri: url,
-          method: "DELETE",
-          module: "hrManagement",
-          data: {
-            ...data,
-          },
-          onSuccess: (result) => {
-            resolve(result.data);
-          },
-          onCatch: (error) => {
-            reject(error);
-          },
-        });
-      } catch (error) {
-        reject(error);
-      }
-    });
   }
 
   textHandler(e) {
@@ -554,37 +503,16 @@ class FinalSettlement extends Component {
       cancelButtonText: "No",
     }).then((willDelete) => {
       if (willDelete.value) {
-        this.deleteEarningsDeductions(
+        this.state.earningList.pop(row);
+
+        this.setState(
           {
-            hims_f_final_settlement_header_id: this.state.data
-              .hims_f_final_settlement_header_id,
-            hims_f_final_settle_earnings_detail_id:
-              row.hims_f_final_settle_earnings_detail_id,
+            earningList: this.state.earningList,
           },
-          "hims_f_final_settle_earnings_detail_id",
-          true
-        )
-          .then(() => {
-            // this.state.earningList.pop(row);
-            const rowId = row.hims_f_final_settle_earnings_detail_id;
-            const allItems = this.state.earningList.filter(
-              (f) => f.hims_f_final_settle_earnings_detail_id !== rowId
-            );
-            this.setState(
-              {
-                earningList: allItems,
-              },
-              () => {
-                this.setTotalEarnings();
-              }
-            );
-          })
-          .catch((error) => {
-            swalMessage({
-              title: error,
-              type: "error",
-            });
-          });
+          () => {
+            this.setTotalEarnings();
+          }
+        );
       }
     });
   }
@@ -600,38 +528,16 @@ class FinalSettlement extends Component {
       cancelButtonText: "No",
     }).then((willDelete) => {
       if (willDelete.value) {
-        //this.state.deductingList.pop(row);
+        this.state.deductingList.pop(row);
 
-        this.deleteEarningsDeductions(
+        this.setState(
           {
-            hims_f_final_settlement_header_id: this.state.data
-              .hims_f_final_settlement_header_id,
-            hims_f_final_settle_deductions_detail_id:
-              row.hims_f_final_settle_deductions_detail_id,
+            deductingList: this.state.deductingList,
           },
-          "hims_f_final_settle_deductions_detail_id",
-          false
-        )
-          .then(() => {
-            const rowId = row.hims_f_final_settle_deductions_detail_id;
-            const allItems = this.state.deductingList.filter(
-              (f) => f.hims_f_final_settle_deductions_detail_id !== rowId
-            );
-            this.setState(
-              {
-                deductingList: allItems,
-              },
-              () => {
-                this.setTotalDeductions();
-              }
-            );
-          })
-          .catch((error) => {
-            swalMessage({
-              title: error,
-              type: "error",
-            });
-          });
+          () => {
+            this.setTotalDeductions();
+          }
+        );
       }
     });
   }
@@ -713,38 +619,36 @@ class FinalSettlement extends Component {
     }
 
     let input_data = " hospital_id=" + this.state.hospital_id;
-
-    this.clearState(() => {
-      AlgaehSearch({
-        searchGrid: {
-          columns: spotlightSearch.Employee_details.employee,
-        },
-        searchName: "exit_employees",
-        inputs: input_data,
-        uri: "/gloabelSearch/get",
-        onContainsChange: (text, serchBy, callBack) => {
-          callBack(text);
-        },
-        onRowSelect: (row) => {
-          const dta = this.state.data;
-          this.setState(
-            {
-              employee_name: row.full_name,
+    //this.clearState();
+    AlgaehSearch({
+      searchGrid: {
+        columns: spotlightSearch.Employee_details.employee,
+      },
+      searchName: "exit_employees",
+      inputs: input_data,
+      uri: "/gloabelSearch/get",
+      onContainsChange: (text, serchBy, callBack) => {
+        callBack(text);
+      },
+      onRowSelect: (row) => {
+        const dta = this.state.data;
+        this.setState(
+          {
+            employee_name: row.full_name,
+            hims_d_employee_id: row.hims_d_employee_id,
+            data: {
+              ...dta,
               hims_d_employee_id: row.hims_d_employee_id,
-              data: {
-                ...dta,
-                hims_d_employee_id: row.hims_d_employee_id,
-                employee_code: row.employee_code,
-                full_name: row.full_name,
-                sub_department_name: row.sub_department_name,
-              },
+              employee_code: row.employee_code,
+              full_name: row.full_name,
+              sub_department_name: row.sub_department_name,
             },
-            () => {
-              this.loadFinalSettlement(this);
-            }
-          );
-        },
-      });
+          },
+          () => {
+            this.loadFinalSettlement(this);
+          }
+        );
+      },
     });
   }
 
@@ -766,46 +670,46 @@ class FinalSettlement extends Component {
               value: this.state.hims_d_employee_id,
               // this.state.hims_d_employee_id,
             },
-            // {
-            //   name: "hims_f_salary_id",
-            //   value: this.state.data.hims_f_salary_id,
-            // },
-            // {
-            //   name: "total_salary_earnings",
-            //   value: this.state.net_earnings,
-            // },
-            // {
-            //   name: "total_salary_deductions",
-            //   value: this.state.net_deductions,
-            // },
-            // {
-            //   name: "total_other_earnings",
-            //   value: this.state.total_earnings,
-            // },
-            // {
-            //   name: "total_other_deductions",
-            //   value: this.state.total_deductions,
-            // },
-            // {
-            //   name: "total_salary",
-            //   value: this.state.data.total_salary,
-            // },
-            // {
-            //   name: "total_leave_encash_amount",
-            //   value: this.state.data.total_leave_encash_amount,
-            // },
-            // {
-            //   name: "total_gratuity_amount",
-            //   value: this.state.data.gratuity_amount,
-            // },
-            // {
-            //   name: "total_loan_amount",
-            //   value: this.state.data.total_loan_amount,
-            // },
-            // {
-            //   name: "final_payble",
-            //   value: this.state.net_amount,
-            // },
+            {
+              name: "hims_f_salary_id",
+              value: this.state.data.hims_f_salary_id,
+            },
+            {
+              name: "total_salary_earnings",
+              value: this.state.net_earnings,
+            },
+            {
+              name: "total_salary_deductions",
+              value: this.state.net_deductions,
+            },
+            {
+              name: "total_other_earnings",
+              value: this.state.total_earnings,
+            },
+            {
+              name: "total_other_deductions",
+              value: this.state.total_deductions,
+            },
+            {
+              name: "total_salary",
+              value: this.state.data.total_salary,
+            },
+            {
+              name: "total_leave_encash_amount",
+              value: this.state.data.total_leave_encash_amount,
+            },
+            {
+              name: "total_gratuity_amount",
+              value: this.state.data.gratuity_amount,
+            },
+            {
+              name: "total_loan_amount",
+              value: this.state.data.total_loan_amount,
+            },
+            {
+              name: "final_payble",
+              value: this.state.net_amount,
+            },
           ],
           outputFileType: "PDF",
         },
@@ -868,7 +772,7 @@ class FinalSettlement extends Component {
             </h6>
           </div>
 
-          <div className="col-1">
+          <div className="col">
             <label className="style_Label ">Employee Code</label>
             <h6>{FsData.employee_code ? FsData.employee_code : "-------"}</h6>
           </div>
@@ -886,21 +790,13 @@ class FinalSettlement extends Component {
                 : "-------"}
             </h6>
           </div>
-
-          <div className="col">
-            <label className="style_Label ">Status</label>
-            <h6>
-              {this.state.flag === "Pending" ? (
-                <span className="badge badge-warning">Pending</span>
-              ) : this.state.flag === "Authorize" ? (
-                <span className="badge badge-info">Authorize</span>
-              ) : this.state.flag === "Settled" ? (
-                <span className="badge badge-success">Settled</span>
-              ) : (
-                "--------"
-              )}
-            </h6>
-          </div>
+          {this.state.flag !== "" ? (
+            <div className="col form-group">
+              <h3 style={{ paddingTop: "19px" }}>
+                <font color="green">{this.state.flag}</font>
+              </h3>
+            </div>
+          ) : null}
         </div>
         <div className="row" style={{ marginTop: 120 }}>
           <div className="col-8">
@@ -909,7 +805,7 @@ class FinalSettlement extends Component {
                 <div className="portlet portlet-bordered margin-bottom-15">
                   <div className="portlet-title">
                     <div className="caption">
-                      <h3 className="caption-subject">Other Misc. Earnings</h3>
+                      <h3 className="caption-subject">Other Earnings</h3>
                     </div>
                     <div className="actions" />
                   </div>
@@ -1065,7 +961,7 @@ class FinalSettlement extends Component {
                 <div className="portlet portlet-bordered margin-bottom-15">
                   <div className="portlet-title">
                     <div className="caption">
-                      <h3 className="caption-subject">Other Misc. Deduction</h3>
+                      <h3 className="caption-subject">Other Deduction</h3>
                     </div>
                     <div className="actions"></div>
                   </div>
@@ -1410,13 +1306,7 @@ class FinalSettlement extends Component {
                   className="btn btn-primary"
                   typeof="save"
                   onClick={this.saveFinalSettlement.bind(this)}
-                  disabled={
-                    this.state.flag === "Pending" ||
-                    this.state.flag === undefined ||
-                    this.state.flag === ""
-                      ? false
-                      : true
-                  }
+                  disabled={this.state.disableSave}
                 >
                   <AlgaehLabel
                     label={{ forceLabel: "Save", returnText: true }}
@@ -1430,17 +1320,19 @@ class FinalSettlement extends Component {
                   disabled={this.state.flag === "Pending" ? false : true}
                 >
                   <AlgaehLabel
-                    label={{ forceLabel: "Send for Payment", returnText: true }}
+                    label={{ forceLabel: "Clear", returnText: true }}
                   />
                 </button>
 
                 <button
                   type="button"
-                  className="btn btn-default"
-                  onClick={this.clearState.bind(this)}
+                  className="btn btn-other"
+                  typeof="final"
+                  onClick={this.saveFinalSettlement.bind(this)}
+                  disabled={this.state.disableSave}
                 >
                   <AlgaehLabel
-                    label={{ forceLabel: "Clear", returnText: true }}
+                    label={{ forceLabel: "Send for Payment", returnText: true }}
                   />
                 </button>
 
@@ -1450,11 +1342,6 @@ class FinalSettlement extends Component {
                     className="btn btn-other"
                     // onClick={this.clearState.bind(this)}
                     onClick={this.generateFinalSettlementSlip.bind(this)}
-                    disabled={
-                      this.state.flag === undefined || this.state.flag === ""
-                        ? true
-                        : false
-                    }
                   >
                     <AlgaehLabel
                       label={{

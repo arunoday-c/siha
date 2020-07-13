@@ -1,5 +1,5 @@
 // import React from "react";
-import { getItem, tokenDecode } from "algaeh-react-components/storage";
+import { getItem, tokenDecode } from "algaeh-react-components";
 import axios from "axios";
 import extend from "extend";
 import moment from "moment";

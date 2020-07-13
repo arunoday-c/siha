@@ -5,14 +5,14 @@ import "./WeeklyAttendance.scss";
 import {
   AlagehAutoComplete,
   AlgaehLabel,
-  AlgaehDateHandler
+  AlgaehDateHandler,
 } from "../../../Wrapper/algaehWrapper";
 import moment from "moment";
 import GlobalVariables from "../../../../utils/GlobalVariables.json";
 import { getYears } from "../../../../utils/GlobalFunctions";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import Enumerable from "linq";
-import { MainContext } from "algaeh-react-components/context";
+import { MainContext } from "algaeh-react-components";
 
 export default class WeeklyAttendance extends Component {
   constructor(props) {
@@ -39,14 +39,12 @@ export default class WeeklyAttendance extends Component {
       from_date: _fromDate, //moment(new Date())
       // .subtract(1, "days")
       // .format("YYYY-MM-DD"),
-      to_date: moment(new Date())
-        .subtract(1, "days")
-        .format("YYYY-MM-DD"),
-      option_attendance_type: null
+      to_date: moment(new Date()).subtract(1, "days").format("YYYY-MM-DD"),
+      option_attendance_type: null,
     };
     this.getSubDepts();
     this.getOrganization();
-    this.getHrmsOptions()
+    this.getHrmsOptions();
   }
 
   getHrmsOptions() {
@@ -54,42 +52,44 @@ export default class WeeklyAttendance extends Component {
       uri: "/payrollOptions/getHrmsOptions",
       method: "GET",
       module: "hrManagement",
-      onSuccess: res => {
+      onSuccess: (res) => {
         if (res.data.success) {
-          this.setState({ option_attendance_type: res.data.result[0].attendance_type });
+          this.setState({
+            option_attendance_type: res.data.result[0].attendance_type,
+          });
         }
       },
-      onFailure: err => {
+      onFailure: (err) => {
         swalMessage({
           title: err.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
-  };
+  }
 
   getOrganization() {
     algaehApiCall({
       uri: "/organization/getOrganizationByUser",
       method: "GET",
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           this.setState({
-            hospitals: response.data.records
+            hospitals: response.data.records,
           });
         }
       },
-      onFailure: error => {
+      onFailure: (error) => {
         this.setState({
           branch: {
-            loader: false
-          }
+            loader: false,
+          },
         });
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -98,22 +98,22 @@ export default class WeeklyAttendance extends Component {
       uri: "/department/get/subdepartment",
       module: "masterSettings",
       data: {
-        sub_department_status: "A"
+        sub_department_status: "A",
       },
       method: "GET",
-      onSuccess: res => {
+      onSuccess: (res) => {
         if (res.data.success) {
           this.setState({
-            sub_depts: res.data.records
+            sub_depts: res.data.records,
           });
         }
       },
-      onFailure: err => {
+      onFailure: (err) => {
         swalMessage({
           title: err.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -122,14 +122,14 @@ export default class WeeklyAttendance extends Component {
     const userToken = this.context.userToken;
 
     this.setState({
-      hospital_id: userToken.hims_d_hospital_id
-    })
+      hospital_id: userToken.hims_d_hospital_id,
+    });
     this.getWeeks();
   }
 
   notifyExceptions() {
     let a = Enumerable.from(this.state.time_sheet)
-      .select(w => parseInt(moment(w.attendance_date).format("YYYYMMDD"), 10))
+      .select((w) => parseInt(moment(w.attendance_date).format("YYYYMMDD"), 10))
       .toArray();
 
     let _fromDate = moment(Math.min(...a), "YYYYMMDD").format("YYYY-MM-DD");
@@ -143,31 +143,31 @@ export default class WeeklyAttendance extends Component {
         to_date: _toDate,
         hospital_id: this.state.hospital_id,
         hims_d_employee_id: this.state.hims_d_employee_id,
-        sub_department_id: this.state.sub_department_id
+        sub_department_id: this.state.sub_department_id,
       },
       module: "hrManagement",
-      onSuccess: res => {
+      onSuccess: (res) => {
         if (res.data.success) {
           swalMessage({
             title: "Notified Successfully . .",
-            type: "success"
+            type: "success",
           });
           this.setState({
-            disableNotify: true
+            disableNotify: true,
           });
         } else if (!res.data.success) {
           swalMessage({
             title: res.data.records.message,
-            type: "warning"
+            type: "warning",
           });
         }
       },
-      onFailure: err => {
+      onFailure: (err) => {
         swalMessage({
           title: err.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -175,22 +175,22 @@ export default class WeeklyAttendance extends Component {
     algaehApiCall({
       uri: "/holiday/getTimeSheet",
       method: "GET",
-      onSuccess: res => {
+      onSuccess: (res) => {
         if (res.data.success) {
           // this.getDailyTimeSheet();
         } else if (!res.data.success) {
           swalMessage({
             title: res.data.message,
-            type: "warning"
+            type: "warning",
           });
         }
       },
-      onFailure: err => {
+      onFailure: (err) => {
         swalMessage({
           title: err.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -212,31 +212,31 @@ export default class WeeklyAttendance extends Component {
         to_date: _toDate,
         hospital_id: this.state.hospital_id,
         hims_d_employee_id: this.state.hims_d_employee_id,
-        sub_department_id: this.state.sub_department_id
+        sub_department_id: this.state.sub_department_id,
       },
-      onSuccess: res => {
+      onSuccess: (res) => {
         if (res.data.success) {
           swalMessage({
             title: "Verified Successfully",
-            type: "success"
+            type: "success",
           });
         }
       },
-      onFailure: err => {
+      onFailure: (err) => {
         swalMessage({
           title: err.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
   monthWiseHours(data) {
-    const _workHours = Enumerable.from(data).sum(s => {
+    const _workHours = Enumerable.from(data).sum((s) => {
       return parseFloat(s.worked_hours);
     });
 
-    let total_hrs = Enumerable.from(data).sum(s => s.actual_hours);
-    let total_mins = Enumerable.from(data).sum(s => s.actual_minutes);
+    let total_hrs = Enumerable.from(data).sum((s) => s.actual_hours);
+    let total_mins = Enumerable.from(data).sum((s) => s.actual_minutes);
     let cumulative_mins = total_hrs * 60 + total_mins;
     const _actualHours =
       parseInt(cumulative_mins / 60) + ":" + (cumulative_mins % 60);
@@ -255,7 +255,7 @@ export default class WeeklyAttendance extends Component {
       month_worked_hours: parseFloat(_workHours).toFixed(2),
       month_actual_hours: parseFloat(_actualHours).toFixed(2),
       month_ot_hour: _exces < 0 ? 0 : parseFloat(_exces).toFixed(2),
-      month_shortage_hour: parseFloat(_shortage).toFixed(2)
+      month_shortage_hour: parseFloat(_shortage).toFixed(2),
     };
   }
 
@@ -266,7 +266,7 @@ export default class WeeklyAttendance extends Component {
     ) {
       swalMessage({
         title: "Please select a Department to view ",
-        type: "warning"
+        type: "warning",
       });
     } else if (
       this.state.attendance_type === "MW" &&
@@ -275,30 +275,30 @@ export default class WeeklyAttendance extends Component {
     ) {
       swalMessage({
         title: "Please select an Employee to view ",
-        type: "warning"
+        type: "warning",
       });
     } else if (
       this.state.attendance_type !== "MW" &&
       moment(this.state.from_date).format("YYYYMMDD") >
-      moment(this.state.to_date).format("YYYYMMDD")
+        moment(this.state.to_date).format("YYYYMMDD")
     ) {
       swalMessage({
         title: "Please set a proper date range",
-        type: "warning"
+        type: "warning",
       });
     } else if (
       moment(this.state.to_date).format("YYYYMMDD") >
-      moment(this.state.from_date).format("YYYYMMDD") &&
+        moment(this.state.from_date).format("YYYYMMDD") &&
       (this.state.hims_d_employee_id === null ||
         this.state.hims_d_employee_id === undefined)
     ) {
       swalMessage({
         title: "Please select an Employee to view ",
-        type: "warning"
+        type: "warning",
       });
     } else {
       this.setState({
-        loader: true
+        loader: true,
       });
 
       let _fromDate = this.state.from_date;
@@ -307,12 +307,8 @@ export default class WeeklyAttendance extends Component {
       if (this.state.attendance_type === "MW") {
         let date = this.state.year + "-" + this.state.month + "-01";
 
-        _fromDate = moment(date)
-          .startOf("month")
-          .format("YYYY-MM-DD");
-        _toDate = moment(date)
-          .endOf("month")
-          .format("YYYY-MM-DD");
+        _fromDate = moment(date).startOf("month").format("YYYY-MM-DD");
+        _toDate = moment(date).endOf("month").format("YYYY-MM-DD");
       }
 
       algaehApiCall({
@@ -328,9 +324,9 @@ export default class WeeklyAttendance extends Component {
           hospital_id: this.state.hospital_id,
           hims_d_employee_id: this.state.hims_d_employee_id,
           sub_department_id: this.state.sub_department_id,
-          attendance_type: this.state.attendance_type
+          attendance_type: this.state.attendance_type,
         },
-        onSuccess: res => {
+        onSuccess: (res) => {
           if (res.data.success) {
             let data =
               this.state.option_attendance_type === "DM"
@@ -346,7 +342,7 @@ export default class WeeklyAttendance extends Component {
                   month_shortage_hour: _monthWiseHours.month_shortage_hour,
                   month_ot_hour: _monthWiseHours.month_ot_hour,
                   month_actual_hours: _monthWiseHours.month_actual_hours,
-                  month_worked_hours: _monthWiseHours.month_worked_hours
+                  month_worked_hours: _monthWiseHours.month_worked_hours,
                 });
               } else {
                 this.setState({
@@ -355,35 +351,35 @@ export default class WeeklyAttendance extends Component {
                   month_shortage_hour: this.getTotalShortage(data),
                   month_ot_hour: this.getTotalOT(data),
                   month_actual_hours: res.data.result.month_actual_hours,
-                  month_worked_hours: res.data.result.month_worked_hours
+                  month_worked_hours: res.data.result.month_worked_hours,
                 });
               }
             } else {
               swalMessage({
                 title: res.data.result.message,
-                type: "warning"
+                type: "warning",
               });
               this.setState({ loader: false });
             }
           } else if (!res.data.success) {
             swalMessage({
               title: res.data.result.message,
-              type: "warning"
+              type: "warning",
             });
             this.setState({
-              loader: false
+              loader: false,
             });
           }
         },
-        onFailure: err => {
+        onFailure: (err) => {
           swalMessage({
             title: err.message,
-            type: "error"
+            type: "error",
           });
           this.setState({
-            loader: false
+            loader: false,
           });
-        }
+        },
       });
     }
   }
@@ -395,12 +391,8 @@ export default class WeeklyAttendance extends Component {
     if (this.state.attendance_type === "MW") {
       let date = this.state.year + "-" + this.state.month + "-01";
 
-      _fromDate = moment(date)
-        .startOf("month")
-        .format("YYYY-MM-DD");
-      _toDate = moment(date)
-        .endOf("month")
-        .format("YYYY-MM-DD");
+      _fromDate = moment(date).startOf("month").format("YYYY-MM-DD");
+      _toDate = moment(date).endOf("month").format("YYYY-MM-DD");
     }
 
     algaehApiCall({
@@ -408,8 +400,8 @@ export default class WeeklyAttendance extends Component {
         this.state.option_attendance_type === "DM"
           ? "/attendance/postManualTimeSheetMonthWise"
           : this.state.attendance_type === "MW"
-            ? "/attendance/postTimeSheetMonthWise"
-            : "/attendance/postTimeSheet",
+          ? "/attendance/postTimeSheetMonthWise"
+          : "/attendance/postTimeSheet",
       method: "GET",
       data: {
         from_date: _fromDate,
@@ -417,28 +409,28 @@ export default class WeeklyAttendance extends Component {
         hims_d_employee_id: this.state.hims_d_employee_id,
         hospital_id: this.state.hospital_id,
         sub_department_id: this.state.sub_department_id,
-        attendance_type: this.state.attendance_type
+        attendance_type: this.state.attendance_type,
       },
       module: "hrManagement",
-      onSuccess: res => {
+      onSuccess: (res) => {
         if (res.data.success) {
           swalMessage({
             title: "Posted Successfully. . ",
-            type: "success"
+            type: "success",
           });
         } else if (!res.data.success) {
           swalMessage({
             title: res.data.result.message,
-            type: "warning"
+            type: "warning",
           });
         }
       },
-      onFailure: err => {
+      onFailure: (err) => {
         swalMessage({
           title: err.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -452,7 +444,7 @@ export default class WeeklyAttendance extends Component {
         weeks: [],
         week: 0,
         time_sheet: [],
-        disableNotify: false
+        disableNotify: false,
       },
       () => {
         this.getWeeks();
@@ -471,12 +463,12 @@ export default class WeeklyAttendance extends Component {
     for (let i = 1; i <= weeksInMonth; i++) {
       weeksData.push({
         name: "Week " + i,
-        value: i
+        value: i,
       });
     }
 
     this.setState({
-      weeks: weeksData
+      weeks: weeksData,
     });
   }
 
@@ -487,21 +479,22 @@ export default class WeeklyAttendance extends Component {
     ) {
       swalMessage({
         title: "Please Select Branch",
-        type: "warning"
+        type: "warning",
       });
       document.querySelector("[name='hospital_id']").focus();
-      return
+      return;
     }
 
     let input_data = " hospital_id=" + this.state.hospital_id;
 
-    input_data = input_data + this.state.sub_department_id !== null &&
+    input_data =
+      input_data + this.state.sub_department_id !== null &&
       this.state.sub_department_id !== undefined
-      ? "sub_department_id = " + this.state.sub_department_id
-      : "sub_department_id > 0"
+        ? "sub_department_id = " + this.state.sub_department_id
+        : "sub_department_id > 0";
     AlgaehSearch({
       searchGrid: {
-        columns: spotlightSearch.Employee_details.employee
+        columns: spotlightSearch.Employee_details.employee,
       },
       inputs: input_data,
       searchName: "employee",
@@ -509,17 +502,17 @@ export default class WeeklyAttendance extends Component {
       onContainsChange: (text, serchBy, callBack) => {
         callBack(text);
       },
-      onRowSelect: row => {
+      onRowSelect: (row) => {
         this.setState(
           {
             employee_name: row.full_name,
             hims_d_employee_id: row.hims_d_employee_id,
             biometric_id: row.biometric_id,
-            sub_department_id: row.sub_department_id
+            sub_department_id: row.sub_department_id,
           },
-          () => { }
+          () => {}
         );
-      }
+      },
     });
   }
 
@@ -551,24 +544,24 @@ export default class WeeklyAttendance extends Component {
         </b>
       </React.Fragment>
     ) : (
-        <React.Fragment>
-          Excess Time
+      <React.Fragment>
+        Excess Time
         <b className="OverTime">
-            {data.ot_hr === undefined ? excess_hr + " Hrs" : data.ot_hr + " Hrs"}
-            {data.ot_min === undefined
-              ? excess_min + " Mins"
-              : data.ot_min + " Mins"}
-          </b>
-          <br />
-          Working Hours:
+          {data.ot_hr === undefined ? excess_hr + " Hrs" : data.ot_hr + " Hrs"}
+          {data.ot_min === undefined
+            ? excess_min + " Mins"
+            : data.ot_min + " Mins"}
+        </b>
+        <br />
+        Working Hours:
         <b className="">
-            {data.actual_hours +
-              ":" +
-              (data.actual_minutes ? data.actual_minutes : "00") +
-              " Hrs"}
-          </b>
-        </React.Fragment>
-      );
+          {data.actual_hours +
+            ":" +
+            (data.actual_minutes ? data.actual_minutes : "00") +
+            " Hrs"}
+        </b>
+      </React.Fragment>
+    );
   }
 
   dropDownHandler(value) {
@@ -576,7 +569,7 @@ export default class WeeklyAttendance extends Component {
       case "month":
         this.setState(
           {
-            [value.name]: value.value
+            [value.name]: value.value,
           },
           () => {
             this.getWeeks();
@@ -587,7 +580,7 @@ export default class WeeklyAttendance extends Component {
       default:
         this.setState(
           {
-            [value.name]: value.value
+            [value.name]: value.value,
           },
           () => {
             this.getWeeks();
@@ -598,16 +591,16 @@ export default class WeeklyAttendance extends Component {
   }
 
   getTotalShortage(data) {
-    let total_hrs = Enumerable.from(data).sum(s => s.shortage_hr);
-    let total_mins = Enumerable.from(data).sum(s => s.shortage_min);
+    let total_hrs = Enumerable.from(data).sum((s) => s.shortage_hr);
+    let total_mins = Enumerable.from(data).sum((s) => s.shortage_min);
     let cumulative_mins = total_hrs * 60 + total_mins;
 
     return parseInt(cumulative_mins / 60) + ":" + (cumulative_mins % 60);
   }
 
   getTotalOT(data) {
-    let total_hrs = Enumerable.from(data).sum(s => s.ot_hr);
-    let total_mins = Enumerable.from(data).sum(s => s.ot_min);
+    let total_hrs = Enumerable.from(data).sum((s) => s.ot_hr);
+    let total_mins = Enumerable.from(data).sum((s) => s.ot_min);
     let cumulative_mins = total_hrs * 60 + total_mins;
 
     return parseInt(cumulative_mins / 60) + ":" + (cumulative_mins % 60);
@@ -615,13 +608,13 @@ export default class WeeklyAttendance extends Component {
 
   textHandler(e) {
     this.setState({
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
   }
 
   changeChecks(data, e) {
     let a = Enumerable.from(this.state.time_sheet)
-      .select(w => parseInt(moment(w.attendance_date).format("YYYYMMDD"), 10))
+      .select((w) => parseInt(moment(w.attendance_date).format("YYYYMMDD"), 10))
       .toArray();
 
     let _fromDate = moment(Math.min(...a), "YYYYMMDD").format("YYYY-MM-DD");
@@ -637,10 +630,10 @@ export default class WeeklyAttendance extends Component {
         to_date: _toDate,
         sub_department_id: this.state.sub_department_id,
         hims_d_employee_id: this.state.hims_d_employee_id,
-        hospital_id: this.state.hospital_id
+        hospital_id: this.state.hospital_id,
       },
       module: "hrManagement",
-      onSuccess: res => {
+      onSuccess: (res) => {
         if (res.data.success) {
           this.setState({
             time_sheet: res.data.result.outputArray,
@@ -649,34 +642,34 @@ export default class WeeklyAttendance extends Component {
             ),
             month_ot_hour: this.getTotalOT(res.data.result.outputArray),
             month_actual_hours: res.data.result.month_actual_hours,
-            month_worked_hours: res.data.result.month_worked_hours
+            month_worked_hours: res.data.result.month_worked_hours,
           });
 
           // this.getDailyTimeSheet();
           swalMessage({
             title: "Record Updated Successfully",
-            type: "success"
+            type: "success",
           });
         }
       },
-      onFailure: err => {
+      onFailure: (err) => {
         swalMessage({
           title: err.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
   selectAll(e) {
     let a = Enumerable.from(this.state.time_sheet)
-      .select(w => parseInt(moment(w.attendance_date).format("YYYYMMDD"), 10))
+      .select((w) => parseInt(moment(w.attendance_date).format("YYYYMMDD"), 10))
       .toArray();
 
     let _fromDate = moment(Math.min(...a), "YYYYMMDD").format("YYYY-MM-DD");
     let _toDate = moment(Math.max(...a), "YYYYMMDD").format("YYYY-MM-DD");
     let time_sheet_ids = Enumerable.from(this.state.time_sheet)
-      .select(s => s.hims_f_daily_time_sheet_id)
+      .select((s) => s.hims_f_daily_time_sheet_id)
       .toArray();
     //
     algaehApiCall({
@@ -689,10 +682,10 @@ export default class WeeklyAttendance extends Component {
         to_date: _toDate,
         sub_department_id: this.state.sub_department_id,
         hims_d_employee_id: this.state.hims_d_employee_id,
-        hospital_id: this.state.hospital_id
+        hospital_id: this.state.hospital_id,
       },
       module: "hrManagement",
-      onSuccess: res => {
+      onSuccess: (res) => {
         if (res.data.success) {
           this.setState({
             time_sheet: res.data.result.outputArray,
@@ -701,22 +694,22 @@ export default class WeeklyAttendance extends Component {
             ),
             month_ot_hour: this.getTotalOT(res.data.result.outputArray),
             month_actual_hours: res.data.result.month_actual_hours,
-            month_worked_hours: res.data.result.month_worked_hours
+            month_worked_hours: res.data.result.month_worked_hours,
           });
 
           // this.getDailyTimeSheet();
           swalMessage({
             title: "Records Updated Successfully",
-            type: "success"
+            type: "success",
           });
         }
       },
-      onFailure: err => {
+      onFailure: (err) => {
         swalMessage({
           title: err.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -760,7 +753,7 @@ export default class WeeklyAttendance extends Component {
                 div={{ className: "col mandatory" }}
                 label={{
                   forceLabel: "Select a Year.",
-                  isImp: true
+                  isImp: true,
                 }}
                 selector={{
                   name: "year",
@@ -769,14 +762,14 @@ export default class WeeklyAttendance extends Component {
                   dataSource: {
                     textField: "name",
                     valueField: "value",
-                    data: allYears
+                    data: allYears,
                   },
                   onChange: this.dropDownHandler.bind(this),
                   onClear: () => {
                     this.setState({
-                      year: null
+                      year: null,
                     });
-                  }
+                  },
                 }}
               />
 
@@ -784,7 +777,7 @@ export default class WeeklyAttendance extends Component {
                 div={{ className: "col mandatory" }}
                 label={{
                   forceLabel: "Select a Month.",
-                  isImp: true
+                  isImp: true,
                 }}
                 selector={{
                   sort: "off",
@@ -794,14 +787,14 @@ export default class WeeklyAttendance extends Component {
                   dataSource: {
                     textField: "name",
                     valueField: "value",
-                    data: GlobalVariables.MONTHS
+                    data: GlobalVariables.MONTHS,
                   },
                   onChange: this.dropDownHandler.bind(this),
                   onClear: () => {
                     this.setState({
-                      month: null
+                      month: null,
                     });
-                  }
+                  },
                 }}
               />
 
@@ -830,61 +823,61 @@ export default class WeeklyAttendance extends Component {
               /> */}
             </React.Fragment>
           ) : (
-              <React.Fragment>
-                <AlgaehDateHandler
-                  div={{ className: "col margin-bottom-15" }}
-                  label={{
-                    forceLabel: "From Date",
-                    isImp: true
-                  }}
-                  textBox={{
-                    className: "txt-fld",
-                    name: "from_date",
-                    others: {
-                      tabIndex: "1"
-                    }
-                  }}
-                  events={{
-                    onChange: selDate => {
-                      this.setState({
-                        from_date: selDate
-                      });
-                    }
-                  }}
-                  maxDate={new Date()}
-                  value={this.state.from_date}
-                />
-                <AlgaehDateHandler
-                  div={{ className: "col margin-bottom-15" }}
-                  label={{
-                    forceLabel: "To Date",
-                    isImp: true
-                  }}
-                  textBox={{
-                    className: "txt-fld",
-                    name: "to_date",
-                    others: {
-                      tabIndex: "2"
-                    }
-                  }}
-                  events={{
-                    onChange: selDate => {
-                      this.setState({
-                        to_date: selDate
-                      });
-                    }
-                  }}
-                  minDate={this.state.from_date}
-                  value={this.state.to_date}
-                />
-              </React.Fragment>
-            )}
+            <React.Fragment>
+              <AlgaehDateHandler
+                div={{ className: "col margin-bottom-15" }}
+                label={{
+                  forceLabel: "From Date",
+                  isImp: true,
+                }}
+                textBox={{
+                  className: "txt-fld",
+                  name: "from_date",
+                  others: {
+                    tabIndex: "1",
+                  },
+                }}
+                events={{
+                  onChange: (selDate) => {
+                    this.setState({
+                      from_date: selDate,
+                    });
+                  },
+                }}
+                maxDate={new Date()}
+                value={this.state.from_date}
+              />
+              <AlgaehDateHandler
+                div={{ className: "col margin-bottom-15" }}
+                label={{
+                  forceLabel: "To Date",
+                  isImp: true,
+                }}
+                textBox={{
+                  className: "txt-fld",
+                  name: "to_date",
+                  others: {
+                    tabIndex: "2",
+                  },
+                }}
+                events={{
+                  onChange: (selDate) => {
+                    this.setState({
+                      to_date: selDate,
+                    });
+                  },
+                }}
+                minDate={this.state.from_date}
+                value={this.state.to_date}
+              />
+            </React.Fragment>
+          )}
 
           <AlagehAutoComplete
             div={{ className: "col mandatory" }}
             label={{
               forceLabel: "Filter by Branch",
-              isImp: true
+              isImp: true,
             }}
             selector={{
               name: "hospital_id",
@@ -893,23 +886,23 @@ export default class WeeklyAttendance extends Component {
               dataSource: {
                 textField: "hospital_name",
                 valueField: "hims_d_hospital_id",
-                data: this.state.hospitals
+                data: this.state.hospitals,
               },
               onChange: this.dropDownHandler.bind(this),
               onClear: () => {
                 this.setState({
-                  hospital_id: null
+                  hospital_id: null,
                 });
-              }
+              },
             }}
-          //showLoading={this.state.branch.loader}
+            //showLoading={this.state.branch.loader}
           />
 
           <AlagehAutoComplete
             div={{ className: "col-2" }}
             label={{
               forceLabel: "Select a Sub Dept.",
-              isImp: false
+              isImp: false,
             }}
             selector={{
               name: "sub_department_id",
@@ -918,14 +911,14 @@ export default class WeeklyAttendance extends Component {
               dataSource: {
                 textField: "sub_department_name",
                 valueField: "hims_d_sub_department_id",
-                data: this.state.sub_depts
+                data: this.state.sub_depts,
               },
               onChange: this.dropDownHandler.bind(this),
               onClear: () => {
                 this.setState({
-                  sub_department_id: null
+                  sub_department_id: null,
                 });
-              }
+              },
             }}
           />
 
@@ -991,8 +984,8 @@ export default class WeeklyAttendance extends Component {
               {!this.state.loader ? (
                 <span>Load</span>
               ) : (
-                  <i className="fas fa-spinner fa-spin" />
-                )}
+                <i className="fas fa-spinner fa-spin" />
+              )}
             </button>
           </div>
         </div>
@@ -1003,7 +996,7 @@ export default class WeeklyAttendance extends Component {
             style={{
               height: 45,
               borderBottom: " 1px solid #e2e2e2",
-              position: "relative"
+              position: "relative",
             }}
           >
             <div className="caption">
@@ -1019,7 +1012,7 @@ export default class WeeklyAttendance extends Component {
                 <input
                   defaultChecked={
                     !Enumerable.from(this.state.time_sheet)
-                      .where(w => w.consider_ot_shrtg === "N")
+                      .where((w) => w.consider_ot_shrtg === "N")
                       .toArray().length > 0
                   }
                   onChange={this.selectAll.bind(this)}
@@ -1087,294 +1080,294 @@ export default class WeeklyAttendance extends Component {
                 <i className="fas fa-user-clock" />
               </div>
             ) : (
-                this.state.time_sheet.map((data, index) =>
-                  data.status === "WO" ? (
-                    <div
-                      key={data.hims_f_daily_time_sheet_id}
-                      className="row dailyTimeProgress weekOffCntr"
-                    >
-                      <div className="col-1">
-                        {moment(data.attendance_date).format("MMM Do, ddd")}
-                      </div>
-                      <div className="col-3">
-                        {data.employee_name ? data.employee_name : "------"}
-                      </div>
-                      <div className="col-1">
-                        {data.worked_hours ? data.worked_hours : "00:00"} Hrs
+              this.state.time_sheet.map((data, index) =>
+                data.status === "WO" ? (
+                  <div
+                    key={data.hims_f_daily_time_sheet_id}
+                    className="row dailyTimeProgress weekOffCntr"
+                  >
+                    <div className="col-1">
+                      {moment(data.attendance_date).format("MMM Do, ddd")}
                     </div>
-                      <div className="col-7 dayTypeCntr">
-                        <span className="weekOffCntr">Week Off</span>
-                        <div className="progress">
-                          <div
-                            className="progress-bar"
-                            role="progressbar"
-                            aria-valuenow="100"
-                            aria-valuemin="0"
-                            aria-valuemax="100"
-                            style={{ width: "100%" }}
-                          />
-                        </div>
+                    <div className="col-3">
+                      {data.employee_name ? data.employee_name : "------"}
+                    </div>
+                    <div className="col-1">
+                      {data.worked_hours ? data.worked_hours : "00:00"} Hrs
+                    </div>
+                    <div className="col-7 dayTypeCntr">
+                      <span className="weekOffCntr">Week Off</span>
+                      <div className="progress">
+                        <div
+                          className="progress-bar"
+                          role="progressbar"
+                          aria-valuenow="100"
+                          aria-valuemin="0"
+                          aria-valuemax="100"
+                          style={{ width: "100%" }}
+                        />
                       </div>
                     </div>
-                  ) : data.status === "PR" ? (
-                    <div
-                      key={data.hims_f_daily_time_sheet_id}
-                      className="row dailyTimeProgress"
-                    >
-                      <div className="col-1">
-                        {moment(data.attendance_date).format("MMM Do, ddd")}
-                      </div>
-                      <div className="col-3">
-                        {data.employee_name ? data.employee_name : "------"}
-                      </div>
-                      <div className="col-1">
-                        {data.worked_hours ? data.worked_hours : "00:00"} Hrs
+                  </div>
+                ) : data.status === "PR" ? (
+                  <div
+                    key={data.hims_f_daily_time_sheet_id}
+                    className="row dailyTimeProgress"
+                  >
+                    <div className="col-1">
+                      {moment(data.attendance_date).format("MMM Do, ddd")}
+                    </div>
+                    <div className="col-3">
+                      {data.employee_name ? data.employee_name : "------"}
+                    </div>
+                    <div className="col-1">
+                      {data.worked_hours ? data.worked_hours : "00:00"} Hrs
                     </div>
 
-                      <div className="col-7 dayTypeCntr">
-                        {data.project_desc ? (
-                          <span className="projectName">
-                            {/* Project Name Come Here */}
-                            {data.project_desc}
-                          </span>
-                        ) : null}
-                        <label className="timeCheckCntr">
-                          <input
-                            type="checkbox"
-                            name="consider_ot_shrtg"
-                            onChange={this.changeChecks.bind(this, data)}
-                            checked={data.consider_ot_shrtg === "Y"}
-                          />
-                          <span className="checkmark" />
-                        </label>
-
-                        <div className="tooltipDetails">
-                          <span className="checkIn animated bounceIn faster">
-                            <i> Check In</i>
-                            <br />
-                            Time:
-                          <b>
-                              {moment(data.in_time, "HH:mm:ss").format("hh:mm a")}
-                            </b>
-                            <br />
-                            Date:
-                          <b>
-                              {moment(data.attendance_date).format("MMM Do YYYY")}
-                            </b>
-                          </span>
-                          <span className="totalHr animated bounceIn faster">
-                            {this.getExcessShortage(data)}
-                          </span>
-                          <span className="checkOut animated bounceIn faster">
-                            <i> Check Out </i>
-                            <br />
-                            Time:
-                          <b>
-                              {moment(data.out_time, "HH:mm:ss").format(
-                                "hh:mm a"
-                              )}
-                            </b>
-                            <br />
-                            Date:
-                          <b>
-                              {data.out_date === null
-                                ? moment(data.attendance_date).format(
-                                  "MMM Do YYYY"
-                                )
-                                : moment(data.out_date).format("MMM Do YYYY")}
-                            </b>
-                          </span>
-                        </div>
-                        <div className="progress">
-                          <div
-                            className={
-                              data.actual_hours - data.worked_hours > 0
-                                ? "progress-bar  bg-shortage"
-                                : "progress-bar  bg-success"
-                            }
-                            role="progressbar"
-                            style={{
-                              width:
-                                (data.worked_hours / data.actual_hours) * 100 +
-                                "%"
-                            }}
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  ) : data.status === "AB" ? (
-                    <div
-                      key={data.hims_f_daily_time_sheet_id}
-                      className="row dailyTimeProgress"
-                    >
-                      <div className="col-1">
-                        {moment(data.attendance_date).format("MMM Do, ddd")}
-                      </div>
-                      <div className="col-3">
-                        {data.employee_name ? data.employee_name : "------"}
-                      </div>
-                      <div className="col-1">
-                        {data.worked_hours ? data.worked_hours : "00:00"} Hrs
-                    </div>
-                      <div className="col-7 dayTypeCntr">
-                        <span className="absentCntr">Absent</span>
-                        <div className="progress">
-                          <div
-                            className="progress-bar"
-                            role="progressbar"
-                            style={{ width: "100%" }}
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  ) : data.status === "HO" ? (
-                    <div
-                      key={data.hims_f_daily_time_sheet_id}
-                      className="row dailyTimeProgress "
-                    >
-                      <div className="col-1">
-                        {moment(data.attendance_date).format("MMM Do, ddd")}
-                      </div>
-                      <div className="col-3">
-                        {data.employee_name ? data.employee_name : "------"}
-                      </div>
-                      <div className="col-1">
-                        {data.worked_hours ? data.worked_hours : "00:00"} Hrs
-                    </div>
-                      <div className="col-7 dayTypeCntr">
-                        <span className="holidayCntr">Holiday</span>
-                        <div className="progress">
-                          <div
-                            className="progress-bar"
-                            role="progressbar"
-                            style={{ width: "100%" }}
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  ) : data.status === "PL" ? (
-                    <div
-                      key={data.hims_f_daily_time_sheet_id}
-                      className="row dailyTimeProgress"
-                    >
-                      <div className="col-1">
-                        {moment(data.attendance_date).format("MMM Do, ddd")}
-                      </div>
-                      <div className="col-3">
-                        {data.employee_name ? data.employee_name : "------"}
-                      </div>
-                      <div className="col-1">
-                        {data.worked_hours ? data.worked_hours : "00:00"} Hrs
-                    </div>
-                      <div className="col-7 dayTypeCntr">
-                        <span className="paidLeaveCntr">Paid Leave</span>
-                        <div className="progress">
-                          <div
-                            className="progress-bar"
-                            role="progressbar"
-                            style={{ width: "100%" }}
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  ) : data.status === "EX" ? (
-                    <div
-                      key={data.hims_f_daily_time_sheet_id}
-                      className="row dailyTimeProgress"
-                    >
-                      <div className="col-1">
-                        {moment(data.attendance_date).format("MMM Do, ddd")}
-                      </div>
-                      <div className="col-3">
-                        {data.employee_name ? data.employee_name : "------"}
-                      </div>
-                      <div className="col-1">
-                        {data.worked_hours ? data.worked_hours : "00:00"} Hrs
-                    </div>
-                      <div className="col-7 dayTypeCntr">
-                        <div className="progress">
-                          <div
-                            className="progress-bar  bg-danger"
-                            role="progressbar"
-                            style={{
-                              width: "50%"
-                            }}
-                          />
-                        </div>
-                        <div className="tooltipDetails">
-                          <span className="checkIn animated bounceIn faster">
-                            <i> Check In</i>
-                            <br />
-                            Time:
-                          <b>
-                              {data.in_time
-                                ? moment(data.in_time, "HH:mm:ss").format(
-                                  "hh:mm a"
-                                )
-                                : "Not Available"}
-                            </b>{" "}
-                            <br />
-                            Date:
-                          <b>
-                              {data.attendance_date
-                                ? moment(data.attendance_date).format(
-                                  "MMM Do YYYY"
-                                )
-                                : "Not Available"}
-                            </b>
-                          </span>
-                          <span className="totalHr animated bounceIn faster">
-                            EXCEPTION
+                    <div className="col-7 dayTypeCntr">
+                      {data.project_desc ? (
+                        <span className="projectName">
+                          {/* Project Name Come Here */}
+                          {data.project_desc}
                         </span>
-                          <span className="checkOut animated bounceIn faster">
-                            <i> Check Out</i>
-                            <br />
-                            Time:
+                      ) : null}
+                      <label className="timeCheckCntr">
+                        <input
+                          type="checkbox"
+                          name="consider_ot_shrtg"
+                          onChange={this.changeChecks.bind(this, data)}
+                          checked={data.consider_ot_shrtg === "Y"}
+                        />
+                        <span className="checkmark" />
+                      </label>
+
+                      <div className="tooltipDetails">
+                        <span className="checkIn animated bounceIn faster">
+                          <i> Check In</i>
+                          <br />
+                          Time:
                           <b>
-                              {data.out_time
-                                ? moment(data.out_time, "HH:mm:ss").format(
+                            {moment(data.in_time, "HH:mm:ss").format("hh:mm a")}
+                          </b>
+                          <br />
+                          Date:
+                          <b>
+                            {moment(data.attendance_date).format("MMM Do YYYY")}
+                          </b>
+                        </span>
+                        <span className="totalHr animated bounceIn faster">
+                          {this.getExcessShortage(data)}
+                        </span>
+                        <span className="checkOut animated bounceIn faster">
+                          <i> Check Out </i>
+                          <br />
+                          Time:
+                          <b>
+                            {moment(data.out_time, "HH:mm:ss").format(
+                              "hh:mm a"
+                            )}
+                          </b>
+                          <br />
+                          Date:
+                          <b>
+                            {data.out_date === null
+                              ? moment(data.attendance_date).format(
+                                  "MMM Do YYYY"
+                                )
+                              : moment(data.out_date).format("MMM Do YYYY")}
+                          </b>
+                        </span>
+                      </div>
+                      <div className="progress">
+                        <div
+                          className={
+                            data.actual_hours - data.worked_hours > 0
+                              ? "progress-bar  bg-shortage"
+                              : "progress-bar  bg-success"
+                          }
+                          role="progressbar"
+                          style={{
+                            width:
+                              (data.worked_hours / data.actual_hours) * 100 +
+                              "%",
+                          }}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                ) : data.status === "AB" ? (
+                  <div
+                    key={data.hims_f_daily_time_sheet_id}
+                    className="row dailyTimeProgress"
+                  >
+                    <div className="col-1">
+                      {moment(data.attendance_date).format("MMM Do, ddd")}
+                    </div>
+                    <div className="col-3">
+                      {data.employee_name ? data.employee_name : "------"}
+                    </div>
+                    <div className="col-1">
+                      {data.worked_hours ? data.worked_hours : "00:00"} Hrs
+                    </div>
+                    <div className="col-7 dayTypeCntr">
+                      <span className="absentCntr">Absent</span>
+                      <div className="progress">
+                        <div
+                          className="progress-bar"
+                          role="progressbar"
+                          style={{ width: "100%" }}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                ) : data.status === "HO" ? (
+                  <div
+                    key={data.hims_f_daily_time_sheet_id}
+                    className="row dailyTimeProgress "
+                  >
+                    <div className="col-1">
+                      {moment(data.attendance_date).format("MMM Do, ddd")}
+                    </div>
+                    <div className="col-3">
+                      {data.employee_name ? data.employee_name : "------"}
+                    </div>
+                    <div className="col-1">
+                      {data.worked_hours ? data.worked_hours : "00:00"} Hrs
+                    </div>
+                    <div className="col-7 dayTypeCntr">
+                      <span className="holidayCntr">Holiday</span>
+                      <div className="progress">
+                        <div
+                          className="progress-bar"
+                          role="progressbar"
+                          style={{ width: "100%" }}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                ) : data.status === "PL" ? (
+                  <div
+                    key={data.hims_f_daily_time_sheet_id}
+                    className="row dailyTimeProgress"
+                  >
+                    <div className="col-1">
+                      {moment(data.attendance_date).format("MMM Do, ddd")}
+                    </div>
+                    <div className="col-3">
+                      {data.employee_name ? data.employee_name : "------"}
+                    </div>
+                    <div className="col-1">
+                      {data.worked_hours ? data.worked_hours : "00:00"} Hrs
+                    </div>
+                    <div className="col-7 dayTypeCntr">
+                      <span className="paidLeaveCntr">Paid Leave</span>
+                      <div className="progress">
+                        <div
+                          className="progress-bar"
+                          role="progressbar"
+                          style={{ width: "100%" }}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                ) : data.status === "EX" ? (
+                  <div
+                    key={data.hims_f_daily_time_sheet_id}
+                    className="row dailyTimeProgress"
+                  >
+                    <div className="col-1">
+                      {moment(data.attendance_date).format("MMM Do, ddd")}
+                    </div>
+                    <div className="col-3">
+                      {data.employee_name ? data.employee_name : "------"}
+                    </div>
+                    <div className="col-1">
+                      {data.worked_hours ? data.worked_hours : "00:00"} Hrs
+                    </div>
+                    <div className="col-7 dayTypeCntr">
+                      <div className="progress">
+                        <div
+                          className="progress-bar  bg-danger"
+                          role="progressbar"
+                          style={{
+                            width: "50%",
+                          }}
+                        />
+                      </div>
+                      <div className="tooltipDetails">
+                        <span className="checkIn animated bounceIn faster">
+                          <i> Check In</i>
+                          <br />
+                          Time:
+                          <b>
+                            {data.in_time
+                              ? moment(data.in_time, "HH:mm:ss").format(
                                   "hh:mm a"
                                 )
-                                : "Not Available"}
-                            </b>
-                            <br />
-                            Date:
+                              : "Not Available"}
+                          </b>{" "}
+                          <br />
+                          Date:
                           <b>
-                              {data.out_date
-                                ? moment(data.out_date).format("MMM Do YYYY")
-                                : "Not Available"}
-                            </b>
-                          </span>
-                        </div>
+                            {data.attendance_date
+                              ? moment(data.attendance_date).format(
+                                  "MMM Do YYYY"
+                                )
+                              : "Not Available"}
+                          </b>
+                        </span>
+                        <span className="totalHr animated bounceIn faster">
+                          EXCEPTION
+                        </span>
+                        <span className="checkOut animated bounceIn faster">
+                          <i> Check Out</i>
+                          <br />
+                          Time:
+                          <b>
+                            {data.out_time
+                              ? moment(data.out_time, "HH:mm:ss").format(
+                                  "hh:mm a"
+                                )
+                              : "Not Available"}
+                          </b>
+                          <br />
+                          Date:
+                          <b>
+                            {data.out_date
+                              ? moment(data.out_date).format("MMM Do YYYY")
+                              : "Not Available"}
+                          </b>
+                        </span>
                       </div>
                     </div>
-                  ) : data.status === "UL" ? (
-                    <div
-                      key={data.hims_f_daily_time_sheet_id}
-                      className="row dailyTimeProgress"
-                    >
-                      <div className="col-1">
-                        {moment(data.attendance_date).format("MMM Do, ddd")}
-                      </div>
-                      <div className="col-3">
-                        {data.employee_name ? data.employee_name : "------"}
-                      </div>
-                      <div className="col-1">
-                        {data.worked_hours ? data.worked_hours : "00:00"} Hrs
+                  </div>
+                ) : data.status === "UL" ? (
+                  <div
+                    key={data.hims_f_daily_time_sheet_id}
+                    className="row dailyTimeProgress"
+                  >
+                    <div className="col-1">
+                      {moment(data.attendance_date).format("MMM Do, ddd")}
                     </div>
-                      <div className="col-7 dayTypeCntr">
-                        <span className="unPaidLeaveCntr">Unpaid Leave</span>
-                        <div className="progress">
-                          <div
-                            className="progress-bar"
-                            style={{ width: "100%" }}
-                          />
-                        </div>
+                    <div className="col-3">
+                      {data.employee_name ? data.employee_name : "------"}
+                    </div>
+                    <div className="col-1">
+                      {data.worked_hours ? data.worked_hours : "00:00"} Hrs
+                    </div>
+                    <div className="col-7 dayTypeCntr">
+                      <span className="unPaidLeaveCntr">Unpaid Leave</span>
+                      <div className="progress">
+                        <div
+                          className="progress-bar"
+                          style={{ width: "100%" }}
+                        />
                       </div>
                     </div>
-                  ) : null
-                )
-              )}
+                  </div>
+                ) : null
+              )
+            )}
           </div>
           {/* <div
             className="row"

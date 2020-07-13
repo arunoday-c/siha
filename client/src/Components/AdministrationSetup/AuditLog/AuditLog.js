@@ -13,7 +13,7 @@ import spotlightSearch from "../../../Search/spotlightSearch.json";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 
 import AlgaehSearch from "../../Wrapper/globalSearch";
-import { MainContext } from "algaeh-react-components/context";
+import { MainContext } from "algaeh-react-components";
 export default class AuditLog extends Component {
   constructor(props) {
     super(props);

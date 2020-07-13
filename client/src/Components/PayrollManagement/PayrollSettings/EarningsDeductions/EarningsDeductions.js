@@ -12,7 +12,7 @@ import {
   AlgaehDataGrid,
 } from "../../../Wrapper/algaehWrapper";
 import GlobalVariables from "../../../../utils/GlobalVariables.json";
-import { MainContext } from "algaeh-react-components/context";
+import { MainContext } from "algaeh-react-components";
 import Enumerable from "linq";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import {

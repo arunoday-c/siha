@@ -19,12 +19,12 @@ import {
   PatientSearch,
   getCtrlCode,
   SavePosCreidt,
-  generatePOSCreditSettlementReceipt
+  generatePOSCreditSettlementReceipt,
 } from "./POSCreditSettlementEvents";
 import { AlgaehActions } from "../../../actions/algaehActions";
 
 import { algaehApiCall } from "../../../utils/algaehApiCall.js";
-import { MainContext } from "algaeh-react-components/context";
+import { MainContext } from "algaeh-react-components";
 import moment from "moment";
 
 class POSCreditSettlement extends Component {
@@ -45,7 +45,7 @@ class POSCreditSettlement extends Component {
       cheque_number: "",
       cheque_date: null,
       cheque_amount: 0,
-      advance: 0
+      advance: 0,
     };
   }
 
@@ -66,7 +66,7 @@ class POSCreditSettlement extends Component {
   componentDidMount() {
     let prevLang = getCookie("Language");
     this.setState({
-      selectedLang: prevLang
+      selectedLang: prevLang,
     });
 
     let _screenName = getCookie("ScreenName").replace("/", "");
@@ -74,14 +74,14 @@ class POSCreditSettlement extends Component {
       uri: "/userPreferences/get",
       data: {
         screenName: _screenName,
-        identifier: "Counter"
+        identifier: "Counter",
       },
       method: "GET",
-      onSuccess: response => {
+      onSuccess: (response) => {
         this.setState({
-          counter_id: response.data.records.selectedValue
+          counter_id: response.data.records.selectedValue,
         });
-      }
+      },
     });
     getCashiersAndShiftMAP(this, this);
   }
@@ -115,21 +115,21 @@ class POSCreditSettlement extends Component {
                 <AlgaehLabel
                   label={{
                     forceLabel: "Home",
-                    align: "ltr"
+                    align: "ltr",
                   }}
                 />
-              )
+              ),
             },
             {
               pageName: (
                 <AlgaehLabel
                   label={{
                     forceLabel: "POS Credit Settlement",
-                    align: "ltr"
+                    align: "ltr",
                   }}
                 />
-              )
-            }
+              ),
+            },
           ]}
           soptlightSearch={{
             label: (
@@ -139,21 +139,21 @@ class POSCreditSettlement extends Component {
             ),
             value: this.state.pos_credit_number,
             events: {
-              onChange: getCtrlCode.bind(this, this)
+              onChange: getCtrlCode.bind(this, this),
             },
             selectValue: "pos_credit_number",
             searchName: "POSCreidt",
             jsonFile: {
               fileName: "spotlightSearch",
-              fieldName: "creidtpos.POSCreidt"
-            }
+              fieldName: "creidtpos.POSCreidt",
+            },
           }}
           userArea={
             <div className="row">
               <div className="col">
                 <AlgaehLabel
                   label={{
-                    fieldName: "credit_date"
+                    fieldName: "credit_date",
                   }}
                 />
                 <h6>
@@ -167,17 +167,17 @@ class POSCreditSettlement extends Component {
           printArea={
             this.state.hims_f_credit_header_id !== null
               ? {
-                menuitems: [
-                  {
-                    label: "Print Receipt",
-                    events: {
-                      onClick: () => {
-                        generatePOSCreditSettlementReceipt(this.state);
-                      }
-                    }
-                  }
-                ]
-              }
+                  menuitems: [
+                    {
+                      label: "Print Receipt",
+                      events: {
+                        onClick: () => {
+                          generatePOSCreditSettlementReceipt(this.state);
+                        },
+                      },
+                    },
+                  ],
+                }
               : ""
           }
           // printArea={
@@ -230,8 +230,8 @@ class POSCreditSettlement extends Component {
                     this.state.Billexists === true
                       ? "none"
                       : this.state.patient_code
-                        ? "none"
-                        : ""
+                      ? "none"
+                      : "",
                 }}
               >
                 {/* {this.state.emp_name ? this.state.emp_name : "------"} */}
@@ -286,7 +286,7 @@ class POSCreditSettlement extends Component {
                 <div className="col-lg-3">
                   <AlgaehLabel
                     label={{
-                      fieldName: "full_name"
+                      fieldName: "full_name",
                     }}
                   />
                   <h6>
@@ -302,7 +302,7 @@ class POSCreditSettlement extends Component {
               state: this.state,
               updateState: (obj, callback) => {
                 this.setState({ ...this.state, ...obj }, () => {
-                  Object.keys(obj).map(key => {
+                  Object.keys(obj).map((key) => {
                     if (key === "patient_code") {
                       this.getPatientDetails(this);
                     }
@@ -311,7 +311,7 @@ class POSCreditSettlement extends Component {
                     callback();
                   }
                 });
-              }
+              },
             }}
           >
             <CreditDetails SettlementIOputs={this.state} fromPos={true} />
@@ -362,7 +362,7 @@ function mapStateToProps(state) {
   return {
     patients: state.patients,
     existinsurance: state.existinsurance,
-    patienttype: state.patienttype
+    patienttype: state.patienttype,
   };
 }
 
@@ -371,7 +371,7 @@ function mapDispatchToProps(dispatch) {
     {
       getPatientDetails: AlgaehActions,
       getBIllDetails: AlgaehActions,
-      getPatientType: AlgaehActions
+      getPatientType: AlgaehActions,
     },
     dispatch
   );

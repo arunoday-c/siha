@@ -1,6 +1,6 @@
 // import React, { useContext } from "react";
-// import { MainContext } from "algaeh-react-components/context";
-import { getItem, tokenDecode } from "algaeh-react-components/storage";
+// import { MainContext } from "algaeh-react-components";
+import { getItem, tokenDecode } from "algaeh-react-components";
 export async function GetContextForm(name) {
   if (name === "") return "";
   const token = await getItem("token");

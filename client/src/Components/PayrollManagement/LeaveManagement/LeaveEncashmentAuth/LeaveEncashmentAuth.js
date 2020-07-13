@@ -29,7 +29,7 @@ import {
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import { GetAmountFormart } from "../../../../utils/GlobalFunctions";
 import EncashmentAuthDtls from "./EncashmentAuthDtls";
-import { MainContext } from "algaeh-react-components/context";
+import { MainContext } from "algaeh-react-components";
 
 class LeaveEncashmentAuth extends Component {
   constructor(props) {

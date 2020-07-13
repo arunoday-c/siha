@@ -38,7 +38,7 @@ import {
 } from "./ContractManagementEvents";
 import Options from "../../../Options.json";
 import moment from "moment";
-import { MainContext } from "algaeh-react-components/context";
+import { MainContext } from "algaeh-react-components";
 
 const { Dragger } = Upload;
 const { confirm } = Modal;

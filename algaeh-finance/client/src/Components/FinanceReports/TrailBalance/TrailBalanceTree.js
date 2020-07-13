@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useState } from "react";
 import moment from "moment";
-import { getItem, tokenDecode } from "algaeh-react-components/storage";
+import { getItem, tokenDecode } from "algaeh-react-components";
 import jwtDecode from "jwt-decode";
 import { PlotUI } from "./trailbalancePlotUI";
 import { newAlgaehApi } from "../../../hooks";

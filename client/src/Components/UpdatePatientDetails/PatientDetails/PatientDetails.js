@@ -22,12 +22,12 @@ import {
   AlagehFormGroup,
   AlagehAutoComplete,
 } from "../../Wrapper/algaehWrapper";
-import AlgaehHijriDatePicker from "algaeh-react-components/components/datehandler";
+import { AlgaehHijriDatePicker } from "algaeh-react-components";
 
 import variableJson from "../../../utils/GlobalVariables.json";
 import AlgaehFileUploader from "../../Wrapper/algaehFileUpload";
 import Enumerable from "linq";
-import { MainContext } from "algaeh-react-components/context";
+import { MainContext } from "algaeh-react-components";
 
 class UpdatePatientForm extends Component {
   constructor(props) {

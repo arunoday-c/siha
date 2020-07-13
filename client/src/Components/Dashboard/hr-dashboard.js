@@ -1,19 +1,17 @@
 import React, { Component } from "react";
 import "./dashboard.scss";
-import {  HorizontalBar } from "react-chartjs-2";
+import { HorizontalBar } from "react-chartjs-2";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { AlgaehActions } from "../../actions/algaehActions";
 import { GetAmountFormart } from "../../utils/GlobalFunctions";
 import DashBoardEvents, {
-  chartLegends,  
-  chartOptionsHorizontal
+  chartLegends,
+  chartOptionsHorizontal,
 } from "./DashBoardEvents";
-import { MainContext } from "algaeh-react-components/context";
-import {
-  AlagehAutoComplete  
-} from "../Wrapper/algaehWrapper";
+import { MainContext } from "algaeh-react-components";
+import { AlagehAutoComplete } from "../Wrapper/algaehWrapper";
 
 const dashEvents = DashBoardEvents();
 
@@ -37,7 +35,7 @@ class Dashboard extends Component {
       no_of_emp_join: [],
       avg_salary: 0,
       no_of_projects: 0,
-      hospital_id: ""
+      hospital_id: "",
     };
   }
   static contextType = MainContext;
@@ -48,13 +46,13 @@ class Dashboard extends Component {
       method: "GET",
       redux: {
         type: "ORGS_GET_DATA",
-        mappingName: "organizations"
-      }
+        mappingName: "organizations",
+      },
     });
 
     this.setState(
       {
-        hospital_id: userToken.hims_d_hospital_id
+        hospital_id: userToken.hims_d_hospital_id,
       },
       () => {
         dashEvents.getEmployeeList(this);
@@ -68,13 +66,13 @@ class Dashboard extends Component {
 
   showDetailHandler(event) {
     this.setState({
-      showDetails: this.state.showDetails === "d-block" ? "d-none" : "d-block"
+      showDetails: this.state.showDetails === "d-block" ? "d-none" : "d-block",
     });
   }
 
   SideMenuBarOpen(sidOpen) {
     this.setState({
-      sidBarOpen: sidOpen
+      sidBarOpen: sidOpen,
     });
   }
 
@@ -85,7 +83,7 @@ class Dashboard extends Component {
 
     this.setState(
       {
-        [name]: value
+        [name]: value,
       },
       () => {
         dashEvents.getEmployeeList(this);
@@ -105,7 +103,7 @@ class Dashboard extends Component {
             div={{ className: "col-lg-3 col-md-3 col-sm-12  form-group" }}
             label={{
               forceLabel: "Select a Branch",
-              isImp: true
+              isImp: true,
             }}
             selector={{
               name: "hospital_id",
@@ -114,15 +112,15 @@ class Dashboard extends Component {
               dataSource: {
                 textField: "hospital_name",
                 valueField: "hims_d_hospital_id",
-                data: this.props.organizations
+                data: this.props.organizations,
               },
               onChange: this.eventHandaler.bind(this),
               onClear: () => {
                 this.setState({
-                  hospital_id: null
+                  hospital_id: null,
                 });
               },
-              autoComplete: "off"
+              autoComplete: "off",
             }}
           />
         </div>
@@ -344,7 +342,7 @@ class Dashboard extends Component {
 function mapStateToProps(state) {
   return {
     hospitaldetails: state.hospitaldetails,
-    organizations: state.organizations
+    organizations: state.organizations,
   };
 }
 
@@ -352,7 +350,7 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
       getHospitalDetails: AlgaehActions,
-      getOrganizations: AlgaehActions
+      getOrganizations: AlgaehActions,
     },
     dispatch
   );

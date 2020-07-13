@@ -12,7 +12,7 @@ import {
   Switch,
   Tabs,
 } from "antd";
-import { MainContext } from "algaeh-react-components/context";
+import { MainContext } from "algaeh-react-components";
 import emptyImage from "./no_data.svg";
 const { TabPane } = Tabs;
 

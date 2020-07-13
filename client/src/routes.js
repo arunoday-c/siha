@@ -6,7 +6,7 @@ import Login from "./Components/Login/Login";
 import Layout from "./Components/common/layout";
 import Experiment from "./Components/Experiment";
 import ConcurrentTest from "./Components/concurrent-test";
-import { MainContext } from "algaeh-react-components/context";
+import { MainContext } from "algaeh-react-components";
 
 const HISDashboard = React.lazy(() =>
   retry(() => import("./Components/Dashboard/Dashboard"))

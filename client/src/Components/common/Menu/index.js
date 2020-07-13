@@ -1,15 +1,14 @@
 import React, { useEffect, useState, useContext } from "react";
 import "./menu.scss";
 import { useHistory, useLocation } from "react-router-dom";
-import { getItem, tokenDecode } from "algaeh-react-components/storage";
-import { MainContext } from "algaeh-react-components/context";
+import { MainContext, getItem, tokenDecode } from "algaeh-react-components";
 import PasswordChange from "../passwordChange";
 import { Notifications } from "../Notifications";
 import Items from "./item";
 import { algaehApiCall } from "../../../utils/algaehApiCall";
 import BreadCrum from "./breadcrum";
 import localSrc from "./algaehlogo.png";
-import i18next from "algaeh-react-components/translation/i18next";
+import { i18next } from "algaeh-react-components";
 import { Badge } from "antd";
 
 function NavBars(props) {

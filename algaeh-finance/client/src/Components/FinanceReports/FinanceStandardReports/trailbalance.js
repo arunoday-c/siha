@@ -1,7 +1,7 @@
 import React, { useRef, useState, useEffect } from "react";
 import { AlgaehTable, AlgaehMessagePop } from "algaeh-react-components";
 import moment from "moment";
-import { getItem, tokenDecode } from "algaeh-react-components/storage";
+import { getItem, tokenDecode } from "algaeh-react-components";
 import jwtDecode from "jwt-decode";
 import { dateFomater } from "../../../utils/algaehApiCall";
 import { newAlgaehApi } from "../../../hooks";

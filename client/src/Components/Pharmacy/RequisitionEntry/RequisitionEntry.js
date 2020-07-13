@@ -13,7 +13,7 @@ import {
   SaveRequisitionEntry,
   AuthorizeRequisitionEntry,
   LocationchangeTexts,
-  generateMaterialReqPhar
+  generateMaterialReqPhar,
 } from "./RequisitionEntryEvents";
 import "./RequisitionEntry.scss";
 import "../../../styles/site.scss";
@@ -25,7 +25,7 @@ import MyContext from "../../../utils/MyContext";
 import RequisitionIOputs from "../../../Models/Requisition";
 import Options from "../../../Options.json";
 import _ from "lodash";
-import { MainContext } from "algaeh-react-components/context";
+import { MainContext } from "algaeh-react-components";
 
 class RequisitionEntry extends Component {
   constructor(props) {
@@ -45,19 +45,19 @@ class RequisitionEntry extends Component {
       uri: "/pharmacy/getPharmacyOptions",
       method: "GET",
       module: "pharmacy",
-      onSuccess: res => {
+      onSuccess: (res) => {
         if (res.data.success) {
           this.setState({
-            requisition_auth_level: res.data.records[0].requisition_auth_level
+            requisition_auth_level: res.data.records[0].requisition_auth_level,
           });
         }
       },
-      onFailure: err => {
+      onFailure: (err) => {
         swalMessage({
           title: err.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -72,8 +72,8 @@ class RequisitionEntry extends Component {
       method: "GET",
       redux: {
         type: "ITEM_GET_DATA",
-        mappingName: "itemlist"
-      }
+        mappingName: "itemlist",
+      },
     });
 
     this.props.getLocation({
@@ -83,8 +83,8 @@ class RequisitionEntry extends Component {
       data: { git_location: "N", location_status: "A" },
       redux: {
         type: "LOCATIOS_GET_DATA",
-        mappingName: "reqlocations"
-      }
+        mappingName: "reqlocations",
+      },
     });
 
     this.props.getUserLocationPermission({
@@ -94,12 +94,12 @@ class RequisitionEntry extends Component {
       data: {
         git_location: "N",
         location_status: "A",
-        hospital_id: userToken.hims_d_hospital_id
+        hospital_id: userToken.hims_d_hospital_id,
       },
       redux: {
         type: "LOCATIOS_GET_DATA",
-        mappingName: "userwiselocations"
-      }
+        mappingName: "userwiselocations",
+      },
     });
 
     if (
@@ -115,7 +115,7 @@ class RequisitionEntry extends Component {
     ClearData(this, this);
   }
   render() {
-    const userwiselocations = _.filter(this.props.userwiselocations, f => {
+    const userwiselocations = _.filter(this.props.userwiselocations, (f) => {
       return f.location_type !== "WH";
     });
 
@@ -135,18 +135,18 @@ class RequisitionEntry extends Component {
                   <AlgaehLabel
                     label={{
                       forceLabel: "Home",
-                      align: "ltr"
+                      align: "ltr",
                     }}
                   />
-                )
+                ),
               },
               {
                 pageName: (
                   <AlgaehLabel
                     label={{ forceLabel: "Material Requisition", align: "ltr" }}
                   />
-                )
-              }
+                ),
+              },
             ]}
             soptlightSearch={{
               label: (
@@ -157,68 +157,69 @@ class RequisitionEntry extends Component {
               value: this.state.material_requisition_number,
               selectValue: "material_requisition_number",
               events: {
-                onChange: getCtrlCode.bind(this, this)
+                onChange: getCtrlCode.bind(this, this),
               },
               jsonFile: {
                 fileName: "spotlightSearch",
-                fieldName: "RequisitionEntry.ReqEntry"
+                fieldName: "RequisitionEntry.ReqEntry",
               },
-              searchName: "REQEntry"
+              searchName: "REQEntry",
             }}
             userArea={
               <div className="row">
                 <div className="col">
                   <AlgaehLabel
                     label={{
-                      forceLabel: "Requisition Date"
+                      forceLabel: "Requisition Date",
                     }}
                   />
                   <h6>
                     {this.state.requistion_date
                       ? moment(this.state.requistion_date).format(
-                        Options.dateFormat
-                      )
+                          Options.dateFormat
+                        )
                       : Options.dateFormat}
                   </h6>
                 </div>
-                {this.state.hims_f_pharamcy_material_header_id !== null ?
+                {this.state.hims_f_pharamcy_material_header_id !== null ? (
                   <div className="col">
                     <AlgaehLabel
                       label={{
-                        forceLabel: "Requisition Status"
+                        forceLabel: "Requisition Status",
                       }}
                     />
                     <h6>
                       {this.state.authorize1 === "Y" &&
-                        this.state.authorie2 === "Y" ? (
-                          <span className="badge badge-success">Authorized</span>
-                        ) : this.state.authorize1 === "Y" &&
-                          this.state.authorie2 === "N" ? (
-                            <span className="badge badge-danger">Pending</span>
-                          ) : this.state.authorize1 === "N" &&
-                            this.state.authorize2 === "N" ? (
-                              <span className="badge badge-danger">Pending</span>
-                            ) : (
-                              "-------"
-                            )}
+                      this.state.authorie2 === "Y" ? (
+                        <span className="badge badge-success">Authorized</span>
+                      ) : this.state.authorize1 === "Y" &&
+                        this.state.authorie2 === "N" ? (
+                        <span className="badge badge-danger">Pending</span>
+                      ) : this.state.authorize1 === "N" &&
+                        this.state.authorize2 === "N" ? (
+                        <span className="badge badge-danger">Pending</span>
+                      ) : (
+                        "-------"
+                      )}
                     </h6>
-                  </div> : null}
+                  </div>
+                ) : null}
               </div>
             }
             printArea={
               this.state.material_requisition_number !== null
                 ? {
-                  menuitems: [
-                    {
-                      label: "Print Receipt",
-                      events: {
-                        onClick: () => {
-                          generateMaterialReqPhar(this.state);
-                        }
-                      }
-                    }
-                  ]
-                }
+                    menuitems: [
+                      {
+                        label: "Print Receipt",
+                        events: {
+                          onClick: () => {
+                            generateMaterialReqPhar(this.state);
+                          },
+                        },
+                      },
+                    ],
+                  }
                 : ""
             }
             selectedLang={this.state.selectedLang}
@@ -263,25 +264,25 @@ class RequisitionEntry extends Component {
                 dataSource: {
                   textField: "location_description",
                   valueField: "hims_d_pharmacy_location_id",
-                  data: userwiselocations
+                  data: userwiselocations,
                 },
                 others: {
-                  disabled: this.state.addedItem
+                  disabled: this.state.addedItem,
                 },
                 onChange: LocationchangeTexts.bind(this, this, "From"),
                 onClear: () => {
                   this.setState({
                     from_location_id: null,
-                    from_location_type: null
+                    from_location_type: null,
                   });
-                }
+                },
               }}
             />
 
             <div className="col">
               <AlgaehLabel
                 label={{
-                  forceLabel: "Location Type"
+                  forceLabel: "Location Type",
                 }}
               />
               <h6>
@@ -289,8 +290,8 @@ class RequisitionEntry extends Component {
                   ? this.state.from_location_type === "WH"
                     ? "Warehouse"
                     : this.state.from_location_type === "MS"
-                      ? "Main Store"
-                      : "Sub Store"
+                    ? "Main Store"
+                    : "Sub Store"
                   : "----------"}
               </h6>
             </div>
@@ -305,28 +306,28 @@ class RequisitionEntry extends Component {
                 dataSource: {
                   textField: "location_description",
                   valueField: "hims_d_pharmacy_location_id",
-                  data: this.props.reqlocations
+                  data: this.props.reqlocations,
                 },
                 others: {
                   disabled:
                     this.state.requistion_type === "PR"
                       ? true
-                      : this.state.addedItem
+                      : this.state.addedItem,
                 },
                 onChange: LocationchangeTexts.bind(this, this, "To"),
                 onClear: () => {
                   this.setState({
                     to_location_id: null,
-                    to_location_type: null
+                    to_location_type: null,
                   });
-                }
+                },
               }}
             />
 
             <div className="col">
               <AlgaehLabel
                 label={{
-                  forceLabel: "Location Type"
+                  forceLabel: "Location Type",
                 }}
               />
               <h6>
@@ -334,8 +335,8 @@ class RequisitionEntry extends Component {
                   ? this.state.to_location_type === "WH"
                     ? "Warehouse"
                     : this.state.to_location_type === "MS"
-                      ? "Main Store"
-                      : "Sub Store"
+                    ? "Main Store"
+                    : "Sub Store"
                   : "----------"}
               </h6>
             </div>
@@ -345,9 +346,9 @@ class RequisitionEntry extends Component {
             <MyContext.Provider
               value={{
                 state: this.state,
-                updateState: obj => {
+                updateState: (obj) => {
                   this.setState({ ...obj });
-                }
+                },
               }}
             >
               <RequisitionItems
@@ -390,8 +391,8 @@ class RequisitionEntry extends Component {
                           ? true
                           : this.state.authorize1 === "Y" &&
                             this.state.authorie2 === "Y"
-                            ? true
-                            : false
+                          ? true
+                          : false
                       }
                       onClick={AuthorizeRequisitionEntry.bind(
                         this,
@@ -407,9 +408,9 @@ class RequisitionEntry extends Component {
                             this.state.authorize1 === "N"
                               ? "Authorize 1"
                               : this.state.requisition_auth_level === "2"
-                                ? "Authorize 2"
-                                : "Authorize 1",
-                          returnText: true
+                              ? "Authorize 2"
+                              : "Authorize 1",
+                          returnText: true,
                         }}
                       />
                     </button>
@@ -429,7 +430,7 @@ function mapStateToProps(state) {
     itemlist: state.itemlist,
     reqlocations: state.reqlocations,
     requisitionentry: state.requisitionentry,
-    userwiselocations: state.userwiselocations
+    userwiselocations: state.userwiselocations,
   };
 }
 
@@ -439,15 +440,12 @@ function mapDispatchToProps(dispatch) {
       getItems: AlgaehActions,
       getLocation: AlgaehActions,
       getRequisitionEntry: AlgaehActions,
-      getUserLocationPermission: AlgaehActions
+      getUserLocationPermission: AlgaehActions,
     },
     dispatch
   );
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(RequisitionEntry)
+  connect(mapStateToProps, mapDispatchToProps)(RequisitionEntry)
 );

@@ -28,7 +28,7 @@ import {
 } from "../../../utils/GlobalVariables.json";
 import { algaehApiCall } from "../../../utils/algaehApiCall";
 import MyContext from "../../../utils/MyContext";
-import { MainContext } from "algaeh-react-components/context";
+import { MainContext } from "algaeh-react-components";
 
 class InsuranceProvider extends PureComponent {
   constructor(props) {
@@ -198,24 +198,24 @@ class InsuranceProvider extends PureComponent {
                   />
 
                   {this.state.mrn_num_sep_cop_client === "Y" &&
-                    this.state.insurance_type === "C" ? (
-                      <AlagehFormGroup
-                        div={{ className: "col-1 form-group mandatory" }}
-                        label={{
-                          fieldName: "prefix",
-                          isImp: true,
-                        }}
-                        textBox={{
-                          value: this.state.prefix,
-                          className: "txt-fld arabicInput",
-                          name: "prefix",
+                  this.state.insurance_type === "C" ? (
+                    <AlagehFormGroup
+                      div={{ className: "col-1 form-group mandatory" }}
+                      label={{
+                        fieldName: "prefix",
+                        isImp: true,
+                      }}
+                      textBox={{
+                        value: this.state.prefix,
+                        className: "txt-fld arabicInput",
+                        name: "prefix",
 
-                          events: {
-                            onChange: texthandle.bind(this, this, context),
-                          },
-                        }}
-                      />
-                    ) : null}
+                        events: {
+                          onChange: texthandle.bind(this, this, context),
+                        },
+                      }}
+                    />
+                  ) : null}
                 </div>
 
                 <div className="row">

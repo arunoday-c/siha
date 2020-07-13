@@ -1,8 +1,7 @@
 import React, { Component } from "react";
 import "./EmployeeDocuments.scss";
-import { MainContext } from "algaeh-react-components/context";
+import { MainContext } from "algaeh-react-components";
 import swal from "sweetalert2";
-import momemt from "moment";
 
 import {
   AlagehFormGroup,

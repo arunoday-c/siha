@@ -1,5 +1,5 @@
 import { getNewLocalIp, getCookie } from "../utils/algaehApiCall";
-import { getItem } from "algaeh-react-components/storage";
+import { getItem } from "algaeh-react-components";
 import axios from "axios";
 import config from "../utils/config.json";
 
@@ -29,7 +29,7 @@ export default async function newAlgaehApi(
     module: "",
     data: {},
     extraHeaders: {},
-    options: {}
+    options: {},
   }
 ) {
   const token = await getItem("token");
@@ -38,7 +38,7 @@ export default async function newAlgaehApi(
     "x-client-ip": getNewLocalIp(),
     "x-app-user-identity": getCookie("keyResources"),
     "x-branch": getCookie("HospitalId"),
-    ...inputs.extraHeaders
+    ...inputs.extraHeaders,
   };
   try {
     let response;
@@ -46,7 +46,7 @@ export default async function newAlgaehApi(
       url: createUrl(inputs),
       method: inputs.method,
       headers,
-      ...inputs.options
+      ...inputs.options,
     };
     if (inputs.method === "GET" || !inputs.method) {
       responseObj.params = inputs.data;

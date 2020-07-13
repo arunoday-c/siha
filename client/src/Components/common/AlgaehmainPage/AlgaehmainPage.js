@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import { withRouter } from "react-router-dom";
-import { MainContext } from "algaeh-react-components/context";
-import { clearItem } from "algaeh-react-components/storage";
+import { MainContext } from "algaeh-react-components";
+import { clearItem } from "algaeh-react-components";
 import "./AlgaehmainPage.scss";
 import Menu from "../Menu";
 import { AlagehFormGroup, AlgaehLabel } from "../../Wrapper/algaehWrapper";
