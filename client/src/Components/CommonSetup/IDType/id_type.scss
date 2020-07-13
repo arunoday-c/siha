@@ -1,5 +1,47 @@
 .id_type {
   font-weight: normal;
+
+  .notifyUserList {
+    margin: 10px 0;
+    padding: 0;
+    list-style: none;
+    overflow-y: auto;
+    overflow-x: hidden;
+    max-height: 200px;
+    li {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      span {
+        margin: 0;
+        padding: 0 0 0 10px;
+        width: 100%;
+        position: relative;
+        border-radius: 0;
+        b {
+          width: 90%;
+          white-space: nowrap;
+          overflow: hidden;
+          display: inline-block;
+          text-overflow: ellipsis;
+          vertical-align: middle;
+          padding: 5px 0;
+        }
+        i {
+          font-size: 12px;
+          display: inline-block;
+          position: absolute;
+          top: 0;
+          right: 0;
+          padding: 8px;
+          border-left: 1px solid #ccc;
+          &:hover {
+            color: red;
+          }
+        }
+      }
+    }
+  }
 }
 
 .imp {
@@ -53,5 +95,49 @@ td {
   &:checked + label:after {
     border-color: #00bcb0;
     background-color: #00bcb0;
+  }
+}
+
+.notifyUserListPopup {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  overflow-y: auto;
+  overflow-x: hidden;
+  max-height: 50vh;
+  border: 1px solid #e8e8e8;
+  li {
+    margin: 0;
+    padding: 5px 5px;
+    list-style: none;
+    border-bottom: 1px solid #e8e8e8;
+    span {
+      margin: 0;
+      padding: 0 0 0 10px;
+      width: 100%;
+      position: relative;
+      border-radius: 0;
+      b {
+        width: 90%;
+        white-space: nowrap;
+        overflow: hidden;
+        display: inline-block;
+        text-overflow: ellipsis;
+        vertical-align: middle;
+        padding: 5px 0;
+      }
+      i {
+        font-size: 12px;
+        display: inline-block;
+        position: absolute;
+        top: 0;
+        right: 0;
+        padding: 8px;
+        border-left: 1px solid #ccc;
+        &:hover {
+          color: red;
+        }
+      }
+    }
   }
 }

@@ -588,17 +588,25 @@ class IDType extends Component {
                           <i className="fas fa-search fa-lg"></i>
                         </h6>
                       </div>
-                      <div>
-                        {this.state.notifyUserArray.map((item) => {
-                          return (
-                            <Tag
-                              closable
-                              onClose={this.removeNotifier.bind(this, item)}
-                            >
-                              {item.full_name}
-                            </Tag>
-                          );
-                        })}
+                      <div className="col-12">
+                        <ul className="notifyUserList">
+                          {this.state.notifyUserArray.map((item) => {
+                            return (
+                              <li>
+                                {" "}
+                                <Tag
+                                  closable
+                                  onClose={this.removeNotifier.bind(this, item)}
+                                >
+                                  <b>
+                                    {" "}
+                                    {item.employee_code} | {item.full_name}
+                                  </b>
+                                </Tag>
+                              </li>
+                            );
+                          })}
+                        </ul>
                       </div>
                     </>
                   ) : null}
@@ -628,7 +636,10 @@ class IDType extends Component {
                     />
                   ) : null}
 
-                  <div className="col-12" style={{ textAlign: "right" }}>
+                  <div
+                    className="col-12"
+                    style={{ textAlign: "right", marginTop: 10 }}
+                  >
                     {this.state.checkbutton !== true ? (
                       <button
                         onClick={this.addIDType.bind(this)}
@@ -688,22 +699,25 @@ class IDType extends Component {
                             return row.notify_expiry === "Y" ? (
                               <div>
                                 <Modal
-                                  title="Notify Users"
+                                  title="Notify Users List"
                                   visible={this.state.visible}
                                   footer={null}
                                   closable
                                   onCancel={this.handleCancel}
                                 >
-                                  {row.employees.map((item) => {
-                                    return (
-                                      <p>
-                                        {item.full_name}
-                                        <p>
-                                          Employee Code: {item.employee_code}
-                                        </p>
-                                      </p>
-                                    );
-                                  })}
+                                  <ul className="notifyUserListPopup">
+                                    {row.employees.map((item) => {
+                                      return (
+                                        <li>
+                                          <b>
+                                            {" "}
+                                            {item.employee_code} |{" "}
+                                            {item.full_name}
+                                          </b>
+                                        </li>
+                                      );
+                                    })}
+                                  </ul>
                                 </Modal>
                                 <i
                                   className="fas fa-eye"
