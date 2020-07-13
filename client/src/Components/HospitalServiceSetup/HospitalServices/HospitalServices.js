@@ -26,7 +26,7 @@ import { AlgaehActions } from "../../../actions/algaehActions";
 import { getCookie, algaehApiCall } from "../../../utils/algaehApiCall";
 import { setGlobal } from "../../../utils/GlobalFunctions";
 import { AlgaehTreeSearch } from "algaeh-react-components";
-import { MainContext } from "algaeh-react-components/context";
+import { MainContext } from "algaeh-react-components";
 
 class HospitalServices extends PureComponent {
   constructor(props) {
@@ -101,8 +101,8 @@ class HospitalServices extends PureComponent {
 
     this.FIN_Active =
       userToken.product_type === "HIMS_ERP" ||
-        userToken.product_type === "FINANCE_ERP" ||
-        userToken.product_type === "HRMS_ERP"
+      userToken.product_type === "FINANCE_ERP" ||
+      userToken.product_type === "HRMS_ERP"
         ? true
         : false;
 
@@ -477,8 +477,8 @@ class HospitalServices extends PureComponent {
                       {this.state.hims_d_services_id === null ? (
                         <AlgaehLabel label={{ fieldName: "btnSave" }} />
                       ) : (
-                          <AlgaehLabel label={{ fieldName: "btnUpdate" }} />
-                        )}
+                        <AlgaehLabel label={{ fieldName: "btnUpdate" }} />
+                      )}
                     </button>
                     <button
                       onClick={(e) => {
@@ -499,8 +499,8 @@ class HospitalServices extends PureComponent {
                         <AlgaehLabel label={{ fieldName: "btn_clear" }} />
                       </button>
                     ) : (
-                        ""
-                      )}
+                      ""
+                    )}
                   </div>
                 </div>
               </div>

@@ -14,7 +14,7 @@ import {
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import moment from "moment";
 import { getYears } from "../../../../utils/GlobalFunctions";
-import { MainContext } from "algaeh-react-components/context";
+import { MainContext } from "algaeh-react-components";
 import GlobalVariables from "../../../../utils/GlobalVariables.json";
 import swal from "sweetalert2";
 import { AlgaehSecurityElement } from "algaeh-react-components";

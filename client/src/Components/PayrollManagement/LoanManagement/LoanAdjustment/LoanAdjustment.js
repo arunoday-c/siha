@@ -10,13 +10,13 @@ import {
   AlagehFormGroup,
   AlagehAutoComplete,
   AlgaehLabel,
-  AlgaehDataGrid
+  AlgaehDataGrid,
 } from "../../../Wrapper/algaehWrapper";
 import AlgaehSearch from "../../../Wrapper/globalSearch";
 import spotlightSearch from "../../../../Search/spotlightSearch.json";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import moment from "moment";
-import { MainContext } from "algaeh-react-components/context";
+import { MainContext } from "algaeh-react-components";
 
 class LoanAdjustment extends Component {
   constructor(props) {
@@ -25,7 +25,7 @@ class LoanAdjustment extends Component {
       employee_loans: [],
       loading: false,
 
-      hospital_id: null
+      hospital_id: null,
     };
   }
 
@@ -34,8 +34,8 @@ class LoanAdjustment extends Component {
     const userToken = this.context.userToken;
 
     this.setState({
-      hospital_id: userToken.hims_d_hospital_id
-    })
+      hospital_id: userToken.hims_d_hospital_id,
+    });
     if (
       this.props.organizations === undefined ||
       this.props.organizations.length === 0
@@ -45,28 +45,28 @@ class LoanAdjustment extends Component {
         method: "GET",
         redux: {
           type: "ORGS_GET_DATA",
-          mappingName: "organizations"
-        }
+          mappingName: "organizations",
+        },
       });
     }
   }
   employeeSearch() {
     AlgaehSearch({
       searchGrid: {
-        columns: spotlightSearch.Employee_details.employee
+        columns: spotlightSearch.Employee_details.employee,
       },
       searchName: "employee",
       uri: "/gloabelSearch/get",
       onContainsChange: (text, serchBy, callBack) => {
         callBack(text);
       },
-      onRowSelect: row => {
+      onRowSelect: (row) => {
         this.setState({
           employee_name: row.full_name,
           hims_d_employee_id: row.hims_d_employee_id,
-          hospital_id: row.hospital_id
+          hospital_id: row.hospital_id,
         });
-      }
+      },
     });
   }
 
@@ -77,23 +77,23 @@ class LoanAdjustment extends Component {
       method: "PUT",
       data: {
         hims_f_loan_application_id: data.hims_f_loan_application_id,
-        loan_skip_months: data.loan_skip_months
+        loan_skip_months: data.loan_skip_months,
       },
-      onSuccess: res => {
+      onSuccess: (res) => {
         if (res.data.success) {
           swalMessage({
             title: "Record Updated Successfully",
-            type: "success"
+            type: "success",
           });
           this.getEmployeeLoans();
         }
       },
-      onFailure: err => {
+      onFailure: (err) => {
         swalMessage({
           title: err.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -101,7 +101,7 @@ class LoanAdjustment extends Component {
     this.setState({
       employee_name: null,
       hims_d_employee_id: null,
-      employee_loans: []
+      employee_loans: [],
     });
   }
 
@@ -114,7 +114,7 @@ class LoanAdjustment extends Component {
 
   getEmployeeLoans() {
     this.setState({
-      loading: true
+      loading: true,
     });
     algaehApiCall({
       uri: "/loan/getLoanApplication",
@@ -124,26 +124,26 @@ class LoanAdjustment extends Component {
         employee_id: this.state.hims_d_employee_id,
         loan_issued: "Y",
         loan_closed: "N",
-        hospital_id: this.state.hospital_id
+        hospital_id: this.state.hospital_id,
       },
-      onSuccess: res => {
+      onSuccess: (res) => {
         if (res.data.success) {
           this.setState({
             employee_loans: res.data.records,
-            loading: false
+            loading: false,
           });
         }
       },
-      onFailure: err => {
+      onFailure: (err) => {
         swalMessage({
           title: err.message,
-          type: "error"
+          type: "error",
         });
 
         this.setState({
-          loading: false
+          loading: false,
         });
-      }
+      },
     });
   }
 
@@ -152,7 +152,7 @@ class LoanAdjustment extends Component {
     let value = e.value || e.target.value;
 
     this.setState({
-      [name]: value
+      [name]: value,
     });
   }
 
@@ -167,7 +167,7 @@ class LoanAdjustment extends Component {
             div={{ className: "col-3 mandatory" }}
             label={{
               forceLabel: "Select a Branch.",
-              isImp: true
+              isImp: true,
             }}
             selector={{
               name: "hospital_id",
@@ -176,14 +176,14 @@ class LoanAdjustment extends Component {
               dataSource: {
                 textField: "hospital_name",
                 valueField: "hims_d_hospital_id",
-                data: this.props.organizations
+                data: this.props.organizations,
               },
               onChange: this.eventHandaler.bind(this),
               onClear: () => {
                 this.setState({
-                  hospital_id: null
+                  hospital_id: null,
                 });
-              }
+              },
             }}
           />
           {/* <div className="col-3 globalSearchCntr">
@@ -212,8 +212,8 @@ class LoanAdjustment extends Component {
               {!this.state.loading ? (
                 <span>Load</span>
               ) : (
-                  <i className="fas fa-spinner fa-spin" />
-                )}
+                <i className="fas fa-spinner fa-spin" />
+              )}
             </button>
           </div>
         </div>
@@ -244,10 +244,10 @@ class LoanAdjustment extends Component {
                               label={{ forceLabel: "Skip Month (Count)" }}
                             />
                           ),
-                          displayTemplate: row => {
+                          displayTemplate: (row) => {
                             return <span>{row.loan_skip_months}</span>;
                           },
-                          editorTemplate: row => {
+                          editorTemplate: (row) => {
                             return (
                               <AlagehFormGroup
                                 textBox={{
@@ -258,18 +258,18 @@ class LoanAdjustment extends Component {
                                     onChange: this.changeGridEditors.bind(
                                       this,
                                       row
-                                    )
+                                    ),
                                   },
                                   others: {
                                     errormessage:
                                       "Skip Months - cannot be blank",
                                     required: true,
-                                    type: "number"
-                                  }
+                                    type: "number",
+                                  },
                                 }}
                               />
                             );
-                          }
+                          },
                         },
                         {
                           fieldName: "employee_code",
@@ -278,10 +278,10 @@ class LoanAdjustment extends Component {
                               label={{ forceLabel: "Employee Code" }}
                             />
                           ),
-                          editorTemplate: row => {
+                          editorTemplate: (row) => {
                             return <span>{row.employee_code}</span>;
                           },
-                          disabled: true
+                          disabled: true,
                         },
                         {
                           fieldName: "employee_name",
@@ -290,10 +290,10 @@ class LoanAdjustment extends Component {
                               label={{ forceLabel: "Employee Name" }}
                             />
                           ),
-                          editorTemplate: row => {
+                          editorTemplate: (row) => {
                             return <span>{row.employee_name}</span>;
                           },
-                          disabled: true
+                          disabled: true,
                         },
                         {
                           fieldName: "approved_amount",
@@ -302,10 +302,10 @@ class LoanAdjustment extends Component {
                               label={{ forceLabel: "Approved Amount" }}
                             />
                           ),
-                          editorTemplate: row => {
+                          editorTemplate: (row) => {
                             return <span>{row.approved_amount}</span>;
                           },
-                          disabled: true
+                          disabled: true,
                         },
                         {
                           fieldName: "installment_amount",
@@ -314,10 +314,10 @@ class LoanAdjustment extends Component {
                               label={{ forceLabel: "Installment Amount" }}
                             />
                           ),
-                          editorTemplate: row => {
+                          editorTemplate: (row) => {
                             return <span>{row.installment_amount}</span>;
                           },
-                          disabled: true
+                          disabled: true,
                         },
                         {
                           fieldName: "pending_tenure",
@@ -326,10 +326,10 @@ class LoanAdjustment extends Component {
                               label={{ forceLabel: "Pending Tenure" }}
                             />
                           ),
-                          editorTemplate: row => {
+                          editorTemplate: (row) => {
                             return <span>{row.pending_tenure}</span>;
                           },
-                          disabled: true
+                          disabled: true,
                         },
                         {
                           fieldName: "pending_loan",
@@ -338,10 +338,10 @@ class LoanAdjustment extends Component {
                               label={{ forceLabel: "Pending Loan" }}
                             />
                           ),
-                          editorTemplate: row => {
+                          editorTemplate: (row) => {
                             return <span>{row.pending_loan}</span>;
                           },
-                          disabled: true
+                          disabled: true,
                         },
                         {
                           fieldName: "loan_application_number",
@@ -350,10 +350,10 @@ class LoanAdjustment extends Component {
                               label={{ forceLabel: "Loan Application Code" }}
                             />
                           ),
-                          editorTemplate: row => {
+                          editorTemplate: (row) => {
                             return <span>{row.loan_application_number}</span>;
                           },
-                          disabled: true
+                          disabled: true,
                         },
                         {
                           fieldName: "application_reason",
@@ -362,10 +362,10 @@ class LoanAdjustment extends Component {
                               label={{ forceLabel: "Application Description" }}
                             />
                           ),
-                          editorTemplate: row => {
+                          editorTemplate: (row) => {
                             return <span>{row.application_reason}</span>;
                           },
-                          disabled: true
+                          disabled: true,
                         },
                         {
                           fieldName: "loan_application_date",
@@ -374,7 +374,7 @@ class LoanAdjustment extends Component {
                               label={{ forceLabel: "Application Date" }}
                             />
                           ),
-                          displayTemplate: row => {
+                          displayTemplate: (row) => {
                             return (
                               <span>
                                 {moment(row.loan_application_date).format(
@@ -383,7 +383,7 @@ class LoanAdjustment extends Component {
                               </span>
                             );
                           },
-                          editorTemplate: row => {
+                          editorTemplate: (row) => {
                             return (
                               <span>
                                 {moment(row.loan_application_date).format(
@@ -391,21 +391,21 @@ class LoanAdjustment extends Component {
                                 )}
                               </span>
                             );
-                          }
-                        }
+                          },
+                        },
                       ]}
                       keyId="hims_f_loan_application_id"
                       dataSource={{ data: this.state.employee_loans }}
                       isEditable={true}
                       filter={true}
                       actions={{
-                        allowDelete: false
+                        allowDelete: false,
                       }}
                       paging={{ page: 0, rowsPerPage: 10 }}
                       loading={this.state.loading}
                       events={{
-                        onEdit: () => { },
-                        onDone: this.adjustLoan.bind(this)
+                        onEdit: () => {},
+                        onDone: this.adjustLoan.bind(this),
                         //onDelete: () => { }
                       }}
                       others={{}}
@@ -423,14 +423,14 @@ class LoanAdjustment extends Component {
 
 function mapStateToProps(state) {
   return {
-    organizations: state.organizations
+    organizations: state.organizations,
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getOrganizations: AlgaehActions
+      getOrganizations: AlgaehActions,
     },
     dispatch
   );

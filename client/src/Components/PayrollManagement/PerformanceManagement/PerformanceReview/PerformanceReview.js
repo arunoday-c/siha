@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import "./perf_review.scss";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
-import { MainContext } from "algaeh-react-components/context";
+import { MainContext } from "algaeh-react-components";
 import {
   AlagehFormGroup,
   AlagehAutoComplete,

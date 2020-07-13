@@ -13,7 +13,7 @@ import { AlgaehActions } from "../../actions/algaehActions";
 import InvItemSetupEvent from "./InventoryItemMasterEvent";
 import GlobalVariables from "../../utils/GlobalVariables.json";
 import InvItemLocationReorder from "./InvItemLocationReorder";
-import { MainContext } from "algaeh-react-components/context";
+import { MainContext } from "algaeh-react-components";
 
 class InventoryItemMaster extends Component {
   constructor(props) {
@@ -26,11 +26,9 @@ class InventoryItemMaster extends Component {
     };
   }
 
-
   static contextType = MainContext;
   componentDidMount() {
     const userToken = this.context.userToken;
-
 
     this.props.getItemCategory({
       uri: "/inventory/getItemCategory",
@@ -38,8 +36,8 @@ class InventoryItemMaster extends Component {
       method: "GET",
       redux: {
         type: "ITEM_CATEGORY_GET_DATA",
-        mappingName: "invitemcategory"
-      }
+        mappingName: "invitemcategory",
+      },
     });
 
     this.props.getItemGroup({
@@ -48,8 +46,8 @@ class InventoryItemMaster extends Component {
       method: "GET",
       redux: {
         type: "ITEM_GROUOP_GET_DATA",
-        mappingName: "inventoryitemgroup"
-      }
+        mappingName: "inventoryitemgroup",
+      },
     });
 
     this.props.getItemUOM({
@@ -58,8 +56,8 @@ class InventoryItemMaster extends Component {
       method: "GET",
       redux: {
         type: "ITEM_UOM_GET_DATA",
-        mappingName: "inventoryitemuom"
-      }
+        mappingName: "inventoryitemuom",
+      },
     });
 
     this.props.getServices({
@@ -68,8 +66,8 @@ class InventoryItemMaster extends Component {
       method: "GET",
       redux: {
         type: "SERVICES_GET_DATA",
-        mappingName: "inventoryitemservices"
-      }
+        mappingName: "inventoryitemservices",
+      },
     });
 
     this.props.getLocation({
@@ -78,13 +76,13 @@ class InventoryItemMaster extends Component {
       data: {
         git_location: "N",
         location_status: "A",
-        hospital_id: userToken.hims_d_hospital_id
+        hospital_id: userToken.hims_d_hospital_id,
       },
       method: "GET",
       redux: {
         type: "LOCATIONS_GET_DATA",
-        mappingName: "inventorylocations"
-      }
+        mappingName: "inventorylocations",
+      },
     });
 
     InvItemSetupEvent().getItems(this, this);
@@ -94,7 +92,7 @@ class InventoryItemMaster extends Component {
     this.setState({
       ...this.state,
       isOpen: !this.state.isOpen,
-      itemPop: {}
+      itemPop: {},
     });
   }
 
@@ -103,7 +101,7 @@ class InventoryItemMaster extends Component {
       {
         ...this.state,
         isOpen: !this.state.isOpen,
-        itemPop: {}
+        itemPop: {},
       },
       () => {
         if (e === true) {
@@ -148,7 +146,7 @@ class InventoryItemMaster extends Component {
           standard_fee: firstRecordSet.sales_price,
           vat_applicable: firstRecordSet.vat_applicable,
           vat_percent: firstRecordSet.vat_percent,
-          detail_item_uom: g.getSource()
+          detail_item_uom: g.getSource(),
         };
       })
       .toArray();
@@ -172,7 +170,7 @@ class InventoryItemMaster extends Component {
                   <AlgaehLabel
                     label={{
                       fieldName: "item_setup",
-                      align: "ltr"
+                      align: "ltr",
                     }}
                   />
                 }
@@ -201,7 +199,7 @@ class InventoryItemMaster extends Component {
                     {
                       fieldName: "action",
                       label: <AlgaehLabel label={{ fieldName: "action" }} />,
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         return (
                           <span>
                             <i
@@ -227,15 +225,17 @@ class InventoryItemMaster extends Component {
                       others: {
                         maxWidth: 90,
                         style: {
-                          textAlign: "center"
+                          textAlign: "center",
                         },
-                        filterable: false
-                      }
+                        filterable: false,
+                      },
                     },
 
                     {
                       fieldName: "item_code",
-                      label: <AlgaehLabel label={{ forceLabel: "Item Code" }} />
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Item Code" }} />
+                      ),
                     },
                     {
                       fieldName: "item_description",
@@ -243,14 +243,14 @@ class InventoryItemMaster extends Component {
                         <AlgaehLabel
                           label={{ fieldName: "item_description" }}
                         />
-                      )
+                      ),
                     },
                     {
                       fieldName: "item_type",
                       label: <AlgaehLabel label={{ fieldName: "item_type" }} />,
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         let display = GlobalVariables.ITEM_TYPE.filter(
-                          f => f.value === row.item_type
+                          (f) => f.value === row.item_type
                         );
 
                         return (
@@ -260,7 +260,7 @@ class InventoryItemMaster extends Component {
                               : ""}
                           </span>
                         );
-                      }
+                      },
                     },
 
                     {
@@ -268,15 +268,15 @@ class InventoryItemMaster extends Component {
                       label: (
                         <AlgaehLabel label={{ fieldName: "category_id" }} />
                       ),
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         let display =
                           this.props.invitemcategory === undefined
                             ? []
                             : this.props.invitemcategory.filter(
-                              f =>
-                                f.hims_d_inventory_tem_category_id ===
-                                row.category_id
-                            );
+                                (f) =>
+                                  f.hims_d_inventory_tem_category_id ===
+                                  row.category_id
+                              );
 
                         return (
                           <span>
@@ -285,20 +285,20 @@ class InventoryItemMaster extends Component {
                               : ""}
                           </span>
                         );
-                      }
+                      },
                     },
                     {
                       fieldName: "group_id",
                       label: <AlgaehLabel label={{ fieldName: "group_id" }} />,
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         let display =
                           this.props.inventoryitemgroup === undefined
                             ? []
                             : this.props.inventoryitemgroup.filter(
-                              f =>
-                                f.hims_d_inventory_item_group_id ===
-                                row.group_id
-                            );
+                                (f) =>
+                                  f.hims_d_inventory_item_group_id ===
+                                  row.group_id
+                              );
 
                         return (
                           <span>
@@ -307,7 +307,7 @@ class InventoryItemMaster extends Component {
                               : ""}
                           </span>
                         );
-                      }
+                      },
                     },
 
                     {
@@ -315,15 +315,15 @@ class InventoryItemMaster extends Component {
                       label: (
                         <AlgaehLabel label={{ fieldName: "purchase_uom_id" }} />
                       ),
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         let display =
                           this.props.inventoryitemuom === undefined
                             ? []
                             : this.props.inventoryitemuom.filter(
-                              f =>
-                                f.hims_d_inventory_uom_id ===
-                                row.purchase_uom_id
-                            );
+                                (f) =>
+                                  f.hims_d_inventory_uom_id ===
+                                  row.purchase_uom_id
+                              );
 
                         return (
                           <span>
@@ -332,21 +332,21 @@ class InventoryItemMaster extends Component {
                               : ""}
                           </span>
                         );
-                      }
+                      },
                     },
                     {
                       fieldName: "sales_uom_id",
                       label: (
                         <AlgaehLabel label={{ fieldName: "sales_uom_id" }} />
                       ),
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         let display =
                           this.props.inventoryitemuom === undefined
                             ? []
                             : this.props.inventoryitemuom.filter(
-                              f =>
-                                f.hims_d_inventory_uom_id === row.sales_uom_id
-                            );
+                                (f) =>
+                                  f.hims_d_inventory_uom_id === row.sales_uom_id
+                              );
 
                         return (
                           <span>
@@ -355,22 +355,22 @@ class InventoryItemMaster extends Component {
                               : ""}
                           </span>
                         );
-                      }
+                      },
                     },
                     {
                       fieldName: "stocking_uom_id",
                       label: (
                         <AlgaehLabel label={{ fieldName: "stocking_uom_id" }} />
                       ),
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         let display =
                           this.props.inventoryitemuom === undefined
                             ? []
                             : this.props.inventoryitemuom.filter(
-                              f =>
-                                f.hims_d_inventory_uom_id ===
-                                row.stocking_uom_id
-                            );
+                                (f) =>
+                                  f.hims_d_inventory_uom_id ===
+                                  row.stocking_uom_id
+                              );
 
                         return (
                           <span>
@@ -379,7 +379,7 @@ class InventoryItemMaster extends Component {
                               : ""}
                           </span>
                         );
-                      }
+                      },
                     },
 
                     {
@@ -387,14 +387,14 @@ class InventoryItemMaster extends Component {
                       label: (
                         <AlgaehLabel label={{ fieldName: "item_status" }} />
                       ),
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         return row.item_status === "A" ? "Active" : "Inactive";
-                      }
-                    }
+                      },
+                    },
                   ]}
                   keyId="hims_d_inventory_item_master_id"
                   dataSource={{
-                    data: ItemList
+                    data: ItemList,
                   }}
                   filter={true}
                   paging={{ page: 0, rowsPerPage: 20 }}
@@ -415,7 +415,7 @@ function mapStateToProps(state) {
     inventoryitemgroup: state.inventoryitemgroup,
     inventoryitemuom: state.inventoryitemuom,
     inventoryitemservices: state.inventoryitemservices,
-    inventorylocations: state.inventorylocations
+    inventorylocations: state.inventorylocations,
   };
 }
 
@@ -427,15 +427,12 @@ function mapDispatchToProps(dispatch) {
       getItemGroup: AlgaehActions,
       getItemUOM: AlgaehActions,
       getServices: AlgaehActions,
-      getLocation: AlgaehActions
+      getLocation: AlgaehActions,
     },
     dispatch
   );
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(InventoryItemMaster)
+  connect(mapStateToProps, mapDispatchToProps)(InventoryItemMaster)
 );

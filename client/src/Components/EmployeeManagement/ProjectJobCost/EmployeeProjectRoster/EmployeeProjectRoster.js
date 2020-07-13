@@ -8,7 +8,7 @@ import ProjectAssign from "./ProjectAssign";
 import ProjectEmpAssign from "./ProjectEmpAssign";
 import AlgaehSearch from "../../../Wrapper/globalSearch";
 import { getYears } from "../../../../utils/GlobalFunctions";
-import { MainContext } from "algaeh-react-components/context";
+import { MainContext } from "algaeh-react-components";
 
 import spotlightSearch from "../../../../Search/spotlightSearch.json";
 import moment from "moment";

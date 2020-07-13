@@ -7,7 +7,7 @@ import {
   AlgaehModalPopUp,
   AlagehFormGroup,
   AlagehAutoComplete,
-  AlgaehDataGrid
+  AlgaehDataGrid,
 } from "../../Wrapper/algaehWrapper";
 import ButtonType from "../../Wrapper/algaehButton";
 import ItemSetup from "../../../Models/ItemSetup";
@@ -32,10 +32,10 @@ import {
   stockingtexthandle,
   stockonchangegridcol,
   additionaleInfo,
-  numberEventHandaler
+  numberEventHandaler,
 } from "./ItemDetailsEvents";
 import GlobalVariables from "../../../utils/GlobalVariables.json";
-import { MainContext } from "algaeh-react-components/context";
+import { MainContext } from "algaeh-react-components";
 
 class ItemMaster extends Component {
   constructor(props) {
@@ -48,7 +48,7 @@ class ItemMaster extends Component {
       stocking_uom: null,
       conversion_factor: 0,
       convertEnable: false,
-      loading_itemInsert: false
+      loading_itemInsert: false,
     };
     this.initCall();
   }
@@ -61,21 +61,21 @@ class ItemMaster extends Component {
       data: {
         fields: "item_code",
         tableName: "hims_d_item_master",
-        keyFieldName: "hims_d_item_master_id"
+        keyFieldName: "hims_d_item_master_id",
       },
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success === true) {
           const placeHolder =
             response.data.records.length > 0 ? response.data.records[0] : {};
           that.setState({
-            item_code_placeHolder: placeHolder.item_code
+            item_code_placeHolder: placeHolder.item_code,
           });
         }
-      }
+      },
     });
   }
 
-  onClose = e => {
+  onClose = (e) => {
     let IOputs = ItemSetup.inputParam();
     this.setState({ ...this.state, ...IOputs });
     this.props.onClose && this.props.onClose(false);
@@ -99,7 +99,7 @@ class ItemMaster extends Component {
 
     this.setState({
       hospital_id: userToken.hims_d_hospital_id,
-    })
+    });
   }
 
   render() {
@@ -107,7 +107,7 @@ class ItemMaster extends Component {
       <div className="hptl-phase1-Display-patient-details">
         <AlgaehModalPopUp
           events={{
-            onClose: this.onClose.bind(this)
+            onClose: this.onClose.bind(this),
           }}
           title={this.props.HeaderCaption}
           openPopup={this.props.open}
@@ -122,40 +122,40 @@ class ItemMaster extends Component {
                       div={{ className: "col-3 mandatory form-group" }}
                       label={{
                         fieldName: "item_code",
-                        isImp: true
+                        isImp: true,
                       }}
                       textBox={{
                         className: "txt-fld",
                         name: "item_code",
                         value: this.state.item_code,
                         others: {
-                          placeholder: this.state.item_code_placeHolder
+                          placeholder: this.state.item_code_placeHolder,
                         },
                         events: {
-                          onChange: texthandle.bind(this, this)
-                        }
+                          onChange: texthandle.bind(this, this),
+                        },
                       }}
                     />
                     <AlagehFormGroup
                       div={{ className: "col-5 mandatory form-group" }}
                       label={{
                         fieldName: "item_description",
-                        isImp: true
+                        isImp: true,
                       }}
                       textBox={{
                         className: "txt-fld",
                         name: "item_description",
                         value: this.state.item_description,
                         events: {
-                          onChange: texthandle.bind(this, this)
-                        }
+                          onChange: texthandle.bind(this, this),
+                        },
                       }}
                     />
                     <AlagehAutoComplete
                       div={{ className: "col-4 mandatory form-group" }}
                       label={{
                         fieldName: "generic_id",
-                        isImp: true
+                        isImp: true,
                       }}
                       selector={{
                         name: "generic_id",
@@ -164,18 +164,18 @@ class ItemMaster extends Component {
                         dataSource: {
                           textField: "generic_name",
                           valueField: "hims_d_item_generic_id",
-                          data: this.props.itemgeneric
+                          data: this.props.itemgeneric,
                         },
-                        onChange: texthandle.bind(this, this)
+                        onChange: texthandle.bind(this, this),
                       }}
                     />
                     <AlagehAutoComplete
                       div={{
-                        className: "col-4 mandatory  form-group "
+                        className: "col-4 mandatory  form-group ",
                       }}
                       label={{
                         fieldName: "category_id",
-                        isImp: true
+                        isImp: true,
                       }}
                       selector={{
                         name: "category_id",
@@ -184,9 +184,9 @@ class ItemMaster extends Component {
                         dataSource: {
                           textField: "category_desc",
                           valueField: "hims_d_item_category_id",
-                          data: this.props.itemcategory
+                          data: this.props.itemcategory,
                         },
-                        onChange: texthandle.bind(this, this)
+                        onChange: texthandle.bind(this, this),
                       }}
                     />
 
@@ -194,7 +194,7 @@ class ItemMaster extends Component {
                       div={{ className: "col-4 mandatory form-group" }}
                       label={{
                         fieldName: "group_id",
-                        isImp: true
+                        isImp: true,
                       }}
                       selector={{
                         name: "group_id",
@@ -203,29 +203,29 @@ class ItemMaster extends Component {
                         dataSource: {
                           textField: "group_description",
                           valueField: "hims_d_item_group_id",
-                          data: this.props.itemgroup
+                          data: this.props.itemgroup,
                         },
-                        onChange: texthandle.bind(this, this)
+                        onChange: texthandle.bind(this, this),
                       }}
                     />
                     <AlagehFormGroup
                       div={{ className: "col-4 form-group" }}
                       label={{
-                        forceLabel: "SFDA"
+                        forceLabel: "SFDA",
                       }}
                       textBox={{
                         className: "txt-fld",
                         name: "sfda_code",
                         value: this.state.sfda_code,
                         events: {
-                          onChange: texthandle.bind(this, this)
-                        }
+                          onChange: texthandle.bind(this, this),
+                        },
                       }}
                     />
                     <AlagehAutoComplete
                       div={{ className: "col-4 form-group" }}
                       label={{
-                        fieldName: "form_id"
+                        fieldName: "form_id",
                       }}
                       selector={{
                         name: "form_id",
@@ -234,15 +234,15 @@ class ItemMaster extends Component {
                         dataSource: {
                           textField: "form_description",
                           valueField: "hims_d_item_form_id",
-                          data: this.props.itemform
+                          data: this.props.itemform,
                         },
-                        onChange: texthandle.bind(this, this)
+                        onChange: texthandle.bind(this, this),
                       }}
                     />
                     <AlagehAutoComplete
                       div={{ className: "col-4  form-group " }}
                       label={{
-                        fieldName: "storage_id"
+                        fieldName: "storage_id",
                       }}
                       selector={{
                         name: "storage_id",
@@ -251,9 +251,9 @@ class ItemMaster extends Component {
                         dataSource: {
                           textField: "storage_description",
                           valueField: "hims_d_item_storage_id",
-                          data: this.props.itemstorage
+                          data: this.props.itemstorage,
                         },
-                        onChange: texthandle.bind(this, this)
+                        onChange: texthandle.bind(this, this),
                       }}
                     />
                     <div className="col-6">
@@ -269,7 +269,7 @@ class ItemMaster extends Component {
                           <span>
                             <AlgaehLabel
                               label={{
-                                fieldName: "active"
+                                fieldName: "active",
                               }}
                             />
                           </span>
@@ -284,7 +284,7 @@ class ItemMaster extends Component {
                           <span>
                             <AlgaehLabel
                               label={{
-                                fieldName: "inactive"
+                                fieldName: "inactive",
                               }}
                             />
                           </span>
@@ -319,23 +319,23 @@ class ItemMaster extends Component {
                       div={{ className: "col-3 form-group" }}
                       label={{
                         forceLabel: "Reorder Quantity",
-                        isImp: true
+                        isImp: true,
                       }}
                       textBox={{
                         number: {
                           allowNegative: false,
-                          thousandSeparator: ","
+                          thousandSeparator: ",",
                         },
                         className: "txt-fld",
                         name: "reorder_qty",
                         value: this.state.reorder_qty,
                         dontAllowKeys: ["-", "e", "."],
                         events: {
-                          onChange: numberEventHandaler.bind(this, this)
+                          onChange: numberEventHandaler.bind(this, this),
                         },
                         others: {
-                          type: "number"
-                        }
+                          type: "number",
+                        },
                       }}
                     />
 
@@ -366,12 +366,12 @@ class ItemMaster extends Component {
                             className:
                               this.state.vat_applicable === "Y"
                                 ? "col-3 mandatory form-group"
-                                : "col-3 form-group"
+                                : "col-3 form-group",
                           }}
                           label={{
                             fieldName: "vat_percent",
                             isImp:
-                              this.state.vat_applicable === "Y" ? true : false
+                              this.state.vat_applicable === "Y" ? true : false,
                           }}
                           textBox={{
                             decimal: { allowNegative: false },
@@ -379,12 +379,14 @@ class ItemMaster extends Component {
                             name: "vat_percent",
                             value: this.state.vat_percent,
                             events: {
-                              onChange: numberEventHandaler.bind(this, this)
+                              onChange: numberEventHandaler.bind(this, this),
                             },
                             others: {
                               disabled:
-                                this.state.vat_applicable === "Y" ? false : true
-                            }
+                                this.state.vat_applicable === "Y"
+                                  ? false
+                                  : true,
+                            },
                           }}
                         />
                       </div>
@@ -411,7 +413,7 @@ class ItemMaster extends Component {
                     <AlagehAutoComplete
                       div={{ className: "col" }}
                       label={{
-                        fieldName: "uom_id"
+                        fieldName: "uom_id",
                       }}
                       selector={{
                         name: "uom_id",
@@ -420,18 +422,18 @@ class ItemMaster extends Component {
                         dataSource: {
                           textField: "uom_description",
                           valueField: "hims_d_pharmacy_uom_id",
-                          data: this.props.itemuom
+                          data: this.props.itemuom,
                         },
                         onChange: uomtexthandle.bind(this, this),
                         others: {
-                          exclude: "true"
-                        }
+                          exclude: "true",
+                        },
                       }}
                     />
                     <AlagehAutoComplete
                       div={{ className: "col-3" }}
                       label={{
-                        fieldName: "stocking_uom"
+                        fieldName: "stocking_uom",
                       }}
                       selector={{
                         name: "stocking_uom",
@@ -440,35 +442,35 @@ class ItemMaster extends Component {
                         dataSource: {
                           textField: "name",
                           valueField: "value",
-                          data: GlobalVariables.FORMAT_YESNO
+                          data: GlobalVariables.FORMAT_YESNO,
                         },
                         onChange: stockingtexthandle.bind(this, this),
                         others: {
-                          exclude: "true"
-                        }
+                          exclude: "true",
+                        },
                       }}
                     />
                     <AlagehFormGroup
                       div={{ className: "col" }}
                       label={{
-                        fieldName: "conversion_factor"
+                        fieldName: "conversion_factor",
                       }}
                       textBox={{
                         number: {
                           allowNegative: false,
-                          thousandSeparator: ","
+                          thousandSeparator: ",",
                         },
                         className: "txt-fld",
                         name: "conversion_factor",
                         value: this.state.conversion_factor,
                         dontAllowKeys: ["-", "e", "."],
                         events: {
-                          onChange: texthandle.bind(this, this)
+                          onChange: texthandle.bind(this, this),
                         },
                         others: {
                           disabled: this.state.convertEnable,
-                          exclude: "true"
-                        }
+                          exclude: "true",
+                        },
                       }}
                     />
 
@@ -493,7 +495,7 @@ class ItemMaster extends Component {
                             label: (
                               <AlgaehLabel label={{ fieldName: "action" }} />
                             ),
-                            displayTemplate: row => {
+                            displayTemplate: (row) => {
                               return (
                                 <span>
                                   <i
@@ -507,23 +509,23 @@ class ItemMaster extends Component {
                             others: {
                               maxWidth: 60,
                               style: {
-                                textAlign: "center"
-                              }
-                            }
+                                textAlign: "center",
+                              },
+                            },
                           },
                           {
                             fieldName: "uom_id",
                             label: (
                               <AlgaehLabel label={{ fieldName: "uom_id" }} />
                             ),
-                            displayTemplate: row => {
+                            displayTemplate: (row) => {
                               let display =
                                 this.props.itemuom === undefined
                                   ? []
                                   : this.props.itemuom.filter(
-                                    f =>
-                                      f.hims_d_pharmacy_uom_id === row.uom_id
-                                  );
+                                      (f) =>
+                                        f.hims_d_pharmacy_uom_id === row.uom_id
+                                    );
 
                               return (
                                 <span>
@@ -533,7 +535,7 @@ class ItemMaster extends Component {
                                 </span>
                               );
                             },
-                            editorTemplate: row => {
+                            editorTemplate: (row) => {
                               return (
                                 <AlagehAutoComplete
                                   div={{}}
@@ -544,26 +546,26 @@ class ItemMaster extends Component {
                                     dataSource: {
                                       textField: "uom_description",
                                       valueField: "hims_d_pharmacy_uom_id",
-                                      data: this.props.itemuom
+                                      data: this.props.itemuom,
                                     },
                                     others: {
-                                      disabled: true
+                                      disabled: true,
                                     },
                                     onChange: onchangegridcol.bind(
                                       this,
                                       this,
 
                                       row
-                                    )
+                                    ),
                                   }}
                                 />
                               );
                             },
                             others: {
                               style: {
-                                textAlign: "center"
-                              }
-                            }
+                                textAlign: "center",
+                              },
+                            },
                           },
 
                           {
@@ -573,7 +575,7 @@ class ItemMaster extends Component {
                                 label={{ fieldName: "conversion_factor" }}
                               />
                             ),
-                            editorTemplate: row => {
+                            editorTemplate: (row) => {
                               return (
                                 <AlagehFormGroup
                                   div={{}}
@@ -582,7 +584,7 @@ class ItemMaster extends Component {
                                     className: "txt-fld",
                                     name: "conversion_factor",
                                     others: {
-                                      disabled: true
+                                      disabled: true,
                                     },
                                     events: {
                                       onChange: onchangegridcol.bind(
@@ -590,17 +592,17 @@ class ItemMaster extends Component {
                                         this,
 
                                         row
-                                      )
-                                    }
+                                      ),
+                                    },
                                   }}
                                 />
                               );
                             },
                             others: {
                               style: {
-                                textAlign: "center"
-                              }
-                            }
+                                textAlign: "center",
+                              },
+                            },
                           },
                           {
                             fieldName: "stocking_uom",
@@ -609,10 +611,10 @@ class ItemMaster extends Component {
                                 label={{ fieldName: "stocking_uom" }}
                               />
                             ),
-                            displayTemplate: row => {
+                            displayTemplate: (row) => {
                               return row.stocking_uom === "N" ? "No" : "Yes";
                             },
-                            editorTemplate: row => {
+                            editorTemplate: (row) => {
                               return (
                                 <AlagehAutoComplete
                                   div={{}}
@@ -623,37 +625,37 @@ class ItemMaster extends Component {
                                     dataSource: {
                                       textField: "name",
                                       valueField: "value",
-                                      data: GlobalVariables.FORMAT_YESNO
+                                      data: GlobalVariables.FORMAT_YESNO,
                                     },
                                     others: {
-                                      disabled: true
+                                      disabled: true,
                                     },
                                     onChange: stockonchangegridcol.bind(
                                       this,
                                       this,
 
                                       row
-                                    )
+                                    ),
                                   }}
                                 />
                               );
                             },
                             others: {
                               style: {
-                                textAlign: "center"
-                              }
-                            }
-                          }
+                                textAlign: "center",
+                              },
+                            },
+                          },
                         ]}
                         keyId="service_type_id"
                         dataSource={{
-                          data: this.state.detail_item_uom
+                          data: this.state.detail_item_uom,
                         }}
                         paging={{ page: 0, rowsPerPage: 5 }}
                         events={{
                           onDelete: deleteUOM.bind(this, this),
-                          onEdit: row => { },
-                          onDone: updateUOM.bind(this, this)
+                          onEdit: (row) => {},
+                          onDone: updateUOM.bind(this, this),
                         }}
                       />
                     </div>
@@ -669,7 +671,7 @@ class ItemMaster extends Component {
                       div={{ className: "col-4 mandatory form-group" }}
                       label={{
                         fieldName: "purchase_uom_id",
-                        isImp: true
+                        isImp: true,
                       }}
                       selector={{
                         name: "purchase_uom_id",
@@ -678,17 +680,17 @@ class ItemMaster extends Component {
                         dataSource: {
                           textField: "uom_description",
                           valueField: "uom_id",
-                          data: this.state.detail_item_uom
+                          data: this.state.detail_item_uom,
                         },
-                        onChange: texthandle.bind(this, this)
+                        onChange: texthandle.bind(this, this),
                       }}
-                    //forceUpdate={true}
+                      //forceUpdate={true}
                     />
                     <AlagehAutoComplete
                       div={{ className: "col-4 mandatory form-group" }}
                       label={{
                         fieldName: "sales_uom_id",
-                        isImp: true
+                        isImp: true,
                       }}
                       selector={{
                         name: "sales_uom_id",
@@ -697,16 +699,16 @@ class ItemMaster extends Component {
                         dataSource: {
                           textField: "uom_description",
                           valueField: "uom_id",
-                          data: this.state.detail_item_uom
+                          data: this.state.detail_item_uom,
                         },
-                        onChange: texthandle.bind(this, this)
+                        onChange: texthandle.bind(this, this),
                       }}
                     />
                     <AlagehAutoComplete
                       div={{ className: "col-4 mandatory form-group " }}
                       label={{
                         fieldName: "stocking_uom_id",
-                        isImp: true
+                        isImp: true,
                       }}
                       selector={{
                         name: "stocking_uom_id",
@@ -715,12 +717,12 @@ class ItemMaster extends Component {
                         dataSource: {
                           textField: "uom_description",
                           valueField: "hims_d_pharmacy_uom_id",
-                          data: this.props.itemuom
+                          data: this.props.itemuom,
                         },
                         onChange: texthandle.bind(this, this),
                         others: {
-                          disabled: true
-                        }
+                          disabled: true,
+                        },
                       }}
                     />
                     {/*<AlagehAutoComplete
@@ -743,7 +745,7 @@ class ItemMaster extends Component {
                     <AlagehFormGroup
                       div={{ className: "col-4 form-group" }}
                       label={{
-                        fieldName: "purchase_cost"
+                        fieldName: "purchase_cost",
                       }}
                       textBox={{
                         decimal: { allowNegative: false },
@@ -751,11 +753,11 @@ class ItemMaster extends Component {
                         name: "purchase_cost",
                         value: this.state.purchase_cost,
                         others: {
-                          min: 0
+                          min: 0,
                         },
                         events: {
-                          onChange: numberEventHandaler.bind(this, this)
-                        }
+                          onChange: numberEventHandaler.bind(this, this),
+                        },
                       }}
                     />
 
@@ -763,13 +765,13 @@ class ItemMaster extends Component {
                       div={{ className: "col-4 mandatory form-group" }}
                       label={{
                         fieldName: "price",
-                        isImp: true
+                        isImp: true,
                       }}
                       textBox={{
                         decimal: { allowNegative: false },
                         className: "txt-fld",
                         name: "standard_fee",
-                        value: this.state.standard_fee
+                        value: this.state.standard_fee,
                       }}
                     />
                   </div>
@@ -804,12 +806,12 @@ class ItemMaster extends Component {
                       forceLabel:
                         this.state.hims_d_item_master_id === null
                           ? "Save"
-                          : "Update"
+                          : "Update",
                     }}
                   />
 
                   <button
-                    onClick={e => {
+                    onClick={(e) => {
                       this.onClose(e);
                     }}
                     type="button"
@@ -837,7 +839,7 @@ function mapStateToProps(state) {
     itemstorage: state.itemstorage,
     itemservices: state.itemservices,
     itemuom: state.itemuom,
-    itemlist: state.itemlist
+    itemlist: state.itemlist,
   };
 }
 
@@ -850,7 +852,7 @@ function mapDispatchToProps(dispatch) {
       getItemForm: AlgaehActions,
       getItemStorage: AlgaehActions,
       getServices: AlgaehActions,
-      getItemUOM: AlgaehActions
+      getItemUOM: AlgaehActions,
     },
     dispatch
   );

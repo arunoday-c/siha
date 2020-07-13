@@ -15,13 +15,13 @@ import AlgaehLabel from "../Wrapper/label.js";
 import {
   algaehApiCall,
   swalMessage,
-  getCookie
+  getCookie,
 } from "../../utils/algaehApiCall.js";
 import { AlgaehModalPopUp } from "../Wrapper/algaehWrapper";
 
 import {
   imageToByteArray,
-  AlgaehValidation
+  AlgaehValidation,
 } from "../../utils/GlobalFunctions";
 import { setGlobal } from "../../utils/GlobalFunctions";
 import { AlgaehActions } from "../../actions/algaehActions";
@@ -29,7 +29,7 @@ import AlgaehLoader from "../Wrapper/fullPageLoader";
 import moment from "moment";
 import { SetBulkState } from "../../utils/GlobalFunctions";
 import extend from "extend";
-import { MainContext } from "algaeh-react-components/context";
+import { MainContext } from "algaeh-react-components";
 
 class UpdatePatientDetails extends Component {
   constructor(props) {
@@ -38,7 +38,7 @@ class UpdatePatientDetails extends Component {
       AdvanceOpen: false,
       RefundOpen: false,
       visittypeselect: true,
-      clearEnable: false
+      clearEnable: false,
     };
   }
 
@@ -55,7 +55,7 @@ class UpdatePatientDetails extends Component {
     setGlobal({ selectedLang: prevLang });
 
     let IOputs = PatRegIOputs.inputParam();
-    IOputs.mrn_num_sep_cop_client = userToken.mrn_num_sep_cop_client
+    IOputs.mrn_num_sep_cop_client = userToken.mrn_num_sep_cop_client;
     IOputs.selectedLang = prevLang;
     this.setState(IOputs);
   }
@@ -72,7 +72,6 @@ class UpdatePatientDetails extends Component {
     SetBulkState({
       state: this,
       callback: () => {
-
         // AlgaehValidation({
         //   alertTypeIcon: "warning",
         //   querySelector: "data-validate='demographicDetails'",
@@ -87,7 +86,7 @@ class UpdatePatientDetails extends Component {
           if (this.state.filePreview !== null) {
             patientdata = {
               ...this.state,
-              patient_Image: imageToByteArray(this.state.filePreview)
+              patient_Image: imageToByteArray(this.state.filePreview),
             };
           } else {
             patientdata = this.state;
@@ -104,14 +103,14 @@ class UpdatePatientDetails extends Component {
           delete patientdata.countrystates;
           delete patientdata.cities;
 
-          let strUri = ""
-          let strMethod = ""
+          let strUri = "";
+          let strMethod = "";
           if (patientdata.hims_d_patient_id === null) {
-            strUri = "/patientRegistration/registerPatient"
-            strMethod = "POST"
+            strUri = "/patientRegistration/registerPatient";
+            strMethod = "POST";
           } else {
-            strUri = "/patientRegistration/updatePatientData"
-            strMethod = "PUT"
+            strUri = "/patientRegistration/updatePatientData";
+            strMethod = "PUT";
           }
 
           algaehApiCall({
@@ -119,7 +118,7 @@ class UpdatePatientDetails extends Component {
             module: "frontDesk",
             data: patientdata,
             method: strMethod,
-            onSuccess: response => {
+            onSuccess: (response) => {
               // AlgaehLoader({ show: false });
               if (response.data.success) {
                 let _arrayImages = [];
@@ -154,35 +153,42 @@ class UpdatePatientDetails extends Component {
                   );
                 }
 
-                Promise.all(_arrayImages).then(result => {
+                Promise.all(_arrayImages).then((result) => {
                   AlgaehLoader({ show: false });
                   let IOputs = PatRegIOputs.inputParam();
 
-                  let tes = response.data.records.patient_code
-                  const patient_code = patientdata.hims_d_patient_id === null ? response.data.records.patient_code : this.state.patient_code
+                  let tes = response.data.records.patient_code;
+                  const patient_code =
+                    patientdata.hims_d_patient_id === null
+                      ? response.data.records.patient_code
+                      : this.state.patient_code;
                   this.setState(IOputs, () => {
-                    this.props.onClose && this.props.onClose({ data: true, patient_code: patient_code });
+                    this.props.onClose &&
+                      this.props.onClose({
+                        data: true,
+                        patient_code: patient_code,
+                      });
                   });
 
                   swalMessage({
                     title: "Done Successfully",
-                    type: "success"
+                    type: "success",
                   });
                 });
               }
             },
-            onFailure: error => {
+            onFailure: (error) => {
               AlgaehLoader({ show: false });
               swalMessage({
                 title: error.message,
-                type: "error"
+                type: "error",
               });
-            }
+            },
           });
         }
         // }
         // });
-      }
+      },
     });
   }
 
@@ -200,7 +206,7 @@ class UpdatePatientDetails extends Component {
       module: "frontDesk",
       method: "GET",
       data: { patient_code: patcode },
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           let data = response.data.records;
 
@@ -220,23 +226,26 @@ class UpdatePatientDetails extends Component {
         }
         AlgaehLoader({ show: false });
       },
-      onFailure: error => {
+      onFailure: (error) => {
         AlgaehLoader({ show: false });
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
-  onClose = e => {
+  onClose = (e) => {
     let IOputs = PatRegIOputs.inputParam();
     const exits_state = extend({}, this.state);
 
     this.setState(IOputs, () => {
-
-      this.props.onClose && this.props.onClose({ data: false, patient_code: exits_state.patient_code });
+      this.props.onClose &&
+        this.props.onClose({
+          data: false,
+          patient_code: exits_state.patient_code,
+        });
     });
   };
 
@@ -245,7 +254,7 @@ class UpdatePatientDetails extends Component {
       <div>
         <AlgaehModalPopUp
           events={{
-            onClose: this.onClose.bind(this)
+            onClose: this.onClose.bind(this),
           }}
           title={this.props.HeaderCaption}
           openPopup={this.props.show}
@@ -254,22 +263,20 @@ class UpdatePatientDetails extends Component {
           <div className="col-12">
             <AlgaehLabel
               label={{
-                fieldName: "patient_code"
+                fieldName: "patient_code",
               }}
             />
             <h6>
-              {this.state.patient_code
-                ? this.state.patient_code
-                : "--------"}
+              {this.state.patient_code ? this.state.patient_code : "--------"}
             </h6>
           </div>
           <div className="col-lg-12 popupInner">
             <MyContext.Provider
               value={{
                 state: this.state,
-                updateState: obj => {
+                updateState: (obj) => {
                   this.setState({ ...obj });
-                }
+                },
               }}
             >
               <div className="row">
@@ -290,7 +297,7 @@ class UpdatePatientDetails extends Component {
                     type="button"
                     className="btn btn-primary"
                     onClick={this.SavePatientDetails.bind(this)}
-                  // disabled={this.state.saveEnable}
+                    // disabled={this.state.saveEnable}
                   >
                     <AlgaehLabel
                       label={{ fieldName: "btn_save", returnText: true }}
@@ -300,7 +307,7 @@ class UpdatePatientDetails extends Component {
                   <button
                     type="button"
                     className="btn btn-default"
-                    onClick={e => {
+                    onClick={(e) => {
                       this.onClose(e);
                     }}
                   >
@@ -319,7 +326,7 @@ class UpdatePatientDetails extends Component {
 function mapStateToProps(state) {
   return {
     patients: state.patients,
-    countries: state.countries
+    countries: state.countries,
   };
 }
 
@@ -327,15 +334,12 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
       getPatientDetails: AlgaehActions,
-      getCountries: AlgaehActions
+      getCountries: AlgaehActions,
     },
     dispatch
   );
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(UpdatePatientDetails)
+  connect(mapStateToProps, mapDispatchToProps)(UpdatePatientDetails)
 );

@@ -20,7 +20,7 @@ import { getCookie } from "../../../../utils/algaehApiCall";
 import { InsertUpdateEmployee } from "./EmployeeMasterEvents";
 import AlgaehLoader from "../../../Wrapper/fullPageLoader";
 import { AlgaehValidation } from "../../../../utils/GlobalFunctions";
-import { MainContext } from "algaeh-react-components/context";
+import { MainContext } from "algaeh-react-components";
 import { AlgaehSecurityElement } from "algaeh-react-components";
 
 class EmployeeMaster extends Component {
@@ -80,16 +80,16 @@ class EmployeeMaster extends Component {
 
     const HIMS_Active =
       userToken.product_type === "HIMS_ERP" ||
-        userToken.product_type === "HIMS_CLINICAL" ||
-        userToken.product_type === "NO_FINANCE"
+      userToken.product_type === "HIMS_CLINICAL" ||
+      userToken.product_type === "NO_FINANCE"
         ? true
         : false;
     const HRMS_Active =
       userToken.product_type === "HIMS_ERP" ||
-        userToken.product_type === "HRMS" ||
-        userToken.product_type === "HRMS_ERP" ||
-        userToken.product_type === "FINANCE_ERP" ||
-        userToken.product_type === "NO_FINANCE"
+      userToken.product_type === "HRMS" ||
+      userToken.product_type === "HRMS_ERP" ||
+      userToken.product_type === "FINANCE_ERP" ||
+      userToken.product_type === "NO_FINANCE"
         ? true
         : false;
 
@@ -404,36 +404,36 @@ class EmployeeMaster extends Component {
                     ) : null}
                   </ul>
                 ) : (
-                    <ul className="nav">
-                      <li
-                        algaehtabs={"PersonalDetails"}
-                        className={"nav-item tab-button active"}
-                        onClick={this.openTab.bind(this)}
-                      >
-                        {
-                          <AlgaehLabel
-                            label={{
-                              fieldName: "personal_details",
-                            }}
-                          />
-                        }
-                      </li>
+                  <ul className="nav">
+                    <li
+                      algaehtabs={"PersonalDetails"}
+                      className={"nav-item tab-button active"}
+                      onClick={this.openTab.bind(this)}
+                    >
+                      {
+                        <AlgaehLabel
+                          label={{
+                            fieldName: "personal_details",
+                          }}
+                        />
+                      }
+                    </li>
 
-                      <li
-                        algaehtabs={"OfficalDetails"}
-                        className={"nav-item tab-button"}
-                        onClick={this.openTab.bind(this)}
-                      >
-                        {
-                          <AlgaehLabel
-                            label={{
-                              forceLabel: "Official Details",
-                            }}
-                          />
-                        }
-                      </li>
+                    <li
+                      algaehtabs={"OfficalDetails"}
+                      className={"nav-item tab-button"}
+                      onClick={this.openTab.bind(this)}
+                    >
+                      {
+                        <AlgaehLabel
+                          label={{
+                            forceLabel: "Official Details",
+                          }}
+                        />
+                      }
+                    </li>
 
-                      {/*<li
+                    {/*<li
                       algaehtabs={"DeptUserDetails"}
                       className={"nav-item tab-button disableLi"}
                       onClick={this.openTab.bind(this)}
@@ -446,69 +446,69 @@ class EmployeeMaster extends Component {
                         />
                       }
                     </li>*/}
-                      {this.state.HRMS_Active === true ? (
-                        <li
-                          algaehtabs={"PayRollDetails"}
-                          className={"nav-item tab-button disableLi"}
-                          onClick={this.openTab.bind(this)}
-                        >
-                          {
-                            <AlgaehLabel
-                              label={{
-                                forceLabel: "Payroll Details",
-                              }}
-                            />
-                          }
-                        </li>
-                      ) : null}
-                      {this.state.isdoctor === "Y" ? (
-                        <li
-                          algaehtabs={"CommissionSetup"}
-                          className={"nav-item tab-button disableLi"}
-                          onClick={this.openTab.bind(this)}
-                        >
-                          {
-                            <AlgaehLabel
-                              label={{
-                                fieldName: "commission_setup",
-                              }}
-                            />
-                          }
-                        </li>
-                      ) : null}
-                      {this.state.HRMS_Active === true ? (
-                        <li
-                          algaehtabs={"FamilyAndIdentification"}
-                          className={"nav-item tab-button disableLi"}
-                          onClick={this.openTab.bind(this)}
-                        >
-                          {
-                            <AlgaehLabel
-                              label={{
-                                forceLabel: "Family & Identification Details",
-                              }}
-                            />
-                          }
-                        </li>
-                      ) : null}
+                    {this.state.HRMS_Active === true ? (
+                      <li
+                        algaehtabs={"PayRollDetails"}
+                        className={"nav-item tab-button disableLi"}
+                        onClick={this.openTab.bind(this)}
+                      >
+                        {
+                          <AlgaehLabel
+                            label={{
+                              forceLabel: "Payroll Details",
+                            }}
+                          />
+                        }
+                      </li>
+                    ) : null}
+                    {this.state.isdoctor === "Y" ? (
+                      <li
+                        algaehtabs={"CommissionSetup"}
+                        className={"nav-item tab-button disableLi"}
+                        onClick={this.openTab.bind(this)}
+                      >
+                        {
+                          <AlgaehLabel
+                            label={{
+                              fieldName: "commission_setup",
+                            }}
+                          />
+                        }
+                      </li>
+                    ) : null}
+                    {this.state.HRMS_Active === true ? (
+                      <li
+                        algaehtabs={"FamilyAndIdentification"}
+                        className={"nav-item tab-button disableLi"}
+                        onClick={this.openTab.bind(this)}
+                      >
+                        {
+                          <AlgaehLabel
+                            label={{
+                              forceLabel: "Family & Identification Details",
+                            }}
+                          />
+                        }
+                      </li>
+                    ) : null}
 
-                      {this.state.HRMS_Active === true ? (
-                        <li
-                          algaehtabs={"RulesDetails"}
-                          className={"nav-item tab-button disableLi"}
-                          onClick={this.openTab.bind(this)}
-                        >
-                          {
-                            <AlgaehLabel
-                              label={{
-                                forceLabel: "Rules Details",
-                              }}
-                            />
-                          }
-                        </li>
-                      ) : null}
-                    </ul>
-                  )}
+                    {this.state.HRMS_Active === true ? (
+                      <li
+                        algaehtabs={"RulesDetails"}
+                        className={"nav-item tab-button disableLi"}
+                        onClick={this.openTab.bind(this)}
+                      >
+                        {
+                          <AlgaehLabel
+                            label={{
+                              forceLabel: "Rules Details",
+                            }}
+                          />
+                        }
+                      </li>
+                    ) : null}
+                  </ul>
+                )}
               </div>
               {/* <MyContext.Provider
                   value={{
@@ -551,17 +551,17 @@ class EmployeeMaster extends Component {
                         className="btn btn-primary"
                         disabled={
                           this.props.employee_status === "I" ||
-                            this.props.blockUpdate === true
+                          this.props.blockUpdate === true
                             ? true
                             : false
                         }
                       >
                         {this.state.personalDetails.hims_d_employee_id ===
-                          null ? (
-                            <AlgaehLabel label={{ fieldName: "btnSave" }} />
-                          ) : (
-                            <AlgaehLabel label={{ fieldName: "btnUpdate" }} />
-                          )}
+                        null ? (
+                          <AlgaehLabel label={{ fieldName: "btnSave" }} />
+                        ) : (
+                          <AlgaehLabel label={{ fieldName: "btnUpdate" }} />
+                        )}
                       </button>
                     </AlgaehSecurityElement>
                     <button

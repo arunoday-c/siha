@@ -17,7 +17,7 @@ import {
   Paymenttexthandle,
   PaymentOnClear,
 } from "./EmployeePaymentCancelEvent.js";
-import { MainContext } from "algaeh-react-components/context";
+import { MainContext } from "algaeh-react-components";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 
 import EmployeePaymentIOputs from "../../../../Models/EmployeePayment";

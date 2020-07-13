@@ -5,13 +5,13 @@ import crypto from "crypto";
 import Enumerable from "linq";
 import Mediate from "./meadiate";
 
-// import { MainContext } from "algaeh-react-components/context";
+// import { MainContext } from "algaeh-react-components";
 export function successfulMessage(options) {
   options.icon = options.icon || "error";
 
   swalMessage({
     text: options.message,
-    type: options.icon
+    type: options.icon,
   });
 }
 
@@ -69,7 +69,7 @@ export function getDays() {
   for (let i = 1; i <= 31; i++) {
     monthDays.push({
       name: i,
-      value: i
+      value: i,
     });
   }
 
@@ -123,15 +123,15 @@ export function saveImageOnServer(options) {
       pageName: "",
       fileName: "",
       saveDirectly: false,
-      destinationName: ""
+      destinationName: "",
     },
-    ...options
+    ...options,
   };
 
   if (settings.fileControl !== undefined) {
-    settings.fileControl.map(file => {
+    settings.fileControl.map((file) => {
       settings.thisState.stateName.setState({
-        [settings.thisState.stateProgressName]: 0
+        [settings.thisState.stateProgressName]: 0,
       });
       if (settings.saveDirectly === false && settings.fileName === "") {
         settings.fileName = getCookie("ScreenName").replace("/", "");
@@ -157,11 +157,11 @@ export function saveImageOnServer(options) {
               saveDirectly: settings.saveDirectly,
               destinationName: settings.destinationName,
               fileType: settings.fileType,
-              fileExtention: _fileName[_fileName.length - 1]
-            })
+              fileExtention: _fileName[_fileName.length - 1],
+            }),
           },
           others: {
-            onUploadProgress: progressEvent => {
+            onUploadProgress: (progressEvent) => {
               let percentCompleted = Math.round(
                 (progressEvent.loaded * 100) / progressEvent.total
               );
@@ -169,28 +169,28 @@ export function saveImageOnServer(options) {
               if (percentCompleted >= 100) {
                 settings.thisState.stateName.setState({
                   [settings.thisState.stateProgressName]: 100,
-                  [settings.thisState.filePreview]: file.preview
+                  [settings.thisState.filePreview]: file.preview,
                 });
               } else {
                 settings.thisState.stateName.setState({
-                  [settings.thisState.stateProgressName]: percentCompleted
+                  [settings.thisState.stateProgressName]: percentCompleted,
                 });
               }
-            }
+            },
           },
-          onSuccess: result => {
+          onSuccess: (result) => {
             if (result.data.success) {
               swalMessage({
                 title: "Image Uploaded Successfully",
-                type: "success"
+                type: "success",
               });
             } else {
               swalMessage({
                 title: "Image Uploding failure",
-                type: "Error"
+                type: "Error",
               });
             }
-          }
+          },
         });
       };
       reader.onabort = () => console.log("file reading was aborted");
@@ -213,15 +213,15 @@ export function displayFileFromServer(options) {
     method: "GET",
     module: "documentManagement",
     headers: {
-      Accept: "blob"
+      Accept: "blob",
     },
     data: {
       fileType: options.fileType,
       destinationName: options.destinationName,
-      ..._resize
+      ..._resize,
     },
     others: { responseType: "blob" },
-    onSuccess: response => {
+    onSuccess: (response) => {
       if (!options.forceSkipNoContent) {
         if (response.status === 204) {
           if (typeof options.onNoContent === "function") {
@@ -242,14 +242,14 @@ export function displayFileFromServer(options) {
         reader.readAsDataURL(response.data);
       }
     },
-    onFailure: details => {
+    onFailure: (details) => {
       if (
         options.onFileFailure !== undefined &&
         typeof options.onFileFailure === "function"
       ) {
         options.onFileFailure(details);
       }
-    }
+    },
   });
 }
 export function saveFileOnServer(options) {
@@ -266,11 +266,11 @@ export function saveFileOnServer(options) {
         pageName: _pageName,
         destinationName: options.uniqueID,
         fileType: options.fileType,
-        fileExtention: options.fileExtention
-      })
+        fileExtention: options.fileExtention,
+      }),
     },
     others: {
-      onUploadProgress: progressEvent => {
+      onUploadProgress: (progressEvent) => {
         let percentCompleted = Math.round(
           (progressEvent.loaded * 100) / progressEvent.total
         );
@@ -279,15 +279,15 @@ export function saveFileOnServer(options) {
         } else {
           if (typeof options.showProcess === "function") options.showProcess();
         }
-      }
+      },
     },
-    onSuccess: result => {
+    onSuccess: (result) => {
       if (result.data.success) {
         if (options.showSuccessMessage === undefined) {
           swalMessage({
             croppingDone: false,
             title: "File Uploaded Successfully",
-            type: "success"
+            type: "success",
           });
         } else {
           if (typeof options.showSuccessMessage === "function") {
@@ -295,7 +295,7 @@ export function saveFileOnServer(options) {
           }
         }
       }
-    }
+    },
   });
 }
 
@@ -312,7 +312,7 @@ export function getLabelFromLanguage(options) {
       let getLanguageLables = JSON.parse(savePage);
       return getLanguageLables[options.fieldName];
     } else {
-      loadJSON(fileImport, data => {
+      loadJSON(fileImport, (data) => {
         window.localStorage.removeItem(fileName);
         window.localStorage.setItem(fileName, JSON.stringify(data));
         return data[options.fieldName];
@@ -340,7 +340,7 @@ export function AlgaehValidation(options) {
     multivalidate: false,
     appendingFieldName: "Cannotbeblank",
     alertTypeIcon: "warning",
-    ...options
+    ...options,
   };
 
   if (settings.skip !== undefined && settings.skip === true) {
@@ -437,16 +437,16 @@ export function AlgaehValidation(options) {
           _title =
             _langua === "en"
               ? _lable
-                .replace("*", "")
-                .toLowerCase()
-                .replace(/^\w/, c => {
-                  return c.toUpperCase();
-                }) + "- Cannot be empty"
+                  .replace("*", "")
+                  .toLowerCase()
+                  .replace(/^\w/, (c) => {
+                    return c.toUpperCase();
+                  }) + "- Cannot be empty"
               : _lable.replace("*", "") + "- لا يمكن أن يكون فارغا";
         }
         swalMessage({
           title: _title,
-          type: settings.alertTypeIcon
+          type: settings.alertTypeIcon,
         });
         _element.focus();
         if (settings.onCatch !== undefined) settings.onCatch(_element.value);
@@ -487,7 +487,7 @@ export function numberFormater(value, options, CurrencyDetail) {
   const settings = {
     ...CurrencyDetail,
     ...{ appendSymbol: true },
-    ...options
+    ...options,
   };
 
   const precesions =
@@ -509,11 +509,7 @@ export function numberFormater(value, options, CurrencyDetail) {
     const k = Math.pow(10, prec);
     return Math.round(n * k) / k;
   };
-  let s = prec
-    ? toFixedFix(n, prec)
-    : Math.round(n)
-      .toString()
-      .split(".");
+  let s = prec ? toFixedFix(n, prec) : Math.round(n).toString().split(".");
   if (s instanceof Array) {
     if (s[0].length > 3) {
       s[0] = s[0].replace(
@@ -637,7 +633,7 @@ export function checkSecurity(options) {
         currentSecurity.listOfComponentsToHide
       )
         .where(
-          w =>
+          (w) =>
             w.component_code === options.component_code &&
             w.module_code === options.module_code &&
             w.screen_code === options.screen_code
@@ -662,7 +658,7 @@ export function checkSecurity(options) {
     } else if (options.securityType === "element") {
       const _hasElement = Enumerable.from(currentSecurity.screenElementsToHide)
         .where(
-          w =>
+          (w) =>
             w.component_code === options.component_code &&
             w.module_code === options.module_code &&
             w.screen_code === options.screen_code &&
@@ -698,7 +694,7 @@ export function retry(fn, retriesLeft = 5, interval = 1000) {
   return new Promise((resolve, reject) => {
     fn()
       .then(resolve)
-      .catch(error => {
+      .catch((error) => {
         setTimeout(() => {
           if (retriesLeft === 1) {
             reject(error);
@@ -721,12 +717,12 @@ export function saveUserPrefernce(options) {
           screenName: _screenName,
           identifier: options.name,
           value: options.value,
-          name: options.name
+          name: options.name,
         },
         method: "POST",
-        onSuccess: response => {
+        onSuccess: (response) => {
           resolve(response);
-        }
+        },
       });
     } catch (e) {
       reject(e);
@@ -742,12 +738,12 @@ export function getUserPreferences(options) {
         uri: "/userPreferences/get",
         data: {
           screenName: _screenName,
-          identifier: options.name
+          identifier: options.name,
         },
         method: "GET",
-        onSuccess: response => {
+        onSuccess: (response) => {
           resolve(response.data.records);
-        }
+        },
       });
     } catch (e) {
       reject(e);

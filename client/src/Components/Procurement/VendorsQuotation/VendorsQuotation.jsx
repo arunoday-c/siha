@@ -24,7 +24,7 @@ import {
   generateVendorQuotation,
   getVendorMaster,
 } from "./VendorsQuotationEvents";
-import { MainContext } from "algaeh-react-components/context";
+import { MainContext } from "algaeh-react-components";
 
 class VendorsQuotation extends Component {
   constructor(props) {

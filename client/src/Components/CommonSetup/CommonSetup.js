@@ -12,7 +12,7 @@ import VisitType from "./VisitType/VisitType";
 import InsuranceCardClass from "./InsuranceCardClass/InsuranceCardClass";
 import { AlgaehLabel } from "../Wrapper/algaehWrapper";
 import { AlgaehActions } from "../../actions/algaehActions";
-import { MainContext } from "algaeh-react-components/context";
+import { MainContext } from "algaeh-react-components";
 
 class CommonSetup extends Component {
   constructor(props) {

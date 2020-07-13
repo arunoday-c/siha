@@ -13,7 +13,7 @@ import ProjectMapping from "./ProjectMapping/ProjectMapping";
 import ProjectMaster from "./ProjectMaster/ProjectMaster";
 import { AlgaehLabel } from "../Wrapper/algaehWrapper";
 import { AlgaehTabs } from "algaeh-react-components";
-import { MainContext } from "algaeh-react-components/context";
+import { MainContext } from "algaeh-react-components";
 
 class BusinessSetup extends Component {
   constructor(props) {

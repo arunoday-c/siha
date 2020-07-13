@@ -5,7 +5,7 @@ import { getEmpGroups } from "../../PayrollManagement/AttendanceMgmt/BulkTimeShe
 import spotlightSearch from "../../../Search/spotlightSearch.json";
 import AlgaehSearch from "../../Wrapper/globalSearch";
 import moment from "moment";
-import { MainContext } from "algaeh-react-components/context";
+import { MainContext } from "algaeh-react-components";
 
 export const FilterContext = createContext(null);
 

@@ -15,7 +15,7 @@ import ConsumptionItems from "./ConsumptionItems/ConsumptionItems";
 import MyContext from "../../../utils/MyContext";
 import ConsumptionIOputs from "../../../Models/ConsumptionEntry";
 import Options from "../../../Options.json";
-import { MainContext } from "algaeh-react-components/context";
+import { MainContext } from "algaeh-react-components";
 
 class ConsumptionEntry extends Component {
   constructor(props) {
@@ -40,8 +40,8 @@ class ConsumptionEntry extends Component {
         method: "GET",
         redux: {
           type: "ITEM_GET_DATA",
-          mappingName: "itemlist"
-        }
+          mappingName: "itemlist",
+        },
       });
     }
 
@@ -55,12 +55,12 @@ class ConsumptionEntry extends Component {
       method: "GET",
       data: {
         location_status: "A",
-        hospital_id: userToken.hims_d_hospital_id
+        hospital_id: userToken.hims_d_hospital_id,
       },
       redux: {
         type: "LOCATIOS_GET_DATA",
-        mappingName: "userwiselocations"
-      }
+        mappingName: "userwiselocations",
+      },
     });
     // }
 
@@ -106,18 +106,18 @@ class ConsumptionEntry extends Component {
                   <AlgaehLabel
                     label={{
                       forceLabel: "Home",
-                      align: "ltr"
+                      align: "ltr",
                     }}
                   />
-                )
+                ),
               },
               {
                 pageName: (
                   <AlgaehLabel
                     label={{ forceLabel: "Consumption Entry", align: "ltr" }}
                   />
-                )
-              }
+                ),
+              },
             ]}
             soptlightSearch={{
               label: (
@@ -128,27 +128,27 @@ class ConsumptionEntry extends Component {
               value: this.state.consumption_number,
               selectValue: "consumption_number",
               events: {
-                onChange: this.getCtrlCode.bind(this)
+                onChange: this.getCtrlCode.bind(this),
               },
               jsonFile: {
                 fileName: "spotlightSearch",
-                fieldName: "ConsumptionEntry.PharConsEntry"
+                fieldName: "ConsumptionEntry.PharConsEntry",
               },
-              searchName: "PharConsEntry"
+              searchName: "PharConsEntry",
             }}
             userArea={
               <div className="row">
                 <div className="col">
                   <AlgaehLabel
                     label={{
-                      forceLabel: "Consumption Date"
+                      forceLabel: "Consumption Date",
                     }}
                   />
                   <h6>
                     {this.state.consumption_date
                       ? moment(this.state.consumption_date).format(
-                        Options.dateFormat
-                      )
+                          Options.dateFormat
+                        )
                       : Options.dateFormat}
                   </h6>
                 </div>
@@ -174,19 +174,19 @@ class ConsumptionEntry extends Component {
                     dataSource: {
                       textField: "location_description",
                       valueField: "hims_d_pharmacy_location_id",
-                      data: this.props.userwiselocations
+                      data: this.props.userwiselocations,
                     },
                     others: {
-                      disabled: this.state.addedItem
+                      disabled: this.state.addedItem,
                     },
-                    onChange: this.LocationchangeTexts.bind(this)
+                    onChange: this.LocationchangeTexts.bind(this),
                   }}
                 />
 
                 <div className="col-lg-4">
                   <AlgaehLabel
                     label={{
-                      forceLabel: "Location Type"
+                      forceLabel: "Location Type",
                     }}
                   />
                   <h6>
@@ -194,8 +194,8 @@ class ConsumptionEntry extends Component {
                       ? this.state.location_type === "WH"
                         ? "Warehouse"
                         : this.state.location_type === "MS"
-                          ? "Main Store"
-                          : "Sub Store"
+                        ? "Main Store"
+                        : "Sub Store"
                       : "Location Type"}
                   </h6>
                 </div>
@@ -207,9 +207,9 @@ class ConsumptionEntry extends Component {
             <MyContext.Provider
               value={{
                 state: this.state,
-                updateState: obj => {
+                updateState: (obj) => {
                   this.setState({ ...obj });
-                }
+                },
               }}
             >
               <ConsumptionItems ConsumptionIOputs={this.state} />
@@ -252,7 +252,7 @@ class ConsumptionEntry extends Component {
 function mapStateToProps(state) {
   return {
     itemlist: state.itemlist,
-    userwiselocations: state.userwiselocations
+    userwiselocations: state.userwiselocations,
   };
 }
 
@@ -260,7 +260,7 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
       getItems: AlgaehActions,
-      getUserLocationPermission: AlgaehActions
+      getUserLocationPermission: AlgaehActions,
     },
     dispatch
   );

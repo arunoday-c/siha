@@ -1,5 +1,5 @@
 import React, { Component, useContext } from "react";
-import { MainContext } from "algaeh-react-components/context";
+import { MainContext } from "algaeh-react-components";
 import ReactTable from "react-table";
 import withFixedColumns from "react-table-hoc-fixed-columns";
 import "react-table/react-table.css";

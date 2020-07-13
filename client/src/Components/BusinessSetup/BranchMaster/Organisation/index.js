@@ -8,7 +8,7 @@ import {
 } from "algaeh-react-components";
 import { newAlgaehApi } from "../../../../hooks";
 import { AlgaehLabel } from "../../../Wrapper/algaehWrapper";
-import { MainContext } from "algaeh-react-components/context";
+import { MainContext } from "algaeh-react-components";
 import { logoUrl, LoadLogo } from "../imagesSettings";
 import EmailConfig from "./EmailConfig";
 import AlgaehSearch from "../../../Wrapper/globalSearch";

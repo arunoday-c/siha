@@ -13,7 +13,7 @@ import {
   Tabs,
 } from "antd";
 import { MessageOutlined } from "@ant-design/icons";
-import { MainContext } from "algaeh-react-components/context";
+import { MainContext } from "algaeh-react-components";
 import emptyImage from "./no_data.svg";
 const { TabPane } = Tabs;
 

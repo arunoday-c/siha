@@ -1,13 +1,16 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
-import "algaeh-react-components/translation/i18next";
+import { i18next } from "algaeh-react-components";
 import { AlagehReducers } from "./reducers/algaehReducers";
 import logger from "redux-logger";
 // import ContextBinding from "./contextCheck";
 import Routes from "./routes.js";
 import thunk from "redux-thunk";
 import { applyMiddleware, createStore } from "redux";
+import "antd/dist/antd.min.css";
+import "algaeh-react-components/dist/index.css";
+
 import "./index.scss";
 import "./styles/site.scss";
 import "./loader.scss";

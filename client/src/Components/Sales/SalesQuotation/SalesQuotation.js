@@ -35,7 +35,7 @@ import SalesListService from "./SalesListService/SalesListService";
 
 import MyContext from "../../../utils/MyContext";
 import Options from "../../../Options.json";
-import { MainContext } from "algaeh-react-components/context";
+import { MainContext } from "algaeh-react-components";
 import { GetAmountFormart } from "../../../utils/GlobalFunctions";
 
 class SalesQuotation extends Component {

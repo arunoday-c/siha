@@ -24,7 +24,7 @@ import EmployeeLeaveOpenBal from "./EmployeeLeaveOpenBal";
 import EmployeeLoanOpenBal from "./EmployeeLoanOpenBal";
 import EmployeeGratuityOpenBal from "./EmployeeGratuityOpenBal";
 import EmployeeLeaveSalaryOpenBal from "./EmployeeLeaveSalaryOpenBal";
-import { MainContext } from "algaeh-react-components/context";
+import { MainContext } from "algaeh-react-components";
 import { AlgaehSecurityElement } from "algaeh-react-components";
 
 const all_functions = OpeningBalanceEvent();

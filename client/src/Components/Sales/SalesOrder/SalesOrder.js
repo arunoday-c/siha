@@ -38,7 +38,7 @@ import {
 import { Upload, Modal } from "antd";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import { GetAmountFormart } from "../../../utils/GlobalFunctions";
-import { MainContext } from "algaeh-react-components/context";
+import { MainContext } from "algaeh-react-components";
 import SalesOrdListItems from "./SalesOrdListItems/SalesOrdListItems";
 import SalesOrdListService from "./SalesOrdListService/SalesOrdListService";
 import { AlgaehSecurityComponent } from "algaeh-react-components";
