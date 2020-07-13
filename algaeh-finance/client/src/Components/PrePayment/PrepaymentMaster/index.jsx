@@ -6,7 +6,6 @@ import {
   AlgaehDataGrid,
   AlgaehTreeSearch,
   AlgaehButton,
-  
 } from "algaeh-react-components";
 export function PrepaymentMaster() {
   return (
@@ -36,7 +35,7 @@ export function PrepaymentMaster() {
             isImp: true,
           }}
           textBox={{
-            name: "prepayment_desc"
+            name: "prepayment_desc",
             type: "text",
             className: "form-control",
             placeholder: "",
