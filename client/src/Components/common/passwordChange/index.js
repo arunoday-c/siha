@@ -6,7 +6,6 @@ import {
   AlgaehMessagePop,
   // Icon
 } from "algaeh-react-components";
-import { InfoCircleOutlined } from "@ant-design/icons";
 import { algaehApiCall } from "../../../utils/algaehApiCall";
 function ChangePassword(props) {
   const { showPasswordChange, onVisibityChange, history } = props;
@@ -133,8 +132,7 @@ function ChangePassword(props) {
         }}
       />
       <p>
-        <InfoCircleOutlined />
-        {/* <Icon type="info-circle" /> */}
+        <i className="fas fa-info-circle"></i>
         &nbsp; Changing Password automatically load login screen.
       </p>
     </AlgaehModal>

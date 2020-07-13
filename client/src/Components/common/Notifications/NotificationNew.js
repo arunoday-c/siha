@@ -12,7 +12,6 @@ import {
   Switch,
   Tabs,
 } from "antd";
-import { MessageOutlined } from "@ant-design/icons";
 import { MainContext } from "algaeh-react-components/context";
 import emptyImage from "./no_data.svg";
 const { TabPane } = Tabs;
@@ -156,7 +155,7 @@ export default function Notification({ open, handlePanel }) {
                 <Skeleton avatar title={false} loading={item.loading} active>
                   <List.Item.Meta
                     title={item.title || "Title"}
-                    avatar={<Avatar icon={<MessageOutlined />} />}
+                    avatar={<Avatar icon={<i className="envelope-square" />} />}
                     description={item.message}
                   />
                 </Skeleton>
