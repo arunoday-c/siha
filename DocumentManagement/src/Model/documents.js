@@ -307,6 +307,23 @@ export default (db) => {
               }
             }
           );
+        } else if (_headerFile.fileType == "EmployeeDocuments") {
+          EmployeeDocModel.deleteOne(
+            { destinationName: _headerFile.unique },
+            (error) => {
+              if (error) {
+                res.status(400).json({
+                  success: false,
+                  message: error,
+                });
+              } else {
+                res.status(200).json({
+                  success: true,
+                  message: "Successfully Deleted",
+                });
+              }
+            }
+          );
         }
       } catch (error) {
         res.status(400).json({
@@ -315,6 +332,7 @@ export default (db) => {
         });
       }
     },
+
     getEmailConfig: (req, res) => {
       EmailConfig.find()
         .then((conf) => {

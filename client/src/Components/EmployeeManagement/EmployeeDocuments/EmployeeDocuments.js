@@ -1,8 +1,11 @@
 import React, { Component } from "react";
 import "./EmployeeDocuments.scss";
 import { MainContext } from "algaeh-react-components/context";
+import swal from "sweetalert2";
+import momemt from "moment";
 
 import {
+  AlagehFormGroup,
   AlgaehLabel,
   AlagehAutoComplete,
   AlgaehDataGrid,
@@ -81,6 +84,13 @@ class EmployeeDocuments extends Component {
       });
   }
   onChangeDocTypeHandler(e) {
+    this.setState({
+      employee_name: null,
+      document_grid: [],
+      employee_id: undefined,
+      // hospital_id: null,
+      document_type_list: [],
+    });
     eventLogic()
       .getDocumentTypes({
         document_type: e.value,
@@ -140,12 +150,122 @@ class EmployeeDocuments extends Component {
         });
     }
   }
+
+  deleteDeptUser(data) {
+    swal({
+      title: `Do you want to delete?`,
+      text: `${data.document_type_name} `,
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes",
+      confirmButtonColor: "#44b8bd",
+      cancelButtonColor: "#d33",
+      cancelButtonText: "No",
+    }).then((willDelete) => {
+      if (willDelete.value) {
+        eventLogic()
+          .deleteSavedDocument({
+            hims_f_employee_documents_id: data.hims_f_employee_documents_id,
+            dependent_id: data.dependent_id,
+          })
+          .then(
+            eventLogic()
+              .deleteDocument({
+                unique: data.download_uniq_id,
+
+                fileType:
+                  data.document_type === "C"
+                    ? "CompanyDocuments"
+                    : "EmployeeDocuments",
+              })
+              .then(
+                swalMessage({
+                  title: "Successfully Deleted",
+                  type: "success",
+                }),
+                eventLogic()
+                  .getSaveDocument({
+                    document_type: this.state.document_type,
+                    employee_id: this.state.employee_id,
+                    dependent_id: this.state.selected_id,
+                  })
+                  .then((result) => {
+                    this.setState({
+                      document_grid: result,
+                    });
+                  })
+                  .catch((error) => {
+                    swalMessage({
+                      title: error.message,
+                      type: "error",
+                    });
+                  })
+              )
+              .catch((error) => {
+                swalMessage({
+                  title: error.message,
+                  type: "error",
+                });
+              })
+          )
+          .catch((error) => {
+            swalMessage({
+              title: error.message,
+              type: "error",
+            });
+          });
+      }
+    });
+  }
+
+  updateDocumentName(data) {
+    algaehApiCall({
+      uri: "/documents/updateDocument",
+      module: "hrManagement",
+      method: "PUT",
+      data: {
+        document_name: data.document_name,
+        hims_f_employee_documents_id: data.hims_f_employee_documents_id,
+      },
+      onSuccess: (response) => {
+        if (response.data.success) {
+          swalMessage({
+            title: "Record updated successfully",
+            type: "success",
+          });
+          eventLogic()
+            .getSaveDocument({
+              document_type: this.state.document_type,
+              employee_id: this.state.employee_id,
+              // dependent_id: item.hims_d_employee_dependents_id,
+            })
+            .then((result) => {
+              this.setState({
+                document_grid: result,
+              });
+            })
+            .catch((error) => {
+              swalMessage({
+                title: error.message,
+                type: "error",
+              });
+            });
+        }
+      },
+      onFailure: (error) => {
+        swalMessage({
+          title: error.message,
+          type: "error",
+        });
+      },
+    });
+  }
   onSaved() {
     eventLogic()
       .getSaveDocument({
         document_type: this.state.document_type,
         employee_id: this.state.employee_id,
-        // dependent_id: item.hims_d_employee_dependents_id,
+        dependent_id: this.state.selected_id,
       })
       .then((result) => {
         this.setState({
@@ -169,7 +289,7 @@ class EmployeeDocuments extends Component {
           .getSaveDocument({
             document_type: this.state.document_type,
             employee_id: this.state.employee_id,
-            dependent_id: item.hims_d_employee_dependents_id,
+            dependent_id: this.state.selected_id,
           })
           .then((result) => {
             this.setState({
@@ -185,6 +305,7 @@ class EmployeeDocuments extends Component {
       }
     );
   }
+
   dropDownHandler(value) {
     this.setState({
       [value.name]: value.value,
@@ -201,13 +322,25 @@ class EmployeeDocuments extends Component {
   }
   onClearEmployeeHandler(e) {
     this.setState({
-      selected_id: undefined,
+      document_type: null,
+      // selected_id: undefined,
+      document_grid: [],
       document_for_list: [],
+
+      employee_name: null,
+      document_type_list: [],
       employee_id: undefined,
+      hospital_id: null,
     });
   }
+  changeGridEditors(row, e) {
+    let name = e.name || e.target.name;
+    let value = e.value || e.target.value;
+    row[name] = value;
+    row.update();
+  }
   // onChangeEmployeeHandler(e) {
-  //   
+  //
   //   eventLogic()
   //     .getEmployeeDependents({ employee_id: e.value })
   //     .then((result) => {
@@ -252,7 +385,7 @@ class EmployeeDocuments extends Component {
         }
       },
 
-      onFailure: (err) => { },
+      onFailure: (err) => {},
     });
   }
 
@@ -268,7 +401,7 @@ class EmployeeDocuments extends Component {
         }
       },
 
-      onFailure: (err) => { },
+      onFailure: (err) => {},
     });
   }
 
@@ -333,7 +466,6 @@ class EmployeeDocuments extends Component {
       },
       others: { responseType: "blob" },
       onSuccess: (response) => {
-
         const { data } = response;
         const url = URL.createObjectURL(data);
         let a = document.createElement("a");
@@ -436,8 +568,12 @@ class EmployeeDocuments extends Component {
               }}
             /> */}
             <div className="col form-group">
-              <button style={{ marginTop: 19 }} className="btn btn-default">
-                Load
+              <button
+                style={{ marginTop: 19 }}
+                className="btn btn-primary"
+                onClick={this.onClearEmployeeHandler.bind(this)}
+              >
+                Clear
               </button>
             </div>
           </div>
@@ -459,7 +595,7 @@ class EmployeeDocuments extends Component {
                     className={
                       "list-group-item d-flex justify-content-between align-items-center" +
                       (this.state.selected_id ===
-                        item.hims_d_employee_dependents_id
+                      item.hims_d_employee_dependents_id
                         ? " active"
                         : "")
                     }
@@ -501,6 +637,9 @@ class EmployeeDocuments extends Component {
                             label={{ forceLabel: "Document Type" }}
                           />
                         ),
+                        editorTemplate: (row) => {
+                          return row.document_type_name;
+                        },
                         others: {
                           maxWidth: 200,
                         },
@@ -512,6 +651,29 @@ class EmployeeDocuments extends Component {
                             label={{ forceLabel: "Document Name" }}
                           />
                         ),
+                        editorTemplate: (row) => {
+                          return (
+                            <AlagehFormGroup
+                              div={{ className: "col" }}
+                              textBox={{
+                                className: "txt-fld",
+                                name: "document_name",
+                                value: row.document_name,
+                                events: {
+                                  onChange: this.changeGridEditors.bind(
+                                    this,
+                                    row
+                                  ),
+                                },
+                                others: {
+                                  errormessage:
+                                    "Document Name- cannot be blank",
+                                  required: true,
+                                },
+                              }}
+                            />
+                          );
+                        },
                       },
                       {
                         fieldName: "View_Download",
@@ -521,6 +683,15 @@ class EmployeeDocuments extends Component {
                           />
                         ),
                         displayTemplate: (row) => (
+                          <button
+                            onClick={() => {
+                              this.downloadSelectedFile(row);
+                            }}
+                          >
+                            Download
+                          </button>
+                        ),
+                        editorTemplate: (row) => (
                           <button
                             onClick={() => {
                               this.downloadSelectedFile(row);
@@ -539,9 +710,10 @@ class EmployeeDocuments extends Component {
                     isEditable={true}
                     paging={{ page: 0, rowsPerPage: 20 }}
                     events={{
-                      onDelete: (rows) => { }, //deleteDeptUser.bind(this, this),
-                      onEdit: (row) => { },
-                      onDone: (rows) => { }, //updateDeptUser.bind(this, this)
+                      //,
+                      onEdit: (row) => {},
+                      onDelete: this.deleteDeptUser.bind(this),
+                      onDone: this.updateDocumentName.bind(this), //updateDeptUser.bind(this, this)
                     }}
                   />
                 </div>
@@ -555,52 +727,52 @@ class EmployeeDocuments extends Component {
               <div className="row">
                 {this.state.selected_id !== undefined
                   ? this.state.document_type_list.map((item, index) => (
-                    <div className="col" key={index}>
-                      <AlgaehFileUploader
-                        name={"attach_" + item.hims_d_document_type_id}
-                        textAltMessage={item.document_description}
-                        showActions={true}
-                        serviceParameters={{
-                          uniqueID:
-                            (this.state.selected_id === null
-                              ? "Me"
-                              : this.state.selected_id) +
-                            "_" +
-                            this.state.document_type +
-                            (this.state.employee_id !== undefined
-                              ? "_" + this.state.employee_id
-                              : "") +
-                            "_" +
-                            item.hims_d_document_type_id +
-                            "_" +
-                            item.document_description,
-                          destinationName:
-                            (this.state.selected_id === null
-                              ? "Me"
-                              : this.state.selected_id) +
-                            "_" +
-                            this.state.document_type +
-                            (this.state.employee_id !== undefined
-                              ? "_" + this.state.employee_id
-                              : "") +
-                            "_" +
-                            item.hims_d_document_type_id +
-                            "_" +
-                            item.document_description,
-                          fileType:
-                            this.state.document_type === "C"
-                              ? "Company"
-                              : "Employees",
-                        }}
-                        onlyDragDrop={true}
-                        componentType={item.document_description}
-                        afterSave={(result) => {
-                          this.afterPassPortSave(result);
-                          this.onSaved();
-                        }}
-                      />
-                    </div>
-                  ))
+                      <div className="col" key={index}>
+                        <AlgaehFileUploader
+                          name={"attach_" + item.hims_d_document_type_id}
+                          textAltMessage={item.document_description}
+                          showActions={true}
+                          serviceParameters={{
+                            uniqueID:
+                              (this.state.selected_id === null
+                                ? "Me"
+                                : this.state.selected_id) +
+                              "_" +
+                              this.state.document_type +
+                              (this.state.employee_id !== undefined
+                                ? "_" + this.state.employee_id
+                                : "") +
+                              "_" +
+                              item.hims_d_document_type_id +
+                              "_" +
+                              item.document_description,
+                            destinationName:
+                              (this.state.selected_id === null
+                                ? "Me"
+                                : this.state.selected_id) +
+                              "_" +
+                              this.state.document_type +
+                              (this.state.employee_id !== undefined
+                                ? "_" + this.state.employee_id
+                                : "") +
+                              "_" +
+                              item.hims_d_document_type_id +
+                              "_" +
+                              item.document_description,
+                            fileType:
+                              this.state.document_type === "C"
+                                ? "Company"
+                                : "Employees",
+                          }}
+                          onlyDragDrop={true}
+                          componentType={item.document_description}
+                          afterSave={(result) => {
+                            this.afterPassPortSave(result);
+                            this.onSaved();
+                          }}
+                        />
+                      </div>
+                    ))
                   : null}
               </div>
             </div>
