@@ -329,6 +329,7 @@ class FinalSettlement extends Component {
             title: "Final Settlement Recorded",
             type: "success",
           });
+          this.loadFinalSettlement();
           this.setState({
             disableSave: true,
           });
@@ -1378,6 +1379,16 @@ class FinalSettlement extends Component {
                 </button>
                 <button
                   type="button"
+                  className="btn btn-default"
+                  onClick={this.clearState.bind(this)}
+                >
+                  <AlgaehLabel
+                    label={{ forceLabel: "Clear", returnText: true }}
+                  />
+                </button>
+
+                <button
+                  type="button"
                   className="btn btn-other"
                   typeof="final"
                   onClick={this.saveFinalSettlement.bind(this)}
@@ -1391,16 +1402,6 @@ class FinalSettlement extends Component {
                 >
                   <AlgaehLabel
                     label={{ forceLabel: "Send for Payment", returnText: true }}
-                  />
-                </button>
-
-                <button
-                  type="button"
-                  className="btn btn-default"
-                  onClick={this.clearState.bind(this)}
-                >
-                  <AlgaehLabel
-                    label={{ forceLabel: "Clear", returnText: true }}
                   />
                 </button>
 
