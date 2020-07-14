@@ -12,8 +12,7 @@ import CompanyAccount from "./CompanyAccount/CompanyAccount";
 import ProjectMapping from "./ProjectMapping/ProjectMapping";
 import ProjectMaster from "./ProjectMaster/ProjectMaster";
 import { AlgaehLabel } from "../Wrapper/algaehWrapper";
-import { AlgaehTabs } from "algaeh-react-components";
-import { MainContext } from "algaeh-react-components";
+import { AlgaehTabs, MainContext } from "algaeh-react-components";
 
 class BusinessSetup extends Component {
   constructor(props) {
@@ -26,7 +25,7 @@ class BusinessSetup extends Component {
   }
   static contextType = MainContext;
 
-  UNSAFE_componentWillMount() {
+  componentDidMount() {
     const userToken = this.context.userToken;
     const active =
       userToken.product_type === "HIMS_ERP" ||
