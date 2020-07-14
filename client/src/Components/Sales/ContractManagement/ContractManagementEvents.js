@@ -471,8 +471,7 @@ export const deleteComment = ($this, row) => {
 
   $this.setState({
     comment_list: comment_list,
-    editMode: true,
-    saveEnable: true,
+    saveEnable: !$this.state.editMode,
   });
 };
 
