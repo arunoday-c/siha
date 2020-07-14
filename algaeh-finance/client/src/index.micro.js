@@ -1,6 +1,7 @@
 import "react-sortable-tree/style.css";
 import "./algaehTableComponentStyle.scss";
 import "./styles/index.scss";
+import "algaeh-react-components/dist/index.css";
 import Accounts from "./Components/FinanceAccounts";
 import JournalVoucher from "./Components/JournalVoucher";
 import FinanceReports from "./Components/FinanceReports";
