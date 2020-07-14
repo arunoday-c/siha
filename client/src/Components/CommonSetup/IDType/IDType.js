@@ -47,7 +47,7 @@ class IDType extends Component {
       hims_d_identity_document_id: null,
       visible: false,
       activateEdit: false,
-      IDGridColumnHide: true,
+      IDGridColumnHide: false,
     };
 
     this.baseState = this.state;
@@ -298,8 +298,8 @@ class IDType extends Component {
       });
     }
     RawSecurityElement({ elementCode: "ID_NOTIFY_EXP" }).then((result) => {
-      if (result === "hide") {
-        this.setState({ IDIDGridColumnHide: false });
+      if (result === "show") {
+        this.setState({ IDGridColumnHide: true });
       }
     });
   }
