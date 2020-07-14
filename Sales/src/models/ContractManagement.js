@@ -257,6 +257,12 @@ export function updateContractManagement(req, res, next) {
     contract_services,
   } = req.body;
   const { algaeh_d_app_user_id } = req.userIdentity;
+  const insert_services = contract_services.filter(
+    (item) => !item.hims_f_contract_management_services_id
+  );
+  const update_services = contract_services.filter(
+    (item) => !!item.hims_f_contract_management_services_id
+  );
   try {
     _mysql
       .executeQueryWithTransaction({
@@ -283,10 +289,32 @@ export function updateContractManagement(req, res, next) {
         printQuery: true,
       })
       .then((result) => {
-        _mysql
-          .executeQuery({
+        const execArray = [];
+        if (insert_services.length) {
+          execArray.push(
+            _mysql.executeQuery({
+              query:
+                "INSERT INTO hims_f_contract_management_services(??) VALUES ?",
+              values: insert_services,
+              includeValues: [
+                "services_id",
+                "service_frequency",
+                "service_price",
+                "comments",
+              ],
+              extraValues: {
+                contract_management_id: hims_f_contract_management_id,
+              },
+              bulkInsertOrUpdate: true,
+              printQuery: true,
+            })
+          );
+        }
+
+        execArray.push(
+          _mysql.executeQuery({
             query: `update hims_f_contract_management_services set ? where hims_f_contract_management_services_id=?`,
-            values: contract_services,
+            values: update_services,
             where: ["hims_f_contract_management_services_id"],
             excludeValues: [
               "contract_management_id",
@@ -301,8 +329,10 @@ export function updateContractManagement(req, res, next) {
             bulkInsertOrUpdate: true,
             printQuery: true,
           })
+        );
+
+        Promise.all(execArray)
           .then((details) => {
-            console.log(details, "details");
             _mysql.commitTransaction(() => {
               _mysql.releaseConnection();
               next();
