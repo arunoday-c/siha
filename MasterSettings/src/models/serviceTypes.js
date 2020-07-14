@@ -148,9 +148,8 @@ export default {
       _mysql
         .executeQuery({
           query:
-            "select product_type from hims_d_hospital where hims_d_hospital_id=? and \
-          (product_type='HIMS_ERP' or product_type='HRMS_ERP' or product_type='FINANCE_ERP');",
-          values: [req.userIdentity.hospital_id],
+            "select product_type from  hims_d_organization where hims_d_organization_id=1\
+              and (product_type='HIMS_ERP' or product_type='FINANCE_ERP') limit 1; ",
           printQuery: true
         })
         .then(appResult => {

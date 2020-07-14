@@ -663,7 +663,7 @@ export default {
         inputParam.billdetails,
         (f) =>
           f.service_type_id ==
-            appsettings.hims_d_service_type.service_type_id.Procedure &&
+          appsettings.hims_d_service_type.service_type_id.Procedure &&
           f.ordered_services_id != null
       );
       console.log("dental_Services: ", dental_Services.length);
@@ -800,8 +800,7 @@ export default {
                 query:
                   "select finance_accounts_maping_id,account,head_id,child_id from finance_accounts_maping  where \
             account in ('OP_DEP','CIH_OP','OUTPUT_TAX','OP_REC','CARD_SETTL');\
-            SELECT hims_d_services_id,service_name,head_id,child_id,\
-            insurance_head_id,insurance_child_id FROM hims_d_services where hims_d_services_id in(?);\
+            SELECT hims_d_services_id,service_name,head_id,child_id FROM hims_d_services where hims_d_services_id in(?);\
             select cost_center_type, cost_center_required from finance_options limit 1;",
                 values: [servicesIds],
                 printQuery: true,
@@ -931,6 +930,8 @@ export default {
                     inner join hims_d_project P on D.project_id=P.hims_d_project_id \
                     inner join hims_d_hospital H on D.division_id=H.hims_d_hospital_id where \
                     division_id= ${req.userIdentity.hospital_id} limit 1;`;
+                } else {
+                  strQuery = `SELECT 1=1`
                 }
                 _mysql
                   .executeQueryWithTransaction({
