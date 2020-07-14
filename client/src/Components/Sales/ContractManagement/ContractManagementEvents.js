@@ -304,7 +304,11 @@ export const getCtrlCode = ($this, docNumber, row) => {
 
         data.saveEnable = true;
         data.dataExists = true;
-        $this.setState({ ...data, organizations: project.branches });
+        $this.setState({
+          ...data,
+          organizations: project.branches,
+          editMode: false,
+        });
       }
     },
     onFailure: (error) => {
@@ -467,6 +471,7 @@ export const deleteComment = ($this, row) => {
 
   $this.setState({
     comment_list: comment_list,
+    editMode: true,
     saveEnable: true,
   });
 };
