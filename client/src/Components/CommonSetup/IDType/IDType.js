@@ -584,7 +584,7 @@ class IDType extends Component {
                           <ul className="notifyUserList">
                             {this.state.notifyUserArray.map((item) => {
                               return (
-                                <li>
+                                <li key={item.employee_code}>
                                   {" "}
                                   <Tag
                                     closable
@@ -705,7 +705,7 @@ class IDType extends Component {
                                   <ul className="notifyUserListPopup">
                                     {row.employees.map((item) => {
                                       return (
-                                        <li>
+                                        <li key={item.employee_code}>
                                           <b>
                                             {" "}
                                             {item.employee_code} |{" "}
