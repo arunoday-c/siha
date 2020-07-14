@@ -7,6 +7,7 @@ const { endOfService, endOfServiceAdd } = end_of_service;
 export default () => {
   const api = Router();
   api.get("/", endOfService, (req, res, next) => {
+    console.log("req.records", req.records);
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
       success: true,
       result: req.records,
