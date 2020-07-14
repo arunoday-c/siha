@@ -39,42 +39,15 @@
                     <tr>
                         <th width="40">Sl No.</th>
                         <th width="100">Item Code</th>
-                        <th width="250">Item Name</th>
+                        <th>Item Name</th>
                         <th width="80">Dispatch UOM</th>
                         <th width="80">Ordered Qty</th>
                         <th width="80">Dispatch Qty</th>
                         <th width="100">Out Standing Qty</th>
-                        {{!-- <th>Price</th> --}}
-                        {{!-- <th>Discount %</th>
-                        <th>Discount Amt.</th>
-                        <th>Net Ext. Cost</th> --}}
-                        {{!-- <th>Tax Amt.</th> --}}
-                        {{!-- <th>Total Amt.</th> --}}
                     </tr>
                 </thead>
                 <tbody>
-                    {{!-- {{#each details}} --}}
-                    {{!-- <tr>
-                        <td colspan="3" class="tableSubHdg">
 
-                            <span><small>Item Name:</small><br>{{item_description}}</span>
-
-                            
-                            <small> | <small>Purchase
-                                UOM:</small><br>{{uom_description}} | <small>Req. Qty:</small><br>{{ordered_quantity}} |
-                            <small>Deliverd Qty:</small><br>{{dispatched_quantity}} | <small>Out Standing
-                                Qty:</small><br>{{quantity_outstanding}}
-
-                        </td>
-                        <td colspan="2" class="tableSubHdg inlineSpan numberFld"><span><small>Item
-                                    Code:</small><br>{{item_code}}</span>
-                            <span><small>Dispatch UOM:</small><br>{{uom_description}}</span>
-                            <span><small>Req. Qty:</small><br>{{ordered_quantity}}</span>
-                            <span><small>Deliverd Qty:</small><br>{{dispatched_quantity}}</span>
-                            <span><small>Out Standing Qty:</small><br>{{quantity_outstanding}}</span>
-                        </td>
-
-                    </tr> --}}
                     {{#each details}}
                     <tr>
                         <td>{{inc @index}}</td>
@@ -87,11 +60,7 @@
                     </tr>
                     {{/each }}
 
-                    {{!-- {{/each }} --}}
-                    {{!-- <tr class="footerTotalDown">
-                        <td colspan="4">Net Total</td>
-                        <td class="numberFld">{{net_payable}}</td>
-                    </tr> --}}
+
                 </tbody>
             </table>
         </section>

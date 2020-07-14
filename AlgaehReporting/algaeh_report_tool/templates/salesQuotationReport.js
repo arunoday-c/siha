@@ -7,7 +7,7 @@ const executePDF = function executePDFMethod(options) {
       let input = {};
       let params = options.args.reportParams;
 
-      params.forEach(para => {
+      params.forEach((para) => {
         input[para["name"]] = para["value"];
       });
 
@@ -30,58 +30,55 @@ const executePDF = function executePDFMethod(options) {
         .executeQuery({
           query: strQuery,
           values: [input.hims_f_sales_quotation_id],
-          printQuery: true
+          printQuery: true,
         })
-        .then(headerResult => {
-
+        .then((headerResult) => {
           headerResult[0].comment_list =
             headerResult[0].terms_conditions !== null
               ? headerResult[0].terms_conditions.split("<br/>")
               : [];
-
-
 
           options.mysql
             .executeQuery({
               query:
                 "select QI.*, IM.item_description, IU.uom_description from hims_f_sales_quotation_items QI \
               inner join hims_d_inventory_item_master IM on IM.hims_d_inventory_item_master_id = QI.item_id \
-              inner join hims_d_inventory_uom IU on IU.hims_d_inventory_uom_id = QI.uom_id where sales_quotation_id=?;\
+              inner join hims_d_inventory_uom IU on IU.hims_d_inventory_uom_id = QI.uom_id where sales_quotation_id=? order by IM.item_description asc;\
               select QS.*, S.service_name, CASE WHEN QS.service_frequency='M' THEN 'Monthly' \
               WHEN QS.service_frequency='W' THEN 'Weekly' WHEN QS.service_frequency='D' THEN 'Daily' \
               WHEN QS.service_frequency='H' THEN 'Hourly' WHEN QS.service_frequency='PT' THEN 'Per Trip' \
               WHEN QS.service_frequency='PP' THEN 'Per Person' END as service_frequency from hims_f_sales_quotation_services QS \
-              inner join hims_d_services S on S.hims_d_services_id = QS.services_id where sales_quotation_id=?;",
+              inner join hims_d_services S on S.hims_d_services_id = QS.services_id where sales_quotation_id=? ;",
               values: [
                 headerResult[0].hims_f_sales_quotation_id,
-                headerResult[0].hims_f_sales_quotation_id
+                headerResult[0].hims_f_sales_quotation_id,
               ],
-              printQuery: true
+              printQuery: true,
             })
-            .then(qutation_detail => {
+            .then((qutation_detail) => {
               let sales_quotation_items = qutation_detail[0];
               let sales_quotation_services = qutation_detail[1];
 
-              headerResult[0].sales_quotation_date = moment(headerResult[0].sales_quotation_date).format(
-                "DD-MM-YYYY"
-              );
-              headerResult[0].delivery_date = moment(headerResult[0].delivery_date).format(
-                "DD-MM-YYYY"
-              );
+              headerResult[0].sales_quotation_date = moment(
+                headerResult[0].sales_quotation_date
+              ).format("DD-MM-YYYY");
+              headerResult[0].delivery_date = moment(
+                headerResult[0].delivery_date
+              ).format("DD-MM-YYYY");
 
               const result = {
                 ...headerResult[0],
                 ...{ sales_quotation_items },
-                ...{ sales_quotation_services }
+                ...{ sales_quotation_services },
               };
 
               resolve(result);
             })
-            .catch(error => {
+            .catch((error) => {
               options.mysql.releaseConnection();
             });
         })
-        .catch(error => {
+        .catch((error) => {
           options.mysql.releaseConnection();
         });
     } catch (e) {
