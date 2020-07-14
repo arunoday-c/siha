@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import {
   AlgaehModal,
   AlgaehDataGrid,
-  AlgaehMessagePop
+  AlgaehMessagePop,
 } from "algaeh-react-components";
 import { useHistory } from "react-router-dom";
 import { newAlgaehApi } from "../../hooks";
@@ -17,10 +17,10 @@ export default function VoucherDetails({ visible, data, onClose }) {
         const result = await newAlgaehApi({
           uri: "/quick_search/getSearchDetails",
           data: {
-            finance_voucher_header_id
+            finance_voucher_header_id,
           },
           module: "finance",
-          method: "GET"
+          method: "GET",
         });
         return result.data.result;
       } catch (e) {
@@ -29,11 +29,11 @@ export default function VoucherDetails({ visible, data, onClose }) {
     }
     if (visible && data) {
       getRowDetails(data)
-        .then(res => setDetails(res))
-        .catch(e => {
+        .then((res) => setDetails(res))
+        .catch((e) => {
           AlgaehMessagePop({
             type: "Error",
-            display: e.message
+            display: e.message,
           });
         });
     }
@@ -49,9 +49,9 @@ export default function VoucherDetails({ visible, data, onClose }) {
           history.push("/JournalVoucher", {
             data: {
               ...data,
-              Details
+              Details,
             },
-            type: "duplicate"
+            type: "duplicate",
           })
         }
         destroyOnClose={true}
@@ -73,25 +73,25 @@ export default function VoucherDetails({ visible, data, onClose }) {
             <AlgaehDataGrid
               columns={[
                 {
-                  key: "ledger_code",
-                  title: "Ledger Code"
+                  fieldName: "ledger_code",
+                  label: "Ledger Code",
                 },
                 {
-                  key: "ledger_name",
-                  title: "Ledger Name"
+                  fieldName: "ledger_name",
+                  label: "Ledger Name",
                 },
                 {
-                  key: "credit_amount",
-                  title: "Credit Amount"
+                  fieldName: "credit_amount",
+                  label: "Credit Amount",
                 },
                 {
-                  key: "debit_amount",
-                  title: "Debit Amount"
-                }
+                  fieldName: "debit_amount",
+                  label: "Debit Amount",
+                },
               ]}
               height="40vh"
               rowUnique="finance_voucher_id"
-              dataSource={{ data: Details }}
+              data={Details}
             />
           </div>
         </div>

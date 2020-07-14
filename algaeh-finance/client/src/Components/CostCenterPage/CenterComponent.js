@@ -80,20 +80,20 @@ export default memo(function CenterComponent({ data }) {
             <AlgaehDataGrid
               columns={[
                 {
-                  title: "Action",
-                  key: "key",
+                  label: "Action",
+                  fieldName: "key",
                   align: "center",
                   displayTemplate: EditButton,
                 },
                 {
-                  key: "hospital_name",
-                  title: "Branch",
+                  fieldName: "hospital_name",
+                  label: "Branch",
                   filtered: true,
                   align: "center",
                 },
                 {
-                  key: "cost_center",
-                  title: "Cost Center",
+                  fieldName: "cost_center",
+                  label: "Cost Center",
                   filtered: true,
                   align: "center",
                 },
@@ -101,9 +101,7 @@ export default memo(function CenterComponent({ data }) {
               loading={false}
               isEditable={false}
               filter={false}
-              dataSource={{
-                data,
-              }}
+              data={data}
               rowUnique="cost_center_id"
               xaxis={1500}
             />

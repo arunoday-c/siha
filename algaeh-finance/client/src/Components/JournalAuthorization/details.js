@@ -1,8 +1,6 @@
 import React from "react";
 import { AlgaehModal, AlgaehDataGrid } from "algaeh-react-components";
-export default function(props) {
-  const { visible, voucherNo, inVisible, data } = props;
-
+export default function ({ visible, voucherNo, inVisible, data }) {
   return (
     <AlgaehModal
       title={`Journal Voucher Details - ${voucherNo}`}
@@ -16,21 +14,21 @@ export default function(props) {
       <AlgaehDataGrid
         columns={[
           {
-            key: "ledger",
-            title: "Ledger"
+            fieldName: "ledger",
+            label: "Ledger",
           },
           {
-            key: "credit_amount",
-            title: "Credit Amount"
+            fieldName: "credit_amount",
+            label: "Credit Amount",
           },
           {
-            key: "debit_amount",
-            title: "Debit Amount"
-          }
+            fieldName: "debit_amount",
+            label: "Debit Amount",
+          },
         ]}
         height="40vh"
         rowUnique="finance_voucher_id"
-        dataSource={{ data: data }}
+        data={data}
       />
     </AlgaehModal>
   );
