@@ -176,6 +176,9 @@ export function getContractManagementList(req, res, next) {
         "SELECT CM.*, C.customer_name from hims_f_contract_management CM \
             inner join  hims_d_customer C on  C.hims_d_customer_id = CM.customer_id";
     }
+    if (req.query.hospital_id) {
+      strQuery += ` where CM.hospital_id=${req.query.hospital_id}`;
+    }
     _mysql
       .executeQuery({
         query: strQuery,

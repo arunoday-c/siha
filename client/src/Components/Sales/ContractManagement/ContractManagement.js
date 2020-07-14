@@ -87,11 +87,11 @@ class ContractManagement extends Component {
 
       organizations: [],
     };
-    getCostCenters(this);
   }
 
   static contextType = MainContext;
   componentDidMount() {
+    getCostCenters(this);
     const userToken = this.context.userToken;
 
     // this.setState({
