@@ -369,34 +369,34 @@ export default memo(function (props) {
                     <AlgaehDataGrid
                       columns={[
                         {
-                          key: "id",
-                          title: "Actions",
+                          fieldName: "id",
+                          label: "Actions",
                           displayTemplate: actions,
                           others: {
                             width: 100,
                           },
                         },
                         {
-                          key: "voucher_no",
-                          title: "Voucher Number",
+                          fieldName: "voucher_no",
+                          label: "Voucher Number",
                           sortable: true,
                           displayTemplate: voucherCol,
                         },
-                        { key: "voucher_type", title: "Voucher Type" },
-                        { key: "payment_date", title: "Payment Date" },
+                        { fieldName: "voucher_type", label: "Voucher Type" },
+                        { fieldName: "payment_date", label: "Payment Date" },
                         ...paymentTemplates,
-                        { key: "amount", title: "Amount" },
-                        { key: "narration", title: "Narration" },
+                        { fieldName: "amount", label: "Amount" },
+                        { fieldName: "narration", label: "Narration" },
                         {
-                          key: "entered_by",
-                          title: "Enterd By",
+                          fieldName: "entered_by",
+                          label: "Enterd By",
                           filtered: true,
                         },
                       ]}
                       height="40vh"
                       rowUnique="finance_voucher_header_id"
-                      dataSource={{ data: data }}
-                    ></AlgaehDataGrid>
+                      data={data}
+                    />
                   </div>
                 </div>
               </div>

@@ -680,22 +680,22 @@ export default function JournalVoucher() {
                 <AlgaehDataGrid
                   columns={[
                     {
-                      key: "slno",
-                      title: "Sl No.",
+                      fieldName: "slno",
+                      label: "Sl No.",
                       sortable: true,
                       others: {
                         width: 80,
                       },
                     },
                     {
-                      key: "sourceName",
-                      title: "Account",
+                      fieldName: "sourceName",
+                      label: "Account",
                       // align: "left",
                       displayTemplate: gridTree,
                     },
                     {
-                      key: "payment_type",
-                      title: "Payment Type ",
+                      fieldName: "payment_type",
+                      label: "Payment Type ",
                       // filtered: true,
                       displayTemplate: PaymentInput,
                       others: {
@@ -703,8 +703,8 @@ export default function JournalVoucher() {
                       },
                     },
                     {
-                      key: "amount",
-                      title: "Amount",
+                      fieldName: "amount",
+                      label: "Amount",
                       displayTemplate: AmountInput,
                       others: {
                         width: 100,
@@ -714,9 +714,7 @@ export default function JournalVoucher() {
                   loading={false}
                   isEditable="onlyDelete"
                   height="34vh"
-                  dataSource={{
-                    data: journerList,
-                  }}
+                  data={journerList}
                   rowUnique="slno"
                   // xaxis={1500}
                   events={{

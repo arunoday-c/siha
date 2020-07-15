@@ -407,8 +407,8 @@ class SalesQuotation extends Component {
                 />
 
                 <AlgaehDateHandler
-                  div={{ className: "col mandatory" }}
-                  label={{ forceLabel: "Delivery Date", isImp: true }}
+                  div={{ className: "col" }}
+                  label={{ forceLabel: "Delivery Date", isImp: false }}
                   textBox={{
                     className: "txt-fld",
                     name: "delivery_date",

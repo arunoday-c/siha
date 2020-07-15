@@ -4,7 +4,7 @@ import {
   AlgaehFormGroup,
   AlgaehDateHandler,
   AlgaehAutoComplete,
-  AlgaehDataGrid
+  AlgaehDataGrid,
 } from "algaeh-react-components";
 // import { incomeSource, incomeDestination } from "../../../data/dropdownList";
 export default function Expense() {
@@ -22,34 +22,34 @@ export default function Expense() {
             <div className="row">
               <AlgaehFormGroup
                 div={{
-                  className: "form-group algaeh-text-fld col-8"
+                  className: "form-group algaeh-text-fld col-8",
                 }}
                 label={{
                   forceLabel: "Expense Description",
-                  isImp: true
+                  isImp: true,
                 }}
                 textBox={{
                   type: "text",
                   className: "form-control",
                   id: "name",
-                  placeholder: "Enter Expense Description"
+                  placeholder: "Enter Expense Description",
                   // autocomplete: false
                 }}
               />{" "}
               <AlgaehDateHandler
                 div={{
-                  className: "form-group algaeh-email-fld col-4"
+                  className: "form-group algaeh-email-fld col-4",
                 }}
                 label={{
                   forceLabel: "Expense Date",
-                  isImp: true
+                  isImp: true,
                 }}
                 textBox={{
                   name: "enter_date",
-                  className: "form-control"
+                  className: "form-control",
                 }}
                 events={{
-                  onChange: e => console.log(e.target)
+                  onChange: (e) => console.log(e.target),
                 }}
                 value={new Date()}
                 maxDate={new Date()}
@@ -62,7 +62,7 @@ export default function Expense() {
               style={{
                 maxHeight: "50vh",
                 overflowX: "hidden",
-                overflowY: "auto"
+                overflowY: "auto",
               }}
             >
               <div className="col-12">
@@ -72,7 +72,7 @@ export default function Expense() {
                     div={{ className: "col-5 form-group" }}
                     label={{
                       forceLabel: "Source Account 1",
-                      isImp: true
+                      isImp: true,
                     }}
                     selector={{
                       name: "",
@@ -81,24 +81,24 @@ export default function Expense() {
                       dataSource: {
                         data: [],
                         valueField: "",
-                        textField: ""
-                      }
+                        textField: "",
+                      },
                     }}
                   />
                   <AlgaehFormGroup
                     div={{
-                      className: "form-group algaeh-text-fld col-4"
+                      className: "form-group algaeh-text-fld col-4",
                     }}
                     label={{
                       forceLabel: "Enter Amount",
-                      isImp: true
+                      isImp: true,
                     }}
                     textBox={{
                       type: "number",
                       value: "",
                       className: "form-control",
                       id: "name",
-                      placeholder: "0.00"
+                      placeholder: "0.00",
                       //autocomplete: false
                     }}
                   />{" "}
@@ -125,7 +125,7 @@ export default function Expense() {
                     div={{ className: "col-5 form-group" }}
                     label={{
                       forceLabel: "Destination Account 1",
-                      isImp: true
+                      isImp: true,
                     }}
                     selector={{
                       name: "",
@@ -134,24 +134,24 @@ export default function Expense() {
                       dataSource: {
                         data: [],
                         valueField: "",
-                        textField: ""
-                      }
+                        textField: "",
+                      },
                     }}
                   />
                   <AlgaehFormGroup
                     div={{
-                      className: "form-group algaeh-text-fld col-4"
+                      className: "form-group algaeh-text-fld col-4",
                     }}
                     label={{
                       forceLabel: "Enter Amount",
-                      isImp: true
+                      isImp: true,
                     }}
                     textBox={{
                       type: "number",
                       value: "",
                       className: "form-control",
                       id: "name",
-                      placeholder: "0.00"
+                      placeholder: "0.00",
                       //autocomplete: false
                     }}
                   />{" "}
@@ -196,15 +196,15 @@ export default function Expense() {
             <AlgaehDataGrid
               columns={[
                 {
-                  key: "id",
-                  title: "Sl No.",
+                  fieldName: "id",
+                  label: "Sl No.",
                   sortable: true,
                   filtered: false,
-                  align: "left"
+                  align: "left",
                 },
                 {
-                  key: "id",
-                  title: "Account ID",
+                  fieldName: "id",
+                  label: "Account ID",
                   filtered: true,
                   align: "left",
                   editorTemplate: (text, records) => {
@@ -212,18 +212,18 @@ export default function Expense() {
                       <input
                         type="text"
                         value={text}
-                        onChange={e => {
+                        onChange={(e) => {
                           console.log("text", text);
                           console.log("records", records);
                           records["title"] = "Hello";
                         }}
                       />
                     );
-                  }
+                  },
                 },
                 {
-                  key: "desc",
-                  title: "Account Description",
+                  fieldName: "desc",
+                  label: "Account Description",
                   filtered: true,
                   align: "left",
                   editorTemplate: (text, records) => {
@@ -231,18 +231,18 @@ export default function Expense() {
                       <input
                         type="text"
                         value={text}
-                        onChange={e => {
+                        onChange={(e) => {
                           console.log("text", text);
                           console.log("records", records);
                           records["title"] = "Hello";
                         }}
                       />
                     );
-                  }
+                  },
                 },
                 {
-                  key: "debitAmt",
-                  title: "Debit Amount",
+                  fieldName: "debitAmt",
+                  label: "Debit Amount",
                   filtered: true,
                   align: "left",
                   editorTemplate: (text, records) => {
@@ -250,18 +250,18 @@ export default function Expense() {
                       <input
                         type="number"
                         value={text}
-                        onChange={e => {
+                        onChange={(e) => {
                           console.log("text", text);
                           console.log("records", records);
                           records["title"] = "Hello";
                         }}
                       />
                     );
-                  }
+                  },
                 },
                 {
-                  key: "creditAmt",
-                  title: "Credit Amount",
+                  fieldName: "creditAmt",
+                  label: "Credit Amount",
                   filtered: true,
                   align: "left",
                   editorTemplate: (text, records) => {
@@ -269,18 +269,18 @@ export default function Expense() {
                       <input
                         type="number"
                         value={text}
-                        onChange={e => {
+                        onChange={(e) => {
                           console.log("text", text);
                           console.log("records", records);
                           records["title"] = "Hello";
                         }}
                       />
                     );
-                  }
+                  },
                 },
                 {
-                  key: "narration",
-                  title: "Narration",
+                  fieldName: "narration",
+                  label: "Narration",
                   filtered: true,
                   align: "left",
                   editorTemplate: (text, records) => {
@@ -288,26 +288,24 @@ export default function Expense() {
                       <input
                         type="number"
                         value={text}
-                        onChange={e => {
+                        onChange={(e) => {
                           console.log("text", text);
                           console.log("records", records);
                           records["title"] = "Hello";
                         }}
                       />
                     );
-                  }
+                  },
                 },
                 {
-                  key: "count",
-                  title: "Count" //, sortable: true
-                }
+                  fieldName: "count",
+                  title: "Count", //, sortable: true
+                },
               ]}
               loading={false}
               isEditable={true}
               filter={true}
-              dataSource={{
-                data: []
-              }}
+              data={[]}
               rowUnique="id"
               xaxis={1500}
               showCheckBox={{}}

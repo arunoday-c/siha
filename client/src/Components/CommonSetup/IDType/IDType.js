@@ -19,6 +19,10 @@ import { Input, Tooltip } from "antd";
 import AlgaehSearch from "../../Wrapper/globalSearch.js";
 import spotlightSearch from "../../../Search/spotlightSearch.json";
 import { Tag, Modal } from "antd";
+import {
+  AlgaehSecurityElement,
+  RawSecurityElement,
+} from "algaeh-react-components";
 
 class IDType extends Component {
   constructor(props) {
@@ -43,6 +47,7 @@ class IDType extends Component {
       hims_d_identity_document_id: null,
       visible: false,
       activateEdit: false,
+      IDGridColumnHide: false,
     };
 
     this.baseState = this.state;
@@ -292,6 +297,11 @@ class IDType extends Component {
         },
       });
     }
+    RawSecurityElement({ elementCode: "ID_NOTIFY_EXP" }).then((result) => {
+      if (result === "show") {
+        this.setState({ IDGridColumnHide: true });
+      }
+    });
   }
 
   updateIDtypes(e) {
@@ -525,91 +535,78 @@ class IDType extends Component {
                       />
                     </div>
                   </div>
-                  <div className="col-6 form-group">
-                    <label>Notify Expiry</label>
-                    <div className="customCheckbox">
-                      <label className="checkbox inline">
-                        <input
-                          type="checkbox"
-                          checked={
-                            this.state.notify_expiry === "Y" ? true : false
-                          }
-                          onChange={this.checkedHandler.bind(this)}
-                          name="notify_expiry"
-                          value={this.state.notify_expiry}
-                        />
-                        <span>Yes</span>
-                      </label>
+
+                  <AlgaehSecurityElement elementCode="ID_NOTIFY_EXP">
+                    <div className="col-6 form-group">
+                      <label>Notify Expiry</label>
+                      <div className="customCheckbox">
+                        <label className="checkbox inline">
+                          <input
+                            type="checkbox"
+                            checked={
+                              this.state.notify_expiry === "Y" ? true : false
+                            }
+                            onChange={this.checkedHandler.bind(this)}
+                            name="notify_expiry"
+                            value={this.state.notify_expiry}
+                          />
+                          <span>Yes</span>
+                        </label>
+                      </div>
                     </div>
-                  </div>
 
-                  {/* <AlagehAutoComplete
-                    div={{
-                      className: "col-12 form-group",
-                    }}
-                    label={{
-                      forceLabel: "Notify User 1",
-                      // isImp: true,
-                    }}
-                    selector={{
-                      name: "",
-                      className: "select-fld",
-                      value: "",
-                      dataSource: {
-                        textField: "",
-                        valueField: "",
-                        data: [],
-                      },
-                      // onChange: this.texthandle.bind(this),
-                    }}
-                  /> */}
-                  {this.state.notify_expiry === "Y" ? (
-                    <>
-                      <AlagehFormGroup
-                        div={{
-                          className: "col-6 form-group mandatory",
-                        }}
-                        label={{
-                          forceLabel: "Notify before (days)",
-                          isImp: false,
-                        }}
-                        textBox={{
-                          className: "txt-fld",
-                          name: "notify_before",
-                          value: this.state.notify_before,
-                          events: { onChange: this.changeTexts.bind(this) },
-                          others: { placeholder: "0", type: "number" },
-                        }}
-                      />
+                    {this.state.notify_expiry === "Y" ? (
+                      <>
+                        <AlagehFormGroup
+                          div={{
+                            className: "col-6 form-group mandatory",
+                          }}
+                          label={{
+                            forceLabel: "Notify before (days)",
+                            isImp: false,
+                          }}
+                          textBox={{
+                            className: "txt-fld",
+                            name: "notify_before",
+                            value: this.state.notify_before,
+                            events: { onChange: this.changeTexts.bind(this) },
+                            others: { placeholder: "0", type: "number" },
+                          }}
+                        />
 
-                      <div className="col-12 globalSearchCntr">
-                        <AlgaehLabel label={{ forceLabel: "Notify Users" }} />
-                        <h6 onClick={this.employeeSearch.bind(this)}>
-                          <i className="fas fa-search fa-lg"></i>
-                        </h6>
-                      </div>
-                      <div className="col-12">
-                        <ul className="notifyUserList">
-                          {this.state.notifyUserArray.map((item) => {
-                            return (
-                              <li>
-                                {" "}
-                                <Tag
-                                  closable
-                                  onClose={this.removeNotifier.bind(this, item)}
-                                >
-                                  <b>
-                                    {" "}
-                                    {item.employee_code} | {item.full_name}
-                                  </b>
-                                </Tag>
-                              </li>
-                            );
-                          })}
-                        </ul>
-                      </div>
-                    </>
-                  ) : null}
+                        <div className="col-12 globalSearchCntr">
+                          <AlgaehLabel label={{ forceLabel: "Notify Users" }} />
+                          <h6 onClick={this.employeeSearch.bind(this)}>
+                            <i className="fas fa-search fa-lg"></i>
+                          </h6>
+                        </div>
+                        <div className="col-12">
+                          <ul className="notifyUserList">
+                            {this.state.notifyUserArray.map((item) => {
+                              return (
+                                <li key={item.employee_code}>
+                                  {" "}
+                                  <Tag
+                                    closable
+                                    onClose={this.removeNotifier.bind(
+                                      this,
+                                      item
+                                    )}
+                                  >
+                                    <b>
+                                      {" "}
+                                      {item.employee_code} | {item.full_name}
+                                    </b>
+                                  </Tag>
+                                </li>
+                              );
+                            })}
+                          </ul>
+                        </div>
+                      </>
+                    ) : null}
+                  </AlgaehSecurityElement>
+
                   {this.state.activateEdit ? (
                     <AlagehAutoComplete
                       div={{
@@ -708,7 +705,7 @@ class IDType extends Component {
                                   <ul className="notifyUserListPopup">
                                     {row.employees.map((item) => {
                                       return (
-                                        <li>
+                                        <li key={item.employee_code}>
                                           <b>
                                             {" "}
                                             {item.employee_code} |{" "}
@@ -726,6 +723,7 @@ class IDType extends Component {
                               </div>
                             ) : null;
                           },
+                          others: { show: this.state.IDGridColumnHide },
                         },
                         {
                           fieldName: "identity_document_code",
@@ -775,6 +773,7 @@ class IDType extends Component {
                           displayTemplate: (row) => {
                             return row.notify_expiry === "Y" ? "Yes" : "No";
                           },
+                          others: { show: this.state.IDGridColumnHide },
                         },
 
                         {
@@ -784,6 +783,8 @@ class IDType extends Component {
                               label={{ forceLabel: "Notify Before" }}
                             />
                           ),
+
+                          others: { show: this.state.IDGridColumnHide },
                         },
                         {
                           fieldName: "identity_status",

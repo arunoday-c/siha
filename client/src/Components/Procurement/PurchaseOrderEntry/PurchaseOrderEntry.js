@@ -467,45 +467,7 @@ class PurchaseOrderEntry extends Component {
         <AlgaehSecurityComponent componentCode="PUR_ORD_MAINT">
           <div className="hptl-phase1-footer">
             <div className="row">
-              <div className="col-lg-12">
-                <button
-                  type="button"
-                  className="btn btn-primary"
-                  onClick={SavePOEnrty.bind(this, this, "S")}
-                  disabled={this.state.saveEnable}
-                >
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Save Purchase Order",
-                      returnText: true,
-                    }}
-                  />
-                </button>
-
-                <button
-                  type="button"
-                  className="btn btn-default"
-                  disabled={this.state.ClearDisable}
-                  onClick={ClearData.bind(this, this)}
-                >
-                  <AlgaehLabel
-                    label={{ forceLabel: "Clear", returnText: true }}
-                  />
-                </button>
-
-                <button
-                  type="button"
-                  className="btn btn-other"
-                  disabled={this.state.dataPosted}
-                  onClick={SavePOEnrty.bind(this, this, "P")}
-                >
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Send for Authorization",
-                      returnText: true,
-                    }}
-                  />
-                </button>
+              <div className="col-4 leftBtnGroup">
                 <AlgaehSecurityComponent componentCode="PUR_AUT_AUTH1">
                   {this.props.purchase_auth === true ? (
                     <button
@@ -570,7 +532,7 @@ class PurchaseOrderEntry extends Component {
                 {this.props.purchase_auth === true ? (
                   <button
                     type="button"
-                    className="btn btn-other"
+                    className="btn btn-danger"
                     disabled={
                       (this.state.authorize2 === "Y" &&
                         this.state.authorize2 === "Y") ||
@@ -588,6 +550,46 @@ class PurchaseOrderEntry extends Component {
                     />
                   </button>
                 ) : null}
+              </div>
+              <div className="col-8">
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  onClick={SavePOEnrty.bind(this, this, "S")}
+                  disabled={this.state.saveEnable}
+                >
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Save Purchase Order",
+                      returnText: true,
+                    }}
+                  />
+                </button>
+
+                <button
+                  type="button"
+                  className="btn btn-default"
+                  disabled={this.state.ClearDisable}
+                  onClick={ClearData.bind(this, this)}
+                >
+                  <AlgaehLabel
+                    label={{ forceLabel: "Clear", returnText: true }}
+                  />
+                </button>
+
+                <button
+                  type="button"
+                  className="btn btn-other"
+                  disabled={this.state.dataPosted}
+                  onClick={SavePOEnrty.bind(this, this, "P")}
+                >
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Send for Authorization",
+                      returnText: true,
+                    }}
+                  />
+                </button>
               </div>
             </div>
           </div>

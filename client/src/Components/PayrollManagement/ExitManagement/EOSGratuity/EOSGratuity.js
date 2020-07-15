@@ -193,8 +193,8 @@ class EOSGratuity extends Component {
                 computed_amount: res.data.result.computed_amount,
                 payable_amount: res.data.result.paybale_amout,
                 entitled_amount: res.data.result.entitled_amount,
-                saveDisabled: true,
-                gratuity_done: true,
+                saveDisabled: false,
+                gratuity_done: false,
                 actual_maount: res.data.result.actual_maount,
                 gratuity_encash: res.data.result.gratuity_encash,
               });
@@ -202,11 +202,13 @@ class EOSGratuity extends Component {
               this.setState({
                 loading: false,
                 data: res.data.result,
-                calculated_gratutity_amount: res.data.result.gratuity_amount,
-                computed_amount: res.data.result.computed_amount,
-                payable_amount: res.data.result.paybale_amout,
+                calculated_gratutity_amount:
+                  res.data.result.calculated_gratutity_amount,
+                computed_amount: res.data.result.calculated_gratutity_amount,
+                payable_amount: res.data.result.payable_amount,
                 entitled_amount: res.data.result.entitled_amount,
-                saveDisabled: false,
+                gratuity_done: true,
+                saveDisabled: true,
                 actual_maount: res.data.result.actual_maount,
                 gratuity_encash: res.data.result.gratuity_encash,
               });
@@ -435,27 +437,31 @@ class EOSGratuity extends Component {
                   <div className="portlet-body">
                     <div className="row">
                       <div className="col-4">
-                        <div className="row">
-                          {EosData.componentList.map((data, index) => (
-                            <div
-                              className="col-12"
-                              key={data.hims_d_employee_earnings_id}
-                            >
-                              <label className="style_Label ">
-                                {data.short_desc === null
-                                  ? data.earning_deduction_description
-                                  : data.short_desc}
-                              </label>
-                              <h6>{GetAmountFormart(data.amount)}</h6>
+                        {EosData.componentList === undefined ? null : (
+                          <div className="row">
+                            {EosData.componentList.map((data, index) => (
+                              <div
+                                className="col-12"
+                                key={data.hims_d_employee_earnings_id}
+                              >
+                                <label className="style_Label ">
+                                  {data.short_desc === null
+                                    ? data.earning_deduction_description
+                                    : data.short_desc}
+                                </label>
+                                <h6>{GetAmountFormart(data.amount)}</h6>
+                              </div>
+                            ))}{" "}
+                            <div className="col-12">
+                              <label className="style_Label ">Total</label>
+                              <h6>
+                                {GetAmountFormart(
+                                  EosData.totalEarningComponents
+                                )}
+                              </h6>
                             </div>
-                          ))}{" "}
-                          <div className="col-12">
-                            <label className="style_Label ">Total</label>
-                            <h6>
-                              {GetAmountFormart(EosData.totalEarningComponents)}
-                            </h6>
                           </div>
-                        </div>
+                        )}
                       </div>
                       <div className="col-8">
                         <div className="row">

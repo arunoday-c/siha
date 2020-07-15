@@ -122,37 +122,35 @@ export function PrepaymentRequest() {
               <AlgaehDataGrid
                 columns={[
                   {
-                    key: "preEmpCode",
-                    title: "Employee Code",
+                    fieldName: "preEmpCode",
+                    label: "Employee Code",
                     sortable: true,
                   },
                   {
-                    key: "preEmpName",
-                    title: "Employee Name",
+                    fieldName: "preEmpName",
+                    label: "Employee Name",
                     sortable: true,
                   },
                   {
-                    key: "preAmt",
-                    title: "Prepayment Amt.",
+                    fieldName: "preAmt",
+                    label: "Prepayment Amt.",
                     sortable: true,
                   },
                   {
-                    key: "preStartDate",
-                    title: "Prepayment Start date",
+                    fieldName: "preStartDate",
+                    label: "Prepayment Start date",
                     sortable: true,
                   },
                   {
-                    key: "preEndDate",
-                    title: "Prepayment End date",
+                    fieldName: "preEndDate",
+                    label: "Prepayment End date",
                     sortable: true,
                   },
                 ]}
                 loading={false}
                 isEditable="onlyDelete"
                 height="34vh"
-                dataSource={{
-                  data: [],
-                }}
+                data={[]}
                 rowUnique="prePayDesc"
                 events={{}}
                 others={{}}
