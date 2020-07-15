@@ -145,7 +145,7 @@ class EOSGratuity extends Component {
       payable_days: _sub_data.eligible_day,
       computed_amount: _sub_data.computed_amount,
       paybale_amout: _sub_data.paybale_amout,
-      gratuity_status: "PRO",
+      gratuity_status: this.state.gratuity_status,
       remarks: this.state.remarks,
     };
     swal({
