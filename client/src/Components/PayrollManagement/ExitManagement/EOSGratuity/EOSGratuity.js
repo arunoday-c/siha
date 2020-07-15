@@ -26,7 +26,7 @@ class EOSGratuity extends Component {
       previous_gratuity_amount: 0,
       saveDisabled: true,
       gratuity_done: false,
-      gratuity_status: "PRO",
+      gratuity_status: null,
       branches: [],
       hospital_id: undefined,
       gratuity_encash: 0,
@@ -291,6 +291,37 @@ class EOSGratuity extends Component {
         },
       });
     }
+  }
+
+  generateEndOfServiceSlip() {
+    algaehApiCall({
+      uri: "/report",
+      method: "GET",
+      module: "reports",
+      headers: {
+        Accept: "blob",
+      },
+      others: { responseType: "blob" },
+      data: {
+        report: {
+          reportName: "EndOfServiceSlip",
+          reportParams: [
+            {
+              name: "employee_id",
+              value: this.state.hims_d_employee_id,
+              // this.state.hims_d_employee_id,
+            },
+          ],
+          outputFileType: "PDF",
+        },
+      },
+      onSuccess: (res) => {
+        const urlBlob = URL.createObjectURL(res.data);
+        // const documentName="Salary Slip"
+        const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Salary Slip`;
+        window.open(origin);
+      },
+    });
   }
 
   render() {
@@ -708,22 +739,29 @@ class EOSGratuity extends Component {
 
         <div className="hptl-phase1-footer">
           <div className="row">
-            <div className="col-4">
+            <div className="col-4 leftBtnGroup">
               {" "}
               <AlgaehSecurityElement elementCode="READ_ONLY_ACCESS">
-                <button
-                  type="button"
-                  className="btn btn-other"
-                  onClick={this.saveEos.bind(this)}
-                  disabled={this.state.sendPaymentButton}
-                >
-                  <AlgaehLabel
-                    label={{ forceLabel: "Send for payment", returnText: true }}
-                  />{" "}
-                </button>{" "}
+                {this.state.gratuity_status != null ? (
+                  <button
+                    type="button"
+                    className="btn btn-other"
+                    onClick={this.saveEos.bind(this)}
+                    // disabled={
+                    //   this.state.gratuity_status === "Pending" ? false : true
+                    // }
+                  >
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Send for payment",
+                        returnText: true,
+                      }}
+                    />
+                  </button>
+                ) : null}
               </AlgaehSecurityElement>
             </div>
-            <div className="col-lg-12">
+            <div className="col-8">
               <AlgaehSecurityElement elementCode="READ_ONLY_ACCESS">
                 <button
                   type="button"
@@ -735,46 +773,25 @@ class EOSGratuity extends Component {
                     label={{ forceLabel: "Save", returnText: true }}
                   />
                 </button>
-                   {this.EosData.gratuity_status != null ? (
-                <button
-                  type="button"
-                  className="btn btn-other"
-                  // onClick={this.saveEos.bind(this)}
-                  disabled={this.state.sendPaymentButton}
-                >
-                  <AlgaehLabel
-                    label={{ forceLabel: "Generate Report", returnText: true }}
-                  />{" "}
-                  </button>{" "}
-                    ) : null}
               </AlgaehSecurityElement>
 
-              {/* <button
-                type="button"
-                className="btn btn-default"
-                onClick={this.clearState.bind(this)}
-              >
-                <AlgaehLabel
-                  label={{ forceLabel: "Clear", returnText: true }}
-                />
-              </button> */}
-
-              {/* <button type="button" className="btn btn-other">
-                <AlgaehLabel
-                  label={{
-                    forceLabel: "Delete",
-                    //   returnText: true
-                  }}
-                />
-              </button>
-              <button type="button" className="btn btn-other">
-                <AlgaehLabel
-                  label={{
-                    forceLabel: "Print",
-                    //   returnText: true
-                  }}
-                />
-              </button> */}
+              <AlgaehSecurityElement elementCode="READ_ONLY_ACCESS">
+                {this.state.gratuity_status != null ||
+                this.state.gratuity_status != "" ? (
+                  <button
+                    type="button"
+                    className="btn btn-other"
+                    onClick={this.generateEndOfServiceSlip.bind(this)}
+                  >
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Generate Report",
+                        returnText: true,
+                      }}
+                    />
+                  </button>
+                ) : null}
+              </AlgaehSecurityElement>
             </div>
           </div>
         </div>
