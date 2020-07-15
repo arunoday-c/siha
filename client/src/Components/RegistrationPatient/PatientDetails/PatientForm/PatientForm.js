@@ -424,8 +424,7 @@ class AddPatientForm extends Component {
                           },
                         }}
                         label={{
-                          fieldName: "age",
-                          isImp: true,
+                          fieldName: "age"
                         }}
                         textBox={{
                           value: this.state.age,

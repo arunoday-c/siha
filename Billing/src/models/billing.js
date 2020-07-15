@@ -2194,7 +2194,7 @@ export default {
                deductible_trt, deductible_medicine from hims_d_insurance_network_office where hospital_id=${req.userIdentity.hospital_id}\
                and hims_d_insurance_network_office_id in (${network_office_ids});\
                select SI.insurance_id ,SI.services_id,IP.company_service_price_type,copay_status,copay_amt,deductable_status,\
-               deductable_amt,pre_approval,covered,net_amount,gross_amt, cpt_code \
+               deductable_amt,pre_approval,covered,net_amount,gross_amt, cpt_code, IP.insurance_type \
                from hims_d_services_insurance SI inner join hims_d_insurance_provider IP on\
                IP.hims_d_insurance_provider_id=SI.insurance_id where SI.hospital_id=${req.userIdentity.hospital_id}\
                and SI.insurance_id in (${insurance_provider_ids}) and\
@@ -2590,15 +2590,11 @@ export default {
                   //   .logger()
                   //   .log("service_type_id: ", typeof deductable_amount);
 
-                  console.log("patient_resp", patient_resp);
-                  console.log("copay_amount", copay_amount);
-                  console.log("deductable_amount", deductable_amount);
+                  // console.log("patient_resp", patient_resp);
+                  // console.log("copay_amount", copay_amount);
+                  // console.log("deductable_amount", deductable_amount);
                   patient_resp =
                     parseFloat(copay_amount) + parseFloat(deductable_amount);
-
-                  utilities
-                    .logger()
-                    .log("service_type_id: ", typeof patient_resp);
 
                   comapany_resp =
                     parseFloat(net_amout) - parseFloat(patient_resp);
@@ -2618,9 +2614,7 @@ export default {
                       decimal_places
                     );
                   }
-                  utilities
-                    .logger()
-                    .log("vat_applicable: ", records.vat_applicable);
+
                   if (records.vat_applicable == "Y") {
                     s_patient_tax =
                       (parseFloat(patient_resp) *
@@ -2704,16 +2698,26 @@ export default {
                   }
 
                   //If primary and secondary exists
-                } else {                  
-                  console.log("insurance_provider_ids", is_insurance.length)
+                } else {
+                  // console.log("insurance_provider_ids", is_insurance.length)
                   if (FollowUp === true) {
                     unit_cost =
                       unit_cost != 0
                         ? parseFloat(unit_cost)
                         : parseFloat(records.followup_free_fee);
                   } else {
-                    if (is_insurance.length > 0) {
-                      unit_cost = parseFloat(policydtls.gross_amt);
+                    if (is_insurance.length > 0 && policydtls.insurance_type === "C") {
+                      if (policydtls.company_service_price_type == "N") {
+                        unit_cost =
+                          unit_cost != 0
+                            ? unit_cost
+                            : parseFloat(policydtls.net_amount);
+                      } else {
+                        unit_cost =
+                          unit_cost != 0
+                            ? unit_cost
+                            : parseFloat(policydtls.gross_amt);
+                      }
 
                     } else {
                       unit_cost =
