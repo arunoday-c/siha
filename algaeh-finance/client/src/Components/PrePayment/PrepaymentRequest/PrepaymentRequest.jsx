@@ -20,10 +20,10 @@ export function PrepaymentRequest() {
 
   const onSubmit = (e) => console.log(e);
 
-  const { hospital_id: ihospital, prepayment_type_id } = watch(
+  const { hospital_id: ihospital, prepayment_type_id } = watch([
     "hospital_id",
-    "prepayment_type_id"
-  );
+    "prepayment_type_id",
+  ]);
 
   return (
     <div>
@@ -44,6 +44,7 @@ export function PrepaymentRequest() {
                   value,
                   onChange: (_, selected) => {
                     onChange(selected);
+                    setValue("employee_id", null);
                   },
                   onBlur: (_, selected) => {
                     onBlur(selected);
@@ -100,9 +101,13 @@ export function PrepaymentRequest() {
                   value,
                   onChange: (_, selected) => {
                     onChange(selected);
+                    setValue("start_date", undefined);
+                    setValue("end_date", undefined);
                   },
-                  onBlur: (_, selected) => {
-                    onBlur(selected);
+                  onClear: () => {
+                    onChange("");
+                    setValue("start_date", undefined);
+                    setValue("end_date", undefined);
                   },
                   name: "prepayment_type_id",
                   dataSource: {
@@ -180,19 +185,32 @@ export function PrepaymentRequest() {
                 }}
                 textBox={{
                   className: "form-control",
-                  value: moment(value),
+                  value,
                 }}
                 events={{
-                  onChange: (mdate, date) => {
-                    onChange(date);
-                    const prepayItem = prePaymentTypes.filter(
-                      (item) =>
-                        item.finance_d_prepayment_type_id === prepayment_type_id
-                    );
-                    setValue(
-                      "end_date",
-                      mdate.add(prepayItem[0].prepayment_duration, "days")
-                    );
+                  onChange: (mdate) => {
+                    if (mdate) {
+                      onChange(mdate._d);
+                      const prepayItem = prePaymentTypes.filter(
+                        (item) =>
+                          item.finance_d_prepayment_type_id ===
+                          prepayment_type_id
+                      );
+                      setValue(
+                        "end_date",
+                        moment(mdate).add(
+                          prepayItem[0].prepayment_duration,
+                          "months"
+                        )._d
+                      );
+                    } else {
+                      onChange(undefined);
+                      setValue("end_date", undefined);
+                    }
+                  },
+                  onClear: () => {
+                    onChange(undefined);
+                    setValue("end_date", undefined);
                   },
                 }}
                 others={{ disabled: !prepayment_type_id }}
@@ -213,9 +231,8 @@ export function PrepaymentRequest() {
                   isImp: true,
                 }}
                 textBox={{
-                  value: moment(props.value),
+                  value: props.value,
                   className: "form-control",
-                  value: "",
                 }}
                 others={{ disabled: true }}
                 // maxDate={moment().add(1, "days")}
