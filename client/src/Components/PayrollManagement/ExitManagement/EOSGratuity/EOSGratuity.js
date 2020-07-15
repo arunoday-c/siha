@@ -708,18 +708,23 @@ class EOSGratuity extends Component {
 
         <div className="hptl-phase1-footer">
           <div className="row">
-            <div className="col-lg-12">
+            <div className="col-4">
+              {" "}
               <AlgaehSecurityElement elementCode="READ_ONLY_ACCESS">
                 <button
                   type="button"
-                  className="btn btn-primary"
+                  className="btn btn-other"
                   onClick={this.saveEos.bind(this)}
                   disabled={this.state.sendPaymentButton}
                 >
                   <AlgaehLabel
                     label={{ forceLabel: "Send for payment", returnText: true }}
-                  />
-                </button>
+                  />{" "}
+                </button>{" "}
+              </AlgaehSecurityElement>
+            </div>
+            <div className="col-lg-12">
+              <AlgaehSecurityElement elementCode="READ_ONLY_ACCESS">
                 <button
                   type="button"
                   className="btn btn-primary"
@@ -730,6 +735,18 @@ class EOSGratuity extends Component {
                     label={{ forceLabel: "Save", returnText: true }}
                   />
                 </button>
+                   {this.EosData.gratuity_status != null ? (
+                <button
+                  type="button"
+                  className="btn btn-other"
+                  // onClick={this.saveEos.bind(this)}
+                  disabled={this.state.sendPaymentButton}
+                >
+                  <AlgaehLabel
+                    label={{ forceLabel: "Generate Report", returnText: true }}
+                  />{" "}
+                  </button>{" "}
+                    ) : null}
               </AlgaehSecurityElement>
 
               {/* <button
