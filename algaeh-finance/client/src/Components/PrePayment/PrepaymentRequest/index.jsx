@@ -59,7 +59,7 @@ export function PrepaymentRequest() {
         />
         <AlgaehFormGroup
           div={{
-            className: "col-2 form-group",
+            className: "col-2 form-group algaeh-text-fld",
           }}
           label={{
             forceLabel: "Prepayment Amt.",
@@ -103,7 +103,7 @@ export function PrepaymentRequest() {
           others={{ disabled: true }}
           // maxDate={moment().add(1, "days")}
         />
-        <div className="col">
+        <div className="col-2">
           <button className="btn btn-primary bttn-sm" style={{ marginTop: 19 }}>
             Add to list
           </button>
