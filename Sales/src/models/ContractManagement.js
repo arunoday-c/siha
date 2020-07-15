@@ -313,26 +313,27 @@ export function updateContractManagement(req, res, next) {
             })
           );
         }
-
-        execArray.push(
-          _mysql.executeQuery({
-            query: `update hims_f_contract_management_services set ? where hims_f_contract_management_services_id=?`,
-            values: update_services,
-            where: ["hims_f_contract_management_services_id"],
-            excludeValues: [
-              "contract_management_id",
-              "service_name",
-              "created_by",
-              "created_date",
-            ],
-            extraValues: {
-              updated_by: algaeh_d_app_user_id,
-              updated_date: new Date(),
-            },
-            bulkInsertOrUpdate: true,
-            printQuery: true,
-          })
-        );
+        if (update_services.length) {
+          execArray.push(
+            _mysql.executeQuery({
+              query: `update hims_f_contract_management_services set ? where hims_f_contract_management_services_id=?`,
+              values: update_services,
+              where: ["hims_f_contract_management_services_id"],
+              excludeValues: [
+                "contract_management_id",
+                "service_name",
+                "created_by",
+                "created_date",
+              ],
+              extraValues: {
+                updated_by: algaeh_d_app_user_id,
+                updated_date: new Date(),
+              },
+              bulkInsertOrUpdate: true,
+              printQuery: true,
+            })
+          );
+        }
 
         Promise.all(execArray)
           .then((details) => {
