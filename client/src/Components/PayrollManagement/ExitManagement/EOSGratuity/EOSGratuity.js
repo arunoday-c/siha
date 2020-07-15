@@ -13,7 +13,7 @@ import moment from "moment";
 // import { parse } from "url";
 import { MainContext } from "algaeh-react-components";
 import { AlgaehSecurityElement } from "algaeh-react-components";
-
+import swal from "sweetalert2";
 class EOSGratuity extends Component {
   constructor(props) {
     super(props);
@@ -31,6 +31,7 @@ class EOSGratuity extends Component {
       hospital_id: undefined,
       gratuity_encash: 0,
       actual_maount: 0,
+      sendPaymentButton: true,
     };
   }
   static contextType = MainContext;
@@ -116,6 +117,18 @@ class EOSGratuity extends Component {
         this.setState({
           employee_name: row.full_name,
           hims_d_employee_id: row.hims_d_employee_id,
+          data: {
+            componentList: [],
+          },
+          previous_gratuity_amount: 0,
+          calculated_gratutity_amount: null,
+          payable_amount: null,
+          remarks: "",
+          saveDisabled: true,
+          gratuity_done: false,
+          gratuity_encash: 0,
+          actual_maount: 0,
+          sendPaymentButton: true,
         });
       },
     });
@@ -132,12 +145,63 @@ class EOSGratuity extends Component {
       payable_days: _sub_data.eligible_day,
       computed_amount: _sub_data.computed_amount,
       paybale_amout: _sub_data.paybale_amout,
-      gratuity_status: this.state.gratuity_status,
+      gratuity_status: "PRO",
       remarks: this.state.remarks,
     };
-
+    swal({
+      title: "Are You Sure to Send For Payment ?",
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes",
+      confirmButtonColor: "#44b8bd",
+      cancelButtonColor: "#d33",
+      cancelButtonText: "No",
+    }).then((sendForpayment) => {
+      if (sendForpayment.value) {
+        algaehApiCall({
+          uri: "/endofservice/save",
+          method: "PUT",
+          module: "hrManagement",
+          data: send_data,
+          onSuccess: (res) => {
+            if (res.data.result) {
+              swalMessage({
+                title: "Record Added Successfully",
+                type: "success",
+              });
+              // this.clearState();
+              this.setState({
+                saveDisabled: true,
+                sendPaymentButton: true,
+              });
+            }
+          },
+          onFailure: (err) => {
+            swalMessage({
+              title: err.message,
+              type: "error",
+            });
+          },
+        });
+      }
+    });
+  }
+  saveData() {
+    let _sub_data = this.state.data;
+    let send_data = {
+      employee_id: this.state.hims_d_employee_id,
+      exit_type: _sub_data.employee_status,
+      join_date: _sub_data.date_of_joining,
+      exit_date: _sub_data.exit_date,
+      service_years: _sub_data.endOfServiceYears,
+      payable_days: _sub_data.eligible_day,
+      computed_amount: _sub_data.computed_amount,
+      paybale_amout: _sub_data.paybale_amout,
+      gratuity_status: "PEN",
+      remarks: this.state.remarks,
+    };
     algaehApiCall({
-      uri: "/endofservice/save",
+      uri: "/endofservice/saveTemporary",
       method: "POST",
       module: "hrManagement",
       data: send_data,
@@ -149,7 +213,8 @@ class EOSGratuity extends Component {
           });
           // this.clearState();
           this.setState({
-            saveDisabled: true,
+            saveDisabled: false,
+            sendPaymentButton: false,
           });
         }
       },
@@ -356,6 +421,11 @@ class EOSGratuity extends Component {
                 <span className="badge badge-success">
                   Already send for payment
                 </span>
+              </p>
+            ) : EosData.gratuity_status === "PEN" ? (
+              <p>
+                {" "}
+                <span className="badge badge-warning">Pending</span>
               </p>
             ) : (
               <p>
@@ -644,10 +714,20 @@ class EOSGratuity extends Component {
                   type="button"
                   className="btn btn-primary"
                   onClick={this.saveEos.bind(this)}
-                  disabled={this.state.saveDisabled}
+                  disabled={this.state.sendPaymentButton}
                 >
                   <AlgaehLabel
                     label={{ forceLabel: "Send for payment", returnText: true }}
+                  />
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  onClick={this.saveData.bind(this)}
+                  disabled={this.state.saveDisabled}
+                >
+                  <AlgaehLabel
+                    label={{ forceLabel: "Save", returnText: true }}
                   />
                 </button>
               </AlgaehSecurityElement>

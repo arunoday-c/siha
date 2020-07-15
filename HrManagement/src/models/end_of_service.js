@@ -4,6 +4,60 @@ import algaehMysql from "algaeh-mysql";
 import algaehUtilities from "algaeh-utilities/utilities";
 
 export default {
+  endOfServiceAdd: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    let input = req.body;
+
+    try {
+      _mysql
+        .executeQuery({
+          query: `UPDATE hims_f_end_of_service set transaction_date=?,join_date=?,exit_date=?,payable_days=?,
+        service_years=?,calculated_gratutity_amount=?,gratuity_status=?,
+        exit_type=?,remarks=?,created_date=?,created_by=?,
+        updated_date=?,updated_by=? where employee_id=? `,
+          values: [
+            new Date(),
+            input.join_date,
+            input.exit_date,
+            input.payable_days,
+            input.service_years,
+            input.computed_amount,
+            // input.payable_amout,
+            input.gratuity_status,
+            input.exit_type,
+            input.remarks,
+
+            new Date(),
+            req.userIdentity.algaeh_d_app_user_id,
+            new Date(),
+            req.userIdentity.algaeh_d_app_user_id,
+            input.employee_id,
+          ],
+        })
+        .then((result) => {
+          _mysql.commitTransaction((error, resu) => {
+            if (error) {
+              _mysql.rollBackTransaction(() => {
+                next(error);
+              });
+            } else {
+              req.records = {
+                result,
+              };
+              next();
+            }
+          });
+        })
+        .catch((e) => {
+          _mysql.rollBackTransaction(() => {
+            next(e);
+          });
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
   endOfService: (req, res, next) => {
     const _input = req.query;
     const _mysql = new algaehMysql();
@@ -11,13 +65,18 @@ export default {
     const { decimal_places, org_country_id } = req.userIdentity;
     _mysql
       .executeQuery({
-        query: `select EOS.employee_id,EOS.join_date,EOS.exit_date,EOS.payable_days,EOS.service_years,EOS.payable_days,EOS.calculated_gratutity_amount,EOS.payable_amount,EOS.gratuity_status from hims_f_end_of_service EOS 
-    where employee_id = ?;`,
+        query: `select EOS.hims_f_end_of_service_id, EOS.employee_id,EOS.join_date,EOS.exit_date,
+        EOS.payable_days,EOS.service_years,EOS.payable_days,EOS.calculated_gratutity_amount,
+        EOS.payable_amount,EOS.gratuity_status from hims_f_end_of_service EOS 
+        where employee_id = ?;`,
         values: [_input.hims_d_employee_id],
       })
       .then((end_of_service) => {
         let endofServexit = false;
-        if (!end_of_service.length > 0) {
+        if (
+          !end_of_service.length > 0 ||
+          end_of_service[0].gratuity_status === "PEN"
+        ) {
           endofServexit = true;
           _mysql
             .executeQuery({
@@ -235,6 +294,7 @@ export default {
                         gratuity_amount: gratuity,
                         gratuity_encash: gratuity_encash,
                         actual_maount: actual_maount,
+                        gratuity_status: "PEN",
                       };
 
                       next();
@@ -299,7 +359,7 @@ export default {
         next(e);
       });
   },
-  endOfServiceAdd: (req, res, next) => {
+  saveEndOfService: (req, res, next) => {
     const _input = req.body;
     const _mysql = new algaehMysql();
     const utilities = new algaehUtilities();
@@ -312,12 +372,48 @@ export default {
       .then((end_of_service) => {
         utilities.logger().log("end_of_service: ", end_of_service.length);
         if (end_of_service.length > 0) {
-          _mysql.releaseConnection();
-          req.records = {
-            message: "End of Service/Gratuity already processed.",
-          };
-          req.flag = 1;
-          next();
+          if (end_of_service[0].gratuity_status === "PRO") {
+            _mysql.releaseConnection();
+            req.records = {
+              message: "End of Service/Gratuity already processed.",
+            };
+            req.flag = 1;
+            next();
+          } else {
+            _mysql
+              .executeQuery({
+                query: `UPDATE hims_f_end_of_service set join_date=?,exit_date=?,payable_days=?,
+            service_years=?,calculated_gratutity_amount=?,payable_amount=?,gratuity_status=?,
+            exit_type=?,remarks=?,created_date=?,created_by=?,
+            updated_date=?,updated_by=? where employee_id= ? `,
+                values: [
+                  _input.join_date,
+                  _input.exit_date,
+                  _input.payable_days,
+                  _input.service_years,
+                  _input.computed_amount,
+                  _input.paybale_amout,
+                  _input.gratuity_status,
+                  _input.exit_type,
+                  _input.remarks,
+
+                  new Date(),
+                  req.userIdentity.algaeh_d_app_user_id,
+                  new Date(),
+                  req.userIdentity.algaeh_d_app_user_id,
+                  _input.employee_id,
+                ],
+              })
+              .then((result) => {
+                _mysql.releaseConnection();
+                req.records = { result };
+                next();
+              })
+              .catch((error) => {
+                _mysql.releaseConnection();
+                next(error);
+              });
+          }
         } else {
           _mysql
             .generateRunningNumber({
@@ -344,14 +440,14 @@ export default {
                 .executeQuery({
                   query:
                     "insert into hims_f_end_of_service(`end_of_service_number`,\
-            `employee_id`,`transaction_date`,`exit_type`,`join_date`,\
+            `employee_id`,`exit_type`,`join_date`,\
             `exit_date`,`service_years`,`payable_days`,`previous_gratuity_amount`,\
             `calculated_gratutity_amount`,`payable_amount`, `gratuity_status`, `remarks`,\
-            `created_by`,`created_date`,`updated_by`,`updated_date`,hospital_id) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+            `created_by`,`created_date`,`updated_by`,`updated_date`,hospital_id) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
                   values: [
                     generatedNumbers.END_OF_SERVICE_NO,
                     _input.employee_id,
-                    new Date(),
+
                     _input.exit_type,
                     _input.join_date,
                     _input.exit_date,
@@ -385,10 +481,9 @@ export default {
                     }
                   });
                 })
-                .catch((e) => {
-                  _mysql.rollBackTransaction(() => {
-                    next(e);
-                  });
+                .catch((error) => {
+                  _mysql.releaseConnection();
+                  next(error);
                 });
             })
             .catch((e) => {
@@ -402,6 +497,7 @@ export default {
       });
   },
 };
+
 function eosBySaudaiRule(options, employee, queryForm, _mysql, req, next) {
   const { endOfServiceYears, employee_status } = employee;
   const {
