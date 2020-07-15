@@ -1300,7 +1300,21 @@ class FinalSettlement extends Component {
         <AlgaehSecurityElement elementCode="READ_ONLY_ACCESS">
           <div className="hptl-phase1-footer">
             <div className="row">
-              <div className="col-lg-12">
+              <div className="col-4 leftBtnGroup">
+                {" "}
+                <button
+                  type="button"
+                  className="btn btn-other"
+                  typeof="final"
+                  onClick={this.saveFinalSettlement.bind(this)}
+                  disabled={this.state.disableSave}
+                >
+                  <AlgaehLabel
+                    label={{ forceLabel: "Send for Payment", returnText: true }}
+                  />
+                </button>
+              </div>
+              <div className="col-8">
                 <button
                   type="button"
                   className="btn btn-primary"
@@ -1321,18 +1335,6 @@ class FinalSettlement extends Component {
                 >
                   <AlgaehLabel
                     label={{ forceLabel: "Clear", returnText: true }}
-                  />
-                </button>
-
-                <button
-                  type="button"
-                  className="btn btn-other"
-                  typeof="final"
-                  onClick={this.saveFinalSettlement.bind(this)}
-                  disabled={this.state.disableSave}
-                >
-                  <AlgaehLabel
-                    label={{ forceLabel: "Send for Payment", returnText: true }}
                   />
                 </button>
 

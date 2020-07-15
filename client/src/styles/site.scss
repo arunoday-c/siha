@@ -705,6 +705,11 @@ button {
     cursor: not-allowed !important;
     opacity: 0.4;
   }
+  .leftBtnGroup {
+    .btn {
+      float: left !important;
+    }
+  }
 }
 
 .hptl-phase1-master-footer {

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { getAccountHeads } from "../../../utils/accountHelpers";
 import { newAlgaehApi } from "../../../hooks/";
 import { useForm, Controller } from "react-hook-form";
@@ -11,10 +11,12 @@ import {
   Button,
   Modal,
 } from "algaeh-react-components";
+import { PrePaymentContext } from "../Prepayment";
 
 const { confirm } = Modal;
 
 export function PrepaymentMaster() {
+  const { setPrepaymentTypes } = useContext(PrePaymentContext);
   const [current, setCurrent] = useState(null);
   const [accounts, setAccounts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -46,6 +48,7 @@ export function PrepaymentMaster() {
       .then((res) => {
         if (res.data.success) {
           setTypes(res.data.result);
+          setPrepaymentTypes(res.data.result);
         }
       })
       .catch((e) => AlgaehMessagePop({ type: "Error", display: e.message }));
@@ -119,7 +122,7 @@ export function PrepaymentMaster() {
     confirm({
       title: "Are you sure you want to delete?",
       content: `This action will remove the ${row.prepayment_desc} type.`,
-      icon: <i className="fas fa-trash"></i>,
+      icon: "",
       cancelText: "Cancel",
       okText: "Delete",
       okType: "danger",
@@ -129,7 +132,6 @@ export function PrepaymentMaster() {
 
   const onSubmit = (e) => {
     console.error(errors);
-    debugger;
 
     if (current) {
       updatePreType(e);
@@ -149,7 +151,7 @@ export function PrepaymentMaster() {
             render={(props) => (
               <AlgaehFormGroup
                 div={{
-                  className: "col-3 form-group",
+                  className: "col form-group algaeh-text-fld",
                 }}
                 label={{
                   forceLabel: "Prepayment Desc.",
@@ -173,10 +175,10 @@ export function PrepaymentMaster() {
             render={(props) => (
               <AlgaehFormGroup
                 div={{
-                  className: "col-3 form-group",
+                  className: "col-2 form-group algaeh-text-fld",
                 }}
                 label={{
-                  forceLabel: "Duration (Month)",
+                  forceLabel: "Duration (Days)",
                   isImp: true,
                 }}
                 textBox={{
@@ -195,7 +197,7 @@ export function PrepaymentMaster() {
             name="prepayment_gl"
             render={(props) => (
               <AlgaehTreeSearch
-                div={{ className: "col-3 form-group" }}
+                div={{ className: "col form-group" }}
                 label={{
                   forceLabel: "Prepayment GL",
                   isImp: false,
@@ -225,7 +227,7 @@ export function PrepaymentMaster() {
             name="expense_gl"
             render={(props) => (
               <AlgaehTreeSearch
-                div={{ className: "col-3 form-group" }}
+                div={{ className: "col form-group" }}
                 label={{
                   forceLabel: "Expense GL",
                   isImp: false,
@@ -251,7 +253,7 @@ export function PrepaymentMaster() {
             )}
           />
 
-          <div className="col">
+          <div className="col-2">
             <button
               type="submit"
               className="btn btn-primary btn-sm"
@@ -266,12 +268,13 @@ export function PrepaymentMaster() {
         <div className="row">
           <div className="col-12">
             <div className="portlet portlet-bordered margin-bottom-15">
-              <div className="portlet-label">
+              <div className="portlet-title">
                 <div className="caption">
                   <h3 className="caption-subject">Prepayment Master List</h3>
                 </div>
                 <div className="actions"></div>
               </div>
+
               <div className="portlet-body">
                 <AlgaehTable
                   columns={[
@@ -281,12 +284,15 @@ export function PrepaymentMaster() {
                       displayTemplate: (row) => {
                         return (
                           <>
-                            <Button onClick={() => onEdit(row)}>
-                              <i className="fas fa-edit"></i>
-                            </Button>
-                            <Button onClick={() => onDelete(row)}>
-                              <i className="fas fa-trash"></i>
-                            </Button>
+                            <i
+                              className="fas fa-pen"
+                              onClick={() => onEdit(row)}
+                            ></i>
+
+                            <i
+                              className="fas fa-trash-alt"
+                              onClick={() => onDelete(row)}
+                            ></i>
                           </>
                         );
                       },
@@ -299,7 +305,7 @@ export function PrepaymentMaster() {
                     },
                     {
                       fieldName: "prepayment_duration",
-                      label: "Duration (Month)",
+                      label: "Duration (Days)",
                       align: "center",
                       sortable: true,
                       filterable: true,

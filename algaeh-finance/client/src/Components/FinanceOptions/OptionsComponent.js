@@ -9,7 +9,7 @@ function OptionsComponent({
   organization,
   costCenters,
   handleDropDown,
-  handleSubmit
+  handleSubmit,
 }) {
   const {
     default_cost_center_id,
@@ -20,7 +20,7 @@ function OptionsComponent({
     end_month,
     auth_level,
     auth1_limit_amount,
-    auth1_limit
+    auth1_limit,
   } = options;
   return (
     <div className="FinanceOptions">
@@ -38,34 +38,34 @@ function OptionsComponent({
                   div={{ className: "col-2" }}
                   label={{
                     forceLabel: "Default Branch",
-                    isImp: true
+                    isImp: true,
                   }}
                   selector={{
-                    value: String(default_branch_id),
+                    value: default_branch_id,
                     name: "default_branch_id",
                     dataSource: {
                       data: organization,
                       valueField: "hims_d_hospital_id",
-                      textField: "hospital_name"
+                      textField: "hospital_name",
                     },
-                    onChange: handleDropDown
+                    onChange: handleDropDown,
                   }}
                 />
                 <AlgaehAutoComplete
                   div={{ className: "col-2" }}
                   label={{
                     forceLabel: "Default Cost Center",
-                    isImp: true
+                    isImp: true,
                   }}
                   selector={{
                     name: "default_cost_center_id",
-                    value: String(default_cost_center_id),
+                    value: default_cost_center_id,
                     dataSource: {
                       data: costCenters,
                       valueField: "cost_center_id",
-                      textField: "cost_center"
+                      textField: "cost_center",
                     },
-                    onChange: handleDropDown
+                    onChange: handleDropDown,
                   }}
                 />
                 <div className="col">
@@ -124,34 +124,34 @@ function OptionsComponent({
                   div={{ className: "col-2" }}
                   label={{
                     forceLabel: "Start month",
-                    isImp: true
+                    isImp: true,
                   }}
                   selector={{
                     name: "start_month",
-                    value: String(start_month),
+                    value: start_month,
                     dataSource: {
                       data: MONTHS,
                       valueField: "value",
-                      textField: "name"
+                      textField: "name",
                     },
-                    onChange: handleDropDown
+                    onChange: handleDropDown,
                   }}
                 />
                 <AlgaehAutoComplete
                   div={{ className: "col-2" }}
                   label={{
                     forceLabel: "End month",
-                    isImp: true
+                    isImp: true,
                   }}
                   selector={{
                     name: "end_month",
-                    value: String(end_month),
+                    value: end_month,
                     dataSource: {
                       data: MONTHS,
                       valueField: "value",
-                      textField: "name"
+                      textField: "name",
                     },
-                    onChange: handleDropDown
+                    onChange: handleDropDown,
                   }}
                 />
               </div>
@@ -161,7 +161,7 @@ function OptionsComponent({
                   div={{ className: "col-2 form-group" }}
                   label={{
                     forceLabel: "MAX AUTHORIZATION LEVEL",
-                    isImp: true
+                    isImp: true,
                   }}
                   selector={{
                     name: "auth_level",
@@ -169,9 +169,9 @@ function OptionsComponent({
                     dataSource: {
                       data: AUTH_LEVELS,
                       valueField: "value",
-                      textField: "name"
+                      textField: "name",
                     },
-                    onChange: handleDropDown
+                    onChange: handleDropDown,
                   }}
                 />
                 <div className="col-2">
@@ -202,11 +202,11 @@ function OptionsComponent({
                 </div>
                 <AlgaehFormGroup
                   div={{
-                    className: "form-group algaeh-text-fld col-2"
+                    className: "form-group algaeh-text-fld col-2",
                   }}
                   label={{
                     forceLabel: "Auth LEVEL 1 Limit (Above)",
-                    isImp: true
+                    isImp: true,
                   }}
                   textBox={{
                     type: "number",
@@ -215,7 +215,7 @@ function OptionsComponent({
                     className: "form-control",
                     disabled: auth1_limit === "N",
                     placeholder: "0.00",
-                    onChange: handleChange
+                    onChange: handleChange,
                   }}
                 />
               </div>
