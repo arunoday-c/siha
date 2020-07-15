@@ -886,25 +886,29 @@ class ContractManagement extends Component {
                   )}
 
                   <div className="col-12  form-group finalCommentsSection">
+                    <hr></hr>
                     <h6>View T&C</h6>
-                    <ol>
+                    <ol className="TermsList">
                       {this.state.comment_list.length > 0
                         ? this.state.comment_list.map((row, index) => {
                             return (
                               <React.Fragment key={index}>
                                 <li key={index}>
                                   <span>{row}</span>
-                                  {this.state.dataExists &&
-                                  !this.state.editMode ? null : (
-                                    <i
-                                      className="fas fa-times"
-                                      onClick={deleteComment.bind(
-                                        this,
-                                        this,
-                                        row
-                                      )}
-                                    ></i>
-                                  )}
+                                  <span>
+                                    {" "}
+                                    {this.state.dataExists &&
+                                    !this.state.editMode ? null : (
+                                      <i
+                                        className="fas fa-times"
+                                        onClick={deleteComment.bind(
+                                          this,
+                                          this,
+                                          row
+                                        )}
+                                      ></i>
+                                    )}
+                                  </span>
                                 </li>
                               </React.Fragment>
                             );
@@ -964,7 +968,7 @@ class ContractManagement extends Component {
               {this.state.dataExists && (
                 <button
                   type="button"
-                  className="btn btn-outline-primary"
+                  className="btn btn-other  "
                   onClick={() => this.setState({ editMode: true })}
                 >
                   <AlgaehLabel
