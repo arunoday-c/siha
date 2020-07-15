@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { getAccountHeads } from "../../../utils/accountHelpers";
 import { newAlgaehApi } from "../../../hooks/";
 import { useForm, Controller } from "react-hook-form";
@@ -11,10 +11,12 @@ import {
   Button,
   Modal,
 } from "algaeh-react-components";
+import { PrePaymentContext } from "../Prepayment";
 
 const { confirm } = Modal;
 
 export function PrepaymentMaster() {
+  const { setPrepaymentTypes } = useContext(PrePaymentContext);
   const [current, setCurrent] = useState(null);
   const [accounts, setAccounts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -46,6 +48,7 @@ export function PrepaymentMaster() {
       .then((res) => {
         if (res.data.success) {
           setTypes(res.data.result);
+          setPrepaymentTypes(res.data.result);
         }
       })
       .catch((e) => AlgaehMessagePop({ type: "Error", display: e.message }));
@@ -129,7 +132,6 @@ export function PrepaymentMaster() {
 
   const onSubmit = (e) => {
     console.error(errors);
-    debugger;
 
     if (current) {
       updatePreType(e);

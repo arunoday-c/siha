@@ -499,7 +499,7 @@ export function Organization(props) {
                         valueField: "hims_d_country_id",
                         textField: "country_name",
                       },
-                      value: String(country_id),
+                      value: country_id || undefined,
 
                       onChange: onChangeHandler,
 
