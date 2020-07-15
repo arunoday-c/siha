@@ -119,7 +119,7 @@ export function PrepaymentMaster() {
     confirm({
       title: "Are you sure you want to delete?",
       content: `This action will remove the ${row.prepayment_desc} type.`,
-      icon: <i className="fas fa-trash"></i>,
+      icon: "",
       cancelText: "Cancel",
       okText: "Delete",
       okType: "danger",

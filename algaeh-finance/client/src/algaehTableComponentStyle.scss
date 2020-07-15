@@ -288,3 +288,21 @@
     }
   }
 }
+.ant-modal-confirm {
+  text-align: center;
+  .ant-modal-body {
+    padding: 0 !important;
+    margin: 0;
+    .ant-modal-confirm-body {
+      margin: 0;
+      padding: 15px;
+    }
+    .ant-modal-confirm-btns {
+      width: 100%;
+      border-top: 1px solid #e8e8e8;
+      text-align: right;
+      padding: 5px 10px;
+      margin: 5px 0 0 0;
+    }
+  }
+}
