@@ -380,16 +380,16 @@ let addDentalTreatment = (req, res, next) => {
 let getTreatmentPlan = (req, res, next) => {
   const _mysql = new algaehMysql({ path: keyPath });
   try {
-    let input = extend({}, req.body);
+    let input = extend({}, req.query);
 
     let strQuery = ""
-    if (req.body.episode_id) {
+    if (input.episode_id != null) {
       strQuery += " and episode_id=" + input.episode_id;
     }
-    if (req.body.patient_id) {
+    if (input.patient_id != null) {
       strQuery += " and patient_id=" + input.patient_id;
     }
-    if (req.body.patient_id) {
+    if (input.patient_id != null) {
       strQuery += " and plan_status= '" + input.plan_status + "'";
     }
 

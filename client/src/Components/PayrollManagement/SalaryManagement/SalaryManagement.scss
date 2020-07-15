@@ -11,3 +11,22 @@
 .SalaryMgmntSection {
   margin-top: 33px;
 }
+.salaryCheckList {
+  border-collapse: collapse;
+  text-align: left;
+  width: 100%;
+  margin-bottom: 15px;
+  font-weight: bold;
+  font-style: italic;
+
+  td {
+    border: 1px solid #e8e8e8;
+    padding: 4px 6px;
+    font-size: 1rem;
+    vertical-align: middle;
+    &:first-child {
+      width: 15px;
+      text-align: center;
+    }
+  }
+}
