@@ -1,5 +1,6 @@
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import { AlgaehValidation } from "../../../utils/GlobalFunctions";
+import swal from "sweetalert2";
 
 const changeTexts = ($this, e) => {
     let name = e.name || e.target.name;
@@ -18,7 +19,7 @@ const onchangegridcol = ($this, row, e) => {
     row.update();
 };
 
-const updateLabAnalytes = ($this, data) => {
+const updateAllergy = ($this, data) => {
     // data.updated_by = getCookie("UserID");
 
     algaehApiCall({
@@ -31,10 +32,10 @@ const updateLabAnalytes = ($this, data) => {
                     title: "Record updated successfully . .",
                     type: "success"
                 });
-                $this.props.getAllAllergies({
-                    uri: "/doctorsWorkBench/getAllAllergies",
+                $this.props.getAllergyDetails({
+                    uri: "/doctorsWorkBench/getAllergyDetails",
                     method: "GET",
-                    cancelRequestId: "getAllAllergies",
+                    cancelRequestId: "getAllergyDetails",
                     redux: {
                         type: "ALL_ALLERGIES",
                         mappingName: "allallergies"
@@ -46,7 +47,7 @@ const updateLabAnalytes = ($this, data) => {
     });
 };
 
-const insertLabAnalytes = ($this, e) => {
+const insertAllergy = ($this, e) => {
     e.preventDefault();
 
     AlgaehValidation({
@@ -59,10 +60,10 @@ const insertLabAnalytes = ($this, e) => {
                     if (response.data.success === true) {
                         resetState($this);
                         //Handle Successful Add here
-                        $this.props.getAllAllergies({
-                            uri: "/doctorsWorkBench/getAllAllergies",
+                        $this.props.getAllergyDetails({
+                            uri: "/doctorsWorkBench/getAllergyDetails",
                             method: "GET",
-                            cancelRequestId: "getAllAllergies",
+                            cancelRequestId: "getAllergyDetails",
                             redux: {
                                 type: "ALL_ALLERGIES",
                                 mappingName: "allallergies"
@@ -81,9 +82,56 @@ const insertLabAnalytes = ($this, e) => {
     });
 };
 
+
+const showconfirmDialog = ($this, id) => {
+    swal({
+        title: "Are you sure you want to delete this Selected Allergy?",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Yes",
+        confirmButtonColor: "#44b8bd",
+        cancelButtonColor: "#d33",
+        cancelButtonText: "No"
+    }).then(willDelete => {
+        if (willDelete.value) {
+            let data = {
+                hims_d_allergy_id: id
+            };
+            algaehApiCall({
+                uri: "/doctorsWorkBench/deleteAllergy",
+                data: data,
+                method: "DELETE",
+                onSuccess: response => {
+                    if (response.data.success) {
+                        swalMessage({
+                            title: "Record deleted successfully . ",
+                            type: "success"
+                        });
+                        $this.props.getAllergyDetails({
+                            uri: "/doctorsWorkBench/getAllergyDetails",
+                            method: "GET",
+                            cancelRequestId: "getAllergyDetails",
+                            redux: {
+                                type: "ALL_ALLERGIES",
+                                mappingName: "allallergies"
+                            }
+                        });
+                    }
+                },
+                onFailure: error => { }
+            });
+        }
+    });
+};
+
+const deleteAllergy = ($this, row) => {
+    showconfirmDialog($this, row.hims_d_allergy_id);
+};
+
 export {
     changeTexts,
     onchangegridcol,
-    insertLabAnalytes,
-    updateLabAnalytes
+    insertAllergy,
+    updateAllergy,
+    deleteAllergy
 };

@@ -230,7 +230,7 @@ class VitalsMaster extends Component {
             });
           }
         });
-      } 
+      }
     });
   }
   deleteVtialsDetail(data) {
@@ -464,7 +464,8 @@ class VitalsMaster extends Component {
                   <h3 className="caption-subject">Create Vitals</h3>
                 </div>
               </div>
-              <div className="row">
+              {/* <div className="row"> */}
+              <div className="row" data-validate="addVitalHdrDiv">
                 <AlagehFormGroup
                   div={{ className: "col" }}
                   label={{
@@ -668,7 +669,7 @@ class VitalsMaster extends Component {
                     isEditable={true}
                     paging={{ page: 0, rowsPerPage: 10 }}
                     events={{
-                      onEdit: () => {},
+                      onEdit: () => { },
                       onDelete: this.deleteVtialsHeader.bind(this),
                       onDone: this.updateVitalsHeader.bind(this)
                     }}
@@ -1006,7 +1007,7 @@ class VitalsMaster extends Component {
                         isEditable={true}
                         paging={{ page: 0, rowsPerPage: 10 }}
                         events={{
-                          onEdit: () => {},
+                          onEdit: () => { },
                           onDelete: this.deleteVtialsDetail.bind(this),
                           onDone: this.updateVitalsDetail.bind(this)
                         }}

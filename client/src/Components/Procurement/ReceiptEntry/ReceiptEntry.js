@@ -294,7 +294,7 @@ class ReceiptEntry extends Component {
                     className: "txt-fld",
                     name: "invoice_date"
                   }}
-                  minDate={new Date()}
+                  // minDate={new Date()}
                   disabled={this.state.dataExitst}
                   events={{
                     onChange: datehandle.bind(this, this),

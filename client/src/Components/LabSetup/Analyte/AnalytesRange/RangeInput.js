@@ -89,7 +89,7 @@ export default function RangeInput({ addAnalyte, analyteType }) {
           onChange: handleChange
         }}
       />
-      <AlagehAutoComplete
+      {/* <AlagehAutoComplete
         div={{ className: "col" }}
         label={{
           forceLabel: "Operator",
@@ -114,7 +114,7 @@ export default function RangeInput({ addAnalyte, analyteType }) {
           },
           onChange: handleChange
         }}
-      />
+      /> */}
       <AlagehFormGroup
         div={{ className: "col" }}
         label={{
@@ -137,7 +137,7 @@ export default function RangeInput({ addAnalyte, analyteType }) {
           }
         }}
       />
-      <AlagehAutoComplete
+      {/* <AlagehAutoComplete
         div={{ className: "col" }}
         label={{
           forceLabel: "Operator",
@@ -162,7 +162,7 @@ export default function RangeInput({ addAnalyte, analyteType }) {
           },
           onChange: handleChange
         }}
-      />
+      /> */}
       <AlagehFormGroup
         div={{ className: "col" }}
         label={{
@@ -188,7 +188,7 @@ export default function RangeInput({ addAnalyte, analyteType }) {
 
       {analyteType === "QN" ? (
         <>
-          <AlagehAutoComplete
+          {/* <AlagehAutoComplete
             div={{ className: "col" }}
             label={{
               forceLabel: "Operator",
@@ -213,7 +213,7 @@ export default function RangeInput({ addAnalyte, analyteType }) {
               },
               onChange: handleChange
             }}
-          />
+          /> */}
           <AlagehFormGroup
             div={{ className: "col" }}
             label={{
@@ -229,7 +229,7 @@ export default function RangeInput({ addAnalyte, analyteType }) {
               }
             }}
           />
-          <AlagehAutoComplete
+          {/* <AlagehAutoComplete
             div={{ className: "col" }}
             label={{
               forceLabel: "Operator",
@@ -254,7 +254,7 @@ export default function RangeInput({ addAnalyte, analyteType }) {
               },
               onChange: handleChange
             }}
-          />
+          /> */}
           <AlagehFormGroup
             div={{ className: "col" }}
             label={{

@@ -25,7 +25,7 @@ class AnalytesRange extends PureComponent {
     if (
       (this.props.active &&
         this.props.active.hims_d_lab_analytes_id !==
-          prevProps.active.hims_d_lab_analytes_id) ||
+        prevProps.active.hims_d_lab_analytes_id) ||
       this.state.refresh
     ) {
       const { hims_d_lab_analytes_id } = this.props.active;
@@ -219,51 +219,51 @@ class AnalytesRange extends PureComponent {
                           );
                         }
                       },
-                      {
-                        fieldName: "from_oprator",
-                        label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "From Operator" }}
-                          />
-                        ),
-                        displayTemplate: row => {
-                          return row.from_oprator === null
-                            ? "Not Selected"
-                            : row.from_oprator;
-                        },
-                        editorTemplate: row => {
-                          return (
-                            <AlagehAutoComplete
-                              div={{}}
-                              selector={{
-                                sort: "off",
-                                name: "from_oprator",
-                                className: "select-fld",
-                                value:
-                                  row["from_oprator"] === null
-                                    ? "notselected"
-                                    : row["from_oprator"],
-                                dataSource: {
-                                  textField: "name",
-                                  valueField: "value",
-                                  data: [
-                                    {
-                                      name: "Not selected",
-                                      value: "notselected"
-                                    },
-                                    { name: "=", value: "=" },
-                                    { name: "<", value: "<" },
-                                    { name: ">", value: ">" },
-                                    { name: ">=", value: ">=" },
-                                    { name: "<=", value: "<=" }
-                                  ]
-                                },
-                                onChange: e => this.handleChange(row, e)
-                              }}
-                            />
-                          );
-                        }
-                      },
+                      // {
+                      //   fieldName: "from_oprator",
+                      //   label: (
+                      //     <AlgaehLabel
+                      //       label={{ forceLabel: "From Operator" }}
+                      //     />
+                      //   ),
+                      //   displayTemplate: row => {
+                      //     return row.from_oprator === null
+                      //       ? "Not Selected"
+                      //       : row.from_oprator;
+                      //   },
+                      //   editorTemplate: row => {
+                      //     return (
+                      //       <AlagehAutoComplete
+                      //         div={{}}
+                      //         selector={{
+                      //           sort: "off",
+                      //           name: "from_oprator",
+                      //           className: "select-fld",
+                      //           value:
+                      //             row["from_oprator"] === null
+                      //               ? "notselected"
+                      //               : row["from_oprator"],
+                      //           dataSource: {
+                      //             textField: "name",
+                      //             valueField: "value",
+                      //             data: [
+                      //               {
+                      //                 name: "Not selected",
+                      //                 value: "notselected"
+                      //               },
+                      //               { name: "=", value: "=" },
+                      //               { name: "<", value: "<" },
+                      //               { name: ">", value: ">" },
+                      //               { name: ">=", value: ">=" },
+                      //               { name: "<=", value: "<=" }
+                      //             ]
+                      //           },
+                      //           onChange: e => this.handleChange(row, e)
+                      //         }}
+                      //       />
+                      //     );
+                      //   }
+                      // },
                       {
                         fieldName: "from_age",
                         label: (
@@ -289,49 +289,49 @@ class AnalytesRange extends PureComponent {
                           );
                         }
                       },
-                      {
-                        fieldName: "to_operator",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "To Operator" }} />
-                        ),
-                        displayTemplate: row => {
-                          return row.to_operator === null
-                            ? "Not Selected"
-                            : row.to_operator;
-                        },
-                        editorTemplate: row => {
-                          return (
-                            <AlagehAutoComplete
-                              div={{}}
-                              selector={{
-                                sort: "off",
-                                name: "to_operator",
-                                className: "select-fld",
-                                value:
-                                  row["to_operator"] === null
-                                    ? "notselected"
-                                    : row["to_operator"],
-                                dataSource: {
-                                  textField: "name",
-                                  valueField: "value",
-                                  data: [
-                                    {
-                                      name: "Not selected",
-                                      value: "notselected"
-                                    },
-                                    { name: "=", value: "=" },
-                                    { name: "<", value: "<" },
-                                    { name: ">", value: ">" },
-                                    { name: ">=", value: ">=" },
-                                    { name: "<=", value: "<=" }
-                                  ]
-                                },
-                                onChange: e => this.handleChange(row, e)
-                              }}
-                            />
-                          );
-                        }
-                      },
+                      // {
+                      //   fieldName: "to_operator",
+                      //   label: (
+                      //     <AlgaehLabel label={{ forceLabel: "To Operator" }} />
+                      //   ),
+                      //   displayTemplate: row => {
+                      //     return row.to_operator === null
+                      //       ? "Not Selected"
+                      //       : row.to_operator;
+                      //   },
+                      //   editorTemplate: row => {
+                      //     return (
+                      //       <AlagehAutoComplete
+                      //         div={{}}
+                      //         selector={{
+                      //           sort: "off",
+                      //           name: "to_operator",
+                      //           className: "select-fld",
+                      //           value:
+                      //             row["to_operator"] === null
+                      //               ? "notselected"
+                      //               : row["to_operator"],
+                      //           dataSource: {
+                      //             textField: "name",
+                      //             valueField: "value",
+                      //             data: [
+                      //               {
+                      //                 name: "Not selected",
+                      //                 value: "notselected"
+                      //               },
+                      //               { name: "=", value: "=" },
+                      //               { name: "<", value: "<" },
+                      //               { name: ">", value: ">" },
+                      //               { name: ">=", value: ">=" },
+                      //               { name: "<=", value: "<=" }
+                      //             ]
+                      //           },
+                      //           onChange: e => this.handleChange(row, e)
+                      //         }}
+                      //       />
+                      //     );
+                      //   }
+                      // },
                       {
                         fieldName: "to_age",
                         label: <AlgaehLabel label={{ forceLabel: "Age to" }} />,
@@ -395,49 +395,49 @@ class AnalytesRange extends PureComponent {
                           );
                         }
                       },
-                      {
-                        fieldName: "low_operator",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "Low Operator" }} />
-                        ),
-                        displayTemplate: row => {
-                          return row.low_operator === null
-                            ? "Not Selected"
-                            : row.low_operator;
-                        },
-                        editorTemplate: row => {
-                          return (
-                            <AlagehAutoComplete
-                              div={{}}
-                              selector={{
-                                sort: "off",
-                                name: "low_operator",
-                                className: "select-fld",
-                                value:
-                                  row["low_operator"] === null
-                                    ? "notselected"
-                                    : row["low_operator"],
-                                dataSource: {
-                                  textField: "name",
-                                  valueField: "value",
-                                  data: [
-                                    {
-                                      name: "Not selected",
-                                      value: "notselected"
-                                    },
-                                    { name: "=", value: "=" },
-                                    { name: "<", value: "<" },
-                                    { name: ">", value: ">" },
-                                    { name: ">=", value: ">=" },
-                                    { name: "<=", value: "<=" }
-                                  ]
-                                },
-                                onChange: e => this.handleChange(row, e)
-                              }}
-                            />
-                          );
-                        }
-                      },
+                      // {
+                      //   fieldName: "low_operator",
+                      //   label: (
+                      //     <AlgaehLabel label={{ forceLabel: "Low Operator" }} />
+                      //   ),
+                      //   displayTemplate: row => {
+                      //     return row.low_operator === null
+                      //       ? "Not Selected"
+                      //       : row.low_operator;
+                      //   },
+                      //   editorTemplate: row => {
+                      //     return (
+                      //       <AlagehAutoComplete
+                      //         div={{}}
+                      //         selector={{
+                      //           sort: "off",
+                      //           name: "low_operator",
+                      //           className: "select-fld",
+                      //           value:
+                      //             row["low_operator"] === null
+                      //               ? "notselected"
+                      //               : row["low_operator"],
+                      //           dataSource: {
+                      //             textField: "name",
+                      //             valueField: "value",
+                      //             data: [
+                      //               {
+                      //                 name: "Not selected",
+                      //                 value: "notselected"
+                      //               },
+                      //               { name: "=", value: "=" },
+                      //               { name: "<", value: "<" },
+                      //               { name: ">", value: ">" },
+                      //               { name: ">=", value: ">=" },
+                      //               { name: "<=", value: "<=" }
+                      //             ]
+                      //           },
+                      //           onChange: e => this.handleChange(row, e)
+                      //         }}
+                      //       />
+                      //     );
+                      //   }
+                      // },
 
                       {
                         fieldName: "normal_low",
@@ -464,51 +464,51 @@ class AnalytesRange extends PureComponent {
                           show: isQuantity
                         }
                       },
-                      {
-                        fieldName: "high_operator",
-                        label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "High Operator" }}
-                          />
-                        ),
-                        displayTemplate: row => {
-                          return row.high_operator === null
-                            ? "Not Selected"
-                            : row.high_operator;
-                        },
-                        editorTemplate: row => {
-                          return (
-                            <AlagehAutoComplete
-                              div={{}}
-                              selector={{
-                                sort: "off",
-                                name: "high_operator",
-                                className: "select-fld",
-                                value:
-                                  row["high_operator"] === null
-                                    ? "notselected"
-                                    : row["high_operator"],
-                                dataSource: {
-                                  textField: "name",
-                                  valueField: "value",
-                                  data: [
-                                    {
-                                      name: "Not selected",
-                                      value: "notselected"
-                                    },
-                                    { name: "=", value: "=" },
-                                    { name: "<", value: "<" },
-                                    { name: ">", value: ">" },
-                                    { name: ">=", value: ">=" },
-                                    { name: "<=", value: "<=" }
-                                  ]
-                                },
-                                onChange: e => this.handleChange(row, e)
-                              }}
-                            />
-                          );
-                        }
-                      },
+                      // {
+                      //   fieldName: "high_operator",
+                      //   label: (
+                      //     <AlgaehLabel
+                      //       label={{ forceLabel: "High Operator" }}
+                      //     />
+                      //   ),
+                      //   displayTemplate: row => {
+                      //     return row.high_operator === null
+                      //       ? "Not Selected"
+                      //       : row.high_operator;
+                      //   },
+                      //   editorTemplate: row => {
+                      //     return (
+                      //       <AlagehAutoComplete
+                      //         div={{}}
+                      //         selector={{
+                      //           sort: "off",
+                      //           name: "high_operator",
+                      //           className: "select-fld",
+                      //           value:
+                      //             row["high_operator"] === null
+                      //               ? "notselected"
+                      //               : row["high_operator"],
+                      //           dataSource: {
+                      //             textField: "name",
+                      //             valueField: "value",
+                      //             data: [
+                      //               {
+                      //                 name: "Not selected",
+                      //                 value: "notselected"
+                      //               },
+                      //               { name: "=", value: "=" },
+                      //               { name: "<", value: "<" },
+                      //               { name: ">", value: ">" },
+                      //               { name: ">=", value: ">=" },
+                      //               { name: "<=", value: "<=" }
+                      //             ]
+                      //           },
+                      //           onChange: e => this.handleChange(row, e)
+                      //         }}
+                      //       />
+                      //     );
+                      //   }
+                      // },
                       {
                         fieldName: "normal_high",
                         label: <AlgaehLabel label={{ forceLabel: "High" }} />,
@@ -590,7 +590,7 @@ class AnalytesRange extends PureComponent {
                     paging={{ page: 0, rowsPerPage: 10 }}
                     events={{
                       onDelete: this.deleteAnalyte,
-                      onEdit: row => {},
+                      onEdit: row => { },
                       onDone: this.updateAnalyte
                     }}
                   />
