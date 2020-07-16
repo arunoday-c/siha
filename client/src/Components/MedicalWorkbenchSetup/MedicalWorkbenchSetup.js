@@ -5,6 +5,7 @@ import { AlgaehLabel } from "../Wrapper/algaehWrapper";
 import PhysicalExamination from "./PhysicalExamination/PhysicalExamination";
 import ReviewofSystems from "./ReviewofSystems/ReviewofSystems";
 import VitalsMaster from "./VitalsMaster/VitalsMaster";
+import Allergies from "./Allergies/Allergies";
 
 class MedicalWorkbenchSetup extends Component {
   constructor(props) {
@@ -63,6 +64,21 @@ class MedicalWorkbenchSetup extends Component {
                   />
                 }
               </li>
+              <li
+                algaehtabs={"Allergies"}
+                className={"nav-item tab-button"}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Allergies"
+                    }}
+                  />
+                }
+              </li>
+
+
               {/* <li
                 algaehtabs={"ReviewofSystems"}
                 className={"nav-item tab-button "}
@@ -86,6 +102,8 @@ class MedicalWorkbenchSetup extends Component {
             <ReviewofSystems />
           ) : this.state.pageDisplay === "VitalsMaster" ? (
             <VitalsMaster />
+          ) : this.state.pageDisplay === "Allergies" ? (
+            <Allergies />
           ) : null}
         </div>
       </div>

@@ -22,7 +22,7 @@ import Enumerable from "linq";
 import swal from "sweetalert2";
 import AlgaehSearch from "../../../Wrapper/globalSearch";
 import AlgaehLoader from "../../../Wrapper/fullPageLoader";
-import { MainContext } from "algaeh-react-components/context";
+import { MainContext } from "algaeh-react-components";
 import { AlgaehSecurityElement } from "algaeh-react-components";
 
 class ApplyLeave extends Component {

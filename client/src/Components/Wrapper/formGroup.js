@@ -6,7 +6,7 @@ import Cleave from "cleave.js/react";
 import NumberFormat from "react-number-format";
 import { Input, TextArea } from "semantic-ui-react";
 import _ from "lodash";
-import { MainContext } from "algaeh-react-components/context";
+import { MainContext } from "algaeh-react-components";
 
 export default class FormGroup extends PureComponent {
   static contextType = MainContext;

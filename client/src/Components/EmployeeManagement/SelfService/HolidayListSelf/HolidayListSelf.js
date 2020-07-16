@@ -3,13 +3,13 @@ import "./HolidayListSelf.scss";
 import { algaehApiCall } from "../../../../utils/algaehApiCall";
 import { AlgaehDataGrid, AlgaehLabel } from "../../../Wrapper/algaehWrapper";
 import moment from "moment";
-import { MainContext } from "algaeh-react-components/context";
+import { MainContext } from "algaeh-react-components";
 
 export default class HolidayListSelf extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      holidays: []
+      holidays: [],
     };
   }
 
@@ -18,7 +18,7 @@ export default class HolidayListSelf extends Component {
     const userToken = this.context.userToken;
     this.setState(
       {
-        hospital_id: userToken.hims_d_hospital_id
+        hospital_id: userToken.hims_d_hospital_id,
       },
       () => {
         this.getHolidayMaster();
@@ -33,16 +33,16 @@ export default class HolidayListSelf extends Component {
 
       data: {
         hospital_id: this.state.hospital_id, //"",
-        type: "H"
+        type: "H",
       },
-      onSuccess: res => {
+      onSuccess: (res) => {
         if (res.data.success) {
           this.setState({
-            holidays: res.data.records.weekoffs
+            holidays: res.data.records.weekoffs,
           });
         }
       },
-      onFailure: err => {}
+      onFailure: (err) => {},
     });
   }
 
@@ -69,15 +69,15 @@ export default class HolidayListSelf extends Component {
                           <AlgaehLabel label={{ forceLabel: "Holiday Date" }} />
                         ),
                         others: {
-                          maxWidth: 150
+                          maxWidth: 150,
                         },
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return (
                             <span>
                               {moment(row.holiday_date).format("DD-MMM-YYYY")}
                             </span>
                           );
-                        }
+                        },
                       },
                       {
                         fieldName: "holiday_description",
@@ -85,7 +85,7 @@ export default class HolidayListSelf extends Component {
                           <AlgaehLabel
                             label={{ forceLabel: "Holyday Description" }}
                           />
-                        )
+                        ),
                       },
                       {
                         fieldName: "holiday_type",
@@ -93,9 +93,9 @@ export default class HolidayListSelf extends Component {
                           <AlgaehLabel label={{ forceLabel: "Holiday Type" }} />
                         ),
                         others: {
-                          maxWidth: 150
+                          maxWidth: 150,
                         },
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return (
                             <span>
                               {row.holiday_type === "RE"
@@ -105,7 +105,7 @@ export default class HolidayListSelf extends Component {
                                 : "------"}
                             </span>
                           );
-                        }
+                        },
                       },
                       {
                         fieldName: "religion_name",
@@ -115,9 +115,9 @@ export default class HolidayListSelf extends Component {
                           />
                         ),
                         others: {
-                          maxWidth: 150
+                          maxWidth: 150,
                         },
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return (
                             <span>
                               {row.religion_name !== null
@@ -125,12 +125,12 @@ export default class HolidayListSelf extends Component {
                                 : "ALL"}
                             </span>
                           );
-                        }
-                      }
+                        },
+                      },
                     ]}
                     keyId="hims_d_holiday_id"
                     dataSource={{
-                      data: this.state.holidays
+                      data: this.state.holidays,
                     }}
                     isEditable={false}
                     filterable

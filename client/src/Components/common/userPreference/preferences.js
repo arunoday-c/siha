@@ -5,7 +5,7 @@ import {
   Input,
   AlgaehFormGroup,
 } from "algaeh-react-components";
-import { MainContext } from "algaeh-react-components/context";
+import { MainContext } from "algaeh-react-components";
 
 export default memo(function () {
   const [searchBarDropDown, setSearchBarDropDown] = useState(true);

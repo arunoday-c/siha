@@ -10,7 +10,7 @@ import {
   AlagehFormGroup,
   AlagehAutoComplete,
   AlgaehDataGrid,
-  AlgaehModalPopUp
+  AlgaehModalPopUp,
 } from "../../Wrapper/algaehWrapper";
 import ProceduresEvent from "./ProceduresEvent";
 import { AlgaehActions } from "../../../actions/algaehActions";
@@ -18,7 +18,7 @@ import { AlgaehActions } from "../../../actions/algaehActions";
 // import { getAmountFormart } from "../../../utils/GlobalFunctions";
 
 import GlobalVariables from "../../../utils/GlobalVariables";
-import { MainContext } from "algaeh-react-components/context";
+import { MainContext } from "algaeh-react-components";
 
 class Procedures extends PureComponent {
   constructor(props) {
@@ -39,7 +39,7 @@ class Procedures extends PureComponent {
       s_service_type: null,
       s_service: null,
       qty: 1,
-      hsopital_id: null
+      hsopital_id: null,
     };
   }
 
@@ -47,7 +47,7 @@ class Procedures extends PureComponent {
   componentDidMount() {
     const userToken = this.context.userToken;
     this.setState({
-      hsopital_id: userToken.hims_d_hospital_id
+      hsopital_id: userToken.hims_d_hospital_id,
     });
 
     if (
@@ -61,8 +61,8 @@ class Procedures extends PureComponent {
         data: { service_type_id: "4" },
         redux: {
           type: "SERVICES_GET_DATA",
-          mappingName: "displayservices"
-        }
+          mappingName: "displayservices",
+        },
       });
     }
 
@@ -77,8 +77,8 @@ class Procedures extends PureComponent {
         method: "GET",
         redux: {
           type: "ITEM_GET_DATA",
-          mappingName: "inventoryitemlist"
-        }
+          mappingName: "inventoryitemlist",
+        },
       });
     }
   }
@@ -90,7 +90,7 @@ class Procedures extends PureComponent {
     }
   }
 
-  onClose = e => {
+  onClose = (e) => {
     this.setState(
       {
         hims_d_procedure_id: null,
@@ -107,7 +107,7 @@ class Procedures extends PureComponent {
         insertProcedure: [],
         s_service_amount: null,
         s_service_type: null,
-        s_service: null
+        s_service: null,
       },
       () => {
         this.props.onClose && this.props.onClose(false);
@@ -143,7 +143,7 @@ class Procedures extends PureComponent {
         <div className="hptl-phase1-add-investigation-form">
           <AlgaehModalPopUp
             events={{
-              onClose: this.onClose.bind(this)
+              onClose: this.onClose.bind(this),
             }}
             title={this.props.HeaderCaption}
             openPopup={this.props.show}
@@ -155,15 +155,15 @@ class Procedures extends PureComponent {
                     div={{ className: "col form-group" }}
                     label={{
                       forceLabel: "Procedure Code",
-                      isImp: true
+                      isImp: true,
                     }}
                     textBox={{
                       className: "txt-fld",
                       name: "procedure_code",
                       value: this.state.procedure_code,
                       events: {
-                        onChange: this.eventHandaler.bind(this)
-                      }
+                        onChange: this.eventHandaler.bind(this),
+                      },
                     }}
                   />
 
@@ -171,22 +171,22 @@ class Procedures extends PureComponent {
                     div={{ className: "col form-group" }}
                     label={{
                       forceLabel: "Description",
-                      isImp: true
+                      isImp: true,
                     }}
                     textBox={{
                       className: "txt-fld",
                       name: "procedure_desc",
                       value: this.state.procedure_desc,
                       events: {
-                        onChange: this.eventHandaler.bind(this)
-                      }
+                        onChange: this.eventHandaler.bind(this),
+                      },
                     }}
                   />
 
                   <AlagehAutoComplete
                     div={{ className: "col form-group" }}
                     label={{
-                      forceLabel: "Service"
+                      forceLabel: "Service",
                     }}
                     selector={{
                       name: "service_id",
@@ -195,16 +195,16 @@ class Procedures extends PureComponent {
                       dataSource: {
                         textField: "service_name",
                         valueField: "hims_d_services_id",
-                        data: this.props.procedureservices
+                        data: this.props.procedureservices,
                       },
-                      onChange: this.eventHandaler.bind(this)
+                      onChange: this.eventHandaler.bind(this),
                     }}
                   />
 
                   <AlagehAutoComplete
                     div={{ className: "col form-group" }}
                     label={{
-                      forceLabel: "Procedure Type"
+                      forceLabel: "Procedure Type",
                     }}
                     selector={{
                       name: "procedure_type",
@@ -213,9 +213,9 @@ class Procedures extends PureComponent {
                       dataSource: {
                         textField: "name",
                         valueField: "value",
-                        data: GlobalVariables.PROCEDURE_TYPE
+                        data: GlobalVariables.PROCEDURE_TYPE,
                       },
-                      onChange: this.eventHandaler.bind(this)
+                      onChange: this.eventHandaler.bind(this),
                     }}
                   />
 
@@ -223,7 +223,7 @@ class Procedures extends PureComponent {
                     <AlagehFormGroup
                       div={{ className: "col form-group" }}
                       label={{
-                        forceLabel: "procedure amount"
+                        forceLabel: "procedure amount",
                       }}
                       textBox={{
                         decimal: { allowNegative: false },
@@ -231,11 +231,11 @@ class Procedures extends PureComponent {
                         className: "txt-fld",
                         name: "procedure_amount",
                         events: {
-                          onChange: this.eventHandaler.bind(this)
+                          onChange: this.eventHandaler.bind(this),
                         },
                         others: {
-                          placeholder: "0.00"
-                        }
+                          placeholder: "0.00",
+                        },
                       }}
                     />
                   ) : null}
@@ -252,14 +252,14 @@ class Procedures extends PureComponent {
                       dataSource: {
                         textField: "item_description",
                         valueField: "hims_d_inventory_item_master_id",
-                        data: this.props.inventoryitemlist
+                        data: this.props.inventoryitemlist,
                       },
                       onChange: this.itemchangeText.bind(this),
                       onClear: () => {
                         this.setState({
-                          item_id: null
+                          item_id: null,
                         });
-                      }
+                      },
                     }}
                   />
 
@@ -267,22 +267,22 @@ class Procedures extends PureComponent {
                     div={{ className: "col-2" }}
                     label={{
                       forceLabel: "Quantity",
-                      isImp: true
+                      isImp: true,
                     }}
                     textBox={{
                       number: {
                         allowNegative: false,
-                        thousandSeparator: ","
+                        thousandSeparator: ",",
                       },
                       className: "txt-fld",
                       name: "qty",
                       value: this.state.qty,
                       events: {
-                        onChange: this.eventHandaler.bind(this)
+                        onChange: this.eventHandaler.bind(this),
                       },
                       others: {
-                        step: "1"
-                      }
+                        step: "1",
+                      },
                     }}
                   />
                   <div className="col-2 form-group">
@@ -306,7 +306,7 @@ class Procedures extends PureComponent {
                             label: (
                               <AlgaehLabel label={{ forceLabel: "Action" }} />
                             ),
-                            displayTemplate: row => {
+                            displayTemplate: (row) => {
                               return (
                                 <span>
                                   <i
@@ -320,8 +320,8 @@ class Procedures extends PureComponent {
                               maxWidth: 65,
                               resizable: false,
                               filterable: false,
-                              style: { textAlign: "center" }
-                            }
+                              style: { textAlign: "center" },
+                            },
                           },
                           {
                             fieldName: "item_id",
@@ -330,15 +330,15 @@ class Procedures extends PureComponent {
                                 label={{ forceLabel: "Item Name" }}
                               />
                             ),
-                            displayTemplate: row => {
+                            displayTemplate: (row) => {
                               let display =
                                 this.props.inventoryitemlist === undefined
                                   ? []
                                   : this.props.inventoryitemlist.filter(
-                                    f =>
-                                      f.hims_d_inventory_item_master_id ===
-                                      row.item_id
-                                  );
+                                      (f) =>
+                                        f.hims_d_inventory_item_master_id ===
+                                        row.item_id
+                                    );
 
                               return (
                                 <span>
@@ -347,7 +347,7 @@ class Procedures extends PureComponent {
                                     : ""}
                                 </span>
                               );
-                            }
+                            },
                           },
                           {
                             fieldName: "service_id",
@@ -356,14 +356,14 @@ class Procedures extends PureComponent {
                                 label={{ forceLabel: "Service Name" }}
                               />
                             ),
-                            displayTemplate: row => {
+                            displayTemplate: (row) => {
                               let display =
                                 this.props.displayservices === undefined
                                   ? []
                                   : this.props.displayservices.filter(
-                                    f =>
-                                      f.hims_d_services_id === row.service_id
-                                  );
+                                      (f) =>
+                                        f.hims_d_services_id === row.service_id
+                                    );
 
                               return (
                                 <span>
@@ -372,18 +372,18 @@ class Procedures extends PureComponent {
                                     : ""}
                                 </span>
                               );
-                            }
+                            },
                           },
                           {
                             fieldName: "qty",
                             label: (
                               <AlgaehLabel label={{ forceLabel: "Quantity" }} />
-                            )
-                          }
+                            ),
+                          },
                         ]}
                         keyId="packages_detail_grid"
                         dataSource={{
-                          data: this.state.ProcedureDetail
+                          data: this.state.ProcedureDetail,
                         }}
                         // isEditable={true}
                         filter={true}
@@ -409,11 +409,11 @@ class Procedures extends PureComponent {
                       {this.state.hims_d_procedure_id === null ? (
                         <AlgaehLabel label={{ forceLabel: "Save" }} />
                       ) : (
-                          <AlgaehLabel label={{ forceLabel: "Update" }} />
-                        )}
+                        <AlgaehLabel label={{ forceLabel: "Update" }} />
+                      )}
                     </button>
                     <button
-                      onClick={e => {
+                      onClick={(e) => {
                         this.onClose(e);
                       }}
                       type="button"
@@ -436,7 +436,7 @@ function mapStateToProps(state) {
   return {
     procedureservices: state.procedureservices,
     displayservices: state.displayservices,
-    inventoryitemlist: state.inventoryitemlist
+    inventoryitemlist: state.inventoryitemlist,
   };
 }
 
@@ -445,15 +445,12 @@ function mapDispatchToProps(dispatch) {
     {
       getServiceTypes: AlgaehActions,
       getServices: AlgaehActions,
-      getItems: AlgaehActions
+      getItems: AlgaehActions,
     },
     dispatch
   );
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(Procedures)
+  connect(mapStateToProps, mapDispatchToProps)(Procedures)
 );

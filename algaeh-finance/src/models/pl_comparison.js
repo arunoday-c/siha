@@ -457,11 +457,17 @@ function buildHierarchyForProfitAndLoss(
           }
         }
         let changed_amount = parseFloat(
-          columns_wise_amounts["1"] - columns_wise_amounts["2"]
+          parseFloat(columns_wise_amounts["1"]) -
+            parseFloat(columns_wise_amounts["2"])
         ).toFixed(decimal_places);
-        let percent = (
-          parseFloat(changed_amount / columns_wise_amounts["2"]) * 100
-        ).toFixed(decimal_places);
+        let percent = default_total;
+
+        if (changed_amount != 0 && columns_wise_amounts["2"] > 0) {
+          percent = (
+            parseFloat(changed_amount / parseFloat(columns_wise_amounts["2"])) *
+            100
+          ).toFixed(decimal_places);
+        }
 
         //END---calulating Amount
         child.push({
@@ -510,9 +516,16 @@ function buildHierarchyForProfitAndLoss(
             columns_wise_amounts["1"] - columns_wise_amounts["2"]
           ).toFixed(decimal_places);
 
-          let percent = (
-            parseFloat(changed_amount / columns_wise_amounts["2"]) * 100
-          ).toFixed(decimal_places);
+          let percent = default_total;
+
+          if (changed_amount != 0 && columns_wise_amounts["2"] > 0) {
+            percent = (
+              parseFloat(
+                changed_amount / parseFloat(columns_wise_amounts["2"])
+              ) * 100
+            ).toFixed(decimal_places);
+          }
+
           target.push({
             ...item,
             trans_symbol: trans_symbol,
@@ -551,9 +564,15 @@ function buildHierarchyForProfitAndLoss(
           columns_wise_amounts["1"] - columns_wise_amounts["2"]
         ).toFixed(decimal_places);
 
-        let percent = (
-          parseFloat(changed_amount / columns_wise_amounts["2"]) * 100
-        ).toFixed(decimal_places);
+        let percent = default_total;
+
+        if (changed_amount != 0 && columns_wise_amounts["2"] > 0) {
+          percent = (
+            parseFloat(changed_amount / parseFloat(columns_wise_amounts["2"])) *
+            100
+          ).toFixed(decimal_places);
+        }
+
         target.push({
           ...item,
           trans_symbol: trans_symbol,

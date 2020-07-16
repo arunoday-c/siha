@@ -11,192 +11,99 @@ const executePDF = function executePDFMethod(options) {
       params.forEach((para) => {
         input[para["name"]] = para["value"];
       });
-      console.log("INPUT:", input);
-      const month = moment(input.month, "M").format("MMMM");
+      // const month = moment(input.month, "M").format("MMMM");
+
       options.mysql
         .executeQuery({
-          query: `select hims_f_salary_id ,S.employee_id, S.year,S.month,ED.hims_d_earning_deduction_id as earning_id,
-          ED.earning_deduction_description as earning_description , S.net_salary,S.total_days,\
-          S.display_present_days,S.absent_days,S.total_work_days,S.total_weekoff_days,S.total_holidays,S.total_leave,\
-          S.paid_leave,S.unpaid_leave, S.total_paid_days,S.pending_unpaid_leave,S.loan_due_amount,\
-          SE.amount as earning_amount,EDD.hims_d_earning_deduction_id as deduction_id,\
-          EDD.earning_deduction_description as deduction_description,SD.amount as deduction_amount,\
-          S.total_earnings,S.total_deductions,SDP.sub_department_name, D.department_name,\
-          E.employee_code, E.full_name,E.arabic_name,E.date_of_joining, E.exit_date,DE.designation,H.hospital_name,\
-          COALESCE(GP.payable_amount,0) as gratuity_amount,\
-          COALESCE(LS.balance_leave_days,0) as annual_leave_days,\
-          COALESCE(LS.balance_leave_salary_amount,0) as annual_leave_salary_amount,\
-          COALESCE(LE.leave_days,0) as encashed_leave_days,\
-          COALESCE(LE.leave_amount,0) as encashed_leave_amount\
-          from hims_f_salary S left join  hims_f_salary_earnings SE on SE.salary_header_id = S.hims_f_salary_id\
-          left join hims_f_salary_deductions SD on SD.salary_header_id = S.hims_f_salary_id\
-          left join hims_d_earning_deduction ED on ED.hims_d_earning_deduction_id = SE.earnings_id\
-          left join hims_d_earning_deduction EDD on EDD.hims_d_earning_deduction_id = SD.deductions_id\
-          left join hims_d_hospital H on H.hims_d_hospital_id = S.hospital_id\
-          left join hims_d_employee E on E.hims_d_employee_id = S.employee_id\
-          left join hims_d_designation DE on DE.hims_d_designation_id = E.employee_designation_id\
-          left join hims_d_sub_department SDP on  E.sub_department_id=SDP.hims_d_sub_department_id\
-          left join hims_d_department D on D.hims_d_department_id = SDP.department_id\
-          left join hims_f_end_of_service GP on S.employee_id = GP.employee_id\
-          left join hims_f_employee_leave_salary_header LS on S.employee_id = LS.employee_id\
-          left join hims_f_leave_encash_header LE on S.employee_id = LE.employee_id and 'APR' = LE.authorized and 'N' = LE.posted\
-          where S.salary_type="FS" and S.employee_id in(?);`,
-          values: [input.employee_id],
+          query: `select H.hospital_name,E.full_name,E.arabic_name,
+E.employee_code,DE.designation, SD.sub_department_name,
+E.exit_date,E.date_of_joining,E.date_of_resignation,FL.final_settlement_number,
+case FL.final_settlement_status when 'PEN' then 'Pending for Authorize' when 'AUT' then 'Authorized'
+else 'Settled' end as final_settlement_status,FL.settled_date,FL.total_amount,
+FL.total_earnings,FL.total_deductions,FL.total_loans,FL.total_salary,
+FL.total_eos,FL.total_leave_encash,FL.forfiet,FL.remarks,FL.posted,
+FL.posted_date,FL.posted_by,FL.cancelled,FL.cancelled_by,FL.cancelled_date,
+S.month,S.year,FL.remarks
+FROM hims_f_final_settlement_header as FL
+inner join hims_d_employee E on E.hims_d_employee_id = FL.employee_id
+inner join hims_d_hospital H on H.hims_d_hospital_id = E.hospital_id
+inner join hims_d_designation DE on DE.hims_d_designation_id = E.employee_designation_id
+left join hims_f_salary as S  on S.hims_f_salary_id = FL.salary_id
+ inner join hims_d_sub_department as SD on SD.hims_d_sub_department_id=E.sub_department_id
+where FL.employee_id=?;
+select SE.earnings_id,ED.earning_deduction_description,SE.amount,'Normal' as salary_type
+ from hims_f_salary_earnings as SE left join hims_f_final_settlement_header as FH
+ on  SE.salary_header_id = FH.salary_id
+inner  join hims_d_earning_deduction as ED on ED.hims_d_earning_deduction_id = SE.earnings_id
+ where FH.employee_id=?
+ union
+ select FE.earnings_id,ED.earning_deduction_description,FE.amount,'Misc' as salary_type
+ from hims_f_final_settle_earnings_detail as FE left join hims_f_final_settlement_header as FH
+ on  FE.final_settlement_header = FH.hims_f_final_settlement_header_id
+inner  join hims_d_earning_deduction as ED on ED.hims_d_earning_deduction_id = FE.earnings_id
+ where FH.employee_id=?;
+ select SD.deductions_id,ED.earning_deduction_description,SD.amount,'Normal' as salary_type
+ from hims_f_salary_deductions as SD left join hims_f_final_settlement_header as FH
+ on  SD.salary_header_id = FH.salary_id
+inner  join hims_d_earning_deduction as ED on ED.hims_d_earning_deduction_id = SD.deductions_id
+ where FH.employee_id=?
+ union
+ select FD.deductions_id,ED.earning_deduction_description,FD.amount,'Misc' as salary_type
+ from hims_f_final_settle_deductions_detail as FD left join hims_f_final_settlement_header as FH
+ on  FD.final_settlement_header_id = FH.hims_f_final_settlement_header_id
+inner  join hims_d_earning_deduction as ED on ED.hims_d_earning_deduction_id = FD.deductions_id
+ where FH.employee_id=?;`,
+          values: [
+            input.employee_id,
+            input.employee_id,
+            input.employee_id,
+            input.employee_id,
+            input.employee_id,
+          ],
           printQuery: true,
         })
         .then((result) => {
-          const outputArray = [];
           if (result.length > 0) {
-            const employees = _.chain(result)
-              .groupBy((g) => g.hims_f_salary_id)
-              .map((m) => m)
-              .value();
+            const headerData = result[0][0];
+            const earningsData = result[1];
+            const deductionData = result[2];
 
-            employees.forEach((employe) => {
-              const emp_earnings = [];
-              employe.forEach((m) => {
-                const exist = emp_earnings.find((val) => {
-                  return val.earning_id == m.earning_id;
-                });
+            const emp_ded_length = deductionData.length;
+            const emp_ear_length = earningsData.length;
 
-                if (!exist) {
-                  emp_earnings.push({
-                    earning_id: m.earning_id,
-                    earning_description: m.earning_description,
-                    earning_amount: m.earning_amount,
-                  });
-                }
-              });
-
-              const emp_deductions = [];
-              employe.forEach((m) => {
-                const exist = emp_deductions.find((val) => {
-                  return val.deduction_id == m.deduction_id;
-                });
-
-                if (!exist) {
-                  emp_deductions.push({
-                    deduction_id: m.deduction_id,
-                    deduction_description: m.deduction_description,
-                    deduction_amount: m.deduction_amount,
-                  });
-                }
-              });
-
-              const emp_ded_length = emp_deductions.length;
-              const emp_ear_length = emp_earnings.length;
-              if (emp_ded_length > emp_ear_length) {
-                const blankIndexs = emp_ded_length - emp_ear_length;
-                for (let d = 0; d < blankIndexs; d++) {
-                  emp_earnings.push({});
-                }
-              } else if (emp_ear_length > emp_ded_length) {
-                const blankIndexs = emp_ear_length - emp_ded_length;
-                for (let d = 0; d < blankIndexs; d++) {
-                  emp_deductions.push({});
-                }
+            if (emp_ded_length > emp_ear_length) {
+              const blankIndexs = emp_ded_length - emp_ear_length;
+              for (let d = 0; d < blankIndexs; d++) {
+                earningsData.push({});
               }
+            } else if (emp_ear_length > emp_ded_length) {
+              const blankIndexs = emp_ear_length - emp_ded_length;
+              for (let d = 0; d < blankIndexs; d++) {
+                deductionData.push({});
+              }
+            }
 
-              // const emp_other_ded_length = input.deductingList.length;
-              // const emp_other_ear_length = input.earningList.length;
-              // if (emp_other_ded_length > emp_other_ear_length) {
-              //   const blankIndexs = emp_other_ded_length - emp_other_ear_length;
-              //   for (let d = 0; d < blankIndexs; d++) {
-              //     emp_other_earnings.push({});
-              //   }
-              // } else if (emp_other_ear_length > emp_other_ded_length) {
-              //   const blankIndexs = emp_other_ear_length - emp_other_ded_length;
-              //   for (let d = 0; d < blankIndexs; d++) {
-              //     emp_other_deductions.push({});
-              //   }
-              // }
+            resolve({
+              ...headerData,
+              ...{
+                month: moment(headerData.month, "MM").format("MMMM"),
 
-              outputArray.push({
-                year: employe[0].year,
-                // month: employe[0].month,
-                month: moment(employe[0].month, "MM").format("MMMM"),
-
-                total_earnings: options.currencyFormat(
-                  employe[0].total_earnings,
-                  options.args.crypto
-                ),
-
-                total_deductions: options.currencyFormat(
-                  employe[0].total_deductions,
-                  options.args.crypto
-                ),
-
-                sub_department_name: employe[0].sub_department_name,
-                department_name: employe[0].department_name,
-                employee_code: employe[0].employee_code,
-                full_name: employe[0].full_name,
-                arabic_name: employe[0].arabic_name,
-                DOJ: moment(employe[0].date_of_joining, "YYYY-MM-DD").format(
-                  "DD-MM-YYYY"
-                ),
-                DOE: moment(employe[0].exit_date, "YYYY-MM-DD").format(
-                  "DD-MM-YYYY"
-                ),
-                designation: employe[0].designation,
-                hospital_name: employe[0].hospital_name,
-                emp_earnings: emp_earnings,
-                emp_deductions: emp_deductions,
-                // emp_other_earnings: emp_other_earnings,
-                // emp_other_deductions: emp_other_deductions,
-                total_salary_earnings: options.currencyFormat(
-                  input.total_salary_earnings,
-                  options.args.crypto
-                ),
-                total_salary_deductions: options.currencyFormat(
-                  input.total_salary_deductions,
-                  options.args.crypto
-                ),
-
-                total_other_earnings: options.currencyFormat(
-                  input.total_other_earnings,
-                  options.args.crypto
-                ),
-                total_other_deductions: options.currencyFormat(
-                  input.total_other_deductions,
-                  options.args.crypto
-                ),
-                total_salary: options.currencyFormat(
-                  input.total_salary,
-                  options.args.crypto
-                ),
-
-                total_leave_encash_amount: options.currencyFormat(
-                  input.total_leave_encash_amount,
-                  options.args.crypto
-                ),
-                total_loan_amount: options.currencyFormat(
-                  input.total_loan_amount,
-                  options.args.crypto
-                ),
-                total_gratuity_amount: options.currencyFormat(
-                  input.total_gratuity_amount,
-                  options.args.crypto
-                ),
-                final_payble: options.currencyFormat(
-                  input.final_payble,
+                total_amount: options.currencyFormat(
+                  headerData.total_amount,
                   options.args.crypto
                 ),
 
                 salary_in_words:
                   options.args.crypto.currency_symbol +
                   " " +
-                  writtenForm(input.final_payble) +
+                  writtenForm(headerData.total_amount) +
                   " Only",
-              });
-            });
-
-            resolve({
-              result: outputArray,
+              },
+              earningsData,
+              deductionData,
             });
           } else {
-            resolve({
-              result: result,
-            });
+            resolve({});
           }
         })
         .catch((error) => {

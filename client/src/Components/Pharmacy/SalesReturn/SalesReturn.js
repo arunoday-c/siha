@@ -11,7 +11,7 @@ import {
   SaveSalesReturn,
   POSSearch,
   ViewInsurance,
-  getCashiersAndShiftMAP
+  getCashiersAndShiftMAP,
 } from "./SalesReturnEvents";
 import "./SalesReturn.scss";
 import "../../../styles/site.scss";
@@ -22,7 +22,7 @@ import MyContext from "../../../utils/MyContext";
 import SALESRETURNIOputs from "../../../Models/SalesReturn";
 import DisplayInsuranceDetails from "./DisplayInsuranceDetails/DisplayInsuranceDetails";
 import Options from "../../../Options.json";
-import { MainContext } from "algaeh-react-components/context";
+import { MainContext } from "algaeh-react-components";
 
 class SalesReturn extends Component {
   constructor(props) {
@@ -41,7 +41,7 @@ class SalesReturn extends Component {
       cheque_date: null,
       cheque_amount: 0,
       advance: 0,
-      viewInsurance: false
+      viewInsurance: false,
     };
   }
 
@@ -52,10 +52,9 @@ class SalesReturn extends Component {
 
   static contextType = MainContext;
   componentDidMount() {
-
     this.setState({
-      userToken: this.context.userToken
-    })
+      userToken: this.context.userToken,
+    });
     if (
       this.props.salesitemlist === undefined ||
       this.props.salesitemlist.length === 0
@@ -67,8 +66,8 @@ class SalesReturn extends Component {
         method: "GET",
         redux: {
           type: "ITEM_GET_DATA",
-          mappingName: "salesitemlist"
-        }
+          mappingName: "salesitemlist",
+        },
       });
     }
 
@@ -82,8 +81,8 @@ class SalesReturn extends Component {
         method: "GET",
         redux: {
           type: "LOCATIOS_GET_DATA",
-          mappingName: "locations"
-        }
+          mappingName: "locations",
+        },
       });
     }
     getCashiersAndShiftMAP(this, this);
@@ -141,52 +140,52 @@ class SalesReturn extends Component {
                   <AlgaehLabel
                     label={{
                       forceLabel: "Home",
-                      align: "ltr"
+                      align: "ltr",
                     }}
                   />
-                )
+                ),
               },
               {
                 pageName: (
                   <AlgaehLabel
                     label={{ forceLabel: "Sales Return", align: "ltr" }}
                   />
-                )
-              }
+                ),
+              },
             ]}
             soptlightSearch={{
               label: (
                 <AlgaehLabel
                   label={{
                     forceLabel: "Sales Return Number",
-                    returnText: true
+                    returnText: true,
                   }}
                 />
               ),
               value: this.state.sales_return_number,
               selectValue: "sales_return_number",
               events: {
-                onChange: getCtrlCode.bind(this, this)
+                onChange: getCtrlCode.bind(this, this),
               },
               jsonFile: {
                 fileName: "spotlightSearch",
-                fieldName: "SalesReturnEntry.ReturnEntry"
+                fieldName: "SalesReturnEntry.ReturnEntry",
               },
-              searchName: "SalesReturn"
+              searchName: "SalesReturn",
             }}
             userArea={
               <div className="row">
                 <div className="col">
                   <AlgaehLabel
                     label={{
-                      forceLabel: "Return Date"
+                      forceLabel: "Return Date",
                     }}
                   />
                   <h6>
                     {this.state.sales_return_date
                       ? moment(this.state.sales_return_date).format(
-                        Options.dateFormat
-                      )
+                          Options.dateFormat
+                        )
                       : Options.dateFormat}
                   </h6>
                 </div>
@@ -212,7 +211,7 @@ class SalesReturn extends Component {
             <div className="col">
               <AlgaehLabel
                 label={{
-                  forceLabel: "Location"
+                  forceLabel: "Location",
                 }}
               />
               <h6>
@@ -225,7 +224,7 @@ class SalesReturn extends Component {
             <div className="col">
               <AlgaehLabel
                 label={{
-                  forceLabel: "Visit Code"
+                  forceLabel: "Visit Code",
                 }}
               />
               <h6>
@@ -235,7 +234,7 @@ class SalesReturn extends Component {
             <div className="col">
               <AlgaehLabel
                 label={{
-                  forceLabel: "Patient Code"
+                  forceLabel: "Patient Code",
                 }}
               />
               <h6>
@@ -245,7 +244,7 @@ class SalesReturn extends Component {
             <div className="col">
               <AlgaehLabel
                 label={{
-                  forceLabel: "Patient Name"
+                  forceLabel: "Patient Name",
                 }}
               />
               <h6>
@@ -256,15 +255,15 @@ class SalesReturn extends Component {
             <div className="col">
               <AlgaehLabel
                 label={{
-                  forceLabel: "Mode of Payment"
+                  forceLabel: "Mode of Payment",
                 }}
               />
               <h6>
                 {this.state.mode_of_pay === "1"
                   ? "Self"
                   : this.state.mode_of_pay === "2"
-                    ? "Insurance"
-                    : "-----------"}
+                  ? "Insurance"
+                  : "-----------"}
               </h6>
             </div>
           </div>
@@ -279,9 +278,9 @@ class SalesReturn extends Component {
             <MyContext.Provider
               value={{
                 state: this.state,
-                updateState: obj => {
+                updateState: (obj) => {
                   this.setState({ ...obj });
-                }
+                },
               }}
             >
               <ItemListsReturn SALESRETURNIOputs={this.state} />
@@ -299,7 +298,7 @@ class SalesReturn extends Component {
                     <AlgaehLabel
                       label={{
                         forceLabel: "Return & Print",
-                        returnText: true
+                        returnText: true,
                       }}
                     />
                   </button>
@@ -338,7 +337,7 @@ function mapStateToProps(state) {
     salesitemlist: state.salesitemlist,
     locations: state.locations,
     salesReturn: state.salesReturn,
-    existinsurance: state.existinsurance
+    existinsurance: state.existinsurance,
   };
 }
 
@@ -348,7 +347,7 @@ function mapDispatchToProps(dispatch) {
       getItems: AlgaehActions,
       getLocation: AlgaehActions,
       getPOSEntry: AlgaehActions,
-      getPatientInsurance: AlgaehActions
+      getPatientInsurance: AlgaehActions,
     },
     dispatch
   );

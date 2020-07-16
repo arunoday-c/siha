@@ -24,7 +24,7 @@ import {
   generateReport,
 } from "./AppointmentHelper";
 import sockets from "../../sockets";
-import { MainContext } from "algaeh-react-components/context";
+import { MainContext } from "algaeh-react-components";
 class Appointment extends PureComponent {
   constructor(props) {
     super(props);

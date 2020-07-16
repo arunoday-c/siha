@@ -22,7 +22,7 @@ import {
   PaymentOnClear,
   getFinanceHeaders,
 } from "./EmployeePaymentEvents.js";
-import { MainContext } from "algaeh-react-components/context";
+import { MainContext } from "algaeh-react-components";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import Enumerable from "linq";
 import EmployeePaymentIOputs from "../../../../Models/EmployeePayment";
@@ -53,8 +53,8 @@ class EmployeePayment extends Component {
 
     this.FIN_Active =
       userToken.product_type === "HIMS_ERP" ||
-        userToken.product_type === "FINANCE_ERP" ||
-        userToken.product_type === "HRMS_ERP"
+      userToken.product_type === "FINANCE_ERP" ||
+      userToken.product_type === "HRMS_ERP"
         ? true
         : false;
 
@@ -244,7 +244,7 @@ class EmployeePayment extends Component {
                                   return (
                                     <span>
                                       {display !== undefined &&
-                                        display.length !== 0
+                                      display.length !== 0
                                         ? display[0].name
                                         : ""}
                                     </span>
@@ -294,9 +294,9 @@ class EmployeePayment extends Component {
                             paging={{ page: 0, rowsPerPage: 10 }}
                             filter={true}
                             events={{
-                              onEdit: () => { },
-                              onDelete: () => { },
-                              onDone: () => { },
+                              onEdit: () => {},
+                              onDelete: () => {},
+                              onDone: () => {},
                             }}
                             onRowSelect={(row) => {
                               getPaymentDetails(this, row);
@@ -321,85 +321,85 @@ class EmployeePayment extends Component {
                         {this.state.request_number === null ? (
                           ""
                         ) : (
-                            <>
-                              <div className="col-4">
-                                <AlgaehLabel
-                                  label={{
-                                    forceLabel: "Request No.",
-                                  }}
-                                />
-                                <h6>
-                                  {this.state.request_number
-                                    ? this.state.request_number
-                                    : "----------"}
-                                </h6>
-                              </div>
-                              <div className="col-8">
-                                <AlgaehLabel
-                                  label={{
-                                    forceLabel: "Employee Name",
-                                  }}
-                                />
-                                <h6>
-                                  {this.state.full_name
-                                    ? this.state.full_name
-                                    : "----------"}
-                                </h6>
-                              </div>
-                              {this.state.sel_payment_type === "LS" ? (
-                                <>
-                                  <div className="col-3 form-group">
-                                    <AlgaehLabel
-                                      label={{
-                                        forceLabel: "Leave Salary",
-                                      }}
-                                    />
-                                    <h6>
-                                      {this.state.dis_leave_amount === null
-                                        ? 0.0
-                                        : this.state.dis_leave_amount}
-                                    </h6>
-                                  </div>{" "}
-                                  <div className="col-3">
-                                    <AlgaehLabel
-                                      label={{
-                                        forceLabel: "Airfare Amt.",
-                                      }}
-                                    />
-                                    <h6>
-                                      {this.state.airfare_months === null
-                                        ? 0.0
-                                        : this.state.airfare_months}
-                                    </h6>
-                                  </div>
-                                  <div className="col-3">
-                                    <AlgaehLabel
-                                      label={{
-                                        forceLabel: "Normal Salary",
-                                      }}
-                                    />
-                                    <h6>
-                                      {this.state.dis_salary_amount === null
-                                        ? 0.0
-                                        : this.state.dis_salary_amount}
-                                    </h6>
-                                  </div>{" "}
-                                  <div className="col-3">
-                                    <AlgaehLabel
-                                      label={{
-                                        forceLabel: "Total Salary",
-                                      }}
-                                    />
-                                    <h6>
-                                      {this.state.dis_total_amount === null
-                                        ? 0.0
-                                        : this.state.dis_total_amount}
-                                    </h6>
-                                  </div>
-                                </>
-                              ) : null}
-                            </>
-                          )}
+                          <>
+                            <div className="col-4">
+                              <AlgaehLabel
+                                label={{
+                                  forceLabel: "Request No.",
+                                }}
+                              />
+                              <h6>
+                                {this.state.request_number
+                                  ? this.state.request_number
+                                  : "----------"}
+                              </h6>
+                            </div>
+                            <div className="col-8">
+                              <AlgaehLabel
+                                label={{
+                                  forceLabel: "Employee Name",
+                                }}
+                              />
+                              <h6>
+                                {this.state.full_name
+                                  ? this.state.full_name
+                                  : "----------"}
+                              </h6>
+                            </div>
+                            {this.state.sel_payment_type === "LS" ? (
+                              <>
+                                <div className="col-3 form-group">
+                                  <AlgaehLabel
+                                    label={{
+                                      forceLabel: "Leave Salary",
+                                    }}
+                                  />
+                                  <h6>
+                                    {this.state.dis_leave_amount === null
+                                      ? 0.0
+                                      : this.state.dis_leave_amount}
+                                  </h6>
+                                </div>{" "}
+                                <div className="col-3">
+                                  <AlgaehLabel
+                                    label={{
+                                      forceLabel: "Airfare Amt.",
+                                    }}
+                                  />
+                                  <h6>
+                                    {this.state.airfare_months === null
+                                      ? 0.0
+                                      : this.state.airfare_months}
+                                  </h6>
+                                </div>
+                                <div className="col-3">
+                                  <AlgaehLabel
+                                    label={{
+                                      forceLabel: "Normal Salary",
+                                    }}
+                                  />
+                                  <h6>
+                                    {this.state.dis_salary_amount === null
+                                      ? 0.0
+                                      : this.state.dis_salary_amount}
+                                  </h6>
+                                </div>{" "}
+                                <div className="col-3">
+                                  <AlgaehLabel
+                                    label={{
+                                      forceLabel: "Total Salary",
+                                    }}
+                                  />
+                                  <h6>
+                                    {this.state.dis_total_amount === null
+                                      ? 0.0
+                                      : this.state.dis_total_amount}
+                                  </h6>
+                                </div>
+                              </>
+                            ) : null}
+                          </>
+                        )}
                         <div className="col-4 form-group">
                           <AlgaehLabel
                             label={{
@@ -409,8 +409,8 @@ class EmployeePayment extends Component {
                           <h6>
                             {this.state.payment_date
                               ? moment(this.state.payment_date).format(
-                                Options.dateFormat
-                              )
+                                  Options.dateFormat
+                                )
                               : Options.dateFormat}
                           </h6>
                         </div>
@@ -585,37 +585,37 @@ class EmployeePayment extends Component {
                           </>
                         ) : this.state.payment_mode === "CS" &&
                           this.FIN_Active === true ? (
-                              <AlgaehTreeSearch
-                                div={{ className: "col-6 form-group" }}
-                                label={{
-                                  forceLabel: "Cash in Hand Account",
-                                  isImp: true,
-                                  align: "ltr",
-                                }}
-                                tree={{
-                                  treeDefaultExpandAll: true,
-                                  onChange: (value) => {
-                                    this.setState({
-                                      selected_account: value,
-                                    });
-                                  },
-                                  data: this.state.cash_finance_account || [],
-                                  textField: "label",
-                                  valueField: (node) => {
-                                    if (node["leafnode"] === "Y") {
-                                      return (
-                                        node["head_id"] +
-                                        "-" +
-                                        node["finance_account_child_id"]
-                                      );
-                                    } else {
-                                      return node["finance_account_head_id"];
-                                    }
-                                  },
-                                  value: this.state.selected_account,
-                                }}
-                              />
-                            ) : null}
+                          <AlgaehTreeSearch
+                            div={{ className: "col-6 form-group" }}
+                            label={{
+                              forceLabel: "Cash in Hand Account",
+                              isImp: true,
+                              align: "ltr",
+                            }}
+                            tree={{
+                              treeDefaultExpandAll: true,
+                              onChange: (value) => {
+                                this.setState({
+                                  selected_account: value,
+                                });
+                              },
+                              data: this.state.cash_finance_account || [],
+                              textField: "label",
+                              valueField: (node) => {
+                                if (node["leafnode"] === "Y") {
+                                  return (
+                                    node["head_id"] +
+                                    "-" +
+                                    node["finance_account_child_id"]
+                                  );
+                                } else {
+                                  return node["finance_account_head_id"];
+                                }
+                              },
+                              value: this.state.selected_account,
+                            }}
+                          />
+                        ) : null}
                       </div>{" "}
                       <AlgaehSecurityElement elementCode="READ_ONLY_ACCESS">
                         <div className="row">
@@ -759,8 +759,8 @@ class EmployeePayment extends Component {
                                 this.props.banks === undefined
                                   ? []
                                   : this.props.banks.filter(
-                                    (f) => f.hims_d_bank_id === row.bank_id
-                                  );
+                                      (f) => f.hims_d_bank_id === row.bank_id
+                                    );
 
                               return (
                                 <span>
@@ -837,9 +837,9 @@ class EmployeePayment extends Component {
                         paging={{ page: 0, rowsPerPage: 10 }}
                         filter={true}
                         events={{
-                          onEdit: () => { },
-                          onDelete: () => { },
-                          onDone: () => { },
+                          onEdit: () => {},
+                          onDelete: () => {},
+                          onDone: () => {},
                         }}
                       />
                     </div>

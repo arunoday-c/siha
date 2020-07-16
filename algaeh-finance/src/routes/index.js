@@ -10,6 +10,8 @@ import quick_search from "../controllers/quick_search";
 import cashFlowStatement from "../controllers/cashFlowStatement";
 import pl_comparison from "../controllers/pl_comparison";
 import balanceSheet_report from "../controllers/balanceSheet_report";
+import balanceSheetComparison from "../controllers/balanceSheetComparison";
+import prepayment from "../controllers/prepayment";
 
 const router = express();
 router.use("/finance", finance());
@@ -22,5 +24,7 @@ router.use("/quick_search", quick_search());
 router.use("/cashFlowStatement", cashFlowStatement());
 router.use("/pl_comparison", pl_comparison());
 router.use("/balanceSheet_report", balanceSheet_report());
+router.use("/balanceSheetComparison", balanceSheetComparison());
+router.use("/prepayment", prepayment());
 
 export default router;

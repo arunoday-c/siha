@@ -10,7 +10,7 @@ import {
   AlagehFormGroup,
   AlagehAutoComplete,
   AlgaehLabel,
-  AlgaehDataGrid
+  AlgaehDataGrid,
 } from "../../Wrapper/algaehWrapper";
 import InventoryItem from "../../../Models/InventoryItem";
 import { InsertUpdateItems } from "./ItemMasterEvents";
@@ -32,10 +32,10 @@ import {
   stockingtexthandle,
   stockonchangegridcol,
   additionaleInfo,
-  numberEventHandaler
+  numberEventHandaler,
 } from "./ItemDetailsEvents";
 import GlobalVariables from "../../../utils/GlobalVariables.json";
-import { MainContext } from "algaeh-react-components/context";
+import { MainContext } from "algaeh-react-components";
 
 class InvItemMaster extends Component {
   constructor(props) {
@@ -44,7 +44,7 @@ class InvItemMaster extends Component {
       uom_id: null,
       stocking_uom: null,
       conversion_factor: 0,
-      convertEnable: false
+      convertEnable: false,
     };
   }
 
@@ -53,10 +53,10 @@ class InvItemMaster extends Component {
     const userToken = this.context.userToken;
 
     this.setState({
-      hospital_id: userToken.hims_d_hospital_id
-    })
+      hospital_id: userToken.hims_d_hospital_id,
+    });
   }
-  onClose = e => {
+  onClose = (e) => {
     this.props.onClose && this.props.onClose(false);
     let IOputs = InventoryItem.inputParam();
     this.setState({ ...this.state, ...IOputs });
@@ -83,7 +83,7 @@ class InvItemMaster extends Component {
       <div className="hptl-phase1-Display-patient-details">
         <AlgaehModalPopUp
           events={{
-            onClose: this.onClose.bind(this)
+            onClose: this.onClose.bind(this),
           }}
           title={this.props.HeaderCaption}
           openPopup={this.props.open}
@@ -97,37 +97,37 @@ class InvItemMaster extends Component {
                       div={{ className: "col-4 mandatory form-group" }}
                       label={{
                         fieldName: "item_code",
-                        isImp: true
+                        isImp: true,
                       }}
                       textBox={{
                         className: "txt-fld",
                         name: "item_code",
                         value: this.state.item_code,
                         events: {
-                          onChange: texthandle.bind(this, this)
-                        }
+                          onChange: texthandle.bind(this, this),
+                        },
                       }}
                     />
                     <AlagehFormGroup
                       div={{ className: "col-8 mandatory form-group" }}
                       label={{
                         fieldName: "item_description",
-                        isImp: true
+                        isImp: true,
                       }}
                       textBox={{
                         className: "txt-fld",
                         name: "item_description",
                         value: this.state.item_description,
                         events: {
-                          onChange: texthandle.bind(this, this)
-                        }
+                          onChange: texthandle.bind(this, this),
+                        },
                       }}
                     />
                     <AlagehAutoComplete
                       div={{ className: "col-4 mandatory form-group" }}
                       label={{
                         fieldName: "item_type",
-                        isImp: true
+                        isImp: true,
                       }}
                       selector={{
                         name: "item_type",
@@ -136,16 +136,16 @@ class InvItemMaster extends Component {
                         dataSource: {
                           textField: "name",
                           valueField: "value",
-                          data: GlobalVariables.ITEM_TYPE
+                          data: GlobalVariables.ITEM_TYPE,
                         },
-                        onChange: texthandle.bind(this, this)
+                        onChange: texthandle.bind(this, this),
                       }}
                     />
                     <AlagehAutoComplete
                       div={{ className: "col-4 mandatory form-group" }}
                       label={{
                         fieldName: "category_id",
-                        isImp: true
+                        isImp: true,
                       }}
                       selector={{
                         name: "category_id",
@@ -154,16 +154,16 @@ class InvItemMaster extends Component {
                         dataSource: {
                           textField: "category_desc",
                           valueField: "hims_d_inventory_tem_category_id",
-                          data: this.props.invitemcategory
+                          data: this.props.invitemcategory,
                         },
-                        onChange: texthandle.bind(this, this)
+                        onChange: texthandle.bind(this, this),
                       }}
                     />
                     <AlagehAutoComplete
                       div={{ className: "col-4 mandatory form-group" }}
                       label={{
                         fieldName: "group_id",
-                        isImp: true
+                        isImp: true,
                       }}
                       selector={{
                         name: "group_id",
@@ -172,9 +172,9 @@ class InvItemMaster extends Component {
                         dataSource: {
                           textField: "group_description",
                           valueField: "hims_d_inventory_item_group_id",
-                          data: this.props.inventoryitemgroup
+                          data: this.props.inventoryitemgroup,
                         },
-                        onChange: texthandle.bind(this, this)
+                        onChange: texthandle.bind(this, this),
                       }}
                     />
                     <div className="col-3">
@@ -190,7 +190,7 @@ class InvItemMaster extends Component {
                           <span>
                             <AlgaehLabel
                               label={{
-                                fieldName: "active"
+                                fieldName: "active",
                               }}
                             />
                           </span>
@@ -205,7 +205,7 @@ class InvItemMaster extends Component {
                           <span>
                             <AlgaehLabel
                               label={{
-                                fieldName: "inactive"
+                                fieldName: "inactive",
                               }}
                             />
                           </span>
@@ -215,15 +215,15 @@ class InvItemMaster extends Component {
                     <AlagehFormGroup
                       div={{ className: "col-4 form-group" }}
                       label={{
-                        forceLabel: "SFDA"
+                        forceLabel: "SFDA",
                       }}
                       textBox={{
                         className: "txt-fld",
                         name: "sfda_code",
                         value: this.state.sfda_code,
                         events: {
-                          onChange: texthandle.bind(this, this)
-                        }
+                          onChange: texthandle.bind(this, this),
+                        },
                       }}
                     />
                     <div className="col-2">
@@ -254,23 +254,23 @@ class InvItemMaster extends Component {
                       div={{ className: "col-3 form-group" }}
                       label={{
                         forceLabel: "Reorder Quantity",
-                        isImp: true
+                        isImp: true,
                       }}
                       textBox={{
                         number: {
                           allowNegative: false,
-                          thousandSeparator: ","
+                          thousandSeparator: ",",
                         },
                         className: "txt-fld",
                         name: "reorder_qty",
                         value: this.state.reorder_qty,
                         dontAllowKeys: ["-", "e", "."],
                         events: {
-                          onChange: numberEventHandaler.bind(this, this)
+                          onChange: numberEventHandaler.bind(this, this),
                         },
                         others: {
-                          type: "number"
-                        }
+                          type: "number",
+                        },
                       }}
                     />
 
@@ -301,12 +301,12 @@ class InvItemMaster extends Component {
                             className:
                               this.state.vat_applicable === "Y"
                                 ? "col-3 mandatory form-group"
-                                : "col-3 form-group"
+                                : "col-3 form-group",
                           }}
                           label={{
                             fieldName: "vat_percent",
                             isImp:
-                              this.state.vat_applicable === "Y" ? true : false
+                              this.state.vat_applicable === "Y" ? true : false,
                           }}
                           textBox={{
                             decimal: { allowNegative: false },
@@ -314,12 +314,14 @@ class InvItemMaster extends Component {
                             name: "vat_percent",
                             value: this.state.vat_percent,
                             events: {
-                              onChange: numberEventHandaler.bind(this, this)
+                              onChange: numberEventHandaler.bind(this, this),
                             },
                             others: {
                               disabled:
-                                this.state.vat_applicable === "Y" ? false : true
-                            }
+                                this.state.vat_applicable === "Y"
+                                  ? false
+                                  : true,
+                            },
                           }}
                         />
                       </div>
@@ -342,7 +344,7 @@ class InvItemMaster extends Component {
                     <AlagehAutoComplete
                       div={{ className: "col-3" }}
                       label={{
-                        fieldName: "uom_id"
+                        fieldName: "uom_id",
                       }}
                       selector={{
                         name: "uom_id",
@@ -351,19 +353,19 @@ class InvItemMaster extends Component {
                         dataSource: {
                           textField: "uom_description",
                           valueField: "hims_d_inventory_uom_id",
-                          data: this.props.inventoryitemuom
+                          data: this.props.inventoryitemuom,
                         },
                         onChange: uomtexthandle.bind(this, this),
                         others: {
-                          exclude: "true"
-                        }
+                          exclude: "true",
+                        },
                       }}
                     />
 
                     <AlagehAutoComplete
                       div={{ className: "col-4" }}
                       label={{
-                        fieldName: "stocking_uom"
+                        fieldName: "stocking_uom",
                       }}
                       selector={{
                         name: "stocking_uom",
@@ -372,36 +374,36 @@ class InvItemMaster extends Component {
                         dataSource: {
                           textField: "name",
                           valueField: "value",
-                          data: GlobalVariables.FORMAT_YESNO
+                          data: GlobalVariables.FORMAT_YESNO,
                         },
                         onChange: stockingtexthandle.bind(this, this),
                         others: {
-                          exclude: "true"
-                        }
+                          exclude: "true",
+                        },
                       }}
                     />
 
                     <AlagehFormGroup
                       div={{ className: "col-4" }}
                       label={{
-                        fieldName: "conversion_factor"
+                        fieldName: "conversion_factor",
                       }}
                       textBox={{
                         number: {
                           allowNegative: false,
-                          thousandSeparator: ","
+                          thousandSeparator: ",",
                         },
                         className: "txt-fld",
                         name: "conversion_factor",
                         value: this.state.conversion_factor,
                         dontAllowKeys: ["-", "e", "."],
                         events: {
-                          onChange: texthandle.bind(this, this)
+                          onChange: texthandle.bind(this, this),
                         },
                         others: {
                           disabled: this.state.convertEnable,
-                          exclude: "true"
-                        }
+                          exclude: "true",
+                        },
                       }}
                     />
 
@@ -426,7 +428,7 @@ class InvItemMaster extends Component {
                             label: (
                               <AlgaehLabel label={{ fieldName: "action" }} />
                             ),
-                            displayTemplate: row => {
+                            displayTemplate: (row) => {
                               return (
                                 <span>
                                   <i
@@ -445,23 +447,23 @@ class InvItemMaster extends Component {
                             others: {
                               maxWidth: 60,
                               style: {
-                                textAlign: "center"
-                              }
-                            }
+                                textAlign: "center",
+                              },
+                            },
                           },
                           {
                             fieldName: "uom_id",
                             label: (
                               <AlgaehLabel label={{ fieldName: "uom_id" }} />
                             ),
-                            displayTemplate: row => {
+                            displayTemplate: (row) => {
                               let display =
                                 this.props.inventoryitemuom === undefined
                                   ? []
                                   : this.props.inventoryitemuom.filter(
-                                    f =>
-                                      f.hims_d_inventory_uom_id === row.uom_id
-                                  );
+                                      (f) =>
+                                        f.hims_d_inventory_uom_id === row.uom_id
+                                    );
 
                               return (
                                 <span>
@@ -471,7 +473,7 @@ class InvItemMaster extends Component {
                                 </span>
                               );
                             },
-                            editorTemplate: row => {
+                            editorTemplate: (row) => {
                               return (
                                 <AlagehAutoComplete
                                   div={{}}
@@ -482,26 +484,26 @@ class InvItemMaster extends Component {
                                     dataSource: {
                                       textField: "uom_description",
                                       valueField: "hims_d_inventory_uom_id",
-                                      data: this.props.inventoryitemuom
+                                      data: this.props.inventoryitemuom,
                                     },
                                     others: {
-                                      disabled: true
+                                      disabled: true,
                                     },
                                     onChange: onchangegridcol.bind(
                                       this,
                                       this,
 
                                       row
-                                    )
+                                    ),
                                   }}
                                 />
                               );
                             },
                             others: {
                               style: {
-                                textAlign: "center"
-                              }
-                            }
+                                textAlign: "center",
+                              },
+                            },
                           },
 
                           {
@@ -511,7 +513,7 @@ class InvItemMaster extends Component {
                                 label={{ fieldName: "conversion_factor" }}
                               />
                             ),
-                            editorTemplate: row => {
+                            editorTemplate: (row) => {
                               return (
                                 <AlagehFormGroup
                                   div={{}}
@@ -520,24 +522,24 @@ class InvItemMaster extends Component {
                                     className: "txt-fld",
                                     name: "conversion_factor",
                                     others: {
-                                      disabled: true
+                                      disabled: true,
                                     },
                                     events: {
                                       onChange: onchangegridcol.bind(
                                         this,
                                         this,
                                         row
-                                      )
-                                    }
+                                      ),
+                                    },
                                   }}
                                 />
                               );
                             },
                             others: {
                               style: {
-                                textAlign: "center"
-                              }
-                            }
+                                textAlign: "center",
+                              },
+                            },
                           },
                           {
                             fieldName: "stocking_uom",
@@ -546,10 +548,10 @@ class InvItemMaster extends Component {
                                 label={{ fieldName: "stocking_uom" }}
                               />
                             ),
-                            displayTemplate: row => {
+                            displayTemplate: (row) => {
                               return row.stocking_uom === "N" ? "No" : "Yes";
                             },
-                            editorTemplate: row => {
+                            editorTemplate: (row) => {
                               return (
                                 <AlagehAutoComplete
                                   div={{}}
@@ -560,37 +562,37 @@ class InvItemMaster extends Component {
                                     dataSource: {
                                       textField: "name",
                                       valueField: "value",
-                                      data: GlobalVariables.FORMAT_YESNO
+                                      data: GlobalVariables.FORMAT_YESNO,
                                     },
                                     others: {
-                                      disabled: true
+                                      disabled: true,
                                     },
                                     onChange: stockonchangegridcol.bind(
                                       this,
                                       this,
 
                                       row
-                                    )
+                                    ),
                                   }}
                                 />
                               );
                             },
                             others: {
                               style: {
-                                textAlign: "center"
-                              }
-                            }
-                          }
+                                textAlign: "center",
+                              },
+                            },
+                          },
                         ]}
                         keyId="service_type_id"
                         dataSource={{
-                          data: this.state.detail_item_uom
+                          data: this.state.detail_item_uom,
                         }}
                         paging={{ page: 0, rowsPerPage: 5 }}
                         events={{
                           onDelete: deleteUOM.bind(this, this),
-                          onEdit: row => { },
-                          onDone: updateUOM.bind(this, this)
+                          onEdit: (row) => {},
+                          onDone: updateUOM.bind(this, this),
                         }}
                       />
                     </div>
@@ -604,7 +606,7 @@ class InvItemMaster extends Component {
                       div={{ className: "col-4 mandatory form-group" }}
                       label={{
                         fieldName: "purchase_uom_id",
-                        isImp: true
+                        isImp: true,
                       }}
                       selector={{
                         name: "purchase_uom_id",
@@ -613,16 +615,16 @@ class InvItemMaster extends Component {
                         dataSource: {
                           textField: "uom_description",
                           valueField: "uom_id",
-                          data: this.state.detail_item_uom
+                          data: this.state.detail_item_uom,
                         },
-                        onChange: texthandle.bind(this, this)
+                        onChange: texthandle.bind(this, this),
                       }}
                     />
                     <AlagehAutoComplete
                       div={{ className: "col-4 mandatory form-group" }}
                       label={{
                         fieldName: "sales_uom_id",
-                        isImp: true
+                        isImp: true,
                       }}
                       selector={{
                         name: "sales_uom_id",
@@ -631,9 +633,9 @@ class InvItemMaster extends Component {
                         dataSource: {
                           textField: "uom_description",
                           valueField: "uom_id",
-                          data: this.state.detail_item_uom
+                          data: this.state.detail_item_uom,
                         },
-                        onChange: texthandle.bind(this, this)
+                        onChange: texthandle.bind(this, this),
                       }}
                     />
                     {/*<AlagehAutoComplete
@@ -656,7 +658,7 @@ class InvItemMaster extends Component {
                       div={{ className: "col-4 mandatory form-group" }}
                       label={{
                         fieldName: "stocking_uom_id",
-                        isImp: true
+                        isImp: true,
                       }}
                       selector={{
                         name: "stocking_uom_id",
@@ -665,18 +667,18 @@ class InvItemMaster extends Component {
                         dataSource: {
                           textField: "uom_description",
                           valueField: "hims_d_inventory_uom_id",
-                          data: this.props.inventoryitemuom
+                          data: this.props.inventoryitemuom,
                         },
                         others: {
-                          disabled: true
+                          disabled: true,
                         },
-                        onChange: texthandle.bind(this, this)
+                        onChange: texthandle.bind(this, this),
                       }}
                     />
                     <AlagehFormGroup
                       div={{ className: "col-4 form-group" }}
                       label={{
-                        fieldName: "purchase_cost"
+                        fieldName: "purchase_cost",
                       }}
                       textBox={{
                         decimal: { allowNegative: false },
@@ -684,8 +686,8 @@ class InvItemMaster extends Component {
                         name: "purchase_cost",
                         value: this.state.purchase_cost,
                         others: {
-                          min: 0
-                        }
+                          min: 0,
+                        },
                       }}
                     />
 
@@ -693,13 +695,17 @@ class InvItemMaster extends Component {
                       div={{ className: "col-4 mandatory form-group" }}
                       label={{
                         fieldName: "price",
-                        isImp: this.state.item_type === "AST" || this.state.item_type === "NSK" ? false : true
+                        isImp:
+                          this.state.item_type === "AST" ||
+                          this.state.item_type === "NSK"
+                            ? false
+                            : true,
                       }}
                       textBox={{
                         decimal: { allowNegative: false },
                         className: "txt-fld",
                         name: "standard_fee",
-                        value: this.state.standard_fee
+                        value: this.state.standard_fee,
                       }}
                     />
                   </div>
@@ -722,11 +728,11 @@ class InvItemMaster extends Component {
                     {this.state.hims_d_inventory_item_master_id === null ? (
                       <AlgaehLabel label={{ fieldName: "btnSave" }} />
                     ) : (
-                        <AlgaehLabel label={{ fieldName: "btnUpdate" }} />
-                      )}
+                      <AlgaehLabel label={{ fieldName: "btnUpdate" }} />
+                    )}
                   </button>
                   <button
-                    onClick={e => {
+                    onClick={(e) => {
                       this.onClose(e);
                     }}
                     type="button"
@@ -750,7 +756,7 @@ function mapStateToProps(state) {
     inventoryitemgroup: state.inventoryitemgroup,
     inventoryitemuom: state.inventoryitemuom,
     inventoryitemservices: state.inventoryitemservices,
-    inventoryitemlist: state.inventoryitemlist
+    inventoryitemlist: state.inventoryitemlist,
   };
 }
 
@@ -759,7 +765,7 @@ function mapDispatchToProps(dispatch) {
     {
       getItemCategory: AlgaehActions,
       getItemGroup: AlgaehActions,
-      getServices: AlgaehActions
+      getServices: AlgaehActions,
     },
     dispatch
   );

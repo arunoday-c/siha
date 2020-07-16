@@ -12,7 +12,7 @@ import VisitType from "./VisitType/VisitType";
 import InsuranceCardClass from "./InsuranceCardClass/InsuranceCardClass";
 import { AlgaehLabel } from "../Wrapper/algaehWrapper";
 import { AlgaehActions } from "../../actions/algaehActions";
-import { MainContext } from "algaeh-react-components/context";
+import { AlgaehTabs, MainContext } from "algaeh-react-components";
 
 class CommonSetup extends Component {
   constructor(props) {
@@ -20,19 +20,8 @@ class CommonSetup extends Component {
     this.state = {
       pageDisplay: "VisaType",
       HIMS_Active: false,
+      screens_data: [],
     };
-  }
-
-  openTab(e) {
-    var element = document.querySelectorAll("[algaehtabs]");
-    for (var i = 0; i < element.length; i++) {
-      element[i].classList.remove("active");
-    }
-    e.currentTarget.classList.add("active");
-    var specified = e.currentTarget.getAttribute("algaehtabs");
-    this.setState({
-      pageDisplay: specified,
-    });
   }
 
   static contextType = MainContext;
@@ -44,9 +33,62 @@ class CommonSetup extends Component {
       userToken.product_type === "NO_FINANCE"
         ? true
         : false;
+
+    let screens_data = [
+      {
+        title: (
+          <AlgaehLabel
+            label={{
+              fieldName: "visa_type",
+            }}
+          />
+        ),
+        children: <VisaType />,
+        componentCode: "COMM_VISA",
+      },
+      {
+        title: (
+          <AlgaehLabel
+            label={{
+              fieldName: "identification_type",
+            }}
+          />
+        ),
+        children: <IDType />,
+        componentCode: "COMM_ID",
+      },
+    ];
+
+    if (active) {
+      screens_data.push(
+        {
+          title: (
+            <AlgaehLabel
+              label={{
+                fieldName: "visit_type",
+              }}
+            />
+          ),
+          children: <VisitType />,
+          componentCode: "COMM_VISIT",
+        },
+        {
+          title: (
+            <AlgaehLabel
+              label={{
+                fieldName: "patient_type",
+              }}
+            />
+          ),
+          children: <PatientType />,
+          componentCode: "COMM_PAT_TYPE",
+        }
+      );
+    }
+
     this.setState({
-      // pageDisplay: active ? "VisitType" : "VisaType",
       HIMS_Active: active,
+      screens_data: screens_data,
     });
 
     this.props.getUserDetails({
@@ -59,109 +101,26 @@ class CommonSetup extends Component {
     });
   }
 
+  // openTab(e) {
+  //   var element = document.querySelectorAll("[algaehtabs]");
+  //   for (var i = 0; i < element.length; i++) {
+  //     element[i].classList.remove("active");
+  //   }
+  //   e.currentTarget.classList.add("active");
+  //   var specified = e.currentTarget.getAttribute("algaehtabs");
+  //   this.setState({
+  //     pageDisplay: specified,
+  //   });
+  // }
+
   render() {
     return (
       <div className="common_setup">
-        <div className="row">
-          <div className="tabMaster toggle-section">
-            <ul className="nav">
-              <li
-                algaehtabs={"VisaType"}
-                className={"nav-item  tab-button active"}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      fieldName: "visa_type",
-                    }}
-                  />
-                }
-              </li>
-
-              {this.state.HIMS_Active === true ? (
-                <li
-                  algaehtabs={"VisitType"}
-                  className={"nav-item tab-button"}
-                  onClick={this.openTab.bind(this)}
-                >
-                  {
-                    <AlgaehLabel
-                      label={{
-                        fieldName: "visit_type",
-                      }}
-                    />
-                  }
-                </li>
-              ) : null}
-
-              <li
-                algaehtabs={"IDType"}
-                className={"nav-item tab-button"}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      fieldName: "identification_type",
-                    }}
-                  />
-                }
-              </li>
-              {this.state.HIMS_Active === true ? (
-                <li
-                  algaehtabs={"PatientType"}
-                  className={"nav-item tab-button"}
-                  onClick={this.openTab.bind(this)}
-                >
-                  {
-                    <AlgaehLabel
-                      label={{
-                        fieldName: "patient_type",
-                      }}
-                    />
-                  }
-                </li>
-              ) : null}
-              {/*{this.state.HIMS_Active === true ? (
-                <li
-                  algaehtabs={"InsuranceCardClass"}
-                  className={"nav-item tab-button"}
-                  onClick={this.openTab.bind(this)}
-                >
-                  {
-                    <AlgaehLabel
-                      label={{
-                        fieldName: "insurance_card_class"
-                      }}
-                    />
-                  }
-                </li>
-                ) : null}*/}
-            </ul>
-          </div>
-        </div>
-        <div className="common-section">
-          {/*  {<this.state.pageDisplay />} */}
-
-          {/* {this.state.pageDisplay === "AccidentType" ? (
-            <AccidentType />
-          ) : this.state.pageDisplay === "EquipmentType" ? (
-            <EquipmentType />
-          ) : */}
-
-          {this.state.pageDisplay === "VisitType" ? (
-            <VisitType />
-          ) : this.state.pageDisplay === "VisaType" ? (
-            <VisaType />
-          ) : this.state.pageDisplay === "IDType" ? (
-            <IDType />
-          ) : this.state.pageDisplay === "PatientType" ? (
-            <PatientType />
-          ) : this.state.pageDisplay === "InsuranceCardClass" ? (
-            <InsuranceCardClass />
-          ) : null}
-        </div>
+        <AlgaehTabs
+          removeCommonSection={true}
+          content={this.state.screens_data}
+          renderClass="CommSetupSection"
+        />
       </div>
     );
   }

@@ -11,9 +11,9 @@ import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import { GetAmountFormart } from "../../../../utils/GlobalFunctions";
 import moment from "moment";
 // import { parse } from "url";
-import { MainContext } from "algaeh-react-components/context";
+import { MainContext } from "algaeh-react-components";
 import { AlgaehSecurityElement } from "algaeh-react-components";
-
+import swal from "sweetalert2";
 class EOSGratuity extends Component {
   constructor(props) {
     super(props);
@@ -26,11 +26,12 @@ class EOSGratuity extends Component {
       previous_gratuity_amount: 0,
       saveDisabled: true,
       gratuity_done: false,
-      gratuity_status: "PRO",
+      gratuity_status: null,
       branches: [],
       hospital_id: undefined,
       gratuity_encash: 0,
       actual_maount: 0,
+      sendPaymentButton: true,
     };
   }
   static contextType = MainContext;
@@ -116,6 +117,18 @@ class EOSGratuity extends Component {
         this.setState({
           employee_name: row.full_name,
           hims_d_employee_id: row.hims_d_employee_id,
+          data: {
+            componentList: [],
+          },
+          previous_gratuity_amount: 0,
+          calculated_gratutity_amount: null,
+          payable_amount: null,
+          remarks: "",
+          saveDisabled: true,
+          gratuity_done: false,
+          gratuity_encash: 0,
+          actual_maount: 0,
+          sendPaymentButton: true,
         });
       },
     });
@@ -135,9 +148,60 @@ class EOSGratuity extends Component {
       gratuity_status: this.state.gratuity_status,
       remarks: this.state.remarks,
     };
-
+    swal({
+      title: "Are You Sure to Send For Payment ?",
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes",
+      confirmButtonColor: "#44b8bd",
+      cancelButtonColor: "#d33",
+      cancelButtonText: "No",
+    }).then((sendForpayment) => {
+      if (sendForpayment.value) {
+        algaehApiCall({
+          uri: "/endofservice/save",
+          method: "PUT",
+          module: "hrManagement",
+          data: send_data,
+          onSuccess: (res) => {
+            if (res.data.result) {
+              swalMessage({
+                title: "Record Added Successfully",
+                type: "success",
+              });
+              // this.clearState();
+              this.setState({
+                saveDisabled: true,
+                sendPaymentButton: true,
+              });
+            }
+          },
+          onFailure: (err) => {
+            swalMessage({
+              title: err.message,
+              type: "error",
+            });
+          },
+        });
+      }
+    });
+  }
+  saveData() {
+    let _sub_data = this.state.data;
+    let send_data = {
+      employee_id: this.state.hims_d_employee_id,
+      exit_type: _sub_data.employee_status,
+      join_date: _sub_data.date_of_joining,
+      exit_date: _sub_data.exit_date,
+      service_years: _sub_data.endOfServiceYears,
+      payable_days: _sub_data.eligible_day,
+      computed_amount: _sub_data.computed_amount,
+      paybale_amout: _sub_data.paybale_amout,
+      gratuity_status: "PEN",
+      remarks: this.state.remarks,
+    };
     algaehApiCall({
-      uri: "/endofservice/save",
+      uri: "/endofservice/saveTemporary",
       method: "POST",
       module: "hrManagement",
       data: send_data,
@@ -149,7 +213,8 @@ class EOSGratuity extends Component {
           });
           // this.clearState();
           this.setState({
-            saveDisabled: true,
+            saveDisabled: false,
+            sendPaymentButton: false,
           });
         }
       },
@@ -193,8 +258,8 @@ class EOSGratuity extends Component {
                 computed_amount: res.data.result.computed_amount,
                 payable_amount: res.data.result.paybale_amout,
                 entitled_amount: res.data.result.entitled_amount,
-                saveDisabled: true,
-                gratuity_done: true,
+                saveDisabled: false,
+                gratuity_done: false,
                 actual_maount: res.data.result.actual_maount,
                 gratuity_encash: res.data.result.gratuity_encash,
               });
@@ -202,11 +267,13 @@ class EOSGratuity extends Component {
               this.setState({
                 loading: false,
                 data: res.data.result,
-                calculated_gratutity_amount: res.data.result.gratuity_amount,
-                computed_amount: res.data.result.computed_amount,
-                payable_amount: res.data.result.paybale_amout,
+                calculated_gratutity_amount:
+                  res.data.result.calculated_gratutity_amount,
+                computed_amount: res.data.result.calculated_gratutity_amount,
+                payable_amount: res.data.result.payable_amount,
                 entitled_amount: res.data.result.entitled_amount,
-                saveDisabled: false,
+                gratuity_done: true,
+                saveDisabled: true,
                 actual_maount: res.data.result.actual_maount,
                 gratuity_encash: res.data.result.gratuity_encash,
               });
@@ -224,6 +291,37 @@ class EOSGratuity extends Component {
         },
       });
     }
+  }
+
+  generateEndOfServiceSlip() {
+    algaehApiCall({
+      uri: "/report",
+      method: "GET",
+      module: "reports",
+      headers: {
+        Accept: "blob",
+      },
+      others: { responseType: "blob" },
+      data: {
+        report: {
+          reportName: "EndOfServiceSlip",
+          reportParams: [
+            {
+              name: "employee_id",
+              value: this.state.hims_d_employee_id,
+              // this.state.hims_d_employee_id,
+            },
+          ],
+          outputFileType: "PDF",
+        },
+      },
+      onSuccess: (res) => {
+        const urlBlob = URL.createObjectURL(res.data);
+        // const documentName="Salary Slip"
+        const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Salary Slip`;
+        window.open(origin);
+      },
+    });
   }
 
   render() {
@@ -355,6 +453,11 @@ class EOSGratuity extends Component {
                   Already send for payment
                 </span>
               </p>
+            ) : EosData.gratuity_status === "PEN" ? (
+              <p>
+                {" "}
+                <span className="badge badge-warning">Pending</span>
+              </p>
             ) : (
               <p>
                 {" "}
@@ -435,27 +538,31 @@ class EOSGratuity extends Component {
                   <div className="portlet-body">
                     <div className="row">
                       <div className="col-4">
-                        <div className="row">
-                          {EosData.componentList.map((data, index) => (
-                            <div
-                              className="col-12"
-                              key={data.hims_d_employee_earnings_id}
-                            >
-                              <label className="style_Label ">
-                                {data.short_desc === null
-                                  ? data.earning_deduction_description
-                                  : data.short_desc}
-                              </label>
-                              <h6>{GetAmountFormart(data.amount)}</h6>
+                        {EosData.componentList === undefined ? null : (
+                          <div className="row">
+                            {EosData.componentList.map((data, index) => (
+                              <div
+                                className="col-12"
+                                key={data.hims_d_employee_earnings_id}
+                              >
+                                <label className="style_Label ">
+                                  {data.short_desc === null
+                                    ? data.earning_deduction_description
+                                    : data.short_desc}
+                                </label>
+                                <h6>{GetAmountFormart(data.amount)}</h6>
+                              </div>
+                            ))}{" "}
+                            <div className="col-12">
+                              <label className="style_Label ">Total</label>
+                              <h6>
+                                {GetAmountFormart(
+                                  EosData.totalEarningComponents
+                                )}
+                              </h6>
                             </div>
-                          ))}{" "}
-                          <div className="col-12">
-                            <label className="style_Label ">Total</label>
-                            <h6>
-                              {GetAmountFormart(EosData.totalEarningComponents)}
-                            </h6>
                           </div>
-                        </div>
+                        )}
                       </div>
                       <div className="col-8">
                         <div className="row">
@@ -632,46 +739,59 @@ class EOSGratuity extends Component {
 
         <div className="hptl-phase1-footer">
           <div className="row">
-            <div className="col-lg-12">
+            <div className="col-4 leftBtnGroup">
+              {" "}
+              <AlgaehSecurityElement elementCode="READ_ONLY_ACCESS">
+                {this.state.gratuity_status != null ? (
+                  <button
+                    type="button"
+                    className="btn btn-other"
+                    onClick={this.saveEos.bind(this)}
+                    // disabled={
+                    //   this.state.gratuity_status === "Pending" ? false : true
+                    // }
+                  >
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Send for payment",
+                        returnText: true,
+                      }}
+                    />
+                  </button>
+                ) : null}
+              </AlgaehSecurityElement>
+            </div>
+            <div className="col-8">
               <AlgaehSecurityElement elementCode="READ_ONLY_ACCESS">
                 <button
                   type="button"
                   className="btn btn-primary"
-                  onClick={this.saveEos.bind(this)}
+                  onClick={this.saveData.bind(this)}
                   disabled={this.state.saveDisabled}
                 >
                   <AlgaehLabel
-                    label={{ forceLabel: "Send for payment", returnText: true }}
+                    label={{ forceLabel: "Save", returnText: true }}
                   />
                 </button>
               </AlgaehSecurityElement>
 
-              {/* <button
-                type="button"
-                className="btn btn-default"
-                onClick={this.clearState.bind(this)}
-              >
-                <AlgaehLabel
-                  label={{ forceLabel: "Clear", returnText: true }}
-                />
-              </button> */}
-
-              {/* <button type="button" className="btn btn-other">
-                <AlgaehLabel
-                  label={{
-                    forceLabel: "Delete",
-                    //   returnText: true
-                  }}
-                />
-              </button>
-              <button type="button" className="btn btn-other">
-                <AlgaehLabel
-                  label={{
-                    forceLabel: "Print",
-                    //   returnText: true
-                  }}
-                />
-              </button> */}
+              <AlgaehSecurityElement elementCode="READ_ONLY_ACCESS">
+                {this.state.gratuity_status != null ||
+                this.state.gratuity_status != "" ? (
+                  <button
+                    type="button"
+                    className="btn btn-other"
+                    onClick={this.generateEndOfServiceSlip.bind(this)}
+                  >
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Generate Report",
+                        returnText: true,
+                      }}
+                    />
+                  </button>
+                ) : null}
+              </AlgaehSecurityElement>
             </div>
           </div>
         </div>

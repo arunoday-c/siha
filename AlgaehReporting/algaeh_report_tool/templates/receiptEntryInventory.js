@@ -1,6 +1,6 @@
 // const algaehUtilities = require("algaeh-utilities/utilities");
 const executePDF = function executePDFMethod(options) {
-  return new Promise(function(resolve, reject) {
+  return new Promise(function (resolve, reject) {
     try {
       const _ = options.loadash;
       const moment = options.moment;
@@ -8,7 +8,7 @@ const executePDF = function executePDFMethod(options) {
       let input = {};
       const params = options.args.reportParams;
       const hospital_id = options.args.crypto.hospital_id;
-      params.forEach(para => {
+      params.forEach((para) => {
         input[para["name"]] = para["value"];
       });
 
@@ -44,7 +44,7 @@ const executePDF = function executePDFMethod(options) {
            on H.hims_f_procurement_dn_header_id= D. hims_f_procurement_dn_header_id
            left  join hims_d_inventory_item_master IM on D.inv_item_id=IM.hims_d_inventory_item_master_id
            left join hims_d_inventory_uom U on D.inventory_uom_id=U.hims_d_inventory_uom_id
-           where GH.hospital_id=? and GH.grn_number=? and GH.grn_for='INV';
+           where GH.hospital_id=? and GH.grn_number=? and GH.grn_for='INV'  order by IM.item_description asc;
           select B.hims_f_procurement_dn_batches_id,B.hims_f_procurement_dn_detail_id,B.barcode,B.po_quantity,B.dn_quantity,
            B.unit_cost,B.extended_cost,B.discount_percentage,B.discount_amount,B.net_extended_cost,B.quantity_recieved_todate,
            B.quantity_outstanding,B.tax_amount,B.total_amount,B.batchno,B.sales_price from
@@ -63,11 +63,11 @@ const executePDF = function executePDFMethod(options) {
             hospital_id,
             input.grn_number,
             hospital_id,
-            input.grn_number
+            input.grn_number,
           ],
-          printQuery: false
+          printQuery: false,
         })
-        .then(result => {
+        .then((result) => {
           const grn_details = result[0];
 
           const delv_headers = result[1];
@@ -76,8 +76,8 @@ const executePDF = function executePDFMethod(options) {
 
           const outputArray = [];
 
-          grn_details.forEach(detail => {
-            const dn_header = delv_headers.filter(item => {
+          grn_details.forEach((detail) => {
+            const dn_header = delv_headers.filter((item) => {
               return (
                 detail["dn_header_id"] ==
                 item["hims_f_procurement_dn_header_id"]
@@ -85,8 +85,8 @@ const executePDF = function executePDFMethod(options) {
             });
 
             //looping each delivery note
-            dn_header.forEach(dn => {
-              const dn_details = delv_details.filter(dn_item => {
+            dn_header.forEach((dn) => {
+              const dn_details = delv_details.filter((dn_item) => {
                 return (
                   dn["hims_f_procurement_dn_header_id"] ==
                   dn_item["hims_f_procurement_dn_header_id"]
@@ -96,8 +96,8 @@ const executePDF = function executePDFMethod(options) {
               const delivery_items = [];
 
               //delivery items of each delivery note
-              dn_details.forEach(item => {
-                const batches = delv_subDetails.filter(sub => {
+              dn_details.forEach((item) => {
+                const batches = delv_subDetails.filter((sub) => {
                   return (
                     sub["hims_f_procurement_dn_detail_id"] ==
                     item["hims_f_procurement_dn_detail_id"]
@@ -109,7 +109,7 @@ const executePDF = function executePDFMethod(options) {
 
               outputArray.push({
                 ...dn,
-                delivery_items: delivery_items
+                delivery_items: delivery_items,
               });
             });
           });
@@ -122,7 +122,7 @@ const executePDF = function executePDFMethod(options) {
             purchase_number: outputArray[0].purchase_number,
             po_date: outputArray[0].po_date,
             invoice_date: invoice_date,
-            details: outputArray
+            details: outputArray,
           });
           // utilities.logger().log("output: ", {
           //   ...grn_details[0],
@@ -133,7 +133,7 @@ const executePDF = function executePDFMethod(options) {
           //   details: outputArray
           // });
         })
-        .catch(error => {
+        .catch((error) => {
           options.mysql.releaseConnection();
         });
     } catch (e) {

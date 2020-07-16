@@ -5,6 +5,7 @@ export function Validations(state) {
 
   var tow_word_name = state.state.full_name.split(" ");
 
+  debugger
   if (state.state.full_name.length <= 0) {
     isError = true;
     swalMessage({
@@ -105,6 +106,19 @@ export function Validations(state) {
     });
 
     document.querySelector("[name='contact_number']").focus();
+    return isError;
+  } else if ((state.state.age === null || parseFloat(state.state.age) === 0) &&
+    (state.state.AGEMM === null || parseFloat(state.state.AGEMM) === 0) &&
+    (state.state.AGEDD === null || parseFloat(state.state.AGEDD) === 0)
+  ) {
+    isError = true;
+
+    swalMessage({
+      type: "warning",
+      title: "Please enter the age."
+    });
+
+    document.querySelector("[name='age']").focus();
     return isError;
   } else if (
     state.state.insured === "Y" &&

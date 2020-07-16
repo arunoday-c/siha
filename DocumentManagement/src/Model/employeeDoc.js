@@ -5,7 +5,7 @@ let employeeSchema = new Schema(
     pageName: String,
     clientID: String,
     image: String,
-    destinationName: Object,
+    destinationName: Object || String,
     fileExtention: String,
     updatedDate: Date,
   },

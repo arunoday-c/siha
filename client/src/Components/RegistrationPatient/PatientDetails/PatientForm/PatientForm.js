@@ -18,7 +18,7 @@ import {
   hijriOnChange,
 } from "./AddPatientDetails.js";
 import MyContext from "../../../../utils/MyContext.js";
-import AlgaehHijriDatePicker from "algaeh-react-components/components/datehandler";
+import { AlgaehHijriDatePicker } from "algaeh-react-components";
 import { AlgaehFormGroup } from "algaeh-react-components";
 import {
   AlgaehDateHandler,
@@ -28,7 +28,7 @@ import {
 import variableJson from "../../../../utils/GlobalVariables.json";
 import AlgaehFileUploader from "../../../Wrapper/algaehFileUpload";
 import Enumerable from "linq";
-import { MainContext } from "algaeh-react-components/context";
+import { MainContext } from "algaeh-react-components";
 
 class AddPatientForm extends Component {
   constructor(props) {
@@ -424,8 +424,7 @@ class AddPatientForm extends Component {
                           },
                         }}
                         label={{
-                          fieldName: "age",
-                          isImp: true,
+                          fieldName: "age"
                         }}
                         textBox={{
                           value: this.state.age,

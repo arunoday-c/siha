@@ -8,7 +8,7 @@ import {
   AlgaehDataGrid,
   AlgaehLabel,
   AlagehAutoComplete,
-  AlgaehDateHandler
+  AlgaehDateHandler,
 } from "../../Wrapper/algaehWrapper";
 import moment from "moment";
 import BreadCrumb from "../../common/BreadCrumb/BreadCrumb.js";
@@ -30,12 +30,12 @@ import {
   salesPriceEvent,
   updateInitialStock,
   onChamgeGridQuantity,
-  EditGrid
+  EditGrid,
 } from "./InvInitialStockEvents";
 import "./InvInitialStock.scss";
 import "../../../styles/site.scss";
 import { AlgaehActions } from "../../../actions/algaehActions";
-import { MainContext } from "algaeh-react-components/context";
+import { MainContext } from "algaeh-react-components";
 import { GetAmountFormart } from "../../../utils/GlobalFunctions";
 import AlgaehAutoSearch from "../../Wrapper/autoSearch";
 import spotlightSearch from "../../../Search/spotlightSearch.json";
@@ -69,7 +69,7 @@ class InvInitialStock extends Component {
       postEnable: true,
       dataExitst: false,
       stock_uom_desc: null,
-      sales_uom_desc: null
+      sales_uom_desc: null,
     };
   }
 
@@ -83,8 +83,8 @@ class InvInitialStock extends Component {
       method: "GET",
       redux: {
         type: "ITEM_GET_DATA",
-        mappingName: "inventoryitemlist"
-      }
+        mappingName: "inventoryitemlist",
+      },
     });
 
     this.props.getLocation({
@@ -93,13 +93,13 @@ class InvInitialStock extends Component {
       data: {
         git_location: "N",
         location_status: "A",
-        hospital_id: userToken.hims_d_hospital_id
+        hospital_id: userToken.hims_d_hospital_id,
       },
       method: "GET",
       redux: {
         type: "LOCATIONS_GET_DATA",
-        mappingName: "inventorylocations"
-      }
+        mappingName: "inventorylocations",
+      },
     });
 
     this.props.getItemCategory({
@@ -108,9 +108,9 @@ class InvInitialStock extends Component {
       method: "GET",
       redux: {
         type: "ITEM_CATEGORY_GET_DATA",
-        mappingName: "inventoryitemcategory"
+        mappingName: "inventoryitemcategory",
       },
-      afterSuccess: data => { }
+      afterSuccess: (data) => {},
     });
 
     this.props.getItemGroup({
@@ -119,8 +119,8 @@ class InvInitialStock extends Component {
       method: "GET",
       redux: {
         type: "ITEM_GROUP_GET_DATA",
-        mappingName: "inventoryitemgroup"
-      }
+        mappingName: "inventoryitemgroup",
+      },
     });
 
     this.props.getItemUOM({
@@ -129,8 +129,8 @@ class InvInitialStock extends Component {
       method: "GET",
       redux: {
         type: "ITEM_UOM_GET_DATA",
-        mappingName: "inventoryitemuom"
-      }
+        mappingName: "inventoryitemuom",
+      },
     });
   }
 
@@ -157,18 +157,18 @@ class InvInitialStock extends Component {
                   <AlgaehLabel
                     label={{
                       forceLabel: "Home",
-                      align: "ltr"
+                      align: "ltr",
                     }}
                   />
-                )
+                ),
               },
               {
                 pageName: (
                   <AlgaehLabel
                     label={{ forceLabel: "Opening Stock", align: "ltr" }}
                   />
-                )
-              }
+                ),
+              },
             ]}
             soptlightSearch={{
               label: (
@@ -179,20 +179,20 @@ class InvInitialStock extends Component {
               value: this.state.document_number,
               selectValue: "document_number",
               events: {
-                onChange: getCtrlCode.bind(this, this)
+                onChange: getCtrlCode.bind(this, this),
               },
               jsonFile: {
                 fileName: "spotlightSearch",
-                fieldName: "initialStock.invintstock"
+                fieldName: "initialStock.invintstock",
               },
-              searchName: "invinitialstock"
+              searchName: "invinitialstock",
             }}
             userArea={
               <div className="row">
                 <div className="col">
                   <AlgaehLabel
                     label={{
-                      forceLabel: "Initial Stock Date"
+                      forceLabel: "Initial Stock Date",
                     }}
                   />
                   <h6>
@@ -218,19 +218,19 @@ class InvInitialStock extends Component {
                   <AlagehFormGroup
                     div={{ className: "col-6 form-group" }}
                     label={{
-                      forceLabel: "Description Inventory"
+                      forceLabel: "Description Inventory",
                     }}
                     textBox={{
                       className: "txt-fld",
                       name: "description",
                       value: this.state.description,
                       events: {
-                        onChange: changeTexts.bind(this, this)
+                        onChange: changeTexts.bind(this, this),
                       },
                       others: {
                         autoComplete: "off",
-                        disabled: this.state.dataExitst
-                      }
+                        disabled: this.state.dataExitst,
+                      },
                     }}
                   />
                   {this.state.dataExitst === true ? (
@@ -239,8 +239,8 @@ class InvInitialStock extends Component {
                         {this.state.posted === "Y" ? (
                           <span className="badge badge-success">Posted</span>
                         ) : (
-                            <span className="badge badge-danger">Not Posted</span>
-                          )}
+                          <span className="badge badge-danger">Not Posted</span>
+                        )}
                       </h6>
                     </div>
                   ) : null}
@@ -257,15 +257,15 @@ class InvInitialStock extends Component {
                         textField: "location_description",
                         valueField: "hims_d_inventory_location_id",
                         data: this.props.inventorylocations,
-                        autoComplete: "off"
+                        autoComplete: "off",
                       },
 
                       onChange: LocationchangeTexts.bind(this, this),
                       onClear: () => {
                         this.setState({
-                          location_id: null
+                          location_id: null,
                         });
-                      }
+                      },
                     }}
                   />
                   <AlgaehAutoSearch
@@ -273,7 +273,7 @@ class InvInitialStock extends Component {
                     label={{ forceLabel: "Item Name" }}
                     title="Search Items"
                     id="item_id_search"
-                    template={result => {
+                    template={(result) => {
                       return (
                         <section className="resultSecStyles">
                           <div className="row">
@@ -305,10 +305,10 @@ class InvInitialStock extends Component {
                         sales_price: 0,
                         purchase_uom_id: null,
                         stock_uom_desc: null,
-                        sales_uom_desc: null
+                        sales_uom_desc: null,
                       });
                     }}
-                    ref={attReg => {
+                    ref={(attReg) => {
                       this.attReg = attReg;
                     }}
                   />
@@ -347,13 +347,13 @@ class InvInitialStock extends Component {
                       dataSource: {
                         textField: "category_desc",
                         valueField: "hims_d_inventory_tem_category_id",
-                        data: this.props.inventoryitemcategory
+                        data: this.props.inventoryitemcategory,
                       },
                       others: {
-                        disabled: true
+                        disabled: true,
                       },
                       onChange: null,
-                      autoComplete: "off"
+                      autoComplete: "off",
                     }}
                   />
 
@@ -367,13 +367,13 @@ class InvInitialStock extends Component {
                       dataSource: {
                         textField: "group_description",
                         valueField: "hims_d_inventory_item_group_id",
-                        data: this.props.inventoryitemgroup
+                        data: this.props.inventoryitemgroup,
                       },
                       others: {
-                        disabled: true
+                        disabled: true,
                       },
                       onChange: null,
-                      autoComplete: "off"
+                      autoComplete: "off",
                     }}
                   />
 
@@ -387,30 +387,30 @@ class InvInitialStock extends Component {
                       dataSource: {
                         textField: "uom_description",
                         valueField: "hims_d_inventory_uom_id",
-                        data: this.props.inventoryitemuom
+                        data: this.props.inventoryitemuom,
                       },
                       others: {
-                        disabled: true
+                        disabled: true,
                       },
                       onChange: itemchangeText.bind(this, this),
-                      autoComplete: "off"
+                      autoComplete: "off",
                     }}
                   />
                   <AlagehFormGroup
                     div={{ className: "col-lg-3 form-group" }}
                     label={{
-                      forceLabel: "Vendor Batch No."
+                      forceLabel: "Vendor Batch No.",
                     }}
                     textBox={{
                       className: "txt-fld",
                       name: "vendor_batchno",
                       value: this.state.vendor_batchno,
                       events: {
-                        onChange: changeTexts.bind(this, this)
+                        onChange: changeTexts.bind(this, this),
                       },
                       others: {
-                        autoComplete: "off"
-                      }
+                        autoComplete: "off",
+                      },
                     }}
                   />
 
@@ -418,12 +418,12 @@ class InvInitialStock extends Component {
                     div={{ className: "col-lg-3 form-group" }}
                     label={{
                       forceLabel: "Expiry Date",
-                      isImp: this.state.required_batchno === "Y" ? true : false
+                      isImp: this.state.required_batchno === "Y" ? true : false,
                     }}
                     textBox={{ className: "txt-fld", name: "expiry_date" }}
                     events={{
                       onChange: datehandle.bind(this, this),
-                      onBlur: dateValidate.bind(this, this)
+                      onBlur: dateValidate.bind(this, this),
                     }}
                     value={this.state.expiry_date}
                   />
@@ -432,30 +432,30 @@ class InvInitialStock extends Component {
                     div={{ className: "col-lg-3 form-group" }}
                     label={{
                       forceLabel: "Quantity",
-                      isImp: true
+                      isImp: true,
                     }}
                     textBox={{
                       number: {
                         allowNegative: false,
-                        thousandSeparator: ","
+                        thousandSeparator: ",",
                       },
                       className: "txt-fld",
                       name: "quantity",
                       value: this.state.quantity,
                       events: {
-                        onChange: numberchangeTexts.bind(this, this)
+                        onChange: numberchangeTexts.bind(this, this),
                       },
                       others: {
                         step: "1",
-                        autoComplete: "off"
-                      }
+                        autoComplete: "off",
+                      },
                     }}
                   />
                   <AlagehFormGroup
                     div={{ className: "col-lg-3 form-group" }}
                     label={{
                       forceLabel: "Unit Cost" + "(" + stock_uom_desc + ")",
-                      isImp: true
+                      isImp: true,
                     }}
                     textBox={{
                       decimal: { allowNegative: false },
@@ -463,9 +463,9 @@ class InvInitialStock extends Component {
                       className: "txt-fld",
                       name: "unit_cost",
                       events: {
-                        onChange: numberchangeTexts.bind(this, this)
+                        onChange: numberchangeTexts.bind(this, this),
                       },
-                      others: { autoComplete: "off" }
+                      others: { autoComplete: "off" },
                     }}
                   />
 
@@ -473,7 +473,7 @@ class InvInitialStock extends Component {
                     div={{ className: "col-3 form-group" }}
                     label={{
                       forceLabel: "Sales Price" + "(" + sales_uom_desc + ")",
-                      isImp: true
+                      isImp: true,
                     }}
                     textBox={{
                       decimal: { allowNegative: false },
@@ -481,11 +481,11 @@ class InvInitialStock extends Component {
                       className: "txt-fld",
                       name: "sales_price",
                       events: {
-                        onChange: salesPriceEvent.bind(this, this)
+                        onChange: salesPriceEvent.bind(this, this),
                       },
                       others: {
-                        autoComplete: "off"
-                      }
+                        autoComplete: "off",
+                      },
                     }}
                   />
 
@@ -532,7 +532,7 @@ class InvInitialStock extends Component {
                     {
                       fieldName: "action",
                       label: <AlgaehLabel label={{ forceLabel: "Print" }} />,
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         return (
                           <span>
                             <i
@@ -540,7 +540,7 @@ class InvInitialStock extends Component {
                                 pointerEvents:
                                   this.state.saveEnable === true ? "none" : "",
                                 opacity:
-                                  this.state.saveEnable === true ? "0.1" : ""
+                                  this.state.saveEnable === true ? "0.1" : "",
                               }}
                               onClick={deleteInitialStock.bind(this, this, row)}
                               className="fas fa-trash-alt"
@@ -549,7 +549,7 @@ class InvInitialStock extends Component {
                               style={{
                                 pointerEvents:
                                   this.state.posted === "N" ? "none" : "",
-                                opacity: this.state.posted === "N" ? "0.1" : ""
+                                opacity: this.state.posted === "N" ? "0.1" : "",
                               }}
                               onClick={printBarcode.bind(this, this, row)}
                               className="fas fa-barcode"
@@ -558,21 +558,21 @@ class InvInitialStock extends Component {
                         );
                       },
                       others: {
-                        filterable: false
-                      }
+                        filterable: false,
+                      },
                     },
                     {
                       fieldName: "location_id",
                       label: <AlgaehLabel label={{ forceLabel: "Location" }} />,
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         let display =
                           this.props.inventorylocations === undefined
                             ? []
                             : this.props.inventorylocations.filter(
-                              f =>
-                                f.hims_d_inventory_location_id ===
-                                row.location_id
-                            );
+                                (f) =>
+                                  f.hims_d_inventory_location_id ===
+                                  row.location_id
+                              );
 
                         return (
                           <span>
@@ -584,8 +584,8 @@ class InvInitialStock extends Component {
                       },
                       others: {
                         minWidth: 150,
-                        filterable: false
-                      }
+                        filterable: false,
+                      },
                     },
 
                     {
@@ -593,15 +593,15 @@ class InvInitialStock extends Component {
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Item Category" }} />
                       ),
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         let display =
                           this.props.inventoryitemcategory === undefined
                             ? []
                             : this.props.inventoryitemcategory.filter(
-                              f =>
-                                f.hims_d_inventory_tem_category_id ===
-                                row.item_category_id
-                            );
+                                (f) =>
+                                  f.hims_d_inventory_tem_category_id ===
+                                  row.item_category_id
+                              );
 
                         return (
                           <span>
@@ -613,8 +613,8 @@ class InvInitialStock extends Component {
                       },
                       others: {
                         minWidth: 250,
-                        filterable: false
-                      }
+                        filterable: false,
+                      },
                     },
 
                     {
@@ -622,15 +622,15 @@ class InvInitialStock extends Component {
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Item Group" }} />
                       ),
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         let display =
                           this.props.inventoryitemgroup === undefined
                             ? []
                             : this.props.inventoryitemgroup.filter(
-                              f =>
-                                f.hims_d_inventory_item_group_id ===
-                                row.item_group_id
-                            );
+                                (f) =>
+                                  f.hims_d_inventory_item_group_id ===
+                                  row.item_group_id
+                              );
 
                         return (
                           <span>
@@ -643,8 +643,8 @@ class InvInitialStock extends Component {
 
                       others: {
                         minWidth: 150,
-                        filterable: false
-                      }
+                        filterable: false,
+                      },
                     },
 
                     {
@@ -652,15 +652,15 @@ class InvInitialStock extends Component {
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Item Name" }} />
                       ),
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         let display =
                           this.props.inventoryitemlist === undefined
                             ? []
                             : this.props.inventoryitemlist.filter(
-                              f =>
-                                f.hims_d_inventory_item_master_id ===
-                                row.item_id
-                            );
+                                (f) =>
+                                  f.hims_d_inventory_item_master_id ===
+                                  row.item_id
+                              );
 
                         return (
                           <span>
@@ -671,8 +671,8 @@ class InvInitialStock extends Component {
                         );
                       },
                       others: {
-                        minWidth: 250
-                      }
+                        minWidth: 250,
+                      },
                     },
                     {
                       fieldName: "vendor_batchno",
@@ -684,23 +684,23 @@ class InvInitialStock extends Component {
                       disabled: true,
                       others: {
                         minWidth: 150,
-                        filterable: false
-                      }
+                        filterable: false,
+                      },
                     },
                     {
                       fieldName: "expiry_date",
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Expiry Date" }} />
                       ),
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         return <span>{dateFormater(row.expiry_date)}</span>;
                       },
-                      others: { filterable: false }
+                      others: { filterable: false },
                     },
                     {
                       fieldName: "quantity",
                       label: <AlgaehLabel label={{ forceLabel: "Quantity" }} />,
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         return this.state.dataExitst === false ? (
                           <AlagehFormGroup
                             div={{}}
@@ -718,74 +718,74 @@ class InvInitialStock extends Component {
                                   this,
                                   this,
                                   row
-                                )
+                                ),
                               },
                               others: {
                                 min: 0,
                                 algaeh_required: "true",
                                 errormessage: "Please enter Quantity ..",
-                                checkvalidation: "value ==='' || value ==='0'"
-                              }
+                                checkvalidation: "value ==='' || value ==='0'",
+                              },
                             }}
                           />
                         ) : (
-                            row.quantity
-                          );
+                          row.quantity
+                        );
                       },
-                      others: { filterable: false }
+                      others: { filterable: false },
                     },
                     {
                       fieldName: "unit_cost",
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Unit Cost" }} />
                       ),
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         return (
                           <span>
                             {GetAmountFormart(row.unit_cost, {
-                              appendSymbol: false
+                              appendSymbol: false,
                             })}
                           </span>
                         );
                       },
-                      others: { filterable: false }
+                      others: { filterable: false },
                     },
                     {
                       fieldName: "sales_price",
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Sales Price" }} />
                       ),
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         return (
                           <span>
                             {GetAmountFormart(row.sales_price, {
-                              appendSymbol: false
+                              appendSymbol: false,
                             })}
                           </span>
                         );
                       },
-                      others: { filterable: false }
+                      others: { filterable: false },
                     },
                     {
                       fieldName: "extended_cost",
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Extended Cost" }} />
                       ),
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         return (
                           <span>
                             {GetAmountFormart(row.extended_cost, {
-                              appendSymbol: false
+                              appendSymbol: false,
                             })}
                           </span>
                         );
                       },
-                      others: { filterable: false }
-                    }
+                      others: { filterable: false },
+                    },
                   ]}
                   keyId="item_id"
                   dataSource={{
-                    data: this.state.inventory_stock_detail
+                    data: this.state.inventory_stock_detail,
                   }}
                   isEditable={false}
                   byForceEvents={true}
@@ -795,7 +795,7 @@ class InvInitialStock extends Component {
                     onDelete: deleteInitialStock.bind(this, this),
                     onEdit: EditGrid.bind(this, this),
                     onCancel: EditGrid.bind(this, this),
-                    onDone: updateInitialStock.bind(this, this)
+                    onDone: updateInitialStock.bind(this, this),
                   }}
                 />
               </div>
@@ -834,7 +834,7 @@ class InvInitialStock extends Component {
                     <AlgaehLabel
                       label={{
                         forceLabel: "Post",
-                        returnText: true
+                        returnText: true,
                       }}
                     />
                   </button>
@@ -856,7 +856,7 @@ function mapStateToProps(state) {
     inventoryitemgroup: state.inventoryitemgroup,
     inventoryitemuom: state.inventoryitemuom,
     inventoryitemuomlist: state.inventoryitemuomlist,
-    inventoryinitialstock: state.inventoryinitialstock
+    inventoryinitialstock: state.inventoryinitialstock,
   };
 }
 
@@ -869,7 +869,7 @@ function mapDispatchToProps(dispatch) {
       getItemGroup: AlgaehActions,
       getItemUOM: AlgaehActions,
       getItemMasterAndItemUom: AlgaehActions,
-      getInitialStock: AlgaehActions
+      getInitialStock: AlgaehActions,
     },
     dispatch
   );

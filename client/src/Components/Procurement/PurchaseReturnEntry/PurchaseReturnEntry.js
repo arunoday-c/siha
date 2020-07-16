@@ -22,36 +22,43 @@ import {
   getVendorMaster,
   generatePOReceipt,
   generatePOReceiptNoPrice,
-  getData
+  getData,
 } from "./PurchaseReturnEntryEvent";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import POReturnEntry from "../../../Models/POReturnEntry";
 import Enumerable from "linq";
 import POReturnItemList from "./POReturnItemList/POReturnItemList";
-import { MainContext } from "algaeh-react-components/context";
-import { AlgaehSecurityComponent, RawSecurityComponent } from "algaeh-react-components";
+import { MainContext } from "algaeh-react-components";
+import {
+  AlgaehSecurityComponent,
+  RawSecurityComponent,
+} from "algaeh-react-components";
 
 class PurchaseReturnEntry extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      decimal_places: null
+      decimal_places: null,
     };
     getVendorMaster(this, this);
 
-    RawSecurityComponent({ componentCode: "PUR_RTN_INVENTORY" }).then((result) => {
-      if (result === "show") {
-        getData(this, "INV")
-        this.setState({ po_return_from: "INV", ReqData: false })
+    RawSecurityComponent({ componentCode: "PUR_RTN_INVENTORY" }).then(
+      (result) => {
+        if (result === "show") {
+          getData(this, "INV");
+          this.setState({ po_return_from: "INV", ReqData: false });
+        }
       }
-    });
+    );
 
-    RawSecurityComponent({ componentCode: "PUR_RTN_PHARMACY" }).then((result) => {
-      if (result === "show") {
-        getData(this, "PHR")
-        this.setState({ po_return_from: "PHR", ReqData: false })
+    RawSecurityComponent({ componentCode: "PUR_RTN_PHARMACY" }).then(
+      (result) => {
+        if (result === "show") {
+          getData(this, "PHR");
+          this.setState({ po_return_from: "PHR", ReqData: false });
+        }
       }
-    });
+    );
   }
 
   UNSAFE_componentWillMount() {
@@ -70,7 +77,7 @@ class PurchaseReturnEntry extends Component {
     }
 
     this.setState({
-      decimal_places: userToken.decimal_places
+      decimal_places: userToken.decimal_places,
     });
   }
 
@@ -79,15 +86,15 @@ class PurchaseReturnEntry extends Component {
       this.state.po_return_from === null
         ? []
         : Enumerable.from(this.props.polocations)
-          .where(w => w.location_type === "WH")
-          .toArray();
+            .where((w) => w.location_type === "WH")
+            .toArray();
 
     const class_finder =
       this.state.dataFinder === true
         ? " disableFinder"
         : this.state.ReqData === false
-          ? ""
-          : " disableFinder";
+        ? ""
+        : " disableFinder";
 
     return (
       <div>
@@ -104,18 +111,18 @@ class PurchaseReturnEntry extends Component {
                 <AlgaehLabel
                   label={{
                     forceLabel: "Home",
-                    align: "ltr"
+                    align: "ltr",
                   }}
                 />
-              )
+              ),
             },
             {
               pageName: (
                 <AlgaehLabel
                   label={{ forceLabel: "Purchase Return Entry", align: "ltr" }}
                 />
-              )
-            }
+              ),
+            },
           ]}
           soptlightSearch={{
             label: (
@@ -126,20 +133,20 @@ class PurchaseReturnEntry extends Component {
             value: this.state.purchase_return_number,
             selectValue: "purchase_return_number",
             events: {
-              onChange: getCtrlCode.bind(this, this)
+              onChange: getCtrlCode.bind(this, this),
             },
             jsonFile: {
               fileName: "spotlightSearch",
-              fieldName: "Purchase.POReturnEntry"
+              fieldName: "Purchase.POReturnEntry",
             },
-            searchName: "POReturnEntry"
+            searchName: "POReturnEntry",
           }}
           userArea={
             <div className="row">
               <div className="col">
                 <AlgaehLabel
                   label={{
-                    forceLabel: "PO Return Date"
+                    forceLabel: "PO Return Date",
                   }}
                 />
                 <h6>
@@ -153,25 +160,25 @@ class PurchaseReturnEntry extends Component {
           printArea={
             this.state.purchase_return_number !== null
               ? {
-                menuitems: [
-                  {
-                    label: "Receipt for Internal",
-                    events: {
-                      onClick: () => {
-                        generatePOReceipt(this.state);
-                      }
-                    }
-                  },
-                  {
-                    label: "Receipt for Vendor",
-                    events: {
-                      onClick: () => {
-                        generatePOReceiptNoPrice(this.state);
-                      }
-                    }
-                  }
-                ]
-              }
+                  menuitems: [
+                    {
+                      label: "Receipt for Internal",
+                      events: {
+                        onClick: () => {
+                          generatePOReceipt(this.state);
+                        },
+                      },
+                    },
+                    {
+                      label: "Receipt for Vendor",
+                      events: {
+                        onClick: () => {
+                          generatePOReceiptNoPrice(this.state);
+                        },
+                      },
+                    },
+                  ],
+                }
               : ""
           }
           selectedLang={this.state.selectedLang}
@@ -193,10 +200,10 @@ class PurchaseReturnEntry extends Component {
                     dataSource: {
                       textField: "name",
                       valueField: "value",
-                      data: GlobalVariables.PO_FROM
+                      data: GlobalVariables.PO_FROM,
                     },
                     others: {
-                      disabled: true
+                      disabled: true,
                     },
                     onChange: poforhandle.bind(this, this),
                     onClear: () => {
@@ -204,9 +211,9 @@ class PurchaseReturnEntry extends Component {
                         po_return_from: null,
                         ReqData: true,
                         pharmcy_location_id: null,
-                        inventory_location_id: null
+                        inventory_location_id: null,
                       });
-                    }
+                    },
                   }}
                 />
                 <AlagehAutoComplete
@@ -228,19 +235,19 @@ class PurchaseReturnEntry extends Component {
                         this.state.po_return_from === "PHR"
                           ? "hims_d_pharmacy_location_id"
                           : "hims_d_inventory_location_id",
-                      data: _mainStore
+                      data: _mainStore,
                     },
                     others: {
-                      disabled: this.state.dataExitst
+                      disabled: this.state.dataExitst,
                     },
                     onChange: loctexthandle.bind(this, this),
                     onClear: () => {
                       this.setState({
                         location_description: null,
                         pharmcy_location_id: null,
-                        inventory_location_id: null
+                        inventory_location_id: null,
                       });
-                    }
+                    },
                   }}
                 />
 
@@ -254,17 +261,17 @@ class PurchaseReturnEntry extends Component {
                     dataSource: {
                       textField: "vendor_name",
                       valueField: "hims_d_vendor_id",
-                      data: this.props.povendors
+                      data: this.props.povendors,
                     },
                     others: {
-                      disabled: this.state.dataExitst
+                      disabled: this.state.dataExitst,
                     },
                     onChange: vendortexthandle.bind(this, this),
                     onClear: () => {
                       this.setState({
-                        vendor_id: null
+                        vendor_id: null,
                       });
-                    }
+                    },
                   }}
                 />
 
@@ -329,17 +336,17 @@ class PurchaseReturnEntry extends Component {
                     dataSource: {
                       textField: "name",
                       valueField: "value",
-                      data: GlobalVariables.PAYMENT_TERMS
+                      data: GlobalVariables.PAYMENT_TERMS,
                     },
                     others: {
-                      disabled: true
+                      disabled: true,
                     },
                     onChange: texthandle.bind(this, this),
                     onClear: () => {
                       this.setState({
-                        payment_terms: null
+                        payment_terms: null,
                       });
-                    }
+                    },
                   }}
                 />
               </div>
@@ -349,9 +356,9 @@ class PurchaseReturnEntry extends Component {
           <MyContext.Provider
             value={{
               state: this.state,
-              updateState: obj => {
+              updateState: (obj) => {
                 this.setState({ ...obj });
-              }
+              },
             }}
           >
             <POReturnItemList POReturnEntry={this.state} />
@@ -370,7 +377,7 @@ class PurchaseReturnEntry extends Component {
                 <AlgaehLabel
                   label={{
                     forceLabel: "Save",
-                    returnText: true
+                    returnText: true,
                   }}
                 />
               </button>
@@ -396,7 +403,7 @@ class PurchaseReturnEntry extends Component {
                   <AlgaehLabel
                     label={{
                       forceLabel: "Post",
-                      returnText: true
+                      returnText: true,
                     }}
                   />
                 </button>
@@ -415,7 +422,7 @@ function mapStateToProps(state) {
     poitemcategory: state.poitemcategory,
     poitemgroup: state.poitemgroup,
     poitemuom: state.poitemuom,
-    povendors: state.povendors
+    povendors: state.povendors,
   };
 }
 
@@ -427,7 +434,7 @@ function mapDispatchToProps(dispatch) {
       getItemCategory: AlgaehActions,
       getItemGroup: AlgaehActions,
       getItemUOM: AlgaehActions,
-      getVendorMaster: AlgaehActions
+      getVendorMaster: AlgaehActions,
     },
     dispatch
   );

@@ -63,7 +63,9 @@ const {
   getSummaryFollowUp,
   addSickLeave,
   getSickLeave,
-  getActiveEncounters
+  getActiveEncounters,
+  updateAllergy,
+  deleteAllergy
 } = workBenchModels;
 const { releaseConnection } = utils;
 
@@ -244,8 +246,33 @@ export default () => {
         records: result
       });
       next();
-    },
-    releaseConnection
+    }
+  );
+
+  api.put(
+    "/updateAllergy",
+    updateAllergy,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    }
+  );
+
+  api.delete(
+    "/deleteAllergy",
+    deleteAllergy,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    }
   );
 
   // created by irfan : get Allergy details

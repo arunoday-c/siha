@@ -23,7 +23,7 @@ import {
 } from "./OPCreditSettlementEvents";
 import { AlgaehActions } from "../../actions/algaehActions";
 import { algaehApiCall, getCookie } from "../../utils/algaehApiCall.js";
-import { MainContext } from "algaeh-react-components/context";
+import { MainContext } from "algaeh-react-components";
 import moment from "moment";
 
 class OPCreditSettlement extends Component {

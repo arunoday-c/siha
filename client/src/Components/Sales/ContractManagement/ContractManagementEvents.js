@@ -185,11 +185,16 @@ export function updateContract() {
         data: this.state,
         onSuccess: (response) => {
           if (response.data.success) {
-            this.setState({
-              saveEnable: true,
-              dataExists: true,
-              editMode: false,
-            });
+            this.setState(
+              {
+                saveEnable: true,
+                dataExists: true,
+                editMode: false,
+              },
+              () => {
+                getCtrlCode(this, this.state.contract_number);
+              }
+            );
             saveDocument(
               this.state.contract_files,
               this.state.contract_number,
@@ -295,9 +300,15 @@ export const getCtrlCode = ($this, docNumber, row) => {
           (item) => item.cost_center_id === data.project_id
         );
         getDocuments(docNumber, $this);
+        AlgaehLoader({ show: false });
+
         data.saveEnable = true;
         data.dataExists = true;
-        $this.setState({ ...data, organizations: project.branches });
+        $this.setState({
+          ...data,
+          organizations: project.branches,
+          editMode: false,
+        });
       }
     },
     onFailure: (error) => {
@@ -460,7 +471,7 @@ export const deleteComment = ($this, row) => {
 
   $this.setState({
     comment_list: comment_list,
-    saveEnable: true,
+    saveEnable: !$this.state.editMode,
   });
 };
 

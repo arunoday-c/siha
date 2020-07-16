@@ -8,7 +8,7 @@ import MyContext from "../../../utils/MyContext";
 import {
   AlgaehLabel,
   AlagehFormGroup,
-  AlagehAutoComplete
+  AlagehAutoComplete,
 } from "../../Wrapper/algaehWrapper";
 import Options from "../../../Options.json";
 import moment from "moment";
@@ -18,12 +18,12 @@ import {
   ClearData,
   SaveDispatchNote,
   getCtrlCode,
-  generateDispatchReport
+  generateDispatchReport,
 } from "./DispatchNoteEvents";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import { GetAmountFormart } from "../../../utils/GlobalFunctions";
 
-import { MainContext } from "algaeh-react-components/context";
+import { MainContext } from "algaeh-react-components";
 import DispatchNoteItems from "./DispatchNoteItems/DispatchNoteItems";
 
 class DispatchNote extends Component {
@@ -63,7 +63,7 @@ class DispatchNote extends Component {
       item_details: [],
       batch_detail_view: false,
       dispatched_quantity: 0,
-      inventory_stock_detail: []
+      inventory_stock_detail: [],
     };
     this.baseState = this.state;
   }
@@ -74,16 +74,16 @@ class DispatchNote extends Component {
 
     this.setState({
       decimal_place: userToken.decimal_places,
-      hospital_id: userToken.hims_d_hospital_id
-    })
+      hospital_id: userToken.hims_d_hospital_id,
+    });
     this.props.getItemCategory({
       uri: "/inventory/getItemCategory",
       module: "inventory",
       method: "GET",
       redux: {
         type: "ITEM_CATEGORY_GET_DATA",
-        mappingName: "inventoryitemcategory"
-      }
+        mappingName: "inventoryitemcategory",
+      },
     });
 
     this.props.getItemGroup({
@@ -92,8 +92,8 @@ class DispatchNote extends Component {
       method: "GET",
       redux: {
         type: "ITEM_GROUOP_GET_DATA",
-        mappingName: "inventoryitemgroup"
-      }
+        mappingName: "inventoryitemgroup",
+      },
     });
 
     this.props.getItems({
@@ -103,8 +103,8 @@ class DispatchNote extends Component {
       method: "GET",
       redux: {
         type: "ITEM_GET_DATA",
-        mappingName: "itemlist"
-      }
+        mappingName: "itemlist",
+      },
     });
     this.props.getItemUOM({
       uri: "/inventory/getInventoryUom",
@@ -112,8 +112,8 @@ class DispatchNote extends Component {
       method: "GET",
       redux: {
         type: "ITEM_UOM_GET_DATA",
-        mappingName: "inventoryitemuom"
-      }
+        mappingName: "inventoryitemuom",
+      },
     });
 
     this.props.getLocation({
@@ -121,12 +121,12 @@ class DispatchNote extends Component {
       module: "inventory",
       method: "GET",
       data: {
-        location_status: "A"
+        location_status: "A",
       },
       redux: {
         type: "LOCATIONS_GET_DATA",
-        mappingName: "locations"
-      }
+        mappingName: "locations",
+      },
     });
   }
 
@@ -135,8 +135,8 @@ class DispatchNote extends Component {
       this.state.dataFinder === true
         ? " disableFinder"
         : this.state.ReqData === true
-          ? " disableFinder"
-          : "";
+        ? " disableFinder"
+        : "";
     return (
       <div>
         <BreadCrumb
@@ -152,18 +152,18 @@ class DispatchNote extends Component {
                 <AlgaehLabel
                   label={{
                     forceLabel: "Home",
-                    align: "ltr"
+                    align: "ltr",
                   }}
                 />
-              )
+              ),
             },
             {
               pageName: (
                 <AlgaehLabel
                   label={{ forceLabel: "Dispatch Note", align: "ltr" }}
                 />
-              )
-            }
+              ),
+            },
           ]}
           soptlightSearch={{
             label: (
@@ -174,27 +174,27 @@ class DispatchNote extends Component {
             value: this.state.dispatch_note_number,
             selectValue: "dispatch_note_number",
             events: {
-              onChange: getCtrlCode.bind(this, this)
+              onChange: getCtrlCode.bind(this, this),
             },
             jsonFile: {
               fileName: "spotlightSearch",
-              fieldName: "Sales.DispatchNote"
+              fieldName: "Sales.DispatchNote",
             },
-            searchName: "DispatchNote"
+            searchName: "DispatchNote",
           }}
           userArea={
             <div className="row">
               <div className="col">
                 <AlgaehLabel
                   label={{
-                    forceLabel: "DN Date"
+                    forceLabel: "DN Date",
                   }}
                 />
                 <h6>
                   {this.state.dispatch_note_date
                     ? moment(this.state.dispatch_note_date).format(
-                      Options.dateFormat
-                    )
+                        Options.dateFormat
+                      )
                     : Options.dateFormat}
                 </h6>
               </div>
@@ -203,17 +203,17 @@ class DispatchNote extends Component {
           printArea={
             this.state.dispatch_note_number !== null
               ? {
-                menuitems: [
-                  {
-                    label: "Dispatch Report",
-                    events: {
-                      onClick: () => {
-                        generateDispatchReport(this.state);
-                      }
-                    }
-                  }
-                ]
-              }
+                  menuitems: [
+                    {
+                      label: "Dispatch Report",
+                      events: {
+                        onClick: () => {
+                          generateDispatchReport(this.state);
+                        },
+                      },
+                    },
+                  ],
+                }
               : ""
           }
           selectedLang={this.state.selectedLang}
@@ -236,28 +236,28 @@ class DispatchNote extends Component {
                     dataSource: {
                       textField: "location_description",
                       valueField: "hims_d_inventory_location_id",
-                      data: this.props.locations
+                      data: this.props.locations,
                     },
                     others: {
                       disabled:
                         this.state.dataExists === true
                           ? true
-                          : this.state.selectedData
+                          : this.state.selectedData,
                     },
                     onChange: texthandle.bind(this, this),
                     onClear: () => {
                       this.setState({
                         location_id: null,
-                        ReqData: true
+                        ReqData: true,
                       });
-                    }
+                    },
                   }}
                 />
 
                 <div className="col">
                   <AlgaehLabel
                     label={{
-                      forceLabel: "Location Type"
+                      forceLabel: "Location Type",
                     }}
                   />
                   <h6>
@@ -265,8 +265,8 @@ class DispatchNote extends Component {
                       ? this.state.location_type === "WH"
                         ? "Warehouse"
                         : this.state.location_type === "MS"
-                          ? "Main Store"
-                          : "Sub Store"
+                        ? "Main Store"
+                        : "Sub Store"
                       : "Location Type"}
                   </h6>
                 </div>
@@ -315,9 +315,9 @@ class DispatchNote extends Component {
             <MyContext.Provider
               value={{
                 state: this.state,
-                updateState: obj => {
+                updateState: (obj) => {
                   this.setState({ ...obj });
-                }
+                },
               }}
             >
               <DispatchNoteItems DELNOTEIOputs={this.state} />
@@ -331,7 +331,7 @@ class DispatchNote extends Component {
               <div className="col">
                 <AlgaehLabel
                   label={{
-                    forceLabel: "Sub Total"
+                    forceLabel: "Sub Total",
                   }}
                 />
                 <h6>{GetAmountFormart(this.state.sub_total)}</h6>
@@ -339,7 +339,7 @@ class DispatchNote extends Component {
               <div className="col">
                 <AlgaehLabel
                   label={{
-                    forceLabel: "Discount Amount"
+                    forceLabel: "Discount Amount",
                   }}
                 />
                 <h6>{GetAmountFormart(this.state.discount_amount)}</h6>
@@ -347,7 +347,7 @@ class DispatchNote extends Component {
               <div className="col">
                 <AlgaehLabel
                   label={{
-                    forceLabel: "Net Total"
+                    forceLabel: "Net Total",
                   }}
                 />
                 <h6>{GetAmountFormart(this.state.net_total)}</h6>
@@ -355,7 +355,7 @@ class DispatchNote extends Component {
               <div className="col">
                 <AlgaehLabel
                   label={{
-                    forceLabel: "Total Tax"
+                    forceLabel: "Total Tax",
                   }}
                 />
                 <h6>{GetAmountFormart(this.state.total_tax)}</h6>
@@ -363,7 +363,7 @@ class DispatchNote extends Component {
               <div className="col">
                 <AlgaehLabel
                   label={{
-                    forceLabel: "Net Total"
+                    forceLabel: "Net Total",
                   }}
                 />
                 <h6>{GetAmountFormart(this.state.net_payable)}</h6>
@@ -372,20 +372,20 @@ class DispatchNote extends Component {
                 div={{ className: "col-5 textAreaLeft" }}
                 label={{
                   forceLabel: "Narration",
-                  isImp: false
+                  isImp: false,
                 }}
                 textBox={{
                   className: "txt-fld",
                   name: "narration",
                   value: this.state.narration,
                   events: {
-                    onChange: texthandle.bind(this, this)
+                    onChange: texthandle.bind(this, this),
                   },
                   others: {
-                    disabled: this.state.dataExists
+                    disabled: this.state.dataExists,
                     // multiline: true,
                     // rows: "4"
-                  }
+                  },
                 }}
               />
             </div>
@@ -403,7 +403,7 @@ class DispatchNote extends Component {
                 <AlgaehLabel
                   label={{
                     forceLabel: "Save",
-                    returnText: true
+                    returnText: true,
                   }}
                 />
               </button>
@@ -432,7 +432,7 @@ function mapStateToProps(state) {
     locations: state.locations,
     inventoryitemuom: state.inventoryitemuom,
     inventoryitemcategory: state.inventoryitemcategory,
-    inventoryitemgroup: state.inventoryitemgroup
+    inventoryitemgroup: state.inventoryitemgroup,
   };
 }
 
@@ -443,7 +443,7 @@ function mapDispatchToProps(dispatch) {
       getItemGroup: AlgaehActions,
       getItems: AlgaehActions,
       getLocation: AlgaehActions,
-      getItemUOM: AlgaehActions
+      getItemUOM: AlgaehActions,
     },
     dispatch
   );

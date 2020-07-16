@@ -35,7 +35,7 @@ import SalesListService from "./SalesListService/SalesListService";
 
 import MyContext from "../../../utils/MyContext";
 import Options from "../../../Options.json";
-import { MainContext } from "algaeh-react-components/context";
+import { MainContext } from "algaeh-react-components";
 import { GetAmountFormart } from "../../../utils/GlobalFunctions";
 
 class SalesQuotation extends Component {
@@ -407,8 +407,8 @@ class SalesQuotation extends Component {
                 />
 
                 <AlgaehDateHandler
-                  div={{ className: "col mandatory" }}
-                  label={{ forceLabel: "Delivery Date", isImp: true }}
+                  div={{ className: "col" }}
+                  label={{ forceLabel: "Delivery Date", isImp: false }}
                   textBox={{
                     className: "txt-fld",
                     name: "delivery_date",

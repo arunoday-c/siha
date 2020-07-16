@@ -1,5 +1,5 @@
 // import React from "react";
-import { getItem, tokenDecode } from "algaeh-react-components/storage";
+import { getItem, tokenDecode } from "algaeh-react-components";
 import axios from "axios";
 import extend from "extend";
 import moment from "moment";
@@ -22,7 +22,7 @@ export function algaehApiCall(options) {
       imageUrl: "images/nointernet.png",
       imageHeight: 30,
       position: "center",
-      timer: 4000
+      timer: 4000,
     });
 
     return false;
@@ -36,14 +36,14 @@ export function algaehApiCall(options) {
         imageUrl: "images/nointernet.png",
         imageHeight: 30,
         position: "top",
-        timer: 4000
+        timer: 4000,
       });
     }
   }
 
   let collection = options.notoken === undefined ? [getItem("token")] : [];
   Promise.all(collection)
-    .then(detailResult => {
+    .then((detailResult) => {
       const myIP = getNewLocalIp();
       const headerToken = detailResult.length > 0 ? detailResult[0] : "";
       const userTokenDetails =
@@ -62,7 +62,7 @@ export function algaehApiCall(options) {
           isfetch: false,
           cancelRequestId: null,
           module: null,
-          skipParse: false
+          skipParse: false,
         },
         options
       );
@@ -112,11 +112,11 @@ export function algaehApiCall(options) {
       let cancelRequest = {};
       if (settings.cancelRequestId !== null) {
         axiosCancel(axios, {
-          debug: false
+          debug: false,
         });
 
         cancelRequest = {
-          requestId: settings.cancelRequestId
+          requestId: settings.cancelRequestId,
         };
       }
       const _contentType = settings.header !== undefined ? settings.header : {};
@@ -128,8 +128,9 @@ export function algaehApiCall(options) {
       const timmer =
         settings.timerNotRequired === undefined
           ? {
-            timeout: settings.timeout !== undefined ? settings.timeout : 60000
-          }
+              timeout:
+                settings.timeout !== undefined ? settings.timeout : 60000,
+            }
           : {};
       axios({
         method: settings.method,
@@ -139,23 +140,23 @@ export function algaehApiCall(options) {
           // "x-app-user-identity": x_app_user_identity,
           "x-client-ip": myIP,
           "x-branch": x_branch,
-          ..._contentType
+          ..._contentType,
         },
         httpAgent: new Agent({
           maxSockets: 100,
           timeout: 60000, // active socket keepalive for 60 seconds
-          freeSocketTimeout: 30000 // free socket keepalive for 30 seconds
+          freeSocketTimeout: 30000, // free socket keepalive for 30 seconds
         }), //new http.Agent({ keepAlive: true }),
         ...settings.others,
         ...Params,
         ...timmer,
-        ...cancelRequest
+        ...cancelRequest,
       })
-        .then(response => {
+        .then((response) => {
           if (typeof settings.onSuccess === "function")
             settings.onSuccess(response);
         })
-        .catch(err => {
+        .catch((err) => {
           if (typeof settings.onCatch === "function") {
             settings.onCatch(err);
             return;
@@ -187,9 +188,9 @@ export function algaehApiCall(options) {
             if (process.env.NODE_ENV === "development") {
               console.error(
                 "Error Message : \n" +
-                err.message +
-                " \n Detail Info : \n" +
-                JSON.stringify(err)
+                  err.message +
+                  " \n Detail Info : \n" +
+                  JSON.stringify(err)
               );
             }
           } else {
@@ -215,7 +216,7 @@ export function algaehApiCall(options) {
                     routers[settings.module]["name"] +
                     "' module is not yet started",
                   type: "info",
-                  position: "top"
+                  position: "top",
                 });
               } else {
                 reader.readAsText(err.response.data);
@@ -229,7 +230,7 @@ export function algaehApiCall(options) {
                 swalMessage({
                   title: reader.result,
                   type: "error",
-                  position: "top"
+                  position: "top",
                 });
               };
               reader.readAsText(err.response.data);
@@ -245,13 +246,13 @@ export function algaehApiCall(options) {
                     routers[settings.module]["name"] +
                     "' module is not yet started",
                   type: "info",
-                  position: "top"
+                  position: "top",
                 });
               }
             } else if (
               err.response !== undefined &&
               err.response.headers["content-type"] ===
-              "application/json; charset=utf-8"
+                "application/json; charset=utf-8"
             ) {
               if (
                 err.response.data !== undefined &&
@@ -260,20 +261,20 @@ export function algaehApiCall(options) {
                 swalMessage({
                   title: err.response.data.message,
                   type: "error",
-                  position: "top"
+                  position: "top",
                 });
               } else {
                 swalMessage({
                   title: err.response.statusText,
                   type: "error",
-                  position: "top"
+                  position: "top",
                 });
               }
             }
           }
         });
     })
-    .catch(error => {
+    .catch((error) => {
       console.error("error", error);
     });
 }
@@ -603,10 +604,10 @@ export function reLoginPopup({ message, username }) {
       inputPlaceholder: "Re-enter your password",
       inputAttributes: {
         autocapitalize: "off",
-        autocorrect: "off"
-      }
+        autocorrect: "off",
+      },
     })
-    .then(rest => {
+    .then((rest) => {
       const { value, dismiss } = rest;
       showOtherPopup = true;
       if (dismiss === "cancel") {
@@ -615,13 +616,13 @@ export function reLoginPopup({ message, username }) {
       }
       if (value !== undefined && value !== "") {
         const item_id = getCookie("HospitalId");
-        getLocalIP(identity => {
+        getLocalIP((identity) => {
           const dataSent = encrypter(
             JSON.stringify({
               username: username,
               password: value,
               item_id: item_id,
-              identity: identity
+              identity: identity,
             })
           );
 
@@ -629,7 +630,7 @@ export function reLoginPopup({ message, username }) {
             uri: "/apiAuth/relogin",
             data: { post: dataSent },
             method: "POST",
-            onSuccess: response => {
+            onSuccess: (response) => {
               const { success, message } = response.data;
               if (success === true) {
                 // setCookie("userName", records.user_display_name);
@@ -650,7 +651,7 @@ export function reLoginPopup({ message, username }) {
               } else {
                 swalMessage({ type: "warning", title: message });
               }
-            }
+            },
           });
         });
 
@@ -668,7 +669,7 @@ export function swalMessage(options) {
     showConfirmButton: false,
     timer: 4000,
     toast: true,
-    ...options
+    ...options,
   };
   const toast = swal.mixin(settings);
   let title = settings.title;
@@ -697,7 +698,7 @@ export function SelectFiledData(options) {
       textField: "",
       valueField: "",
       selectedFiled: "",
-      payload: null
+      payload: null,
     },
     options
   );
@@ -708,7 +709,7 @@ export function SelectFiledData(options) {
       let row = settings.payload[i];
       Data.push({
         name: row[settings.textField],
-        value: row[settings.valueField]
+        value: row[settings.valueField],
       });
     }
   }
@@ -775,7 +776,7 @@ export function valueReviver(key, value) {
 
 export function collectIP() {
   const identity = window.localStorage.getItem("identity");
-  var findIP = new Promise(r => {
+  var findIP = new Promise((r) => {
     if (identity !== null) {
       r(identity);
       return;
@@ -785,15 +786,15 @@ export function collectIP() {
       a = new (w.RTCPeerConnection ||
         w.mozRTCPeerConnection ||
         w.webkitRTCPeerConnection)({ iceServers: [] }),
-      b = () => { };
+      b = () => {};
     const autoIP = new IDGenerator().generate();
     a.createDataChannel("");
-    a.createOffer(c => a.setLocalDescription(c, b, b), b);
+    a.createOffer((c) => a.setLocalDescription(c, b, b), b);
     if (a.onicecandidate === null) {
       r(autoIP);
       return;
     }
-    a.onicecandidate = c => {
+    a.onicecandidate = (c) => {
       try {
         c.candidate.candidate
           .match(
@@ -806,7 +807,7 @@ export function collectIP() {
     };
   });
   if (identity === null) {
-    findIP.then(ip => {
+    findIP.then((ip) => {
       window.localStorage.setItem("identity", ip);
     });
   }
@@ -814,7 +815,7 @@ export function collectIP() {
 }
 
 export function getLocalIP(callback) {
-  collectIP().then(IP => {
+  collectIP().then((IP) => {
     callback(IP);
   });
 }

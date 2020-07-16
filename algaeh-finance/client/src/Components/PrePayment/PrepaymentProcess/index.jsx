@@ -1,5 +1,1 @@
-import React from "react";
-
-export function PrepaymentProcess() {
-  return <div>PrepaymentProcess</div>;
-}
+export * from "./PrepaymentProcess";

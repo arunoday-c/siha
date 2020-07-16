@@ -8,7 +8,7 @@ import {
 } from "algaeh-react-components";
 import { newAlgaehApi } from "../../../../hooks";
 import { AlgaehLabel } from "../../../Wrapper/algaehWrapper";
-import { MainContext } from "algaeh-react-components/context";
+import { MainContext } from "algaeh-react-components";
 import { logoUrl, LoadLogo } from "../imagesSettings";
 import EmailConfig from "./EmailConfig";
 import AlgaehSearch from "../../../Wrapper/globalSearch";
@@ -499,7 +499,7 @@ export function Organization(props) {
                         valueField: "hims_d_country_id",
                         textField: "country_name",
                       },
-                      value: String(country_id),
+                      value: country_id || undefined,
 
                       onChange: onChangeHandler,
 

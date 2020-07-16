@@ -35,7 +35,7 @@ import {
 import Options from "../../../../Options.json";
 import LeaveSalaryProcessIOputs from "../../../../Models/LeaveSalaryProcess";
 import SalariesComponents from "../../SalaryManagement/SalaryProcessing/SalariesComponents";
-import { MainContext } from "algaeh-react-components/context";
+import { MainContext } from "algaeh-react-components";
 
 class LeaveSalaryProcess extends Component {
   constructor(props) {
@@ -198,7 +198,6 @@ class LeaveSalaryProcess extends Component {
   }
 
   render() {
-
     return (
       <div className="leave_en_auth row">
         <div className="col-12">
@@ -258,8 +257,8 @@ class LeaveSalaryProcess extends Component {
               <h6>
                 {this.state.leave_salary_date
                   ? moment(this.state.leave_salary_date).format(
-                    Options.dateFormat
-                  )
+                      Options.dateFormat
+                    )
                   : Options.dateFormat}
               </h6>
             </div>
@@ -343,8 +342,8 @@ class LeaveSalaryProcess extends Component {
                     ) : this.state.status === "CAN" ? (
                       <span className="badge badge-danger">Cancelled</span>
                     ) : (
-                            ""
-                          )}{" "}
+                      ""
+                    )}{" "}
                   </>
                 ) : null}
               </div>

@@ -16,7 +16,7 @@ export function ResultInput({ row, onChange }) {
         value,
         className: "txt-fld",
         name: "result",
-        number: row.analyte_type === "QN" ? true : undefined,
+        type: row.analyte_type === "QN" ? "number" : "text",
         placeholder: "Enter Result",
       }}
       events={{
