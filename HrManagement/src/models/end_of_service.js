@@ -67,7 +67,7 @@ export default {
       .executeQuery({
         query: `select EOS.hims_f_end_of_service_id, EOS.employee_id,EOS.join_date,EOS.exit_date,
         EOS.payable_days,EOS.service_years,EOS.payable_days,EOS.calculated_gratutity_amount,
-        EOS.payable_amount,EOS.gratuity_status from hims_f_end_of_service EOS 
+        EOS.payable_amount,EOS.gratuity_status,EOS.remarks,EOS.total_gratutity_amount,EOS.transaction_date from hims_f_end_of_service EOS 
         where employee_id = ?;`,
         values: [_input.hims_d_employee_id],
       })
@@ -75,7 +75,8 @@ export default {
         let endofServexit = false;
         if (
           !end_of_service.length > 0 ||
-          end_of_service[0].gratuity_status === "PEN"
+          end_of_service[0].gratuity_status === "PEN" ||
+          end_of_service[0].gratuity_status === "PEF"
         ) {
           endofServexit = true;
           _mysql
@@ -282,7 +283,12 @@ export default {
                       }
                       const actual_maount = _eligibleDays * gratuity;
                       _computatedAmout = actual_maount - gratuity_encash;
-
+                      const remarks = end_of_service[0]
+                        ? end_of_service[0].remarks
+                        : "";
+                      const gratuityStatus = end_of_service[0]
+                        ? end_of_service[0].gratuity_status
+                        : "";
                       req.records = {
                         computed_amount: _computatedAmout, //_computatedAmoutSum,
                         paybale_amout: _computatedAmout, //_computatedAmoutSum,
@@ -294,7 +300,9 @@ export default {
                         gratuity_amount: gratuity,
                         gratuity_encash: gratuity_encash,
                         actual_maount: actual_maount,
-                        gratuity_status: "PEN",
+                        gratuity_status: gratuityStatus,
+                        total_gratutity_amount: actual_maount,
+                        remarks: remarks,
                       };
 
                       next();
@@ -330,14 +338,14 @@ export default {
               const endOfService = end_of_service[0];
               const result1 = result[0];
 
-              const gratuityAmount =
-                parseFloat(endOfService.calculated_gratutity_amount) +
-                parseFloat(result1.gratuity_encash);
+              // const gratuityAmount =
+              //   parseFloat(endOfService.calculated_gratutity_amount) +
+              //   parseFloat(result1.gratuity_encash);
 
               req.records = Object.assign(
                 {
                   ...endOfService,
-                  actual_maount: gratuityAmount.toFixed(3),
+                  actual_maount: endOfService.total_gratutity_amount,
                   date_of_joining: endOfService.join_date,
                   endOfServiceYears: endOfService.service_years,
                   eligible_day: endOfService.payable_days,
@@ -384,7 +392,7 @@ export default {
               .executeQuery({
                 query: `UPDATE hims_f_end_of_service set join_date=?,exit_date=?,payable_days=?,
             service_years=?,calculated_gratutity_amount=?,payable_amount=?,gratuity_status=?,
-            exit_type=?,remarks=?,created_date=?,created_by=?,
+            exit_type=?,remarks=?,total_gratutity_amount=?,transaction_date=?,created_date=?,created_by=?,
             updated_date=?,updated_by=? where employee_id= ? `,
                 values: [
                   _input.join_date,
@@ -396,6 +404,8 @@ export default {
                   _input.gratuity_status,
                   _input.exit_type,
                   _input.remarks,
+                  _input.total_gratutity_amount,
+                  new Date(),
 
                   new Date(),
                   req.userIdentity.algaeh_d_app_user_id,
@@ -442,8 +452,8 @@ export default {
                     "insert into hims_f_end_of_service(`end_of_service_number`,\
             `employee_id`,`exit_type`,`join_date`,\
             `exit_date`,`service_years`,`payable_days`,`previous_gratuity_amount`,\
-            `calculated_gratutity_amount`,`payable_amount`, `gratuity_status`, `remarks`,\
-            `created_by`,`created_date`,`updated_by`,`updated_date`,hospital_id) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+            `calculated_gratutity_amount`,`payable_amount`, `gratuity_status`, `remarks`,`total_gratutity_amount`,\
+            `transaction_date`,`created_by`,`created_date`,`updated_by`,`updated_date`,hospital_id) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
                   values: [
                     generatedNumbers.END_OF_SERVICE_NO,
                     _input.employee_id,
@@ -458,6 +468,9 @@ export default {
                     _input.paybale_amout,
                     _input.gratuity_status,
                     _input.remarks,
+                    _input.total_gratutity_amount,
+                    new Date(),
+
                     req.userIdentity.algaeh_d_app_user_id,
                     new Date(),
                     req.userIdentity.algaeh_d_app_user_id,

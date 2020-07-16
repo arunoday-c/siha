@@ -25,13 +25,14 @@ class EOSGratuity extends Component {
       },
       previous_gratuity_amount: 0,
       saveDisabled: true,
+      sendPaymentButton: true,
       gratuity_done: false,
       gratuity_status: null,
       branches: [],
       hospital_id: undefined,
       gratuity_encash: 0,
       actual_maount: 0,
-      sendPaymentButton: true,
+      forfeitChecked: false,
     };
   }
   static contextType = MainContext;
@@ -73,15 +74,7 @@ class EOSGratuity extends Component {
   }
 
   changeChecks(e) {
-    if (e.target.checked) {
-      this.setState({
-        [e.target.name]: e.target.value,
-      });
-    } else if (!e.target.checked) {
-      this.setState({
-        [e.target.name]: null,
-      });
-    }
+    this.setState({ forfeitChecked: e.target.checked });
   }
 
   clearState() {
@@ -96,6 +89,7 @@ class EOSGratuity extends Component {
       payable_amount: null,
       remarks: "",
       saveDisabled: true,
+      sendPaymentButton: true,
       gratuity_done: false,
       gratuity_encash: 0,
       actual_maount: 0,
@@ -125,10 +119,12 @@ class EOSGratuity extends Component {
           payable_amount: null,
           remarks: "",
           saveDisabled: true,
+          sendPaymentButton: true,
           gratuity_done: false,
           gratuity_encash: 0,
           actual_maount: 0,
           sendPaymentButton: true,
+          computed_amount: 0,
         });
       },
     });
@@ -145,8 +141,9 @@ class EOSGratuity extends Component {
       payable_days: _sub_data.eligible_day,
       computed_amount: _sub_data.computed_amount,
       paybale_amout: _sub_data.paybale_amout,
-      gratuity_status: this.state.gratuity_status,
+      gratuity_status: this.state.forfeitChecked ? "FOR" : "PRO",
       remarks: this.state.remarks,
+      total_gratutity_amount: _sub_data.total_gratutity_amount,
     };
     swal({
       title: "Are You Sure to Send For Payment ?",
@@ -170,6 +167,7 @@ class EOSGratuity extends Component {
                 type: "success",
               });
               // this.clearState();
+              this.loadEmployeeDetails();
               this.setState({
                 saveDisabled: true,
                 sendPaymentButton: true,
@@ -197,8 +195,9 @@ class EOSGratuity extends Component {
       payable_days: _sub_data.eligible_day,
       computed_amount: _sub_data.computed_amount,
       paybale_amout: _sub_data.paybale_amout,
-      gratuity_status: "PEN",
+      gratuity_status: this.state.forfeitChecked ? "PEF" : "PEN",
       remarks: this.state.remarks,
+      total_gratutity_amount: _sub_data.total_gratutity_amount,
     };
     algaehApiCall({
       uri: "/endofservice/saveTemporary",
@@ -212,6 +211,8 @@ class EOSGratuity extends Component {
             type: "success",
           });
           // this.clearState();
+
+          this.loadEmployeeDetails();
           this.setState({
             saveDisabled: false,
             sendPaymentButton: false,
@@ -259,9 +260,13 @@ class EOSGratuity extends Component {
                 payable_amount: res.data.result.paybale_amout,
                 entitled_amount: res.data.result.entitled_amount,
                 saveDisabled: false,
+                // sendPaymentButton: false,
                 gratuity_done: false,
                 actual_maount: res.data.result.actual_maount,
                 gratuity_encash: res.data.result.gratuity_encash,
+                remarks: res.data.result.remarks,
+                gratuity_status: res.data.result.gratuity_status,
+                forfeitChecked: res.data.result.gratuity_status === "PEF",
               });
             } else {
               this.setState({
@@ -273,9 +278,12 @@ class EOSGratuity extends Component {
                 payable_amount: res.data.result.payable_amount,
                 entitled_amount: res.data.result.entitled_amount,
                 gratuity_done: true,
-                saveDisabled: true,
+                // saveDisabled: true,
                 actual_maount: res.data.result.actual_maount,
                 gratuity_encash: res.data.result.gratuity_encash,
+                remarks: res.data.result.remarks,
+                gratuity_status: res.data.result.gratuity_status,
+                forfeitChecked: res.data.result.gratuity_status === "FOR",
               });
             }
           }
@@ -453,7 +461,7 @@ class EOSGratuity extends Component {
                   Already send for payment
                 </span>
               </p>
-            ) : EosData.gratuity_status === "PEN" ? (
+            ) : EosData.gratuity_status ? (
               <p>
                 {" "}
                 <span className="badge badge-warning">Pending</span>
@@ -710,8 +718,7 @@ class EOSGratuity extends Component {
                                 <input
                                   type="checkbox"
                                   onChange={this.changeChecks.bind(this)}
-                                  value="FOR"
-                                  name="gratuity_status"
+                                  checked={this.state.forfeitChecked}
                                 />
                                 <span>Forfeiture</span>
                               </label>
@@ -742,14 +749,12 @@ class EOSGratuity extends Component {
             <div className="col-4 leftBtnGroup">
               {" "}
               <AlgaehSecurityElement elementCode="READ_ONLY_ACCESS">
-                {this.state.gratuity_status != null ? (
+                {!this.state.sendPaymentButton ? (
                   <button
                     type="button"
                     className="btn btn-other"
                     onClick={this.saveEos.bind(this)}
-                    // disabled={
-                    //   this.state.gratuity_status === "Pending" ? false : true
-                    // }
+                    disabled={this.state.sendPaymentButton}
                   >
                     <AlgaehLabel
                       label={{
