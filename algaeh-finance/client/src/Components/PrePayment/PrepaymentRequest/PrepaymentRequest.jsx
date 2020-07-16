@@ -124,7 +124,7 @@ export function PrepaymentRequest() {
             control={control}
             render={({ value, onBlur, onChange }) => (
               <AlgaehAutoComplete
-                div={{ className: "col-2 form-group" }}
+                div={{ className: "col-2 form-group " }}
                 label={{
                   forceLabel: "Employee",
                   isImp: true,
@@ -157,7 +157,7 @@ export function PrepaymentRequest() {
             render={(props) => (
               <AlgaehFormGroup
                 div={{
-                  className: "col-2 form-group",
+                  className: "col-2 form-group algaeh-text-fld",
                 }}
                 label={{
                   forceLabel: "Prepayment Amt.",

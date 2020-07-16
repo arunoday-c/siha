@@ -46,17 +46,6 @@ export function PrepaymentList() {
             dataSource: {},
           }}
         />
-        <AlgaehAutoComplete
-          div={{ className: "col-2 form-group" }}
-          label={{
-            forceLabel: "Prepayment Type",
-            isImp: true,
-          }}
-          selector={{
-            value: "",
-            dataSource: {},
-          }}
-        />
         <AlgaehDateHandler
           div={{
             className: "col-2 algaeh-date-fld  form-group",
@@ -89,10 +78,7 @@ export function PrepaymentList() {
           // maxDate={moment().add(1, "days")}
         />
         <div className="col">
-          <button
-            className="btn btn-primary bttn-sm"
-            style={{ marginBottom: 10 }}
-          >
+          <button className="btn btn-primary bttn-sm" style={{ marginTop: 18 }}>
             Load
           </button>
         </div>
