@@ -6,8 +6,11 @@ import { PlotUI } from "./plotui";
 import { newAlgaehApi } from "../../../hooks";
 import { handleFile } from "../FinanceReportEvents";
 import { AlgaehMessagePop } from "algaeh-react-components";
-import { getItem, tokenDecode } from "algaeh-react-components";
-import jwtDecode from "jwt-decode";
+// import ReportHeader from "../header";
+import Filter from "../filter";
+import ReportLayout from "../printlayout";
+// import { getItem, tokenDecode } from "algaeh-react-components/storage";
+// import jwtDecode from "jwt-decode";
 export default function BalanceSheet({
   style,
   footer,
@@ -15,66 +18,107 @@ export default function BalanceSheet({
   dates,
   selectedFilter,
 }) {
-  const createPrintObject = useRef(undefined);
+  // const createPrintObject = useRef(undefined);
+  const [columns, setColumns] = useState([]);
   const [data, setData] = useState([]);
+  const [stopLoading, setStopLoading] = useState(undefined);
+  const [preview, setPreview] = useState(false);
+  const [rangeDate, setRangeDate] = useState([dates[0], dates[1]]);
+  const [prevDateRange, setPrevDateRange] = useState([]);
+  const [filter, setFilter] = useState([]);
+  const [triggerUpdate, setTriggerUpdate] = useState(false);
+  const [changeInAmount, setChangeInAccount] = useState("N");
+  const [changeInPercentage, setChangeInPercentage] = useState("N");
+  const [reportType, setReportType] = useState("balancesheet");
   // const [hospitalDetails, setHospitalDeytails] = useState([]);
-  const [organisation, setOrganisation] = useState({});
+  // const [organisation, setOrganisation] = useState({});
   useEffect(() => {
-    loadBalanceSheet();
-    // getItem("token").then((result) => {
-    //   const details = jwtDecode(result);
-    //   setHospitalDeytails(details);
-    // });
+    const { filterKey } = selectedFilter;
+    if (filterKey !== undefined) {
+      const newFilter = [];
+      if (filterKey === "comparison") {
+        newFilter.push({
+          type: "DH|RANGE",
+          data: "PREVIOUS RANGE",
+          maxDate: moment(),
+        });
+        newFilter.push({
+          type: "CH",
+          data: "Change in amount",
+        });
+        newFilter.push({
+          type: "CH",
+          data: "Change in percentage",
+        });
+        setFilter(newFilter);
+        setReportType(filterKey);
+      } else {
+        setFilter([]);
+        setReportType("balancesheet");
+      }
+    } else {
+      setFilter([]);
+    }
+
+    setTriggerUpdate((result) => {
+      return !result;
+    });
+  }, [selectedFilter]);
+
+  useEffect(() => {
+    const { filterKey } = selectedFilter;
+    if (filterKey !== undefined) {
+      if (filterKey === "comparison") {
+        loadcomparisionData(false);
+      }
+    } else {
+      loadBalanceSheet();
+    }
+  }, [preview]);
+  function loadcomparisionData(excel) {
+    let extraHeaders = {};
+    let others = {};
+    if (excel === true) {
+      extraHeaders = {
+        Accept: "blob",
+      };
+      others = { responseType: "blob" };
+    }
+    const from_date = rangeDate[0].format("YYYY-MM-DD");
+    const to_date = rangeDate[1].format("YYYY-MM-DD");
+    let prev_from_date = undefined;
+    let prev_to_date = undefined;
+    if (Array.isArray(prevDateRange) && prevDateRange.length > 0) {
+      prev_from_date = prevDateRange[0].format("YYYY-MM-DD");
+      prev_to_date = prevDateRange[1].format("YYYY-MM-DD");
+    }
 
     newAlgaehApi({
-      uri: "/organization/getMainOrganization",
-      method: "GET",
+      uri: "/balanceSheetComparison/getBalanceSheet",
+      module: "finance",
+      data: {
+        from_date,
+        to_date,
+        change_in_amount: changeInAmount,
+        change_in_percent: changeInPercentage,
+        excel,
+      },
+      extraHeaders,
+      options: others,
     })
-      .then((result) => {
-        const { records, success, message } = result.data;
-        if (success === true) {
-          setOrganisation(records);
-        } else {
-          AlgaehMessagePop({
-            display: message,
-            type: "error",
-          });
-        }
+      .then((response) => {
+        if (typeof stopLoading === "function") stopLoading();
+        console.log("response", response);
+        debugger;
       })
       .catch((error) => {
+        if (typeof stopLoading === "function") stopLoading();
         AlgaehMessagePop({
+          title: "error",
           display: error.message,
-          type: "error",
         });
       });
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dates]);
-
-  const { organization_name, address1, address2, full_name } = organisation;
-  // .then(([detailResult]) => {
-  //   debugger;
-  //   const headerToken = detailResult.length > 0 ? detailResult[0] : "";
-  //   const userTokenDetails =
-  //     headerToken !== "" ? tokenDecode(headerToken) : {};
-  //   setHospitalDeytails(userTokenDetails);
-  //   return;
-  // });
-
-  // // Promise.all([getItem("token")])
-  //   .then((detailResult) => {
-  //     // const myIP = getNewLocalIp();
-  //     const headerToken = detailResult.length > 0 ? detailResult[0] : "";
-  //     const userTokenDetails =
-  //       headerToken !== "" ? tokenDecode(headerToken) : {};
-  //     const x_branch = userTokenDetails.hims_d_hospital_id;
-  //     setHospitalDeytails(userTokenDetails);
-
-  //     return;
-  // //   })
-  //   .catch((error) => {
-  //     console.error("error", error);
-  //   });
+  }
 
   function loadBalanceSheet(excel) {
     let extraHeaders = {};
@@ -85,12 +129,14 @@ export default function BalanceSheet({
       };
       others = { responseType: "blob" };
     }
+    const f_date = rangeDate[0];
+    const t_date = rangeDate[1];
     newAlgaehApi({
       uri: "/financeReports/getBalanceSheet",
       module: "finance",
       data: {
-        from_date: dates[0],
-        to_date: dates[1],
+        from_date: f_date,
+        to_date: t_date,
         excel,
       },
       extraHeaders,
@@ -100,20 +146,119 @@ export default function BalanceSheet({
         if (excel) {
           handleFile(res.data, "balance_sheet");
         } else {
-          setData(res.data.result);
+          const { asset, liabilities } = res.data.result;
+          let records = [];
+          //For asset
+          records.push(asset);
+          //For liabilities
+          records.push(liabilities);
+
+          setColumns([
+            { fieldName: "label", label: "Ledger Name" },
+            { fieldName: "subtitle" },
+          ]);
+          setData(records);
         }
+        if (typeof stopLoading === "function") stopLoading();
       })
       .catch((e) => {
+        if (typeof stopLoading === "function") stopLoading();
         AlgaehMessagePop({
           title: "error",
           display: e.message,
         });
       });
   }
-
+  function filterBuilder(existing, updated) {
+    const newFilter = existing.concat(updated);
+    return newFilter;
+  }
+  function BalanceScheet() {
+    return (
+      <>
+        <div className="reportBodyArea">
+          <Row gutter={[8, 8]}>
+            <Col span={layout.col}>
+              <div className="reportTableStyle">
+                <ul className="treeListUL">
+                  {PlotUI(data["liabilities"], style, [0], layout.expand)}
+                </ul>
+              </div>
+            </Col>
+            <Col span={layout.col}>
+              <div className="reportTableStyle">
+                <ul className="treeListUL">
+                  {PlotUI(data["asset"], style, [0], layout.expand)}
+                </ul>
+              </div>
+            </Col>
+          </Row>
+        </div>
+        <div className="reportTotalArea">
+          <table style={{ width: "100%" }}>
+            <tbody>
+              <tr className="footerTotalArea">
+                <td style={{ width: "100%" }} valign="top">
+                  <b> {null}</b>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </>
+    );
+  }
+  function Comparition() {
+    return null;
+  }
+  // function DataLoading() {
+  //   if (reportType === "balancesheet") {
+  //     return <BalanceScheet />;
+  //   } else if (reportType === "comparison") {
+  //     return <Comparition />;
+  //   }
+  // }
   return (
     <>
-      <div className="row">
+      <div className="row inner-top-search">
+        <Filter
+          filters={filterBuilder(
+            [
+              {
+                type: "AC",
+                data: "PERIOD",
+                initalStates: "TMTD",
+                dependent: ["Range"],
+              },
+              {
+                type: "DH|RANGE",
+                data: "Range",
+                initalStates: rangeDate,
+              },
+            ],
+            filter
+          )}
+          callBack={(inputs, cb) => {
+            const {
+              CHANGEINAMOUNT,
+              CHANGEINPERCENTAGE,
+              PREVIOUSRANGE,
+              RANGE,
+            } = inputs;
+            setRangeDate(RANGE);
+            setPrevDateRange(PREVIOUSRANGE);
+            setChangeInPercentage(CHANGEINPERCENTAGE);
+            setChangeInAccount(CHANGEINAMOUNT);
+            setStopLoading(cb);
+            setPreview((result) => {
+              return !result;
+            });
+            // console.log("inputs", inputs);
+          }}
+          triggerUpdate={triggerUpdate}
+        />
+      </div>
+      {/* <div className="row">
         <div className="col-12 reportHeaderAction">
           <span>
             <i
@@ -142,7 +287,7 @@ export default function BalanceSheet({
             />
           </span>
         </div>
-      </div>
+      </div> */}
 
       {/* <AlgaehButton
         onClick={() => loadBalanceSheet(true)}
@@ -176,55 +321,24 @@ export default function BalanceSheet({
           }}
         />
       </div> */}
-      <div ref={createPrintObject}>
-        <div className="financeReportHeader">
-          <div>
-            {organization_name}
-            {/* Twareat Medica.l Centre */}
-          </div>
-          <div>
-            {address1}, {address2}
-            {/* Al Fanar Mall، 1 Street, Ar Rawabi, Al Khobar 34421, Saudi Arabia */}
-          </div>
-          <hr></hr>
 
-          <h3>Balance Sheet</h3>
+      {/* <div ref={createPrintObject}>
+        <ReportHeader
+          title={`Balance Sheet ${
+            reportType === "comparison" ? "Comparison" : ""
+          }`}
+        />
 
-          <p>
-            As on: <b>{moment(dates[0]).format("D/M/Y")}</b> to{" "}
-            <b>{moment(dates[1]).format("D/M/Y")}</b>
-          </p>
-        </div>
-        <div className="reportBodyArea">
-          <Row gutter={[8, 8]}>
-            <Col span={layout.col}>
-              <div className="reportTableStyle">
-                <ul className="treeListUL">
-                  {PlotUI(data["liabilities"], style, [0], layout.expand)}
-                </ul>
-              </div>
-            </Col>{" "}
-            <Col span={layout.col}>
-              <div className="reportTableStyle">
-                <ul className="treeListUL">
-                  {PlotUI(data["asset"], style, [0], layout.expand)}
-                </ul>
-              </div>
-            </Col>
-          </Row>
-        </div>
-        <div className="reportTotalArea">
-          <table style={{ width: "100%" }}>
-            <tbody>
-              <tr className="footerTotalArea">
-                <td style={{ width: "100%" }} valign="top">
-                  <b> {null}</b>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
+        <DataLoading />
+      </div> */}
+      <ReportLayout
+        title={`Balance Sheet ${
+          reportType === "comparison" ? "Comparison" : ""
+        }`}
+        columns={columns}
+        data={data}
+        layout={layout}
+      />
     </>
   );
 }

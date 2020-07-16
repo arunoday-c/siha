@@ -44,7 +44,7 @@ export default function ReportMain({
       return <Cashflow layout={layout} dates={dates} />;
 
     default:
-      return null;
+      return <h1>No Report Linked</h1>;
   }
 }
 

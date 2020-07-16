@@ -410,7 +410,7 @@ export default {
       _mysql
         .executeQuery({
           query:
-            "select * FROM hims_d_inventory_item_master IM inner join hims_d_services S on S.hims_d_services_id = IM.service_id \
+            "select * FROM hims_d_inventory_item_master IM left join hims_d_services S on S.hims_d_services_id = IM.service_id \
             where IM.record_status='A'" +
             _strQry +
             " order by hims_d_inventory_item_master_id desc;",

@@ -64,7 +64,8 @@ const {
   addSickLeave,
   getSickLeave,
   getActiveEncounters,
-  updateAllergy
+  updateAllergy,
+  deleteAllergy
 } = workBenchModels;
 const { releaseConnection } = utils;
 
@@ -251,6 +252,19 @@ export default () => {
   api.put(
     "/updateAllergy",
     updateAllergy,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    }
+  );
+
+  api.delete(
+    "/deleteAllergy",
+    deleteAllergy,
     (req, res, next) => {
       let result = req.records;
       res.status(httpStatus.ok).json({

@@ -2,11 +2,12 @@ import React, { memo, useEffect, useState } from "react";
 import {
   Spin,
   AlgaehMessagePop,
-  AlgaehTable,
+  // AlgaehTable,
   Empty,
 } from "algaeh-react-components";
 import moment from "moment";
 import { newAlgaehApi } from "../../../hooks";
+import PrintLayout from "../printlayout";
 export default memo(function (props) {
   const { display_column_by, from_date, to_date } = props;
   const [columns, setColumns] = useState([]);
@@ -120,13 +121,15 @@ export default memo(function (props) {
       {columns.length === 0 ? (
         <Empty description="No data to show." />
       ) : (
-        <AlgaehTable
-          className="reportGridPlain"
-          columns={columns}
-          data={data}
-          row_unique_id="child_id"
-          expandAll={true}
-        />
+        <PrintLayout title="Cash Flow" columns={columns} data={data} />
+        // <AlgaehTable
+        //   className="reportGridPlain"
+        //   columns={columns}
+        //   data={data}
+        //   row_unique_id="child_id"
+        //   expandAll={true}
+        //   pagination={false}
+        // />
       )}
     </Spin>
   );

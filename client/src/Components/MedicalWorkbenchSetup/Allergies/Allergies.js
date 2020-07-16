@@ -15,8 +15,9 @@ import { getCookie } from "../../../utils/algaehApiCall.js";
 import {
     changeTexts,
     onchangegridcol,
-    insertLabAnalytes,
-    updateLabAnalytes
+    insertAllergy,
+    updateAllergy,
+    deleteAllergy
 } from "./AllergiesEvent";
 import Options from "../../../Options.json";
 import moment from "moment";
@@ -45,13 +46,26 @@ class LabAnalyte extends Component {
             this.props.allallergies === undefined ||
             this.props.allallergies.length === 0
         ) {
-            this.props.getAllAllergies({
-                uri: "/doctorsWorkBench/getAllAllergies",
+            this.props.getAllergyDetails({
+                uri: "/doctorsWorkBench/getAllergyDetails",
                 method: "GET",
-                cancelRequestId: "getAllAllergies",
+                cancelRequestId: "getAllergyDetails",
                 redux: {
                     type: "ALL_ALLERGIES",
                     mappingName: "allallergies"
+                }
+            });
+        }
+        if (
+            this.props.userdrtails === undefined ||
+            this.props.userdrtails.length === 0
+        ) {
+            this.props.getUserDetails({
+                uri: "/algaehappuser/selectAppUsers",
+                method: "GET",
+                redux: {
+                    type: "USER_DETAILS_GET_DATA",
+                    mappingName: "userdrtails"
                 }
             });
         }
@@ -118,7 +132,7 @@ class LabAnalyte extends Component {
 
                     <div className="col-lg-2 align-middle" style={{ paddingTop: 19 }}>
                         <button
-                            onClick={insertLabAnalytes.bind(this, this)}
+                            onClick={insertAllergy.bind(this, this)}
                             className="btn btn-primary"
                         >
                             Add to List
@@ -173,8 +187,7 @@ class LabAnalyte extends Component {
                                                         }}
                                                     />
                                                 );
-                                            },
-                                            others: { maxWidth: 150 }
+                                            }
                                         },
                                         {
                                             fieldName: "allergy_name",
@@ -269,16 +282,12 @@ class LabAnalyte extends Component {
                                                 : this.props.allallergies
                                     }}
                                     isEditable={true}
-                                    actions={{
-                                        allowDelete: false
-                                    }}
                                     filter={true}
                                     paging={{ page: 0, rowsPerPage: 10 }}
                                     events={{
-                                        //onDelete: deleteLabAnalytes.bind(this, this),
+                                        onDelete: deleteAllergy.bind(this, this),
                                         onEdit: row => { },
-
-                                        onDone: updateLabAnalytes.bind(this, this)
+                                        onDone: updateAllergy.bind(this, this)
                                     }}
                                 />
                             </div>
@@ -300,7 +309,8 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
     return bindActionCreators(
         {
-            getAllAllergies: AlgaehActions
+            getAllergyDetails: AlgaehActions,
+            getUserDetails: AlgaehActions
         },
         dispatch
     );

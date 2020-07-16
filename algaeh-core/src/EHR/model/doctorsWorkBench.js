@@ -661,8 +661,8 @@ let updateAllergy = (req, res, next) => {
     _mysql
       .executeQuery({
         query:
-          "update hims_d_allergy set allergy_type = ?, allergy_name = ?,updated_by = ? updated_date=? \
-          where hims_d_allergy_id+?",
+          "update hims_d_allergy set allergy_type = ?, allergy_name = ?,updated_by = ?, updated_date=? \
+          where hims_d_allergy_id=?",
         values: [
           input.allergy_type,
           input.allergy_name,
@@ -670,6 +670,7 @@ let updateAllergy = (req, res, next) => {
           new Date(),
           input.hims_d_allergy_id,
         ],
+        printQuery: true
       })
       .then((result) => {
         _mysql.releaseConnection();
@@ -689,38 +690,36 @@ let updateAllergy = (req, res, next) => {
 //created by irfan:  to get allergic details
 let getAllergyDetails = (req, res, next) => {
   const _mysql = new algaehMysql({ path: keyPath });
-
-  // debugFunction("getAllergyDetails");
   try {
-    // if (req.db == null) {
-    //   next(httpStatus.dataBaseNotInitilizedError());
-    // }
-    // let db = req.db;
 
-    // db.getConnection((error, connection) => {
-    //   if (error) {
-    //     releaseDBConnection(db, connection);
-    //     next(error);
-    //   }
-
-    //   connection.query(
     _mysql
       .executeQuery({
-        query: "SELECT * FROM hims_d_allergy",
-        //          (error, results) => {
-        //         releaseDBConnection(db, connection);
-        //         if (error) {
-        //           next(error);
-        //         }
-        //         debugLog("Results fetched");
-        //         req.records = results;
-        //         next();
-        //       });
-        //     });
-        //   } catch (e) {
-        //     next(e);
-        //   }
-        // };
+        query: "SELECT * FROM hims_d_allergy where record_status='A' order by hims_d_allergy_id desc",
+      })
+      .then((result) => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch((error) => {
+        _mysql.releaseConnection();
+        next(error);
+      });
+  } catch (e) {
+    _mysql.releaseConnection();
+    next(e);
+  }
+};
+
+let deleteAllergy = (req, res, next) => {
+  const _mysql = new algaehMysql({ path: keyPath });
+  try {
+
+    _mysql
+      .executeQuery({
+        query: "DELETE from hims_d_allergy where hims_d_allergy_id=?",
+        values: [req.body.hims_d_allergy_id],
+        printQuery: true
       })
       .then((result) => {
         _mysql.releaseConnection();
@@ -739,29 +738,11 @@ let getAllergyDetails = (req, res, next) => {
 
 //created by irfan:  to add chronical conditions
 let addChronicalConditions = (req, res, next) => {
-  // let ChronicalConditionsModel = {
-  //   hims_d_chronic_conditions_id: null,
-  //   name: null,
-  //   created_by: null,
-  //   updated_by: null,
-  // };
   const _mysql = new algaehMysql({ path: keyPath });
   let input = req.body;
 
-  // debugFunction("addChronicalConditions");
   try {
-    // if (req.db == null) {
-    //   next(httpStatus.dataBaseNotInitilizedError());
-    // }
-    // let db = req.db;
-    // let input = extend(ChronicalConditionsModel, req.body);
-    // db.getConnection((error, connection) => {
-    //   if (error) {
-    //     releaseDBConnection(db, connection);
-    //     next(error);
-    //   }
 
-    //   connection.query(
     _mysql
       .executeQuery({
         query:
@@ -773,22 +754,6 @@ let addChronicalConditions = (req, res, next) => {
           req.userIdentity.algaeh_d_app_user_id,
           req.userIdentity.algaeh_d_app_user_id,
         ],
-
-        //         (error, results) => {
-        //           releaseDBConnection(db, connection);
-        //           if (error) {
-        //             next(error);
-        //           }
-        //           debugLog("Results are recorded...");
-        //           req.records = results;
-        //           next();
-        //         }
-        //       );
-        //     });
-        //   } catch (e) {
-        //     next(e);
-        //   }
-        // };
       })
       .then((result) => {
         _mysql.releaseConnection();
@@ -808,38 +773,10 @@ let addChronicalConditions = (req, res, next) => {
 let getChronicalConditions = (req, res, next) => {
   const _mysql = new algaehMysql({ path: keyPath });
 
-  // debugFunction("getChronicalConditions");
   try {
-    // if (req.db == null) {
-    //   next(httpStatus.dataBaseNotInitilizedError());
-    // }
-    // let db = req.db;
-
-    // db.getConnection((error, connection) => {
-    //   if (error) {
-    //     releaseDBConnection(db, connection);
-    //     next(error);
-    //   }
-
-    //   connection.query(
     _mysql
       .executeQuery({
         query: "SELECT * FROM hims_d_chronic_conditions;",
-        //         (error, results) => {
-        //           releaseDBConnection(db, connection);
-        //           if (error) {
-        //             next(error);
-        //           }
-        //           debugLog("Results fetched");
-        //           req.records = results;
-        //           next();
-        //         }
-        //       );
-        //     });
-        //   } catch (e) {
-        //     next(e);
-        //   }
-        // };
       })
       .then((result) => {
         _mysql.releaseConnection();
@@ -858,31 +795,11 @@ let getChronicalConditions = (req, res, next) => {
 
 //created by irfan:  to add encounter review
 let addEncounterReview = (req, res, next) => {
-  // let EncounterReviewMOdel = {
-  //   hims_f_encounter_review_id: null,
-  //   encounter_id: null,
-  //   review_header_id: null,
-  //   review_details_id: null,
-  //   created_by: null,
-  //   updated_by: null,
-  // };
+
   const _mysql = new algaehMysql({ path: keyPath });
-  // let input = req.body;
 
-  // debugFunction("addEncounterReview");
   try {
-    // if (req.db == null) {
-    //   next(httpStatus.dataBaseNotInitilizedError());
-    // }
-    // let db = req.db;
     let input = extend(EncounterReviewMOdel, req.body);
-    // db.getConnection((error, connection) => {
-    //   if (error) {
-    //     releaseDBConnection(db, connection);
-    //     next(error);
-    //   }
-
-    //   connection.query(
     _mysql
       .executeQuery({
         query:
@@ -896,22 +813,7 @@ let addEncounterReview = (req, res, next) => {
           req.userIdentity.algaeh_d_app_user_id,
           req.userIdentity.algaeh_d_app_user_id,
           req.userIdentity.hospital_id,
-        ],
-        //         (error, results) => {
-        //           releaseDBConnection(db, connection);
-        //           if (error) {
-        //             next(error);
-        //           }
-        //           debugLog("Results are recorded...");
-        //           req.records = results;
-        //           next();
-        //         }
-        //       );
-        //     });
-        //   } catch (e) {
-        //     next(e);
-        //   }
-        // };
+        ]
       })
       .then((result) => {
         _mysql.releaseConnection();
@@ -3277,5 +3179,6 @@ export default {
   getSummaryFollowUp,
   addSickLeave,
   getSickLeave,
-  updateAllergy
+  updateAllergy,
+  deleteAllergy
 };

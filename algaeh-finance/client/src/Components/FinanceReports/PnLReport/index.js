@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import {
   AlgaehMessagePop,
   AlgaehButton,
@@ -6,12 +6,14 @@ import {
 } from "algaeh-react-components";
 import ByYear from "./pandLYear";
 import ByCostCenter from "./pandLCostCenter";
+import Comparision from "./comparision";
 import PnLTree from "./PnLTree";
 import { newAlgaehApi } from "../../../hooks";
 import { getYears } from "../../../utils/GlobalFunctions";
 import { handleFile } from "../FinanceReportEvents";
+import Filter from "../filter";
+import moment from "moment";
 const yearList = getYears();
-
 export default function PnLReport({
   layout,
   finOptions,
@@ -21,51 +23,92 @@ export default function PnLReport({
 }) {
   const [columnType, setColumnType] = useState("by_year");
   const [year, setYear] = useState(new Date().getFullYear());
+  const [previousYear, setPreviousYear] = useState([]);
+  const [changeInPercentage, setChangeInPercentage] = useState("N");
+  const [changeInAmount, setChangeInAmount] = useState("N");
   const [costCenters, setCostCenters] = useState([]);
+  const [triggerUpdate, setTriggerUpdate] = useState(false);
+  const [stopLoading, setStopLoading] = useState(undefined);
+  const [isExcel, setExcel] = useState(false);
   const [branch_id, setBranchID] = useState(finOptions.default_branch_id);
   const [cost_center_id, setCostCenterId] = useState(
     finOptions.default_cost_center_id
   );
+  const [preview, setPreview] = useState(false);
   const [data, setData] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [filter, setFilter] = useState([]);
 
   useEffect(() => {
-    if (branch_id) {
-      const [required] = organization.filter(
-        (el) => el.hims_d_hospital_id === parseInt(branch_id, 10)
-      );
-      setCostCenters(required.cost_centers);
-      const { filterKey } = selectedFilter;
-      setColumnType(filterKey);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [branch_id, selectedFilter]);
+    let isMounted = true;
 
-  function handleDropDown(_, value, name) {
-    switch (name) {
-      case "branch_id":
-        setBranchID(value);
-        break;
-      case "cost_center_id":
-        setCostCenterId(value);
-        break;
-      case "year":
-        setYear(value);
-        break;
-      case "columnType":
-        setData(null);
-        setColumnType(value);
-        break;
-      default:
-        break;
+    if (branch_id) {
+      const { filterKey } = selectedFilter;
+      if (filterKey !== undefined) {
+        if (isMounted) {
+          setColumnType(filterKey);
+          const newFilter = [];
+          if (filterKey === "comparison") {
+            newFilter.push({
+              type: "DH|RANGE",
+              data: "PREVIOUS RANGE",
+              maxDate: moment(),
+            });
+            newFilter.push({
+              type: "CH",
+              data: "Change in amount",
+            });
+            newFilter.push({
+              type: "CH",
+              data: "Change in percentage",
+            });
+            setFilter(newFilter);
+          } else {
+            setFilter([]);
+          }
+
+          setTriggerUpdate((result) => {
+            return !result;
+          });
+        }
+      }
+      onChangingBranch(branch_id, isMounted);
+    }
+  }, [selectedFilter]);
+
+  function onChangingBranch(branchId, isMounted) {
+    const bId = branchId === undefined ? branch_id : branchId;
+
+    const [required] = organization.filter(
+      (el) => el.hims_d_hospital_id === parseInt(bId, 10)
+    );
+    if (isMounted) {
+      const cstCenter = required.cost_centers;
+      setCostCenters(cstCenter);
+      const center = cstCenter.find(
+        (f) => f.cost_center_id === finOptions.default_cost_center_id
+      );
+      if (center === undefined) {
+        setCostCenterId(undefined);
+      }
+      // setTriggerUpdate((result) => {
+      //   return !result;
+      // });
     }
   }
 
-  function handleResponse(response, excel) {
+  useEffect(() => {
+    if (cost_center_id === undefined) {
+      return;
+    }
+    onLoad();
+  }, [preview]);
+
+  function handleResponse(response, excel, dataType) {
+    dataType = dataType || "result";
     if (excel) {
       handleFile(response.data, columnType);
     } else {
-      setData(response.data.result);
+      setData(response.data[dataType]);
     }
   }
 
@@ -93,10 +136,10 @@ export default function PnLReport({
     })
       .then((response) => {
         handleResponse(response, excel);
-        setLoading(false);
+        if (typeof stopLoading === "function") stopLoading();
       })
       .catch((error) => {
-        setLoading(false);
+        if (typeof stopLoading === "function") stopLoading();
         AlgaehMessagePop({
           type: "error",
           display: error,
@@ -125,10 +168,10 @@ export default function PnLReport({
     })
       .then((response) => {
         handleResponse(response, excel);
-        setLoading(false);
+        if (typeof stopLoading === "function") stopLoading();
       })
       .catch((error) => {
-        setLoading(false);
+        if (typeof stopLoading === "function") stopLoading();
         AlgaehMessagePop({
           type: "error",
           display: error,
@@ -159,177 +202,201 @@ export default function PnLReport({
     })
       .then((response) => {
         handleResponse(response, excel);
-        setLoading(false);
+        if (typeof stopLoading === "function") stopLoading();
+        // setLoading(false);
       })
       .catch((error) => {
-        setLoading(false);
+        // setLoading(false);
+        if (typeof stopLoading === "function") stopLoading();
         AlgaehMessagePop({
           type: "error",
           display: error,
         });
       });
   }
+  function loadByComaprison(excel) {
+    let extraHeaders = {};
+    let others = {};
+    if (excel) {
+      extraHeaders = {
+        Accept: "blob",
+      };
+      others = { responseType: "blob" };
+      excel = true;
+    }
+    let from_date = undefined;
+    let to_date = undefined;
+    let prev_from_date = undefined;
+    let prev_to_date = undefined;
+    if (Array.isArray(year)) {
+      if (year.length > 0) {
+        from_date = year[0].format("YYYY-MM-DD");
+        if (year.length === 1) to_date = year[1].format("YYYY-MM-DD");
+      }
+    }
+    if (Array.isArray(previousYear)) {
+      if (previousYear.length > 0) {
+        prev_from_date = previousYear[0].format("YYYY-MM-DD");
+        prev_to_date = previousYear[1].format("YYYY-MM-DD");
+      }
+    }
 
-  function onLoad(e) {
-    const name = e.target.getAttribute("data-name");
-    const isExcel = name === "excel";
-    setLoading(true);
+    newAlgaehApi({
+      uri: "/pl_comparison/getPlComparison",
+      module: "finance",
+      data: {
+        from_date,
+        to_date,
+        prev_from_date,
+        prev_to_date,
+        change_in_percent: changeInPercentage,
+        change_in_amount: changeInAmount,
+      },
+      extraHeaders,
+      options: others,
+    })
+      .then((response) => {
+        handleResponse(response, excel, "records");
+        if (typeof stopLoading === "function") stopLoading();
+      })
+      .catch((error) => {
+        if (typeof stopLoading === "function") stopLoading();
+        AlgaehMessagePop({
+          type: "error",
+          display: error,
+        });
+      });
+  }
+  function onLoad() {
+    const { filterKey } = selectedFilter;
+    console.log("columnType", columnType);
+    console.log("filterKey", filterKey);
     if (columnType === "by_year") {
       loadReportByYear(isExcel);
     } else if (columnType === "by_center") {
       loadByCostCenter(isExcel);
     } else if (columnType === "total") {
       loadByTotal(isExcel);
+    } else if (columnType === undefined && filterKey === "comparison") {
+      loadByComaprison(isExcel);
     } else {
-      return;
+      return null;
     }
   }
 
-  // function loadExcel() {
-  //   if (columnType) {
-  //     downloadExcel({
-  //       selected: columnType,
-  //       inputParam: {
-  //         hospital_id: branch_id,
-  //         cost_center_id: cost_center_id,
-  //         year: year
-  //       }
-  //     })
-  //       .then(response => {
-  //         handleFile(response.data, columnType);
-  //       })
-  //       .catch(error => {
-  //         const { message } = error;
-  //         AlgaehMessagePop({
-  //           type: "error",
-  //           display: message !== "" ? message : error.data.message
-  //         });
-  //       });
-  //   }
-  // }
-
   function Content() {
-    switch (columnType) {
+    let colType = columnType;
+    const { filterKey } = selectedFilter;
+    if (columnType === undefined && filterKey === "comparison") {
+      colType = "comparison";
+    }
+    switch (colType) {
       case "by_year":
         return <ByYear data={data} layout={layout} />;
       case "by_center":
         return <ByCostCenter data={data} layout={layout} />;
       case "total":
         return <PnLTree data={data} layout={layout} style={style} />;
+      case "comparison":
+        return <Comparision data={data} layout={layout} />;
       default:
+        return null;
         break;
     }
   }
-
+  function onloadReport(inputs, cb) {
+    const {
+      BASEDON,
+      BRANCH,
+      COSTCENTER,
+      PERIOD,
+      YEAR,
+      CHANGEINPERCENTAGE,
+      CHANGEINAMOUNT,
+      PREVIOUSRANGE,
+    } = inputs;
+    setBranchID(BRANCH);
+    setColumnType(BASEDON);
+    setCostCenterId(COSTCENTER);
+    setYear(YEAR);
+    setStopLoading(cb);
+    setPreviousYear(PREVIOUSRANGE);
+    setChangeInPercentage(CHANGEINPERCENTAGE);
+    setChangeInAmount(CHANGEINAMOUNT);
+    setPreview((result) => {
+      return !result;
+    });
+  }
+  function filterBuilder(existing, updated) {
+    const newFilter = existing.concat(updated);
+    return newFilter;
+  }
   return (
     <>
-      {/* <Button onClick={loadExcel}>Excel</Button> */}
-
       <div className="row inner-top-search">
-        <AlgaehAutoComplete
-          div={{ className: "col-3" }}
-          label={{
-            forceLabel: "Branch",
-            isImp: true,
-          }}
-          selector={{
-            value: String(branch_id),
-            name: "branch_id",
-            dataSource: {
-              data: organization,
-              valueField: "hims_d_hospital_id",
-              textField: "hospital_name",
-            },
-            onChange: handleDropDown,
-          }}
-        />
-        <AlgaehAutoComplete
-          div={{ className: "col-2" }}
-          label={{
-            forceLabel: "Cost Center",
-            isImp: true,
-          }}
-          selector={{
-            name: "cost_center_id",
-            value: String(cost_center_id),
-            dataSource: {
-              data: costCenters,
-              valueField: "cost_center_id",
-              textField: "cost_center",
-            },
-            onChange: handleDropDown,
-          }}
-        />
-        <AlgaehAutoComplete
-          div={{ className: "col-2" }}
-          label={{
-            forceLabel: "Year",
-            isImp: true,
-          }}
-          selector={{
-            name: "year",
-            value: year,
-            dataSource: {
-              data: yearList,
-              valueField: "value",
-              textField: "name",
-            },
-            onChange: handleDropDown,
-          }}
-        />
-        <AlgaehAutoComplete
-          div={{ className: "col-2" }}
-          label={{
-            forceLabel: "Based on",
-            isImp: true,
-          }}
-          selector={{
-            name: "columnType",
-            value: columnType,
-            dataSource: {
-              data: [
-                {
-                  name: "Period",
-                  value: "by_year",
+        <Filter
+          filters={filterBuilder(
+            [
+              {
+                type: "AC",
+                data: {
+                  dataSource: {
+                    data: organization,
+                    valueField: "hims_d_hospital_id",
+                    textField: "hospital_name",
+                  },
                 },
-                {
-                  name: "Cost Center",
-                  value: "by_center",
+                title: "Branch",
+                initalStates: String(branch_id),
+                onChange: (value) => {
+                  onChangingBranch(value, true);
                 },
-                {
-                  name: "Total",
-                  value: "total",
+              },
+              {
+                type: "AC",
+                data: "PERIOD",
+                initalStates: "TMTD",
+                dependent: ["RANGE"],
+              },
+              {
+                type: "DH|RANGE",
+                data: "YEAR",
+                title: "RANGE",
+                maxDate: moment(),
+                initalStates: [moment().startOf("month"), moment()],
+              },
+              {
+                type: "AC",
+                data: {
+                  dataSource: {
+                    data: costCenters,
+                    valueField: "cost_center_id",
+                    textField: "cost_center",
+                  },
                 },
-              ],
-              valueField: "value",
-              textField: "name",
-            },
-            onChange: handleDropDown,
+                title: "COST CENTER",
+                initalStates:
+                  cost_center_id !== undefined
+                    ? String(cost_center_id)
+                    : cost_center_id,
+              },
+              {
+                type: "AC",
+                data: "BASEDON",
+                title: "Based on",
+                initalStates:
+                  columnType === "comparison" ? undefined : columnType,
+              },
+            ],
+            filter
+          )}
+          callBack={(inputs, cb) => {
+            onloadReport(inputs, cb);
           }}
+          triggerUpdate={triggerUpdate}
         />
-        <div className="col-2">
-          {" "}
-          <AlgaehButton
-            className="btn btn-primary"
-            onClick={onLoad}
-            disabled={!columnType}
-            data-name="preview"
-            loading={loading}
-            style={{ marginTop: 16 }}
-          >
-            Preview
-          </AlgaehButton>
-        </div>
-        {/* <AlgaehButton
-          className="btn btn-default"
-       
-          name="excel"
-          style={{ marginTop: 15 }}
-        >
-          Download Excel
-        </AlgaehButton> */}
       </div>
-      <div className="row">
+      {/* <div className="row">
         <div className="col-12 reportHeaderAction">
           <span>
             <i
@@ -340,7 +407,7 @@ export default function PnLReport({
             />
           </span>
         </div>
-      </div>
+      </div> */}
       {!data ? (
         <div style={{ textAlign: "center" }}>
           <i
