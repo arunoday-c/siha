@@ -212,7 +212,7 @@ export const getPrepaymentRequests = (req, res, next) => {
     .executeQuery({
       query:
         "select finance_f_prepayment_request_id, prepayment_type_id,prepayment_desc,\
-      employee_id,employee_code start_period, end_period, prepayment_amount, start_date, end_date\
+      employee_id,employee_code , prepayment_amount, start_date, end_date\
       from finance_f_prepayment_request PR  inner join finance_d_prepayment_type P \
       on PR.prepayment_type_id=P.finance_d_prepayment_type_id\
       left join hims_d_employee E on PR.employee_id=E.hims_d_employee_id ;",
@@ -266,7 +266,7 @@ export const getPrepaymentRequestToAuthorize = (req, res, next) => {
       _mysql
         .executeQuery({
           query: `select finance_f_prepayment_request_id, prepayment_type_id,prepayment_desc,\
-        employee_id,employee_code start_period, end_period, prepayment_amount, start_date, end_date\
+        employee_id,employee_code , prepayment_amount, start_date, end_date\
         from finance_f_prepayment_request PR  inner join finance_d_prepayment_type P \
         on PR.prepayment_type_id=P.finance_d_prepayment_type_id\
         left join hims_d_employee E on PR.employee_id=E.hims_d_employee_id where request_status='P' ${str};`,
