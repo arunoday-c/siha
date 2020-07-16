@@ -8,7 +8,8 @@ export default function ToolBar({ selected, layoutDispatch, layout }) {
         <li>
           <Tooltip title="Change Layout" placement="left">
             <Button
-              icon="layout"
+              // icon="layout"
+              icon={<i className="fas fa-object-ungroup"></i>}
               size="large"
               disabled={!selected}
               onClick={() => layoutDispatch({ type: "switchCol" })}
@@ -19,7 +20,8 @@ export default function ToolBar({ selected, layoutDispatch, layout }) {
           <li>
             <Tooltip title="Expand" placement="left">
               <Button
-                icon="arrows-alt"
+                // icon="arrows-alt"
+                icon={<i className="fas fa-expand"></i>}
                 size="large"
                 disabled={!selected}
                 onClick={() => layoutDispatch({ type: "expand" })}
@@ -30,7 +32,8 @@ export default function ToolBar({ selected, layoutDispatch, layout }) {
           <li>
             <Tooltip title="Shrink" placement="left">
               <Button
-                icon="shrink"
+                // icon="shrink"
+                icon={<i className="fas fa-compress"></i>}
                 size="large"
                 disabled={!selected}
                 onClick={() => layoutDispatch({ type: "collapse" })}

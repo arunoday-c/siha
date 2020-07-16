@@ -7,7 +7,7 @@ import {
 } from "algaeh-react-components";
 import { Spin } from "antd";
 import { newAlgaehApi } from "../../hooks";
-import ToolBar from "./ToolBar";
+// import ToolBar from "./ToolBar";
 import ReportNavBar from "./ReportNavBar";
 import {
   // getBalanceSheet,
@@ -16,7 +16,9 @@ import {
 } from "./FinanceReportEvents";
 import ReportMain from "./ReportMain";
 import "./financeReportStyle.scss";
-
+import ReportsMenu from "./reportsmenu";
+import "./FinanceStandardReports/antTableCustomStyle.scss";
+import { OrganizationContext } from "./context";
 function layoutReducer(state, action) {
   switch (action.type) {
     case "singleCol":
@@ -40,6 +42,7 @@ export default function FinanceReports() {
   const [selected, setSelected] = useState("BS");
   const [selectedFilter, setSelectedFilter] = useState({});
   const [organization, setOrganization] = useState([]);
+  const [organizationDetail, setOrganizationDetail] = useState({});
   const [layout, layoutDispatch] = useReducer(layoutReducer, {
     cols: 24,
     expand: true,
@@ -59,8 +62,13 @@ export default function FinanceReports() {
             uri: "/finance_masters/getFinanceOption",
             module: "finance",
           }),
+          newAlgaehApi({
+            uri: "/organization/getMainOrganization",
+            method: "GET",
+          }),
         ]);
         setOrganization(results[0].data.result);
+        setOrganizationDetail(results[2].data.records);
         const finOpts = results[1].data.result[0];
         setFinOptions(finOpts);
         setLoading(false);
@@ -112,16 +120,25 @@ export default function FinanceReports() {
         });
       });
   }
-
+  function getReportName() {
+    const reportT = ReportsMenu.find((f) => f.key === selected);
+    if (reportT !== undefined) {
+      return reportT.title;
+    } else {
+      return "";
+    }
+  }
   if (finOptions && dates) {
     return (
       <div className="row">
         <div className="col-12">
           <div className="row ">
             <ReportNavBar
+              REPORT_LIST={ReportsMenu}
               setSelected={setSelected}
               setSelectedFilter={setSelectedFilter}
               selected={selected}
+              selectedFilter={selectedFilter}
             />
             <div className="col reportPreviewSecLeft">
               <div
@@ -129,10 +146,10 @@ export default function FinanceReports() {
                 style={{ padding: "15px 0", marginBottom: 0, border: "none" }}
               >
                 <div className="col-12">
-                  <h3>Report Name Here</h3>
+                  <h3>{getReportName()}</h3>
                   <hr></hr>
                 </div>
-                <AlgaehAutoComplete
+                {/* <AlgaehAutoComplete
                   div={{ className: "col-4" }}
                   label={{
                     forceLabel: "Select Period",
@@ -184,40 +201,41 @@ export default function FinanceReports() {
                       setDates(selected);
                     },
                   }}
-                />
+                /> */}
               </div>
 
               <div className="row">
-                {" "}
                 <Spin
                   spinning={loading}
                   tip="Please wait report data is fetching.."
                   delay={500}
                   className="abc"
                 >
-                  {selected === "TB" ? (
+                  {/* {selected === "TB" ? (
                     <i
                       className="fas fa-file-download"
                       onClick={onExportExcel}
                     />
-                  ) : null}
-                  <ReportMain
-                    selected={selected}
-                    selectedFilter={selectedFilter}
-                    dates={dates}
-                    finOptions={finOptions}
-                    layout={layout}
-                    organization={organization}
-                    downloadExcel={onExportExcel}
-                  />
+                  ) : null} */}
+                  <OrganizationContext.Provider value={{ organizationDetail }}>
+                    <ReportMain
+                      selected={selected}
+                      selectedFilter={selectedFilter}
+                      dates={dates}
+                      finOptions={finOptions}
+                      layout={layout}
+                      organization={organization}
+                      downloadExcel={onExportExcel}
+                    />
+                  </OrganizationContext.Provider>
                 </Spin>
               </div>
             </div>
-            <ToolBar
+            {/* <ToolBar
               selected={selected}
               layoutDispatch={layoutDispatch}
               layout={layout}
-            />
+            /> */}
           </div>
         </div>
       </div>

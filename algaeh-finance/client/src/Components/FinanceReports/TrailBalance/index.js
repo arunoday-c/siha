@@ -1,17 +1,17 @@
-import React, { useState, useEffect, useRef } from "react";
-import { AlgaehAutoComplete } from "algaeh-react-components";
+import React, { useState, useEffect } from "react";
+// import { AlgaehAutoComplete } from "algaeh-react-components";
 import { Spin } from "antd";
 import { newAlgaehApi } from "../../../hooks";
-import ReactToPrint from "react-to-print";
+// import ReactToPrint from "react-to-print";
 
 import TrailTable from "./TrailbalanceTable";
-import TrailTree from "./TrailBalanceTree";
+// import TrailTree from "./TrailBalanceTree";
 
 export default function TrailBalance({ layout, dates, finOptions }) {
   const [type, setType] = useState("table");
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(false);
-  const createPrintObject = useRef(undefined);
+  // const createPrintObject = useRef(undefined);
 
   useEffect(() => {
     async function getData() {
@@ -47,16 +47,17 @@ export default function TrailBalance({ layout, dates, finOptions }) {
           <TrailTable
             data={data}
             layout={layout}
-            createPrintObject={createPrintObject}
+            // createPrintObject={createPrintObject}
           />
         );
       } else {
         return (
-          <TrailTree
-            data={data}
-            layout={layout}
-            createPrintObject={createPrintObject}
-          />
+          <></>
+          // <TrailTree
+          //   data={data}
+          //   layout={layout}
+          //   createPrintObject={createPrintObject}
+          // />
         );
       }
     } else {
@@ -66,7 +67,7 @@ export default function TrailBalance({ layout, dates, finOptions }) {
 
   return (
     <>
-      <div className="row inner-top-search">
+      {/* <div className="row inner-top-search">
         <AlgaehAutoComplete
           div={{ className: "col-4" }}
           label={{
@@ -95,8 +96,8 @@ export default function TrailBalance({ layout, dates, finOptions }) {
             },
           }}
         />
-      </div>
-      <div className="row">
+      </div> */}
+      {/* <div className="row">
         <div className="col-12 reportHeaderAction">
           <span>
             <ReactToPrint
@@ -119,7 +120,7 @@ export default function TrailBalance({ layout, dates, finOptions }) {
             />
           </span>
         </div>
-      </div>
+      </div> */}
       <Spin spinning={loading}>{renderReport()}</Spin>
     </>
   );
