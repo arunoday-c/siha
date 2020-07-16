@@ -4,6 +4,8 @@ import {
   createPrepaymentTypes,
   updatePrepaymentTypes,
   deletePrepaymentTypes,
+  addPrepaymentRequest,
+  getPrepaymentRequests,
 } from "../models/prepayment";
 import utlities from "algaeh-utilities";
 
@@ -55,6 +57,26 @@ export default () => {
         .end();
     }
   );
+
+  api.post("/addPrepaymentRequest", addPrepaymentRequest, (req, res, next) => {
+    res
+      .status(utlities.AlgaehUtilities().httpStatus().ok)
+      .json({
+        success: true,
+        result: req.records,
+      })
+      .end();
+  });
+
+  api.get("/getPrepaymentRequests", getPrepaymentRequests, (req, res, next) => {
+    res
+      .status(utlities.AlgaehUtilities().httpStatus().ok)
+      .json({
+        success: true,
+        result: req.records,
+      })
+      .end();
+  });
 
   return api;
 };

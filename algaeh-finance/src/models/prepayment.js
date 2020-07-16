@@ -149,3 +149,81 @@ export const deletePrepaymentTypes = (req, res, next) => {
       next(e);
     });
 };
+
+//created by:irfan
+export const addPrepaymentRequest = (req, res, next) => {
+  const _mysql = new algaehMysql();
+
+  const input = req.body;
+
+  let project_id, sub_department_id;
+  _mysql
+    .executeQuery({
+      query: "  SELECT cost_center_type  FROM finance_options limit 1; ",
+    })
+    .then((options) => {
+      if (options[0]["cost_center_type"] == "P") {
+        project_id = input.cost_center_id;
+        sub_department_id = null;
+      } else if (options[0]["cost_center_type"] == "SD") {
+        project_id = null;
+        sub_department_id = input.cost_center_id;
+      }
+
+      _mysql
+        .executeQuery({
+          query:
+            "insert into finance_f_prepayment_request (prepayment_type_id,employee_id,prepayment_amount,start_date,\
+          end_date,hospital_id,project_id,sub_department_id,created_by,created_date)  values(?,?,?,?,?,?,?,?,?,?);  ",
+          values: [
+            input.prepayment_type_id,
+            input.employee_id,
+            input.prepayment_amount,
+            input.start_date,
+            input.end_date,
+            input.hospital_id,
+            project_id,
+            sub_department_id,
+            req.userIdentity.algaeh_d_app_user_id,
+            new Date(),
+          ],
+        })
+        .then((result) => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch((e) => {
+          _mysql.releaseConnection();
+          next(e);
+        });
+    })
+    .catch((e) => {
+      _mysql.releaseConnection();
+      next(e);
+    });
+};
+
+//created by:irfan
+export const getPrepaymentRequests = (req, res, next) => {
+  const _mysql = new algaehMysql();
+
+  _mysql
+    .executeQuery({
+      query:
+        "select finance_f_prepayment_request_id, prepayment_type_id,prepayment_desc,\
+      employee_id,employee_code start_period, end_period, prepayment_amount, start_date, end_date\
+      from finance_f_prepayment_request PR  inner join finance_d_prepayment_type P \
+      on PR.prepayment_type_id=P.finance_d_prepayment_type_id\
+      left join hims_d_employee E on PR.employee_id=E.hims_d_employee_id ;",
+    })
+    .then((result) => {
+      _mysql.releaseConnection();
+      req.records = result;
+      next();
+    })
+    .catch((e) => {
+      _mysql.releaseConnection();
+      next(e);
+    });
+};
