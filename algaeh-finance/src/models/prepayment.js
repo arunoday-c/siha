@@ -377,7 +377,7 @@ export const authorizePrepaymentRequest = (req, res, next) => {
                   VALUES (?,?,?,?,?,?,?,?,?);",
               values: [
                 new Date(),
-                data.amount,
+                data.prepayment_amount,
                 "payment",
                 finance_f_prepayment_request_id,
                 data.request_code,
