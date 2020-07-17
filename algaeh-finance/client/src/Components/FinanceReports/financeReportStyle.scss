@@ -224,7 +224,7 @@
     padding: 0 15px 15px;
     width: 100%;
     .inner-top-search {
-      padding-bottom: 15px;
+      padding: 0;
       margin-bottom: 0;
       border: none;
     }
@@ -362,4 +362,7 @@
   .footerTotal {
     background: #f3f3f3;
   }
+}
+.finCusCheckBox {
+  margin-top: 22px;
 }

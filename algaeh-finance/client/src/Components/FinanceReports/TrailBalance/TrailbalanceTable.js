@@ -55,6 +55,7 @@ export default function TrailBalaceReport({
             fieldName: "label",
             label: "Paticulars",
             filterable: true,
+            freezable: true,
           },
           {
             fieldName: "op_amount",

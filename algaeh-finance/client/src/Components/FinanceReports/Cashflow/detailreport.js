@@ -47,7 +47,11 @@ export default memo(function (props) {
                 label: column.label,
               };
             });
-            newColumns.unshift({ fieldName: "name", label: "Name" });
+            newColumns.unshift({
+              fieldName: "name",
+              label: "Name",
+              freezable: true,
+            });
             setColumns(newColumns);
             let detailsData = [];
             function getOtherObjects(netObject) {
@@ -122,14 +126,6 @@ export default memo(function (props) {
         <Empty description="No data to show." />
       ) : (
         <PrintLayout title="Cash Flow" columns={columns} data={data} />
-        // <AlgaehTable
-        //   className="reportGridPlain"
-        //   columns={columns}
-        //   data={data}
-        //   row_unique_id="child_id"
-        //   expandAll={true}
-        //   pagination={false}
-        // />
       )}
     </Spin>
   );

@@ -43,6 +43,16 @@ export function Validations(state) {
 
     document.querySelector("[name='arabic_name']").focus();
     return isError;
+  } else if (state.state.doctor_id === 0) {
+    isError = true;
+
+    swalMessage({
+      type: "warning",
+      title: "Select Visit Doctor."
+    });
+
+    document.querySelector("[name='doctor_id']").focus();
+    return isError;
   } else if (state.state.title_id <= 0) {
     isError = true;
 

@@ -119,7 +119,7 @@ const DeptselectedHandeler = ($this, context, e) => {
 export const clearBillDetails = (context, ...args) => {
   //Takes context and field names as arguements, pass whatever fields you want to keep in the state.
   const removeObj = {
-    visit_type: null,
+    // visit_type: null,
     doctor_id: null,
     sub_department_id: null,
     saveEnable: true,
@@ -186,34 +186,59 @@ const selectedHandeler = ($this, context, e) => {
               type: "error",
             });
           } else {
-            $this.setState(
-              {
-                [e.name]: e.value,
-                visittypeselect: false,
-                consultation: e.selected.consultation,
-                primary_policy_num: primary_policy_num,
-                unbalanced_amount: 0,
-              },
-              () => {
-                if (context !== null) {
-                  context.updateState({
-                    ...$this.state,
-                    primary_policy_num: primary_policy_num,
-                    unbalanced_amount: 0,
+            if (e.value === undefined) {
+              $this.setState(
+                {
+                  visit_type: null,
+                  sub_department_id: null,
+                  doctor_id: null,
+                  visittypeselect: true
+                },
+                () => {
+                  if (context !== null) {
+                    context.updateState({
+                      ...$this.state,
+                      visit_type: null,
+                      primary_policy_num: primary_policy_num,
+                      unbalanced_amount: 0,
+                    });
+                  }
+                  clearBillDetails(context);
+                }
+              );
+            } else {
+              $this.setState(
+                {
+                  [e.name]: e.value,
+                  visittypeselect: false,
+                  consultation: e.selected.consultation,
+                  primary_policy_num: primary_policy_num,
+                  unbalanced_amount: 0,
+                  sub_department_id: null,
+                  doctor_id: null
+                },
+                () => {
+                  if (context !== null) {
+                    context.updateState({
+                      ...$this.state,
+                      primary_policy_num: primary_policy_num,
+                      unbalanced_amount: 0,
+                    });
+                  }
+                  clearBillDetails(context);
+
+                  $this.props.getDepartmentsandDoctors({
+                    uri: "/department/get/get_All_Doctors_DepartmentWise",
+                    module: "masterSettings",
+                    method: "GET",
+                    redux: {
+                      type: "DEPT_DOCTOR_GET_DATA",
+                      mappingName: "deptanddoctors",
+                    },
                   });
                 }
-
-                $this.props.getDepartmentsandDoctors({
-                  uri: "/department/get/get_All_Doctors_DepartmentWise",
-                  module: "masterSettings",
-                  method: "GET",
-                  redux: {
-                    type: "DEPT_DOCTOR_GET_DATA",
-                    mappingName: "deptanddoctors",
-                  },
-                });
-              }
-            );
+              );
+            }
           }
         },
         onCatch: () => {

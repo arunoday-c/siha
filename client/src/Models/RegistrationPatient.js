@@ -2,7 +2,7 @@ import { getCookie } from "../utils/algaehApiCall";
 
 let prevLang = getCookie("Language");
 export default {
-  inputParam: function(param) {
+  inputParam: function (param) {
     var output;
     const CurrentDate = new Date();
     output = {
@@ -19,7 +19,7 @@ export default {
       religion_id: null,
       date_of_birth: null,
       hijiri_date: null,
-      age: null,
+      age: 0,
       marital_status: null,
       address1: "",
       address2: "",
@@ -86,8 +86,8 @@ export default {
       sidBarOpen: true,
       selectedLang: prevLang,
       chnageLang: false,
-      AGEMM: null,
-      AGEDD: null,
+      AGEMM: 0,
+      AGEDD: 0,
       breadCrumbWidth: null,
       saveEnable: true,
       clearData: true,

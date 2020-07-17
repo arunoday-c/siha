@@ -10,10 +10,10 @@ const executePDF = function executePDFMethod(options) {
         ...result,
         ...{
           month: moment(result.month, "MM").format("MMMM"),
-          // total_gratutity_amount: options.currencyFormat(
-          //   result.total_gratutity_amount,
-          //   options.args.crypto
-          // ),
+          total_gratutity_amount: options.currencyFormat(
+            result.total_gratutity_amount,
+            options.args.crypto
+          ),
           gratuity_encash: options.currencyFormat(
             result.gratuity_encash,
             options.args.crypto

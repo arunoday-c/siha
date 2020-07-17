@@ -38,17 +38,20 @@ export default function BalanceSheet({
       const newFilter = [];
       if (filterKey === "comparison") {
         newFilter.push({
+          className: "col-3 form-group",
           type: "DH|RANGE",
           data: "PREVIOUS RANGE",
           maxDate: moment(),
         });
         newFilter.push({
+          className: "col-2 formgroup finCusCheckBox",
           type: "CH",
-          data: "Change in amount",
+          data: "Change in Amt.",
         });
         newFilter.push({
+          className: "col-2 formgroup finCusCheckBox",
           type: "CH",
-          data: "Change in percentage",
+          data: "Change in %",
         });
         setFilter(newFilter);
         setReportType(filterKey);
@@ -154,8 +157,8 @@ export default function BalanceSheet({
           records.push(liabilities);
 
           setColumns([
-            { fieldName: "label", label: "Ledger Name" },
-            { fieldName: "subtitle" },
+            { fieldName: "label", label: "Ledger Name", freezable: true },
+            { fieldName: "subtitle", label: "Total" },
           ]);
           setData(records);
         }
@@ -225,12 +228,14 @@ export default function BalanceSheet({
           filters={filterBuilder(
             [
               {
+                className: "col-2 form-group",
                 type: "AC",
                 data: "PERIOD",
                 initalStates: "TMTD",
                 dependent: ["Range"],
               },
               {
+                className: "col-3 form-group",
                 type: "DH|RANGE",
                 data: "Range",
                 initalStates: rangeDate,

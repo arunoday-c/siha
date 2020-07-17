@@ -428,8 +428,8 @@ export default function JournalVoucher() {
   const gridTree = (row, record) => {
     return (
       <AlgaehTreeSearch
-        div={{}}
-        label={{}}
+        // div={{}}
+        // label={{}}
         tree={{
           treeDefaultExpandAll: true,
           onChange: (value, label) => {
@@ -462,8 +462,8 @@ export default function JournalVoucher() {
   const PaymentInput = (row, record) => {
     return (
       <AlgaehAutoComplete
-        div={{}}
-        label={{}}
+        // div={{}}
+        // label={{}}
         selector={{
           value: row,
           dataSource: {
@@ -712,9 +712,10 @@ export default function JournalVoucher() {
                     },
                   ]}
                   loading={false}
-                  isEditable="onlyDelete"
+                  // isEditable="onlyDelete"
                   height="34vh"
                   data={journerList}
+                  isEditable={"deleteOnly"}
                   rowUnique="slno"
                   // xaxis={1500}
                   events={{
