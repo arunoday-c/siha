@@ -192,7 +192,6 @@ export default memo(function (props) {
           className="btn btn-primary"
           onClick={onPreviewClick}
           loading={loading}
-          style={{ marginTop: 18 }}
         >
           Preview
         </AlgaehButton>

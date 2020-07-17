@@ -37,10 +37,15 @@ export default function ({
         }"
             />
           </span> */}
-
-          <button className="btn btn-other btn-sm">Download as Excel</button>
-          <button className="btn btn-other btn-sm">Download as PDF</button>
-          <button className="btn btn-other btn-sm">Print</button>
+          <span>
+            <i className="fas fa-print" />
+          </span>
+          <span>
+            <i className="fas fa-file-excel" />
+          </span>{" "}
+          <span>
+            <i className="fas fa-file-pdf" />
+          </span>{" "}
         </div>
       </div>
 

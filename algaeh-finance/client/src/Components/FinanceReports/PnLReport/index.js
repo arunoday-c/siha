@@ -49,19 +49,20 @@ export default function PnLReport({
           const newFilter = [];
           if (filterKey === "comparison") {
             newFilter.push({
+              className: "col-3 form-group",
               type: "DH|RANGE",
               data: "PREVIOUS RANGE",
               maxDate: moment(),
             });
             newFilter.push({
-              className: "col-2",
+              className: "col-2 formgroup finCusCheckBox",
               type: "CH",
-              data: "Change in amount",
+              data: "Change in Amt.",
             });
             newFilter.push({
-              className: "col-2",
+              className: "col-2 formgroup finCusCheckBox",
               type: "CH",
-              data: "Change in percentage",
+              data: "Change in %",
             });
             setFilter(newFilter);
           } else {
@@ -340,7 +341,7 @@ export default function PnLReport({
           filters={filterBuilder(
             [
               {
-                className: "col-2",
+                className: "col-2 form-group",
                 type: "AC",
                 data: {
                   dataSource: {
@@ -356,14 +357,14 @@ export default function PnLReport({
                 },
               },
               {
-                className: "col-2",
+                className: "col-2 form-group",
                 type: "AC",
                 data: "PERIOD",
                 initalStates: "TMTD",
                 dependent: ["RANGE"],
               },
               {
-                className: "col-3",
+                className: "col-3 form-group",
                 type: "DH|RANGE",
                 data: "YEAR",
                 title: "RANGE",
@@ -371,7 +372,7 @@ export default function PnLReport({
                 initalStates: [moment().startOf("month"), moment()],
               },
               {
-                className: "col-2",
+                className: "col-2 form-group",
                 type: "AC",
                 data: {
                   dataSource: {
@@ -387,7 +388,7 @@ export default function PnLReport({
                     : cost_center_id,
               },
               {
-                className: "col-2",
+                className: "col-2 form-group",
                 type: "AC",
                 data: "BASEDON",
                 title: "Based on",
