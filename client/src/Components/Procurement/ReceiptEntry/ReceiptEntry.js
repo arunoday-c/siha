@@ -298,7 +298,7 @@ class ReceiptEntry extends Component {
                   disabled={this.state.dataExitst}
                   events={{
                     onChange: datehandle.bind(this, this),
-                    onBlur: dateValidate.bind(this, this)
+                    // onBlur: dateValidate.bind(this, this)
                   }}
                   value={this.state.invoice_date}
                 />

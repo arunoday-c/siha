@@ -169,33 +169,49 @@ export const addPrepaymentRequest = (req, res, next) => {
         project_id = null;
         sub_department_id = input.cost_center_id;
       }
-
+      const voucher_type = "PAYMENT";
       _mysql
-        .executeQuery({
-          query:
-            "insert into finance_f_prepayment_request (prepayment_type_id,employee_id,prepayment_amount,start_date,\
-          end_date,hospital_id,project_id,sub_department_id,created_by,created_date)  values(?,?,?,?,?,?,?,?,?,?);  ",
-          values: [
-            input.prepayment_type_id,
-            input.employee_id,
-            input.prepayment_amount,
-            input.start_date,
-            input.end_date,
-            input.hospital_id,
-            project_id,
-            sub_department_id,
-            req.userIdentity.algaeh_d_app_user_id,
-            new Date(),
-          ],
+        .generateRunningNumber({
+          user_id: req.userIdentity.algaeh_d_app_user_id,
+          numgen_codes: [voucher_type],
+          table_name: "finance_numgen",
         })
-        .then((result) => {
-          _mysql.releaseConnection();
-          req.records = result;
-          next();
+        .then((numgen) => {
+          _mysql
+            .executeQuery({
+              query:
+                "insert into finance_f_prepayment_request (prepayment_type_id,request_code,employee_id,prepayment_amount,start_date,\
+          end_date,hospital_id,project_id,sub_department_id,created_by,created_date)  values(?,?,?,?,?,?,?,?,?,?,?);  ",
+              values: [
+                input.prepayment_type_id,
+                numgen[voucher_type],
+                input.employee_id,
+                input.prepayment_amount,
+                input.start_date,
+                input.end_date,
+                input.hospital_id,
+                project_id,
+                sub_department_id,
+                req.userIdentity.algaeh_d_app_user_id,
+                new Date(),
+              ],
+            })
+            .then((result) => {
+              _mysql.commitTransaction(() => {
+                _mysql.releaseConnection();
+                req.records = result;
+                next();
+              });
+            })
+            .catch((e) => {
+              _mysql.releaseConnection();
+              next(e);
+            });
         })
         .catch((e) => {
-          _mysql.releaseConnection();
-          next(e);
+          _mysql.rollBackTransaction(() => {
+            next(e);
+          });
         });
     })
     .catch((e) => {
@@ -285,4 +301,203 @@ export const getPrepaymentRequestToAuthorize = (req, res, next) => {
       _mysql.releaseConnection();
       next(e);
     });
+};
+
+//created by:irfan
+export const authorizePrepaymentRequest = (req, res, next) => {
+  const _mysql = new algaehMysql();
+
+  let { auth_status, finance_f_prepayment_request_id } = req.body;
+
+  if (auth_status == "A") {
+    _mysql
+      .executeQuery({
+        query: `select finance_f_prepayment_request_id, prepayment_type_id,prepayment_head_id,prepayment_child_id,
+          P.prepayment_duration , prepayment_amount, start_date, end_date,
+          coalesce(prepayment_amount/P.prepayment_duration,0) as amount,request_code,
+          project_id,sub_department_id,hospital_id
+          from finance_f_prepayment_request PR  inner join finance_d_prepayment_type P 
+          on PR.prepayment_type_id=P.finance_d_prepayment_type_id where 
+          PR.finance_f_prepayment_request_id=? and PR.request_status='P' for update;
+          select finance_accounts_maping_id,account,head_id,child_id from 
+          finance_accounts_maping  where account='cash' limit 1;`,
+        values: [finance_f_prepayment_request_id],
+      })
+      .then((result) => {
+        if (result[0].length > 0) {
+          let data = result[0][0];
+          let cash = result[1][0];
+          let dateStart = moment(data.start_date);
+          let dateEnd = moment(data.end_date);
+
+          const detail_Array = [];
+          while (dateEnd >= dateStart) {
+            detail_Array.push({
+              year: dateStart.format("YYYY"),
+              month_id: dateStart.format("M"),
+              amount: data.amount,
+              prepayment_request_id: finance_f_prepayment_request_id,
+            });
+            dateStart.add(1, "month");
+          }
+
+          const EntriesArray = [];
+          EntriesArray.push({
+            payment_date: new Date(),
+            head_id: cash.head_id,
+            child_id: cash.child_id,
+            debit_amount: 0,
+            payment_type: "CR",
+            credit_amount: data.prepayment_amount,
+            hospital_id: data.hospital_id,
+            project_id: data.project_id,
+            sub_department_id: data.sub_department_id,
+          });
+
+          EntriesArray.push({
+            payment_date: new Date(),
+            head_id: data.prepayment_head_id,
+            child_id: data.prepayment_child_id,
+            debit_amount: data.prepayment_amount,
+            payment_type: "DR",
+            credit_amount: 0,
+            hospital_id: data.hospital_id,
+            project_id: data.project_id,
+            sub_department_id: data.sub_department_id,
+          });
+
+          let narration = `Prepayment of amount:${data.prepayment_amount}-${data.request_code}`;
+
+          _mysql
+            .executeQueryWithTransaction({
+              query:
+                "INSERT INTO finance_day_end_header (transaction_date,amount,voucher_type,document_id,\
+                  document_number,from_screen,narration,entered_by,entered_date) \
+                  VALUES (?,?,?,?,?,?,?,?,?);",
+              values: [
+                new Date(),
+                amount,
+                "payment",
+                finance_f_prepayment_request_id,
+                data.request_code,
+                "FINPREPAY",
+                narration,
+                req.userIdentity.algaeh_d_app_user_id,
+                new Date(),
+              ],
+              printQuery: true,
+            })
+            .then((header_result) => {
+              const month = moment().format("M");
+              const year = moment().format("YYYY");
+              const IncludeValuess = [
+                "payment_date",
+                "head_id",
+                "child_id",
+                "debit_amount",
+                "payment_type",
+                "credit_amount",
+                "hospital_id",
+                "project_id",
+                "sub_department_id",
+              ];
+
+              _mysql
+                .executeQueryWithTransaction({
+                  query:
+                    "INSERT INTO finance_day_end_sub_detail (??) VALUES ? ;",
+                  values: EntriesArray,
+                  includeValues: IncludeValuess,
+                  bulkInsertOrUpdate: true,
+                  extraValues: {
+                    year: year,
+                    month: month,
+                    day_end_header_id: header_result.insertId,
+                  },
+                  printQuery: true,
+                })
+                .then((subResult) => {
+                  const Inscolumns = [
+                    "prepayment_request_id",
+                    "amount",
+                    "year",
+                    "month",
+                  ];
+
+                  _mysql
+                    .executeQueryWithTransaction({
+                      query:
+                        "INSERT INTO finance_f_prepayment_detail (??) VALUES ? ;",
+                      values: detail_Array,
+                      includeValues: Inscolumns,
+                      bulkInsertOrUpdate: true,
+
+                      printQuery: true,
+                    })
+                    .then((detailResult) => {
+                      _mysql
+                        .executeQueryWithTransaction({
+                          query:
+                            "update finance_f_prepayment_request set request_status='A' where finance_f_prepayment_request_id=? and request_status='P';",
+                          values: [finance_f_prepayment_request_id],
+
+                          printQuery: true,
+                        })
+                        .then((updte) => {
+                          _mysql.commitTransaction(() => {
+                            _mysql.releaseConnection();
+                            req.records = updte;
+                            next();
+                          });
+                        })
+                        .catch((error) => {
+                          _mysql.rollBackTransaction(() => {
+                            next(error);
+                          });
+                        });
+                    })
+                    .catch((error) => {
+                      _mysql.rollBackTransaction(() => {
+                        next(error);
+                      });
+                    });
+                })
+                .catch((error) => {
+                  _mysql.rollBackTransaction(() => {
+                    next(error);
+                  });
+                });
+            })
+            .catch((error) => {
+              _mysql.rollBackTransaction(() => {
+                next(error);
+              });
+            });
+        } else {
+          next(new Error("No record found"));
+        }
+      })
+      .catch((e) => {
+        _mysql.releaseConnection();
+        next(e);
+      });
+  } else if (auth_status == "R") {
+    _mysql
+      .executeQuery({
+        query:
+          "update finance_f_prepayment_request set request_status='R' where finance_f_prepayment_request_id=? and request_status='P';",
+        values: [finance_f_prepayment_request_id],
+      })
+      .then((result) => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch((e) => {
+        _mysql.releaseConnection();
+        next(e);
+      });
+  } else {
+    next(new Error("Please provide valid input"));
+  }
 };
