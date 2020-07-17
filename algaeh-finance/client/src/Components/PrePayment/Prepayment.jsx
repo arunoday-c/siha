@@ -2,7 +2,7 @@ import React, { createContext, useEffect, useState, useReducer } from "react";
 import "./PrePayment.scss";
 import { PrepaymentMaster } from "./PrepaymentMaster";
 import { PrepaymentRequest } from "./PrepaymentRequest";
-import { PrepaymentList } from "./PrepaymentList";
+import { PrepaymentAuthList } from "./PrepaymentAuthList";
 import { PrepaymentProcess } from "./PrepaymentProcess";
 import { newAlgaehApi } from "../../hooks";
 import {
@@ -118,7 +118,7 @@ export default function PrePayment() {
                     }}
                   />
                 ),
-                children: <PrepaymentList />,
+                children: <PrepaymentAuthList />,
                 componentCode: "PRE_PAY_LST",
               },
               {

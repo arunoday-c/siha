@@ -1,39 +1,39 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
-  AlgaehFormGroup,
+  //   AlgaehFormGroup,
   AlgaehDateHandler,
   AlgaehAutoComplete,
   AlgaehDataGrid,
-  AlgaehMessagePop,
+  //   AlgaehTreeSearch,
+  //   AlgaehMessagePop,
+  //   AlgaehButton,
   Spin,
 } from "algaeh-react-components";
 import moment from "moment";
 import { Controller, useForm } from "react-hook-form";
 import { PrePaymentContext } from "../Prepayment";
-import { newAlgaehApi } from "../../../hooks";
+import { newAlgaehApi } from "../../../hooks/";
 
-export function PrepaymentRequest() {
+export function PrepaymentAuthList() {
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(true);
   const { branchAndCenters, prePaymentTypes, employees } = useContext(
     PrePaymentContext
   );
-
-  useEffect(() => {
-    getRequest().then(() => {
-      setLoading(false);
-    });
-  }, []);
-
   const { control, errors, handleSubmit, setValue, watch } = useForm({
     shouldFocusError: true,
   });
 
-  const getRequest = async () => {
+  useEffect(() => {
+    getRequestForAuth({}).then(() => setLoading(false));
+  }, []);
+
+  const getRequestForAuth = async (data) => {
     try {
       const res = await newAlgaehApi({
-        uri: "/prepayment/getPrepaymentRequests",
+        uri: "/prepayment/getPrepaymentRequestToAuthorize",
         module: "finance",
+        data,
       });
       if (res.data.success) {
         setRequests(res.data.result);
@@ -46,37 +46,6 @@ export function PrepaymentRequest() {
     }
   };
 
-  const addRequest = async (data) => {
-    try {
-      const res = await newAlgaehApi({
-        uri: "/prepayment/addPrepaymentRequest",
-        method: "POST",
-        data: {
-          ...data,
-          start_date: moment(data.start_date).format("YYYY-MM-DD"),
-          end_date: moment(data.end_date).format("YYYY-MM-DD"),
-        },
-        module: "finance",
-      });
-      if (res.data.success) {
-        getRequest();
-        AlgaehMessagePop({
-          type: "success",
-          display: "Request Added successfully",
-        });
-      }
-    } catch (e) {
-      AlgaehMessagePop({
-        type: "success",
-        display: e.message,
-      });
-    }
-  };
-
-  const onSubmit = (e) => {
-    addRequest(e);
-  };
-
   const { hospital_id: ihospital, prepayment_type_id } = watch([
     "hospital_id",
     "prepayment_type_id",
@@ -85,12 +54,11 @@ export function PrepaymentRequest() {
   return (
     <Spin spinning={loading}>
       <div>
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form onSubmit={handleSubmit(getRequestForAuth)}>
           <div className="row inner-top-search">
             <Controller
               control={control}
               name="hospital_id"
-              rules={{ required: "Please select a branch" }}
               render={({ onBlur, onChange, value }) => (
                 <AlgaehAutoComplete
                   div={{ className: "col-2 form-group" }}
@@ -101,6 +69,11 @@ export function PrepaymentRequest() {
                   selector={{
                     value,
                     onChange: (_, selected) => {
+                      onChange(selected);
+                      setValue("employee_id", null);
+                      setValue("cost_center_id", null);
+                    },
+                    onClear: (_, selected) => {
                       onChange(selected);
                       setValue("employee_id", null);
                       setValue("cost_center_id", null);
@@ -119,7 +92,6 @@ export function PrepaymentRequest() {
             <Controller
               control={control}
               name="cost_center_id"
-              rules={{ required: "Please select a cost center" }}
               render={({ onBlur, onChange, value }) => (
                 <AlgaehAutoComplete
                   div={{ className: "col-2 form-group" }}
@@ -158,7 +130,6 @@ export function PrepaymentRequest() {
             <Controller
               control={control}
               name="prepayment_type_id"
-              rules={{ required: "Please select a type" }}
               render={({ value, onChange, onBlur }) => (
                 <AlgaehAutoComplete
                   div={{ className: "col-2 form-group" }}
@@ -191,68 +162,10 @@ export function PrepaymentRequest() {
             {errors.prepayment_type_id && (
               <span>{errors.prepayment_type_id.message}</span>
             )}
-            <Controller
-              name="employee_id"
-              control={control}
-              rules={{ required: "Please select an employee" }}
-              render={({ value, onBlur, onChange }) => (
-                <AlgaehAutoComplete
-                  div={{ className: "col-2 form-group " }}
-                  label={{
-                    forceLabel: "Employee",
-                    isImp: true,
-                  }}
-                  selector={{
-                    value,
-                    onChange: (_, selected) => {
-                      onChange(selected);
-                    },
-                    onBlur: (_, selected) => {
-                      onBlur(selected);
-                    },
-                    name: "employee_id",
-                    dataSource: {
-                      data: ihospital
-                        ? employees.filter(
-                            (item) => item.hospital_id === ihospital
-                          )
-                        : employees,
-                      textField: "full_name",
-                      valueField: "hims_d_employee_id",
-                    },
-                  }}
-                />
-              )}
-            />
-            {errors.employee_id && <span>{errors.employee_id.message}</span>}
-            <Controller
-              control={control}
-              rules={{ required: "Please enter an amount" }}
-              name="prepayment_amount"
-              render={(props) => (
-                <AlgaehFormGroup
-                  div={{
-                    className: "col-2 form-group algaeh-text-fld",
-                  }}
-                  label={{
-                    forceLabel: "Prepayment Amt.",
-                    isImp: true,
-                  }}
-                  textBox={{
-                    ...props,
-                    type: "text",
-                    className: "form-control",
-                  }}
-                />
-              )}
-            />
-            {errors.prepayment_amount && (
-              <span>{errors.prepayment_amount.message}</span>
-            )}
+
             <Controller
               name="start_date"
               control={control}
-              rules={{ required: "Please select a start date" }}
               render={({ value, onChange }) => (
                 <AlgaehDateHandler
                   div={{
@@ -270,18 +183,20 @@ export function PrepaymentRequest() {
                     onChange: (mdate) => {
                       if (mdate) {
                         onChange(mdate._d);
-                        const prepayItem = prePaymentTypes.filter(
-                          (item) =>
-                            item.finance_d_prepayment_type_id ===
-                            prepayment_type_id
-                        );
-                        setValue(
-                          "end_date",
-                          moment(mdate).add(
-                            prepayItem[0].prepayment_duration,
-                            "months"
-                          )._d
-                        );
+                        if (prepayment_type_id) {
+                          const prepayItem = prePaymentTypes.filter(
+                            (item) =>
+                              item.finance_d_prepayment_type_id ===
+                              prepayment_type_id
+                          );
+                          setValue(
+                            "end_date",
+                            moment(mdate).add(
+                              prepayItem[0].prepayment_duration,
+                              "months"
+                            )._d
+                          );
+                        }
                       } else {
                         onChange(undefined);
                         setValue("end_date", undefined);
@@ -292,7 +207,7 @@ export function PrepaymentRequest() {
                       setValue("end_date", undefined);
                     },
                   }}
-                  others={{ disabled: !prepayment_type_id }}
+                  // others={{ disabled: !prepayment_type_id }}
                   // maxDate={moment().add(1, "days")}
                 />
               )}
@@ -314,7 +229,19 @@ export function PrepaymentRequest() {
                     value: props.value,
                     className: "form-control",
                   }}
-                  others={{ disabled: true }}
+                  events={{
+                    onChange: (mdate) => {
+                      if (mdate) {
+                        onChange(mdate._d);
+                      } else {
+                        onChange(undefined);
+                      }
+                    },
+                    onClear: () => {
+                      onChange(undefined);
+                    },
+                  }}
+                  // others={{ disabled: true }}
                   // maxDate={moment().add(1, "days")}
                 />
               )}
@@ -325,7 +252,7 @@ export function PrepaymentRequest() {
                 className="btn btn-primary bttn-sm"
                 style={{ marginTop: 19 }}
               >
-                Add to list
+                Filter
               </button>
             </div>
           </div>
@@ -335,7 +262,7 @@ export function PrepaymentRequest() {
             <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-title">
                 <div className="caption">
-                  <h3 className="caption-subject">Prepayment Request List</h3>
+                  <h3 className="caption-subject">Prepayment Auth List</h3>
                 </div>
                 <div className="actions"></div>
               </div>
@@ -343,13 +270,9 @@ export function PrepaymentRequest() {
                 <AlgaehDataGrid
                   columns={[
                     {
-                      fieldName: "employee_id",
+                      fieldName: "employee_code",
                       label: "Employee Code",
                       sortable: true,
-                      displayTemplate: (row) =>
-                        employees.filter(
-                          (item) => item.hims_d_employee_id === row.employee_id
-                        )[0].employee_code,
                     },
                     {
                       fieldName: "employee_id",
@@ -359,17 +282,6 @@ export function PrepaymentRequest() {
                         employees.filter(
                           (item) => item.hims_d_employee_id === row.employee_id
                         )[0].full_name,
-                    },
-                    {
-                      fieldName: "prepayment_type_id",
-                      label: "Prepayment Type",
-                      sortable: true,
-                      displayTemplate: (row) =>
-                        prePaymentTypes.filter(
-                          (item) =>
-                            item.finance_d_prepayment_type_id ===
-                            row.prepayment_type_id
-                        )[0].prepayment_desc,
                     },
                     {
                       fieldName: "prepayment_amount",
@@ -388,9 +300,10 @@ export function PrepaymentRequest() {
                     },
                   ]}
                   loading={false}
+                  // isEditable="onlyDelete"
                   height="34vh"
                   data={requests}
-                  pagination={true}
+                  rowUnique="prePayDesc"
                   events={{}}
                   others={{}}
                 />
