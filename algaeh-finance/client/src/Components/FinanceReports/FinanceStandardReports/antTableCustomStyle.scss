@@ -19,7 +19,7 @@
   border: 1px solid #dedede;
   max-height: 35vh !important;
   table {
-    min-width: calc(100vw - 70px) !important;
+    // min-width: calc(100vw - 70px) !important;
     thead {
       th {
         background: #fff !important;
@@ -37,6 +37,7 @@
         z-index: 999 !important;
         border-right: 1px solid #d3d3d3 !important;
         text-align: left !important;
+        min-width: 250px !important;
       }
     }
     tbody {
@@ -55,7 +56,7 @@
         }
       }
       td.fixed {
-        min-width: 210px !important;
+        min-width: 250px !important;
         // background: #edfffd !important;
         border-right: 1px solid #d3d3d3 !important;
         .pointer {
