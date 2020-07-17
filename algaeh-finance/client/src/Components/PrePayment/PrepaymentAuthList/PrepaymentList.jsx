@@ -5,7 +5,7 @@ import {
   AlgaehAutoComplete,
   AlgaehDataGrid,
   //   AlgaehTreeSearch,
-  //   AlgaehMessagePop,
+  AlgaehMessagePop,
   //   AlgaehButton,
   Spin,
 } from "algaeh-react-components";
@@ -216,7 +216,7 @@ export function PrepaymentAuthList() {
             <Controller
               name="end_date"
               control={control}
-              render={(props) => (
+              render={({ onChange, value }) => (
                 <AlgaehDateHandler
                   div={{
                     className: "col-2 algaeh-date-fld form-group",
@@ -226,7 +226,7 @@ export function PrepaymentAuthList() {
                     isImp: true,
                   }}
                   textBox={{
-                    value: props.value,
+                    value: value,
                     className: "form-control",
                   }}
                   events={{
