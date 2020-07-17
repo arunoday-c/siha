@@ -90,9 +90,11 @@ class EOSGratuity extends Component {
       remarks: "",
       saveDisabled: true,
       sendPaymentButton: true,
+
       gratuity_done: false,
       gratuity_encash: 0,
       actual_maount: 0,
+      disableCheckbox: false,
     });
   }
 
@@ -120,6 +122,7 @@ class EOSGratuity extends Component {
           remarks: "",
           saveDisabled: true,
           sendPaymentButton: true,
+
           gratuity_done: false,
           gratuity_encash: 0,
           actual_maount: 0,
@@ -261,6 +264,7 @@ class EOSGratuity extends Component {
                 entitled_amount: res.data.result.entitled_amount,
                 saveDisabled: false,
                 // sendPaymentButton: false,
+
                 gratuity_done: false,
                 actual_maount: res.data.result.actual_maount,
                 gratuity_encash: res.data.result.gratuity_encash,
@@ -284,6 +288,7 @@ class EOSGratuity extends Component {
                 remarks: res.data.result.remarks,
                 gratuity_status: res.data.result.gratuity_status,
                 forfeitChecked: res.data.result.gratuity_status === "FOR",
+                disableCheckbox: true,
               });
             }
           }
@@ -719,6 +724,7 @@ class EOSGratuity extends Component {
                                   type="checkbox"
                                   onChange={this.changeChecks.bind(this)}
                                   checked={this.state.forfeitChecked}
+                                  disabled={this.state.disableCheckbox}
                                 />
                                 <span>Forfeiture</span>
                               </label>
@@ -781,8 +787,7 @@ class EOSGratuity extends Component {
               </AlgaehSecurityElement>
 
               <AlgaehSecurityElement elementCode="READ_ONLY_ACCESS">
-                {this.state.gratuity_status != null ||
-                this.state.gratuity_status != "" ? (
+                {EosData.gratuity_status ? (
                   <button
                     type="button"
                     className="btn btn-other"
