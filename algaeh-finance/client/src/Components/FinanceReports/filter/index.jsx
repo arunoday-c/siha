@@ -187,14 +187,16 @@ export default memo(function (props) {
             break;
         }
       })}
-      <AlgaehButton
-        className="btn btn-primary"
-        onClick={onPreviewClick}
-        loading={loading}
-        style={{ marginTop: 16 }}
-      >
-        Preview
-      </AlgaehButton>
+      <div className="col">
+        <AlgaehButton
+          className="btn btn-primary"
+          onClick={onPreviewClick}
+          loading={loading}
+          style={{ marginTop: 18 }}
+        >
+          Preview
+        </AlgaehButton>
+      </div>
     </>
   );
 });

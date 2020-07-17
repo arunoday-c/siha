@@ -143,65 +143,12 @@ export default function FinanceReports() {
             <div className="col reportPreviewSecLeft">
               <div
                 className="row inner-top-search"
-                style={{ padding: "15px 0", marginBottom: 0, border: "none" }}
+                style={{ padding: "15px 0 0", marginBottom: 0, border: "none" }}
               >
                 <div className="col-12">
                   <h3>{getReportName()}</h3>
-                  <hr></hr>
+                  <hr style={{ margin: "0 0 10px" }} />
                 </div>
-                {/* <AlgaehAutoComplete
-                  div={{ className: "col-4" }}
-                  label={{
-                    forceLabel: "Select Period",
-                    isImp: true,
-                  }}
-                  selector={{
-                    name: "period",
-                    value: period,
-                    dataSource: {
-                      data: [
-                        {
-                          name: "This month",
-                          value: "TM",
-                        },
-                        {
-                          name: "This Month till Date",
-                          value: "TMTD",
-                        },
-                        {
-                          name: "Last month",
-                          value: "LM",
-                        },
-                        {
-                          name: "Current Year",
-                          value: "CY",
-                        },
-                        {
-                          name: "Current Yeat till Date",
-                          value: "CYTD",
-                        },
-                      ],
-                      valueField: "value",
-                      textField: "name",
-                    },
-                    onChange: (_, value) => {
-                      setPeriod(value);
-                    },
-                  }}
-                />
-                <AlgaehDateHandler
-                  div={{ className: "col-4" }}
-                  label={{ forceLabel: "Selected Range" }}
-                  type="range"
-                  textBox={{
-                    value: dates,
-                  }}
-                  events={{
-                    onChange: (selected) => {
-                      setDates(selected);
-                    },
-                  }}
-                /> */}
               </div>
 
               <div className="row">

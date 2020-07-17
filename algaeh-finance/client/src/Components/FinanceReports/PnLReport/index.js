@@ -54,10 +54,12 @@ export default function PnLReport({
               maxDate: moment(),
             });
             newFilter.push({
+              className: "col-2",
               type: "CH",
               data: "Change in amount",
             });
             newFilter.push({
+              className: "col-2",
               type: "CH",
               data: "Change in percentage",
             });
@@ -338,6 +340,7 @@ export default function PnLReport({
           filters={filterBuilder(
             [
               {
+                className: "col-2",
                 type: "AC",
                 data: {
                   dataSource: {
@@ -353,12 +356,14 @@ export default function PnLReport({
                 },
               },
               {
+                className: "col-2",
                 type: "AC",
                 data: "PERIOD",
                 initalStates: "TMTD",
                 dependent: ["RANGE"],
               },
               {
+                className: "col-3",
                 type: "DH|RANGE",
                 data: "YEAR",
                 title: "RANGE",
@@ -366,6 +371,7 @@ export default function PnLReport({
                 initalStates: [moment().startOf("month"), moment()],
               },
               {
+                className: "col-2",
                 type: "AC",
                 data: {
                   dataSource: {
@@ -381,6 +387,7 @@ export default function PnLReport({
                     : cost_center_id,
               },
               {
+                className: "col-2",
                 type: "AC",
                 data: "BASEDON",
                 title: "Based on",
@@ -396,18 +403,7 @@ export default function PnLReport({
           triggerUpdate={triggerUpdate}
         />
       </div>
-      {/* <div className="row">
-        <div className="col-12 reportHeaderAction">
-          <span>
-            <i
-              className="fas fa-file-download"
-              onClick={onLoad}
-              disabled={!columnType}
-              data-name="excel"
-            />
-          </span>
-        </div>
-      </div> */}
+
       {!data ? (
         <div style={{ textAlign: "center" }}>
           <i
