@@ -53,28 +53,6 @@ function PLYear({ data, layout }) {
         footer: true,
       }}
     />
-    // <>
-    //   <ReportHeader title="Profit & Loss by Month" />
-    //   {incomeExpenceData.length ? (
-    //     <>
-    //       <AlgaehTable
-    //         className="reportGridPlain"
-    //         // height="65vh"
-    //         columns={columns}
-    //         data={columns.length === 0 ? [] : incomeExpenceData}
-    //         footer={true}
-    //         // isFiltable={true}
-    //         aggregate={(field) => {
-    //           return totals[field];
-    //         }}
-    //         expandAll={layout.expand}
-    //         pagination={false}
-    //       />
-    //     </>
-    //   ) : (
-    //     <></>
-    //   )}
-    // </>
   );
 }
 

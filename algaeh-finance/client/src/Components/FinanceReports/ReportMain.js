@@ -47,23 +47,3 @@ export default function ReportMain({
       return <h1>No Report Linked</h1>;
   }
 }
-
-// case "PL":
-//   return (
-//     <Balance
-//       data={data}
-//       layout={layout}
-//       result={["income", "expense"]}
-//       footer={result => <div>Profit : {result.profit}</div>}
-//     />
-//   );
-// case "PLCost":
-//   return <PandLCostCenter />;
-// case "PLYear":
-//   return (
-//     <PLYear
-//       default_branch_id={finOptions.default_branch_id}
-//       default_cost_center_id={finOptions.default_cost_center_id}
-//       organization={organization}
-//     />
-// );

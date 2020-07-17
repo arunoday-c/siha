@@ -154,8 +154,8 @@ export default function BalanceSheet({
           records.push(liabilities);
 
           setColumns([
-            { fieldName: "label", label: "Ledger Name" },
-            { fieldName: "subtitle" },
+            { fieldName: "label", label: "Ledger Name", freezable: true },
+            { fieldName: "subtitle", label: "Total" },
           ]);
           setData(records);
         }
