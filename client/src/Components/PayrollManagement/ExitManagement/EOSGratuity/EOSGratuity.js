@@ -749,21 +749,23 @@ class EOSGratuity extends Component {
             <div className="col-4 leftBtnGroup">
               {" "}
               <AlgaehSecurityElement elementCode="READ_ONLY_ACCESS">
-                {!this.state.sendPaymentButton ? (
-                  <button
-                    type="button"
-                    className="btn btn-other"
-                    onClick={this.saveEos.bind(this)}
-                    disabled={this.state.sendPaymentButton}
-                  >
-                    <AlgaehLabel
-                      label={{
-                        forceLabel: "Send for payment",
-                        returnText: true,
-                      }}
-                    />
-                  </button>
-                ) : null}
+                {
+                  (this.state.gratuity_status = "PEN" ? (
+                    <button
+                      type="button"
+                      className="btn btn-other"
+                      onClick={this.saveEos.bind(this)}
+                      // disabled={this.state.sendPaymentButton}
+                    >
+                      <AlgaehLabel
+                        label={{
+                          forceLabel: "Send for payment",
+                          returnText: true,
+                        }}
+                      />
+                    </button>
+                  ) : null)
+                }
               </AlgaehSecurityElement>
             </div>
             <div className="col-8">
