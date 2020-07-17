@@ -171,21 +171,22 @@ class AddConsultationForm extends Component {
                               : this.state.clearEnable
                         },
                         onChange: selectedHandeler.bind(this, this, context),
-                        onClear: () => {
-                          this.setState(
-                            {
-                              visit_type: null,
-                              sub_department_id: null,
-                              doctor_id: null,
-                              visittypeselect: true
-                            },
-                            () => {
-                              if (context !== null) {
-                                clearBillDetails(context);
-                              }
-                            }
-                          );
-                        }
+                        onClear: selectedHandeler.bind(this, this, context),
+                        // () => {
+                        //   this.setState(
+                        //     {
+                        //       visit_type: null,
+                        //       sub_department_id: null,
+                        //       doctor_id: null,
+                        //       visittypeselect: true
+                        //     },
+                        //     () => {
+                        //       if (context !== null) {
+                        //         clearBillDetails(context);
+                        //       }
+                        //     }
+                        //   );
+                        // }
                       }}
                     />
 
