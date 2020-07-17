@@ -212,7 +212,7 @@ export const getPrepaymentRequests = (req, res, next) => {
     .executeQuery({
       query:
         "select finance_f_prepayment_request_id, prepayment_type_id,prepayment_desc,\
-      employee_id,employee_code start_period, end_period, prepayment_amount, start_date, end_date\
+      employee_id,employee_code , prepayment_amount, start_date, end_date\
       from finance_f_prepayment_request PR  inner join finance_d_prepayment_type P \
       on PR.prepayment_type_id=P.finance_d_prepayment_type_id\
       left join hims_d_employee E on PR.employee_id=E.hims_d_employee_id ;",
@@ -221,6 +221,65 @@ export const getPrepaymentRequests = (req, res, next) => {
       _mysql.releaseConnection();
       req.records = result;
       next();
+    })
+    .catch((e) => {
+      _mysql.releaseConnection();
+      next(e);
+    });
+};
+
+//created by:irfan
+export const getPrepaymentRequestToAuthorize = (req, res, next) => {
+  const _mysql = new algaehMysql();
+
+  const input = req.query;
+
+  let str = "";
+
+  if (input.hospital_id > 0) {
+    str += ` and PR.hospital_id=${input.hospital_id}`;
+  }
+
+  if (input.prepayment_type_id > 0) {
+    str += ` and PR.prepayment_type_id=${input.prepayment_type_id}`;
+  }
+
+  _mysql
+    .executeQuery({
+      query: "  SELECT cost_center_type  FROM finance_options limit 1; ",
+    })
+    .then((options) => {
+      if (input.cost_center_id > 0) {
+        if (options[0]["cost_center_type"] == "P") {
+          str += ` and PR.project_id=${input.cost_center_id}`;
+        } else if (options[0]["cost_center_type"] == "SD") {
+          str += ` and PR.sub_department_id=${input.cost_center_id}`;
+        }
+      }
+
+      if (input.start_date && input.end_date) {
+        str += ` and (
+          (PR.start_date between date('${input.start_date}') and  date('${input.end_date}')) or
+          (PR.end_date between date('${input.start_date}') and  date('${input.end_date}')) or 
+          (  date('${input.start_date}')  between PR.start_date and  PR.end_date  )) `;
+      }
+      _mysql
+        .executeQuery({
+          query: `select finance_f_prepayment_request_id, prepayment_type_id,prepayment_desc,\
+        employee_id,employee_code , prepayment_amount, start_date, end_date\
+        from finance_f_prepayment_request PR  inner join finance_d_prepayment_type P \
+        on PR.prepayment_type_id=P.finance_d_prepayment_type_id\
+        left join hims_d_employee E on PR.employee_id=E.hims_d_employee_id where request_status='P' ${str};`,
+        })
+        .then((result) => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch((e) => {
+          _mysql.releaseConnection();
+          next(e);
+        });
     })
     .catch((e) => {
       _mysql.releaseConnection();
