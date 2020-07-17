@@ -12,20 +12,18 @@ import {
   Spin,
 } from "algaeh-react-components";
 
-export const PrePaymentContext = createContext({
-  branch: [],
-  costCenter: [],
+const intialState = {
+  branchAndCenters: [],
   prePaymentTypes: [],
   employees: [],
-});
+};
+
+export const PrePaymentContext = createContext(intialState);
 
 function reducer(state, action) {
   switch (action.type) {
-    case "SET_BRANCH":
-      return { ...state, branch: action.payload };
-
-    case "SET_COSTCENTER":
-      return { ...state, costCenter: action.payload };
+    case "SET_BRANCHANDCENTER":
+      return { ...state, branchAndCenters: action.payload };
 
     case "SET_PREPAYMENTTYPES":
       return { ...state, prePaymentTypes: action.payload };
@@ -38,14 +36,11 @@ function reducer(state, action) {
 }
 
 export default function PrePayment() {
-  const [state, dispatch] = useReducer(reducer, { branch: [], costCenter: [] });
+  const [state, dispatch] = useReducer(reducer, intialState);
 
   const dispatches = {
-    setBranch(data) {
-      dispatch({ type: "SET_BRANCH", payload: data });
-    },
-    setCostCenter(data) {
-      dispatch({ type: "SET_COSTCENTER", payload: data });
+    setBranchAndCenters(data) {
+      dispatch({ type: "SET_BRANCHANDCENTER", payload: data });
     },
     setPrepaymentTypes(data) {
       dispatch({ type: "SET_PREPAYMENTTYPES", payload: data });
@@ -56,16 +51,13 @@ export default function PrePayment() {
   };
 
   const [loading, setLoading] = useState(true);
+
   useEffect(() => {
     async function getData() {
       try {
         const results = await Promise.all([
           newAlgaehApi({
-            uri: `/organization/getOrganizationByUser`,
-            method: "GET",
-          }),
-          newAlgaehApi({
-            uri: "/finance_masters/getCostCenters",
+            uri: "/finance_masters/getCostCentersForVoucher",
             method: "GET",
             module: "finance",
           }),
@@ -75,18 +67,18 @@ export default function PrePayment() {
             method: "GET",
           }),
         ]);
-        const [branch, costCenters, employees] = results;
-        dispatches.setBranch(branch.data.records);
-        dispatches.setCostCenter(costCenters.data.result);
+        const [branchAndCenters, employees] = results;
+        dispatches.setBranchAndCenters(branchAndCenters.data.result);
         dispatches.setEmployees(employees.data.records);
       } catch (e) {
         AlgaehMessagePop({
-          display: "error",
-          type: e.message,
+          display: e.message,
+          type: "error",
         });
       }
     }
     getData().then(() => setLoading(false));
+    //  eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
