@@ -16,12 +16,12 @@ import AlgaehLabel from "../Wrapper/label.js";
 import {
   algaehApiCall,
   swalMessage,
-  getCookie
+  getCookie,
 } from "../../utils/algaehApiCall.js";
 
 import {
   imageToByteArray,
-  AlgaehValidation
+  AlgaehValidation,
 } from "../../utils/GlobalFunctions";
 import { setGlobal } from "../../utils/GlobalFunctions";
 import { AlgaehActions } from "../../actions/algaehActions";
@@ -38,7 +38,7 @@ class UpdatePatientDetails extends Component {
       AdvanceOpen: false,
       RefundOpen: false,
       visittypeselect: true,
-      clearEnable: false
+      clearEnable: false,
     };
   }
 
@@ -91,7 +91,7 @@ class UpdatePatientDetails extends Component {
               if (this.state.filePreview !== null) {
                 patientdata = {
                   ...this.state,
-                  patient_Image: imageToByteArray(this.state.filePreview)
+                  patient_Image: imageToByteArray(this.state.filePreview),
                 };
               } else {
                 patientdata = this.state;
@@ -113,7 +113,7 @@ class UpdatePatientDetails extends Component {
                 module: "frontDesk",
                 data: patientdata,
                 method: "PUT",
-                onSuccess: response => {
+                onSuccess: (response) => {
                   // AlgaehLoader({ show: false });
                   if (response.data.success) {
                     let _arrayImages = [];
@@ -148,7 +148,7 @@ class UpdatePatientDetails extends Component {
                       );
                     }
 
-                    Promise.all(_arrayImages).then(result => {
+                    Promise.all(_arrayImages).then((result) => {
                       AlgaehLoader({ show: false });
                       this.setState({
                         bill_number: response.data.records.bill_number,
@@ -156,28 +156,28 @@ class UpdatePatientDetails extends Component {
                         saveEnable: true,
                         insuranceYes: true,
                         sec_insuranceYes: true,
-                        ProcessInsure: true
+                        ProcessInsure: true,
                       });
 
                       swalMessage({
                         title: "Done Successfully",
-                        type: "success"
+                        type: "success",
                       });
                     });
                   }
                 },
-                onFailure: error => {
+                onFailure: (error) => {
                   AlgaehLoader({ show: false });
                   swalMessage({
                     title: error.message,
-                    type: "error"
+                    type: "error",
                   });
-                }
+                },
               });
             }
-          }
+          },
         });
-      }
+      },
     });
   }
 
@@ -195,7 +195,7 @@ class UpdatePatientDetails extends Component {
       module: "frontDesk",
       method: "GET",
       data: { patient_code: patcode },
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           let data = response.data.records;
 
@@ -215,13 +215,13 @@ class UpdatePatientDetails extends Component {
         }
         AlgaehLoader({ show: false });
       },
-      onFailure: error => {
+      onFailure: (error) => {
         AlgaehLoader({ show: false });
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -245,16 +245,18 @@ class UpdatePatientDetails extends Component {
                 <AlgaehLabel
                   label={{
                     fieldName: "form_home",
-                    align: "ltr"
+                    align: "ltr",
                   }}
                 />
-              )
+              ),
             },
             {
               pageName: (
-                <AlgaehLabel label={{ fieldName: "form_name", align: "ltr" }} />
-              )
-            }
+                <AlgaehLabel
+                  label={{ forceLabel: "Update Patient Details", align: "ltr" }}
+                />
+              ),
+            },
           ]}
           soptlightSearch={{
             label: (
@@ -265,27 +267,27 @@ class UpdatePatientDetails extends Component {
             value: this.state.patient_code,
             selectValue: "patient_code",
             events: {
-              onChange: this.getCtrlCode.bind(this)
+              onChange: this.getCtrlCode.bind(this),
             },
             jsonFile: {
               fileName: "spotlightSearch",
-              fieldName: "frontDesk.patients"
+              fieldName: "frontDesk.patients",
             },
-            searchName: "patients"
+            searchName: "patients",
           }}
           userArea={
             <div className="row">
               <div className="col">
                 <AlgaehLabel
                   label={{
-                    fieldName: "registered_date"
+                    fieldName: "registered_date",
                   }}
                 />
                 <h6>
                   {this.state.registration_date
                     ? moment(this.state.registration_date).format(
-                      Options.dateFormat
-                    )
+                        Options.dateFormat
+                      )
                     : Options.dateFormat}
                 </h6>
               </div>
@@ -322,10 +324,10 @@ class UpdatePatientDetails extends Component {
                 events: {
                   onClick: () => {
                     generateIdCard(this, this);
-                  }
-                }
-              }
-            ]
+                  },
+                },
+              },
+            ],
           }}
           selectedLang={this.state.selectedLang}
         />
@@ -333,9 +335,9 @@ class UpdatePatientDetails extends Component {
           <MyContext.Provider
             value={{
               state: this.state,
-              updateState: obj => {
+              updateState: (obj) => {
                 this.setState({ ...obj });
-              }
+              },
             }}
           >
             <div className="row">
@@ -384,7 +386,7 @@ function mapStateToProps(state) {
   return {
     patients: state.patients,
     countries: state.countries,
-    insurarProviders: state.insurarProviders
+    insurarProviders: state.insurarProviders,
   };
 }
 
@@ -393,7 +395,7 @@ function mapDispatchToProps(dispatch) {
     {
       getPatientDetails: AlgaehActions,
       getCountries: AlgaehActions,
-      getInsuranceProviders: AlgaehActions
+      getInsuranceProviders: AlgaehActions,
     },
     dispatch
   );
