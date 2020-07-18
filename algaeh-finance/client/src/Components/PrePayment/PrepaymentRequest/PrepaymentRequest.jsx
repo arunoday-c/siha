@@ -102,8 +102,8 @@ export function PrepaymentRequest() {
                     value,
                     onChange: (_, selected) => {
                       onChange(selected);
-                      setValue("employee_id", null);
-                      setValue("cost_center_id", null);
+                      setValue("employee_id", "");
+                      setValue("cost_center_id", "");
                     },
                     name: "hospital_id",
                     dataSource: {
@@ -142,7 +142,7 @@ export function PrepaymentRequest() {
                     dataSource: {
                       data: ihospital
                         ? branchAndCenters.filter(
-                            (item) => item.hims_d_hospital_id === ihospital
+                            (item) => item.hims_d_hospital_id == ihospital
                           )[0].cost_centers
                         : [],
                       valueField: "cost_center_id",
@@ -214,7 +214,7 @@ export function PrepaymentRequest() {
                     dataSource: {
                       data: ihospital
                         ? employees.filter(
-                            (item) => item.hospital_id === ihospital
+                            (item) => item.hospital_id == ihospital
                           )
                         : employees,
                       textField: "full_name",
@@ -272,7 +272,7 @@ export function PrepaymentRequest() {
                         onChange(mdate._d);
                         const prepayItem = prePaymentTypes.filter(
                           (item) =>
-                            item.finance_d_prepayment_type_id ===
+                            item.finance_d_prepayment_type_id ==
                             prepayment_type_id
                         );
                         setValue(
@@ -343,13 +343,9 @@ export function PrepaymentRequest() {
                 <AlgaehDataGrid
                   columns={[
                     {
-                      fieldName: "employee_id",
+                      fieldName: "employee_code",
                       label: "Employee Code",
                       sortable: true,
-                      displayTemplate: (row) =>
-                        employees.filter(
-                          (item) => item.hims_d_employee_id === row.employee_id
-                        )[0].employee_code,
                     },
                     {
                       fieldName: "employee_id",
