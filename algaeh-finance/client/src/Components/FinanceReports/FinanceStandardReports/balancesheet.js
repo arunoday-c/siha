@@ -1,16 +1,12 @@
 import React, { useRef, useEffect, useState } from "react";
-import { Row, Col } from "antd";
 import moment from "moment";
 import ReactToPrint from "react-to-print";
 import { PlotUI } from "./plotui";
 import { newAlgaehApi } from "../../../hooks";
 import { handleFile } from "../FinanceReportEvents";
 import { AlgaehMessagePop } from "algaeh-react-components";
-// import ReportHeader from "../header";
 import Filter from "../filter";
 import ReportLayout from "../printlayout";
-// import { getItem, tokenDecode } from "algaeh-react-components/storage";
-// import jwtDecode from "jwt-decode";
 export default function BalanceSheet({
   style,
   footer,
@@ -18,11 +14,10 @@ export default function BalanceSheet({
   dates,
   selectedFilter,
 }) {
-  // const createPrintObject = useRef(undefined);
   const [columns, setColumns] = useState([]);
   const [data, setData] = useState([]);
   const [stopLoading, setStopLoading] = useState(undefined);
-  const [preview, setPreview] = useState(false);
+  const [preview, setPreview] = useState(undefined);
   const [rangeDate, setRangeDate] = useState([dates[0], dates[1]]);
   const [prevDateRange, setPrevDateRange] = useState([]);
   const [filter, setFilter] = useState([]);
@@ -30,8 +25,6 @@ export default function BalanceSheet({
   const [changeInAmount, setChangeInAccount] = useState("N");
   const [changeInPercentage, setChangeInPercentage] = useState("N");
   const [reportType, setReportType] = useState("balancesheet");
-  // const [hospitalDetails, setHospitalDeytails] = useState([]);
-  // const [organisation, setOrganisation] = useState({});
   useEffect(() => {
     const { filterKey } = selectedFilter;
     if (filterKey !== undefined) {
@@ -62,20 +55,22 @@ export default function BalanceSheet({
     } else {
       setFilter([]);
     }
-
+    setPreview(undefined);
     setTriggerUpdate((result) => {
       return !result;
     });
   }, [selectedFilter]);
 
   useEffect(() => {
-    const { filterKey } = selectedFilter;
-    if (filterKey !== undefined) {
-      if (filterKey === "comparison") {
-        loadcomparisionData(false);
+    if (preview !== undefined) {
+      const { filterKey } = selectedFilter;
+      if (filterKey !== undefined) {
+        if (filterKey === "comparison") {
+          loadcomparisionData(false);
+        }
+      } else {
+        loadBalanceSheet();
       }
-    } else {
-      loadBalanceSheet();
     }
   }, [preview]);
   function loadcomparisionData(excel) {
@@ -104,15 +99,36 @@ export default function BalanceSheet({
         to_date,
         change_in_amount: changeInAmount,
         change_in_percent: changeInPercentage,
+        prev_from_date,
+        prev_to_date,
         excel,
       },
       extraHeaders,
       options: others,
     })
       .then((response) => {
+        const { records } = response.data;
+
+        const { columns: col, asset, liabilities } = records;
+        let cols = col.map((item) => {
+          return {
+            fieldName: item.column_id,
+            label: item.label,
+          };
+        });
+        cols.unshift({
+          fieldName: "label",
+          label: "Ledger Name",
+          freezable: true,
+        });
+        let details = [];
+        //For asset
+        details.push(asset);
+        //For liabilities
+        details.push(liabilities);
+        setColumns(cols);
+        setData(details);
         if (typeof stopLoading === "function") stopLoading();
-        console.log("response", response);
-        debugger;
       })
       .catch((error) => {
         if (typeof stopLoading === "function") stopLoading();
@@ -176,51 +192,7 @@ export default function BalanceSheet({
     const newFilter = existing.concat(updated);
     return newFilter;
   }
-  function BalanceScheet() {
-    return (
-      <>
-        <div className="reportBodyArea">
-          <Row gutter={[8, 8]}>
-            <Col span={layout.col}>
-              <div className="reportTableStyle">
-                <ul className="treeListUL">
-                  {PlotUI(data["liabilities"], style, [0], layout.expand)}
-                </ul>
-              </div>
-            </Col>
-            <Col span={layout.col}>
-              <div className="reportTableStyle">
-                <ul className="treeListUL">
-                  {PlotUI(data["asset"], style, [0], layout.expand)}
-                </ul>
-              </div>
-            </Col>
-          </Row>
-        </div>
-        <div className="reportTotalArea">
-          <table style={{ width: "100%" }}>
-            <tbody>
-              <tr className="footerTotalArea">
-                <td style={{ width: "100%" }} valign="top">
-                  <b> {null}</b>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </>
-    );
-  }
-  function Comparition() {
-    return null;
-  }
-  // function DataLoading() {
-  //   if (reportType === "balancesheet") {
-  //     return <BalanceScheet />;
-  //   } else if (reportType === "comparison") {
-  //     return <Comparition />;
-  //   }
-  // }
+
   return (
     <>
       <div className="row inner-top-search">
@@ -237,8 +209,22 @@ export default function BalanceSheet({
               {
                 className: "col-3 form-group",
                 type: "DH|RANGE",
-                data: "Range",
+                data: "RANGE",
                 initalStates: rangeDate,
+                onChange: (selected, val, cb) => {
+                  if (filter.length > 0) {
+                    const frdt = selected[0].clone();
+                    const tdt = selected[1].clone();
+                    const previousfrom = frdt.subtract(1, "years");
+                    const previousto = tdt.subtract(1, "years");
+                    cb({
+                      PREVIOUSRANGE: [previousfrom, previousto],
+                      RANGE: selected,
+                    });
+                  } else {
+                    cb({ RANGE: selected });
+                  }
+                },
               },
             ],
             filter
@@ -256,92 +242,19 @@ export default function BalanceSheet({
             setChangeInAccount(CHANGEINAMOUNT);
             setStopLoading(cb);
             setPreview((result) => {
-              return !result;
+              return result === undefined ? false : !result;
             });
-            // console.log("inputs", inputs);
           }}
           triggerUpdate={triggerUpdate}
         />
       </div>
-      {/* <div className="row">
-        <div className="col-12 reportHeaderAction">
-          <span>
-            <i
-              className="fas fa-file-download"
-              onClick={() => loadBalanceSheet(true)}
-            />
-          </span>
-          <span>
-            <ReactToPrint
-              trigger={() => <i className="fas fa-print" />}
-              content={() => createPrintObject.current}
-              removeAfterPrint={true}
-              bodyClass="reportPreviewSecLeft"
-              pageStyle="@media print {
-              html, body {
-                height: initial !important;
-                overflow: initial !important;
-                -webkit-print-color-adjust: exact;
-              }
-            }
-            
-            @page {
-              size: auto;
-              margin: 20mm;
-            }"
-            />
-          </span>
-        </div>
-      </div> */}
 
-      {/* <AlgaehButton
-        onClick={() => loadBalanceSheet(true)}
-        className="btn btn-default"
-      >
-        Download Excel
-      </AlgaehButton> */}
-
-      {/* <div className="row inner-top-search">
-        <AlgaehDateHandler
-          div={{
-            className: "col-3 algaeh-date-fld"
-          }}
-          label={{
-            forceLabel: "Select Date",
-            isImp: true
-          }}
-          textBox={{
-            name: "date",
-            className: "form-control",
-            value: date
-          }}
-          events={{
-            onChange: momentDate => {
-              if (momentDate) {
-                setDate(momentDate._d);
-              } else {
-                setDate(undefined);
-              }
-            }
-          }}
-        />
-      </div> */}
-
-      {/* <div ref={createPrintObject}>
-        <ReportHeader
-          title={`Balance Sheet ${
-            reportType === "comparison" ? "Comparison" : ""
-          }`}
-        />
-
-        <DataLoading />
-      </div> */}
       <ReportLayout
         title={`Balance Sheet ${
           reportType === "comparison" ? "Comparison" : ""
         }`}
-        columns={columns}
-        data={data}
+        columns={preview === undefined ? [] : columns}
+        data={preview === undefined ? [] : data}
         layout={layout}
       />
     </>

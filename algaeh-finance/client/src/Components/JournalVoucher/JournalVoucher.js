@@ -438,10 +438,12 @@ export default function JournalVoucher() {
               const source = value.split("-");
               record["child_id"] = source[1];
               record["head_id"] = source[0];
+              row = label;
             } else {
               record["sourceName"] = "";
               record["child_id"] = "";
               record["head_id"] = "";
+              row = "";
             }
           },
           data: accounts,
@@ -453,7 +455,7 @@ export default function JournalVoucher() {
               return node["finance_account_head_id"];
             }
           },
-          value: row,
+          defaultValue: row,
         }}
       />
     );
