@@ -8,11 +8,15 @@ import {
   AlgaehMessagePop,
   //   AlgaehButton,
   Spin,
+  Modal,
+  Button,
 } from "algaeh-react-components";
 import moment from "moment";
 import { Controller, useForm } from "react-hook-form";
 import { PrePaymentContext } from "../Prepayment";
 import { newAlgaehApi } from "../../../hooks/";
+
+const { confirm } = Modal;
 
 export function PrepaymentAuthList() {
   const [requests, setRequests] = useState([]);
@@ -20,9 +24,11 @@ export function PrepaymentAuthList() {
   const { branchAndCenters, prePaymentTypes, employees } = useContext(
     PrePaymentContext
   );
-  const { control, errors, handleSubmit, setValue, watch } = useForm({
-    shouldFocusError: true,
-  });
+  const { control, errors, handleSubmit, setValue, watch, getValues } = useForm(
+    {
+      shouldFocusError: true,
+    }
+  );
 
   useEffect(() => {
     getRequestForAuth({}).then(() => setLoading(false));
@@ -44,6 +50,74 @@ export function PrepaymentAuthList() {
         display: e.message,
       });
     }
+  };
+
+  const authorizeOrRejectReq = async (decision, id) => {
+    try {
+      const res = await newAlgaehApi({
+        uri: "/prepayment/authorizePrepaymentRequest",
+        method: "PUT",
+        module: "finance",
+        data: {
+          auth_status: decision,
+          finance_f_prepayment_request_id: id,
+        },
+      });
+      if (res.data.success) {
+        getRequestForAuth(getValues());
+      }
+    } catch (e) {
+      AlgaehMessagePop({
+        type: "error",
+        display: e.message,
+      });
+    }
+  };
+
+  const onClickAuthorize = (row) => {
+    confirm({
+      okText: "Authorize",
+      okType: "primary",
+
+      title: "Prepayment Request Authorization",
+      content: `This request is made for 
+Prepayment Type: ${row.prepayment_desc}`,
+
+      maskClosable: true,
+      onOk: async () => {
+        try {
+          await authorizeOrRejectReq("A", row.finance_f_prepayment_request_id);
+        } catch (e) {
+          AlgaehMessagePop({
+            type: "error",
+            display: e.message,
+          });
+        }
+      },
+    });
+  };
+
+  const onClickReject = (row) => {
+    confirm({
+      okText: "Reject",
+      okType: "danger",
+
+      title: "Prepayment Request Authorization",
+      content: `This request is made for 
+Prepayment Type: ${row.prepayment_desc}`,
+
+      maskClosable: true,
+      onOk: async () => {
+        try {
+          await authorizeOrRejectReq("R", row.finance_f_prepayment_request_id);
+        } catch (e) {
+          AlgaehMessagePop({
+            type: "error",
+            display: e.message,
+          });
+        }
+      },
+    });
   };
 
   const { hospital_id: ihospital, prepayment_type_id } = watch([
@@ -269,6 +343,29 @@ export function PrepaymentAuthList() {
               <div className="portlet-body">
                 <AlgaehDataGrid
                   columns={[
+                    {
+                      fieldName: "request_status",
+                      label: "Actions",
+                      sortable: true,
+                      displayTemplate: (row) => {
+                        if (row.request_status === "P") {
+                          return (
+                            <>
+                              <Button onClick={() => onClickAuthorize(row)}>
+                                Authorize
+                              </Button>
+                              <Button onClick={() => onClickReject(row)}>
+                                Reject
+                              </Button>
+                            </>
+                          );
+                        } else if (row.request_status === "A") {
+                          return "Authorized";
+                        } else {
+                          return "Rejected";
+                        }
+                      },
+                    },
                     {
                       fieldName: "employee_code",
                       label: "Employee Code",
