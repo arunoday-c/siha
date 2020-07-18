@@ -2,7 +2,7 @@
 // const utilities = new algaehUtilities();
 const executePDF = function executePDFMethod(options) {
   const _ = options.loadash;
-  return new Promise(function(resolve, reject) {
+  return new Promise(function (resolve, reject) {
     try {
       const _ = options.loadash;
       let str = "";
@@ -43,7 +43,7 @@ const executePDF = function executePDFMethod(options) {
           inner join hims_d_sub_department SD on V.sub_department_id=SD.hims_d_sub_department_id
           inner join hims_d_employee E on V.doctor_id=E.hims_d_employee_id
           where date(bill_date)  between date(?) and date(?) and RH.pay_type='R' and
-          RH.record_status='A'    and RD.record_status='A'  and BH.hospital_id= ?  ${str}) as A
+          RH.record_status='A'    and RD.record_status='A' and cancelled='N' and BH.hospital_id= ?  ${str}) as A
           group by hims_f_receipt_header_id`;
 
           break;
@@ -152,8 +152,8 @@ const executePDF = function executePDFMethod(options) {
             .toFixed(decimal_places);
           const total_collection = parseFloat(
             parseFloat(total_cash) +
-              parseFloat(total_card) +
-              parseFloat(total_check)
+            parseFloat(total_card) +
+            parseFloat(total_check)
           ).toFixed(decimal_places);
 
           // utilities.logger().log("result: ", {

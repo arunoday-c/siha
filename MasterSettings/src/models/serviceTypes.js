@@ -715,9 +715,11 @@ export default {
       _mysql
         .executeQueryWithTransaction({
           query:
-            "UPDATE `hims_d_services` SET `standard_fee`=?, `vat_applicable`=?,`vat_percent`=?, \
-            `updated_by`=?, `updated_date`=? WHERE `hims_d_services_id`=?",
+            "UPDATE `hims_d_services` SET `service_code`=?, `service_name`=?, `standard_fee`=?, \
+            `vat_applicable`=?,`vat_percent`=?, `updated_by`=?, `updated_date`=? WHERE `hims_d_services_id`=?",
           values: [
+            inputParam.service_code,
+            inputParam.service_name,
             inputParam.standard_fee,
             inputParam.vat_applicable,
             inputParam.vat_percent,

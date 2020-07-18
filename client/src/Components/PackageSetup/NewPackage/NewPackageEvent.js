@@ -338,6 +338,8 @@ export default function NewPackageEvent() {
             InputObj.updatePakageDetail = updatePakageDetail;
             InputObj.standard_fee = InputObj.package_amount;
             InputObj.service_id = InputObj.package_service_id;
+            InputObj.service_code = InputObj.package_code;
+            InputObj.service_name = InputObj.package_name;
 
             algaehApiCall({
               uri: "/packagesetup/updatePackageSetup",
@@ -537,6 +539,42 @@ export default function NewPackageEvent() {
       $this.setState($this.baseState, () => {
         $this.setState(Package_data);
       });
+    },
+    VatAppilicable: ($this, e) => {
+      let name = e.target.name;
+
+      $this.state.vat_percent = 0;
+      $this.setState({
+        [name]: e.target.checked ? "Y" : "N",
+        ...$this.state
+      });
+    },
+    numberEventHandaler: ($this, e) => {
+      let name = e.name || e.target.name;
+      let value = e.value === "" ? null : e.value || e.target.value;
+
+      if (parseFloat(value) < 0) {
+        swalMessage({
+          type: "warning",
+          title: "Cannot be less than zero."
+        });
+        $this.setState({
+          [name]: 0
+        });
+      } if (parseFloat(value) > 100) {
+        swalMessage({
+          type: "warning",
+          title: "Cannot be less than zero."
+        });
+        $this.setState({
+          [name]: 0
+        });
+      } else {
+        $this.setState({
+          [name]: value
+        });
+      }
+
     }
   };
 }
