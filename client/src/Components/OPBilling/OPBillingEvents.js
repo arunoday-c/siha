@@ -238,7 +238,7 @@ const selectVisit = ($this) => {
     },
     onSuccess: (response) => {
       if (response.data.success) {
-        AlgaehLoader({ show: false });
+
 
         let data = response.data.records;
 
@@ -406,7 +406,7 @@ const getPatientDetails = ($this) => {
         if (
           $this.context.userToken.local_vat_applicable === "N" &&
           $this.context.userToken.default_nationality ===
-            data.patientRegistration.nationality_id
+          data.patientRegistration.nationality_id
         ) {
           data.patientRegistration.vat_applicable = "N";
         } else {

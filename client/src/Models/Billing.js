@@ -1,5 +1,5 @@
 export default {
-  inputParam: function() {
+  inputParam: function () {
     var output;
     var CurrentDate = new Date();
     output = {
@@ -100,7 +100,8 @@ export default {
       due_amount: 0,
       pack_balance_amount: 0,
       bank_card_id: null,
-      card_check_number: null
+      card_check_number: null,
+      insured: "N"
     };
     return output;
   }
