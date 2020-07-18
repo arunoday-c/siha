@@ -144,13 +144,13 @@ Prepayment Type: ${row.prepayment_desc}`,
                     value,
                     onChange: (_, selected) => {
                       onChange(selected);
-                      setValue("employee_id", null);
-                      setValue("cost_center_id", null);
+                      setValue("employee_id", "");
+                      setValue("cost_center_id", "");
                     },
                     onClear: (_, selected) => {
                       onChange(selected);
-                      setValue("employee_id", null);
-                      setValue("cost_center_id", null);
+                      setValue("employee_id", "");
+                      setValue("cost_center_id", "");
                     },
                     name: "hospital_id",
                     dataSource: {
@@ -188,7 +188,7 @@ Prepayment Type: ${row.prepayment_desc}`,
                     dataSource: {
                       data: ihospital
                         ? branchAndCenters.filter(
-                            (item) => item.hims_d_hospital_id === ihospital
+                            (item) => item.hims_d_hospital_id == ihospital
                           )[0].cost_centers
                         : [],
                       valueField: "cost_center_id",
@@ -260,7 +260,7 @@ Prepayment Type: ${row.prepayment_desc}`,
                         if (prepayment_type_id) {
                           const prepayItem = prePaymentTypes.filter(
                             (item) =>
-                              item.finance_d_prepayment_type_id ===
+                              item.finance_d_prepayment_type_id ==
                               prepayment_type_id
                           );
                           setValue(
