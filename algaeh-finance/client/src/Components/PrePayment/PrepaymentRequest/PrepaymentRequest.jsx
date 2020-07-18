@@ -343,6 +343,16 @@ export function PrepaymentRequest() {
                 <AlgaehDataGrid
                   columns={[
                     {
+                      fieldName: "hospital_name",
+                      label: "Hospital Name",
+                      sortable: true,
+                    },
+                    {
+                      fieldName: "cost_center",
+                      label: "Cost Center",
+                      sortable: true,
+                    },
+                    {
                       fieldName: "employee_code",
                       label: "Employee Code",
                       sortable: true,
