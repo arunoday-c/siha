@@ -278,7 +278,7 @@ export function PrepaymentRequest() {
                         setValue(
                           "end_date",
                           moment(mdate).add(
-                            prepayItem[0].prepayment_duration,
+                            prepayItem[0].prepayment_duration - 1,
                             "months"
                           )._d
                         );
@@ -348,24 +348,14 @@ export function PrepaymentRequest() {
                       sortable: true,
                     },
                     {
-                      fieldName: "employee_id",
+                      fieldName: "employee_name",
                       label: "Employee Name",
                       sortable: true,
-                      displayTemplate: (row) =>
-                        employees.filter(
-                          (item) => item.hims_d_employee_id === row.employee_id
-                        )[0].full_name,
                     },
                     {
-                      fieldName: "prepayment_type_id",
+                      fieldName: "prepayment_desc",
                       label: "Prepayment Type",
                       sortable: true,
-                      displayTemplate: (row) =>
-                        prePaymentTypes.filter(
-                          (item) =>
-                            item.finance_d_prepayment_type_id ===
-                            row.prepayment_type_id
-                        )[0].prepayment_desc,
                     },
                     {
                       fieldName: "prepayment_amount",

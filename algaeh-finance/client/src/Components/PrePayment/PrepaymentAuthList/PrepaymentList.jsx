@@ -367,18 +367,34 @@ Prepayment Type: ${row.prepayment_desc}`,
                       },
                     },
                     {
+                      fieldName: "request_code",
+                      label: "Request Codel",
+                      sortable: true,
+                    },
+                    {
+                      fieldName: "hospital_name",
+                      label: "Hospital",
+                      sortable: true,
+                    },
+                    {
+                      fieldName: "hospital_name",
+                      label: "Hospital",
+                      sortable: true,
+                    },
+                    {
+                      fieldName: "cost_center",
+                      label: "Cost Center",
+                      sortable: true,
+                    },
+                    {
                       fieldName: "employee_code",
                       label: "Employee Code",
                       sortable: true,
                     },
                     {
-                      fieldName: "employee_id",
+                      fieldName: "employee_name",
                       label: "Employee Name",
                       sortable: true,
-                      displayTemplate: (row) =>
-                        employees.filter(
-                          (item) => item.hims_d_employee_id === row.employee_id
-                        )[0].full_name,
                     },
                     {
                       fieldName: "prepayment_amount",
