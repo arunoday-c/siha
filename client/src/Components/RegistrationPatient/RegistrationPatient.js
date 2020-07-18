@@ -779,7 +779,9 @@ class RegistrationPatient extends Component {
             },
             {
               pageName: (
-                <AlgaehLabel label={{ fieldName: "form_name", align: "ltr" }} />
+                <AlgaehLabel
+                  label={{ fieldName: "form_patregister", align: "ltr" }}
+                />
               ),
             },
           ]}

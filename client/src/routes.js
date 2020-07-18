@@ -155,6 +155,11 @@ const ReportsList = React.lazy(() =>
 const RCMWorkbench = React.lazy(() =>
   retry(() => import("./Components/InsuranceClaims/RCMWorkbench/RCMWorkbench"))
 );
+const InsuranceStatement = React.lazy(() =>
+  retry(() =>
+    import("./Components/InsuranceClaims/InsuranceStatement/InsuranceStatement")
+  )
+);
 const VisitClose = React.lazy(() =>
   retry(() => import("./Components/VisitClose/VisitClose"))
 );
@@ -1139,6 +1144,12 @@ const appRoutes = [
     path: "/RCMWorkbench",
     isExactPath: true,
     component: <RCMWorkbench />,
+  },
+
+  {
+    path: "/InsuranceStatement",
+    isExactPath: true,
+    component: <InsuranceStatement />,
   },
   {
     path: "/InitialStock",

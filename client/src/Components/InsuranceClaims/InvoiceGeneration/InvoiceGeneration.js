@@ -7,14 +7,14 @@ import Options from "../../../Options.json";
 import {
   AlagehFormGroup,
   AlgaehDataGrid,
-  AlgaehLabel
+  AlgaehLabel,
 } from "../../Wrapper/algaehWrapper";
 import BreadCrumb from "../../common/BreadCrumb/BreadCrumb.js";
 import {
   VisitSearch,
   FinalizedAndInvoice,
   ClearData,
-  getCtrlCode
+  getCtrlCode,
 } from "./InvoiceGenerationHandaler";
 import "./InvoiceGeneration.scss";
 import { algaehApiCall } from "../../../utils/algaehApiCall";
@@ -61,7 +61,7 @@ class InvoiceGeneration extends Component {
       select_invoice: "CH",
       creidt_invoice: false,
       cash_invoice: true,
-      dataExists: false
+      dataExists: false,
     };
   }
 
@@ -76,8 +76,8 @@ class InvoiceGeneration extends Component {
         method: "GET",
         redux: {
           type: "SERVIES_TYPES_GET_DATA",
-          mappingName: "servicetype"
-        }
+          mappingName: "servicetype",
+        },
       });
     }
 
@@ -91,8 +91,8 @@ class InvoiceGeneration extends Component {
         method: "GET",
         redux: {
           type: "SERVICES_GET_DATA",
-          mappingName: "serviceslist"
-        }
+          mappingName: "serviceslist",
+        },
       });
     }
   }
@@ -103,7 +103,7 @@ class InvoiceGeneration extends Component {
       method: "GET",
       module: "reports",
       headers: {
-        Accept: "blob"
+        Accept: "blob",
       },
       others: { responseType: "blob" },
       data: {
@@ -112,21 +112,21 @@ class InvoiceGeneration extends Component {
           reportParams: [
             {
               name: "hims_d_patient_id",
-              value: this.state.patient_id
+              value: this.state.patient_id,
             },
             {
               name: "visit_id",
-              value: this.state.visit_id
+              value: this.state.visit_id,
             },
             {
               name: "visit_date",
-              value: null
-            }
+              value: null,
+            },
           ],
-          outputFileType: "PDF"
-        }
+          outputFileType: "PDF",
+        },
       },
-      onSuccess: res => {
+      onSuccess: (res) => {
         // const url = URL.createObjectURL(res.data);
         // let myWindow = window.open(
         //   "{{ product.metafields.google.custom_label_0 }}",
@@ -137,10 +137,10 @@ class InvoiceGeneration extends Component {
         //   "<iframe src= '" + url + "' width='100%' height='100%' />"
         // );
         const urlBlob = URL.createObjectURL(res.data);
-      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=${rpt_desc}`;
-      window.open(origin);
+        const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=${rpt_desc}`;
+        window.open(origin);
         // window.document.title = rpt_desc;
-      }
+      },
     });
   }
 
@@ -149,13 +149,13 @@ class InvoiceGeneration extends Component {
       this.setState({
         select_invoice: "CH",
         cash_invoice: true,
-        creidt_invoice: false
+        creidt_invoice: false,
       });
     } else if (e.target.name === "creidt_invoice") {
       this.setState({
         select_invoice: "CD",
         creidt_invoice: true,
-        cash_invoice: false
+        cash_invoice: false,
       });
     }
   }
@@ -177,7 +177,7 @@ class InvoiceGeneration extends Component {
         <BreadCrumb
           title={
             <AlgaehLabel
-              label={{ forceLabel: "Claim Generation", align: "ltr" }}
+              label={{ forceLabel: "Invoice Generation", align: "ltr" }}
             />
           }
           breadStyle={this.props.breadStyle}
@@ -187,18 +187,18 @@ class InvoiceGeneration extends Component {
                 <AlgaehLabel
                   label={{
                     forceLabel: "Home",
-                    align: "ltr"
+                    align: "ltr",
                   }}
                 />
-              )
+              ),
             },
             {
               pageName: (
                 <AlgaehLabel
-                  label={{ forceLabel: "Claim Generation", align: "ltr" }}
+                  label={{ forceLabel: "Invoice Generation", align: "ltr" }}
                 />
-              )
-            }
+              ),
+            },
           ]}
           soptlightSearch={{
             label: (
@@ -209,20 +209,20 @@ class InvoiceGeneration extends Component {
             value: this.state.invoice_number,
             selectValue: "invoice_number",
             events: {
-              onChange: getCtrlCode.bind(this, this)
+              onChange: getCtrlCode.bind(this, this),
             },
             jsonFile: {
               fileName: "spotlightSearch",
-              fieldName: "Invoice.InvoiceGen"
+              fieldName: "Invoice.InvoiceGen",
             },
-            searchName: "InvoiceGen"
+            searchName: "InvoiceGen",
           }}
           userArea={
             <div className="row">
               <div className="col">
                 <AlgaehLabel
                   label={{
-                    forceLabel: "Invoice Date"
+                    forceLabel: "Invoice Date",
                   }}
                 />
                 <h6>
@@ -272,7 +272,7 @@ class InvoiceGeneration extends Component {
               <AlagehFormGroup
                 div={{ className: "col-6" }}
                 label={{
-                  forceLabel: "Visit Code"
+                  forceLabel: "Visit Code",
                 }}
                 textBox={{
                   className: "txt-fld",
@@ -280,8 +280,8 @@ class InvoiceGeneration extends Component {
                   value: this.state.visit_code,
 
                   others: {
-                    disabled: true
-                  }
+                    disabled: true,
+                  },
                 }}
               />
               <div
@@ -302,7 +302,7 @@ class InvoiceGeneration extends Component {
               <div className="col-3">
                 <AlgaehLabel
                   label={{
-                    forceLabel: "Patient Code"
+                    forceLabel: "Patient Code",
                   }}
                 />
                 <h6>
@@ -314,7 +314,7 @@ class InvoiceGeneration extends Component {
               <div className="col-3">
                 <AlgaehLabel
                   label={{
-                    forceLabel: "Patient Name"
+                    forceLabel: "Patient Name",
                   }}
                 />
                 <h6>
@@ -367,30 +367,30 @@ class InvoiceGeneration extends Component {
                       label: (
                         <AlgaehLabel label={{ fieldName: "trans_from" }} />
                       ),
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         return row.trans_from === "OP"
                           ? "OP Billing"
                           : "Point of Sale";
-                      }
+                      },
                     },
                     {
                       fieldName: "billed",
                       label: <AlgaehLabel label={{ fieldName: "billed" }} />,
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         return row.billed === "N" ? "No" : "Yes";
-                      }
+                      },
                     },
                     {
                       fieldName: "service_type_id",
                       label: (
                         <AlgaehLabel label={{ fieldName: "service_type_id" }} />
                       ),
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         let display =
                           this.props.servicetype === undefined
                             ? []
                             : this.props.servicetype.filter(
-                                f =>
+                                (f) =>
                                   f.hims_d_service_type_id ===
                                   parseInt(row.service_type_id, 10)
                               );
@@ -405,12 +405,12 @@ class InvoiceGeneration extends Component {
                           </span>
                         );
                       },
-                      editorTemplate: row => {
+                      editorTemplate: (row) => {
                         let display =
                           this.props.servicetype === undefined
                             ? []
                             : this.props.servicetype.filter(
-                                f =>
+                                (f) =>
                                   f.hims_d_service_type_id ===
                                   parseInt(row.service_type_id, 10)
                               );
@@ -424,19 +424,19 @@ class InvoiceGeneration extends Component {
                               : ""}
                           </span>
                         );
-                      }
+                      },
                     },
                     {
                       fieldName: "service_id",
                       label: (
                         <AlgaehLabel label={{ fieldName: "services_id" }} />
                       ),
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         let display =
                           this.props.serviceslist === undefined
                             ? []
                             : this.props.serviceslist.filter(
-                                f => f.hims_d_services_id === row.service_id
+                                (f) => f.hims_d_services_id === row.service_id
                               );
 
                         return (
@@ -449,12 +449,12 @@ class InvoiceGeneration extends Component {
                           </span>
                         );
                       },
-                      editorTemplate: row => {
+                      editorTemplate: (row) => {
                         let display =
                           this.props.serviceslist === undefined
                             ? []
                             : this.props.serviceslist.filter(
-                                f => f.hims_d_services_id === row.service_id
+                                (f) => f.hims_d_services_id === row.service_id
                               );
 
                         return (
@@ -466,19 +466,19 @@ class InvoiceGeneration extends Component {
                               : ""}
                           </span>
                         );
-                      }
+                      },
                     },
 
                     {
                       fieldName: "unit_cost",
                       label: <AlgaehLabel label={{ fieldName: "unit_cost" }} />,
-                      disabled: true
+                      disabled: true,
                     },
 
                     {
                       fieldName: "quantity",
                       label: <AlgaehLabel label={{ fieldName: "quantity" }} />,
-                      editorTemplate: row => {
+                      editorTemplate: (row) => {
                         return (
                           <AlagehFormGroup
                             div={{}}
@@ -487,12 +487,12 @@ class InvoiceGeneration extends Component {
                               className: "txt-fld",
                               name: "quantity",
                               events: {
-                                onChange: null
-                              }
+                                onChange: null,
+                              },
                             }}
                           />
                         );
-                      }
+                      },
                     },
 
                     {
@@ -500,7 +500,7 @@ class InvoiceGeneration extends Component {
                       label: (
                         <AlgaehLabel label={{ fieldName: "gross_amount" }} />
                       ),
-                      disabled: true
+                      disabled: true,
                     },
 
                     {
@@ -508,7 +508,7 @@ class InvoiceGeneration extends Component {
                       label: (
                         <AlgaehLabel label={{ fieldName: "discount_amount" }} />
                       ),
-                      editorTemplate: row => {
+                      editorTemplate: (row) => {
                         return (
                           <AlagehFormGroup
                             div={{}}
@@ -518,12 +518,12 @@ class InvoiceGeneration extends Component {
                               className: "txt-fld",
                               name: "discount_amount",
                               events: {
-                                onChange: null
-                              }
+                                onChange: null,
+                              },
                             }}
                           />
                         );
-                      }
+                      },
                     },
 
                     {
@@ -531,54 +531,54 @@ class InvoiceGeneration extends Component {
                       label: (
                         <AlgaehLabel label={{ fieldName: "net_amount" }} />
                       ),
-                      disabled: true
+                      disabled: true,
                     },
                     {
                       fieldName: "patient_resp",
                       label: (
                         <AlgaehLabel label={{ fieldName: "patient_resp" }} />
                       ),
-                      disabled: true
+                      disabled: true,
                     },
                     {
                       fieldName: "patient_tax",
                       label: (
                         <AlgaehLabel label={{ fieldName: "patient_tax" }} />
                       ),
-                      disabled: true
+                      disabled: true,
                     },
                     {
                       fieldName: "patient_payable",
                       label: (
                         <AlgaehLabel label={{ fieldName: "patient_payable" }} />
                       ),
-                      disabled: true
+                      disabled: true,
                     },
                     {
                       fieldName: "company_resp",
                       label: (
                         <AlgaehLabel label={{ fieldName: "comapany_resp" }} />
                       ),
-                      disabled: true
+                      disabled: true,
                     },
                     {
                       fieldName: "company_tax",
                       label: (
                         <AlgaehLabel label={{ fieldName: "company_tax" }} />
                       ),
-                      disabled: true
+                      disabled: true,
                     },
                     {
                       fieldName: "company_payable",
                       label: (
                         <AlgaehLabel label={{ fieldName: "company_payble" }} />
                       ),
-                      disabled: true
-                    }
+                      disabled: true,
+                    },
                   ]}
                   keyId="service_type_id"
                   dataSource={{
-                    data: this.state.Invoice_Detail
+                    data: this.state.Invoice_Detail,
                   }}
                   paging={{ page: 0, rowsPerPage: 10 }}
                 />
@@ -596,7 +596,7 @@ class InvoiceGeneration extends Component {
                         <div className="col-4">
                           <AlgaehLabel
                             label={{
-                              fieldName: "insurance_company"
+                              fieldName: "insurance_company",
                             }}
                           />
                           <h6>
@@ -609,7 +609,7 @@ class InvoiceGeneration extends Component {
                         <div className="col-4">
                           <AlgaehLabel
                             label={{
-                              fieldName: "sub_insurance_company"
+                              fieldName: "sub_insurance_company",
                             }}
                           />
                           <h6>
@@ -621,7 +621,7 @@ class InvoiceGeneration extends Component {
                         <div className="col-4">
                           <AlgaehLabel
                             label={{
-                              fieldName: "plan_desc"
+                              fieldName: "plan_desc",
                             }}
                           />
                           <h6>
@@ -634,7 +634,7 @@ class InvoiceGeneration extends Component {
                         <div className="col-4">
                           <AlgaehLabel
                             label={{
-                              fieldName: "policy_no"
+                              fieldName: "policy_no",
                             }}
                           />
                           <h6>
@@ -646,7 +646,7 @@ class InvoiceGeneration extends Component {
                         <div className="col-4">
                           <AlgaehLabel
                             label={{
-                              fieldName: "card_no"
+                              fieldName: "card_no",
                             }}
                           />
                           <h6>
@@ -659,7 +659,7 @@ class InvoiceGeneration extends Component {
                         <div className="col-4">
                           <AlgaehLabel
                             label={{
-                              fieldName: "ins_expiry_date"
+                              fieldName: "ins_expiry_date",
                             }}
                           />
                           <h6>
@@ -777,7 +777,7 @@ class InvoiceGeneration extends Component {
                     <div className="col-4">
                       <AlgaehLabel
                         label={{
-                          forceLabel: "Gross Total"
+                          forceLabel: "Gross Total",
                         }}
                       />
                       <h6>{GetAmountFormart(this.state.gross_amount)}</h6>
@@ -785,7 +785,7 @@ class InvoiceGeneration extends Component {
                     <div className="col-4">
                       <AlgaehLabel
                         label={{
-                          forceLabel: "Discount Total"
+                          forceLabel: "Discount Total",
                         }}
                       />
                       <h6>{GetAmountFormart(this.state.discount_amount)}</h6>
@@ -794,7 +794,7 @@ class InvoiceGeneration extends Component {
                     <div className="col-4">
                       <AlgaehLabel
                         label={{
-                          forceLabel: "Net Total"
+                          forceLabel: "Net Total",
                         }}
                       />
                       <h6>{GetAmountFormart(this.state.net_amout)}</h6>
@@ -803,7 +803,7 @@ class InvoiceGeneration extends Component {
                     <div className="col-4">
                       <AlgaehLabel
                         label={{
-                          forceLabel: "Patient Resp."
+                          forceLabel: "Patient Resp.",
                         }}
                       />
                       <h6>{GetAmountFormart(this.state.patient_resp)}</h6>
@@ -812,7 +812,7 @@ class InvoiceGeneration extends Component {
                     <div className="col-4">
                       <AlgaehLabel
                         label={{
-                          forceLabel: "Patient Tax"
+                          forceLabel: "Patient Tax",
                         }}
                       />
                       <h6>{GetAmountFormart(this.state.patient_tax)}</h6>
@@ -821,7 +821,7 @@ class InvoiceGeneration extends Component {
                     <div className="col-4">
                       <AlgaehLabel
                         label={{
-                          forceLabel: "Patient Payable"
+                          forceLabel: "Patient Payable",
                         }}
                       />
                       <h6>{GetAmountFormart(this.state.patient_payable)}</h6>
@@ -830,7 +830,7 @@ class InvoiceGeneration extends Component {
                     <div className="col-4">
                       <AlgaehLabel
                         label={{
-                          forceLabel: "Company Resp."
+                          forceLabel: "Company Resp.",
                         }}
                       />
                       <h6>{GetAmountFormart(this.state.company_resp)}</h6>
@@ -838,7 +838,7 @@ class InvoiceGeneration extends Component {
                     <div className="col-4">
                       <AlgaehLabel
                         label={{
-                          forceLabel: "Company Tax"
+                          forceLabel: "Company Tax",
                         }}
                       />
                       <h6>{GetAmountFormart(this.state.company_tax)}</h6>
@@ -846,7 +846,7 @@ class InvoiceGeneration extends Component {
                     <div className="col-4">
                       <AlgaehLabel
                         label={{
-                          forceLabel: "Company Payable"
+                          forceLabel: "Company Payable",
                         }}
                       />
                       <h6>{GetAmountFormart(this.state.company_payble)}</h6>
@@ -981,7 +981,7 @@ function mapStateToProps(state) {
     orderedserviceslist: state.orderedserviceslist,
     serviceslist: state.serviceslist,
     invoiceGen: state.invoiceGen,
-    existinsurance: state.existinsurance
+    existinsurance: state.existinsurance,
   };
 }
 
@@ -993,15 +993,12 @@ function mapDispatchToProps(dispatch) {
       getMedicationList: AlgaehActions,
       initialStateOrders: AlgaehActions,
       getInvoiceGeneration: AlgaehActions,
-      getPatientInsurance: AlgaehActions
+      getPatientInsurance: AlgaehActions,
     },
     dispatch
   );
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(InvoiceGeneration)
+  connect(mapStateToProps, mapDispatchToProps)(InvoiceGeneration)
 );
