@@ -31,7 +31,6 @@ export function PrepaymentProcess() {
   }, []);
 
   const loadListToProcess = async (data) => {
-    debugger;
     try {
       const res = await newAlgaehApi({
         uri: "/prepayment/loadPrepaymentsToProcess",
@@ -139,41 +138,44 @@ export function PrepaymentProcess() {
               <AlgaehDataGrid
                 columns={[
                   {
-                    fieldName: "pretype",
+                    fieldName: "prepayment_desc",
                     label: "Prepayment Type",
                     sortable: true,
                   },
                   {
-                    fieldName: "preEmpCode",
+                    fieldName: "request_code",
+                    label: "Request Code",
+                    sortable: true,
+                  },
+                  {
+                    fieldName: "employee_code",
                     label: "Employee Code",
                     sortable: true,
                   },
                   {
-                    fieldName: "preEmpName",
+                    fieldName: "employee_name",
                     label: "Employee Name",
                     sortable: true,
                   },
                   {
-                    fieldName: "preAmt",
+                    fieldName: "prepayment_amount",
                     label: "Prepayment Amt.",
                     sortable: true,
                   },
                   {
-                    fieldName: "preStartDate",
-                    label: "Prepayment Start date",
+                    fieldName: "start_date",
+                    label: "Start date",
                     sortable: true,
                   },
                   {
-                    fieldName: "preEndDate",
-                    label: "Prepayment End date",
+                    fieldName: "end_date",
+                    label: "End date",
                     sortable: true,
                   },
                 ]}
                 loading={false}
-                isEditable="onlyDelete"
                 height="34vh"
                 data={list}
-                rowUnique="prePayDesc"
                 events={{}}
                 others={{}}
               />
