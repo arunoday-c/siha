@@ -628,13 +628,14 @@ export const loadPrepaymentsToProcess = (req, res, next) => {
           .executeQuery({
             query: `select finance_f_prepayment_request_id, prepayment_type_id,prepayment_desc,request_code,
       employee_id,employee_code ,E.full_name as employee_name , ROUND( amount,${decimal_places}) as  amount,
-      date_format(concat (D.year,'-',D.month,'-01'),'%Y-%M') as pay_month ${selectStr}
+      ROUND(prepayment_amount,${decimal_places}) as prepayment_amount,
+      date_format(concat (D.year,'-',D.month,'-01'),'%Y-%M') as pay_month,PR.start_date, PR.end_date ${selectStr}
       from finance_f_prepayment_request PR  inner join finance_d_prepayment_type PT 
       on PR.prepayment_type_id=PT.finance_d_prepayment_type_id inner join finance_f_prepayment_detail D 
       on PR.finance_f_prepayment_request_id=D.prepayment_request_id
       left join hims_d_employee E on PR.employee_id=E.hims_d_employee_id ${joinStr}
       where PR.prepayment_type_id=? and D.year=? and D.month=?  ;`,
-            values: [finance_d_prepayment_type_id, year, month],
+            values: [finance_d_prepayment_type_id, year, parseInt(month)],
             printQuery: true,
           })
           .then((result) => {
