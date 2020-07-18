@@ -224,20 +224,75 @@ export const addPrepaymentRequest = (req, res, next) => {
 //created by:irfan
 export const getPrepaymentRequests = (req, res, next) => {
   const _mysql = new algaehMysql();
+
+  const input = req.query;
   const decimal_places = req.userIdentity.decimal_places;
+  let whereStr = "";
+
+  switch (input.request_status) {
+    case "A":
+      whereStr += " request_status='A' ";
+      break;
+    case "R":
+      whereStr += " request_status='R' ";
+      break;
+    case "P":
+      whereStr += " request_status='P' ";
+      break;
+  }
+  if (input.hospital_id > 0) {
+    whereStr += ` and PR.hospital_id=${input.hospital_id}`;
+  }
 
   _mysql
     .executeQuery({
-      query: `select finance_f_prepayment_request_id, prepayment_type_id,prepayment_desc,request_code,request_status,\
-      employee_id,employee_code , ROUND(prepayment_amount,${decimal_places}) as prepayment_amount, start_date, end_date\
-      from finance_f_prepayment_request PR  inner join finance_d_prepayment_type P \
-      on PR.prepayment_type_id=P.finance_d_prepayment_type_id\
-      left join hims_d_employee E on PR.employee_id=E.hims_d_employee_id ;`,
+      query: "  SELECT cost_center_type  FROM finance_options limit 1; ",
     })
-    .then((result) => {
-      _mysql.releaseConnection();
-      req.records = result;
-      next();
+    .then((options) => {
+      let selectStr = "";
+      let joinStr = "";
+
+      if (options[0]["cost_center_type"] == "P") {
+        selectStr += ` ,PR.project_id as cost_center_id, P.project_desc as cost_center`;
+        joinStr += ` left join hims_d_project P on PR.project_id=P.hims_d_project_id `;
+
+        if (input.cost_center_id > 0) {
+          whereStr += ` and PR.project_id=${input.cost_center_id}`;
+        }
+      } else if (options[0]["cost_center_type"] == "SD") {
+        selectStr += ` ,PR.sub_department_id   as cost_center_id, SD.sub_department_name as cost_center`;
+        joinStr += ` left join hims_d_sub_department SD on PR.sub_department_id=SD.hims_d_sub_department_id `;
+        if (input.cost_center_id > 0) {
+          whereStr += ` and PR.sub_department_id=${input.cost_center_id}`;
+        }
+      } else {
+        selectStr += `,hims_d_hospital_id as cost_center_id ,hospital_name as cost_center`;
+      }
+
+      if (whereStr != "") {
+        whereStr = " where " + whereStr;
+      }
+      _mysql
+        .executeQuery({
+          query: `select finance_f_prepayment_request_id, prepayment_type_id,prepayment_desc,request_code,request_status,\
+    employee_id,employee_code ,E.full_name as employee_name , ROUND(prepayment_amount,${decimal_places}) as prepayment_amount, PR.start_date, PR.end_date,\
+    hims_d_hospital_id,hospital_name ${selectStr}
+    from finance_f_prepayment_request PR  inner join finance_d_prepayment_type PT \
+    on PR.prepayment_type_id=PT.finance_d_prepayment_type_id\
+    left join hims_d_employee E on PR.employee_id=E.hims_d_employee_id
+    left join hims_d_hospital H on PR.hospital_id=H.hims_d_hospital_id${joinStr}
+        ${whereStr};`,
+          printQuery: true,
+        })
+        .then((result) => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch((e) => {
+          _mysql.releaseConnection();
+          next(e);
+        });
     })
     .catch((e) => {
       _mysql.releaseConnection();
@@ -305,7 +360,7 @@ export const getPrepaymentRequestToAuthorize = (req, res, next) => {
       _mysql
         .executeQuery({
           query: `select finance_f_prepayment_request_id, prepayment_type_id,prepayment_desc,request_code,request_status,\
-        employee_id,employee_code , ROUND(prepayment_amount,${decimal_places}) as prepayment_amount, PR.start_date, PR.end_date,\
+        employee_id,employee_code ,E.full_name as employee_name ,ROUND(prepayment_amount,${decimal_places}) as prepayment_amount, PR.start_date, PR.end_date,\
         hims_d_hospital_id,hospital_name ${selectStr}
         from finance_f_prepayment_request PR  inner join finance_d_prepayment_type PT \
         on PR.prepayment_type_id=PT.finance_d_prepayment_type_id\
@@ -542,25 +597,55 @@ export const authorizePrepaymentRequest = (req, res, next) => {
 export const loadPrepaymentsToProcess = (req, res, next) => {
   const _mysql = new algaehMysql();
   const decimal_places = req.userIdentity.decimal_places;
-
-  const { finance_d_prepayment_type_id, year, month } = req.query;
+  const input = req.query;
+  const { finance_d_prepayment_type_id, year, month } = input;
   if (finance_d_prepayment_type_id > 0 && year > 0 && month > 0) {
     _mysql
       .executeQuery({
-        query: `select finance_f_prepayment_request_id, prepayment_type_id,prepayment_desc,request_code,
-      employee_id,employee_code , ROUND( amount,${decimal_places}) as  amount,
-      date_format(concat (D.year,'-',D.month,'-01'),'%Y-%M') as pay_month
-      from finance_f_prepayment_request PR  inner join finance_d_prepayment_type P 
-      on PR.prepayment_type_id=P.finance_d_prepayment_type_id inner join finance_f_prepayment_detail D 
-      on PR.finance_f_prepayment_request_id=D.prepayment_request_id
-      left join hims_d_employee E on PR.employee_id=E.hims_d_employee_id
-      where PR.prepayment_type_id=? and D.year=? and D.month=?  ;`,
-        values: [finance_d_prepayment_type_id, year, month],
+        query: "  SELECT cost_center_type  FROM finance_options limit 1; ",
       })
-      .then((result) => {
-        _mysql.releaseConnection();
-        req.records = result;
-        next();
+      .then((options) => {
+        let selectStr = "";
+        let joinStr = "";
+
+        if (options[0]["cost_center_type"] == "P") {
+          selectStr += ` ,PR.project_id as cost_center_id, P.project_desc as cost_center`;
+          joinStr += ` left join hims_d_project P on PR.project_id=P.hims_d_project_id `;
+
+          if (input.cost_center_id > 0) {
+            whereStr += ` and PR.project_id=${input.cost_center_id}`;
+          }
+        } else if (options[0]["cost_center_type"] == "SD") {
+          selectStr += ` ,PR.sub_department_id   as cost_center_id, SD.sub_department_name as cost_center`;
+          joinStr += ` left join hims_d_sub_department SD on PR.sub_department_id=SD.hims_d_sub_department_id `;
+          if (input.cost_center_id > 0) {
+            whereStr += ` and PR.sub_department_id=${input.cost_center_id}`;
+          }
+        } else {
+          selectStr += `,hims_d_hospital_id as cost_center_id ,hospital_name as cost_center`;
+        }
+        _mysql
+          .executeQuery({
+            query: `select finance_f_prepayment_request_id, prepayment_type_id,prepayment_desc,request_code,
+      employee_id,employee_code ,E.full_name as employee_name , ROUND( amount,${decimal_places}) as  amount,
+      date_format(concat (D.year,'-',D.month,'-01'),'%Y-%M') as pay_month ${selectStr}
+      from finance_f_prepayment_request PR  inner join finance_d_prepayment_type PT 
+      on PR.prepayment_type_id=PT.finance_d_prepayment_type_id inner join finance_f_prepayment_detail D 
+      on PR.finance_f_prepayment_request_id=D.prepayment_request_id
+      left join hims_d_employee E on PR.employee_id=E.hims_d_employee_id ${joinStr}
+      where PR.prepayment_type_id=? and D.year=? and D.month=?  ;`,
+            values: [finance_d_prepayment_type_id, year, month],
+            printQuery: true,
+          })
+          .then((result) => {
+            _mysql.releaseConnection();
+            req.records = result;
+            next();
+          })
+          .catch((e) => {
+            _mysql.releaseConnection();
+            next(e);
+          });
       })
       .catch((e) => {
         _mysql.releaseConnection();
