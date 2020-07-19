@@ -714,7 +714,6 @@ export default {
     const _mysql = new algaehMysql();
     try {
       const utilities = new algaehUtilities();
-      utilities.logger().log("getPrescriptionPOS: ");
 
       const _reqBody = req.body;
       const item_ids = new LINQ(_reqBody)
@@ -727,47 +726,53 @@ export default {
           return s.pharmacy_location_id;
         })
         .ToArray();
-      let _message = "";
 
       _mysql
         .executeQuery({
           query:
-            "select itmloc.item_id, itmloc.pharmacy_location_id, itmloc.batchno, itmloc.expirydt, itmloc.qtyhand, \
-              itmloc.grnno, itmloc.sales_uom, itmloc.barcode, itmloc.sale_price, itmloc.avgcost,\
-              item.item_description, item.service_id,item.category_id,item.group_id, ITMUOM.conversion_factor \
-              from hims_m_item_location as itmloc \
-              inner join hims_d_item_master as item on itmloc.item_id = item.hims_d_item_master_id \
-              left join hims_m_item_uom as ITMUOM  on ITMUOM.item_master_id=item.hims_d_item_master_id \
-              and ITMUOM.uom_id = itmloc.sales_uom and ITMUOM.record_status = 'A' \
-              where item_id in (?) and pharmacy_location_id in (?) and qtyhand > 0 and date(expirydt) > CURDATE() order by date(expirydt)",
-          values: [item_ids, location_ids],
+            `SELECT IM.hims_d_item_master_id, COALESCE(LOC.item_id, LOCAD.item_id) as item_id,
+            COALESCE(LOC.pharmacy_location_id, LOCAD.pharmacy_location_id) as pharmacy_location_id,
+            COALESCE(LOC.batchno, LOCAD.batchno) as batchno, COALESCE(LOC.expirydt, LOCAD.expirydt) as expirydt,
+            COALESCE(LOC.qtyhand, LOCAD.qtyhand) as qtyhand, COALESCE(LOC.sales_uom, LOCAD.sales_uom) as sales_uom,
+            COALESCE(LOC.barcode, LOCAD.barcode) as barcode, COALESCE(LOC.sale_price, LOCAD.sale_price) as sale_price,
+            COALESCE(LOC.avgcost, LOCAD.avgcost) as avgcost, IM.item_description, IM.service_id,
+            IM.category_id as item_category, IM.group_id as item_group_id, IMU.conversion_factor, 'N' as select_item,
+            0 as quantity FROM hims_d_item_master AS IM 
+            left join hims_m_item_location LOC  on IM.hims_d_item_master_id=LOC.item_id and 
+            date(LOC.expirydt) > date(CURDATE()) 
+            left join hims_m_item_location LOCAD  on IM.hims_d_item_master_id=LOCAD.item_id and 
+            LOCAD.expirydt is null and IM.exp_date_required='N'
+            LEFT JOIN hims_m_item_uom AS IMU ON IMU.item_master_id = IM.hims_d_item_master_id
+            AND (IMU.uom_id = LOC.sales_uom OR IMU.uom_id = LOCAD.sales_uom) AND IMU.record_status = 'A' 
+            WHERE hims_d_item_master_id IN (?) ORDER BY DATE(LOC.expirydt)`,
+          values: [item_ids],
           printQuery: true
         })
         .then(result => {
           _mysql.releaseConnection();
+
+          console.log("result", result)
+
           var item_grp = _(result)
-            .groupBy("item_id")
-            .map((row, item_id) => item_id)
+            .groupBy("hims_d_item_master_id")
+            .map((row, hims_d_item_master_id) => hims_d_item_master_id)
             .value();
 
           let outputArray = [];
-          utilities.logger().log("item_grp: ", item_grp);
 
           for (let i = 0; i < item_grp.length; i++) {
-            // utilities.logger().log("item_details: ", item_details);
-
             let item = new LINQ(result)
-              .Where(w => w.item_id == item_grp[i])
+              .Where(w => w.hims_d_item_master_id == item_grp[i])
               .Select(s => {
                 let item_details = new LINQ(_reqBody)
-                  .Where(w => w.item_id == s.item_id)
+                  .Where(w => w.item_id == s.hims_d_item_master_id)
                   .FirstOrDefault();
                 return {
                   select_item: "N",
                   item_id: s.item_id,
                   service_id: s.service_id,
-                  item_category: s.category_id,
-                  item_group_id: s.group_id,
+                  item_category: s.item_category,
+                  item_group_id: s.item_group_id,
                   uom_id: s.sales_uom,
                   sale_price: s.sale_price,
                   quantity: 0,
@@ -784,10 +789,10 @@ export default {
               .FirstOrDefault();
 
             let batches = new LINQ(result)
-              .Where(w => w.item_id == item_grp[i])
+              .Where(w => w.item_id == item_grp[i] && w.qtyhand > 0 && w.pharmacy_location_id == location_ids[0])
               .Select(s => {
                 let item_details = new LINQ(_reqBody)
-                  .Where(w => w.item_id == s.item_id)
+                  .Where(w => w.item_id == s.hims_d_item_master_id)
                   .FirstOrDefault();
                 return {
                   item_description: s.item_description,
@@ -801,12 +806,12 @@ export default {
                   sale_price: s.sale_price,
                   conversion_factor: s.conversion_factor,
                   average_cost: s.avgcost,
-                  sales_uom: s.sales_uom,
+                  sales_uom: parseInt(s.sales_uom),
                   quantity: 0,
                   service_id: s.service_id,
-                  item_category: s.category_id,
-                  item_group_id: s.group_id,
-                  uom_id: s.sales_uom,
+                  item_category: s.item_category,
+                  item_group_id: s.item_group_id,
+                  uom_id: parseInt(s.sales_uom),
 
                   insured: item_details.insured,
                   insurance_yesno: item_details.insured,
@@ -817,6 +822,7 @@ export default {
               })
               .ToArray();
 
+            console.log("batches", batches)
             outputArray.push({ ...item, batches });
           }
 
