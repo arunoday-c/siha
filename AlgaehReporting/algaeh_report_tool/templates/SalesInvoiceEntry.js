@@ -33,19 +33,19 @@ const executePDF = function executePDFMethod(options) {
       options.mysql
         .executeQuery({
           query: `select  H.*, C.customer_name, C.arabic_customer_name,C.vat_number,C.address, 
-                    SO.sales_order_number, SO.customer_po_no, SO.sales_order_date
-                    from  hims_f_sales_invoice_header H 
-                    inner join hims_d_customer C on H.customer_id = C.hims_d_customer_id
-                    inner join hims_f_sales_order SO on H.sales_order_id = SO.hims_f_sales_order_id
-                    where H.invoice_number=?;                    
-                    select B.*, IM.item_code,IM.item_description, ROUND(B.tax_percentage, 0) as tax_percentage from
-                    hims_f_sales_invoice_header IH 
-                    inner join  hims_f_sales_invoice_detail ID on IH.hims_f_sales_invoice_header_id=ID.sales_invoice_header_id  
-                    inner join hims_f_sales_dispatch_note_header H  on ID.dispatch_note_header_id=H.hims_f_dispatch_note_header_id 
-                    inner join hims_f_sales_dispatch_note_detail D on H.hims_f_dispatch_note_header_id= D. dispatch_note_header_id
-                    inner join hims_f_sales_dispatch_note_batches B on D.hims_f_sales_dispatch_note_detail_id=B.sales_dispatch_note_detail_id
-                    inner  join hims_d_inventory_item_master IM on B.item_id=IM.hims_d_inventory_item_master_id
-                    where IH.invoice_number=?  order by IM.item_description asc;`,
+          SO.sales_order_number, SO.customer_po_no, SO.sales_order_date
+          from  hims_f_sales_invoice_header H 
+          inner join hims_d_customer C on H.customer_id = C.hims_d_customer_id
+          inner join hims_f_sales_order SO on H.sales_order_id = SO.hims_f_sales_order_id
+          where H.invoice_number=?;                    
+          select B.*,SUM(dispatch_quantity) as dispatch_quantity, SUM(total_amount) as total_amount, IM.item_code,IM.item_description, ROUND(B.tax_percentage, 0) as tax_percentage from
+          hims_f_sales_invoice_header IH 
+          inner join  hims_f_sales_invoice_detail ID on IH.hims_f_sales_invoice_header_id=ID.sales_invoice_header_id  
+          inner join hims_f_sales_dispatch_note_header H  on ID.dispatch_note_header_id=H.hims_f_dispatch_note_header_id 
+          inner join hims_f_sales_dispatch_note_detail D on H.hims_f_dispatch_note_header_id= D. dispatch_note_header_id
+          inner join hims_f_sales_dispatch_note_batches B on D.hims_f_sales_dispatch_note_detail_id=B.sales_dispatch_note_detail_id
+          inner  join hims_d_inventory_item_master IM on B.item_id=IM.hims_d_inventory_item_master_id
+          where IH.invoice_number=?  group by item_id order by IM.item_description asc;`,
           values: [
             input.invoice_number,
             input.invoice_number,
