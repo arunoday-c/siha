@@ -9393,57 +9393,29 @@ function processBulkAtt_Normal(data) {
                               year: input.year,
                               month: input.month,
                               total_days: 1,
-                              present_days: present_days,
-                              display_present_days: display_present_days,
-                              absent_days: absent,
+                              present_days: 0,
+                              display_present_days: 0,
+                              absent_days: 1,
                               total_work_days: 1,
-                              weekoff_days:
-                                AttenResult[i]["status"] == "WO" ? 1 : 0,
-                              holidays:
-                                AttenResult[i]["status"] == "HO" ? 1 : 0,
-                              paid_leave: paid_leave,
-                              unpaid_leave: unpaid_leave,
-                              anual_leave: anual_leave,
-                              total_hours:
-                                AttenResult[i]["consider_ot_shrtg"] == "Y"
-                                  ? AttenResult[i]["worked_hours"]
-                                  : AttenResult[i]["actual_hours"] +
-                                    "." +
-                                    AttenResult[i]["actual_minutes"],
-                              hours:
-                                AttenResult[i]["consider_ot_shrtg"] == "Y"
-                                  ? AttenResult[i]["hours"]
-                                  : AttenResult[i]["actual_hours"],
-                              minutes:
-                                AttenResult[i]["consider_ot_shrtg"] == "Y"
-                                  ? AttenResult[i]["minutes"]
-                                  : AttenResult[i]["actual_minutes"],
-                              working_hours:
-                                AttenResult[i]["actual_hours"] +
-                                "." +
-                                AttenResult[i]["actual_minutes"],
+                              weekoff_days: 0,
+                              holidays: 0,
+                              paid_leave: 0,
+                              unpaid_leave: 0,
+                              anual_leave: 0,
+                              total_hours: 0,
+                              hours: 0,
+                              minutes: 0,
+                              working_hours: 0,
 
-                              shortage_hours:
-                                AttenResult[i]["consider_ot_shrtg"] == "Y"
-                                  ? shortage_time
-                                  : 0,
-                              shortage_minutes:
-                                AttenResult[i]["consider_ot_shrtg"] == "Y"
-                                  ? shortage_min
-                                  : 0,
-                              ot_work_hours:
-                                AttenResult[i]["consider_ot_shrtg"] == "Y"
-                                  ? ot_time
-                                  : 0,
-                              ot_minutes:
-                                AttenResult[i]["consider_ot_shrtg"] == "Y"
-                                  ? ot_min
-                                  : 0,
+                              shortage_hours: 0,
+                              shortage_minutes: 0,
+                              ot_work_hours: 0,
+                              ot_minutes: 0,
 
-                              ot_weekoff_hours: week_off_ot_hour,
-                              ot_weekoff_minutes: week_off_ot_min,
-                              ot_holiday_hours: holiday_ot_hour,
-                              ot_holiday_minutes: holiday_ot_min,
+                              ot_weekoff_hours: 0,
+                              ot_weekoff_minutes: 0,
+                              ot_holiday_hours: 0,
+                              ot_holiday_minutes: 0,
                             });
                           }
                           // else {
