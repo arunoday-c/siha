@@ -777,6 +777,7 @@ class ContractManagement extends Component {
                         }));
                         return false;
                       }}
+                      disabled={this.state.dataExists && !this.state.editMode}
                       fileList={this.state.contract_files}
                     >
                       <p className="upload-drag-icon">
