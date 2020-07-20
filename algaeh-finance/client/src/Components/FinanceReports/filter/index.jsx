@@ -25,7 +25,7 @@ export default memo(function (props) {
       .filter((f) => f.initalStates !== undefined)
       .forEach((item) => {
         const hasTitle =
-          typeof item.data === "string"
+          typeof item.data === "string" && item.title === undefined
             ? item.data.toUpperCase().replace(/ /gi, "")
             : item.title.toUpperCase().replace(/ /gi, "");
         if (hasTitle !== undefined && hasTitle !== "") {
@@ -37,6 +37,8 @@ export default memo(function (props) {
 
   function updateInput(obj) {
     setInputs((result) => {
+      console.log("result", result);
+      console.log("obj", obj);
       return { ...result, ...obj };
     });
   }
@@ -64,6 +66,8 @@ export default memo(function (props) {
           minDate,
           onChange,
           dependent,
+          isImp,
+          onClear,
         } = filter;
 
         if (component !== undefined) {
@@ -74,7 +78,7 @@ export default memo(function (props) {
         const oth = others !== undefined ? { others: others } : {};
 
         const int =
-          typeof data === "string"
+          typeof data === "string" && title === undefined
             ? data.toUpperCase().replace(/ /gi, "")
             : title.toUpperCase().replace(/ /gi, "");
         let name = title === undefined ? data : title;
@@ -86,21 +90,25 @@ export default memo(function (props) {
                 div={{ className: className === undefined ? "col" : className }}
                 label={{
                   forceLabel: title === undefined ? data : title,
-                  isImp: true,
+                  isImp: isImp === undefined ? false : isImp,
                 }}
                 selector={{
                   value: inputs[int],
                   ...dta,
                   onChange: (_, value) => {
                     let dpt = {};
+
                     if (dependent !== undefined) {
                       let depen = {};
                       const { depend } = _;
                       dependent.forEach((item) => {
                         const itm = item.toUpperCase().replace(/ /gi, "");
-                        depen[itm] = depend["type"];
-                        dpt[itm] = depend["value"];
-                        if (depend["title"] !== undefined) {
+                        depen[itm] = depend !== undefined ? depend.type : "";
+                        dpt[itm] = depend !== undefined ? depend.value : "";
+                        if (
+                          depend !== undefined &&
+                          depend.title !== undefined
+                        ) {
                           depen[`title_${itm}`] = depend["title"];
                         }
                       });
@@ -111,7 +119,12 @@ export default memo(function (props) {
 
                     updateInput({ [int]: value, ...dpt });
 
-                    if (typeof onChange === "function") onChange(value, inputs);
+                    if (typeof onChange === "function")
+                      onChange(value, inputs, updateInput);
+                  },
+                  onClear: () => {
+                    updateInput({ [int]: undefined });
+                    if (typeof onChange === "function") onClear(updateInput);
                   },
                   ...oth,
                 }}
@@ -142,7 +155,7 @@ export default memo(function (props) {
                 div={{ className: className === undefined ? "col" : className }}
                 label={{
                   forceLabel: name,
-                  isImp: true,
+                  isImp: isImp === undefined ? false : isImp,
                 }}
                 maxDate={maxDate}
                 minDate={minDate}
@@ -152,17 +165,21 @@ export default memo(function (props) {
                 }}
                 events={{
                   onChange: (selected) => {
-                    if (selected === null) {
-                      updateInput({ [int]: undefined });
-                    } else {
-                      if (typeString !== "" && typeString === "year") {
-                        updateInput({ [int]: selected.year().toString() });
+                    if (typeof onChange === "function")
+                      onChange(selected, inputs, updateInput);
+                    else {
+                      if (selected === null) {
+                        updateInput({ [int]: undefined });
                       } else {
-                        updateInput({ [int]: selected });
+                        if (typeString !== "" && typeString === "year") {
+                          updateInput({ [int]: selected.year().toString() });
+                        } else {
+                          updateInput({
+                            [int]: selected,
+                          });
+                        }
                       }
                     }
-                    if (typeof onChange === "function")
-                      onChange(selected, inputs);
                   },
                 }}
                 {...oth}

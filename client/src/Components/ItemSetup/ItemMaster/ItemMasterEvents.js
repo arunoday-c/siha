@@ -156,6 +156,9 @@ const InsertUpdateItems = $this => {
               });
             } else {
               $this.state.record_status = "A";
+              $this.state.service_code = $this.state.item_code;
+              $this.state.service_name = $this.state.item_description;
+
               algaehApiCall({
                 uri: "/pharmacy/updateItemMasterAndUom",
                 module: "pharmacy",

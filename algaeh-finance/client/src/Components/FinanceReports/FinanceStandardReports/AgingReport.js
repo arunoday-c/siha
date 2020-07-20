@@ -99,11 +99,11 @@ export default function AgingReport({ style, result, layout, type, dates }) {
     <PrintLayout
       title={`Account ${
         type === "receivable" ? "Receivable" : "Payable"
-      } Aging Report`}
+        } Aging Report`}
       columns={[
         {
           fieldName: "customer",
-          label: "Vendor Name",
+          label: type === "receivable" ? "Customer Name" : "Vendor Name",
           filterable: true,
           sortable: true,
         },

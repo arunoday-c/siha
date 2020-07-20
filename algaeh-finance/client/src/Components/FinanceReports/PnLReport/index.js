@@ -34,7 +34,7 @@ export default function PnLReport({
   const [cost_center_id, setCostCenterId] = useState(
     finOptions.default_cost_center_id
   );
-  const [preview, setPreview] = useState(false);
+  const [preview, setPreview] = useState(undefined);
   const [data, setData] = useState(null);
   const [filter, setFilter] = useState([]);
 
@@ -271,9 +271,11 @@ export default function PnLReport({
       });
   }
   function onLoad() {
+    if (preview !== undefined) {
+      return null;
+    }
     const { filterKey } = selectedFilter;
-    console.log("columnType", columnType);
-    console.log("filterKey", filterKey);
+
     if (columnType === "by_year") {
       loadReportByYear(isExcel);
     } else if (columnType === "by_center") {
@@ -327,7 +329,7 @@ export default function PnLReport({
     setChangeInPercentage(CHANGEINPERCENTAGE);
     setChangeInAmount(CHANGEINAMOUNT);
     setPreview((result) => {
-      return !result;
+      return result === undefined ? false : !result;
     });
   }
   function filterBuilder(existing, updated) {
@@ -370,6 +372,20 @@ export default function PnLReport({
                 title: "RANGE",
                 maxDate: moment(),
                 initalStates: [moment().startOf("month"), moment()],
+                onChange: (selected, val, cb) => {
+                  if (filter.length > 0) {
+                    const frdt = selected[0].clone();
+                    const tdt = selected[1].clone();
+                    const previousfrom = frdt.subtract(1, "years");
+                    const previousto = tdt.subtract(1, "years");
+                    cb({
+                      PREVIOUSRANGE: [previousfrom, previousto],
+                      RANGE: selected,
+                    });
+                  } else {
+                    cb({ RANGE: selected });
+                  }
+                },
               },
               {
                 className: "col-2 form-group",

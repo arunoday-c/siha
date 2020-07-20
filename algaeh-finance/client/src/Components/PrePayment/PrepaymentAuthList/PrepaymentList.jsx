@@ -377,11 +377,6 @@ Prepayment Type: ${row.prepayment_desc}`,
                       sortable: true,
                     },
                     {
-                      fieldName: "hospital_name",
-                      label: "Hospital",
-                      sortable: true,
-                    },
-                    {
                       fieldName: "cost_center",
                       label: "Cost Center",
                       sortable: true,

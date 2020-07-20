@@ -26,7 +26,8 @@ class PrescribedItemList extends Component {
     this.state = {
       item_batches: [],
       viewPreapproval: false,
-      selected_row: null
+      selected_row: null,
+      stock_exists: false
     };
   }
 
@@ -88,10 +89,10 @@ class PrescribedItemList extends Component {
                                 {row.select_item === "N" ? (
                                   <span className="badge badge-danger">No</span>
                                 ) : (
-                                  <span className="badge badge-success">
-                                    Yes
+                                    <span className="badge badge-success">
+                                      Yes
                                   </span>
-                                )}
+                                  )}
                               </span>
                             );
                           }
@@ -132,17 +133,17 @@ class PrescribedItemList extends Component {
                             return row.pre_approval === "N" ? (
                               <span>Not Required</span>
                             ) : (
-                              <span
-                                className="pat-code"
-                                onClick={getMedicationAprovalList.bind(
-                                  this,
-                                  this,
-                                  row
-                                )}
-                              >
-                                Required
+                                <span
+                                  className="pat-code"
+                                  onClick={getMedicationAprovalList.bind(
+                                    this,
+                                    this,
+                                    row
+                                  )}
+                                >
+                                  Required
                               </span>
-                            );
+                              );
                           },
                           disabled: true
                         }
@@ -159,8 +160,10 @@ class PrescribedItemList extends Component {
                           let _index = this.state.prescribed_item_list.indexOf(
                             row
                           );
+
                           this.setState({
                             item_batches: row.batches,
+                            stock_exists: row.batches.length === 0 ? true : false,
                             selected_row: _index
                           });
                         } else {
@@ -173,6 +176,13 @@ class PrescribedItemList extends Component {
                     />
                   </div>
                   <div className="col-8" id="itemBatchsGrid_Cntr">
+                    {this.state.stock_exists ? (
+                      <div className="col">
+                        <AlgaehLabel
+                          label={{ forceLabel: "Stock Not Available" }}
+                        />
+                      </div>
+                    ) : null}
                     <AlgaehDataGrid
                       id="itemBatchsGrid"
                       columns={[
@@ -188,13 +198,14 @@ class PrescribedItemList extends Component {
                             <AlgaehLabel label={{ forceLabel: "Sales UOM" }} />
                           ),
                           displayTemplate: row => {
+
                             let display =
                               this.props.itemuom === undefined
                                 ? []
                                 : this.props.itemuom.filter(
-                                    f =>
-                                      f.hims_d_pharmacy_uom_id === row.sales_uom
-                                  );
+                                  f =>
+                                    f.hims_d_pharmacy_uom_id === row.sales_uom
+                                );
 
                             return (
                               <span>
@@ -296,7 +307,7 @@ class PrescribedItemList extends Component {
                       onClick={processSelectedItems.bind(this, this)}
                       type="button"
                       className="btn btn-primary"
-                      // disabled={this.state.button_enable}
+                    // disabled={this.state.button_enable}
                     >
                       Process
                     </button>

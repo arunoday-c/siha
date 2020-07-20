@@ -196,7 +196,7 @@ export default {
               hims_d_sub_department_id,SD.sub_department_code,SD.sub_department_name\
               from hims_d_department D inner join hims_d_sub_department  SD\
               on D.hims_d_department_id=SD.department_id\
-              where D.department_status='A' and SD.sub_department_status='A';",
+              where D.department_status='A' and SD.sub_department_status='A' and D.record_status='A' and SD.record_status='A';",
           })
           .then((result) => {
             _mysql.releaseConnection();

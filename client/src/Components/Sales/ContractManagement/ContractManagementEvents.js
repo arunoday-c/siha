@@ -116,47 +116,95 @@ export const SaveContract = ($this) => {
 
       AlgaehLoader({ show: true });
       $this.state.terms_conditions = $this.state.comment_list.join("<br/>");
-      algaehApiCall({
-        uri: "/ContractManagement/addContractManagement",
-        module: "sales",
-        method: "POST",
-        data: $this.state,
-        onSuccess: (response) => {
-          if (response.data.success) {
-            $this.setState({
-              contract_number: response.data.records.contract_number,
-              hims_f_contract_management_id:
-                response.data.records.hims_f_contract_management_id,
-              saveEnable: true,
-              dataExists: true,
-            });
-            saveDocument(
-              $this.state.contract_files,
-              response.data.records.contract_number,
-              response.data.records.hims_f_contract_management_id,
-              $this
-            );
-            swalMessage({
-              type: "success",
-              title: "Saved successfully ...",
-            });
+      debugger
+      if ($this.state.hims_f_contract_management_id !== null) {
+        algaehApiCall({
+          uri: "/ContractManagement/updateContractManagement",
+          module: "sales",
+          method: "PUT",
+          data: $this.state,
+          onSuccess: (response) => {
+            if (response.data.success) {
+              $this.setState(
+                {
+                  saveEnable: true,
+                  dataExists: true,
+                  editMode: false,
+                },
+                () => {
+                  getCtrlCode($this, $this.state.contract_number);
+                }
+              );
+              saveDocument(
+                $this.state.contract_files,
+                $this.state.contract_number,
+                $this.state.hims_f_contract_management_id,
+                $this
+              );
+              swalMessage({
+                type: "success",
+                title: "Saved successfully ...",
+              });
+              AlgaehLoader({ show: false });
+            } else {
+              AlgaehLoader({ show: false });
+              swalMessage({
+                type: "error",
+                title: response.data.records.message,
+              });
+            }
+          },
+          onFailure: (error) => {
             AlgaehLoader({ show: false });
-          } else {
-            AlgaehLoader({ show: false });
             swalMessage({
+              title: error.message,
               type: "error",
-              title: response.data.records.message,
             });
-          }
-        },
-        onFailure: (error) => {
-          AlgaehLoader({ show: false });
-          swalMessage({
-            title: error.message,
-            type: "error",
-          });
-        },
-      });
+          },
+        });
+      } else {
+        algaehApiCall({
+          uri: "/ContractManagement/addContractManagement",
+          module: "sales",
+          method: "POST",
+          data: $this.state,
+          onSuccess: (response) => {
+            if (response.data.success) {
+              $this.setState({
+                contract_number: response.data.records.contract_number,
+                hims_f_contract_management_id:
+                  response.data.records.hims_f_contract_management_id,
+                saveEnable: true,
+                dataExists: true,
+              });
+              saveDocument(
+                $this.state.contract_files,
+                response.data.records.contract_number,
+                response.data.records.hims_f_contract_management_id,
+                $this
+              );
+              swalMessage({
+                type: "success",
+                title: "Saved successfully ...",
+              });
+              AlgaehLoader({ show: false });
+            } else {
+              AlgaehLoader({ show: false });
+              swalMessage({
+                type: "error",
+                title: response.data.records.message,
+              });
+            }
+          },
+          onFailure: (error) => {
+            AlgaehLoader({ show: false });
+            swalMessage({
+              title: error.message,
+              type: "error",
+            });
+          },
+        });
+      }
     },
   });
 };
@@ -178,6 +226,7 @@ export function updateContract() {
 
       AlgaehLoader({ show: true });
       this.state.terms_conditions = this.state.comment_list.join("<br/>");
+
       algaehApiCall({
         uri: "/ContractManagement/updateContractManagement",
         module: "sales",

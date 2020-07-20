@@ -27,7 +27,7 @@ export function getContractManagement(req, res, next) {
               query:
                 "select QS.*, S.service_name from hims_f_contract_management_services QS \
                             inner join hims_d_services S on S.hims_d_services_id = QS.services_id \
-                            where contract_management_id=? and QS.record_status='A';",
+                            where contract_management_id=?;",
               values: [headerResult[0].hims_f_contract_management_id],
               printQuery: true,
             })
@@ -325,10 +325,6 @@ export function updateContractManagement(req, res, next) {
                 "created_by",
                 "created_date",
               ],
-              extraValues: {
-                updated_by: algaeh_d_app_user_id,
-                updated_date: new Date(),
-              },
               bulkInsertOrUpdate: true,
               printQuery: true,
             })

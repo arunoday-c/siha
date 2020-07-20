@@ -1154,7 +1154,8 @@ let load_orders_for_bill = (req, res, next) => {
           OS.`deductable_amount`, OS.`deductable_percentage`, OS.`tax_inclusive`, OS.`patient_tax`,\
           OS.`company_tax`, OS.`total_tax`, OS.`patient_resp`, OS.`patient_payable`,OS.`comapany_resp`,\
           OS.`company_payble`, OS.`sec_company`, OS.`sec_deductable_percentage`, OS.`sec_deductable_amount`,\
-          OS.`sec_company_res`, OS.`sec_company_tax`, OS.`sec_company_paybale`, OS.`sec_copay_percntage`, OS.`sec_copay_amount`,OS.`created_by`, OS.`created_date`, OS.`updated_by`, OS.`updated_date`,\
+          OS.`sec_company_res`, OS.`sec_company_tax`, OS.`sec_company_paybale`, OS.`sec_copay_percntage`, \
+          OS.`sec_copay_amount`,OS.package_visit_type, OS.`created_by`, OS.`created_date`, OS.`updated_by`, OS.`updated_date`,\
           OS.`record_status`, S.`hims_d_services_id`, S.`service_code`, S.`cpt_code`, S.`service_name`,\
           S.`arabic_service_name`, S.`service_desc`, S.`sub_department_id`, S.`hospital_id`, S.`service_type_id`,\
           S.`procedure_type`, S.`standard_fee`, S.`followup_free_fee`, S.`followup_paid_fee`, S.`discount`,\
@@ -1209,7 +1210,7 @@ let getOrderServices = (req, res, next) => {
       connection.query(
         "SELECT  * FROM `hims_f_ordered_services` \
        WHERE `record_status`='A' AND " +
-          where.condition,
+        where.condition,
         where.values,
         (error, result) => {
           releaseDBConnection(db, connection);
@@ -2029,12 +2030,12 @@ let getPatientPackage = (req, res, next) => {
               PM.package_name,P.full_name,P.patient_code, PM.cancellation_policy, \
               PM.cancellation_amount as can_amt, PM.package_code from hims_f_package_header H, \
               hims_d_package_header PM, hims_f_patient P where H.patient_id = P.hims_d_patient_id \
-              and PM.hims_d_package_header_id = H.package_id and  H.record_status='A'\
+              and PM.hims_d_package_header_id = H.package_id and  H.record_status='A' and H.package_visit_type='M' \
               and H.hospital_id=?  ${str};
               select D.*,0 as quantity, D.service_id as services_id from hims_f_package_header H  \
               inner join hims_f_package_detail D\
-              on H.hims_f_package_header_id=D.package_header_id where H.record_status='A'\
-              and H.hospital_id=?  ${str};  `,
+              on H.hims_f_package_header_id=D.package_header_id where H.record_status='A' \
+              and package_visit_type='M' and H.hospital_id=?  ${str};  `,
         values: [req.userIdentity.hospital_id, req.userIdentity.hospital_id],
         printQuery: true,
       })
@@ -2045,7 +2046,7 @@ let getPatientPackage = (req, res, next) => {
         header.forEach((item) => {
           const package_details = details.filter((detail) => {
             return (
-              detail["package_header_id"] == item["hims_f_package_header_id"]
+              detail["package_header_id"] == item["hims_f_package_header_id"] && detail["package_visit_type"] == "M"
             );
           });
 

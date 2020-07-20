@@ -739,6 +739,10 @@
         "label": "Name"
       },
       {
+        "fieldName": "identity_no",
+        "label": "Identity No."
+      },
+      {
         "fieldName": "sub_department_name",
         "label": "Sub Department"
       },
