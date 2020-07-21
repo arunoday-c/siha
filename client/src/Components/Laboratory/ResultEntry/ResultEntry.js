@@ -453,6 +453,14 @@ class ResultEntry extends Component {
                                                 name: "Not Seen",
                                                 value: "Not Seen",
                                               },
+                                              {
+                                                name: "Reactive",
+                                                value: "Reactive",
+                                              },
+                                              {
+                                                name: "Non-Reactive",
+                                                value: "Non-Reactive",
+                                              },
                                             ],
                                           },
                                           onChange: onchangegridresult.bind(
