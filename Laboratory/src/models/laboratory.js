@@ -867,7 +867,7 @@ export default {
         .executeQuery({
           query:
             "SELECT *,la.description from hims_f_ord_analytes, hims_d_lab_analytes la where hims_f_ord_analytes.record_status='A' \
-          and la.hims_d_lab_analytes_id = hims_f_ord_analytes.analyte_id AND order_id=?",
+          and la.hims_d_lab_analytes_id = hims_f_ord_analytes.analyte_id AND order_id=? order by hims_f_ord_analytes_id",
           values: [req.query.order_id],
           printQuery: true
         })

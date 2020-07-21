@@ -12,10 +12,9 @@
                     <td><label class="textEnLft">Patient Name</label>:<span
                             class="valueText">{{header.patient_full_name}}</span></span><label class="textArRht">
                             الإسم</label></td>
-                    <td><label class="textEnLft">Visit Date</label>:
-                        <span class="valueText">{{dateTime header.visit_date "date"}}</span>
-                        <label class="textArRht"> موعد زيارة</label>
-                    </td>
+                    <td><label class="textEnLft">Visit Date</label>:<span
+                            class="valueText">{{dateTime header.visit_date "date"}}</span>
+                        <label class="textArRht"> موعد زيارة</label></td>
                 </tr>
                 <tr>
                     <td><label class="textEnLft">MR No</label>:<span
@@ -62,35 +61,22 @@
                         <td style="text-align:right"><label class="">العلاج</label></td>
                     </tr>
                     <tr>
-                        <td><label class="">From</label>:
+                        <td><label class="">From Time</label>:
                         </td>
-                        <td><span class="valueTextSick">{{header.from_date}}</span>
+                        <td><span class="valueTextSick">{{header.from_time}}</span>
                         </td>
-                        <td style="text-align:right"><label class="">منتاريخ</label></td>
+                        <td style="text-align:right"><label class="">من وقت</label></td>
                     </tr>
                     <tr>
-                        <td><label class="">To</label>:</td>
-                        <td><span class="valueTextSick">{{header.to_date}}</span>
+                        <td><label class="">To Time</label>:</td>
+                        <td><span class="valueTextSick">{{header.to_time}}</span>
                         </td>
-                        <td style="text-align:right"><label class="">الىتاريخ</label></td>
-                    </tr>
-                    <tr>
-                        <td><label class="">No. of Rest Days</label>:</td>
-                        <td><span class="valueTextSick">{{header.no_of_days}}</span></td>
-                        <td style="text-align:right"><label class="">تاريخ
-                                المريض</label></td>
-                    </tr>
-                    <tr>
-                        <td><label class="">Remarks</label>:
-                        </td>
-                        <td><span class="valueTextSick">{{header.remarks}}</span>
-                        </td>
-                        <td style="text-align:right"><label class="">الملاحظات</label></td>
+                        <td style="text-align:right"><label class="">الى وقت</label></td>
                     </tr>
 
                 </tbody>
             </table>
         </section>
-        <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer>
+        {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
     </div>
 </body>
