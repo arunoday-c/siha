@@ -1108,7 +1108,23 @@ class RegistrationPatient extends Component {
                   >
                     Print Card
                   </button>
-
+                  {this.state.visit_type == 11 && (
+                    <button
+                      type="button"
+                      className="btn btn-other"
+                      onClick={() =>
+                        this.props.history.push(
+                          `/OPBilling?bill_code=${this.state.bill_number}`
+                        )
+                      }
+                    >
+                      <AlgaehLabel
+                        label={{
+                          forceLabel: "Go to Billing",
+                        }}
+                      />
+                    </button>
+                  )}
                   {/* <button
                 className="btn btn-default"
                 // onClick={closePopup.bind(this, this, "")}

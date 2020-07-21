@@ -129,6 +129,10 @@ class OPBilling extends Component {
       },
     });
     getCashiersAndShiftMAP(this, this);
+    const queryParams = new URLSearchParams(this.props.location.search);
+    if (queryParams.get("bill_code")) {
+      this.getCtrlCode(queryParams.get("bill_code"));
+    }
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
