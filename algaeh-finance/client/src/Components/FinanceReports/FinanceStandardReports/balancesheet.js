@@ -230,17 +230,13 @@ export default function BalanceSheet({
             filter
           )}
           callBack={(inputs, cb) => {
-            const {
-              CHANGEINAMOUNT,
-              CHANGEINPERCENTAGE,
-              PREVIOUSRANGE,
-              RANGE,
-            } = inputs;
+            const { PREVIOUSRANGE, RANGE } = inputs;
             setRangeDate(RANGE);
             setPrevDateRange(PREVIOUSRANGE);
-            setChangeInPercentage(CHANGEINPERCENTAGE);
-            setChangeInAccount(CHANGEINAMOUNT);
+            setChangeInPercentage(inputs["CHANGEIN%"]);
+            setChangeInAccount(inputs["CHANGEINAMT."]);
             setStopLoading(cb);
+
             setPreview((result) => {
               return result === undefined ? false : !result;
             });
