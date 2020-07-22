@@ -7,7 +7,8 @@ import _ from "lodash";
 import {
   PRESCRIPTION_FREQ_PERIOD,
   PRESCRIPTION_FREQ_TIME,
-  PRESCRIPTION_FREQ_DURATION
+  PRESCRIPTION_FREQ_DURATION,
+  PRESCRIPTION_FREQ_ROUTE,
 } from "../../../../utils/GlobalVariables.json";
 
 //Text Handaler Change
@@ -16,7 +17,7 @@ const texthandle = ($this, e) => {
   let value = e.value === "" ? null : e.value || e.target.value;
   $this.setState(
     {
-      [name]: value
+      [name]: value,
     },
     () => {
       $this.instructionItems();
@@ -31,7 +32,7 @@ const numberhandle = ($this, ctrl, e) => {
   let name = e.name;
   if (e.value === "") {
     $this.setState({
-      [name]: ""
+      [name]: "",
     });
     return;
   }
@@ -39,12 +40,12 @@ const numberhandle = ($this, ctrl, e) => {
   if (typeof value === "number" && value < 0) {
     swalMessage({
       title: "Cannot be lessthan Zero.",
-      type: "warning"
+      type: "warning",
     });
   } else {
     $this.setState(
       {
-        [name]: value
+        [name]: value,
       },
       () => {
         $this.instructionItems();
@@ -58,11 +59,11 @@ const numberhandle = ($this, ctrl, e) => {
 const SaveMedication = ($this, e) => {
   if ($this.state.medicationitems.length > 0) {
     let dosage_enterted = Enumerable.from($this.state.medicationitems).any(
-      w => parseFloat(w.dosage) === 0 || w.dosage === null || w.dosage === ""
+      (w) => parseFloat(w.dosage) === 0 || w.dosage === null || w.dosage === ""
     );
 
     let no_of_days_ent = Enumerable.from($this.state.medicationitems).any(
-      w =>
+      (w) =>
         parseFloat(w.no_of_days) === 0 ||
         w.no_of_days === null ||
         w.no_of_days === ""
@@ -71,7 +72,7 @@ const SaveMedication = ($this, e) => {
     let instructions_enterted = Enumerable.from(
       $this.state.medicationitems
     ).any(
-      w =>
+      (w) =>
         parseFloat(w.instructions) === 0 ||
         w.instructions === null ||
         w.instructions === ""
@@ -80,7 +81,7 @@ const SaveMedication = ($this, e) => {
     if (dosage_enterted === true) {
       swalMessage({
         title: "Please enter Dosage.",
-        type: "warning"
+        type: "warning",
       });
       return;
     }
@@ -88,7 +89,7 @@ const SaveMedication = ($this, e) => {
     if (no_of_days_ent === true) {
       swalMessage({
         title: "Please enter Duration.",
-        type: "warning"
+        type: "warning",
       });
       return;
     }
@@ -96,7 +97,7 @@ const SaveMedication = ($this, e) => {
     if (instructions_enterted === true) {
       swalMessage({
         title: "Please enter Instructions.",
-        type: "warning"
+        type: "warning",
       });
       return;
     }
@@ -115,17 +116,17 @@ const SaveMedication = ($this, e) => {
       sub_insurance_provider_id: $this.state.sub_insurance_provider_id,
       sub_insurance_id: $this.state.sub_insurance_provider_id,
 
-      medicationitems: $this.state.medicationitems
+      medicationitems: $this.state.medicationitems,
     };
     algaehApiCall({
       uri: "/orderMedication/addPatientPrescription",
       data: inputObj,
       method: "POST",
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           swalMessage({
             title: "Ordered Successfully.",
-            type: "success"
+            type: "success",
           });
           if (Window.global["orderMedicationState"] !== null)
             removeGlobal("orderMedicationState");
@@ -133,7 +134,7 @@ const SaveMedication = ($this, e) => {
           $this.setState(
             {
               saveMedicationEnable: true,
-              medicationitems: []
+              medicationitems: [],
             },
             () => {
               $this.props.refreshState.getPatientMedications();
@@ -142,12 +143,12 @@ const SaveMedication = ($this, e) => {
           );
         }
       },
-      onFailure: error => {}
+      onFailure: (error) => {},
     });
   } else {
     swalMessage({
       title: "Please enter the items",
-      type: "success"
+      type: "success",
     });
   }
 };
@@ -159,7 +160,7 @@ const printPrescription = (that, e) => {
     method: "GET",
     module: "reports",
     headers: {
-      Accept: "blob"
+      Accept: "blob",
     },
     others: { responseType: "blob" },
     data: {
@@ -168,21 +169,21 @@ const printPrescription = (that, e) => {
         reportParams: [
           {
             name: "hims_d_patient_id",
-            value: _patient
+            value: _patient,
           },
           {
             name: "visit_id",
-            value: _visit
+            value: _visit,
           },
           {
             name: "visit_code",
-            value: null
-          }
+            value: null,
+          },
         ],
-        outputFileType: "PDF"
-      }
+        outputFileType: "PDF",
+      },
     },
-    onSuccess: res => {
+    onSuccess: (res) => {
       // const url = URL.createObjectURL(res.data);
       // let myWindow = window.open(
       //   "{{ product.metafields.google.custom_label_0 }}",
@@ -196,7 +197,7 @@ const printPrescription = (that, e) => {
       const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Prescription`;
       window.open(origin);
       // window.document.title = "Prescription";
-    }
+    },
   });
 };
 const genericnamehandle = ($this, ctrl, e) => {
@@ -205,11 +206,11 @@ const genericnamehandle = ($this, ctrl, e) => {
   let value = e.value || e.target.value;
 
   let items = Enumerable.from($this.props.itemlist)
-    .where(w => w.generic_id === value)
+    .where((w) => w.generic_id === value)
     .toArray();
   $this.setState({
     [name]: value,
-    itemlist: items
+    itemlist: items,
   });
 };
 
@@ -263,11 +264,11 @@ const itemhandle = ($this, item) => {
   if (item.service_id === null || item.service_id === undefined) {
     swalMessage({
       title: "Service not setup to the selected Item.",
-      type: "error"
+      type: "error",
     });
     $this.setState({
       total_quantity: 0,
-      generic_id: null
+      generic_id: null,
     });
   } else {
     $this.setState(
@@ -291,7 +292,7 @@ const itemhandle = ($this, item) => {
         item_category_id: item.category_id,
         item_group_id: item.group_id,
         addItemEnable: false,
-        total_quantity: 0
+        total_quantity: 0,
       },
       () => {
         getItemStock($this);
@@ -329,14 +330,14 @@ const itemhandle = ($this, item) => {
   //   );
   // }
 };
-const AddItems = $this => {
+const AddItems = ($this) => {
   if (
     $this.state.no_of_days === "" ||
     parseInt($this.state.no_of_days, 10) < 1
   ) {
     swalMessage({
       title: "Duration can't be zero",
-      type: "info"
+      type: "info",
     });
     return;
   }
@@ -347,12 +348,12 @@ const AddItems = $this => {
   ) {
     $this.setState(
       {
-        start_date: moment().format("YYYY-MM-DD")
+        start_date: moment().format("YYYY-MM-DD"),
       },
       () => {
         swalMessage({
           title: "Start date must not in the past",
-          type: "error"
+          type: "error",
         });
       }
     );
@@ -367,6 +368,7 @@ const AddItems = $this => {
     $this.state.no_of_days !== null &&
     $this.state.frequency_type !== null &&
     $this.state.frequency_time !== null &&
+    $this.state.frequency_route !== null &&
     $this.state.uom_id !== null &&
     $this.state.service_id !== null &&
     $this.state.item_category_id !== null &&
@@ -381,6 +383,7 @@ const AddItems = $this => {
       no_of_days: $this.state.no_of_days,
       frequency_type: $this.state.frequency_type,
       frequency_time: $this.state.frequency_time,
+      frequency_route: $this.state.frequency_route,
       start_date: $this.state.start_date,
       uom_id: $this.state.uom_id,
       service_id: $this.state.service_id,
@@ -391,7 +394,7 @@ const AddItems = $this => {
       requested_quantity: $this.state.dispense,
       approved_qty: $this.state.dispense,
       insured: $this.state.insured,
-      item_status: "A"
+      item_status: "A",
     };
 
     let serviceInput = [
@@ -407,8 +410,8 @@ const AddItems = $this => {
         secondary_insurance_provider_id:
           $this.state.secondary_insurance_provider_id,
         secondary_network_id: $this.state.secondary_network_id,
-        secondary_network_office_id: $this.state.secondary_network_office_id
-      }
+        secondary_network_office_id: $this.state.secondary_network_office_id,
+      },
     ];
 
     algaehApiCall({
@@ -416,7 +419,7 @@ const AddItems = $this => {
       module: "billing",
       method: "POST",
       data: serviceInput,
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           let data = response.data.records;
 
@@ -440,41 +443,41 @@ const AddItems = $this => {
           if (medicationobj.pre_approval === "Y") {
             swalMessage({
               title: "Selected Item is Pre Approval",
-              type: "warning"
+              type: "warning",
             });
           }
 
           medicationitems.push(medicationobj);
           $this.setState(
             {
-              medicationitems: medicationitems
+              medicationitems: medicationitems,
             },
             $this.clearInputState
           );
         }
       },
-      onFailure: error => {
+      onFailure: (error) => {
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   } else {
     swalMessage({
       title: "Please enter all detils of prescription",
-      type: "error"
+      type: "error",
     });
   }
 };
 
 const datehandle = ($this, ctrl, e) => {
   $this.setState({
-    [e]: moment(ctrl)._d
+    [e]: moment(ctrl)._d,
   });
 };
 
-const dateFormater = value => {
+const dateFormater = (value) => {
   if (value !== null) {
     return String(moment(value).format(Options.dateFormat));
   }
@@ -487,7 +490,7 @@ const deleteItems = ($this, row) => {
 
   $this.setState({
     medicationitems: medicationitems,
-    saveMedicationEnable: saveMedicationEnable
+    saveMedicationEnable: saveMedicationEnable,
   });
 };
 
@@ -497,13 +500,13 @@ const updateItems = ($this, row) => {
   if (dosage || no_of_days || instructions) {
     swalMessage({
       title: "Please Enter Correct Values",
-      type: "error"
+      type: "error",
     });
   } else {
     medicationitems[row.rowId] = row;
     $this.setState({
       saveMedicationEnable: false,
-      medicationitems: medicationitems
+      medicationitems: medicationitems,
     });
   }
 };
@@ -568,13 +571,13 @@ const calcuateDispense = ($this, e) => {
     dispense = $this.state.no_of_days * $this.state.dosage * frequency_type;
 
     $this.setState({
-      dispense: dispense
+      dispense: dispense,
     });
   }
   // }
 };
 
-const getItemStock = $this => {
+const getItemStock = ($this) => {
   $this.props.getItemStock({
     uri: "/pharmacyGlobal/getItemandLocationStock",
     module: "pharmacy",
@@ -582,9 +585,9 @@ const getItemStock = $this => {
     data: { item_id: $this.state.item_id },
     redux: {
       type: "ITEMS_STOCK_GET_DATA",
-      mappingName: "itemStock"
+      mappingName: "itemStock",
     },
-    afterSuccess: data => {
+    afterSuccess: (data) => {
       let total_quantity = 0;
       if (data.length !== 0) {
         for (let i = 0; i < data.length; i++) {
@@ -592,14 +595,14 @@ const getItemStock = $this => {
           total_quantity = parseFloat(total_quantity) + parseFloat(qtyhand);
         }
         $this.setState({
-          total_quantity: total_quantity
+          total_quantity: total_quantity,
         });
       } else {
         $this.setState({
-          total_quantity: total_quantity
+          total_quantity: total_quantity,
         });
       }
-    }
+    },
   });
 };
 
@@ -613,15 +616,19 @@ const onchangegridcol = ($this, row, e) => {
 
     const frequency = _.find(
       PRESCRIPTION_FREQ_PERIOD,
-      f => f.value === row.frequency
+      (f) => f.value === row.frequency
     );
     const frequencyType = _.find(
       PRESCRIPTION_FREQ_TIME,
-      f => f.value === row.frequency_type
+      (f) => f.value === row.frequency_type
     );
     const consume = _.find(
       PRESCRIPTION_FREQ_DURATION,
-      f => f.value === row.frequency_time
+      (f) => f.value === row.frequency_time
+    );
+    const route = _.find(
+      PRESCRIPTION_FREQ_ROUTE,
+      (f) => f.value === this.state.frequency_route
     );
     if (frequency !== undefined && frequencyType !== undefined) {
       if (name === "dosage") {
@@ -635,7 +642,7 @@ const onchangegridcol = ($this, row, e) => {
           frequency.name
         } Time(s) ${frequencyType.name} '${
           consume !== undefined ? consume.name : ""
-        }' for ${value} day(s)`;
+        }'  via '${route !== undefined ? route.name : ""}' for ${value} day(s)`;
       }
     }
   }
@@ -643,7 +650,7 @@ const onchangegridcol = ($this, row, e) => {
   medicationitems[_index] = row;
 
   $this.setState({
-    medicationitems: medicationitems
+    medicationitems: medicationitems,
   });
 };
 
@@ -654,7 +661,7 @@ const EditGrid = ($this, cancelRow) => {
   }
   $this.setState({
     saveMedicationEnable: true,
-    medicationitems: _medicationitems
+    medicationitems: _medicationitems,
   });
 };
 
@@ -665,7 +672,7 @@ const CancelGrid = ($this, cancelRow) => {
   }
   $this.setState({
     saveMedicationEnable: false,
-    medicationitems: _medicationitems
+    medicationitems: _medicationitems,
   });
 };
 
@@ -685,5 +692,5 @@ export {
   updateItems,
   onchangegridcol,
   EditGrid,
-  CancelGrid
+  CancelGrid,
 };

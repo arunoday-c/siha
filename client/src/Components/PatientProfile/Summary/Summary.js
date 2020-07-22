@@ -16,7 +16,7 @@ class Summary extends Component {
     this.state = {
       patientMedications: [],
       patientEpisode: [],
-      patientFollowUp: []
+      patientFollowUp: [],
     };
 
     if (
@@ -38,23 +38,23 @@ class Summary extends Component {
       uri: "/doctorsWorkBench/getPatientEncounter",
       method: "GET",
       data: {
-        encounter_id: Window.global.encounter_id
+        encounter_id: Window.global.encounter_id,
       },
-      onSuccess: response => {
+      onSuccess: (response) => {
         let data = response.data.records[0];
         if (response.data.success) {
           this.setState({
             significant_signs: data.significant_signs,
-            other_signs: data.other_signs
+            other_signs: data.other_signs,
           });
         }
       },
-      onFailure: error => {
+      onFailure: (error) => {
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -63,20 +63,20 @@ class Summary extends Component {
       uri: "/doctorsWorkBench/getPatientEpisodeSummary",
       method: "GET",
       data: {
-        episode_id: Window.global["episode_id"]
+        episode_id: Window.global["episode_id"],
       },
       cancelRequestId: "getPatientMedication1",
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           this.setState({ patientEpisode: response.data.records });
         }
       },
-      onFailure: error => {
+      onFailure: (error) => {
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -86,20 +86,20 @@ class Summary extends Component {
       module: "MRD",
       method: "GET",
       data: {
-        episode_id: Window.global["episode_id"]
+        episode_id: Window.global["episode_id"],
       },
       cancelRequestId: "getPatientMedication11",
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           this.setState({ patientMedications: response.data.records });
         }
       },
-      onFailure: error => {
+      onFailure: (error) => {
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -108,19 +108,19 @@ class Summary extends Component {
       uri: "/doctorsWorkBench/getSummaryFollowUp",
       method: "GET",
       data: {
-        episode_id: Window.global["episode_id"]
+        episode_id: Window.global["episode_id"],
       },
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           this.setState({ patientFollowUp: response.data.records });
         }
       },
-      onFailure: error => {
+      onFailure: (error) => {
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -141,8 +141,8 @@ class Summary extends Component {
       this.props.patient_vitals !== undefined &&
       this.props.patient_vitals.length > 0
         ? _.chain(this.props.patient_vitals)
-            .uniqBy(u => u.vital_id)
-            .orderBy(o => o.sequence_order)
+            .uniqBy((u) => u.vital_id)
+            .orderBy((o) => o.sequence_order)
             .value()
         : [];
 
@@ -258,7 +258,9 @@ class Summary extends Component {
                           <td>{data.item_description}</td>
                           <td>{data.dosage}</td>
                           <td>
-                            {data.frequency_type === "PD"
+                            {data.frequency_type === "AD"
+                              ? "Alternate Day"
+                              : data.frequency_type === "PD"
                               ? "Per Day"
                               : data.frequency_type === "PH"
                               ? "Per Hour"
@@ -266,8 +268,16 @@ class Summary extends Component {
                               ? "Per Week"
                               : data.frequency_type === "PM"
                               ? "Per Month"
-                              : data.frequency_type === "AD"
-                              ? "Alternate Day"
+                              : data.frequency_type === "2W"
+                              ? "Every 2 weeks"
+                              : data.frequency_type === "2M"
+                              ? "Every 2 months"
+                              : data.frequency_type === "3M"
+                              ? "Every 3 months"
+                              : data.frequency_type === "4M"
+                              ? "Every 4 Months"
+                              : data.frequency_type === "6M"
+                              ? "Every 6 Months"
                               : ""}
                           </td>
                           <td>{data.no_of_days}</td>
@@ -348,7 +358,7 @@ function mapStateToProps(state) {
     patient_diet: state.patient_diet,
     patient_vitals: state.patient_vitals,
     patient_history: state.patient_history,
-    patient_diagnosis: state.patient_diagnosis
+    patient_diagnosis: state.patient_diagnosis,
   };
 }
 
@@ -357,15 +367,12 @@ function mapDispatchToProps(dispatch) {
     {
       getPatientSummary: AlgaehActions,
       getVitalHistory: AlgaehActions,
-      getPatientHistory: AlgaehActions
+      getPatientHistory: AlgaehActions,
     },
     dispatch
   );
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(Summary)
+  connect(mapStateToProps, mapDispatchToProps)(Summary)
 );
