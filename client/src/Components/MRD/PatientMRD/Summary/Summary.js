@@ -267,6 +267,7 @@ class Summary extends Component {
                     <th>Sl. No.</th>
                     <th>Item Name</th>
                     <th>Dosage</th>
+                    <th>Units</th>
                     <th>Frequency</th>
                     <th>Duration(days)</th>
                     <th>Instructions</th>
@@ -279,6 +280,7 @@ class Summary extends Component {
                           <td>{index + 1}</td>
                           <td>{data.item_description}</td>
                           <td>{data.dosage}</td>
+                          <td>{data.med_units}</td>
                           <td>
                             {data.frequency_type === "AD"
                               ? "Alternate Day"

@@ -200,6 +200,13 @@ class ActiveMedication extends Component {
                   },
                 },
                 {
+                  fieldName: "med_units",
+                  label: <AlgaehLabel label={{ forceLabel: "Units" }} />,
+                  others: {
+                    minWidth: 40,
+                  },
+                },
+                {
                   fieldName: "no_of_days",
                   label: (
                     <AlgaehLabel label={{ forceLabel: "Duration (Days)" }} />

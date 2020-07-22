@@ -23,17 +23,17 @@ export default {
              IL.record_status='A'  and item_id=? and pharmacy_location_id=? and qtyhand>0 \
              and (date(expirydt) > date(CURDATE())|| exp_date_required='N') order by date(expirydt)",
           values: [req.query.item_id, req.query.item_id, req.query.location_id],
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = {
             uomResult: result[0],
-            locationResult: result[1]
+            locationResult: result[1],
           };
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -51,20 +51,20 @@ export default {
           query:
             "SELECT H.hims_f_prescription_id,H.patient_id, H.encounter_id, H.provider_id, H.episode_id, \
             H.prescription_date,H.prescription_status,H.cancelled,D.hims_f_prescription_detail_id, \
-            D.prescription_id, D.item_id, D.generic_id, D.dosage, D.frequency, D.no_of_days,\
-            D.dispense, D.frequency_type, D.frequency_time,D.start_date, D.item_status, \
+            D.prescription_id, D.item_id, D.generic_id, D.dosage,D.med_units, D.frequency, D.no_of_days,\
+            D.dispense, D.frequency_type, D.frequency_time,D.frequency_route,D.start_date, D.item_status, \
             D.service_id, D.uom_id,D.item_category_id, D.item_group_id, D.pre_approval, D.insured\
             from hims_f_prescription H,hims_f_prescription_detail D  \
             WHERE H.hims_f_prescription_id = D.prescription_id and episode_id=?",
           values: [req.query.episode_id],
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -119,14 +119,14 @@ export default {
             "SELECT * from hims_f_pharmacy_trans_history  WHERE record_status = 'A' " +
             _strAppend,
 
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -147,14 +147,14 @@ export default {
           from hims_m_item_location where record_status='A'  and item_id=? and pharmacy_location_id=? \
           and qtyhand>0  order by expirydt",
           values: [req.query.item_id, req.query.location_id],
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -175,9 +175,9 @@ export default {
           where LP.record_status='A' and\
            L.record_status='A' and LP.location_id=L.hims_d_pharmacy_location_id  and allow='Y' and user_id=?",
           values: [req.userIdentity.algaeh_d_app_user_id],
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           if (result.length < 1) {
             let _strQry = "";
             let intValues = [];
@@ -205,14 +205,14 @@ export default {
               allow_pos from hims_d_pharmacy_location where record_status='A' " +
                   _strQry,
                 values: intValues,
-                printQuery: true
+                printQuery: true,
               })
-              .then(resultLoctaion => {
+              .then((resultLoctaion) => {
                 _mysql.releaseConnection();
                 req.records = resultLoctaion;
                 next();
               })
-              .catch(error => {
+              .catch((error) => {
                 _mysql.releaseConnection();
                 next(error);
               });
@@ -222,7 +222,7 @@ export default {
             next();
           }
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -255,14 +255,14 @@ export default {
             strAppend +
             "order by date(expirydt)",
           values: intValues,
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -283,23 +283,22 @@ export default {
       _mysql
         .executeQueryWithTransaction({
           query: "select 1=1",
-          printQuery: true
+          printQuery: true,
         })
-        .then(openconn => {
-
+        .then((openconn) => {
           for (let i = 0; i < inputParam.pharmacy_stock_detail.length; i++) {
             _mysql
               .executeQueryWithTransaction({
                 query:
                   "select  item_code from `hims_d_item_master` WHERE `hims_d_item_master_id`=?",
                 values: [inputParam.pharmacy_stock_detail[i].item_id],
-                printQuery: true
+                printQuery: true,
               })
-              .then(result => {
+              .then((result) => {
                 req.connection = {
                   connection: _mysql.connection,
                   isTransactionConnection: _mysql.isTransactionConnection,
-                  pool: _mysql.pool
+                  pool: _mysql.pool,
                 };
                 var date = new Date();
                 var hours = date.getHours();
@@ -312,17 +311,17 @@ export default {
                   month = "0" + month;
                 }
 
-                var chars =
-                  "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+                var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
                 var length = 2;
-                var resultString = year + month + day + hours + minutes + seconds;
+                var resultString =
+                  year + month + day + hours + minutes + seconds;
                 for (var j = length; j > 0; --j)
-                  resultString += chars[Math.floor(Math.random() * chars.length)];
+                  resultString +=
+                    chars[Math.floor(Math.random() * chars.length)];
                 resultString +=
                   req.userIdentity.algaeh_d_app_user_id +
                   req.userIdentity.hospital_id;
-
 
                 req.body.pharmacy_stock_detail[i].batchno = "B" + resultString;
                 req.body.pharmacy_stock_detail[i].barcode = "B" + resultString;
@@ -330,13 +329,13 @@ export default {
                   next();
                 }
               })
-              .catch(e => {
+              .catch((e) => {
                 _mysql.releaseConnection();
                 next(e);
               });
           }
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -373,14 +372,14 @@ export default {
             strAppend +
             "group by item_id order by date(expirydt)",
           values: intValues,
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -402,16 +401,16 @@ export default {
             req.query.from_date,
             req.query.to_date,
             req.query.item_code_id,
-            req.query.from_location_id
+            req.query.from_location_id,
           ],
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -428,9 +427,9 @@ export default {
         .executeQueryWithTransaction({
           query:
             "SELECT notification_before, notification_type from hims_d_pharmacy_options;",
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           const utilities = new algaehUtilities();
           utilities.logger().log("result: ", result[0].notification_type);
           let expiry_date_filter = null;
@@ -452,7 +451,7 @@ export default {
             expiry_date_filter = new Date(
               today_date.setFullYear(
                 today_date.getFullYear() +
-                parseInt(result[0].notification_before)
+                  parseInt(result[0].notification_before)
               )
             );
           }
@@ -466,9 +465,9 @@ export default {
                 notification_insert,hospital_id from hims_m_item_location \
                 where qtyhand > 0 and notification_insert='N' and date(expirydt) <= date(?)",
               values: [expiry_date_filter],
-              printQuery: true
+              printQuery: true,
             })
-            .then(item_expiry_result => {
+            .then((item_expiry_result) => {
               utilities
                 .logger()
                 .log("item_expiry_result: ", item_expiry_result);
@@ -495,7 +494,7 @@ export default {
                       req.userIdentity.algaeh_d_app_user_id,
                       new Date(),
                       new Date(),
-                      req.userIdentity.algaeh_d_app_user_id
+                      req.userIdentity.algaeh_d_app_user_id,
                     ]
                   );
                 }
@@ -503,16 +502,16 @@ export default {
                 _mysql
                   .executeQuery({
                     query: str_query,
-                    printQuery: true
+                    printQuery: true,
                   })
-                  .then(notification_result => {
+                  .then((notification_result) => {
                     _mysql.commitTransaction(() => {
                       _mysql.releaseConnection();
                       req.records = notification_result;
                       next();
                     });
                   })
-                  .catch(e => {
+                  .catch((e) => {
                     _mysql.rollBackTransaction(() => {
                       next(e);
                     });
@@ -525,13 +524,13 @@ export default {
                 });
               }
             })
-            .catch(e => {
+            .catch((e) => {
               _mysql.rollBackTransaction(() => {
                 next(e);
               });
             });
         })
-        .catch(e => {
+        .catch((e) => {
           _mysql.rollBackTransaction(() => {
             next(e);
           });
@@ -552,14 +551,14 @@ export default {
             FROM hims_d_pharmacy_notification_expiry NE, hims_d_pharmacy_location PL, hims_d_item_master IM where \
             NE.loaction_id = PL.hims_d_pharmacy_location_id and  NE.item_id=IM.hims_d_item_master_id and NE.loaction_id=?;",
           values: [req.query.location_id],
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -567,5 +566,5 @@ export default {
       _mysql.releaseConnection();
       next(e);
     }
-  }
+  },
 };

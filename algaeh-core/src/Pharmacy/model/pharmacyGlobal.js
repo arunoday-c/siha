@@ -10,7 +10,7 @@ const {
   whereCondition,
   releaseDBConnection,
   jsonArrayToObject,
-  runningNumber
+  runningNumber,
 } = utils;
 
 //created by irfan: to get Uom Location Stock
@@ -43,7 +43,7 @@ let getUomLocationStock = (req, res, next) => {
           }
           req.records = {
             uomResult: result[0],
-            locationResult: result[1]
+            locationResult: result[1],
           };
           next();
         }
@@ -57,7 +57,7 @@ let getUomLocationStock = (req, res, next) => {
 //created by Nowshad: getVisitPrescriptionDetails
 let getVisitPrescriptionDetails = (req, res, next) => {
   let selectWhere = {
-    episode_id: "ALL"
+    episode_id: "ALL",
   };
 
   try {
@@ -74,11 +74,11 @@ let getVisitPrescriptionDetails = (req, res, next) => {
       }
       db.query(
         "SELECT H.hims_f_prescription_id,H.patient_id, H.encounter_id, H.provider_id, H.episode_id, \
-          H.prescription_date,H.prescription_status,H.cancelled,D.hims_f_prescription_detail_id, D.prescription_id, D.item_id, D.generic_id, D.dosage,\
-          D.frequency, D.no_of_days,D.dispense, D.frequency_type, D.frequency_time, D.start_date, D.item_status, D.service_id, D.uom_id,\
+          H.prescription_date,H.prescription_status,H.cancelled,D.hims_f_prescription_detail_id, D.prescription_id, D.item_id, D.generic_id, D.dosage,D.med_units\
+          D.frequency, D.no_of_days,D.dispense, D.frequency_type, D.frequency_time,D.frequency_route, D.start_date, D.item_status, D.service_id, D.uom_id,\
           D.item_category_id, D.item_group_id\
           from hims_f_prescription H,hims_f_prescription_detail D  WHERE H.hims_f_prescription_id = D.prescription_id and " +
-        where.condition,
+          where.condition,
         where.values,
 
         (error, result) => {
@@ -126,8 +126,8 @@ let getItemMoment = (req, res, next) => {
       }
       db.query(
         "SELECT * from hims_f_pharmacy_trans_history  WHERE record_status = 'A' and " +
-        whereOrder +
-        (where.condition == "" ? "" : " AND " + where.condition),
+          whereOrder +
+          (where.condition == "" ? "" : " AND " + where.condition),
         where.values,
 
         (error, result) => {
@@ -235,7 +235,7 @@ let getUserLocationPermission = (req, res, next) => {
 let getItemandLocationStock = (req, res, next) => {
   let selectWhere = {
     item_id: "ALL",
-    pharmacy_location_id: "ALL"
+    pharmacy_location_id: "ALL",
   };
 
   try {
@@ -254,7 +254,7 @@ let getItemandLocationStock = (req, res, next) => {
         "SELECT hims_m_item_location_id, item_id, pharmacy_location_id, item_location_status, batchno, expirydt, barcode, qtyhand, qtypo, cost_uom,\
         avgcost, last_purchase_cost, item_type, grn_id, grnno, sale_price, mrp_price, sales_uom \
         from hims_m_item_location where record_status='A' and qtyhand>0 and " +
-        where.condition,
+          where.condition,
         where.values,
 
         (error, result) => {
@@ -288,7 +288,7 @@ let pharmacyReceiptInsert = (req, res, next) => {
     record_status: null,
     counter_id: null,
     shift_id: null,
-    pay_type: null
+    pay_type: null,
   };
 
   debugFunction("Receipt POS and Sales");
@@ -300,7 +300,7 @@ let pharmacyReceiptInsert = (req, res, next) => {
     let db = req.db;
 
     let connection = req.connection;
-    connection.beginTransaction(error => {
+    connection.beginTransaction((error) => {
       if (error) {
         connection.rollback(() => {
           releaseDBConnection(db, connection);
@@ -339,7 +339,7 @@ let pharmacyReceiptInsert = (req, res, next) => {
               new Date(),
               inputParam.counter_id,
               inputParam.shift_id,
-              inputParam.pay_type
+              inputParam.pay_type,
             ],
             (error, headerRcptResult) => {
               if (error) {
@@ -360,20 +360,20 @@ let pharmacyReceiptInsert = (req, res, next) => {
                   "pay_type",
                   "amount",
                   "created_by",
-                  "updated_by"
+                  "updated_by",
                 ];
 
                 connection.query(
                   "INSERT  INTO hims_f_receipt_details ( " +
-                  receptSample.join(",") +
-                  ",hims_f_receipt_header_id) VALUES ? ",
+                    receptSample.join(",") +
+                    ",hims_f_receipt_header_id) VALUES ? ",
                   [
                     jsonArrayToObject({
                       sampleInputObject: receptSample,
                       arrayObj: inputParam.receiptdetails,
                       req: req,
-                      newFieldToInsert: [headerRcptResult.insertId]
-                    })
+                      newFieldToInsert: [headerRcptResult.insertId],
+                    }),
                   ],
                   (error, RcptDetailsRecords) => {
                     if (error) {
@@ -385,7 +385,7 @@ let pharmacyReceiptInsert = (req, res, next) => {
                     debugFunction("inside details result");
                     req.records = {
                       receipt_header_id: headerRcptResult.insertId,
-                      receipt_number: inputParam.receipt_number
+                      receipt_number: inputParam.receipt_number,
                     };
                     releaseDBConnection(db, connection);
                     next();
@@ -441,7 +441,7 @@ let pharmacyReceiptInsert = (req, res, next) => {
               new Date(),
               inputParam.counter_id,
               inputParam.shift_id,
-              inputParam.pay_type
+              inputParam.pay_type,
             ],
             (error, headerRcptResult) => {
               if (error) {
@@ -464,19 +464,19 @@ let pharmacyReceiptInsert = (req, res, next) => {
                   "pay_type",
                   "amount",
                   "created_by",
-                  "updated_by"
+                  "updated_by",
                 ];
                 connection.query(
                   "INSERT  INTO hims_f_receipt_details ( " +
-                  receptSample.join(",") +
-                  ",hims_f_receipt_header_id) VALUES ? ",
+                    receptSample.join(",") +
+                    ",hims_f_receipt_header_id) VALUES ? ",
                   [
                     jsonArrayToObject({
                       sampleInputObject: receptSample,
                       arrayObj: inputParam.receiptdetails,
                       req: req,
-                      newFieldToInsert: [headerRcptResult.insertId]
-                    })
+                      newFieldToInsert: [headerRcptResult.insertId],
+                    }),
                   ],
                   (error, RcptDetailsRecords) => {
                     debugLog("Error : ", error);
@@ -489,7 +489,7 @@ let pharmacyReceiptInsert = (req, res, next) => {
                     debugFunction("inside details result");
                     req.records = {
                       receipt_header_id: headerRcptResult.insertId,
-                      receipt_number: inputParam.receipt_number
+                      receipt_number: inputParam.receipt_number,
                     };
                     releaseDBConnection(db, connection);
                     next();
@@ -540,5 +540,5 @@ export default {
   getItemLocationStock,
   getUserLocationPermission,
   getItemandLocationStock,
-  pharmacyReceiptInsert
+  pharmacyReceiptInsert,
 };

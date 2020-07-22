@@ -22,8 +22,13 @@
     margin-top: 2.5vh;
   }
 }
+.popLeftDiv {
+  max-height: 76vh !important;
+  background-color: #fdfdfd;
+}
 
-#Order_Medication{
+#OrderMedicationGrid_Cntr {
   .ReactTable {
-    max-height: 36vh !important;
-  }}
+    max-height: 65vh !important;
+  }
+}
