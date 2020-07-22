@@ -116,10 +116,19 @@ export default function PnLReport({
   }
 
   function loadReportByYear(excel) {
+    let dts = {};
+    if (Array.isArray(year)) {
+      // const from_date = year[0].format("YYYY");
+      const to_date = year[1].format("YYYY");
+      dts = { year: to_date };
+    } else {
+      dts = { year };
+    }
+
     const input = {
       hospital_id: branch_id,
       cost_center_id,
-      year,
+      ...dts,
     };
     let extraHeaders = {};
     let others = {};
@@ -145,7 +154,7 @@ export default function PnLReport({
         if (typeof stopLoading === "function") stopLoading();
         AlgaehMessagePop({
           type: "error",
-          display: error,
+          display: error.message,
         });
       });
   }
@@ -234,7 +243,7 @@ export default function PnLReport({
     if (Array.isArray(year)) {
       if (year.length > 0) {
         from_date = year[0].format("YYYY-MM-DD");
-        if (year.length === 1) to_date = year[1].format("YYYY-MM-DD");
+        to_date = year[1].format("YYYY-MM-DD");
       }
     }
     if (Array.isArray(previousYear)) {
@@ -271,18 +280,18 @@ export default function PnLReport({
       });
   }
   function onLoad() {
-    if (preview !== undefined) {
+    if (preview === undefined) {
       return null;
     }
     const { filterKey } = selectedFilter;
 
-    if (columnType === "by_year") {
+    if (columnType === "by_year" && filterKey !== "comparison") {
       loadReportByYear(isExcel);
-    } else if (columnType === "by_center") {
+    } else if (columnType === "by_center" && filterKey !== "comparison") {
       loadByCostCenter(isExcel);
-    } else if (columnType === "total") {
+    } else if (columnType === "total" && filterKey !== "comparison") {
       loadByTotal(isExcel);
-    } else if (columnType === undefined && filterKey === "comparison") {
+    } else if (filterKey === "comparison") {
       loadByComaprison(isExcel);
     } else {
       return null;
@@ -292,7 +301,7 @@ export default function PnLReport({
   function Content() {
     let colType = columnType;
     const { filterKey } = selectedFilter;
-    if (columnType === undefined && filterKey === "comparison") {
+    if (filterKey === "comparison") {
       colType = "comparison";
     }
     switch (colType) {
@@ -316,18 +325,18 @@ export default function PnLReport({
       COSTCENTER,
       PERIOD,
       YEAR,
-      CHANGEINPERCENTAGE,
-      CHANGEINAMOUNT,
+      RANGE,
       PREVIOUSRANGE,
     } = inputs;
     setBranchID(BRANCH);
     setColumnType(BASEDON);
     setCostCenterId(COSTCENTER);
-    setYear(YEAR);
+    setYear(YEAR ? YEAR : RANGE);
     setStopLoading(cb);
     setPreviousYear(PREVIOUSRANGE);
-    setChangeInPercentage(CHANGEINPERCENTAGE);
-    setChangeInAmount(CHANGEINAMOUNT);
+    setChangeInPercentage(inputs["CHANGEIN%"]);
+    setChangeInAmount(inputs["CHANGEINAMT."]);
+
     setPreview((result) => {
       return result === undefined ? false : !result;
     });

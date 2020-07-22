@@ -99,7 +99,12 @@ algaehUtilities.prototype.logger = function (reqTracker) {
   } else {
     transport = new winston.transports.MongoDB({
       db: mongoDb.connectionURI,
-      options: { useUnifiedTopology: true, poolSize: 10 },
+      options: {
+        useUnifiedTopology: true,
+        poolSize: 10,
+        // autoReconnect: true,
+        // useNewUrlParser: true,
+      },
       collection: "audit_logs",
       tryReconnect: true,
     });
