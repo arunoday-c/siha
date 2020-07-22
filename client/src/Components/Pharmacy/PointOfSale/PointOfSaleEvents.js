@@ -1152,6 +1152,7 @@ const getCashiersAndShiftMAP = $this => {
 
 const ClosePrescribedItem = ($this, e) => {
   if (e !== undefined && e.length > 0 && Array.isArray(e)) {
+    debugger
     algaehApiCall({
       uri: "/billing/billingCalculations",
       module: "billing",
@@ -1159,6 +1160,7 @@ const ClosePrescribedItem = ($this, e) => {
       data: { billdetails: e },
       onSuccess: response => {
         if (response.data.success) {
+          debugger
           let sum_data = response.data.records;
 
           sum_data.patient_payable_h =

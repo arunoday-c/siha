@@ -67,8 +67,9 @@ export default {
             } else {
               strQuery += mysql.format(
                 "select *,extended_cost as gross_amount,net_extended_cost as net_amout ,\
-                  patient_responsibility as patient_resp, IU.conversion_factor from hims_f_pharmacy_pos_detail D \
+                  patient_responsibility as patient_resp, IU.conversion_factor, IM.item_description from hims_f_pharmacy_pos_detail D \
                   inner join hims_m_item_uom IU on IU.item_master_id = D.item_id and IU.uom_id = D.uom_id and IU.record_status = 'A'\
+                  inner join hims_d_item_master IM on IM.hims_d_item_master_id = D.item_id and IU.uom_id = D.uom_id and IU.record_status = 'A'\
                   where pharmacy_pos_header_id=?",
                 [headerResult[0].hims_f_pharmacy_pos_header_id]
               );
@@ -1050,7 +1051,7 @@ export default {
                   sub_department_id = result[4].length > 0 ? result[4][0].hims_d_sub_department_id : null
                 }
 
-                let strQuery = "";
+                let strQuery = "select 1=1";
 
                 if (result[5][0].cost_center_required === "Y" && result[5][0].cost_center_type === "P") {
                   strQuery = `select  hims_m_division_project_id, project_id from hims_m_division_project D \
@@ -1243,7 +1244,7 @@ export default {
                           project_id: project_id,
                           sub_department_id: sub_department_id
                         },
-                        printQuery: false
+                        printQuery: true
                       })
                       .then(subResult => {
                         next();
