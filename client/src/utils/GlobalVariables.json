@@ -797,9 +797,65 @@
     {
       "name": "1-1-1",
       "value": "6"
+    },
+    {
+      "name": "Once only",
+      "value": "7"
+    },
+    {
+      "name": "Once daily (q24h)",
+      "value": "8"
+    },
+    {
+      "name": "Twice daily (Bid)",
+      "value": "9"
+    },
+    {
+      "name": "Three times daily (tid)",
+      "value": "10"
+    },
+    {
+      "name": "Five times daily",
+      "value": "11"
+    },
+    {
+      "name": " Every two hours (q2h)",
+      "value": "12"
+    },
+    {
+      "name": "Every three hours (q3h) ",
+      "value": "13"
+    },
+    {
+      "name": "Every four hours (q4h)",
+      "value": "14"
+    },
+    {
+      "name": "Every six hours (q6h)",
+      "value": "15"
+    },
+    {
+      "name": "Every eight hours (q8h)",
+      "value": "16"
+    },
+    {
+      "name": "Every twelve hours (q12h)",
+      "value": "17"
+    },
+    {
+      "name": "Four times daily (qid)",
+      "value": "18"
+    },
+    {
+      "name": "Other (According To Physician)",
+      "value": "19"
     }
   ],
   "PRESCRIPTION_FREQ_TIME": [
+    {
+      "name": "Alternate Day",
+      "value": "AD"
+    },
     {
       "name": "Per Day",
       "value": "PD"
@@ -817,8 +873,24 @@
       "value": "PM"
     },
     {
-      "name": "Alternate Day",
-      "value": "AD"
+      "name": "Every 2 weeks",
+      "value": "2W"
+    },
+    {
+      "name": "Every 2 months",
+      "value": "2M"
+    },
+    {
+      "name": "Every 3 months",
+      "value": "3M"
+    },
+    {
+      "name": "Every 4 Months",
+      "value": "4M"
+    },
+    {
+      "name": "Every 6 Months",
+      "value": "6M"
     }
   ],
   "PRESCRIPTION_FREQ_DURATION": [
@@ -829,6 +901,88 @@
     {
       "name": "Before Meal",
       "value": "BM"
+    },
+    {
+      "name": "With Food",
+      "value": "WF"
+    },
+    {
+      "name": "Early Morning",
+      "value": "EM"
+    },
+    {
+      "name": "Before Bed Time",
+      "value": "BB"
+    },
+    {
+      "name": "At Bed Time",
+      "value": "AB"
+    }
+  ],
+  "PRESCRIPTION_FREQ_ROUTE": [
+    {
+      "name": "Buccal",
+      "value": "BL"
+    },
+    {
+      "name": "Enteral",
+      "value": "EL"
+    },
+    {
+      "name": "Inhalation",
+      "value": "IL"
+    },
+    {
+      "name": "Infusion",
+      "value": "IF"
+    },
+    {
+      "name": "Intramuscular Inj",
+      "value": "IM"
+    },
+    {
+      "name": "Intrathecal Inj",
+      "value": "IT"
+    },
+    {
+      "name": "Intravenous Inj",
+      "value": "IR"
+    },
+    {
+      "name": "Nasal",
+      "value": "NL"
+    },
+    {
+      "name": "Ophthalmic",
+      "value": "OP"
+    },
+    {
+      "name": "Oral",
+      "value": "OR"
+    },
+    {
+      "name": "Otic (ear)",
+      "value": "OE"
+    },
+    {
+      "name": "Rectal",
+      "value": "RL"
+    },
+    {
+      "name": "Subcutaneous",
+      "value": "ST"
+    },
+    {
+      "name": "Sublingual",
+      "value": "SL"
+    },
+    {
+      "name": "Topical",
+      "value": "TL"
+    },
+    {
+      "name": "Transdermal",
+      "value": "TD"
     }
   ],
   "SEARCH_BY_ICD": [
