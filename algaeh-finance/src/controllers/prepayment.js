@@ -9,6 +9,7 @@ import {
   getPrepaymentRequestToAuthorize,
   authorizePrepaymentRequest,
   loadPrepaymentsToProcess,
+  processPrepayments,
 } from "../models/prepayment";
 import utlities from "algaeh-utilities";
 
@@ -122,5 +123,15 @@ export default () => {
         .end();
     }
   );
+
+  api.put("/processPrepayments", processPrepayments, (req, res, next) => {
+    res
+      .status(utlities.AlgaehUtilities().httpStatus().ok)
+      .json({
+        success: true,
+        result: req.records,
+      })
+      .end();
+  });
   return api;
 };
