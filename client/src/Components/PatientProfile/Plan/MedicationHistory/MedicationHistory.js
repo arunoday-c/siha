@@ -132,6 +132,14 @@ class MedicationHistory extends Component {
                       ? "Before Meals"
                       : row.frequency_time === "AM"
                       ? "After Meals"
+                      : row.frequency_time === "WF"
+                      ? "With Food"
+                      : row.frequency_time === "EM"
+                      ? "Early Morning"
+                      : row.frequency_time === "BB"
+                      ? "Before Bed Time"
+                      : row.frequency_time === "AB"
+                      ? "At Bed Time"
                       : null;
                   },
 

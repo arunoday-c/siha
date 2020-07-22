@@ -853,6 +853,10 @@
   ],
   "PRESCRIPTION_FREQ_TIME": [
     {
+      "name": "Alternate Day",
+      "value": "AD"
+    },
+    {
       "name": "Per Day",
       "value": "PD"
     },
@@ -869,8 +873,24 @@
       "value": "PM"
     },
     {
-      "name": "Alternate Day",
-      "value": "AD"
+      "name": "Every 2 weeks",
+      "value": "2W"
+    },
+    {
+      "name": "Every 2 months",
+      "value": "2M"
+    },
+    {
+      "name": "Every 3 months",
+      "value": "3M"
+    },
+    {
+      "name": "Every 4 Months",
+      "value": "4M"
+    },
+    {
+      "name": "Every 6 Months",
+      "value": "6M"
     }
   ],
   "PRESCRIPTION_FREQ_DURATION": [
@@ -881,6 +901,22 @@
     {
       "name": "Before Meal",
       "value": "BM"
+    },
+    {
+      "name": "With Food",
+      "value": "WF"
+    },
+    {
+      "name": "Early Morning",
+      "value": "EM"
+    },
+    {
+      "name": "Before Bed Time",
+      "value": "BB"
+    },
+    {
+      "name": "At Bed Time",
+      "value": "AB"
     }
   ],
   "SEARCH_BY_ICD": [
