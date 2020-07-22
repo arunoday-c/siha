@@ -43,7 +43,6 @@ class PhysicalExamination extends Component {
   //   this.setState({ pe_type: status.value });
   // }
   changeGridEditors(row, e) {
-    debugger;
     let name = e.name || e.target.name;
     let value = e.value || e.target.value;
     row[name] = value;
@@ -95,7 +94,6 @@ class PhysicalExamination extends Component {
       method: "GET",
       onSuccess: (response) => {
         if (response.data.success) {
-          console.log("response.data.records", response.data.records);
           this.setState({
             examinationType: response.data.records,
           });
