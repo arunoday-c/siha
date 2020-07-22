@@ -255,7 +255,6 @@ const ContractSearch = ($this, e) => {
             let data = response.data.records;
             data.sales_order_services = data.contract_services;
 
-
             data.contract_id = data.hims_f_contract_management_id;
             data.saveEnable = false;
             data.selectedData = true;
@@ -299,6 +298,9 @@ const ContractSearch = ($this, e) => {
               parseFloat(s.total_amount)
             );
 
+            data.organizations = $this.state.cost_projects.filter(
+              (item) => item.cost_center_id == data.project_id
+            )[0].branches;
             $this.setState(data);
             AlgaehLoader({ show: false });
           }
@@ -400,17 +402,21 @@ const SaveSalesOrderEnrty = ($this) => {
         });
         return;
       }
-      $this.state.quote_validity = moment(
-        $this.state.quote_validity,
-        "YYYY-MM-DD"
-      ).format("YYYY-MM-DD");
+      $this.state.quote_validity =
+        $this.state.sales_order_mode === "S"
+          ? null
+          : moment($this.state.quote_validity, "YYYY-MM-DD").format(
+              "YYYY-MM-DD"
+            );
 
-      $this.state.delivery_date = moment(
-        $this.state.delivery_date,
-        "YYYY-MM-DD"
-      ).format("YYYY-MM-DD");
+      $this.state.delivery_date =
+        $this.state.sales_order_mode === "S"
+          ? null
+          : moment($this.state.delivery_date, "YYYY-MM-DD").format(
+              "YYYY-MM-DD"
+            );
       const settings = { header: undefined, footer: undefined };
-
+      debugger;
       AlgaehLoader({ show: true });
       algaehApiCall({
         uri: "/SalesOrder/addSalesOrder",
