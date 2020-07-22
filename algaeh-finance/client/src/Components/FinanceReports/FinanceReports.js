@@ -69,6 +69,7 @@ export default function FinanceReports() {
         ]);
         setOrganization(results[0].data.result);
         setOrganizationDetail(results[2].data.records);
+
         const finOpts = results[1].data.result[0];
         setFinOptions(finOpts);
         setLoading(false);

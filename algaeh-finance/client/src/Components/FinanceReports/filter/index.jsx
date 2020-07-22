@@ -37,8 +37,6 @@ export default memo(function (props) {
 
   function updateInput(obj) {
     setInputs((result) => {
-      console.log("result", result);
-      console.log("obj", obj);
       return { ...result, ...obj };
     });
   }
