@@ -20,7 +20,7 @@ class Encounters extends Component {
       patientVital: [],
       loaderChiefComp: false,
       loaderSignificantSigns_Others: false,
-      loaderVitals: false
+      loaderVitals: false,
     };
   }
 
@@ -37,11 +37,11 @@ class Encounters extends Component {
     this.getEncounterDetails(row.encounter_id);
 
     const general_info = Enumerable.from(this.state.patientEncounters)
-      .where(w => w.encounter_id === parseInt(row.encounter_id, 10))
+      .where((w) => w.encounter_id === parseInt(row.encounter_id, 10))
       .firstOrDefault();
 
     this.setState({
-      generalInfo: general_info
+      generalInfo: general_info,
     });
   }
 
@@ -58,31 +58,31 @@ class Encounters extends Component {
   getEncounterDetails(encounter_id) {
     this.setState(
       {
-        loaderSignificantSigns_Others: true
+        loaderSignificantSigns_Others: true,
       },
       () => {
         algaehApiCall({
           uri: "/doctorsWorkBench/getPatientEncounter",
           method: "GET",
           data: {
-            encounter_id: encounter_id
+            encounter_id: encounter_id,
           },
-          onSuccess: response => {
+          onSuccess: (response) => {
             let data = response.data.records[0];
             if (response.data.success) {
               this.setState({
                 significant_signs: data.significant_signs,
                 other_signs: data.other_signs,
-                loaderSignificantSigns_Others: false
+                loaderSignificantSigns_Others: false,
               });
             }
           },
-          onFailure: error => {
+          onFailure: (error) => {
             swalMessage({
               title: error.message,
-              type: "error"
+              type: "error",
             });
-          }
+          },
         });
       }
     );
@@ -91,7 +91,7 @@ class Encounters extends Component {
   getPatientVitals(patient_id, visit_id) {
     this.setState(
       {
-        loaderVitals: true
+        loaderVitals: true,
       },
       () => {
         algaehApiCall({
@@ -99,40 +99,40 @@ class Encounters extends Component {
           method: "GET",
           data: {
             patient_id: patient_id,
-            visit_id: visit_id
+            visit_id: visit_id,
           },
           cancelRequestId: "getPatientVitals",
-          onSuccess: response => {
+          onSuccess: (response) => {
             algaehLoader({ show: false });
             if (response.data.success && response.data.records.length !== 0) {
               const _Vitals =
                 response.data.records !== undefined &&
-                  response.data.records.length > 0
+                response.data.records.length > 0
                   ? Enumerable.from(response.data.records)
-                    .groupBy("$.visit_date", null, (k, g) => {
-                      return {
-                        key: k,
-                        details: g.getSource()
-                      };
-                    })
-                    .toArray()
+                      .groupBy("$.visit_date", null, (k, g) => {
+                        return {
+                          key: k,
+                          details: g.getSource(),
+                        };
+                      })
+                      .toArray()
                   : [];
 
               this.setState({ patientVital: _Vitals, loaderVitals: false });
             } else if (response.data.records.length === 0) {
               this.setState({
                 patientVital: [],
-                loaderVitals: false
+                loaderVitals: false,
               });
             }
           },
-          onFailure: error => {
+          onFailure: (error) => {
             algaehLoader({ show: false });
             swalMessage({
               title: error.message,
-              type: "error"
+              type: "error",
             });
-          }
+          },
         });
       }
     );
@@ -141,31 +141,31 @@ class Encounters extends Component {
   getPatientChiefComplaint(episode_id) {
     this.setState(
       {
-        loaderChiefComp: true
+        loaderChiefComp: true,
       },
       () => {
         algaehApiCall({
           uri: "/mrd/getPatientChiefComplaint",
           method: "GET",
           data: {
-            episode_id: episode_id
+            episode_id: episode_id,
           },
           module: "MRD",
           cancelRequestId: "getPatientChiefComplaint",
-          onSuccess: response => {
+          onSuccess: (response) => {
             if (response.data.success) {
               this.setState({
                 patientComplaints: response.data.records,
-                loaderChiefComp: false
+                loaderChiefComp: false,
               });
             }
           },
-          onFailure: error => {
+          onFailure: (error) => {
             swalMessage({
               title: error.message,
-              type: "error"
+              type: "error",
             });
-          }
+          },
         });
       }
     );
@@ -177,21 +177,21 @@ class Encounters extends Component {
       module: "MRD",
       method: "GET",
       data: {
-        episode_id: episode_id
+        episode_id: episode_id,
       },
-      onSuccess: response => {
+      onSuccess: (response) => {
         algaehLoader({ show: false });
         if (response.data.success) {
           this.setState({ patientDiagnosis: response.data.records });
         }
       },
-      onFailure: error => {
+      onFailure: (error) => {
         algaehLoader({ show: false });
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
   getPatientMedication(enc_id) {
@@ -200,20 +200,20 @@ class Encounters extends Component {
       module: "MRD",
       method: "GET",
       data: {
-        encounter_id: enc_id
+        encounter_id: enc_id,
       },
       cancelRequestId: "getPatientMedication",
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           this.setState({ patientMedications: response.data.records });
         }
       },
-      onFailure: error => {
+      onFailure: (error) => {
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
   getPatientInvestigation(visit_id) {
@@ -222,22 +222,22 @@ class Encounters extends Component {
       module: "MRD",
       method: "GET",
       data: {
-        visit_id: visit_id
+        visit_id: visit_id,
       },
       cancelRequestId: "getPatientInvestigation",
-      onSuccess: response => {
+      onSuccess: (response) => {
         algaehLoader({ show: false });
         if (response.data.success) {
           this.setState({ patientInvestigations: response.data.records });
         }
       },
-      onFailure: error => {
+      onFailure: (error) => {
         algaehLoader({ show: false });
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -248,27 +248,26 @@ class Encounters extends Component {
       uri: "/mrd/getPatientEncounterDetails",
       method: "GET",
       data: {
-        patient_id: Window.global["mrd_patient"]
+        patient_id: Window.global["mrd_patient"],
       },
       module: "MRD",
-      onSuccess: response => {
+      onSuccess: (response) => {
         algaehLoader({ show: false });
         if (response.data.success) {
           this.setState({ patientEncounters: response.data.records });
         }
       },
-      onFailure: error => {
+      onFailure: (error) => {
         algaehLoader({ show: false });
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
   generateReport(row, report_type) {
-
     let inputObj = {};
     if (report_type === "RAD") {
       inputObj = {
@@ -277,9 +276,9 @@ class Encounters extends Component {
         data: [
           {
             name: "hims_f_rad_order_id",
-            value: row.hims_f_rad_order_id
-          }
-        ]
+            value: row.hims_f_rad_order_id,
+          },
+        ],
       };
     } else {
       inputObj = {
@@ -288,17 +287,17 @@ class Encounters extends Component {
         data: [
           {
             name: "hims_d_patient_id",
-            value: row.patient_id
+            value: row.patient_id,
           },
           {
             name: "visit_id",
-            value: row.visit_id
+            value: row.visit_id,
           },
           {
             name: "hims_f_lab_order_id",
-            value: row.hims_f_lab_order_id
-          }
-        ]
+            value: row.hims_f_lab_order_id,
+          },
+        ],
       };
     }
     // let tab_name = report_type === "RAD" ? "Radiology Report" : "Lab Report";
@@ -308,17 +307,17 @@ class Encounters extends Component {
       method: "GET",
       module: "reports",
       headers: {
-        Accept: "blob"
+        Accept: "blob",
       },
       others: { responseType: "blob" },
       data: {
         report: {
           reportName: inputObj.reportName,
           reportParams: inputObj.data,
-          outputFileType: "PDF"
-        }
+          outputFileType: "PDF",
+        },
       },
-      onSuccess: res => {
+      onSuccess: (res) => {
         // const url = URL.createObjectURL(res.data);
         // let myWindow = window.open(
         //   "{{ product.metafields.google.custom_label_0 }}",
@@ -332,7 +331,7 @@ class Encounters extends Component {
         const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=${tab_name}`;
         window.open(origin);
         // window.document.title = tab_name;
-      }
+      },
     });
   }
 
@@ -354,7 +353,7 @@ class Encounters extends Component {
                     {
                       fieldName: "encountered_date",
                       label: "Consult Date & Time",
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         return (
                           <span
                             enc-id={row.hims_f_patient_encounter_id}
@@ -372,33 +371,33 @@ class Encounters extends Component {
                       others: {
                         maxWidth: 150,
                         resizable: false,
-                        style: { textAlign: "center" }
+                        style: { textAlign: "center" },
                       },
-                      className: drow => {
+                      className: (drow) => {
                         return "greenCell";
-                      }
+                      },
                     },
                     {
                       fieldName: "provider_name",
                       label: "Doctor Name",
                       others: {
-                        style: { textAlign: "center" }
-                      }
-                    }
+                        style: { textAlign: "center" },
+                      },
+                    },
                   ]}
                   // rowClassName={row => {
                   //   return "cursor-pointer";
                   // }}
                   keyId="index"
                   dataSource={{
-                    data: this.state.patientEncounters
+                    data: this.state.patientEncounters,
                   }}
                   isEditable={false}
                   paging={{ page: 0, rowsPerPage: 10 }}
                   events={{
-                    onDelete: row => { },
-                    onEdit: row => { },
-                    onDone: row => { }
+                    onDelete: (row) => {},
+                    onEdit: (row) => {},
+                    onDone: (row) => {},
                   }}
                 />
               </div>
@@ -421,21 +420,21 @@ class Encounters extends Component {
                       <div className="col">
                         <AlgaehLabel
                           label={{
-                            forceLabel: "Consult Date & Time"
+                            forceLabel: "Consult Date & Time",
                           }}
                         />
                         <h6>
                           {this.state.generalInfo !== undefined
                             ? moment(
-                              this.state.generalInfo.encountered_date
-                            ).format("DD-MM-YYYY HH:mm A")
+                                this.state.generalInfo.encountered_date
+                              ).format("DD-MM-YYYY HH:mm A")
                             : "----------"}
                         </h6>
                       </div>
                       <div className="col">
                         <AlgaehLabel
                           label={{
-                            forceLabel: "Doctor Name"
+                            forceLabel: "Doctor Name",
                           }}
                         />
                         <h6>
@@ -448,7 +447,7 @@ class Encounters extends Component {
                       <div className="col">
                         <AlgaehLabel
                           label={{
-                            forceLabel: "Department"
+                            forceLabel: "Department",
                           }}
                         />
                         <h6>
@@ -460,7 +459,7 @@ class Encounters extends Component {
                       <div className="col">
                         <AlgaehLabel
                           label={{
-                            forceLabel: "Primary Insurance"
+                            forceLabel: "Primary Insurance",
                           }}
                         />
                         <h6>
@@ -484,18 +483,18 @@ class Encounters extends Component {
                           </Dimmer>
                         </div>
                       ) : (
-                          <div className="col">
-                            <h6 className="">
-                              {this.state.patientComplaints.map((data, index) => {
-                                return data.chief_complaint
-                                  ? data.chief_complaint
-                                  : data.comment
-                                    ? data.comment
-                                    : "-------";
-                              })}
-                            </h6>
-                          </div>
-                        )}
+                        <div className="col">
+                          <h6 className="">
+                            {this.state.patientComplaints.map((data, index) => {
+                              return data.chief_complaint
+                                ? data.chief_complaint
+                                : data.comment
+                                ? data.comment
+                                : "-------";
+                            })}
+                          </h6>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -511,10 +510,10 @@ class Encounters extends Component {
                           </Dimmer>
                         </div>
                       ) : (
-                          <div className="col">
-                            <h6 className="">{this.state.significant_signs}</h6>
-                          </div>
-                        )}
+                        <div className="col">
+                          <h6 className="">{this.state.significant_signs}</h6>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -530,34 +529,34 @@ class Encounters extends Component {
                         </Dimmer>
                       </div>
                     ) : (
-                        <div className="row">
-                          {this.state.patientVital.length > 0 ? (
-                            this.state.patientVital.map((item, index) => (
-                              <React.Fragment key={index}>
-                                <div className="col-lg-12">
-                                  Recorded on {item.key}
-                                </div>
+                      <div className="row">
+                        {this.state.patientVital.length > 0 ? (
+                          this.state.patientVital.map((item, index) => (
+                            <React.Fragment key={index}>
+                              <div className="col-lg-12">
+                                Recorded on {item.key}
+                              </div>
 
-                                {item.details.map((row, indexD) => (
-                                  <div key={indexD} className="col borderVitals">
-                                    <AlgaehLabel
-                                      label={{
-                                        forceLabel: row.vitals_name
-                                      }}
-                                    />
-                                    <h6>
-                                      {row.vital_value}
-                                      <span>{row.uom}</span>
-                                    </h6>
-                                  </div>
-                                ))}
-                              </React.Fragment>
-                            ))
-                          ) : (
-                              <span className="col">----------</span>
-                            )}
-                        </div>
-                      )}
+                              {item.details.map((row, indexD) => (
+                                <div key={indexD} className="col borderVitals">
+                                  <AlgaehLabel
+                                    label={{
+                                      forceLabel: row.vitals_name,
+                                    }}
+                                  />
+                                  <h6>
+                                    {row.vital_value}
+                                    <span>{row.uom}</span>
+                                  </h6>
+                                </div>
+                              ))}
+                            </React.Fragment>
+                          ))
+                        ) : (
+                          <span className="col">----------</span>
+                        )}
+                      </div>
+                    )}
                   </div>
                 </div>
                 {/* VITALS END */}
@@ -599,118 +598,118 @@ class Encounters extends Component {
                             columns={[
                               {
                                 fieldName: "service_name",
-                                label: "Service Name"
+                                label: "Service Name",
                               },
                               {
                                 fieldName: "lab_ord_status",
                                 label: "Lab Order Status",
-                                displayTemplate: row => {
+                                displayTemplate: (row) => {
                                   return (
                                     <span>
                                       {row.lab_ord_status === "O"
                                         ? "Ordered"
                                         : row.lab_ord_status === "CL"
-                                          ? "Specimen Collected"
-                                          : row.lab_ord_status === "CN"
-                                            ? "Test Cancelled"
-                                            : row.lab_ord_status === "CF"
-                                              ? "Result Confirmed "
-                                              : row.lab_ord_status === "V"
-                                                ? "Result Validated"
-                                                : "----"}
+                                        ? "Specimen Collected"
+                                        : row.lab_ord_status === "CN"
+                                        ? "Test Cancelled"
+                                        : row.lab_ord_status === "CF"
+                                        ? "Result Confirmed "
+                                        : row.lab_ord_status === "V"
+                                        ? "Result Validated"
+                                        : "----"}
                                     </span>
                                   );
-                                }
+                                },
                               },
                               {
                                 fieldName: "lab_billed",
                                 label: "Lab Billed",
-                                displayTemplate: row => {
+                                displayTemplate: (row) => {
                                   return (
                                     <span>
                                       {row.lab_billed === "Y" ? "Yes" : "----"}
                                     </span>
                                   );
-                                }
+                                },
                               },
                               {
                                 fieldName: "rad_ord_status",
                                 label: "Radiology Order Status",
-                                displayTemplate: row => {
+                                displayTemplate: (row) => {
                                   return (
                                     <span>
                                       {row.rad_ord_status === "O"
                                         ? "Ordered"
                                         : row.rad_ord_status === "S"
-                                          ? "Scheduled"
-                                          : row.rad_ord_status === "UP"
-                                            ? "Under Process"
-                                            : row.rad_ord_status === "CN"
-                                              ? "Cancelled"
-                                              : row.rad_ord_status === "RC"
-                                                ? "Result Confirmed"
-                                                : row.rad_ord_status === "RA"
-                                                  ? "Result Available"
-                                                  : "----"}
+                                        ? "Scheduled"
+                                        : row.rad_ord_status === "UP"
+                                        ? "Under Process"
+                                        : row.rad_ord_status === "CN"
+                                        ? "Cancelled"
+                                        : row.rad_ord_status === "RC"
+                                        ? "Result Confirmed"
+                                        : row.rad_ord_status === "RA"
+                                        ? "Result Available"
+                                        : "----"}
                                     </span>
                                   );
-                                }
+                                },
                               },
                               {
                                 fieldName: "rad_billed",
                                 label: "Radiology Billed",
-                                displayTemplate: row => {
+                                displayTemplate: (row) => {
                                   return (
                                     <span>
                                       {row.rad_billed === "Y" ? "Yes" : "----"}
                                     </span>
                                   );
-                                }
+                                },
                               },
                               {
                                 fieldName: "hims_f_ordered_services_id",
                                 label: "View Report",
-                                displayTemplate: row => {
+                                displayTemplate: (row) => {
                                   return row.service_type_id === 5 &&
                                     row.lab_ord_status === "V" ? (
-                                      <span
-                                        className="pat-code"
-                                        style={{ color: "#006699" }}
-                                        onClick={this.generateReport.bind(
-                                          this,
-                                          row,
-                                          "LAB"
-                                        )}
-                                      >
-                                        View Report
+                                    <span
+                                      className="pat-code"
+                                      style={{ color: "#006699" }}
+                                      onClick={this.generateReport.bind(
+                                        this,
+                                        row,
+                                        "LAB"
+                                      )}
+                                    >
+                                      View Report
                                     </span>
-                                    ) : row.service_type_id === 11 &&
-                                      row.rad_ord_status === "RA" ? (
-                                        <span
-                                          className="pat-code"
-                                          style={{ color: "#006699" }}
-                                          onClick={this.generateReport.bind(
-                                            this,
-                                            row,
-                                            "RAD"
-                                          )}
-                                        >
-                                          View Report
+                                  ) : row.service_type_id === 11 &&
+                                    row.rad_ord_status === "RA" ? (
+                                    <span
+                                      className="pat-code"
+                                      style={{ color: "#006699" }}
+                                      onClick={this.generateReport.bind(
+                                        this,
+                                        row,
+                                        "RAD"
+                                      )}
+                                    >
+                                      View Report
                                     </span>
-                                      ) : null;
-                                }
-                              }
+                                  ) : null;
+                                },
+                              },
                             ]}
                             keyId="index"
                             dataSource={{
-                              data: this.state.patientInvestigations
+                              data: this.state.patientInvestigations,
                             }}
                             isEditable={false}
                             paging={{ page: 0, rowsPerPage: 5 }}
                             events={{
-                              onDelete: row => { },
-                              onEdit: row => { },
-                              onDone: row => { }
+                              onDelete: (row) => {},
+                              onEdit: (row) => {},
+                              onDone: (row) => {},
                             }}
                           />
                         </div>
@@ -729,29 +728,33 @@ class Encounters extends Component {
                             columns={[
                               {
                                 fieldName: "generic_name",
-                                label: "Generic Name"
+                                label: "Generic Name",
                               },
                               {
                                 fieldName: "item_description",
-                                label: "Item Description"
+                                label: "Item Description",
                               },
 
                               {
                                 fieldName: "dosage",
-                                label: "Dosage"
+                                label: "Dosage",
+                              },
+                              {
+                                fieldName: "med_units",
+                                label: "Unit",
                               },
                               {
                                 fieldName: "frequency",
-                                label: "Frequency"
+                                label: "Frequency",
                               },
                               {
                                 fieldName: "no_of_days",
-                                label: "No. of Days"
+                                label: "No. of Days",
                               },
                               {
                                 fieldName: "start_date",
                                 label: "Start date",
-                                displayTemplate: row => {
+                                displayTemplate: (row) => {
                                   return (
                                     <span>
                                       {moment(row.start_date).format(
@@ -759,19 +762,19 @@ class Encounters extends Component {
                                       )}
                                     </span>
                                   );
-                                }
-                              }
+                                },
+                              },
                             ]}
                             keyId="index"
                             dataSource={{
-                              data: this.state.patientMedications
+                              data: this.state.patientMedications,
                             }}
                             isEditable={false}
                             paging={{ page: 0, rowsPerPage: 5 }}
                             events={{
-                              onDelete: row => { },
-                              onEdit: row => { },
-                              onDone: row => { }
+                              onDelete: (row) => {},
+                              onEdit: (row) => {},
+                              onDone: (row) => {},
                             }}
                           />
                         </div>
@@ -790,16 +793,16 @@ class Encounters extends Component {
                             columns={[
                               {
                                 fieldName: "index",
-                                label: "Sl. No."
+                                label: "Sl. No.",
                               },
                               {
                                 fieldName: "c_d_t",
-                                label: "Consult Date & Time"
+                                label: "Consult Date & Time",
                               },
                               {
                                 fieldName: "doc_name",
-                                label: "Doctor Name"
-                              }
+                                label: "Doctor Name",
+                              },
                             ]}
                             keyId="index"
                             dataSource={{
@@ -807,21 +810,21 @@ class Encounters extends Component {
                                 {
                                   c_d_t: "May 22 13:00:00",
                                   doc_name: "Norman John",
-                                  index: "1"
+                                  index: "1",
                                 },
                                 {
                                   c_d_t: "May 23 13:00:00",
                                   doc_name: "John Morgan",
-                                  index: "2"
-                                }
-                              ]
+                                  index: "2",
+                                },
+                              ],
                             }}
                             isEditable={false}
                             paging={{ page: 0, rowsPerPage: 5 }}
                             events={{
-                              onDelete: row => { },
-                              onEdit: row => { },
-                              onDone: row => { }
+                              onDelete: (row) => {},
+                              onEdit: (row) => {},
+                              onDone: (row) => {},
                             }}
                           />
                         </div>

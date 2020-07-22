@@ -37,14 +37,14 @@ export default {
             _stringData +
             "order by registration_date desc",
           values: [req.userIdentity.hospital_id],
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -73,14 +73,14 @@ export default {
               and V.record_status='A' and SD.record_status='A'   and encounter_id <>'null' and PE.patient_id=?\
               order by encountered_date desc;",
           values: [req.query.patient_id],
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -100,14 +100,14 @@ export default {
             left join hims_d_hpi_header HH on ECC.chief_complaint_id=HH.hims_d_hpi_header_id\
             Where ECC.record_status='A' and episode_id=?",
           values: [req.query.episode_id],
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -137,14 +137,14 @@ export default {
              where PD.record_status='A' and   ICD.record_status='A'\
              and PD.daignosis_id=ICD.hims_d_icd_id " +
             _stringData,
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -175,8 +175,8 @@ export default {
             "select  hims_f_prescription_id, patient_id, encounter_id, provider_id, episode_id,\
             prescription_date, prescription_status , \
             hims_f_prescription_detail_id, prescription_id, item_id,IM.item_description, PD.generic_id, IG.generic_name, \
-            dosage, frequency, no_of_days,\
-            dispense, frequency_type, frequency_time, start_date, PD.service_id, uom_id, \
+            dosage,med_units, frequency, no_of_days,\
+            dispense, frequency_type, frequency_time, frequency_route, start_date, PD.service_id, uom_id, \
             item_category_id, PD.item_status, PD.instructions\
              from hims_f_prescription P,hims_f_prescription_detail PD,hims_d_item_master IM,hims_d_item_generic IG\
             where P.record_status='A' and IM.record_status='A' and IG.record_status='A' and \
@@ -184,14 +184,14 @@ export default {
             and PD.generic_id =IG.hims_d_item_generic_id " +
             _stringData +
             " order by prescription_date desc;",
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -230,14 +230,14 @@ export default {
           where (OS.service_type_id=5 or OS.service_type_id=11)" +
             _stringData +
             " group by hims_f_ordered_services_id order by OS.visit_id desc",
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -257,16 +257,16 @@ export default {
           query:
             "select distinct  visit_id from hims_f_billing_header where record_status='A' and patient_id=? order by visit_id desc;",
           values: [req.query.patient_id],
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           // _mysql.releaseConnection();
           // req.records = result;
           // next();
 
           let allVisits = new LINQ(result)
-            .Where(w => w.visit_id != null)
-            .Select(s => s.visit_id)
+            .Where((w) => w.visit_id != null)
+            .Select((s) => s.visit_id)
             .ToArray();
 
           let outputArray = [];
@@ -283,9 +283,9 @@ export default {
                     where BH.record_status='A' and E.record_status='A' and\
                     BH.incharge_or_provider=E.hims_d_employee_id and visit_id=? order by bill_date desc;",
                   values: [allVisits[i]],
-                  printQuery: true
+                  printQuery: true,
                 })
-                .then(billHeadResult => {
+                .then((billHeadResult) => {
                   // _mysql.releaseConnection();
                   // req.records = result;
                   // next();
@@ -306,16 +306,16 @@ export default {
                                   "select hims_f_receipt_header_id, receipt_number, receipt_date, total_amount\
                                   from hims_f_receipt_header where record_status='A' and hims_f_receipt_header_id=?;",
                                 values: [billHeadResult[k].receipt_header_id],
-                                printQuery: true
+                                printQuery: true,
                               })
-                              .then(recptResult => {
+                              .then((recptResult) => {
                                 // _mysql.releaseConnection();
                                 // req.records = result;
                                 // next();
 
                                 return resolve(recptResult);
                               })
-                              .catch(error => {
+                              .catch((error) => {
                                 _mysql.releaseConnection();
                                 next(error);
                               });
@@ -323,7 +323,7 @@ export default {
                         } catch (e) {
                           reject(e);
                         }
-                      }).then(resultRCPT => {
+                      }).then((resultRCPT) => {
                         _mysql
                           .executeQuery({
                             query:
@@ -336,11 +336,11 @@ export default {
                  left join hims_d_insurance_provider IPR  on  IM.secondary_insurance_provider_id=IPR.hims_d_insurance_provider_id   \
                 where BH.record_status='A'  and   BH.hims_f_billing_header_id=?",
                             values: [
-                              billHeadResult[k].hims_f_billing_header_id
+                              billHeadResult[k].hims_f_billing_header_id,
                             ],
-                            printQuery: true
+                            printQuery: true,
                           })
-                          .then(insResult => {
+                          .then((insResult) => {
                             // _mysql.releaseConnection();
                             // req.records = result;
                             // next();
@@ -354,7 +354,7 @@ export default {
                                 " " +
                                 billHeadResult[k].provider_name,
                               ...insResult[0],
-                              receipt: resultRCPT
+                              receipt: resultRCPT,
                             });
 
                             if (i == allVisits.length - 1) {
@@ -363,7 +363,7 @@ export default {
                               next();
                             }
                           })
-                          .catch(error => {
+                          .catch((error) => {
                             _mysql.releaseConnection();
                             next(error);
                           });
@@ -378,7 +378,7 @@ export default {
                     }
                   }
                 })
-                .catch(error => {
+                .catch((error) => {
                   _mysql.releaseConnection();
                   next(error);
                 });
@@ -389,7 +389,7 @@ export default {
             next();
           }
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -406,14 +406,14 @@ export default {
         .executeQuery({
           query: "",
           values: [],
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -421,5 +421,5 @@ export default {
       _mysql.releaseConnection();
       next(e);
     }
-  }
+  },
 };

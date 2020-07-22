@@ -364,6 +364,7 @@ const AddItems = ($this) => {
     $this.state.item_id !== null &&
     $this.state.generic_id !== null &&
     $this.state.dosage !== null &&
+    $this.state.med_units !== null &&
     $this.state.frequency !== null &&
     $this.state.no_of_days !== null &&
     $this.state.frequency_type !== null &&
@@ -379,6 +380,7 @@ const AddItems = ($this) => {
       item_id: $this.state.item_id,
       generic_id: $this.state.generic_id,
       dosage: $this.state.dosage,
+      med_units: $this.state.med_units,
       frequency: $this.state.frequency,
       no_of_days: $this.state.no_of_days,
       frequency_type: $this.state.frequency_type,
@@ -632,17 +634,21 @@ const onchangegridcol = ($this, row, e) => {
     );
     if (frequency !== undefined && frequencyType !== undefined) {
       if (name === "dosage") {
-        row["instructions"] = `Use ${value} Unit(s),${frequency.name} Time(s) ${
-          frequencyType.name
-        } '${consume !== undefined ? consume.name : ""}' for ${
-          row.no_of_days
+        row["instructions"] = `${this.state.dosage} ${this.state.med_units}, ${
+          frequency.name
+        }, ${frequencyType.name}, ${
+          consume !== undefined ? consume.name : ""
+        }, ${route !== undefined ? route.name : ""} for ${
+          this.state.no_of_days
         } day(s)`;
       } else if (name === "no_of_days") {
-        row["instructions"] = `Use ${row.dosage} Unit(s),${
+        row["instructions"] = `${this.state.dosage}${this.state.med_units}, ${
           frequency.name
-        } Time(s) ${frequencyType.name} '${
+        }, ${frequencyType.name}, ${
           consume !== undefined ? consume.name : ""
-        }'  via '${route !== undefined ? route.name : ""}' for ${value} day(s)`;
+        }, ${route !== undefined ? route.name : ""} for ${
+          this.state.no_of_days
+        } day(s)`;
       }
     }
   }
