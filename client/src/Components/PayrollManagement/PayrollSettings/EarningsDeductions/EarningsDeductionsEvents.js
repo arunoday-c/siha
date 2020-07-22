@@ -413,7 +413,7 @@ const addEarningsDeductions = ($this) => {
               });
             }
           },
-          onFailure: (err) => { },
+          onFailure: (err) => {},
         });
       } else {
         inputObj.hims_d_earning_deduction_id =
@@ -435,7 +435,7 @@ const addEarningsDeductions = ($this) => {
               });
             }
           },
-          onFailure: (err) => { },
+          onFailure: (err) => {},
         });
       }
     },
