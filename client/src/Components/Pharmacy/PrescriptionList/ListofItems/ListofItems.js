@@ -239,6 +239,51 @@ class ListofItems extends PureComponent {
                     },
                   },
                   {
+                    fieldName: "frequency_route",
+                    label: (
+                      <AlgaehLabel label={{ forceLabel: "Frequency Route" }} />
+                    ),
+                    displayTemplate: (row) => {
+                      return row.frequency_route === "BL"
+                        ? "Buccal"
+                        : row.frequency_route === "EL"
+                        ? "Enteral"
+                        : row.frequency_route === "IL"
+                        ? "Inhalation"
+                        : row.frequency_route === "IF"
+                        ? "Infusion"
+                        : row.frequency_route === "IM"
+                        ? "Intramuscular Inj"
+                        : row.frequency_route === "IT"
+                        ? "Intrathecal Inj"
+                        : row.frequency_route === "IR"
+                        ? "Intravenous Inj"
+                        : row.frequency_route === "NL"
+                        ? "Nasal"
+                        : row.frequency_route === "OP"
+                        ? "Ophthalmic"
+                        : row.frequency_route === "OR"
+                        ? "Oral"
+                        : row.frequency_route === "OE"
+                        ? "Otic (ear)"
+                        : row.frequency_route === "RL"
+                        ? "Rectal"
+                        : row.frequency_route === "ST"
+                        ? "Subcutaneous"
+                        : row.frequency_route === "SL"
+                        ? "Sublingual"
+                        : row.frequency_route === "TL"
+                        ? "Topical"
+                        : row.frequency_route === "TD"
+                        ? "Transdermal"
+                        : null;
+                    },
+                    others: {
+                      //minWidth: 200,
+                      style: { textAlign: "center" },
+                    },
+                  },
+                  {
                     fieldName: "dosage",
                     label: <AlgaehLabel label={{ forceLabel: "Dosage" }} />,
                     others: {

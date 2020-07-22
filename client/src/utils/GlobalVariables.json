@@ -919,6 +919,72 @@
       "value": "AB"
     }
   ],
+  "PRESCRIPTION_FREQ_ROUTE": [
+    {
+      "name": "Buccal",
+      "value": "BL"
+    },
+    {
+      "name": "Enteral",
+      "value": "EL"
+    },
+    {
+      "name": "Inhalation",
+      "value": "IL"
+    },
+    {
+      "name": "Infusion",
+      "value": "IF"
+    },
+    {
+      "name": "Intramuscular Inj",
+      "value": "IM"
+    },
+    {
+      "name": "Intrathecal Inj",
+      "value": "IT"
+    },
+    {
+      "name": "Intravenous Inj",
+      "value": "IR"
+    },
+    {
+      "name": "Nasal",
+      "value": "NL"
+    },
+    {
+      "name": "Ophthalmic",
+      "value": "OP"
+    },
+    {
+      "name": "Oral",
+      "value": "OR"
+    },
+    {
+      "name": "Otic (ear)",
+      "value": "OE"
+    },
+    {
+      "name": "Rectal",
+      "value": "RL"
+    },
+    {
+      "name": "Subcutaneous",
+      "value": "ST"
+    },
+    {
+      "name": "Sublingual",
+      "value": "SL"
+    },
+    {
+      "name": "Topical",
+      "value": "TL"
+    },
+    {
+      "name": "Transdermal",
+      "value": "TD"
+    }
+  ],
   "SEARCH_BY_ICD": [
     {
       "name": "ICD Code",

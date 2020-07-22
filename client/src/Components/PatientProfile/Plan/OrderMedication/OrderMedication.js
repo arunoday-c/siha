@@ -7,6 +7,7 @@ import {
   PRESCRIPTION_FREQ_PERIOD,
   PRESCRIPTION_FREQ_TIME,
   PRESCRIPTION_FREQ_DURATION,
+  PRESCRIPTION_FREQ_ROUTE,
 } from "../../../../utils/GlobalVariables.json";
 
 import {
@@ -83,6 +84,7 @@ class OrderMedication extends Component {
 
       frequency_type: null,
       frequency_time: null,
+      frequency_route: null,
       total_quantity: 0,
       ...storedState,
     };
@@ -178,13 +180,19 @@ class OrderMedication extends Component {
       PRESCRIPTION_FREQ_DURATION,
       (f) => f.value === this.state.frequency_time
     );
+    const route = _.find(
+      PRESCRIPTION_FREQ_ROUTE,
+      (f) => f.value === this.state.frequency_route
+    );
     if (frequency !== undefined && frequencyType !== undefined) {
       this.setState({
         instructions: `Use ${this.state.dosage} Unit(s),${
           frequency.name
         } Time(s) ${frequencyType.name} '${
           consume !== undefined ? consume.name : ""
-        }' for ${this.state.no_of_days} day(s)`,
+        }' via '${route !== undefined ? route.name : ""}' for ${
+          this.state.no_of_days
+        } day(s)`,
       });
     }
   }
@@ -208,6 +216,7 @@ class OrderMedication extends Component {
       dispense: null,
       frequency_type: null,
       frequency_time: null,
+      frequency_route: null,
       uom_id: null,
       service_id: null,
       item_category_id: null,
@@ -344,8 +353,24 @@ class OrderMedication extends Component {
                       autoComplete: "off",
                     }}
                   />{" "}
+                  <AlagehAutoComplete
+                    div={{ className: "col-3" }}
+                    label={{ forceLabel: "Route" }}
+                    selector={{
+                      name: "frequency_route",
+                      className: "select-fld",
+                      value: this.state.frequency_route,
+                      dataSource: {
+                        textField: "name",
+                        valueField: "value",
+                        data: PRESCRIPTION_FREQ_ROUTE,
+                      },
+                      onChange: texthandle.bind(this, this),
+                      autoComplete: "off",
+                    }}
+                  />{" "}
                   <AlagehFormGroup
-                    div={{ className: "col-4" }}
+                    div={{ className: "col-3" }}
                     label={{
                       forceLabel: "Dosage",
                     }}
@@ -366,7 +391,7 @@ class OrderMedication extends Component {
                     }}
                   />
                   <AlagehFormGroup
-                    div={{ className: "col-4" }}
+                    div={{ className: "col-3" }}
                     label={{
                       forceLabel: "Duration (Days)",
                     }}
@@ -386,7 +411,7 @@ class OrderMedication extends Component {
                     }}
                   />
                   <AlgaehDateHandler
-                    div={{ className: "col-4" }}
+                    div={{ className: "col-3" }}
                     label={{ forceLabel: "Start Date" }}
                     textBox={{ className: "txt-fld", name: "start_date" }}
                     minDate={new Date()}
@@ -413,7 +438,7 @@ class OrderMedication extends Component {
                     className="col-12"
                     style={{ paddingTop: 9, textAlign: "right" }}
                   >
-                    <span style={{ textAlign: "left", marginRight: "10" }}>
+                    <span style={{ float: "left" }}>
                       Pharmacy Stock: <b>{this.state.total_quantity}</b>
                     </span>
                     <button
@@ -540,7 +565,7 @@ class OrderMedication extends Component {
                           : null;
                       },
                       others: {
-                        minWidth: 50,
+                        minWidth: 150,
                       },
                     },
                     {
@@ -595,7 +620,7 @@ class OrderMedication extends Component {
                           : null;
                       },
                       others: {
-                        minWidth: 70,
+                        minWidth: 150,
                       },
                     },
                     {
@@ -634,14 +659,93 @@ class OrderMedication extends Component {
                           : null;
                       },
                       others: {
-                        minWidth: 70,
+                        minWidth: 100,
+                      },
+                    },
+                    {
+                      fieldName: "frequency_route",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Freq. Route" }} />
+                      ),
+                      displayTemplate: (row) => {
+                        return row.frequency_route === "BL"
+                          ? "Buccal"
+                          : row.frequency_route === "EL"
+                          ? "Enteral"
+                          : row.frequency_route === "IL"
+                          ? "Inhalation"
+                          : row.frequency_route === "IF"
+                          ? "Infusion"
+                          : row.frequency_route === "IM"
+                          ? "Intramuscular Inj"
+                          : row.frequency_route === "IT"
+                          ? "Intrathecal Inj"
+                          : row.frequency_route === "IR"
+                          ? "Intravenous Inj"
+                          : row.frequency_route === "NL"
+                          ? "Nasal"
+                          : row.frequency_route === "OP"
+                          ? "Ophthalmic"
+                          : row.frequency_route === "OR"
+                          ? "Oral"
+                          : row.frequency_route === "OE"
+                          ? "Otic (ear)"
+                          : row.frequency_route === "RL"
+                          ? "Rectal"
+                          : row.frequency_route === "ST"
+                          ? "Subcutaneous"
+                          : row.frequency_route === "SL"
+                          ? "Sublingual"
+                          : row.frequency_route === "TL"
+                          ? "Topical"
+                          : row.frequency_route === "TD"
+                          ? "Transdermal"
+                          : null;
+                      },
+                      editorTemplate: (row) => {
+                        return row.frequency_route === "BL"
+                          ? "Buccal"
+                          : row.frequency_route === "EL"
+                          ? "Enteral"
+                          : row.frequency_route === "IL"
+                          ? "Inhalation"
+                          : row.frequency_route === "IF"
+                          ? "Infusion"
+                          : row.frequency_route === "IM"
+                          ? "Intramuscular Inj"
+                          : row.frequency_route === "IT"
+                          ? "Intrathecal Inj"
+                          : row.frequency_route === "IR"
+                          ? "Intravenous Inj"
+                          : row.frequency_route === "NL"
+                          ? "Nasal"
+                          : row.frequency_route === "OP"
+                          ? "Ophthalmic"
+                          : row.frequency_route === "OR"
+                          ? "Oral"
+                          : row.frequency_route === "OE"
+                          ? "Otic (ear)"
+                          : row.frequency_route === "RL"
+                          ? "Rectal"
+                          : row.frequency_route === "ST"
+                          ? "Subcutaneous"
+                          : row.frequency_route === "SL"
+                          ? "Sublingual"
+                          : row.frequency_route === "TL"
+                          ? "Topical"
+                          : row.frequency_route === "TD"
+                          ? "Transdermal"
+                          : null;
+                      },
+                      others: {
+                        minWidth: 100,
                       },
                     },
                     {
                       fieldName: "dosage",
                       label: <AlgaehLabel label={{ forceLabel: "Dosage" }} />,
                       others: {
-                        minWidth: 50,
+                        minWidth: 70,
                       },
                       displayTemplate: (row) => {
                         return (
@@ -737,6 +841,9 @@ class OrderMedication extends Component {
                             }}
                           />
                         );
+                      },
+                      others: {
+                        minWidth: 200,
                       },
                     },
                   ]}
