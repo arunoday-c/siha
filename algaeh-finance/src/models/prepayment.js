@@ -635,7 +635,7 @@ export const loadPrepaymentsToProcess = (req, res, next) => {
             query: `select finance_f_prepayment_request_id,finance_f_prepayment_detail_id, prepayment_type_id,prepayment_desc,request_code,
       employee_id,employee_code ,E.full_name as employee_name , ROUND( amount,${decimal_places}) as  amount,
       ROUND(prepayment_amount,${decimal_places}) as prepayment_amount, hims_d_hospital_id,hospital_name,
-      date_format(concat (D.year,'-',D.month,'-01'),'%Y-%M') as pay_month,PR.start_date, PR.end_date ${selectStr}
+      left(date_format(concat (D.year,'-',D.month,'-01'),'%Y-%M') ,8)as pay_month,PR.start_date, PR.end_date ${selectStr}
       from finance_f_prepayment_request PR  inner join finance_d_prepayment_type PT 
       on PR.prepayment_type_id=PT.finance_d_prepayment_type_id inner join finance_f_prepayment_detail D 
       on PR.finance_f_prepayment_request_id=D.prepayment_request_id
@@ -869,4 +869,51 @@ export const processPrepayments = (req, res, next) => {
   } else {
     next(new Error("Please provide valid input"));
   }
+};
+
+//created by:irfan
+export const getPrepaymentDetails = (req, res, next) => {
+  const _mysql = new algaehMysql();
+
+  const decimal_places = req.userIdentity.decimal_places;
+
+  _mysql
+    .executeQuery({
+      query: "  SELECT cost_center_type  FROM finance_options limit 1; ",
+    })
+    .then((options) => {
+      let selectStr = "";
+      let joinStr = "";
+
+      if (options[0]["cost_center_type"] == "P") {
+        selectStr += ` ,D.project_id as cost_center_id, P.project_desc as cost_center`;
+        joinStr += ` left join hims_d_project P on D.project_id=P.hims_d_project_id `;
+      } else if (options[0]["cost_center_type"] == "SD") {
+        selectStr += ` ,D.sub_department_id   as cost_center_id, SD.sub_department_name as cost_center`;
+        joinStr += ` left join hims_d_sub_department SD on D.sub_department_id=SD.hims_d_sub_department_id `;
+      }
+      _mysql
+        .executeQuery({
+          query: ` select finance_f_prepayment_detail_id, ROUND(amount,${decimal_places}) as amount,
+        left(date_format(concat (D.year,'-',D.month,'-01'),'%Y-%M') ,8)as pay_month,
+        processed, DATE(D.updated_date) as processed_date, U.username as processed_by ${selectStr}
+        from finance_f_prepayment_detail D left join algaeh_d_app_user U
+        on D.updated_by=U.algaeh_d_app_user_id ${joinStr} where prepayment_request_id=? ; `,
+          values: [req.query.finance_f_prepayment_request_id],
+          printQuery: false,
+        })
+        .then((result) => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch((e) => {
+          _mysql.releaseConnection();
+          next(e);
+        });
+    })
+    .catch((e) => {
+      _mysql.releaseConnection();
+      next(e);
+    });
 };
