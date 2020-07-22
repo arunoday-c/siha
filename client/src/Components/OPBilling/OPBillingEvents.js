@@ -21,6 +21,18 @@ const ClearData = ($this, e) => {
       data: [],
     },
   });
+
+  let IOputs = extend(
+    PatRegIOputs.inputParam(),
+    BillingIOputs.inputParam()
+  );
+  IOputs.patient_payable_h = 0;
+  IOputs.counter_id = counter_id;
+  IOputs.s_service_type = null;
+  IOputs.s_service = null;
+  IOputs.pageDisplay = "BillingDetails";
+  IOputs.selectedLang = getCookie("Language");
+
   algaehApiCall({
     uri: "/userPreferences/get",
     data: {
@@ -31,16 +43,16 @@ const ClearData = ($this, e) => {
     onSuccess: (response) => {
       counter_id = response.data.records.selectedValue;
 
-      let IOputs = extend(
-        PatRegIOputs.inputParam(),
-        BillingIOputs.inputParam()
-      );
-      IOputs.patient_payable_h = 0;
+      // let IOputs = extend(
+      //   PatRegIOputs.inputParam(),
+      //   BillingIOputs.inputParam()
+      // );
+      // IOputs.patient_payable_h = 0;
       IOputs.counter_id = counter_id;
-      IOputs.s_service_type = null;
-      IOputs.s_service = null;
-      IOputs.pageDisplay = "BillingDetails";
-      IOputs.selectedLang = getCookie("Language");
+      // IOputs.s_service_type = null;
+      // IOputs.s_service = null;
+      // IOputs.pageDisplay = "BillingDetails";
+      // IOputs.selectedLang = getCookie("Language");
       $this.setState({ ...$this.state, ...IOputs }, () => {
         getCashiersAndShiftMAP($this);
       });
@@ -212,24 +224,6 @@ const generateReceipt = ($this) => {
 };
 
 const selectVisit = ($this) => {
-  //   let $this = this;
-
-  if ($this.state.insured === "Y") {
-    $this.props.getPatientInsurance({
-      uri: "/patientRegistration/getPatientInsurance",
-      module: "frontDesk",
-      method: "GET",
-      data: {
-        patient_id: $this.state.hims_d_patient_id,
-        patient_visit_id: $this.state.visit_id,
-      },
-      redux: {
-        type: "EXIT_INSURANCE_GET_DATA",
-        mappingName: "existinsurance",
-      },
-    });
-  }
-
   algaehApiCall({
     uri: "/orderAndPreApproval/load_orders_for_bill",
     method: "GET",
@@ -474,26 +468,42 @@ const getPatientDetails = ($this) => {
         } else {
           data.patientRegistration.due_amount = 0;
         }
-        $this.setState(data.patientRegistration, () => {
-          $this.props.getPatientPackage({
-            uri: "/orderAndPreApproval/getPatientPackage",
+        $this.props.getPatientPackage({
+          uri: "/orderAndPreApproval/getPatientPackage",
+          method: "GET",
+          data: {
+            patient_id: data.patientRegistration.patient_id,
+            closed: "N",
+          },
+          redux: {
+            type: "ORDER_SERVICES_GET_DATA",
+            mappingName: "PatientPackageList",
+          },
+          afterSuccess: (data) => {
+            if (data.length !== 0 || data.length === undefined) {
+              $this.setState({
+                pack_balance_amount: data[0].balance_amount
+              });
+            }
+          },
+        });
+        if ($this.state.insured === "Y") {
+          $this.props.getPatientInsurance({
+            uri: "/patientRegistration/getPatientInsurance",
+            module: "frontDesk",
             method: "GET",
             data: {
-              patient_id: $this.state.patient_id,
-              closed: "N",
+              patient_id: data.patientRegistration.hims_d_patient_id,
+              patient_visit_id: data.patientRegistration.visit_id,
             },
             redux: {
-              type: "ORDER_SERVICES_GET_DATA",
-              mappingName: "PatientPackageList",
-            },
-            afterSuccess: (data) => {
-              if (data.length !== 0 || data.length === undefined) {
-                $this.setState({
-                  pack_balance_amount: data[0].balance_amount,
-                });
-              }
+              type: "EXIT_INSURANCE_GET_DATA",
+              mappingName: "existinsurance",
             },
           });
+        }
+
+        $this.setState(data.patientRegistration, () => {
           selectVisit($this);
         });
 
