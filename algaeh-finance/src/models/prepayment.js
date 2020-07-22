@@ -615,17 +615,17 @@ export const loadPrepaymentsToProcess = (req, res, next) => {
         let joinStr = "";
 
         if (options[0]["cost_center_type"] == "P") {
-          selectStr += ` ,PR.project_id as cost_center_id, P.project_desc as cost_center`;
-          joinStr += ` left join hims_d_project P on PR.project_id=P.hims_d_project_id `;
+          selectStr += ` ,D.project_id as cost_center_id, P.project_desc as cost_center`;
+          joinStr += ` left join hims_d_project P on D.project_id=P.hims_d_project_id `;
 
           if (input.cost_center_id > 0) {
-            whereStr += ` and PR.project_id=${input.cost_center_id}`;
+            whereStr += ` and D.project_id=${input.cost_center_id}`;
           }
         } else if (options[0]["cost_center_type"] == "SD") {
-          selectStr += ` ,PR.sub_department_id   as cost_center_id, SD.sub_department_name as cost_center`;
-          joinStr += ` left join hims_d_sub_department SD on PR.sub_department_id=SD.hims_d_sub_department_id `;
+          selectStr += ` ,D.sub_department_id   as cost_center_id, SD.sub_department_name as cost_center`;
+          joinStr += ` left join hims_d_sub_department SD on D.sub_department_id=SD.hims_d_sub_department_id `;
           if (input.cost_center_id > 0) {
-            whereStr += ` and PR.sub_department_id=${input.cost_center_id}`;
+            whereStr += ` and D.sub_department_id=${input.cost_center_id}`;
           }
         } else {
           selectStr += `,hims_d_hospital_id as cost_center_id ,hospital_name as cost_center`;
@@ -900,6 +900,49 @@ export const getPrepaymentDetails = (req, res, next) => {
         from finance_f_prepayment_detail D left join algaeh_d_app_user U
         on D.updated_by=U.algaeh_d_app_user_id ${joinStr} where prepayment_request_id=? ; `,
           values: [req.query.finance_f_prepayment_request_id],
+          printQuery: false,
+        })
+        .then((result) => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch((e) => {
+          _mysql.releaseConnection();
+          next(e);
+        });
+    })
+    .catch((e) => {
+      _mysql.releaseConnection();
+      next(e);
+    });
+};
+
+//created by:irfan
+export const updatePrepaymentCostCenter = (req, res, next) => {
+  const _mysql = new algaehMysql();
+
+  const decimal_places = req.userIdentity.decimal_places;
+
+  const { finance_f_prepayment_detail_id, cost_center_id } = req.body;
+  _mysql
+    .executeQuery({
+      query: "  SELECT cost_center_type  FROM finance_options limit 1; ",
+    })
+    .then((options) => {
+      let updateStr = "";
+
+      if (options[0]["cost_center_type"] == "P") {
+        updateStr += ` project_id=${cost_center_id} `;
+      } else if (options[0]["cost_center_type"] == "SD") {
+        updateStr += `sub_department_id=${cost_center_id}  `;
+      } else {
+        updateStr += `hospital_id=${cost_center_id}  `;
+      }
+      _mysql
+        .executeQuery({
+          query: ` update finance_f_prepayment_detail set ${updateStr} where finance_f_prepayment_detail_id=? and processed='N' ; `,
+          values: [finance_f_prepayment_detail_id],
           printQuery: false,
         })
         .then((result) => {
