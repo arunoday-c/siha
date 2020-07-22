@@ -34,26 +34,25 @@ class PurchaseOrderList extends Component {
     super(props);
     let month = moment().format("MM");
     let year = moment().format("YYYY");
-    let status = "1"
+    let status = "1";
     this.state = {
       to_date: new Date(),
       from_date: moment("01" + month + year, "DDMMYYYY")._d,
       po_from: null,
       to_location_id: null,
       purchase_list: [],
-
+      inv_access: false,
+      phr_access: false,
       authorize1: "Y",
       poSelected: true,
       status: "1",
     };
 
-    RawSecurityComponent({ componentCode: "PUR_AUT_AUTH2" }).then(
-      (result) => {
-        if (result === "show") {
-          status = "2"
-        }
+    RawSecurityComponent({ componentCode: "PUR_AUT_AUTH2" }).then((result) => {
+      if (result === "show") {
+        status = "2";
       }
-    );
+    });
 
     RawSecurityComponent({ componentCode: "PUR_AUTH_INVENTORY" }).then(
       (result) => {
@@ -61,8 +60,9 @@ class PurchaseOrderList extends Component {
           this.setState(
             {
               po_from: "INV",
+              inv_access: true,
               poSelected: false,
-              status: status
+              status: status,
             },
             () => {
               getData(this);
@@ -80,7 +80,8 @@ class PurchaseOrderList extends Component {
             {
               po_from: "PHR",
               poSelected: false,
-              status: status
+              phr_access: true,
+              status: status,
             },
             () => {
               getData(this);
@@ -90,8 +91,6 @@ class PurchaseOrderList extends Component {
         }
       }
     );
-
-
   }
 
   render() {
@@ -166,7 +165,8 @@ class PurchaseOrderList extends Component {
                       data: GlobalVariables.PO_FROM,
                     },
                     others: {
-                      disabled: true,
+                      disabled:
+                        !this.state.inv_access && !this.state.phr_access,
                     },
                     onChange: poforhandle.bind(this, this),
                     onClear: poforhandle.bind(this, this),
@@ -365,21 +365,21 @@ class PurchaseOrderList extends Component {
 
                           this.state.po_from === "PHR"
                             ? (display =
-                              this.props.polocations === undefined
-                                ? []
-                                : this.props.polocations.filter(
-                                  (f) =>
-                                    f.hims_d_pharmacy_location_id ===
-                                    row.pharmcy_location_id
-                                ))
+                                this.props.polocations === undefined
+                                  ? []
+                                  : this.props.polocations.filter(
+                                      (f) =>
+                                        f.hims_d_pharmacy_location_id ===
+                                        row.pharmcy_location_id
+                                    ))
                             : (display =
-                              this.props.polocations === undefined
-                                ? []
-                                : this.props.polocations.filter(
-                                  (f) =>
-                                    f.hims_d_inventory_location_id ===
-                                    row.inventory_location_id
-                                ));
+                                this.props.polocations === undefined
+                                  ? []
+                                  : this.props.polocations.filter(
+                                      (f) =>
+                                        f.hims_d_inventory_location_id ===
+                                        row.inventory_location_id
+                                    ));
 
                           return (
                             <span>
@@ -428,7 +428,7 @@ class PurchaseOrderList extends Component {
 function mapStateToProps(state) {
   return {
     polocations: state.polocations,
-    purchaseorderlist: state.purchaseorderlist,
+    // purchaseorderlist: state.purchaseorderlist,
   };
 }
 
@@ -436,7 +436,7 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
       getLocation: AlgaehActions,
-      getPurchaseOrderList: AlgaehActions,
+      // getPurchaseOrderList: AlgaehActions,
     },
     dispatch
   );
