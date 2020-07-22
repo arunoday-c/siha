@@ -231,7 +231,7 @@ const InventorySetup = React.lazy(() =>
 );
 
 const OPBillPendingList = React.lazy(() =>
-  retry(() => import("./Components/OPBillPendingList/OPBillPendingList"))
+  retry(() => import("./Components/OPBillPendingList/OPBillPendSwitch"))
 );
 const SalesReturn = React.lazy(() =>
   retry(() => import("./Components/Pharmacy/SalesReturn/SalesReturn"))

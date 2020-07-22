@@ -377,20 +377,21 @@ const ClosePackage = ($this) => {
       isPackOpen: !$this.state.isPackOpen,
     },
     () => {
-      getPatientDetails($this);
+      getPatientDetails($this, $this.state.patient_code);
     }
   );
 };
 
-const getPatientDetails = ($this) => {
+const getPatientDetails = ($this, patient_code) => {
   AlgaehLoader({ show: true });
 
+  debugger
   algaehApiCall({
     uri: "/frontDesk/get",
     module: "frontDesk",
     method: "GET",
     data: {
-      patient_code: $this.state.patient_code,
+      patient_code: patient_code,
       expiry_visit: "N",
     },
     onSuccess: (response) => {
@@ -544,7 +545,7 @@ const ClosePackageUtilize = ($this) => {
       isPackUtOpen: !$this.state.isPackUtOpen,
     },
     () => {
-      getPatientDetails($this);
+      getPatientDetails($this, $this.state.patient_code);
       $this.props.getPatientPackage({
         uri: "/orderAndPreApproval/getPatientPackage",
         method: "GET",
