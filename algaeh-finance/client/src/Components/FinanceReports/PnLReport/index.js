@@ -116,10 +116,19 @@ export default function PnLReport({
   }
 
   function loadReportByYear(excel) {
+    let dts = {};
+    if (Array.isArray(year)) {
+      // const from_date = year[0].format("YYYY");
+      const to_date = year[1].format("YYYY");
+      dts = { year: to_date };
+    } else {
+      dts = { year };
+    }
+
     const input = {
       hospital_id: branch_id,
       cost_center_id,
-      year,
+      ...dts,
     };
     let extraHeaders = {};
     let others = {};
@@ -145,7 +154,7 @@ export default function PnLReport({
         if (typeof stopLoading === "function") stopLoading();
         AlgaehMessagePop({
           type: "error",
-          display: error,
+          display: error.message,
         });
       });
   }
@@ -317,7 +326,6 @@ export default function PnLReport({
       PERIOD,
       YEAR,
       RANGE,
-      CHANGEINAMT,
       PREVIOUSRANGE,
     } = inputs;
     setBranchID(BRANCH);

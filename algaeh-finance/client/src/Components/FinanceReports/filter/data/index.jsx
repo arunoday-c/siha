@@ -8,6 +8,8 @@ const PERIOD = {
         value: "TMTD",
         depend: {
           type: "RANGE",
+          format: "YYYY-MM",
+          mode: ["month", "month"],
           value: [moment().startOf("month"), moment()],
         },
       },
@@ -16,6 +18,8 @@ const PERIOD = {
         value: "LM",
         depend: {
           type: "RANGE",
+          mode: ["month", "month"],
+          format: "YYYY-MM",
           value: [
             moment().subtract(1, "months").startOf("month"),
             moment().subtract(1, "months").endOf("month"),
