@@ -6,7 +6,7 @@ import Swal from "sweetalert2";
 import {
   PRESCRIPTION_FREQ_PERIOD,
   PRESCRIPTION_FREQ_TIME,
-  PRESCRIPTION_FREQ_DURATION
+  PRESCRIPTION_FREQ_DURATION,
 } from "../../../../utils/GlobalVariables.json";
 
 import {
@@ -14,22 +14,22 @@ import {
   AlgaehDataGrid,
   AlgaehLabel,
   AlagehAutoComplete,
-  AlgaehDateHandler
+  AlgaehDateHandler,
 } from "../../../Wrapper/algaehWrapper";
 
 import {
-  texthandle,  
+  texthandle,
   itemhandle,
   AddItems,
   deleteItems,
   datehandle,
-  SaveMedication,  
+  SaveMedication,
   dateFormater,
-  numberhandle,  
+  numberhandle,
   updateItems,
   onchangegridcol,
   EditGrid,
-  CancelGrid
+  CancelGrid,
 } from "./OrderMedicationEvents";
 import "./OrderMedication.scss";
 import "../../../../styles/site.scss";
@@ -52,7 +52,7 @@ class OrderMedication extends Component {
       encounter_id,
       visit_id,
       provider_id,
-      episode_id
+      episode_id,
     } = Window.global;
     this.state = {
       patient_id: current_patient, // Window.global["current_patient"],
@@ -84,7 +84,7 @@ class OrderMedication extends Component {
       frequency_type: null,
       frequency_time: null,
       total_quantity: 0,
-      ...storedState
+      ...storedState,
     };
   }
 
@@ -94,7 +94,7 @@ class OrderMedication extends Component {
   onGenericItemSelectedHandler(item) {
     this.setState({
       generic_id: item.hims_d_item_generic_id,
-      generic_name: _.startCase(_.toLower(item.generic_name))
+      generic_name: _.startCase(_.toLower(item.generic_name)),
     });
   }
   clearGenericCodeHandler() {
@@ -102,7 +102,7 @@ class OrderMedication extends Component {
       generic_id: undefined,
       generic_name: "",
       item_description: "",
-      item_id: undefined
+      item_id: undefined,
     });
   }
   clearItemCodeHandler() {
@@ -114,7 +114,7 @@ class OrderMedication extends Component {
       item_group_id: null,
       addItemEnable: true,
       instructions: "",
-      total_quantity: 0
+      total_quantity: 0,
     });
   }
   itemChangeHandle(item) {
@@ -128,13 +128,13 @@ class OrderMedication extends Component {
       method: "GET",
       data: {
         patient_id: this.state.patient_id,
-        patient_visit_id: this.state.visit_id
+        patient_visit_id: this.state.visit_id,
       },
       redux: {
         type: "EXIT_INSURANCE_GET_DATA",
-        mappingName: "existinginsurance"
+        mappingName: "existinginsurance",
       },
-      afterSuccess: data => {
+      afterSuccess: (data) => {
         if (data.length > 0) {
           this.setState({
             insured: "Y",
@@ -145,10 +145,10 @@ class OrderMedication extends Component {
             secondary_insurance_provider_id:
               data.secondary_insurance_provider_id,
             secondary_network_id: data.secondary_network_id,
-            secondary_network_office_id: data.secondary_network_office_id
+            secondary_network_office_id: data.secondary_network_office_id,
           });
         }
-      }
+      },
     });
   }
   componentWillUnmount() {
@@ -168,15 +168,15 @@ class OrderMedication extends Component {
   instructionItems() {
     const frequency = _.find(
       PRESCRIPTION_FREQ_PERIOD,
-      f => f.value === this.state.frequency
+      (f) => f.value === this.state.frequency
     );
     const frequencyType = _.find(
       PRESCRIPTION_FREQ_TIME,
-      f => f.value === this.state.frequency_type
+      (f) => f.value === this.state.frequency_type
     );
     const consume = _.find(
       PRESCRIPTION_FREQ_DURATION,
-      f => f.value === this.state.frequency_time
+      (f) => f.value === this.state.frequency_time
     );
     if (frequency !== undefined && frequencyType !== undefined) {
       this.setState({
@@ -184,14 +184,14 @@ class OrderMedication extends Component {
           frequency.name
         } Time(s) ${frequencyType.name} '${
           consume !== undefined ? consume.name : ""
-        }' for ${this.state.no_of_days} day(s)`
+        }' for ${this.state.no_of_days} day(s)`,
       });
     }
   }
 
   onInstructionsTextHandler(e) {
     this.setState({
-      instructions: e.currentTarget.value
+      instructions: e.currentTarget.value,
     });
   }
 
@@ -217,32 +217,30 @@ class OrderMedication extends Component {
       item_description: "",
       instructions: "",
       start_date: moment().format("YYYY-MM-DD"),
-      total_quantity: 0
+      total_quantity: 0,
     });
   };
 
-  clearAction = e => {
-    
-      Swal.fire({
-        title: "Are you sure?",
-        text: "You won't be able to revert this!",
-        type: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Yes, clear it!"
-      }).then(result => {
-        if (result.value) {
-          this.setState(
-            {
-              saveMedicationEnable: true,
-              medicationitems: []
-            },
-            this.clearInputState
-          );
-        }
-      });
-    
+  clearAction = (e) => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, clear it!",
+    }).then((result) => {
+      if (result.value) {
+        this.setState(
+          {
+            saveMedicationEnable: true,
+            medicationitems: [],
+          },
+          this.clearInputState
+        );
+      }
+    });
   };
 
   render() {
@@ -263,8 +261,8 @@ class OrderMedication extends Component {
                       { fieldName: "item_code" },
                       { fieldName: "sfda_code" },
                       {
-                        fieldName: "generic_name"
-                      }
+                        fieldName: "generic_name",
+                      },
                     ]}
                     displayField="generic_name_item_description"
                     value={this.state.generic_name_item_description}
@@ -275,7 +273,7 @@ class OrderMedication extends Component {
                       sfda_code,
                       storage_description,
                       sales_price,
-                      generic_name
+                      generic_name,
                     }) => {
                       return (
                         <div className="col-12 padd-10">
@@ -308,10 +306,10 @@ class OrderMedication extends Component {
                       dataSource: {
                         textField: "name",
                         valueField: "value",
-                        data: PRESCRIPTION_FREQ_PERIOD
+                        data: PRESCRIPTION_FREQ_PERIOD,
                       },
                       onChange: texthandle.bind(this, this),
-                      autoComplete: "off"
+                      autoComplete: "off",
                     }}
                   />
                   <AlagehAutoComplete
@@ -324,10 +322,10 @@ class OrderMedication extends Component {
                       dataSource: {
                         textField: "name",
                         valueField: "value",
-                        data: PRESCRIPTION_FREQ_TIME
+                        data: PRESCRIPTION_FREQ_TIME,
                       },
                       onChange: texthandle.bind(this, this),
-                      autoComplete: "off"
+                      autoComplete: "off",
                     }}
                   />
                   <AlagehAutoComplete
@@ -340,16 +338,16 @@ class OrderMedication extends Component {
                       dataSource: {
                         textField: "name",
                         valueField: "value",
-                        data: PRESCRIPTION_FREQ_DURATION
+                        data: PRESCRIPTION_FREQ_DURATION,
                       },
                       onChange: texthandle.bind(this, this),
-                      autoComplete: "off"
+                      autoComplete: "off",
                     }}
                   />{" "}
                   <AlagehFormGroup
                     div={{ className: "col-4" }}
                     label={{
-                      forceLabel: "Dosage"
+                      forceLabel: "Dosage",
                     }}
                     textBox={{
                       number: true,
@@ -357,20 +355,20 @@ class OrderMedication extends Component {
                       name: "dosage",
                       value: this.state.dosage,
                       events: {
-                        onChange: numberhandle.bind(this, this)
+                        onChange: numberhandle.bind(this, this),
                       },
                       others: {
                         min: 1,
-                        onFocus: e => {
+                        onFocus: (e) => {
                           e.target.oldvalue = e.target.value;
-                        }
-                      }
+                        },
+                      },
                     }}
                   />
                   <AlagehFormGroup
                     div={{ className: "col-4" }}
                     label={{
-                      forceLabel: "Duration (Days)"
+                      forceLabel: "Duration (Days)",
                     }}
                     textBox={{
                       number: { allowNegative: false },
@@ -378,13 +376,13 @@ class OrderMedication extends Component {
                       name: "no_of_days",
                       value: this.state.no_of_days,
                       events: {
-                        onChange: numberhandle.bind(this, this)
+                        onChange: numberhandle.bind(this, this),
                       },
                       others: {
-                        onFocus: e => {
+                        onFocus: (e) => {
                           e.target.oldvalue = e.target.value;
-                        }
-                      }
+                        },
+                      },
                     }}
                   />
                   <AlgaehDateHandler
@@ -393,7 +391,7 @@ class OrderMedication extends Component {
                     textBox={{ className: "txt-fld", name: "start_date" }}
                     minDate={new Date()}
                     events={{
-                      onChange: datehandle.bind(this, this)
+                      onChange: datehandle.bind(this, this),
                     }}
                     value={this.state.start_date}
                   />
@@ -441,19 +439,21 @@ class OrderMedication extends Component {
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Generic Name" }} />
                       ),
-                      editorTemplate: row => <span>{row.generic_name}</span>
+                      editorTemplate: (row) => <span>{row.generic_name}</span>,
                     },
                     {
                       fieldName: "item_description",
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Item Name" }} />
                       ),
-                      editorTemplate: row => <span>{row.item_description}</span>
+                      editorTemplate: (row) => (
+                        <span>{row.item_description}</span>
+                      ),
                     },
                     {
                       fieldName: "frequency",
                       label: <AlgaehLabel label={{ forceLabel: "Freq." }} />,
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         return row.frequency === "0"
                           ? "1-0-1"
                           : row.frequency === "1"
@@ -468,9 +468,35 @@ class OrderMedication extends Component {
                           ? "0-1-1"
                           : row.frequency === "6"
                           ? "1-1-1"
+                          : row.frequency === "7"
+                          ? "Once only"
+                          : row.frequency === "8"
+                          ? "Once daily (q24h)"
+                          : row.frequency === "9"
+                          ? "Twice daily (Bid)"
+                          : row.frequency === "10"
+                          ? "Three times daily (tid)"
+                          : row.frequency === "11"
+                          ? "Five times daily"
+                          : row.frequency === "12"
+                          ? "Every two hours (q2h)"
+                          : row.frequency === "13"
+                          ? "Every three hours (q3h)"
+                          : row.frequency === "14"
+                          ? "Every four hours (q4h)"
+                          : row.frequency === "15"
+                          ? "Every six hours (q6h)"
+                          : row.frequency === "16"
+                          ? "Every eight hours (q8h)"
+                          : row.frequency === "17"
+                          ? "Every twelve hours (q12h)"
+                          : row.frequency === "18"
+                          ? "Four times daily (qid)"
+                          : row.frequency === "19"
+                          ? "Other (According To Physician)"
                           : null;
                       },
-                      editorTemplate: row => {
+                      editorTemplate: (row) => {
                         return row.frequency === "0"
                           ? "1-0-1"
                           : row.frequency === "1"
@@ -485,18 +511,44 @@ class OrderMedication extends Component {
                           ? "0-1-1"
                           : row.frequency === "6"
                           ? "1-1-1"
+                          : row.frequency === "7"
+                          ? "Once only"
+                          : row.frequency === "8"
+                          ? "Once daily (q24h)"
+                          : row.frequency === "9"
+                          ? "Twice daily (Bid)"
+                          : row.frequency === "10"
+                          ? "Three times daily (tid)"
+                          : row.frequency === "11"
+                          ? "Five times daily"
+                          : row.frequency === "12"
+                          ? "Every two hours (q2h)"
+                          : row.frequency === "13"
+                          ? "Every three hours (q3h)"
+                          : row.frequency === "14"
+                          ? "Every four hours (q4h)"
+                          : row.frequency === "15"
+                          ? "Every six hours (q6h)"
+                          : row.frequency === "16"
+                          ? "Every eight hours (q8h)"
+                          : row.frequency === "17"
+                          ? "Every twelve hours (q12h)"
+                          : row.frequency === "18"
+                          ? "Four times daily (qid)"
+                          : row.frequency === "19"
+                          ? "Other (According To Physician)"
                           : null;
                       },
                       others: {
-                        minWidth: 50
-                      }
+                        minWidth: 50,
+                      },
                     },
                     {
                       fieldName: "frequency_type",
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Freq. Type" }} />
                       ),
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         return row.frequency_type === "PD"
                           ? "Per Day"
                           : row.frequency_type === "PH"
@@ -507,9 +559,19 @@ class OrderMedication extends Component {
                           ? "Per Month"
                           : row.frequency_type === "AD"
                           ? "Alternate Day"
+                          : row.frequency_type === "2W"
+                          ? "Every 2 weeks"
+                          : row.frequency_type === "2M"
+                          ? "Every 2 months"
+                          : row.frequency_type === "3M"
+                          ? "Every 3 months"
+                          : row.frequency_type === "4M"
+                          ? "Every 4 months"
+                          : row.frequency_type === "6M"
+                          ? "Every 6 months"
                           : null;
                       },
-                      editorTemplate: row => {
+                      editorTemplate: (row) => {
                         return row.frequency_type === "PD"
                           ? "Per Day"
                           : row.frequency_type === "PH"
@@ -520,25 +582,35 @@ class OrderMedication extends Component {
                           ? "Per Month"
                           : row.frequency_type === "AD"
                           ? "Alternate Day"
+                          : row.frequency_type === "2W"
+                          ? "Every 2 weeks"
+                          : row.frequency_type === "2M"
+                          ? "Every 2 months"
+                          : row.frequency_type === "3M"
+                          ? "Every 3 months"
+                          : row.frequency_type === "4M"
+                          ? "Every 4 months"
+                          : row.frequency_type === "6M"
+                          ? "Every 6 months"
                           : null;
                       },
                       others: {
-                        minWidth: 70
-                      }
+                        minWidth: 70,
+                      },
                     },
                     {
                       fieldName: "frequency_time",
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Freq. Time" }} />
                       ),
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         return row.frequency_time === "BM"
                           ? "Before Meals"
                           : row.frequency_time === "AM"
                           ? "After Meals"
                           : null;
                       },
-                      editorTemplate: row => {
+                      editorTemplate: (row) => {
                         return row.frequency_time === "BM"
                           ? "Before Meals"
                           : row.frequency_time === "AM"
@@ -546,16 +618,16 @@ class OrderMedication extends Component {
                           : null;
                       },
                       others: {
-                        minWidth: 70
-                      }
+                        minWidth: 70,
+                      },
                     },
                     {
                       fieldName: "dosage",
                       label: <AlgaehLabel label={{ forceLabel: "Dosage" }} />,
                       others: {
-                        minWidth: 50
+                        minWidth: 50,
                       },
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         return (
                           <AlagehFormGroup
                             div={{}}
@@ -565,12 +637,12 @@ class OrderMedication extends Component {
                               className: "txt-fld",
                               name: "dosage",
                               events: {
-                                onChange: onchangegridcol.bind(this, this, row)
-                              }
+                                onChange: onchangegridcol.bind(this, this, row),
+                              },
                             }}
                           />
                         );
-                      }
+                      },
                     },
                     {
                       fieldName: "no_of_days",
@@ -580,9 +652,9 @@ class OrderMedication extends Component {
                         />
                       ),
                       others: {
-                        minWidth: 90
+                        minWidth: 90,
                       },
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         return (
                           <AlagehFormGroup
                             div={{}}
@@ -592,50 +664,50 @@ class OrderMedication extends Component {
                               className: "txt-fld",
                               name: "no_of_days",
                               events: {
-                                onChange: onchangegridcol.bind(this, this, row)
-                              }
+                                onChange: onchangegridcol.bind(this, this, row),
+                              },
                             }}
                           />
                         );
-                      }
+                      },
                     },
                     {
                       fieldName: "start_date",
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Start Date" }} />
                       ),
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         return <span>{dateFormater(row.start_date)}</span>;
                       },
-                      editorTemplate: row => {
+                      editorTemplate: (row) => {
                         return <span>{dateFormater(row.start_date)}</span>;
                       },
                       others: {
-                        minWidth: 100
-                      }
+                        minWidth: 100,
+                      },
                     },
                     {
                       fieldName: "pre_approval",
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Pre Approval" }} />
                       ),
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         return row.pre_approval === "Y"
                           ? "Required"
                           : "Not Required";
                       },
-                      editorTemplate: row => {
+                      editorTemplate: (row) => {
                         return row.pre_approval === "Y"
                           ? "Required"
                           : "Not Required";
-                      }
+                      },
                     },
                     {
                       fieldName: "instructions",
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Instruction" }} />
                       ),
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         return (
                           <AlagehFormGroup
                             div={{}}
@@ -644,20 +716,20 @@ class OrderMedication extends Component {
                               className: "txt-fld",
                               name: "instructions",
                               events: {
-                                onChange: onchangegridcol.bind(this, this, row)
-                              }
+                                onChange: onchangegridcol.bind(this, this, row),
+                              },
                             }}
                           />
                         );
-                      }
-                    }
+                      },
+                    },
                   ]}
                   keyId="item_id"
                   dataSource={{
-                    data: this.state.medicationitems
+                    data: this.state.medicationitems,
                   }}
                   actions={{
-                    allowEdit: false
+                    allowEdit: false,
                   }}
                   isEditable={true}
                   paging={{ page: 0, rowsPerPage: 10 }}
@@ -666,7 +738,7 @@ class OrderMedication extends Component {
                     onDelete: deleteItems.bind(this, this),
                     onEdit: EditGrid.bind(this, this),
                     onCancel: CancelGrid.bind(this, this),
-                    onDone: updateItems.bind(this, this)
+                    onDone: updateItems.bind(this, this),
                   }}
                 />
               </div>
@@ -729,7 +801,7 @@ function mapStateToProps(state) {
     itemlist: state.itemlist,
     genericlist: state.genericlist,
     itemStock: state.itemStock,
-    existinginsurance: state.existinginsurance
+    existinginsurance: state.existinginsurance,
   };
 }
 
@@ -737,7 +809,7 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
       getItemStock: AlgaehActions,
-      getPatientInsurance: AlgaehActions
+      getPatientInsurance: AlgaehActions,
     },
     dispatch
   );

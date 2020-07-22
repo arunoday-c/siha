@@ -797,6 +797,58 @@
     {
       "name": "1-1-1",
       "value": "6"
+    },
+    {
+      "name": "Once only",
+      "value": "7"
+    },
+    {
+      "name": "Once daily (q24h)",
+      "value": "8"
+    },
+    {
+      "name": "Twice daily (Bid)",
+      "value": "9"
+    },
+    {
+      "name": "Three times daily (tid)",
+      "value": "10"
+    },
+    {
+      "name": "Five times daily",
+      "value": "11"
+    },
+    {
+      "name": " Every two hours (q2h)",
+      "value": "12"
+    },
+    {
+      "name": "Every three hours (q3h) ",
+      "value": "13"
+    },
+    {
+      "name": "Every four hours (q4h)",
+      "value": "14"
+    },
+    {
+      "name": "Every six hours (q6h)",
+      "value": "15"
+    },
+    {
+      "name": "Every eight hours (q8h)",
+      "value": "16"
+    },
+    {
+      "name": "Every twelve hours (q12h)",
+      "value": "17"
+    },
+    {
+      "name": "Four times daily (qid)",
+      "value": "18"
+    },
+    {
+      "name": "Other (According To Physician)",
+      "value": "19"
     }
   ],
   "PRESCRIPTION_FREQ_TIME": [
