@@ -13,24 +13,24 @@ class PhysicalExamination extends Component {
 
     this.state = {
       // pe_type: "A",
-      examination_type: "G",
+      examination_type: "",
       sub_department_id: null,
       examinationType: [],
 
       description: "",
-      nameError: false,
-      nameErrorText: "",
+      // nameError: false,
+      // nameErrorText: "",
       physical_examination_header_id: "",
 
       EDname: "",
-      EDnameError: false,
-      EDnameErrorText: "",
+      // EDnameError: false,
+      // EDnameErrorText: "",
       examDescription: [],
       physical_examination_details_id: "",
 
       ECname: "",
-      ECnameError: false,
-      ECnameErrorText: "",
+      // ECnameError: false,
+      // ECnameErrorText: "",
       examCategory: [],
     };
   }
@@ -158,38 +158,45 @@ class PhysicalExamination extends Component {
   addExamDesc = (e) => {
     e.preventDefault();
 
-    if (this.state.EDname.length === 0) {
-      this.setState({
-        nameError: true,
-        EDnameErrorText: "Name cannot be empty",
+    if (!this.state.EDname) {
+      swalMessage({
+        type: "warning",
+        title: "Name Cannot be Empty",
       });
-    } else {
-      algaehApiCall({
-        uri: "/workBenchSetup/addExaminationDescription",
-        method: "POST",
-        data: {
-          physical_examination_header_id: this.state
-            .physical_examination_header_id,
-          description: this.state.EDname,
-        },
-        onSuccess: (response) => {
-          if (response.data.success) {
-            swalMessage({
-              title: "Record added successfully",
-              type: "success",
-            });
-            this.resetSaveState();
-            this.getExaminationDesc();
-          }
-        },
-        onFailure: (error) => {
-          swalMessage({
-            title: error.message,
-            type: "error",
-          });
-        },
-      });
+      return;
     }
+    if (!this.state.physical_examination_header_id) {
+      swalMessage({
+        type: "warning",
+        title: "Please Select PhysicalExamination",
+      });
+      return;
+    }
+    algaehApiCall({
+      uri: "/workBenchSetup/addExaminationDescription",
+      method: "POST",
+      data: {
+        physical_examination_header_id: this.state
+          .physical_examination_header_id,
+        description: this.state.EDname,
+      },
+      onSuccess: (response) => {
+        if (response.data.success) {
+          swalMessage({
+            title: "Record added successfully",
+            type: "success",
+          });
+          this.resetSaveState();
+          this.getExaminationDesc();
+        }
+      },
+      onFailure: (error) => {
+        swalMessage({
+          title: error.message,
+          type: "error",
+        });
+      },
+    });
   };
   updateExamDesc = (data) => {
     algaehApiCall({
@@ -221,6 +228,20 @@ class PhysicalExamination extends Component {
 
   addExaminationCategory = (e) => {
     e.preventDefault();
+    if (!this.state.ECname) {
+      swalMessage({
+        type: "warning",
+        title: "Please Select the Category",
+      });
+      return;
+    }
+    if (!this.state.physical_examination_details_id) {
+      swalMessage({
+        type: "warning",
+        title: "Please Select Examination Description",
+      });
+      return;
+    }
 
     algaehApiCall({
       uri: "/workBenchSetup/addExaminationCategory",
@@ -278,35 +299,45 @@ class PhysicalExamination extends Component {
   addExaminationType = (e) => {
     e.preventDefault();
 
-    if (this.state.description.length === 0) {
-      this.setState({ nameError: true, nameErrorText: "Code cannot be empty" });
-    } else {
-      algaehApiCall({
-        uri: "/workBenchSetup/addExaminationType",
-        method: "POST",
-        data: {
-          examination_type: this.state.examination_type,
-          description: this.state.description,
-          sub_department_id: this.state.sub_department_id,
-        },
-        onSuccess: (response) => {
-          if (response.data.success) {
-            swalMessage({
-              title: "Record added successfully",
-              type: "success",
-            });
-            this.resetSaveState();
-            this.getExaminationTypes();
-          }
-        },
-        onFailure: (error) => {
-          swalMessage({
-            title: error.message,
-            type: "error",
-          });
-        },
+    if (!this.state.description) {
+      swalMessage({
+        type: "warning",
+        title: "Description Cannot be Empty",
       });
+      return;
     }
+    if (!this.state.examination_type) {
+      swalMessage({
+        type: "warning",
+        title: "Please Select General or Specific ",
+      });
+      return;
+    }
+    algaehApiCall({
+      uri: "/workBenchSetup/addExaminationType",
+      method: "POST",
+      data: {
+        examination_type: this.state.examination_type,
+        description: this.state.description,
+        sub_department_id: this.state.sub_department_id,
+      },
+      onSuccess: (response) => {
+        if (response.data.success) {
+          swalMessage({
+            title: "Record added successfully",
+            type: "success",
+          });
+          this.resetSaveState();
+          this.getExaminationTypes();
+        }
+      },
+      onFailure: (error) => {
+        swalMessage({
+          title: error.message,
+          type: "error",
+        });
+      },
+    });
   };
   editExaminationType(data) {
     algaehApiCall({
