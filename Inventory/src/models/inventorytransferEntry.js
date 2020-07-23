@@ -520,66 +520,74 @@ export default {
     const _mysql = new algaehMysql();
 
     try {
-      let inputParam = { ...req.body };
+      let buffer = "";
+      req.on("data", (chunk) => {
+        buffer += chunk.toString();
+      });
 
-      _mysql
-        .executeQueryWithTransaction({
-          query:
-            "UPDATE `hims_f_inventory_transfer_header` SET `ack_done`=?, `ack_date`=?, `ack_by`=? \
+      req.on("end", () => {
+        let inputParam = JSON.parse(buffer);
+        req.body = inputParam;
+
+        _mysql
+          .executeQueryWithTransaction({
+            query:
+              "UPDATE `hims_f_inventory_transfer_header` SET `ack_done`=?, `ack_date`=?, `ack_by`=? \
             WHERE `hims_f_inventory_transfer_header_id`=?;",
-          values: [
-            inputParam.ack_done,
-            new Date(),
-            req.userIdentity.algaeh_d_app_user_id,
-            inputParam.hims_f_inventory_transfer_header_id,
-          ],
-          printQuery: true,
-        })
-        .then((headerResult) => {
-          req.connection = {
-            connection: _mysql.connection,
-            isTransactionConnection: _mysql.isTransactionConnection,
-            pool: _mysql.pool,
-          };
-          let qry = "";
-          for (let i = 0; i < inputParam.inventory_stock_detail.length; i++) {
-            qry += _mysql.mysqlQueryFormat(
-              "UPDATE hims_f_inventory_transfer_batches set ack_quantity=?\
+            values: [
+              inputParam.ack_done,
+              new Date(),
+              req.userIdentity.algaeh_d_app_user_id,
+              inputParam.hims_f_inventory_transfer_header_id,
+            ],
+            printQuery: true,
+          })
+          .then((headerResult) => {
+            req.connection = {
+              connection: _mysql.connection,
+              isTransactionConnection: _mysql.isTransactionConnection,
+              pool: _mysql.pool,
+            };
+            let qry = "";
+            for (let i = 0; i < inputParam.inventory_stock_detail.length; i++) {
+              qry += _mysql.mysqlQueryFormat(
+                "UPDATE hims_f_inventory_transfer_batches set ack_quantity=?\
   		        WHERE hims_f_inventory_transfer_batches_id=?;",
-              [
-                inputParam.inventory_stock_detail[i].ack_quantity,
-                inputParam.inventory_stock_detail[i]
-                  .hims_f_inventory_transfer_batches_id,
-              ]
-            );
-          }
+                [
+                  inputParam.inventory_stock_detail[i].ack_quantity,
+                  inputParam.inventory_stock_detail[i]
+                    .hims_f_inventory_transfer_batches_id,
+                ]
+              );
+            }
 
-          // utilities.logger().log("qry: ", qry);
-          _mysql
-            .executeQuery({
-              query: qry,
-              printQuery: true,
-            })
-            .then((batch_detail) => {
-              req.flag = 1;
-              req.records = headerResult;
-              next();
-            })
-            .catch((error) => {
-              _mysql.releaseConnection();
-              next(error);
+            // utilities.logger().log("qry: ", qry);
+            _mysql
+              .executeQuery({
+                query: qry,
+                printQuery: true,
+              })
+              .then((batch_detail) => {
+                req.flag = 1;
+                req.records = headerResult;
+                next();
+              })
+              .catch((error) => {
+                _mysql.releaseConnection();
+                next(error);
+              });
+
+            // req.flag = 1;
+            //
+            // req.records = headerResult;
+            // next();
+          })
+          .catch((e) => {
+            _mysql.rollBackTransaction(() => {
+              next(e);
             });
-
-          // req.flag = 1;
-          //
-          // req.records = headerResult;
-          // next();
-        })
-        .catch((e) => {
-          _mysql.rollBackTransaction(() => {
-            next(e);
           });
-        });
+      });
     } catch (e) {
       _mysql.rollBackTransaction(() => {
         next(e);
@@ -736,7 +744,7 @@ export default {
                         (f) =>
                           f.qtyhand > 0 &&
                           f.inventory_location_id ===
-                            inputParam.from_location_id
+                          inputParam.from_location_id
                       ),
                     };
                   })

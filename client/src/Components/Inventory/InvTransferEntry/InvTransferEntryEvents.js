@@ -580,12 +580,29 @@ const AcknowledgeTransferEntry = $this => {
   }
 
   InputObj.ScreenCode = getCookie("ScreenCode");
-
+  const settings = { header: undefined, footer: undefined };
+  // algaehApiCall({
+  //   uri: "/inventorytransferEntry/addtransferEntry",
+  //   module: "inventory",
+  //   skipParse: true,
+  //   data: Buffer.from(JSON.stringify(InputObj), "utf8"),
+  //   method: "PUT",
+  //   header: {
+  //     "content-type": "application/octet-stream",
+  //     ...settings
+  //   },
   algaehApiCall({
     uri: "/inventorytransferEntry/updatetransferEntry",
     module: "inventory",
-    data: InputObj,
+    skipParse: true,
+    data: Buffer.from(JSON.stringify(InputObj), "utf8"),
     method: "PUT",
+    header: {
+      "content-type": "application/octet-stream",
+      ...settings
+    },
+    // data: InputObj,
+    // method: "PUT",
     onSuccess: response => {
       if (response.data.success === true) {
         $this.setState({
