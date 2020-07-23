@@ -55,24 +55,31 @@
   }
 }
 .TermsList {
-  margin: 0 0 0 15px;
+  margin: 0;
   padding: 0;
-  li {
-    margin: 0 0 10px;
-    padding: 0;
-    span {
-      display: inline-block;
-      vertical-align: top;
-      &:first-child {
-        width: 90%;
-      }
-      &:last-child {
-        width: 10%;
-        text-align: center;
-        border: 1px solid #ccc;
-        &:hover {
-          color: red;
-          cursor: pointer;
+  max-height: 36vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  ol {
+    margin: 0;
+    padding: 0 0 15px;
+    li {
+      margin: 0 10px;
+      padding: 0;
+      span {
+        display: inline-block;
+        vertical-align: top;
+        &:first-child {
+          width: 90%;
+        }
+        &:last-child {
+          width: 10%;
+          text-align: center;
+          border: 1px solid #ccc;
+          &:hover {
+            color: red;
+            cursor: pointer;
+          }
         }
       }
     }

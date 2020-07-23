@@ -263,7 +263,7 @@ class ContractManagement extends Component {
           <div className="col-lg-12">
             <div className="row" data-validate="HeaderDiv">
               <AlagehAutoComplete
-                div={{ className: "col form-group mandatory" }}
+                div={{ className: "col-3 form-group mandatory" }}
                 label={{ forceLabel: "Customer", isImp: true }}
                 selector={{
                   name: "customer_id",
@@ -287,7 +287,7 @@ class ContractManagement extends Component {
                 }}
               />
               <AlagehFormGroup
-                div={{ className: "col-3 mandatory" }}
+                div={{ className: "col-2 mandatory" }}
                 label={{
                   forceLabel: "Enter Contract Code",
                   isImp: true,
@@ -324,7 +324,7 @@ class ContractManagement extends Component {
               />
 
               <AlgaehDateHandler
-                div={{ className: "col mandatory" }}
+                div={{ className: "col-2 mandatory" }}
                 label={{ forceLabel: "Start Date", isImp: true }}
                 textBox={{
                   className: "txt-fld",
@@ -340,7 +340,7 @@ class ContractManagement extends Component {
               />
 
               <AlgaehDateHandler
-                div={{ className: "col mandatory" }}
+                div={{ className: "col-2 mandatory" }}
                 label={{ forceLabel: "End Date", isImp: true }}
                 textBox={{
                   className: "txt-fld",
@@ -359,8 +359,7 @@ class ContractManagement extends Component {
                 <>
                   <div
                     className={
-                      "col-3 globalSearchCntr form-group mandatory" +
-                      class_finder
+                      "col globalSearchCntr form-group mandatory" + class_finder
                     }
                   >
                     <AlgaehLabel
@@ -424,7 +423,7 @@ class ContractManagement extends Component {
                 </>
               ) : null}
               <AlagehAutoComplete
-                div={{ className: "col-2 form-group mandatory" }}
+                div={{ className: "col form-group mandatory" }}
                 label={{
                   forceLabel: "Select Project",
                   isImp: true,
@@ -453,7 +452,7 @@ class ContractManagement extends Component {
               />
 
               <AlagehAutoComplete
-                div={{ className: "col-2 mandatory" }}
+                div={{ className: "col mandatory" }}
                 label={{
                   forceLabel: "Select Branch",
                   isImp: true,
@@ -889,33 +888,36 @@ class ContractManagement extends Component {
                   <div className="col-12  form-group finalCommentsSection">
                     <hr></hr>
                     <h6>View T&C</h6>
-                    <ol className="TermsList">
-                      {this.state.comment_list.length > 0
-                        ? this.state.comment_list.map((row, index) => {
-                            return (
-                              <React.Fragment key={index}>
-                                <li key={index}>
-                                  <span>{row}</span>
-                                  <span>
-                                    {" "}
-                                    {this.state.dataExists &&
-                                    !this.state.editMode ? null : (
-                                      <i
-                                        className="fas fa-times"
-                                        onClick={deleteComment.bind(
-                                          this,
-                                          this,
-                                          row
-                                        )}
-                                      ></i>
-                                    )}
-                                  </span>
-                                </li>
-                              </React.Fragment>
-                            );
-                          })
-                        : null}
-                    </ol>
+                    <div className="TermsList">
+                      {" "}
+                      <ol>
+                        {this.state.comment_list.length > 0
+                          ? this.state.comment_list.map((row, index) => {
+                              return (
+                                <React.Fragment key={index}>
+                                  <li key={index}>
+                                    <span>{row}</span>
+                                    <span>
+                                      {" "}
+                                      {this.state.dataExists &&
+                                      !this.state.editMode ? null : (
+                                        <i
+                                          className="fas fa-times"
+                                          onClick={deleteComment.bind(
+                                            this,
+                                            this,
+                                            row
+                                          )}
+                                        ></i>
+                                      )}
+                                    </span>
+                                  </li>
+                                </React.Fragment>
+                              );
+                            })
+                          : null}
+                      </ol>
+                    </div>
                   </div>
                 </div>
               </div>
