@@ -7,6 +7,40 @@
 
             <table class="tableForLabel" cell-padding="0">
                 <tr>
+                    <td>Quotation No.</td>
+                    <td colspan="3"><b>{{sales_quotation_number}}</b></td>
+
+                </tr>
+                <tr>
+                    <td width="12%">Customer</td>
+                    <td><b>{{customer_name}}</b></td>
+                    <td width="12%">Address</td>
+                    <td><b>{{address}}</b></td>
+                </tr>
+                <tr>
+                    <td>Order No.</td>
+                    <td><b>{{sales_order_number}}</b></td>
+                    <td>Order Date</td>
+                    <td><b>{{sales_order_date}}</b></td>
+
+                </tr>
+                <tr>
+                    <td>Delivery Date</td>
+                    <td><b>{{delivery_date}}</b></td>
+                    <td>Sales Person</td>
+                    <td><b>{{employee_name}}</b></td>
+                </tr>
+
+
+            </table>
+
+
+        </section>
+
+        {{!-- <section>
+
+            <table class="tableForLabel" cell-padding="0">
+                <tr>
                     <td width="40%"><label class="textEnLft">Quotation No.</label>:<span
                             class="valueText">{{sales_quotation_number}}</span>
                     </td>
@@ -17,7 +51,7 @@
                 <tr>
                     <td><label class="textEnLft">Bill To</label>:<span class="valueText">{{customer_name}}</span>
                     </td>
-                    <td><label class="textEnLft">Customer Address</label>:<span class="valueText">{{address}}</span>
+                    <td><label class="textEnLft">Address</label>:<span class="valueText">{{address}}</span>
                     </td>
 
                 </tr>
@@ -38,7 +72,7 @@
             </table>
 
 
-        </section>
+        </section> --}}
         <section>
             <table class="tableForData" cell-padding="0">
                 <thead>
@@ -74,7 +108,7 @@
                     </tr>
                     {{/each }}
                     <tr class="footerTotalDown">
-                        <td colspan="9">Net Total</td>
+                        <td colspan="9" class="numberFld">Net Total</td>
                         <td class="numberFld">{{net_payable}}</td>
                     </tr>
                 </tbody>
