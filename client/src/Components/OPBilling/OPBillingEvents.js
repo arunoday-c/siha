@@ -22,6 +22,14 @@ const ClearData = ($this, e) => {
     },
   });
 
+  $this.props.getPatientInsurance({
+    redux: {
+      type: "EXIT_INSURANCE_GET_DATA",
+      mappingName: "existinsurance",
+      data: []
+    },
+  });
+
   let IOputs = extend(
     PatRegIOputs.inputParam(),
     BillingIOputs.inputParam()
@@ -488,7 +496,7 @@ const getPatientDetails = ($this, patient_code) => {
             }
           },
         });
-        if ($this.state.insured === "Y") {
+        if (data.patientRegistration.insured === "Y") {
           $this.props.getPatientInsurance({
             uri: "/patientRegistration/getPatientInsurance",
             module: "frontDesk",
@@ -500,7 +508,7 @@ const getPatientDetails = ($this, patient_code) => {
             redux: {
               type: "EXIT_INSURANCE_GET_DATA",
               mappingName: "existinsurance",
-            },
+            }
           });
         }
 
