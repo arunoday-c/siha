@@ -4,7 +4,7 @@ import {
   AlagehFormGroup,
   AlgaehDataGrid,
   AlagehAutoComplete,
-  AlgaehLabel
+  AlgaehLabel,
 } from "../../Wrapper/algaehWrapper";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import swal from "sweetalert2";
@@ -25,7 +25,8 @@ class VitalsMaster extends Component {
       nonGeneralVitals: [],
       depts: [],
       general: true,
-      display: true
+      display: true,
+      record_status: "A",
     };
     dps = [];
     this.getVitalMasterHeader();
@@ -44,14 +45,14 @@ class VitalsMaster extends Component {
   changeChecks(e) {
     if (e.target.name === "general") {
       this.setState({
-        [e.target.name]: !this.state.general
+        [e.target.name]: !this.state.general,
       });
       return;
     }
 
     if (e.target.name === "display") {
       this.setState({
-        [e.target.name]: !this.state.display
+        [e.target.name]: !this.state.display,
       });
       return;
     }
@@ -78,13 +79,13 @@ class VitalsMaster extends Component {
       min_age: "",
       max_age: "",
       min_value: "",
-      max_value: ""
+      max_value: "",
     });
   }
 
   dropDownHandler(value) {
     this.setState({
-      [value.name]: value.value
+      [value.name]: value.value,
     });
   }
 
@@ -97,17 +98,17 @@ class VitalsMaster extends Component {
       // data: {
       //   department_type: "CLINICAL"
       // },
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           this.setState({ depts: response.data.records });
         }
       },
-      onFailure: error => {
+      onFailure: (error) => {
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -128,7 +129,7 @@ class VitalsMaster extends Component {
       onSuccess: () => {
         let vitals = [];
         let send_data = {
-          department_id: this.state.hims_d_sub_department_id
+          department_id: this.state.hims_d_sub_department_id,
         };
 
         for (var i = 0; i < dps.length; i++) {
@@ -142,30 +143,30 @@ class VitalsMaster extends Component {
         if (dps.length === 0) {
           swalMessage({
             title: "Please Select atleast one vital to add",
-            type: "warning"
+            type: "warning",
           });
         } else {
           algaehApiCall({
             uri: "/workBenchSetup/addDepartmentVitalMap",
             method: "POST",
             data: send_data,
-            onSuccess: response => {
+            onSuccess: (response) => {
               if (response.data.success) {
                 swalMessage({
                   title: "Vitals Mapped Successfully",
-                  type: "success"
+                  type: "success",
                 });
               }
             },
-            onFailure: error => {
+            onFailure: (error) => {
               swalMessage({
                 title: error.message,
-                type: "error"
+                type: "error",
               });
-            }
+            },
           });
         }
-      }
+      },
     });
   }
 
@@ -173,66 +174,66 @@ class VitalsMaster extends Component {
     algaehApiCall({
       uri: "/workBenchSetup/getDepartmentVitalMap",
       method: "GET",
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           this.setState({
-            mappingData: response.data.records
+            mappingData: response.data.records,
           });
 
           // console.log("Mapping Data:", response.data.records);
         }
       },
-      onFailure: error => {
+      onFailure: (error) => {
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
-  deleteVtialsHeader(data) {
-    swal({
-      title: "Delete Vital " + data.vitals_name + "?",
-      type: "warning",
-      showCancelButton: true,
-      confirmButtonText: "Yes",
-      confirmButtonColor: "#44b8bd",
-      cancelButtonColor: "#d33",
-      cancelButtonText: "No"
-    }).then(willDelete => {
-      if (willDelete.value) {
-        algaehApiCall({
-          uri: "/workBenchSetup/deleteVitalMasterHeader",
-          data: {
-            hims_d_vitals_header_id: data.hims_d_vitals_header_id
-          },
-          method: "DELETE",
-          onSuccess: response => {
-            if (response.data.records.success) {
-              swalMessage({
-                title: "Record deleted successfully . .",
-                type: "success"
-              });
-            } else if (!response.data.records.success) {
-              swalMessage({
-                title: response.data.records.message,
-                type: "error"
-              });
-            }
+  // deleteVtialsHeader(data) {
+  //   swal({
+  //     title: "Delete Vital " + data.vitals_name + "?",
+  //     type: "warning",
+  //     showCancelButton: true,
+  //     confirmButtonText: "Yes",
+  //     confirmButtonColor: "#44b8bd",
+  //     cancelButtonColor: "#d33",
+  //     cancelButtonText: "No",
+  //   }).then((willDelete) => {
+  //     if (willDelete.value) {
+  //       algaehApiCall({
+  //         uri: "/workBenchSetup/deleteVitalMasterHeader",
+  //         data: {
+  //           hims_d_vitals_header_id: data.hims_d_vitals_header_id,
+  //         },
+  //         method: "DELETE",
+  //         onSuccess: (response) => {
+  //           if (response.data.records.success) {
+  //             swalMessage({
+  //               title: "Record deleted successfully . .",
+  //               type: "success",
+  //             });
+  //           } else if (!response.data.records.success) {
+  //             swalMessage({
+  //               title: response.data.records.message,
+  //               type: "error",
+  //             });
+  //           }
 
-            this.getVitalMasterHeader();
-          },
-          onFailure: error => {
-            swalMessage({
-              title: error.message,
-              type: "error"
-            });
-          }
-        });
-      }
-    });
-  }
+  //           this.getVitalMasterHeader();
+  //         },
+  //         onFailure: (error) => {
+  //           swalMessage({
+  //             title: error.message,
+  //             type: "error",
+  //           });
+  //         },
+  //       });
+  //     }
+  //   });
+  // }
   deleteVtialsDetail(data) {
     swal({
       title: "Delete Details for this Vital?",
@@ -241,36 +242,36 @@ class VitalsMaster extends Component {
       confirmButtonText: "Yes",
       confirmButtonColor: "#44b8bd",
       cancelButtonColor: "#d33",
-      cancelButtonText: "No"
-    }).then(willDelete => {
+      cancelButtonText: "No",
+    }).then((willDelete) => {
       if (willDelete.value) {
         algaehApiCall({
           uri: "/workBenchSetup/deleteVitalMasterDetail",
           data: {
-            hims_d_vitals_details_id: data.hims_d_vitals_details_id
+            hims_d_vitals_details_id: data.hims_d_vitals_details_id,
           },
           method: "DELETE",
-          onSuccess: response => {
+          onSuccess: (response) => {
             if (response.data.records.success) {
               swalMessage({
                 title: "Record deleted successfully . .",
-                type: "success"
+                type: "success",
               });
             } else if (!response.data.records.success) {
               swalMessage({
                 title: response.data.records.message,
-                type: "error"
+                type: "error",
               });
             }
 
             this.getVitalMasterDetail();
           },
-          onFailure: error => {
+          onFailure: (error) => {
             swalMessage({
               title: error.message,
-              type: "error"
+              type: "error",
             });
-          }
+          },
         });
       }
     });
@@ -285,23 +286,24 @@ class VitalsMaster extends Component {
         uom: data.uom,
         general: data.general,
         display: data.display,
-        hims_d_vitals_header_id: data.hims_d_vitals_header_id
+        hims_d_vitals_header_id: data.hims_d_vitals_header_id,
+        record_status: data.record_status,
       },
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           swalMessage({
             title: "Record updated successfully",
-            type: "success"
+            type: "success",
           });
           this.getVitalMasterHeader();
         }
       },
-      onFailure: error => {
+      onFailure: (error) => {
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -316,23 +318,23 @@ class VitalsMaster extends Component {
         max_age: data.max_age,
         min_value: data.min_value,
         max_value: data.max_value,
-        hims_d_vitals_details_id: data.hims_d_vitals_details_id
+        hims_d_vitals_details_id: data.hims_d_vitals_details_id,
       },
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           swalMessage({
             title: "Record updated successfully",
-            type: "success"
+            type: "success",
           });
           this.getVitalMasterHeader();
         }
       },
-      onFailure: error => {
+      onFailure: (error) => {
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -340,41 +342,41 @@ class VitalsMaster extends Component {
     algaehApiCall({
       uri: "/workBenchSetup/getVitalMasterHeader",
       method: "GET",
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           let x = Enumerable.from(response.data.records)
-            .where(w => w.general === "N")
+            .where((w) => w.general === "N")
             .toArray();
 
           this.setState({
             vitalsHeader: response.data.records,
-            nonGeneralVitals: x
+            nonGeneralVitals: x,
           });
         }
       },
-      onFailure: error => {
+      onFailure: (error) => {
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
   getVitalMasterDetail() {
     algaehApiCall({
       uri: "/workBenchSetup/getVitalMasterDetail",
       method: "GET",
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           this.setState({ vitalsDetail: response.data.records });
         }
       },
-      onFailure: error => {
+      onFailure: (error) => {
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -385,33 +387,47 @@ class VitalsMaster extends Component {
       querySelector: "data-validate='addVitalHdrDiv'",
       alertTypeIcon: "warning",
       onSuccess: () => {
-        algaehApiCall({
-          uri: "/workBenchSetup/addVitalMasterHeader",
-          method: "POST",
-          data: {
-            vitals_name: this.state.vitals_name,
-            uom: this.state.uom,
-            general: this.state.general === true ? "Y" : "N",
-            display: this.state.display === true ? "Y" : "N"
-          },
-          onSuccess: response => {
-            if (response.data.success) {
-              swalMessage({
-                title: "Record added successfully",
-                type: "success"
-              });
-              this.resetSaveState();
-              this.getVitalMasterHeader();
-            }
-          },
-          onFailure: error => {
-            swalMessage({
-              title: error.message,
-              type: "error"
+        swal({
+          title:
+            "Vitals added will not be deleted but it can be made Inactive ?",
+          type: "warning",
+          showCancelButton: true,
+          confirmButtonText: "Confirm",
+          confirmButtonColor: "#44b8bd",
+          cancelButtonColor: "#d33",
+          cancelButtonText: "Cancel",
+        }).then((willDelete) => {
+          if (willDelete.value) {
+            algaehApiCall({
+              uri: "/workBenchSetup/addVitalMasterHeader",
+              method: "POST",
+              data: {
+                vitals_name: this.state.vitals_name,
+                uom: this.state.uom,
+                general: this.state.general === true ? "Y" : "N",
+                display: this.state.display === true ? "Y" : "N",
+                record_status: "A",
+              },
+              onSuccess: (response) => {
+                if (response.data.success) {
+                  swalMessage({
+                    title: "Record added successfully",
+                    type: "success",
+                  });
+                  this.resetSaveState();
+                  this.getVitalMasterHeader();
+                }
+              },
+              onFailure: (error) => {
+                swalMessage({
+                  title: error.message,
+                  type: "error",
+                });
+              },
             });
           }
         });
-      }
+      },
     });
   }
 
@@ -430,26 +446,26 @@ class VitalsMaster extends Component {
             min_age: this.state.min_age,
             max_age: this.state.max_age,
             min_value: this.state.min_value,
-            max_value: this.state.max_value
+            max_value: this.state.max_value,
           },
-          onSuccess: response => {
+          onSuccess: (response) => {
             if (response.data.success) {
               swalMessage({
                 title: "Record added successfully",
-                type: "success"
+                type: "success",
               });
               this.resetSaveState();
               this.getVitalMasterDetail();
             }
           },
-          onFailure: error => {
+          onFailure: (error) => {
             swalMessage({
               title: error.message,
-              type: "error"
+              type: "error",
             });
-          }
+          },
         });
-      }
+      },
     });
   }
 
@@ -470,18 +486,18 @@ class VitalsMaster extends Component {
                   div={{ className: "col" }}
                   label={{
                     fieldName: "vitals_name",
-                    isImp: true
+                    isImp: true,
                   }}
                   textBox={{
                     className: "txt-fld",
                     name: "vitals_name",
                     value: this.state.vitals_name,
                     events: {
-                      onChange: this.changeTexts.bind(this)
+                      onChange: this.changeTexts.bind(this),
                     },
                     others: {
-                      required: true
-                    }
+                      required: true,
+                    },
                   }}
                 />
 
@@ -489,18 +505,18 @@ class VitalsMaster extends Component {
                   div={{ className: "col" }}
                   label={{
                     fieldName: "uom",
-                    isImp: true
+                    isImp: true,
                   }}
                   textBox={{
                     className: "txt-fld",
                     name: "uom",
                     value: this.state.uom,
                     events: {
-                      onChange: this.changeTexts.bind(this)
+                      onChange: this.changeTexts.bind(this),
                     },
                     others: {
-                      required: true
-                    }
+                      required: true,
+                    },
                   }}
                 />
                 <div className="col" style={{ marginTop: 19 }}>
@@ -552,7 +568,7 @@ class VitalsMaster extends Component {
                         label: (
                           <AlgaehLabel label={{ fieldName: "vitals_name" }} />
                         ),
-                        editorTemplate: row => {
+                        editorTemplate: (row) => {
                           return (
                             <AlagehFormGroup
                               div={{ className: "col" }}
@@ -560,25 +576,26 @@ class VitalsMaster extends Component {
                                 className: "txt-fld",
                                 name: "vitals_name",
                                 value: row.vitals_name,
+                                disabled: row.record_status === "I",
                                 events: {
                                   onChange: this.changeGridEditors.bind(
                                     this,
                                     row
-                                  )
+                                  ),
                                 },
                                 others: {
                                   errormessage: "Name - cannot be blank",
-                                  required: true
-                                }
+                                  required: true,
+                                },
                               }}
                             />
                           );
-                        }
+                        },
                       },
                       {
                         fieldName: "uom",
                         label: <AlgaehLabel label={{ fieldName: "uom" }} />,
-                        editorTemplate: row => {
+                        editorTemplate: (row) => {
                           return (
                             <AlagehFormGroup
                               div={{ className: "col" }}
@@ -586,30 +603,31 @@ class VitalsMaster extends Component {
                                 className: "txt-fld",
                                 name: "uom",
                                 value: row.uom,
+                                disabled: row.record_status === "I",
                                 events: {
                                   onChange: this.changeGridEditors.bind(
                                     this,
                                     row
-                                  )
+                                  ),
                                 },
                                 others: {
                                   errormessage: "UOM - cannot be blank",
-                                  required: true
-                                }
+                                  required: true,
+                                },
                               }}
                             />
                           );
-                        }
+                        },
                       },
                       {
                         fieldName: "general",
                         label: <AlgaehLabel label={{ fieldName: "general" }} />,
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return (
                             <span>{row.general === "Y" ? "Yes" : "No"}</span>
                           );
                         },
-                        editorTemplate: row => {
+                        editorTemplate: (row) => {
                           return (
                             <AlagehAutoComplete
                               div={{ className: "col" }}
@@ -617,29 +635,34 @@ class VitalsMaster extends Component {
                                 name: "general",
                                 className: "select-fld",
                                 value: row.general,
+
                                 dataSource: {
                                   textField: "name",
                                   valueField: "value",
-                                  data: GlobalVariables.FORMAT_YESNO
+                                  data: GlobalVariables.FORMAT_YESNO,
                                 },
                                 others: {
-                                  required: true
+                                  required: true,
+                                  disabled: row.record_status === "I",
                                 },
-                                onChange: this.changeGridEditors.bind(this, row)
+                                onChange: this.changeGridEditors.bind(
+                                  this,
+                                  row
+                                ),
                               }}
                             />
                           );
-                        }
+                        },
                       },
                       {
                         fieldName: "display",
                         label: <AlgaehLabel label={{ fieldName: "display" }} />,
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return (
                             <span>{row.display === "Y" ? "Yes" : "No"}</span>
                           );
                         },
-                        editorTemplate: row => {
+                        editorTemplate: (row) => {
                           return (
                             <AlagehAutoComplete
                               div={{ className: "col" }}
@@ -647,31 +670,76 @@ class VitalsMaster extends Component {
                                 name: "display",
                                 className: "select-fld",
                                 value: row.display,
+
                                 dataSource: {
                                   textField: "name",
                                   valueField: "value",
-                                  data: GlobalVariables.FORMAT_YESNO
+                                  data: GlobalVariables.FORMAT_YESNO,
                                 },
                                 others: {
-                                  required: true
+                                  required: true,
+                                  disabled: row.record_status === "I",
                                 },
-                                onChange: this.changeGridEditors.bind(this, row)
+                                onChange: this.changeGridEditors.bind(
+                                  this,
+                                  row
+                                ),
                               }}
                             />
                           );
-                        }
-                      }
+                        },
+                      },
+                      {
+                        fieldName: "Record Status",
+                        label: (
+                          <AlgaehLabel label={{ fieldName: "record_status" }} />
+                        ),
+                        displayTemplate: (row) => {
+                          return (
+                            <span>
+                              {row.record_status === "A"
+                                ? "Active"
+                                : "Inactive"}
+                            </span>
+                          );
+                        },
+                        editorTemplate: (row) => {
+                          return (
+                            <AlagehAutoComplete
+                              div={{ className: "col" }}
+                              selector={{
+                                name: "record_status",
+                                className: "select-fld",
+                                value: row.record_status,
+                                dataSource: {
+                                  textField: "name",
+                                  valueField: "value",
+                                  data: GlobalVariables.FORMAT_STATUS,
+                                },
+                                others: {
+                                  required: true,
+                                },
+                                onChange: this.changeGridEditors.bind(
+                                  this,
+                                  row
+                                ),
+                              }}
+                            />
+                          );
+                        },
+                      },
                     ]}
                     keyId="hims_d_vitals_header_id"
                     dataSource={{
-                      data: this.state.vitalsHeader
+                      data: this.state.vitalsHeader,
                     }}
+                    filter={true}
                     isEditable={true}
                     paging={{ page: 0, rowsPerPage: 10 }}
                     events={{
-                      onEdit: () => { },
-                      onDelete: this.deleteVtialsHeader.bind(this),
-                      onDone: this.updateVitalsHeader.bind(this)
+                      onEdit: () => {},
+                      // onDelete: this.deleteVtialsHeader.bind(this),
+                      onDone: this.updateVitalsHeader.bind(this),
                     }}
                   />
                 </div>
@@ -690,7 +758,7 @@ class VitalsMaster extends Component {
                   div={{ className: "col-12" }}
                   label={{
                     fieldName: "select_department",
-                    isImp: true
+                    isImp: true,
                   }}
                   selector={{
                     name: "hims_d_sub_department_id",
@@ -699,9 +767,9 @@ class VitalsMaster extends Component {
                     dataSource: {
                       textField: "sub_department_name",
                       valueField: "hims_d_sub_department_id",
-                      data: this.state.depts
+                      data: this.state.depts,
                     },
-                    onChange: this.dropDownHandler.bind(this)
+                    onChange: this.dropDownHandler.bind(this),
                   }}
                 />
                 <div className="col-12">
@@ -750,7 +818,7 @@ class VitalsMaster extends Component {
                       div={{ className: "col" }}
                       label={{
                         fieldName: "vitals_name",
-                        isImp: true
+                        isImp: true,
                       }}
                       selector={{
                         name: "vitals_header_id",
@@ -759,9 +827,9 @@ class VitalsMaster extends Component {
                         dataSource: {
                           textField: "vitals_name",
                           valueField: "hims_d_vitals_header_id",
-                          data: this.state.vitalsHeader
+                          data: this.state.vitalsHeader,
                         },
-                        onChange: this.dropDownHandler.bind(this)
+                        onChange: this.dropDownHandler.bind(this),
                       }}
                     />
 
@@ -769,7 +837,7 @@ class VitalsMaster extends Component {
                       div={{ className: "col" }}
                       label={{
                         fieldName: "gender",
-                        isImp: true
+                        isImp: true,
                       }}
                       selector={{
                         name: "gender",
@@ -778,9 +846,9 @@ class VitalsMaster extends Component {
                         dataSource: {
                           textField: "name",
                           valueField: "value",
-                          data: GlobalVariables.FORMAT_GENDER
+                          data: GlobalVariables.FORMAT_GENDER,
                         },
-                        onChange: this.dropDownHandler.bind(this)
+                        onChange: this.dropDownHandler.bind(this),
                       }}
                     />
 
@@ -788,87 +856,87 @@ class VitalsMaster extends Component {
                       div={{ className: "col" }}
                       label={{
                         fieldName: "min_age",
-                        isImp: true
+                        isImp: true,
                       }}
                       textBox={{
                         className: "txt-fld",
                         name: "min_age",
                         value: this.state.min_age,
                         events: {
-                          onChange: this.changeTexts.bind(this)
+                          onChange: this.changeTexts.bind(this),
                         },
                         others: {
                           type: "number",
                           min: 0,
                           checkvalidation: "$value === '' || $value < 0",
-                          errormessage: "Please enter a proper age value"
-                        }
+                          errormessage: "Please enter a proper age value",
+                        },
                       }}
                     />
                     <AlagehFormGroup
                       div={{ className: "col" }}
                       label={{
                         fieldName: "max_age",
-                        isImp: true
+                        isImp: true,
                       }}
                       textBox={{
                         className: "txt-fld",
                         name: "max_age",
                         value: this.state.max_age,
                         events: {
-                          onChange: this.changeTexts.bind(this)
+                          onChange: this.changeTexts.bind(this),
                         },
                         others: {
                           type: "number",
                           min: 0,
                           checkvalidation:
                             "$value === '' || $value < " + this.state.min_age,
-                          errormessage: "Enter proper age range"
-                        }
+                          errormessage: "Enter proper age range",
+                        },
                       }}
                     />
                     <AlagehFormGroup
                       div={{ className: "col" }}
                       label={{
                         fieldName: "min_value",
-                        isImp: true
+                        isImp: true,
                       }}
                       textBox={{
                         className: "txt-fld",
                         name: "min_value",
                         value: this.state.min_value,
                         events: {
-                          onChange: this.changeTexts.bind(this)
+                          onChange: this.changeTexts.bind(this),
                         },
                         others: {
                           type: "number",
                           min: 0,
                           checkvalidation:
                             "$value === '' || $value > " + this.state.max_value,
-                          errormessage: "Enter proper value range"
-                        }
+                          errormessage: "Enter proper value range",
+                        },
                       }}
                     />
                     <AlagehFormGroup
                       div={{ className: "col" }}
                       label={{
                         fieldName: "max_value",
-                        isImp: true
+                        isImp: true,
                       }}
                       textBox={{
                         className: "txt-fld",
                         name: "max_value",
                         value: this.state.max_value,
                         events: {
-                          onChange: this.changeTexts.bind(this)
+                          onChange: this.changeTexts.bind(this),
                         },
                         others: {
                           type: "number",
                           min: 0,
                           checkvalidation:
                             "$value === '' || $value < " + this.state.min_value,
-                          errormessage: "Enter proper value range"
-                        }
+                          errormessage: "Enter proper value range",
+                        },
                       }}
                     />
 
@@ -901,7 +969,7 @@ class VitalsMaster extends Component {
                                 label={{ fieldName: "vitals_name" }}
                               />
                             ),
-                            editorTemplate: row => {
+                            editorTemplate: (row) => {
                               return (
                                 <AlagehAutoComplete
                                   div={{ className: "" }}
@@ -912,17 +980,20 @@ class VitalsMaster extends Component {
                                     dataSource: {
                                       textField: "vitals_name",
                                       valueField: "hims_d_vitals_header_id",
-                                      data: this.state.vitalsHeader
+                                      data: this.state.vitalsHeader,
                                     },
                                     others: {
-                                      required: true
+                                      required: true,
                                     },
-                                    onChange: this.changeGridEditors.bind(this)
+                                    onChange: this.changeGridEditors.bind(
+                                      this,
+                                      row
+                                    ),
                                   }}
                                 />
                               );
                             },
-                            displayTemplate: row => {
+                            displayTemplate: (row) => {
                               return (
                                 <AlagehAutoComplete
                                   div={{ className: "" }}
@@ -933,26 +1004,26 @@ class VitalsMaster extends Component {
                                     dataSource: {
                                       textField: "vitals_name",
                                       valueField: "hims_d_vitals_header_id",
-                                      data: this.state.vitalsHeader
+                                      data: this.state.vitalsHeader,
                                     },
                                     others: {
                                       required: true,
-                                      disabled: true
-                                    }
+                                      disabled: true,
+                                    },
                                   }}
                                 />
                               );
-                            }
+                            },
                           },
                           {
                             fieldName: "gender",
                             label: (
                               <AlgaehLabel label={{ fieldName: "gender" }} />
                             ),
-                            displayTemplate: row => {
+                            displayTemplate: (row) => {
                               return <span>{row.gender}</span>;
                             },
-                            editorTemplate: row => {
+                            editorTemplate: (row) => {
                               return (
                                 <AlagehAutoComplete
                                   div={{ className: "" }}
@@ -963,53 +1034,53 @@ class VitalsMaster extends Component {
                                     dataSource: {
                                       textField: "name",
                                       valueField: "value",
-                                      data: GlobalVariables.FORMAT_GENDER
+                                      data: GlobalVariables.FORMAT_GENDER,
                                     },
                                     onChange: this.changeGridEditors.bind(
                                       this,
                                       row
-                                    )
+                                    ),
                                   }}
                                 />
                               );
-                            }
+                            },
                           },
                           {
                             fieldName: "min_age",
                             label: (
                               <AlgaehLabel label={{ fieldName: "min_age" }} />
-                            )
+                            ),
                           },
                           {
                             fieldName: "max_age",
                             label: (
                               <AlgaehLabel label={{ fieldName: "max_age" }} />
-                            )
+                            ),
                           },
                           {
                             fieldName: "min_value",
                             label: (
                               <AlgaehLabel label={{ fieldName: "min_value" }} />
-                            )
+                            ),
                           },
                           {
                             fieldName: "max_value",
                             label: (
                               <AlgaehLabel label={{ fieldName: "max_value" }} />
-                            )
-                          }
+                            ),
+                          },
                         ]}
                         keyId="hims_d_vitals_details_id"
                         dataSource={{
-                          data: this.state.vitalsDetail
+                          data: this.state.vitalsDetail,
                         }}
                         filter={true}
                         isEditable={true}
                         paging={{ page: 0, rowsPerPage: 10 }}
                         events={{
-                          onEdit: () => { },
+                          onEdit: () => {},
                           onDelete: this.deleteVtialsDetail.bind(this),
-                          onDone: this.updateVitalsDetail.bind(this)
+                          onDone: this.updateVitalsDetail.bind(this),
                         }}
                       />
                     </div>

@@ -166,7 +166,7 @@ const numberchangeTexts = ($this, context, e) => {
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
 
-  if (name === "quantity") {    
+  if (name === "quantity") {
     if (parseFloat(value) < 0) {
       swalMessage({
         title: "Quantity cannot be less than or equal to Zero",
@@ -280,6 +280,7 @@ const itemchangeText = ($this, context, e, ctrl) => {
                 service_id: e.service_id,
                 item_group_id: e.group_id,
                 quantity: 1,
+                item_description: e.item_description,
                 expiry_date: data.locationResult[0].expirydt,
                 batchno: data.locationResult[0].batchno,
                 grn_no: data.locationResult[0].grnno,
@@ -635,6 +636,7 @@ const AddItems = ($this, context) => {
               data.billdetails[0].service_id = data.billdetails[0].services_id;
               data.billdetails[0].discount_amount = data.billdetails[0].discount_amout;
               data.billdetails[0].conversion_factor = $this.state.conversion_factor;
+              data.billdetails[0].item_description = $this.state.item_description;
 
               data.billdetails[0].batches = [
                 {
@@ -1661,8 +1663,8 @@ const generatePharmacyLabel = ($this, row) => {
         //   "<iframe src= '" + url + "' width='100%' height='100%' />"
         // );
         const urlBlob = URL.createObjectURL(res.data);
-      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename= Report`;
-      window.open(origin);
+        const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename= Report`;
+        window.open(origin);
         // window.document.title = "";
       }
     });

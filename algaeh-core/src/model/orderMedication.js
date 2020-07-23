@@ -65,6 +65,7 @@ let addPatientPrescriptionOLD = (req, res, next) => {
                 "item_id",
                 "generic_id",
                 "dosage",
+                "med_units",
                 "service_id",
                 "uom_id",
                 "item_category_id",
@@ -73,6 +74,7 @@ let addPatientPrescriptionOLD = (req, res, next) => {
                 "no_of_days",
                 "frequency_type",
                 "frequency_time",
+                "frequency_route",
                 "insured",
                 "pre_approval",
                 "instructions",
@@ -81,8 +83,8 @@ let addPatientPrescriptionOLD = (req, res, next) => {
 
               connection.query(
                 "INSERT INTO hims_f_prescription_detail(" +
-                insurtColumns.join(",") +
-                ",`prescription_id`) VALUES ?",
+                  insurtColumns.join(",") +
+                  ",`prescription_id`) VALUES ?",
                 [
                   jsonArrayToObject({
                     sampleInputObject: insurtColumns,
@@ -135,7 +137,7 @@ let addPatientPrescriptionOLD = (req, res, next) => {
                                 ...s,
                                 prescription_detail_id:
                                   detail_res[i][
-                                  "hims_f_prescription_detail_id"
+                                    "hims_f_prescription_detail_id"
                                   ],
                               };
                             })
@@ -159,8 +161,8 @@ let addPatientPrescriptionOLD = (req, res, next) => {
 
                           connection.query(
                             "INSERT INTO hims_f_medication_approval(" +
-                            insurtCols.join(",") +
-                            ",created_by,updated_by,created_date,updated_date,insurance_provider_id,\
+                              insurtCols.join(",") +
+                              ",created_by,updated_by,created_date,updated_date,insurance_provider_id,\
                               sub_insurance_id, network_id, insurance_network_office_id, patient_id, visit_id,\
                                hospital_id) VALUES ?",
                             [
@@ -291,6 +293,7 @@ let addPatientPrescription = (req, res, next) => {
           "item_id",
           "generic_id",
           "dosage",
+          "med_units",
           "service_id",
           "uom_id",
           "item_category_id",
@@ -299,6 +302,7 @@ let addPatientPrescription = (req, res, next) => {
           "no_of_days",
           "frequency_type",
           "frequency_time",
+          "frequency_route",
           "insured",
           "pre_approval",
           "instructions",
@@ -472,10 +476,10 @@ let getPatientPrescriptionOLD = (req, res, next) => {
       }
       db.query(
         "SELECT H.hims_f_prescription_id,H.patient_id, P.patient_code,P.full_name,H.encounter_id, H.provider_id, H.episode_id, \
-        H.prescription_date,H.prescription_status,H.cancelled,D.hims_f_prescription_detail_id, D.prescription_id, D.item_id, D.generic_id, D.dosage,\
-        D.frequency, D.no_of_days,D.dispense, D.frequency_type, D.frequency_time, D.start_date, D.item_status \
+        H.prescription_date,H.prescription_status,H.cancelled,D.hims_f_prescription_detail_id, D.prescription_id, D.item_id, D.generic_id, D.dosage,D.med_units,\
+        D.frequency, D.no_of_days,D.dispense, D.frequency_type, D.frequency_time,D.frequency_route, D.start_date, D.item_status \
         from hims_f_prescription H,hims_f_prescription_detail D ,hims_f_patient P WHERE H.hims_f_prescription_id = D.prescription_id and P.hims_d_patient_id=H.patient_id and " +
-        where.condition,
+          where.condition,
         where.values,
 
         (error, result) => {
@@ -507,16 +511,17 @@ let getPatientPrescription = (req, res, next) => {
       strQry += " and provider_id=" + input.provider_id;
     }
     if (input.prescription_date) {
-      strQry += " and date(prescription_date)= '" + input.prescription_date + "'";
+      strQry +=
+        " and date(prescription_date)= '" + input.prescription_date + "'";
     }
 
-    console.log("strQry", strQry)
+    console.log("strQry", strQry);
     _mysql
       .executeQuery({
         query:
           "SELECT H.hims_f_prescription_id,H.patient_id, P.patient_code,P.full_name,H.encounter_id, H.provider_id, H.episode_id, \
-        H.prescription_date,H.prescription_status,H.cancelled,D.hims_f_prescription_detail_id, D.prescription_id, D.item_id, D.generic_id, D.dosage,\
-        D.frequency, D.no_of_days,D.dispense, D.frequency_type, D.frequency_time, D.start_date, D.item_status \
+        H.prescription_date,H.prescription_status,H.cancelled,D.hims_f_prescription_detail_id, D.prescription_id, D.item_id, D.generic_id, D.dosage,D.med_units,\
+        D.frequency, D.no_of_days,D.dispense, D.frequency_type, D.frequency_time, D.frequency_route,D.start_date, D.item_status \
         from hims_f_prescription H,hims_f_prescription_detail D ,hims_f_patient P WHERE H.hims_f_prescription_id = D.prescription_id\
          and P.hims_d_patient_id=H.patient_id " +
           strQry,
@@ -560,8 +565,8 @@ let getPatientMedications = (req, res, next) => {
           // ],
           " select P.episode_id,P.prescription_date,P.prescription_status,P.cancelled,\
  PD.item_id,IM.item_description,IM.item_code,PD.item_category_id,PD.generic_id,\
- PD.item_id,PD.item_category_id,PD.item_group_id,PD.dosage,PD.frequency,\
- PD.no_of_days,PD.dispense,PD.frequency_type,PD.frequency_time,PD.start_date,\
+ PD.item_id,PD.item_category_id,PD.item_group_id,PD.dosage,PD.med_units,PD.frequency,\
+ PD.no_of_days,PD.dispense,PD.frequency_type,PD.frequency_time,PD.frequency_route,PD.start_date,\
  PD.service_id,PD.uom_id,PD.item_status,PD.instructions,PD.insured,PD.pre_approval,\
  PD.apprv_status,PD.approved_amount,IG.generic_name \
  from hims_f_prescription as P inner join hims_f_prescription_detail as PD \
@@ -601,9 +606,9 @@ let getPatientMedications = (req, res, next) => {
               enddate: endDate,
               active:
                 parseInt(moment().format("YYYYMMDD")) <=
-                  parseInt(
-                    moment(endDate, "YYYY-MM-DD HH:mm:ss").format("YYYYMMDD")
-                  )
+                parseInt(
+                  moment(endDate, "YYYY-MM-DD HH:mm:ss").format("YYYYMMDD")
+                )
                   ? true
                   : false,
             };

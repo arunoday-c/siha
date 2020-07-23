@@ -25,35 +25,89 @@ export default function BalanceSheet({
   const [changeInAmount, setChangeInAccount] = useState("N");
   const [changeInPercentage, setChangeInPercentage] = useState("N");
   const [reportType, setReportType] = useState("balancesheet");
+  const [BasedOn, setBasedOn] = useState("by_year");
   useEffect(() => {
     const { filterKey } = selectedFilter;
     if (filterKey !== undefined) {
-      const newFilter = [];
+      let newFilter = [];
       if (filterKey === "comparison") {
-        newFilter.push({
-          className: "col-3 form-group",
-          type: "DH|RANGE",
-          data: "PREVIOUS RANGE",
-          maxDate: moment(),
-        });
-        newFilter.push({
-          className: "col-2 formgroup finCusCheckBox",
-          type: "CH",
-          data: "Change in Amt.",
-        });
-        newFilter.push({
-          className: "col-2 formgroup finCusCheckBox",
-          type: "CH",
-          data: "Change in %",
-        });
+        newFilter = [
+          {
+            className: "col-2 form-group",
+            type: "AC",
+            data: "PERIOD",
+            initalStates: "TMTD",
+            dependent: ["Range"],
+          },
+          {
+            className: "col-3 form-group",
+            type: "DH|RANGE",
+            data: "RANGE",
+            initalStates: rangeDate,
+            onChange: (selected, val, cb) => {
+              if (filter.length > 0) {
+                const frdt = selected[0].clone();
+                const tdt = selected[1].clone();
+                const previousfrom = frdt.subtract(1, "years");
+                const previousto = tdt.subtract(1, "years");
+                cb({
+                  PREVIOUSRANGE: [previousfrom, previousto],
+                  RANGE: selected,
+                });
+              } else {
+                cb({ RANGE: selected });
+              }
+            },
+          },
+          {
+            className: "col-3 form-group",
+            type: "DH|RANGE",
+            data: "PREVIOUS RANGE",
+            maxDate: moment(),
+          },
+          {
+            className: "col-2 formgroup finCusCheckBox",
+            type: "CH",
+            data: "Change in Amt.",
+          },
+          {
+            className: "col-2 formgroup finCusCheckBox",
+            type: "CH",
+            data: "Change in %",
+          },
+        ];
         setFilter(newFilter);
         setReportType(filterKey);
       } else {
-        setFilter([]);
+        setFilter([
+          {
+            className: "col-2 form-group",
+            type: "AC",
+            data: "BASEDON",
+            initalStates: "by_year",
+          },
+          {
+            className: "col-3 form-group",
+            type: "DH|RANGE",
+            data: "RANGE",
+          },
+        ]);
         setReportType("balancesheet");
       }
     } else {
-      setFilter([]);
+      setFilter([
+        {
+          className: "col-2 form-group",
+          type: "AC",
+          data: "BASEDON",
+          initalStates: "by_year",
+        },
+        {
+          className: "col-3 form-group",
+          type: "DH|RANGE",
+          data: "RANGE",
+        },
+      ]);
     }
     setPreview(undefined);
     setTriggerUpdate((result) => {
@@ -148,36 +202,64 @@ export default function BalanceSheet({
       };
       others = { responseType: "blob" };
     }
-    const f_date = rangeDate[0];
-    const t_date = rangeDate[1];
+    const f_date = rangeDate[0].format("YYYY-MM-DD");
+    const t_date = rangeDate[1].format("YYYY-MM-DD");
+    const display_column_by =
+      BasedOn === "by_year"
+        ? "Y"
+        : BasedOn === "by_center"
+        ? "CC"
+        : BasedOn === "total"
+        ? "T"
+        : "M";
+    //balanceSheet_report/getBalanceSheet?from_date=2018-01-28&to_date=2020-08-20&display_column_by=[M,Y,T,CC]
     newAlgaehApi({
-      uri: "/financeReports/getBalanceSheet",
+      uri: "/balanceSheet_report/getBalanceSheet", //"/financeReports/getBalanceSheet",
       module: "finance",
       data: {
         from_date: f_date,
         to_date: t_date,
         excel,
+        display_column_by,
       },
       extraHeaders,
       options: others,
     })
       .then((res) => {
-        if (excel) {
-          handleFile(res.data, "balance_sheet");
-        } else {
-          const { asset, liabilities } = res.data.result;
-          let records = [];
-          //For asset
-          records.push(asset);
-          //For liabilities
-          records.push(liabilities);
+        const { records } = res.data;
+        const { columns, asset, liabilities } = records;
+        let cols = [];
+        cols = columns.map((item) => {
+          return { fieldName: item.column_id, label: item.label };
+        });
+        cols.unshift({
+          fieldName: "label",
+          label: "Ledger Name",
+          freezable: true,
+        });
+        setColumns(cols);
+        let details = [];
+        //For asset
+        details.push(asset);
+        //For liabilities
+        details.push(liabilities);
+        setData(details);
+        // if (excel) {
+        //   handleFile(res.data, "balance_sheet");
+        // } else {
+        //   const { asset, liabilities } = res.data.result;
+        //   let records = [];
+        //   //For asset
+        //   records.push(asset);
+        //   //For liabilities
+        //   records.push(liabilities);
 
-          setColumns([
-            { fieldName: "label", label: "Ledger Name", freezable: true },
-            { fieldName: "subtitle", label: "Total" },
-          ]);
-          setData(records);
-        }
+        //   setColumns([
+        //     { fieldName: "label", label: "Ledger Name", freezable: true },
+        //     { fieldName: "subtitle", label: "Total" },
+        //   ]);
+        //   setData(records);
+        // }
         if (typeof stopLoading === "function") stopLoading();
       })
       .catch((e) => {
@@ -199,42 +281,43 @@ export default function BalanceSheet({
         <Filter
           filters={filterBuilder(
             [
-              {
-                className: "col-2 form-group",
-                type: "AC",
-                data: "PERIOD",
-                initalStates: "TMTD",
-                dependent: ["Range"],
-              },
-              {
-                className: "col-3 form-group",
-                type: "DH|RANGE",
-                data: "RANGE",
-                initalStates: rangeDate,
-                onChange: (selected, val, cb) => {
-                  if (filter.length > 0) {
-                    const frdt = selected[0].clone();
-                    const tdt = selected[1].clone();
-                    const previousfrom = frdt.subtract(1, "years");
-                    const previousto = tdt.subtract(1, "years");
-                    cb({
-                      PREVIOUSRANGE: [previousfrom, previousto],
-                      RANGE: selected,
-                    });
-                  } else {
-                    cb({ RANGE: selected });
-                  }
-                },
-              },
+              // {
+              //   className: "col-2 form-group",
+              //   type: "AC",
+              //   data: "PERIOD",
+              //   initalStates: "TMTD",
+              //   dependent: ["Range"],
+              // },
+              // {
+              //   className: "col-3 form-group",
+              //   type: "DH|RANGE",
+              //   data: "RANGE",
+              //   initalStates: rangeDate,
+              //   onChange: (selected, val, cb) => {
+              //     if (filter.length > 0) {
+              //       const frdt = selected[0].clone();
+              //       const tdt = selected[1].clone();
+              //       const previousfrom = frdt.subtract(1, "years");
+              //       const previousto = tdt.subtract(1, "years");
+              //       cb({
+              //         PREVIOUSRANGE: [previousfrom, previousto],
+              //         RANGE: selected,
+              //       });
+              //     } else {
+              //       cb({ RANGE: selected });
+              //     }
+              //   },
+              // },
             ],
             filter
           )}
           callBack={(inputs, cb) => {
-            const { PREVIOUSRANGE, RANGE } = inputs;
+            const { PREVIOUSRANGE, RANGE, BASEDON } = inputs;
             setRangeDate(RANGE);
             setPrevDateRange(PREVIOUSRANGE);
             setChangeInPercentage(inputs["CHANGEIN%"]);
             setChangeInAccount(inputs["CHANGEINAMT."]);
+            setBasedOn(BASEDON);
             setStopLoading(cb);
 
             setPreview((result) => {

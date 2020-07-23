@@ -133,6 +133,15 @@ class OPBilling extends Component {
     if (queryParams.get("bill_code")) {
       this.getCtrlCode(queryParams.get("bill_code"));
     }
+
+
+    debugger
+    if (
+      this.props.patient_code !== undefined &&
+      this.props.patient_code.length !== 0
+    ) {
+      getPatientDetails(this, this.props.patient_code);
+    }
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
@@ -460,17 +469,17 @@ class OPBilling extends Component {
           printArea={
             this.state.bill_number !== null
               ? {
-                  menuitems: [
-                    {
-                      label: "Print Receipt",
-                      events: {
-                        onClick: () => {
-                          generateReceipt(this, this);
-                        },
+                menuitems: [
+                  {
+                    label: "Print Receipt",
+                    events: {
+                      onClick: () => {
+                        generateReceipt(this, this);
                       },
                     },
-                  ],
-                }
+                  },
+                ],
+              }
               : ""
           }
           selectedLang={this.state.selectedLang}
@@ -483,7 +492,8 @@ class OPBilling extends Component {
                 this.setState({ ...this.state, ...obj }, () => {
                   Object.keys(obj).map((key) => {
                     if (key === "patient_code") {
-                      getPatientDetails(this, this);
+                      debugger
+                      getPatientDetails(this, this.state.patient_code);
                     }
                   });
                 });
@@ -523,7 +533,7 @@ class OPBilling extends Component {
                 />
               </button>
 
-              <button
+              {this.props.from_list_auth === true ? null : (<button
                 type="button"
                 className="btn btn-primary"
                 onClick={ShowOrderPackage.bind(this, this)}
@@ -531,23 +541,24 @@ class OPBilling extends Component {
                   this.state.patient_id === null
                     ? true
                     : this.state.Billexists === true
-                    ? true
-                    : false
+                      ? true
+                      : false
                 }
               >
                 <AlgaehLabel
                   label={{ fieldName: "btn_order_package", returnText: true }}
                 />
-              </button>
-              <button
-                type="button"
-                className="btn btn-default"
-                onClick={ClearData.bind(this, this)}
-              >
-                <AlgaehLabel
-                  label={{ fieldName: "btn_clear", returnText: true }}
-                />
-              </button>
+              </button>)}
+              {this.props.from_list_auth === true ?
+                null : (<button
+                  type="button"
+                  className="btn btn-default"
+                  onClick={ClearData.bind(this, this)}
+                >
+                  <AlgaehLabel
+                    label={{ fieldName: "btn_clear", returnText: true }}
+                  />
+                </button>)}
 
               {Package_Exists.length > 0 ? (
                 <button

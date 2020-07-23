@@ -13,7 +13,16 @@ const {
   updateVitalMasterHeader,
   updateVitalMasterDetail,
   addDepartmentVitalMap,
-  getDepartmentVitalMap
+  getDepartmentVitalMap,
+  addExaminationType,
+  updateExaminationType,
+  getExaminationType,
+  getExaminationDescription,
+  addExaminationDescription,
+  updateExaminationDescription,
+  addExaminationCategory,
+  updateExaminationCategory,
+  getExaminationCategory,
 } = workBenchModels;
 const { releaseConnection } = utils;
 
@@ -28,7 +37,7 @@ export default ({ config, db }) => {
       let result = req.records;
       res.status(httpStatus.ok).json({
         success: true,
-        records: result
+        records: result,
       });
       next();
     },
@@ -42,7 +51,7 @@ export default ({ config, db }) => {
       let result = req.records;
       res.status(httpStatus.ok).json({
         success: true,
-        records: result
+        records: result,
       });
       next();
     },
@@ -56,7 +65,7 @@ export default ({ config, db }) => {
       let result = req.records;
       res.status(httpStatus.ok).json({
         success: true,
-        records: result
+        records: result,
       });
       next();
     },
@@ -70,26 +79,26 @@ export default ({ config, db }) => {
       let result = req.records;
       res.status(httpStatus.ok).json({
         success: true,
-        records: result
+        records: result,
       });
       next();
     },
     releaseConnection
   );
 
-  api.delete(
-    "/deleteVitalMasterHeader",
-    deleteVitalMasterHeader,
-    (req, res, next) => {
-      let result = req.records;
-      res.status(httpStatus.ok).json({
-        success: true,
-        records: result
-      });
-      next();
-    },
-    releaseConnection
-  );
+  // api.delete(
+  //   "/deleteVitalMasterHeader",
+  //   deleteVitalMasterHeader,
+  //   (req, res, next) => {
+  //     let result = req.records;
+  //     res.status(httpStatus.ok).json({
+  //       success: true,
+  //       records: result
+  //     });
+  //     next();
+  //   },
+  //   releaseConnection
+  // );
 
   api.delete(
     "/deleteVitalMasterDetail",
@@ -98,7 +107,7 @@ export default ({ config, db }) => {
       let result = req.records;
       res.status(httpStatus.ok).json({
         success: true,
-        records: result
+        records: result,
       });
       next();
     },
@@ -112,7 +121,7 @@ export default ({ config, db }) => {
       let result = req.records;
       res.status(httpStatus.ok).json({
         success: true,
-        records: result
+        records: result,
       });
       next();
     },
@@ -126,7 +135,7 @@ export default ({ config, db }) => {
       let result = req.records;
       res.status(httpStatus.ok).json({
         success: true,
-        records: result
+        records: result,
       });
       next();
     },
@@ -140,7 +149,7 @@ export default ({ config, db }) => {
       let result = req.records;
       res.status(httpStatus.ok).json({
         success: true,
-        records: result
+        records: result,
       });
       next();
     },
@@ -154,12 +163,137 @@ export default ({ config, db }) => {
       let result = req.records;
       res.status(httpStatus.ok).json({
         success: true,
-        records: result
+        records: result,
       });
       next();
     },
     releaseConnection
   );
 
+  api.get(
+    "/getExaminationType",
+    getExaminationType,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result,
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  api.post(
+    "/addExaminationType",
+    addExaminationType,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result,
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  api.put(
+    "/updateExaminationType",
+    updateExaminationType,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result,
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  api.get(
+    "/getExaminationDescription",
+    getExaminationDescription,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result,
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  api.post(
+    "/addExaminationDescription",
+    addExaminationDescription,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result,
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  api.put(
+    "/updateExaminationDescription",
+    updateExaminationDescription,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result,
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  api.get(
+    "/getExaminationCategory",
+    getExaminationCategory,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result,
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  api.post(
+    "/addExaminationCategory",
+    addExaminationCategory,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result,
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  api.put(
+    "/updateExaminationCategory",
+    updateExaminationCategory,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result,
+      });
+      next();
+    },
+    releaseConnection
+  );
   return api;
 };

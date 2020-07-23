@@ -102,34 +102,6 @@ class PrescriptionList extends Component {
                     }}
                     value={this.state.prescription_date}
                   />
-                  <AlagehFormGroup
-                    div={{ className: "col" }}
-                    label={{
-                      forceLabel: "Patient Code"
-                    }}
-                    textBox={{
-                      value: this.state.patient_code,
-                      className: "txt-fld",
-                      name: "patient_code",
-
-                      events: {
-                        onChange: null
-                      },
-                      others: {
-                        disabled: true
-                      }
-                    }}
-                  />
-                  <div className="col-lg-1">
-                    <span
-                      className="fas fa-search"
-                      style={{
-                        fontSize: 20,
-                        marginTop: 27
-                      }}
-                      onClick={PatientSearch.bind(this, this)}
-                    />
-                  </div>
 
                   <div className="col" style={{ paddingTop: 19 }}>
                     <button
@@ -179,7 +151,8 @@ class PrescriptionList extends Component {
                       },
                       others: {
                         maxWidth: 70,
-                        style: { textAlign: "center" }
+                        style: { textAlign: "center" },
+                        filterable: false
                       }
                     },
                     {
@@ -220,7 +193,8 @@ class PrescriptionList extends Component {
                       disabled: true,
                       others: {
                         maxWidth: 150,
-                        style: { textAlign: "center" }
+                        style: { textAlign: "center" },
+                        filterable: false
                       }
                     },
                     {
@@ -234,7 +208,8 @@ class PrescriptionList extends Component {
                       disabled: true,
                       others: {
                         maxWidth: 150,
-                        style: { textAlign: "center" }
+                        style: { textAlign: "center" },
+                        filterable: false
                       }
                     }
                   ]}
@@ -242,6 +217,7 @@ class PrescriptionList extends Component {
                   dataSource={{
                     data: this.state.medication_list
                   }}
+                  filter={true}
                   paging={{ page: 0, rowsPerPage: 10 }}
                 />
               </div>

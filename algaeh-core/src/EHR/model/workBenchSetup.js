@@ -11,20 +11,347 @@ let addVitalMasterHeader = (req, res, next) => {
   try {
     let input = extend({}, req.body);
     const _mysql = new algaehMysql();
+
+    let $max = _mysql
+      .executeQuery({
+        query: `SELECT max(hims_d_vitals_header_id)+1 as vital FROM hims_d_vitals_header`,
+      })
+      .then((result) => {
+        const vital_id = result.length === 0 ? 1 : result[0]["vital"];
+        _mysql
+          .executeQuery({
+            query:
+              "INSERT INTO `hims_d_vitals_header` (vitals_name, uom,general,display,record_status,created_date, created_by, updated_date, updated_by,hims_d_vitals_header_id)\
+      VALUE(?,?,?,?,?,?,?,?,?,?)",
+            values: [
+              input.vitals_name,
+              input.uom,
+              input.general,
+              input.display,
+              input.record_status,
+              new Date(),
+              input.created_by,
+              new Date(),
+              input.updated_by,
+              vital_id,
+            ],
+          })
+          .then((result) => {
+            _mysql.releaseConnection();
+            req.records = result;
+            next();
+          })
+          .catch((error) => {
+            _mysql.releaseConnection();
+            next(error);
+          });
+      })
+      .catch((error) => {
+        _mysql.releaseConnection();
+        next(error);
+      });
+  } catch (e) {
+    next(e);
+  }
+};
+let addExaminationType = (req, res, next) => {
+  try {
+    let input = extend({}, req.body);
+    const _mysql = new algaehMysql();
     _mysql
       .executeQuery({
         query:
-          "INSERT INTO `hims_d_vitals_header` (vitals_name, uom,general,display,created_date, created_by, updated_date, updated_by)\
-      VALUE(?,?,?,?,?,?,?,?)",
+          "INSERT INTO `hims_d_physical_examination_header` (examination_type, description,sub_department_id,assesment_type,mandatory,created_date, created_by, updated_date, updated_by)\
+      VALUE(?,?,?,?,?,?,?,?,?)",
         values: [
-          input.vitals_name,
-          input.uom,
-          input.general,
-          input.display,
+          input.examination_type,
+          input.description,
+          input.sub_department_id,
+          "NS",
+          "N",
+
           new Date(),
           input.created_by,
           new Date(),
           input.updated_by,
+        ],
+      })
+      .then((result) => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch((error) => {
+        _mysql.releaseConnection();
+        next(error);
+      });
+  } catch (e) {
+    next(e);
+  }
+};
+// let ExaminationType = (req, res, next) => {
+//   let  = {
+//     hims_d_vitals_header_id: "ALL",
+//   };
+//   try {
+//     const _mysql = new algaehMysql();
+
+//     let where = whereCondition(extend(selectWhere, req.query));
+
+//     _mysql
+//       .executeQuery({
+//         query:
+//           "select hims_d_vitals_header_id,uom, vitals_name,general,display,record_status FROM hims_d_vitals_header where " +
+//           where.condition +
+//           " order by hims_d_vitals_header_id desc",
+//         values: [...where.values],
+//       })
+//       .then((result) => {
+//         _mysql.releaseConnection();
+//         req.records = result;
+//         next();
+//       })
+//       .catch((error) => {
+//         _mysql.releaseConnection();
+//         next(error);
+//       });
+//   } catch (e) {
+//     next(e);
+//   }
+// };
+let updateExaminationType = (req, res, next) => {
+  try {
+    const _mysql = new algaehMysql();
+    let input = extend({}, req.body);
+
+    _mysql
+      .executeQuery({
+        query:
+          "UPDATE `hims_d_physical_examination_header` SET examination_type=?,description=?,sub_department_id=?,assesment_type=?,mandatory=?,\
+      updated_date=?, updated_by=?  WHERE  `hims_d_physical_examination_header_id`=?;",
+        values: [
+          input.examination_type,
+          input.description,
+          input.sub_department_id,
+          "NS",
+          "N",
+
+          new Date(),
+          input.updated_by,
+          input.hims_d_physical_examination_header_id,
+        ],
+      })
+      .then((result) => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch((error) => {
+        _mysql.releaseConnection();
+        next(error);
+      });
+  } catch (e) {
+    next(e);
+  }
+};
+let getExaminationType = (req, res, next) => {
+  let input = req.body;
+  try {
+    const _mysql = new algaehMysql();
+
+    _mysql
+      .executeQuery({
+        query:
+          "select hims_d_physical_examination_header_id, examination_type, description,sub_department_id,assesment_type,mandatory\
+           FROM hims_d_physical_examination_header where  record_status='A'",
+
+        // values: [input.hims_d_physical_examination_header_id],
+      })
+      .then((result) => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch((error) => {
+        _mysql.releaseConnection();
+        next(error);
+      });
+  } catch (e) {
+    next(e);
+  }
+};
+let getExaminationDescription = (req, res, next) => {
+  let input = req.body;
+  try {
+    const _mysql = new algaehMysql();
+
+    _mysql
+      .executeQuery({
+        query:
+          "select ED.hims_d_physical_examination_details_id, ED.physical_examination_header_id, ED.description as descr,ED.mandatory,PEH.hims_d_physical_examination_header_id,PEH.description\
+           FROM hims_d_physical_examination_details ED inner join hims_d_physical_examination_header PEH\
+            on ED.physical_examination_header_id=PEH.hims_d_physical_examination_header_id and  ED.record_status='A'and PEH.record_status='A'",
+        printQuery: true,
+        // values: [input.hims_d_physical_examination_header_id],
+      })
+      .then((result) => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch((error) => {
+        _mysql.releaseConnection();
+        next(error);
+      });
+  } catch (e) {
+    next(e);
+  }
+};
+let addExaminationDescription = (req, res, next) => {
+  try {
+    let input = extend({}, req.body);
+    const _mysql = new algaehMysql();
+    _mysql
+      .executeQuery({
+        query:
+          "INSERT INTO `hims_d_physical_examination_details` (physical_examination_header_id, description,mandatory,created_date, created_by, updated_date, updated_by)\
+      VALUE(?,?,?,?,?,?,?)",
+        values: [
+          input.physical_examination_header_id,
+          input.description,
+          "N",
+
+          new Date(),
+          input.created_by,
+          new Date(),
+          input.updated_by,
+        ],
+      })
+      .then((result) => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch((error) => {
+        _mysql.releaseConnection();
+        next(error);
+      });
+  } catch (e) {
+    next(e);
+  }
+};
+let updateExaminationDescription = (req, res, next) => {
+  try {
+    const _mysql = new algaehMysql();
+    let input = extend({}, req.body);
+
+    _mysql
+      .executeQuery({
+        query:
+          "UPDATE `hims_d_physical_examination_details` SET physical_examination_header_id=?,description=?,mandatory=?,\
+      updated_date=?, updated_by=?  WHERE  `hims_d_physical_examination_details_id`=?;",
+        values: [
+          input.physical_examination_header_id,
+          input.description,
+          "N",
+
+          new Date(),
+          input.updated_by,
+          input.hims_d_physical_examination_details_id,
+        ],
+      })
+      .then((result) => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch((error) => {
+        _mysql.releaseConnection();
+        next(error);
+      });
+  } catch (e) {
+    next(e);
+  }
+};
+let getExaminationCategory = (req, res, next) => {
+  let input = req.body;
+  try {
+    const _mysql = new algaehMysql();
+
+    _mysql
+      .executeQuery({
+        query:
+          "select EC.physical_examination_details_id, EC.hims_d_physical_examination_subdetails_id, EC.description as ecDescr,EC.mandatory,\
+          ED.hims_d_physical_examination_details_id,ED.description FROM hims_d_physical_examination_subdetails EC inner join hims_d_physical_examination_details ED\
+          on EC.physical_examination_details_id = ED.hims_d_physical_examination_details_id\
+          and  EC.record_status='A' and ED.record_status='A'",
+
+        // values: [input.hims_d_physical_examination_header_id],
+      })
+      .then((result) => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch((error) => {
+        _mysql.releaseConnection();
+        next(error);
+      });
+  } catch (e) {
+    next(e);
+  }
+};
+let addExaminationCategory = (req, res, next) => {
+  try {
+    let input = extend({}, req.body);
+    const _mysql = new algaehMysql();
+    _mysql
+      .executeQuery({
+        query:
+          "INSERT INTO `hims_d_physical_examination_subdetails` (physical_examination_details_id, description,mandatory,created_date, created_by, updated_date, updated_by)\
+      VALUE(?,?,?,?,?,?,?)",
+        values: [
+          input.physical_examination_details_id,
+          input.description,
+          "N",
+
+          new Date(),
+          input.created_by,
+          new Date(),
+          input.updated_by,
+        ],
+      })
+      .then((result) => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch((error) => {
+        _mysql.releaseConnection();
+        next(error);
+      });
+  } catch (e) {
+    next(e);
+  }
+};
+let updateExaminationCategory = (req, res, next) => {
+  try {
+    const _mysql = new algaehMysql();
+    let input = extend({}, req.body);
+
+    _mysql
+      .executeQuery({
+        query:
+          "UPDATE `hims_d_physical_examination_subdetails` SET physical_examination_details_id=?,description=?,mandatory=?,\
+      updated_date=?, updated_by=?  WHERE  `hims_d_physical_examination_subdetails_id`=?;",
+        values: [
+          input.physical_examination_details_id,
+          input.description,
+          "N",
+
+          new Date(),
+          input.updated_by,
+          input.hims_d_physical_examination_subdetails_id,
         ],
       })
       .then((result) => {
@@ -54,7 +381,7 @@ let getVitalMasterHeader = (req, res, next) => {
     _mysql
       .executeQuery({
         query:
-          "select hims_d_vitals_header_id,uom, vitals_name,general,display FROM hims_d_vitals_header where record_status='A' AND" +
+          "select hims_d_vitals_header_id,uom, vitals_name,general,display,record_status FROM hims_d_vitals_header where " +
           where.condition +
           " order by hims_d_vitals_header_id desc",
         values: [...where.values],
@@ -74,29 +401,29 @@ let getVitalMasterHeader = (req, res, next) => {
 };
 
 //created by irfan: to deleteVitalMasterHeader
-let deleteVitalMasterHeader = (req, res, next) => {
-  try {
-    const _mysql = new algaehMysql();
+// let deleteVitalMasterHeader = (req, res, next) => {
+//   try {
+//     const _mysql = new algaehMysql();
 
-    _mysql
-      .executeQuery({
-        query:
-          "UPDATE hims_d_vitals_header SET  record_status='I' WHERE hims_d_vitals_header_id=?",
-        values: [req.body.hims_d_vitals_header_id],
-      })
-      .then((result) => {
-        _mysql.releaseConnection();
-        req.records = result;
-        next();
-      })
-      .catch((error) => {
-        _mysql.releaseConnection();
-        next(error);
-      });
-  } catch (e) {
-    next(e);
-  }
-};
+//     _mysql
+//       .executeQuery({
+//         query:
+//           "UPDATE hims_d_vitals_header SET  record_status='I' WHERE hims_d_vitals_header_id=?",
+//         values: [req.body.hims_d_vitals_header_id],
+//       })
+//       .then((result) => {
+//         _mysql.releaseConnection();
+//         req.records = result;
+//         next();
+//       })
+//       .catch((error) => {
+//         _mysql.releaseConnection();
+//         next(error);
+//       });
+//   } catch (e) {
+//     next(e);
+//   }
+// };
 
 //created by irfan: to updateVitalMasterHeader
 let updateVitalMasterHeader = (req, res, next) => {
@@ -107,13 +434,14 @@ let updateVitalMasterHeader = (req, res, next) => {
     _mysql
       .executeQuery({
         query:
-          "UPDATE `hims_d_vitals_header` SET vitals_name=?,uom=?,general=?,display=?,\
-      updated_date=?, updated_by=?  WHERE  `record_status`='A' and `hims_d_vitals_header_id`=?;",
+          "UPDATE `hims_d_vitals_header` SET vitals_name=?,uom=?,general=?,display=?,record_status=?,\
+      updated_date=?, updated_by=?  WHERE  `hims_d_vitals_header_id`=?;",
         values: [
           input.vitals_name,
           input.uom,
           input.general,
           input.display,
+          input.record_status,
           new Date(),
           input.updated_by,
           input.hims_d_vitals_header_id,
@@ -336,10 +664,19 @@ export default {
   addVitalMasterDetail,
   getVitalMasterHeader,
   getVitalMasterDetail,
-  deleteVitalMasterHeader,
+  // deleteVitalMasterHeader,
   deleteVitalMasterDetail,
   updateVitalMasterHeader,
   updateVitalMasterDetail,
   addDepartmentVitalMap,
   getDepartmentVitalMap,
+  addExaminationType,
+  updateExaminationType,
+  getExaminationType,
+  getExaminationDescription,
+  addExaminationDescription,
+  updateExaminationDescription,
+  getExaminationCategory,
+  addExaminationCategory,
+  updateExaminationCategory,
 };

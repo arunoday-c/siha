@@ -17,7 +17,7 @@ let getPatientMrdList = (req, res, next) => {
     arabic_name: "ALL",
     date_of_birth: "ALL",
     contact_number: "ALL",
-    hims_d_patient_id: "ALL"
+    hims_d_patient_id: "ALL",
   };
   try {
     if (req.db == null) {
@@ -37,9 +37,7 @@ let getPatientMrdList = (req, res, next) => {
       req.query.registration_date != "null" &&
       req.query.registration_date != null
     ) {
-      registration_date = `and date(registration_date)= date('${
-        req.query.registration_date
-      }')`;
+      registration_date = `and date(registration_date)= date('${req.query.registration_date}')`;
     }
 
     delete req.query.registration_date;
@@ -160,7 +158,7 @@ let getPatientChiefComplaint = (req, res, next) => {
 let getPatientDiagnosis = (req, res, next) => {
   let selectWhere = {
     episode_id: "ALL",
-    patient_id: "ALL"
+    patient_id: "ALL",
   };
   try {
     if (req.db == null) {
@@ -199,7 +197,7 @@ let getPatientDiagnosis = (req, res, next) => {
 let getPatientMedication = (req, res, next) => {
   let selectWhere = {
     patient_id: "ALL",
-    encounter_id: "ALL"
+    encounter_id: "ALL",
   };
   try {
     if (req.db == null) {
@@ -214,8 +212,8 @@ let getPatientMedication = (req, res, next) => {
         "select  hims_f_prescription_id, patient_id, encounter_id, provider_id, episode_id,\
         prescription_date, prescription_status , \
         hims_f_prescription_detail_id, prescription_id, item_id,IM.item_description, PD.generic_id, IG.generic_name, \
-        dosage, frequency, no_of_days,\
-        dispense, frequency_type, frequency_time, start_date, PD.service_id, uom_id, item_category_id, PD.item_status\
+        dosage,med_units, frequency, no_of_days,\
+        dispense, frequency_type, frequency_time,frequency_route, start_date, PD.service_id, uom_id, item_category_id, PD.item_status\
          from hims_f_prescription P,hims_f_prescription_detail PD,hims_d_item_master IM,hims_d_item_generic IG\
         where P.record_status='A' and IM.record_status='A' and IG.record_status='A' and \
         P.hims_f_prescription_id=PD.prescription_id and PD.item_id=IM.hims_d_item_master_id \
@@ -310,8 +308,8 @@ let getPatientPaymentDetails = (req, res, next) => {
           }
 
           let allVisits = new LINQ(result)
-            .Where(w => w.visit_id != null)
-            .Select(s => s.visit_id)
+            .Where((w) => w.visit_id != null)
+            .Select((s) => s.visit_id)
             .ToArray();
 
           debugLog("allVisits:", allVisits);
@@ -357,7 +355,7 @@ let getPatientPaymentDetails = (req, res, next) => {
                         } catch (e) {
                           reject(e);
                         }
-                      }).then(resultRCPT => {
+                      }).then((resultRCPT) => {
                         connection.query(
                           "select BH.hims_f_billing_header_id,company_payable as pri_company_payble, sec_company_payable,\
                           hims_f_patient_insurance_mapping_id,IM.patient_id,primary_insurance_provider_id,IP.insurance_provider_name as pri_insurance_provider_name,\
@@ -383,7 +381,7 @@ let getPatientPaymentDetails = (req, res, next) => {
                                 " " +
                                 billHeadResult[k].provider_name,
                               ...insResult[0],
-                              receipt: resultRCPT
+                              receipt: resultRCPT,
                             });
 
                             debugLog("outputArray:", outputArray);
@@ -479,5 +477,5 @@ export default {
   getPatientMedication,
   getPatientInvestigation,
   getPatientPaymentDetails,
-  getPatientTreatments
+  getPatientTreatments,
 };

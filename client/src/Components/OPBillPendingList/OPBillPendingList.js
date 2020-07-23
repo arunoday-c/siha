@@ -34,7 +34,24 @@ class OPBillPendingList extends Component {
   }
 
   componentDidMount() {
-    getBillPatientList(this, this);
+    if (this.props.backToAuth) {
+      const {
+        today_date
+      } = this.props.prev;
+      this.setState(
+        {
+          today_date
+        },
+        () => getBillPatientList(this)
+      );
+    } else {
+      this.setState(
+        {
+          today_date: new Date()
+        },
+        () => getBillPatientList(this)
+      );
+    }
   }
 
   //   changeDateFormat({ value }) {
@@ -42,6 +59,12 @@ class OPBillPendingList extends Component {
   //       return moment(value).format(Options.dateFormat);
   //     }
   //   }
+
+  ourOwnMiniNavigator = obj => {
+    const { requisition_list, radioYes, authorize1, ...rest } = this.state;
+    let sendObj = Object.assign(rest, obj);
+    this.props.new_routeComponents(sendObj);
+  };
 
   render() {
     return (
@@ -160,15 +183,15 @@ class OPBillPendingList extends Component {
                         displayTemplate: row => {
                           return (
                             <span>
-                              {/* <IconButton
-                                color="primary"
-                                title="Collection"
-                                style={{ maxHeight: "4vh" }}
-                              >
-                                <Collections
-                                // onClick={ListOfItems.bind(this, this, row)}
-                                />
-                              </IconButton> */}
+                              <i
+                                className="fa fa-exchange-alt"
+                                onClick={() => {
+                                  this.ourOwnMiniNavigator({
+                                    RQ_Screen: "OPBilling",
+                                    patient_code: row.patient_code
+                                  });
+                                }}
+                              />
                             </span>
                           );
                         },

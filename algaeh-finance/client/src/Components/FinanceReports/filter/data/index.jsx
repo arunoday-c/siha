@@ -84,6 +84,10 @@ const BASEDON = {
         name: "Total",
         value: "total",
       },
+      {
+        name: "Month",
+        value: "by_month",
+      },
     ],
     valueField: "value",
     textField: "name",

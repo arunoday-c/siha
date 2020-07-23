@@ -9,6 +9,9 @@ import {
   getPrepaymentRequestToAuthorize,
   authorizePrepaymentRequest,
   loadPrepaymentsToProcess,
+  processPrepayments,
+  getPrepaymentDetails,
+  updatePrepaymentCostCenter,
 } from "../models/prepayment";
 import utlities from "algaeh-utilities";
 
@@ -112,6 +115,40 @@ export default () => {
   api.get(
     "/loadPrepaymentsToProcess",
     loadPrepaymentsToProcess,
+    (req, res, next) => {
+      res
+        .status(utlities.AlgaehUtilities().httpStatus().ok)
+        .json({
+          success: true,
+          result: req.records,
+        })
+        .end();
+    }
+  );
+
+  api.put("/processPrepayments", processPrepayments, (req, res, next) => {
+    res
+      .status(utlities.AlgaehUtilities().httpStatus().ok)
+      .json({
+        success: true,
+        result: req.records,
+      })
+      .end();
+  });
+
+  api.get("/getPrepaymentDetails", getPrepaymentDetails, (req, res, next) => {
+    res
+      .status(utlities.AlgaehUtilities().httpStatus().ok)
+      .json({
+        success: true,
+        result: req.records,
+      })
+      .end();
+  });
+
+  api.put(
+    "/updatePrepaymentCostCenter",
+    updatePrepaymentCostCenter,
     (req, res, next) => {
       res
         .status(utlities.AlgaehUtilities().httpStatus().ok)

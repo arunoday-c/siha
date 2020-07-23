@@ -628,6 +628,11 @@ class HistoricalData extends Component {
                           accessor: "dosage",
                           Header: "Dosage",
                         },
+
+                        {
+                          accessor: "med_units",
+                          Header: "Unit",
+                        },
                         {
                           accessor: "frequency",
                           Header: "Frequency",

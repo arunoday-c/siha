@@ -292,6 +292,14 @@ class ListofItems extends PureComponent {
                     },
                   },
                   {
+                    fieldName: "med_units",
+                    label: <AlgaehLabel label={{ forceLabel: "Units" }} />,
+                    others: {
+                      //minWidth: 200,
+                      style: { textAlign: "center" },
+                    },
+                  },
+                  {
                     fieldName: "no_of_days",
                     label: (
                       <AlgaehLabel label={{ forceLabel: "Duration (Days)" }} />
