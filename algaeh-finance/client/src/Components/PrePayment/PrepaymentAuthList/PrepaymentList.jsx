@@ -138,7 +138,7 @@ Prepayment Type: ${row.prepayment_desc}`,
                   div={{ className: "col-2 form-group" }}
                   label={{
                     forceLabel: "Branch",
-                    isImp: true,
+                    isImp: false,
                   }}
                   selector={{
                     value,
@@ -171,7 +171,7 @@ Prepayment Type: ${row.prepayment_desc}`,
                   div={{ className: "col-2 form-group" }}
                   label={{
                     forceLabel: "Cost Center",
-                    isImp: true,
+                    isImp: false,
                   }}
                   selector={{
                     others: {
@@ -209,7 +209,7 @@ Prepayment Type: ${row.prepayment_desc}`,
                   div={{ className: "col-2 form-group" }}
                   label={{
                     forceLabel: "Prepayment Type",
-                    isImp: true,
+                    isImp: false,
                   }}
                   selector={{
                     value,
@@ -247,7 +247,7 @@ Prepayment Type: ${row.prepayment_desc}`,
                   }}
                   label={{
                     forceLabel: "Start Date",
-                    isImp: true,
+                    isImp: false,
                   }}
                   textBox={{
                     className: "form-control",
@@ -297,7 +297,7 @@ Prepayment Type: ${row.prepayment_desc}`,
                   }}
                   label={{
                     forceLabel: "End Date",
-                    isImp: true,
+                    isImp: false,
                   }}
                   textBox={{
                     value: value,
