@@ -509,7 +509,7 @@ class SalesOrder extends Component {
                       data: GlobalVariables.PAYMENT_TERMS,
                     },
                     others: {
-                      disabled: this.state.selectedData,
+                      disabled: this.state.dataExists,
                     },
                     onChange: texthandle.bind(this, this),
                     onClear: () => {
