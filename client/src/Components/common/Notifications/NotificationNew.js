@@ -136,7 +136,6 @@ export default function Notification({ open, handlePanel }) {
             className="demo-loadmore-list"
             // loading={loading}
             bordered
-            style={{ paddingBottom: "2.5rem", borderBottom: 0 }}
             itemLayout="horizontal"
             dataSource={content}
             renderItem={(item) => (
@@ -146,6 +145,8 @@ export default function Notification({ open, handlePanel }) {
                   <Button
                     type="ghost"
                     icon="close"
+                    with
+                    icon={<i className="fas fa-times" />}
                     loading={item.loading}
                     data-current={JSON.stringify(item)}
                     onClick={removeNotification}
@@ -182,14 +183,17 @@ export default function Notification({ open, handlePanel }) {
       visible={open}
       className="notifyDrawer"
     >
-      <Tabs defaultActiveKey="1" type="line" size="default">
-        <TabPane tab="Today" key="1">
-          <NotiList content={today} />
-        </TabPane>
-        <TabPane tab="All Notifications" key="2">
-          <NotiList content={list} />
-        </TabPane>
-      </Tabs>
+      <div className="col">
+        {" "}
+        <Tabs defaultActiveKey="1" type="line" size="default">
+          <TabPane tab="Today" key="1">
+            <NotiList content={today} />
+          </TabPane>
+          <TabPane tab="All Notifications" key="2">
+            <NotiList content={list} />
+          </TabPane>
+        </Tabs>
+      </div>
       <div
         style={{
           position: "absolute",

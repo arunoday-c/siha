@@ -120,7 +120,8 @@ export function IdleManager() {
                     <div className="row">
                       <AlgaehFormGroup
                         div={{
-                          className: "col-lg-7 col-sm-12 form-group mandatory",
+                          className:
+                            "col-lg-7 col-sm-12 form-group mandatory  algaeh-text-fld",
                         }}
                         label={{
                           forceLabel: "Password",

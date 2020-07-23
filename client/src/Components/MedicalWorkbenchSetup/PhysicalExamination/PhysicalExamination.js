@@ -397,7 +397,7 @@ class PhysicalExamination extends Component {
                     /> */}
 
                     <AlagehFormGroup
-                      div={{ className: "col-8" }}
+                      div={{ className: "col-12" }}
                       label={{
                         fieldName: "description",
                         isImp: true,
@@ -442,6 +442,7 @@ class PhysicalExamination extends Component {
                     <div className="col">
                       <button
                         className="btn btn-primary"
+                        style={{ marginTop: 19 }}
                         onClick={this.addExaminationType}
                       >
                         Add
@@ -471,7 +472,7 @@ class PhysicalExamination extends Component {
                         editorTemplate: (row) => {
                           return (
                             <AlagehFormGroup
-                              div={{ className: "col-8" }}
+                              div={{ className: "noLabel" }}
                               textBox={{
                                 className: "txt-fld",
                                 name: "description",
@@ -500,7 +501,7 @@ class PhysicalExamination extends Component {
                         editorTemplate: (row) => {
                           return (
                             <AlagehAutoComplete
-                              div={{ className: "col" }}
+                              div={{ className: "noLabel" }}
                               selector={{
                                 name: "examination_type",
                                 className: "select-fld",
@@ -550,7 +551,7 @@ class PhysicalExamination extends Component {
             <div className="col-lg-4 row-card">
               <h6>Examination Description</h6>
               <div className="row">
-                <div className="col-lg-12">
+                <div className="col-12">
                   <div className="row">
                     {/* <AlagehFormGroup
                       div={{ className: "col-4" }}
@@ -571,7 +572,7 @@ class PhysicalExamination extends Component {
                     /> */}
 
                     <AlagehFormGroup
-                      div={{ className: "col-8" }}
+                      div={{ className: "col-12" }}
                       label={{
                         fieldName: "Name",
                         isImp: true,
@@ -610,6 +611,7 @@ class PhysicalExamination extends Component {
                     <div className="col">
                       <button
                         className="btn btn-primary"
+                        style={{ marginTop: 19 }}
                         onClick={this.addExamDesc.bind(this)}
                       >
                         Add
@@ -635,8 +637,8 @@ class PhysicalExamination extends Component {
                         editorTemplate: (row) => {
                           return (
                             <AlagehFormGroup
+                              div={{ className: "noLabel" }}
                               textBox={{
-                                className: "txt-fld",
                                 name: "descr",
                                 value: row.descr,
                                 events: {
@@ -659,9 +661,9 @@ class PhysicalExamination extends Component {
                         editorTemplate: (row) => {
                           return (
                             <AlagehAutoComplete
+                              div={{ className: "noLabel" }}
                               selector={{
                                 name: "physical_examination_header_id",
-                                className: "select-fld",
                                 value: row.physical_examination_header_id,
                                 dataSource: {
                                   textField: "description",
@@ -703,43 +705,8 @@ class PhysicalExamination extends Component {
               <div className="row">
                 <div className="col-lg-12">
                   <div className="row">
-                    {/* <AlagehFormGroup
-                      div={{ className: "col" }}
-                      label={{
-                        fieldName: "code",
-                        isImp: true,
-                      }}
-                      textBox={{
-                        className: "txt-fld",
-                        name: "code",
-                        value: this.state.ECcode,
-                        events: {
-                          onChange: this.texthandle.bind(this),
-                        },
-                        error: this.state.ECcodeError,
-                        helperText: this.state.ECcodeErrorText,
-                      }}
-                    /> */}
-
-                    {/* <AlagehFormGroup
-                      div={{ className: "col-7" }}
-                      label={{
-                        fieldName: "name",
-                        isImp: true,
-                      }}
-                      textBox={{
-                        className: "txt-fld",
-                        name: "name",
-                        value: this.state.ECname,
-                        events: {
-                          onChange: this.texthandle.bind(this),
-                        },
-                        error: this.state.ECnameError,
-                        helperText: this.state.ECnameErrorText,
-                      }}
-                    /> */}
                     <AlagehAutoComplete
-                      div={{ className: "col-9" }}
+                      div={{ className: "col-12" }}
                       label={{
                         fieldName: "Category Type",
                         isImp: true,
@@ -781,6 +748,7 @@ class PhysicalExamination extends Component {
                     <div className="col">
                       <button
                         className="btn btn-primary"
+                        style={{ marginTop: 19 }}
                         onClick={this.addExaminationCategory.bind(this)}
                       >
                         Add
@@ -806,9 +774,9 @@ class PhysicalExamination extends Component {
                         editorTemplate: (row) => {
                           return (
                             <AlagehAutoComplete
+                              div={{ className: "noLabel" }}
                               selector={{
                                 name: "ecDescr",
-                                className: "select-fld",
                                 value: row.ecDescr,
                                 dataSource: {
                                   textField: "name",
@@ -833,9 +801,10 @@ class PhysicalExamination extends Component {
                         editorTemplate: (row) => {
                           return (
                             <AlagehAutoComplete
+                              div={{ className: "noLabel" }}
                               selector={{
                                 name: "physical_examination_details_id",
-                                className: "select-fld",
+                                // className: "select-fld",
                                 value: row.physical_examination_details_id,
                                 dataSource: {
                                   textField: "descr",
