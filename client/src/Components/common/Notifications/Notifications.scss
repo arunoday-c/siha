@@ -5,9 +5,13 @@
 }
 .notifyDrawer {
   .ant-drawer-body {
+    .ant-tabs-nav {
+      margin-bottom: 0;
+    }
     padding: 0;
     .ant-list-items {
-      max-height: 86vh;
+      min-height: 77vh;
+      max-height: 77vh;
       overflow-y: auto;
       overflow-x: hidden;
 
@@ -18,8 +22,13 @@
         &:nth-child(odd) {
           background-color: #f5f5f5;
         }
+        padding-left: 15px;
+        padding-right: 15px;
       }
     }
+  }
+  .ant-empty {
+    margin-top: 20vh;
   }
 }
 

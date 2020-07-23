@@ -806,6 +806,7 @@ class OrderMedication extends Component {
                                 name: "med_units",
                                 others: {
                                   maxLength: 10,
+                                  placeHolder: "ml, drops etc",
                                 },
                                 events: {
                                   onChange: onchangegridcol.bind(
