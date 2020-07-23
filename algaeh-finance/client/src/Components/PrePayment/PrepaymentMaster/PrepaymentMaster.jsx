@@ -195,12 +195,13 @@ export function PrepaymentMaster() {
           <Controller
             control={control}
             name="prepayment_gl"
+            rules={{ required: "Required" }}
             render={(props) => (
               <AlgaehTreeSearch
                 div={{ className: "col form-group" }}
                 label={{
                   forceLabel: "Prepayment GL",
-                  isImp: false,
+                  isImp: true,
                   align: "ltr",
                 }}
                 tree={{
@@ -225,12 +226,13 @@ export function PrepaymentMaster() {
           <Controller
             control={control}
             name="expense_gl"
+            rules={{ required: "Required" }}
             render={(props) => (
               <AlgaehTreeSearch
                 div={{ className: "col form-group" }}
                 label={{
                   forceLabel: "Expense GL",
-                  isImp: false,
+                  isImp: true,
                   align: "ltr",
                 }}
                 tree={{
