@@ -94,7 +94,7 @@ class InitialStock extends Component {
       data: {
         git_location: "N",
         location_status: "A",
-        hospital_id: userToken.hims_d_hospital_id,
+        // hospital_id: userToken.hims_d_hospital_id,
       },
       redux: {
         type: "LOCATIONS_GET_DATA",
@@ -258,8 +258,8 @@ class InitialStock extends Component {
                         {this.state.posted === "Y" ? (
                           <span className="badge badge-success">Posted</span>
                         ) : (
-                          <span className="badge badge-danger">Not Posted</span>
-                        )}
+                            <span className="badge badge-danger">Not Posted</span>
+                          )}
                       </h6>
                     </div>
                   ) : null}
@@ -580,10 +580,10 @@ class InitialStock extends Component {
                           this.props.intlocations === undefined
                             ? []
                             : this.props.intlocations.filter(
-                                (f) =>
-                                  f.hims_d_pharmacy_location_id ===
-                                  row.location_id
-                              );
+                              (f) =>
+                                f.hims_d_pharmacy_location_id ===
+                                row.location_id
+                            );
 
                         return (
                           <span>
@@ -610,10 +610,10 @@ class InitialStock extends Component {
                           this.props.intitemcategory === undefined
                             ? []
                             : this.props.intitemcategory.filter(
-                                (f) =>
-                                  f.hims_d_item_category_id ===
-                                  row.item_category_id
-                              );
+                              (f) =>
+                                f.hims_d_item_category_id ===
+                                row.item_category_id
+                            );
 
                         return (
                           <span>
@@ -640,9 +640,9 @@ class InitialStock extends Component {
                           this.props.intitemgroup === undefined
                             ? []
                             : this.props.intitemgroup.filter(
-                                (f) =>
-                                  f.hims_d_item_group_id === row.item_group_id
-                              );
+                              (f) =>
+                                f.hims_d_item_group_id === row.item_group_id
+                            );
 
                         return (
                           <span>
@@ -669,8 +669,8 @@ class InitialStock extends Component {
                           this.props.intitemlist === undefined
                             ? []
                             : this.props.intitemlist.filter(
-                                (f) => f.hims_d_item_master_id === row.item_id
-                              );
+                              (f) => f.hims_d_item_master_id === row.item_id
+                            );
 
                         return (
                           <span>
@@ -748,8 +748,8 @@ class InitialStock extends Component {
                             }}
                           />
                         ) : (
-                          parseFloat(row.quantity)
-                        );
+                            parseFloat(row.quantity)
+                          );
                       },
                       others: {
                         filterable: false,
