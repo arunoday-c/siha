@@ -18,7 +18,7 @@ class SearchModule extends Component {
       filterBy: "CON",
       isSpeakEnable: false,
       stop: false,
-      start: false
+      start: false,
     };
     this.handleKeyUp = this.handleKeyUp.bind(this);
     this.searchRef = React.createRef();
@@ -32,11 +32,15 @@ class SearchModule extends Component {
     ReactDOM.unmountComponentAtNode(document.getElementById("searchWindow"));
   };
   handleKeyUp(event) {
-    if (!this.spotlight.contains(event.target)) {
+    // if (!this.spotlight.contains(event.target)) {
+    if (this.state.open) {
       if (event.keyCode === 27) {
-        document.getElementById("closeSearch").click();
+        this.setState({ open: false });
+        // document.getElementById("closeSearch").click();
       }
     }
+
+    // }
   }
   componentWillUnmount() {
     document.removeEventListener("keyup", this.handleKeyUp, false);
@@ -46,7 +50,7 @@ class SearchModule extends Component {
     const that = this;
     this.getUserSelectedValue(
       { searchName: that.props.searchName },
-      response => {
+      (response) => {
         const column = that.props.searchGrid.columns[0];
         let _searchBy = column["fieldName"];
         let _name = column["label"];
@@ -64,8 +68,8 @@ class SearchModule extends Component {
         that.handleOnchnageSearchBy({
           target: {
             value: _searchBy,
-            title: _name
-          }
+            title: _name,
+          },
         });
         that.setState(
           {
@@ -74,7 +78,7 @@ class SearchModule extends Component {
             searchBy: _searchBy,
             isSpeakEnable: false,
             stop: false,
-            contains: ""
+            contains: "",
           },
           () => this.searchRef.current.focus()
         );
@@ -90,17 +94,17 @@ class SearchModule extends Component {
       uri: "/userPreferences/get",
       data: {
         screenName: _screenName,
-        identifier: nextProps.searchName
+        identifier: nextProps.searchName,
       },
       method: "GET",
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (typeof callBack === "function") callBack(response);
-      }
+      },
     });
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
-    this.getUserSelectedValue(nextProps, response => {
+    this.getUserSelectedValue(nextProps, (response) => {
       let _searchBy = nextProps.searchGrid.columns[0]["fieldName"];
       let _title = nextProps.searchGrid.columns[0]["label"];
       if (response.data.success === true) {
@@ -116,7 +120,7 @@ class SearchModule extends Component {
         isSpeakEnable: false,
         stop: false,
         contains: "",
-        title: _title
+        title: _title,
       });
     });
   }
@@ -127,12 +131,12 @@ class SearchModule extends Component {
       uri: "/userPreferences/save",
       data: {
         screenName: _screenName,
-        ...jsonObj
+        ...jsonObj,
       },
       method: "POST",
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (typeof callBack === "function") callBack(response);
-      }
+      },
     });
   }
 
@@ -148,9 +152,9 @@ class SearchModule extends Component {
         identifier: this.props.searchName,
         value: _value,
         name: _name,
-        filterBy: this.state.filterBy
+        filterBy: this.state.filterBy,
       },
-      response => {
+      (response) => {
         this.setState({ searchBy: _value, title: _title });
       }
     );
@@ -159,14 +163,14 @@ class SearchModule extends Component {
     const _name = this.searchByCtrl[this.searchByCtrl.selectedIndex].text;
     this.setState(
       {
-        filterBy: e.target.value
+        filterBy: e.target.value,
       },
       () => {
         this.setUserSelectedValue({
           identifier: this.props.searchName,
           value: this.state.searchBy,
           name: _name,
-          filterBy: this.state.filterBy
+          filterBy: this.state.filterBy,
         });
       }
     );
@@ -184,9 +188,13 @@ class SearchModule extends Component {
     clearInterval(intervalId);
     intervalId = setInterval(() => {
       if (typeof $this.props.onContainsChange === "function") {
-        $this.props.onContainsChange(contains, $this.state.searchBy, value => {
-          return value;
-        });
+        $this.props.onContainsChange(
+          contains,
+          $this.state.searchBy,
+          (value) => {
+            return value;
+          }
+        );
       }
       clearInterval(intervalId);
     }, 1000);
@@ -209,14 +217,14 @@ class SearchModule extends Component {
                   fieldName: this.state.searchBy,
                   fieldContains: this.state.contains,
                   searchName: this.state.searchName,
-                  filterBy: this.state.filterBy
+                  filterBy: this.state.filterBy,
                 },
                 method: "GET",
                 responseSchema: {
                   data: "records.data",
-                  totalPages: "records.totalPages"
+                  totalPages: "records.totalPages",
                 },
-                validateBeforeServiceCall: $this => {
+                validateBeforeServiceCall: ($this) => {
                   if (
                     $this.props.dataSource.inputParam.searchName ===
                       undefined ||
@@ -224,17 +232,17 @@ class SearchModule extends Component {
                   ) {
                     return false;
                   } else return true;
-                }
+                },
               }}
               paging={{
                 page: 0,
                 rowsPerPage:
                   this.props.rowsPerPage !== undefined
                     ? this.props.rowsPerPage
-                    : 10
+                    : 10,
               }}
               algaehSearch={true}
-              onRowSelect={row => {
+              onRowSelect={(row) => {
                 this.props.onRowSelect(row);
                 //   this.setState({ open: false });
                 this.handleClose();
@@ -264,17 +272,17 @@ class SearchModule extends Component {
     // true =Recogniser doesn't stop listening even if the user pauses
     recognizer.continuous = false;
     // recognizer.lang = "ar-AE";
-    recognizer.onresult = event => {
+    recognizer.onresult = (event) => {
       for (var i = event.resultIndex; i < event.results.length; i++) {
         if (event.results[i].isFinal) {
           $this.setState({
             isSpeakEnable: false,
-            contains: event.results[i][0].transcript
+            contains: event.results[i][0].transcript,
           });
         }
       }
     };
-    recognizer.onerror = error => {
+    recognizer.onerror = (error) => {
       recognizer.stop();
       $this.setState({ isSpeakEnable: false, contains: "" });
       console.error("speach error : ", error);
@@ -286,7 +294,7 @@ class SearchModule extends Component {
       <div
         id="spotlight_wrapper"
         className={this.state.open === true ? "d-block" : "d-none"}
-        ref={spotlight => (this.spotlight = spotlight)}
+        ref={(spotlight) => (this.spotlight = spotlight)}
       >
         <div className="helpText">
           <span className="helpTextEsc">press [esc] to close window</span>
@@ -323,7 +331,7 @@ class SearchModule extends Component {
                       className="searchBySelect"
                       onChange={this.handleOnchnageSearchBy.bind(this)}
                       value={this.state.searchBy}
-                      ref={searchByCtrl => {
+                      ref={(searchByCtrl) => {
                         this.searchByCtrl = searchByCtrl;
                       }}
                     >
