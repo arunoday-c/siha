@@ -26,6 +26,9 @@ import {
   // getChartData,
   getGridChildNodes,
 } from ".././FinanceAccountEvent";
+import {
+  AlgaehSecurityComponent
+} from "algaeh-react-components";
 
 import "../alice.scss";
 function TreeComponent({ assetCode, title, inDrawer }) {
@@ -224,42 +227,46 @@ function TreeComponent({ assetCode, title, inDrawer }) {
       buttons: [
         <div className="box">
           <ul className="NodeActionButton">
-            <li
-              label="Add"
-              className={
-                "NodeAddButton " + (node.leafnode === "Y" ? "disabled" : "")
-              }
-              onClick={() => {
-                setShowPopup(true);
-                setNewAccount(true);
-                setSelectedNode(rowInfo);
-              }}
-            >
-              <i className="fas fa-plus"></i>
-            </li>
-            <li
-              label="edit"
-              className={
-                "NodeEditButton " + (node.leafnode === "N" ? "disabled" : "")
-              }
-              onClick={() => {
-                if (Object.keys(editorRecord).length > 0) {
-                  setEditorRecord({});
-                } else {
-                  setEditorRecord(rowInfo);
-                  if (node.leafnode === "Y") {
-                    setShowPopup(true);
-                    setNewAccount(false);
-                  }
+            <AlgaehSecurityComponent componentCode="ACCOUNT_MIANT">
+              <li
+                label="Add"
+                className={
+                  "NodeAddButton " + (node.leafnode === "Y" ? "disabled" : "")
                 }
-              }}
-            >
-              {JSON.stringify(editorRecord) === JSON.stringify(rowInfo) ? (
-                <i className="fas fa-times" />
-              ) : (
-                <i className="fas fa-pen" />
-              )}
-            </li>
+                onClick={() => {
+                  setShowPopup(true);
+                  setNewAccount(true);
+                  setSelectedNode(rowInfo);
+                }}
+              >
+                <i className="fas fa-plus"></i>
+              </li>
+              <li
+                label="edit"
+                className={
+                  "NodeEditButton " + (node.leafnode === "N" ? "disabled" : "")
+                }
+                onClick={() => {
+                  if (Object.keys(editorRecord).length > 0) {
+                    setEditorRecord({});
+                  } else {
+                    setEditorRecord(rowInfo);
+                    if (node.leafnode === "Y") {
+                      setShowPopup(true);
+                      setNewAccount(false);
+                    }
+                  }
+                }}
+              >
+                {JSON.stringify(editorRecord) === JSON.stringify(rowInfo) ? (
+                  <i className="fas fa-times" />
+                ) : (
+                    <i className="fas fa-pen" />
+                  )}
+              </li>
+            </AlgaehSecurityComponent>
+
+
             <li
               label="print"
               className={"NodePrintButton "}
@@ -270,39 +277,41 @@ function TreeComponent({ assetCode, title, inDrawer }) {
             >
               <i className="fas fa-print"></i>
             </li>
-            <li
-              className={
-                "NodeDeleteButton " +
-                (node.created_status === "S" ? "disabled" : "")
-              }
-              label="Delete"
-            >
-              <AlgaehConfirm
-                title="Are you sure want to delete ?"
-                placement="topLeft"
-                onConfirm={(e) => {
-                  removeNode(rowInfo)
-                    .then((newTree) => {
-                      setTreeData(newTree);
-                      AlgaehMessagePop({
-                        type: "success",
-                        display: "Account deleted successfully",
-                      });
-                    })
-                    .catch((error) => {
-                      AlgaehMessagePop({
-                        type: "error",
-                        display: error,
-                      });
-                    });
-                }}
-                okButtonProps={{ label: "Delete" }}
-                okText="Yes, delete it!"
-                cancelText="No"
+            <AlgaehSecurityComponent componentCode="ACCOUNT_MIANT">
+              <li
+                className={
+                  "NodeDeleteButton " +
+                  (node.created_status === "S" ? "disabled" : "")
+                }
+                label="Delete"
               >
-                <i className="fas fa-trash"></i>
-              </AlgaehConfirm>
-            </li>
+                <AlgaehConfirm
+                  title="Are you sure want to delete ?"
+                  placement="topLeft"
+                  onConfirm={(e) => {
+                    removeNode(rowInfo)
+                      .then((newTree) => {
+                        setTreeData(newTree);
+                        AlgaehMessagePop({
+                          type: "success",
+                          display: "Account deleted successfully",
+                        });
+                      })
+                      .catch((error) => {
+                        AlgaehMessagePop({
+                          type: "error",
+                          display: error,
+                        });
+                      });
+                  }}
+                  okButtonProps={{ label: "Delete" }}
+                  okText="Yes, delete it!"
+                  cancelText="No"
+                >
+                  <i className="fas fa-trash"></i>
+                </AlgaehConfirm>
+              </li>
+            </AlgaehSecurityComponent>
           </ul>
         </div>,
       ],
@@ -338,8 +347,8 @@ function TreeComponent({ assetCode, title, inDrawer }) {
         node.created_status === "S"
           ? "systemGen"
           : node.leafnode === "Y"
-          ? ""
-          : "accGroup",
+            ? ""
+            : "accGroup",
     };
   };
 
@@ -520,8 +529,8 @@ function TreeComponent({ assetCode, title, inDrawer }) {
                   {layout === "tree" ? (
                     <i className="fas fa-th"></i>
                   ) : (
-                    <i className="fas fa-stream"></i>
-                  )}
+                      <i className="fas fa-stream"></i>
+                    )}
                 </button>
                 <button
                   className="btn btn-default btn-circle active"
@@ -564,7 +573,7 @@ function TreeComponent({ assetCode, title, inDrawer }) {
                     const values =
                       searchFocusIndex !== undefined
                         ? (searchFoundCount + searchFocusIndex - 1) %
-                          searchFoundCount
+                        searchFoundCount
                         : searchFoundCount - 1;
                     setSearchFocusIndex(values);
                   }}
@@ -617,47 +626,47 @@ function TreeComponent({ assetCode, title, inDrawer }) {
                       />
                     </div>
                   ) : (
-                    <div className="row">
-                      {loadingGridData === true ? (
-                        <p>Please wait loading</p>
-                      ) : (
-                        <div className="col-12">
-                          {" "}
-                          <AlgaehTable
-                            className="accountTable"
-                            columns={[
-                              {
-                                fieldName: "ledger_code",
-                                label: "Ledger Code",
-                                filterable: true,
-                              },
-                              {
-                                fieldName: "child_name",
-                                label: "Ledger Name",
-                                filterable: true,
-                              },
-                              {
-                                fieldName: "arabic_child_name",
-                                label: "Ledger Arabic",
-                                filterable: true,
-                              },
-                              {
-                                fieldName: "closing_balance",
-                                label: "Closing Balance",
-                                filterable: true,
-                              },
-                            ]}
-                            data={gridData}
-                            // hasFooter={true}
-                            isFilterable={true}
-                            // aggregate={field => {
-                            //   return total[field];
-                            // }}
-                          />
-                        </div>
-                      )}
-                    </div>
-                  )}
+                      <div className="row">
+                        {loadingGridData === true ? (
+                          <p>Please wait loading</p>
+                        ) : (
+                            <div className="col-12">
+                              {" "}
+                              <AlgaehTable
+                                className="accountTable"
+                                columns={[
+                                  {
+                                    fieldName: "ledger_code",
+                                    label: "Ledger Code",
+                                    filterable: true,
+                                  },
+                                  {
+                                    fieldName: "child_name",
+                                    label: "Ledger Name",
+                                    filterable: true,
+                                  },
+                                  {
+                                    fieldName: "arabic_child_name",
+                                    label: "Ledger Arabic",
+                                    filterable: true,
+                                  },
+                                  {
+                                    fieldName: "closing_balance",
+                                    label: "Closing Balance",
+                                    filterable: true,
+                                  },
+                                ]}
+                                data={gridData}
+                                // hasFooter={true}
+                                isFilterable={true}
+                              // aggregate={field => {
+                              //   return total[field];
+                              // }}
+                              />
+                            </div>
+                          )}
+                      </div>
+                    )}
                 </div>
               </div>
             </div>

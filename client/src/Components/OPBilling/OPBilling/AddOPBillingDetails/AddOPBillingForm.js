@@ -756,12 +756,12 @@ class AddOPBillingForm extends Component {
                                     },
                                     others: {
                                       placeholder: "0.00",
-                                      disabled:
-                                        this.state.insurance_yesno === "Y"
-                                          ? true
-                                          : row.trans_package_detail_id > 0
-                                            ? true
-                                            : this.state.Billexists,
+                                      disabled: this.state.Billexists,
+                                      // this.state.insurance_yesno === "Y"
+                                      //   ? true
+                                      //   : row.trans_package_detail_id > 0
+                                      //     ? true
+                                      //     : this.state.Billexists,
                                       onBlur: makeZeroIngrid.bind(
                                         this,
                                         this,

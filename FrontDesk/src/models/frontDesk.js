@@ -258,6 +258,10 @@ export default {
   getCashHandoverDetails: (req, res, next) => {
     const _mysql = new algaehMysql();
     try {
+      let strQry = ""
+      if (req.query.user_wise == "true") {
+        strQry = " and D.casher_id = " + req.userIdentity.algaeh_d_app_user_id
+      }
       _mysql
         .executeQuery({
           query: ` select hims_f_cash_handover_header_id,shift_id ,shift_description,daily_handover_date from\
@@ -273,12 +277,12 @@ export default {
             from hims_f_cash_handover_header H inner join hims_f_cash_handover_detail D on \
             H.hims_f_cash_handover_header_id=D.cash_handover_header_id inner join algaeh_d_app_user U on D.casher_id=U.algaeh_d_app_user_id\
             inner join  hims_d_employee E on U.employee_id=E.hims_d_employee_id \
-            where H.hospital_id=? and date(daily_handover_date)=date(?) ;\
+            where H.hospital_id=? and date(daily_handover_date)=date(?)  ${strQry} ;\
             select hims_f_cash_handover_header_id,shift_id ,shift_description,daily_handover_date  from \
             hims_f_cash_handover_header  H inner join hims_f_cash_handover_detail D on \
             H.hims_f_cash_handover_header_id=D.cash_handover_header_id \
             inner join  hims_d_shift S on H.shift_id=S.hims_d_shift_id \
-            where H.hospital_id=? and D.shift_status='O'  group by H.hims_f_cash_handover_header_id;\
+            where H.hospital_id=? and D.shift_status='O' ${strQry} group by H.hims_f_cash_handover_header_id;\
             select H.hims_f_cash_handover_header_id,H.shift_id,H.daily_handover_date,\
             D.hims_f_cash_handover_detail_id,D.cash_handover_header_id,D.casher_id,D.shift_status,\
             D.collected_cash,D.refunded_cash,
@@ -289,7 +293,7 @@ export default {
             from hims_f_cash_handover_header H inner join hims_f_cash_handover_detail D on \
             H.hims_f_cash_handover_header_id=D.cash_handover_header_id inner join algaeh_d_app_user U on D.casher_id=U.algaeh_d_app_user_id\
             inner join  hims_d_employee E on U.employee_id=E.hims_d_employee_id \
-            where H.hospital_id=? and D.shift_status='O';            `,
+            where H.hospital_id=? and D.shift_status='O' ${strQry};`,
           values: [
             req.userIdentity.hospital_id,
             req.query.daily_handover_date,
