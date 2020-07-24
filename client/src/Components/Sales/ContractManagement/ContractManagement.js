@@ -760,8 +760,8 @@ class ContractManagement extends Component {
                       name="contract_file"
                       onRemove={(file) => {
                         this.setState((state) => {
-                          const index = state.fileList.indexOf(file);
-                          const newFileList = state.fileList.slice();
+                          const index = state.contract_files.indexOf(file);
+                          const newFileList = [...state.contract_files];
                           newFileList.splice(index, 1);
                           return {
                             contract_files: newFileList,
