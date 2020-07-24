@@ -135,6 +135,44 @@ export default function InsuranceStatement(props) {
             // onChange: this.dropDownHandler.bind(this),
           }}
           showLoading={true}
+        />{" "}
+        <AlagehAutoComplete
+          div={{ className: "col-2 form-group mandatory" }}
+          label={{
+            forceLabel: "Insurance",
+            isImp: true,
+          }}
+          selector={{
+            name: "hospital_id",
+            className: "select-fld",
+            value: "", //this.state.hospital_id
+            dataSource: {
+              textField: "hospital_name",
+              valueField: "hims_d_hospital_id",
+              data: [], //this.state.hospital_id
+            },
+            // onChange: this.dropDownHandler.bind(this),
+          }}
+          showLoading={true}
+        />{" "}
+        <AlagehAutoComplete
+          div={{ className: "col-2 form-group mandatory" }}
+          label={{
+            forceLabel: "sub Insurance",
+            isImp: true,
+          }}
+          selector={{
+            name: "hospital_id",
+            className: "select-fld",
+            value: "", //this.state.hospital_id
+            dataSource: {
+              textField: "hospital_name",
+              valueField: "hims_d_hospital_id",
+              data: [], //this.state.hospital_id
+            },
+            // onChange: this.dropDownHandler.bind(this),
+          }}
+          showLoading={true}
         />
         <AlagehAutoComplete
           div={{ className: "col-1 form-group mandatory" }}
