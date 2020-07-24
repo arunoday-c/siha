@@ -281,6 +281,24 @@
         "fieldName": "FPL.location_description",
         "label": "From Location"
       }
+    ],
+    "ReqEntryInv": [
+      {
+        "fieldName": "material_requisition_number",
+        "label": "Requisition Number"
+      },
+      {
+        "fieldName": "requistion_date",
+        "label": "Requisition Date"
+      },
+      {
+        "fieldName": "FPL.location_description",
+        "label": "From Location"
+      },
+      {
+        "fieldName": "TPL.location_description",
+        "label": "To Location"
+      }
     ]
   },
   "RequisitionEntry1": {

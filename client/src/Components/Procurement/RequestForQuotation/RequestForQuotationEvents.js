@@ -29,7 +29,10 @@ const poforhandle = ($this, e) => {
 const RequisitionSearch = ($this, e) => {
   AlgaehSearch({
     searchGrid: {
-      columns: spotlightSearch.RequisitionEntry.ReqEntry,
+      columns:
+        $this.state.quotation_for === "PHR"
+          ? spotlightSearch.RequisitionEntry.ReqEntry
+          : spotlightSearch.RequisitionEntry.ReqEntryInv,
     },
     searchName:
       $this.state.quotation_for === "PHR" ? "PhrPOEntry" : "InvPOEntry",
@@ -108,30 +111,28 @@ const ClearData = ($this, e) => {
   IOputs.dataExitst = false;
   clearItemDetails($this);
 
-  let bothExisits = true
+  let bothExisits = true;
 
   RawSecurityComponent({ componentCode: "PUR_ORD_INVENTORY" }).then(
     (result) => {
       if (result === "show") {
         getData($this, "INV");
-        bothExisits = false
-        IOputs.quotation_for = "INV"
+        bothExisits = false;
+        IOputs.quotation_for = "INV";
       }
     }
   );
 
-  RawSecurityComponent({ componentCode: "PUR_ORD_PHARMACY" }).then(
-    (result) => {
-      if (result === "show") {
-        getData($this, "PHR");
-        IOputs.bothExisits = bothExisits === false ? false : true
-        IOputs.quotation_for = "PHR"
-      } else {
-        IOputs.bothExisits = true
-      }
-      $this.setState(IOputs);
+  RawSecurityComponent({ componentCode: "PUR_ORD_PHARMACY" }).then((result) => {
+    if (result === "show") {
+      getData($this, "PHR");
+      IOputs.bothExisits = bothExisits === false ? false : true;
+      IOputs.quotation_for = "PHR";
+    } else {
+      IOputs.bothExisits = true;
     }
-  );
+    $this.setState(IOputs);
+  });
 };
 
 const clearItemDetails = ($this) => {
@@ -299,7 +300,7 @@ const getData = ($this, quotation_for) => {
         type: "ITEM_CATEGORY_GET_DATA",
         mappingName: "poitemcategory",
       },
-      afterSuccess: (data) => { },
+      afterSuccess: (data) => {},
     });
 
     $this.props.getItemGroup({
@@ -400,5 +401,5 @@ export {
   clearItemDetails,
   dateValidate,
   setDataFromRequest,
-  getData
+  getData,
 };
