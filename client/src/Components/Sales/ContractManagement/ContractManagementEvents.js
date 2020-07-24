@@ -116,7 +116,6 @@ export const SaveContract = ($this) => {
 
       AlgaehLoader({ show: true });
       $this.state.terms_conditions = $this.state.comment_list.join("<br/>");
-      debugger
       if ($this.state.hims_f_contract_management_id !== null) {
         algaehApiCall({
           uri: "/ContractManagement/updateContractManagement",

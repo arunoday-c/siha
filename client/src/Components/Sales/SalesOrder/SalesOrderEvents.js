@@ -416,7 +416,6 @@ const SaveSalesOrderEnrty = ($this) => {
               "YYYY-MM-DD"
             );
       const settings = { header: undefined, footer: undefined };
-      debugger;
       AlgaehLoader({ show: true });
       algaehApiCall({
         uri: "/SalesOrder/addSalesOrder",
