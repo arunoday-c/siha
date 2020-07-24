@@ -32,7 +32,6 @@ class SearchModule extends Component {
     ReactDOM.unmountComponentAtNode(document.getElementById("searchWindow"));
   };
   handleKeyUp(event) {
-    debugger;
     // if (!this.spotlight.contains(event.target)) {
     if (this.state.open) {
       if (event.keyCode === 27) {
