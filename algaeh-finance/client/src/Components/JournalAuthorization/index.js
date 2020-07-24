@@ -146,16 +146,20 @@ export default memo(function (props) {
       <>
         {record.auth_status === "P" ? (
           <>
-            <AlgaehButton
+            {/* <AlgaehButton
               type="primary"
-              icon="like"
+              icon="close"
+              with
+              icon={<i className="fas fa-times" />}
               onClick={approve}
-            ></AlgaehButton>
-            <AlgaehButton
+            ></AlgaehButton> */}
+            {/* <AlgaehButton
               type="danger"
-              icon="dislike"
+              icon="close" with icon={<i className="fas fa-times" />}
               onClick={reject}
-            ></AlgaehButton>
+            ></AlgaehButton> */}
+            <i class="fas fa-thumbs-up" onClick={approve}></i>
+            <i class="fas fa-thumbs-down" onClick={reject}></i>
           </>
         ) : (
           <span>---</span>
@@ -219,8 +223,13 @@ export default memo(function (props) {
 
   const voucherCol = (text, record) => (
     <AlgaehButton
-      style={{ border: "none" }}
-      icon="search"
+      style={{
+        border: "none",
+        background: "none",
+        padding: 0,
+        color: "blue",
+      }}
+      // icon="search"
       onClick={() => {
         LoadVoucherDetails({
           finance_voucher_header_id: record["finance_voucher_header_id"],
@@ -349,14 +358,22 @@ export default memo(function (props) {
           />
           <div className="col">
             {" "}
-            <AlgaehButton
-              type="primary"
+            {/* <AlgaehButton
+              className="btn btn-primary"
+              // type="primary"
               loading={loading}
               onClick={loadData}
               style={{ marginTop: 15 }}
             >
               Load
-            </AlgaehButton>
+            </AlgaehButton> */}
+            <button
+              className="btn btn-primary"
+              onClick={loadData}
+              style={{ marginTop: 18 }}
+            >
+              Load
+            </button>
           </div>
         </div>
         <div className="row">

@@ -237,22 +237,22 @@ class ContractManagement extends Component {
               </div>
             </div>
           }
-          printArea={
-            this.state.contract_number !== null
-              ? {
-                  menuitems: [
-                    {
-                      label: "Contract Report",
-                      events: {
-                        onClick: () => {
-                          generateContractReport(this.state);
-                        },
-                      },
-                    },
-                  ],
-                }
-              : ""
-          }
+          // printArea={
+          //   this.state.contract_number !== null
+          //     ? {
+          //         menuitems: [
+          //           {
+          //             label: "Contract Report",
+          //             events: {
+          //               onClick: () => {
+          //                 generateContractReport(this.state);
+          //               },
+          //             },
+          //           },
+          //         ],
+          //       }
+          //     : ""
+          // }
           selectedLang={this.state.selectedLang}
         />
         <div
