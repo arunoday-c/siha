@@ -262,21 +262,10 @@ class InvStockEnquiry extends Component {
                     others: { filterable: true }
                   },
 
-
-
                   {
                     fieldName: "item_description",
                     label: <AlgaehLabel label={{ forceLabel: "Item Name" }} />,
                     displayTemplate: row => {
-                      let display =
-                        this.props.inventoryitemlist === undefined
-                          ? []
-                          : this.props.inventoryitemlist.filter(
-                            f =>
-                              f.hims_d_inventory_item_master_id ===
-                              row.item_id
-                          );
-
                       return (
                         <span
                           className="pat-code"

@@ -111,42 +111,10 @@ class BatchWiseStock extends Component {
                     },
 
                     {
-                      fieldName: "item_id",
+                      fieldName: "item_description",
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Item Name" }} />
                       ),
-                      displayTemplate: row => {
-                        let display =
-                          this.props.itemlist === undefined
-                            ? []
-                            : this.props.itemlist.filter(
-                              f => f.hims_d_item_master_id === row.item_id
-                            );
-
-                        return (
-                          <span>
-                            {display !== undefined && display.length !== 0
-                              ? display[0].item_description
-                              : ""}
-                          </span>
-                        );
-                      },
-                      editorTemplate: row => {
-                        let display =
-                          this.props.itemlist === undefined
-                            ? []
-                            : this.props.itemlist.filter(
-                              f => f.hims_d_item_master_id === row.item_id
-                            );
-
-                        return (
-                          <span>
-                            {display !== undefined && display.length !== 0
-                              ? display[0].item_description
-                              : ""}
-                          </span>
-                        );
-                      },
                       others: { filterable: false }
                     },
                     {
