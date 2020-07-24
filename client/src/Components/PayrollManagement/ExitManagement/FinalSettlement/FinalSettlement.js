@@ -280,12 +280,28 @@ class FinalSettlement extends Component {
       }
     );
   }
+  confirmSendForPayment(e) {
+    e.persist();
 
+    swal({
+      title: `Are you sure?`,
+      text: `Once send for payment not allow to revert back.`,
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes",
+      confirmButtonColor: "#44b8bd",
+      cancelButtonColor: "#d33",
+      cancelButtonText: "No",
+    }).then((willConfirm) => {
+      if (willConfirm.value) {
+        this.saveFinalSettlement(false);
+      }
+    });
+  }
   saveFinalSettlement(e) {
-    const url =
-      e.currentTarget.getAttribute("typeof") === "save"
-        ? "/finalsettlement/finalSettlementSave"
-        : "/finalsettlement/save";
+    const url = e
+      ? "/finalsettlement/finalSettlementSave"
+      : "/finalsettlement/save";
 
     let data = this.state.data;
 
@@ -1363,7 +1379,7 @@ class FinalSettlement extends Component {
                   type="button"
                   className="btn btn-other"
                   typeof="final"
-                  onClick={this.saveFinalSettlement.bind(this)}
+                  onClick={this.confirmSendForPayment.bind(this)}
                   disabled={
                     this.state.flag === "Pending" ||
                     this.state.flag === undefined ||

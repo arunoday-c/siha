@@ -273,7 +273,6 @@ class EOSGratuity extends Component {
                 forfeitChecked: res.data.result.gratuity_status === "PEF",
               });
             } else {
-              debugger;
               this.setState({
                 loading: false,
                 data: res.data.result,
