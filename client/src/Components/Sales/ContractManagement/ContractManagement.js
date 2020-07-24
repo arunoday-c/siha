@@ -237,22 +237,22 @@ class ContractManagement extends Component {
               </div>
             </div>
           }
-          printArea={
-            this.state.contract_number !== null
-              ? {
-                  menuitems: [
-                    {
-                      label: "Contract Report",
-                      events: {
-                        onClick: () => {
-                          generateContractReport(this.state);
-                        },
-                      },
-                    },
-                  ],
-                }
-              : ""
-          }
+          // printArea={
+          //   this.state.contract_number !== null
+          //     ? {
+          //         menuitems: [
+          //           {
+          //             label: "Contract Report",
+          //             events: {
+          //               onClick: () => {
+          //                 generateContractReport(this.state);
+          //               },
+          //             },
+          //           },
+          //         ],
+          //       }
+          //     : ""
+          // }
           selectedLang={this.state.selectedLang}
         />
         <div
@@ -760,8 +760,8 @@ class ContractManagement extends Component {
                       name="contract_file"
                       onRemove={(file) => {
                         this.setState((state) => {
-                          const index = state.fileList.indexOf(file);
-                          const newFileList = state.fileList.slice();
+                          const index = state.contract_files.indexOf(file);
+                          const newFileList = [...state.contract_files];
                           newFileList.splice(index, 1);
                           return {
                             contract_files: newFileList,
