@@ -163,6 +163,7 @@ export default function JournalVoucher() {
 
     if (location.state) {
       const { type, data } = location.state;
+
       setPayment((state) => ({ ...state, payment_mode: "CASH" }));
       if (type === "duplicate") {
         const { Details, voucher_type, amount } = data;
@@ -181,6 +182,7 @@ export default function JournalVoucher() {
           payment_type: single.payment_type,
           amount,
         }));
+
         setJournerList(records);
       } else {
         const {
@@ -443,6 +445,7 @@ export default function JournalVoucher() {
         // label={{}}
         tree={{
           treeDefaultExpandAll: true,
+          updateInternally: true,
           onChange: (value, label) => {
             if (value !== undefined) {
               record["sourceName"] = value;
@@ -466,7 +469,8 @@ export default function JournalVoucher() {
               return node["finance_account_head_id"];
             }
           },
-          defaultValue: row,
+          value: row,
+          // defaultValue: row,
         }}
       />
     );
@@ -503,6 +507,7 @@ export default function JournalVoucher() {
       <AlgaehFormGroup
         type="number"
         textBox={{
+          updateInternally: true,
           value: row,
           onChange: (e) => {
             records["amount"] = e.target.value === "" ? "" : e.target.value;
