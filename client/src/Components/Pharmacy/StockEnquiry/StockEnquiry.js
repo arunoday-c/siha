@@ -189,53 +189,23 @@ class StockEnquiry extends Component {
                     },
                     others: { filterable: false }
                   },
-
                   {
-                    fieldName: "item_id",
+                    fieldName: "item_description",
                     label: <AlgaehLabel label={{ forceLabel: "Item Name" }} />,
                     displayTemplate: row => {
-                      let display =
-                        this.props.itemlist === undefined
-                          ? []
-                          : this.props.itemlist.filter(
-                            f => f.hims_d_item_master_id === row.item_id
-                          );
-
                       return (
                         <span
                           className="pat-code"
                           onClick={getBatchWiseData.bind(this, this, row)}
                         >
-                          {display !== undefined && display.length !== 0
-                            ? display[0].item_description
-                            : ""}
+                          {row.item_description}
                         </span>
                       );
                     },
-                    editorTemplate: row => {
-                      let display =
-                        this.props.itemlist === undefined
-                          ? []
-                          : this.props.itemlist.filter(
-                            f => f.hims_d_item_master_id === row.item_id
-                          );
-
-                      return (
-                        <span
-                          className="pat-code"
-                          onClick={getBatchWiseData.bind(this, this, row)}
-                        >
-                          {display !== undefined && display.length !== 0
-                            ? display[0].item_description
-                            : ""}
-                        </span>
-                      );
-                    },
-                    className: drow => {
+                    className: row => {
                       return "greenCell";
                     }
                   },
-
                   {
                     fieldName: "stocking_uom_id",
                     label: (
