@@ -50,7 +50,7 @@ export default function JournalVoucher() {
   const [invoiceNo, setInvoiceNo] = useState("");
   const [selInvoice, setSelInvoice] = useState("");
 
-  const [cost_center_id, setCostCenter] = useState(null);
+  const [cost_center_id, setCostCenter] = useState(undefined);
   const [hospital_id, setHospitalID] = useState(null);
   const [branchData, setbranchData] = useState([]);
   const [costCenterdata, setcostCenterdata] = useState([]);
@@ -101,7 +101,18 @@ export default function JournalVoucher() {
                 (el) => el.hims_d_hospital_id === options.default_branch_id
               );
               setcostCenterdata(center.cost_centers);
-              setCostCenter(options.default_cost_center_id.toString());
+
+              const costCenterId = center.cost_centers.find(
+                (f) => f.cost_center_id === options.default_cost_center_id
+              );
+              let defaultCenter = options.default_cost_center_id;
+              if (
+                costCenterId === undefined &&
+                center.cost_centers.length > 0
+              ) {
+                defaultCenter = center.cost_centers[0]["cost_center_id"];
+              }
+              setCostCenter(defaultCenter);
             }
           }
         },
@@ -461,13 +472,11 @@ export default function JournalVoucher() {
     );
   };
 
-  const PaymentInput = (row, record) => {
+  const PaymentInput = (record) => {
     return (
       <AlgaehAutoComplete
-        // div={{}}
-        // label={{}}
         selector={{
-          value: row,
+          value: record["payment_type"],
           dataSource: {
             //TODO: need to change as per the backend requirement discussion happned on 09-12-2019
             data: [
@@ -477,8 +486,12 @@ export default function JournalVoucher() {
             valueField: "value",
             textField: "label",
           },
+          updateInternally: true,
           onChange: (selected) => {
             record["payment_type"] = selected.value;
+          },
+          onClear: () => {
+            record["payment_type"] = undefined;
           },
         }}
       />
@@ -489,12 +502,14 @@ export default function JournalVoucher() {
     return (
       <AlgaehFormGroup
         type="number"
-        value={row === undefined ? "" : row}
-        onChange={(e) => {
-          records["amount"] = e.target.value === "" ? "" : e.target.value;
-          if (records["payment_type"] === "DR")
-            records["debit_amount"] = records["amount"];
-          else records["credit_amount"] = records["amount"];
+        textBox={{
+          value: row,
+          onChange: (e) => {
+            records["amount"] = e.target.value === "" ? "" : e.target.value;
+            if (records["payment_type"] === "DR")
+              records["debit_amount"] = records["amount"];
+            else records["credit_amount"] = records["amount"];
+          },
         }}
       />
     );
@@ -714,10 +729,10 @@ export default function JournalVoucher() {
                     },
                   ]}
                   loading={false}
-                  // isEditable="onlyDelete"
                   height="34vh"
                   data={journerList}
                   isEditable={"deleteOnly"}
+                  // isEditable={true}
                   rowUnique="slno"
                   // xaxis={1500}
                   events={{
