@@ -102,29 +102,70 @@ export default function JournalVoucher() {
               const [center] = result.filter(
                 (el) => el.hims_d_hospital_id === options.default_branch_id
               );
-              setcostCenterdata(center.cost_centers);
+              // console.log("result", JSON.stringify(result));
+              // setcostCenterdata(center.cost_centers);
               setCostCenterField({
                 fieldName: "cost_center_id",
                 label: "Cost Center",
                 displayTemplate: (row) => {
+                  const valueRow =
+                    row["hims_d_hospital_id"] !== undefined &&
+                    row["hims_d_hospital_id"] !== "" &&
+                    row["cost_center_id"] !== undefined &&
+                    row["cost_center_id"] !== ""
+                      ? `${row["hims_d_hospital_id"]}-${row["cost_center_id"]}`
+                      : "";
                   return (
-                    <AlgaehAutoComplete
-                      selector={{
+                    <AlgaehTreeSearch
+                      tree={{
+                        treeDefaultExpandAll: true,
                         updateInternally: true,
-                        dataSource: {
-                          data: center.cost_centers,
-                          valueField: "cost_center_id",
+                        data: result,
+                        disableHeader: true,
+                        textField: "hospital_name",
+                        valueField: "hims_d_hospital_id",
+                        children: {
+                          node: "cost_centers",
                           textField: "cost_center",
+                          valueField: (node) => {
+                            const { hims_d_hospital_id, cost_center_id } = node;
+                            if (cost_center_id === undefined) {
+                              return hims_d_hospital_id;
+                            } else {
+                              return `${hims_d_hospital_id}-${cost_center_id}`;
+                            }
+                          },
                         },
-                        value: row["cost_center_id"],
-                        onChange: (details) => {
-                          row["cost_center_id"] = details["cost_center_id"];
-                        },
-                        onClear: () => {
-                          row["cost_center_id"] = null;
+                        value: valueRow,
+                        onChange: (value) => {
+                          if (value !== undefined) {
+                            const detl = value.split("-");
+                            row["hims_d_hospital_id"] = detl[0];
+                            row["cost_center_id"] = detl[1];
+                          } else {
+                            row["hims_d_hospital_id"] = undefined;
+                            row["cost_center_id"] = undefined;
+                          }
                         },
                       }}
                     />
+                    // <AlgaehAutoComplete
+                    //   selector={{
+                    //     updateInternally: true,
+                    //     dataSource: {
+                    //       data: center.cost_centers,
+                    //       valueField: "cost_center_id",
+                    //       textField: "cost_center",
+                    //     },
+                    //     value: row["cost_center_id"],
+                    //     onChange: (details) => {
+                    //       row["cost_center_id"] = details["cost_center_id"];
+                    //     },
+                    //     onClear: () => {
+                    //       row["cost_center_id"] = null;
+                    //     },
+                    //   }}
+                    // />
                   );
                 },
                 others: {
@@ -329,7 +370,7 @@ export default function JournalVoucher() {
       }
     }
 
-    if (hospital_id === null) {
+    if (finOptions.cost_center_required !== "Y" && hospital_id === null) {
       AlgaehMessagePop({
         type: "error",
         display: "Branch is mandatory",
@@ -337,6 +378,7 @@ export default function JournalVoucher() {
       setLoading(false);
       return;
     }
+
     // if (cost_center_id === null) {
     //   AlgaehMessagePop({
     //     type: "error",
@@ -532,9 +574,9 @@ export default function JournalVoucher() {
           value: row,
           onChange: (e) => {
             records["amount"] = e.target.value === "" ? "" : e.target.value;
-            if (records["payment_type"] === "DR")
-              records["debit_amount"] = records["amount"];
-            else records["credit_amount"] = records["amount"];
+            // if (records["payment_type"] === "DR")
+            //   records["debit_amount"] = records["amount"];
+            // else records["credit_amount"] = records["amount"];
           },
         }}
       />
@@ -656,26 +698,27 @@ export default function JournalVoucher() {
             handleDrop={handlePaymentDrop}
             handleChange={setPayment}
           />
-
-          <AlgaehAutoComplete
-            div={{ className: "col-2" }}
-            label={{ forceLabel: "Select a Branch", isImp: true }}
-            selector={{
-              dataSource: {
-                data: branchData,
-                valueField: "hims_d_hospital_id",
-                textField: "hospital_name",
-              },
-              value: hospital_id,
-              onChange: HandleHospital,
-              // others: {
-              //   loading: loadBranch
-              // },
-              onClear: () => {
-                setHospitalID(null);
-              },
-            }}
-          />
+          {finOptions.cost_center_required !== "Y" ? (
+            <AlgaehAutoComplete
+              div={{ className: "col-2" }}
+              label={{ forceLabel: "Select a Branch", isImp: true }}
+              selector={{
+                dataSource: {
+                  data: branchData,
+                  valueField: "hims_d_hospital_id",
+                  textField: "hospital_name",
+                },
+                value: hospital_id,
+                onChange: HandleHospital,
+                // others: {
+                //   loading: loadBranch
+                // },
+                onClear: () => {
+                  setHospitalID(null);
+                },
+              }}
+            />
+          ) : null}
 
           {/* {finOptions.cost_center_required === "Y" ? (
             <AlgaehAutoComplete

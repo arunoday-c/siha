@@ -119,24 +119,36 @@ export default {
 
           let credit_amount = 0;
           let debit_amount = 0;
-          input.details.forEach((item) => {
-            if (item.payment_type == "CR") {
-              credit_amount =
-                parseFloat(credit_amount) + parseFloat(item.amount);
-              item["credit_amount"] = item.amount;
-              item["debit_amount"] = 0;
-            } else if (item.payment_type == "DR") {
-              debit_amount = parseFloat(debit_amount) + parseFloat(item.amount);
-              item["credit_amount"] = 0;
-              item["debit_amount"] = item.amount;
-            }
-          });
+          // input.details.forEach((item) => {
+          //   if (item.payment_type == "CR") {
+          //     credit_amount =
+          //       parseFloat(credit_amount) + parseFloat(item.amount);
+          //     item["credit_amount"] = item.amount;
+          //     item["debit_amount"] = 0;
+          //   } else if (item.payment_type == "DR") {
+          //     debit_amount = parseFloat(debit_amount) + parseFloat(item.amount);
+          //     item["credit_amount"] = 0;
+          //     item["debit_amount"] = item.amount;
+          //   }
+          // });
+          credit_amount = _.chain(input.details)
+            .filter((f) => f.payment_type === "CR")
+            .sumBy((s) => {
+              return parseFloat(s.amount);
+            })
+            .value();
+          debit_amount = _.chain(input.details)
+            .filter((f) => f.payment_type === "DR")
+            .sumBy((s) => {
+              return parseFloat(s.amount);
+            })
+            .value();
 
           if (credit_amount == debit_amount) {
             _mysql
               .executeQuery({
                 query:
-                  "SELECT cost_center_type  FROM finance_options limit 1; ",
+                  "SELECT cost_center_type,cost_center_required  FROM finance_options limit 1; ",
               })
               .then((resul) => {
                 if (
@@ -161,6 +173,7 @@ export default {
 
                   /* added by noor for detail level costcenters */
                   const cost_center_type = resul[0]["cost_center_type"];
+                  const cost_center_required = resul[0]["cost_center_required"];
                   const newDetails = input.details.map((item) => {
                     const {
                       cost_center_id,
@@ -168,6 +181,7 @@ export default {
                       payment_mode,
                       sourceName,
                       amount,
+                      hims_d_hospital_id,
                       ...rest
                     } = item;
                     const typeSel =
@@ -186,11 +200,16 @@ export default {
                     return {
                       ...rest,
                       ...typeSel,
+                      debit_amount: item.payment_type === "DR" ? amount : 0,
+                      credit_amount: item.payment_type === "CR" ? amount : 0,
                       payment_date: transaction_date,
                       month: month,
                       year: year,
                       entered_by: algaeh_d_app_user_id,
-                      hospital_id: input.hospital_id,
+                      hospital_id:
+                        cost_center_required === "Y"
+                          ? hims_d_hospital_id
+                          : input.hospital_id,
                     };
                   });
 
