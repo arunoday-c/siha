@@ -53,6 +53,15 @@
       border-bottom: none;
     }
   }
+  .noAttachment {
+    min-height: 137px;
+    max-height: 137px;
+    text-align: center;
+    p {
+      line-height: 137px;
+      padding: 0 10px;
+    }
+  }
 }
 .TermsList {
   margin: 0;
@@ -82,6 +91,40 @@
           }
         }
       }
+    }
+  }
+}
+.ant-upload-text {
+  font-size: 0.8rem !important;
+  margin-top: 15px !important;
+}
+.ant-upload-list {
+  position: absolute;
+  top: 0;
+  left: 100%;
+  width: 100%;
+  // background: #000;
+  border: 1px solid #ccc;
+  min-height: 139px;
+  max-height: 139px;
+  overflow: auto;
+  z-index: 9;
+}
+.ant-modal-confirm {
+  text-align: center;
+  .ant-modal-body {
+    padding: 0 !important;
+    margin: 0;
+    .ant-modal-confirm-body {
+      margin: 0;
+      padding: 15px;
+    }
+    .ant-modal-confirm-btns {
+      width: 100%;
+      border-top: 1px solid #e8e8e8;
+      text-align: right;
+      padding: 5px 10px;
+      margin: 5px 0 0 0;
     }
   }
 }

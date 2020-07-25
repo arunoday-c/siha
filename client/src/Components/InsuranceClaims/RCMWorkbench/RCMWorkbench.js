@@ -9,8 +9,9 @@ import {
   AlgaehLabel,
   AlagehAutoComplete,
   AlgaehDateHandler,
-  AlagehFormGroup
+  AlagehFormGroup,
 } from "../../Wrapper/algaehWrapper";
+import { texthandle } from "./RCMWorkbenchEvent";
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
 import AlgaehSearch from "../../Wrapper/globalSearch";
 import ValidateBills from "./ValidateBills/ValidateBills";
@@ -26,7 +27,8 @@ class RCMWorkbench extends Component {
       selectedLang: "en",
       claims: [],
       openClaims: false,
-      generateReport: true
+      generateReport: true,
+      rcmMode: "C",
     };
     this.validatedClaims = [];
     this.select = true;
@@ -44,7 +46,7 @@ class RCMWorkbench extends Component {
       case "insurance_provider_id":
         this.setState(
           {
-            [value.name]: value.value
+            [value.name]: value.value,
           },
           () => {
             algaehApiCall({
@@ -52,16 +54,16 @@ class RCMWorkbench extends Component {
               module: "insurance",
               method: "GET",
               data: {
-                insurance_provider_id: this.state.insurance_provider_id
+                insurance_provider_id: this.state.insurance_provider_id,
               },
-              onSuccess: response => {
+              onSuccess: (response) => {
                 if (response.data.success) {
                   this.setState({
-                    sub_ins_companies: response.data.records
+                    sub_ins_companies: response.data.records,
                   });
                 }
               },
-              onError: error => { }
+              onError: (error) => {},
             });
           }
         );
@@ -69,7 +71,7 @@ class RCMWorkbench extends Component {
 
       default:
         this.setState({
-          [value.name]: value.value
+          [value.name]: value.value,
         });
         break;
     }
@@ -88,11 +90,11 @@ class RCMWorkbench extends Component {
       generateReport = this.validatedClaims.length > 0 ? false : true;
       this.setState({
         generateReport: generateReport,
-        claims: claims
+        claims: claims,
       });
       swalMessage({
         title: "Please Validate the bill first",
-        type: "warning"
+        type: "warning",
       });
     } else if (this.validatedClaims.includes(row)) {
       this.validatedClaims.pop(row);
@@ -103,7 +105,7 @@ class RCMWorkbench extends Component {
       generateReport = this.validatedClaims.length > 0 ? false : true;
       this.setState({
         generateReport: generateReport,
-        claims: claims
+        claims: claims,
       });
     } else {
       this.validatedClaims.push(row);
@@ -113,7 +115,7 @@ class RCMWorkbench extends Component {
       generateReport = this.validatedClaims.length > 0 ? false : true;
       this.setState({
         generateReport: generateReport,
-        claims: claims
+        claims: claims,
       });
     }
   }
@@ -131,7 +133,7 @@ class RCMWorkbench extends Component {
             : null,
           sub_insurance_id: this.state.sub_insurance_id
             ? this.state.sub_insurance_id
-            : null
+            : null,
         };
 
         AlgaehLoader({ show: true });
@@ -141,25 +143,25 @@ class RCMWorkbench extends Component {
           module: "insurance",
           method: "GET",
           data: send_data,
-          onSuccess: response => {
+          onSuccess: (response) => {
             if (response.data.success) {
               this.setState({
-                claims: response.data.records
+                claims: response.data.records,
               });
               AlgaehLoader({ show: false });
             } else {
               swalMessage({
                 title: response.data.records,
-                type: "error"
+                type: "error",
               });
               AlgaehLoader({ show: false });
             }
           },
-          onError: error => {
+          onError: (error) => {
             AlgaehLoader({ show: false });
-          }
+          },
         });
-      }
+      },
     });
   }
 
@@ -168,14 +170,14 @@ class RCMWorkbench extends Component {
       uri: "/insurance/getInsuranceProviders",
       module: "insurance",
       method: "GET",
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           this.setState({
-            insurance_providers: response.data.records
+            insurance_providers: response.data.records,
           });
         }
       },
-      onError: error => { }
+      onError: (error) => {},
     });
   }
 
@@ -187,7 +189,7 @@ class RCMWorkbench extends Component {
       insurance_provider_id: null,
       sub_insurance_id: null,
       patient_id: null,
-      claims: []
+      claims: [],
     });
   }
 
@@ -201,12 +203,12 @@ class RCMWorkbench extends Component {
         { name: "hims_d_patient_id", value: this.state.claims[i].patient_id },
         {
           name: "visit_id",
-          value: this.state.claims[i].visit_id
+          value: this.state.claims[i].visit_id,
         },
         {
           name: "visit_date",
-          value: null
-        }
+          value: null,
+        },
       ]);
     }
 
@@ -215,12 +217,12 @@ class RCMWorkbench extends Component {
       method: "GET",
       module: "reports",
       headers: {
-        Accept: "blob"
+        Accept: "blob",
       },
       timeout: 120000,
       others: {
         responseType: "blob",
-        onDownloadProgress: progressEvent => {
+        onDownloadProgress: (progressEvent) => {
           let percentCompleted = Math.round(
             (progressEvent.loaded * 100) / progressEvent.total
           );
@@ -229,7 +231,7 @@ class RCMWorkbench extends Component {
           } else {
             this.setState({ progressPercentage: percentCompleted });
           }
-        }
+        },
       },
       data: {
         report: {
@@ -238,13 +240,13 @@ class RCMWorkbench extends Component {
             "pharmacyCreditInvoice",
             "ucaf",
             "haematologyReport",
-            "radiologyReport"
+            "radiologyReport",
           ],
           reportParams: rpt_paramenter,
-          outputFileType: "PDF" //"EXCEL", //"PDF",
-        }
+          outputFileType: "PDF", //"EXCEL", //"PDF",
+        },
       },
-      onSuccess: res => {
+      onSuccess: (res) => {
         // const url = URL.createObjectURL(res.data);
         // let myWindow = window.open(
         //   "{{ product.metafields.google.custom_label_0 }}",
@@ -260,72 +262,72 @@ class RCMWorkbench extends Component {
         // window.document.title = "Algaeh Merdge";
         AlgaehLoader({ show: false });
       },
-      onFailure: error => {
+      onFailure: (error) => {
         AlgaehLoader({ show: false });
-      }
+      },
     });
   }
 
   patientSearch() {
     AlgaehSearch({
       searchGrid: {
-        columns: spotlightSearch.frontDesk.patients
+        columns: spotlightSearch.frontDesk.patients,
       },
       searchName: "patients",
       uri: "/gloabelSearch/get",
       onContainsChange: (text, serchBy, callBack) => {
         callBack(text);
       },
-      onRowSelect: row => {
+      onRowSelect: (row) => {
         this.setState({
           patient_code: row.patient_code,
-          patient_id: row.hims_d_patient_id
+          patient_id: row.hims_d_patient_id,
         });
-      }
+      },
     });
   }
 
   openReviewSubmit() {
     this.validatedClaims.length === 0
       ? swalMessage({
-        title: "please select atleast one invoice to submit",
-        type: "warning"
-      })
+          title: "please select atleast one invoice to submit",
+          type: "warning",
+        })
       : this.setState({
-        openSubmit: true
-      });
+          openSubmit: true,
+        });
   }
 
   handleClose() {
     this.setState({
-      openClaims: false
+      openClaims: false,
     });
   }
 
   handleSubmitClose() {
     this.setState({
-      openSubmit: false
+      openSubmit: false,
     });
   }
   claimsReport(e) {
     if (this.state.insurance_provider_id === undefined) {
       swalMessage({
         type: "error",
-        title: "Company Name can't blank"
+        title: "Company Name can't blank",
       });
       return;
     }
     if (this.state.from_date === undefined) {
       swalMessage({
         type: "error",
-        title: "From date can't blank"
+        title: "From date can't blank",
       });
       return;
     }
     if (this.state.to_date === undefined) {
       swalMessage({
         type: "error",
-        title: "To date can't blank"
+        title: "To date can't blank",
       });
       return;
     }
@@ -334,7 +336,7 @@ class RCMWorkbench extends Component {
       method: "GET",
       module: "reports",
       headers: {
-        Accept: "blob"
+        Accept: "blob",
       },
       others: { responseType: "blob" },
       data: {
@@ -343,36 +345,36 @@ class RCMWorkbench extends Component {
           reportParams: [
             {
               name: "insurance_provider_id",
-              value: this.state.insurance_provider_id
+              value: this.state.insurance_provider_id,
             },
             {
               name: "invoice_from_date",
-              value: new Date(this.state.from_date)
+              value: new Date(this.state.from_date),
             },
-            { name: "invoice_to_date", value: new Date(this.state.to_date) }
-          ]
-        }
+            { name: "invoice_to_date", value: new Date(this.state.to_date) },
+          ],
+        },
       },
-      onSuccess: res => {
+      onSuccess: (res) => {
         const url = URL.createObjectURL(res.data);
         const link = document.createElement("a");
         link.setAttribute("href", url);
         link.setAttribute("download", "claimSubmission.xlsx");
         link.click();
-      }
+      },
     });
   }
   preValidateReport(e) {
     if (this.state.claims.length === 0) {
       swalMessage({
         type: "warning",
-        title: "There is no data to validate !"
+        title: "There is no data to validate !",
       });
       return;
     }
 
     const inputParams = _.chain(this.state.claims)
-      .groupBy(g => g.visit_id)
+      .groupBy((g) => g.visit_id)
       .map((details, key) => {
         return key;
       })
@@ -383,16 +385,16 @@ class RCMWorkbench extends Component {
       method: "GET",
       module: "reports",
       headers: {
-        Accept: "blob"
+        Accept: "blob",
       },
       others: { responseType: "blob" },
       data: {
         report: {
           reportName: "prevalidation",
-          reportParams: [{ name: "visit_id", value: inputParams }]
-        }
+          reportParams: [{ name: "visit_id", value: inputParams }],
+        },
       },
-      onSuccess: res => {
+      onSuccess: (res) => {
         // const url = URL.createObjectURL(res.data);
         // const link = document.createElement("a");
         // link.setAttribute("href", url);
@@ -401,18 +403,19 @@ class RCMWorkbench extends Component {
         const urlBlob = URL.createObjectURL(res.data);
         const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename= Prevalidation`;
         window.open(origin);
-      }
+      },
     });
   }
   render() {
     return (
-      <div className="" style={{ marginBottom: "50px" }}>
+      <div className="row">
         <button
           id="load-claims"
+          className="d-none"
           onClick={() => {
             this.getInvoicesForClaims();
             this.setState({
-              openClaims: false
+              openClaims: false,
             });
           }}
         />
@@ -427,149 +430,141 @@ class RCMWorkbench extends Component {
           closeSubmissionModal={this.handleSubmitClose.bind(this)}
         />
 
-        <BreadCrumb
-          title={
-            <AlgaehLabel label={{ forceLabel: "RCM Desk", align: "ltr" }} />
-          }
-          breadStyle={this.props.breadStyle}
-          pageNavPath={[
-            {
-              pageName: (
-                <AlgaehLabel
-                  label={{
-                    forceLabel: "RCM Desk",
-                    align: "ltr"
-                  }}
-                />
-              )
-            },
-            {
-              pageName: (
-                <AlgaehLabel label={{ fieldName: "form_name", align: "ltr" }} />
-              )
-            }
-          ]}
-        />
+        <div className="col-12">
+          <div className="row inner-top-search">
+            <div className="col-2">
+              <label>Load By</label>
+              <div className="customRadio">
+                <label className="radio inline">
+                  <input
+                    type="radio"
+                    value="C"
+                    name="rcmMode"
+                    checked={this.state.rcmMode === "C" ? true : false}
+                    onChange={texthandle.bind(this)}
+                  />
+                  <span>Claim</span>
+                </label>
 
-        <div
-          className="portlet portlet-bordered margin-bottom-15"
-          style={{ marginTop: 60 }}
-        >
-          <div className="row">
-            <AlagehAutoComplete
-              div={{ className: "col" }}
-              label={{ isImp: true, forceLabel: "Company Name" }}
-              selector={{
-                name: "insurance_provider_id",
-                className: "select-fld",
-                value: this.state.insurance_provider_id,
-                dataSource: {
-                  textField: "insurance_provider_name",
-                  valueField: "hims_d_insurance_provider_id",
-                  data: this.state.insurance_providers
-                },
-                onChange: this.dropDownHandler,
-                onClear: () => {
-                  this.setState({
-                    insurance_provider_id: null,
-                    sub_insurance_id: null
-                  });
-                }
-              }}
-            />
-            <AlagehAutoComplete
-              div={{ className: "col" }}
-              label={{ isImp: true, forceLabel: "Sub Company Name" }}
-              selector={{
-                name: "sub_insurance_id",
-                className: "select-fld",
-                value: this.state.sub_insurance_id,
-                dataSource: {
-                  textField: "insurance_sub_name",
-                  valueField: "hims_d_insurance_sub_id",
-                  data: this.state.sub_ins_companies
-                },
-                onChange: this.dropDownHandler,
-                onClear: () => {
-                  this.setState({
-                    sub_insurance_id: null
-                  });
-                }
-              }}
-            />
-            <AlagehFormGroup
-              div={{ className: "col" }}
-              label={{
-                forceLabel: "Patient Code",
-                isImp: false
-              }}
-              textBox={{
-                className: "txt-fld",
-                name: "patient_code",
-                others: {
-                  disabled: true
-                },
-                value: this.state.patient_code,
-                events: {
-                  // onChange: this.texthandle.bind(this)
-                }
-              }}
-            />
-
-            <div className="col-1 margin-top-15">
-              <i
-                onClick={this.patientSearch.bind(this)}
-                className="fas fa-search"
-                style={{
-                  cursor: "pointer"
-                }}
-              />
+                <label className="radio inline">
+                  <input
+                    type="radio"
+                    value="S"
+                    name="rcmMode"
+                    checked={this.state.rcmMode === "S" ? true : false}
+                    onChange={texthandle.bind(this)}
+                  />
+                  <span>Statement</span>
+                </label>
+              </div>
             </div>
 
-            <AlgaehDateHandler
-              div={{ className: "col" }}
-              label={{ isImp: false, forceLabel: "From Date" }}
-              textBox={{
-                className: "txt-fld",
-                name: "from_date"
-              }}
-              maxDate={new Date()}
-              events={{
-                onChange: selDate => {
-                  this.setState({
-                    from_date: selDate
-                  });
-                }
-              }}
-              value={this.state.from_date}
-            />
+            {this.state.rcmMode === "C" ? (
+              <>
+                <AlagehAutoComplete
+                  div={{ className: "col form-group mandatory" }}
+                  label={{ isImp: true, forceLabel: "Company Name" }}
+                  selector={{
+                    name: "insurance_provider_id",
+                    className: "select-fld",
+                    value: this.state.insurance_provider_id,
+                    dataSource: {
+                      textField: "insurance_provider_name",
+                      valueField: "hims_d_insurance_provider_id",
+                      data: this.state.insurance_providers,
+                    },
+                    onChange: this.dropDownHandler,
+                    onClear: () => {
+                      this.setState({
+                        insurance_provider_id: null,
+                        sub_insurance_id: null,
+                      });
+                    },
+                  }}
+                />
+                <AlagehAutoComplete
+                  div={{ className: "col form-group mandatory" }}
+                  label={{ isImp: true, forceLabel: "Sub Company Name" }}
+                  selector={{
+                    name: "sub_insurance_id",
+                    className: "select-fld",
+                    value: this.state.sub_insurance_id,
+                    dataSource: {
+                      textField: "insurance_sub_name",
+                      valueField: "hims_d_insurance_sub_id",
+                      data: this.state.sub_ins_companies,
+                    },
+                    onChange: this.dropDownHandler,
+                    onClear: () => {
+                      this.setState({
+                        sub_insurance_id: null,
+                      });
+                    },
+                  }}
+                />
 
-            <AlgaehDateHandler
-              div={{ className: "col" }}
-              label={{ isImp: false, forceLabel: "To Date" }}
-              textBox={{
-                className: "txt-fld",
-                name: "to_date"
-              }}
-              maxDate={new Date()}
-              events={{
-                onChange: selDate => {
-                  this.setState({
-                    to_date: selDate
-                  });
-                }
-              }}
-              value={this.state.to_date}
-            />
-          </div>
-          <div className="row">
-            <div className="col">
+                <div className="col-2 globalSearchCntr">
+                  <AlgaehLabel label={{ forceLabel: "Search Employee" }} />
+                  <h6 onClick={this.patientSearch.bind(this)}>
+                    {/* {this.state.emp_name ? this.state.emp_name : "------"} */}
+                    {this.state.patient_code
+                      ? this.state.patient_code
+                      : "Search Patient"}
+                    <i className="fas fa-search fa-lg"></i>
+                  </h6>
+                </div>
+                <AlgaehDateHandler
+                  div={{ className: "col" }}
+                  label={{ isImp: false, forceLabel: "From Date" }}
+                  textBox={{
+                    className: "txt-fld",
+                    name: "from_date",
+                  }}
+                  maxDate={new Date()}
+                  events={{
+                    onChange: (selDate) => {
+                      this.setState({
+                        from_date: selDate,
+                      });
+                    },
+                  }}
+                  value={this.state.from_date}
+                />
+                <AlgaehDateHandler
+                  div={{ className: "col" }}
+                  label={{ isImp: false, forceLabel: "To Date" }}
+                  textBox={{
+                    className: "txt-fld",
+                    name: "to_date",
+                  }}
+                  maxDate={new Date()}
+                  events={{
+                    onChange: (selDate) => {
+                      this.setState({
+                        to_date: selDate,
+                      });
+                    },
+                  }}
+                  value={this.state.to_date}
+                />
+              </>
+            ) : (
+              <div className="col-2 globalSearchCntr form-group">
+                <AlgaehLabel label={{ forceLabel: "Search Statement No" }} />
+                <h6>
+                  {/* {this.state.emp_name ? this.state.emp_name : "------"} */}
+                  {"Search Statement No"}
+                  <i className="fas fa-search fa-lg"></i>
+                </h6>
+              </div>
+            )}
+            <div className="col-2">
               <button
                 onClick={this.getInvoicesForClaims}
                 className="btn btn-primary"
                 style={{ marginTop: 19, marginLeft: 5, float: "right" }}
               >
-                Load Claims
+                Load
               </button>
               <button
                 onClick={this.clearSearch}
@@ -582,239 +577,232 @@ class RCMWorkbench extends Component {
           </div>
         </div>
 
-        <div className="row">
-          <div className="col-12">
-            <div className="portlet portlet-bordered margin-bottom-15">
-              <div className="row">
-                <div className="col-12" id="rcm_desktop_cntr">
-                  <AlgaehDataGrid
-                    id="rcm_desktop"
-                    columns={[
-                      {
-                        fieldName: "actions",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "Details" }} />
-                        ),
-                        displayTemplate: row => {
-                          return (
-                            <i
-                              onClick={() => {
-                                // row.claim_validated === "V" ||
-                                // row.claim_validated === "X"
-                                //   ? swalMessage({
-                                //       title:
-                                //         "Invoice Already Validated, You can now submit the invoice for claims",
-                                //       type: "warning"
-                                //     })
-                                //   :
-                                this.setState({
-                                  openClaims: true,
-                                  sendProps: row
-                                });
-                              }}
-                              className="fas fa-eye"
-                            />
-                          );
-                        },
-
-                        others: {
-                          fixed: "left",
-                          filterable: false
-                        }
-                      },
-                      {
-                        fieldName: "chkselect",
-                        label: <AlgaehLabel label={{ forceLabel: "Select" }} />,
-                        displayTemplate: row => {
-                          return (
-                            <input
-                              type="checkbox"
-                              checked={
-                                parseFloat(row.chkselect) === 0 ? false : true
-                              }
-                              onChange={this.addClaimsArray.bind(this, row)}
-                            />
-                          );
-                        },
-                        editorTemplate: row => {
-                          return (
-                            <input
-                              type="checkbox"
-                              checked={
-                                parseFloat(row.chkselect) === 0 ? false : true
-                              }
-                              onChange={this.addClaimsArray.bind(this, row)}
-                            />
-                          );
-                        },
-                        others: {
-                          fixed: "left",
-                          filterable: false
-                        }
-                      },
-                      {
-                        fieldName: "invoice_number",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "Claim ID" }} />
-                        )
-                      },
-                      {
-                        fieldName: "claim_validated",
-                        label: <AlgaehLabel label={{ forceLabel: "Status" }} />,
-                        displayTemplate: row => {
-                          return (
-                            <span>
-                              {row.claim_validated === "V"
-                                ? "Validated"
-                                : row.claim_validated === "E"
-                                  ? "Error"
-                                  : row.claim_validated === "X"
-                                    ? "XML Generated"
-                                    : row.claim_validated === "P"
-                                      ? "Pending"
-                                      : "----"}
-                            </span>
-                          );
-                        }
-                      },
-                      {
-                        fieldName: "insurance_provider_name",
-                        label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "Insurance Company" }}
-                          />
-                        )
-                      },
-                      {
-                        fieldName: "policy_number",
-                        label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "Policy Number" }}
-                          />
-                        )
-                      },
-                      {
-                        fieldName: "network_type",
-                        label: <AlgaehLabel label={{ forceLabel: "Plan" }} />
-                      },
-                      {
-                        fieldName: "card_number",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "Card Number" }} />
-                        )
-                      },
-                      {
-                        fieldName: "invoice_date",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "Invoice Date" }} />
-                        ),
-                        displayTemplate: row => {
-                          return (
-                            <span>
-                              {moment(row.invoice_date).format("DD-MM-YYYY")}
-                            </span>
-                          );
-                        },
-                        disabled: true
-                      },
-                      {
-                        fieldName: "patient_code",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "Patient Code" }} />
-                        )
-                      },
-                      {
-                        fieldName: "patient_name",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "Patient Name" }} />
-                        ),
-                        disabled: true
-                      },
-                      {
-                        fieldName: "submission_ammount",
-                        label: (
-                          <AlgaehLabel
-                            label={{
-                              forceLabel: "Submit Amt."
+        <div className="col-12">
+          <div className="portlet portlet-bordered margin-bottom-15">
+            <div className="row">
+              <div className="col-12" id="rcmDesktopGrid_Cntr">
+                <AlgaehDataGrid
+                  id="rcmDesktopGrid"
+                  columns={[
+                    {
+                      fieldName: "actions",
+                      label: <AlgaehLabel label={{ forceLabel: "Details" }} />,
+                      displayTemplate: (row) => {
+                        return (
+                          <i
+                            onClick={() => {
+                              // row.claim_validated === "V" ||
+                              // row.claim_validated === "X"
+                              //   ? swalMessage({
+                              //       title:
+                              //         "Invoice Already Validated, You can now submit the invoice for claims",
+                              //       type: "warning"
+                              //     })
+                              //   :
+                              this.setState({
+                                openClaims: true,
+                                sendProps: row,
+                              });
                             }}
+                            className="fas fa-eye"
                           />
-                        ),
-                        displayTemplate: row => {
-                          return (
-                            <span>
-                              {row.submission_ammount
-                                ? row.submission_ammount
-                                : 0}
-                            </span>
-                          );
-                        }
+                        );
                       },
-                      {
-                        fieldName: "submission_date",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "Submit Date" }} />
-                        ),
-                        displayTemplate: row => {
-                          return (
-                            <span>
-                              {row.submission_date
-                                ? row.submission_date
-                                : "------"}
-                            </span>
-                          );
-                        }
+
+                      others: {
+                        fixed: "left",
+                        filterable: false,
                       },
-                      {
-                        fieldName: "remittance_ammount.",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "Remit Amt." }} />
-                        ),
-                        displayTemplate: row => {
-                          return (
-                            <span>
-                              {row.remittance_ammount
-                                ? row.remittance_ammount
-                                : 0}
-                            </span>
-                          );
-                        }
+                    },
+                    {
+                      fieldName: "chkselect",
+                      label: <AlgaehLabel label={{ forceLabel: "Select" }} />,
+                      displayTemplate: (row) => {
+                        return (
+                          <input
+                            type="checkbox"
+                            checked={
+                              parseFloat(row.chkselect) === 0 ? false : true
+                            }
+                            onChange={this.addClaimsArray.bind(this, row)}
+                          />
+                        );
                       },
-                      {
-                        fieldName: "remittance_date",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "Remit Date" }} />
-                        ),
-                        displayTemplate: row => {
-                          return (
-                            <span>
-                              {row.remittance_date
-                                ? row.remittance_date
-                                : "------"}
-                            </span>
-                          );
-                        }
+                      editorTemplate: (row) => {
+                        return (
+                          <input
+                            type="checkbox"
+                            checked={
+                              parseFloat(row.chkselect) === 0 ? false : true
+                            }
+                            onChange={this.addClaimsArray.bind(this, row)}
+                          />
+                        );
                       },
-                      {
-                        fieldName: "denial_ammount.",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "Denial Amt." }} />
-                        ),
-                        displayTemplate: row => {
-                          return (
-                            <span>
-                              {row.denial_ammount ? row.denial_ammount : 0}
-                            </span>
-                          );
-                        }
-                      }
-                    ]}
-                    keyId="service_type_id"
-                    dataSource={{
-                      data: this.state.claims
-                    }}
-                    filter={true}
-                    isEditable={false}
-                    paging={{ page: 0, rowsPerPage: 20 }}
+                      others: {
+                        fixed: "left",
+                        filterable: false,
+                      },
+                    },
+                    {
+                      fieldName: "invoice_number",
+                      label: <AlgaehLabel label={{ forceLabel: "Claim ID" }} />,
+                    },
+                    {
+                      fieldName: "claim_validated",
+                      label: <AlgaehLabel label={{ forceLabel: "Status" }} />,
+                      displayTemplate: (row) => {
+                        return (
+                          <span>
+                            {row.claim_validated === "V"
+                              ? "Validated"
+                              : row.claim_validated === "E"
+                              ? "Error"
+                              : row.claim_validated === "X"
+                              ? "XML Generated"
+                              : row.claim_validated === "P"
+                              ? "Pending"
+                              : "----"}
+                          </span>
+                        );
+                      },
+                    },
+                    {
+                      fieldName: "insurance_provider_name",
+                      label: (
+                        <AlgaehLabel
+                          label={{ forceLabel: "Insurance Company" }}
+                        />
+                      ),
+                    },
+                    {
+                      fieldName: "policy_number",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Policy Number" }} />
+                      ),
+                    },
+                    {
+                      fieldName: "network_type",
+                      label: <AlgaehLabel label={{ forceLabel: "Plan" }} />,
+                    },
+                    {
+                      fieldName: "card_number",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Card Number" }} />
+                      ),
+                    },
+                    {
+                      fieldName: "invoice_date",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Invoice Date" }} />
+                      ),
+                      displayTemplate: (row) => {
+                        return (
+                          <span>
+                            {moment(row.invoice_date).format("DD-MM-YYYY")}
+                          </span>
+                        );
+                      },
+                      disabled: true,
+                    },
+                    {
+                      fieldName: "patient_code",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Patient Code" }} />
+                      ),
+                    },
+                    {
+                      fieldName: "patient_name",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Patient Name" }} />
+                      ),
+                      disabled: true,
+                    },
+                    {
+                      fieldName: "submission_ammount",
+                      label: (
+                        <AlgaehLabel
+                          label={{
+                            forceLabel: "Submit Amt.",
+                          }}
+                        />
+                      ),
+                      displayTemplate: (row) => {
+                        return (
+                          <span>
+                            {row.submission_ammount
+                              ? row.submission_ammount
+                              : 0}
+                          </span>
+                        );
+                      },
+                    },
+                    {
+                      fieldName: "submission_date",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Submit Date" }} />
+                      ),
+                      displayTemplate: (row) => {
+                        return (
+                          <span>
+                            {row.submission_date
+                              ? row.submission_date
+                              : "------"}
+                          </span>
+                        );
+                      },
+                    },
+                    {
+                      fieldName: "remittance_ammount.",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Remit Amt." }} />
+                      ),
+                      displayTemplate: (row) => {
+                        return (
+                          <span>
+                            {row.remittance_ammount
+                              ? row.remittance_ammount
+                              : 0}
+                          </span>
+                        );
+                      },
+                    },
+                    {
+                      fieldName: "remittance_date",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Remit Date" }} />
+                      ),
+                      displayTemplate: (row) => {
+                        return (
+                          <span>
+                            {row.remittance_date
+                              ? row.remittance_date
+                              : "------"}
+                          </span>
+                        );
+                      },
+                    },
+                    {
+                      fieldName: "denial_ammount.",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Denial Amt." }} />
+                      ),
+                      displayTemplate: (row) => {
+                        return (
+                          <span>
+                            {row.denial_ammount ? row.denial_ammount : 0}
+                          </span>
+                        );
+                      },
+                    },
+                  ]}
+                  keyId="service_type_id"
+                  dataSource={{
+                    data: this.state.claims,
+                  }}
+                  filter={true}
+                  isEditable={false}
+                  paging={{ page: 0, rowsPerPage: 20 }}
                   // events={{
                   //   onDelete: deletePosDetail.bind(this, this, context),
                   //   onEdit: row => {},
@@ -823,8 +811,7 @@ class RCMWorkbench extends Component {
                   // onRowSelect={row => {
                   //   getItemLocationStock(this, row);
                   // }}
-                  />
-                </div>
+                />
               </div>
             </div>
           </div>
@@ -840,7 +827,7 @@ class RCMWorkbench extends Component {
                 <AlgaehLabel
                   label={{
                     forceLabel: "Submit Claims",
-                    returnText: true
+                    returnText: true,
                   }}
                 />
               </button>
@@ -853,7 +840,7 @@ class RCMWorkbench extends Component {
                 <AlgaehLabel
                   label={{
                     forceLabel: "Re-Submit",
-                    returnText: true
+                    returnText: true,
                   }}
                 />
               </button>
@@ -879,7 +866,7 @@ class RCMWorkbench extends Component {
                 <AlgaehLabel
                   label={{
                     forceLabel: "Claims Report",
-                    returnText: true
+                    returnText: true,
                   }}
                 />
               </button>
@@ -891,7 +878,7 @@ class RCMWorkbench extends Component {
                 <AlgaehLabel
                   label={{
                     forceLabel: "Pre Validate Report",
-                    returnText: true
+                    returnText: true,
                   }}
                 />
               </button>
