@@ -8,13 +8,13 @@ import logger from "redux-logger";
 import Routes from "./routes.js";
 import thunk from "redux-thunk";
 import { applyMiddleware, createStore } from "redux";
-import "antd/dist/antd.min.css";
-import "algaeh-react-components/dist/index.css";
 
 import "./index.scss";
 import "./styles/site.scss";
 import "./loader.scss";
 
+import "antd/dist/antd.min.css";
+import "algaeh-react-components/dist/index.css";
 // import * as serviceWorker from "./serviceWorker";
 import MainProvider from "./MainProvider";
 const middleware =
