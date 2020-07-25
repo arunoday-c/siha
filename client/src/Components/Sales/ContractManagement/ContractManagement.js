@@ -141,7 +141,7 @@ class ContractManagement extends Component {
     confirm({
       title: `Are you sure you want to delete this file?`,
       content: `${doc.filename}`,
-      icon: <i className="fa fa-trash"></i>,
+      icon: "",
       okText: "Yes",
       okType: "danger",
       cancelText: "No",
@@ -753,7 +753,7 @@ class ContractManagement extends Component {
               </div>
               <div className="portlet-body">
                 <div className="row">
-                  <div className="col-4">
+                  <div className="col-3">
                     {" "}
                     <Dragger
                       accept=".doc,.docx,application/msword,.pdf"
@@ -789,7 +789,8 @@ class ContractManagement extends Component {
                       </p>
                     </Dragger>
                   </div>
-                  <div className="col-8">
+                  <div className="col-3"></div>
+                  <div className="col-6">
                     <div className="row">
                       <div className="col-12">
                         <ul className="contractAttachmentList">
@@ -810,7 +811,7 @@ class ContractManagement extends Component {
                               </li>
                             ))
                           ) : (
-                            <div className="col-12" key={1}>
+                            <div className="col-12 noAttachment" key={1}>
                               <p>No Attachments Available</p>
                             </div>
                           )}

@@ -249,7 +249,7 @@ class SalesOrder extends Component {
     confirm({
       title: `Are you sure you want to delete this file?`,
       content: `${doc.filename}`,
-      icon: <i className="fa fa-trash"></i>,
+      icon: "",
       okText: "Yes",
       okType: "danger",
       cancelText: "No",
@@ -358,9 +358,13 @@ class SalesOrder extends Component {
                     ) : this.state.authorize1 === "Y" &&
                       this.state.authorize2 === "Y" &&
                       this.state.is_completed === "N" ? (
-                      <span className="badge badge-success">
-                        Authorized / Dispatch Pending
-                      </span>
+                      this.state.sales_order_mode === "S" ? (
+                        <span className="badge badge-success">Authorized</span>
+                      ) : (
+                        <span className="badge badge-success">
+                          Authorized / Dispatch Pending
+                        </span>
+                      )
                     ) : this.state.authorize1 === "Y" &&
                       this.state.authorize2 === "N" ? (
                       <span className="badge badge-danger">
@@ -697,92 +701,95 @@ class SalesOrder extends Component {
           </div>
         </div>
 
-        <div
-          className="portlet portlet-bordered margin-top-15"
-          style={{ marginBottom: 50 }}
-        >
-          <div className="portlet-title">
-            <div className="caption">
-              <h3 className="caption-subject">Attachments</h3>
-            </div>
-          </div>
-          <div className="portlet-body">
-            <div className="row">
-              <div className="col-4">
-                {" "}
-                <Dragger
-                  accept=".doc,.docx,application/msword,.pdf"
-                  name="contract_file"
-                  multiple={false}
-                  onRemove={() => {
-                    this.setState((state) => {
-                      return {
-                        invoice_files: [],
-                        docChanged: false,
-                        // saveEnable: state.dataExists && !newFileList.length,
-                      };
-                    });
-                  }}
-                  beforeUpload={(file) => {
-                    this.setState((state) => ({
-                      invoice_files: [file],
-                      docChanged: true,
-
-                      // saveEnable: false,
-                    }));
-                    return false;
-                  }}
-                  fileList={this.state.invoice_files}
-                >
-                  <p className="upload-drag-icon">
-                    <i className="fas fa-file-upload"></i>
-                  </p>
-                  <p className="ant-upload-text">
-                    {this.state.contract_file
-                      ? `Click or Drag a file to replace the current file`
-                      : `Click or Drag a file to this area to upload`}
-                  </p>
-                </Dragger>
+        <div className="row">
+          <div className="col-6">
+            {" "}
+            <div
+              className="portlet portlet-bordered"
+              style={{ marginBottom: 60 }}
+            >
+              <div className="portlet-title">
+                <div className="caption">
+                  <h3 className="caption-subject">Attachments</h3>
+                </div>
               </div>
-              <div className="col-8">
+              <div className="portlet-body">
                 <div className="row">
-                  <div className="col-12">
-                    <ul className="contractAttachmentList">
-                      {this.state.invoice_docs.length ? (
-                        this.state.invoice_docs.map((doc) => (
-                          <li>
-                            <b> {doc.filename} </b>
-                            <span>
-                              <i
-                                className="fas fa-download"
-                                onClick={() => this.downloadDoc(doc)}
-                              ></i>
-                              <i
-                                className="fas fa-trash"
-                                onClick={() => this.deleteDoc(doc)}
-                              ></i>
-                            </span>
-                          </li>
-                        ))
-                      ) : (
-                        <div className="col-12" key={1}>
-                          <p>No Attachments Available</p>
-                        </div>
-                      )}
-                    </ul>
+                  <div className="col-3">
+                    {" "}
+                    <Dragger
+                      accept=".doc,.docx,application/msword,.pdf"
+                      name="contract_file"
+                      multiple={false}
+                      onRemove={() => {
+                        this.setState((state) => {
+                          return {
+                            invoice_files: [],
+                            docChanged: false,
+                            // saveEnable: state.dataExists && !newFileList.length,
+                          };
+                        });
+                      }}
+                      beforeUpload={(file) => {
+                        this.setState((state) => ({
+                          invoice_files: [file],
+                          docChanged: true,
+
+                          // saveEnable: false,
+                        }));
+                        return false;
+                      }}
+                      fileList={this.state.invoice_files}
+                    >
+                      <p className="upload-drag-icon">
+                        <i className="fas fa-file-upload"></i>
+                      </p>
+                      <p className="ant-upload-text">
+                        {this.state.contract_file
+                          ? `Click or Drag a file to replace the current file`
+                          : `Click or Drag a file to this area to upload`}
+                      </p>
+                    </Dragger>
+                  </div>
+                  <div className="col-3"></div>
+                  <div className="col-6">
+                    <div className="row">
+                      <div className="col-12">
+                        <ul className="contractAttachmentList">
+                          {this.state.invoice_docs.length ? (
+                            this.state.invoice_docs.map((doc) => (
+                              <li>
+                                <b> {doc.filename} </b>
+                                <span>
+                                  <i
+                                    className="fas fa-download"
+                                    onClick={() => this.downloadDoc(doc)}
+                                  ></i>
+                                  <i
+                                    className="fas fa-trash"
+                                    onClick={() => this.deleteDoc(doc)}
+                                  ></i>
+                                </span>
+                              </li>
+                            ))
+                          ) : (
+                            <div className="col-12 noAttachment" key={1}>
+                              <p>No Attachments Available</p>
+                            </div>
+                          )}
+                        </ul>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-
-        <div className="row">
-          <div className="col-12">
+          <div className="col-6">
             <div className="row">
-              <div className="col-6">
+              <div className="col-12">
                 <div className="row">
-                  <div className="col-4">
+                  <div className="col">
                     <AlgaehLabel
                       label={{
                         forceLabel: "Sub Total",
@@ -790,7 +797,7 @@ class SalesOrder extends Component {
                     />
                     <h6>{GetAmountFormart(this.state.sub_total)}</h6>
                   </div>
-                  <div className="col-4">
+                  <div className="col">
                     <AlgaehLabel
                       label={{
                         forceLabel: "Discount Amount",
@@ -798,7 +805,7 @@ class SalesOrder extends Component {
                     />
                     <h6>{GetAmountFormart(this.state.discount_amount)}</h6>
                   </div>
-                  <div className="col-4">
+                  <div className="col">
                     <AlgaehLabel
                       label={{
                         forceLabel: "Net Total",
@@ -806,7 +813,7 @@ class SalesOrder extends Component {
                     />
                     <h6>{GetAmountFormart(this.state.net_total)}</h6>
                   </div>
-                  <div className="col-4">
+                  <div className="col">
                     <AlgaehLabel
                       label={{
                         forceLabel: "Total Tax",
@@ -814,7 +821,7 @@ class SalesOrder extends Component {
                     />
                     <h6>{GetAmountFormart(this.state.total_tax)}</h6>
                   </div>
-                  <div className="col-4">
+                  <div className="col">
                     <AlgaehLabel
                       label={{
                         forceLabel: "Net Payable",
@@ -825,7 +832,7 @@ class SalesOrder extends Component {
                 </div>
               </div>
               <AlagehFormGroup
-                div={{ className: "col-6 textAreaLeft" }}
+                div={{ className: "col-12 textAreaLeft" }}
                 label={{
                   forceLabel: "Narration",
                   isImp: false,
