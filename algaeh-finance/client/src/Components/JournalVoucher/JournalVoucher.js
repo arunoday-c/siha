@@ -66,6 +66,7 @@ export default function JournalVoucher() {
   const [payment, setPayment] = useState(basePayment);
   const [loading, setLoading] = useState(false);
   const [clearLoading, setClearLoading] = useState(false);
+  const [costCenterField, setCostCenterField] = useState(undefined);
   const baseJournalList = [
     {
       child_id: undefined,
@@ -94,14 +95,42 @@ export default function JournalVoucher() {
         onSuccess: (response) => {
           if (response.data.success === true) {
             const [options] = response.data.result;
+
             setFinOptions(options);
             setHospitalID(options.default_branch_id.toString());
-            if (options.cost_center_required) {
+            if (options.cost_center_required === "Y") {
               const [center] = result.filter(
                 (el) => el.hims_d_hospital_id === options.default_branch_id
               );
               setcostCenterdata(center.cost_centers);
-
+              setCostCenterField({
+                fieldName: "cost_center_id",
+                label: "Cost Center",
+                displayTemplate: (row) => {
+                  return (
+                    <AlgaehAutoComplete
+                      selector={{
+                        updateInternally: true,
+                        dataSource: {
+                          data: center.cost_centers,
+                          valueField: "cost_center_id",
+                          textField: "cost_center",
+                        },
+                        value: row["cost_center_id"],
+                        onChange: (details) => {
+                          row["cost_center_id"] = details["cost_center_id"];
+                        },
+                        onClear: () => {
+                          row["cost_center_id"] = null;
+                        },
+                      }}
+                    />
+                  );
+                },
+                others: {
+                  width: 300,
+                },
+              });
               const costCenterId = center.cost_centers.find(
                 (f) => f.cost_center_id === options.default_cost_center_id
               );
@@ -308,50 +337,42 @@ export default function JournalVoucher() {
       setLoading(false);
       return;
     }
-    if (cost_center_id === null) {
-      AlgaehMessagePop({
-        type: "error",
-        display: "Cost Center is mandatory",
-      });
-      setLoading(false);
-      return;
-    }
-
-    // let costcenter = {};
-    // if (Object.keys(records_av).length === 0) {
-    //   setLoading(false);
+    // if (cost_center_id === null) {
     //   AlgaehMessagePop({
     //     type: "error",
-    //     display: "Branch and Cost Center is mandatory"
+    //     display: "Cost Center is mandatory",
     //   });
+    //   setLoading(false);
     //   return;
-    // } else {
-    //   if (
-    //     records_av["hospital_id"] === undefined ||
-    //     records_av["cost_center_id"] === undefined
-    //   ) {
-    //     setLoading(false);
-    //     AlgaehMessagePop({
-    //       type: "info",
-    //       display: "Branch and Cost Center is mandatory"
-    //     });
-    //     return;
-    //   } else {
-    //     costcenter["hospital_id"] = records_av["hospital_id"];
-    //     costcenter["cost_center_id"] = records_av["cost_center_id"];
-    //   }
     // }
 
     if (journerList.length >= 2) {
-      const check =
-        journerList[0].amount &&
-        journerList[0].sourceName &&
-        journerList[1].amount &&
-        journerList[1].sourceName;
-      if (!check) {
+      // const check =
+      //   journerList[0].amount &&
+      //   journerList[0].sourceName &&
+      //   journerList[1].amount &&
+      //   journerList[1].sourceName;
+      function checkCostcenterMandatory(costCenterID) {
+        if (finOptions.cost_center_required === "Y") {
+          return costCenterID === undefined || costCenterID === "";
+        } else {
+          return false;
+        }
+      }
+      const check = journerList.find(
+        (f) =>
+          f.amount === undefined ||
+          f.amount === "" ||
+          f.sourceName === undefined ||
+          f.sourceName === "" ||
+          checkCostcenterMandatory(f.cost_center_id)
+      );
+      if (check !== undefined) {
         AlgaehMessagePop({
           type: "info",
-          display: "Please select an Account and enter proper amount",
+          display: `Please select proper amount / account ${
+            finOptions.cost_center_required === "Y" ? "/ cost center" : ""
+          }`, //"Please select an Account and enter proper amount",
         });
         setLoading(false);
         return;
@@ -656,7 +677,7 @@ export default function JournalVoucher() {
             }}
           />
 
-          {finOptions.cost_center_required === "Y" ? (
+          {/* {finOptions.cost_center_required === "Y" ? (
             <AlgaehAutoComplete
               div={{ className: "col-2" }}
               label={{ forceLabel: "Select a Cost Center" }}
@@ -668,15 +689,13 @@ export default function JournalVoucher() {
                 },
                 value: cost_center_id,
                 onChange: HandleCostCenter,
-                // others: {
-                //   loading: loading
-                // },
+                
                 onClear: () => {
                   setCostCenter(null);
                 },
               }}
             />
-          ) : null}
+          ) : null} */}
 
           {/* <CostCenter result={records_av} noborder={false} /> */}
         </div>
@@ -709,6 +728,15 @@ export default function JournalVoucher() {
                         width: 80,
                       },
                     },
+                    costCenterField,
+                    // {
+                    //   fieldName: "cost_center_id",
+                    //   label: "Cost Center",
+                    //   displayTemplate: costcenterInput,
+                    //   others: {
+                    //     width: 300,
+                    //   },
+                    // },
                     {
                       fieldName: "sourceName",
                       label: "Account",
