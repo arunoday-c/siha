@@ -5,7 +5,7 @@ import {
   AlgaehDateHandler,
   Spin,
   Button,
-  AlgaehMessagePop
+  AlgaehMessagePop,
 } from "algaeh-react-components";
 import moment from "moment";
 // import CostCenter from "../../costCenterComponent";
@@ -19,7 +19,7 @@ export default memo(function Modal(props) {
     visible,
     onOk,
     parentId,
-    fromInvoice
+    fromInvoice,
   } = props;
   const [plaseWait, setPleaseWait] = useState(
     "Please wait report is preparing.."
@@ -55,7 +55,7 @@ export default memo(function Modal(props) {
     //   }
     // }
     generateReport("pdf", resultdata)
-      .then(result => {
+      .then((result) => {
         // console.log("result", result);
         // var file = new Blob([result], { type: "application/pdf" });
 
@@ -91,11 +91,11 @@ export default memo(function Modal(props) {
         onOk("pdf");
         setLoading(false);
       })
-      .catch(error => {
+      .catch((error) => {
         setLoading(false);
         AlgaehMessagePop({
           type: "error",
-          display: error
+          display: error,
         });
       });
   }
@@ -118,13 +118,13 @@ export default memo(function Modal(props) {
             name: "hospital_id",
             value: inputdata["hospital_id"],
             label: "Branch",
-            labelValue: inputdata["hospital_id_label"]
+            labelValue: inputdata["hospital_id_label"],
           };
           outcomeDataCostCenter = {
             name: "cost_center_id",
             value: inputdata["cost_center_id"],
             label: "Cost Center",
-            labelValue: inputdata["cost_center_id_label"]
+            labelValue: inputdata["cost_center_id_label"],
           };
         }
         const from_date =
@@ -132,14 +132,14 @@ export default memo(function Modal(props) {
             ? {}
             : {
                 name: "from_date",
-                value: moment(dateRange[0]).format("YYYY-MM-DD")
+                value: moment(dateRange[0]).format("YYYY-MM-DD"),
               };
         const to_date =
           dateRange.length === 0
             ? {}
             : {
                 name: "to_date",
-                value: moment(dateRange[1]).format("YYYY-MM-DD")
+                value: moment(dateRange[1]).format("YYYY-MM-DD"),
               };
         let data;
         if (fromInvoice) {
@@ -156,16 +156,16 @@ export default memo(function Modal(props) {
                   name: "child_id",
                   value: selectedNode.finance_account_child_id,
                   label: "Child",
-                  labelValue: selectedNode.child_name
+                  labelValue: selectedNode.child_name,
                 },
                 { name: "leafnode", value: "Y" },
                 from_date,
                 to_date,
                 outcomeDataHospital,
-                outcomeDataCostCenter
+                outcomeDataCostCenter,
                 // monthwise
-              ]
-            }
+              ],
+            },
           };
         } else {
           const { node } = selectedNode;
@@ -174,7 +174,7 @@ export default memo(function Modal(props) {
             finance_account_head_id,
             finance_account_child_id,
             leafnode,
-            label
+            label,
           } = node;
 
           // const monthwise =
@@ -205,29 +205,29 @@ export default memo(function Modal(props) {
                   value:
                     head_id === undefined ? finance_account_head_id : head_id,
                   label: "Head",
-                  labelValue: label
+                  labelValue: label,
                 },
                 {
                   name: "child_id",
                   value: finance_account_child_id,
                   label: "Child",
-                  labelValue: label
+                  labelValue: label,
                 },
                 {
                   name: "child_id",
                   value: finance_account_child_id,
                   label: "Child",
-                  labelValue: label
+                  labelValue: label,
                 },
                 { name: "leafnode", value: leafnode },
                 { name: "parent_id", value: parentId },
                 from_date,
                 to_date,
                 outcomeDataHospital,
-                outcomeDataCostCenter
+                outcomeDataCostCenter,
                 // monthwise
-              ]
-            }
+              ],
+            },
           };
         }
         algaehApiCall({
@@ -236,17 +236,17 @@ export default memo(function Modal(props) {
           module: "reports",
           method: "GET",
           headers: {
-            Accept: "blob"
+            Accept: "blob",
           },
           others: { responseType: "blob" },
           data: data,
-          onSuccess: response => {
+          onSuccess: (response) => {
             const url = URL.createObjectURL(response.data);
             resolve(url);
           },
-          onCatch: error => {
+          onCatch: (error) => {
             reject(error);
-          }
+          },
         });
       } catch (e) {
         reject(e);
@@ -267,8 +267,21 @@ export default memo(function Modal(props) {
         setLoading(false);
       }}
       footer={
-        <>
-          <Button
+        <div>
+          <span className="ant-btn ant-btn-primary ant-btn-circle ant-btn-icon-only">
+            <i className="fas fa-file-pdf" onClick={onPdfGeneration}></i>
+          </span>
+          <span
+            className="ant-btn ant-btn-success ant-btn-circle ant-btn-icon-only"
+            style={{ backgroundColor: "#00a796", color: "#fff" }}
+          >
+            <i className="fas fa-file-excel" onClick={onExcelGeneration}></i>
+          </span>
+          <span className="ant-btn ant-btn-dangerous ant-btn-circle ant-btn-icon-only">
+            <i className="fas fa-times" onClick={onCancelClick}></i>
+          </span>
+
+          {/* <Button
             type="primary"
             shape="circle"
             icon="file-pdf"
@@ -276,7 +289,7 @@ export default memo(function Modal(props) {
             onClick={() => {
               onPdfGeneration();
             }}
-          />
+          /> 
           <Button
             type="success"
             shape="circle"
@@ -294,8 +307,8 @@ export default memo(function Modal(props) {
             onClick={() => {
               onCancelClick();
             }}
-          />
-        </>
+          />*/}
+        </div>
       }
     >
       <Spin tip={plaseWait} spinning={loading}>
@@ -307,7 +320,7 @@ export default memo(function Modal(props) {
                 <input
                   type="radio"
                   name="d_m_wise"
-                  onChange={check => {
+                  onChange={(check) => {
                     setCheckType(!check);
                   }}
                   checked={!checkedType}
@@ -318,7 +331,7 @@ export default memo(function Modal(props) {
                 <input
                   type="radio"
                   name="d_m_wise"
-                  onChange={check => {
+                  onChange={(check) => {
                     setCheckType(check);
                   }}
                   checked={checkedType}
@@ -331,18 +344,18 @@ export default memo(function Modal(props) {
           <AlgaehDateHandler
             type={"range"}
             div={{
-              className: "col-12 form-group"
+              className: "col-12 form-group",
             }}
             label={{
-              forceLabel: "Select Date Range"
+              forceLabel: "Select Date Range",
             }}
             textBox={{
               name: "selectRange",
-              value: dateRange
+              value: dateRange,
             }}
             maxDate={moment().add(1, "days")}
             events={{
-              onChange: dateSelected => {
+              onChange: (dateSelected) => {
                 if (checkedType) {
                   const months = moment(dateSelected[1]).diff(
                     dateSelected[0],
@@ -353,16 +366,16 @@ export default memo(function Modal(props) {
                   } else {
                     AlgaehMessagePop({
                       title: "error",
-                      display: "you can select maximum one year."
+                      display: "you can select maximum one year.",
                     });
                   }
                 } else {
                   setDateRange(dateSelected);
                 }
-              }
+              },
             }}
             others={{
-              ...format
+              ...format,
             }}
           />
         </div>

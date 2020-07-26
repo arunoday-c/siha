@@ -933,7 +933,10 @@ export default {
     const utilities = new algaehUtilities();
     let input = req.body;
 
-    if (req.userIdentity.finance_authorize_privilege != "N") {
+    if (
+      req.userIdentity.role_type === "SU" ||
+      req.userIdentity.finance_authorize_privilege != "N"
+    ) {
       const _mysql = new algaehMysql();
       // get highest auth level
       getMaxAuth({
@@ -1142,8 +1145,9 @@ export default {
               }
             });
           } else if (
-            req.userIdentity.finance_authorize_privilege >= option.MaxAuth &&
-            input.auth_level >= option.MaxAuth
+            req.userIdentity.role_type === "SU" ||
+            (req.userIdentity.finance_authorize_privilege >= option.MaxAuth &&
+              input.auth_level >= option.MaxAuth)
           ) {
             getFinanceAuthFields(input["auth_level"]).then((authFields) => {
               if (input.auth_status == "A" && input.voucher_header_id > 0) {
