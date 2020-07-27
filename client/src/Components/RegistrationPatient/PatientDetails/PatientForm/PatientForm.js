@@ -404,7 +404,7 @@ class AddPatientForm extends Component {
                       /> */}
                       <AlgaehHijriDatePicker
                         div={{
-                          className: "col-lg-3",
+                          className: "col-lg-3 mandatory HijriCalendar",
                           tabIndex: "6",
                         }}
                         label={{ forceLabel: "Hijiri Date" }}
@@ -424,7 +424,7 @@ class AddPatientForm extends Component {
                           },
                         }}
                         label={{
-                          fieldName: "age"
+                          fieldName: "age",
                         }}
                         textBox={{
                           value: this.state.age,
