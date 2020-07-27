@@ -12,6 +12,7 @@ import pl_comparison from "../controllers/pl_comparison";
 import balanceSheet_report from "../controllers/balanceSheet_report";
 import balanceSheetComparison from "../controllers/balanceSheetComparison";
 import prepayment from "../controllers/prepayment";
+import profit_and_loss_report from "../controllers/profit_and_loss_report";
 
 const router = express();
 router.use("/finance", finance());
@@ -26,5 +27,6 @@ router.use("/pl_comparison", pl_comparison());
 router.use("/balanceSheet_report", balanceSheet_report());
 router.use("/balanceSheetComparison", balanceSheetComparison());
 router.use("/prepayment", prepayment());
+router.use("/profit_and_loss_report", profit_and_loss_report());
 
 export default router;

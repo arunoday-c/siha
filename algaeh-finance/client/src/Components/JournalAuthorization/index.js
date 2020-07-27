@@ -26,11 +26,11 @@ export default memo(function (props) {
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState("P");
   const [dates, setDates] = useState(undefined);
-  const paymentTemplates = [
-    { key: "payment_mode", title: "Payment Mode" },
-    { key: "ref_no", title: "Reference No" },
-    { key: "cheque_date", title: "Cheque Date" },
-  ];
+  // const paymentTemplates = [
+  //   { key: "payment_mode", title: "Payment Mode" },
+  //   { key: "ref_no", title: "Reference No" },
+  //   { key: "cheque_date", title: "Cheque Date" },
+  // ];
   // useEffect(() => {
   //   LoadVouchersToAuthorize()
   //     .then(result => {
@@ -158,8 +158,8 @@ export default memo(function (props) {
               icon="close" with icon={<i className="fas fa-times" />}
               onClick={reject}
             ></AlgaehButton> */}
-            <i class="fas fa-thumbs-up" onClick={approve}></i>
-            <i class="fas fa-thumbs-down" onClick={reject}></i>
+            <i className="fas fa-thumbs-up" onClick={approve}></i>
+            <i className="fas fa-thumbs-down" onClick={reject}></i>
           </>
         ) : (
           <span>---</span>
@@ -401,7 +401,20 @@ export default memo(function (props) {
                         },
                         { fieldName: "voucher_type", label: "Voucher Type" },
                         { fieldName: "payment_date", label: "Payment Date" },
-                        ...paymentTemplates,
+                        // ...paymentTemplates,
+                        /* Commented paymentTemplates there is no condition we can use directly   */
+                        {
+                          fieldName: "payment_mode",
+                          label: "Payment Mode",
+                          displayTemplate: (row) => {
+                            return row["payment_mode"] === "N"
+                              ? "NONE"
+                              : row["payment_mode"];
+                          },
+                        },
+                        { fieldName: "ref_no", label: "Reference No" },
+                        { fieldName: "cheque_date", label: "Cheque Date" },
+                        /* Commented End */
                         { fieldName: "amount", label: "Amount" },
                         { fieldName: "narration", label: "Narration" },
                         {

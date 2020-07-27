@@ -532,27 +532,49 @@ export default {
             .then((results) => {
               _mysql.releaseConnection();
 
-              let branch = _.chain(results)
-                .groupBy((g) => g.hims_d_hospital_id)
-                .value();
-              const output = [];
+              // let branch = _.chain(results)
+              //   .groupBy((g) => g.hims_d_hospital_id)
+              //   .value();
+              // const output = [];
 
-              for (let b in branch) {
-                const cost_centers = [];
-                results.forEach((item) => {
-                  if (item.hims_d_hospital_id == b) {
-                    cost_centers.push({
-                      cost_center: item.cost_center,
-                      cost_center_id: item.cost_center_id,
-                    });
-                  }
-                });
-                output.push({
-                  hospital_name: branch[b][0]["hospital_name"],
-                  hims_d_hospital_id: branch[b][0]["hims_d_hospital_id"],
-                  cost_centers: cost_centers,
-                });
-              }
+              // for (let b in branch) {
+              //   const cost_centers = [];
+              //   results.forEach((item) => {
+              //     if (item.hims_d_hospital_id == b) {
+              //       cost_centers.push({
+              //         hims_d_hospital_id: item.hims_d_hospital_id,
+              //         cost_center: item.cost_center,
+              //         cost_center_id: item.cost_center_id,
+              //       });
+              //     }
+              //   });
+              //   output.push({
+              //     hospital_name: branch[b][0]["hospital_name"],
+              //     hims_d_hospital_id: branch[b][0]["hims_d_hospital_id"],
+              //     cost_centers: cost_centers,
+              //   });
+              // }
+              /* simplified above code */
+              const output = _.chain(results)
+                .groupBy((g) => g.hims_d_hospital_id)
+                .map((details, key) => {
+                  const { hospital_name, hims_d_hospital_id } = _.first(
+                    details
+                  );
+                  return {
+                    hospital_name,
+                    hims_d_hospital_id,
+                    cost_centers: details.map((centers) => {
+                      const { cost_center, cost_center_id } = centers;
+                      return {
+                        hims_d_hospital_id,
+                        cost_center,
+                        cost_center_id,
+                      };
+                    }),
+                  };
+                })
+                .value();
 
               req.records = output;
               next();
