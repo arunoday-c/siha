@@ -6,9 +6,22 @@ const executePDF = function executePDFMethod(options) {
       const decimal_places = options.args.crypto.decimal_places;
       if (options.result.length > 0) {
         resolve({
+          sub_total: parseFloat(options.result[0]["sub_total"]).toFixed(
+            decimal_places
+          ),
+          discount_amount: parseFloat(options.result[0]["discount_amount"]).toFixed(
+            decimal_places
+          ),
+          net_total: parseFloat(options.result[0]["net_total"]).toFixed(
+            decimal_places
+          ),
+          total_tax: parseFloat(options.result[0]["total_tax"]).toFixed(
+            decimal_places
+          ),
           net_payable: parseFloat(options.result[0]["net_payable"]).toFixed(
             decimal_places
           ),
+
           sales_quotation_id: options.result[0]["sales_quotation_id"],
           sales_quotation_number: options.result[0]["sales_quotation_number"],
           customer_name: options.result[0]["customer_name"],

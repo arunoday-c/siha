@@ -190,15 +190,6 @@ export function Validations(state) {
     });
 
     return isError;
-  } else if (state.state.counter_id === null) {
-    isError = true;
-
-    swalMessage({
-      type: "warning",
-      title: "Counter is Mandatory."
-    });
-
-    return isError;
   } else if (
     state.state.existing_plan === "Y" &&
     state.state.treatment_plan_id === null
@@ -212,6 +203,17 @@ export function Validations(state) {
 
     return isError;
   }
+
+  // else if (state.state.counter_id === null) {
+  //   isError = true;
+
+  //   swalMessage({
+  //     type: "warning",
+  //     title: "Counter is Mandatory."
+  //   });
+
+  //   return isError;
+  // } 
 
   if (state.state.Cardchecked === true) {
     // if (state.state.card_number === null || state.state.card_number === "") {

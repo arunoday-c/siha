@@ -467,7 +467,8 @@ export function updateSalesOrderEntry(req, res, next) {
                 .executeQueryWithTransaction({
                     query:
                         "UPDATE `hims_f_sales_order` SET `authorize1`=?, `authorize1_by_date`=?, `authorize1_by`=?, \
-            `authorize2`=?, `authorize2_date`=?, `authorize2_by`=? WHERE `hims_f_sales_order_id`=?",
+                    `authorize2`=?, `authorize2_date`=?, `authorize2_by`=?, `is_completed`=?, `completed_by` =?, \
+                    `completed_date`=? WHERE `hims_f_sales_order_id`=?",
                     values: [
                         inputParam.authorize1,
                         new Date(),
@@ -475,6 +476,9 @@ export function updateSalesOrderEntry(req, res, next) {
                         inputParam.authorize2,
                         new Date(),
                         req.userIdentity.algaeh_d_app_user_id,
+                        inputParam.is_completed,
+                        req.userIdentity.algaeh_d_app_user_id,
+                        new Date(),
                         inputParam.hims_f_sales_order_id,
                     ],
                     printQuery: true,

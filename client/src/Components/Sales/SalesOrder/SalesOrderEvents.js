@@ -199,9 +199,7 @@ const SalesQuotationSearch = ($this, e) => {
               parseFloat(s.tax_amount)
             );
 
-            data.net_payable = _.sumBy(data.qutation_detail, (s) =>
-              parseFloat(s.total_amount)
-            );
+            data.net_payable = parseFloat(data.net_total) + parseFloat(data.total_tax);
 
             $this.setState(data);
             AlgaehLoader({ show: false });
@@ -406,15 +404,15 @@ const SaveSalesOrderEnrty = ($this) => {
         $this.state.sales_order_mode === "S"
           ? null
           : moment($this.state.quote_validity, "YYYY-MM-DD").format(
-              "YYYY-MM-DD"
-            );
+            "YYYY-MM-DD"
+          );
 
       $this.state.delivery_date =
         $this.state.sales_order_mode === "S"
           ? null
           : moment($this.state.delivery_date, "YYYY-MM-DD").format(
-              "YYYY-MM-DD"
-            );
+            "YYYY-MM-DD"
+          );
       const settings = { header: undefined, footer: undefined };
       AlgaehLoader({ show: true });
       algaehApiCall({
@@ -677,6 +675,7 @@ const AuthorizeOrderEntry = ($this, authorize) => {
   if ($this.state.sales_order_auth_level === "1") {
     $this.state.authorize1 = "Y";
     $this.state.authorize2 = "Y";
+    $this.state.is_completed = $this.state.sales_order_mode === "S" ? "Y" : "N"
     authorize1 = "Y";
     authorize2 = "Y";
   } else {
@@ -689,9 +688,11 @@ const AuthorizeOrderEntry = ($this, authorize) => {
       $this.state.authorize2 = "Y";
       authorize1 = "Y";
       authorize2 = "Y";
+      $this.state.is_completed = $this.state.sales_order_mode === "S" ? "Y" : "N"
     }
   }
 
+  debugger
   const settings = { header: undefined, footer: undefined };
   algaehApiCall({
     uri: "/SalesOrder/updateSalesOrderEntry",
