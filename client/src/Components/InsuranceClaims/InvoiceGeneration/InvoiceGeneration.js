@@ -243,8 +243,9 @@ class InvoiceGeneration extends Component {
           {/* Visit code */}
 
           <div className="col-2">
+            <label>Invoice Type</label>
             <div className="customRadio">
-              <label className="radio block">
+              <label className="radio inline">
                 <input
                   type="radio"
                   checked={this.state.cash_invoice}
@@ -252,10 +253,10 @@ class InvoiceGeneration extends Component {
                   onClick={this.selectData.bind(this)}
                   disabled={this.state.dataExists}
                 />
-                <span>Cash Invoice</span>
+                <span>Cash</span>
               </label>
 
-              <label className="radio block">
+              <label className="radio inline">
                 <input
                   type="radio"
                   checked={this.state.creidt_invoice}
@@ -263,11 +264,48 @@ class InvoiceGeneration extends Component {
                   onClick={this.selectData.bind(this)}
                   disabled={this.state.dataExists}
                 />
-                <span>Credit Invoice</span>
+                <span>Credit </span>
               </label>
             </div>
           </div>
-          <div className="col-4">
+
+          <div className="col-2 globalSearchCntr form-group">
+            <AlgaehLabel label={{ forceLabel: "Search Visit Code" }} />
+            <h6
+              onClick={VisitSearch.bind(this, this)}
+              disabled={this.state.case_type === "O" ? false : true}
+            >
+              {this.state.visit_code
+                ? this.state.visit_code
+                : "Search Employee"}
+              <i className="fas fa-search fa-lg"></i>
+            </h6>
+          </div>
+
+          <div className="col-2">
+            <AlgaehLabel
+              label={{
+                forceLabel: "Patient Code",
+              }}
+            />
+            <h6>
+              {this.state.patient_code
+                ? this.state.patient_code
+                : "Patient Code"}
+            </h6>
+          </div>
+          <div className="col">
+            <AlgaehLabel
+              label={{
+                forceLabel: "Patient Name",
+              }}
+            />
+            <h6>
+              {this.state.full_name ? this.state.full_name : "Patient Name"}
+            </h6>
+          </div>
+
+          {/* <div className="col-4">
             <div className="row">
               <AlagehFormGroup
                 div={{ className: "col-6" }}
@@ -296,59 +334,7 @@ class InvoiceGeneration extends Component {
                 />
               </div>
             </div>
-          </div>
-          <div className="col-6">
-            <div className="row">
-              <div className="col-3">
-                <AlgaehLabel
-                  label={{
-                    forceLabel: "Patient Code",
-                  }}
-                />
-                <h6>
-                  {this.state.patient_code
-                    ? this.state.patient_code
-                    : "Patient Code"}
-                </h6>
-              </div>
-              <div className="col-3">
-                <AlgaehLabel
-                  label={{
-                    forceLabel: "Patient Name",
-                  }}
-                />
-                <h6>
-                  {this.state.full_name ? this.state.full_name : "Patient Name"}
-                </h6>
-              </div>
-
-              {/* <AlagehAutoComplete
-                div={{ className: "col-lg-6" }}
-                label={{
-                  forceLabel: "Invoice Type",
-                  isImp: true
-                }}
-                selector={{
-                  name: "invoice_type",
-                  className: "select-fld",
-                  value: this.state.invoice_type,
-                  dataSource: {
-                    textField: "name",
-                    valueField: "value",
-                    data: GlobalVariables.FORMAT_INVOICE_TYPE
-                  },
-                  onChange: texthandle.bind(this, this),
-                  others: {
-                    disabled:
-                      this.state.select_invoice === "CH"
-                        ? true
-                        : this.state.existingPatient,
-                    tabIndex: "4"
-                  }
-                }}
-              /> */}
-            </div>
-          </div>
+          </div> */}
         </div>
         <div className="hptl-phase1-invoice-generation-form">
           <div className="col-lg-12">

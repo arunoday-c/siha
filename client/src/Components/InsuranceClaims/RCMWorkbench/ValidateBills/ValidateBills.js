@@ -4,7 +4,7 @@ import {
   AlgaehModalPopUp,
   AlgaehDataGrid,
   AlgaehLabel,
-  AlagehFormGroup
+  AlagehFormGroup,
 } from "../../../Wrapper/algaehWrapper";
 import AlgaehSearch from "../../../Wrapper/globalSearch";
 import spotlightSearch from "../../../../Search/spotlightSearch.json";
@@ -28,7 +28,7 @@ class ValidateBills extends PureComponent {
       openDCAF: false,
       DCAFData: undefined,
       openOCAF: false,
-      OCAFData: []
+      OCAFData: [],
     };
   }
 
@@ -39,19 +39,19 @@ class ValidateBills extends PureComponent {
       method: "GET",
       data: {
         patient_id: this.state.invoices.patient_id,
-        visit_id: this.state.invoices.visit_id
+        visit_id: this.state.invoices.visit_id,
       },
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           that.setState({ openUCAF: true, UCAFData: response.data.records });
         }
       },
-      onFailure: error => {
+      onFailure: (error) => {
         swalMessage({
           title: error.response.data.message,
-          type: "warning"
+          type: "warning",
         });
-      }
+      },
     });
   }
 
@@ -62,19 +62,19 @@ class ValidateBills extends PureComponent {
       method: "GET",
       data: {
         patient_id: this.state.invoices.patient_id,
-        visit_id: this.state.invoices.visit_id
+        visit_id: this.state.invoices.visit_id,
       },
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           that.setState({ openDCAF: true, DCAFData: response.data.records });
         }
       },
-      onFailure: error => {
+      onFailure: (error) => {
         swalMessage({
           title: error.response.data.message,
-          type: "warning"
+          type: "warning",
         });
-      }
+      },
     });
   }
 
@@ -85,19 +85,19 @@ class ValidateBills extends PureComponent {
       method: "GET",
       data: {
         patient_id: this.state.invoices.patient_id,
-        visit_id: this.state.invoices.visit_id
+        visit_id: this.state.invoices.visit_id,
       },
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           that.setState({ openOCAF: true, OCAFData: response.data.records });
         }
       },
-      onFailure: error => {
+      onFailure: (error) => {
         swalMessage({
           title: error.response.data.message,
-          type: "warning"
+          type: "warning",
         });
-      }
+      },
     });
   }
 
@@ -106,26 +106,26 @@ class ValidateBills extends PureComponent {
       uri: "/invoiceGeneration/updateClaimValidatedStatus",
       data: {
         hims_f_invoice_header_id: this.state.invoices.hims_f_invoice_header_id,
-        claim_validated: "V"
+        claim_validated: "V",
       },
       module: "insurance",
       method: "PUT",
-      onSuccess: res => {
+      onSuccess: (res) => {
         if (res.data.success) {
           swalMessage({
             title: "Invoice Validated Successfully",
-            type: "success"
+            type: "success",
           });
 
           document.getElementById("load-claims").click();
         }
       },
-      onError: error => {
+      onError: (error) => {
         swalMessage({
           title: error.name,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -133,7 +133,7 @@ class ValidateBills extends PureComponent {
     if (nextProps.data !== undefined) {
       this.setState(
         {
-          invoices: nextProps.data
+          invoices: nextProps.data,
         },
         () => {
           this.getInvoiceICDs();
@@ -148,22 +148,22 @@ class ValidateBills extends PureComponent {
       uri: "/department/get/subdepartment",
       module: "masterSettings",
       data: {
-        sub_department_status: "A"
+        sub_department_status: "A",
       },
       method: "GET",
-      onSuccess: res => {
+      onSuccess: (res) => {
         if (res.data.success) {
           this.setState({
-            sub_depts: res.data.records
+            sub_depts: res.data.records,
           });
         }
       },
-      onFailure: err => {
+      onFailure: (err) => {
         swalMessage({
           title: err.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
   generatePharacyCreditInvoiceReport() {
@@ -172,7 +172,7 @@ class ValidateBills extends PureComponent {
       method: "GET",
       module: "reports",
       headers: {
-        Accept: "blob"
+        Accept: "blob",
       },
       others: { responseType: "blob" },
       data: {
@@ -184,24 +184,24 @@ class ValidateBills extends PureComponent {
               value:
                 this.state.invoices.length !== 0
                   ? this.state.invoices.patient_id
-                  : null
+                  : null,
             },
             {
               name: "visit_id",
               value:
                 this.state.invoices.length !== 0
                   ? this.state.invoices.visit_id
-                  : null
+                  : null,
             },
             {
               name: "visit_date",
-              value: null
-            }
+              value: null,
+            },
           ],
-          outputFileType: "PDF"
-        }
+          outputFileType: "PDF",
+        },
       },
-      onSuccess: res => {
+      onSuccess: (res) => {
         // const url = URL.createObjectURL(res.data);
         // let myWindow = window.open(
         //   "{{ product.metafields.google.custom_label_0 }}",
@@ -212,10 +212,10 @@ class ValidateBills extends PureComponent {
         //   "<iframe src= '" + url + "' width='100%' height='100%' />"
         // );
         const urlBlob = URL.createObjectURL(res.data);
-      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=report`;
-      window.open(origin);
+        const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=report`;
+        window.open(origin);
         // window.document.title = "";
-      }
+      },
     });
   }
   generateReport(rpt_name, rpt_desc) {
@@ -224,7 +224,7 @@ class ValidateBills extends PureComponent {
       method: "GET",
       module: "reports",
       headers: {
-        Accept: "blob"
+        Accept: "blob",
       },
       others: { responseType: "blob" },
       data: {
@@ -236,24 +236,24 @@ class ValidateBills extends PureComponent {
               value:
                 this.state.invoices.length !== 0
                   ? this.state.invoices.patient_id
-                  : null
+                  : null,
             },
             {
               name: "visit_id",
               value:
                 this.state.invoices.length !== 0
                   ? this.state.invoices.visit_id
-                  : null
+                  : null,
             },
             {
               name: "visit_date",
-              value: null
-            }
+              value: null,
+            },
           ],
-          outputFileType: "PDF"
-        }
+          outputFileType: "PDF",
+        },
       },
-      onSuccess: res => {
+      onSuccess: (res) => {
         // const url = URL.createObjectURL(res.data);
         // let myWindow = window.open(
         //   "{{ product.metafields.google.custom_label_0 }}",
@@ -265,10 +265,9 @@ class ValidateBills extends PureComponent {
         // );
         // myWindow.document.title = rpt_desc;
         const urlBlob = URL.createObjectURL(res.data);
-      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=${rpt_desc}`;
-      window.open(origin);
-        
-      }
+        const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=${rpt_desc}`;
+        window.open(origin);
+      },
     });
   }
 
@@ -293,33 +292,33 @@ class ValidateBills extends PureComponent {
             episode_id: invoice.episode_id,
             daignosis_id: this.state.hims_d_icd_id,
             diagnosis_type: "P",
-            final_daignosis: "Y"
+            final_daignosis: "Y",
           },
           module: "insurance",
           method: "POST",
-          onSuccess: res => {
+          onSuccess: (res) => {
             if (res.data.success) {
               swalMessage({
                 title: "Record added successfully",
-                type: "success"
+                type: "success",
               });
               this.setState({
                 icd_code: null,
-                hims_d_icd_id: null
+                hims_d_icd_id: null,
               });
               this.getInvoiceICDs();
             }
           },
-          onError: err => {
+          onError: (err) => {
             swalMessage({
               title: err.message,
-              type: "error"
+              type: "error",
             });
-          }
+          },
         })
       : swalMessage({
           title: "Please select an ICD",
-          type: "warning"
+          type: "warning",
         });
   }
 
@@ -334,67 +333,67 @@ class ValidateBills extends PureComponent {
       confirmButtonText: "Yes",
       confirmButtonColor: "#44b8bd",
       cancelButtonColor: "#d33",
-      cancelButtonText: "No"
-    }).then(willDelete => {
+      cancelButtonText: "No",
+    }).then((willDelete) => {
       if (willDelete.value) {
         algaehApiCall({
           uri: "/invoiceGeneration/deleteInvoiceIcd",
           data: {
-            hims_f_invoice_icd_id: data.hims_f_invoice_icd_id
+            hims_f_invoice_icd_id: data.hims_f_invoice_icd_id,
           },
           module: "insurance",
           method: "DELETE",
-          onSuccess: response => {
+          onSuccess: (response) => {
             if (response.data.success) {
               swalMessage({
                 title: "Record deleted successfully . .",
-                type: "success"
+                type: "success",
               });
 
               this.getInvoiceICDs();
             }
           },
-          onFailure: error => {
+          onFailure: (error) => {
             swalMessage({
               title: error.message,
-              type: "warning"
+              type: "warning",
             });
-          }
+          },
         });
-      } 
+      }
     });
   }
 
   icdSearch() {
     AlgaehSearch({
       searchGrid: {
-        columns: spotlightSearch.Diagnosis.IcdCodes
+        columns: spotlightSearch.Diagnosis.IcdCodes,
       },
       searchName: "IcdCodes",
       uri: "/gloabelSearch/get",
       onContainsChange: (text, serchBy, callBack) => {
         callBack(text);
       },
-      onRowSelect: row => {
+      onRowSelect: (row) => {
         this.setState({
           icd_code: row.icd_code,
-          hims_d_icd_id: row.hims_d_icd_id
+          hims_d_icd_id: row.hims_d_icd_id,
         });
-      }
+      },
     });
   }
 
   cptSearch(row, e) {
     AlgaehSearch({
       searchGrid: {
-        columns: spotlightSearch.Services.CptCodes
+        columns: spotlightSearch.Services.CptCodes,
       },
       searchName: "CptCodes",
       uri: "/gloabelSearch/get",
       onContainsChange: (text, serchBy, callBack) => {
         callBack(text);
       },
-      onRowSelect: data => {
+      onRowSelect: (data) => {
         // this.setState({
         //   cpt_code: row.hims_d_cpt_code_id,
         //   cpt_code_data: row.cpt_code
@@ -402,7 +401,7 @@ class ValidateBills extends PureComponent {
 
         row["cpt_code"] = data.cpt_code;
         row.update();
-      }
+      },
     });
   }
 
@@ -414,19 +413,19 @@ class ValidateBills extends PureComponent {
       module: "insurance",
       data: { invoice_header_id: id },
       method: "GET",
-      onSuccess: res => {
+      onSuccess: (res) => {
         if (res.data.success) {
           this.setState({
-            icds: res.data.records
+            icds: res.data.records,
           });
         }
       },
-      onError: error => {
+      onError: (error) => {
         swalMessage({
           title: "Sorry for the inconvenience , Please reload the page",
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -438,7 +437,7 @@ class ValidateBills extends PureComponent {
         events={{
           onClose: () => {
             this.setState({ openDCAF: false });
-          }
+          },
         }}
       >
         <DcafEditor dataProps={this.state.DCAFData} />
@@ -453,7 +452,7 @@ class ValidateBills extends PureComponent {
         events={{
           onClose: () => {
             this.setState({ openOCAF: false });
-          }
+          },
         }}
       >
         <OcafEditor dataProps={this.state.OCAFData} />
@@ -468,7 +467,7 @@ class ValidateBills extends PureComponent {
         events={{
           onClose: () => {
             this.setState({ openUCAF: false });
-          }
+          },
         }}
       >
         <UcafEditor dataProps={this.state.UCAFData} />
@@ -481,24 +480,24 @@ class ValidateBills extends PureComponent {
       uri: "/invoiceGeneration/updateInvoiceDetails",
       data: {
         hims_f_invoice_details_id: data.hims_f_invoice_details_id,
-        cpt_code: data.cpt_code
+        cpt_code: data.cpt_code,
       },
       module: "insurance",
       method: "PUT",
-      onSuccess: res => {
+      onSuccess: (res) => {
         if (res.data.success) {
           swalMessage({
             title: "Record Updated",
-            type: "success"
+            type: "success",
           });
         }
       },
-      onFailure: err => {
+      onFailure: (err) => {
         swalMessage({
           title: "Cannot update, Please try again",
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -530,7 +529,7 @@ class ValidateBills extends PureComponent {
       <AlgaehModalPopUp
         title="Claim Validation"
         events={{
-          onClose: this.props.closeModal
+          onClose: this.props.closeModal,
         }}
         openPopup={this.props.openPopup}
       >
@@ -564,7 +563,7 @@ class ValidateBills extends PureComponent {
                       {
                         fieldName: "claim_validated",
                         label: <AlgaehLabel label={{ forceLabel: "Status" }} />,
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return (
                             <span>
                               {row.claim_validated === "V"
@@ -578,7 +577,7 @@ class ValidateBills extends PureComponent {
                                 : "----"}
                             </span>
                           );
-                        }
+                        },
                       },
                       // {
                       //   fieldName: "status",
@@ -602,13 +601,16 @@ class ValidateBills extends PureComponent {
                         fieldName: "visit_code",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Visit Code" }} />
-                        )
+                        ),
                       },
                       {
                         fieldName: "patient_name",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Patient Name" }} />
-                        )
+                        ),
+                        others: {
+                          minWidth: 250,
+                        },
                       },
                       {
                         fieldName: "invoice_number",
@@ -616,13 +618,16 @@ class ValidateBills extends PureComponent {
                           <AlgaehLabel
                             label={{ forceLabel: "Invoice Number" }}
                           />
-                        )
+                        ),
+                        others: {
+                          minWidth: 150,
+                        },
                       },
                       {
                         fieldName: "gross_amount",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Gross Amount" }} />
-                        )
+                        ),
                       },
                       {
                         fieldName: "discount_amount",
@@ -630,7 +635,7 @@ class ValidateBills extends PureComponent {
                           <AlgaehLabel
                             label={{ forceLabel: "Discount Amount" }}
                           />
-                        )
+                        ),
                       },
                       {
                         fieldName: "patient_resp",
@@ -638,13 +643,13 @@ class ValidateBills extends PureComponent {
                           <AlgaehLabel
                             label={{ forceLabel: "Patient Responsibility" }}
                           />
-                        )
+                        ),
                       },
                       {
                         fieldName: "patient_tax",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Patient Tax" }} />
-                        )
+                        ),
                       },
                       {
                         fieldName: "patient_payable",
@@ -652,7 +657,7 @@ class ValidateBills extends PureComponent {
                           <AlgaehLabel
                             label={{ forceLabel: "Patient Payable" }}
                           />
-                        )
+                        ),
                       },
                       {
                         fieldName: "company_resp",
@@ -660,13 +665,13 @@ class ValidateBills extends PureComponent {
                           <AlgaehLabel
                             label={{ forceLabel: "Company Responsibility" }}
                           />
-                        )
+                        ),
                       },
                       {
                         fieldName: "company_tax",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Company Tax" }} />
-                        )
+                        ),
                       },
                       {
                         fieldName: "company_payable",
@@ -674,19 +679,19 @@ class ValidateBills extends PureComponent {
                           <AlgaehLabel
                             label={{ forceLabel: "Company Payable" }}
                           />
-                        )
-                      }
+                        ),
+                      },
                     ]}
                     keyId="id"
                     dataSource={{
-                      data: invoices
+                      data: invoices,
                     }}
                     isEditable={false}
-                    paging={{ page: 0, rowsPerPage: 5 }}
+                    paging={{ page: 0, rowsPerPage: 2 }}
                     events={{
-                      onDelete: row => {},
-                      onEdit: row => {},
-                      onDone: row => {}
+                      onDelete: (row) => {},
+                      onEdit: (row) => {},
+                      onDone: (row) => {},
                     }}
                   />
                 </div>
@@ -699,76 +704,68 @@ class ValidateBills extends PureComponent {
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Service Code" }} />
                         ),
-                        disabled: true
+                        editorTemplate: (row) => {
+                          return <span>{row.service_type_code}</span>;
+                        },
+                        disabled: true,
                       },
                       {
                         fieldName: "service_type",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Service Type" }} />
                         ),
-                        disabled: true
+                        editorTemplate: (row) => {
+                          return <span>{row.service_type}</span>;
+                        },
+                        disabled: true,
+                        others: { minWidth: 150 },
                       },
                       {
                         fieldName: "service_name",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Service Name" }} />
                         ),
-                        disabled: true
+                        // displayTemplate: (row) => {
+                        //   return <span>{row.service_name}</span>;
+                        // },
+                        editorTemplate: (row) => {
+                          return <span>{row.service_name}</span>;
+                        },
+                        disabled: true,
+                        others: { minWidth: 200 },
                       },
                       {
                         fieldName: "cpt_code",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "CPT Code" }} />
                         ),
-                        editorTemplate: row => {
+                        editorTemplate: (row) => {
                           return (
                             <div className="row">
-                              <AlagehFormGroup
-                                div={{ className: "col  margin-top-15" }}
-                                textBox={{
-                                  className: "txt-fld",
-                                  name: "cpt_code",
-                                  others: {
-                                    disabled: true
-                                  },
-                                  value: row.cpt_code,
-                                  events: {
-                                    onChange: this.changeGridEditors.bind(this)
-                                  }
-                                }}
-                              />
-
-                              <div
-                                className="col-lg-1"
-                                style={{ paddingTop: "40px" }}
-                              >
-                                <i
-                                  name="cpt_code"
-                                  onClick={this.cptSearch.bind(this, row)}
-                                  className="fas fa-search"
-                                  style={{
-                                    marginLeft: "-75%",
-                                    cursor: "pointer"
-                                  }}
-                                />
+                              <div className="col globalSearchCntr noLabel">
+                                <h6 onClick={this.cptSearch.bind(this, row)}>
+                                  {row.cpt_code ? row.cpt_code : "CPT Code"}
+                                  <i className="fas fa-search fa-lg"></i>
+                                </h6>
                               </div>
                             </div>
                           );
-                        }
+                        },
+                        others: { minWidth: 150 },
                       },
                       {
                         fieldName: "quantity",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Quantity" }} />
                         ),
-                        disabled: true
+                        disabled: true,
                       },
                       {
                         fieldName: "gross_amount",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Gross Amount" }} />
                         ),
-                        disabled: true
+                        disabled: true,
                       },
                       {
                         fieldName: "discount_amount",
@@ -777,7 +774,7 @@ class ValidateBills extends PureComponent {
                             label={{ forceLabel: "Discount Amount" }}
                           />
                         ),
-                        disabled: true
+                        disabled: true,
                       },
                       {
                         fieldName: "patient_resp",
@@ -786,14 +783,14 @@ class ValidateBills extends PureComponent {
                             label={{ forceLabel: "Patient Responsibility" }}
                           />
                         ),
-                        disabled: true
+                        disabled: true,
                       },
                       {
                         fieldName: "patient_tax",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Patient Tax" }} />
                         ),
-                        disabled: true
+                        disabled: true,
                       },
                       {
                         fieldName: "patient_payable",
@@ -802,7 +799,7 @@ class ValidateBills extends PureComponent {
                             label={{ forceLabel: "Patient Payable" }}
                           />
                         ),
-                        disabled: true
+                        disabled: true,
                       },
                       {
                         fieldName: "company_resp",
@@ -811,14 +808,14 @@ class ValidateBills extends PureComponent {
                             label={{ forceLabel: "Company Responsibility" }}
                           />
                         ),
-                        disabled: true
+                        disabled: true,
                       },
                       {
                         fieldName: "company_tax",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Company Tax" }} />
                         ),
-                        disabled: true
+                        disabled: true,
                       },
                       {
                         fieldName: "company_payable",
@@ -827,21 +824,21 @@ class ValidateBills extends PureComponent {
                             label={{ forceLabel: "Company Payable" }}
                           />
                         ),
-                        disabled: true
-                      }
+                        disabled: true,
+                      },
                     ]}
                     keyId="id"
                     dataSource={{
-                      data: invoice_details
+                      data: invoice_details,
                       // data: this.state.invoice_details
                     }}
                     isEditable={claim_validated === "P" ? true : false}
                     actions={{ allowDelete: false }}
                     paging={{ page: 0, rowsPerPage: 10 }}
                     events={{
-                      onDelete: row => {},
-                      onEdit: row => {},
-                      onDone: this.updateInvoiceDetail.bind(this)
+                      onDelete: (row) => {},
+                      onEdit: (row) => {},
+                      onDone: this.updateInvoiceDetail.bind(this),
                     }}
                   />
                 </div>
@@ -852,7 +849,7 @@ class ValidateBills extends PureComponent {
                     <div className="row">
                       <div className="col-lg-6 insurCrdImg">
                         <AlgaehFileUploader
-                          ref={patInsuranceFrontImg => {
+                          ref={(patInsuranceFrontImg) => {
                             this.patInsuranceFrontImg = patInsuranceFrontImg;
                           }}
                           noImage="insurance-card-front"
@@ -865,7 +862,7 @@ class ValidateBills extends PureComponent {
                             processDelay: this.imageDetails.bind(
                               this,
                               "patInsuranceFrontImg"
-                            )
+                            ),
                           }}
                           renderPrevState={this.state.patInsuranceFrontImg}
                           // forceRefresh={this.state.forceRefresh}
@@ -874,7 +871,7 @@ class ValidateBills extends PureComponent {
 
                       <div className="col-lg-6 insurCrdImg">
                         <AlgaehFileUploader
-                          ref={patInsuranceBackImg => {
+                          ref={(patInsuranceBackImg) => {
                             this.patInsuranceBackImg = patInsuranceBackImg;
                           }}
                           noImage="insurance-card-back"
@@ -887,7 +884,7 @@ class ValidateBills extends PureComponent {
                             processDelay: this.imageDetails.bind(
                               this,
                               "patInsuranceBackImg"
-                            )
+                            ),
                           }}
                           renderPrevState={this.state.patInsuranceBackImg}
                           forceRefresh={this.state.forceRefresh}
@@ -895,6 +892,7 @@ class ValidateBills extends PureComponent {
                         <div />
                       </div>
                     </div>
+                    <hr></hr>
                   </div>
                   {/* <div className="col-12 margin-top-15">
                     <div className="image-drop-area">
@@ -932,23 +930,35 @@ class ValidateBills extends PureComponent {
                     </div>
                   </div> */}
                   {claim_validated === "P" ? (
-                    <div className="row">
-                      <AlagehFormGroup
+                    <>
+                      <div className="col globalSearchCntr">
+                        <AlgaehLabel
+                          label={{ forceLabel: "Search ICD Code" }}
+                        />
+                        <h6 onClick={this.addICDtoInvoice.bind(this)}>
+                          {this.state.icd_code
+                            ? this.state.icd_code
+                            : "Search ICD Code"}
+                          <i className="fas fa-search fa-lg"></i>
+                        </h6>
+                      </div>
+
+                      {/* <AlagehFormGroup
                         div={{ className: "col  margin-top-15 " }}
                         label={{
                           forceLabel: "ICD Code",
-                          isImp: false
+                          isImp: false,
                         }}
                         textBox={{
                           className: "txt-fld",
                           name: "icd_code",
                           others: {
-                            disabled: true
+                            disabled: true,
                           },
                           value: this.state.icd_code,
                           events: {
                             // onChange: this.texthandle.bind(this)
-                          }
+                          },
                         }}
                       />
                       <div
@@ -959,23 +969,23 @@ class ValidateBills extends PureComponent {
                           onClick={this.icdSearch.bind(this)}
                           className="fas fa-search"
                           style={{
-                            cursor: "pointer"
+                            cursor: "pointer",
                           }}
                         />
-                      </div>
+                      </div> */}
                       <div className="col-3">
                         <button
                           onClick={this.addICDtoInvoice.bind(this)}
                           className="btn btn-primary margin-top-15"
-                          style={{ marginTop: 32 }}
+                          style={{ marginTop: 21 }}
                         >
                           Add
                         </button>
                       </div>
-                    </div>
+                    </>
                   ) : null}
 
-                  <div className="col-12 margin-top-15" id="icd_bill_cntr">
+                  <div className="col-12" id="icd_bill_cntr">
                     <AlgaehDataGrid
                       id="icd_bill_Grid"
                       columns={[
@@ -984,7 +994,7 @@ class ValidateBills extends PureComponent {
                           label: (
                             <AlgaehLabel label={{ forceLabel: "Action" }} />
                           ),
-                          displayTemplate: row => {
+                          displayTemplate: (row) => {
                             return (
                               <span>
                                 <i
@@ -992,7 +1002,7 @@ class ValidateBills extends PureComponent {
                                     pointerEvents:
                                       claim_validated === "P" ? "" : "none",
                                     opacity:
-                                      claim_validated === "P" ? "" : "0.1"
+                                      claim_validated === "P" ? "" : "0.1",
                                   }}
                                   className="fas fa-trash-alt"
                                   onClick={this.deleteICDfromInvoice.bind(
@@ -1003,7 +1013,7 @@ class ValidateBills extends PureComponent {
                               </span>
                             );
                           },
-                          editorTemplate: row => {
+                          editorTemplate: (row) => {
                             return (
                               <span
                                 onClick={this.deleteICDfromInvoice.bind(
@@ -1014,15 +1024,15 @@ class ValidateBills extends PureComponent {
                                 <i className="fas fa-trash-alt" />
                               </span>
                             );
-                          }
+                          },
                         },
                         {
                           fieldName: "icd_type",
-                          label: <AlgaehLabel label={{ forceLabel: "Type" }} />
+                          label: <AlgaehLabel label={{ forceLabel: "Type" }} />,
                         },
                         {
                           fieldName: "icd_code",
-                          label: <AlgaehLabel label={{ forceLabel: "Code" }} />
+                          label: <AlgaehLabel label={{ forceLabel: "Code" }} />,
                         },
                         {
                           fieldName: "icd_description",
@@ -1030,19 +1040,19 @@ class ValidateBills extends PureComponent {
                             <AlgaehLabel
                               label={{ forceLabel: "Description" }}
                             />
-                          )
-                        }
+                          ),
+                        },
                       ]}
                       keyId="id"
                       dataSource={{
-                        data: this.state.icds
+                        data: this.state.icds,
                       }}
                       isEditable={false}
                       paging={{ page: 0, rowsPerPage: 10 }}
                       events={{
-                        onDelete: row => {},
-                        onEdit: row => {},
-                        onDone: row => {}
+                        onDelete: (row) => {},
+                        onEdit: (row) => {},
+                        onDone: (row) => {},
                       }}
                     />
                   </div>

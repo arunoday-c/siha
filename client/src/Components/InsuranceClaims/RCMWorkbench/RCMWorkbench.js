@@ -603,36 +603,6 @@ class RCMWorkbench extends Component {
                   id="rcmDesktopGrid"
                   columns={[
                     {
-                      fieldName: "actions",
-                      label: <AlgaehLabel label={{ forceLabel: "Details" }} />,
-                      displayTemplate: (row) => {
-                        return (
-                          <i
-                            onClick={() => {
-                              // row.claim_validated === "V" ||
-                              // row.claim_validated === "X"
-                              //   ? swalMessage({
-                              //       title:
-                              //         "Invoice Already Validated, You can now submit the invoice for claims",
-                              //       type: "warning"
-                              //     })
-                              //   :
-                              this.setState({
-                                openClaims: true,
-                                sendProps: row,
-                              });
-                            }}
-                            className="fas fa-eye"
-                          />
-                        );
-                      },
-
-                      others: {
-                        fixed: "left",
-                        filterable: false,
-                      },
-                    },
-                    {
                       fieldName: "chkselect",
                       label: <AlgaehLabel label={{ forceLabel: "Select" }} />,
                       displayTemplate: (row) => {
@@ -658,13 +628,47 @@ class RCMWorkbench extends Component {
                         );
                       },
                       others: {
-                        fixed: "left",
+                        // fixed: "left",
                         filterable: false,
+                        maxWidth: 60,
+                      },
+                    },
+                    {
+                      fieldName: "actions",
+                      label: <AlgaehLabel label={{ forceLabel: "Details" }} />,
+                      displayTemplate: (row) => {
+                        return (
+                          <i
+                            onClick={() => {
+                              // row.claim_validated === "V" ||
+                              // row.claim_validated === "X"
+                              //   ? swalMessage({
+                              //       title:
+                              //         "Invoice Already Validated, You can now submit the invoice for claims",
+                              //       type: "warning"
+                              //     })
+                              //   :
+                              this.setState({
+                                openClaims: true,
+                                sendProps: row,
+                              });
+                            }}
+                            className="fas fa-eye"
+                          />
+                        );
+                      },
+                      others: {
+                        // fixed: "left",
+                        filterable: false,
+                        maxWidth: 60,
                       },
                     },
                     {
                       fieldName: "invoice_number",
                       label: <AlgaehLabel label={{ forceLabel: "Claim ID" }} />,
+                      others: {
+                        minWidth: 130,
+                      },
                     },
                     {
                       fieldName: "claim_validated",
@@ -684,6 +688,9 @@ class RCMWorkbench extends Component {
                           </span>
                         );
                       },
+                      others: {
+                        maxWidth: 100,
+                      },
                     },
                     {
                       fieldName: "insurance_provider_name",
@@ -692,22 +699,31 @@ class RCMWorkbench extends Component {
                           label={{ forceLabel: "Insurance Company" }}
                         />
                       ),
+                      others: {
+                        minWidth: 150,
+                      },
                     },
                     {
                       fieldName: "policy_number",
                       label: (
-                        <AlgaehLabel label={{ forceLabel: "Policy Number" }} />
+                        <AlgaehLabel label={{ forceLabel: "Policy No." }} />
                       ),
                     },
                     {
                       fieldName: "network_type",
                       label: <AlgaehLabel label={{ forceLabel: "Plan" }} />,
+                      others: {
+                        minWidth: 150,
+                      },
                     },
                     {
                       fieldName: "card_number",
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Card Number" }} />
                       ),
+                      others: {
+                        maxWidth: 150,
+                      },
                     },
                     {
                       fieldName: "invoice_date",
@@ -722,12 +738,18 @@ class RCMWorkbench extends Component {
                         );
                       },
                       disabled: true,
+                      others: {
+                        maxWidth: 100,
+                      },
                     },
                     {
                       fieldName: "patient_code",
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Patient Code" }} />
                       ),
+                      others: {
+                        maxWidth: 100,
+                      },
                     },
                     {
                       fieldName: "patient_name",
@@ -735,6 +757,9 @@ class RCMWorkbench extends Component {
                         <AlgaehLabel label={{ forceLabel: "Patient Name" }} />
                       ),
                       disabled: true,
+                      others: {
+                        minWidth: 150,
+                      },
                     },
                     {
                       fieldName: "submission_ammount",
@@ -754,6 +779,9 @@ class RCMWorkbench extends Component {
                           </span>
                         );
                       },
+                      others: {
+                        maxWidth: 100,
+                      },
                     },
                     {
                       fieldName: "submission_date",
@@ -768,6 +796,9 @@ class RCMWorkbench extends Component {
                               : "------"}
                           </span>
                         );
+                      },
+                      others: {
+                        maxWidth: 100,
                       },
                     },
                     {
@@ -784,6 +815,9 @@ class RCMWorkbench extends Component {
                           </span>
                         );
                       },
+                      others: {
+                        maxWidth: 100,
+                      },
                     },
                     {
                       fieldName: "remittance_date",
@@ -799,6 +833,9 @@ class RCMWorkbench extends Component {
                           </span>
                         );
                       },
+                      others: {
+                        maxWidth: 100,
+                      },
                     },
                     {
                       fieldName: "denial_ammount.",
@@ -811,6 +848,9 @@ class RCMWorkbench extends Component {
                             {row.denial_ammount ? row.denial_ammount : 0}
                           </span>
                         );
+                      },
+                      others: {
+                        maxWidth: 100,
                       },
                     },
                   ]}
