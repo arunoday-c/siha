@@ -432,7 +432,7 @@ class RCMWorkbench extends Component {
 
         <div className="col-12">
           <div className="row inner-top-search">
-            <div className="col-2">
+            <div className="col-3">
               <label>Load By</label>
               <div className="customRadio">
                 <label className="radio inline">
@@ -462,7 +462,7 @@ class RCMWorkbench extends Component {
             {this.state.rcmMode === "C" ? (
               <>
                 <AlagehAutoComplete
-                  div={{ className: "col form-group mandatory" }}
+                  div={{ className: "col-3 form-group mandatory" }}
                   label={{ isImp: true, forceLabel: "Company Name" }}
                   selector={{
                     name: "insurance_provider_id",
@@ -483,7 +483,7 @@ class RCMWorkbench extends Component {
                   }}
                 />
                 <AlagehAutoComplete
-                  div={{ className: "col form-group mandatory" }}
+                  div={{ className: "col-3 form-group mandatory" }}
                   label={{ isImp: true, forceLabel: "Sub Company Name" }}
                   selector={{
                     name: "sub_insurance_id",
@@ -503,7 +503,7 @@ class RCMWorkbench extends Component {
                   }}
                 />
 
-                <div className="col-2 globalSearchCntr">
+                <div className="col-3 globalSearchCntr">
                   <AlgaehLabel label={{ forceLabel: "Search Employee" }} />
                   <h6 onClick={this.patientSearch.bind(this)}>
                     {/* {this.state.emp_name ? this.state.emp_name : "------"} */}
@@ -514,7 +514,7 @@ class RCMWorkbench extends Component {
                   </h6>
                 </div>
                 <AlgaehDateHandler
-                  div={{ className: "col" }}
+                  div={{ className: "col-2 form-group" }}
                   label={{ isImp: false, forceLabel: "From Date" }}
                   textBox={{
                     className: "txt-fld",
@@ -531,7 +531,7 @@ class RCMWorkbench extends Component {
                   value={this.state.from_date}
                 />
                 <AlgaehDateHandler
-                  div={{ className: "col" }}
+                  div={{ className: "col-2 form-group" }}
                   label={{ isImp: false, forceLabel: "To Date" }}
                   textBox={{
                     className: "txt-fld",
@@ -547,33 +547,51 @@ class RCMWorkbench extends Component {
                   }}
                   value={this.state.to_date}
                 />
+                <div className="col">
+                  <button
+                    onClick={this.getInvoicesForClaims}
+                    className="btn btn-primary"
+                    style={{ marginTop: 19, marginLeft: 5, float: "right" }}
+                  >
+                    Load
+                  </button>
+                  <button
+                    onClick={this.clearSearch}
+                    className="btn btn-default"
+                    style={{ marginTop: 19, float: "right" }}
+                  >
+                    Clear
+                  </button>
+                </div>
               </>
             ) : (
-              <div className="col-2 globalSearchCntr form-group">
-                <AlgaehLabel label={{ forceLabel: "Search Statement No" }} />
-                <h6>
-                  {/* {this.state.emp_name ? this.state.emp_name : "------"} */}
-                  {"Search Statement No"}
-                  <i className="fas fa-search fa-lg"></i>
-                </h6>
-              </div>
+              <>
+                <div className="col-3 globalSearchCntr form-group">
+                  <AlgaehLabel label={{ forceLabel: "Search Statement No" }} />
+                  <h6>
+                    {/* {this.state.emp_name ? this.state.emp_name : "------"} */}
+                    {"Search Statement No"}
+                    <i className="fas fa-search fa-lg"></i>
+                  </h6>
+                </div>
+                <div className="col-2">
+                  <button
+                    onClick={this.getInvoicesForClaims}
+                    className="btn btn-primary"
+                    style={{ marginTop: 19, marginLeft: 5, float: "right" }}
+                  >
+                    Load
+                  </button>
+                  <button
+                    onClick={this.clearSearch}
+                    className="btn btn-default"
+                    style={{ marginTop: 19, float: "right" }}
+                  >
+                    Clear
+                  </button>
+                </div>
+              </>
             )}
-            <div className="col-2">
-              <button
-                onClick={this.getInvoicesForClaims}
-                className="btn btn-primary"
-                style={{ marginTop: 19, marginLeft: 5, float: "right" }}
-              >
-                Load
-              </button>
-              <button
-                onClick={this.clearSearch}
-                className="btn btn-default"
-                style={{ marginTop: 19, float: "right" }}
-              >
-                Clear
-              </button>
-            </div>
           </div>
         </div>
 
