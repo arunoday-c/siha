@@ -137,9 +137,7 @@ const discounthandle = ($this, context, ctrl, e) => {
           : (sub_discount_amount / parseFloat($this.state.extended_price)) *
           100;
 
-      sub_discount_percentage = sub_discount_percentage.toFixed(
-        $this.state.decimal_places
-      );
+      sub_discount_percentage = sub_discount_percentage.toFixed(6);
     }
     if (sub_discount_percentage > 100) {
       swalMessage({
@@ -985,9 +983,7 @@ const onchhangegriddiscount = ($this, row, e) => {
       sub_discount_amount === null
         ? 0
         : (sub_discount_amount / parseFloat(extended_price)) * 100;
-    sub_discount_percentage = sub_discount_percentage.toFixed(
-      $this.state.decimal_places
-    );
+    sub_discount_percentage = sub_discount_percentage.toFixed(6);
 
     if (parseFloat(discount_amount) > parseFloat(extended_price)) {
       swalMessage({
