@@ -90,6 +90,10 @@
         "label": "Patient Name"
       },
       {
+        "fieldName": "primary_id_no",
+        "label": "Patient ID"
+      },
+      {
         "fieldName": "contact_number",
         "label": "Mobile Num."
       },
