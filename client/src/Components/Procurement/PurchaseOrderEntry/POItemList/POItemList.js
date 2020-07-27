@@ -859,35 +859,35 @@ class POItemList extends Component {
                               },
                             },
 
-                            {
-                              fieldName: "unit_cost",
-                              label: (
-                                <AlgaehLabel
-                                  label={{ forceLabel: "Unit Cost" }}
-                                />
-                              ),
-                              displayTemplate: (row) => {
-                                return (
-                                  <span>
-                                    {GetAmountFormart(row.unit_cost, {
-                                      appendSymbol: false,
-                                    })}
-                                  </span>
-                                );
-                              },
-                              editorTemplate: (row) => {
-                                return (
-                                  <span>
-                                    {GetAmountFormart(row.unit_cost, {
-                                      appendSymbol: false,
-                                    })}
-                                  </span>
-                                );
-                              },
-                              others: {
-                                filterable: false,
-                              },
-                            },
+                            // {
+                            //   fieldName: "unit_cost",
+                            //   label: (
+                            //     <AlgaehLabel
+                            //       label={{ forceLabel: "Unit Cost" }}
+                            //     />
+                            //   ),
+                            //   displayTemplate: (row) => {
+                            //     return (
+                            //       <span>
+                            //         {GetAmountFormart(row.unit_cost, {
+                            //           appendSymbol: false,
+                            //         })}
+                            //       </span>
+                            //     );
+                            //   },
+                            //   editorTemplate: (row) => {
+                            //     return (
+                            //       <span>
+                            //         {GetAmountFormart(row.unit_cost, {
+                            //           appendSymbol: false,
+                            //         })}
+                            //       </span>
+                            //     );
+                            //   },
+                            //   others: {
+                            //     filterable: false,
+                            //   },
+                            // },
 
                             {
                               fieldName: "quantity_outstanding",
