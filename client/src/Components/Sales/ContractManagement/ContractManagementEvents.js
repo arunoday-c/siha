@@ -348,7 +348,7 @@ export const getCtrlCode = ($this, docNumber, row) => {
           (item) => item.cost_center_id === data.project_id
         );
         getDocuments(docNumber, $this);
-        AlgaehLoader({ show: false });
+        // AlgaehLoader({ show: false });
 
         data.saveEnable = true;
         data.dataExists = true;
