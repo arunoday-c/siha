@@ -18,11 +18,11 @@ let getPatientUCAF = (req, res, next) => {
           _input.patient_id,
           _input.visit_id,
           _input.visit_date,
-          _input.visit_id
-        ]
+          _input.visit_id,
+        ],
         // printQuery: true
       })
-      .then(result => {
+      .then((result) => {
         const _isInsured = result[1][0]["insured"];
         if (_isInsured == "N") {
           _mysql.releaseConnection();
@@ -56,7 +56,7 @@ let getPatientUCAF = (req, res, next) => {
                 and IM.patient_id = V.patient_id \
                 where V.patient_id=? and (date(visit_date) =date(?) or  V.hims_f_patient_visit_id=? )\
                 and P.record_status='A'; \
-                select distinct PV.vital_value,PV.formula_value,VH.vitals_name, \
+                select distinct PV.visit_date, PV.vital_value,PV.formula_value,VH.vitals_name, \
                 case VH.vitals_name when 'Weight' then 'patient_weight' when 'Heart Rate' then 'patient_pulse' \
                 when 'Height' then 'patient_height' when 'BMI' then 'patient_bmi' when 'Temperature' then 'patient_temp' \
                 when 'O2 Sat' then 'patient_o2stat' when 'Bp Systolic' then 'patient_bp_sys' when 'Bp Diastolic' \
@@ -138,11 +138,11 @@ let getPatientUCAF = (req, res, next) => {
                 hims_f_ucaf_header_id,
                 hims_f_ucaf_header_id,
                 hims_f_ucaf_header_id,
-                hims_f_ucaf_header_id
+                hims_f_ucaf_header_id,
               ],
-              printQuery: true
+              printQuery: true,
             })
-            .then(outputResult => {
+            .then((outputResult) => {
               // let errorString =
               //   outputResult[4].length == 0 ? "Services not yet added \n" : "";
               // errorString +=
@@ -269,58 +269,58 @@ let getPatientUCAF = (req, res, next) => {
                     _fields.patient_complaint_type,
                     _fields.patient_indicated_LMP,
                     _fields.patient_gender,
-                    _fields.age_in_years
+                    _fields.age_in_years,
                   ],
-                  printQuery: true
+                  printQuery: true,
                 })
-                .then(headerResult => {
+                .then((headerResult) => {
                   req["hims_f_ucaf_header_id"] = headerResult["insertId"];
                   let _services_query = {
                     query: "INSERT INTO hims_f_ucaf_services (??) values ?",
                     values: outputResult[4],
                     extraValues: {
-                      hims_f_ucaf_header_id: headerResult["insertId"]
+                      hims_f_ucaf_header_id: headerResult["insertId"],
                     },
-                    bulkInsertOrUpdate: true
+                    bulkInsertOrUpdate: true,
                   };
                   if (outputResult[4].length == 0) {
                     _services_query = {
-                      query: "select 1"
+                      query: "select 1",
                     };
                   }
                   let _service_medication = {
                     query: "INSERT INTO hims_f_ucaf_medication (??) values ?",
                     values: outputResult[5],
                     extraValues: {
-                      hims_f_ucaf_header_id: headerResult["insertId"]
+                      hims_f_ucaf_header_id: headerResult["insertId"],
                     },
-                    bulkInsertOrUpdate: true
+                    bulkInsertOrUpdate: true,
                   };
                   if (outputResult[5].length == 0) {
                     _service_medication = {
-                      query: "select 1"
+                      query: "select 1",
                     };
                   }
                   _mysql
                     .executeQuery(_services_query)
-                    .then(serviceResult => {
+                    .then((serviceResult) => {
                       _mysql
                         .executeQuery(_service_medication)
-                        .then(medicationResult => {
+                        .then((medicationResult) => {
                           _mysql
                             .executeQuery({
                               query:
                                 "INSERT INTO hims_f_ucaf_insurance_details (??) values ?",
                               values: outputResult[6],
                               extraValues: {
-                                hims_f_ucaf_header_id: headerResult["insertId"]
+                                hims_f_ucaf_header_id: headerResult["insertId"],
                               },
-                              bulkInsertOrUpdate: true
+                              bulkInsertOrUpdate: true,
                             })
-                            .then(insuranceResult => {
+                            .then((insuranceResult) => {
                               _getUcafDetails(_mysql, req)
-                                .then(allResult => {
-                                  _mysql.commitTransaction(error => {
+                                .then((allResult) => {
+                                  _mysql.commitTransaction((error) => {
                                     _mysql.releaseConnection();
                                     if (error) {
                                       _mysql.rollBackTransaction(() => {
@@ -332,36 +332,36 @@ let getPatientUCAF = (req, res, next) => {
                                   req.records = allResult;
                                   next();
                                 })
-                                .catch(error => {
+                                .catch((error) => {
                                   _mysql.releaseConnection();
                                   next(error);
                                 });
                             })
-                            .catch(error => {
+                            .catch((error) => {
                               _mysql.rollBackTransaction(() => {
                                 next(error);
                               });
                             });
                         })
-                        .catch(error => {
+                        .catch((error) => {
                           _mysql.rollBackTransaction(() => {
                             next(error);
                           });
                         });
                     })
-                    .catch(error => {
+                    .catch((error) => {
                       _mysql.rollBackTransaction(() => {
                         next(error);
                       });
                     });
                 })
-                .catch(error => {
+                .catch((error) => {
                   _mysql.rollBackTransaction(() => {
                     next(error);
                   });
                 });
             })
-            .catch(error => {
+            .catch((error) => {
               _mysql.rollBackTransaction(() => {
                 next(error);
               });
@@ -369,18 +369,18 @@ let getPatientUCAF = (req, res, next) => {
         } else {
           req["hims_f_ucaf_header_id"] = result[0][0]["hims_f_ucaf_header_id"];
           _getUcafDetails(_mysql, req)
-            .then(allResult => {
+            .then((allResult) => {
               _mysql.releaseConnection();
 
               req.records = allResult;
               next();
             })
-            .catch(error => {
+            .catch((error) => {
               next(error);
             });
         }
       })
-      .catch(error => {
+      .catch((error) => {
         _mysql.releaseConnection();
         next(error);
       });
@@ -403,19 +403,19 @@ const _getUcafDetails = (_mysql, req) => {
           req.hims_f_ucaf_header_id,
           req.hims_f_ucaf_header_id,
           req.hims_f_ucaf_header_id,
-          req.hims_f_ucaf_header_id
+          req.hims_f_ucaf_header_id,
         ],
-        printQuery: true
+        printQuery: true,
       })
-      .then(result => {
+      .then((result) => {
         resolve({
           hims_f_ucaf_header: result[0],
           hims_f_ucaf_insurance_details: result[1],
           hims_f_ucaf_medication: result[2],
-          hims_f_ucaf_services: result[3]
+          hims_f_ucaf_services: result[3],
         });
       })
-      .catch(error => {
+      .catch((error) => {
         reject(error);
       });
   });
@@ -461,16 +461,16 @@ const updateUcafDetails = (req, res, next) => {
           input.patient_indicated_LMP,
           new Date(),
           req.userIdentity.algaeh_d_app_user_id,
-          input.hims_f_ucaf_header_id
+          input.hims_f_ucaf_header_id,
         ],
-        printQuery: true
+        printQuery: true,
       })
-      .then(result => {
+      .then((result) => {
         _mysql.releaseConnection();
         req.records = result;
         next();
       })
-      .catch(error => {
+      .catch((error) => {
         _mysql.releaseConnection();
         next(error);
       });
@@ -482,5 +482,5 @@ const updateUcafDetails = (req, res, next) => {
 
 export default {
   getPatientUCAF,
-  updateUcafDetails
+  updateUcafDetails,
 };

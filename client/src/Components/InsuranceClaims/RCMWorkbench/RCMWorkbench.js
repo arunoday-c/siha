@@ -676,15 +676,23 @@ class RCMWorkbench extends Component {
                       displayTemplate: (row) => {
                         return (
                           <span>
-                            {row.claim_validated === "V"
-                              ? "Validated"
-                              : row.claim_validated === "E"
-                              ? "Error"
-                              : row.claim_validated === "X"
-                              ? "XML Generated"
-                              : row.claim_validated === "P"
-                              ? "Pending"
-                              : "----"}
+                            {row.claim_validated === "V" ? (
+                              <span className="badge badge-primary">
+                                Validated
+                              </span>
+                            ) : row.claim_validated === "E" ? (
+                              <span className="badge badge-danger">Error</span>
+                            ) : row.claim_validated === "X" ? (
+                              <span className="badge badge-info">
+                                XML Generated
+                              </span>
+                            ) : row.claim_validated === "P" ? (
+                              <span className="badge badge-warning">
+                                Pending
+                              </span>
+                            ) : (
+                              "----"
+                            )}
                           </span>
                         );
                       },
@@ -692,30 +700,30 @@ class RCMWorkbench extends Component {
                         maxWidth: 100,
                       },
                     },
-                    {
-                      fieldName: "insurance_provider_name",
-                      label: (
-                        <AlgaehLabel
-                          label={{ forceLabel: "Insurance Company" }}
-                        />
-                      ),
-                      others: {
-                        minWidth: 150,
-                      },
-                    },
+                    // {
+                    //   fieldName: "insurance_provider_name",
+                    //   label: (
+                    //     <AlgaehLabel
+                    //       label={{ forceLabel: "Insurance Company" }}
+                    //     />
+                    //   ),
+                    //   others: {
+                    //     minWidth: 150,
+                    //   },
+                    // },
                     {
                       fieldName: "policy_number",
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Policy No." }} />
                       ),
                     },
-                    {
-                      fieldName: "network_type",
-                      label: <AlgaehLabel label={{ forceLabel: "Plan" }} />,
-                      others: {
-                        minWidth: 150,
-                      },
-                    },
+                    // {
+                    //   fieldName: "network_type",
+                    //   label: <AlgaehLabel label={{ forceLabel: "Plan" }} />,
+                    //   others: {
+                    //     minWidth: 150,
+                    //   },
+                    // },
                     {
                       fieldName: "card_number",
                       label: (

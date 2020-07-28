@@ -264,7 +264,7 @@ class InvoiceGeneration extends Component {
                   onClick={this.selectData.bind(this)}
                   disabled={this.state.dataExists}
                 />
-                <span>Credit </span>
+                <span>Insurance</span>
               </label>
             </div>
           </div>
