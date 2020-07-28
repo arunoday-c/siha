@@ -4,13 +4,15 @@ import { AlgaehMessagePop, AlgaehTable } from "algaeh-react-components";
 import { InfoBar } from "../../../Wrappers";
 import { LedgerReport } from "../../InvoiceCommon";
 import { getInvoicesForCustomer } from "./CusPaymentEvents";
-import { Button, Spin } from "antd";
-
+import { Button, Spin, Checkbox, Modal } from "antd";
+import _ from "lodash";
 export default memo(function (props) {
   const location = useLocation();
   const history = useHistory();
   const [visible, setvisible] = useState(false);
   const [data, setData] = useState([]);
+  const [indeterminate, setIndeterminate] = useState(false);
+  const [checkAll, setCheckAll] = useState(false);
   const [info, setInfo] = useState({
     over_due: "0.00",
     total_receivable: "0.00",
@@ -64,6 +66,91 @@ export default memo(function (props) {
     );
   };
 
+  function onChangeCheck(checked, row) {
+    row["checked"] = checked;
+    const filterCheck = data.filter((f) => f.checked === true);
+    if (data.length === filterCheck.length) {
+      setCheckAll(true);
+      setIndeterminate(false);
+    } else {
+      setCheckAll(false);
+      setIndeterminate(true);
+    }
+  }
+  function onClickSendSelected() {
+    const filterCheck = data.filter((f) => f.checked === true);
+    if (filterCheck.length > 0) {
+      const totalAmount = _.sumBy(filterCheck, (s) => {
+        return parseFloat(s.balance_amount);
+      });
+
+      const {
+        narration,
+        child_id,
+        head_id,
+        voucher_type,
+        invoice_no,
+      } = filterCheck[0];
+      Modal.confirm({
+        title: "Are you sure do you want to process ?",
+        content: (
+          <span>
+            Total amount<b>{totalAmount} </b>for the <b>{narration}</b>
+          </span>
+        ),
+        okText: "Proceed",
+        cancelText: "Cancel",
+        onOk: () => {
+          const merdge = filterCheck.map((item) => {
+            const {
+              invoice_no,
+              balance_amount,
+              finance_voucher_header_id,
+            } = item;
+            return { invoice_no, balance_amount, finance_voucher_header_id };
+          });
+          history.push("/JournalVoucher", {
+            data: {
+              narration,
+              child_id,
+              head_id,
+              balance_amount: totalAmount,
+              voucher_type: voucher_type,
+              invoice_no,
+            },
+            merdge,
+            type: "customer",
+          });
+        },
+      });
+    } else {
+      AlgaehMessagePop({
+        type: "warning",
+        display: "Please select atleast one Invoice.",
+      });
+    }
+  }
+  function onChangeCheckAll(e) {
+    const { checked } = e.target;
+    if (checked) {
+      setCheckAll(true);
+      setIndeterminate(false);
+      marking(true);
+    } else {
+      setCheckAll(false);
+      setIndeterminate(true);
+      marking(false);
+    }
+  }
+  function marking(state) {
+    setData((prevState) => {
+      const list = prevState.map((item) => {
+        return { ...item, checked: state };
+      });
+      return [...list];
+    });
+  }
+
   return (
     <Spin spinning={loading} delay={500}>
       <LedgerReport
@@ -85,7 +172,12 @@ export default memo(function (props) {
                     </h3>
                   </div>{" "}
                   <div className="actions">
-                    {" "}
+                    <button
+                      className="btn btn-default"
+                      onClick={onClickSendSelected}
+                    >
+                      <i className="fas fa-paper-plane"></i>
+                    </button>
                     <button
                       className="btn btn-default"
                       onClick={() => setvisible(true)}
@@ -102,6 +194,29 @@ export default memo(function (props) {
                     >
                       <AlgaehTable
                         columns={[
+                          {
+                            fieldName: "checked",
+                            label: (
+                              <Checkbox
+                                indeterminate={indeterminate}
+                                checked={checkAll}
+                                onChange={onChangeCheckAll}
+                              />
+                            ),
+                            sortable: false,
+                            filterable: false,
+                            displayTemplate: (row) => {
+                              return (
+                                <Checkbox
+                                  defaultChecked={row["checked"]}
+                                  onChange={(e) => {
+                                    const { checked } = e.target;
+                                    onChangeCheck(checked, row);
+                                  }}
+                                />
+                              );
+                            },
+                          },
                           {
                             fieldName: "invoice_date",
                             label: "Date",
@@ -159,13 +274,14 @@ export default memo(function (props) {
                           },
                           {
                             label: "Action",
+                            fieldName: "act",
                             displayTemplate: receive,
+                            sortable: false,
                           },
                         ]}
                         // minHeight="80vh"
                         // rowUnique="finance_voucher_header_id"
                         isFilterable={true}
-                        row_unique_id="finance_voucher_header_id"
                         // dataSource={{ data: data }}
                         data={data || []}
                       />

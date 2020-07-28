@@ -54,6 +54,7 @@ export default function JournalVoucher() {
   const [hospital_id, setHospitalID] = useState(null);
   const [branchData, setbranchData] = useState([]);
   const [costCenterdata, setcostCenterdata] = useState([]);
+  const [disableAmount, setDisableAmount] = useState(false);
 
   // const [prefix, setPrefix] = useState("");
   const basePayment = {
@@ -84,7 +85,7 @@ export default function JournalVoucher() {
     },
   ];
   const [journerList, setJournerList] = useState(baseJournalList);
-
+  const [merdgeRecords, setMerdgeRecords] = useState([]);
   useEffect(() => {
     getCostCentersForVoucher().then((result) => {
       setbranchData(result);
@@ -232,7 +233,7 @@ export default function JournalVoucher() {
     }
 
     if (location.state) {
-      const { type, data } = location.state;
+      const { type, data, merdge } = location.state;
 
       setPayment((state) => ({ ...state, payment_mode: "CASH" }));
       if (type === "duplicate") {
@@ -252,7 +253,10 @@ export default function JournalVoucher() {
           payment_type: single.payment_type,
           amount,
         }));
-
+        if (merdge !== undefined) {
+          setDisableAmount(true);
+          setMerdgeRecords(merdge);
+        }
         setJournerList(records);
       } else {
         const {
@@ -268,6 +272,10 @@ export default function JournalVoucher() {
             : voucher_type === "purchase"
             ? "payment"
             : null;
+        if (merdge !== undefined) {
+          setDisableAmount(true);
+          setMerdgeRecords(merdge);
+        }
         setVoucherType(currentVoucher);
         setSelInvoice(invoice_no);
         getCashAccount()
@@ -449,6 +457,7 @@ export default function JournalVoucher() {
       // hospital_id: getCookie("HospitalId"),
       details: journerList,
       narration: narration,
+      merdgeRecords,
     })
       .then((result) => {
         setLoading(false);
@@ -570,6 +579,7 @@ export default function JournalVoucher() {
       <AlgaehFormGroup
         type="number"
         textBox={{
+          disabled: disableAmount,
           updateInternally: true,
           value: row,
           onChange: (e) => {
@@ -832,6 +842,7 @@ export default function JournalVoucher() {
           </div>
           <div className="col-8">
             <button
+              disabled={disableAmount}
               className="btn btn-primary btn-small"
               onClick={() => {
                 setJournerList((result) => {
