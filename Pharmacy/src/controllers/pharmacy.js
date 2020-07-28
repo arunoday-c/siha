@@ -330,7 +330,7 @@ export default () => {
   //   });
   // });
 
-  api.get("/downloadPharStock", getItemandLocationStock, (req, res, next) => {
+  api.get("/downloadPharStock", getItemLocationStock, (req, res, next) => {
     const columns = Object.keys(req.records[0]);
     const pharStocks = req.records;
     //location_name,
@@ -380,7 +380,7 @@ export default () => {
 
   api.get(
     "/downloadPharStockDetails",
-    getItemLocationStock,
+    getItemandLocationStock,
     (req, res, next) => {
       const columns = Object.keys(req.records[0]);
       const pharStocks = req.records;
