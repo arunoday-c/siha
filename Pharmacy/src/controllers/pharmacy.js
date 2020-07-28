@@ -2,7 +2,9 @@ import { Router } from "express";
 import utlities from "algaeh-utilities";
 import serviceModels from "algaeh-master-settings/src/models/serviceTypes";
 import pharmacyModels from "../models/pharmacy";
+import pharmaGlobal from "../models/pharmacyGlobal";
 import Excel from "exceljs";
+const { getItemandLocationStock, getItemLocationStock } = pharmaGlobal;
 const {
   addItemMaster,
   addItemCategory,
@@ -328,20 +330,21 @@ export default () => {
   //   });
   // });
 
-  api.get("/downloadPharStock", downloadPharStock, (req, res, next) => {
-    const { columns, pharStocks } = req.records;
+  api.get("/downloadPharStock", getItemandLocationStock, (req, res, next) => {
+    const columns = Object.keys(req.records[0]);
+    const pharStocks = req.records;
     //location_name,
     //Create instance of excel
     var workbook = new Excel.Workbook();
     workbook.creator = "Algaeh technologies private limited";
-    workbook.lastModifiedBy = "Manual Time sheet";
+    // workbook.lastModifiedBy = "Pharmacy Stock ";
     workbook.created = new Date();
     workbook.modified = new Date();
     // Set workbook dates to 1904 date system
     // workbook.properties.date1904 = true;
 
     //Work worksheet creation
-    var worksheet = workbook.addWorksheet("Pharmacy Location", {
+    var worksheet = workbook.addWorksheet("Pharmacy Location Stock", {
       properties: {
         tabColor: {
           argb: "FFC0000",
@@ -374,6 +377,58 @@ export default () => {
       console.log("File write done........");
     });
   });
+
+  api.get(
+    "/downloadPharStockDetails",
+    getItemLocationStock,
+    (req, res, next) => {
+      const columns = Object.keys(req.records[0]);
+      const pharStocks = req.records;
+      //location_name,
+      //Create instance of excel
+      var workbook = new Excel.Workbook();
+      workbook.creator = "Algaeh technologies private limited";
+      // workbook.lastModifiedBy = "Pharmacy Stock ";
+      workbook.created = new Date();
+      workbook.modified = new Date();
+      // Set workbook dates to 1904 date system
+      // workbook.properties.date1904 = true;
+
+      //Work worksheet creation
+      var worksheet = workbook.addWorksheet("Pharmacy Location Stock Details", {
+        properties: {
+          tabColor: {
+            argb: "FFC0000",
+          },
+        },
+      });
+      //Adding columns
+      worksheet.columns = columns.map((item) => {
+        return {
+          header: item,
+          key: item,
+          width: 30,
+        };
+      }); //require("../../testDB/data.json");
+      // Add a couple of Rows by key-value, after the last current row, using the column keys
+      for (let i = 0; i < pharStocks.length; i++) {
+        const rest = pharStocks[i];
+        worksheet.addRow(rest);
+      }
+      res.setHeader(
+        "Content-Type",
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+      );
+      res.setHeader(
+        "Content-Disposition",
+        "attachment; filename=" + "Report.xlsx"
+      );
+      workbook.xlsx.write(res).then(function (data) {
+        res.end();
+        console.log("File write done........");
+      });
+    }
+  );
 
   return api;
 };

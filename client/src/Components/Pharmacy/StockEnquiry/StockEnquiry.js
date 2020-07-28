@@ -14,6 +14,7 @@ import {
   changeTexts,
   // dateFormater,
   updateStockDetils,
+  downloadPharStockDetails,
   // datehandle,
   texthandle,
   getBatchWiseData,
@@ -148,6 +149,15 @@ class StockEnquiry extends Component {
                 <div className="col" style={{ textAlign: "right" }}>
                   <button
                     className="btn btn-default"
+                    disabled={!this.state.location_id}
+                    style={{ marginTop: 20, marginRight: 10 }}
+                    onClick={() => downloadPharStockDetails(this)}
+                  >
+                    Download Stock Details
+                  </button>
+                  <button
+                    className="btn btn-default"
+                    disabled={!this.state.location_id}
                     style={{ marginTop: 20 }}
                     onClick={() => downloadPharStock(this)}
                   >

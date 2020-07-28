@@ -114,15 +114,40 @@ const downloadPharStock = ($this) => {
       link.click();
     },
     onCatch: (error) => {
-      var reader = new FileReader();
-      reader.onload = function () {
-        const parse = JSON.parse(reader.result);
-        swalMessage({
-          type: "error",
-          title: parse !== undefined ? parse.result.message : parse,
-        });
-      };
-      reader.readAsText(error.response.data);
+      swalMessage({
+        type: "error",
+        title: error.message,
+      });
+    },
+  });
+};
+
+const downloadPharStockDetails = ($this) => {
+  algaehApiCall({
+    uri: "/pharmacy/downloadPharStockDetails",
+    method: "GET",
+    data: { pharmacy_location_id: $this.state.location_id },
+    headers: {
+      Accept: "blob",
+    },
+    module: "pharmacy",
+    others: { responseType: "blob" },
+    onSuccess: (res) => {
+      let blob = new Blob([res.data], {
+        type: "application/octet-stream",
+      });
+      const fileName = `Pharmacy Stock Details.xlsx`;
+      var objectUrl = URL.createObjectURL(blob);
+      var link = document.createElement("a");
+      link.setAttribute("href", objectUrl);
+      link.setAttribute("download", fileName);
+      link.click();
+    },
+    onCatch: (error) => {
+      swalMessage({
+        type: "error",
+        title: error.message,
+      });
     },
   });
 };
@@ -202,4 +227,5 @@ export {
   closeBatchWise,
   printBarcode,
   downloadPharStock,
+  downloadPharStockDetails,
 };
