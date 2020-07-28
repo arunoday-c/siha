@@ -22,6 +22,7 @@ export default function InsuranceStatement(props) {
   const [branches, setBranches] = useState([]);
   const [insurance, setInsurance] = useState([]);
   const [subInsurance, setSubInsurance] = useState([]);
+  const [data, setData] = useState([]);
 
   const { control, getValues, setValue, handleSubmit } = useForm({
     shouldFocusError: true,
@@ -80,8 +81,29 @@ export default function InsuranceStatement(props) {
     }
   };
 
+  const loadStatements = async (e) => {
+    setLoading(true);
+    try {
+      const res = await newAlgaehApi({
+        uri: "/invoiceGeneration/getInvoicesForClaims",
+        module: "insurance",
+        method: "GET",
+        data: e,
+      });
+      setData(res.data.records);
+      setLoading(false);
+    } catch (e) {
+      setLoading(false);
+      AlgaehMessagePop({
+        display: e.message,
+        type: "error",
+      });
+    }
+  };
+
   const onSubmit = (e) => {
     console.log(e, "inputs");
+    loadStatements(e);
   };
 
   return (
@@ -170,7 +192,7 @@ export default function InsuranceStatement(props) {
               )}
             />
             <Controller
-              name="hims_d_insurance_provider_id"
+              name="insurance_provider_id"
               control={control}
               render={({ onBlur, onChange, value }) => (
                 <AlgaehAutoComplete
@@ -187,11 +209,11 @@ export default function InsuranceStatement(props) {
                     },
                     onBlur: (_, value) => onBlur(value),
                     onClear: () => {
-                      setValue("hims_d_insurance_provider_id", "");
+                      setValue("insurance_provider_id", "");
                       setValue("sub_insurance_id", "");
                       setSubInsurance([]);
                     },
-                    name: "hims_d_insurance_provider_id",
+                    name: "insurance_provider_id",
                     className: "select-fld",
                     dataSource: {
                       textField: "insurance_provider_name",
@@ -429,7 +451,7 @@ export default function InsuranceStatement(props) {
                   ),
                 },
               ]}
-              data={{}}
+              data={data}
               // filter={true}
               paging={{ page: 0, rowsPerPage: 20 }}
             />
