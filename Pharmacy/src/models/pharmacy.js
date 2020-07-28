@@ -1480,16 +1480,16 @@ export default {
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
             new Date(),
-            req.userIdentity.algaeh_d_app_user_id
+            req.userIdentity.algaeh_d_app_user_id,
           ],
-          printQuery: false
+          printQuery: false,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -1501,22 +1501,25 @@ export default {
   getLocationReorder: (req, res, next) => {
     const _mysql = new algaehMysql();
     try {
-
-      let strQuery = req.query.location_id != null ? ` and location_id = '${req.query.location_id}' ` : ""
+      let strQuery =
+        req.query.location_id != null
+          ? ` and location_id = '${req.query.location_id}' `
+          : "";
 
       _mysql
         .executeQuery({
           query:
-            "select * from `hims_d_phar_location_reorder` where item_id=? " + strQuery,
+            "select * from `hims_d_phar_location_reorder` where item_id=? " +
+            strQuery,
           values: [req.query.item_id],
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -1538,22 +1541,86 @@ export default {
             input.reorder_qty,
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
-            input.hims_d_phar_location_reorder_id
+            input.hims_d_phar_location_reorder_id,
           ],
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
     } catch (e) {
       _mysql.releaseConnection();
       next(e);
+    }
+  },
+
+  downloadPharStock: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    try {
+      let intValues = [req.query.pharmacy_location_id];
+      let strAppend = "";
+      if (req.query.item_id != null) {
+        strAppend += " and IL.item_id=?";
+        intValues.push(req.query.item_id);
+      }
+      if (req.query.pharmacy_location_id != null) {
+        strAppend += " and pharmacy_location_id=?";
+        intValues.push(req.query.pharmacy_location_id);
+      }
+
+      _mysql
+        .executeQuery({
+          query:
+            "SELECT IM.item_code,IM.item_description,IM.stocking_uom_id,  coalesce(PLR.reorder_qty, IM.reorder_qty,0) as reorder_qty ,\
+            hims_m_item_location_id, IL.item_id, pharmacy_location_id,\
+            item_location_status, batchno, expirydt, barcode, sum(qtyhand) as qtyhand, qtypo, cost_uom,avgcost,\
+            last_purchase_cost, item_type, grn_id, grnno, sale_price, mrp_price, sales_uom,\
+            CASE WHEN sum(qtyhand)<=coalesce(PLR.reorder_qty, IM.reorder_qty,0) THEN 'R'   else 'NR' END as reorder from \
+            hims_d_item_master IM left  join hims_m_item_location IL on IM.hims_d_item_master_id=IL.item_id \
+            left  join hims_d_phar_location_reorder PLR on PLR.item_id=IL.item_id and location_id=? \
+            where qtyhand>0" +
+            strAppend +
+            "group by item_id order by date(expirydt)",
+          values: intValues,
+          printQuery: true,
+        })
+        .then((result) => {
+          _mysql.releaseConnection();
+          let data = result[1][0];
+          console.log(result, "result");
+          console.log(data, "data");
+          let x;
+          const columns = [];
+
+          for (x in data) {
+            columns.push(x);
+          }
+
+          req.records = {
+            // location_name: result[0][0]["hospital_name"],
+            columns: result,
+            pharStocks: result[1],
+          };
+          next();
+        })
+        .catch((error) => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      req.records = {
+        invalid_input: true,
+        message: "Please select branch",
+      };
+
+      next(e);
+      return;
     }
   },
 };
