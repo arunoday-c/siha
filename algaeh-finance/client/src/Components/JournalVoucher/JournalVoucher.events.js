@@ -9,14 +9,14 @@ export function getVoucherNumber(input) {
         method: "GET",
         module: "finance",
         data: input,
-        onSuccess: response => {
+        onSuccess: (response) => {
           if (response.data.success === true) {
             resolve(response.data.result);
           }
         },
-        onCatch: error => {
+        onCatch: (error) => {
           reject(error);
-        }
+        },
       });
     } catch (e) {}
   });
@@ -30,14 +30,14 @@ export function getHeaders(input) {
         data: input,
         method: "GET",
         module: "finance",
-        onSuccess: response => {
+        onSuccess: (response) => {
           if (response.data.success === true) {
             resolve(response.data.result);
           }
         },
-        onCatch: error => {
+        onCatch: (error) => {
           reject(error);
-        }
+        },
       });
     } catch (e) {
       reject(e);
@@ -54,14 +54,14 @@ export function getInvoiceDetail(input) {
         data: input,
         method: "GET",
         module: "finance",
-        onSuccess: response => {
+        onSuccess: (response) => {
           if (response.data.success === true) {
             resolve(response.data.result);
           }
         },
-        onCatch: error => {
+        onCatch: (error) => {
           reject(error);
-        }
+        },
       });
     } catch (e) {
       reject(e);
@@ -70,23 +70,32 @@ export function getInvoiceDetail(input) {
 }
 
 export function addJurnorLedger(input) {
+  const { merdgeRecords, ...rest } = input;
+  if (merdgeRecords.length > 0) {
+    input["receipt_type"] = "M";
+    return addVoucher(input, "/voucher/addVoucher");
+  } else {
+    return addVoucher(rest, "/voucher/addVoucher");
+  }
+}
+function addVoucher(input, url) {
   return new Promise((resolve, reject) => {
     try {
       algaehApiCall({
-        uri: "/voucher/addVoucher",
+        uri: url,
         data: input,
         method: "POST",
         module: "finance",
-        onSuccess: response => {
+        onSuccess: (response) => {
           if (response.data.success === true) {
             resolve(response.data.result);
           } else {
             reject(response.data.message);
           }
         },
-        onCatch: error => {
+        onCatch: (error) => {
           reject(error);
-        }
+        },
       });
     } catch (e) {
       reject(e);
@@ -101,14 +110,14 @@ export function getCostCentersForVoucher(input) {
         uri: "/finance_masters/getCostCentersForVoucher",
         method: "GET",
         module: "finance",
-        onSuccess: response => {
+        onSuccess: (response) => {
           if (response.data.success === true) {
             resolve(response.data.result);
           }
         },
-        onCatch: error => {
+        onCatch: (error) => {
           reject(error);
-        }
+        },
       });
     } catch (e) {
       reject(e);

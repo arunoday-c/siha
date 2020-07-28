@@ -2,7 +2,7 @@ import algaehMysql from "algaeh-mysql";
 import _ from "lodash";
 import moment from "moment";
 import algaehUtilities from "algaeh-utilities/utilities";
-
+// import axios from "axios";
 //created by irfan: to get hieghest auth level
 function getMaxAuth(options) {
   const _mysql = options.mysql;
@@ -47,7 +47,44 @@ function getMaxAuth(options) {
       });
   });
 }
-
+// export function multipleInvoices(req, res, next) {
+//   const inputs = req.body;
+//   const reqHeaders = req.headers;
+//   const { merdgeRecords, details } = inputs;
+//   let sendArray = [];
+//   for (let i = 0; i < merdgeRecords.length; i++) {
+//     let indetails = { ...inputs };
+//     const { balance_amount, invoice_no } = merdgeRecords[i];
+//     const det = details.map((detail) => {
+//       return {
+//         ...detail,
+//         amount: balance_amount,
+//       };
+//     });
+//     indetails["details"] = det;
+//     indetails["invoice_no"] = invoice_no;
+//     sendArray.push(
+//       axios({
+//         url: "http://localhost:3007/api/v1/voucher/addVoucher",
+//         method: "POST",
+//         data: indetails,
+//         headers: {
+//           "x-api-key": reqHeaders["x-api-key"],
+//           "x-client-ip": reqHeaders["x-client-ip"],
+//           "x-branch": reqHeaders["x-branch"],
+//         },
+//       })
+//     );
+//   }
+//   Promise.all(sendArray)
+//     .then((result) => {
+//       console.log("result", result);
+//       next();
+//     })
+//     .catch((error) => {
+//       next(error);
+//     });
+// }
 export default {
   //created by irfan:
   addVoucher: (req, res, next) => {
@@ -92,7 +129,7 @@ export default {
         voucher_type = "DEBIT_NOTE";
         break;
     }
-
+    const { merdgeRecords } = input;
     if (voucher_type == "") {
       req.records = {
         invalid_input: true,
@@ -234,13 +271,15 @@ export default {
                   if (input.ref_no != null && input.ref_no != undefined) {
                     ref_no = input.ref_no;
                   }
+                  const isMultipleInvoices =
+                    input.receipt_type === undefined ? "S" : input.receipt_type;
                   _mysql
                     .executeQueryWithTransaction({
                       query:
                         "INSERT INTO `finance_voucher_header` (payment_mode,ref_no,cheque_date,amount, payment_date, month, year,\
                        narration, voucher_no, voucher_type,from_screen,invoice_no,invoice_ref_no,posted_from,\
-                       created_by, updated_by, created_date, updated_date)\
-                       VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                       created_by, updated_by, created_date, updated_date,receipt_type)\
+                       VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
                       values: [
                         payment_mode,
                         ref_no,
@@ -260,6 +299,7 @@ export default {
                         req.userIdentity.algaeh_d_app_user_id,
                         new Date(),
                         new Date(),
+                        isMultipleInvoices,
                       ],
                       printQuery: true,
                     })
@@ -275,11 +315,51 @@ export default {
                       //   "project_id",
                       //   "sub_department_id"
                       // ];
+                      let arrCounter = [];
+                      if (isMultipleInvoices === "M") {
+                        let queryString = "";
+                        for (let i = 0; i < merdgeRecords.length; i++) {
+                          const { balance_amount, invoice_no } = merdgeRecords[
+                            i
+                          ];
+                          queryString += _mysql.mysqlQueryFormat(
+                            "insert into finance_voucher_sub_header(finance_voucher_header_id,invoice_ref_no,amount)value(?,?,?);",
+                            [result.insertId, invoice_no, balance_amount]
+                          );
+                          newDetails.forEach((item) => {
+                            const { amount, ...rest } = item;
+                            arrCounter.push({
+                              ...rest,
+                              debit_amount:
+                                item.payment_type === "DR" ? balance_amount : 0,
+                              credit_amount:
+                                item.payment_type === "CR" ? balance_amount : 0,
+                            });
+                          });
+                        }
+                        _mysql
+                          .executeQueryWithTransaction({
+                            query: queryString,
+                          })
+                          .then((resultsubheader) => {
+                            //Done.....
+                            console.log("Subdetails are inserted");
+                          })
+                          .catch((error) => {
+                            _mysql.rollBackTransaction(() => {
+                              next(error);
+                            });
+                            return;
+                          });
+                      } else {
+                        arrCounter = newDetails;
+                      }
+
                       _mysql
                         .executeQueryWithTransaction({
                           query:
                             "insert into finance_voucher_details (??) values ?;",
-                          values: newDetails,
+                          values: arrCounter,
                           // values: input.details,
                           // includeValues: insertColumns,
                           bulkInsertOrUpdate: true,
@@ -1155,7 +1235,7 @@ export default {
                   .executeQuery({
                     query:
                       "select VD.debit_amount,amount,voucher_type,invoice_ref_no,VD.child_id,VD.credit_amount,VD.payment_type,H.root_id,VD.hospital_id\
-                      ,C.child_name from finance_voucher_header VH inner join finance_voucher_details VD on VH.finance_voucher_header_id=VD.voucher_header_id\
+                      ,C.child_name,VH.receipt_type from finance_voucher_header VH inner join finance_voucher_details VD on VH.finance_voucher_header_id=VD.voucher_header_id\
                     inner join finance_account_head H on VD.head_id=H.finance_account_head_id\
                     inner join finance_account_child C on VD.child_id=C.finance_account_child_id\
                     where voucher_header_id=? and auth_status='P';",
@@ -1356,59 +1436,162 @@ export default {
                         new Promise((resolve, reject) => {
                           // PAYMENT AGAINST OLD PENDING VOUCHER
                           if (result[0]["invoice_ref_no"] != null) {
+                            const hasMultiple = result[0]["receipt_type"];
+                            let queryType = "select 1";
+                            if (hasMultiple === "M") {
+                              queryType = _mysql.mysqlQueryFormat(
+                                "select finance_voucher_header_id,finance_voucher_sub_header_id,invoice_ref_no,amount from finance_voucher_sub_header where finance_voucher_header_id=?",
+                                [input.voucher_header_id]
+                              );
+                            }
                             _mysql
                               .executeQuery({
-                                query:
-                                  "select finance_voucher_header_id, voucher_type,amount,settlement_status,settled_amount\
-                                from finance_voucher_header where invoice_no=? and voucher_type in ('purchase' ,'sales') and settlement_status='P';",
-                                values: [result[0]["invoice_ref_no"]],
-                                printQuery: true,
+                                query: queryType,
                               })
-                              .then((BalanceInvoice) => {
-                                if (
-                                  result[0]["voucher_type"] == "credit_note" ||
-                                  result[0]["voucher_type"] == "debit_note" ||
-                                  result[0]["voucher_type"] == "payment" ||
-                                  result[0]["voucher_type"] == "receipt"
-                                ) {
-                                  const total_paid_amount =
-                                    parseFloat(
-                                      BalanceInvoice[0]["settled_amount"]
-                                    ) + parseFloat(result[0]["amount"]);
-
-                                  if (
-                                    parseFloat(BalanceInvoice[0]["amount"]) ==
-                                    total_paid_amount
-                                  ) {
-                                    updateQry = `update finance_voucher_header set settlement_status='S',settled_amount=settled_amount+${parseFloat(
-                                      result[0]["amount"]
-                                    )} where finance_voucher_header_id=${
-                                      BalanceInvoice[0][
-                                        "finance_voucher_header_id"
-                                      ]
-                                    };`;
-                                  } else {
-                                    updateQry = `update finance_voucher_header set settled_amount=settled_amount+${parseFloat(
-                                      result[0]["amount"]
-                                    )}, updated_date='${moment().format(
-                                      "YYYY-MM-DD"
-                                    )}',
-                                    updated_by= ${
-                                      req.userIdentity.algaeh_d_app_user_id
-                                    } where finance_voucher_header_id=${
-                                      BalanceInvoice[0][
-                                        "finance_voucher_header_id"
-                                      ]
-                                    };`;
-                                  }
+                              .then((subHeaderResult) => {
+                                let ref_no_headers = [];
+                                if (hasMultiple === "M") {
+                                  ref_no_headers = subHeaderResult.map(
+                                    (item) => {
+                                      return item.invoice_ref_no;
+                                    }
+                                  );
+                                } else {
+                                  ref_no_headers.push(
+                                    result[0]["invoice_ref_no"]
+                                  );
                                 }
 
-                                resolve({});
+                                _mysql
+                                  .executeQuery({
+                                    query:
+                                      "select finance_voucher_header_id,voucher_no, voucher_type,amount,settlement_status,settled_amount\
+                               from finance_voucher_header where invoice_no in(?) and voucher_type in ('purchase' ,'sales') and settlement_status='P';",
+                                    values: [ref_no_headers],
+                                    printQuery: true,
+                                  })
+                                  .then((BalanceInvoice) => {
+                                    if (
+                                      result[0]["voucher_type"] ==
+                                        "credit_note" ||
+                                      result[0]["voucher_type"] ==
+                                        "debit_note" ||
+                                      result[0]["voucher_type"] == "payment" ||
+                                      result[0]["voucher_type"] == "receipt"
+                                    ) {
+                                      for (
+                                        let b = 0;
+                                        b < BalanceInvoice.length;
+                                        b++
+                                      ) {
+                                        const {
+                                          settled_amount,
+                                          finance_voucher_header_id,
+                                          voucher_no,
+                                        } = BalanceInvoice[b];
+                                        let head_amount = result[0]["amount"];
+                                        if (hasMultiple === "M") {
+                                          const oneRecord = subHeaderResult.find(
+                                            (f) =>
+                                              f.invoice_ref_no === voucher_no
+                                          );
+
+                                          head_amount = oneRecord.amount;
+                                        }
+                                        const total_paid_amount =
+                                          parseFloat(settled_amount) +
+                                          parseFloat(head_amount);
+
+                                        if (
+                                          parseFloat(head_amount) ==
+                                          total_paid_amount
+                                        ) {
+                                          updateQry += `update finance_voucher_header set settlement_status='S',settled_amount=settled_amount+${parseFloat(
+                                            head_amount
+                                          )} where finance_voucher_header_id=${finance_voucher_header_id};`;
+                                        } else {
+                                          updateQry += `update finance_voucher_header set settled_amount=settled_amount+${parseFloat(
+                                            head_amount
+                                          )}, updated_date='${moment().format(
+                                            "YYYY-MM-DD"
+                                          )}',
+                                     updated_by= ${
+                                       req.userIdentity.algaeh_d_app_user_id
+                                     } where finance_voucher_header_id=${finance_voucher_header_id};`;
+                                        }
+                                      }
+
+                                      if (hasMultiple === "M") {
+                                        updateQry += `update finance_voucher_header set settlement_status='S',settled_amount=amount
+                                        where finance_voucher_header_id=${input.voucher_header_id};`;
+                                      }
+                                    }
+
+                                    resolve({});
+                                  })
+                                  .catch((error) => {
+                                    _mysql.releaseConnection();
+                                    next(error);
+                                  });
                               })
                               .catch((error) => {
                                 _mysql.releaseConnection();
                                 next(error);
                               });
+
+                            // _mysql
+                            //   .executeQuery({
+                            //     query:
+                            //       "select finance_voucher_header_id, voucher_type,amount,settlement_status,settled_amount\
+                            //     from finance_voucher_header where invoice_no=? and voucher_type in ('purchase' ,'sales') and settlement_status='P';",
+                            //     values: [result[0]["invoice_ref_no"]],
+                            //     printQuery: true,
+                            //   })
+                            //   .then((BalanceInvoice) => {
+                            //     if (
+                            //       result[0]["voucher_type"] == "credit_note" ||
+                            //       result[0]["voucher_type"] == "debit_note" ||
+                            //       result[0]["voucher_type"] == "payment" ||
+                            //       result[0]["voucher_type"] == "receipt"
+                            //     ) {
+                            //       const total_paid_amount =
+                            //         parseFloat(
+                            //           BalanceInvoice[0]["settled_amount"]
+                            //         ) + parseFloat(result[0]["amount"]);
+
+                            //       if (
+                            //         parseFloat(BalanceInvoice[0]["amount"]) ==
+                            //         total_paid_amount
+                            //       ) {
+                            //         updateQry = `update finance_voucher_header set settlement_status='S',settled_amount=settled_amount+${parseFloat(
+                            //           result[0]["amount"]
+                            //         )} where finance_voucher_header_id=${
+                            //           BalanceInvoice[0][
+                            //             "finance_voucher_header_id"
+                            //           ]
+                            //         };`;
+                            //       } else {
+                            //         updateQry = `update finance_voucher_header set settled_amount=settled_amount+${parseFloat(
+                            //           result[0]["amount"]
+                            //         )}, updated_date='${moment().format(
+                            //           "YYYY-MM-DD"
+                            //         )}',
+                            //         updated_by= ${
+                            //           req.userIdentity.algaeh_d_app_user_id
+                            //         } where finance_voucher_header_id=${
+                            //           BalanceInvoice[0][
+                            //             "finance_voucher_header_id"
+                            //           ]
+                            //         };`;
+                            //       }
+                            //     }
+
+                            //     resolve({});
+                            //   })
+                            //   .catch((error) => {
+                            //     _mysql.releaseConnection();
+                            //     next(error);
+                            //   });
                           } else {
                             resolve({});
                           }

@@ -8,7 +8,7 @@ const {
   authorizeVoucher,
   getVouchersToAuthorize,
   getVouchersDetailsToAuthorize,
-  getUnSettledInvoices
+  getUnSettledInvoices,
 } = voucher;
 
 export default () => {
@@ -20,7 +20,7 @@ export default () => {
         .status(utlities.AlgaehUtilities().httpStatus().internalServer)
         .json({
           success: false,
-          message: req.records.message
+          message: req.records.message,
         })
         .end();
     } else {
@@ -28,18 +28,19 @@ export default () => {
         .status(utlities.AlgaehUtilities().httpStatus().ok)
         .json({
           success: true,
-          result: req.records
+          result: req.records,
         })
         .end();
     }
   });
+
   api.get("/getVoucherNo", getVoucherNo, (req, res, next) => {
     if (req.records.invalid_input == true) {
       res
         .status(utlities.AlgaehUtilities().httpStatus().internalServer)
         .json({
           success: false,
-          message: req.records.message
+          message: req.records.message,
         })
         .end();
     } else {
@@ -47,7 +48,7 @@ export default () => {
         .status(utlities.AlgaehUtilities().httpStatus().ok)
         .json({
           success: true,
-          result: req.records
+          result: req.records,
         })
         .end();
     }
@@ -59,7 +60,7 @@ export default () => {
         .status(utlities.AlgaehUtilities().httpStatus().internalServer)
         .json({
           success: false,
-          message: req.records.message
+          message: req.records.message,
         })
         .end();
     } else {
@@ -67,7 +68,7 @@ export default () => {
         .status(utlities.AlgaehUtilities().httpStatus().ok)
         .json({
           success: true,
-          result: req.records
+          result: req.records,
         })
         .end();
     }
@@ -81,7 +82,7 @@ export default () => {
           .status(utlities.AlgaehUtilities().httpStatus().internalServer)
           .json({
             success: false,
-            message: req.records.message
+            message: req.records.message,
           })
           .end();
       } else {
@@ -89,7 +90,7 @@ export default () => {
           .status(utlities.AlgaehUtilities().httpStatus().ok)
           .json({
             success: true,
-            result: req.records
+            result: req.records,
           })
           .end();
       }
@@ -104,7 +105,7 @@ export default () => {
           .status(utlities.AlgaehUtilities().httpStatus().internalServer)
           .json({
             success: false,
-            message: req.records.message
+            message: req.records.message,
           })
           .end();
       } else {
@@ -112,7 +113,7 @@ export default () => {
           .status(utlities.AlgaehUtilities().httpStatus().ok)
           .json({
             success: true,
-            result: req.records
+            result: req.records,
           })
           .end();
       }
@@ -124,7 +125,7 @@ export default () => {
         .status(utlities.AlgaehUtilities().httpStatus().internalServer)
         .json({
           success: false,
-          message: req.records.message
+          message: req.records.message,
         })
         .end();
     } else {
@@ -132,7 +133,7 @@ export default () => {
         .status(utlities.AlgaehUtilities().httpStatus().ok)
         .json({
           success: true,
-          result: req.records
+          result: req.records,
         })
         .end();
     }
