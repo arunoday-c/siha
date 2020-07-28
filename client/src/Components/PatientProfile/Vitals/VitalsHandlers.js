@@ -1,3 +1,4 @@
+/* eslint-disable no-eval */
 import { setGlobal } from "../../../utils/GlobalFunctions";
 import { algaehApiCall } from "../../../utils/algaehApiCall";
 import config from "../../../utils/config.json";
@@ -9,34 +10,34 @@ const getVitalHistory = ($this, callBack) => {
     method: "GET",
     data: {
       patient_id: current_patient, //Window.global["current_patient"],
-      visit_id: visit_id //Window.global["visit_id"]
+      visit_id: visit_id, //Window.global["visit_id"]
     },
     cancelRequestId: "getPatientVitals",
     redux: {
       type: "PATIENT_VITALS",
-      mappingName: "patient_vitals"
+      mappingName: "patient_vitals",
     },
-    afterSuccess: data => {
+    afterSuccess: (data) => {
       if (typeof callBack === "function") {
         callBack(data);
       }
-    }
+    },
   });
 };
 
-const getDepartmentVitals = $this => {
+const getDepartmentVitals = ($this) => {
   $this.props.getDepartmentVitals({
     uri: "/doctorsWorkBench/getVitalsHeaderMaster",
     method: "GET",
     cancelRequestId: "getVitalsHeaderMaster",
     redux: {
       type: "DEPARTMENT_VITALS",
-      mappingName: "department_vitals"
-    }
+      mappingName: "department_vitals",
+    },
   });
 };
 
-const getFormula = options => {
+const getFormula = (options) => {
   if (options === undefined) return;
 
   if (Window.global["BMI"] === undefined) {
@@ -45,11 +46,11 @@ const getFormula = options => {
       uri: "/masters/algaehFormula",
       method: "get",
       data: _input,
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           const _function = JSON.parse(response.data.records.formula);
           setGlobal({
-            BMI: _function["BMI-" + options.WEIGHTAS + "-" + options.HEIGHTAS]
+            BMI: _function["BMI-" + options.WEIGHTAS + "-" + options.HEIGHTAS],
           });
 
           if (typeof options.onSuccess === "function")
@@ -61,7 +62,7 @@ const getFormula = options => {
               )
             );
         }
-      }
+      },
     });
   } else {
     if (typeof options.onSuccess === "function")
@@ -94,5 +95,5 @@ export {
   getVitalHistory,
   getFormula,
   temperatureConvertion,
-  getDepartmentVitals
+  getDepartmentVitals,
 };

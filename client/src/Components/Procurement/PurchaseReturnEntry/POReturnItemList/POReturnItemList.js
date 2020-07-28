@@ -7,7 +7,7 @@ import { bindActionCreators } from "redux";
 import {
   AlgaehDataGrid,
   AlgaehLabel,
-  AlagehFormGroup
+  AlagehFormGroup,
 } from "../../../Wrapper/algaehWrapper";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import MyContext from "../../../../utils/MyContext";
@@ -15,7 +15,7 @@ import MyContext from "../../../../utils/MyContext";
 import {
   dateFormater,
   deletePOReturnDetail,
-  onchangegridcol
+  onchangegridcol,
 } from "./POReturnItemListEvents";
 import { GetAmountFormart } from "../../../../utils/GlobalFunctions";
 
@@ -38,7 +38,7 @@ class POReturnItemList extends Component {
     return (
       <React.Fragment>
         <MyContext.Consumer>
-          {context => (
+          {(context) => (
             <div className="hims-purchase-order-entry">
               <div className="row">
                 <div className="col-lg-12">
@@ -56,8 +56,8 @@ class POReturnItemList extends Component {
                                 />
                               ),
                               others: {
-                                minWidth: 150
-                              }
+                                minWidth: 150,
+                              },
                             },
                             {
                               fieldName: "category_desc",
@@ -67,8 +67,8 @@ class POReturnItemList extends Component {
                                 />
                               ),
                               others: {
-                                minWidth: 250
-                              }
+                                minWidth: 250,
+                              },
                             },
                             {
                               fieldName: "group_description",
@@ -76,7 +76,7 @@ class POReturnItemList extends Component {
                                 <AlgaehLabel
                                   label={{ forceLabel: "Item Group" }}
                                 />
-                              )
+                              ),
                             },
 
                             {
@@ -86,11 +86,11 @@ class POReturnItemList extends Component {
                                   label={{ forceLabel: "Delivered Quantity" }}
                                 />
                               ),
-                              displayTemplate: row => {
+                              displayTemplate: (row) => {
                                 return (
                                   <span>{parseFloat(row.dn_quantity)}</span>
                                 );
-                              }
+                              },
                             },
 
                             {
@@ -100,9 +100,9 @@ class POReturnItemList extends Component {
                                   label={{ forceLabel: "Qty IN Hand" }}
                                 />
                               ),
-                              displayTemplate: row => {
+                              displayTemplate: (row) => {
                                 return <span>{parseFloat(row.qtyhand)}</span>;
-                              }
+                              },
                             },
                             {
                               fieldName: "expirydt",
@@ -111,13 +111,13 @@ class POReturnItemList extends Component {
                                   label={{ forceLabel: "Expiry Date" }}
                                 />
                               ),
-                              displayTemplate: row => {
+                              displayTemplate: (row) => {
                                 return (
                                   <span>
                                     {dateFormater(this, row.expirydt)}
                                   </span>
                                 );
-                              }
+                              },
                             },
                             {
                               fieldName: "batchno",
@@ -126,7 +126,7 @@ class POReturnItemList extends Component {
                                   label={{ forceLabel: "Batch No." }}
                                 />
                               ),
-                              others: { minWidth: 150 }
+                              others: { minWidth: 150 },
                             },
                             {
                               fieldName: "vendor_batchno",
@@ -136,8 +136,8 @@ class POReturnItemList extends Component {
                                 />
                               ),
                               others: {
-                                minWidth: 100
-                              }
+                                minWidth: 100,
+                              },
                             },
                             {
                               fieldName: "return_qty",
@@ -146,14 +146,14 @@ class POReturnItemList extends Component {
                                   label={{ forceLabel: "Return Qty" }}
                                 />
                               ),
-                              displayTemplate: row => {
+                              displayTemplate: (row) => {
                                 return this.state.is_posted === "N" ? (
                                   <AlagehFormGroup
                                     div={{}}
                                     textBox={{
                                       number: {
                                         allowNegative: false,
-                                        thousandSeparator: ","
+                                        thousandSeparator: ",",
                                       },
                                       value:
                                         row.return_qty !== ""
@@ -168,8 +168,8 @@ class POReturnItemList extends Component {
                                           this,
                                           context,
                                           row
-                                        )
-                                      }
+                                        ),
+                                      },
                                       // others: {
                                       //   disabled: this.state.authorizeEnable,
                                       //   min: 0,
@@ -182,9 +182,9 @@ class POReturnItemList extends Component {
                                     }}
                                   />
                                 ) : (
-                                    parseFloat(row.return_qty)
-                                  );
-                              }
+                                  parseFloat(row.return_qty)
+                                );
+                              },
                             },
                             {
                               fieldName: "unit_cost",
@@ -193,15 +193,15 @@ class POReturnItemList extends Component {
                                   label={{ forceLabel: "Unit Cost" }}
                                 />
                               ),
-                              displayTemplate: row => {
+                              displayTemplate: (row) => {
                                 return (
                                   <span>
                                     {GetAmountFormart(row.unit_cost, {
-                                      appendSymbol: false
+                                      appendSymbol: false,
                                     })}
                                   </span>
                                 );
-                              }
+                              },
                             },
                             {
                               fieldName: "extended_cost",
@@ -210,15 +210,15 @@ class POReturnItemList extends Component {
                                   label={{ forceLabel: "Extended Cost" }}
                                 />
                               ),
-                              displayTemplate: row => {
+                              displayTemplate: (row) => {
                                 return (
                                   <span>
                                     {GetAmountFormart(row.extended_cost, {
-                                      appendSymbol: false
+                                      appendSymbol: false,
                                     })}
                                   </span>
                                 );
-                              }
+                              },
                             },
                             {
                               fieldName: "discount_percentage",
@@ -228,8 +228,8 @@ class POReturnItemList extends Component {
                                 />
                               ),
                               others: {
-                                minWidth: 100
-                              }
+                                minWidth: 100,
+                              },
                             },
                             {
                               fieldName: "discount_amount",
@@ -238,15 +238,15 @@ class POReturnItemList extends Component {
                                   label={{ forceLabel: "Discount Amt." }}
                                 />
                               ),
-                              displayTemplate: row => {
+                              displayTemplate: (row) => {
                                 return (
                                   <span>
                                     {GetAmountFormart(row.discount_amount, {
-                                      appendSymbol: false
+                                      appendSymbol: false,
                                     })}
                                   </span>
                                 );
-                              }
+                              },
                             },
                             {
                               fieldName: "net_extended_cost",
@@ -255,15 +255,15 @@ class POReturnItemList extends Component {
                                   label={{ forceLabel: "Net Ext Cost" }}
                                 />
                               ),
-                              displayTemplate: row => {
+                              displayTemplate: (row) => {
                                 return (
                                   <span>
                                     {GetAmountFormart(row.net_extended_cost, {
-                                      appendSymbol: false
+                                      appendSymbol: false,
                                     })}
                                   </span>
                                 );
-                              }
+                              },
                             },
                             {
                               fieldName: "tax_amount",
@@ -272,15 +272,15 @@ class POReturnItemList extends Component {
                                   label={{ forceLabel: "Tax Amount" }}
                                 />
                               ),
-                              displayTemplate: row => {
+                              displayTemplate: (row) => {
                                 return (
                                   <span>
                                     {GetAmountFormart(row.tax_amount, {
-                                      appendSymbol: false
+                                      appendSymbol: false,
                                     })}
                                   </span>
                                 );
-                              }
+                              },
                             },
                             {
                               fieldName: "total_amount",
@@ -289,32 +289,32 @@ class POReturnItemList extends Component {
                                   label={{ forceLabel: "Total Amount" }}
                                 />
                               ),
-                              displayTemplate: row => {
+                              displayTemplate: (row) => {
                                 return (
                                   <span>
                                     {GetAmountFormart(row.total_amount, {
-                                      appendSymbol: false
+                                      appendSymbol: false,
                                     })}
                                   </span>
                                 );
-                              }
-                            }
+                              },
+                            },
                           ]}
                           keyId="hims_f_procurement_po_return_detail_id"
                           dataSource={{
                             data:
                               this.state.po_return_from === "PHR"
                                 ? this.state.pharmacy_stock_detail
-                                : this.state.inventory_stock_detail
+                                : this.state.inventory_stock_detail,
                           }}
                           isEditable={
                             this.state.purchase_return_number !== null &&
-                              this.state.purchase_return_number !== ""
+                            this.state.purchase_return_number !== ""
                               ? false
                               : true
                           }
                           actions={{
-                            allowEdit: false
+                            allowEdit: false,
                           }}
                           byForceEvents={true}
                           paging={{ page: 0, rowsPerPage: 10 }}
@@ -324,8 +324,8 @@ class POReturnItemList extends Component {
                               this,
                               context
                             ),
-                            onEdit: row => { },
-                            onDone: row => { }
+                            onEdit: (row) => {},
+                            onDone: (row) => {},
                           }}
                         />
                       </div>
@@ -337,7 +337,7 @@ class POReturnItemList extends Component {
                     <div className="col">
                       <AlgaehLabel
                         label={{
-                          forceLabel: "Receipt Net Payable"
+                          forceLabel: "Receipt Net Payable",
                         }}
                       />
                       <h6>
@@ -348,7 +348,7 @@ class POReturnItemList extends Component {
                     <div className="col">
                       <AlgaehLabel
                         label={{
-                          forceLabel: "Return Sub Total"
+                          forceLabel: "Return Sub Total",
                         }}
                       />
                       <h6>{GetAmountFormart(this.state.sub_total)}</h6>
@@ -357,7 +357,7 @@ class POReturnItemList extends Component {
                     <div className="col">
                       <AlgaehLabel
                         label={{
-                          forceLabel: "Discount Amount"
+                          forceLabel: "Discount Amount",
                         }}
                       />
                       <h6>{GetAmountFormart(this.state.discount_amount)}</h6>
@@ -365,7 +365,7 @@ class POReturnItemList extends Component {
                     <div className="col">
                       <AlgaehLabel
                         label={{
-                          forceLabel: "Return Net Total"
+                          forceLabel: "Return Net Total",
                         }}
                       />
                       <h6>{GetAmountFormart(this.state.net_total)}</h6>
@@ -374,7 +374,7 @@ class POReturnItemList extends Component {
                     <div className="col">
                       <AlgaehLabel
                         label={{
-                          forceLabel: "Tax Amount"
+                          forceLabel: "Tax Amount",
                         }}
                       />
                       <h6>{GetAmountFormart(this.state.tax_amount)}</h6>
@@ -383,7 +383,7 @@ class POReturnItemList extends Component {
                     <div className="col">
                       <AlgaehLabel
                         label={{
-                          forceLabel: "Return Total"
+                          forceLabel: "Return Total",
                         }}
                       />
                       <h6>{GetAmountFormart(this.state.return_total)}</h6>
@@ -399,8 +399,7 @@ class POReturnItemList extends Component {
   }
 }
 
-{
-  /*{
+/*{
   fieldName: "expected_arrival_date",
   label: (
     <AlgaehLabel
@@ -433,14 +432,14 @@ class POReturnItemList extends Component {
     minWidth: 130
   }
 },*/
-}
+
 function mapStateToProps(state) {
   return {
     poitemlist: state.poitemlist,
     polocations: state.polocations,
     poitemcategory: state.poitemcategory,
     poitemgroup: state.poitemgroup,
-    poitemuom: state.poitemuom
+    poitemuom: state.poitemuom,
   };
 }
 
@@ -451,7 +450,7 @@ function mapDispatchToProps(dispatch) {
       getLocation: AlgaehActions,
       getItemCategory: AlgaehActions,
       getItemGroup: AlgaehActions,
-      getItemUOM: AlgaehActions
+      getItemUOM: AlgaehActions,
     },
     dispatch
   );

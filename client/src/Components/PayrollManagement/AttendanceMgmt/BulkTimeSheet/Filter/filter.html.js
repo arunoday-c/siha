@@ -39,7 +39,7 @@ export default function Filter(props) {
   const [empGroups, setEmpGroups] = useState([]);
   const [empGroupId, setEmpGroupId] = useState("");
 
-  const [loading, setLoading] = useState(false);
+  const loading = false;
   const [fullName, setFullName] = useState("");
   const [employeeID, setEmployeeId] = useState(0);
   const [startDt, setStartDt] = useState(0);
@@ -49,10 +49,11 @@ export default function Filter(props) {
   const [fromMax, setFromMax] = useState(new Date());
   const [toMin, setToMin] = useState(new Date());
   const [toMax, setToMax] = useState(new Date());
-  const [loadingPriew, setLoadingPriew] = useState(false);
+  const loadingPriew = false;
   const [atStartType, setATStartType] = useState("");
   // const [onlyExcel, setOnlyExcel] = useState("");
-  const [upload, setUpload] = useState("Y");
+  const upload = "Y";
+  // const [upload, setUpload] = useState("Y");
   const [selYear, setSelYear] = useState("");
   const [loadYear, setLoadYear] = useState([]);
 

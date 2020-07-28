@@ -4,21 +4,22 @@ import axios from "axios";
 export default function FinanceFragment(props) {
   const [Component, setComp] = useState(null);
   const [err, setErr] = useState(null);
-  const PREFIX = window.location.port
-    ? `http://${window.location.hostname}:3007/finbuild`
-    : "/finance/finbuild";
 
   useEffect(() => {
+    const PREFIX = window.location.port
+      ? `http://${window.location.hostname}:3007/finbuild`
+      : "/finance/finbuild";
+
     function loadManifest() {
       return axios.get(`${PREFIX}/manifest.micro.json`, {});
     }
 
     loadManifest()
-      .then(res => res.data)
-      .then(manifest => {
+      .then((res) => res.data)
+      .then((manifest) => {
         const {
           micro: { js, css },
-          metadata: { componentName }
+          metadata: { componentName },
         } = manifest;
         if (process.env.REACT_APP_CDN === "production.min") {
           const css_hash = css.split(".")[1];
@@ -57,7 +58,7 @@ export default function FinanceFragment(props) {
           setComp(window[componentName]);
         }
       })
-      .catch(err => setErr(err));
+      .catch((err) => setErr(err));
   }, []);
 
   if (Component) {

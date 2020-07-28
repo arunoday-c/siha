@@ -45,13 +45,13 @@ export default function LisConfig(props) {
     } else {
       setLisConfig({ ...baseState });
     }
-  }, [props]);
+  }, [props]); // eslint-disable-line
 
   useEffect(() => {
     getOrganizations((data) => {
       setOrganizations(data);
     });
-  }, []);
+  }, []); // eslint-disable-line
 
   function EventHandaler(e) {
     const { name, value } = e.target || e;

@@ -45,7 +45,7 @@ export default function EmployeeFilter(props) {
       }
       getBranchDetails();
     }
-  }, [inputs.hospital_id]);
+  }, [inputs.hospital_id]); // eslint-disable-line
 
   // To set the sub depts after department selected
   useEffect(() => {
@@ -67,7 +67,7 @@ export default function EmployeeFilter(props) {
     } else {
       setSubDepts([]);
     }
-  }, [inputs.department_id]);
+  }, [inputs.department_id]); // eslint-disable-line
 
   useEffect(() => {
     if (inputs.sub_department_id) {
@@ -76,7 +76,7 @@ export default function EmployeeFilter(props) {
       }
       getDesignations(inputs.sub_department_id);
     }
-  }, [inputs.sub_department_id]);
+  }, [inputs.sub_department_id]); // eslint-disable-line
 
   function getHospitals() {
     algaehApiCall({

@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React, { Component, useContext } from "react";
 import { MainContext } from "algaeh-react-components";
 import ReactTable from "react-table";

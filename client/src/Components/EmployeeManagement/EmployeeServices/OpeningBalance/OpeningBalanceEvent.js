@@ -657,19 +657,22 @@ export default function ManualAttendanceEvents() {
       // let employee_Leave_Update = [];
       let inputData = "";
       if (selected_type === "LE") {
-        var result = Object.keys(row).map(function (key) {
-          if (row[key] !== "N" && isNaN(Number(key)) === false) {
-            return {
-              leave_id: Number(key),
-              close_balance: row[key],
-              employee_id: row.hims_d_employee_id,
-              year: $this.state.year,
-            };
-          }
-        });
-        inputData = _.filter(result, (f) => {
-          return f !== undefined;
-        });
+        inputData = Object.keys(row)
+          .map(function (key) {
+            if (row[key] !== "N" && isNaN(Number(key)) === false) {
+              return {
+                leave_id: Number(key),
+                close_balance: row[key],
+                employee_id: row.hims_d_employee_id,
+                year: $this.state.year,
+              };
+            } else {
+              return undefined;
+            }
+          })
+          .filter((f) => {
+            return f !== undefined;
+          });
         selected_uri = "/leave/updateEmployeeLeave";
       } else if (selected_type === "LS") {
         selected_uri = "/employeepayments/updateEmployeeLeaveSalary";
@@ -828,29 +831,29 @@ function getLeaveMasterData($this) {
                 return row[item.hims_d_leave_id] === "N" ? (
                   "Not Applicable"
                 ) : (
-                    <Input
-                      value={row[item.hims_d_leave_id]}
-                      name={item.hims_d_leave_id}
-                      row={row}
-                    />
+                  <Input
+                    value={row[item.hims_d_leave_id]}
+                    name={item.hims_d_leave_id}
+                    row={row}
+                  />
 
-                    // <AlagehFormGroup
-                    //   div={{ className: "col" }}
-                    //   textBox={{
-                    //     number: {
-                    //       allowNegative: false,
-                    //       thousandSeparator: ","
-                    //     },
-                    //     dontAllowKeys: ["-", "e"],
-                    //     className: "txt-fld",
-                    //     name: item.hims_d_leave_id,
-                    //     value: row[item.hims_d_leave_id],
-                    //     events: {
-                    //       onChange: changeGridEditors.bind($this, $this, row)
-                    //     }
-                    //   }}
-                    // />
-                  );
+                  // <AlagehFormGroup
+                  //   div={{ className: "col" }}
+                  //   textBox={{
+                  //     number: {
+                  //       allowNegative: false,
+                  //       thousandSeparator: ","
+                  //     },
+                  //     dontAllowKeys: ["-", "e"],
+                  //     className: "txt-fld",
+                  //     name: item.hims_d_leave_id,
+                  //     value: row[item.hims_d_leave_id],
+                  //     events: {
+                  //       onChange: changeGridEditors.bind($this, $this, row)
+                  //     }
+                  //   }}
+                  // />
+                );
               },
               others: {
                 filterable: false,

@@ -4,7 +4,7 @@ import Enumerable from "linq";
 import AlgaehSearch from "../../../Wrapper/globalSearch";
 import spotlightSearch from "../../../../Search/spotlightSearch.json";
 import AlgaehLoader from "../../../Wrapper/fullPageLoader";
-import _ from "lodash";
+// import _ from "lodash";
 export default function ProjectPayrollEvents() {
   return {
     texthandle: ($this, e) => {
@@ -70,7 +70,6 @@ export default function ProjectPayrollEvents() {
       });
     },
     openSalaryComponents: ($this, row) => {
-
       const salaryprocess_Earning = Enumerable.from(
         $this.state.project_payroll_detail
       )
@@ -115,7 +114,6 @@ export default function ProjectPayrollEvents() {
         data: inputObj,
         method: "GET",
         onSuccess: (response) => {
-
           if (response.data.records.pjc_array.length > 0) {
             let data = response.data.records;
             $this.setState({
@@ -126,7 +124,6 @@ export default function ProjectPayrollEvents() {
               noEmployees: data.no_employees,
               no_projects: data.no_projects,
             });
-
           } else {
             AlgaehLoader({ show: false });
             swalMessage({

@@ -302,7 +302,7 @@ class POSCreditSettlement extends Component {
               state: this.state,
               updateState: (obj, callback) => {
                 this.setState({ ...this.state, ...obj }, () => {
-                  Object.keys(obj).map((key) => {
+                  Object.keys(obj).forEach((key) => {
                     if (key === "patient_code") {
                       this.getPatientDetails(this);
                     }

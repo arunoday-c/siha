@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "./EmployeeView.scss";
-import { AlgaehMessagePop } from "algaeh-react-components";
+// import { AlgaehMessagePop } from "algaeh-react-components";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 
 function ChartEntry({ data = [], toggle = true }) {
@@ -36,7 +36,7 @@ function ChartEntry({ data = [], toggle = true }) {
             >
               <span className="childCount">{item.count || 0}</span>
               <span className="imgSection">
-                <img src="" />
+                <img src="" alt="" />
               </span>
               <span className="contentSection">
                 <small>{item.employee_code}</small>

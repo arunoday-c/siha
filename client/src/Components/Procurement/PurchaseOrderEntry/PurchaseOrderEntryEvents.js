@@ -134,7 +134,10 @@ const datehandle = ($this, ctrl, e) => {
 const RequisitionSearch = ($this, e) => {
   AlgaehSearch({
     searchGrid: {
-      columns: $this.state.po_type === "MR" ? spotlightSearch.RequisitionEntry.ReqEntry : spotlightSearch.RequisitionEntry.ReqPOEntry,
+      columns:
+        $this.state.po_type === "MR"
+          ? spotlightSearch.RequisitionEntry.ReqEntry
+          : spotlightSearch.RequisitionEntry.ReqPOEntry,
     },
     searchName: $this.state.po_from === "PHR" ? "PhrPOEntry" : "InvPOEntry",
     uri: "/gloabelSearch/get",
@@ -285,31 +288,28 @@ const ClearData = ($this, e) => {
 
   clearItemDetails($this);
   getPOOptions($this);
-  let bothExisits = true
+  let bothExisits = true;
 
   RawSecurityComponent({ componentCode: "PUR_ORD_INVENTORY" }).then(
     (result) => {
       if (result === "show") {
         getData($this, "INV");
-        bothExisits = false
-        IOputs.po_from = "INV"
+        bothExisits = false;
+        IOputs.po_from = "INV";
       }
     }
   );
 
-  RawSecurityComponent({ componentCode: "PUR_ORD_PHARMACY" }).then(
-    (result) => {
-      if (result === "show") {
-        getData($this, "PHR");
-        IOputs.bothExisits = bothExisits === false ? false : true
-        IOputs.po_from = "PHR"
-      } else {
-        IOputs.bothExisits = true
-      }
-      $this.setState(IOputs);
+  RawSecurityComponent({ componentCode: "PUR_ORD_PHARMACY" }).then((result) => {
+    if (result === "show") {
+      getData($this, "PHR");
+      IOputs.bothExisits = bothExisits === false ? false : true;
+      IOputs.po_from = "PHR";
+    } else {
+      IOputs.bothExisits = true;
     }
-  );
-
+    $this.setState(IOputs);
+  });
 };
 
 const SavePOEnrty = ($this, from) => {
@@ -361,7 +361,7 @@ const SavePOEnrty = ($this, from) => {
     "net_payable",
     "po_entry_detail",
     "delete_stock_detail",
-    "is_posted"
+    "is_posted",
   ];
   let sendJsonBody = {};
   procumentInputs.forEach((item) => {
@@ -579,7 +579,7 @@ const getData = ($this, po_from) => {
         type: "ITEM_CATEGORY_GET_DATA",
         mappingName: "poitemcategory",
       },
-      afterSuccess: (data) => { },
+      afterSuccess: (data) => {},
     });
 
     $this.props.getItemGroup({
@@ -765,7 +765,7 @@ const AuthorizePOEntry = ($this, authorize) => {
     algaehApiCall({
       uri: "/PurchaseOrderEntry/updatePurchaseOrderEntry",
       skipParse: true,
-      data: Buffer.from(JSON.stringify(sendJsonBody), "utf8"),
+      // data: Buffer.from(JSON.stringify(sendJsonBody), "utf8"),
       module: "procurement",
       data: sendJsonBody, //$this.state,
       method: "PUT",
@@ -919,18 +919,18 @@ const VendorQuotationSearch = ($this) => {
                 data.po_entry_detail[i].quantity;
               data.po_entry_detail[i].total_quantity =
                 data.po_entry_detail[i].quantity;
-              data.po_entry_detail[i].unit_price =
-                data.po_entry_detail[i].unit_price;
-              data.po_entry_detail[i].extended_price =
-                data.po_entry_detail[i].extended_price;
+              // data.po_entry_detail[i].unit_price =
+              //   data.po_entry_detail[i].unit_price;
+              // data.po_entry_detail[i].extended_price =
+              //   data.po_entry_detail[i].extended_price;
               data.po_entry_detail[i].sub_discount_percentage =
                 data.po_entry_detail[i].discount_percentage;
               data.po_entry_detail[i].sub_discount_amount =
                 data.po_entry_detail[i].discount_amount;
               data.po_entry_detail[i].extended_cost =
                 data.po_entry_detail[i].net_extended_cost;
-              data.po_entry_detail[i].net_extended_cost =
-                data.po_entry_detail[i].net_extended_cost;
+              // data.po_entry_detail[i].net_extended_cost =
+              //   data.po_entry_detail[i].net_extended_cost;
               data.po_entry_detail[i].unit_cost = (
                 parseFloat(data.po_entry_detail[i].extended_cost) /
                 parseFloat(data.po_entry_detail[i].quantity)
@@ -938,15 +938,15 @@ const VendorQuotationSearch = ($this) => {
               data.po_entry_detail[i].authorize_quantity = 0;
               data.po_entry_detail[i].quantity_outstanding = 0;
               data.po_entry_detail[i].rejected_quantity = 0;
-              data.po_entry_detail[i].tax_percentage =
-                data.po_entry_detail[i].tax_percentage;
-              data.po_entry_detail[i].tax_amount =
-                data.po_entry_detail[i].tax_amount;
-              data.po_entry_detail[i].total_amount =
-                data.po_entry_detail[i].total_amount;
+              // data.po_entry_detail[i].tax_percentage =
+              //   data.po_entry_detail[i].tax_percentage;
+              // data.po_entry_detail[i].tax_amount =
+              //   data.po_entry_detail[i].tax_amount;
+              // data.po_entry_detail[i].total_amount =
+              //   data.po_entry_detail[i].total_amount;
             }
 
-            data.vendor_quotation_number = data.vendor_quotation_number;
+            // data.vendor_quotation_number = data.vendor_quotation_number;
             data.vendor_quotation_header_id =
               data.hims_f_procurement_vendor_quotation_header_id;
             if ($this.state.po_from === "PHR") {
