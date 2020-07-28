@@ -196,18 +196,20 @@ export default memo(function (props) {
                         columns={[
                           {
                             fieldName: "checked",
-                            label: (
-                              <Checkbox
-                                indeterminate={indeterminate}
-                                checked={checkAll}
-                                onChange={onChangeCheckAll}
-                              />
-                            ),
+                            // label: (
+                            //   <Checkbox
+                            //     indeterminate={indeterminate}
+                            //     checked={checkAll}
+                            //     onChange={onChangeCheckAll}
+                            //   />
+                            // ),
+                            label: "Select",
                             sortable: false,
                             filterable: false,
                             displayTemplate: (row) => {
                               return (
                                 <Checkbox
+                                  disabled={row.invoice_status === "closed"}
                                   defaultChecked={row["checked"]}
                                   onChange={(e) => {
                                     const { checked } = e.target;
