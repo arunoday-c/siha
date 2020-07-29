@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
-import { i18next } from "algaeh-react-components";
+import { i18next } from "algaeh-react-components"; //eslint-disable-line
 import { AlagehReducers } from "./reducers/algaehReducers";
 import logger from "redux-logger";
 // import ContextBinding from "./contextCheck";

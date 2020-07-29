@@ -78,7 +78,7 @@ export function IdleManager() {
       data: { post: dataSent },
       notoken: true,
       onSuccess: (response) => {
-        const { success, records, message } = response.data;
+        const { success, message } = response.data;
         if (success === true) {
           setItem("locked", false).then(() => {
             setVisible(false);

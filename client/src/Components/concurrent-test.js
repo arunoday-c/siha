@@ -1,9 +1,10 @@
+/* eslint-disable */
 import React, { Component } from "react";
 import "./concurrent-test.scss";
 
 import {
   AlagehFormGroup,
-  AlagehAutoComplete
+  AlagehAutoComplete,
 } from "../Components/Wrapper/algaehWrapper";
 import { algaehApiCall } from "../utils/algaehApiCall";
 
@@ -19,7 +20,7 @@ class ConcurrentTest extends Component {
       maxLines: 1000,
       appendComponent: [],
       FireDisabled: false,
-      spinner: ""
+      spinner: "",
     };
   }
 
@@ -67,7 +68,7 @@ class ConcurrentTest extends Component {
       {
         FireDisabled: true,
         appendComponent: _componentAppend,
-        spinner: "fa-spin"
+        spinner: "fa-spin",
       },
       () => {
         callback();
@@ -89,7 +90,7 @@ class ConcurrentTest extends Component {
           method:
             _that.state.methodType === null ? "GET" : _that.state.methodType,
           data: _data,
-          onSuccess: response => {
+          onSuccess: (response) => {
             let _componentAppend = _that.state.appendComponent;
 
             if (_that.state.appendComponent.length >= _that.state.maxLines) {
@@ -111,10 +112,10 @@ class ConcurrentTest extends Component {
             _that.setState({
               FireDisabled: false,
               appendComponent: _componentAppend,
-              spinner: ""
+              spinner: "",
             });
           },
-          onFailure: error => {
+          onFailure: (error) => {
             let _componentAppend = _that.state.appendComponent;
 
             if (_that.state.appendComponent.length >= _that.state.maxLines) {
@@ -124,9 +125,9 @@ class ConcurrentTest extends Component {
             _that.setState({
               FireDisabled: false,
               appendComponent: _componentAppend,
-              spinner: ""
+              spinner: "",
             });
-          }
+          },
         });
       }
     });
@@ -152,67 +153,67 @@ class ConcurrentTest extends Component {
                       { value: "GET", text: "GET" },
                       { value: "POST", text: "POST" },
                       { value: "PUT", text: "PUT" },
-                      { value: "DELETE", text: "DELETE" }
-                    ]
+                      { value: "DELETE", text: "DELETE" },
+                    ],
                   },
                   onChange: this.HandleMethodTypes.bind(this),
-                  onClear: this.HandleMethodTypesClear.bind(this)
+                  onClear: this.HandleMethodTypesClear.bind(this),
                 }}
               />
               <AlagehFormGroup
                 div={{ className: "col-3" }}
                 label={{
-                  forceLabel: "Enter URL"
+                  forceLabel: "Enter URL",
                 }}
                 textBox={{
                   className: "txt-fld",
                   name: "enterURL",
                   value: this.state.enterURL,
                   events: {
-                    onChange: this.TextHandler.bind(this)
-                  }
+                    onChange: this.TextHandler.bind(this),
+                  },
                 }}
               />
               <AlagehFormGroup
                 div={{ className: "col" }}
                 label={{
-                  forceLabel: "Enter Header"
+                  forceLabel: "Enter Header",
                 }}
                 textBox={{
                   className: "txt-fld",
                   name: "enterHeader",
                   value: this.state.enterHeader,
                   events: {
-                    onChange: this.TextHandler.bind(this)
-                  }
+                    onChange: this.TextHandler.bind(this),
+                  },
                 }}
               />
               <AlagehFormGroup
                 div={{ className: "col" }}
                 label={{
-                  forceLabel: "Enter Input"
+                  forceLabel: "Enter Input",
                 }}
                 textBox={{
                   className: "txt-fld",
                   name: "enterInput",
                   value: this.state.enterInput,
                   events: {
-                    onChange: this.TextHandler.bind(this)
-                  }
+                    onChange: this.TextHandler.bind(this),
+                  },
                 }}
               />
               <AlagehFormGroup
                 div={{ className: "col" }}
                 label={{
-                  forceLabel: "No. of Concurrent"
+                  forceLabel: "No. of Concurrent",
                 }}
                 textBox={{
                   className: "txt-fld",
                   name: "enterConcurrent",
                   value: this.state.enterConcurrent,
                   events: {
-                    onChange: this.TextHandler.bind(this)
-                  }
+                    onChange: this.TextHandler.bind(this),
+                  },
                 }}
               />
               <div className="col">

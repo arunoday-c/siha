@@ -11,7 +11,7 @@ const texthandle = ($this, ctrl, e) => {
   let value = e.value || e.target.value;
 
   $this.setState({
-    [name]: value
+    [name]: value,
   });
 };
 
@@ -29,12 +29,11 @@ const selectItemHandeler = ($this, e) => {
     uom_id: e.sales_uom,
     item_category_id: e.category_id,
     item_group_id: e.group_id,
-    unit_cost: e.sale_price
+    unit_cost: e.sale_price,
   });
 };
 
 const ProcessService = ($this, e) => {
-
   if ($this.state.inventory_item_id !== null) {
     let preserviceInput = $this.state.preserviceInput || [];
     let serviceInput = [
@@ -54,8 +53,8 @@ const ProcessService = ($this, e) => {
         approval_amt: $this.state.approval_amt,
         approval_limit_yesno: $this.state.approval_limit_yesno,
         preapp_limit_amount: $this.state.preapp_limit_amount,
-        unit_cost: $this.state.unit_cost
-      }
+        unit_cost: $this.state.unit_cost,
+      },
     ];
 
     algaehApiCall({
@@ -63,9 +62,8 @@ const ProcessService = ($this, e) => {
       module: "billing",
       method: "POST",
       data: serviceInput,
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
-
           let data = response.data.records;
           if (
             data.billdetails[0].preapp_limit_exceed === "Y" &&
@@ -80,8 +78,8 @@ const ProcessService = ($this, e) => {
               confirmButtonText: "Yes!",
               confirmButtonColor: "#",
               cancelButtonColor: "#d33",
-              cancelButtonText: "No"
-            }).then(willProceed => {
+              cancelButtonText: "No",
+            }).then((willProceed) => {
               if (willProceed.value) {
                 preserviceInput.push(serviceInput[0]);
                 for (let k = 0; k < preserviceInput.length; k++) {
@@ -98,7 +96,7 @@ const ProcessService = ($this, e) => {
                   module: "billing",
                   method: "POST",
                   data: preserviceInput,
-                  onSuccess: response => {
+                  onSuccess: (response) => {
                     if (response.data.success) {
                       let Service_data = response.data.records;
 
@@ -182,7 +180,7 @@ const ProcessService = ($this, e) => {
                         approval_amt: approval_amt,
                         preserviceInput: preserviceInput,
                         approval_limit_yesno: approval_limit_yesno,
-                        saved: false
+                        saved: false,
                       });
 
                       algaehApiCall({
@@ -190,7 +188,7 @@ const ProcessService = ($this, e) => {
                         module: "billing",
                         method: "POST",
                         data: { billdetails: Service_data.billdetails },
-                        onSuccess: response => {
+                        onSuccess: (response) => {
                           if (response.data.success) {
                             $this.setState({
                               sub_total_amount:
@@ -217,25 +215,25 @@ const ProcessService = ($this, e) => {
                               uom_id: null,
                               item_notchargable: "N",
                               itemchargable: false,
-                              item_description: ""
+                              item_description: "",
                             });
                           }
                         },
-                        onFailure: error => {
+                        onFailure: (error) => {
                           swalMessage({
                             title: error.message,
-                            type: "error"
+                            type: "error",
                           });
-                        }
+                        },
                       });
                     }
                   },
-                  onFailure: error => {
+                  onFailure: (error) => {
                     swalMessage({
                       title: error.message,
-                      type: "error"
+                      type: "error",
                     });
-                  }
+                  },
                 });
               }
             });
@@ -295,7 +293,7 @@ const ProcessService = ($this, e) => {
             ) {
               swalMessage({
                 title: "Selected Service is Pre-Approval required.",
-                type: "warning"
+                type: "warning",
               });
             } else if (
               data.billdetails[0].insurance_yesno === "Y" &&
@@ -320,7 +318,7 @@ const ProcessService = ($this, e) => {
               saved: false,
               // s_service_type: null,
               s_service: null,
-              test_type: "R"
+              test_type: "R",
             });
 
             algaehApiCall({
@@ -328,7 +326,7 @@ const ProcessService = ($this, e) => {
               module: "billing",
               method: "POST",
               data: { billdetails: existingservices },
-              onSuccess: response => {
+              onSuccess: (response) => {
                 if (response.data.success) {
                   $this.setState({
                     sub_total_amount: response.data.records.sub_total_amount,
@@ -349,31 +347,31 @@ const ProcessService = ($this, e) => {
                     uom_id: null,
                     item_notchargable: "N",
                     itemchargable: false,
-                    item_description: ""
+                    item_description: "",
                   });
                 }
               },
-              onFailure: error => {
+              onFailure: (error) => {
                 swalMessage({
                   title: error.message,
-                  type: "error"
+                  type: "error",
                 });
-              }
+              },
             });
           }
         }
       },
-      onFailure: error => {
+      onFailure: (error) => {
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   } else {
     swalMessage({
       title: "Please select Item.",
-      type: "warning"
+      type: "warning",
     });
   }
 };
@@ -385,7 +383,7 @@ const deleteServices = ($this, row, rowId) => {
 
   const get_selected_row = _.find(
     preserviceInput,
-    f => f.hims_d_services_id === row["services_id"]
+    (f) => f.hims_d_services_id === row["services_id"]
   );
 
   const _index = preserviceInput.indexOf(get_selected_row);
@@ -402,7 +400,7 @@ const deleteServices = ($this, row, rowId) => {
       sec_company_paybale: null,
       sub_total_amount: null,
       discount_amount: null,
-      net_total: null
+      net_total: null,
     });
   }
   preserviceInput.splice(_index, 1);
@@ -419,7 +417,7 @@ const deleteServices = ($this, row, rowId) => {
         module: "billing",
         method: "POST",
         data: preserviceInput,
-        onSuccess: response => {
+        onSuccess: (response) => {
           if (response.data.success) {
             let data = response.data.records;
 
@@ -428,7 +426,7 @@ const deleteServices = ($this, row, rowId) => {
               module: "billing",
               method: "POST",
               data: { billdetails: data.billdetails },
-              onSuccess: response => {
+              onSuccess: (response) => {
                 if (response.data.success) {
                   $this.setState({
                     orderconsumabledata: data.billdetails,
@@ -442,32 +440,32 @@ const deleteServices = ($this, row, rowId) => {
                     patient_payable: response.data.records.patient_payable,
                     company_payble: response.data.records.company_payble,
                     copay_amount: response.data.records.copay_amount,
-                    sec_copay_amount: response.data.records.sec_copay_amount
+                    sec_copay_amount: response.data.records.sec_copay_amount,
                   });
                 }
               },
-              onFailure: error => {
+              onFailure: (error) => {
                 swalMessage({
                   title: error.message,
-                  type: "error"
+                  type: "error",
                 });
-              }
+              },
             });
           }
         },
-        onFailure: error => {
+        onFailure: (error) => {
           swalMessage({
             title: error.message,
-            type: "error"
+            type: "error",
           });
-        }
+        },
       });
     } else {
       $this.setState({
         orderconsumabledata: orderconsumabledata,
         preserviceInput: preserviceInput,
         approval_amt: app_amt,
-        saved: saved
+        saved: saved,
       });
     }
   } else {
@@ -475,7 +473,7 @@ const deleteServices = ($this, row, rowId) => {
       orderconsumabledata: orderconsumabledata,
       preserviceInput: preserviceInput,
       approval_amt: app_amt,
-      saved: saved
+      saved: saved,
     });
   }
 };
@@ -488,18 +486,18 @@ const SaveOrdersServices = ($this, e) => {
     incharge_or_provider: Window.global["provider_id"],
     doctor_id: Window.global["provider_id"],
     billed: "N",
-    billdetails: $this.state.orderconsumabledata
+    billdetails: $this.state.orderconsumabledata,
   };
   algaehApiCall({
     uri: "/orderAndPreApproval/insertInvOrderedServices",
     data: inputObj,
     // module: "clicnicalDesk",
     method: "POST",
-    onSuccess: response => {
+    onSuccess: (response) => {
       if (response.data.success === true) {
         $this.state.transaction_type = "CS";
         $this.state.location_id = $this.state.inventory_location_id;
-        $this.state.location_type = $this.state.location_type;
+        // $this.state.location_type = $this.state.location_type;
         $this.state.inventory_stock_detail = $this.state.orderconsumabledata;
         $this.state.provider_id = Window.global["provider_id"];
         $this.state.transaction_date = new Date();
@@ -507,12 +505,12 @@ const SaveOrdersServices = ($this, e) => {
           uri: "/inventoryconsumption/addInventoryConsumption",
           module: "inventory",
           data: $this.state,
-          onSuccess: response => {
+          onSuccess: (response) => {
             AlgaehLoader({ show: false });
             if (response.data.success === true) {
               swalMessage({
                 title: "Saved successfully . .",
-                type: "success"
+                type: "success",
               });
               $this.setState(
                 {
@@ -551,7 +549,7 @@ const SaveOrdersServices = ($this, e) => {
                   discount_amount: null,
                   net_total: null,
                   item_notchargable: "N",
-                  itemchargable: false
+                  itemchargable: false,
                 },
                 () => {
                   $this.props.onClose && $this.props.onClose(e);
@@ -559,25 +557,25 @@ const SaveOrdersServices = ($this, e) => {
               );
             }
           },
-          onFailure: err => {
+          onFailure: (err) => {
             AlgaehLoader({ show: false });
             swalMessage({
               title: err.message,
-              type: "error"
+              type: "error",
             });
-          }
+          },
         });
       } else {
         AlgaehLoader({ show: false });
       }
     },
-    onFailure: error => {
+    onFailure: (error) => {
       AlgaehLoader({ show: false });
       swalMessage({
         title: error.response.data.message,
-        type: "error"
+        type: "error",
       });
-    }
+    },
   });
 };
 
@@ -597,13 +595,13 @@ const calculateAmount = ($this, row, e) => {
   if (parseFloat(discount_percentage) > 100) {
     swalMessage({
       title: "Discount % cannot be greater than 100.",
-      type: "warning"
+      type: "warning",
     });
     discount_percentage = 0;
   } else if (discount_amout > parseFloat(row.unit_cost)) {
     swalMessage({
       title: "Discount Amount cannot be greater than Unit Cost.",
-      type: "warning"
+      type: "warning",
     });
     discount_amout = 0;
   }
@@ -628,8 +626,8 @@ const calculateAmount = ($this, row, e) => {
       secondary_network_office_id: $this.state.secondary_network_office_id,
       approval_amt: $this.state.approval_amt,
       approval_limit_yesno: $this.state.approval_limit_yesno,
-      preapp_limit_amount: $this.state.preapp_limit_amount
-    }
+      preapp_limit_amount: $this.state.preapp_limit_amount,
+    },
   ];
 
   algaehApiCall({
@@ -637,7 +635,7 @@ const calculateAmount = ($this, row, e) => {
     module: "billing",
     method: "POST",
     data: inputParam,
-    onSuccess: response => {
+    onSuccess: (response) => {
       if (response.data.success) {
         let data = response.data.records;
         extend(row, data.billdetails[0]);
@@ -647,7 +645,7 @@ const calculateAmount = ($this, row, e) => {
           module: "billing",
           method: "POST",
           data: { billdetails: orderconsumabledata },
-          onSuccess: response => {
+          onSuccess: (response) => {
             if (response.data.success) {
               let header_data = response.data.records;
               $this.setState({
@@ -660,25 +658,25 @@ const calculateAmount = ($this, row, e) => {
                 copay_amount: header_data.copay_amount,
                 sec_copay_amount: header_data.sec_copay_amount,
                 deductable_amount: header_data.deductable_amount,
-                sec_deductable_amount: header_data.sec_deductable_amount
+                sec_deductable_amount: header_data.sec_deductable_amount,
               });
             }
           },
-          onFailure: error => {
+          onFailure: (error) => {
             swalMessage({
               title: error.message,
-              type: "error"
+              type: "error",
             });
-          }
+          },
         });
       }
     },
-    onFailure: error => {
+    onFailure: (error) => {
       swalMessage({
         title: error.message,
-        type: "error"
+        type: "error",
       });
-    }
+    },
   });
 };
 
@@ -690,9 +688,9 @@ const updateBillDetail = ($this, e) => {
     data: { billdetails: $this.state.orderconsumabledata },
     redux: {
       type: "BILL_HEADER_GEN_GET_DATA",
-      mappingName: "genbill"
+      mappingName: "genbill",
     },
-    afterSuccess: data => {
+    afterSuccess: (data) => {
       $this.setState({
         sub_total_amount: data.sub_total_amount,
         discount_amount: data.discount_amount,
@@ -704,9 +702,9 @@ const updateBillDetail = ($this, e) => {
         deductable_amount: data.deductable_amount,
         sec_deductable_amount: data.sec_deductable_amount,
         addNewService: !$this.state.addNewService,
-        saved: !$this.state.saved
+        saved: !$this.state.saved,
       });
-    }
+    },
   });
 };
 
@@ -727,7 +725,7 @@ const EditGrid = ($this, cancelRow) => {
   $this.setState({
     saved: !$this.state.saved,
     addNewService: !$this.state.addNewService,
-    orderconsumabledata: _orderconsumabledata
+    orderconsumabledata: _orderconsumabledata,
   });
 };
 
@@ -738,7 +736,7 @@ const ItemChargable = ($this, e) => {
   }
   $this.setState({
     item_notchargable: item_notchargable,
-    itemchargable: !$this.state.itemchargable
+    itemchargable: !$this.state.itemchargable,
   });
 };
 
@@ -751,7 +749,7 @@ const makeZeroIngrid = ($this, row, e) => {
 
     orderconsumabledata[_index] = row;
     $this.setState({
-      orderconsumabledata: orderconsumabledata
+      orderconsumabledata: orderconsumabledata,
     });
   }
 };
@@ -767,5 +765,5 @@ export {
   onchangegridcol,
   EditGrid,
   ItemChargable,
-  makeZeroIngrid
+  makeZeroIngrid,
 };

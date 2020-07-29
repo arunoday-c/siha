@@ -37,7 +37,7 @@ export default function Layout({ path, noSecurityCheck, children }) {
         });
       });
     }
-  }, []);
+  }, []); // eslint-disable-line
 
   // function checkHasAccessToPage() {
   //   if (noSecurityCheck === true) return true;

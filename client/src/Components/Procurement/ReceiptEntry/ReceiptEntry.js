@@ -7,7 +7,7 @@ import BreadCrumb from "../../common/BreadCrumb/BreadCrumb";
 import {
   AlgaehLabel,
   AlagehFormGroup,
-  AlgaehDateHandler
+  AlgaehDateHandler,
 } from "../../Wrapper/algaehWrapper";
 import Options from "../../../Options.json";
 import moment from "moment";
@@ -19,15 +19,14 @@ import {
   getCtrlCode,
   PostReceiptEntry,
   PurchaseOrderSearch,
-  dateValidate,
+  // dateValidate,
   datehandle,
   textEventhandle,
-  generateReceiptEntryReport
+  generateReceiptEntryReport,
 } from "./ReceiptEntryEvent";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import ReceiptEntryInp from "../../../Models/ReceiptEntry";
 import MyContext from "../../../utils/MyContext";
-
 
 class ReceiptEntry extends Component {
   constructor(props) {
@@ -48,8 +47,8 @@ class ReceiptEntry extends Component {
       data: { vendor_status: "A" },
       redux: {
         type: "VENDORS_GET_DATA",
-        mappingName: "receiptvendors"
-      }
+        mappingName: "receiptvendors",
+      },
     });
 
     if (
@@ -61,9 +60,7 @@ class ReceiptEntry extends Component {
   }
 
   render() {
-    const class_finder = this.state.dataExitst === true
-      ? " disableFinder"
-      : ""
+    const class_finder = this.state.dataExitst === true ? " disableFinder" : "";
 
     return (
       <div>
@@ -80,18 +77,18 @@ class ReceiptEntry extends Component {
                 <AlgaehLabel
                   label={{
                     forceLabel: "Home",
-                    align: "ltr"
+                    align: "ltr",
                   }}
                 />
-              )
+              ),
             },
             {
               pageName: (
                 <AlgaehLabel
                   label={{ forceLabel: "Receipt Entry", align: "ltr" }}
                 />
-              )
-            }
+              ),
+            },
           ]}
           soptlightSearch={{
             label: (
@@ -102,20 +99,20 @@ class ReceiptEntry extends Component {
             value: this.state.grn_number,
             selectValue: "grn_number",
             events: {
-              onChange: getCtrlCode.bind(this, this)
+              onChange: getCtrlCode.bind(this, this),
             },
             jsonFile: {
               fileName: "spotlightSearch",
-              fieldName: "Receipt.ReceiptEntry"
+              fieldName: "Receipt.ReceiptEntry",
             },
-            searchName: "ReceiptEntry"
+            searchName: "ReceiptEntry",
           }}
           userArea={
             <div className="row">
               <div className="col">
                 <AlgaehLabel
                   label={{
-                    forceLabel: "Receipt Date"
+                    forceLabel: "Receipt Date",
                   }}
                 />
                 <h6>
@@ -129,17 +126,17 @@ class ReceiptEntry extends Component {
           printArea={
             this.state.hims_f_procurement_po_header_id !== null
               ? {
-                menuitems: [
-                  {
-                    label: "Receipt Entry Report",
-                    events: {
-                      onClick: () => {
-                        generateReceiptEntryReport(this.state);
-                      }
-                    }
-                  }
-                ]
-              }
+                  menuitems: [
+                    {
+                      label: "Receipt Entry Report",
+                      events: {
+                        onClick: () => {
+                          generateReceiptEntryReport(this.state);
+                        },
+                      },
+                    },
+                  ],
+                }
               : ""
           }
           selectedLang={this.state.selectedLang}
@@ -151,8 +148,10 @@ class ReceiptEntry extends Component {
           >
             <div className="col-lg-12">
               <div className="row">
-                <div className={"col-2 globalSearchCntr" + class_finder} >
-                  <AlgaehLabel label={{ forceLabel: "Search Purchase Order No." }} />
+                <div className={"col-2 globalSearchCntr" + class_finder}>
+                  <AlgaehLabel
+                    label={{ forceLabel: "Search Purchase Order No." }}
+                  />
                   <h6 onClick={PurchaseOrderSearch.bind(this, this)}>
                     {this.state.purchase_number
                       ? this.state.purchase_number
@@ -272,7 +271,7 @@ class ReceiptEntry extends Component {
                   div={{ className: "col" }}
                   label={{
                     forceLabel: "Invoice No.",
-                    isImp: true
+                    isImp: true,
                   }}
                   textBox={{
                     value: this.state.inovice_number,
@@ -280,11 +279,11 @@ class ReceiptEntry extends Component {
                     name: "inovice_number",
 
                     events: {
-                      onChange: textEventhandle.bind(this, this)
+                      onChange: textEventhandle.bind(this, this),
                     },
                     others: {
-                      disabled: this.state.dataExitst
-                    }
+                      disabled: this.state.dataExitst,
+                    },
                   }}
                 />
                 <AlgaehDateHandler
@@ -292,7 +291,7 @@ class ReceiptEntry extends Component {
                   label={{ forceLabel: "Invoice Date", isImp: true }}
                   textBox={{
                     className: "txt-fld",
-                    name: "invoice_date"
+                    name: "invoice_date",
                   }}
                   // minDate={new Date()}
                   disabled={this.state.dataExitst}
@@ -339,9 +338,9 @@ class ReceiptEntry extends Component {
           <MyContext.Provider
             value={{
               state: this.state,
-              updateState: obj => {
+              updateState: (obj) => {
                 this.setState({ ...obj });
-              }
+              },
             }}
           >
             <ReceiptItemList ReceiptEntryInp={this.state} />
@@ -359,7 +358,7 @@ class ReceiptEntry extends Component {
                   <AlgaehLabel
                     label={{
                       forceLabel: "Save",
-                      returnText: true
+                      returnText: true,
                     }}
                   />
                 </button>
@@ -383,7 +382,7 @@ class ReceiptEntry extends Component {
                   <AlgaehLabel
                     label={{
                       forceLabel: "Post",
-                      returnText: true
+                      returnText: true,
                     }}
                   />
                 </button>
@@ -404,7 +403,7 @@ function mapStateToProps(state) {
     receiptitemgroup: state.receiptitemgroup,
     receiptitemuom: state.receiptitemuom,
     receiptvendors: state.receiptvendors,
-    receiptrequisitionentry: state.receiptrequisitionentry
+    receiptrequisitionentry: state.receiptrequisitionentry,
     // receiptentry: state.receiptentry
   };
 }
@@ -417,7 +416,7 @@ function mapDispatchToProps(dispatch) {
       getItemCategory: AlgaehActions,
       getItemGroup: AlgaehActions,
       getItemUOM: AlgaehActions,
-      getVendorMaster: AlgaehActions
+      getVendorMaster: AlgaehActions,
       // getReceiptEntry: AlgaehActions
     },
     dispatch
@@ -425,8 +424,5 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(ReceiptEntry)
+  connect(mapStateToProps, mapDispatchToProps)(ReceiptEntry)
 );

@@ -26,7 +26,7 @@ import {
   deleteContarctServices,
   AddSerices,
   servicechangeText,
-  generateContractReport,
+  // generateContractReport,
   SaveContract,
   ClearData,
   addToTermCondition,

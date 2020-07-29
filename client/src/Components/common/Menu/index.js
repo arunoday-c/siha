@@ -56,7 +56,7 @@ function NavBars(props) {
     if (socket.connected) {
       socket.on("count", (res) => setCount(res));
     }
-  }, []);
+  }, []); //eslint-disable-line
 
   function showMenuClick() {
     setShowMenu((result) => !result);

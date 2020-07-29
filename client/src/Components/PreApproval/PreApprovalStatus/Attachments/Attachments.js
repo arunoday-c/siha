@@ -8,13 +8,13 @@ export default class Attachments extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      filePreview: ""
+      filePreview: "",
     };
   }
 
   onDrop(file) {
     this.setState({
-      filePreview: file[0].name
+      filePreview: file[0].name,
     });
   }
 
@@ -40,7 +40,7 @@ export default class Attachments extends Component {
                       >
                         <AlgaehLabel
                           label={{
-                            fieldName: "btnchoose_file"
+                            fieldName: "btnchoose_file",
                           }}
                         />
                       </button>
@@ -57,6 +57,7 @@ export default class Attachments extends Component {
 
                 <div className="image-drop-area">
                   <img
+                    alt="front"
                     src={this.state.frontSide}
                     style={{ width: "100%", height: "101px" }}
                   />

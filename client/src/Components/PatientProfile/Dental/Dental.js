@@ -6,7 +6,7 @@ import "./Dental.scss";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import {
   AlgaehValidation,
-  GetAmountFormart
+  GetAmountFormart,
 } from "../../../utils/GlobalFunctions";
 import GlobalVariables from "../../../utils/GlobalVariables.json";
 import {
@@ -15,7 +15,7 @@ import {
   AlgaehDataGrid,
   AlgaehModalPopUp,
   AlgaehDateHandler,
-  AlgaehLabel
+  AlgaehLabel,
 } from "../../Wrapper/algaehWrapper";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import Enumerable from "linq";
@@ -44,7 +44,7 @@ class Dental extends Component {
       hims_d_services_id: "",
       discount_percentage: 0,
       dental_form_loading: false,
-      teeth_type: "P"
+      teeth_type: "P",
     };
     this.getProcedures();
     this.getTreatementPlans();
@@ -59,7 +59,7 @@ class Dental extends Component {
     this.setState({
       plan_name: "",
       remarks: "",
-      consult_date: new Date()
+      consult_date: new Date(),
     });
   }
 
@@ -68,35 +68,35 @@ class Dental extends Component {
       uri: "/serviceType/getService",
       module: "masterSettings",
       data: {
-        procedure_type: "DN"
+        procedure_type: "DN",
       },
       method: "GET",
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           this.setState({
-            procedures: response.data.records
+            procedures: response.data.records,
           });
         }
       },
-      onError: error => {
+      onError: (error) => {
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
   radioChange(e) {
     this.setState({
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
   }
 
   dropDownHandler(value) {
     this.setState({
       [value.name]: value.value,
-      standard_fee: value.selected.standard_fee
+      standard_fee: value.selected.standard_fee,
     });
   }
 
@@ -105,13 +105,13 @@ class Dental extends Component {
       case "quantity":
         this.setState({
           [e.target.name]: e.target.value,
-          total_price: e.target.value * this.state.standard_fee
+          total_price: e.target.value * this.state.standard_fee,
         });
         break;
 
       default:
         this.setState({
-          [e.target.name]: e.target.value
+          [e.target.name]: e.target.value,
         });
         break;
     }
@@ -121,16 +121,16 @@ class Dental extends Component {
     let discount_percentage = 0;
     if (parseFloat(e.target.value) > 100) {
       this.setState({
-        [e.target.name]: 0
+        [e.target.name]: 0,
       });
       swalMessage({
         title: "Discount % cannot be greater than 100.",
-        type: "warning"
+        type: "warning",
       });
     } else {
       discount_percentage = e.target.value;
       this.setState({
-        [e.target.name]: e.target.value
+        [e.target.name]: e.target.value,
       });
     }
     let bill_dtls = { ...this.state.billDetails, ...this.state.ins_details };
@@ -166,8 +166,8 @@ class Dental extends Component {
           : null,
         preapp_limit_amount: bill_dtls.preapp_limit_amount
           ? bill_dtls.preapp_limit_amount
-          : null
-      }
+          : null,
+      },
     ];
 
     algaehApiCall({
@@ -175,15 +175,15 @@ class Dental extends Component {
       module: "billing",
       method: "POST",
       data: inputParam,
-      onSuccess: res => {
+      onSuccess: (res) => {
         if (res.data.success) {
           res.data.records.billdetails[0].teeth_number = bill_dtls.teeth_number;
-          
+
           this.setState({
-            billDetails: res.data.records.billdetails[0]
+            billDetails: res.data.records.billdetails[0],
           });
         }
-      }
+      },
     });
   }
 
@@ -202,13 +202,12 @@ class Dental extends Component {
     } else {
       swalMessage({
         title: "Please Select a service first",
-        type: "warning"
+        type: "warning",
       });
     }
   }
 
   saveBill() {
-
     let inputObj = {
       visit_id: Window.global["visit_is"],
       patient_id: Window.global["current_patient"],
@@ -222,66 +221,66 @@ class Dental extends Component {
             visit_id: Window.global["visit_id"],
             patient_id: Window.global["current_patient"],
             // pre_approval: "N",
-            doctor_id: Window.global["provider_id"]
+            doctor_id: Window.global["provider_id"],
             // teeth_number: teeth_number
-          }
-        }
-      ]
+          },
+        },
+      ],
     };
 
     algaehApiCall({
       uri: "/orderAndPreApproval/insertOrderedServices",
       data: inputObj,
       method: "POST",
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           algaehApiCall({
             uri: "/dental/updateDentalTreatmentBilledStatus",
             method: "PUT",
             data: {
               hims_f_dental_treatment_id: this.state.d_id,
-              billed: "SB"
+              billed: "SB",
             },
-            onSuccess: res => {
+            onSuccess: (res) => {
               if (res.data.success) {
                 this.setState(
                   {
                     openBillingModal: false,
                     discount_amout: 0,
-                    discount_percentage: 0
+                    discount_percentage: 0,
                   },
                   () => {
                     let inputData = {
                       hims_f_treatment_plan_id: this.state
                         .hims_f_treatment_plan_id,
                       approve_status: this.state.approval_status,
-                      plan_name: this.state.selected_plan
+                      plan_name: this.state.selected_plan,
                     };
                     this.loadDentalTreatment(inputData);
                   }
                 );
               }
             },
-            onError: error => {
+            onError: (error) => {
               swalMessage({
                 title: error.message,
-                type: "error"
+                type: "error",
               });
-            }
+            },
           });
 
           swalMessage({
             title: "Ordered Successfully.",
-            type: "success"
+            type: "success",
           });
         }
       },
-      onFailure: error => {
+      onFailure: (error) => {
         swalMessage({
           title: error.response.data.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -289,7 +288,7 @@ class Dental extends Component {
     if (this.state.approval_status !== "Y") {
       swalMessage({
         title: "Please Approve the plan",
-        type: "warning"
+        type: "warning",
       });
       return;
     }
@@ -300,14 +299,14 @@ class Dental extends Component {
       method: "GET",
       data: {
         patient_id: Window.global["current_patient"],
-        patient_visit_id: Window.global["visit_id"]
+        patient_visit_id: Window.global["visit_id"],
       },
-      onSuccess: res => {
-         if (res.data.success) {
+      onSuccess: (res) => {
+        if (res.data.success) {
           let ins = res.data.records.length > 0 ? res.data.records[0] : null;
 
           this.setState({
-            ins_details: ins
+            ins_details: ins,
           });
 
           algaehApiCall({
@@ -336,26 +335,29 @@ class Dental extends Component {
                 approval_limit_yesno:
                   ins !== null ? ins.approval_limit_yesno : null,
                 preapp_limit_amount:
-                  ins !== null ? ins.preapp_limit_amount : null
-              }
+                  ins !== null ? ins.preapp_limit_amount : null,
+              },
             ],
-            onSuccess: res => {
-
+            onSuccess: (res) => {
               if (res.data.success) {
                 let dataOutput = res.data.records.billdetails[0];
                 if (dataOutput.pre_approval === "Y") {
                   swalMessage({
                     title: "Selected Service is Pre-Approval required.",
-                    type: "warning"
+                    type: "warning",
                   });
                 }
                 dataOutput.teeth_number = row.teeth_number;
 
-                dataOutput.insurance_provider_id = ins !== null ? ins.insurance_provider_id : null;
-                dataOutput.insurance_sub_id = ins !== null ? ins.sub_insurance_provider_id : null;
+                dataOutput.insurance_provider_id =
+                  ins !== null ? ins.insurance_provider_id : null;
+                dataOutput.insurance_sub_id =
+                  ins !== null ? ins.sub_insurance_provider_id : null;
                 dataOutput.network_id = ins !== null ? ins.network_id : null;
-                dataOutput.insurance_network_office_id = ins !== null ? ins.hims_d_insurance_network_office_id : null;
-                dataOutput.policy_number = ins !== null ? ins.policy_number : null;
+                dataOutput.insurance_network_office_id =
+                  ins !== null ? ins.hims_d_insurance_network_office_id : null;
+                dataOutput.policy_number =
+                  ins !== null ? ins.policy_number : null;
                 dataOutput.requested_quantity = dataOutput.quantity;
                 dataOutput.insurance_service_name = dataOutput.service_name;
 
@@ -363,26 +365,26 @@ class Dental extends Component {
                   discount_percentage: 0,
                   billDetails: dataOutput,
 
-                  hims_f_dental_treatment_id: row.hims_f_dental_treatment_id
+                  hims_f_dental_treatment_id: row.hims_f_dental_treatment_id,
                 });
               }
-            }
+            },
           });
         }
       },
-      onError: err => {
+      onError: (err) => {
         swalMessage({
           title: err.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
 
     this.setState({
       openBillingModal: true,
       treatment_gridUpdate: false,
       d_id: row.hims_f_dental_treatment_id,
-      hims_f_treatment_plan_id: row.treatment_plan_id
+      hims_f_treatment_plan_id: row.treatment_plan_id,
     });
   }
 
@@ -391,21 +393,21 @@ class Dental extends Component {
       uri: "/dental/getTreatmentPlan",
       method: "GET",
       data: {
-        episode_id: Window.global["episode_id"]
+        episode_id: Window.global["episode_id"],
       },
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.records) {
           this.setState({
-            treatements: response.data.records
+            treatements: response.data.records,
           });
         }
       },
-      onError: error => {
+      onError: (error) => {
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -419,7 +421,7 @@ class Dental extends Component {
         10
       );
       const readyToBill = Enumerable.from(this.state.dentalTreatments)
-        .where(w => w.teeth_number === toothNumber)
+        .where((w) => w.teeth_number === toothNumber)
         .toArray();
       const isMarked = e.currentTarget.classList.contains("mark-active");
       const surface = e.currentTarget.innerText.toString();
@@ -434,7 +436,7 @@ class Dental extends Component {
               title:
                 String(surfaceType).toUpperCase() +
                 " - already added you can't add or remove from here need to delete first",
-              type: "warning"
+              type: "warning",
             });
             returnfunction = true;
             break;
@@ -450,12 +452,12 @@ class Dental extends Component {
 
       let my_obj = {
         teeth_number: toothNumber,
-        surface: surface
+        surface: surface,
       };
 
       let my_item = Enumerable.from(teeth)
         .where(
-          w =>
+          (w) =>
             w.teeth_number === my_obj.teeth_number &&
             w.surface === my_obj.surface
         )
@@ -473,7 +475,7 @@ class Dental extends Component {
             .teeth_number;
           return {
             teeth_number: teeth,
-            details: g.getSource()
+            details: g.getSource(),
           };
         })
         .toArray();
@@ -483,25 +485,25 @@ class Dental extends Component {
         episode_id: Window.global["episode_id"],
         treatment_plan_id: this.state.hims_f_treatment_plan_id,
         service_id: this.state.hims_d_services_id,
-        scheduled_date: this.state.scheduled_date
+        scheduled_date: this.state.scheduled_date,
       };
 
       my_send_obj.send_teeth = send_teeth;
 
       this.setState(
         {
-          quantity: send_teeth.length
+          quantity: send_teeth.length,
         },
         () => {
           this.setState({
-            total_price: this.state.quantity * this.state.standard_fee
+            total_price: this.state.quantity * this.state.standard_fee,
           });
         }
       );
     } else {
       swalMessage({
         title: "Please Select a service first",
-        type: "warning"
+        type: "warning",
       });
     }
   }
@@ -512,11 +514,11 @@ class Dental extends Component {
       my_send_obj.send_teeth.length === 0
     ) {
       loader.setState({
-        loading: false
+        loading: false,
       });
       swalMessage({
         title: "No surface selected ..",
-        type: "info"
+        type: "info",
       });
       return;
     }
@@ -526,7 +528,7 @@ class Dental extends Component {
       alertTypeIcon: "warning",
       onFailure: () => {
         loader.setState({
-          loading: false
+          loading: false,
         });
       },
       onSuccess: () => {
@@ -534,20 +536,20 @@ class Dental extends Component {
           uri: "/dental/addDentalTreatment",
           method: "POST",
           data: my_send_obj,
-          onSuccess: response => {
+          onSuccess: (response) => {
             loader.setState({
-              loading: false
+              loading: false,
             });
             if (response.data.success) {
               swalMessage({
                 title: "Added Successfully",
-                type: "success"
+                type: "success",
               });
 
               let inputData = {
                 hims_f_treatment_plan_id: this.state.hims_f_treatment_plan_id,
                 approve_status: this.state.approval_status,
-                plan_name: this.state.selected_plan
+                plan_name: this.state.selected_plan,
               };
               this.loadDentalTreatment(inputData);
 
@@ -560,21 +562,21 @@ class Dental extends Component {
                 hims_d_services_id: null,
                 quantity: 0,
                 standard_fee: 0,
-                total_price: 0
+                total_price: 0,
               });
             }
           },
-          onError: error => {
+          onError: (error) => {
             loader.setState({
-              loading: false
+              loading: false,
             });
             swalMessage({
               title: error.message,
-              type: "success"
+              type: "success",
             });
-          }
+          },
         });
-      }
+      },
     });
   }
 
@@ -584,7 +586,7 @@ class Dental extends Component {
       alertTypeIcon: "warning",
       onCatch: () => {
         loader.setState({
-          loading: false
+          loading: false,
         });
       },
       onSuccess: () => {
@@ -597,32 +599,32 @@ class Dental extends Component {
             episode_id: Window.global["episode_id"],
             visit_id: Window.global["visit_id"],
             remarks: this.state.remarks,
-            consult_date: this.state.consult_date
+            consult_date: this.state.consult_date,
           },
-          onSuccess: response => {
+          onSuccess: (response) => {
             loader.setState({
-              loading: false
+              loading: false,
             });
             if (response.data.success) {
               swalMessage({
                 title: "Added Successfully",
-                type: "success"
+                type: "success",
               });
               this.clearSaveState();
               this.getTreatementPlans();
             }
           },
-          onError: error => {
+          onError: (error) => {
             loader.setState({
-              loading: false
+              loading: false,
             });
             swalMessage({
               title: error.message,
-              type: "error"
+              type: "error",
             });
-          }
+          },
         });
-      }
+      },
     });
   }
 
@@ -632,26 +634,26 @@ class Dental extends Component {
         type === "Y"
           ? "Approve plan?"
           : type === "C"
-            ? "Cancel Plan?"
-            : "Update?",
+          ? "Cancel Plan?"
+          : "Update?",
       type: "warning",
       showCancelButton: true,
       confirmButtonText: "Yes",
       confirmButtonColor: "#44b8bd",
       cancelButtonColor: "#d33",
-      cancelButtonText: "No"
-    }).then(willDelete => {
+      cancelButtonText: "No",
+    }).then((willDelete) => {
       if (willDelete.value) {
         algaehApiCall({
           uri: "/dental/approveTreatmentPlan",
           method: "PUT",
           data: {
             hims_f_treatment_plan_id: data.hims_f_treatment_plan_id,
-            approve_status: type
+            approve_status: type,
           },
-          onSuccess: response => {
+          onSuccess: (response) => {
             if (response.data.success) {
-              this.setState({ approval_status: type }, () => { });
+              this.setState({ approval_status: type }, () => {});
 
               this.getTreatementPlans();
               swalMessage({
@@ -659,23 +661,23 @@ class Dental extends Component {
                   type === "Y"
                     ? "Plan Approved"
                     : type === "C"
-                      ? "Plan Cancelled"
-                      : "Done",
-                type: "success"
+                    ? "Plan Cancelled"
+                    : "Done",
+                type: "success",
               });
             }
           },
-          onError: error => {
+          onError: (error) => {
             swalMessage({
               title: error.message,
-              type: "error"
+              type: "error",
             });
-          }
+          },
         });
       } else {
         swalMessage({
           title: "Request Cancelled",
-          type: "error"
+          type: "error",
         });
       }
     });
@@ -689,18 +691,18 @@ class Dental extends Component {
           i === 5
             ? 51
             : i === 4
-              ? 52
-              : i === 3
-                ? 53
-                : i === 2
-                  ? 54
-                  : i === 1
-                    ? 55
-                    : null;
+            ? 52
+            : i === 3
+            ? 53
+            : i === 2
+            ? 54
+            : i === 1
+            ? 55
+            : null;
         let _marking = undefined;
         if (teeth !== undefined) {
           const selectedTooth = Enumerable.from(teeth)
-            .where(w => w.teeth_number === tooth)
+            .where((w) => w.teeth_number === tooth)
             .toArray();
           for (let i = 0; i < selectedTooth.length; i++) {
             if (_marking === undefined) {
@@ -738,10 +740,10 @@ class Dental extends Component {
               (i <= 3
                 ? "molar-up-"
                 : i <= 5
-                  ? "premolar-up-"
-                  : i === 6
-                    ? "canine-up-"
-                    : "incisors-up-up-") +
+                ? "premolar-up-"
+                : i === 6
+                ? "canine-up-"
+                : "incisors-up-up-") +
               i
             }
           >
@@ -825,35 +827,34 @@ class Dental extends Component {
       }
     } else
       for (let i = 1; i < 9; i++) {
-        {
-          const tooth =
-            i === 8
-              ? 11
-              : i === 7
-                ? 12
-                : i === 6
-                  ? 13
-                  : i === 5
-                    ? 14
-                    : i === 4
-                      ? 15
-                      : i === 3
-                        ? 16
-                        : i === 2
-                          ? 17
-                          : i === 1
-                            ? 18
-                            : null;
-          let _marking = undefined;
-          if (teeth !== undefined) {
-            const selectedTooth = Enumerable.from(teeth)
-              .where(w => w.teeth_number === tooth)
-              .toArray();
-            for (let i = 0; i < selectedTooth.length; i++) {
-              if (_marking === undefined) {
-                _marking = { ...selectedTooth[i] };
-              } else {
-                _marking["buccal"] =
+        const tooth =
+          i === 8
+            ? 11
+            : i === 7
+            ? 12
+            : i === 6
+            ? 13
+            : i === 5
+            ? 14
+            : i === 4
+            ? 15
+            : i === 3
+            ? 16
+            : i === 2
+            ? 17
+            : i === 1
+            ? 18
+            : null;
+        let _marking = undefined;
+        if (teeth !== undefined) {
+          const selectedTooth = Enumerable.from(teeth)
+            .where((w) => w.teeth_number === tooth)
+            .toArray();
+          for (let i = 0; i < selectedTooth.length; i++) {
+            if (_marking === undefined) {
+              _marking = { ...selectedTooth[i] };
+            } else {
+              _marking["buccal"] =
                 _marking["buccal"] === "N"
                   ? selectedTooth[i]["buccal"]
                   : _marking["buccal"];
@@ -873,27 +874,27 @@ class Dental extends Component {
                 _marking["occlusal"] === "N"
                   ? selectedTooth[i]["occlusal"]
                   : _marking["occlusal"];
-              }
             }
           }
+        }
 
-          plot.push(
-            <div
-              key={i}
-              className={
-                "col tooth-sec up-side " +
-                (i <= 3
-                  ? "molar-up-"
-                  : i <= 5
-                    ? "premolar-up-"
-                    : i === 6
-                      ? "canine-up-"
-                      : "incisors-up-up-") +
-                i
-              }
-            >
-              <span onClick={this.markAllSurface.bind(this)}>{tooth}</span>
-              <div className="surface-Marking">
+        plot.push(
+          <div
+            key={i}
+            className={
+              "col tooth-sec up-side " +
+              (i <= 3
+                ? "molar-up-"
+                : i <= 5
+                ? "premolar-up-"
+                : i === 6
+                ? "canine-up-"
+                : "incisors-up-up-") +
+              i
+            }
+          >
+            <span onClick={this.markAllSurface.bind(this)}>{tooth}</span>
+            <div className="surface-Marking">
               {i >= 6 ? (
                 <div
                   onClick={this.markTeethSurface.bind(this)}
@@ -908,99 +909,99 @@ class Dental extends Component {
                   }
                 >
                   <span surface="labial">L</span>
-                  </div>) : (
-                    <div
-                    onClick={this.markTeethSurface.bind(this)}
-                    className={
-                      "top-surface " +
-                      (_marking !== undefined
-                        ? _marking.buccal === "Y" &&
-                          _marking.service_id === this.state.hims_d_services_id
-                          ? " mark-active"
-                          : ""
-                        : "")
-                    }
-                  >
-                    <span surface="buccal">B</span>
-                    </div>
-
-                )} 
+                </div>
+              ) : (
                 <div
                   onClick={this.markTeethSurface.bind(this)}
                   className={
-                    "right-surface " +
+                    "top-surface " +
                     (_marking !== undefined
-                      ? _marking.mesial === "Y" &&
+                      ? _marking.buccal === "Y" &&
                         _marking.service_id === this.state.hims_d_services_id
                         ? " mark-active"
                         : ""
                       : "")
                   }
                 >
-                  <span surface="mesial">M</span>
+                  <span surface="buccal">B</span>
                 </div>
-                <div
-                  onClick={this.markTeethSurface.bind(this)}
-                  className={
-                    "bottom-surface " +
-                    (_marking !== undefined
-                      ? _marking.distal === "Y" &&
-                        _marking.service_id === this.state.hims_d_services_id
-                        ? " mark-active"
-                        : ""
-                      : "")
-                  }
-                >
-                  <span surface="distal">D</span>
-                </div>
-                <div
-                  onClick={this.markTeethSurface.bind(this)}
-                  className={
-                    "left-surface " +
-                    (_marking !== undefined
-                      ? _marking.palatal === "Y" &&
-                        _marking.service_id === this.state.hims_d_services_id
-                        ? " mark-active"
-                        : ""
-                      : "")
-                  }
-                >
-                  <span surface="palatal">P</span>
-                </div>
-                {i >= 6 ? (
-                <div
-                    onClick={this.markTeethSurface.bind(this)}
-                    className={
-                      "middle-surface " +
-                      (_marking !== undefined
-                        ? _marking.incisal === "Y" &&
-                          _marking.service_id === this.state.hims_d_services_id
-                          ? " mark-active"
-                          : ""
-                        : "")
-                    }
-                  >
-                    <span surface="incisal">I</span>
-                  </div>) : (
-                  <div
-                    onClick={this.markTeethSurface.bind(this)}
-                    className={
-                      "middle-surface " +
-                      (_marking !== undefined
-                        ? _marking.occlusal === "Y" &&
-                          _marking.service_id === this.state.hims_d_services_id
-                          ? " mark-active"
-                          : ""
-                        : "")
-                    }
-                  >
-                    <span surface="occlusal">O</span>
-                  </div>
-                 )} 
+              )}
+              <div
+                onClick={this.markTeethSurface.bind(this)}
+                className={
+                  "right-surface " +
+                  (_marking !== undefined
+                    ? _marking.mesial === "Y" &&
+                      _marking.service_id === this.state.hims_d_services_id
+                      ? " mark-active"
+                      : ""
+                    : "")
+                }
+              >
+                <span surface="mesial">M</span>
               </div>
+              <div
+                onClick={this.markTeethSurface.bind(this)}
+                className={
+                  "bottom-surface " +
+                  (_marking !== undefined
+                    ? _marking.distal === "Y" &&
+                      _marking.service_id === this.state.hims_d_services_id
+                      ? " mark-active"
+                      : ""
+                    : "")
+                }
+              >
+                <span surface="distal">D</span>
+              </div>
+              <div
+                onClick={this.markTeethSurface.bind(this)}
+                className={
+                  "left-surface " +
+                  (_marking !== undefined
+                    ? _marking.palatal === "Y" &&
+                      _marking.service_id === this.state.hims_d_services_id
+                      ? " mark-active"
+                      : ""
+                    : "")
+                }
+              >
+                <span surface="palatal">P</span>
+              </div>
+              {i >= 6 ? (
+                <div
+                  onClick={this.markTeethSurface.bind(this)}
+                  className={
+                    "middle-surface " +
+                    (_marking !== undefined
+                      ? _marking.incisal === "Y" &&
+                        _marking.service_id === this.state.hims_d_services_id
+                        ? " mark-active"
+                        : ""
+                      : "")
+                  }
+                >
+                  <span surface="incisal">I</span>
+                </div>
+              ) : (
+                <div
+                  onClick={this.markTeethSurface.bind(this)}
+                  className={
+                    "middle-surface " +
+                    (_marking !== undefined
+                      ? _marking.occlusal === "Y" &&
+                        _marking.service_id === this.state.hims_d_services_id
+                        ? " mark-active"
+                        : ""
+                      : "")
+                  }
+                >
+                  <span surface="occlusal">O</span>
+                </div>
+              )}
             </div>
-          );
-        }
+          </div>
+        );
       }
     return plot;
   }
@@ -1013,18 +1014,18 @@ class Dental extends Component {
           i === 9
             ? 61
             : i === 10
-              ? 62
-              : i === 11
-                ? 63
-                : i === 12
-                  ? 64
-                  : i === 13
-                    ? 65
-                    : null;
+            ? 62
+            : i === 11
+            ? 63
+            : i === 12
+            ? 64
+            : i === 13
+            ? 65
+            : null;
         let _marking = undefined;
         if (teeth !== undefined) {
           const selectedTooth = Enumerable.from(teeth)
-            .where(w => w.teeth_number === tooth)
+            .where((w) => w.teeth_number === tooth)
             .toArray();
           for (let i = 0; i < selectedTooth.length; i++) {
             if (_marking === undefined) {
@@ -1067,31 +1068,32 @@ class Dental extends Component {
               (i <= 10
                 ? "incisors-up-up-"
                 : i === 11
-                  ? "canine-up-"
-                  : i <= 13
-                    ? "premolar-up-"
-                    : "i molar-up-") +
+                ? "canine-up-"
+                : i <= 13
+                ? "premolar-up-"
+                : "i molar-up-") +
               i
             }
           >
             <span onClick={this.markAllSurface.bind(this)}>{tooth}</span>
             <div className="surface-Marking">
-            {i >= 12 ? (
+              {i >= 12 ? (
                 <div
-                    onClick={this.markTeethSurface.bind(this)}
-                    className={
-                      "top-surface " +
-                      (_marking !== undefined
-                        ? _marking.buccal === "Y" &&
-                          _marking.service_id === this.state.hims_d_services_id
-                          ? " mark-active"
-                          : ""
-                        : "")
-                    }
-                  >
-                    <span surface="buccal">B</span>
-                  </div>) : (
-                   <div
+                  onClick={this.markTeethSurface.bind(this)}
+                  className={
+                    "top-surface " +
+                    (_marking !== undefined
+                      ? _marking.buccal === "Y" &&
+                        _marking.service_id === this.state.hims_d_services_id
+                        ? " mark-active"
+                        : ""
+                      : "")
+                  }
+                >
+                  <span surface="buccal">B</span>
+                </div>
+              ) : (
+                <div
                   onClick={this.markTeethSurface.bind(this)}
                   className={
                     "top-surface " +
@@ -1103,10 +1105,9 @@ class Dental extends Component {
                       : "")
                   }
                 >
-                  <span surface="labial">L</span> 
-                    </div>
-
-                )} 
+                  <span surface="labial">L</span>
+                </div>
+              )}
               <div
                 onClick={this.markTeethSurface.bind(this)}
                 className={
@@ -1135,24 +1136,24 @@ class Dental extends Component {
               >
                 <span surface="mesial">M</span>
               </div>
-              
+
+              <div
+                onClick={this.markTeethSurface.bind(this)}
+                className={
+                  "bottom-surface" +
+                  (_marking !== undefined
+                    ? _marking.palatal === "Y" &&
+                      _marking.service_id === this.state.hims_d_services_id
+                      ? " mark-active"
+                      : ""
+                    : "")
+                }
+              >
+                <span surface="palatal">P</span>
+              </div>
+
+              {i >= 12 ? (
                 <div
-                  onClick={this.markTeethSurface.bind(this)}
-                  className={
-                    "bottom-surface" +
-                    (_marking !== undefined
-                      ? _marking.palatal === "Y" &&
-                        _marking.service_id === this.state.hims_d_services_id
-                        ? " mark-active"
-                        : ""
-                      : "")
-                  }
-                >
-                  <span surface="palatal">P</span>
-                </div>
-               
-                {i >= 12 ? (
-                    <div
                   onClick={this.markTeethSurface.bind(this)}
                   className={
                     "middle-surface" +
@@ -1165,8 +1166,9 @@ class Dental extends Component {
                   }
                 >
                   <span surface="occlusal">O</span>
-                </div>  ) :(
-                    <div
+                </div>
+              ) : (
+                <div
                   onClick={this.markTeethSurface.bind(this)}
                   className={
                     "middle-surface" +
@@ -1179,7 +1181,8 @@ class Dental extends Component {
                   }
                 >
                   <span surface="incisal">I</span>
-                </div>  )}
+                </div>
+              )}
             </div>
           </div>
         );
@@ -1190,24 +1193,24 @@ class Dental extends Component {
           i === 9
             ? 21
             : i === 10
-              ? 22
-              : i === 11
-                ? 23
-                : i === 12
-                  ? 24
-                  : i === 13
-                    ? 25
-                    : i === 14
-                      ? 26
-                      : i === 15
-                        ? 27
-                        : i === 16
-                          ? 28
-                          : null;
+            ? 22
+            : i === 11
+            ? 23
+            : i === 12
+            ? 24
+            : i === 13
+            ? 25
+            : i === 14
+            ? 26
+            : i === 15
+            ? 27
+            : i === 16
+            ? 28
+            : null;
         let _marking = undefined;
         if (teeth !== undefined) {
           const selectedTooth = Enumerable.from(teeth)
-            .where(w => w.teeth_number === tooth)
+            .where((w) => w.teeth_number === tooth)
             .toArray();
           for (let i = 0; i < selectedTooth.length; i++) {
             if (_marking === undefined) {
@@ -1221,28 +1224,26 @@ class Dental extends Component {
                 _marking["labial"] === "N"
                   ? selectedTooth[i]["labial"]
                   : _marking["labial"];
-             _marking["distal"] =
-                  _marking["distal"] === "N"
-                    ? selectedTooth[i]["distal"]
-                    : _marking["distal"];
-                 _marking["mesial"] =
-                   _marking["mesial"] === "N"
-                      ? selectedTooth[i]["mesial"]
-                      : _marking["mesial"];
-                 _marking["palatal"] =
-                  _marking["palatal"] === "N"
-                       ? selectedTooth[i]["palatal"]
-                       : _marking["palatal"];
-                  _marking["occlusal"] =
-                   _marking["occlusal"] === "N"
-                         ? selectedTooth[i]["occlusal"]
-                         : _marking["occlusal"];      
+              _marking["distal"] =
+                _marking["distal"] === "N"
+                  ? selectedTooth[i]["distal"]
+                  : _marking["distal"];
+              _marking["mesial"] =
+                _marking["mesial"] === "N"
+                  ? selectedTooth[i]["mesial"]
+                  : _marking["mesial"];
+              _marking["palatal"] =
+                _marking["palatal"] === "N"
+                  ? selectedTooth[i]["palatal"]
+                  : _marking["palatal"];
+              _marking["occlusal"] =
+                _marking["occlusal"] === "N"
+                  ? selectedTooth[i]["occlusal"]
+                  : _marking["occlusal"];
               _marking["incisal"] =
                 _marking["incisal"] === "N"
                   ? selectedTooth[i]["incisal"]
                   : _marking["incisal"];
-              
-             
             }
           }
         }
@@ -1260,31 +1261,32 @@ class Dental extends Component {
               (i <= 10
                 ? "incisors-up-up-"
                 : i === 11
-                  ? "canine-up-"
-                  : i <= 13
-                    ? "premolar-up-"
-                    : "i molar-up-") +
+                ? "canine-up-"
+                : i <= 13
+                ? "premolar-up-"
+                : "i molar-up-") +
               i
             }
           >
             <span onClick={this.markAllSurface.bind(this)}>{tooth}</span>
             <div className="surface-Marking">
-            {i >= 12 ? (
+              {i >= 12 ? (
                 <div
-                    onClick={this.markTeethSurface.bind(this)}
-                    className={
-                      "top-surface " +
-                      (_marking !== undefined
-                        ? _marking.buccal === "Y" &&
-                          _marking.service_id === this.state.hims_d_services_id
-                          ? " mark-active"
-                          : ""
-                        : "")
-                    }
-                  >
-                    <span surface="buccal">B</span>
-                  </div>) : (
-                   <div
+                  onClick={this.markTeethSurface.bind(this)}
+                  className={
+                    "top-surface " +
+                    (_marking !== undefined
+                      ? _marking.buccal === "Y" &&
+                        _marking.service_id === this.state.hims_d_services_id
+                        ? " mark-active"
+                        : ""
+                      : "")
+                  }
+                >
+                  <span surface="buccal">B</span>
+                </div>
+              ) : (
+                <div
                   onClick={this.markTeethSurface.bind(this)}
                   className={
                     "top-surface " +
@@ -1296,10 +1298,9 @@ class Dental extends Component {
                       : "")
                   }
                 >
-                  <span surface="labial">L</span> 
-                    </div>
-
-                )} 
+                  <span surface="labial">L</span>
+                </div>
+              )}
               <div
                 onClick={this.markTeethSurface.bind(this)}
                 className={
@@ -1328,24 +1329,24 @@ class Dental extends Component {
               >
                 <span surface="mesial">M</span>
               </div>
-              
+
+              <div
+                onClick={this.markTeethSurface.bind(this)}
+                className={
+                  "bottom-surface" +
+                  (_marking !== undefined
+                    ? _marking.palatal === "Y" &&
+                      _marking.service_id === this.state.hims_d_services_id
+                      ? " mark-active"
+                      : ""
+                    : "")
+                }
+              >
+                <span surface="palatal">P</span>
+              </div>
+
+              {i >= 12 ? (
                 <div
-                  onClick={this.markTeethSurface.bind(this)}
-                  className={
-                    "bottom-surface" +
-                    (_marking !== undefined
-                      ? _marking.palatal === "Y" &&
-                        _marking.service_id === this.state.hims_d_services_id
-                        ? " mark-active"
-                        : ""
-                      : "")
-                  }
-                >
-                  <span surface="palatal">P</span>
-                </div>
-               
-                {i >= 12 ? (
-                    <div
                   onClick={this.markTeethSurface.bind(this)}
                   className={
                     "middle-surface" +
@@ -1358,8 +1359,9 @@ class Dental extends Component {
                   }
                 >
                   <span surface="occlusal">O</span>
-                </div>  ) :(
-                    <div
+                </div>
+              ) : (
+                <div
                   onClick={this.markTeethSurface.bind(this)}
                   className={
                     "middle-surface" +
@@ -1372,8 +1374,8 @@ class Dental extends Component {
                   }
                 >
                   <span surface="incisal">I</span>
-                </div>  )}
-  
+                </div>
+              )}
             </div>
           </div>
         );
@@ -1391,18 +1393,18 @@ class Dental extends Component {
           i === 28
             ? 81
             : i === 29
-              ? 82
-              : i === 30
-                ? 83
-                : i === 31
-                  ? 84
-                  : i === 32
-                    ? 85
-                    : null;
+            ? 82
+            : i === 30
+            ? 83
+            : i === 31
+            ? 84
+            : i === 32
+            ? 85
+            : null;
         let _marking = undefined;
         if (teeth !== undefined) {
           const selectedTooth = Enumerable.from(teeth)
-            .where(w => w.teeth_number === tooth)
+            .where((w) => w.teeth_number === tooth)
             .toArray();
           for (let i = 0; i < selectedTooth.length; i++) {
             if (_marking === undefined) {
@@ -1410,34 +1412,28 @@ class Dental extends Component {
             } else {
               _marking["palatal"] =
                 _marking["palatal"] === "N"
-                     ? selectedTooth[i]["palatal"]
-                     : _marking["palatal"];
-                _marking["mesial"] =
-                  _marking["mesial"] === "N"
-                     ? selectedTooth[i]["mesial"]
-                     : _marking["mesial"];
-                _marking["distal"] =
-                 _marking["distal"] === "N"
-                    ? selectedTooth[i]["distal"]
-                    : _marking["distal"];
+                  ? selectedTooth[i]["palatal"]
+                  : _marking["palatal"];
+              _marking["mesial"] =
+                _marking["mesial"] === "N"
+                  ? selectedTooth[i]["mesial"]
+                  : _marking["mesial"];
+              _marking["distal"] =
+                _marking["distal"] === "N"
+                  ? selectedTooth[i]["distal"]
+                  : _marking["distal"];
               _marking["buccal"] =
-              _marking["buccal"] === "N"
-                ? selectedTooth[i]["buccal"]
-                : _marking["buccal"];
-                _marking["incisal"] =
+                _marking["buccal"] === "N"
+                  ? selectedTooth[i]["buccal"]
+                  : _marking["buccal"];
+              _marking["incisal"] =
                 _marking["incisal"] === "N"
                   ? selectedTooth[i]["incisal"]
                   : _marking["incisal"];
               _marking["occlusal"] =
-               _marking["occlusal"] === "N"
-                   ? selectedTooth[i]["occlusal"]
-                   : _marking["occlusal"];  
-            
-              
-               
-                   
-           
-            
+                _marking["occlusal"] === "N"
+                  ? selectedTooth[i]["occlusal"]
+                  : _marking["occlusal"];
             }
           }
         }
@@ -1456,10 +1452,10 @@ class Dental extends Component {
               (counter <= 3
                 ? "molar-down-"
                 : counter <= 5
-                  ? "premolar-down-"
-                  : counter === 6
-                    ? "canine-down-"
-                    : "incisors-down-") +
+                ? "premolar-down-"
+                : counter === 6
+                ? "canine-down-"
+                : "incisors-down-") +
               counter
             }
           >
@@ -1521,8 +1517,9 @@ class Dental extends Component {
               >
                 <span surface="buccal">B</span>
               </div>
-              
-              {counter >= 6 ? (<div
+
+              {counter >= 6 ? (
+                <div
                   onClick={this.markTeethSurface.bind(this)}
                   className={
                     "middle-surface" +
@@ -1536,22 +1533,21 @@ class Dental extends Component {
                 >
                   <span surface="incisal">I</span>
                 </div>
-             
-              ) : ( <div
-                onClick={this.markTeethSurface.bind(this)}
-                className={
-                  "middle-surface" +
-                  (_marking !== undefined
-                    ? _marking.occlusal === "Y" &&
-                      _marking.service_id === this.state.hims_d_services_id
-                      ? " mark-active"
-                      : ""
-                    : "")
-                }
-              >
-                <span surface="occlusal">O</span>
-              </div>
-                
+              ) : (
+                <div
+                  onClick={this.markTeethSurface.bind(this)}
+                  className={
+                    "middle-surface" +
+                    (_marking !== undefined
+                      ? _marking.occlusal === "Y" &&
+                        _marking.service_id === this.state.hims_d_services_id
+                        ? " mark-active"
+                        : ""
+                      : "")
+                  }
+                >
+                  <span surface="occlusal">O</span>
+                </div>
               )}
             </div>
           </div>
@@ -1564,58 +1560,57 @@ class Dental extends Component {
           i === 25
             ? 41
             : i === 26
-              ? 42
-              : i === 27
-                ? 43
-                : i === 28
-                  ? 44
-                  : i === 29
-                    ? 45
-                    : i === 30
-                      ? 46
-                      : i === 31
-                        ? 47
-                        : i === 32
-                          ? 48
-                          : null;
+            ? 42
+            : i === 27
+            ? 43
+            : i === 28
+            ? 44
+            : i === 29
+            ? 45
+            : i === 30
+            ? 46
+            : i === 31
+            ? 47
+            : i === 32
+            ? 48
+            : null;
         let _marking = undefined;
         if (teeth !== undefined) {
           const selectedTooth = Enumerable.from(teeth)
-            .where(w => w.teeth_number === tooth)
+            .where((w) => w.teeth_number === tooth)
             .toArray();
           for (let i = 0; i < selectedTooth.length; i++) {
             if (_marking === undefined) {
               _marking = { ...selectedTooth[i] };
             } else {
               _marking["palatal"] =
-              _marking["palatal"] === "N"
-                   ? selectedTooth[i]["palatal"]
-                   : _marking["palatal"];
+                _marking["palatal"] === "N"
+                  ? selectedTooth[i]["palatal"]
+                  : _marking["palatal"];
               _marking["mesial"] =
                 _marking["mesial"] === "N"
-                   ? selectedTooth[i]["mesial"]
-                   : _marking["mesial"];
+                  ? selectedTooth[i]["mesial"]
+                  : _marking["mesial"];
               _marking["distal"] =
-               _marking["distal"] === "N"
+                _marking["distal"] === "N"
                   ? selectedTooth[i]["distal"]
                   : _marking["distal"];
               _marking["labial"] =
-               _marking["labial"] === "N"
+                _marking["labial"] === "N"
                   ? selectedTooth[i]["labial"]
                   : _marking["labial"];
-            _marking["buccal"] =
-            _marking["buccal"] === "N"
-              ? selectedTooth[i]["buccal"]
-              : _marking["buccal"];
+              _marking["buccal"] =
+                _marking["buccal"] === "N"
+                  ? selectedTooth[i]["buccal"]
+                  : _marking["buccal"];
               _marking["incisal"] =
-              _marking["incisal"] === "N"
-                ? selectedTooth[i]["incisal"]
-                : _marking["incisal"];
-            _marking["occlusal"] =
-             _marking["occlusal"] === "N"
-                 ? selectedTooth[i]["occlusal"]
-                 : _marking["occlusal"];  
-          
+                _marking["incisal"] === "N"
+                  ? selectedTooth[i]["incisal"]
+                  : _marking["incisal"];
+              _marking["occlusal"] =
+                _marking["occlusal"] === "N"
+                  ? selectedTooth[i]["occlusal"]
+                  : _marking["occlusal"];
             }
           }
         }
@@ -1634,16 +1629,16 @@ class Dental extends Component {
               (counter <= 3
                 ? "molar-down-"
                 : counter <= 5
-                  ? "premolar-down-"
-                  : counter === 6
-                    ? "canine-down-"
-                    : "incisors-down-") +
+                ? "premolar-down-"
+                : counter === 6
+                ? "canine-down-"
+                : "incisors-down-") +
               counter
             }
           >
             <span onClick={this.markAllSurface.bind(this)}>{tooth}</span>
             <div className="surface-Marking">
-            <div
+              <div
                 onClick={this.markTeethSurface.bind(this)}
                 className={
                   "top-surface " +
@@ -1686,40 +1681,39 @@ class Dental extends Component {
                 <span surface="distal">D</span>
               </div>
               {counter >= 6 ? (
-              <div
-                onClick={this.markTeethSurface.bind(this)}
-                className={
-                  "bottom-surface" +
-                  (_marking !== undefined
-                    ? _marking.labial === "Y" &&
-                      _marking.service_id === this.state.hims_d_services_id
-                      ? " mark-active"
-                      : ""
-                    : "")
-                }
-              >
-                <span surface="labial">L</span>
-              </div>
-              ):(
-              <div
-                onClick={this.markTeethSurface.bind(this)}
-                className={
-                  "bottom-surface" +
-                  (_marking !== undefined
-                    ? _marking.buccal === "Y" &&
-                      _marking.service_id === this.state.hims_d_services_id
-                      ? " mark-active"
-                      : ""
-                    : "")
-                }
-              >
-                <span surface="buccal">B</span>
-              </div>
-
+                <div
+                  onClick={this.markTeethSurface.bind(this)}
+                  className={
+                    "bottom-surface" +
+                    (_marking !== undefined
+                      ? _marking.labial === "Y" &&
+                        _marking.service_id === this.state.hims_d_services_id
+                        ? " mark-active"
+                        : ""
+                      : "")
+                  }
+                >
+                  <span surface="labial">L</span>
+                </div>
+              ) : (
+                <div
+                  onClick={this.markTeethSurface.bind(this)}
+                  className={
+                    "bottom-surface" +
+                    (_marking !== undefined
+                      ? _marking.buccal === "Y" &&
+                        _marking.service_id === this.state.hims_d_services_id
+                        ? " mark-active"
+                        : ""
+                      : "")
+                  }
+                >
+                  <span surface="buccal">B</span>
+                </div>
               )}
-              
+
               {counter >= 6 ? (
-              <div
+                <div
                   onClick={this.markTeethSurface.bind(this)}
                   className={
                     "middle-surface" +
@@ -1733,22 +1727,21 @@ class Dental extends Component {
                 >
                   <span surface="incisal">I</span>
                 </div>
-             
-              ) : ( <div
-                onClick={this.markTeethSurface.bind(this)}
-                className={
-                  "middle-surface" +
-                  (_marking !== undefined
-                    ? _marking.occlusal === "Y" &&
-                      _marking.service_id === this.state.hims_d_services_id
-                      ? " mark-active"
-                      : ""
-                    : "")
-                }
-              >
-                <span surface="occlusal">O</span>
-              </div>
-                
+              ) : (
+                <div
+                  onClick={this.markTeethSurface.bind(this)}
+                  className={
+                    "middle-surface" +
+                    (_marking !== undefined
+                      ? _marking.occlusal === "Y" &&
+                        _marking.service_id === this.state.hims_d_services_id
+                        ? " mark-active"
+                        : ""
+                      : "")
+                  }
+                >
+                  <span surface="occlusal">O</span>
+                </div>
               )}
             </div>
           </div>
@@ -1768,18 +1761,18 @@ class Dental extends Component {
           i === 24
             ? 71
             : i === 23
-              ? 72
-              : i === 22
-                ? 73
-                : i === 21
-                  ? 74
-                  : i === 20
-                    ? 75
-                    : null;
+            ? 72
+            : i === 22
+            ? 73
+            : i === 21
+            ? 74
+            : i === 20
+            ? 75
+            : null;
         let _marking = undefined;
         if (teeth !== undefined) {
           const selectedTooth = Enumerable.from(teeth)
-            .where(w => w.teeth_number === tooth)
+            .where((w) => w.teeth_number === tooth)
             .toArray();
           for (let i = 0; i < selectedTooth.length; i++) {
             if (_marking === undefined) {
@@ -1797,24 +1790,22 @@ class Dental extends Component {
                 _marking["mesial"] === "N"
                   ? selectedTooth[i]["mesial"]
                   : _marking["mesial"];
-               _marking["buccal"] =
-            _marking["buccal"] === "N"
-              ? selectedTooth[i]["buccal"]
-              : _marking["buccal"];
+              _marking["buccal"] =
+                _marking["buccal"] === "N"
+                  ? selectedTooth[i]["buccal"]
+                  : _marking["buccal"];
               _marking["labial"] =
                 _marking["labial"] === "N"
                   ? selectedTooth[i]["labial"]
                   : _marking["labial"];
-               _marking["occlusal"] =
-             _marking["occlusal"] === "N"
-                 ? selectedTooth[i]["occlusal"]
-                 : _marking["occlusal"]; 
+              _marking["occlusal"] =
+                _marking["occlusal"] === "N"
+                  ? selectedTooth[i]["occlusal"]
+                  : _marking["occlusal"];
               _marking["incisal"] =
                 _marking["incisal"] === "N"
                   ? selectedTooth[i]["incisal"]
                   : _marking["incisal"];
-              
-              
             }
           }
         }
@@ -1833,10 +1824,10 @@ class Dental extends Component {
               (counter <= 10
                 ? "incisors-down-"
                 : counter === 11
-                  ? "canine-down-"
-                  : counter < 14
-                    ? "premolar-down-"
-                    : "i molar-down-") +
+                ? "canine-down-"
+                : counter < 14
+                ? "premolar-down-"
+                : "i molar-down-") +
               counter
             }
           >
@@ -1885,37 +1876,37 @@ class Dental extends Component {
                 <span surface="mesial">M</span>
               </div>
               {i <= 21 ? (
-              <div
-                onClick={this.markTeethSurface.bind(this)}
-                className={
-                  "bottom-surface " +
-                  (_marking !== undefined
-                    ? _marking.buccal === "Y" &&
-                      _marking.service_id === this.state.hims_d_services_id
-                      ? " mark-active"
-                      : ""
-                    : "")
-                }
-              >
-                <span surface="buccal">B</span>
-              </div>):(
-              <div
-                onClick={this.markTeethSurface.bind(this)}
-                className={
-                  "bottom-surface " +
-                  (_marking !== undefined
-                    ? _marking.labial === "Y" &&
-                      _marking.service_id === this.state.hims_d_services_id
-                      ? " mark-active"
-                      : ""
-                    : "")
-                }
-              >
-                <span surface="labial">L</span>
-              </div>
-
+                <div
+                  onClick={this.markTeethSurface.bind(this)}
+                  className={
+                    "bottom-surface " +
+                    (_marking !== undefined
+                      ? _marking.buccal === "Y" &&
+                        _marking.service_id === this.state.hims_d_services_id
+                        ? " mark-active"
+                        : ""
+                      : "")
+                  }
+                >
+                  <span surface="buccal">B</span>
+                </div>
+              ) : (
+                <div
+                  onClick={this.markTeethSurface.bind(this)}
+                  className={
+                    "bottom-surface " +
+                    (_marking !== undefined
+                      ? _marking.labial === "Y" &&
+                        _marking.service_id === this.state.hims_d_services_id
+                        ? " mark-active"
+                        : ""
+                      : "")
+                  }
+                >
+                  <span surface="labial">L</span>
+                </div>
               )}
-              
+
               {i <= 21 ? (
                 <div
                   onClick={this.markTeethSurface.bind(this)}
@@ -1932,20 +1923,20 @@ class Dental extends Component {
                   <span surface="occlusal">O</span>
                 </div>
               ) : (
-              <div
-                onClick={this.markTeethSurface.bind(this)}
-                className={
-                  "middle-surface " +
-                  (_marking !== undefined
-                    ? _marking.incisal === "Y" &&
-                      _marking.service_id === this.state.hims_d_services_id
-                      ? " mark-active"
-                      : ""
-                    : "")
-                }
-              >
-                <span surface="incisal">I</span>
-              </div>
+                <div
+                  onClick={this.markTeethSurface.bind(this)}
+                  className={
+                    "middle-surface " +
+                    (_marking !== undefined
+                      ? _marking.incisal === "Y" &&
+                        _marking.service_id === this.state.hims_d_services_id
+                        ? " mark-active"
+                        : ""
+                      : "")
+                  }
+                >
+                  <span surface="incisal">I</span>
+                </div>
               )}
             </div>
           </div>
@@ -1958,24 +1949,24 @@ class Dental extends Component {
           i === 24
             ? 31
             : i === 23
-              ? 32
-              : i === 22
-                ? 33
-                : i === 21
-                  ? 34
-                  : i === 20
-                    ? 35
-                    : i === 19
-                      ? 36
-                      : i === 18
-                        ? 37
-                        : i === 17
-                          ? 38
-                          : null;
+            ? 32
+            : i === 22
+            ? 33
+            : i === 21
+            ? 34
+            : i === 20
+            ? 35
+            : i === 19
+            ? 36
+            : i === 18
+            ? 37
+            : i === 17
+            ? 38
+            : null;
         let _marking = undefined;
         if (teeth !== undefined) {
           const selectedTooth = Enumerable.from(teeth)
-            .where(w => w.teeth_number === tooth)
+            .where((w) => w.teeth_number === tooth)
             .toArray();
           for (let i = 0; i < selectedTooth.length; i++) {
             if (_marking === undefined) {
@@ -1993,23 +1984,22 @@ class Dental extends Component {
                 _marking["mesial"] === "N"
                   ? selectedTooth[i]["mesial"]
                   : _marking["mesial"];
-               _marking["buccal"] =
-            _marking["buccal"] === "N"
-              ? selectedTooth[i]["buccal"]
-              : _marking["buccal"];
+              _marking["buccal"] =
+                _marking["buccal"] === "N"
+                  ? selectedTooth[i]["buccal"]
+                  : _marking["buccal"];
               _marking["labial"] =
                 _marking["labial"] === "N"
                   ? selectedTooth[i]["labial"]
                   : _marking["labial"];
-               _marking["occlusal"] =
-             _marking["occlusal"] === "N"
-                 ? selectedTooth[i]["occlusal"]
-                 : _marking["occlusal"]; 
+              _marking["occlusal"] =
+                _marking["occlusal"] === "N"
+                  ? selectedTooth[i]["occlusal"]
+                  : _marking["occlusal"];
               _marking["incisal"] =
                 _marking["incisal"] === "N"
                   ? selectedTooth[i]["incisal"]
                   : _marking["incisal"];
-              
             }
           }
         }
@@ -2028,16 +2018,16 @@ class Dental extends Component {
               (counter <= 10
                 ? "incisors-down-"
                 : counter === 11
-                  ? "canine-down-"
-                  : counter < 14
-                    ? "premolar-down-"
-                    : "i molar-down-") +
+                ? "canine-down-"
+                : counter < 14
+                ? "premolar-down-"
+                : "i molar-down-") +
               counter
             }
           >
             <span onClick={this.markAllSurface.bind(this)}>{tooth}</span>
             <div className="surface-Marking">
-            <div
+              <div
                 onClick={this.markTeethSurface.bind(this)}
                 className={
                   "top-surface" +
@@ -2080,37 +2070,37 @@ class Dental extends Component {
                 <span surface="mesial">M</span>
               </div>
               {i <= 21 ? (
-              <div
-                onClick={this.markTeethSurface.bind(this)}
-                className={
-                  "bottom-surface " +
-                  (_marking !== undefined
-                    ? _marking.buccal === "Y" &&
-                      _marking.service_id === this.state.hims_d_services_id
-                      ? " mark-active"
-                      : ""
-                    : "")
-                }
-              >
-                <span surface="buccal">B</span>
-              </div>):(
-              <div
-                onClick={this.markTeethSurface.bind(this)}
-                className={
-                  "bottom-surface " +
-                  (_marking !== undefined
-                    ? _marking.labial === "Y" &&
-                      _marking.service_id === this.state.hims_d_services_id
-                      ? " mark-active"
-                      : ""
-                    : "")
-                }
-              >
-                <span surface="labial">L</span>
-              </div>
-
+                <div
+                  onClick={this.markTeethSurface.bind(this)}
+                  className={
+                    "bottom-surface " +
+                    (_marking !== undefined
+                      ? _marking.buccal === "Y" &&
+                        _marking.service_id === this.state.hims_d_services_id
+                        ? " mark-active"
+                        : ""
+                      : "")
+                  }
+                >
+                  <span surface="buccal">B</span>
+                </div>
+              ) : (
+                <div
+                  onClick={this.markTeethSurface.bind(this)}
+                  className={
+                    "bottom-surface " +
+                    (_marking !== undefined
+                      ? _marking.labial === "Y" &&
+                        _marking.service_id === this.state.hims_d_services_id
+                        ? " mark-active"
+                        : ""
+                      : "")
+                  }
+                >
+                  <span surface="labial">L</span>
+                </div>
               )}
-              
+
               {i <= 21 ? (
                 <div
                   onClick={this.markTeethSurface.bind(this)}
@@ -2127,20 +2117,20 @@ class Dental extends Component {
                   <span surface="occlusal">O</span>
                 </div>
               ) : (
-              <div
-                onClick={this.markTeethSurface.bind(this)}
-                className={
-                  "middle-surface " +
-                  (_marking !== undefined
-                    ? _marking.incisal === "Y" &&
-                      _marking.service_id === this.state.hims_d_services_id
-                      ? " mark-active"
-                      : ""
-                    : "")
-                }
-              >
-                <span surface="incisal">I</span>
-              </div>
+                <div
+                  onClick={this.markTeethSurface.bind(this)}
+                  className={
+                    "middle-surface " +
+                    (_marking !== undefined
+                      ? _marking.incisal === "Y" &&
+                        _marking.service_id === this.state.hims_d_services_id
+                        ? " mark-active"
+                        : ""
+                      : "")
+                  }
+                >
+                  <span surface="incisal">I</span>
+                </div>
               )}
             </div>
           </div>
@@ -2159,40 +2149,40 @@ class Dental extends Component {
       confirmButtonText: "Yes",
       confirmButtonColor: "#44b8bd",
       cancelButtonColor: "#d33",
-      cancelButtonText: "No"
-    }).then(willDelete => {
+      cancelButtonText: "No",
+    }).then((willDelete) => {
       if (willDelete.value) {
         algaehApiCall({
           uri: "/dental/deleteDentalPlan",
           data: {
-            hims_f_dental_treatment_id: data.hims_f_dental_treatment_id
+            hims_f_dental_treatment_id: data.hims_f_dental_treatment_id,
           },
           method: "DELETE",
-          onSuccess: res => {
+          onSuccess: (res) => {
             if (res.data.success) {
               let inputData = {
                 hims_f_treatment_plan_id: this.state.hims_f_treatment_plan_id,
                 approve_status: this.state.approval_status,
-                plan_name: this.state.selected_plan
+                plan_name: this.state.selected_plan,
               };
               this.loadDentalTreatment(inputData);
               swalMessage({
                 title: "Record Deleted",
-                type: "success"
+                type: "success",
               });
             }
           },
-          onError: err => {
+          onError: (err) => {
             swalMessage({
               title: err.message,
-              type: "error"
+              type: "error",
             });
-          }
+          },
         });
       } else {
         swalMessage({
           title: "Request Cancelled",
-          type: "error"
+          type: "error",
         });
       }
     });
@@ -2205,29 +2195,29 @@ class Dental extends Component {
       data: {
         hims_f_dental_treatment_id: data.hims_f_dental_treatment_id,
         treatment_status: data.treatment_status,
-        treatment_plan_id: data.treatment_plan_id
+        treatment_plan_id: data.treatment_plan_id,
       },
-      onSuccess: res => {
+      onSuccess: (res) => {
         if (res.data.success) {
           swalMessage({
             title: "Record Updated",
-            type: "success"
+            type: "success",
           });
           let inputData = {
             hims_f_treatment_plan_id: this.state.hims_f_treatment_plan_id,
             approve_status: this.state.approval_status,
-            plan_name: this.state.selected_plan
+            plan_name: this.state.selected_plan,
           };
           this.loadDentalTreatment(inputData);
           this.getTreatementPlans();
         }
       },
-      onError: err => {
+      onError: (err) => {
         swalMessage({
           title: err.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -2241,12 +2231,12 @@ class Dental extends Component {
             {
               fieldName: "teeth_number",
               label: "Tooth",
-              disabled: true
+              disabled: true,
             },
             {
               fieldName: "distal",
               label: "Surfaces",
-              displayTemplate: row => {
+              displayTemplate: (row) => {
                 return (
                   <span>
                     {row.distal === "Y" ? "D " : ""}
@@ -2257,7 +2247,7 @@ class Dental extends Component {
                   </span>
                 );
               },
-              editorTemplate: row => {
+              editorTemplate: (row) => {
                 return (
                   <span>
                     {row.distal === "Y" ? "D " : ""}
@@ -2267,59 +2257,59 @@ class Dental extends Component {
                     {row.labial === "Y" ? "L " : ""}
                   </span>
                 );
-              }
+              },
             },
             {
               fieldName: "service_id",
               label: "Procedure",
-              displayTemplate: row => {
+              displayTemplate: (row) => {
                 let x = Enumerable.from(this.state.procedures)
-                  .where(w => w.hims_d_services_id === row.service_id)
+                  .where((w) => w.hims_d_services_id === row.service_id)
                   .firstOrDefault();
                 return (
                   <span>{x !== undefined ? x.service_name : "----------"}</span>
                 );
               },
-              editorTemplate: row => {
+              editorTemplate: (row) => {
                 let x = Enumerable.from(this.state.procedures)
-                  .where(w => w.hims_d_services_id === row.service_id)
+                  .where((w) => w.hims_d_services_id === row.service_id)
                   .firstOrDefault();
                 return (
                   <span>{x !== undefined ? x.service_name : "----------"}</span>
                 );
-              }
+              },
             },
             {
               fieldName: "scheduled_date",
               label: "Date",
-              displayTemplate: row => {
+              displayTemplate: (row) => {
                 return (
                   <span>{moment(row.scheduled_date).format("DD-MM-YYYY")}</span>
                 );
               },
-              editorTemplate: row => {
+              editorTemplate: (row) => {
                 return (
                   <span>{moment(row.scheduled_date).format("DD-MM-YYYY")}</span>
                 );
-              }
+              },
             },
             {
               fieldName: "treatment_status",
               label: "Status",
-              displayTemplate: row => {
+              displayTemplate: (row) => {
                 return (
                   <span>
                     {row.treatment_status === "PL"
                       ? "Planned"
                       : row.treatment_status === "WIP"
-                        ? "Work in Progress"
-                        : row.treatment_status === "CP"
-                          ? "Completed"
-                          : null}
+                      ? "Work in Progress"
+                      : row.treatment_status === "CP"
+                      ? "Completed"
+                      : null}
                   </span>
                 );
               },
-              editorTemplate: row => {
+              editorTemplate: (row) => {
                 return (
                   <AlagehAutoComplete
                     selector={{
@@ -2329,22 +2319,22 @@ class Dental extends Component {
                       dataSource: {
                         textField: "name",
                         valueField: "value",
-                        data: GlobalVariables.DENTAL_TREATMENT_STATUS
+                        data: GlobalVariables.DENTAL_TREATMENT_STATUS,
                       },
                       others: {
                         errormessage: "Status - cannot be blank",
-                        required: true
+                        required: true,
                       },
-                      onChange: this.changeGridEditors.bind(this, row)
+                      onChange: this.changeGridEditors.bind(this, row),
                     }}
                   />
                 );
-              }
+              },
             },
             {
               fieldName: "billed",
               label: "Add To Bill",
-              displayTemplate: row => {
+              displayTemplate: (row) => {
                 return row.billed === "N" ? (
                   <button
                     onClick={this.addToBill.bind(this, row)}
@@ -2358,7 +2348,7 @@ class Dental extends Component {
                   <span>Paid</span>
                 ) : null;
               },
-              editorTemplate: row => {
+              editorTemplate: (row) => {
                 return row.billed === "N" ? (
                   <button
                     onClick={this.addToBill.bind(this, row)}
@@ -2371,8 +2361,8 @@ class Dental extends Component {
                 ) : row.billed === "Y" ? (
                   <span>Paid</span>
                 ) : null;
-              }
-            }
+              },
+            },
           ]}
           keyId="algaeh_app_screens_id"
           uiUpdate={this.state.treatment_gridUpdate}
@@ -2381,15 +2371,15 @@ class Dental extends Component {
             uri: "/dental/getDentalTreatment",
             inputParam: { treatment_plan_id: data.hims_f_treatment_plan_id },
             method: "GET",
-            responseSchema: { data: "records" }
+            responseSchema: { data: "records" },
             // data: [] //this.state.dentalTreatments
           }}
           paging={{ page: 0, rowsPerPage: 5 }}
           isEditable={true}
           events={{
-            onEdit: () => { },
+            onEdit: () => {},
             onDelete: this.deleteDentalPlan,
-            onDone: this.updateDentalTreatmentStatus
+            onDone: this.updateDentalTreatmentStatus,
           }}
         />
       </div>
@@ -2399,45 +2389,45 @@ class Dental extends Component {
   loadDentalTreatment(data) {
     data !== undefined
       ? this.setState(
-        {
-          hims_f_treatment_plan_id: data.hims_f_treatment_plan_id
-        },
-        () => {
-          algaehApiCall({
-            uri: "/dental/getDentalTreatment",
-            method: "GET",
-            data: {
-              treatment_plan_id: this.state.hims_f_treatment_plan_id
-            },
-            onSuccess: response => {
-              if (response.data.success) {
-                this.setState({
-                  dentalTreatments: response.data.records,
-                  selected_plan: data.plan_name,
-                  approval_status: data.approve_status
-                });
-              }
-            },
-            onError: error => { }
-          });
-        }
-      )
-      : algaehApiCall({
-        uri: "/dental/getDentalTreatment",
-        method: "GET",
-        data: {
-          treatment_plan_id: this.state.hims_f_treatment_plan_id
-        },
-        onSuccess: response => {
-          if (response.data.success) {
-            this.setState({
-              dentalTreatments: response.data.records,
-              approval_status: data.approve_status
+          {
+            hims_f_treatment_plan_id: data.hims_f_treatment_plan_id,
+          },
+          () => {
+            algaehApiCall({
+              uri: "/dental/getDentalTreatment",
+              method: "GET",
+              data: {
+                treatment_plan_id: this.state.hims_f_treatment_plan_id,
+              },
+              onSuccess: (response) => {
+                if (response.data.success) {
+                  this.setState({
+                    dentalTreatments: response.data.records,
+                    selected_plan: data.plan_name,
+                    approval_status: data.approve_status,
+                  });
+                }
+              },
+              onError: (error) => {},
             });
           }
-        },
-        onError: error => { }
-      });
+        )
+      : algaehApiCall({
+          uri: "/dental/getDentalTreatment",
+          method: "GET",
+          data: {
+            treatment_plan_id: this.state.hims_f_treatment_plan_id,
+          },
+          onSuccess: (response) => {
+            if (response.data.success) {
+              this.setState({
+                dentalTreatments: response.data.records,
+                approval_status: data.approve_status,
+              });
+            }
+          },
+          onError: (error) => {},
+        });
   }
 
   openAddModal(data) {
@@ -2446,26 +2436,26 @@ class Dental extends Component {
         openDentalModal: true,
         selected_treatement_plan: data.plan_name,
         hims_f_treatment_plan_id: data.hims_f_treatment_plan_id,
-        treatment_gridUpdate: false
+        treatment_gridUpdate: false,
       },
       () => {
         algaehApiCall({
           uri: "/dental/getDentalTreatment",
           method: "GET",
           data: { treatment_plan_id: this.state.hims_f_treatment_plan_id },
-          onSuccess: response => {
+          onSuccess: (response) => {
             if (response.data.success) {
               this.setState({
-                highlightTeeth: response.data.records
+                highlightTeeth: response.data.records,
               });
             }
           },
-          onError: error => { }
+          onError: (error) => {},
         });
       }
     );
   }
-  onClose = e => {
+  onClose = (e) => {
     this.setState({ openBillingModal: false });
   };
   onClickSaveDentalForm(e) {
@@ -2475,7 +2465,7 @@ class Dental extends Component {
       visit_id: patientDetails.visit_id,
       provider_id: patientDetails.provider_id,
       episode: patientDetails.episode_id,
-      due_date: this.state.due_date
+      due_date: this.state.due_date,
     };
     const allCheckList = this.checList.querySelectorAll("[type='checkbox']");
     for (let i = 0; i < allCheckList.length; i++) {
@@ -2486,37 +2476,37 @@ class Dental extends Component {
     const that = this;
     this.setState(
       {
-        dental_form_loading: true
+        dental_form_loading: true,
       },
       () => {
         algaehApiCall({
           uri: "/dentalForm/addDentalForm",
           method: "POST",
           data: dentalFormObject,
-          onSuccess: response => {
+          onSuccess: (response) => {
             if (response.data.success) {
               that.setState({
-                dental_form_loading: false
+                dental_form_loading: false,
               });
               swalMessage({
                 title: "Updated successfully",
-                type: "success"
+                type: "success",
               });
             } else {
               that.setState({
-                dental_form_loading: false
+                dental_form_loading: false,
               });
               swalMessage({
                 title: response.data.message,
-                type: "error"
+                type: "error",
               });
             }
           },
-          onCatch: err => {
+          onCatch: (err) => {
             that.setState({
-              dental_form_loading: false
+              dental_form_loading: false,
             });
-          }
+          },
         });
       }
     );
@@ -2524,13 +2514,13 @@ class Dental extends Component {
   render() {
     let billDetails = this.state.billDetails;
     let child_dental_chart = this.state.teeth_type === "D" ? "childchart" : "";
-    
+
     return (
       <div id="dentalTreatment">
         <AlgaehModalPopUp
           openPopup={this.state.openBillingModal}
           events={{
-            onClose: this.onClose.bind(this)
+            onClose: this.onClose.bind(this),
           }}
           title="Bill Service"
         >
@@ -2543,19 +2533,19 @@ class Dental extends Component {
                 div={{ className: "col-lg-3" }}
                 label={{
                   fieldName: "service_type_id",
-                  isImp: true
+                  isImp: true,
                 }}
                 textBox={{
                   className: "txt-fld",
                   name: "treatement_plan",
                   value: billDetails.service_name,
                   events: {
-                    onChange: this.textHandle.bind(this)
+                    onChange: this.textHandle.bind(this),
                   },
                   others: {
                     disabled: true,
-                    placeholder: "Enter Treatment Name"
-                  }
+                    placeholder: "Enter Treatment Name",
+                  },
                 }}
               />
 
@@ -2563,19 +2553,19 @@ class Dental extends Component {
                 div={{ className: "col-lg-3" }}
                 label={{
                   forceLabel: "Select Procedure",
-                  isImp: true
+                  isImp: true,
                 }}
                 textBox={{
                   className: "txt-fld",
                   name: "treatement_plan",
                   value: billDetails.service_name,
                   events: {
-                    onChange: this.textHandle.bind(this)
+                    onChange: this.textHandle.bind(this),
                   },
                   others: {
                     disabled: true,
-                    placeholder: "Enter Treatment Name"
-                  }
+                    placeholder: "Enter Treatment Name",
+                  },
                 }}
               />
             </div>
@@ -2585,7 +2575,7 @@ class Dental extends Component {
               <div className="col-lg-2">
                 <AlgaehLabel
                   label={{
-                    fieldName: "quantity"
+                    fieldName: "quantity",
                   }}
                 />
                 <h6>1</h6>
@@ -2594,7 +2584,7 @@ class Dental extends Component {
               <div className="col-lg-2">
                 <AlgaehLabel
                   label={{
-                    fieldName: "unit_cost"
+                    fieldName: "unit_cost",
                   }}
                 />
                 <h6>{GetAmountFormart(billDetails.unit_cost)}</h6>
@@ -2603,7 +2593,7 @@ class Dental extends Component {
               <div className="col-lg-2">
                 <AlgaehLabel
                   label={{
-                    fieldName: "gross_amount"
+                    fieldName: "gross_amount",
                   }}
                 />
                 <h6>{GetAmountFormart(billDetails.gross_amount)}</h6>
@@ -2612,7 +2602,7 @@ class Dental extends Component {
               <div className="col-lg-2">
                 <AlgaehLabel
                   label={{
-                    fieldName: "discount_percentage"
+                    fieldName: "discount_percentage",
                   }}
                 />
                 {/* <h6>
@@ -2629,11 +2619,11 @@ class Dental extends Component {
                     name: "discount_percentage",
                     value: this.state.discount_percentage,
                     events: {
-                      onChange: this.calculateDiscount.bind(this)
+                      onChange: this.calculateDiscount.bind(this),
                     },
                     others: {
-                      placeholder: "0.00"
-                    }
+                      placeholder: "0.00",
+                    },
                   }}
                 />
               </div>
@@ -2641,7 +2631,7 @@ class Dental extends Component {
               <div className="col-lg-2">
                 <AlgaehLabel
                   label={{
-                    fieldName: "discount_amout"
+                    fieldName: "discount_amout",
                   }}
                 />
                 <h6>{GetAmountFormart(billDetails.discount_amout)}</h6>
@@ -2650,7 +2640,7 @@ class Dental extends Component {
               <div className="col-lg-2">
                 <AlgaehLabel
                   label={{
-                    fieldName: "net_amout"
+                    fieldName: "net_amout",
                   }}
                 />
                 <h6>{GetAmountFormart(billDetails.net_amout)}</h6>
@@ -2665,7 +2655,7 @@ class Dental extends Component {
                     <AlgaehLabel
                       label={{
                         forceLabel: "Insurance Detailed Breakup",
-                        returnText: true
+                        returnText: true,
                       }}
                     />
                   </u>
@@ -2675,7 +2665,7 @@ class Dental extends Component {
                     <div className="col-6">
                       <AlgaehLabel
                         label={{
-                          fieldName: "copay_percentage"
+                          fieldName: "copay_percentage",
                         }}
                       />
                       <h6>
@@ -2688,7 +2678,7 @@ class Dental extends Component {
                     <div className="col-6">
                       <AlgaehLabel
                         label={{
-                          fieldName: "copay_amount"
+                          fieldName: "copay_amount",
                         }}
                       />
                       <h6>{GetAmountFormart(billDetails.copay_amount)}</h6>
@@ -2697,7 +2687,7 @@ class Dental extends Component {
                     <div className="col-6">
                       <AlgaehLabel
                         label={{
-                          fieldName: "deductable_percentage"
+                          fieldName: "deductable_percentage",
                         }}
                       />
                       <h6>
@@ -2710,7 +2700,7 @@ class Dental extends Component {
                     <div className="col-6">
                       <AlgaehLabel
                         label={{
-                          fieldName: "deductable_amount"
+                          fieldName: "deductable_amount",
                         }}
                       />
                       <h6>{GetAmountFormart(billDetails.deductable_amount)}</h6>
@@ -2723,7 +2713,7 @@ class Dental extends Component {
                 className="col-4"
                 style={{
                   borderLeft: "1px solid #ccc",
-                  borderRight: "1px solid #ccc"
+                  borderRight: "1px solid #ccc",
                 }}
               >
                 <b>
@@ -2731,7 +2721,7 @@ class Dental extends Component {
                     <AlgaehLabel
                       label={{
                         forceLabel: "Patient Responsibility",
-                        returnText: true
+                        returnText: true,
                       }}
                     />
                   </u>
@@ -2741,7 +2731,7 @@ class Dental extends Component {
                     <div className="col-7">
                       <AlgaehLabel
                         label={{
-                          fieldName: "gross_amount"
+                          fieldName: "gross_amount",
                         }}
                       />
                       <h6>{GetAmountFormart(billDetails.patient_resp)}</h6>
@@ -2750,7 +2740,7 @@ class Dental extends Component {
                     <div className="col-5">
                       <AlgaehLabel
                         label={{
-                          fieldName: "tax_lbl"
+                          fieldName: "tax_lbl",
                         }}
                       />
                       <h6>{GetAmountFormart(billDetails.patient_tax)}</h6>
@@ -2759,7 +2749,7 @@ class Dental extends Component {
                     <div className="col-12">
                       <AlgaehLabel
                         label={{
-                          fieldName: "payable_lbl"
+                          fieldName: "payable_lbl",
                         }}
                       />
                       <h6>{GetAmountFormart(billDetails.patient_payable)}</h6>
@@ -2774,7 +2764,7 @@ class Dental extends Component {
                     <AlgaehLabel
                       label={{
                         forceLabel: "Company Responsibility",
-                        returnText: true
+                        returnText: true,
                       }}
                     />
                   </u>
@@ -2784,7 +2774,7 @@ class Dental extends Component {
                     <div className="col-7">
                       <AlgaehLabel
                         label={{
-                          fieldName: "gross_amount"
+                          fieldName: "gross_amount",
                         }}
                       />
                       <h6>{GetAmountFormart(billDetails.comapany_resp)}</h6>
@@ -2793,7 +2783,7 @@ class Dental extends Component {
                     <div className="col-5">
                       <AlgaehLabel
                         label={{
-                          fieldName: "tax_lbl"
+                          fieldName: "tax_lbl",
                         }}
                       />
                       <h6>{GetAmountFormart(billDetails.company_tax)}</h6>
@@ -2802,7 +2792,7 @@ class Dental extends Component {
                     <div className="col-12">
                       <AlgaehLabel
                         label={{
-                          fieldName: "payable_lbl"
+                          fieldName: "payable_lbl",
                         }}
                       />
                       <h6>{GetAmountFormart(billDetails.company_payble)}</h6>
@@ -2826,7 +2816,7 @@ class Dental extends Component {
                   <button
                     type="button"
                     className="btn btn-default"
-                    onClick={e => {
+                    onClick={(e) => {
                       this.onClose(e);
                     }}
                   >
@@ -2850,9 +2840,9 @@ class Dental extends Component {
                 quantity: 0,
                 standard_fee: 0,
                 total_price: 0,
-                approval_status: "N"
+                approval_status: "N",
               });
-            }
+            },
           }}
           openPopup={this.state.openDentalModal}
           title="Dental Plan"
@@ -2866,19 +2856,19 @@ class Dental extends Component {
                       div={{ className: "col-3" }}
                       label={{
                         fieldName: "treatment_plan",
-                        isImp: true
+                        isImp: true,
                       }}
                       textBox={{
                         className: "txt-fld",
                         name: "treatement_plan",
                         value: this.state.selected_treatement_plan,
                         events: {
-                          onChange: this.textHandle.bind(this)
+                          onChange: this.textHandle.bind(this),
                         },
                         others: {
                           disabled: true,
-                          placeholder: "Enter Treatment Name"
-                        }
+                          placeholder: "Enter Treatment Name",
+                        },
                       }}
                     />
 
@@ -2886,7 +2876,7 @@ class Dental extends Component {
                       div={{ className: "col-2" }}
                       label={{
                         fieldName: "sel_a_proc",
-                        isImp: true
+                        isImp: true,
                       }}
                       selector={{
                         name: "hims_d_services_id",
@@ -2895,15 +2885,15 @@ class Dental extends Component {
                         dataSource: {
                           textField: "service_name",
                           valueField: "hims_d_services_id",
-                          data: this.state.procedures
+                          data: this.state.procedures,
                         },
                         onChange: this.dropDownHandler.bind(this),
                         onClear: () => {
                           this.setState({
                             hims_d_services_id: "",
-                            standard_fee: 0
+                            standard_fee: 0,
                           });
-                        }
+                        },
                       }}
                     />
 
@@ -2911,20 +2901,20 @@ class Dental extends Component {
                       div={{ className: "col" }}
                       label={{
                         fieldName: "unit_cost",
-                        isImp: true
+                        isImp: true,
                       }}
                       textBox={{
                         className: "txt-fld",
                         name: "standard_fee",
                         value: this.state.standard_fee,
                         events: {
-                          onChange: this.textHandle.bind(this)
+                          onChange: this.textHandle.bind(this),
                         },
                         others: {
                           disabled: true,
                           min: 0,
-                          type: "number"
-                        }
+                          type: "number",
+                        },
                       }}
                     />
 
@@ -2932,40 +2922,40 @@ class Dental extends Component {
                       div={{ className: "col" }}
                       label={{
                         fieldName: "quantity",
-                        isImp: true
+                        isImp: true,
                       }}
                       textBox={{
                         className: "txt-fld",
                         name: "quantity",
                         value: this.state.quantity,
                         events: {
-                          onChange: this.textHandle.bind(this)
+                          onChange: this.textHandle.bind(this),
                         },
                         others: {
                           disabled: true,
                           min: 0,
-                          type: "number"
-                        }
+                          type: "number",
+                        },
                       }}
                     />
                     <AlagehFormGroup
                       div={{ className: "col" }}
                       label={{
                         fieldName: "total_price",
-                        isImp: true
+                        isImp: true,
                       }}
                       textBox={{
                         className: "txt-fld",
                         name: "total_price",
                         value: this.state.total_price,
                         events: {
-                          onChange: this.textHandle.bind(this)
+                          onChange: this.textHandle.bind(this),
                         },
                         others: {
                           disabled: true,
                           min: 0,
-                          type: "number"
-                        }
+                          type: "number",
+                        },
                       }}
                     />
 
@@ -2974,15 +2964,15 @@ class Dental extends Component {
                       label={{ fieldName: "schld_date", isImp: false }}
                       textBox={{
                         className: "txt-fld",
-                        name: "scheduled_date"
+                        name: "scheduled_date",
                       }}
                       minDate={new Date()}
                       events={{
-                        onChange: selectedDate => {
+                        onChange: (selectedDate) => {
                           this.setState({
-                            scheduled_date: selectedDate
+                            scheduled_date: selectedDate,
                           });
-                        }
+                        },
                       }}
                       value={this.state.scheduled_date}
                     />
@@ -3070,7 +3060,7 @@ class Dental extends Component {
                 onClick={this.addDentalPlan.bind(this, this)}
                 label={{
                   forceLabel: "Add to List",
-                  returnText: true
+                  returnText: true,
                 }}
               />
             </div>
@@ -3084,18 +3074,18 @@ class Dental extends Component {
                 div={{ className: "col-lg-3" }}
                 label={{
                   fieldName: "treatment_plan",
-                  isImp: true
+                  isImp: true,
                 }}
                 textBox={{
                   className: "txt-fld",
                   name: "plan_name",
                   value: this.state.plan_name,
                   events: {
-                    onChange: this.textHandle.bind(this)
+                    onChange: this.textHandle.bind(this),
                   },
                   others: {
-                    placeholder: "Enter Treatment Name"
-                  }
+                    placeholder: "Enter Treatment Name",
+                  },
                 }}
               />
 
@@ -3103,18 +3093,18 @@ class Dental extends Component {
                 div={{ className: "col-lg-4" }}
                 label={{
                   fieldName: "remarks",
-                  isImp: true
+                  isImp: true,
                 }}
                 textBox={{
                   className: "txt-fld",
                   name: "remarks",
                   value: this.state.remarks,
                   events: {
-                    onChange: this.textHandle.bind(this)
+                    onChange: this.textHandle.bind(this),
                   },
                   others: {
-                    placeholder: "Enter Remarks"
-                  }
+                    placeholder: "Enter Remarks",
+                  },
                 }}
               />
 
@@ -3142,7 +3132,7 @@ class Dental extends Component {
                   onClick={this.addTreatementPlan.bind(this, this)}
                   label={{
                     forceLabel: "Add Plan",
-                    returnText: true
+                    returnText: true,
                   }}
                 />
                 {/*<button
@@ -3171,10 +3161,10 @@ class Dental extends Component {
                     {
                       fieldName: "actions",
                       label: <AlgaehLabel label={{ forceLabel: "Actions" }} />,
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         const isDisable =
                           this.state.hims_f_treatment_plan_id ===
-                            row.hims_f_treatment_plan_id
+                          row.hims_f_treatment_plan_id
                             ? false
                             : true;
                         return (
@@ -3193,7 +3183,7 @@ class Dental extends Component {
                                       ? " none"
                                       : null,
                                   opacity:
-                                    row.approve_status === "Y" ? "0.1" : null
+                                    row.approve_status === "Y" ? "0.1" : null,
                                 }}
                               />
 
@@ -3209,7 +3199,7 @@ class Dental extends Component {
                                       ? " none"
                                       : null,
                                   opacity:
-                                    row.approve_status === "Y" ? "0.1" : null
+                                    row.approve_status === "Y" ? "0.1" : null,
                                 }}
                                 className="fas fa-times"
                               />
@@ -3223,8 +3213,8 @@ class Dental extends Component {
                         );
                       },
                       others: {
-                        width: 130
-                      }
+                        width: 130,
+                      },
                     },
                     {
                       fieldName: "plan_name",
@@ -3234,7 +3224,7 @@ class Dental extends Component {
                           label={{ forceLabel: "Treatement Plan" }}
                         />
                       ),
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         return (
                           <span
                             className="pat-code"
@@ -3246,12 +3236,12 @@ class Dental extends Component {
                           </span>
                         );
                       },
-                      className: row => {
+                      className: (row) => {
                         return "greenCell";
                       },
                       others: {
-                        width: 150
-                      }
+                        width: 150,
+                      },
                     },
                     {
                       fieldName: "remarks",
@@ -3260,8 +3250,8 @@ class Dental extends Component {
 
                       disabled: true,
                       others: {
-                        width: 250
-                      }
+                        width: 250,
+                      },
                     },
                     {
                       fieldName: "approve_status",
@@ -3272,7 +3262,7 @@ class Dental extends Component {
                         />
                       ),
 
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         return (
                           <span>
                             {row.approve_status === "Y"
@@ -3280,7 +3270,7 @@ class Dental extends Component {
                               : "Plan Not Approved"}
                           </span>
                         );
-                      }
+                      },
                     },
                     {
                       fieldName: "plan_status",
@@ -3288,27 +3278,27 @@ class Dental extends Component {
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Plan Status" }} />
                       ),
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         return (
                           <span>
                             {row.plan_status === "O"
                               ? "Open"
                               : row.plan_status === "C"
-                                ? "Closed"
-                                : null}
+                              ? "Closed"
+                              : null}
                           </span>
                         );
-                      }
+                      },
                     },
                     {
                       fieldName: "consult_date",
 
-                      label: <AlgaehLabel label={{ forceLabel: "Date" }} />
-                    }
+                      label: <AlgaehLabel label={{ forceLabel: "Date" }} />,
+                    },
                   ]}
                   keyId="algaeh_app_screens_id"
                   dataSource={{
-                    data: this.state.treatements
+                    data: this.state.treatements,
                   }}
                   filter={false}
                   paging={{ page: 0, rowsPerPage: 10 }}
@@ -3318,9 +3308,9 @@ class Dental extends Component {
                   //   }
                   // }}
                   events={{
-                    onEdit: () => { },
-                    onDelete: () => { },
-                    onDone: () => { }
+                    onEdit: () => {},
+                    onDelete: () => {},
+                    onDone: () => {},
                   }}
                 />
               </div>
@@ -3342,12 +3332,12 @@ class Dental extends Component {
                     {
                       fieldName: "teeth_number",
                       label: "Tooth",
-                      disabled: true
+                      disabled: true,
                     },
                     {
                       fieldName: "distal",
                       label: "Surfaces",
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         return (
                           <span>
                             {row.distal === "Y" ? "D " : ""}
@@ -3357,11 +3347,10 @@ class Dental extends Component {
                             {row.labial === "Y" ? "L " : ""}
                             {row.occlusal === "Y" ? "L " : ""}
                             {row.buccal === "Y" ? "L " : ""}
-
                           </span>
                         );
                       },
-                      editorTemplate: row => {
+                      editorTemplate: (row) => {
                         return (
                           <span>
                             {row.distal === "Y" ? "D " : ""}
@@ -3371,17 +3360,16 @@ class Dental extends Component {
                             {row.labial === "Y" ? "L " : ""}
                             {row.occlusal === "Y" ? "L " : ""}
                             {row.buccal === "Y" ? "L " : ""}
-
                           </span>
                         );
-                      }
+                      },
                     },
                     {
                       fieldName: "service_id",
                       label: "Procedure",
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         let x = Enumerable.from(this.state.procedures)
-                          .where(w => w.hims_d_services_id === row.service_id)
+                          .where((w) => w.hims_d_services_id === row.service_id)
                           .firstOrDefault();
                         return (
                           <span>
@@ -3389,52 +3377,52 @@ class Dental extends Component {
                           </span>
                         );
                       },
-                      editorTemplate: row => {
+                      editorTemplate: (row) => {
                         let x = Enumerable.from(this.state.procedures)
-                          .where(w => w.hims_d_services_id === row.service_id)
+                          .where((w) => w.hims_d_services_id === row.service_id)
                           .firstOrDefault();
                         return (
                           <span>
                             {x !== undefined ? x.service_name : "----------"}
                           </span>
                         );
-                      }
+                      },
                     },
                     {
                       fieldName: "scheduled_date",
                       label: "Date",
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         return (
                           <span>
                             {moment(row.scheduled_date).format("DD-MM-YYYY")}
                           </span>
                         );
                       },
-                      editorTemplate: row => {
+                      editorTemplate: (row) => {
                         return (
                           <span>
                             {moment(row.scheduled_date).format("DD-MM-YYYY")}
                           </span>
                         );
-                      }
+                      },
                     },
                     {
                       fieldName: "treatment_status",
                       label: "Status",
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         return (
                           <span>
                             {row.treatment_status === "PL"
                               ? "Planned"
                               : row.treatment_status === "WIP"
-                                ? "Work in Progress"
-                                : row.treatment_status === "CP"
-                                  ? "Completed"
-                                  : null}
+                              ? "Work in Progress"
+                              : row.treatment_status === "CP"
+                              ? "Completed"
+                              : null}
                           </span>
                         );
                       },
-                      editorTemplate: row => {
+                      editorTemplate: (row) => {
                         return (
                           <AlagehAutoComplete
                             selector={{
@@ -3444,22 +3432,22 @@ class Dental extends Component {
                               dataSource: {
                                 textField: "name",
                                 valueField: "value",
-                                data: GlobalVariables.DENTAL_TREATMENT_STATUS
+                                data: GlobalVariables.DENTAL_TREATMENT_STATUS,
                               },
                               others: {
                                 errormessage: "Status - cannot be blank",
-                                required: true
+                                required: true,
                               },
-                              onChange: this.changeGridEditors.bind(this, row)
+                              onChange: this.changeGridEditors.bind(this, row),
                             }}
                           />
                         );
-                      }
+                      },
                     },
                     {
                       fieldName: "billed",
                       label: "Billing",
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         return row.billed === "N" ? (
                           <button
                             onClick={this.addToBill.bind(this, row)}
@@ -3473,7 +3461,7 @@ class Dental extends Component {
                           <span>Billed</span>
                         ) : null;
                       },
-                      editorTemplate: row => {
+                      editorTemplate: (row) => {
                         return row.billed === "N" ? (
                           <button
                             onClick={this.addToBill.bind(this, row)}
@@ -3486,34 +3474,34 @@ class Dental extends Component {
                         ) : row.billed === "Y" ? (
                           <span>Billed</span>
                         ) : null;
-                      }
-                    }
+                      },
+                    },
                   ]}
                   keyId="algaeh_app_screens_id"
                   dataSource={{
-                    data: this.state.dentalTreatments
+                    data: this.state.dentalTreatments,
                   }}
                   paging={{ page: 0, rowsPerPage: 10 }}
                   isEditable={true}
                   events={{
-                    onEdit: () => { },
-                    onDelete: row => {
+                    onEdit: () => {},
+                    onDelete: (row) => {
                       const status =
                         row.treatment_status === "PL"
                           ? "Planned"
                           : row.treatment_status === "WIP"
-                            ? "Work in Progress"
-                            : row.treatment_status === "CP"
-                              ? "Completed"
-                              : "";
+                          ? "Work in Progress"
+                          : row.treatment_status === "CP"
+                          ? "Completed"
+                          : "";
                       row.billed === "SB" || row.billed === "Y"
                         ? swalMessage({
-                          title: `Treatment is in ${status}, cannot delete`,
-                          type: "warning"
-                        })
+                            title: `Treatment is in ${status}, cannot delete`,
+                            type: "warning",
+                          })
                         : this.deleteDentalPlan(row);
                     },
-                    onDone: this.updateDentalTreatmentStatus
+                    onDone: this.updateDentalTreatmentStatus,
                   }}
                 />
               </div>
@@ -3523,7 +3511,7 @@ class Dental extends Component {
         <div className="col-12 margin-top-15">
           <div
             className="row"
-            ref={c => {
+            ref={(c) => {
               this.checList = c;
             }}
           >
@@ -3711,16 +3699,16 @@ class Dental extends Component {
                           label={{ forceLabel: "Due Date", isImp: false }}
                           textBox={{
                             className: "txt-fld",
-                            name: "due_date"
+                            name: "due_date",
                           }}
                           value={this.state.due_date}
                           minDate={new Date()}
                           events={{
-                            onChange: selectedDate => {
+                            onChange: (selectedDate) => {
                               this.setState({
-                                due_date: selectedDate
+                                due_date: selectedDate,
                               });
-                            }
+                            },
                           }}
                         />
                       </div>
@@ -3728,7 +3716,7 @@ class Dental extends Component {
                     <div className="col-12 algaehLabelFormGroup">
                       <label className="algaehLabelGroup">Dental Diagram</label>
                       <div className="row">
-                        <img src="" />
+                        <img src="" alt="" />
                       </div>
                     </div>
                   </div>
@@ -3742,7 +3730,7 @@ class Dental extends Component {
             <ButtonType
               label={{
                 forceLabel: "Save",
-                returnText: true
+                returnText: true,
               }}
               className="btn-primary"
               onClick={this.onClickSaveDentalForm.bind(this)}
@@ -3763,22 +3751,17 @@ class Dental extends Component {
 function mapStateToProps(state) {
   return {
     patient_summary: state.patient_summary,
-    patient_profile: state.patient_profile
+    patient_profile: state.patient_profile,
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getPatientSummary: AlgaehActions
+      getPatientSummary: AlgaehActions,
     },
     dispatch
   );
 }
 
-export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(Dental)
-);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Dental));

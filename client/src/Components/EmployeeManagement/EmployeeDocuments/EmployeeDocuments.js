@@ -444,7 +444,7 @@ class EmployeeDocuments extends Component {
     });
   }
   downloadSelectedFile(row) {
-    const { download_uniq_id, document_name, document_type } = row;
+    const { download_uniq_id, document_name } = row;
     //for preview
     // const { hostname, port, protocol } = window.location;
     // const _port = port === "" ? "/documentManagement" : `:3006`;

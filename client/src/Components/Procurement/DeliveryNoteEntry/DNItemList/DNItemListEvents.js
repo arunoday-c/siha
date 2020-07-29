@@ -125,6 +125,26 @@ const deleteDNDetail = ($this, row, context) => {
   );
   po_entry_detail[_index].dn_entry_detail.splice(_dn_index, 1);
 
+  let sub_total = Enumerable.from(dn_entry_detail).sum((s) =>
+    parseFloat(s.extended_price)
+  );
+
+  let net_total = Enumerable.from(dn_entry_detail).sum((s) =>
+    parseFloat(s.net_extended_cost)
+  );
+
+  let net_payable = Enumerable.from(dn_entry_detail).sum((s) =>
+    parseFloat(s.total_amount)
+  );
+
+  let total_tax = Enumerable.from(dn_entry_detail).sum((s) =>
+    parseFloat(s.tax_amount)
+  );
+
+  let detail_discount = Enumerable.from(dn_entry_detail).sum((s) =>
+    parseFloat(s.discount_amount)
+  );
+
   if (dn_entry_detail.length === 0) {
     assignDataandclear(
       $this,
@@ -139,6 +159,11 @@ const deleteDNDetail = ($this, row, context) => {
       context.updateState({
         po_entry_detail: po_entry_detail,
         dn_entry_detail: dn_entry_detail,
+        sub_total: sub_total,
+        net_total: net_total,
+        net_payable: net_payable,
+        total_tax: total_tax,
+        detail_discount: detail_discount,
       });
     }
   }
@@ -543,7 +568,7 @@ const OnChangeDeliveryQty = ($this, context, e) => {
       item_details["discount_amount"] = parseFloat(discount_amount);
       item_details["extended_cost"] = parseFloat(extended_cost);
       item_details["net_extended_cost"] = parseFloat(extended_cost);
-      item_details["expiry_date"] = item_details["expiry_date"];
+      // item_details["expiry_date"] = item_details["expiry_date"];
       item_details[name] = value;
       $this.setState({
         [name]: value,

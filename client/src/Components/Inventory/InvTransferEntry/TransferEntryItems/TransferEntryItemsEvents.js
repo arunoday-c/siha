@@ -206,8 +206,8 @@ const deleteTransEntryDetail = ($this, context, row, rowId) => {
     $this.props.inventoryitemlist === undefined
       ? []
       : $this.props.inventoryitemlist.filter(
-        (f) => f.hims_d_inventory_item_master_id === row.item_id
-      );
+          (f) => f.hims_d_inventory_item_master_id === row.item_id
+        );
 
   swal({
     title: "Are you sure want to delete ?" + display[0].item_description + "?",
@@ -347,8 +347,8 @@ const onchangegridcol = ($this, context, row, e) => {
     }
   }
 };
-{
-  /* const onchangegridcol = ($this, context, row, e) => {
+
+/* const onchangegridcol = ($this, context, row, e) => {
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
   let transfer_to_date = parseFloat(row.transfer_to_date) + parseFloat(value);
@@ -388,7 +388,6 @@ const onchangegridcol = ($this, context, row, e) => {
     }
   }
 };*/
-}
 
 const dateFormater = ($this, value) => {
   if (value !== null) {

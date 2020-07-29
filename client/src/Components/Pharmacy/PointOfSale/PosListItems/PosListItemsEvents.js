@@ -26,40 +26,40 @@ const discounthandle = ($this, context, ctrl, e) => {
   if (sheet_discount_percentage > 100) {
     swalMessage({
       title: "Discount % cannot be greater than 100.",
-      type: "Warning"
+      type: "Warning",
     });
     $this.setState({
       sheet_discount_amount: 0,
-      sheet_discount_percentage: 0
+      sheet_discount_percentage: 0,
     });
 
     if (context !== null) {
       context.updateState({
         sheet_discount_amount: 0,
-        sheet_discount_percentage: 0
+        sheet_discount_percentage: 0,
       });
     }
   } else if (sheet_discount_amount > $this.state.patient_payable) {
     swalMessage({
       title: "Discount Amount cannot be greater than Patient Share.",
-      type: "Warning"
+      type: "Warning",
     });
     $this.setState({
       sheet_discount_amount: 0,
-      sheet_discount_percentage: 0
+      sheet_discount_percentage: 0,
     });
 
     if (context !== null) {
       context.updateState({
         sheet_discount_amount: 0,
-        sheet_discount_percentage: 0
+        sheet_discount_percentage: 0,
       });
     }
   } else {
     $this.setState(
       {
         sheet_discount_percentage: sheet_discount_percentage,
-        sheet_discount_amount: sheet_discount_amount
+        sheet_discount_amount: sheet_discount_amount,
       },
       () => {
         PosheaderCalculation($this, context);
@@ -69,7 +69,7 @@ const discounthandle = ($this, context, ctrl, e) => {
     if (context !== null) {
       context.updateState({
         sheet_discount_percentage: sheet_discount_percentage,
-        sheet_discount_amount: sheet_discount_amount
+        sheet_discount_amount: sheet_discount_amount,
       });
     }
   }
@@ -142,7 +142,7 @@ const UomchangeTexts = ($this, context, ctrl, e) => {
       unit_cost: unit_cost,
       qtyhand: qtyhand,
       uom_description: e.selected.text,
-      quantity: 0
+      quantity: 0,
     });
 
     clearInterval(texthandlerInterval);
@@ -154,7 +154,7 @@ const UomchangeTexts = ($this, context, ctrl, e) => {
           unit_cost: unit_cost,
           qtyhand: qtyhand,
           uom_description: e.selected.text,
-          quantity: 0
+          quantity: 0,
         });
       }
       clearInterval(texthandlerInterval);
@@ -170,13 +170,13 @@ const numberchangeTexts = ($this, context, e) => {
     if (parseFloat(value) < 0) {
       swalMessage({
         title: "Quantity cannot be less than or equal to Zero",
-        type: "warning"
+        type: "warning",
       });
       return;
     } else if (parseFloat(value) > parseFloat($this.state.qtyhand)) {
       swalMessage({
         title: "Quantity cannot be greater than Quantity in hand.",
-        type: "warning"
+        type: "warning",
       });
       return;
     } else {
@@ -186,7 +186,7 @@ const numberchangeTexts = ($this, context, e) => {
       texthandlerInterval = setInterval(() => {
         if (context !== undefined) {
           context.updateState({
-            [name]: value
+            [name]: value,
           });
         }
         clearInterval(texthandlerInterval);
@@ -197,13 +197,13 @@ const numberchangeTexts = ($this, context, e) => {
     if (parseFloat(value) < 0) {
       swalMessage({
         title: "Discount % cannot be less than Zero",
-        type: "warning"
+        type: "warning",
       });
       return;
     } else if (parseFloat(value) > 100) {
       swalMessage({
         title: "Discount % cannot be greater than 100.",
-        type: "warning"
+        type: "warning",
       });
       return;
     } else {
@@ -213,7 +213,7 @@ const numberchangeTexts = ($this, context, e) => {
       texthandlerInterval = setInterval(() => {
         if (context !== undefined) {
           context.updateState({
-            [name]: value
+            [name]: value,
           });
         }
         clearInterval(texthandlerInterval);
@@ -226,7 +226,7 @@ const numberchangeTexts = ($this, context, e) => {
     texthandlerInterval = setInterval(() => {
       if (context !== undefined) {
         context.updateState({
-          [name]: value
+          [name]: value,
         });
       }
       clearInterval(texthandlerInterval);
@@ -246,9 +246,9 @@ const itemchangeText = ($this, context, e, ctrl) => {
         method: "GET",
         data: {
           location_id: $this.state.location_id,
-          item_id: value
+          item_id: value,
         },
-        onSuccess: response => {
+        onSuccess: (response) => {
           if (response.data.success) {
             let data = response.data.records;
             if (data.locationResult.length > 0) {
@@ -256,7 +256,7 @@ const itemchangeText = ($this, context, e, ctrl) => {
 
               const sales_conversion_factor = _.find(
                 data.uomResult,
-                f => f.uom_id === e.sales_uom_id
+                (f) => f.uom_id === e.sales_uom_id
               );
               const qtyhand =
                 parseFloat(data.locationResult[0].qtyhand) /
@@ -289,7 +289,6 @@ const itemchangeText = ($this, context, e, ctrl) => {
                 ItemUOM: data.uomResult,
                 Batch_Items: data.locationResult,
                 addItemButton: false,
-                item_description: e.item_description,
                 sales_uom_id: e.sales_uom_id,
                 sales_conversion_factor:
                   sales_conversion_factor.conversion_factor,
@@ -298,7 +297,7 @@ const itemchangeText = ($this, context, e, ctrl) => {
                 conversion_factor: sales_conversion_factor.conversion_factor,
                 sales_qtyhand: sales_qtyhand,
                 stocking_uom_id: e.stocking_uom_id,
-                average_cost: data.locationResult[0].avgcost
+                average_cost: data.locationResult[0].avgcost,
               });
 
               if (context !== undefined) {
@@ -327,51 +326,51 @@ const itemchangeText = ($this, context, e, ctrl) => {
                   conversion_factor: sales_conversion_factor.conversion_factor,
                   sales_qtyhand: sales_qtyhand,
                   stocking_uom_id: e.stocking_uom_id,
-                  average_cost: data.locationResult[0].avgcost
+                  average_cost: data.locationResult[0].avgcost,
                 });
               }
               document.querySelector("[name='quantity']").focus();
             } else {
               swalMessage({
                 title: "No stock available for selected Item.",
-                type: "warning"
+                type: "warning",
               });
               $this.setState({
                 item_description: $this.state.item_description,
-                item_id: $this.state.item_id
+                item_id: $this.state.item_id,
               });
               if (context !== undefined) {
                 context.updateState({
                   item_description: $this.state.item_description,
-                  item_id: $this.state.item_id
+                  item_id: $this.state.item_id,
                 });
               }
             }
           } else {
             swalMessage({
               title: response.data.message,
-              type: "error"
+              type: "error",
             });
           }
           AlgaehLoader({ show: false });
         },
-        onFailure: error => {
+        onFailure: (error) => {
           AlgaehLoader({ show: false });
           swalMessage({
             title: error.message,
-            type: "error"
+            type: "error",
           });
-        }
+        },
       });
     } else {
       $this.setState(
         {
-          [name]: null
+          [name]: null,
         },
         () => {
           swalMessage({
             title: "Hospital service not linked to this item, contact Admin.",
-            type: "warning"
+            type: "warning",
           });
         }
       );
@@ -379,12 +378,12 @@ const itemchangeText = ($this, context, e, ctrl) => {
   } else {
     $this.setState(
       {
-        [name]: null
+        [name]: null,
       },
       () => {
         swalMessage({
           title: "Please select Location.",
-          type: "warning"
+          type: "warning",
         });
       }
     );
@@ -396,13 +395,13 @@ const getUnitCost = ($this, context, serviceid, sales_price) => {
     // if (sales_price > 0) {
     $this.setState({
       unit_cost: sales_price,
-      Real_unit_cost: sales_price
+      Real_unit_cost: sales_price,
     });
 
     if (context !== undefined) {
       context.updateState({
         unit_cost: sales_price,
-        Real_unit_cost: sales_price
+        Real_unit_cost: sales_price,
       });
     }
     // } else {
@@ -446,43 +445,43 @@ const getUnitCost = ($this, context, serviceid, sales_price) => {
       method: "GET",
       data: {
         services_id: serviceid,
-        insurance_id: $this.state.insurance_provider_id
+        insurance_id: $this.state.insurance_provider_id,
       },
       redux: {
         type: "SERVICES_GET_DATA",
-        mappingName: "hospitalservices"
+        mappingName: "hospitalservices",
       },
-      afterSuccess: data => {
+      afterSuccess: (data) => {
         if (data.length > 0) {
           $this.setState({
             unit_cost: data[0].gross_amt,
-            Real_unit_cost: data[0].gross_amt
+            Real_unit_cost: data[0].gross_amt,
           });
 
           if (context !== undefined) {
             context.updateState({
               unit_cost: data[0].gross_amt,
-              Real_unit_cost: data[0].gross_amt
+              Real_unit_cost: data[0].gross_amt,
             });
           }
         } else {
           $this.setState({
             unit_cost: sales_price,
-            Real_unit_cost: sales_price
+            Real_unit_cost: sales_price,
           });
 
           if (context !== undefined) {
             context.updateState({
               unit_cost: sales_price,
-              Real_unit_cost: sales_price
+              Real_unit_cost: sales_price,
             });
           }
           swalMessage({
             title: "Insurance Not Covered.",
-            type: "warning"
+            type: "warning",
           });
         }
-      }
+      },
     });
   }
 };
@@ -510,13 +509,13 @@ const AddItems = ($this, context) => {
   //     });
   //     return;
   //   }
-  // } else 
+  // } else
 
   if ($this.state.pos_customer_type === "OP") {
     if ($this.state.visit_id === null) {
       swalMessage({
         title: "Select the Patient.",
-        type: "warning"
+        type: "warning",
       });
       return;
     }
@@ -532,7 +531,7 @@ const AddItems = ($this, context) => {
     ) {
       swalMessage({
         title: "Please provide insurance details properly.",
-        type: "warning"
+        type: "warning",
       });
       return;
     }
@@ -540,26 +539,26 @@ const AddItems = ($this, context) => {
   if ($this.state.uom_id === null) {
     swalMessage({
       title: "Select the UOM.",
-      type: "warning"
+      type: "warning",
     });
     return;
   }
   let itemData = Enumerable.from($this.state.pharmacy_stock_detail)
     .where(
-      w =>
+      (w) =>
         w.item_id === $this.state.item_id && w.batchno === $this.state.batchno
     )
     .toArray();
   if (itemData.length > 0) {
     swalMessage({
       title: "Selected Item already added in the list.",
-      type: "warning"
+      type: "warning",
     });
   } else {
     if ($this.state.item_id === null) {
       swalMessage({
         title: "Please Select Item.",
-        type: "warning"
+        type: "warning",
       });
     } else if (
       parseFloat($this.state.quantity) === 0 ||
@@ -567,7 +566,7 @@ const AddItems = ($this, context) => {
     ) {
       swalMessage({
         title: "Enter the Quantity.",
-        type: "warning"
+        type: "warning",
       });
     } else {
       let ItemInput = [
@@ -588,8 +587,8 @@ const AddItems = ($this, context) => {
             $this.state.secondary_insurance_provider_id,
           secondary_network_id: $this.state.secondary_network_id,
           secondary_network_office_id: $this.state.secondary_network_office_id,
-          from_pos: "Y"
-        }
+          from_pos: "Y",
+        },
       ];
 
       AlgaehLoader({ show: true });
@@ -598,13 +597,13 @@ const AddItems = ($this, context) => {
         module: "billing",
         method: "POST",
         data: ItemInput,
-        onSuccess: response => {
+        onSuccess: (response) => {
           if (response.data.success) {
             let data = response.data.records;
             if (data.billdetails[0].pre_approval === "Y") {
               swalMessage({
                 title: "Selected Item is Pre-Approval required.",
-                type: "warning"
+                type: "warning",
               });
             }
             // } else {
@@ -634,9 +633,12 @@ const AddItems = ($this, context) => {
               data.billdetails[0].qtyhand = $this.state.qtyhand;
               data.billdetails[0].barcode = $this.state.barcode;
               data.billdetails[0].service_id = data.billdetails[0].services_id;
-              data.billdetails[0].discount_amount = data.billdetails[0].discount_amout;
-              data.billdetails[0].conversion_factor = $this.state.conversion_factor;
-              data.billdetails[0].item_description = $this.state.item_description;
+              data.billdetails[0].discount_amount =
+                data.billdetails[0].discount_amout;
+              data.billdetails[0].conversion_factor =
+                $this.state.conversion_factor;
+              data.billdetails[0].item_description =
+                $this.state.item_description;
 
               data.billdetails[0].batches = [
                 {
@@ -650,8 +652,8 @@ const AddItems = ($this, context) => {
                   uom_id: $this.state.uom_id,
                   conversion_factor: $this.state.conversion_factor,
                   non_prec_Item: true,
-                  avgcost: $this.state.average_cost
-                }
+                  avgcost: $this.state.average_cost,
+                },
               ];
 
               data.billdetails[0].patient_responsibility =
@@ -692,7 +694,7 @@ const AddItems = ($this, context) => {
                 barcode: null,
                 discount_percentage: 0,
                 OTItemAddDis: true,
-                saveEnable: false
+                saveEnable: false,
               });
             }
 
@@ -713,7 +715,7 @@ const AddItems = ($this, context) => {
               qtyhand: 0,
               barcode: null,
               discount_percentage: 0,
-              OTItemAddDis: true
+              OTItemAddDis: true,
             });
 
             algaehApiCall({
@@ -721,7 +723,7 @@ const AddItems = ($this, context) => {
               module: "billing",
               method: "POST",
               data: { billdetails: existingservices },
-              onSuccess: response => {
+              onSuccess: (response) => {
                 if (response.data.success) {
                   let sum_data = response.data.records;
 
@@ -752,8 +754,8 @@ const AddItems = ($this, context) => {
                   sum_data.postEnable = false;
                   sum_data.hims_f_pharmacy_pos_detail_id = null;
                   if ($this.state.default_pay_type === "CD") {
-                    sum_data.card_amount = sum_data.receiveable_amount
-                    sum_data.cash_amount = 0
+                    sum_data.card_amount = sum_data.receiveable_amount;
+                    sum_data.cash_amount = 0;
                   }
 
                   if (context !== null) {
@@ -762,29 +764,29 @@ const AddItems = ($this, context) => {
                 } else {
                   swalMessage({
                     title: response.data.message,
-                    type: "error"
+                    type: "error",
                   });
                 }
                 AlgaehLoader({ show: false });
               },
-              onFailure: error => {
+              onFailure: (error) => {
                 AlgaehLoader({ show: false });
                 swalMessage({
                   title: error.message,
-                  type: "error"
+                  type: "error",
                 });
-              }
+              },
             });
             // }
           }
         },
-        onFailure: error => {
+        onFailure: (error) => {
           AlgaehLoader({ show: false });
           swalMessage({
             title: error.message,
-            type: "error"
+            type: "error",
           });
-        }
+        },
       });
     }
   }
@@ -792,7 +794,7 @@ const AddItems = ($this, context) => {
 
 const datehandle = ($this, ctrl, e) => {
   $this.setState({
-    [e]: moment(ctrl)._d
+    [e]: moment(ctrl)._d,
   });
 };
 
@@ -813,7 +815,7 @@ const deletePosDetail = ($this, context, row) => {
       }
     }
     let Updateobj = {
-      hims_f_pharmacy_pos_detail_id: row.hims_f_pharmacy_pos_detail_id
+      hims_f_pharmacy_pos_detail_id: row.hims_f_pharmacy_pos_detail_id,
     };
     delete_pharmacy_stock.push(Updateobj);
   } else {
@@ -879,7 +881,7 @@ const deletePosDetail = ($this, context, row) => {
         saveEnable: true,
         postEnable: true,
         unbalanced_amount: 0,
-        balance_credit: 0
+        balance_credit: 0,
       });
     }
   } else {
@@ -890,7 +892,7 @@ const deletePosDetail = ($this, context, row) => {
       module: "billing",
       method: "POST",
       data: { billdetails: pharmacy_stock_detail },
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           let data = response.data.records;
 
@@ -917,8 +919,8 @@ const deletePosDetail = ($this, context, row) => {
           data.postEnable = false;
 
           if ($this.state.default_pay_type === "CD") {
-            data.card_amount = data.receiveable_amount
-            data.cash_amount = 0
+            data.card_amount = data.receiveable_amount;
+            data.cash_amount = 0;
           }
 
           if (context !== null) {
@@ -926,16 +928,16 @@ const deletePosDetail = ($this, context, row) => {
           }
         }
       },
-      onFailure: error => {
+      onFailure: (error) => {
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
     if (context !== undefined) {
       context.updateState({
-        pharmacy_stock_detail: pharmacy_stock_detail
+        pharmacy_stock_detail: pharmacy_stock_detail,
       });
     }
   }
@@ -949,7 +951,7 @@ const updatePosDetail = ($this, context) => {
     module: "billing",
     method: "POST",
     data: { billdetails: $this.state.pharmacy_stock_detail },
-    onSuccess: response => {
+    onSuccess: (response) => {
       if (response.data.success) {
         let data = response.data.records;
 
@@ -975,8 +977,8 @@ const updatePosDetail = ($this, context) => {
         data.saveEnable = false;
 
         if ($this.state.default_pay_type === "CD") {
-          data.card_amount = data.receiveable_amount
-          data.cash_amount = 0
+          data.card_amount = data.receiveable_amount;
+          data.cash_amount = 0;
         }
 
         if (context !== null) {
@@ -984,12 +986,12 @@ const updatePosDetail = ($this, context) => {
         }
       }
     },
-    onFailure: error => {
+    onFailure: (error) => {
       swalMessage({
         title: error.message,
-        type: "error"
+        type: "error",
       });
-    }
+    },
   });
 };
 
@@ -1026,8 +1028,8 @@ const calculateAmount = ($this, context, row, ctrl, e) => {
         $this.state.secondary_insurance_provider_id,
       secondary_network_id: $this.state.secondary_network_id,
       secondary_network_office_id: $this.state.secondary_network_office_id,
-      from_pos: "Y"
-    }
+      from_pos: "Y",
+    },
   ];
 
   algaehApiCall({
@@ -1036,7 +1038,7 @@ const calculateAmount = ($this, context, row, ctrl, e) => {
     method: "POST",
     cancelRequestId: "getPosDetails",
     data: inputParam,
-    onSuccess: response => {
+    onSuccess: (response) => {
       if (response.data.success) {
         let data = response.data.records;
 
@@ -1077,7 +1079,7 @@ const calculateAmount = ($this, context, row, ctrl, e) => {
           module: "billing",
           method: "POST",
           data: { billdetails: pharmacy_stock_detail },
-          onSuccess: response => {
+          onSuccess: (response) => {
             if (response.data.success) {
               let data_billing = response.data.records;
 
@@ -1112,39 +1114,39 @@ const calculateAmount = ($this, context, row, ctrl, e) => {
               data_billing.sec_company_payable =
                 data_billing.sec_company_paybale;
 
-              data_billing.copay_amount = data_billing.copay_amount;
-              data_billing.sec_copay_amount = data_billing.sec_copay_amount;
+              // data_billing.copay_amount = data_billing.copay_amount;
+              // data_billing.sec_copay_amount = data_billing.sec_copay_amount;
               data_billing.addItemButton = false;
 
               if ($this.state.default_pay_type === "CD") {
-                data_billing.card_amount = data_billing.receiveable_amount
-                data_billing.cash_amount = 0
+                data_billing.card_amount = data_billing.receiveable_amount;
+                data_billing.cash_amount = 0;
               }
 
               // data_billing.saveEnable = false;
               if (context !== null) {
                 context.updateState({
                   ...data_billing,
-                  pharmacy_stock_detail: pharmacy_stock_detail
+                  pharmacy_stock_detail: pharmacy_stock_detail,
                 });
               }
             }
           },
-          onFailure: error => {
+          onFailure: (error) => {
             swalMessage({
               title: error.message,
-              type: "error"
+              type: "error",
             });
-          }
+          },
         });
       }
     },
-    onFailure: error => {
+    onFailure: (error) => {
       swalMessage({
         title: error.message,
-        type: "error"
+        type: "error",
       });
-    }
+    },
   });
   // }
 };
@@ -1153,16 +1155,16 @@ const adjustadvance = ($this, context, ctrl, e) => {
   e = e || ctrl;
 
   if (e.target.value > $this.state.advance_amount) {
-    e.target.value = 0
+    e.target.value = 0;
     swalMessage({
       title: "Adjusted amount cannot be greater than Advance amount",
-      type: "warning"
+      type: "warning",
     });
   }
 
   $this.setState(
     {
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     },
     () => {
       PosheaderCalculation($this, context);
@@ -1171,10 +1173,9 @@ const adjustadvance = ($this, context, ctrl, e) => {
 
   if (context !== null) {
     context.updateState({
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
   }
-
 };
 
 const PosheaderCalculation = ($this, context) => {
@@ -1199,7 +1200,7 @@ const PosheaderCalculation = ($this, context) => {
     credit_amount:
       $this.state.credit_amount === undefined
         ? 0
-        : parseFloat($this.state.credit_amount)
+        : parseFloat($this.state.credit_amount),
   };
 
   algaehApiCall({
@@ -1207,7 +1208,7 @@ const PosheaderCalculation = ($this, context) => {
     module: "billing",
     method: "POST",
     data: ItemInput,
-    onSuccess: response => {
+    onSuccess: (response) => {
       if (response.data.success) {
         let data = response.data.records;
 
@@ -1233,8 +1234,8 @@ const PosheaderCalculation = ($this, context) => {
         data.saveEnable = false;
 
         if ($this.state.default_pay_type === "CD") {
-          data.card_amount = data.receiveable_amount
-          data.cash_amount = 0
+          data.card_amount = data.receiveable_amount;
+          data.cash_amount = 0;
         }
 
         // data.credit_amount = ItemInput.credit_amount;
@@ -1244,12 +1245,12 @@ const PosheaderCalculation = ($this, context) => {
         }
       }
     },
-    onFailure: error => {
+    onFailure: (error) => {
       swalMessage({
         title: error.message,
-        type: "error"
+        type: "error",
       });
-    }
+    },
   });
   // }
 };
@@ -1263,7 +1264,7 @@ const dateFormater = ($this, value) => {
 const ShowItemBatch = ($this, e) => {
   $this.setState({
     ...$this.state,
-    selectBatch: !$this.state.selectBatch
+    selectBatch: !$this.state.selectBatch,
   });
 };
 
@@ -1328,11 +1329,12 @@ const CloseItemBatch = ($this, context, e) => {
         : $this.state.average_cost
       : $this.state.average_cost;
 
-  let quantity = e !== undefined
-    ? e.selected === true
-      ? 0
-      : $this.state.quantity
-    : $this.state.quantity;
+  let quantity =
+    e !== undefined
+      ? e.selected === true
+        ? 0
+        : $this.state.quantity
+      : $this.state.quantity;
 
   $this.setState({
     ...$this.state,
@@ -1346,7 +1348,7 @@ const CloseItemBatch = ($this, context, e) => {
     unit_cost: sale_price,
     uom_description: uom_description,
     average_cost: average_cost,
-    quantity: quantity
+    quantity: quantity,
   });
 
   if (context !== null) {
@@ -1360,7 +1362,7 @@ const CloseItemBatch = ($this, context, e) => {
       unit_cost: sale_price,
       uom_description: uom_description,
       average_cost: average_cost,
-      quantity: quantity
+      quantity: quantity,
     });
   }
 };
@@ -1377,57 +1379,52 @@ const onchangegridcol = ($this, context, row, e) => {
       row["discount_amount"] = 0;
       pharmacy_stock_detail[_index] = row;
       $this.setState({
-        pharmacy_stock_detail: pharmacy_stock_detail
+        pharmacy_stock_detail: pharmacy_stock_detail,
       });
       swalMessage({
         title: "Discount % cannot be greater than 100.",
-        type: "warning"
+        type: "warning",
       });
 
       // return;
-    }
-    else if (parseFloat(value) < 0) {
+    } else if (parseFloat(value) < 0) {
       row[name] = 0;
       row["discount_amount"] = 0;
       pharmacy_stock_detail[_index] = row;
       $this.setState({
-        pharmacy_stock_detail: pharmacy_stock_detail
+        pharmacy_stock_detail: pharmacy_stock_detail,
       });
       swalMessage({
         title: "Discount % cannot be less than Zero",
-        type: "warning"
+        type: "warning",
       });
       // return;
     } else {
       row[name] = value;
     }
   } else if (name === "discount_amount") {
-
     if (parseFloat(value) < 0) {
-
       row[name] = 0;
-      row["discount_percentage"] = 0
+      row["discount_percentage"] = 0;
       pharmacy_stock_detail[_index] = row;
       $this.setState({
-        pharmacy_stock_detail: pharmacy_stock_detail
+        pharmacy_stock_detail: pharmacy_stock_detail,
       });
       swalMessage({
         title: "Discount Amount cannot be less than Zero",
-        type: "warning"
+        type: "warning",
       });
       // return;
-    }
-    else if (parseFloat(row.extended_cost) < parseFloat(value)) {
-
+    } else if (parseFloat(row.extended_cost) < parseFloat(value)) {
       row[name] = 0;
-      row["discount_percentage"] = 0
+      row["discount_percentage"] = 0;
       pharmacy_stock_detail[_index] = row;
       $this.setState({
-        pharmacy_stock_detail: pharmacy_stock_detail
+        pharmacy_stock_detail: pharmacy_stock_detail,
       });
       swalMessage({
         title: "Discount Amount cannot be greater than Gross Amount.",
-        type: "warning"
+        type: "warning",
       });
       // return;
     } else {
@@ -1441,7 +1438,7 @@ const qtyonchangegridcol = ($this, context, row, e) => {
   if (row.batchno === undefined || row.batchno === null) {
     swalMessage({
       title: "Please select Batch",
-      type: "error"
+      type: "error",
     });
     return;
   }
@@ -1451,12 +1448,12 @@ const qtyonchangegridcol = ($this, context, row, e) => {
   if (parseFloat(value) < 0) {
     swalMessage({
       title: "Quantity cannot be less than Zero",
-      type: "warning"
+      type: "warning",
     });
   } else if (parseFloat(value) > parseFloat(row.qtyhand)) {
     swalMessage({
       title: "Quantity cannot be greater than Quantity in hand",
-      type: "warning"
+      type: "warning",
     });
   } else {
     if (value === null) {
@@ -1467,7 +1464,7 @@ const qtyonchangegridcol = ($this, context, row, e) => {
 
       if (context !== null) {
         context.updateState({
-          pharmacy_stock_detail: _pharmacy_stock_detail
+          pharmacy_stock_detail: _pharmacy_stock_detail,
         });
       }
       return;
@@ -1480,7 +1477,7 @@ const qtyonchangegridcol = ($this, context, row, e) => {
 
 const ViewInsurance = ($this, e) => {
   $this.setState({
-    viewInsurance: !$this.state.viewInsurance
+    viewInsurance: !$this.state.viewInsurance,
   });
 };
 
@@ -1494,7 +1491,7 @@ const EditGrid = ($this, context, cancelRow) => {
     context.updateState({
       saveEnable: !$this.state.saveEnable,
       addItemButton: !$this.state.addItemButton,
-      pharmacy_stock_detail: _pharmacy_stock_detail
+      pharmacy_stock_detail: _pharmacy_stock_detail,
     });
   }
 };
@@ -1505,13 +1502,13 @@ const credittexthandle = ($this, context, ctrl, e) => {
   if (e.target.value > $this.state.net_amount) {
     swalMessage({
       title: "Credit amount cannot be greater than Net amount",
-      type: "warning"
+      type: "warning",
     });
   } else {
     $this.setState(
       {
         [e.target.name]: e.target.value,
-        balance_credit: e.target.value
+        balance_credit: e.target.value,
       },
       () => {
         PosheaderCalculation($this, context);
@@ -1521,7 +1518,7 @@ const credittexthandle = ($this, context, ctrl, e) => {
     if (context !== null) {
       context.updateState({
         [e.target.name]: e.target.value,
-        balance_credit: e.target.value
+        balance_credit: e.target.value,
       });
     }
   }
@@ -1539,7 +1536,7 @@ const SelectBatchDetails = ($this, row, context, e) => {
     e.selected.non_prec_Item === true
       ? parseFloat(e.selected.qtyhand)
       : parseFloat(e.selected.qtyhand) /
-      parseFloat(e.selected.conversion_factor);
+        parseFloat(e.selected.conversion_factor);
   row["grn_no"] = e.selected.grnno;
   row["barcode"] = e.selected.barcode;
   row["unit_cost"] = e.selected.sale_price;
@@ -1548,7 +1545,7 @@ const SelectBatchDetails = ($this, row, context, e) => {
 
   if (context !== null) {
     context.updateState({
-      pharmacy_stock_detail: _pharmacy_stock_detail
+      pharmacy_stock_detail: _pharmacy_stock_detail,
     });
   }
 };
@@ -1560,7 +1557,7 @@ const getMedicationAprovalList = ($this, row) => {
   ) {
     swalMessage({
       title: "Save the record...",
-      type: "warning"
+      type: "warning",
     });
     return;
   }
@@ -1587,9 +1584,8 @@ const getMedicationAprovalList = ($this, row) => {
     uri: "/orderAndPreApproval/getMedicationAprovalList",
     method: "GET",
     data: inputobj,
-    onSuccess: response => {
+    onSuccess: (response) => {
       if (response.data.success) {
-
         if (response.data.records.length > 0) {
           $this.setState({
             medca_approval_Services: response.data.records,
@@ -1597,32 +1593,33 @@ const getMedicationAprovalList = ($this, row) => {
             item_description: row.item_description,
             prescription_detail_id: row.prescription_detail_id,
             item_data: row,
-            hims_f_pharmacy_pos_detail_id: row.hims_f_pharmacy_pos_detail_id
+            hims_f_pharmacy_pos_detail_id: row.hims_f_pharmacy_pos_detail_id,
           });
         } else {
           swalMessage({
             title: "Save the record...",
-            type: "warning"
+            type: "warning",
           });
         }
       }
     },
-    onFailure: error => {
+    onFailure: (error) => {
       swalMessage({
         title: error.response.data.message,
-        type: "warning"
+        type: "warning",
       });
-    }
+    },
   });
 };
 
 const generatePharmacyLabel = ($this, row) => {
   if ($this.state.pos_customer_type === "OT") {
-    let item_details = $this.props.positemlist.find(f => f.hims_d_item_master_id ===
-      row.item_id)
+    let item_details = $this.props.positemlist.find(
+      (f) => f.hims_d_item_master_id === row.item_id
+    );
     $this.setState({
       view_item_instructions: !$this.state.view_item_instructions,
-      item_details: item_details
+      item_details: item_details,
     });
   } else {
     algaehApiCall({
@@ -1630,7 +1627,7 @@ const generatePharmacyLabel = ($this, row) => {
       method: "GET",
       module: "reports",
       headers: {
-        Accept: "blob"
+        Accept: "blob",
       },
       others: { responseType: "blob" },
       data: {
@@ -1639,20 +1636,20 @@ const generatePharmacyLabel = ($this, row) => {
           reportParams: [
             {
               name: "visit_id",
-              value: $this.state.visit_id
+              value: $this.state.visit_id,
             },
             {
               name: "item_id",
-              value: row.item_id
-            }
+              value: row.item_id,
+            },
           ],
           pageSize: "A6",
           pageOrentation: "landscape",
           outputFileType: "PDF",
-          breakAtArray: true
-        }
+          breakAtArray: true,
+        },
       },
-      onSuccess: res => {
+      onSuccess: (res) => {
         // const url = URL.createObjectURL(res.data);
         // let myWindow = window.open(
         //   "{{ product.metafields.google.custom_label_0 }}",
@@ -1666,16 +1663,16 @@ const generatePharmacyLabel = ($this, row) => {
         const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename= Report`;
         window.open(origin);
         // window.document.title = "";
-      }
+      },
     });
   }
 };
 
-const CloseItemInstructions = $this => {
+const CloseItemInstructions = ($this) => {
   $this.setState({
-    view_item_instructions: !$this.state.view_item_instructions
+    view_item_instructions: !$this.state.view_item_instructions,
   });
-}
+};
 
 export {
   discounthandle,
@@ -1700,5 +1697,5 @@ export {
   SelectBatchDetails,
   getMedicationAprovalList,
   generatePharmacyLabel,
-  CloseItemInstructions
+  CloseItemInstructions,
 };

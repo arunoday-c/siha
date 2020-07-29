@@ -50,14 +50,14 @@ const discounthandle = ($this, context, ctrl, e) => {
         value === ""
           ? 0
           : (parseFloat($this.state.extended_price) * sub_discount_percentage) /
-          100;
+            100;
     } else {
       sub_discount_amount = value === "" ? "" : parseFloat(value);
       sub_discount_percentage =
         value === ""
           ? 0
           : (sub_discount_amount / parseFloat($this.state.extended_price)) *
-          100;
+            100;
 
       sub_discount_percentage = sub_discount_percentage.toFixed(3);
     }
@@ -309,7 +309,6 @@ const itemchangeText = ($this, context, e) => {
 };
 
 const AddItems = ($this, context) => {
-
   if ($this.state.order_quantity === 0) {
     swalMessage({
       title: "Please enter Quantity Required .",
@@ -547,50 +546,48 @@ const deletePOReturnDetail = ($this, context, row) => {
       });
     }
   } else {
-    {
-      let inventory_stock_detail = $this.state.inventory_stock_detail;
+    let inventory_stock_detail = $this.state.inventory_stock_detail;
 
-      inventory_stock_detail.splice(row.rowIdx, 1);
+    inventory_stock_detail.splice(row.rowIdx, 1);
 
-      if (inventory_stock_detail.length > 0) {
-        sub_total = Enumerable.from(inventory_stock_detail).sum((s) =>
-          parseFloat(s.extended_cost)
-        );
+    if (inventory_stock_detail.length > 0) {
+      sub_total = Enumerable.from(inventory_stock_detail).sum((s) =>
+        parseFloat(s.extended_cost)
+      );
 
-        discount_amount = Enumerable.from(inventory_stock_detail).sum((s) =>
-          parseFloat(s.discount_amount)
-        );
+      discount_amount = Enumerable.from(inventory_stock_detail).sum((s) =>
+        parseFloat(s.discount_amount)
+      );
 
-        net_total = Enumerable.from(inventory_stock_detail).sum((s) =>
-          parseFloat(s.net_extended_cost)
-        );
+      net_total = Enumerable.from(inventory_stock_detail).sum((s) =>
+        parseFloat(s.net_extended_cost)
+      );
 
-        tax_amount = Enumerable.from(inventory_stock_detail).sum((s) =>
-          parseFloat(s.tax_amount)
-        );
+      tax_amount = Enumerable.from(inventory_stock_detail).sum((s) =>
+        parseFloat(s.tax_amount)
+      );
 
-        return_total = Enumerable.from(inventory_stock_detail).sum((s) =>
-          parseFloat(s.total_amount)
-        );
-      } else {
-        sub_total = 0;
-        discount_amount = 0;
-        net_total = 0;
-        tax_amount = 0;
-        return_total = 0;
-      }
+      return_total = Enumerable.from(inventory_stock_detail).sum((s) =>
+        parseFloat(s.total_amount)
+      );
+    } else {
+      sub_total = 0;
+      discount_amount = 0;
+      net_total = 0;
+      tax_amount = 0;
+      return_total = 0;
+    }
 
-      if (context !== undefined) {
-        context.updateState({
-          inventory_stock_detail: inventory_stock_detail,
-          sub_total: sub_total,
-          discount_amount: discount_amount,
-          net_total: net_total,
-          tax_amount: tax_amount,
-          return_total: return_total,
-          saveEnable: inventory_stock_detail.length > 0 ? false : true,
-        });
-      }
+    if (context !== undefined) {
+      context.updateState({
+        inventory_stock_detail: inventory_stock_detail,
+        sub_total: sub_total,
+        discount_amount: discount_amount,
+        net_total: net_total,
+        tax_amount: tax_amount,
+        return_total: return_total,
+        saveEnable: inventory_stock_detail.length > 0 ? false : true,
+      });
     }
   }
 };
