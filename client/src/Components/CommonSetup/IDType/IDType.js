@@ -157,7 +157,26 @@ class IDType extends Component {
   }
 
   resetState() {
-    this.setState(this.baseState);
+    this.setState({
+      identity_status: "A",
+      effective_end_date: "",
+      identity_document_code: "",
+      identity_document_name: "",
+      arabic_identity_document_name: "",
+      currentRowID: "",
+      nationality_id: null,
+      nationality: "",
+      countries: [],
+      masked_identity: "",
+      notify_expiry: "N",
+      notify_before: 0,
+      notifyUserArray: [],
+      employeeIDs: [],
+      checkbutton: false,
+      hims_d_identity_document_id: null,
+      visible: false,
+      activateEdit: false,
+    });
   }
   _onChange = (e) => {
     this.setState({ [e.target.name]: e.target.value });
