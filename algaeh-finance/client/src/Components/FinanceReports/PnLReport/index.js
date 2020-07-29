@@ -1,8 +1,8 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState } from "react";
 import {
   AlgaehMessagePop,
-  AlgaehButton,
-  AlgaehAutoComplete,
+  // AlgaehButton,
+  // AlgaehAutoComplete,
 } from "algaeh-react-components";
 import ByYear from "./pandLYear";
 import ByCostCenter from "./pandLCostCenter";
@@ -13,7 +13,7 @@ import { getYears } from "../../../utils/GlobalFunctions";
 import { handleFile } from "../FinanceReportEvents";
 import Filter from "../filter";
 import moment from "moment";
-const yearList = getYears();
+// const yearList = getYears();
 export default function PnLReport({
   layout,
   finOptions,
@@ -29,7 +29,8 @@ export default function PnLReport({
   const [costCenters, setCostCenters] = useState([]);
   const [triggerUpdate, setTriggerUpdate] = useState(false);
   const [stopLoading, setStopLoading] = useState(undefined);
-  const [isExcel, setExcel] = useState(false);
+  // const [isExcel, setExcel] = useState(false);
+  const isExcel = false;
   const [branch_id, setBranchID] = useState(finOptions.default_branch_id);
   const [cost_center_id, setCostCenterId] = useState(
     finOptions.default_cost_center_id

@@ -11,9 +11,7 @@ import { newAlgaehApi } from "../../../../hooks";
 import Editor from "./editor";
 export default memo(function () {
   const [kpi_types, setKpiTypes] = useState([]);
-  const [input, setInput] = useState({
-    _id: undefined,
-  });
+
   const [masterInput, setMasterInput] = useState({
     kpi_type: "",
     kpi_name: "",
@@ -102,7 +100,7 @@ export default memo(function () {
     });
     setButtonType("Add To List");
   }
-  const { _id } = input;
+
   return (
     <div className="row">
       <div className="col-5">

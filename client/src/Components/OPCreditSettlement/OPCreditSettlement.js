@@ -210,7 +210,7 @@ class OPCreditSettlement extends Component {
               state: this.state,
               updateState: (obj, callback) => {
                 this.setState({ ...this.state, ...obj }, () => {
-                  Object.keys(obj).map((key) => {
+                  Object.keys(obj).forEach((key) => {
                     if (key === "patient_code") {
                       this.getPatientDetails(this);
                     }
@@ -239,7 +239,7 @@ class OPCreditSettlement extends Component {
                 disabled={
                   this.state.saveEnable ||
                   !this.state.receipt_amount ||
-                  !this.state.unbalanced_amount == 0
+                  !this.state.unbalanced_amount == 0 // eslint-disable-line
                 }
               >
                 <AlgaehLabel

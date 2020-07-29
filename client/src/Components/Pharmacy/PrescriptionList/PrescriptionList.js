@@ -11,16 +11,16 @@ import "./../../../styles/site.scss";
 import {
   AlgaehDataGrid,
   AlgaehLabel,
-  AlagehFormGroup,
-  AlgaehDateHandler
+  // AlagehFormGroup,
+  AlgaehDateHandler,
 } from "../../Wrapper/algaehWrapper";
 
 import {
   getMedicationList,
-  PatientSearch,
+  // PatientSearch,
   Refresh,
   datehandle,
-  ListOfItems
+  ListOfItems,
 } from "./PrescriptionListEvents";
 
 import { AlgaehActions } from "../../../actions/algaehActions";
@@ -37,7 +37,7 @@ class PrescriptionList extends Component {
       medication_list: [],
       patient_id: null,
       item_list: [],
-      itemlist: false
+      itemlist: false,
     };
   }
 
@@ -68,18 +68,18 @@ class PrescriptionList extends Component {
                   <AlgaehLabel
                     label={{
                       forceLabel: "Home",
-                      align: "ltr"
+                      align: "ltr",
                     }}
                   />
-                )
+                ),
               },
               {
                 pageName: (
                   <AlgaehLabel
                     label={{ forceLabel: "Prescription List", align: "ltr" }}
                   />
-                )
-              }
+                ),
+              },
             ]}
           />
           <div style={{ marginTop: 76 }}>
@@ -94,11 +94,11 @@ class PrescriptionList extends Component {
                     label={{ forceLabel: "Select Date" }}
                     textBox={{
                       className: "txt-fld",
-                      name: "prescription_date"
+                      name: "prescription_date",
                     }}
                     dontAllow={"future"}
                     events={{
-                      onChange: datehandle.bind(this, this)
+                      onChange: datehandle.bind(this, this),
                     }}
                     value={this.state.prescription_date}
                   />
@@ -139,7 +139,7 @@ class PrescriptionList extends Component {
                     {
                       fieldName: "action",
                       label: <AlgaehLabel label={{ forceLabel: "action" }} />,
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         return (
                           <span>
                             <i
@@ -152,8 +152,8 @@ class PrescriptionList extends Component {
                       others: {
                         maxWidth: 70,
                         style: { textAlign: "center" },
-                        filterable: false
-                      }
+                        filterable: false,
+                      },
                     },
                     {
                       fieldName: "patient_code",
@@ -163,8 +163,8 @@ class PrescriptionList extends Component {
                       disabled: false,
                       others: {
                         maxWidth: 150,
-                        style: { textAlign: "center" }
-                      }
+                        style: { textAlign: "center" },
+                      },
                     },
                     {
                       fieldName: "full_name",
@@ -173,8 +173,8 @@ class PrescriptionList extends Component {
                       ),
                       disabled: true,
                       others: {
-                        style: { textAlign: "left" }
-                      }
+                        style: { textAlign: "left" },
+                      },
                     },
                     {
                       fieldName: "prescription_date",
@@ -183,7 +183,7 @@ class PrescriptionList extends Component {
                           label={{ forceLabel: "Prescription Date" }}
                         />
                       ),
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         return (
                           <span>
                             {this.changeDateFormat(row.prescription_date)}
@@ -194,8 +194,8 @@ class PrescriptionList extends Component {
                       others: {
                         maxWidth: 150,
                         style: { textAlign: "center" },
-                        filterable: false
-                      }
+                        filterable: false,
+                      },
                     },
                     {
                       fieldName: "number_of_items",
@@ -209,13 +209,13 @@ class PrescriptionList extends Component {
                       others: {
                         maxWidth: 150,
                         style: { textAlign: "center" },
-                        filterable: false
-                      }
-                    }
+                        filterable: false,
+                      },
+                    },
                   ]}
                   keyId="patient_code"
                   dataSource={{
-                    data: this.state.medication_list
+                    data: this.state.medication_list,
                   }}
                   filter={true}
                   paging={{ page: 0, rowsPerPage: 10 }}
@@ -237,22 +237,19 @@ class PrescriptionList extends Component {
 
 function mapStateToProps(state) {
   return {
-    medicationlist: state.medicationlist
+    medicationlist: state.medicationlist,
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getMedicationList: AlgaehActions
+      getMedicationList: AlgaehActions,
     },
     dispatch
   );
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(PrescriptionList)
+  connect(mapStateToProps, mapDispatchToProps)(PrescriptionList)
 );

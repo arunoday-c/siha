@@ -1,6 +1,5 @@
 import React, { memo, useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
-import { Button } from "antd";
 import { AlgaehMessagePop, AlgaehTable } from "algaeh-react-components";
 import { LoadSupplierPayable } from "./event";
 import { InfoBar } from "../../Wrappers";

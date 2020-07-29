@@ -7,7 +7,7 @@ import {
   AlgaehLabel,
   AlagehFormGroup,
 } from "../../../Wrapper/algaehWrapper";
-import _ from "lodash";
+// import _ from "lodash";
 import Input from "./inputs";
 import AlgaehSearch from "../../../Wrapper/globalSearch";
 import spotlightSearch from "../../../../Search/spotlightSearch.json";

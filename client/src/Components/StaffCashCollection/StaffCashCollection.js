@@ -15,9 +15,8 @@ import AlgaehLoader from "../Wrapper/fullPageLoader";
 import Enumerable from "linq";
 import {
   AlgaehSecurityComponent,
-  RawSecurityComponent
+  RawSecurityComponent,
 } from "algaeh-react-components";
-
 
 class StaffCashCollection extends Component {
   constructor(props) {
@@ -36,7 +35,7 @@ class StaffCashCollection extends Component {
       cash_collection: [],
       previous_opend_shift: [],
       cashHandoverDetails: [],
-      user_wise: false
+      user_wise: false,
     };
     this.getShifts();
     this.getCashHandoverDetails();
@@ -85,7 +84,7 @@ class StaffCashCollection extends Component {
   }
 
   loadDetails(value) {
-    debugger
+    debugger;
     this.setState({
       cashHandoverDetails: value.cashiers,
     });
@@ -159,7 +158,7 @@ class StaffCashCollection extends Component {
     let status_suffix = "_status";
 
     //getting the payment mode
-    const [_, mode] = name.split("_");
+    const [_, mode] = name.split("_"); // eslint-disable-line
 
     if (value && value > 0) {
       let diff = this.state[exp_prefix + mode] - value;
@@ -254,10 +253,10 @@ class StaffCashCollection extends Component {
           method: "GET",
           data: {
             daily_handover_date: this.state.daily_handover_date,
-            user_wise: this.state.user_wise
+            user_wise: this.state.user_wise,
           },
           onSuccess: (response) => {
-            debugger
+            debugger;
             AlgaehLoader({ show: false });
             if (response.data.success) {
               this.setState({
@@ -319,17 +318,17 @@ class StaffCashCollection extends Component {
   render() {
     const _cash =
       this.state.difference_cash !== undefined &&
-        this.state.difference_cash !== ""
+      this.state.difference_cash !== ""
         ? parseFloat(this.state.difference_cash)
         : 0;
     const _card =
       this.state.difference_card !== undefined &&
-        this.state.difference_card !== ""
+      this.state.difference_card !== ""
         ? parseFloat(this.state.difference_card)
         : 0;
     const _cheque =
       this.state.difference_cheque !== undefined &&
-        this.state.difference_cheque !== ""
+      this.state.difference_cheque !== ""
         ? parseFloat(this.state.difference_cheque)
         : 0;
 
@@ -457,8 +456,8 @@ class StaffCashCollection extends Component {
                         </div>
                       ))
                     ) : (
-                        <span className="noDataStyle">Select Shift Date</span>
-                      )}
+                      <span className="noDataStyle">Select Shift Date</span>
+                    )}
                   </div>
                 </div>
               </div>
@@ -499,10 +498,10 @@ class StaffCashCollection extends Component {
                         </div>
                       ))
                     ) : (
-                        <div className="noDataStyle">
-                          Relax! No more Open Shift Available.
+                      <div className="noDataStyle">
+                        Relax! No more Open Shift Available.
                       </div>
-                      )}
+                    )}
                   </div>
                 </div>
               </div>
@@ -579,8 +578,8 @@ class StaffCashCollection extends Component {
                                 Authorized
                               </span>
                             ) : (
-                                    "------"
-                                  );
+                              "------"
+                            );
                           },
                           others: {
                             maxWidth: 100,
@@ -656,8 +655,8 @@ class StaffCashCollection extends Component {
                                 Shortage
                               </span>
                             ) : (
-                                    "------"
-                                  );
+                              "------"
+                            );
                           },
                           others: {
                             maxWidth: 100,
@@ -711,8 +710,8 @@ class StaffCashCollection extends Component {
                                 Shortage
                               </span>
                             ) : (
-                                    "------"
-                                  );
+                              "------"
+                            );
                           },
                           others: {
                             maxWidth: 100,
@@ -780,8 +779,8 @@ class StaffCashCollection extends Component {
                                 Shortage
                               </span>
                             ) : (
-                                    "------"
-                                  );
+                              "------"
+                            );
                           },
                           others: {
                             maxWidth: 105,
@@ -1015,8 +1014,8 @@ class StaffCashCollection extends Component {
                                     Shortage
                                   </span>
                                 ) : (
-                                        "------"
-                                      )}
+                                  "------"
+                                )}
                               </td>
                               <td>
                                 {this.state.card_status === "T" ? (
@@ -1032,8 +1031,8 @@ class StaffCashCollection extends Component {
                                     Shortage
                                   </span>
                                 ) : (
-                                        "------"
-                                      )}
+                                  "------"
+                                )}
                               </td>
                               <td>
                                 {this.state.cheque_status === "T" ? (
@@ -1049,8 +1048,8 @@ class StaffCashCollection extends Component {
                                     Shortage
                                   </span>
                                 ) : (
-                                        "------"
-                                      )}
+                                  "------"
+                                )}
                               </td>
                             </tr>
                             {/* <tr>
@@ -1073,7 +1072,7 @@ class StaffCashCollection extends Component {
                             style={{ marginLeft: 10, float: "right" }}
                           >
                             Close Shift
-                        </button>
+                          </button>
                           <button
                             disabled={this.disableBtn("A")}
                             onClick={this.authAndCloseShift.bind(this, "A")}
@@ -1081,7 +1080,7 @@ class StaffCashCollection extends Component {
                             style={{ marginLeft: 10, float: "right" }}
                           >
                             Authorize Shift
-                        </button>
+                          </button>
                         </div>
                       </div>
                     </AlgaehSecurityComponent>

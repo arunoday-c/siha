@@ -14,7 +14,6 @@ import {
   AlgaehDateHandler,
 } from "../../Wrapper/algaehWrapper";
 import {
-  deleteNetWorkPlan,
   UpdateNetworkPlan,
   onchangegridcol,
   onchangegridnumber,

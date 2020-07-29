@@ -9,7 +9,7 @@ import {
   AlgaehDataGrid,
   AlgaehLabel,
   AlagehFormGroup,
-  AlagehAutoComplete
+  AlagehAutoComplete,
   // AlgaehDateHandler
 } from "../../../Wrapper/algaehWrapper";
 
@@ -36,7 +36,7 @@ import {
   // SelectBatchDetails,
   getMedicationAprovalList,
   generatePharmacyLabel,
-  CloseItemInstructions
+  CloseItemInstructions,
 } from "./PosListItemsEvents";
 import ReciptForm from "./ReciptDetails/AddReciptForm";
 import { AlgaehActions } from "../../../../actions/algaehActions";
@@ -59,7 +59,7 @@ class PosListItems extends Component {
       viewInsurance: false,
       viewPreapproval: false,
       view_item_instructions: false,
-      item_details: {}
+      item_details: {},
     };
     // this.onKeyPress = this.onKeyPress.bind(this);
   }
@@ -82,8 +82,8 @@ class PosListItems extends Component {
         method: "GET",
         redux: {
           type: "ITEM_CATEGORY_GET_DATA",
-          mappingName: "itemcategory"
-        }
+          mappingName: "itemcategory",
+        },
       });
     }
 
@@ -97,8 +97,8 @@ class PosListItems extends Component {
         method: "GET",
         redux: {
           type: "ITEM_GROUOP_GET_DATA",
-          mappingName: "itemgroup"
-        }
+          mappingName: "itemgroup",
+        },
       });
     }
 
@@ -109,8 +109,8 @@ class PosListItems extends Component {
         method: "GET",
         redux: {
           type: "ITEM_UOM_GET_DATA",
-          mappingName: "itemuom"
-        }
+          mappingName: "itemuom",
+        },
       });
     }
   }
@@ -124,7 +124,7 @@ class PosListItems extends Component {
       }
     }
     this.setState({
-      viewPreapproval: !this.state.viewPreapproval
+      viewPreapproval: !this.state.viewPreapproval,
     });
   }
 
@@ -141,7 +141,7 @@ class PosListItems extends Component {
     return (
       <React.Fragment>
         <MyContext.Consumer>
-          {context => (
+          {(context) => (
             <div className="hptl-phase1-op-add-billing-form">
               <div className="container-fluid">
                 <div className="row">
@@ -160,7 +160,7 @@ class PosListItems extends Component {
                               label={{ forceLabel: "Item Name (Ctrl + i)" }}
                               title="Type Item Name Here"
                               id="item_id_search"
-                              template={result => {
+                              template={(result) => {
                                 return (
                                   <section className="resultSecStyles">
                                     <div className="row">
@@ -188,7 +188,7 @@ class PosListItems extends Component {
                               value={this.state.item_description}
                               searchName="itemmaster"
                               extraParameters={{
-                                pharmacy_location_id: pharmacy_location_id
+                                pharmacy_location_id: pharmacy_location_id,
                               }}
                               onClick={itemchangeText.bind(this, this, context)}
                               onClear={() => {
@@ -217,10 +217,10 @@ class PosListItems extends Component {
                                   stocking_uom_id: null,
                                   average_cost: null,
                                   unit_cost: 0,
-                                  Real_unit_cost: 0
+                                  Real_unit_cost: 0,
                                 });
                               }}
-                              ref={attReg => {
+                              ref={(attReg) => {
                                 this.attReg = attReg;
                               }}
                             />
@@ -228,7 +228,7 @@ class PosListItems extends Component {
                             <div className="col">
                               <AlgaehLabel
                                 label={{
-                                  forceLabel: "Batch No."
+                                  forceLabel: "Batch No.",
                                 }}
                               />
                               <h6>
@@ -240,14 +240,14 @@ class PosListItems extends Component {
                             <div className="col">
                               <AlgaehLabel
                                 label={{
-                                  forceLabel: "Expiry Date"
+                                  forceLabel: "Expiry Date",
                                 }}
                               />
                               <h6>
                                 {this.state.expiry_date
                                   ? moment(this.state.expiry_date).format(
-                                    Options.dateFormat
-                                  )
+                                      Options.dateFormat
+                                    )
                                   : "-----------"}
                               </h6>
                             </div>
@@ -255,14 +255,14 @@ class PosListItems extends Component {
                             <div className="col">
                               <AlgaehLabel
                                 label={{
-                                  forceLabel: "Quantity In Hand"
+                                  forceLabel: "Quantity In Hand",
                                 }}
                               />
                               <h6>
                                 {this.state.qtyhand
                                   ? this.state.qtyhand +
-                                  " " +
-                                  this.state.uom_description
+                                    " " +
+                                    this.state.uom_description
                                   : "-----------"}
                               </h6>
                             </div>
@@ -277,7 +277,7 @@ class PosListItems extends Component {
                                 dataSource: {
                                   textField: "uom_description",
                                   valueField: "uom_id",
-                                  data: this.state.ItemUOM
+                                  data: this.state.ItemUOM,
                                 },
                                 onChange: UomchangeTexts.bind(
                                   this,
@@ -286,27 +286,27 @@ class PosListItems extends Component {
                                 ),
                                 onClear: () => {
                                   this.setState({
-                                    uom_id: null
+                                    uom_id: null,
                                   });
                                   context.updateState({
-                                    uom_id: null
+                                    uom_id: null,
                                   });
                                 },
                                 others: {
                                   disabled: this.state.dataExitst,
-                                  tabIndex: "2"
-                                }
+                                  tabIndex: "2",
+                                },
                               }}
                             />
                             <AlagehFormGroup
                               div={{ className: "col" }}
                               label={{
-                                forceLabel: "Quantity"
+                                forceLabel: "Quantity",
                               }}
                               textBox={{
                                 number: {
                                   allowNegative: false,
-                                  thousandSeparator: ","
+                                  thousandSeparator: ",",
                                 },
                                 className: "txt-fld",
                                 name: "quantity",
@@ -317,12 +317,12 @@ class PosListItems extends Component {
                                     this,
                                     this,
                                     context
-                                  )
+                                  ),
                                 },
                                 others: {
                                   disabled: this.state.dataExitst,
-                                  tabIndex: "3"
-                                }
+                                  tabIndex: "3",
+                                },
                               }}
                             />
 
@@ -330,7 +330,7 @@ class PosListItems extends Component {
                               div={{ className: "col" }}
                               label={{
                                 forceLabel: "Discount (%)",
-                                isImp: false
+                                isImp: false,
                               }}
                               textBox={{
                                 decimal: { allowNegative: false },
@@ -342,20 +342,20 @@ class PosListItems extends Component {
                                     this,
                                     this,
                                     context
-                                  )
+                                  ),
                                 },
                                 others: {
                                   tabIndex: "4",
                                   disabled:
-                                    this.state.insured === "Y" ? true : false
-                                }
+                                    this.state.insured === "Y" ? true : false,
+                                },
                               }}
                             />
 
                             <div className="col">
                               <AlgaehLabel
                                 label={{
-                                  forceLabel: "Unit Cost"
+                                  forceLabel: "Unit Cost",
                                 }}
                               />
                               <h6>
@@ -395,15 +395,15 @@ class PosListItems extends Component {
                             ) : null}
                             <div>
                               {this.state.insured === "Y" &&
-                                this.state.insurance_yesno === "N" ? (
-                                  <button
-                                    className="btn btn-default"
-                                    onClick={ViewInsurance.bind(this, this)}
+                              this.state.insurance_yesno === "N" ? (
+                                <button
+                                  className="btn btn-default"
+                                  onClick={ViewInsurance.bind(this, this)}
                                   // disabled={this.state.mode_of_pay === 2 ? false? true}
-                                  >
-                                    View Insurance
+                                >
+                                  View Insurance
                                 </button>
-                                ) : null}
+                              ) : null}
                             </div>
 
                             <ItemBatchs
@@ -413,7 +413,7 @@ class PosListItems extends Component {
                               inputsparameters={{
                                 item_id: this.state.item_id,
                                 location_id: this.state.location_id,
-                                Batch_Items: this.state.Batch_Items
+                                Batch_Items: this.state.Batch_Items,
                               }}
                             />
                             <DisplayInsuranceDetails
@@ -449,7 +449,7 @@ class PosListItems extends Component {
                                         label={{ forceLabel: "Action" }}
                                       />
                                     ),
-                                    displayTemplate: row => {
+                                    displayTemplate: (row) => {
                                       return (
                                         <span>
                                           <i
@@ -461,7 +461,7 @@ class PosListItems extends Component {
                                               opacity:
                                                 this.state.posted === "Y"
                                                   ? "0.1"
-                                                  : ""
+                                                  : "",
                                             }}
                                             className="fas fa-trash-alt"
                                             onClick={deletePosDetail.bind(
@@ -481,7 +481,7 @@ class PosListItems extends Component {
                                               opacity:
                                                 this.state.posted === "N"
                                                   ? "0.1"
-                                                  : ""
+                                                  : "",
                                             }}
                                             className="fas fa-print"
                                             onClick={generatePharmacyLabel.bind(
@@ -492,7 +492,7 @@ class PosListItems extends Component {
                                           />
                                         </span>
                                       );
-                                    }
+                                    },
                                   },
                                   {
                                     fieldName: "item_description",
@@ -541,8 +541,8 @@ class PosListItems extends Component {
                                     //   );
                                     // },
                                     others: {
-                                      minWidth: 200
-                                    }
+                                      minWidth: 200,
+                                    },
                                   },
                                   {
                                     fieldName: "expiry_date",
@@ -551,20 +551,20 @@ class PosListItems extends Component {
                                         label={{ forceLabel: "Expiry Date" }}
                                       />
                                     ),
-                                    displayTemplate: row => {
+                                    displayTemplate: (row) => {
                                       return (
                                         <span>
                                           {dateFormater(this, row.expiry_date)}
                                         </span>
                                       );
                                     },
-                                    editorTemplate: row => {
+                                    editorTemplate: (row) => {
                                       return (
                                         <span>
                                           {dateFormater(this, row.expiry_date)}
                                         </span>
                                       );
-                                    }
+                                    },
                                   },
                                   {
                                     fieldName: "batchno",
@@ -604,22 +604,22 @@ class PosListItems extends Component {
                                     // },
                                     disabled: true,
                                     others: {
-                                      minWidth: 150
-                                    }
+                                      minWidth: 150,
+                                    },
                                   },
                                   {
                                     fieldName: "qtyhand",
                                     label: (
                                       <AlgaehLabel
                                         label={{
-                                          forceLabel: "Qty In Hand"
+                                          forceLabel: "Qty In Hand",
                                         }}
                                       />
                                     ),
                                     disabled: true,
                                     others: {
-                                      minWidth: 90
-                                    }
+                                      minWidth: 90,
+                                    },
                                   },
 
                                   {
@@ -629,14 +629,14 @@ class PosListItems extends Component {
                                         label={{ forceLabel: "Qty Req." }}
                                       />
                                     ),
-                                    displayTemplate: row => {
+                                    displayTemplate: (row) => {
                                       return this.state.postEnable === false ? (
                                         <AlagehFormGroup
                                           div={{}}
                                           textBox={{
                                             number: {
                                               allowNegative: false,
-                                              thousandSeparator: ","
+                                              thousandSeparator: ",",
                                             },
                                             value:
                                               row.quantity !== ""
@@ -651,23 +651,23 @@ class PosListItems extends Component {
                                                 this,
                                                 context,
                                                 row
-                                              )
+                                              ),
                                             },
                                             others: {
-                                              onFocus: e => {
+                                              onFocus: (e) => {
                                                 e.target.oldvalue =
                                                   e.target.value;
-                                              }
-                                            }
+                                              },
+                                            },
                                           }}
                                         />
                                       ) : (
-                                          row.quantity
-                                        );
+                                        row.quantity
+                                      );
                                     },
                                     others: {
-                                      minWidth: 80
-                                    }
+                                      minWidth: 80,
+                                    },
                                   },
                                   {
                                     fieldName: "insurance_yesno",
@@ -676,7 +676,7 @@ class PosListItems extends Component {
                                         label={{ forceLabel: "Insured" }}
                                       />
                                     ),
-                                    displayTemplate: row => {
+                                    displayTemplate: (row) => {
                                       return (
                                         <span>
                                           {row.insurance_yesno === "N"
@@ -685,7 +685,7 @@ class PosListItems extends Component {
                                         </span>
                                       );
                                     },
-                                    disabled: true
+                                    disabled: true,
                                   },
                                   {
                                     fieldName: "pre_approval",
@@ -694,23 +694,23 @@ class PosListItems extends Component {
                                         label={{ forceLabel: "Pre Approval" }}
                                       />
                                     ),
-                                    displayTemplate: row => {
+                                    displayTemplate: (row) => {
                                       return row.pre_approval === "N" ? (
                                         <span>Not Required</span>
                                       ) : (
-                                          <span
-                                            className="pat-code"
-                                            onClick={getMedicationAprovalList.bind(
-                                              this,
-                                              this,
-                                              row
-                                            )}
-                                          >
-                                            Required
+                                        <span
+                                          className="pat-code"
+                                          onClick={getMedicationAprovalList.bind(
+                                            this,
+                                            this,
+                                            row
+                                          )}
+                                        >
+                                          Required
                                         </span>
-                                        );
+                                      );
                                     },
-                                    disabled: true
+                                    disabled: true,
                                   },
                                   {
                                     fieldName: "uom_id",
@@ -719,47 +719,47 @@ class PosListItems extends Component {
                                         label={{ forceLabel: "UOM" }}
                                       />
                                     ),
-                                    displayTemplate: row => {
+                                    displayTemplate: (row) => {
                                       let display =
                                         this.props.itemuom === undefined
                                           ? []
                                           : this.props.itemuom.filter(
-                                            f =>
-                                              f.hims_d_pharmacy_uom_id ===
-                                              row.uom_id
-                                          );
+                                              (f) =>
+                                                f.hims_d_pharmacy_uom_id ===
+                                                row.uom_id
+                                            );
 
                                       return (
                                         <span>
                                           {display !== null &&
-                                            display.length !== 0
+                                          display.length !== 0
                                             ? display[0].uom_description
                                             : ""}
                                         </span>
                                       );
                                     },
-                                    editorTemplate: row => {
+                                    editorTemplate: (row) => {
                                       let display =
                                         this.props.itemuom === undefined
                                           ? []
                                           : this.props.itemuom.filter(
-                                            f =>
-                                              f.hims_d_pharmacy_uom_id ===
-                                              row.uom_id
-                                          );
+                                              (f) =>
+                                                f.hims_d_pharmacy_uom_id ===
+                                                row.uom_id
+                                            );
 
                                       return (
                                         <span>
                                           {display !== null &&
-                                            display.length !== 0
+                                          display.length !== 0
                                             ? display[0].uom_description
                                             : ""}
                                         </span>
                                       );
                                     },
                                     others: {
-                                      minWidth: 80
-                                    }
+                                      minWidth: 80,
+                                    },
                                   },
                                   {
                                     fieldName: "unit_cost",
@@ -768,19 +768,19 @@ class PosListItems extends Component {
                                         label={{ forceLabel: "Unit Cost" }}
                                       />
                                     ),
-                                    displayTemplate: row => {
+                                    displayTemplate: (row) => {
                                       return (
                                         <span>
                                           {GetAmountFormart(row.unit_cost, {
-                                            appendSymbol: false
+                                            appendSymbol: false,
                                           })}
                                         </span>
                                       );
                                     },
                                     disabled: true,
                                     others: {
-                                      minWidth: 80
-                                    }
+                                      minWidth: 80,
+                                    },
                                   },
 
                                   {
@@ -790,30 +790,30 @@ class PosListItems extends Component {
                                         label={{ forceLabel: "Ext. Cost" }}
                                       />
                                     ),
-                                    displayTemplate: row => {
+                                    displayTemplate: (row) => {
                                       return (
                                         <span>
                                           {GetAmountFormart(row.extended_cost, {
-                                            appendSymbol: false
+                                            appendSymbol: false,
                                           })}
                                         </span>
                                       );
                                     },
                                     disabled: true,
                                     others: {
-                                      minWidth: 80
-                                    }
+                                      minWidth: 80,
+                                    },
                                   },
                                   {
                                     fieldName: "discount_percentage",
                                     label: (
                                       <AlgaehLabel
                                         label={{
-                                          forceLabel: "discount %"
+                                          forceLabel: "discount %",
                                         }}
                                       />
                                     ),
-                                    displayTemplate: row => {
+                                    displayTemplate: (row) => {
                                       return this.state.postEnable === false ? (
                                         this.state.insured === "N" ? (
                                           <AlagehFormGroup
@@ -829,35 +829,35 @@ class PosListItems extends Component {
                                                   this,
                                                   context,
                                                   row
-                                                )
+                                                ),
                                               },
                                               others: {
-                                                onFocus: e => {
+                                                onFocus: (e) => {
                                                   e.target.oldvalue =
                                                     e.target.value;
-                                                }
+                                                },
                                                 // type: "number"
-                                              }
+                                              },
                                             }}
                                           />
                                         ) : (
-                                            row.discount_percentage
-                                          )
-                                      ) : (
                                           row.discount_percentage
-                                        );
-                                    }
+                                        )
+                                      ) : (
+                                        row.discount_percentage
+                                      );
+                                    },
                                   },
                                   {
                                     fieldName: "discount_amount",
                                     label: (
                                       <AlgaehLabel
                                         label={{
-                                          forceLabel: "Discount Amt"
+                                          forceLabel: "Discount Amt",
                                         }}
                                       />
                                     ),
-                                    displayTemplate: row => {
+                                    displayTemplate: (row) => {
                                       return this.state.postEnable === false ? (
                                         this.state.insured === "N" ? (
                                           <AlagehFormGroup
@@ -873,24 +873,24 @@ class PosListItems extends Component {
                                                   this,
                                                   context,
                                                   row
-                                                )
+                                                ),
                                               },
                                               others: {
-                                                onFocus: e => {
+                                                onFocus: (e) => {
                                                   e.target.oldvalue =
                                                     e.target.value;
-                                                }
+                                                },
                                                 // type: "number"
-                                              }
+                                              },
                                             }}
                                           />
                                         ) : (
-                                            row.discount_amount
-                                          )
-                                      ) : (
                                           row.discount_amount
-                                        );
-                                    }
+                                        )
+                                      ) : (
+                                        row.discount_amount
+                                      );
+                                    },
                                   },
 
                                   {
@@ -898,28 +898,28 @@ class PosListItems extends Component {
                                     label: (
                                       <AlgaehLabel
                                         label={{
-                                          forceLabel: "Net Ext. Cost"
+                                          forceLabel: "Net Ext. Cost",
                                         }}
                                       />
                                     ),
-                                    displayTemplate: row => {
+                                    displayTemplate: (row) => {
                                       return (
                                         <span>
                                           {GetAmountFormart(
                                             row.net_extended_cost,
                                             {
-                                              appendSymbol: false
+                                              appendSymbol: false,
                                             }
                                           )}
                                         </span>
                                       );
                                     },
-                                    disabled: true
-                                  }
+                                    disabled: true,
+                                  },
                                 ]}
                                 keyId="service_type_id"
                                 dataSource={{
-                                  data: this.state.pharmacy_stock_detail
+                                  data: this.state.pharmacy_stock_detail,
                                 }}
                                 // isEditable={true}
                                 paging={{ page: 0, rowsPerPage: 10 }}
@@ -936,12 +936,12 @@ class PosListItems extends Component {
                                     this,
                                     this,
                                     context
-                                  )
+                                  ),
                                 }}
 
-                              // onRowSelect={row => {
-                              //   getItemLocationStock(this, row);
-                              // }}
+                                // onRowSelect={row => {
+                                //   getItemLocationStock(this, row);
+                                // }}
                               />
                             </div>
                           </div>
@@ -953,7 +953,7 @@ class PosListItems extends Component {
                           <div className="col-lg-4">
                             <AlgaehLabel
                               label={{
-                                forceLabel: "Sub Total"
+                                forceLabel: "Sub Total",
                               }}
                             />
                             <h6>{GetAmountFormart(this.state.sub_total)}</h6>
@@ -961,7 +961,7 @@ class PosListItems extends Component {
                           <div className="col-lg-4">
                             <AlgaehLabel
                               label={{
-                                forceLabel: "Discount Amount"
+                                forceLabel: "Discount Amount",
                               }}
                             />
                             <h6>
@@ -972,7 +972,7 @@ class PosListItems extends Component {
                           <div className="col-lg-4">
                             <AlgaehLabel
                               label={{
-                                forceLabel: "Net Total"
+                                forceLabel: "Net Total",
                               }}
                             />
                             <h6>{GetAmountFormart(this.state.net_total)}</h6>
@@ -993,7 +993,7 @@ class PosListItems extends Component {
                                 <div className="col-6">
                                   <AlgaehLabel
                                     label={{
-                                      forceLabel: "Copay Amount"
+                                      forceLabel: "Copay Amount",
                                     }}
                                   />
                                   <h6>
@@ -1008,7 +1008,7 @@ class PosListItems extends Component {
                                 <div className="col">
                                   <AlgaehLabel
                                     label={{
-                                      forceLabel: "Responsibility"
+                                      forceLabel: "Responsibility",
                                     }}
                                   />
                                   <h6>
@@ -1021,7 +1021,7 @@ class PosListItems extends Component {
                                 <div className="col">
                                   <AlgaehLabel
                                     label={{
-                                      forceLabel: "Tax"
+                                      forceLabel: "Tax",
                                     }}
                                   />
                                   <h6>
@@ -1032,7 +1032,7 @@ class PosListItems extends Component {
                                 <div className="col">
                                   <AlgaehLabel
                                     label={{
-                                      forceLabel: "Payable"
+                                      forceLabel: "Payable",
                                     }}
                                   />
                                   <h6>
@@ -1049,7 +1049,7 @@ class PosListItems extends Component {
                                 <div className="col-5">
                                   <AlgaehLabel
                                     label={{
-                                      forceLabel: "Responsibility"
+                                      forceLabel: "Responsibility",
                                     }}
                                   />
                                   <h6>
@@ -1062,7 +1062,7 @@ class PosListItems extends Component {
                                 <div className="col-3">
                                   <AlgaehLabel
                                     label={{
-                                      forceLabel: "Tax"
+                                      forceLabel: "Tax",
                                     }}
                                   />
                                   <h6>
@@ -1073,7 +1073,7 @@ class PosListItems extends Component {
                                 <div className="col-4">
                                   <AlgaehLabel
                                     label={{
-                                      forceLabel: "Payable"
+                                      forceLabel: "Payable",
                                     }}
                                   />
                                   <h6>
@@ -1094,7 +1094,7 @@ class PosListItems extends Component {
                             <AlagehFormGroup
                               div={{ className: "col-lg-4" }}
                               label={{
-                                forceLabel: "Advance Adjust"
+                                forceLabel: "Advance Adjust",
                               }}
                               textBox={{
                                 decimal: { allowNegative: false },
@@ -1107,23 +1107,23 @@ class PosListItems extends Component {
                                     this,
                                     this,
                                     context
-                                  )
+                                  ),
                                 },
                                 others: {
                                   disabled: this.state.saveEnable,
                                   placeholder: "0.00",
                                   // onBlur: PosheaderCalculation.bind(this, this),
-                                  onFocus: e => {
+                                  onFocus: (e) => {
                                     e.target.oldvalue = e.target.value;
-                                  }
-                                }
+                                  },
+                                },
                               }}
                             />
 
                             <AlagehFormGroup
                               div={{ className: "col-lg-4" }}
                               label={{
-                                forceLabel: "Sheet Level Discount %"
+                                forceLabel: "Sheet Level Discount %",
                               }}
                               textBox={{
                                 decimal: { allowNegative: false },
@@ -1136,7 +1136,7 @@ class PosListItems extends Component {
                                     this,
                                     this,
                                     context
-                                  )
+                                  ),
                                 },
                                 others: {
                                   disabled:
@@ -1149,17 +1149,17 @@ class PosListItems extends Component {
                                   //   this,
                                   //   context
                                   // ),
-                                  onFocus: e => {
+                                  onFocus: (e) => {
                                     e.target.oldvalue = e.target.value;
-                                  }
-                                }
+                                  },
+                                },
                               }}
                             />
 
                             <AlagehFormGroup
                               div={{ className: "col-lg-4" }}
                               label={{
-                                forceLabel: "Sheet Level Discount Amount"
+                                forceLabel: "Sheet Level Discount Amount",
                               }}
                               textBox={{
                                 decimal: { allowNegative: false },
@@ -1172,7 +1172,7 @@ class PosListItems extends Component {
                                     this,
                                     this,
                                     context
-                                  )
+                                  ),
                                 },
                                 others: {
                                   disabled:
@@ -1185,10 +1185,10 @@ class PosListItems extends Component {
                                   //   this,
                                   //   context
                                   // ),
-                                  onFocus: e => {
+                                  onFocus: (e) => {
                                     e.target.oldvalue = e.target.value;
-                                  }
-                                }
+                                  },
+                                },
                               }}
                             />
                           </div>
@@ -1201,7 +1201,7 @@ class PosListItems extends Component {
                             <div className="col-3">
                               <AlgaehLabel
                                 label={{
-                                  forceLabel: "Available Aavance"
+                                  forceLabel: "Available Aavance",
                                 }}
                               />
                               <h6>
@@ -1212,7 +1212,7 @@ class PosListItems extends Component {
                             <div className="col-3">
                               <AlgaehLabel
                                 label={{
-                                  forceLabel: "Net Amount"
+                                  forceLabel: "Net Amount",
                                 }}
                               />
                               <h6>{GetAmountFormart(this.state.net_amount)}</h6>
@@ -1221,7 +1221,7 @@ class PosListItems extends Component {
                             <AlagehFormGroup
                               div={{ className: "col-lg-2" }}
                               label={{
-                                forceLabel: "Credit Amount"
+                                forceLabel: "Credit Amount",
                               }}
                               textBox={{
                                 decimal: { allowNegative: false },
@@ -1234,22 +1234,22 @@ class PosListItems extends Component {
                                     this,
                                     this,
                                     context
-                                  )
+                                  ),
                                 },
                                 others: {
                                   placeholder: "0.00",
                                   disabled:
                                     this.state.pos_customer_type === "OT"
                                       ? true
-                                      : false
-                                }
+                                      : false,
+                                },
                               }}
                             />
 
                             <div className="col-2 highlightGreen">
                               <AlgaehLabel
                                 label={{
-                                  forceLabel: "Receiveable Amount"
+                                  forceLabel: "Receiveable Amount",
                                 }}
                               />
                               <h4>
@@ -1262,7 +1262,7 @@ class PosListItems extends Component {
                             <div className="col-2 highlightGrey">
                               <AlgaehLabel
                                 label={{
-                                  forceLabel: "Balance Due"
+                                  forceLabel: "Balance Due",
                                 }}
                               />
 
@@ -1299,8 +1299,7 @@ class PosListItems extends Component {
   }
 }
 
-{
-  /*{
+/*{
   fieldName: "prescribed_qty",
   label: (
     <AlgaehLabel
@@ -1314,7 +1313,6 @@ class PosListItems extends Component {
     minWidth: 110
   }
 },*/
-}
 
 function mapStateToProps(state) {
   return {
@@ -1323,7 +1321,7 @@ function mapStateToProps(state) {
     itemcategory: state.itemcategory,
     itemuom: state.itemuom,
     posheader: state.posheader,
-    itemgroup: state.itemgroup
+    itemgroup: state.itemgroup,
     // itemBatch: state.itemBatch
   };
 }
@@ -1341,7 +1339,7 @@ function mapDispatchToProps(dispatch) {
       getInsuranceServicesCost: AlgaehActions,
       generateBill: AlgaehActions,
       getItemGroup: AlgaehActions,
-      getMedicationList: AlgaehActions
+      getMedicationList: AlgaehActions,
       // getItemLocationStock: AlgaehActions
     },
     dispatch

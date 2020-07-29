@@ -199,8 +199,8 @@ class EmployeeMaster extends Component {
               IOputs.precountrystates = states;
               IOputs.precities = cities !== undefined ? cities.cities : [];
               IOputs.present_cities = cities !== undefined ? cities.cities : [];
-              IOputs.present_state_id = IOputs.present_state_id;
-              IOputs.present_city_id = IOputs.present_city_id;
+              // IOputs.present_state_id = IOputs.present_state_id;
+              // IOputs.present_city_id = IOputs.present_city_id;
               IOputs.samechecked = "Y";
               // this.updateEmployeeTabs({
               //   IOputscountrystates: states,
@@ -239,11 +239,11 @@ class EmployeeMaster extends Component {
                   IOputs.precountrystates = pres_states;
                   IOputs.precities =
                     pres_cities !== undefined ? pres_cities.cities : [];
-                  IOputs.present_state_id = IOputs.present_state_id;
-                  IOputs.present_city_id = IOputs.present_city_id;
+                  // IOputs.present_state_id = IOputs.present_state_id;
+                  // IOputs.present_city_id = IOputs.present_city_id;
 
-                  IOputs.permanent_city_id = IOputs.permanent_city_id;
-                  IOputs.permanent_city_id = IOputs.permanent_city_id;
+                  // IOputs.permanent_city_id = IOputs.permanent_city_id;
+                  // IOputs.permanent_city_id = IOputs.permanent_city_id;
                   IOputs.samechecked = "N";
                   // this.updateEmployeeTabs({
                   //   countrystates: states,

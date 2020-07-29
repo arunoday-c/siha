@@ -8,13 +8,13 @@ class BreadCrumb extends PureComponent {
     this.state = {
       createNew: true,
       value: "",
-      printOpen: false
+      printOpen: false,
     };
   }
 
   selectedValue(e) {
     this.setState({
-      createNew: !this.state.createNew
+      createNew: !this.state.createNew,
     });
   }
 
@@ -23,7 +23,7 @@ class BreadCrumb extends PureComponent {
       value:
         nextProps.soptlightSearch !== undefined
           ? nextProps.soptlightSearch.value
-          : ""
+          : "",
     });
   }
 
@@ -33,7 +33,7 @@ class BreadCrumb extends PureComponent {
     }
 
     this.setState({
-      value: e.target.value
+      value: e.target.value,
     });
   }
 
@@ -131,9 +131,7 @@ class BreadCrumb extends PureComponent {
                   ? this.props.pageNavPath.map((row, index) => {
                       return (
                         <React.Fragment key={index}>
-                          <li key={index}>
-                            <a>{row.pageName}</a>
-                          </li>
+                          <li key={index}>{row.pageName}</li>
                           {this.props.pageNavPath.length - 1 ===
                           index ? null : (
                             <li>&nbsp;/&nbsp; </li>

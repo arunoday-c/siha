@@ -9,7 +9,7 @@ import {
   AlgaehDataGrid,
   AlgaehLabel,
   AlagehFormGroup,
-  AlagehAutoComplete,
+  // AlagehAutoComplete,
 } from "../../../Wrapper/algaehWrapper";
 
 import {
@@ -19,7 +19,7 @@ import {
   deleteRequisitionDetail,
   updatePosDetail,
   onchangegridcol,
-  UomchangeTexts,
+  // UomchangeTexts,
   EditGrid,
 } from "./RequisitionItemsEvents";
 import { AlgaehActions } from "../../../../actions/algaehActions";
@@ -139,7 +139,7 @@ class RequisitionItems extends Component {
                               addItemButton: false,
                               group_description: null,
                               uom_description: null,
-                              category_desc: null
+                              category_desc: null,
                             });
                           }}
                           others={{
@@ -176,7 +176,7 @@ class RequisitionItems extends Component {
                               : "-----------"}
                           </h6>
                         </div>
-                        {this.state.requistion_type === "MR" ?
+                        {this.state.requistion_type === "MR" ? (
                           <div className="col-6">
                             <AlgaehLabel
                               label={{
@@ -189,7 +189,9 @@ class RequisitionItems extends Component {
                                 : "-----------"}
                             </h6>
                           </div>
-                          : <div className="col-6"></div>}
+                        ) : (
+                          <div className="col-6"></div>
+                        )}
                         {/* <AlagehAutoComplete
                           div={{ className: "col-6" }}
                           label={{ forceLabel: "UOM", isImp: true }}
@@ -397,15 +399,15 @@ class RequisitionItems extends Component {
                                   this.props.inventoryitemlist === undefined
                                     ? []
                                     : this.props.inventoryitemlist.filter(
-                                      (f) =>
-                                        f.hims_d_inventory_item_master_id ===
-                                        row.item_id
-                                    );
+                                        (f) =>
+                                          f.hims_d_inventory_item_master_id ===
+                                          row.item_id
+                                      );
 
                                 return (
                                   <span>
                                     {display !== undefined &&
-                                      display.length !== 0
+                                    display.length !== 0
                                       ? display[0].item_description
                                       : ""}
                                   </span>
@@ -426,10 +428,10 @@ class RequisitionItems extends Component {
                                   this.props.inventoryitemcategory === undefined
                                     ? []
                                     : this.props.inventoryitemcategory.filter(
-                                      (f) =>
-                                        f.hims_d_inventory_tem_category_id ===
-                                        row.item_category_id
-                                    );
+                                        (f) =>
+                                          f.hims_d_inventory_tem_category_id ===
+                                          row.item_category_id
+                                      );
 
                                 return (
                                   <span>
@@ -454,10 +456,10 @@ class RequisitionItems extends Component {
                                   this.props.inventoryitemgroup === undefined
                                     ? []
                                     : this.props.inventoryitemgroup.filter(
-                                      (f) =>
-                                        f.hims_d_inventory_item_group_id ===
-                                        row.item_group_id
-                                    );
+                                        (f) =>
+                                          f.hims_d_inventory_item_group_id ===
+                                          row.item_group_id
+                                      );
 
                                 return (
                                   <span>
@@ -480,10 +482,10 @@ class RequisitionItems extends Component {
                                   this.props.inventoryitemuom === undefined
                                     ? []
                                     : this.props.inventoryitemuom.filter(
-                                      (f) =>
-                                        f.hims_d_inventory_uom_id ===
-                                        row.item_uom
-                                    );
+                                        (f) =>
+                                          f.hims_d_inventory_uom_id ===
+                                          row.item_uom
+                                      );
 
                                 return (
                                   <span>
@@ -552,28 +554,28 @@ class RequisitionItems extends Component {
                                 return this.state.authorizeEnable ? (
                                   parseFloat(row.quantity_authorized)
                                 ) : (
-                                    <AlagehFormGroup
-                                      div={{}}
-                                      textBox={{
-                                        number: { allowNegative: false },
-                                        value:
-                                          row.quantity_authorized !== ""
-                                            ? parseFloat(row.quantity_authorized)
-                                            : "",
-                                        className: "txt-fld",
-                                        name: "quantity_authorized",
-                                        dontAllowKeys: ["-", "e", "."],
-                                        events: {
-                                          onChange: onchangegridcol.bind(
-                                            this,
-                                            this,
-                                            context,
-                                            row
-                                          ),
-                                        },
-                                      }}
-                                    />
-                                  );
+                                  <AlagehFormGroup
+                                    div={{}}
+                                    textBox={{
+                                      number: { allowNegative: false },
+                                      value:
+                                        row.quantity_authorized !== ""
+                                          ? parseFloat(row.quantity_authorized)
+                                          : "",
+                                      className: "txt-fld",
+                                      name: "quantity_authorized",
+                                      dontAllowKeys: ["-", "e", "."],
+                                      events: {
+                                        onChange: onchangegridcol.bind(
+                                          this,
+                                          this,
+                                          context,
+                                          row
+                                        ),
+                                      },
+                                    }}
+                                  />
+                                );
                               },
                             },
                             {

@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 // import { Row, Col } from "antd";
 // import "./antTableCustomStyle.scss";
 
@@ -19,7 +19,7 @@ export default function AgingReport({ style, result, layout, type, dates }) {
     receivable: { url: "getAccountReceivableAging", title: "Receivable" },
   };
 
-  const createPrintObject = useRef(undefined);
+  // const createPrintObject = useRef(undefined);
   const [data, setData] = useState([]);
   const [footerData, setFooterData] = useState({});
   // const [organisation, setOrganisation] = useState({});
@@ -99,7 +99,7 @@ export default function AgingReport({ style, result, layout, type, dates }) {
     <PrintLayout
       title={`Account ${
         type === "receivable" ? "Receivable" : "Payable"
-        } Aging Report`}
+      } Aging Report`}
       columns={[
         {
           fieldName: "customer",

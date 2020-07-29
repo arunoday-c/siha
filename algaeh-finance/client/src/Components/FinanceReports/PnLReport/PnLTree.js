@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 // import { Row, Col } from "antd";
 // import ReactToPrint from "react-to-print";
 // import { PlotUI } from "../FinanceStandardReports/plotui";
@@ -9,13 +9,13 @@ import React, { useRef, useEffect, useState } from "react";
 // import { AlgaehMessagePop } from "algaeh-react-components";
 import PrintLayout from "../printlayout";
 export default function ProfitTree({ style, layout, data }) {
-  const createPrintObject = useRef(undefined);
+  // const createPrintObject = useRef(undefined);
   const [records, setRecords] = useState([]);
   // const [organisation, setOrganisation] = useState({});
   useEffect(() => {
     let dtl = [];
     if (data !== undefined) {
-      const { income, expense, profit } = data;
+      const { income, expense } = data;
       //For income
       dtl.push(income);
       //For Expence

@@ -8,6 +8,7 @@ const SearchDetails = ($this, e) => {
   let lodFile = require("../../../Search/" + jsonFileName);
 
   if (lodFile !== undefined) {
+    // eslint-disable-next-line
     columnNames = eval(
       "lodFile." + $this.props.soptlightSearch.jsonFile.fieldName
     );
@@ -15,14 +16,14 @@ const SearchDetails = ($this, e) => {
 
   AlgaehSearch({
     searchGrid: {
-      columns: columnNames
+      columns: columnNames,
     },
     searchName: $this.props.soptlightSearch.searchName,
     uri: "/gloabelSearch/get",
     onContainsChange: (text, serchBy, callBack) => {
       callBack(text);
     },
-    onRowSelect: row => {
+    onRowSelect: (row) => {
       const selectValue = $this.props.soptlightSearch.selectValue;
 
       $this.setState({ value: row[selectValue] }, () => {
@@ -30,7 +31,7 @@ const SearchDetails = ($this, e) => {
           $this.props.soptlightSearch.events.onChange(row[selectValue], row);
         }
       });
-    }
+    },
   });
 };
 

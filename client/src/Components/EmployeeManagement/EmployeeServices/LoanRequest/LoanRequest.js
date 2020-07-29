@@ -212,7 +212,7 @@ class LoanRequest extends Component {
       hims_d_employee_id: null,
     };
 
-    exclude.map((item) => {
+    exclude.forEach((item) => {
       delete items[item];
     });
     this.setState(items);
@@ -229,7 +229,7 @@ class LoanRequest extends Component {
       employee_id: null,
       hims_d_employee_id: null,
     };
-    exclude.map((item) => {
+    exclude.forEach((item) => {
       delete items[item];
     });
     this.setState(items);

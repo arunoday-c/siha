@@ -36,7 +36,7 @@ export function PrepaymentProcess() {
 
   useEffect(() => {
     loadListToProcess(getValues());
-  }, []);
+  }, []); // eslint-disable-line
 
   const addToList = (row) => {
     setProcessList((state) => {

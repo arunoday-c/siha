@@ -9,7 +9,7 @@ import {
   AlagehFormGroup,
   // AlgaehDateHandler
 } from "../../Wrapper/algaehWrapper";
-import BreadCrumb from "../../common/BreadCrumb/BreadCrumb.js";
+// import BreadCrumb from "../../common/BreadCrumb/BreadCrumb.js";
 import {
   changeTexts,
   // dateFormater,
@@ -26,11 +26,11 @@ import "../../../styles/site.scss";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import BatchWiseStock from "./BatchWiseStock";
 import { GetAmountFormart } from "../../../utils/GlobalFunctions";
-import {
-  getCookie,
-  algaehApiCall,
-  swalMessage,
-} from "../../../utils/algaehApiCall";
+// import {
+//   getCookie,
+//   algaehApiCall,
+//   swalMessage,
+// } from "../../../utils/algaehApiCall";
 
 class StockEnquiry extends Component {
   constructor(props) {

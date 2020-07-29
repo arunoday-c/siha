@@ -12,10 +12,8 @@ import {
 } from "../../../Wrapper/algaehWrapper";
 import spotlightSearch from "../../../../Search/spotlightSearch.json";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
-import { AlgaehValidation } from "../../../../utils/GlobalFunctions";
 import { MainContext } from "algaeh-react-components";
 import AlgaehSearch from "../../../Wrapper/globalSearch";
-import AlgaehLoader from "../../../Wrapper/fullPageLoader";
 import { AlgaehButton } from "algaeh-react-components";
 class IssueCertificate extends Component {
   constructor(props) {

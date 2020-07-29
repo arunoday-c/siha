@@ -144,8 +144,6 @@ export default function Notification({ open, handlePanel }) {
                 actions={[
                   <Button
                     type="ghost"
-                    icon="close"
-                    with
                     icon={<i className="fas fa-times" />}
                     loading={item.loading}
                     data-current={JSON.stringify(item)}

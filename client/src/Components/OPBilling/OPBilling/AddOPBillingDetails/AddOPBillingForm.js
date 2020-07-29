@@ -14,7 +14,6 @@ import {
 } from "../../../Wrapper/algaehWrapper";
 import DisplayOPBilling from "../../../BillDetails/BillDetails";
 import {
-  serviceTypeHandeler,
   serviceHandeler,
   discounthandle,
   adjustadvance,
@@ -24,7 +23,7 @@ import {
   ondiscountgridcol,
   makeZero,
   makeDiscountZero,
-  makeZeroIngrid
+  makeZeroIngrid,
 } from "./AddOPBillingHandaler";
 import ReciptForm from "../ReciptDetails/AddReciptForm";
 import { AlgaehActions } from "../../../../actions/algaehActions";
@@ -42,7 +41,7 @@ class AddOPBillingForm extends Component {
     super(props);
     this.state = {
       isOpen: false,
-      isPackUtOpen: false
+      isPackUtOpen: false,
     };
   }
 
@@ -66,8 +65,8 @@ class AddOPBillingForm extends Component {
         method: "GET",
         redux: {
           type: "SERVIES_TYPES_GET_DATA",
-          mappingName: "servicetype"
-        }
+          mappingName: "servicetype",
+        },
       });
     }
 
@@ -77,15 +76,15 @@ class AddOPBillingForm extends Component {
       method: "GET",
       redux: {
         type: "SERVICES_GET_DATA",
-        mappingName: "serviceslist"
-      }
+        mappingName: "serviceslist",
+      },
     });
   }
 
   ShowBillDetails(e) {
     this.setState({
       ...this.state,
-      isOpen: !this.state.isOpen
+      isOpen: !this.state.isOpen,
     });
   }
 
@@ -94,7 +93,7 @@ class AddOPBillingForm extends Component {
 
     let SelectedService = Enumerable.from(this.state.billdetails)
       .where(
-        w =>
+        (w) =>
           w.service_type_id === $this.state.s_service_type &&
           w.services_id === $this.state.s_service
       )
@@ -122,8 +121,8 @@ class AddOPBillingForm extends Component {
                 .secondary_insurance_provider_id,
               secondary_network_id: this.state.secondary_network_id,
               secondary_network_office_id: this.state
-                .secondary_network_office_id
-            }
+                .secondary_network_office_id,
+            },
           ];
 
           algaehApiCall({
@@ -131,7 +130,7 @@ class AddOPBillingForm extends Component {
             module: "billing",
             method: "POST",
             data: serviceInput,
-            onSuccess: response => {
+            onSuccess: (response) => {
               if (response.data.success) {
                 let data = response.data.records;
 
@@ -140,7 +139,7 @@ class AddOPBillingForm extends Component {
                     message:
                       "Selected Service is Pre-Approval required, you don't have rights to bill.",
                     title: "Warning",
-                    icon: "warning"
+                    icon: "warning",
                   });
                 } else {
                   let existingservices = $this.state.billdetails;
@@ -160,7 +159,7 @@ class AddOPBillingForm extends Component {
                       // s_service_type: null,
                       s_service: null,
                       service_name: "",
-                      saveEnable: false
+                      saveEnable: false,
                     });
                   }
 
@@ -169,7 +168,7 @@ class AddOPBillingForm extends Component {
                     module: "billing",
                     method: "POST",
                     data: { billdetails: existingservices },
-                    onSuccess: response => {
+                    onSuccess: (response) => {
                       if (response.data.success) {
                         if (context !== null) {
                           response.data.records.patient_payable_h =
@@ -188,44 +187,44 @@ class AddOPBillingForm extends Component {
                         }
                       }
                     },
-                    onFailure: error => {
+                    onFailure: (error) => {
                       AlgaehLoader({ show: false });
                       swalMessage({
                         title: error.message,
-                        type: "error"
+                        type: "error",
                       });
-                    }
+                    },
                   });
                 }
               }
             },
-            onFailure: error => {
+            onFailure: (error) => {
               AlgaehLoader({ show: false });
               swalMessage({
                 title: error.message,
-                type: "error"
+                type: "error",
               });
-            }
+            },
           });
         } else {
           successfulMessage({
             message: "Please select the Service and Service Type.",
             title: "Warning",
-            icon: "warning"
+            icon: "warning",
           });
         }
       } else {
         successfulMessage({
           message: "Please select the patient and visit.",
           title: "Warning",
-          icon: "warning"
+          icon: "warning",
         });
       }
     } else {
       successfulMessage({
         message: "Selected Service already exists.",
         title: "Warning",
-        icon: "warning"
+        icon: "warning",
       });
     }
   }
@@ -236,7 +235,7 @@ class AddOPBillingForm extends Component {
       module: "billing",
       method: "POST",
       data: { billdetails: this.state.billdetails },
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           response.data.records.patient_payable_h =
             response.data.records.patient_payable || this.state.patient_payable;
@@ -253,12 +252,12 @@ class AddOPBillingForm extends Component {
           }
         }
       },
-      onFailure: error => {
+      onFailure: (error) => {
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -309,7 +308,7 @@ class AddOPBillingForm extends Component {
           unbalanced_amount: 0,
           saveEnable: true,
           billDetails: true,
-          applydiscount: true
+          applydiscount: true,
         });
       }
     } else {
@@ -318,7 +317,7 @@ class AddOPBillingForm extends Component {
         module: "billing",
         method: "POST",
         data: { billdetails: serviceDetails },
-        onSuccess: response => {
+        onSuccess: (response) => {
           if (response.data.success) {
             response.data.records.patient_payable_h =
               response.data.records.patient_payable ||
@@ -334,17 +333,17 @@ class AddOPBillingForm extends Component {
             }
           }
         },
-        onFailure: error => {
+        onFailure: (error) => {
           swalMessage({
             title: error.message,
-            type: "error"
+            type: "error",
           });
-        }
+        },
       });
 
       if (context !== undefined) {
         context.updateState({
-          billdetails: serviceDetails
+          billdetails: serviceDetails,
         });
       }
     }
@@ -358,11 +357,10 @@ class AddOPBillingForm extends Component {
     return (
       <React.Fragment>
         <MyContext.Consumer>
-          {context => (
+          {(context) => (
             <div className="row">
               <div className="algaeh-md-12 algaeh-lg-12 algaeh-xl-8">
                 <div className="screenCardStyle">
-
                   <div className="row">
                     <div className="col-12">
                       <div className="row">
@@ -445,7 +443,9 @@ class AddOPBillingForm extends Component {
                               properStyle = "white_N_N";
                             }
                             return (
-                              <div className={`row resultSecStyles ${properStyle}`}>
+                              <div
+                                className={`row resultSecStyles ${properStyle}`}
+                              >
                                 <div className="col-12 padd-10">
                                   <h4 className="title">
                                     {_.startCase(_.toLower(service_name))}
@@ -453,7 +453,9 @@ class AddOPBillingForm extends Component {
                                   <p className="searchMoreDetails">
                                     <span>
                                       Service Type:
-                                      <b>{_.startCase(_.toLower(service_type))}</b>
+                                      <b>
+                                        {_.startCase(_.toLower(service_type))}
+                                      </b>
                                     </span>
                                   </p>
                                 </div>
@@ -473,7 +475,7 @@ class AddOPBillingForm extends Component {
                             context.updateState({
                               s_service: null,
                               service_name: null,
-                              s_service_type: null
+                              s_service_type: null,
                             });
                           }}
                           ref={(attReg) => {
@@ -491,7 +493,7 @@ class AddOPBillingForm extends Component {
                               label={{
                                 fieldName: "add_new_service",
                                 align: "ltr",
-                                returnText: true
+                                returnText: true,
                               }}
                             />
                           </button>
@@ -507,7 +509,7 @@ class AddOPBillingForm extends Component {
                               label={{
                                 fieldName: "view_bill_details",
                                 align: "ltr",
-                                returnText: true
+                                returnText: true,
                               }}
                             />
                           </button>
@@ -517,13 +519,13 @@ class AddOPBillingForm extends Component {
                               <AlgaehLabel
                                 label={{
                                   fieldName: "bill_details",
-                                  align: "ltr"
+                                  align: "ltr",
                                 }}
                               />
                             }
                             BillingIOputs={{
                               selectedLang: this.state.selectedLang,
-                              billdetails: this.state.billdetails
+                              billdetails: this.state.billdetails,
                             }}
                             show={this.state.isOpen}
                             onClose={this.ShowBillDetails.bind(this)}
@@ -537,7 +539,7 @@ class AddOPBillingForm extends Component {
                               style={{
                                 margin: "18px 0 0",
                                 padding: 5,
-                                textAlign: "center"
+                                textAlign: "center",
                               }}
                             >
                               Package Exists
@@ -555,7 +557,7 @@ class AddOPBillingForm extends Component {
                             label: (
                               <AlgaehLabel label={{ forceLabel: "Action" }} />
                             ),
-                            displayTemplate: row => {
+                            displayTemplate: (row) => {
                               return (
                                 <span>
                                   <i
@@ -565,7 +567,7 @@ class AddOPBillingForm extends Component {
                                         : "",
                                       opacity: this.state.Billexists
                                         ? "0.1"
-                                        : ""
+                                        : "",
                                     }}
                                     onClick={this.deleteBillDetail.bind(
                                       this,
@@ -576,7 +578,7 @@ class AddOPBillingForm extends Component {
                                   />
                                 </span>
                               );
-                            }
+                            },
                           },
                           {
                             fieldName: "service_type_id",
@@ -585,15 +587,15 @@ class AddOPBillingForm extends Component {
                                 label={{ fieldName: "service_type_id" }}
                               />
                             ),
-                            displayTemplate: row => {
+                            displayTemplate: (row) => {
                               let display =
                                 this.props.servicetype === undefined
                                   ? []
                                   : this.props.servicetype.filter(
-                                    f =>
-                                      f.hims_d_service_type_id ===
-                                      row.service_type_id
-                                  );
+                                      (f) =>
+                                        f.hims_d_service_type_id ===
+                                        row.service_type_id
+                                    );
 
                               return (
                                 <span>
@@ -605,15 +607,15 @@ class AddOPBillingForm extends Component {
                                 </span>
                               );
                             },
-                            editorTemplate: row => {
+                            editorTemplate: (row) => {
                               let display =
                                 this.props.servicetype === undefined
                                   ? []
                                   : this.props.servicetype.filter(
-                                    f =>
-                                      f.hims_d_service_type_id ===
-                                      row.service_type_id
-                                  );
+                                      (f) =>
+                                        f.hims_d_service_type_id ===
+                                        row.service_type_id
+                                    );
 
                               return (
                                 <span>
@@ -624,7 +626,7 @@ class AddOPBillingForm extends Component {
                                     : ""}
                                 </span>
                               );
-                            }
+                            },
                           },
 
                           {
@@ -634,7 +636,7 @@ class AddOPBillingForm extends Component {
                                 label={{ fieldName: "services_id" }}
                               />
                             ),
-                            displayTemplate: row => {
+                            displayTemplate: (row) => {
                               let package_service =
                                 row.trans_package_detail_id > 0
                                   ? "(Package Service)"
@@ -643,9 +645,9 @@ class AddOPBillingForm extends Component {
                                 this.props.serviceslist === undefined
                                   ? []
                                   : this.props.serviceslist.filter(
-                                    f =>
-                                      f.hims_d_services_id === row.services_id
-                                  );
+                                      (f) =>
+                                        f.hims_d_services_id === row.services_id
+                                    );
 
                               return (
                                 <span>
@@ -660,14 +662,14 @@ class AddOPBillingForm extends Component {
                                 </span>
                               );
                             },
-                            editorTemplate: row => {
+                            editorTemplate: (row) => {
                               let display =
                                 this.props.serviceslist === undefined
                                   ? []
                                   : this.props.serviceslist.filter(
-                                    f =>
-                                      f.hims_d_services_id === row.services_id
-                                  );
+                                      (f) =>
+                                        f.hims_d_services_id === row.services_id
+                                    );
 
                               return (
                                 <span>
@@ -678,7 +680,7 @@ class AddOPBillingForm extends Component {
                                     : ""}
                                 </span>
                               );
-                            }
+                            },
                           },
 
                           {
@@ -686,7 +688,7 @@ class AddOPBillingForm extends Component {
                             label: (
                               <AlgaehLabel label={{ fieldName: "insurance" }} />
                             ),
-                            displayTemplate: row => {
+                            displayTemplate: (row) => {
                               return (
                                 <span>
                                   {row.insurance_yesno === "N"
@@ -695,30 +697,30 @@ class AddOPBillingForm extends Component {
                                 </span>
                               );
                             },
-                            disabled: true
+                            disabled: true,
                           },
                           {
                             fieldName: "unit_cost",
                             label: (
                               <AlgaehLabel label={{ fieldName: "unit_cost" }} />
                             ),
-                            displayTemplate: row => {
+                            displayTemplate: (row) => {
                               return (
                                 <span>
                                   {GetAmountFormart(row.unit_cost, {
-                                    appendSymbol: false
+                                    appendSymbol: false,
                                   })}
                                 </span>
                               );
                             },
-                            disabled: true
+                            disabled: true,
                           },
                           {
                             fieldName: "quantity",
                             label: (
                               <AlgaehLabel label={{ fieldName: "quantity" }} />
                             ),
-                            disabled: true
+                            disabled: true,
                           },
 
                           {
@@ -728,7 +730,7 @@ class AddOPBillingForm extends Component {
                                 label={{ fieldName: "gross_amount" }}
                               />
                             ),
-                            disabled: true
+                            disabled: true,
                           },
                           {
                             fieldName: "discount_percentage",
@@ -737,7 +739,7 @@ class AddOPBillingForm extends Component {
                                 label={{ fieldName: "discount_percentage" }}
                               />
                             ),
-                            displayTemplate: row => {
+                            displayTemplate: (row) => {
                               return (
                                 <AlagehFormGroup
                                   div={{}}
@@ -752,7 +754,7 @@ class AddOPBillingForm extends Component {
                                         this,
                                         context,
                                         row
-                                      )
+                                      ),
                                     },
                                     others: {
                                       placeholder: "0.00",
@@ -768,14 +770,14 @@ class AddOPBillingForm extends Component {
                                         context,
                                         row
                                       ),
-                                      onFocus: e => {
+                                      onFocus: (e) => {
                                         e.target.oldvalue = e.target.value;
-                                      }
-                                    }
+                                      },
+                                    },
                                   }}
                                 />
                               );
-                            }
+                            },
                           },
                           {
                             fieldName: "discount_amout",
@@ -785,7 +787,7 @@ class AddOPBillingForm extends Component {
                               />
                             ),
 
-                            displayTemplate: row => {
+                            displayTemplate: (row) => {
                               return (
                                 <AlagehFormGroup
                                   div={{}}
@@ -800,7 +802,7 @@ class AddOPBillingForm extends Component {
                                         this,
                                         context,
                                         row
-                                      )
+                                      ),
                                     },
                                     others: {
                                       placeholder: "0.00",
@@ -808,22 +810,22 @@ class AddOPBillingForm extends Component {
                                         this.state.insurance_yesno === "Y"
                                           ? true
                                           : row.trans_package_detail_id > 0
-                                            ? true
-                                            : this.state.Billexists,
+                                          ? true
+                                          : this.state.Billexists,
                                       onBlur: makeZeroIngrid.bind(
                                         this,
                                         this,
                                         context,
                                         row
                                       ),
-                                      onFocus: e => {
+                                      onFocus: (e) => {
                                         e.target.oldvalue = e.target.value;
-                                      }
-                                    }
+                                      },
+                                    },
                                   }}
                                 />
                               );
-                            }
+                            },
                           },
 
                           {
@@ -831,26 +833,26 @@ class AddOPBillingForm extends Component {
                             label: (
                               <AlgaehLabel label={{ fieldName: "net_amout" }} />
                             ),
-                            displayTemplate: row => {
+                            displayTemplate: (row) => {
                               return (
                                 <span>
                                   {GetAmountFormart(row.net_amout, {
-                                    appendSymbol: false
+                                    appendSymbol: false,
                                   })}
                                 </span>
                               );
                             },
-                            disabled: true
-                          }
+                            disabled: true,
+                          },
                         ]}
                         keyId="service_type_id"
                         dataSource={{
-                          data: this.state.billdetails
+                          data: this.state.billdetails,
                         }}
                         // isEditable={!this.state.Billexists}
                         actions={{
                           allowEdit: !this.state.Billexists,
-                          allowDelete: !this.state.Billexists
+                          allowDelete: !this.state.Billexists,
                         }}
                         paging={{ page: 0, rowsPerPage: 10 }}
                         byForceEvents={true}
@@ -858,7 +860,7 @@ class AddOPBillingForm extends Component {
                           onDelete: this.deleteBillDetail.bind(this, context),
                           onEdit: EditGrid.bind(this, this, context),
                           onCancel: CancelGrid.bind(this, this, context),
-                          onDone: this.updateBillDetail.bind(this, context)
+                          onDone: this.updateBillDetail.bind(this, context),
                         }}
                         forceRender={this.state.Rerender}
                       />
@@ -869,7 +871,7 @@ class AddOPBillingForm extends Component {
                         <div className="col-lg-4">
                           <AlgaehLabel
                             label={{
-                              fieldName: "sub_total_amount"
+                              fieldName: "sub_total_amount",
                             }}
                           />
                           <h6>
@@ -879,7 +881,7 @@ class AddOPBillingForm extends Component {
                         <div className="col-lg-4">
                           <AlgaehLabel
                             label={{
-                              fieldName: "discount_amount"
+                              fieldName: "discount_amount",
                             }}
                           />
                           <h6>
@@ -890,7 +892,7 @@ class AddOPBillingForm extends Component {
                         <div className="col-lg-4">
                           <AlgaehLabel
                             label={{
-                              fieldName: "net_total"
+                              fieldName: "net_total",
                             }}
                           />
                           <h6>{GetAmountFormart(this.state.net_total)}</h6>
@@ -908,7 +910,7 @@ class AddOPBillingForm extends Component {
                         <div className="col-lg-6">
                           <AlgaehLabel
                             label={{
-                              fieldName: "copay_amount"
+                              fieldName: "copay_amount",
                             }}
                           />
                           <h6>{GetAmountFormart(this.state.copay_amount)}</h6>
@@ -917,7 +919,7 @@ class AddOPBillingForm extends Component {
                           <div className="col-lg-6">
                             <AlgaehLabel
                               label={{
-                                fieldName: "deductable_amount"
+                                fieldName: "deductable_amount",
                               }}
                             />
                             <h6>
@@ -950,7 +952,7 @@ class AddOPBillingForm extends Component {
                         <div className="col-lg-12 patientRespo">
                           <AlgaehLabel
                             label={{
-                              fieldName: "patient_lbl"
+                              fieldName: "patient_lbl",
                             }}
                           />
                           <hr style={{ marginTop: 0, marginBottom: 5 }} />
@@ -958,7 +960,7 @@ class AddOPBillingForm extends Component {
                             <div className="col-5">
                               <AlgaehLabel
                                 label={{
-                                  fieldName: "responsibility_lbl"
+                                  fieldName: "responsibility_lbl",
                                 }}
                               />
                               <h6>
@@ -969,7 +971,7 @@ class AddOPBillingForm extends Component {
                             <div className="col-3">
                               <AlgaehLabel
                                 label={{
-                                  fieldName: "tax_lbl"
+                                  fieldName: "tax_lbl",
                                 }}
                               />
                               <h6>
@@ -980,7 +982,7 @@ class AddOPBillingForm extends Component {
                             <div className="col-4">
                               <AlgaehLabel
                                 label={{
-                                  fieldName: "payable_lbl"
+                                  fieldName: "payable_lbl",
                                 }}
                               />
                               <h6>
@@ -994,7 +996,7 @@ class AddOPBillingForm extends Component {
                         <div className="col-lg-12">
                           <AlgaehLabel
                             label={{
-                              fieldName: "company_lbl"
+                              fieldName: "company_lbl",
                             }}
                           />
                           <hr style={{ marginTop: 0, marginBottom: 5 }} />
@@ -1002,7 +1004,7 @@ class AddOPBillingForm extends Component {
                             <div className="col-5">
                               <AlgaehLabel
                                 label={{
-                                  fieldName: "responsibility_lbl"
+                                  fieldName: "responsibility_lbl",
                                 }}
                               />
                               <h6>
@@ -1013,7 +1015,7 @@ class AddOPBillingForm extends Component {
                             <div className="col-3">
                               <AlgaehLabel
                                 label={{
-                                  fieldName: "tax_lbl"
+                                  fieldName: "tax_lbl",
                                 }}
                               />
                               <h6>
@@ -1024,7 +1026,7 @@ class AddOPBillingForm extends Component {
                             <div className="col-4">
                               <AlgaehLabel
                                 label={{
-                                  fieldName: "payable_lbl"
+                                  fieldName: "payable_lbl",
                                 }}
                               />
                               <h6>
@@ -1043,7 +1045,7 @@ class AddOPBillingForm extends Component {
                         <AlagehFormGroup
                           div={{ className: "col-lg-4" }}
                           label={{
-                            fieldName: "advance_adjust"
+                            fieldName: "advance_adjust",
                           }}
                           textBox={{
                             decimal: { allowNegative: false },
@@ -1052,25 +1054,25 @@ class AddOPBillingForm extends Component {
                             name: "advance_adjust",
 
                             events: {
-                              onChange: adjustadvance.bind(this, this, context)
+                              onChange: adjustadvance.bind(this, this, context),
                             },
                             others: {
                               placeholder: "0.00",
                               onBlur: makeZero.bind(this, this, context),
-                              onFocus: e => {
+                              onFocus: (e) => {
                                 e.target.oldvalue = e.target.value;
                               },
                               disabled:
                                 this.state.advance_amount === 0
                                   ? true
-                                  : this.state.Billexists
-                            }
+                                  : this.state.Billexists,
+                            },
                           }}
                         />
                         <AlagehFormGroup
                           div={{ className: "col-lg-4" }}
                           label={{
-                            fieldName: "sheet_discount_percentage"
+                            fieldName: "sheet_discount_percentage",
                           }}
                           textBox={{
                             decimal: { allowNegative: false },
@@ -1079,7 +1081,11 @@ class AddOPBillingForm extends Component {
                             name: "sheet_discount_percentage",
 
                             events: {
-                              onChange: discounthandle.bind(this, this, context)
+                              onChange: discounthandle.bind(
+                                this,
+                                this,
+                                context
+                              ),
                             },
                             others: {
                               disabled:
@@ -1092,17 +1098,17 @@ class AddOPBillingForm extends Component {
                                 this,
                                 context
                               ),
-                              onFocus: e => {
+                              onFocus: (e) => {
                                 e.target.oldvalue = e.target.value;
-                              }
-                            }
+                              },
+                            },
                           }}
                         />
 
                         <AlagehFormGroup
                           div={{ className: "col-lg-4" }}
                           label={{
-                            fieldName: "sheet_discount_amount"
+                            fieldName: "sheet_discount_amount",
                           }}
                           textBox={{
                             decimal: { allowNegative: false },
@@ -1110,7 +1116,11 @@ class AddOPBillingForm extends Component {
                             className: "txt-fld",
                             name: "sheet_discount_amount",
                             events: {
-                              onChange: discounthandle.bind(this, this, context)
+                              onChange: discounthandle.bind(
+                                this,
+                                this,
+                                context
+                              ),
                             },
                             others: {
                               disabled:
@@ -1119,10 +1129,10 @@ class AddOPBillingForm extends Component {
                                   : this.state.applydiscount,
                               placeholder: "0.00",
 
-                              onFocus: e => {
+                              onFocus: (e) => {
                                 e.target.oldvalue = e.target.value;
-                              }
-                            }
+                              },
+                            },
                           }}
                         />
                       </div>
@@ -1135,7 +1145,7 @@ class AddOPBillingForm extends Component {
                         <div className="col">
                           <AlgaehLabel
                             label={{
-                              fieldName: "advance_amount"
+                              fieldName: "advance_amount",
                             }}
                           />
                           <h6>{GetAmountFormart(this.state.advance_amount)}</h6>
@@ -1144,7 +1154,7 @@ class AddOPBillingForm extends Component {
                         <div className="col">
                           <AlgaehLabel
                             label={{
-                              fieldName: "net_amount"
+                              fieldName: "net_amount",
                             }}
                           />
                           <h6>{GetAmountFormart(this.state.net_amount)}</h6>
@@ -1153,7 +1163,7 @@ class AddOPBillingForm extends Component {
                         <AlagehFormGroup
                           div={{ className: "col" }}
                           label={{
-                            fieldName: "credit_amount"
+                            fieldName: "credit_amount",
                           }}
                           textBox={{
                             decimal: { allowNegative: false },
@@ -1165,21 +1175,21 @@ class AddOPBillingForm extends Component {
                                 this,
                                 this,
                                 context
-                              )
+                              ),
                             },
                             others: {
                               placeholder: "0.00",
                               onBlur: makeZero.bind(this, this, context),
                               disabled:
-                                this.state.Billexists === true ? true : false
-                            }
+                                this.state.Billexists === true ? true : false,
+                            },
                           }}
                         />
 
                         <div className="col highlightGreen">
                           <AlgaehLabel
                             label={{
-                              fieldName: "receiveable_amount"
+                              fieldName: "receiveable_amount",
                             }}
                           />
                           <h4>
@@ -1189,7 +1199,7 @@ class AddOPBillingForm extends Component {
                         <div className="col highlightGrey">
                           <AlgaehLabel
                             label={{
-                              fieldName: "balance_due"
+                              fieldName: "balance_due",
                             }}
                           />
 
@@ -1214,7 +1224,7 @@ function mapStateToProps(state) {
     servicetype: state.servicetype,
     opbilservices: state.opbilservices,
     serviceslist: state.serviceslist,
-    PatientPackageList: state.PatientPackageList
+    PatientPackageList: state.PatientPackageList,
   };
 }
 
@@ -1223,7 +1233,7 @@ function mapDispatchToProps(dispatch) {
     {
       getServiceTypes: AlgaehActions,
       getServices: AlgaehActions,
-      getPatientPackage: AlgaehActions
+      getPatientPackage: AlgaehActions,
     },
     dispatch
   );

@@ -1098,7 +1098,7 @@ const CalculateBasedonFormula = ($this, from, callBack) => {
       // let strFormula = contribute_comp[z].formula;
       const _index = contributioncomponents.indexOf(contribute_comp[z]);
 
-      earningComponents.map((menu) => {
+      earningComponents.forEach((menu) => {
         if (formulaCal.indexOf(menu.short_desc) > -1) {
           let con_short_desc = menu.short_desc;
           const expression = new RegExp(con_short_desc, "g");

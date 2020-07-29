@@ -142,6 +142,8 @@ export default memo(function (props = { data: [] }) {
                         tbl.setAttribute("data-table-field", prot);
                       });
                       break;
+                    default:
+                      break;
                   }
                 },
               },

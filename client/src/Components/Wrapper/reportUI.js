@@ -142,7 +142,7 @@ export default class ReportUI extends Component {
         onSuccess: (response) => {
           if (response.data.success) {
             if (parametes.link.schema !== undefined) {
-              parametes.link.schema.map((sch) => {
+              parametes.link.schema.forEach((sch) => {
                 this.setState({
                   [sch.name + "_list"]: eval(
                     "response.data.records." + sch.response
@@ -480,7 +480,7 @@ export default class ReportUI extends Component {
           _hasSearch.search.schema !== undefined &&
           _hasSearch.search.schema.length > 0
         ) {
-          _hasSearch.search.schema.map((item) => {
+          _hasSearch.search.schema.forEach((item) => {
             this.setState({ [item.name]: row[item.response] });
           });
         } else {

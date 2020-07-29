@@ -53,7 +53,7 @@ export default function JournalVoucher() {
   const [cost_center_id, setCostCenter] = useState(undefined);
   const [hospital_id, setHospitalID] = useState(null);
   const [branchData, setbranchData] = useState([]);
-  const [costCenterdata, setcostCenterdata] = useState([]);
+  // const [costCenterdata, setcostCenterdata] = useState([]);
   const [disableAmount, setDisableAmount] = useState(false);
 
   // const [prefix, setPrefix] = useState("");
@@ -314,12 +314,12 @@ export default function JournalVoucher() {
 
   function HandleHospital(details, value) {
     setHospitalID(value);
-    setcostCenterdata(details.cost_centers);
+    // setcostCenterdata(details.cost_centers);
   }
 
-  function HandleCostCenter(details, value) {
-    setCostCenter(value);
-  }
+  // function HandleCostCenter(details, value) {
+  //   setCostCenter(value);
+  // }
 
   function handlePaymentDrop(...args) {
     const value = args[1];

@@ -1,9 +1,9 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import moment from "moment";
-import ReactToPrint from "react-to-print";
-import { PlotUI } from "./plotui";
+// import ReactToPrint from "react-to-print";
+// import { PlotUI } from "./plotui";
 import { newAlgaehApi } from "../../../hooks";
-import { handleFile } from "../FinanceReportEvents";
+// import { handleFile } from "../FinanceReportEvents";
 import { AlgaehMessagePop } from "algaeh-react-components";
 import Filter from "../filter";
 import ReportLayout from "../printlayout";
@@ -113,7 +113,7 @@ export default function BalanceSheet({
     setTriggerUpdate((result) => {
       return !result;
     });
-  }, [selectedFilter]);
+  }, [selectedFilter]); // eslint-disable-line
 
   useEffect(() => {
     if (preview !== undefined) {
@@ -126,7 +126,8 @@ export default function BalanceSheet({
         loadBalanceSheet();
       }
     }
-  }, [preview]);
+  }, [preview]); // eslint-disable-line
+
   function loadcomparisionData(excel) {
     let extraHeaders = {};
     let others = {};

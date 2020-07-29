@@ -4,19 +4,19 @@ import config from "../../utils/config.json";
 import moment from "moment";
 import Enumerable from "linq";
 
-const getPatientAllergies = $this => {
+const getPatientAllergies = ($this) => {
   $this.props.getPatientAllergies({
     uri: "/doctorsWorkBench/getPatientAllergies",
     method: "GET",
     data: {
-      patient_id: $this.state.patient_id
+      patient_id: $this.state.patient_id,
     },
     cancelRequestId: "getPatientAllergies",
     redux: {
       type: "PATIENT_ALLERGIES",
-      mappingName: "patient_allergies"
+      mappingName: "patient_allergies",
     },
-    afterSuccess: data => {
+    afterSuccess: (data) => {
       let _allergies = Enumerable.from(data)
         .groupBy("$.allergy_type", null, (k, g) => {
           return {
@@ -31,15 +31,15 @@ const getPatientAllergies = $this => {
                 : k === "C"
                 ? "Chemical & Others"
                 : "",
-            allergyList: g.getSource()
+            allergyList: g.getSource(),
           };
         })
         .toArray();
       $this.setState({
         patientAllergies: _allergies,
-        allPatientAllergies: data
+        allPatientAllergies: data,
       });
-    }
+    },
   });
 };
 
@@ -56,7 +56,7 @@ const texthandle = ($this, data, ctrl, e) => {
   }
 
   $this.setState({
-    allAllergies: allAllergies
+    allAllergies: allAllergies,
   });
 };
 
@@ -67,38 +67,38 @@ const getAllChiefComplaints = ($this, callBack) => {
     cancelRequestId: "getChiefComplaints1",
     redux: {
       type: "ALL_CHIEF_COMPLAINTS",
-      mappingName: "allchiefcomplaints"
+      mappingName: "allchiefcomplaints",
     },
-    afterSuccess: data => {
+    afterSuccess: (data) => {
       if (typeof callBack === "function") callBack(data);
-    }
+    },
   });
 };
 
-const getPatientChiefComplaints = $this => {
+const getPatientChiefComplaints = ($this) => {
   $this.props.getPatientChiefComplaints({
     uri: "/nurseWorkBench/getPatientNurseChiefComplaints",
     data: {
-      episode_id: $this.state.episode_id
+      episode_id: $this.state.episode_id,
     },
     method: "GET",
     cancelRequestId: "getPatientChiefComplaints1",
     redux: {
       type: "PATIENT_CHIEF_COMPLAINTS",
-      mappingName: "patient_chief_complaints"
-    }
+      mappingName: "patient_chief_complaints",
+    },
   });
 };
 
-const getDepartmentVitals = $this => {
+const getDepartmentVitals = ($this) => {
   $this.props.getDepartmentVitals({
     uri: "/doctorsWorkBench/getVitalsHeaderMaster",
     method: "GET",
     cancelRequestId: "getVitalsHeaderMaster",
     redux: {
       type: "DEPARTMENT_VITALS",
-      mappingName: "department_vitals"
-    }
+      mappingName: "department_vitals",
+    },
   });
 };
 
@@ -118,13 +118,13 @@ const datehandle = ($this, ctrl, e) => {
   if (Date.parse(new Date()) < Date.parse(moment(ctrl)._d)) {
     swalMessage({
       title: "Cannot be grater than Today's Date.",
-      type: "warning"
+      type: "warning",
     });
     return;
   }
 
   $this.setState({
-    [e]: moment(ctrl)._d
+    [e]: moment(ctrl)._d,
   });
 };
 
@@ -137,11 +137,11 @@ const BMICalculation = (weight, height, calculation) => {
     calculation === undefined || calculation === ""
       ? "const _heightM = (height*height)/100; BMI=  (weight/_heightM*100)"
       : calculation;
-  eval(calculation);
+  eval(calculation); // eslint-disable-line
   return (BMI = typeof BMI === "number" ? BMI.toFixed(2) : BMI);
 };
 
-const getFormula = options => {
+const getFormula = (options) => {
   if (options === undefined) return;
 
   if (Window.global === undefined) {
@@ -150,11 +150,11 @@ const getFormula = options => {
       uri: "/masters/algaehFormula",
       method: "get",
       data: _input,
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           const _function = JSON.parse(response.data.records.formula);
           setGlobal({
-            BMI: _function["BMI-" + options.WEIGHTAS + "-" + options.HEIGHTAS]
+            BMI: _function["BMI-" + options.WEIGHTAS + "-" + options.HEIGHTAS],
           });
 
           if (typeof options.onSuccess === "function")
@@ -166,7 +166,7 @@ const getFormula = options => {
               )
             );
         }
-      }
+      },
     });
   } else {
     if (typeof options.onSuccess === "function")
@@ -182,15 +182,15 @@ const getAllAllergies = ($this, callBack) => {
     method: "GET",
     cancelRequestId: "getAllAllergies",
     data: {
-      allergy_type: "ALL"
+      allergy_type: "ALL",
     },
     redux: {
       type: "ALL_ALLERGIES",
-      mappingName: "allallergies"
+      mappingName: "allallergies",
     },
-    afterSuccess: data => {
+    afterSuccess: (data) => {
       if (typeof callBack === "function") callBack(data);
-    }
+    },
   });
 };
 
@@ -204,5 +204,5 @@ export {
   datehandle,
   getPatientAllergies,
   texthandle,
-  getAllAllergies
+  getAllAllergies,
 };
