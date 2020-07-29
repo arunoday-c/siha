@@ -677,7 +677,7 @@ class RCMWorkbench extends Component {
                         return (
                           <span>
                             {row.claim_validated === "V" ? (
-                              <span className="badge badge-primary">
+                              <span className="badge badge-success">
                                 Validated
                               </span>
                             ) : row.claim_validated === "E" ? (
