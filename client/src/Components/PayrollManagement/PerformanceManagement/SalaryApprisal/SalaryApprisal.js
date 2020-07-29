@@ -5,7 +5,7 @@ import { bindActionCreators } from "redux";
 
 import "./salary_apprsl.scss";
 
-import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
+import { algaehApiCall } from "../../../../utils/algaehApiCall";
 import { MainContext } from "algaeh-react-components";
 import {
   AlagehFormGroup,
@@ -14,12 +14,12 @@ import {
   AlgaehDataGrid,
   AlgaehDateHandler,
 } from "../../../Wrapper/algaehWrapper";
-import GlobalVariables from "../../../../utils/GlobalVariables.json";
+// import GlobalVariables from "../../../../utils/GlobalVariables.json";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import { employeeSearch } from "./SalaryApprisalEvent";
 
-import Enumerable from "linq";
-import moment from "moment";
+// import Enumerable from "linq";
+// import moment from "moment";
 class SalaryApprisal extends Component {
   constructor(props) {
     super(props);

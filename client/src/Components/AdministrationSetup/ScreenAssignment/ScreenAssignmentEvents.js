@@ -630,7 +630,7 @@ function getRoleActiveModules($this, role_id, module_id) {
         let data = res.data.records.screen_list;
         let ScreenList = $this.state.ScreenList;
         let checkAllLength = data.map((item) => {
-          return item.checked == true;
+          return item.checked == true; //eslint-disable-line
         });
         //   let filtered = item.filter((f) => {
         //     return f.checked === true;
@@ -681,6 +681,7 @@ function getRoleActiveModules($this, role_id, module_id) {
                     checked: true,
                   };
                 }
+                return null;
               });
             } else {
               if (ScreenList[index]["componentList"].length > 0) {
@@ -693,10 +694,12 @@ function getRoleActiveModules($this, role_id, module_id) {
                     ...ScreenList[index]["componentList"][indexS],
                     checked: true,
                   };
+                  return null;
                 });
               }
             }
           }
+          return null;
         });
 
         // ScreenList = ScreenList.concat(data)

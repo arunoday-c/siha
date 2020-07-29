@@ -272,17 +272,17 @@ class OPBillCancellation extends Component {
           printArea={
             this.state.bill_cancel_number !== null
               ? {
-                menuitems: [
-                  {
-                    label: "Print Receipt",
-                    events: {
-                      onClick: () => {
-                        generateReceipt(this, this);
+                  menuitems: [
+                    {
+                      label: "Print Receipt",
+                      events: {
+                        onClick: () => {
+                          generateReceipt(this, this);
+                        },
                       },
                     },
-                  },
-                ],
-              }
+                  ],
+                }
               : ""
           }
           selectedLang={this.state.selectedLang}
@@ -293,7 +293,7 @@ class OPBillCancellation extends Component {
               state: this.state,
               updateState: (obj) => {
                 this.setState({ ...this.state, ...obj }, () => {
-                  Object.keys(obj).map((key) => {
+                  Object.keys(obj).forEach((key) => {
                     if (key === "bill_number") {
                       getBillDetails(this, this);
                     }

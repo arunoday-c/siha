@@ -4,7 +4,6 @@ import {
   Spin,
   getPreferences,
   AlgaehModal,
-  AlgaehButton,
   Input,
 } from "algaeh-react-components";
 import { MainContext } from "algaeh-react-components";
@@ -108,6 +107,7 @@ function Login(props) {
         checkUserActive();
       }
     })();
+    // eslint-disable-next-line
   }, []);
 
   function popUpMessage(message) {
@@ -560,7 +560,7 @@ function Login(props) {
             {login.loading ? (
               <div className="connectingServerDiv">
                 {" "}
-                <img src={connecting} />
+                <img src={connecting} alt="connecting" />
                 <p className="saving">
                   Please wait, Connecting to server<span>.</span>
                   <span>.</span>
@@ -742,6 +742,7 @@ function Login(props) {
                           <div className="row">
                             <div className="col userAfterLogin">
                               <img
+                                alt="User"
                                 className="userImg"
                                 src={userImage}
                                 onError={onErrorUserImage}
@@ -807,7 +808,7 @@ function Login(props) {
                                 {rspLoader === true ? (
                                   <label>Please wait generating request</label>
                                 ) : (
-                                  <a href="#" onClick={resetPassWord}>
+                                  <a href="#request" onClick={resetPassWord}>
                                     Request New Password
                                   </a>
                                 )}
@@ -877,7 +878,11 @@ function Login(props) {
             <div className="loginFooter">
               <p>
                 COPYRIGHT © 2019-2020. ALL RIGHTS RESERVED.{" "}
-                <a href="http://algaeh.com/" target="_blank">
+                <a
+                  href="http://algaeh.com/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   ALGAEH TECHNOLOGIES PVT. LTD.
                 </a>
               </p>

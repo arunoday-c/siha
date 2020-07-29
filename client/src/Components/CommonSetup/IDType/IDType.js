@@ -398,13 +398,13 @@ class IDType extends Component {
       // })
     });
   }
-  onchangegridcol(e) {
-    let name = e.name || e.target.name;
-    let value = e.value || e.target.value;
-    // row[name] = value;
-    // row.update();
-    //this.resetState();
-  }
+  // onchangegridcol(e) {
+  //   // let name = e.name || e.target.name;
+  //   // let value = e.value || e.target.value;
+  //   // row[name] = value;
+  //   // row.update();
+  //   //this.resetState();
+  // }
   ToolTipText() {
     return (
       <ul style={{ listStyle: "none" }}>

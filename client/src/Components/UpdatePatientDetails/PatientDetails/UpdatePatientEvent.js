@@ -1,10 +1,10 @@
 import moment from "moment";
-import AlgaehLoader from "../../Wrapper/fullPageLoader";
+// import AlgaehLoader from "../../Wrapper/fullPageLoader";
 import {
   saveImageOnServer,
   SetBulkState,
 } from "../../../utils/GlobalFunctions";
-import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
+import { swalMessage } from "../../../utils/algaehApiCall";
 // import Enumerable from "linq";
 
 const texthandle = ($this, e) => {
@@ -17,25 +17,26 @@ const texthandle = ($this, e) => {
 };
 
 const companyHandle = ($this, context, e) => {
-
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
 
-  $this.setState({
-    [name]: value,
-    insurance_type: e.selected.insurance_type,
-    insurance_provider_name: e.selected.insurance_provider_name
-  }, () => {
-    if (context !== undefined) {
-      context.updateState({
-        [name]: value,
-        insurance_type: e.selected.insurance_type,
-        insurance_provider_name: e.selected.insurance_provider_name,
-        ...$this.state
-      });
+  $this.setState(
+    {
+      [name]: value,
+      insurance_type: e.selected.insurance_type,
+      insurance_provider_name: e.selected.insurance_provider_name,
+    },
+    () => {
+      if (context !== undefined) {
+        context.updateState({
+          [name]: value,
+          insurance_type: e.selected.insurance_type,
+          insurance_provider_name: e.selected.insurance_provider_name,
+          ...$this.state,
+        });
+      }
     }
-  });
-
+  );
 };
 
 const countryStatehandle = ($this, e) => {
@@ -90,7 +91,7 @@ const titlehandle = ($this, e) => {
   $this.setState({
     gender: setGender,
     [e.name]: e.value,
-    saveEnable: false
+    saveEnable: false,
   });
 
   // if (context !== undefined) {
@@ -100,7 +101,6 @@ const titlehandle = ($this, e) => {
   //     saveEnable: false
   //   });
   // }
-
 };
 
 const calculateAge = ($this, e) => {
@@ -204,7 +204,7 @@ const hijriOnChange = ($this, e) => {
     AGEMM: months,
     AGEDD: days,
   });
-}
+};
 
 export {
   texthandle,
@@ -214,5 +214,5 @@ export {
   onDrop,
   countryStatehandle,
   hijriOnChange,
-  companyHandle
+  companyHandle,
 };

@@ -21,7 +21,7 @@ import { AlgaehModalPopUp } from "../Wrapper/algaehWrapper";
 
 import {
   imageToByteArray,
-  AlgaehValidation,
+  // AlgaehValidation,
 } from "../../utils/GlobalFunctions";
 import { setGlobal } from "../../utils/GlobalFunctions";
 import { AlgaehActions } from "../../actions/algaehActions";

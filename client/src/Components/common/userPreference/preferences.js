@@ -2,7 +2,6 @@ import React, { memo, useState, useContext, useEffect } from "react";
 import {
   Switch,
   AlgaehAutoComplete,
-  Input,
   AlgaehFormGroup,
 } from "algaeh-react-components";
 import { MainContext } from "algaeh-react-components";
@@ -31,7 +30,7 @@ export default memo(function () {
       { lang_short: other_lang_short, lang: other_lang },
     ]);
     setScreens(scrns);
-  }, []);
+  }, []); //eslint-disable-line
 
   function onChnageSwitch(checked, e) {
     const { name } = e.currentTarget;
@@ -41,6 +40,8 @@ export default memo(function () {
         break;
       case "notificationSound":
         setNotificationSound(checked);
+        break;
+      default:
         break;
     }
   }

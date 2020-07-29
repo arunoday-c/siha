@@ -44,7 +44,7 @@ export default function EmailConfig(props) {
           type: "error",
         });
       });
-  }, []);
+  }, []); // eslint-disable-line
 
   async function updateEmailConfig() {
     try {

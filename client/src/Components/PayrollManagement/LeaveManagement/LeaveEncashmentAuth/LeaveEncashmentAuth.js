@@ -8,7 +8,7 @@ import {
   texthandler,
   LoadEncashment,
   getLeaveEncashDetails,
-  generateLeaveEncashSlip,
+  // generateLeaveEncashSlip,
   getLeaveLevels,
   dateFormater,
 } from "./LeaveEncashmentAuthEvents.js";

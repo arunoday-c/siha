@@ -1,3 +1,4 @@
+/* eslint-disable no-eval */
 import React, { Component } from "react";
 import {
   successfulMessage,
@@ -58,7 +59,7 @@ export default class ReportUI extends Component {
                         manupulateResult(response.data, this, s.name + "_list");
                       } else {
                         if (s.link.schema !== undefined) {
-                          s.link.schema.map((sch) => {
+                          s.link.schema.forEach((sch) => {
                             this.setState({
                               [sch.name + "_list"]: eval(
                                 "response.data.records." + sch.response

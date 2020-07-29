@@ -4,7 +4,7 @@ import {
   AlgaehModalPopUp,
   AlgaehDataGrid,
   AlgaehLabel,
-  AlagehFormGroup,
+  // AlagehFormGroup,
 } from "../../../Wrapper/algaehWrapper";
 import AlgaehSearch from "../../../Wrapper/globalSearch";
 import spotlightSearch from "../../../../Search/spotlightSearch.json";
@@ -566,15 +566,25 @@ class ValidateBills extends PureComponent {
                         displayTemplate: (row) => {
                           return (
                             <span>
-                              {row.claim_validated === "V"
-                                ? "Validated"
-                                : row.claim_validated === "E"
-                                ? "Error"
-                                : row.claim_validated === "X"
-                                ? "XML Generated"
-                                : row.claim_validated === "P"
-                                ? "Pending"
-                                : "----"}
+                              {row.claim_validated === "V" ? (
+                                <span className="badge badge-success">
+                                  Validated
+                                </span>
+                              ) : row.claim_validated === "E" ? (
+                                <span className="badge badge-danger">
+                                  Error
+                                </span>
+                              ) : row.claim_validated === "X" ? (
+                                <span className="badge badge-info">
+                                  XML Generated
+                                </span>
+                              ) : row.claim_validated === "P" ? (
+                                <span className="badge badge-warning">
+                                  Pending
+                                </span>
+                              ) : (
+                                "----"
+                              )}
                             </span>
                           );
                         },
@@ -935,7 +945,7 @@ class ValidateBills extends PureComponent {
                         <AlgaehLabel
                           label={{ forceLabel: "Search ICD Code" }}
                         />
-                        <h6 onClick={this.addICDtoInvoice.bind(this)}>
+                        <h6 onClick={this.icdSearch.bind(this)}>
                           {this.state.icd_code
                             ? this.state.icd_code
                             : "Search ICD Code"}

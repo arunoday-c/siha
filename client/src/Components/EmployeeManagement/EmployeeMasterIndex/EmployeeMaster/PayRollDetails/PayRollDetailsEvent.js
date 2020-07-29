@@ -1,5 +1,5 @@
 import Enumerable from "linq";
-import extend from "extend";
+// import extend from "extend";
 import { algaehApiCall, swalMessage } from "../../../../../utils/algaehApiCall";
 import { AlgaehValidation } from "../../../../../utils/GlobalFunctions";
 import swal from "sweetalert2";
@@ -150,7 +150,7 @@ const AddEarnComponent = ($this, e) => {
         return;
       }
 
-      let formulaCal = $this.state.earn_formula;
+      // let formulaCal = $this.state.earn_formula;
       // if ($this.state.earn_calculation_method === "FO") {
       //   const expression = new RegExp("Gross Salary", "g");
       //   formulaCal = formulaCal.replace(expression, "GrossSalary");
@@ -974,7 +974,7 @@ const CalculateBasedonFormula = ($this, from, callBack) => {
       // let strFormula = earn_comp[x].formula;
       const _index = earningComponents.indexOf(earn_comp[x]);
 
-      earningComponents.map((menu) => {
+      earningComponents.forEach((menu) => {
         if (formulaCal.indexOf(menu.short_desc) > -1) {
           let earn_short_desc = menu.short_desc;
           const expression = new RegExp(earn_short_desc, "g");
@@ -986,7 +986,7 @@ const CalculateBasedonFormula = ($this, from, callBack) => {
       const perexpression = new RegExp("%", "g");
       formulaCal = formulaCal.replace(perexpression, "/100");
 
-      formulaCal = eval(formulaCal);
+      formulaCal = eval(formulaCal); // eslint-disable-line
       // limit_applicable: e.selected.contribut_limit_applicable,
       //   limit_amount: e.selected.contribut_limit_amount
       if (
@@ -1020,7 +1020,7 @@ const CalculateBasedonFormula = ($this, from, callBack) => {
 
       const _index = deductioncomponents.indexOf(deduct_comp[y]);
 
-      earningComponents.map((menu) => {
+      earningComponents.forEach((menu) => {
         if (formulaCal.indexOf(menu.short_desc) > -1) {
           let ded_short_desc = menu.short_desc;
           const expression = new RegExp(ded_short_desc, "g");
@@ -1038,7 +1038,7 @@ const CalculateBasedonFormula = ($this, from, callBack) => {
       // checkAnyCharacter.forEach((element) => {
       //   formulaCal = formulaCal.replace(element, "0");
       // });
-      // 
+      //
       if (dependentCompoennt === true) {
         if (typeof callBack === "function") {
           swalMessage({
@@ -1056,7 +1056,7 @@ const CalculateBasedonFormula = ($this, from, callBack) => {
         }
       }
 
-      formulaCal = eval(formulaCal);
+      formulaCal = eval(formulaCal); // eslint-disable-line
 
       if (
         deduct_comp[y].limit_applicable === "Y" &&
@@ -1100,7 +1100,6 @@ const CalculateBasedonFormula = ($this, from, callBack) => {
 
       earningComponents.map((menu) => {
         if (formulaCal.indexOf(menu.short_desc) > -1) {
-
           let con_short_desc = menu.short_desc;
           const expression = new RegExp(con_short_desc, "g");
           formulaCal = formulaCal.replace(expression, menu.amount);
@@ -1109,7 +1108,6 @@ const CalculateBasedonFormula = ($this, from, callBack) => {
           // formulaCal = formulaCal.replace(expression, menu.amount);
         }
       });
-
 
       const expression = new RegExp("Gross Salary", "g");
       formulaCal = formulaCal.replace(expression, $this.state.gross_salary);
@@ -1134,7 +1132,7 @@ const CalculateBasedonFormula = ($this, from, callBack) => {
         }
       }
 
-      formulaCal = eval(formulaCal);
+      formulaCal = eval(formulaCal); // eslint-disable-line
 
       if (
         contribute_comp[z].limit_applicable === "Y" &&

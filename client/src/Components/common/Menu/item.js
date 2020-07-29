@@ -46,7 +46,7 @@ function MenuItems({ showMenu, onVisibityChange, openModule, openScreen }) {
     const value = e.target.value;
     if (value !== "") {
       let result = [];
-      userMenu.filter((f) => {
+      userMenu.forEach((f) => {
         let screens = [];
         const filScren = f.ScreenList.filter((s) => {
           const { screen_name, s_other_language } = s;
@@ -59,7 +59,10 @@ function MenuItems({ showMenu, onVisibityChange, openModule, openScreen }) {
             return true;
           } else return false;
         });
-        if (filScren.length > 0) result.push({ ...f, ScreenList: screens });
+        if (filScren.length > 0) {
+          result.push({ ...f, ScreenList: screens });
+          return false;
+        }
       });
       setModules(() => {
         return result;

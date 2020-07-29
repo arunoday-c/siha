@@ -5,7 +5,7 @@ import {
   algaehApiCall,
   getCookie,
   swalMessage,
-  cancelRequest
+  cancelRequest,
 } from "../../utils/algaehApiCall";
 // import noImage from "../../assets/images/no-image.jpg";
 import SelectNoImage from "./images";
@@ -35,7 +35,7 @@ export default class AlgaehFileUploader extends Component {
       showLoader: true,
       croppingDone: false,
       outSaveFunction: undefined,
-      forceRefreshed: undefined
+      forceRefreshed: undefined,
     };
   }
   UNSAFE_componentWillReceiveProps(nextProps) {
@@ -74,7 +74,7 @@ export default class AlgaehFileUploader extends Component {
         this.setState({
           forceRefreshed: undefined,
           croppingDone: false,
-          processDelay: nextProps.serviceParameters.processDelay
+          processDelay: nextProps.serviceParameters.processDelay,
         });
         if (nextProps.serviceParameters.processDelay === undefined)
           this.SavingImageOnServer();
@@ -108,7 +108,7 @@ export default class AlgaehFileUploader extends Component {
         } else this.getDisplayImage(this.props);
       } else {
         this.setState({
-          filePreview: undefined
+          filePreview: undefined,
         });
       }
     }
@@ -138,7 +138,7 @@ export default class AlgaehFileUploader extends Component {
       this.setState({
         filePreview: this.noImage,
         showLoader: false,
-        forceRefreshed: undefined
+        forceRefreshed: undefined,
       });
       return;
     }
@@ -151,7 +151,7 @@ export default class AlgaehFileUploader extends Component {
         fileType: fileType,
         destinationName: uniqueID,
         addDataTag: propsP.addDataTag === undefined ? true : propsP.addDataTag,
-        onFileSuccess: data => {
+        onFileSuccess: (data) => {
           if (that._isMounted === false) {
             return;
           }
@@ -166,7 +166,7 @@ export default class AlgaehFileUploader extends Component {
               that.setState({
                 filePreview: this.noImage,
                 showLoader: false,
-                forceRefreshed: undefined
+                forceRefreshed: undefined,
               });
             }
           }
@@ -178,10 +178,10 @@ export default class AlgaehFileUploader extends Component {
           that.setState({
             filePreview: this.noImage,
             showLoader: false,
-            forceRefreshed: undefined
+            forceRefreshed: undefined,
           });
         },
-        onFileFailure: data => {
+        onFileFailure: (data) => {
           if (propsP.events !== undefined) {
             if (typeof propsP.events.onFailure === "function") {
               propsP.events.onFailure(data);
@@ -193,10 +193,10 @@ export default class AlgaehFileUploader extends Component {
             that.setState({
               filePreview: this.noImage,
               showLoader: false,
-              forceRefreshed: undefined
+              forceRefreshed: undefined,
             });
           }
-        }
+        },
       });
     } else {
       if (propsP.events !== undefined) {
@@ -210,7 +210,7 @@ export default class AlgaehFileUploader extends Component {
         that.setState({
           filePreview: this.noImage,
           showLoader: false,
-          forceRefreshed: undefined
+          forceRefreshed: undefined,
         });
       }
     }
@@ -233,7 +233,7 @@ export default class AlgaehFileUploader extends Component {
       const reader = new FileReader();
       reader.readAsDataURL(_file);
 
-      reader.onload = event => {
+      reader.onload = (event) => {
         const img = new Image();
         img.src = event.target.result;
         img.onload = () => {
@@ -249,7 +249,7 @@ export default class AlgaehFileUploader extends Component {
               filePreview: _dataURL, //this.resizingAndCompressImage(_file),
               fileExtention: "image/webp",
               croppingDone: false,
-              forceRefreshed: undefined
+              forceRefreshed: undefined,
             },
             () => {
               this.SavingImageOnServer(
@@ -279,7 +279,7 @@ export default class AlgaehFileUploader extends Component {
       this.setState({
         croppingDone: false,
         fileName: _fileExtention,
-        forceRefreshed: undefined
+        forceRefreshed: undefined,
       });
     }
   }
@@ -294,7 +294,7 @@ export default class AlgaehFileUploader extends Component {
           this.state.oldImage !== undefined
             ? this.state.oldImage
             : this.noImage,
-        oldImage: undefined
+        oldImage: undefined,
       });
     if (_from === "zoom")
       this.setState({ forceRefreshed: undefined, showZoom: false });
@@ -306,7 +306,7 @@ export default class AlgaehFileUploader extends Component {
         showCropper: false,
         filePreview: this.cropperImage.crop(),
         croppingDone: true,
-        forceRefreshed: undefined
+        forceRefreshed: undefined,
       },
       () => {
         if (this.props.serviceParameters.processDelay === undefined)
@@ -324,7 +324,7 @@ export default class AlgaehFileUploader extends Component {
         <div className="Image-cropper ">
           <Cropper
             src={this.state.filePreview}
-            ref={ref => {
+            ref={(ref) => {
               this.cropperImage = ref;
             }}
             fixedRatio={false}
@@ -356,7 +356,7 @@ export default class AlgaehFileUploader extends Component {
     if (this.state.showZoom) {
       return (
         <div className="Image-cropper zoomCntr">
-          <img src={this.state.filePreview} alt="image" />
+          <img src={this.state.filePreview} alt="preview" />
           <div className="row crop-action">
             {" "}
             <button
@@ -383,7 +383,7 @@ export default class AlgaehFileUploader extends Component {
           : this.props.uniqueBlankMessage;
       swalMessage({
         title: _messageUniqueBlank,
-        type: "error"
+        type: "error",
       });
       return;
     }
@@ -421,11 +421,11 @@ export default class AlgaehFileUploader extends Component {
             destinationName: uniqueID,
             fileType: that.props.serviceParameters.fileType,
             fileExtention: fileExtention,
-            ..._needConvertion
-          })
+            ..._needConvertion,
+          }),
         },
         others: {
-          onUploadProgress: progressEvent => {
+          onUploadProgress: (progressEvent) => {
             let percentCompleted = Math.round(
               (progressEvent.loaded * 100) / progressEvent.total
             );
@@ -435,7 +435,7 @@ export default class AlgaehFileUploader extends Component {
                 {
                   progressPercentage: 100,
                   showProgress: false,
-                  forceRefreshed: undefined
+                  forceRefreshed: undefined,
                 },
                 () => {
                   if (
@@ -451,7 +451,7 @@ export default class AlgaehFileUploader extends Component {
                         fileType: that.props.serviceParameters.fileType,
                         fileName: fileName,
                         filePreview: dataToSave,
-                        componentType: that.props.componentType
+                        componentType: that.props.componentType,
                       });
                   }
                 }
@@ -461,40 +461,40 @@ export default class AlgaehFileUploader extends Component {
                 progressPercentage: percentCompleted,
                 showProgress: true,
                 oldImage: undefined,
-                forceRefreshed: undefined
+                forceRefreshed: undefined,
               });
             }
-          }
+          },
         },
-        onSuccess: result => {
+        onSuccess: (result) => {
           if (result.data.success) {
             if (typeof callBack === "function") callBack("success");
             if (this.props.serviceParameters.processDelay === undefined) {
               swalMessage({
                 title: "File Uploaded Successfully",
-                type: "success"
+                type: "success",
               });
             }
           } else {
             if (typeof callBack === "function") callBack("failure");
             swalMessage({
               title: "File Uploding failure",
-              type: "Error"
+              type: "Error",
             });
           }
         },
-        onCatch: failure => {
+        onCatch: (failure) => {
           if (typeof callBack === "function") callBack("failure");
           swalMessage({
             title: failure.message,
-            type: "failure"
+            type: "failure",
           });
-        }
+        },
       });
     } else {
       swalMessage({
         title: "Enter Mandatory Fields Before Uploading the image",
-        type: "failure"
+        type: "failure",
       });
     }
     //};
@@ -516,13 +516,13 @@ export default class AlgaehFileUploader extends Component {
   webCamHandler(e) {
     this.setState({
       openWebCam: true,
-      forceRefreshed: undefined
+      forceRefreshed: undefined,
     });
   }
   webCamCloseHandler(e) {
     this.setState({
       openWebCam: false,
-      forceRefreshed: undefined
+      forceRefreshed: undefined,
     });
   }
   webcamCaptureImage(e) {
@@ -532,7 +532,7 @@ export default class AlgaehFileUploader extends Component {
       oldImage: this.state.filePreview,
       filePreview: short,
       openWebCam: false,
-      showCropper: true
+      showCropper: true,
     });
   }
   implementWebCam() {
@@ -542,7 +542,7 @@ export default class AlgaehFileUploader extends Component {
           <Webcam
             className="captureVideo"
             screenshotFormat="image/jpeg"
-            ref={ref => {
+            ref={(ref) => {
               this.webCam = ref;
             }}
           />
@@ -573,7 +573,7 @@ export default class AlgaehFileUploader extends Component {
   zoomHandler(e) {
     this.setState({
       forceRefreshed: undefined,
-      showZoom: true
+      showZoom: true,
     });
   }
 
@@ -609,7 +609,7 @@ export default class AlgaehFileUploader extends Component {
                 <img
                   src={this.state.filePreview}
                   alt={_alt}
-                  ref={ref => {
+                  ref={(ref) => {
                     this.imager = ref;
                   }}
                 />

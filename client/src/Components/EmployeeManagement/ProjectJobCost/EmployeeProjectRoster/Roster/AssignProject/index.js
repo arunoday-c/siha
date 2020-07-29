@@ -31,7 +31,6 @@ export default function (props) {
     filterTrue,
     toDate,
     fromDate,
-    inputs,
   } = getProjectRosterState();
   const [from_date, setFromDate] = useState("");
   const [to_date, setToDate] = useState("");

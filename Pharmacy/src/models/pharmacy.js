@@ -1480,16 +1480,16 @@ export default {
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
             new Date(),
-            req.userIdentity.algaeh_d_app_user_id
+            req.userIdentity.algaeh_d_app_user_id,
           ],
-          printQuery: false
+          printQuery: false,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -1501,22 +1501,25 @@ export default {
   getLocationReorder: (req, res, next) => {
     const _mysql = new algaehMysql();
     try {
-
-      let strQuery = req.query.location_id != null ? ` and location_id = '${req.query.location_id}' ` : ""
+      let strQuery =
+        req.query.location_id != null
+          ? ` and location_id = '${req.query.location_id}' `
+          : "";
 
       _mysql
         .executeQuery({
           query:
-            "select * from `hims_d_phar_location_reorder` where item_id=? " + strQuery,
+            "select * from `hims_d_phar_location_reorder` where item_id=? " +
+            strQuery,
           values: [req.query.item_id],
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -1538,16 +1541,16 @@ export default {
             input.reorder_qty,
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
-            input.hims_d_phar_location_reorder_id
+            input.hims_d_phar_location_reorder_id,
           ],
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });

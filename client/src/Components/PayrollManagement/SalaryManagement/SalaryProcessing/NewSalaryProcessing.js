@@ -63,7 +63,7 @@ class NewSalaryProcessing extends Component {
   }
   onCheckChangeRow(dol, row, e) {
     const status = e.target.checked;
-    const currentRow = row;
+    // const currentRow = row;
     row.checked = status;
     const records = this.state.salaryprocess_header;
     const hasUncheck = records.filter((f) => {

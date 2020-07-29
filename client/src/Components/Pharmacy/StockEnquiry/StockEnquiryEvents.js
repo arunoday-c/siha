@@ -27,7 +27,7 @@ const dateFormater = ($this, value) => {
 const getBatchWiseData = ($this, row) => {
   let inputObj = {
     item_id: row.item_id,
-    pharmacy_location_id: row.pharmacy_location_id
+    pharmacy_location_id: row.pharmacy_location_id,
   };
 
   algaehApiCall({
@@ -35,26 +35,26 @@ const getBatchWiseData = ($this, row) => {
     module: "pharmacy",
     method: "GET",
     data: inputObj,
-    onSuccess: response => {
+    onSuccess: (response) => {
       if (response.data.success === true) {
         $this.setState({
           batch_wise_item: response.data.records,
           item_description: row.item_description,
           total_quantity: row.qtyhand,
-          openBatchWise: !$this.state.openBatchWise
+          openBatchWise: !$this.state.openBatchWise,
         });
       }
     },
-    onFailure: error => {
+    onFailure: (error) => {
       swalMessage({
         title: error.message,
-        type: "error"
+        type: "error",
       });
-    }
+    },
   });
 };
 
-const getItemLocationStock = $this => {
+const getItemLocationStock = ($this) => {
   if ($this.state.location_id !== null || $this.state.item_id !== null) {
     let inputObj = {};
 
@@ -71,28 +71,88 @@ const getItemLocationStock = $this => {
       module: "pharmacy",
       method: "GET",
       data: inputObj,
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success === true) {
           $this.setState({
-            ListItems: response.data.records
+            ListItems: response.data.records,
           });
         }
       },
-      onFailure: error => {
+      onFailure: (error) => {
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   } else {
     $this.setState({
-      ListItems: []
+      ListItems: [],
     });
   }
 };
 
-const updateStockDetils = $this => { };
+const downloadPharStock = ($this) => {
+  algaehApiCall({
+    uri: "/pharmacy/downloadPharStock",
+    method: "GET",
+    data: { pharmacy_location_id: $this.state.location_id },
+    headers: {
+      Accept: "blob",
+    },
+    module: "pharmacy",
+    others: { responseType: "blob" },
+    onSuccess: (res) => {
+      let blob = new Blob([res.data], {
+        type: "application/octet-stream",
+      });
+      const fileName = `Pharmacy Stock.xlsx`;
+      var objectUrl = URL.createObjectURL(blob);
+      var link = document.createElement("a");
+      link.setAttribute("href", objectUrl);
+      link.setAttribute("download", fileName);
+      link.click();
+    },
+    onCatch: (error) => {
+      swalMessage({
+        type: "error",
+        title: error.message,
+      });
+    },
+  });
+};
+
+const downloadPharStockDetails = ($this) => {
+  algaehApiCall({
+    uri: "/pharmacy/downloadPharStockDetails",
+    method: "GET",
+    data: { pharmacy_location_id: $this.state.location_id },
+    headers: {
+      Accept: "blob",
+    },
+    module: "pharmacy",
+    others: { responseType: "blob" },
+    onSuccess: (res) => {
+      let blob = new Blob([res.data], {
+        type: "application/octet-stream",
+      });
+      const fileName = `Pharmacy Stock Details.xlsx`;
+      var objectUrl = URL.createObjectURL(blob);
+      var link = document.createElement("a");
+      link.setAttribute("href", objectUrl);
+      link.setAttribute("download", fileName);
+      link.click();
+    },
+    onCatch: (error) => {
+      swalMessage({
+        type: "error",
+        title: error.message,
+      });
+    },
+  });
+};
+
+const updateStockDetils = ($this) => {};
 
 const datehandle = ($this, row, ctrl, e) => {
   row[e] = moment(ctrl)._d;
@@ -107,12 +167,11 @@ const texthandle = ($this, row, e) => {
   row.update();
 };
 
-const closeBatchWise = $this => {
+const closeBatchWise = ($this) => {
   $this.setState({
-    openBatchWise: !$this.state.openBatchWise
+    openBatchWise: !$this.state.openBatchWise,
   });
 };
-
 
 const printBarcode = ($this, row) => {
   algaehApiCall({
@@ -120,7 +179,7 @@ const printBarcode = ($this, row) => {
     method: "GET",
     module: "reports",
     headers: {
-      Accept: "blob"
+      Accept: "blob",
     },
     others: { responseType: "blob" },
     data: {
@@ -128,19 +187,19 @@ const printBarcode = ($this, row) => {
         others: {
           width: "50mm",
           height: "20mm",
-          showHeaderFooter: false
+          showHeaderFooter: false,
         },
         reportName: "StockPharmacyBarcode",
         reportParams: [
           {
             name: "hims_m_item_location_id",
-            value: row.hims_m_item_location_id
-          }
+            value: row.hims_m_item_location_id,
+          },
         ],
-        outputFileType: "PDF"
-      }
+        outputFileType: "PDF",
+      },
     },
-    onSuccess: res => {
+    onSuccess: (res) => {
       // const url = URL.createObjectURL(res.data);
       // let myWindow = window.open(
       //   "{{ product.metafields.google.custom_label_0 }}",
@@ -154,7 +213,7 @@ const printBarcode = ($this, row) => {
       const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Item Barcode`;
       window.open(origin);
       // window.document.title = "Item Barcode";
-    }
+    },
   });
 };
 export {
@@ -166,5 +225,7 @@ export {
   texthandle,
   getBatchWiseData,
   closeBatchWise,
-  printBarcode
+  printBarcode,
+  downloadPharStock,
+  downloadPharStockDetails,
 };

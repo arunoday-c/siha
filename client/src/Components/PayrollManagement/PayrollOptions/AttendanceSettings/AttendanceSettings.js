@@ -5,7 +5,6 @@ import {
   AlagehFormGroup,
   AlgaehLabel,
   AlagehAutoComplete,
-  AlgaehDataGrid,
 } from "../../../Wrapper/algaehWrapper";
 import {
   AUTH_LEVEL2,
@@ -19,7 +18,6 @@ import {
   BIOMETRIC_DBS,
   SWIPE_CARD_TYPE,
   MANUAL_TIME_TYPE,
-  ATTN_START_TYPE,
 } from "../../../../utils/GlobalVariables.json";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 

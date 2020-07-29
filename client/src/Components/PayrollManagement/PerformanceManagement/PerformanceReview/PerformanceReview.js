@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import "./perf_review.scss";
-import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
-import { MainContext } from "algaeh-react-components";
+import { algaehApiCall } from "../../../../utils/algaehApiCall";
+// import { MainContext } from "algaeh-react-components";
 import {
   AlagehFormGroup,
   AlagehAutoComplete,
@@ -9,8 +9,8 @@ import {
   AlgaehDataGrid,
   AlgaehDateHandler,
 } from "../../../Wrapper/algaehWrapper";
-import GlobalVariables from "../../../../utils/GlobalVariables.json";
-import Enumerable from "linq";
+// import GlobalVariables from "../../../../utils/GlobalVariables.json";
+// import Enumerable from "linq";
 import moment from "moment";
 import AlgaehSearch from "../../../Wrapper/globalSearch";
 import spotlightSearch from "../../../../Search/spotlightSearch.json";
