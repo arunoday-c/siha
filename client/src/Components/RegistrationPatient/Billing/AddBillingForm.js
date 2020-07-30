@@ -26,13 +26,13 @@ import {
 } from "./AddBillingDetails";
 
 import MyContext from "../../../utils/MyContext.js";
-import { withRouter } from "react-router-dom";
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
-import { AlgaehActions } from "../../../actions/algaehActions";
+// import { withRouter } from "react-router-dom";
+// import { connect } from "react-redux";
+// import { bindActionCreators } from "redux";
+// import { AlgaehActions } from "../../../actions/algaehActions";
 import { GetAmountFormart } from "../../../utils/GlobalFunctions";
 
-class AddBillingForm extends Component {
+export default class AddBillingForm extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -51,17 +51,17 @@ class AddBillingForm extends Component {
   }
 
   componentDidMount() {
-    if (this.props.counters === undefined || this.props.counters.length === 0) {
-      this.props.getCounters({
-        uri: "/shiftAndCounter/getCounterMaster",
-        module: "masterSettings",
-        method: "GET",
-        redux: {
-          type: "CTRY_GET_DATA",
-          mappingName: "counters"
-        }
-      });
-    }
+    // if (this.props.counters === undefined || this.props.counters.length === 0) {
+    //   this.props.getCounters({
+    //     uri: "/shiftAndCounter/getCounterMaster",
+    //     module: "masterSettings",
+    //     method: "GET",
+    //     redux: {
+    //       type: "CTRY_GET_DATA",
+    //       mappingName: "counters"
+    //     }
+    //   });
+    // }
     this.props.getBankCards({
       uri: "/bankmaster/getBankCards",
       module: "masterSettings",
@@ -811,23 +811,23 @@ class AddBillingForm extends Component {
   }
 }
 
-function mapStateToProps(state) {
-  return {
-    counters: state.counters,
-    bankscards: state.bankscards
-  };
-}
+// function mapStateToProps(state) {
+//   return {
+//     // counters: state.counters,
+//     // bankscards: state.bankscards
+//   };
+// }
 
-function mapDispatchToProps(dispatch) {
-  return bindActionCreators(
-    {
-      getCounters: AlgaehActions,
-      getBankCards: AlgaehActions
-    },
-    dispatch
-  );
-}
+// function mapDispatchToProps(dispatch) {
+//   return bindActionCreators(
+//     {
+//       // getCounters: AlgaehActions,
+//       // getBankCards: AlgaehActions
+//     },
+//     dispatch
+//   );
+// }
 
-export default withRouter(
-  connect(mapStateToProps, mapDispatchToProps)(AddBillingForm)
-);
+// export default withRouter(
+//   connect(mapStateToProps, mapDispatchToProps)(AddBillingForm)
+// );
