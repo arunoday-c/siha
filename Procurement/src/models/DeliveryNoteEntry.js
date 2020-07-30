@@ -655,6 +655,200 @@ export default {
       });
     }
   },
+
+  //created by Irfan:
+  updateGrni: (req, res, next) => {
+    const _options = req.connection == null ? {} : req.connection;
+    const _mysql = new algaehMysql(_options);
+    try {
+      const utilities = new algaehUtilities();
+
+      let input = req.body;
+
+      let hospital_id = req.userIdentity.hospital_id;
+
+      let locationQry = "";
+      if (input.dn_from == "PHR") {
+        locationQry = `select head_id,child_id from hims_d_pharmacy_location where hims_d_pharmacy_location_id=${input.pharmcy_location_id};`;
+      } else {
+        locationQry = `select head_id,child_id from hims_d_inventory_location where hims_d_inventory_location_id=${input.inventory_location_id};`;
+      }
+
+      _mysql
+        .executeQuery({
+          query: ` select product_type from hims_d_organization where hims_d_organization_id=1 limit 1; 
+          SELECT grni_required,cost_center_type, cost_center_required FROM finance_options;
+          select head_id,child_id from finance_accounts_maping where account='GRNI';
+          select hims_d_sub_department_id from hims_d_sub_department where department_type='I';
+          select hims_d_sub_department_id from hims_d_sub_department where department_type='PH';
+          select  hims_m_division_project_id, project_id from hims_m_division_project D 
+          inner join hims_d_project P on D.project_id=P.hims_d_project_id inner join 
+          hims_d_hospital H on D.division_id=H.hims_d_hospital_id where 
+          division_id= ${hospital_id} limit 1; ${locationQry}`,
+          printQuery: false,
+        })
+        .then((result) => {
+          const org_data = result[0][0];
+          const options = result[1][0];
+          const grni_required = options["grni_required"];
+          const GRNI = result[2][0];
+          const inventory = result[3][0];
+          const pharmacy = result[4][0];
+          const project_id = result[5][0]["project_id"];
+          const stock_location = result[6][0];
+
+          let sub_department_id = null;
+          if (input.dn_from == "PHR") {
+            sub_department_id = pharmacy["hims_d_sub_department_id"];
+          } else if (input.dn_from == "INV") {
+            sub_department_id = inventory["hims_d_sub_department_id"];
+          }
+
+          if (
+            org_data["product_type"] == "HIMS_ERP" ||
+            org_data["product_type"] == "FINANCE_ERP"
+          ) {
+            if (grni_required == "Y") {
+              if (GRNI.head_id > 0 && GRNI.child_id > 0) {
+                _mysql
+                  .executeQuery({
+                    query:
+                      "INSERT INTO finance_day_end_header (transaction_date, amount, voucher_type, document_id,\
+                  document_number, from_screen, narration,    entered_date, entered_by) \
+                  VALUES (?,?,?,?,?,?,?,?,?)",
+                    values: [
+                      new Date(),
+                      input.net_payable,
+                      "purchase",
+                      input.transaction_id,
+                      input.delivery_note_number,
+                      "PR0003",
+                      "Goods received but not invoiced",
+                      new Date(),
+                      req.userIdentity.algaeh_d_app_user_id,
+                    ],
+                    printQuery: true,
+                  })
+                  .then((day_end_header) => {
+                    let insertSubDetail = [];
+                    const month = moment().format("M");
+                    const year = moment().format("YYYY");
+                    const IncludeValuess = [
+                      "payment_date",
+                      "head_id",
+                      "child_id",
+                      "debit_amount",
+                      "payment_type",
+                      "credit_amount",
+                      "hospital_id",
+                      "day_end_header_id",
+                      "year",
+                      "month",
+                      "project_id",
+                      "sub_department_id",
+                    ];
+
+                    //GRNI
+                    insertSubDetail.push({
+                      payment_date: new Date(),
+                      head_id: GRNI.head_id,
+                      child_id: GRNI.child_id,
+                      debit_amount: 0,
+                      payment_type: "CR",
+                      credit_amount: input.net_payable,
+                      hospital_id: hospital_id,
+                      day_end_header_id: day_end_header.insertId,
+                      year: year,
+                      month: month,
+                      project_id: project_id,
+                      sub_department_id: sub_department_id,
+                    });
+
+                    //STOCK
+                    insertSubDetail.push({
+                      payment_date: new Date(),
+                      head_id: stock_location.head_id,
+                      child_id: stock_location.child_id,
+                      debit_amount: input.net_payable,
+                      payment_type: "DR",
+                      credit_amount: 0,
+                      hospital_id: hospital_id,
+                      day_end_header_id: day_end_header.insertId,
+                      year: year,
+                      month: month,
+                      project_id: project_id,
+                      sub_department_id: sub_department_id,
+                    });
+
+                    // console.log("insertSubDetail", insertSubDetail)
+                    _mysql
+                      .executeQuery({
+                        query:
+                          "INSERT INTO finance_day_end_sub_detail (??) VALUES ? ;",
+                        values: insertSubDetail,
+                        includeValues: IncludeValuess,
+                        bulkInsertOrUpdate: true,
+                        // extraValues: {
+                        //   day_end_header_id: day_end_header.insertId,
+                        //   year: year,
+                        //   month: month,
+                        //   project_id: project_id,
+                        //   sub_department_id: sub_department_id,
+                        // },
+                        printQuery: false,
+                      })
+                      .then((subResult) => {
+                        next();
+                        // _mysql.commitTransaction(() => {
+                        //   _mysql.releaseConnection();
+                        //   req.records = subResult;
+                        //   next();
+                        // });
+                      })
+                      .catch((error) => {
+                        _mysql.rollBackTransaction(() => {
+                          next(error);
+                        });
+                      });
+                  })
+                  .catch((error) => {
+                    _mysql.rollBackTransaction(() => {
+                      next(error);
+                    });
+                  });
+              } else {
+                _mysql.rollBackTransaction(() => {
+                  next(new Error("please define GRNI control account"));
+                });
+              }
+            } else {
+              next();
+              // _mysql.commitTransaction(() => {
+              //   _mysql.releaseConnection();
+              //   req.records = org_data;
+              //   next();
+              // });
+            }
+          } else {
+            next();
+            // _mysql.commitTransaction(() => {
+            //   _mysql.releaseConnection();
+            //   req.records = org_data;
+            //   next();
+            // });
+          }
+        })
+        .catch((e) => {
+          _mysql.rollBackTransaction(() => {
+            next(e);
+          });
+        });
+    } catch (e) {
+      _mysql.rollBackTransaction(() => {
+        next(e);
+      });
+    }
+  },
   //created by irfan:
   getDeliveryNoteEntry: (req, res, next) => {
     const _mysql = new algaehMysql();

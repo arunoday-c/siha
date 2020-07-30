@@ -10,7 +10,8 @@ const {
   addDeliveryNoteEntry,
   getDeliveryNoteEntry,
   updateDeliveryNoteEntry,
-  updatePOEntry
+  updatePOEntry,
+  updateGrni,
 } = deliveyModels;
 
 const { updateIntoItemLocation } = pharmacyComModels;
@@ -22,7 +23,7 @@ export default () => {
   api.get("/getDeliveryNoteEntry", getDeliveryNoteEntry, (req, res, next) => {
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
       success: true,
-      records: req.records
+      records: req.records,
     });
   });
 
@@ -31,6 +32,7 @@ export default () => {
     generateNumber,
     addDeliveryNoteEntry,
     updatePOEntry,
+    updateGrni,
     (req, res, next) => {
       if (req.body.dn_from == "PHR") {
         updateIntoItemLocation(req, res, next);
@@ -48,7 +50,7 @@ export default () => {
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
-        records: req.records
+        records: req.records,
       });
     }
   );
@@ -59,7 +61,7 @@ export default () => {
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
-        records: req.records
+        records: req.records,
       });
     }
   );
