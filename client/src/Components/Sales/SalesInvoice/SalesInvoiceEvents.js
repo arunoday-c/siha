@@ -1,7 +1,8 @@
+/* eslint-disable no-multi-str */
 import {
   swalMessage,
   algaehApiCall,
-  getCookie
+  getCookie,
 } from "../../../utils/algaehApiCall";
 
 import AlgaehSearch from "../../Wrapper/globalSearch";
@@ -24,7 +25,7 @@ const texthandle = ($this, ctrl, e) => {
         customer_name: null,
         hospital_name: null,
         payment_terms: null,
-        customer_id: null,        
+        customer_id: null,
         sales_order_number: null,
         sales_quotation_number: null,
         invoice_entry_detail_item: [],
@@ -34,31 +35,31 @@ const texthandle = ($this, ctrl, e) => {
         discount_amount: null,
         net_total: null,
         total_tax: null,
-        net_payable: null
+        net_payable: null,
       });
       break;
 
     default:
       $this.setState({
-        [name]: value
+        [name]: value,
       });
       break;
   }
 };
 
-const ClearData = $this => {
+const ClearData = ($this) => {
   let IOputs = SalesInvoiceIO.inputParam();
   $this.setState(IOputs);
 };
 
-const SaveInvoiceEnrty = $this => {
+const SaveInvoiceEnrty = ($this) => {
   AlgaehLoader({ show: true });
   algaehApiCall({
     uri: "/SalesInvoice/addInvoiceEntry",
     module: "sales",
     method: "POST",
     data: $this.state,
-    onSuccess: response => {
+    onSuccess: (response) => {
       if (response.data.success) {
         $this.setState({
           invoice_number: response.data.records.invoice_number,
@@ -66,21 +67,21 @@ const SaveInvoiceEnrty = $this => {
             response.data.records.hims_f_sales_invoice_header_id,
           saveEnable: true,
           postEnable: false,
-          dataExitst: true
+          dataExitst: true,
         });
         swalMessage({
           type: "success",
-          title: "Saved successfully ..."
+          title: "Saved successfully ...",
         });
         AlgaehLoader({ show: false });
       } else {
         AlgaehLoader({ show: false });
         swalMessage({
           type: "error",
-          title: response.data.records.message
+          title: response.data.records.message,
         });
       }
-    }
+    },
   });
 };
 
@@ -95,7 +96,7 @@ const getCtrlCode = ($this, docNumber, row) => {
       module: "sales",
       method: "GET",
       data: { invoice_number: docNumber },
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           let data = response.data.records;
 
@@ -121,25 +122,25 @@ const getCtrlCode = ($this, docNumber, row) => {
         }
         AlgaehLoader({ show: false });
       },
-      onFailure: error => {
+      onFailure: (error) => {
         AlgaehLoader({ show: false });
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   });
 };
 
-const generateSalesInvoiceReport = data => {
+const generateSalesInvoiceReport = (data) => {
   // console.log("data:", data);
   algaehApiCall({
     uri: "/report",
     method: "GET",
     module: "reports",
     headers: {
-      Accept: "blob"
+      Accept: "blob",
     },
     others: { responseType: "blob" },
     data: {
@@ -151,23 +152,23 @@ const generateSalesInvoiceReport = data => {
         reportParams: [
           {
             name: "invoice_number",
-            value: data.invoice_number
-          }
+            value: data.invoice_number,
+          },
         ],
-        outputFileType: "PDF"
-      }
+        outputFileType: "PDF",
+      },
     },
-    onSuccess: res => {
+    onSuccess: (res) => {
       const urlBlob = URL.createObjectURL(res.data);
-      const reportName = `${data.invoice_number}-Invoice Report`
-            const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=${reportName}`;
+      const reportName = `${data.invoice_number}-Invoice Report`;
+      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=${reportName}`;
       window.open(origin);
       // window.document.title = "Invoice Report";
-    }
+    },
   });
 };
 
-const PostSalesInvoice = $this => {
+const PostSalesInvoice = ($this) => {
   AlgaehLoader({ show: true });
   let Inputobj = $this.state;
 
@@ -182,25 +183,25 @@ const PostSalesInvoice = $this => {
     module: "sales",
     data: Inputobj,
     method: "PUT",
-    onSuccess: response => {
+    onSuccess: (response) => {
       if (response.data.success === true) {
         $this.setState({
-          postEnable: true
+          postEnable: true,
         });
         swalMessage({
           title: "Posted successfully . .",
-          type: "success"
+          type: "success",
         });
       }
       AlgaehLoader({ show: false });
-    }
+    },
   });
 };
 
 const SalesOrderSearch = ($this, e) => {
   AlgaehSearch({
     searchGrid: {
-      columns: spotlightSearch.Sales.SalesOrder
+      columns: spotlightSearch.Sales.SalesOrder,
     },
     searchName: "SalesOrder",
     uri: "/gloabelSearch/get",
@@ -213,7 +214,7 @@ const SalesOrderSearch = ($this, e) => {
     onContainsChange: (text, serchBy, callBack) => {
       callBack(text);
     },
-    onRowSelect: row => {
+    onRowSelect: (row) => {
       AlgaehLoader({ show: true });
       if ($this.state.sales_invoice_mode === "I") {
         algaehApiCall({
@@ -221,13 +222,13 @@ const SalesOrderSearch = ($this, e) => {
           module: "sales",
           method: "GET",
           data: { sales_order_id: row.hims_f_sales_order_id },
-          onSuccess: response => {
+          onSuccess: (response) => {
             if (response.data.success) {
               let data = response.data.records;
               if (data.invoice_entry_detail_item.length === 0) {
                 swalMessage({
                   title: "Item not dispatched yet",
-                  type: "warning"
+                  type: "warning",
                 });
                 AlgaehLoader({ show: false });
                 return;
@@ -236,20 +237,20 @@ const SalesOrderSearch = ($this, e) => {
               data.sales_order_id = data.hims_f_sales_order_id;
               data.saveEnable = false;
 
-              data.sub_total = _.sumBy(data.invoice_entry_detail_item, s =>
+              data.sub_total = _.sumBy(data.invoice_entry_detail_item, (s) =>
                 parseFloat(s.sub_total)
               );
               data.discount_amount = _.sumBy(
                 data.invoice_entry_detail_item,
-                s => parseFloat(s.discount_amount)
+                (s) => parseFloat(s.discount_amount)
               );
-              data.net_total = _.sumBy(data.invoice_entry_detail_item, s =>
+              data.net_total = _.sumBy(data.invoice_entry_detail_item, (s) =>
                 parseFloat(s.net_total)
               );
-              data.total_tax = _.sumBy(data.invoice_entry_detail_item, s =>
+              data.total_tax = _.sumBy(data.invoice_entry_detail_item, (s) =>
                 parseFloat(s.total_tax)
               );
-              data.net_payable = _.sumBy(data.invoice_entry_detail_item, s =>
+              data.net_payable = _.sumBy(data.invoice_entry_detail_item, (s) =>
                 parseFloat(s.net_payable)
               );
 
@@ -258,13 +259,13 @@ const SalesOrderSearch = ($this, e) => {
             }
             AlgaehLoader({ show: false });
           },
-          onFailure: error => {
+          onFailure: (error) => {
             AlgaehLoader({ show: false });
             swalMessage({
               title: error.message,
-              type: "error"
+              type: "error",
             });
-          }
+          },
         });
       } else {
         algaehApiCall({
@@ -272,7 +273,7 @@ const SalesOrderSearch = ($this, e) => {
           module: "sales",
           method: "GET",
           data: { hims_f_sales_order_id: row.hims_f_sales_order_id },
-          onSuccess: response => {
+          onSuccess: (response) => {
             if (response.data.success) {
               let data = response.data.records;
               data.sales_order_id = data.hims_f_sales_order_id;
@@ -283,16 +284,16 @@ const SalesOrderSearch = ($this, e) => {
             }
             AlgaehLoader({ show: false });
           },
-          onFailure: error => {
+          onFailure: (error) => {
             AlgaehLoader({ show: false });
             swalMessage({
               title: error.message,
-              type: "error"
+              type: "error",
             });
-          }
+          },
         });
       }
-    }
+    },
   });
 };
 
@@ -303,5 +304,5 @@ export {
   getCtrlCode,
   PostSalesInvoice,
   generateSalesInvoiceReport,
-  SalesOrderSearch
+  SalesOrderSearch,
 };

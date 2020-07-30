@@ -1,10 +1,6 @@
 import React, { useState, useEffect, useReducer } from "react";
 import moment from "moment";
-import {
-  AlgaehMessagePop,
-  AlgaehAutoComplete,
-  AlgaehDateHandler,
-} from "algaeh-react-components";
+import { AlgaehMessagePop } from "algaeh-react-components";
 import { Spin } from "antd";
 import { newAlgaehApi } from "../../hooks";
 // import ToolBar from "./ToolBar";
@@ -43,11 +39,12 @@ export default function FinanceReports() {
   const [selectedFilter, setSelectedFilter] = useState({});
   const [organization, setOrganization] = useState([]);
   const [organizationDetail, setOrganizationDetail] = useState({});
+  // eslint-disable-next-line
   const [layout, layoutDispatch] = useReducer(layoutReducer, {
     cols: 24,
     expand: true,
   });
-  const [period, setPeriod] = useState("TMTD");
+  const [period, setPeriod] = useState("TMTD"); // eslint-disable-line
   const [dates, setDates] = useState(undefined);
 
   useEffect(() => {

@@ -1,5 +1,5 @@
-import React, { useRef } from "react";
-import ReactToPrint from "react-to-print";
+import React from "react";
+// import ReactToPrint from "react-to-print";
 import { AlgaehTable } from "algaeh-react-components";
 import ReportHeader from "../header";
 export default function ({
@@ -11,7 +11,7 @@ export default function ({
   renderBeforeTable,
   renderAfterTable,
 }) {
-  const createPrintObject = useRef(undefined);
+  // const createPrintObject = useRef(undefined);
   const isExpand = layout === undefined ? true : layout.expand;
   return (
     <>

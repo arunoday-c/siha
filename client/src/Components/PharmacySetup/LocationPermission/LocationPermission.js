@@ -6,7 +6,7 @@ import { bindActionCreators } from "redux";
 import {
   AlgaehDataGrid,
   AlagehAutoComplete,
-  AlgaehLabel
+  AlgaehLabel,
 } from "../../Wrapper/algaehWrapper";
 import {
   changeTexts,
@@ -15,7 +15,7 @@ import {
   updateLocationPermission,
   deleteLocationPermission,
   getLocationPermission,
-  allowHandle
+  allowHandle,
 } from "./LocationPermissionEvent";
 
 import GlobalVariables from "../../../utils/GlobalVariables";
@@ -33,7 +33,7 @@ class LocationPermission extends Component {
       user_id: null,
       location_id: null,
       allow: "Y",
-      allowLocation: true
+      allowLocation: true,
     };
     this.baseState = this.state;
   }
@@ -42,7 +42,7 @@ class LocationPermission extends Component {
     let prevLang = getCookie("Language");
 
     this.setState({
-      selectedLang: prevLang
+      selectedLang: prevLang,
     });
 
     if (
@@ -58,8 +58,8 @@ class LocationPermission extends Component {
         method: "GET",
         redux: {
           type: "ANALYTES_GET_DATA",
-          mappingName: "location"
-        }
+          mappingName: "location",
+        },
       });
     }
   }
@@ -78,7 +78,7 @@ class LocationPermission extends Component {
             div={{ className: "col-2 form-group mandatory" }}
             label={{
               forceLabel: "Select User",
-              isImp: true
+              isImp: true,
             }}
             selector={{
               name: "user_id",
@@ -87,16 +87,16 @@ class LocationPermission extends Component {
               dataSource: {
                 textField: "username",
                 valueField: "algaeh_d_app_user_id",
-                data: this.props.userdrtails
+                data: this.props.userdrtails,
               },
-              onChange: changeTexts.bind(this, this)
+              onChange: changeTexts.bind(this, this),
             }}
           />
           <AlagehAutoComplete
             div={{ className: "col-2 form-group mandatory" }}
             label={{
               fieldName: "from_location",
-              isImp: true
+              isImp: true,
             }}
             selector={{
               name: "location_id",
@@ -105,9 +105,9 @@ class LocationPermission extends Component {
               dataSource: {
                 textField: "location_description",
                 valueField: "hims_d_pharmacy_location_id",
-                data: this.props.location
+                data: this.props.location,
               },
-              onChange: changeTexts.bind(this, this)
+              onChange: changeTexts.bind(this, this),
             }}
           />
 
@@ -180,12 +180,12 @@ class LocationPermission extends Component {
                     {
                       fieldName: "user_id",
                       label: <AlgaehLabel label={{ fieldName: "user_id" }} />,
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         let display =
                           this.props.userdrtails === undefined
                             ? []
                             : this.props.userdrtails.filter(
-                                f => f.algaeh_d_app_user_id === row.user_id
+                                (f) => f.algaeh_d_app_user_id === row.user_id
                               );
 
                         return (
@@ -196,7 +196,7 @@ class LocationPermission extends Component {
                           </span>
                         );
                       },
-                      editorTemplate: row => {
+                      editorTemplate: (row) => {
                         return (
                           <AlagehAutoComplete
                             selector={{
@@ -206,29 +206,29 @@ class LocationPermission extends Component {
                               dataSource: {
                                 textField: "username",
                                 valueField: "algaeh_d_app_user_id",
-                                data: this.props.userdrtails
+                                data: this.props.userdrtails,
                               },
                               onChange: onchangegridcol.bind(this, this, row),
                               others: {
                                 errormessage: "User - cannot be blank",
-                                required: true
-                              }
+                                required: true,
+                              },
                             }}
                           />
                         );
-                      }
+                      },
                     },
                     {
                       fieldName: "location_id",
                       label: (
                         <AlgaehLabel label={{ fieldName: "from_location" }} />
                       ),
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         let display =
                           this.props.location === undefined
                             ? []
                             : this.props.location.filter(
-                                f =>
+                                (f) =>
                                   f.hims_d_pharmacy_location_id ===
                                   row.location_id
                               );
@@ -241,7 +241,7 @@ class LocationPermission extends Component {
                           </span>
                         );
                       },
-                      editorTemplate: row => {
+                      editorTemplate: (row) => {
                         return (
                           <AlagehAutoComplete
                             selector={{
@@ -251,25 +251,25 @@ class LocationPermission extends Component {
                               dataSource: {
                                 textField: "location_description",
                                 valueField: "hims_d_pharmacy_location_id",
-                                data: this.props.location
+                                data: this.props.location,
                               },
                               onChange: onchangegridcol.bind(this, this, row),
                               others: {
                                 errormessage: "Location - cannot be blank",
-                                required: true
-                              }
+                                required: true,
+                              },
                             }}
                           />
                         );
-                      }
+                      },
                     },
                     {
                       fieldName: "allow",
                       label: <AlgaehLabel label={{ forceLabel: "allow" }} />,
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         return row.allow === "N" ? "No" : "Yes";
                       },
-                      editorTemplate: row => {
+                      editorTemplate: (row) => {
                         return (
                           <AlagehAutoComplete
                             div={{}}
@@ -280,17 +280,17 @@ class LocationPermission extends Component {
                               dataSource: {
                                 textField: "name",
                                 valueField: "value",
-                                data: GlobalVariables.FORMAT_YESNO
+                                data: GlobalVariables.FORMAT_YESNO,
                               },
                               onChange: onchangegridcol.bind(this, this, row),
                               others: {
                                 errormessage: "Allow - cannot be blank",
-                                required: true
-                              }
+                                required: true,
+                              },
                             }}
                           />
                         );
-                      }
+                      },
                     },
 
                     {
@@ -298,12 +298,12 @@ class LocationPermission extends Component {
                       label: (
                         <AlgaehLabel label={{ fieldName: "created_by" }} />
                       ),
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         let display =
                           this.props.userdrtails === undefined
                             ? []
                             : this.props.userdrtails.filter(
-                                f => f.algaeh_d_app_user_id === row.created_by
+                                (f) => f.algaeh_d_app_user_id === row.created_by
                               );
 
                         return (
@@ -314,12 +314,12 @@ class LocationPermission extends Component {
                           </span>
                         );
                       },
-                      editorTemplate: row => {
+                      editorTemplate: (row) => {
                         let display =
                           this.props.userdrtails === undefined
                             ? []
                             : this.props.userdrtails.filter(
-                                f => f.algaeh_d_app_user_id === row.created_by
+                                (f) => f.algaeh_d_app_user_id === row.created_by
                               );
 
                         return (
@@ -329,42 +329,41 @@ class LocationPermission extends Component {
                               : ""}
                           </span>
                         );
-                      }
+                      },
                     },
                     {
                       fieldName: "created_date",
                       label: (
                         <AlgaehLabel label={{ fieldName: "created_date" }} />
                       ),
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         return (
                           <span>{this.dateFormater(row.created_date)}</span>
                         );
                       },
-                      editorTemplate: row => {
+                      editorTemplate: (row) => {
                         return (
                           <span>{this.dateFormater(row.created_date)}</span>
                         );
-                      }
+                      },
                       //disabled: true
-                    }
+                    },
                   ]}
                   keyId="hims_d_location_permission_id"
                   dataSource={{
                     data:
                       this.props.locationpermission === undefined
                         ? []
-                        : this.props.locationpermission
+                        : this.props.locationpermission,
                   }}
                   filter={true}
                   isEditable={true}
                   paging={{ page: 0, rowsPerPage: 10 }}
                   events={{
                     onDelete: deleteLocationPermission.bind(this, this),
-                    onEdit: row => {},
-                    onDone: updateLocationPermission.bind(this, this)
+                    onEdit: (row) => {},
+                    onDone: updateLocationPermission.bind(this, this),
                   }}
-                  filter={true}
                 />
               </div>
             </div>
@@ -379,7 +378,7 @@ function mapStateToProps(state) {
   return {
     locationpermission: state.locationpermission,
     userdrtails: state.userdrtails,
-    location: state.location
+    location: state.location,
   };
 }
 
@@ -387,15 +386,12 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
       getLocationPermission: AlgaehActions,
-      getLocation: AlgaehActions
+      getLocation: AlgaehActions,
     },
     dispatch
   );
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(LocationPermission)
+  connect(mapStateToProps, mapDispatchToProps)(LocationPermission)
 );

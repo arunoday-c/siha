@@ -5,7 +5,7 @@ import { swalMessage } from "../../../../../utils/algaehApiCall";
 const texthandle = ($this, e) => {
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
-  let _notice = {};
+
   switch (name) {
     case "notice_period":
       if (

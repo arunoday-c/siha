@@ -11,7 +11,7 @@ const VisitSearch = ($this, e) => {
       : "pv.insured = 'Y' and pv.invoice_generated='N'";
   AlgaehSearch({
     searchGrid: {
-      columns: spotlightSearch.VisitDetails.VisitList
+      columns: spotlightSearch.VisitDetails.VisitList,
     },
     searchName: "visit",
     uri: "/gloabelSearch/get",
@@ -19,14 +19,14 @@ const VisitSearch = ($this, e) => {
     onContainsChange: (text, serchBy, callBack) => {
       callBack(text);
     },
-    onRowSelect: row => {
+    onRowSelect: (row) => {
       $this.setState(
         {
           visit_code: row.visit_code,
           patient_code: row.patient_code,
           full_name: row.full_name,
           patient_id: row.patient_id,
-          visit_id: row.hims_f_patient_visit_id
+          visit_id: row.hims_f_patient_visit_id,
         },
         () => {
           if ($this.state.select_invoice === "CD") {
@@ -36,9 +36,9 @@ const VisitSearch = ($this, e) => {
               method: "GET",
               data: {
                 patient_id: $this.state.patient_id,
-                patient_visit_id: $this.state.visit_id
+                patient_visit_id: $this.state.visit_id,
               },
-              onSuccess: response => {
+              onSuccess: (response) => {
                 if (response.data.success) {
                   response.data.records[0].sub_insurance_id =
                     response.data.records[0].sub_insurance_provider_id;
@@ -50,13 +50,13 @@ const VisitSearch = ($this, e) => {
                 }
                 AlgaehLoader({ show: false });
               },
-              onFailure: error => {
+              onFailure: (error) => {
                 AlgaehLoader({ show: false });
                 swalMessage({
                   title: error.message,
-                  type: "error"
+                  type: "error",
                 });
-              }
+              },
             });
           }
 
@@ -64,11 +64,11 @@ const VisitSearch = ($this, e) => {
           getVisitWiseBillDetailS($this);
         }
       );
-    }
+    },
   });
 };
 
-const getVisitWiseBillDetailS = $this => {
+const getVisitWiseBillDetailS = ($this) => {
   let inputobj = { visit_id: $this.state.visit_id, insurance_yesno: "Y" };
 
   algaehApiCall({
@@ -76,21 +76,21 @@ const getVisitWiseBillDetailS = $this => {
     module: "insurance",
     method: "GET",
     data: inputobj,
-    onSuccess: response => {
+    onSuccess: (response) => {
       AlgaehLoader({ show: true });
       if (response.data.success) {
         let data = response.data.records;
         if (data.length > 0) {
           let gross_total = Enumerable.from(data)
-            .select(w => parseFloat(w.gross_amount))
+            .select((w) => parseFloat(w.gross_amount))
             .sum();
 
           let discout_total = Enumerable.from(data)
-            .select(w => parseFloat(w.discount_amout))
+            .select((w) => parseFloat(w.discount_amout))
             .sum();
 
           let net_total = Enumerable.from(data)
-            .select(w => parseFloat(w.net_amout))
+            .select((w) => parseFloat(w.net_amout))
             .sum();
 
           for (let i = 0; i < data.length; i++) {
@@ -111,7 +111,7 @@ const getVisitWiseBillDetailS = $this => {
             Invoice_Detail: data,
             gross_amount: gross_total,
             discount_amount: discout_total,
-            net_amout: net_total
+            net_amout: net_total,
           });
 
           algaehApiCall({
@@ -119,12 +119,12 @@ const getVisitWiseBillDetailS = $this => {
             module: "billing",
             method: "POST",
             data: { billdetails: data },
-            onSuccess: response => {
+            onSuccess: (response) => {
               if (response.data.success) {
                 response.data.records.patient_resp =
                   response.data.records.patient_res;
-                response.data.records.patient_payable =
-                  response.data.records.patient_payable;
+                // response.data.records.patient_payable =
+                //   response.data.records.patient_payable;
                 response.data.records.company_resp =
                   response.data.records.company_res;
                 response.data.records.company_payable =
@@ -137,28 +137,28 @@ const getVisitWiseBillDetailS = $this => {
               }
               AlgaehLoader({ show: false });
             },
-            onFailure: error => {
+            onFailure: (error) => {
               AlgaehLoader({ show: false });
               swalMessage({
                 title: error.message,
-                type: "error"
+                type: "error",
               });
-            }
+            },
           });
         }
       }
       AlgaehLoader({ show: false });
     },
-    onFailure: error => {
+    onFailure: (error) => {
       AlgaehLoader({ show: false });
       swalMessage({
         title: error.message,
-        type: "error"
+        type: "error",
       });
-    }
+    },
   });
 };
-const getOrderServices = $this => {
+const getOrderServices = ($this) => {
   let inputobj = { visit_id: $this.state.visit_id, insurance_yesno: "Y" };
 
   $this.props.getMedicationList({
@@ -167,27 +167,27 @@ const getOrderServices = $this => {
     data: inputobj,
     redux: {
       type: "ORDERED_SERVICES_GET_DATA",
-      mappingName: "orderedserviceslist"
-    }
+      mappingName: "orderedserviceslist",
+    },
   });
 };
 
-const FinalizedAndInvoice = $this => {
+const FinalizedAndInvoice = ($this) => {
   let NotBilled = Enumerable.from($this.props.orderedserviceslist)
-    .where(w => w.billed === "N")
+    .where((w) => w.billed === "N")
     .toArray();
 
   if (NotBilled.length !== 0) {
     swalMessage({
       title: "Some of the Services Not Billed, Please Billed and Proceed.",
-      type: "warning"
+      type: "warning",
     });
   } else {
     algaehApiCall({
       uri: "/invoiceGeneration/addInvoiceGeneration",
       module: "insurance",
       data: $this.state,
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success === true) {
           $this.setState({
             saveEnable: true,
@@ -195,19 +195,19 @@ const FinalizedAndInvoice = $this => {
 
             invoice_number: response.data.records.invoice_number,
             hims_f_invoice_header_id:
-              response.data.records.hims_f_invoice_header_id
+              response.data.records.hims_f_invoice_header_id,
           });
           swalMessage({
             title: "Invoice Generated Successfully . .",
-            type: "success"
+            type: "success",
           });
         }
-      }
+      },
     });
   }
 };
 
-const ClearData = $this => {
+const ClearData = ($this) => {
   $this.setState(
     {
       hims_f_invoice_header_id: null,
@@ -248,15 +248,15 @@ const ClearData = $this => {
       select_invoice: "CH",
       creidt_invoice: false,
       cash_invoice: true,
-      dataExists: false
+      dataExists: false,
     },
     () => {
       $this.props.initialStateOrders({
         redux: {
           type: "ORDERED_SERVICES_GET_DATA",
           mappingName: "orderedserviceslist",
-          data: []
-        }
+          data: [],
+        },
       });
     }
   );
@@ -272,9 +272,9 @@ const getCtrlCode = ($this, docNumber) => {
     data: { invoice_number: docNumber },
     redux: {
       type: "INVOICE_GEN_GET_DATA",
-      mappingName: "invoiceGen"
+      mappingName: "invoiceGen",
     },
-    afterSuccess: data => {
+    afterSuccess: (data) => {
       data.generateVoice = false;
       data.clearEnable = false;
       if (data.insurance_provider_id !== null) {
@@ -296,17 +296,17 @@ const getCtrlCode = ($this, docNumber) => {
           method: "GET",
           data: {
             patient_id: data.patient_id,
-            patient_visit_id: data.visit_id
+            patient_visit_id: data.visit_id,
           },
           redux: {
             type: "EXIT_INSURANCE_GET_DATA",
-            mappingName: "existinsurance"
-          }
+            mappingName: "existinsurance",
+          },
         });
       }
       $this.setState(data);
       AlgaehLoader({ show: false });
-    }
+    },
   });
 };
 
@@ -315,7 +315,7 @@ const texthandle = ($this, e) => {
   let value = e.value || e.target.value;
 
   $this.setState({
-    [name]: value
+    [name]: value,
   });
 };
 
@@ -326,5 +326,5 @@ export {
   ClearData,
   getVisitWiseBillDetailS,
   getCtrlCode,
-  texthandle
+  texthandle,
 };

@@ -1,7 +1,7 @@
 import React, { Component } from "react";
-import { withRouter } from "react-router-dom";
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
+// import { withRouter } from "react-router-dom";
+// import { connect } from "react-redux";
+// import { bindActionCreators } from "redux";
 import MyContext from "../../../../utils/MyContext";
 import "./AddOPBillingForm.scss";
 import "./../../../../styles/site.scss";
@@ -19,12 +19,12 @@ import DisplayOPBilling from "../../../BillDetails/BillDetails";
 //   makeZero
 // } from "./AddOPBillingHandaler";
 import ReciptForm from "../ReciptDetails/ReciptForm";
-import { AlgaehActions } from "../../../../actions/algaehActions";
+// import { AlgaehActions } from "../../../../actions/algaehActions";
 import { successfulMessage } from "../../../../utils/GlobalFunctions";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import { GetAmountFormart } from "../../../../utils/GlobalFunctions";
 import swal from "sweetalert2";
-class AddOPBillingForm extends Component {
+export default class AddOPBillingForm extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -39,38 +39,6 @@ class AddOPBillingForm extends Component {
 
   UNSAFE_componentWillReceiveProps(nextProps) {
     this.setState(nextProps.BillingIOputs);
-  }
-
-  componentDidMount() {
-    if (
-      this.props.servicetype === undefined ||
-      this.props.servicetype.length === 0
-    ) {
-      this.props.getServiceTypes({
-        uri: "/serviceType",
-        module: "masterSettings",
-        method: "GET",
-        redux: {
-          type: "SERVIES_TYPES_GET_DATA",
-          mappingName: "servicetype",
-        },
-      });
-    }
-
-    if (
-      this.props.opbilservices === undefined ||
-      this.props.opbilservices.length === 0
-    ) {
-      this.props.getServices({
-        uri: "/serviceType/getService",
-        module: "masterSettings",
-        method: "GET",
-        redux: {
-          type: "SERVICES_GET_DATA",
-          mappingName: "opserviceslist",
-        },
-      });
-    }
   }
 
   ShowBillDetails(e) {
@@ -355,9 +323,7 @@ class AddOPBillingForm extends Component {
   deleteSingleBill(context, row, e) {
     e.persist();
     let details = this.state.billdetails;
-    const [current] = this.props.opserviceslist.filter(
-      (f) => f.hims_d_services_id === row.services_id
-    );
+
 
     if (details.length === 1) {
       swalMessage({
@@ -369,7 +335,7 @@ class AddOPBillingForm extends Component {
     e.target.classList.remove("fa-trash-alt");
     e.target.classList.add("fa-spinner");
     swal({
-      title: `Do you want to exclude '${current.service_name}' of amount ${row.net_amout} from cancelation?`,
+      title: `Do you want to exclude '${row.service_name}' of amount ${row.net_amout} from cancelation?`,
       type: "warning",
       showCancelButton: true,
       confirmButtonText: "Yes",
@@ -453,58 +419,19 @@ class AddOPBillingForm extends Component {
                           ),
                         },
                         {
-                          fieldName: "service_type_id",
+                          fieldName: "service_type",
                           label: (
                             <AlgaehLabel
                               label={{ fieldName: "service_type_id" }}
                             />
                           ),
-                          displayTemplate: (row) => {
-                            let display =
-                              this.props.servicetype === undefined
-                                ? []
-                                : this.props.servicetype.filter(
-                                    (f) =>
-                                      f.hims_d_service_type_id ===
-                                      row.service_type_id
-                                  );
-
-                            return (
-                              <span>
-                                {display !== undefined && display.length !== 0
-                                  ? this.state.selectedLang === "en"
-                                    ? display[0].service_type
-                                    : display[0].arabic_service_type
-                                  : ""}
-                              </span>
-                            );
-                          },
                         },
 
                         {
-                          fieldName: "services_id",
+                          fieldName: "service_name",
                           label: (
                             <AlgaehLabel label={{ fieldName: "services_id" }} />
                           ),
-                          displayTemplate: (row) => {
-                            let display =
-                              this.props.opserviceslist === undefined
-                                ? []
-                                : this.props.opserviceslist.filter(
-                                    (f) =>
-                                      f.hims_d_services_id === row.services_id
-                                  );
-
-                            return (
-                              <span>
-                                {display !== null && display.length !== 0
-                                  ? this.state.selectedLang === "en"
-                                    ? display[0].service_name
-                                    : display[0].arabic_service_name
-                                  : ""}
-                              </span>
-                            );
-                          },
                         },
                         {
                           fieldName: "unit_cost",
@@ -1026,23 +953,3 @@ class AddOPBillingForm extends Component {
   }
 }
 
-function mapStateToProps(state) {
-  return {
-    servicetype: state.servicetype,
-    opserviceslist: state.opserviceslist,
-  };
-}
-
-function mapDispatchToProps(dispatch) {
-  return bindActionCreators(
-    {
-      getServiceTypes: AlgaehActions,
-      getServices: AlgaehActions,
-    },
-    dispatch
-  );
-}
-
-export default withRouter(
-  connect(mapStateToProps, mapDispatchToProps)(AddOPBillingForm)
-);

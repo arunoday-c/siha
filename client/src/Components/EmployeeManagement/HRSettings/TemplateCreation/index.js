@@ -1,26 +1,17 @@
-import React, { memo, useState, useRef, useEffect } from "react";
+import React, { memo, useState, useEffect } from "react";
 
 import "./certificateMaster.scss";
 import {
   AlgaehDataGrid,
-  AlagehAutoComplete,
   AlgaehLabel,
   AlagehFormGroup,
 } from "../../../Wrapper/algaehWrapper";
-import {
-  Spin,
-  AlgaehFormGroup,
-  AlgaehAutoComplete,
-  AlgaehMessagePop,
-  AlgaehButton,
-} from "algaeh-react-components";
+import { AlgaehMessagePop, AlgaehButton } from "algaeh-react-components";
 import { newAlgaehApi } from "../../../../hooks";
 import Editor from "./editor";
 export default memo(function () {
   const [kpi_types, setKpiTypes] = useState([]);
-  const [input, setInput] = useState({
-    _id: undefined,
-  });
+
   const [masterInput, setMasterInput] = useState({
     kpi_type: "",
     kpi_name: "",
@@ -109,7 +100,7 @@ export default memo(function () {
     });
     setButtonType("Add To List");
   }
-  const { _id } = input;
+
   return (
     <div className="row">
       <div className="col-5">

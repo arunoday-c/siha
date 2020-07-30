@@ -386,6 +386,8 @@ export default class AuditLog extends Component {
                           case "info":
                             className = "";
                             break;
+                          default:
+                            break;
                         }
                         return className;
                       }}

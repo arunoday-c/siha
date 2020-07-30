@@ -126,7 +126,6 @@ class EOSGratuity extends Component {
           gratuity_done: false,
           gratuity_encash: 0,
           actual_maount: 0,
-          sendPaymentButton: true,
           computed_amount: 0,
         });
       },

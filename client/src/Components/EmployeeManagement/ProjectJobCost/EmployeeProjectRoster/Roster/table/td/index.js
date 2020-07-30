@@ -7,7 +7,7 @@ import { ProjectRosterContext } from "../../index";
 // } from "../../../../../../../utils/algaehApiCall";
 import { deleteProjectRoster } from "./index.event";
 import AlgaehLoader from "../../../../../../Wrapper/fullPageLoader";
-export default React.memo(function(props) {
+export default React.memo(function (props) {
   const {
     projects,
     employee_code,
@@ -16,58 +16,58 @@ export default React.memo(function(props) {
     designation,
     date_of_joining,
     exit_date,
-    hims_d_employee_id
+    hims_d_employee_id,
   } = props;
   const {
     getEmployeesForProjectRoster,
     getProjectRosterState,
-    setProjectRosterState
+    setProjectRosterState,
   } = useContext(ProjectRosterContext);
   const { inputs, filterTrue, selectedFilter } = getProjectRosterState();
 
   return (
     <React.Fragment>
-      {projects.map(item => {
+      {projects.map((item) => {
         const style =
           item.status === "WO"
             ? {
                 style: {
                   backgroundColor: "#459C62",
                   color: "#fff",
-                  cursor: "pointer"
-                }
+                  cursor: "pointer",
+                },
               }
             : item.status === "HO"
             ? {
                 style: {
                   backgroundColor: "#3F789C",
                   color: "#fff",
-                  cursor: "pointer"
-                }
+                  cursor: "pointer",
+                },
               }
             : item.status === "APR"
             ? {
                 style: {
                   backgroundColor: "#879C3F",
                   color: "#fff",
-                  cursor: "pointer"
-                }
+                  cursor: "pointer",
+                },
               }
             : item.status === "PEN"
             ? {
                 style: {
                   backgroundColor: "#9C7D3F",
                   color: "#fff",
-                  cursor: "pointer"
-                }
+                  cursor: "pointer",
+                },
               }
             : item.status === "N"
             ? {
                 style: {
                   backgroundColor: "rgb(255, 230, 234)",
                   color: "rgb(228, 34, 69)",
-                  cursor: "pointer"
-                }
+                  cursor: "pointer",
+                },
               }
             : {};
 
@@ -76,7 +76,7 @@ export default React.memo(function(props) {
             key={`${employee_code + item.attendance_date}`}
             className="time_cell editAction"
             {...style}
-            onClick={e => {
+            onClick={(e) => {
               if (e.target.nodeName !== "LI") {
                 editing({
                   ...item,
@@ -86,8 +86,8 @@ export default React.memo(function(props) {
                     date_of_joining,
                     exit_date,
                     hims_d_employee_id,
-                    employee_code
-                  }
+                    employee_code,
+                  },
                 });
               }
             }}
@@ -98,38 +98,40 @@ export default React.memo(function(props) {
 
                 <ul>
                   <li
-                    onClick={e => {
+                    onClick={(e) => {
                       deleteProjectRoster(item).then(() => {
                         AlgaehLoader({ show: true });
                         getEmployeesForProjectRoster(inputs)
-                          .then(result => {
+                          .then((result) => {
                             const { records, fromDate, toDate } = result;
                             let filterData = {};
 
                             if (filterTrue === true && selectedFilter !== "0") {
                               const empl = records.roster;
-                              const emp = empl.map(employee => {
+                              const emp = empl.map((employee) => {
                                 let allProjects = employee.projects;
-                                const projs = employee.projects.filter(f => {
+                                const projs = employee.projects.filter((f) => {
                                   return f.status === "N";
                                 });
                                 if (selectedFilter === "1") {
                                   if (projs.length === 0) {
                                     return {
                                       ...employee,
-                                      projects: allProjects
+                                      projects: allProjects,
                                     };
                                   }
+                                  return undefined;
                                 } else {
                                   if (projs.length > 0) {
                                     return {
                                       ...employee,
-                                      projects: allProjects
+                                      projects: allProjects,
                                     };
                                   }
+                                  return undefined;
                                 }
                               });
-                              const allEmployees = emp.filter(f => {
+                              const allEmployees = emp.filter((f) => {
                                 return f !== undefined;
                               });
                               filterData["filterEmployees"] = allEmployees;
@@ -143,11 +145,11 @@ export default React.memo(function(props) {
                               inputs: inputs,
                               fromDate: fromDate,
                               toDate: toDate,
-                              ...filterData
+                              ...filterData,
                             });
                             AlgaehLoader({ show: false });
                           })
-                          .catch(error => {
+                          .catch((error) => {
                             setProjectRosterState({ employees: [], dates: [] });
                             AlgaehLoader({ show: false });
                           });

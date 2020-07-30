@@ -21,7 +21,7 @@ import { AlgaehModalPopUp } from "../Wrapper/algaehWrapper";
 
 import {
   imageToByteArray,
-  AlgaehValidation,
+  // AlgaehValidation,
 } from "../../utils/GlobalFunctions";
 import { setGlobal } from "../../utils/GlobalFunctions";
 import { AlgaehActions } from "../../actions/algaehActions";
@@ -157,7 +157,7 @@ class UpdatePatientDetails extends Component {
                   AlgaehLoader({ show: false });
                   let IOputs = PatRegIOputs.inputParam();
 
-                  let tes = response.data.records.patient_code;
+                  // let tes = response.data.records.patient_code;
                   const patient_code =
                     patientdata.hims_d_patient_id === null
                       ? response.data.records.patient_code

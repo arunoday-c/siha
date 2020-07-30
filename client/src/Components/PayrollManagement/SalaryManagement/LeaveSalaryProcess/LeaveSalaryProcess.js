@@ -9,8 +9,8 @@ import { AlgaehActions } from "../../../../actions/algaehActions";
 import moment from "moment";
 import {
   algaehApiCall,
-  swalMessage,
-  getCookie,
+  // swalMessage,
+  // getCookie,
 } from "../../../../utils/algaehApiCall";
 
 import { AlgaehSecurityElement } from "algaeh-react-components";

@@ -454,7 +454,7 @@ class InvInitialStock extends Component {
                   <AlagehFormGroup
                     div={{ className: "col-lg-3 form-group" }}
                     label={{
-                      forceLabel: "Unit Cost" + "(" + stock_uom_desc + ")",
+                      forceLabel: `Unit Cost (${stock_uom_desc})`,
                       isImp: true,
                     }}
                     textBox={{
@@ -472,7 +472,7 @@ class InvInitialStock extends Component {
                   <AlagehFormGroup
                     div={{ className: "col-3 form-group" }}
                     label={{
-                      forceLabel: "Sales Price" + "(" + sales_uom_desc + ")",
+                      forceLabel: `Sales Price (${sales_uom_desc})`,
                       isImp: true,
                     }}
                     textBox={{

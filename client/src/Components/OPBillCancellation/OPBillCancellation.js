@@ -91,6 +91,11 @@ class OPBillCancellation extends Component {
         });
       },
     });
+    const queryParams = new URLSearchParams(this.props.location.search);
+    if (queryParams.get("bill_cancel_number")) {
+      getCtrlCode(this, queryParams.get("bill_cancel_number"));
+    }
+
     getCashiersAndShiftMAP(this, this);
   }
 
@@ -293,7 +298,7 @@ class OPBillCancellation extends Component {
               state: this.state,
               updateState: (obj) => {
                 this.setState({ ...this.state, ...obj }, () => {
-                  Object.keys(obj).map((key) => {
+                  Object.keys(obj).forEach((key) => {
                     if (key === "bill_number") {
                       getBillDetails(this, this);
                     }

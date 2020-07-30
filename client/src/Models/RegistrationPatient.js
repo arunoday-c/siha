@@ -63,7 +63,7 @@ export default {
       consultation: null,
       appointment_patient: "N",
       doctor_name: null,
-      service_name: null,
+      service_name: "",
 
       provider_id: null,
       source: "O",

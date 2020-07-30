@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import {
-  AlgaehButton,
   AlgaehMessagePop,
   AlgaehTreeSearch,
   AlgaehLabel,

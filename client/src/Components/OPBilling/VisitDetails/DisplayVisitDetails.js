@@ -39,21 +39,6 @@ class DisplayVisitDetails extends Component {
         }
       });
     }
-
-    if (
-      this.props.deptanddoctors === undefined ||
-      this.props.deptanddoctors.length === 0
-    ) {
-      this.props.getDepartmentsandDoctors({
-        uri: "/department/get/get_All_Doctors_DepartmentWise",
-        module: "masterSettings",
-        method: "GET",
-        redux: {
-          type: "DEPT_DOCTOR_GET_DATA",
-          mappingName: "deptanddoctors"
-        }
-      });
-    }
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
@@ -128,9 +113,9 @@ class DisplayVisitDetails extends Component {
                               this.props.visittypes === undefined
                                 ? []
                                 : this.props.visittypes.filter(
-                                    f =>
-                                      f.hims_d_visit_type_id === row.visit_type
-                                  );
+                                  f =>
+                                    f.hims_d_visit_type_id === row.visit_type
+                                );
 
                             return (
                               <span>
@@ -151,29 +136,6 @@ class DisplayVisitDetails extends Component {
                               label={{ fieldName: "department_id" }}
                             />
                           ),
-                          // displayTemplate: row => {
-                          //   let display = [];
-                          //   this.props.deptanddoctors !== 0
-                          //     ? (display =
-                          //         this.props.deptanddoctors === undefined
-                          //           ? []
-                          //           : this.props.deptanddoctors.departmets.filter(
-                          //               f =>
-                          //                 f.sub_department_id ===
-                          //                 row.sub_department_id
-                          //             ))
-                          //     : [];
-
-                          //   return (
-                          //     <span>
-                          //       {display !== null && display.length !== 0
-                          //         ? this.state.selectedLang === "en"
-                          //           ? display[0].sub_department_name
-                          //           : display[0].arabic_sub_department_name
-                          //         : ""}
-                          //     </span>
-                          //   );
-                          // },
                           disabled: true
                         },
                         {
@@ -183,27 +145,6 @@ class DisplayVisitDetails extends Component {
                               label={{ fieldName: "incharge_or_provider" }}
                             />
                           ),
-                          // displayTemplate: row => {
-                          //   let display;
-                          //   this.props.deptanddoctors !== 0
-                          //     ? (display =
-                          //         this.props.deptanddoctors === undefined
-                          //           ? []
-                          //           : this.props.deptanddoctors.doctors.filter(
-                          //               f => f.employee_id === row.doctor_id
-                          //             ))
-                          //     : [];
-
-                          //   return (
-                          //     <span>
-                          //       {display !== null && display.length !== 0
-                          //         ? this.state.selectedLang === "en"
-                          //           ? display[0].full_name
-                          //           : display[0].arabic_name
-                          //         : ""}
-                          //     </span>
-                          //   );
-                          // },
                           disabled: true
                         }
                       ]}
@@ -233,7 +174,6 @@ class DisplayVisitDetails extends Component {
 function mapStateToProps(state) {
   return {
     visittypes: state.visittypes,
-    deptanddoctors: state.deptanddoctors,
     existinsurance: state.existinsurance,
     orderlist: state.orderlist
   };
@@ -243,7 +183,6 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
       getVisittypes: AlgaehActions,
-      getDepartmentsandDoctors: AlgaehActions,
       getPatientInsurance: AlgaehActions,
       getOrderList: AlgaehActions
     },

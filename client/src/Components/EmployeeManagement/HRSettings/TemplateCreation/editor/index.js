@@ -5,13 +5,13 @@ import {
   AlgaehMessagePop,
 } from "algaeh-react-components";
 import JoditEditor from "jodit-react";
-import Jodit from "jodit";
+// import Jodit from "jodit";
 import "jodit/build/jodit.min.css";
 import { newAlgaehApi } from "../../../../../hooks";
 export default memo(function (props = { data: [] }) {
   const { data } = props;
   const [id, setId] = useState("");
-  const [html_id, setHtmlId] = useState("");
+  // const [html_id, setHtmlId] = useState("");
   const [xcolumns, setColumns] = useState([]);
   const [publishLoader, setPublishLoader] = useState(false);
   const joditEditor = useRef(undefined);
@@ -28,7 +28,7 @@ export default memo(function (props = { data: [] }) {
       },
     })
       .then((response) => {
-        const { data } = response;
+        // const { data } = response;
         setPublishLoader(false);
         AlgaehMessagePop({
           display: "Successfully inserted",
@@ -64,8 +64,8 @@ export default memo(function (props = { data: [] }) {
     })
       .then((response) => {
         const { result } = response.data;
-        const { _id, kpi_html } = result;
-        setHtmlId(_id);
+        const { kpi_html } = result;
+        // setHtmlId(_id);
         joditEditor.current.value = kpi_html;
       })
       .catch((error) => {
@@ -141,6 +141,8 @@ export default memo(function (props = { data: [] }) {
                         const prot = prompt("Change array field name:", field);
                         tbl.setAttribute("data-table-field", prot);
                       });
+                      break;
+                    default:
                       break;
                   }
                 },

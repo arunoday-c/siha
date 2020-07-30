@@ -112,9 +112,9 @@ class SalesReturn extends Component {
       nextProps.salesReturn.sec_company_payable =
         nextProps.salesReturn.sec_company_paybale;
 
-      nextProps.salesReturn.copay_amount = nextProps.salesReturn.copay_amount;
-      nextProps.salesReturn.sec_copay_amount =
-        nextProps.salesReturn.sec_copay_amount;
+      // nextProps.salesReturn.copay_amount = nextProps.salesReturn.copay_amount;
+      // nextProps.salesReturn.sec_copay_amount =
+      // nextProps.salesReturn.sec_copay_amount;
 
       nextProps.salesReturn.saveEnable = false;
       SalesHeaderOut = nextProps.salesReturn;

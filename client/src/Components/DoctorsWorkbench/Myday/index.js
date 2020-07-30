@@ -15,15 +15,15 @@ export default class MyDayView extends Component {
       toDate: new Date(),
       mydayList: [],
       selectedPatinetId: undefined,
-      visit_by: "AW"
+      visit_by: "AW",
     };
   }
   componentDidMount() {
     this.plotMyDayList({
       inputParam: {
         fromDate: this.state.fromDate,
-        toDate: this.state.toDate
-      }
+        toDate: this.state.toDate,
+      },
     });
   }
 
@@ -38,47 +38,47 @@ has same request  */
     cancelRequest("ehr_vitals");
     this.setState({
       fromDate: e,
-      toDate: e
+      toDate: e,
     });
     this.plotMyDayList({
       inputParam: {
         fromDate: e,
-        toDate: e
-      }
+        toDate: e,
+      },
     });
   }
   plotMyDayList(options) {
     MyDayEvents()
       .loadPatientsList(options)
-      .then(res => {
+      .then((res) => {
         if (res.data.success) {
           this.setState({
             showPatientDashboard: false,
-            mydayList: res.data.records
+            mydayList: res.data.records,
           });
         } else {
           swalMessage({
             title: res.data.message,
-            type: "error"
+            type: "error",
           });
         }
       })
-      .catch(error => {
+      .catch((error) => {
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
       });
   }
 
   onVisiByChange(e) {
     this.setState({
-      visit_by: e.selected.value
+      visit_by: e.selected.value,
     });
   }
   onVisitClear(e) {
     this.setState({
-      visit_by: undefined
+      visit_by: undefined,
     });
   }
   onClickMyDayHandler(patientID, e) {
@@ -89,35 +89,35 @@ has same request  */
     MyDayEvents()
       .getPatientDetails({
         inputParam: {
-          hims_d_patient_id: patientID
-        }
+          hims_d_patient_id: patientID,
+        },
       })
-      .then(response => {
+      .then((response) => {
         const _result = response.data;
         if (_result.success) {
           this.setState(
             {
               showPatientDashboard: true,
-              selectedPatinetId: patientID
+              selectedPatinetId: patientID,
             },
             () => {
               this.props.onupdatingdata({
                 showPatientDashboard: this.state.showPatientDashboard,
-                selectedPatientDetails: response.data.records
+                selectedPatientDetails: response.data.records,
               });
             }
           );
         } else {
           swalMessage({
             title: _result.message,
-            type: "error"
+            type: "error",
           });
         }
       })
-      .catch(error => {
+      .catch((error) => {
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
       });
   }
@@ -145,6 +145,8 @@ has same request  */
         break;
       case "CO":
         _element = <span className="completed">Completed</span>;
+        break;
+      default:
         break;
     }
     return _element;
@@ -180,11 +182,11 @@ has same request  */
               dataSource: {
                 data: MyDayEvents().visitBy,
                 displayText: "text",
-                displayValue: "value"
+                displayValue: "value",
               },
               value: this.state.visit_by,
               onChange: this.onVisiByChange.bind(this),
-              onClear: this.onVisitClear.bind(this)
+              onClear: this.onVisitClear.bind(this),
             }}
           />
 

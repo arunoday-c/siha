@@ -3,10 +3,10 @@ import { algaehApiCall } from "../../../utils/algaehApiCall";
 import moment from "moment";
 export default function patientDashboard() {
   return {
-    patientDetails: data => {
-      return _.maxBy(data, m => new Date(m.encounter_date));
+    patientDetails: (data) => {
+      return _.maxBy(data, (m) => new Date(m.encounter_date));
     },
-    visitsOrder: data => {
+    visitsOrder: (data) => {
       return _.orderBy(data, ["encounter_date"], ["desc"]);
     },
     getPatientVitials: (item, data) => {
@@ -18,9 +18,9 @@ export default function patientDashboard() {
 
         let _data = {
           patient_id: item.hims_d_patient_id,
-          visit_id: data.map(item => {
+          visit_id: data.map((item) => {
             return item.hims_f_patient_visit_id;
-          })
+          }),
         };
         algaehApiCall({
           uri: "/vitals",
@@ -28,35 +28,36 @@ export default function patientDashboard() {
           method: "GET",
           cancelRequestId: "ehr_vitals",
           module: "clicnicalDesk",
-          onSuccess: response => {
+          onSuccess: (response) => {
             resolve(response.data.records);
           },
-          onFailure: error => {
+          onFailure: (error) => {
             reject(error);
-          }
+          },
         });
       });
     },
-    getTopLevelVitals: vitals => {
+    getTopLevelVitals: (vitals) => {
       let _mainVitals = [];
       if (vitals !== undefined && vitals.length > 0) {
         //To get last updated vital and start filter
-        const _visitDate = _.maxBy(vitals, r => new Date(r.visit_date));
+        const _visitDate = _.maxBy(vitals, (r) => new Date(r.visit_date));
         _.chain(vitals)
           .filter(
-            f =>
+            (f) =>
               moment(new Date(f.visit_date)).format("YYYYMMDD") ===
               moment(new Date(_visitDate.visit_date)).format("YYYYMMDD")
           )
           .value()
-          .map(item => {
+          .map((item) => {
             const _finder = _.find(
               _mainVitals,
-              fd => fd.vital_short_name === item.vital_short_name
+              (fd) => fd.vital_short_name === item.vital_short_name
             );
             if (typeof _finder === "undefined") {
               _mainVitals.push(item);
             }
+            return null;
           });
       }
       return _mainVitals;
@@ -66,7 +67,7 @@ export default function patientDashboard() {
       let _date = undefined;
       const _objectVisitDtl = _.find(
         visitsDetail,
-        f => f.hims_f_patient_visit_id === hims_f_patient_visit_id
+        (f) => f.hims_f_patient_visit_id === hims_f_patient_visit_id
       );
       _date = _objectVisitDtl.encounter_date;
       if (vitals !== undefined && vitals.length > 0) {
@@ -74,25 +75,26 @@ export default function patientDashboard() {
           //Selected date vitals start filter
           _.chain(vitals)
             .filter(
-              f =>
+              (f) =>
                 moment(new Date(f.visit_date)).format("YYYYMMDD") ===
                 moment(new Date(_date)).format("YYYYMMDD")
             )
             .value()
-            .map(item => {
+            .map((item) => {
               const _finder = _.find(
                 _dateVitals,
-                fd => fd.vital_short_name === item.vital_short_name
+                (fd) => fd.vital_short_name === item.vital_short_name
               );
               if (typeof _finder === "undefined") {
                 _dateVitals.push(item);
               }
+              return null;
             });
         }
       }
       return { vitals: _dateVitals, date: _date };
     },
-    getSelectDiagnosis: options => {
+    getSelectDiagnosis: (options) => {
       return new Promise((resolve, reject) => {
         if (options.patient_id === undefined) return reject([]);
 
@@ -102,14 +104,14 @@ export default function patientDashboard() {
           method: "GET",
           cancelRequestId: "ehr_patientDiagnosis",
           module: "clicnicalDesk",
-          onSuccess: response => {
+          onSuccess: (response) => {
             resolve(response.data.records);
           },
-          onFailure: error => {
+          onFailure: (error) => {
             reject(error);
-          }
+          },
         });
       });
-    }
+    },
   };
 }

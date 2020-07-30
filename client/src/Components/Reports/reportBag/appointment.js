@@ -1,4 +1,4 @@
-export default function Appointment({}) {
+export default function Appointment() {
   return {
     name: "Appointment",
     submenu: [
@@ -16,8 +16,8 @@ export default function Appointment({}) {
             isImp: true,
             others: {
               maxDate: new Date(),
-              minDate: null
-            }
+              minDate: null,
+            },
           },
           {
             className: "col-2 form-group mandatory",
@@ -26,8 +26,8 @@ export default function Appointment({}) {
             isImp: true,
             others: {
               maxDate: new Date(),
-              minDate: null
-            }
+              minDate: null,
+            },
           },
           {
             className: "col-2 form-group mandatory",
@@ -39,17 +39,17 @@ export default function Appointment({}) {
             link: {
               //uri: "/department/get/subdepartment"
               uri: "/department/get/get_All_Doctors_DepartmentWise",
-              module: "masterSettings"
+              module: "masterSettings",
             },
             manupulation: (response, reportState, stateProperty) => {
               reportState.setState({
-                [stateProperty]: response.records.departmets
+                [stateProperty]: response.records.departmets,
               });
             },
             dataSource: {
               textField: "sub_department_name",
               valueField: "sub_department_id",
-              data: undefined
+              data: undefined,
             },
             events: {
               onChange: (reportState, currentEvent) => {
@@ -58,16 +58,16 @@ export default function Appointment({}) {
                 reportState.setState({
                   [currentEvent.name]: currentEvent.value,
                   sub_department_id: currentEvent.value,
-                  provider_id_list: currentEvent.selected.doctors
+                  provider_id_list: currentEvent.selected.doctors,
                 });
               },
               onClear: (reportState, currentName) => {
                 reportState.setState({
                   [currentName]: undefined,
-                  provider_id_list: []
+                  provider_id_list: [],
                 });
-              }
-            }
+              },
+            },
           },
           {
             className: "col-2 form-group mandatory",
@@ -79,8 +79,8 @@ export default function Appointment({}) {
             dataSource: {
               textField: "full_name",
               valueField: "employee_id",
-              data: undefined
-            }
+              data: undefined,
+            },
           },
           {
             className: "col-2 form-group",
@@ -91,16 +91,16 @@ export default function Appointment({}) {
             label: "Filter by Status",
             link: {
               uri: "/appointment/getAppointmentStatus",
-              module: "frontDesk"
+              module: "frontDesk",
             },
             dataSource: {
               textField: "statusDesc",
               valueField: "hims_d_appointment_status_id",
-              data: undefined
-            }
-          }
-        ]
-      }
-    ]
+              data: undefined,
+            },
+          },
+        ],
+      },
+    ],
   };
 }

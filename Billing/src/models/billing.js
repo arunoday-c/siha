@@ -12,13 +12,11 @@ export default {
     const _options = req.connection == null ? {} : req.connection;
     const _mysql = new algaehMysql(_options);
     try {
-      console.log("consultation", req.body.consultation);
       if (req.body.consultation == "N") {
         next();
         return;
       }
       let inputParam = { ...req.body };
-      console.log("newReceiptData: ");
 
       _mysql
         .executeQuery({
@@ -104,7 +102,6 @@ export default {
     const _mysql = new algaehMysql(_options);
 
     const utilities = new algaehUtilities();
-    utilities.logger().log("addBillData: ", req.body);
     try {
       if (req.body.consultation == "N") {
         next();
@@ -2211,10 +2208,10 @@ export default {
           // hospital_id=? and
           _mysql
             .executeQuery({
-              query: `select hims_d_services_id,service_code,cpt_code,service_name,arabic_service_name,service_desc,sub_department_id,\
-             service_type_id,procedure_type,standard_fee,followup_free_fee,followup_paid_fee,discount,vat_applicable,\
-             vat_percent,service_status,effective_start_date,effectice_end_date,physiotherapy_service from hims_d_services\
-             where hims_d_services_id in (?);${strQuery}`,
+              query: `select hims_d_services_id, service_code, cpt_code, service_name, arabic_service_name, service_desc, \
+              sub_department_id, service_type_id, procedure_type, standard_fee, followup_free_fee, followup_paid_fee, \
+              discount, vat_applicable, vat_percent, service_status, physiotherapy_service, ST.service_type from hims_d_services S\
+             inner join hims_d_service_type ST on S.service_type_id = ST.hims_d_service_type_id where hims_d_services_id in (?);${strQuery}`,
               values: [service_ids],
               printQuery: true,
             })
@@ -2836,6 +2833,7 @@ export default {
                   {
                     service_type_id: records.service_type_id,
                     service_name: records.service_name,
+                    service_type: records.service_type,
                     insurance_service_name: records.service_name,
                     services_id: records.hims_d_services_id,
                     physiotherapy_service: records.physiotherapy_service,
@@ -3665,8 +3663,8 @@ export default {
                       new Date(),
                       amount,
                       voucher_type,
-                      inputParam.receipt_header_id,
-                      inputParam.receipt_number,
+                      inputParam.hims_f_billing_header_id,
+                      inputParam.bill_number,
                       inputParam.ScreenCode,
                       narration,
                       req.userIdentity.algaeh_d_app_user_id,
@@ -3677,15 +3675,12 @@ export default {
                   .then((header_result) => {
                     let project_id = null;
 
-                    let headerDayEnd = "";
-
-                    if (strQuery == "") {
-                      headerDayEnd = header_result;
+                    let headerDayEnd = []
+                    if (header_result.length > 1) {
+                      headerDayEnd = header_result[0]
+                      project_id = header_result[1][0].project_id
                     } else {
-                      headerDayEnd = header_result[0];
-                      if (header_result[1].length > 0) {
-                        project_id = header_result[1][0].project_id;
-                      }
+                      headerDayEnd = header_result
                     }
 
                     const month = moment().format("M");

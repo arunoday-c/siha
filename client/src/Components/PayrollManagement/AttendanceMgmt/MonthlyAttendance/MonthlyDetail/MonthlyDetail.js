@@ -3,7 +3,7 @@ import "./MonthlyDetail.scss";
 import {
   AlgaehDataGrid,
   AlgaehModalPopUp,
-  AlgaehLabel
+  AlgaehLabel,
 } from "../../../../Wrapper/algaehWrapper";
 import moment from "moment";
 
@@ -14,7 +14,7 @@ function MonthlyDetail(props) {
       title="Monthly Detail"
       openPopup={props.open}
       events={{
-        onClose: props.onClose
+        onClose: props.onClose,
       }}
       className="col-lg-12 MonthlyDetailsPopup"
     >
@@ -31,7 +31,7 @@ function MonthlyDetail(props) {
             <div className="col">
               <AlgaehLabel
                 label={{
-                  forceLabel: "Employee Name"
+                  forceLabel: "Employee Name",
                 }}
               />
               <h6>{props.employee_name}</h6>
@@ -54,9 +54,9 @@ function MonthlyDetail(props) {
                   {
                     fieldName: "attendance_date",
                     label: <AlgaehLabel label={{ forceLabel: "Date" }} />,
-                    displayTemplate: row => {
+                    displayTemplate: (row) => {
                       return moment(row.attendance_date).format("DD-MMM-YYYY");
-                    }
+                    },
                   },
                   // {
                   //   fieldName: "year",
@@ -87,21 +87,25 @@ function MonthlyDetail(props) {
                     fieldName: "display_present_days",
                     label: (
                       <AlgaehLabel label={{ forceLabel: "Present Days" }} />
-                    )
+                    ),
                   },
                   {
                     fieldName: "absent_days",
-                    label: <AlgaehLabel label={{ forceLabel: "Absent Days" }} />
+                    label: (
+                      <AlgaehLabel label={{ forceLabel: "Absent Days" }} />
+                    ),
                   },
                   {
                     fieldName: "paid_leave",
-                    label: <AlgaehLabel label={{ forceLabel: "Paid Leaves" }} />
+                    label: (
+                      <AlgaehLabel label={{ forceLabel: "Paid Leaves" }} />
+                    ),
                   },
                   {
                     fieldName: "unpaid_leave",
                     label: (
                       <AlgaehLabel label={{ forceLabel: "Unpaid Leaves" }} />
-                    )
+                    ),
                   },
                   {
                     fieldName: "pending_unpaid_leave",
@@ -110,7 +114,7 @@ function MonthlyDetail(props) {
                         label={{ forceLabel: "Pending Unpaid Leaves" }}
                       />
                     ),
-                    displayTemplate: row => {
+                    displayTemplate: (row) => {
                       return (
                         <span>
                           {row.pending_unpaid_leave
@@ -118,7 +122,7 @@ function MonthlyDetail(props) {
                             : 0}
                         </span>
                       );
-                    }
+                    },
                   },
 
                   {
@@ -128,7 +132,7 @@ function MonthlyDetail(props) {
                         label={{ forceLabel: "Total Working Hours" }}
                       />
                     ),
-                    displayTemplate: row => {
+                    displayTemplate: (row) => {
                       return (
                         <span>
                           {row.working_hours
@@ -136,7 +140,7 @@ function MonthlyDetail(props) {
                             : "00:00 Hrs"}
                         </span>
                       );
-                    }
+                    },
                   },
                   {
                     fieldName: "total_hours",
@@ -145,7 +149,7 @@ function MonthlyDetail(props) {
                         label={{ forceLabel: "Actual Worked Hours" }}
                       />
                     ),
-                    displayTemplate: row => {
+                    displayTemplate: (row) => {
                       return (
                         <span>
                           {row.total_hours
@@ -153,12 +157,12 @@ function MonthlyDetail(props) {
                             : "00:00 Hrs"}
                         </span>
                       );
-                    }
+                    },
                   },
                   {
                     fieldName: "ot_work_hours",
                     label: <AlgaehLabel label={{ forceLabel: "OT Hours" }} />,
-                    displayTemplate: row => {
+                    displayTemplate: (row) => {
                       return (
                         <span>
                           {row.complete_ot_hr
@@ -166,14 +170,14 @@ function MonthlyDetail(props) {
                             : "00:00 Hrs"}
                         </span>
                       );
-                    }
+                    },
                   },
                   {
                     fieldName: "shortage_hours",
                     label: (
                       <AlgaehLabel label={{ forceLabel: "Shortage Hours" }} />
                     ),
-                    displayTemplate: row => {
+                    displayTemplate: (row) => {
                       return (
                         <span>
                           {row.complete_shortage_hr
@@ -181,14 +185,14 @@ function MonthlyDetail(props) {
                             : "00:00 Hrs"}
                         </span>
                       );
-                    }
+                    },
                   },
                   {
                     fieldName: "ot_weekoff_hours",
                     label: (
                       <AlgaehLabel label={{ forceLabel: "Week Off OT" }} />
                     ),
-                    displayTemplate: row => {
+                    displayTemplate: (row) => {
                       return (
                         <span>
                           {row.complete_weekoff_ot_hr
@@ -196,12 +200,12 @@ function MonthlyDetail(props) {
                             : "00:00 Hrs"}
                         </span>
                       );
-                    }
+                    },
                   },
                   {
                     fieldName: "ot_holiday_hours",
                     label: <AlgaehLabel label={{ forceLabel: "Holiday OT" }} />,
-                    displayTemplate: row => {
+                    displayTemplate: (row) => {
                       return (
                         <span>
                           {row.complete_holiday_ot_hr
@@ -209,10 +213,10 @@ function MonthlyDetail(props) {
                             : "00:00 Hrs"}
                         </span>
                       );
-                    }
-                  }
+                    },
+                  },
                 ]}
-                rowClassName={row => {
+                rowClassName={(row) => {
                   switch (row.lay_off) {
                     case "W":
                       return "weekOffStyle";
@@ -222,10 +226,12 @@ function MonthlyDetail(props) {
                       return "paidLeaveStyle";
                     case "U":
                       return "unpaidLeaveStyle";
+                    default:
+                      return "";
                   }
                 }}
                 dataSource={{
-                  data: props.data
+                  data: props.data,
                 }}
                 filter={true}
                 paging={{ page: 0, rowsPerPage: 31 }}

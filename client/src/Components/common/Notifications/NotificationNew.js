@@ -21,7 +21,7 @@ export default function Notification({ open, handlePanel }) {
   // const base = [];
   const [list, setList] = useState(base);
   const [today, setToday] = useState(base);
-  const [loading, setLoading] = useState(true);
+  // const [loading, setLoading] = useState(true);
   const [authed, setAuthed] = useState(false);
   const [doNot, setDoNot] = useState(false);
   const context = useContext(MainContext);
@@ -66,7 +66,7 @@ export default function Notification({ open, handlePanel }) {
         } else {
           setList([]);
         }
-        setLoading(false);
+        // setLoading(false);
       });
 
       socket.on("today", (data) => {
@@ -75,7 +75,7 @@ export default function Notification({ open, handlePanel }) {
         } else {
           setToday([]);
         }
-        setLoading(false);
+        // setLoading(false);
       });
 
       socket.on("notification", (msg) => {
@@ -107,7 +107,7 @@ export default function Notification({ open, handlePanel }) {
         });
       });
     }
-  }, [socket, userToken]);
+  }, [socket, userToken]); // eslint-disable-line
 
   function removeNotification(e) {
     const { dataset } = e.target;
@@ -144,8 +144,6 @@ export default function Notification({ open, handlePanel }) {
                 actions={[
                   <Button
                     type="ghost"
-                    icon="close"
-                    with
                     icon={<i className="fas fa-times" />}
                     loading={item.loading}
                     data-current={JSON.stringify(item)}

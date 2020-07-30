@@ -188,6 +188,29 @@ class DayEndProcess extends Component {
         break;
     }
   }
+  DrillDownScree(row) {
+    debugger
+    if (row.from_screen === "FD0002" || row.from_screen === "BL0001") {
+      this.props.history.push(
+        `/OPBilling?bill_code=${row.document_number}`
+      )
+    } else if (row.from_screen === "BL0003") {
+      this.props.history.push(
+        `/OPBillCancellation?bill_cancel_number=${row.document_number}`
+      )
+    } else if (row.from_screen === "INV0009") {
+      this.props.history.push(
+        `/InvTransferEntry?transfer_number=${row.document_number}`
+      )
+    } else if (row.from_screen === "INV0007") {
+      this.props.history.push(
+        `/InvConsumptionEntry?consumption_number=${row.document_number}`
+      )
+    }
+
+
+
+  }
   onOpenPreviewPopUP(row, that) {
     try {
       algaehApiCall({
@@ -535,10 +558,16 @@ class DayEndProcess extends Component {
                                   this.onOpenPreviewPopUP(row, this);
                                 }}
                               ></i>
+                              <i
+                                className="fa fa-exchange-alt"
+                                onClick={() => {
+                                  this.DrillDownScree(row, this);
+                                }}
+                              ></i>
                             </>
                           ),
                           others: {
-                            maxWidth: 90,
+                            maxWidth: 160,
                             filterable: false,
                           },
                         },

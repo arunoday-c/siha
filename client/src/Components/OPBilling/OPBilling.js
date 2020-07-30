@@ -104,15 +104,15 @@ class OPBilling extends Component {
       });
     }
 
-    this.props.getDepartmentsandDoctors({
-      uri: "/department/get/get_All_Doctors_DepartmentWise",
-      module: "masterSettings",
-      method: "GET",
-      redux: {
-        type: "DEPT_DOCTOR_GET_DATA",
-        mappingName: "deptanddoctors",
-      },
-    });
+    // this.props.getDepartmentsandDoctors({
+    //   uri: "/department/get/get_All_Doctors_DepartmentWise",
+    //   module: "masterSettings",
+    //   method: "GET",
+    //   redux: {
+    //     type: "DEPT_DOCTOR_GET_DATA",
+    //     mappingName: "deptanddoctors",
+    //   },
+    // });
 
     let _screenName = getCookie("ScreenName").replace("/", "");
     algaehApiCall({
@@ -134,8 +134,6 @@ class OPBilling extends Component {
       this.getCtrlCode(queryParams.get("bill_code"));
     }
 
-
-    debugger
     if (
       this.props.patient_code !== undefined &&
       this.props.patient_code.length !== 0
@@ -490,9 +488,8 @@ class OPBilling extends Component {
               state: this.state,
               updateState: (obj) => {
                 this.setState({ ...this.state, ...obj }, () => {
-                  Object.keys(obj).map((key) => {
+                  Object.keys(obj).forEach((key) => {
                     if (key === "patient_code") {
-                      debugger
                       getPatientDetails(this, this.state.patient_code);
                     }
                   });
@@ -533,24 +530,26 @@ class OPBilling extends Component {
                 />
               </button>
 
-              {this.props.from_list_auth === true ? null : (<button
-                type="button"
-                className="btn btn-primary"
-                onClick={ShowOrderPackage.bind(this, this)}
-                disabled={
-                  this.state.patient_id === null
-                    ? true
-                    : this.state.Billexists === true
+              {this.props.from_list_auth === true ? null : (
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  onClick={ShowOrderPackage.bind(this, this)}
+                  disabled={
+                    this.state.patient_id === null
                       ? true
-                      : false
-                }
-              >
-                <AlgaehLabel
-                  label={{ fieldName: "btn_order_package", returnText: true }}
-                />
-              </button>)}
-              {this.props.from_list_auth === true ?
-                null : (<button
+                      : this.state.Billexists === true
+                        ? true
+                        : false
+                  }
+                >
+                  <AlgaehLabel
+                    label={{ fieldName: "btn_order_package", returnText: true }}
+                  />
+                </button>
+              )}
+              {this.props.from_list_auth === true ? null : (
+                <button
                   type="button"
                   className="btn btn-default"
                   onClick={ClearData.bind(this, this)}
@@ -558,7 +557,8 @@ class OPBilling extends Component {
                   <AlgaehLabel
                     label={{ fieldName: "btn_clear", returnText: true }}
                   />
-                </button>)}
+                </button>
+              )}
 
               {Package_Exists.length > 0 ? (
                 <button
@@ -593,7 +593,6 @@ function mapStateToProps(state) {
     existinsurance: state.existinsurance,
     patienttype: state.patienttype,
     networkandplans: state.networkandplans,
-    deptanddoctors: state.deptanddoctors,
     PatientPackageList: state.PatientPackageList,
     orderedList: state.orderedList,
   };
@@ -607,7 +606,6 @@ function mapDispatchToProps(dispatch) {
       getPatientType: AlgaehActions,
       getPatientInsurance: AlgaehActions,
       getNetworkPlans: AlgaehActions,
-      getDepartmentsandDoctors: AlgaehActions,
       getPatientPackage: AlgaehActions,
       getOrderList: AlgaehActions,
     },

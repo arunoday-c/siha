@@ -102,15 +102,15 @@ class AddConsultationForm extends Component {
       });
     }
 
-    this.props.getServices({
-      uri: "/serviceType/getService",
-      module: "masterSettings",
-      method: "GET",
-      redux: {
-        type: "SERVICES_GET_DATA",
-        mappingName: "serviceslist"
-      }
-    });
+    // this.props.getServices({
+    //   uri: "/serviceType/getService",
+    //   module: "masterSettings",
+    //   method: "GET",
+    //   redux: {
+    //     type: "SERVICES_GET_DATA",
+    //     mappingName: "serviceslist"
+    //   }
+    // });
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
@@ -562,7 +562,7 @@ function mapStateToProps(state) {
     viewsubdept: state.viewsubdept,
     dentalplans: state.dentalplans,
     PatientPackageList: state.PatientPackageList,
-    serviceslist: state.serviceslist
+    // serviceslist: state.serviceslist
   };
 }
 
@@ -574,7 +574,7 @@ function mapDispatchToProps(dispatch) {
       getDepartmentsandDoctors: AlgaehActions,
       getSubDepartment: AlgaehActions,
       getTreatmentPlan: AlgaehActions,
-      getServices: AlgaehActions
+      // getServices: AlgaehActions
     },
     dispatch
   );

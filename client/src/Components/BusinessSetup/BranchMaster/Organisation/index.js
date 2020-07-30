@@ -27,11 +27,11 @@ export function Organization(props) {
   const { userToken } = useContext(MainContext);
   const disabledEdits =
     userToken.user_type === "SU" || userToken.user_type === "AD" ? false : true;
-  const [hospitalList, setHospitalList] = useState([]);
+  // const [hospitalList, setHospitalList] = useState([]);
   const [fullName, setFullName] = useState("");
-  const [employeeID, setEmployeeId] = useState(0);
-  const [hospitalID, setHospitalID] = useState(userToken.hims_d_hospital_id);
-  const [employee, setEmloyees] = useState("");
+  // const [employeeID, setEmployeeId] = useState(0);
+  // const [hospitalID, setHospitalID] = useState(userToken.hims_d_hospital_id);
+  // const [employee, setEmloyees] = useState("");
 
   useEffect(() => {
     newAlgaehApi({
@@ -88,7 +88,7 @@ export function Organization(props) {
     phone1,
     address1,
     address2,
-    hims_d_head_of_organization_id,
+    // hims_d_head_of_organization_id,
     full_name,
   } = organisation;
 
@@ -198,7 +198,7 @@ export function Organization(props) {
       },
       onRowSelect: (row) => {
         setFullName(row.full_name);
-        setEmployeeId(row.hims_d_employee_id);
+        // setEmployeeId(row.hims_d_employee_id);
         setOrganisation((state) => {
           return {
             ...state,
@@ -206,7 +206,7 @@ export function Organization(props) {
           };
         });
 
-        setHospitalID(row.hospital_id);
+        // setHospitalID(row.hospital_id);
       },
     });
   }

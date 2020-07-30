@@ -3,7 +3,6 @@ import { useHistory } from "react-router-dom";
 import { InfoBar } from "../../Wrappers";
 import { AlgaehMessagePop, AlgaehTable } from "algaeh-react-components";
 import { LoadCustomerReceivables } from "./event";
-import { Button } from "antd";
 
 function CustomerList(props) {
   const history = useHistory();

@@ -1,3 +1,4 @@
+/* eslint-disable eqeqeq */
 import React, { useContext, useEffect, useState } from "react";
 import {
   //   AlgaehFormGroup,
@@ -21,9 +22,7 @@ const { confirm } = Modal;
 export function PrepaymentAuthList() {
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(true);
-  const { branchAndCenters, prePaymentTypes, employees } = useContext(
-    PrePaymentContext
-  );
+  const { branchAndCenters, prePaymentTypes } = useContext(PrePaymentContext);
   const { control, errors, handleSubmit, setValue, watch, getValues } = useForm(
     {
       shouldFocusError: true,

@@ -198,7 +198,7 @@ export function saveImageOnServer(options) {
 
       // const formData = new FormData();
       // formData.append("file", reader);
-      return;
+      return undefined;
     });
   }
 }
@@ -406,7 +406,7 @@ export function AlgaehValidation(options) {
       }
       let expression = false;
       try {
-        expression = eval(_evalConditions);
+        expression = eval(_evalConditions); // eslint-disable-line
       } catch (e) {
         expression = false;
       }

@@ -15,12 +15,12 @@ const UomchangeTexts = ($this, context, ctrl, e) => {
   $this.setState({
     [name]: value,
     conversion_factor: e.selected.conversion_factor,
-    unit_cost: unit_cost
+    unit_cost: unit_cost,
   });
   context.updateState({
     [name]: value,
     conversion_factor: e.selected.conversion_factor,
-    unit_cost: unit_cost
+    unit_cost: unit_cost,
   });
 };
 
@@ -32,12 +32,12 @@ const numberchangeTexts = ($this, context, e) => {
     if (parseFloat(value) < 0) {
       swalMessage({
         title: "Quantity cannot be less than or equal to Zero",
-        type: "warning"
+        type: "warning",
       });
     } else if (parseFloat(value) > parseFloat($this.state.qtyhand)) {
       swalMessage({
         title: "Quantity cannot be greater than Quantity in hand",
-        type: "warning"
+        type: "warning",
       });
     } else {
       $this.setState({ [name]: value });
@@ -46,7 +46,7 @@ const numberchangeTexts = ($this, context, e) => {
       texthandlerInterval = setInterval(() => {
         if (context !== undefined) {
           context.updateState({
-            [name]: value
+            [name]: value,
           });
         }
         clearInterval(texthandlerInterval);
@@ -59,7 +59,7 @@ const numberchangeTexts = ($this, context, e) => {
     texthandlerInterval = setInterval(() => {
       if (context !== undefined) {
         context.updateState({
-          [name]: value
+          [name]: value,
         });
       }
       clearInterval(texthandlerInterval);
@@ -74,7 +74,7 @@ const AddItems = ($this, context) => {
   ) {
     swalMessage({
       title: "Please select From and To Location.",
-      type: "warning"
+      type: "warning",
     });
 
     return;
@@ -83,7 +83,7 @@ const AddItems = ($this, context) => {
   if (parseFloat($this.state.quantity) <= 0) {
     swalMessage({
       title: "Enter the Quantity",
-      type: "warning"
+      type: "warning",
     });
     return;
   }
@@ -94,20 +94,20 @@ const AddItems = ($this, context) => {
 
   let BatchExists = _.filter(
     pharmacy_stock_detail,
-    f => f.batchno === $this.state.batchno
+    (f) => f.batchno === $this.state.batchno
   );
 
   if (BatchExists.length > 0) {
     swalMessage({
       title: "Selected Batch Already Exists",
-      type: "warning"
+      type: "warning",
     });
     return;
   }
 
   let Item_Exists = _.find(
     stock_detail,
-    f => f.item_id === $this.state.item_id
+    (f) => f.item_id === $this.state.item_id
   );
 
   let ItemBatchInput = {
@@ -124,7 +124,7 @@ const AddItems = ($this, context) => {
     uom_transferred_id: $this.state.uom_id,
     sales_price: $this.state.sales_price,
     git_qty: $this.state.quantity,
-    ack_quantity: 0
+    ack_quantity: 0,
   };
   if (Item_Exists !== undefined) {
     let item_index = stock_detail.indexOf(Item_Exists);
@@ -144,7 +144,7 @@ const AddItems = ($this, context) => {
 
       quantity_transferred: $this.state.quantity,
       uom_transferred_id: $this.state.uom_id,
-      removed: "N"
+      removed: "N",
     };
 
     ItemBatchInput.pharmacy_stock_index = 0;
@@ -173,7 +173,7 @@ const AddItems = ($this, context) => {
     addItemButton: true,
     item_description: "",
     saveEnable: false,
-    uom_description: null
+    uom_description: null,
   });
   if (context !== undefined) {
     context.updateState({
@@ -195,14 +195,14 @@ const AddItems = ($this, context) => {
       addItemButton: true,
       item_description: "",
       saveEnable: false,
-      uom_description: null
+      uom_description: null,
     });
   }
 };
 
 const datehandle = ($this, ctrl, e) => {
   $this.setState({
-    [e]: moment(ctrl)._d
+    [e]: moment(ctrl)._d,
   });
 };
 
@@ -211,8 +211,8 @@ const deleteTransEntryDetail = ($this, context, row, rowId) => {
     $this.props.itemlist === undefined
       ? []
       : $this.props.itemlist.filter(
-        f => f.hims_d_item_master_id === row.item_id
-      );
+          (f) => f.hims_d_item_master_id === row.item_id
+        );
 
   swal({
     title: "Are you sure want to delete ?" + display[0].item_description + "?",
@@ -221,22 +221,22 @@ const deleteTransEntryDetail = ($this, context, row, rowId) => {
     confirmButtonText: "Yes",
     confirmButtonColor: "#44b8bd",
     cancelButtonColor: "#d33",
-    cancelButtonText: "No"
-  }).then(willDelete => {
+    cancelButtonText: "No",
+  }).then((willDelete) => {
     if (willDelete.value) {
       let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
       let stock_detail = $this.state.stock_detail;
 
       let getDeleteRowData = _.find(
         stock_detail,
-        f => f.item_id === row.item_id
+        (f) => f.item_id === row.item_id
       );
 
       let _index = stock_detail.indexOf(getDeleteRowData);
 
       let getPharStockToDelete = _.find(
         stock_detail[_index].pharmacy_stock_detail,
-        f => f.pharmacy_stock_index === row.pharmacy_stock_index
+        (f) => f.pharmacy_stock_index === row.pharmacy_stock_index
       );
 
       let _pharmacy_stock_index = stock_detail[
@@ -260,14 +260,14 @@ const deleteTransEntryDetail = ($this, context, row, rowId) => {
           context.updateState({
             pharmacy_stock_detail: pharmacy_stock_detail,
             stock_detail: stock_detail,
-            saveEnable: true
+            saveEnable: true,
           });
         }
       } else {
         if (context !== undefined) {
           context.updateState({
             pharmacy_stock_detail: pharmacy_stock_detail,
-            stock_detail: stock_detail
+            stock_detail: stock_detail,
           });
         }
       }
@@ -278,7 +278,7 @@ const deleteTransEntryDetail = ($this, context, row, rowId) => {
 const updateTransEntryDetail = ($this, context) => {
   if (context !== null) {
     context.updateState({
-      saveEnable: false
+      saveEnable: false,
     });
   }
 };
@@ -290,12 +290,12 @@ const onchangegridcol = ($this, context, row, e) => {
   if (parseFloat(value) > parseFloat(row.qtyhand)) {
     swalMessage({
       title: "Cannot be greater than Quantity in Hand.",
-      type: "warning"
+      type: "warning",
     });
   } else if (parseFloat(value) < 0) {
     swalMessage({
       title: "Cannot be less than Zero.",
-      type: "warning"
+      type: "warning",
     });
   } else {
     let item_details = $this.state.item_details;
@@ -304,7 +304,7 @@ const onchangegridcol = ($this, context, row, e) => {
     row["git_qty"] = value;
     // row["quantity_outstanding"] =
     //   row.quantity_authorized - row.transfer_to_date - value;
-    let quantity_transferred = _.sumBy(item_details.batches, s => {
+    let quantity_transferred = _.sumBy(item_details.batches, (s) => {
       return s.quantity_transfer !== null ? parseFloat(s.quantity_transfer) : 0;
     });
 
@@ -321,11 +321,11 @@ const onchangegridcol = ($this, context, row, e) => {
     if (item_details.quantity_outstanding < 0) {
       swalMessage({
         title: "Quantity cannot be greater than requested quantity.",
-        type: "warning"
+        type: "warning",
       });
       row[name] = 0;
       row["git_qty"] = 0;
-      quantity_transferred = _.sumBy(item_details.batches, s =>
+      quantity_transferred = _.sumBy(item_details.batches, (s) =>
         parseFloat(s.quantity_transfer)
       );
       item_details.quantity_transferred = quantity_transferred;
@@ -337,13 +337,13 @@ const onchangegridcol = ($this, context, row, e) => {
     }
     $this.setState({
       item_details: item_details,
-      quantity_transferred: quantity_transferred
+      quantity_transferred: quantity_transferred,
     });
 
     if (context !== undefined) {
       context.updateState({
         item_details: item_details,
-        quantity_transferred: quantity_transferred
+        quantity_transferred: quantity_transferred,
       });
     }
   }
@@ -362,13 +362,13 @@ const getItemLocationStock = ($this, value) => {
     method: "GET",
     data: {
       pharmacy_location_id: $this.state.from_location_id,
-      item_id: value.item_id
+      item_id: value.item_id,
     },
     redux: {
       type: "ITEMS_BATCH_GET_DATA",
-      mappingName: "itemBatch"
+      mappingName: "itemBatch",
     },
-    afterSuccess: data => {
+    afterSuccess: (data) => {
       if (data.length !== 0) {
         let total_quantity = 0;
         for (let i = 0; i < data.length; i++) {
@@ -376,10 +376,10 @@ const getItemLocationStock = ($this, value) => {
           total_quantity = total_quantity + qtyhand;
         }
         $this.setState({
-          total_quantity: total_quantity
+          total_quantity: total_quantity,
         });
       }
-    }
+    },
   });
 };
 
@@ -391,7 +391,7 @@ const EditGrid = ($this, context, cancelRow) => {
     }
     context.updateState({
       saveEnable: !$this.state.saveEnable,
-      pharmacy_stock_detail: _pharmacy_stock_detail
+      pharmacy_stock_detail: _pharmacy_stock_detail,
     });
   }
 };
@@ -403,16 +403,15 @@ const AddSelectedBatches = ($this, context) => {
   ) {
     swalMessage({
       title: "Transfer Qty cannot be greater than Request Qty.",
-      type: "warning"
+      type: "warning",
     });
   } else {
     if (context !== null) {
-
       let saveEnable = true;
       let _pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
       let _stock_detail = $this.state.stock_detail;
       let details = extend({}, $this.state.item_details);
-      let batches = _.filter($this.state.item_details.batches, f => {
+      let batches = _.filter($this.state.item_details.batches, (f) => {
         return (
           parseFloat(f.quantity_transfer) !== 0 && f.quantity_transfer !== null
         );
@@ -430,13 +429,13 @@ const AddSelectedBatches = ($this, context) => {
         }
       );
 
-      let remove_item = _.filter(_pharmacy_stock_detail, f => {
+      let remove_item = _.filter(_pharmacy_stock_detail, (f) => {
         return f.item_id === details.item_id;
       });
 
       for (let i = 0; i < remove_item.length; i++) {
         if (remove_item[i].item_id === details.item_id) {
-          let remove_index = _pharmacy_stock_detail.indexOf(remove_item[i])
+          let remove_index = _pharmacy_stock_detail.indexOf(remove_item[i]);
           _pharmacy_stock_detail.splice(remove_index, 1);
         }
       }
@@ -454,7 +453,7 @@ const AddSelectedBatches = ($this, context) => {
         pharmacy_stock_detail: _pharmacy_stock_detail,
         batch_detail_view: false,
         saveEnable: saveEnable,
-        quantity_transferred: 0
+        quantity_transferred: 0,
       });
     }
   }
@@ -474,15 +473,15 @@ const itemchangeText = ($this, context, e, ctrl) => {
       method: "GET",
       data: {
         location_id: $this.state.from_location_id,
-        item_id: value
+        item_id: value,
       },
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           let data = response.data.records;
           if (data.locationResult.length > 0) {
             const sales_conversion_factor = _.find(
               data.uomResult,
-              f => f.uom_id === e.sales_uom_id
+              (f) => f.uom_id === e.sales_uom_id
             );
             const qtyhand =
               parseFloat(data.locationResult[0].qtyhand) /
@@ -523,7 +522,7 @@ const itemchangeText = ($this, context, e, ctrl) => {
               conversion_factor: sales_conversion_factor.conversion_factor,
               sales_qtyhand: sales_qtyhand,
               sales_price: e.sale_price,
-              unit_cost: e.avgcost
+              unit_cost: e.avgcost,
             });
 
             if (context !== undefined) {
@@ -552,48 +551,48 @@ const itemchangeText = ($this, context, e, ctrl) => {
                 conversion_factor: sales_conversion_factor.conversion_factor,
                 sales_qtyhand: sales_qtyhand,
                 sales_price: e.sale_price,
-                unit_cost: e.avgcost
+                unit_cost: e.avgcost,
               });
             }
           } else {
             swalMessage({
               title: "No stock available for selected Item.",
-              type: "warning"
+              type: "warning",
             });
             $this.setState({
               item_description: $this.state.item_description,
-              item_id: $this.state.item_id
+              item_id: $this.state.item_id,
             });
             if (context !== undefined) {
               context.updateState({
                 item_description: $this.state.item_description,
-                item_id: $this.state.item_id
+                item_id: $this.state.item_id,
               });
             }
           }
         } else {
           swalMessage({
             title: response.data.message,
-            type: "error"
+            type: "error",
           });
         }
       },
-      onFailure: error => {
+      onFailure: (error) => {
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   } else {
     $this.setState(
       {
-        [name]: null
+        [name]: null,
       },
       () => {
         swalMessage({
           title: "Please select From Location and To Location.",
-          type: "warning"
+          type: "warning",
         });
       }
     );
@@ -602,7 +601,7 @@ const itemchangeText = ($this, context, e, ctrl) => {
 
 const ShowItemBatch = ($this, e) => {
   $this.setState({
-    selectBatch: !$this.state.selectBatch
+    selectBatch: !$this.state.selectBatch,
   });
 };
 
@@ -613,12 +612,12 @@ const onchangegridcolauthqty = ($this, context, row, e) => {
   if (parseFloat(value) > parseFloat(row.quantity_transfer)) {
     swalMessage({
       title: "Cannot be greater than Quantity Transfered.",
-      type: "warning"
+      type: "warning",
     });
   } else if (parseFloat(value) < 0) {
     swalMessage({
       title: "Cannot be less than Zero.",
-      type: "warning"
+      type: "warning",
     });
   } else {
     let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
@@ -628,12 +627,12 @@ const onchangegridcolauthqty = ($this, context, row, e) => {
     pharmacy_stock_detail[_index] = row;
 
     $this.setState({
-      pharmacy_stock_detail: pharmacy_stock_detail
+      pharmacy_stock_detail: pharmacy_stock_detail,
     });
 
     if (context !== undefined) {
       context.updateState({
-        pharmacy_stock_detail: pharmacy_stock_detail
+        pharmacy_stock_detail: pharmacy_stock_detail,
       });
     }
   }
@@ -649,7 +648,9 @@ const CloseItemBatch = ($this, context, e) => {
   let expiry_date =
     e !== undefined
       ? e.selected === true
-        ? e.expirydt !== null ? moment(e.expirydt)._d : null
+        ? e.expirydt !== null
+          ? moment(e.expirydt)._d
+          : null
         : $this.state.expiry_date
       : $this.state.expiry_date;
 
@@ -687,11 +688,12 @@ const CloseItemBatch = ($this, context, e) => {
         : $this.state.barcode
       : $this.state.barcode;
 
-  let quantity = e !== undefined
-    ? e.selected === true
-      ? 0
-      : $this.state.quantity
-    : $this.state.quantity;
+  let quantity =
+    e !== undefined
+      ? e.selected === true
+        ? 0
+        : $this.state.quantity
+      : $this.state.quantity;
   $this.setState({
     ...$this.state,
     selectBatch: !$this.state.selectBatch,
@@ -702,7 +704,7 @@ const CloseItemBatch = ($this, context, e) => {
     unit_cost: unit_cost,
     sales_price: sale_price,
     barcode: barcode,
-    quantity: quantity
+    quantity: quantity,
   });
 
   if (context !== null) {
@@ -714,7 +716,7 @@ const CloseItemBatch = ($this, context, e) => {
       unit_cost: unit_cost,
       sales_price: sale_price,
       barcode: barcode,
-      quantity: quantity
+      quantity: quantity,
     });
   }
 };
@@ -734,5 +736,5 @@ export {
   AddSelectedBatches,
   ShowItemBatch,
   CloseItemBatch,
-  onchangegridcolauthqty
+  onchangegridcolauthqty,
 };

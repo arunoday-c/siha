@@ -16,7 +16,7 @@ import {
 } from "algaeh-react-components";
 import { newAlgaehApi } from "../../../hooks";
 
-export default function InsuranceStatement(props) {
+export default function InsuranceStatement() {
   // const { userToken } = useContext(MainContext);
   const [loading, setLoading] = useState(true);
   const [branches, setBranches] = useState([]);
@@ -24,7 +24,7 @@ export default function InsuranceStatement(props) {
   const [subInsurance, setSubInsurance] = useState([]);
   const [data, setData] = useState([]);
 
-  const { control, getValues, setValue, handleSubmit } = useForm({
+  const { control, setValue, handleSubmit } = useForm({
     shouldFocusError: true,
   });
   useEffect(() => {

@@ -5,7 +5,7 @@ import {
   AlgaehButton,
   Checkbox,
 } from "algaeh-react-components";
-import moment from "moment";
+// import moment from "moment";
 import details from "./data";
 export default memo(function (props) {
   const { filters, callBack, triggerUpdate } = props;
@@ -33,7 +33,7 @@ export default memo(function (props) {
         }
       });
     if (Object.keys(initStates).length > 0) setInputs(initStates);
-  }, [triggerUpdate]);
+  }, [triggerUpdate]); // eslint-disable-line
 
   function updateInput(obj) {
     setInputs((result) => {
@@ -199,7 +199,7 @@ export default memo(function (props) {
               </Checkbox>
             );
           default:
-            break;
+            return null;
         }
       })}
       <div className="col">

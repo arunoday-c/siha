@@ -81,6 +81,10 @@ class InvConsumptionEntry extends Component {
     ) {
       ConsumptionItemsEvents().getCtrlCode(this, this.props.consumption_number);
     }
+    const queryParams = new URLSearchParams(this.props.location.search);
+    if (queryParams.get("consumption_number")) {
+      ConsumptionItemsEvents().getCtrlCode(this, queryParams.get("consumption_number"));
+    }
   }
 
   componentWillUnmount() {
@@ -158,8 +162,8 @@ class InvConsumptionEntry extends Component {
                   <h6>
                     {this.state.consumption_date
                       ? moment(this.state.consumption_date).format(
-                          Options.dateFormat
-                        )
+                        Options.dateFormat
+                      )
                       : Options.dateFormat}
                   </h6>
                 </div>
@@ -168,19 +172,19 @@ class InvConsumptionEntry extends Component {
             printArea={
               this.state.hims_f_inventory_consumption_header_id !== null
                 ? {
-                    menuitems: [
-                      {
-                        label: "Print Receipt",
-                        events: {
-                          onClick: () => {
-                            ConsumptionItemsEvents().generateConsumptionRecpt(
-                              this.state.consumption_number
-                            );
-                          },
+                  menuitems: [
+                    {
+                      label: "Print Receipt",
+                      events: {
+                        onClick: () => {
+                          ConsumptionItemsEvents().generateConsumptionRecpt(
+                            this.state.consumption_number
+                          );
                         },
                       },
-                    ],
-                  }
+                    },
+                  ],
+                }
                 : ""
             }
             selectedLang={this.state.selectedLang}
@@ -223,8 +227,8 @@ class InvConsumptionEntry extends Component {
                       ? this.state.location_type === "WH"
                         ? "Warehouse"
                         : this.state.location_type === "MS"
-                        ? "Main Store"
-                        : "Sub Store"
+                          ? "Main Store"
+                          : "Sub Store"
                       : "Location Type"}
                   </h6>
                 </div>

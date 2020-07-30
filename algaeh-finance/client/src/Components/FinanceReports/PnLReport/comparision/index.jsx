@@ -7,14 +7,7 @@ export default memo(function ({ layout, data }) {
   // const [loading, setLoading] = useState(false);
   const [details, setDetails] = useState([]);
   useEffect(() => {
-    const {
-      columns,
-      income,
-      Direct_expense,
-      Indirect_expense,
-      gross_profit,
-      net_profit,
-    } = data;
+    const { columns, income, Direct_expense, Indirect_expense } = data;
     if (columns === undefined) {
       return;
     }

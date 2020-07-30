@@ -39,9 +39,7 @@ const itemchangeText = ($this, context, e) => {
   let name = e.item_description;
 
   if ($this.state.requistion_type === "PR") {
-    if (
-      $this.state.from_location_id === null
-    ) {
+    if ($this.state.from_location_id === null) {
       swalMessage({
         title: "Please select From and To Location.",
         type: "warning",
@@ -100,7 +98,7 @@ const itemchangeText = ($this, context, e) => {
             category_desc: e.category_desc,
 
             ItemUOM: data,
-            uom_description: data[0].uom_description
+            // uom_description: data[0].uom_description,
           });
 
           if (context !== undefined) {
@@ -185,9 +183,8 @@ const itemchangeText = ($this, context, e) => {
             category_desc: e.category_desc,
 
             ItemUOM: data,
-            uom_description: data[0].uom_description,
+            // uom_description: data[0].uom_description,
           });
-
 
           if (context !== undefined) {
             context.updateState({
@@ -210,7 +207,6 @@ const itemchangeText = ($this, context, e) => {
               ItemUOM: data,
             });
           }
-
         } else {
           swalMessage({
             title: "No Stock Avaiable for selected Item.",
@@ -224,9 +220,7 @@ const itemchangeText = ($this, context, e) => {
 
 const AddItems = ($this, context) => {
   if ($this.state.requistion_type === "PR") {
-    if (
-      $this.state.from_location_id === null
-    ) {
+    if ($this.state.from_location_id === null) {
       swalMessage({
         title: "Please select From and To Location.",
         type: "warning",
@@ -291,7 +285,7 @@ const AddItems = ($this, context) => {
       item_description: "",
       group_description: null,
       uom_description: null,
-      category_desc: null
+      category_desc: null,
     });
 
     if (context !== undefined) {
@@ -311,8 +305,7 @@ const AddItems = ($this, context) => {
         item_description: "",
         group_description: null,
         uom_description: null,
-        category_desc: null
-
+        category_desc: null,
       });
     }
   }
@@ -336,8 +329,8 @@ const deleteRequisitionDetail = ($this, context, row) => {
     $this.props.requisition_auth === true
       ? true
       : inventory_stock_detail.length > 0
-        ? false
-        : true;
+      ? false
+      : true;
   let authBtnEnable = inventory_stock_detail.length > 0 ? false : true;
 
   $this.setState({ inventory_stock_detail: inventory_stock_detail });

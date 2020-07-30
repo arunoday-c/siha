@@ -22,7 +22,6 @@ import swal from "sweetalert2";
 import AlgaehLoader from "../../../Wrapper/fullPageLoader";
 import { MainContext } from "algaeh-react-components";
 import { AlgaehSecurityElement } from "algaeh-react-components";
-import { reject } from "lodash";
 
 class FinalSettlement extends Component {
   constructor(props) {

@@ -25,7 +25,7 @@ export default class AlgaehSecurity extends PureComponent {
         const that = this;
         if (that.props.elementLink !== undefined) {
           if (that.props.elementLink.that !== undefined) {
-            that.props.elementLink.elements.map(item => {
+            that.props.elementLink.elements.forEach((item) => {
               if (item.ref !== undefined && item.ref !== "")
                 that.props.elementLink.that[item.ref].classList.add("d-none");
               if (item.event !== undefined && typeof item.event === "function")
@@ -34,14 +34,14 @@ export default class AlgaehSecurity extends PureComponent {
           }
         }
         this.setState({
-          canRender: false
+          canRender: false,
         });
       },
       hasNoSecurity: () => {
         this.setState({
-          canRender: true
+          canRender: true,
         });
-      }
+      },
     });
   }
 

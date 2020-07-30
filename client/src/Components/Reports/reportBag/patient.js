@@ -1,4 +1,4 @@
-export default function Patient({}) {
+export default function Patient() {
   return {
     name: "Patient Reports",
     submenu: [
@@ -15,11 +15,11 @@ export default function Patient({}) {
             isImp: true,
             others: {
               maxDate: new Date(),
-              minDate: null
-            }
-          }
-        ]
-      }
-    ]
+              minDate: null,
+            },
+          },
+        ],
+      },
+    ],
   };
 }

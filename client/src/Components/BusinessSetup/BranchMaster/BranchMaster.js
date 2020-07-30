@@ -13,7 +13,7 @@ import {
 import { AlgaehValidation } from "../../../utils/GlobalFunctions";
 
 import { FORMAT_YESNO } from "../../../utils/GlobalVariables.json";
-import _ from "lodash";
+// import _ from "lodash";
 
 import { Checkbox, AlgaehSecurityElement } from "algaeh-react-components";
 // /branchMaster/getBranchMaster
@@ -314,7 +314,7 @@ export default class BranchMaster extends Component {
               if (res.data.success) {
                 let data = res.data.records;
                 const newArray = this.state.allDepartments
-                  .map((item) => {
+                  .forEach((item) => {
                     const hasDepartment = data.find(
                       (f) =>
                         f.hims_d_department_id === item.hims_d_department_id
@@ -424,7 +424,8 @@ export default class BranchMaster extends Component {
 
   changeDepartments(data, e) {
     const _status = e.target.checked;
-    const index = this.state.allDepartments.indexOf(data);
+    const { allDepartments } = this.state;
+    const index = allDepartments.indexOf(data);
     data.checked = _status;
     data.indeterminate = false;
     data.subDepts = data.subDepts.map((item) => {
@@ -434,12 +435,10 @@ export default class BranchMaster extends Component {
       };
     });
 
-    this.state.allDepartments[index] = data;
-    const unCheckExist = this.state.allDepartments.find(
-      (f) => f.checked === false
-    );
+    allDepartments[index] = data;
+    const unCheckExist = allDepartments.find((f) => f.checked === false);
     this.setState({
-      allDepartments: this.state.allDepartments,
+      allDepartments,
       checkAll: unCheckExist === undefined ? true : false,
       checkAllIntermediate: unCheckExist === undefined ? false : true,
     });
@@ -474,11 +473,11 @@ export default class BranchMaster extends Component {
   changeSubdepartment(item, e) {
     const _status = e.target.checked;
     const { data, sub } = item;
-    const allDept = this.state.allDepartments;
-    const filterData = allDept.find(
+    const { allDepartments } = this.state;
+    const filterData = allDepartments.find(
       (f) => f.hims_d_department_id === data.hims_d_department_id
     );
-    const mainStateIndex = allDept.indexOf[filterData];
+    const mainStateIndex = allDepartments.indexOf[filterData];
     sub.checked = _status;
     const subData = data.subDepts.find(
       (f) => f.hims_d_sub_department_id === sub.hims_d_sub_department_id
@@ -493,12 +492,13 @@ export default class BranchMaster extends Component {
         : hasUnchecked.length === data.subDepts.length
         ? false
         : true;
-    this.state.allDepartments[mainStateIndex] = data;
+
+    allDepartments[mainStateIndex] = data;
     const hasUncheckedState = this.state.allDepartments.find(
       (f) => f.checked === false
     );
     this.setState({
-      allDepartments: this.state.allDepartments,
+      allDepartments,
       checkAll: hasUncheckedState === undefined ? true : false,
       checkAllIntermediate: hasUncheckedState === undefined ? false : true,
     });
@@ -686,6 +686,8 @@ export default class BranchMaster extends Component {
             ...item,
             subDepts: subDpartments,
           };
+        } else {
+          return undefined;
         }
       })
       .filter((f) => f !== undefined);

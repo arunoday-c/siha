@@ -34,10 +34,11 @@ function MenuItems({ showMenu, onVisibityChange, openModule, openScreen }) {
     setSelectedMenuItem(selMenu);
     setActiveScreen(item.screen_name);
     setCookie("ScreenName", screenName);
+    setCookie("ScreenCode", item.screen_code);
     const extraParam =
       item.redirect_url !== undefined &&
-      item.redirect_url !== "" &&
-      item.redirect_url !== null
+        item.redirect_url !== "" &&
+        item.redirect_url !== null
         ? `/${item.redirect_url}`
         : "";
     history.push(`/${screenName}${extraParam}`);
@@ -46,7 +47,7 @@ function MenuItems({ showMenu, onVisibityChange, openModule, openScreen }) {
     const value = e.target.value;
     if (value !== "") {
       let result = [];
-      userMenu.filter((f) => {
+      userMenu.forEach((f) => {
         let screens = [];
         const filScren = f.ScreenList.filter((s) => {
           const { screen_name, s_other_language } = s;
@@ -59,7 +60,10 @@ function MenuItems({ showMenu, onVisibityChange, openModule, openScreen }) {
             return true;
           } else return false;
         });
-        if (filScren.length > 0) result.push({ ...f, ScreenList: screens });
+        if (filScren.length > 0) {
+          result.push({ ...f, ScreenList: screens });
+          return false;
+        }
       });
       setModules(() => {
         return result;
@@ -124,8 +128,8 @@ function MenuItems({ showMenu, onVisibityChange, openModule, openScreen }) {
                     {moduleSelect === item.module_name || searchText !== "" ? (
                       <i className="fas fa-angle-up" />
                     ) : (
-                      <i className="fas fa-angle-down" />
-                    )}
+                        <i className="fas fa-angle-down" />
+                      )}
                   </div>
                 </div>
                 {moduleSelect === item.module_name || searchText !== "" ? (

@@ -371,6 +371,7 @@ export default memo(function (props) {
               className="btn btn-primary"
               onClick={loadData}
               style={{ marginTop: 18 }}
+              disabled={loading}
             >
               Load
             </button>

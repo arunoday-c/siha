@@ -14,10 +14,6 @@ import MyContext from "../../../../utils/MyContext";
 import { onchhangeNumber } from "./ItemListEvents";
 
 class ItemList extends Component {
-  constructor(props) {
-    super(props);
-  }
-
   static contextType = MyContext;
 
   render() {

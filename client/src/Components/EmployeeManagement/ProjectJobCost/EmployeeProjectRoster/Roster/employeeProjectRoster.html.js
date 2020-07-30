@@ -9,7 +9,7 @@ import AlgaehLoader from "../../../../Wrapper/fullPageLoader";
 import {
   getEmployeesForProjectRoster,
   getProjects,
-  createReport,
+  // createReport,
 } from "./employeeProjectRoster.event";
 import { swalMessage } from "../../../../../utils/algaehApiCall";
 import "../EmployeeProjectRoster.scss";
@@ -148,6 +148,7 @@ export default function EmpProjectRoster(props) {
                             projects: allProjects,
                           };
                         }
+                        return undefined;
                       } else {
                         if (projs.length > 0) {
                           return {
@@ -155,6 +156,7 @@ export default function EmpProjectRoster(props) {
                             projects: allProjects,
                           };
                         }
+                        return undefined;
                       }
                     });
                     const allEmployees = emp.filter((f) => {

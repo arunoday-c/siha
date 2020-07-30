@@ -319,11 +319,7 @@ class PurchaseOrderList extends Component {
                         others: {
                           resizable: false,
                           style: { textAlign: "center" },
-                        },
-                        others: {
                           maxWidth: 180,
-                          resizable: false,
-                          style: { textAlign: "center" },
                         },
                       },
                       {

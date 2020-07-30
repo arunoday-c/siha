@@ -347,7 +347,7 @@ function TableCells(props) {
           }
         : {};
     setEditable(editableTD);
-  }, []);
+  }, []); // eslint-disable-line
 
   return (
     <td {...editable} className={status}>

@@ -1,5 +1,6 @@
+/* eslint-disable no-eval */
 import { algaehApiCall } from "../utils/algaehApiCall";
-export const AlgaehActions = options => dispatch => {
+export const AlgaehActions = (options) => (dispatch) => {
   let settings = {
     ...{
       uri: null,
@@ -7,25 +8,25 @@ export const AlgaehActions = options => dispatch => {
       data: null,
       redux: {
         type: null,
-        mappingName: null
+        mappingName: null,
       },
       schema: {
         successField: "response.data.success === true",
-        data: "response.data.records"
-      }
+        data: "response.data.records",
+      },
     },
-    ...options
+    ...options,
   };
 
   if (settings.redux.data === undefined) {
-    settings.onSuccess = response => {
+    settings.onSuccess = (response) => {
       if (eval(settings.schema.successField)) {
         const redux_data = eval(settings.schema.data);
         if (redux_data.message === undefined) {
           dispatch({
             type: "ALGAEH_" + settings.redux.type,
             payload: eval(settings.schema.data),
-            mappingName: settings.redux.mappingName
+            mappingName: settings.redux.mappingName,
           });
           if (typeof settings.afterSuccess === "function") {
             settings.afterSuccess(eval(settings.schema.data));
@@ -38,7 +39,7 @@ export const AlgaehActions = options => dispatch => {
         );
       }
     };
-    settings.onFailure = error => {
+    settings.onFailure = (error) => {
       if (typeof settings.afterSuccess === "function")
         settings.afterSuccess(error);
     };
@@ -47,7 +48,7 @@ export const AlgaehActions = options => dispatch => {
     dispatch({
       type: "ALGAEH_" + settings.redux.type,
       payload: settings.redux.data,
-      mappingName: settings.redux.mappingName
+      mappingName: settings.redux.mappingName,
     });
     if (typeof settings.afterSuccess === "function")
       settings.afterSuccess(eval(settings.redux.data));

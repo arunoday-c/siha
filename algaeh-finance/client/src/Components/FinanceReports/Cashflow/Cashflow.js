@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import moment from "moment";
 // import { getItem, tokenDecode } from "algaeh-react-components/storage";
 // import jwtDecode from "jwt-decode";
@@ -38,9 +38,9 @@ export function Cashflow({ dates, layout }) {
   }, []);
 
   // const { organization_name, address1, address2, full_name } = organisation;
-  function onChangeDisplayHandler(name, value) {
-    setDisplayColumn(value);
-  }
+  // function onChangeDisplayHandler(name, value) {
+  //   setDisplayColumn(value);
+  // }
   return (
     <Details
       from_date={from_date}

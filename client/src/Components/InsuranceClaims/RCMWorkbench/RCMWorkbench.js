@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import "./RCMWorkbench.scss";
-import BreadCrumb from "../../common/BreadCrumb/BreadCrumb";
+// import BreadCrumb from "../../common/BreadCrumb/BreadCrumb";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import spotlightSearch from "../../../Search/spotlightSearch.json";
 import { AlgaehValidation } from "../../../utils/GlobalFunctions";
@@ -9,7 +9,7 @@ import {
   AlgaehLabel,
   AlagehAutoComplete,
   AlgaehDateHandler,
-  AlagehFormGroup,
+  // AlagehFormGroup,
 } from "../../Wrapper/algaehWrapper";
 import { texthandle } from "./RCMWorkbenchEvent";
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
@@ -677,7 +677,7 @@ class RCMWorkbench extends Component {
                         return (
                           <span>
                             {row.claim_validated === "V" ? (
-                              <span className="badge badge-primary">
+                              <span className="badge badge-success">
                                 Validated
                               </span>
                             ) : row.claim_validated === "E" ? (

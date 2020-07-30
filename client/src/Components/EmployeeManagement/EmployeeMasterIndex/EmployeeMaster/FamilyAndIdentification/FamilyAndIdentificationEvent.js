@@ -217,19 +217,17 @@ const updateIdentifications = ($this, row) => {
     updateIdDetails.push(Updateobj);
     idDetails[row.rowIdx] = Updateobj;
   } else {
-    {
-      let hijriConverted = hijri(row.valid_upto).format("iD-iM-iYYYY");
+    let hijriConverted = hijri(row.valid_upto).format("iD-iM-iYYYY");
 
-      let Updateobj = {
-        identity_documents_id: row.identity_documents_id,
-        identity_number: row.identity_number,
-        issue_date: row.issue_date,
-        valid_upto: row.valid_upto,
-        hijri_valid_upto: hijriConverted,
-      };
-      insertIdDetails[row.rowIdx] = Updateobj;
-      idDetails[row.rowIdx] = Updateobj;
-    }
+    let Updateobj = {
+      identity_documents_id: row.identity_documents_id,
+      identity_number: row.identity_number,
+      issue_date: row.issue_date,
+      valid_upto: row.valid_upto,
+      hijri_valid_upto: hijriConverted,
+    };
+    insertIdDetails[row.rowIdx] = Updateobj;
+    idDetails[row.rowIdx] = Updateobj;
   }
   $this.setState({
     idDetails: idDetails,
@@ -300,16 +298,14 @@ const updateDependencies = ($this, row) => {
     updateDependentDetails.push(Updateobj);
     dependentDetails[row.rowIdx] = Updateobj;
   } else {
-    {
-      let Updateobj = {
-        dependent_type: row.dependent_type,
-        dependent_name: row.dependent_name,
-        dependent_identity_type: row.dependent_identity_type,
-        dependent_identity_no: row.dependent_identity_no,
-      };
-      insertDependentDetails[row.rowIdx] = Updateobj;
-      dependentDetails[row.rowIdx] = Updateobj;
-    }
+    let Updateobj = {
+      dependent_type: row.dependent_type,
+      dependent_name: row.dependent_name,
+      dependent_identity_type: row.dependent_identity_type,
+      dependent_identity_no: row.dependent_identity_no,
+    };
+    insertDependentDetails[row.rowIdx] = Updateobj;
+    dependentDetails[row.rowIdx] = Updateobj;
   }
   $this.setState({
     dependentDetails: dependentDetails,
