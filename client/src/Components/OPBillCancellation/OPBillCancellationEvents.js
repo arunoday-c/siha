@@ -163,7 +163,7 @@ const getBillDetails = $this => {
     uri: "/opBilling/get",
     module: "billing",
     method: "GET",
-    data: { bill_number: $this.state.bill_number },
+    data: { bill_number: $this.state.bill_number, from_cancellation: "Y" },
     onSuccess: response => {
       if (response.data.success) {
 

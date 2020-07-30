@@ -104,15 +104,15 @@ class OPBilling extends Component {
       });
     }
 
-    this.props.getDepartmentsandDoctors({
-      uri: "/department/get/get_All_Doctors_DepartmentWise",
-      module: "masterSettings",
-      method: "GET",
-      redux: {
-        type: "DEPT_DOCTOR_GET_DATA",
-        mappingName: "deptanddoctors",
-      },
-    });
+    // this.props.getDepartmentsandDoctors({
+    //   uri: "/department/get/get_All_Doctors_DepartmentWise",
+    //   module: "masterSettings",
+    //   method: "GET",
+    //   redux: {
+    //     type: "DEPT_DOCTOR_GET_DATA",
+    //     mappingName: "deptanddoctors",
+    //   },
+    // });
 
     let _screenName = getCookie("ScreenName").replace("/", "");
     algaehApiCall({
@@ -134,7 +134,6 @@ class OPBilling extends Component {
       this.getCtrlCode(queryParams.get("bill_code"));
     }
 
-    debugger;
     if (
       this.props.patient_code !== undefined &&
       this.props.patient_code.length !== 0
@@ -468,17 +467,17 @@ class OPBilling extends Component {
           printArea={
             this.state.bill_number !== null
               ? {
-                  menuitems: [
-                    {
-                      label: "Print Receipt",
-                      events: {
-                        onClick: () => {
-                          generateReceipt(this, this);
-                        },
+                menuitems: [
+                  {
+                    label: "Print Receipt",
+                    events: {
+                      onClick: () => {
+                        generateReceipt(this, this);
                       },
                     },
-                  ],
-                }
+                  },
+                ],
+              }
               : ""
           }
           selectedLang={this.state.selectedLang}
@@ -540,8 +539,8 @@ class OPBilling extends Component {
                     this.state.patient_id === null
                       ? true
                       : this.state.Billexists === true
-                      ? true
-                      : false
+                        ? true
+                        : false
                   }
                 >
                   <AlgaehLabel
@@ -594,7 +593,6 @@ function mapStateToProps(state) {
     existinsurance: state.existinsurance,
     patienttype: state.patienttype,
     networkandplans: state.networkandplans,
-    deptanddoctors: state.deptanddoctors,
     PatientPackageList: state.PatientPackageList,
     orderedList: state.orderedList,
   };
@@ -608,7 +606,6 @@ function mapDispatchToProps(dispatch) {
       getPatientType: AlgaehActions,
       getPatientInsurance: AlgaehActions,
       getNetworkPlans: AlgaehActions,
-      getDepartmentsandDoctors: AlgaehActions,
       getPatientPackage: AlgaehActions,
       getOrderList: AlgaehActions,
     },

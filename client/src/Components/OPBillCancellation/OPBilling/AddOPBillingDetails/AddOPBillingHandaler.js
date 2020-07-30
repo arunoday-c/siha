@@ -1,42 +1,5 @@
 import { successfulMessage } from "../../../../utils/GlobalFunctions";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
-
-const serviceTypeHandeler = ($this, context, e) => {
-  $this.setState(
-    {
-      [e.name]: e.value
-    },
-    () => {
-      $this.props.getServices({
-        uri: "/serviceType/getService",
-        module: "masterSettings",
-        method: "GET",
-        data: { service_type_id: $this.state.s_service_type },
-        redux: {
-          type: "SERVICES_GET_DATA",
-          mappingName: "opbilservices"
-        }
-      });
-    }
-  );
-  if (context !== null) {
-    context.updateState({ [e.name]: e.value });
-  }
-};
-
-const serviceHandeler = ($this, context, e) => {
-  $this.setState(
-    {
-      [e.name]: e.value,
-      visittypeselect: false
-    },
-    () => {}
-  );
-  if (context !== null) {
-    context.updateState({ [e.name]: e.value });
-  }
-};
-
 const texthandle = ($this, context, ctrl, e) => {
   e = e || ctrl;
   let name;
@@ -264,8 +227,6 @@ const makeZero = ($this, context, e) => {
   }
 };
 export {
-  serviceTypeHandeler,
-  serviceHandeler,
   texthandle,
   discounthandle,
   adjustadvance,

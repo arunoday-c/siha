@@ -91,6 +91,11 @@ class OPBillCancellation extends Component {
         });
       },
     });
+    const queryParams = new URLSearchParams(this.props.location.search);
+    if (queryParams.get("bill_cancel_number")) {
+      getCtrlCode(this, queryParams.get("bill_cancel_number"));
+    }
+
     getCashiersAndShiftMAP(this, this);
   }
 
@@ -272,17 +277,17 @@ class OPBillCancellation extends Component {
           printArea={
             this.state.bill_cancel_number !== null
               ? {
-                  menuitems: [
-                    {
-                      label: "Print Receipt",
-                      events: {
-                        onClick: () => {
-                          generateReceipt(this, this);
-                        },
+                menuitems: [
+                  {
+                    label: "Print Receipt",
+                    events: {
+                      onClick: () => {
+                        generateReceipt(this, this);
                       },
                     },
-                  ],
-                }
+                  },
+                ],
+              }
               : ""
           }
           selectedLang={this.state.selectedLang}

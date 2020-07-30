@@ -301,8 +301,6 @@ export default {
   selectBill: (req, res, next) => {
     const _mysql = new algaehMysql();
     try {
-      const utilities = new algaehUtilities();
-      utilities.logger().log("selectBill: ");
       _mysql
         .executeQuery({
           query:
@@ -318,19 +316,24 @@ export default {
           printQuery: true,
         })
         .then((headerResult) => {
-          utilities.logger().log("headerResult: ", headerResult);
           req.connection = {
             connection: _mysql.connection,
             isTransactionConnection: _mysql.isTransactionConnection,
             pool: _mysql.pool,
           };
           if (headerResult.length != 0) {
+            let strQuery = ""
+            if (req.query.from_cancellation == "Y") {
+              strQuery = "and D.cancel_yes_no='N'"
+            }
+
             _mysql
               .executeQuery({
                 query:
-                  "select * from hims_f_billing_details, hims_d_services where \
-                  hims_f_billing_details.services_id = hims_d_services.hims_d_services_id and \
-                  hims_f_billing_header_id=? and hims_f_billing_details.record_status='A' and hims_f_billing_details.cancel_yes_no='N'",
+                  "select D.*, S.service_name, ST.service_type from hims_f_billing_details D \
+                  inner join hims_d_services S on D.services_id = S.hims_d_services_id  \
+                  inner join hims_d_service_type ST on D.service_type_id = ST.hims_d_service_type_id \
+                  where hims_f_billing_header_id=? and D.record_status='A'" + strQuery,
                 values: [headerResult[0].hims_f_billing_header_id],
                 printQuery: true,
               })
