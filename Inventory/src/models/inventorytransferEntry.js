@@ -976,7 +976,7 @@ export default {
 
                 ack_cost = utilities.decimalPoints(ack_cost, decimal_places);
 
-                let strQuery = "select 1=1";
+                let strQuery = "";
 
                 if (
                   result_data[2][0].cost_center_required === "Y" &&
@@ -1010,10 +1010,14 @@ export default {
                   })
                   .then((header_result) => {
                     let project_id = null;
-                    const day_end_header = header_result[0];
-                    if (header_result[1].length > 0) {
-                      project_id = header_result[1][0].project_id;
+                    let day_end_header = []
+                    if (header_result.length > 1) {
+                      day_end_header = header_result[0]
+                      project_id = header_result[1][0].project_id
+                    } else {
+                      day_end_header = header_result
                     }
+
                     let insertSubDetail = [];
                     const month = moment().format("M");
                     const year = moment().format("YYYY");

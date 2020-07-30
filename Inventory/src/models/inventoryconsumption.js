@@ -227,7 +227,7 @@ export default {
                 const sub_department_id = result[3].length > 0 ? result[3][0].hims_d_sub_department_id :
                   result[4].length > 0 ? result[4][0].hims_d_sub_department_id : null
 
-                let strQuery = "select 1=1";
+                let strQuery = "";
 
                 if (result[5][0].cost_center_required === "Y" && result[5][0].cost_center_type === "P") {
                   strQuery = `select  hims_m_division_project_id, project_id from hims_m_division_project D \
@@ -259,10 +259,24 @@ export default {
                   })
                   .then(header_result => {
                     let project_id = null;
-                    const day_end_header = header_result[0]
-                    if (header_result[1].length > 0) {
+                    let day_end_header =[]
+                    if (header_result.length > 1) {
+                      day_end_header = header_result[0]
                       project_id = header_result[1][0].project_id
+                    }else{
+                      day_end_header = header_result
                     }
+                    // let day_end_header = "";
+
+                    // if (strQuery == "") {
+                    //   day_end_header = header_result;
+                    // } else {
+                    //   day_end_header = header_result[0];
+                    //   if (header_result[1].length > 0) {
+                    //     project_id = header_result[1][0].project_id;
+                    //   }
+                    // }
+
                     let insertSubDetail = []
                     const month = moment().format("M");
                     const year = moment().format("YYYY");

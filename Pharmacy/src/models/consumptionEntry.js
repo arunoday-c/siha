@@ -249,10 +249,14 @@ export default {
                   })
                   .then(header_result => {
                     let project_id = null;
-                    const day_end_header = header_result[0]
-                    if (header_result[1].length > 0) {
+                    let day_end_header = []
+                    if (header_result.length > 1) {
+                      day_end_header = header_result[0]
                       project_id = header_result[1][0].project_id
+                    } else {
+                      day_end_header = header_result
                     }
+
                     let insertSubDetail = []
                     const month = moment().format("M");
                     const year = moment().format("YYYY");
