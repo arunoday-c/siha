@@ -1,6 +1,6 @@
 import { Router } from "express";
 import utlities from "algaeh-utilities";
-import insuranceModels from "../models/insurance";
+import insuranceModels, { saveMultiStatement } from "../models/insurance";
 
 const {
   addPatientInsuranceData,
@@ -226,6 +226,11 @@ export default () => {
       next();
     }
   );
-
+  api.post("/saveMultiStatement", saveMultiStatement, (req, res) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: req.records,
+    });
+  });
   return api;
 };
