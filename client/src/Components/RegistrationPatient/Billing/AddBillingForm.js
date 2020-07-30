@@ -50,29 +50,6 @@ export default class AddBillingForm extends Component {
     this.setState({ ...this.state, ...InputOutput });
   }
 
-  componentDidMount() {
-    // if (this.props.counters === undefined || this.props.counters.length === 0) {
-    //   this.props.getCounters({
-    //     uri: "/shiftAndCounter/getCounterMaster",
-    //     module: "masterSettings",
-    //     method: "GET",
-    //     redux: {
-    //       type: "CTRY_GET_DATA",
-    //       mappingName: "counters"
-    //     }
-    //   });
-    // }
-    this.props.getBankCards({
-      uri: "/bankmaster/getBankCards",
-      module: "masterSettings",
-      method: "GET",
-      redux: {
-        type: "BANK_CARD_GET_DATA",
-        mappingName: "bankscards"
-      }
-    });
-  }
-
   UNSAFE_componentWillReceiveProps(nextProps) {
     this.setState(nextProps.PatRegIOputs);
   }
