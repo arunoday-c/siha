@@ -907,7 +907,7 @@ export default {
                 // console.log("ack_cost", ack_cost)
                 // console.log("non_reviced_transfer_cost", non_reviced_transfer_cost)
 
-                let strQuery = "";
+                let strQuery = "select 1=1";
 
                 if (result_data[2][0].cost_center_required === "Y" && result_data[2][0].cost_center_type === "P") {
                   strQuery = `select  hims_m_division_project_id, project_id from hims_m_division_project D \

@@ -976,7 +976,7 @@ export default {
 
                 ack_cost = utilities.decimalPoints(ack_cost, decimal_places);
 
-                let strQuery = "";
+                let strQuery = "select 1=1";
 
                 if (
                   result_data[2][0].cost_center_required === "Y" &&

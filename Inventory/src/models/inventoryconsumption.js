@@ -227,7 +227,7 @@ export default {
                 const sub_department_id = result[3].length > 0 ? result[3][0].hims_d_sub_department_id :
                   result[4].length > 0 ? result[4][0].hims_d_sub_department_id : null
 
-                let strQuery = "";
+                let strQuery = "select 1=1";
 
                 if (result[5][0].cost_center_required === "Y" && result[5][0].cost_center_type === "P") {
                   strQuery = `select  hims_m_division_project_id, project_id from hims_m_division_project D \
