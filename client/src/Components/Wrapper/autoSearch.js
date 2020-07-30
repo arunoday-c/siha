@@ -103,10 +103,15 @@ export default class AlgaehAutoSearch extends Component {
     } = this.props;
     const { pageSize, pageNo, value } = this.state;
     const _exParameters = extraParameters === undefined ? {} : extraParameters;
-    let _arrayParam = columns.map((f) => {
-      if (f.exclude === undefined || f.exclude !== true)
-        return { [f.fieldName]: value };
-    });
+    let _arrayParam = columns
+      .map((f) => {
+        if (f.exclude === undefined || f.exclude !== true) {
+          return { [f.fieldName]: value };
+        } else {
+          return undefined;
+        }
+      })
+      .filter((item) => item !== undefined);
     //  Array.prototype.push.apply(_arrayParam, _exParameters);
 
     // Object.keys(_exParameters).map((item, index) => {
