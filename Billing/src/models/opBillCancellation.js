@@ -23,14 +23,16 @@ export default {
         .then((generatedNumbers) => {
           bill_cancel_number = generatedNumbers.OP_CBIL;
 
-          let criedt_qry = "";
-          if (parseFloat(inputParam.credit_amount) > 0) {
-            criedt_qry = _mysql.mysqlQueryFormat(
-              "UPDATE `hims_f_billing_header` SET balance_credit = balance_credit - ? \
-              WHERE hims_f_billing_header_id=?;",
-              [parseFloat(inputParam.credit_amount), inputParam.from_bill_id]
-            );
-          }
+          req.body.bill_cancel_number = generatedNumbers.OP_CBIL
+
+          // let criedt_qry = "";
+          // if (parseFloat(inputParam.credit_amount) > 0) {
+          //   criedt_qry = _mysql.mysqlQueryFormat(
+          //     "UPDATE `hims_f_billing_header` SET balance_credit = balance_credit - ? \
+          //     WHERE hims_f_billing_header_id=?;",
+          //     [parseFloat(inputParam.credit_amount), inputParam.from_bill_id]
+          //   );
+          // }
 
           _mysql
             .executeQuery({
@@ -90,6 +92,7 @@ export default {
               printQuery: true,
             })
             .then((headerResult) => {
+              req.body.hims_f_bill_cancel_header_id = headerResult.insertId
               let IncludeValues = [
                 "service_type_id",
                 "services_id",
@@ -178,7 +181,8 @@ export default {
       _mysql
         .executeQuery({
           query:
-            "SELECT bh.*,PAT.*,vst.*,bill.bill_number,bh.patient_payable , bh.receipt_header_id as cal_receipt_header_id FROM hims_f_bill_cancel_header bh \
+            "SELECT bh.*,PAT.*,vst.*,bill.bill_number, bill.bill_date ,bh.patient_payable , \
+            bh.receipt_header_id as cal_receipt_header_id FROM hims_f_bill_cancel_header bh \
           inner join hims_f_patient as PAT on bh.patient_id = PAT.hims_d_patient_id\
           inner join hims_f_patient_visit as vst on bh.visit_id = vst.hims_f_patient_visit_id\
           inner join hims_f_billing_header as bill on bh.from_bill_id = bill.hims_f_billing_header_id \
@@ -199,7 +203,10 @@ export default {
             _mysql
               .executeQuery({
                 query:
-                  "select * from hims_f_bill_cancel_details where hims_f_bill_cancel_header_id=? and record_status='A'",
+                  "select D.*, S.service_name, ST.service_type from hims_f_bill_cancel_details D \
+                  inner join hims_d_services S on D.services_id = S.hims_d_services_id  \
+                  inner join hims_d_service_type ST on D.service_type_id = ST.hims_d_service_type_id \
+                  where hims_f_bill_cancel_header_id=?",
                 values: [headerResult[0].hims_f_bill_cancel_header_id],
                 printQuery: true,
               })
@@ -930,9 +937,8 @@ export default {
                     inner join hims_d_project P on D.project_id=P.hims_d_project_id \
                     inner join hims_d_hospital H on D.division_id=H.hims_d_hospital_id where \
                     division_id= ${req.userIdentity.hospital_id} limit 1;`;
-                } else {
-                  strQuery = `SELECT 1=1`
                 }
+
                 _mysql
                   .executeQueryWithTransaction({
                     query:
@@ -944,8 +950,8 @@ export default {
                       new Date(),
                       amount,
                       voucher_type,
-                      inputParam.receipt_header_id,
-                      inputParam.receipt_number,
+                      inputParam.hims_f_bill_cancel_header_id,
+                      inputParam.bill_cancel_number,
                       inputParam.ScreenCode,
                       narration,
                       req.userIdentity.algaeh_d_app_user_id,
@@ -955,10 +961,15 @@ export default {
                   })
                   .then((header_result) => {
                     let project_id = null;
-                    const headerDayEnd = header_result[0];
-                    if (header_result[1].length > 0) {
-                      project_id = header_result[1][0].project_id;
+
+                    let headerDayEnd = [];
+                    if (header_result.length > 1) {
+                      headerDayEnd = header_result[0]
+                      project_id = header_result[1][0].project_id
+                    } else {
+                      headerDayEnd = header_result
                     }
+
                     const month = moment().format("M");
                     const year = moment().format("YYYY");
                     const IncludeValuess = [

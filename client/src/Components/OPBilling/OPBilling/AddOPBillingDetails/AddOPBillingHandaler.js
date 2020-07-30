@@ -1,45 +1,6 @@
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import extend from "extend";
 
-const serviceTypeHandeler = ($this, context, e) => {
-  if (e.value === undefined) {
-    $this.setState({
-      [e]: null
-    });
-    if (context !== null) {
-      context.updateState({ [e]: null });
-    }
-    $this.props.getServices({
-      redux: {
-        type: "SERVICES_GET_DATA",
-        mappingName: "opbilservices",
-        data: []
-      }
-    });
-  } else {
-    $this.setState(
-      {
-        [e.name]: e.value
-      },
-      () => {
-        $this.props.getServices({
-          uri: "/serviceType/getService",
-          module: "masterSettings",
-          method: "GET",
-          data: { service_type_id: $this.state.s_service_type },
-          redux: {
-            type: "SERVICES_GET_DATA",
-            mappingName: "opbilservices"
-          }
-        });
-      }
-    );
-    if (context !== null) {
-      context.updateState({ [e.name]: e.value });
-    }
-  }
-};
-
 const serviceHandeler = ($this, context, e) => {
   if ((e.service_type_id === 5 || e.service_type_id === 11) && e.hims_d_investigation_test_id === null) {
     $this.setState({
@@ -564,7 +525,6 @@ const makeZeroIngrid = ($this, context, row, e) => {
 };
 
 export {
-  serviceTypeHandeler,
   serviceHandeler,
   texthandle,
   discounthandle,

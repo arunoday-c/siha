@@ -1,7 +1,7 @@
 import algaehMysql from "algaeh-mysql";
 import extend from "extend";
 import mysql from "mysql";
-
+import _ from "lodash";
 export default {
   //Addded by noor code modification
   addPatientInsuranceData: (req, res, next) => {
@@ -1530,3 +1530,60 @@ export default {
     }
   },
 };
+export function saveMultiStatement(req, res, next) {
+  const _mysql = new algaehMysql();
+  try {
+    const { invoiceList } = req.body;
+    _mysql
+      .executeQuery({
+        query: `select hims_f_invoice_header_id,insurance_provider_id,sub_insurance_id,gross_amount, discount_amount, net_amount, patient_resp, 
+        patient_tax, patient_payable, company_resp, company_tax, company_payable, sec_company_resp, sec_company_tax, 
+        sec_company_payable, submission_date, submission_ammount, remittance_date, remittance_ammount, 
+        denial_ammount from hims_f_invoice_header 
+        where hims_f_invoice_header_id in (?) FOR UPDATE;`,
+        values: [invoiceList],
+        printQuery: true,
+      })
+      .then((result) => {
+        if (result.length > 0) {
+          const { insurance_provider_id, sub_insurance_id } = result[0];
+          const total_gross_amount = _.sumBy(result, (s) => s.gross_amount);
+          const total_company_responsibility = _.sumBy(
+            result,
+            (s) => s.company_resp
+          );
+          const total_company_vat = _.sumBy(result, (s) => s.company_tax);
+          const total_company_payable = _.sumBy(
+            result,
+            (s) => s.company_payable
+          );
+          const total_remittance_amount = 0;
+          const total_balance_amount =
+            total_gross_amount - total_remittance_amount;
+          _mysql
+            .generateRunningNumber({
+              user_id: req.userIdentity.algaeh_d_app_user_id,
+              numgen_codes: ["INV_NUM"],
+              table_name: "hims_f_app_numgen",
+            })
+            .then((generatedNumbers) => {
+              // generatedNumbers.INV_NUM
+            })
+            .catch((error) => {
+              mysql.rollBackTransaction(() => {
+                next(error);
+              });
+            });
+        }
+        _mysql.releaseConnection();
+        next();
+      })
+      .catch((error) => {
+        _mysql.closeConnection(() => {
+          next(error);
+        });
+      });
+  } catch (error) {
+    _mysql.releaseConnection();
+  }
+}

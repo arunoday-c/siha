@@ -34,10 +34,11 @@ function MenuItems({ showMenu, onVisibityChange, openModule, openScreen }) {
     setSelectedMenuItem(selMenu);
     setActiveScreen(item.screen_name);
     setCookie("ScreenName", screenName);
+    setCookie("ScreenCode", item.screen_code);
     const extraParam =
       item.redirect_url !== undefined &&
-      item.redirect_url !== "" &&
-      item.redirect_url !== null
+        item.redirect_url !== "" &&
+        item.redirect_url !== null
         ? `/${item.redirect_url}`
         : "";
     history.push(`/${screenName}${extraParam}`);
@@ -127,8 +128,8 @@ function MenuItems({ showMenu, onVisibityChange, openModule, openScreen }) {
                     {moduleSelect === item.module_name || searchText !== "" ? (
                       <i className="fas fa-angle-up" />
                     ) : (
-                      <i className="fas fa-angle-down" />
-                    )}
+                        <i className="fas fa-angle-down" />
+                      )}
                   </div>
                 </div>
                 {moduleSelect === item.module_name || searchText !== "" ? (

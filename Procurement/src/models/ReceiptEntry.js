@@ -515,12 +515,13 @@ export default {
                     printQuery: true
                   })
                   .then(header_result => {
-                    console.log("header_result", header_result[0])
-                    console.log("header_result", header_result[1])
                     let project_id = null;
-                    const headerResult = header_result[0]
-                    if (header_result[1].length > 0) {
+                    let headerResult = []
+                    if (header_result.length > 1) {
+                      headerResult = header_result[0]
                       project_id = header_result[1][0].project_id
+                    } else {
+                      headerResult = header_result
                     }
 
                     _mysql

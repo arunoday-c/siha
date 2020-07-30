@@ -91,8 +91,8 @@ class PatientVisitDetails extends Component {
                       this.state.Billexists === true
                         ? "none"
                         : this.state.patient_code
-                        ? "none"
-                        : "",
+                          ? "none"
+                          : "",
                   }}
                 >
                   <AlgaehLabel label={{ fieldName: "bill_number" }} />
@@ -100,8 +100,8 @@ class PatientVisitDetails extends Component {
                     {this.state.bill_number ? (
                       this.state.bill_number
                     ) : (
-                      <AlgaehLabel label={{ fieldName: "bill_number" }} />
-                    )}
+                        <AlgaehLabel label={{ fieldName: "bill_number" }} />
+                      )}
                     <i className="fas fa-search fa-lg"></i>
                   </h6>
                 </div>

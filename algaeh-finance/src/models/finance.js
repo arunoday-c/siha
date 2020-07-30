@@ -816,7 +816,7 @@ export default {
       .executeQuery({
         query: `select finance_day_end_header_id, transaction_date,    
         ROUND( amount , ${decimal_places}) as amount, voucher_type, document_number,  
-        invoice_no, screen_name, ref_no as cheque_no,cheque_date, 
+        invoice_no, screen_name, ref_no as cheque_no,cheque_date, from_screen,
          ROUND( cheque_amount , ${decimal_places}) as  cheque_amount, narration, 
         U.username as entered_by, entered_date from finance_day_end_header H 
         ${joinStr}
@@ -1664,13 +1664,13 @@ export default {
                               headRes[0]["amount"]
                             )} where finance_voucher_header_id=${
                               BalanceInvoice[0]["finance_voucher_header_id"]
-                            };`;
+                              };`;
                           } else {
                             updateQry = `update finance_voucher_header set settled_amount=settled_amount+${parseFloat(
                               headRes[0]["amount"]
                             )} where finance_voucher_header_id=${
                               BalanceInvoice[0]["finance_voucher_header_id"]
-                            };`;
+                              };`;
                           }
                         }
 
@@ -2940,11 +2940,11 @@ function calcAmount(account_heads, levels, decimal_places) {
 
           item["cred_minus_deb"] = parseFloat(
             parseFloat(item["total_credit_amount"]) -
-              parseFloat(item["total_debit_amount"])
+            parseFloat(item["total_debit_amount"])
           ).toFixed(decimal_places);
           item["deb_minus_cred"] = parseFloat(
             parseFloat(item["total_debit_amount"]) -
-              parseFloat(item["total_credit_amount"])
+            parseFloat(item["total_credit_amount"])
           ).toFixed(decimal_places);
 
           return item;

@@ -54,33 +54,6 @@ class AddOPBillingForm extends Component {
     this.setState(nextProps.BillingIOputs);
   }
 
-  componentDidMount() {
-    if (
-      this.props.servicetype === undefined ||
-      this.props.servicetype.length === 0
-    ) {
-      this.props.getServiceTypes({
-        uri: "/serviceType",
-        module: "masterSettings",
-        method: "GET",
-        redux: {
-          type: "SERVIES_TYPES_GET_DATA",
-          mappingName: "servicetype",
-        },
-      });
-    }
-
-    this.props.getServices({
-      uri: "/serviceType/getService",
-      module: "masterSettings",
-      method: "GET",
-      redux: {
-        type: "SERVICES_GET_DATA",
-        mappingName: "serviceslist",
-      },
-    });
-  }
-
   ShowBillDetails(e) {
     this.setState({
       ...this.state,
@@ -364,59 +337,6 @@ class AddOPBillingForm extends Component {
                   <div className="row">
                     <div className="col-12">
                       <div className="row">
-                        {/* <AlagehAutoComplete
-                          div={{ className: "col-lg-3" }}
-                          label={{
-                            fieldName: "select_service_type"
-                          }}
-                          selector={{
-                            name: "s_service_type",
-                            className: "select-fld",
-                            value: this.state.s_service_type,
-                            dataSource: {
-                              textField:
-                                this.state.selectedLang === "en"
-                                  ? "service_type"
-                                  : "arabic_service_type",
-                              valueField: "hims_d_service_type_id",
-                              data: this.props.servicetype
-                            },
-                            others: { disabled: this.state.Billexists },
-                            onChange: serviceTypeHandeler.bind(
-                              this,
-                              this,
-                              context
-                            ),
-                            onClear: serviceTypeHandeler.bind(
-                              this,
-                              this,
-                              context
-                            )
-                          }}
-                        />
-                        <AlagehAutoComplete
-                          div={{ className: "col-lg-3" }}
-                          label={{
-                            fieldName: "select_service"
-                          }}
-                          selector={{
-                            name: "s_service",
-                            className: "select-fld",
-                            value: this.state.s_service,
-                            dataSource: {
-                              textField:
-                                this.state.selectedLang === "en"
-                                  ? "service_name"
-                                  : "arabic_service_name",
-                              valueField: "hims_d_services_id",
-                              data: this.props.opbilservices
-                            },
-                            others: { disabled: this.state.Billexists },
-                            onChange: serviceHandeler.bind(this, this, context),
-                            onClear: serviceHandeler.bind(this, this, context)
-                          }}
-                        /> */}
-
                         <AlgaehAutoSearch
                           div={{ className: "col customServiceSearch" }}
                           label={{ forceLabel: "Search Investigation" }}
@@ -474,7 +394,7 @@ class AddOPBillingForm extends Component {
                           onClear={() => {
                             context.updateState({
                               s_service: null,
-                              service_name: null,
+                              service_name: "",
                               s_service_type: null,
                             });
                           }}
@@ -581,56 +501,16 @@ class AddOPBillingForm extends Component {
                             },
                           },
                           {
-                            fieldName: "service_type_id",
+                            fieldName: "service_type",
                             label: (
                               <AlgaehLabel
                                 label={{ fieldName: "service_type_id" }}
                               />
-                            ),
-                            displayTemplate: (row) => {
-                              let display =
-                                this.props.servicetype === undefined
-                                  ? []
-                                  : this.props.servicetype.filter(
-                                      (f) =>
-                                        f.hims_d_service_type_id ===
-                                        row.service_type_id
-                                    );
-
-                              return (
-                                <span>
-                                  {display !== undefined && display.length !== 0
-                                    ? this.state.selectedLang === "en"
-                                      ? display[0].service_type
-                                      : display[0].arabic_service_type
-                                    : ""}
-                                </span>
-                              );
-                            },
-                            editorTemplate: (row) => {
-                              let display =
-                                this.props.servicetype === undefined
-                                  ? []
-                                  : this.props.servicetype.filter(
-                                      (f) =>
-                                        f.hims_d_service_type_id ===
-                                        row.service_type_id
-                                    );
-
-                              return (
-                                <span>
-                                  {display !== undefined && display.length !== 0
-                                    ? this.state.selectedLang === "en"
-                                      ? display[0].service_type
-                                      : display[0].arabic_service_type
-                                    : ""}
-                                </span>
-                              );
-                            },
+                            )
                           },
 
                           {
-                            fieldName: "services_id",
+                            fieldName: "service_name",
                             label: (
                               <AlgaehLabel
                                 label={{ fieldName: "services_id" }}
@@ -641,46 +521,23 @@ class AddOPBillingForm extends Component {
                                 row.trans_package_detail_id > 0
                                   ? "(Package Service)"
                                   : "";
-                              let display =
-                                this.props.serviceslist === undefined
-                                  ? []
-                                  : this.props.serviceslist.filter(
-                                      (f) =>
-                                        f.hims_d_services_id === row.services_id
-                                    );
+                              // let display =
+                              //   this.props.serviceslist === undefined
+                              //     ? []
+                              //     : this.props.serviceslist.filter(
+                              //         (f) =>
+                              //           f.hims_d_services_id === row.services_id
+                              //       );
 
                               return (
                                 <span>
-                                  {display !== null && display.length !== 0
-                                    ? this.state.selectedLang === "en"
-                                      ? display[0].service_name
-                                      : display[0].arabic_service_name
-                                    : ""}
+                                  {row.service_name}
                                   <span className="packageAvail">
                                     {package_service}
                                   </span>
                                 </span>
                               );
-                            },
-                            editorTemplate: (row) => {
-                              let display =
-                                this.props.serviceslist === undefined
-                                  ? []
-                                  : this.props.serviceslist.filter(
-                                      (f) =>
-                                        f.hims_d_services_id === row.services_id
-                                    );
-
-                              return (
-                                <span>
-                                  {display !== null && display.length !== 0
-                                    ? this.state.selectedLang === "en"
-                                      ? display[0].service_name
-                                      : display[0].arabic_service_name
-                                    : ""}
-                                </span>
-                              );
-                            },
+                            }
                           },
 
                           {
@@ -810,8 +667,8 @@ class AddOPBillingForm extends Component {
                                         this.state.insurance_yesno === "Y"
                                           ? true
                                           : row.trans_package_detail_id > 0
-                                          ? true
-                                          : this.state.Billexists,
+                                            ? true
+                                            : this.state.Billexists,
                                       onBlur: makeZeroIngrid.bind(
                                         this,
                                         this,
@@ -1221,8 +1078,6 @@ class AddOPBillingForm extends Component {
 
 function mapStateToProps(state) {
   return {
-    servicetype: state.servicetype,
-    opbilservices: state.opbilservices,
     serviceslist: state.serviceslist,
     PatientPackageList: state.PatientPackageList,
   };
@@ -1231,8 +1086,6 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getServiceTypes: AlgaehActions,
-      getServices: AlgaehActions,
       getPatientPackage: AlgaehActions,
     },
     dispatch
@@ -1242,34 +1095,3 @@ function mapDispatchToProps(dispatch) {
 export default withRouter(
   connect(mapStateToProps, mapDispatchToProps)(AddOPBillingForm)
 );
-
-// editorTemplate: row => {
-//   return (
-//     <AlagehFormGroup
-//       div={{}}
-//       textBox={{
-//         value: row.quantity,
-//         className: "txt-fld",
-//         name: "quantity",
-//         events: {
-//           onChange: onquantitycol.bind(
-//             this,
-//             this,
-//             row
-//           )
-//         },
-//         others: {
-//           placeholder: "0.00",
-//           onBlur: this.calculateAmount.bind(
-//             this,
-//             row
-//           ),
-//           onFocus: e => {
-//             e.target.oldvalue = e.target.value;
-//           },
-//           type: "number"
-//         }
-//       }}
-//     />
-//   );
-// }
