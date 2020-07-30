@@ -1145,7 +1145,6 @@ export default function Pharmacy({
           // }
         ]
       },
-      ,
       {
         subitem: "Transfer Report",
         reportName: "PharmacyTransferReport",
