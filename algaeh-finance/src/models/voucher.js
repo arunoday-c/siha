@@ -1036,47 +1036,64 @@ export default {
                       ,C.child_name from finance_voucher_details VD\
                       inner join finance_account_head H on VD.head_id=H.finance_account_head_id\
                        inner join finance_account_child C on VD.child_id=C.finance_account_child_id\
-                      where voucher_header_id=? and auth_status='P';",
+                      where voucher_header_id=? and auth_status='P';SELECT allow_negative_balance FROM finance_options;",
                     values: [input.voucher_header_id],
                     printQuery: false,
                   })
-                  .then((result) => {
-                    if (result.length > 0) {
-                      const child_ids = [];
-                      result.forEach((child) => {
-                        child_ids.push(child.child_id);
-                      });
+                  .then((results) => {
+                    const result = results[0];
 
+                    const options = results[1][0];
+                    if (result.length > 0) {
                       new Promise((resolve, reject) => {
-                        _mysql
-                          .executeQuery({
-                            query:
-                              "select child_id,coalesce(sum(credit_amount)- sum(debit_amount),0) as cred_minus_deb,\
+                        if (options.allow_negative_balance == "Y") {
+                          resolve({});
+                        } else {
+                          const child_ids = [];
+                          result.forEach((child) => {
+                            child_ids.push(child.child_id);
+                          });
+
+                          _mysql
+                            .executeQuery({
+                              query:
+                                "select child_id,coalesce(sum(credit_amount)- sum(debit_amount),0) as cred_minus_deb,\
                             coalesce(sum(debit_amount)-sum(credit_amount),0) as deb_minus_cred\
                           from finance_voucher_details \
                           where auth_status='A' and child_id in (?) group by child_id;",
-                            values: [child_ids],
-                            printQuery: false,
-                          })
-                          .then((closeBalance) => {
-                            let internal_eror = false;
-                            //ST-closing balance CHECK
-                            result.forEach((entry) => {
-                              //checking debit balance for asset and expence
-                              if (
-                                (entry.root_id == 1 || entry.root_id == 5) &&
-                                entry.payment_type == "CR"
-                              ) {
-                                let ledger = closeBalance.find((f) => {
-                                  return f.child_id == entry.child_id;
-                                });
+                              values: [child_ids],
+                              printQuery: false,
+                            })
+                            .then((closeBalance) => {
+                              let internal_eror = false;
+                              //ST-closing balance CHECK
+                              result.forEach((entry) => {
+                                //checking debit balance for asset and expence
+                                if (
+                                  (entry.root_id == 1 || entry.root_id == 5) &&
+                                  entry.payment_type == "CR"
+                                ) {
+                                  let ledger = closeBalance.find((f) => {
+                                    return f.child_id == entry.child_id;
+                                  });
 
-                                if (ledger != undefined) {
-                                  const temp =
-                                    parseFloat(ledger.deb_minus_cred) -
-                                    parseFloat(entry.credit_amount);
+                                  if (ledger != undefined) {
+                                    const temp =
+                                      parseFloat(ledger.deb_minus_cred) -
+                                      parseFloat(entry.credit_amount);
 
-                                  if (temp < 0) {
+                                    if (temp < 0) {
+                                      internal_eror = true;
+                                      req.records = {
+                                        invalid_user: true,
+                                        message: `${entry.child_name} doesn't have debit balance`,
+                                      };
+                                      next();
+                                      return;
+                                    } else {
+                                      ledger.deb_minus_cred = temp;
+                                    }
+                                  } else {
                                     internal_eror = true;
                                     req.records = {
                                       invalid_user: true,
@@ -1084,36 +1101,36 @@ export default {
                                     };
                                     next();
                                     return;
-                                  } else {
-                                    ledger.deb_minus_cred = temp;
                                   }
-                                } else {
-                                  internal_eror = true;
-                                  req.records = {
-                                    invalid_user: true,
-                                    message: `${entry.child_name} doesn't have debit balance`,
-                                  };
-                                  next();
-                                  return;
                                 }
-                              }
-                              //checking credit balance for liabilty,capital and income
-                              else if (
-                                (entry.root_id == 2 ||
-                                  entry.root_id == 3 ||
-                                  entry.root_id == 4) &&
-                                entry.payment_type == "DR"
-                              ) {
-                                let ledger = closeBalance.find((f) => {
-                                  return f.child_id == entry.child_id;
-                                });
+                                //checking credit balance for liabilty,capital and income
+                                else if (
+                                  (entry.root_id == 2 ||
+                                    entry.root_id == 3 ||
+                                    entry.root_id == 4) &&
+                                  entry.payment_type == "DR"
+                                ) {
+                                  let ledger = closeBalance.find((f) => {
+                                    return f.child_id == entry.child_id;
+                                  });
 
-                                if (ledger != undefined) {
-                                  const temp =
-                                    parseFloat(ledger.cred_minus_deb) -
-                                    parseFloat(entry.debit_amount);
+                                  if (ledger != undefined) {
+                                    const temp =
+                                      parseFloat(ledger.cred_minus_deb) -
+                                      parseFloat(entry.debit_amount);
 
-                                  if (temp < 0) {
+                                    if (temp < 0) {
+                                      internal_eror = true;
+                                      req.records = {
+                                        invalid_user: true,
+                                        message: `${entry.child_name} doesn't have credit balance`,
+                                      };
+                                      next();
+                                      return;
+                                    } else {
+                                      ledger.deb_minus_cred = temp;
+                                    }
+                                  } else {
                                     internal_eror = true;
                                     req.records = {
                                       invalid_user: true,
@@ -1121,32 +1138,22 @@ export default {
                                     };
                                     next();
                                     return;
-                                  } else {
-                                    ledger.deb_minus_cred = temp;
                                   }
-                                } else {
-                                  internal_eror = true;
-                                  req.records = {
-                                    invalid_user: true,
-                                    message: `${entry.child_name} doesn't have credit balance`,
-                                  };
-                                  next();
-                                  return;
                                 }
-                              }
-                            });
+                              });
 
-                            //END-closing balance CHECK
-                            if (internal_eror == false) {
-                              resolve({});
-                            } else {
-                              next();
-                            }
-                          })
-                          .catch((error) => {
-                            _mysql.releaseConnection();
-                            next(error);
-                          });
+                              //END-closing balance CHECK
+                              if (internal_eror == false) {
+                                resolve({});
+                              } else {
+                                next();
+                              }
+                            })
+                            .catch((error) => {
+                              _mysql.releaseConnection();
+                              next(error);
+                            });
+                        }
                       }).then((res) => {
                         // code comes here
                         _mysql
@@ -1238,51 +1245,66 @@ export default {
                       ,C.child_name,VH.receipt_type from finance_voucher_header VH inner join finance_voucher_details VD on VH.finance_voucher_header_id=VD.voucher_header_id\
                     inner join finance_account_head H on VD.head_id=H.finance_account_head_id\
                     inner join finance_account_child C on VD.child_id=C.finance_account_child_id\
-                    where voucher_header_id=? and auth_status='P';",
+                    where voucher_header_id=? and auth_status='P';SELECT allow_negative_balance FROM finance_options;",
                     values: [input.voucher_header_id],
                     printQuery: false,
                   })
-                  .then((result) => {
+                  .then((results) => {
+                    const result = results[0];
+                    const options = results[1][0];
                     let total_income = 0;
                     let total_expense = 0;
                     let balance = 0;
 
                     if (result.length > 0) {
-                      const child_ids = [];
-                      result.forEach((child) => {
-                        child_ids.push(child.child_id);
-                      });
-
                       new Promise((resolve, reject) => {
-                        _mysql
-                          .executeQuery({
-                            query:
-                              "select child_id,coalesce(sum(credit_amount)- sum(debit_amount),0) as cred_minus_deb,\
+                        if (options.allow_negative_balance == "Y") {
+                          resolve({});
+                        } else {
+                          const child_ids = [];
+                          result.forEach((child) => {
+                            child_ids.push(child.child_id);
+                          });
+                          _mysql
+                            .executeQuery({
+                              query:
+                                "select child_id,coalesce(sum(credit_amount)- sum(debit_amount),0) as cred_minus_deb,\
                             coalesce(sum(debit_amount)-sum(credit_amount),0) as deb_minus_cred\
                           from finance_voucher_details \
                           where auth_status='A' and child_id in (?) group by child_id;",
-                            values: [child_ids],
-                            printQuery: true,
-                          })
-                          .then((closeBalance) => {
-                            let internal_eror = false;
-                            //ST-closing balance CHECK
-                            result.forEach((entry) => {
-                              //checking debit balance for asset and expence
-                              if (
-                                (entry.root_id == 1 || entry.root_id == 5) &&
-                                entry.payment_type == "CR"
-                              ) {
-                                let ledger = closeBalance.find((f) => {
-                                  return f.child_id == entry.child_id;
-                                });
+                              values: [child_ids],
+                              printQuery: true,
+                            })
+                            .then((closeBalance) => {
+                              let internal_eror = false;
+                              //ST-closing balance CHECK
+                              result.forEach((entry) => {
+                                //checking debit balance for asset and expence
+                                if (
+                                  (entry.root_id == 1 || entry.root_id == 5) &&
+                                  entry.payment_type == "CR"
+                                ) {
+                                  let ledger = closeBalance.find((f) => {
+                                    return f.child_id == entry.child_id;
+                                  });
 
-                                if (ledger != undefined) {
-                                  const temp =
-                                    parseFloat(ledger.deb_minus_cred) -
-                                    parseFloat(entry.credit_amount);
+                                  if (ledger != undefined) {
+                                    const temp =
+                                      parseFloat(ledger.deb_minus_cred) -
+                                      parseFloat(entry.credit_amount);
 
-                                  if (temp < 0) {
+                                    if (temp < 0) {
+                                      internal_eror = true;
+                                      req.records = {
+                                        invalid_user: true,
+                                        message: `${entry.child_name} doesn't have debit balance`,
+                                      };
+                                      next();
+                                      return;
+                                    } else {
+                                      ledger.deb_minus_cred = temp;
+                                    }
+                                  } else {
                                     internal_eror = true;
                                     req.records = {
                                       invalid_user: true,
@@ -1290,36 +1312,36 @@ export default {
                                     };
                                     next();
                                     return;
-                                  } else {
-                                    ledger.deb_minus_cred = temp;
                                   }
-                                } else {
-                                  internal_eror = true;
-                                  req.records = {
-                                    invalid_user: true,
-                                    message: `${entry.child_name} doesn't have debit balance`,
-                                  };
-                                  next();
-                                  return;
                                 }
-                              }
-                              //checking credit balance for liabilty,capital and income
-                              else if (
-                                (entry.root_id == 2 ||
-                                  entry.root_id == 3 ||
-                                  entry.root_id == 4) &&
-                                entry.payment_type == "DR"
-                              ) {
-                                let ledger = closeBalance.find((f) => {
-                                  return f.child_id == entry.child_id;
-                                });
+                                //checking credit balance for liabilty,capital and income
+                                else if (
+                                  (entry.root_id == 2 ||
+                                    entry.root_id == 3 ||
+                                    entry.root_id == 4) &&
+                                  entry.payment_type == "DR"
+                                ) {
+                                  let ledger = closeBalance.find((f) => {
+                                    return f.child_id == entry.child_id;
+                                  });
 
-                                if (ledger != undefined) {
-                                  const temp =
-                                    parseFloat(ledger.cred_minus_deb) -
-                                    parseFloat(entry.debit_amount);
+                                  if (ledger != undefined) {
+                                    const temp =
+                                      parseFloat(ledger.cred_minus_deb) -
+                                      parseFloat(entry.debit_amount);
 
-                                  if (temp < 0) {
+                                    if (temp < 0) {
+                                      internal_eror = true;
+                                      req.records = {
+                                        invalid_user: true,
+                                        message: `${entry.child_name} doesn't have credit balance`,
+                                      };
+                                      next();
+                                      return;
+                                    } else {
+                                      ledger.deb_minus_cred = temp;
+                                    }
+                                  } else {
                                     internal_eror = true;
                                     req.records = {
                                       invalid_user: true,
@@ -1327,32 +1349,22 @@ export default {
                                     };
                                     next();
                                     return;
-                                  } else {
-                                    ledger.deb_minus_cred = temp;
                                   }
-                                } else {
-                                  internal_eror = true;
-                                  req.records = {
-                                    invalid_user: true,
-                                    message: `${entry.child_name} doesn't have credit balance`,
-                                  };
-                                  next();
-                                  return;
                                 }
-                              }
-                            });
+                              });
 
-                            //END-closing balance CHECK
-                            if (internal_eror == false) {
-                              resolve({});
-                            } else {
-                              next();
-                            }
-                          })
-                          .catch((error) => {
-                            _mysql.releaseConnection();
-                            next(error);
-                          });
+                              //END-closing balance CHECK
+                              if (internal_eror == false) {
+                                resolve({});
+                              } else {
+                                next();
+                              }
+                            })
+                            .catch((error) => {
+                              _mysql.releaseConnection();
+                              next(error);
+                            });
+                        }
                       }).then((res) => {
                         console.log("res:", res);
                         //ST-profit and loss calculation
