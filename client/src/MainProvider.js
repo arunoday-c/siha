@@ -1,63 +1,82 @@
-import React, { useState } from "react";
+import React, { useReducer } from "react";
 import { MainContext } from "algaeh-react-components";
 import socket from "./sockets";
-export default function (props) {
-  const { children } = props;
-  const [menu, setMenu] = useState([]);
-  const [language, setLanguage] = useState("en");
-  const [token, setToken] = useState({});
-  const [elements, setElements] = useState([]);
-  const [selectedMenu, setSelectedMenu] = useState({});
-  const [userPreferences, setUserPreferences] = useState([]);
 
-  function setUserMenu(data) {
-    setMenu(data);
+const intialState = {
+  userMenu: [],
+  userLanguage: "en",
+  is_authenticated: false,
+  userToken: {},
+  selectElement: [],
+  selectedMenu: {},
+  userPreferences: [],
+  socket,
+};
+
+const mainActionTypes = {
+  SET_MENU: "SET_MENU",
+  SET_LANGUAGE: "SET_LANGUAGE",
+  SET_TOKEN: "SET_TOKEN",
+  SET_ELEMENTS: "SET_ELEMENTS",
+  SET_SELECTED_MENU: "SET_SELECTED_MENU",
+  SET_USER_PREFERENCES: "SET_USER_PREFERENCES",
+  CLEAR_STATE: "CLEAR_ALL",
+};
+
+const mainReducer = (state, { type = "", payload = {} }) => {
+  switch (type) {
+    case mainActionTypes.SET_MENU:
+      return { ...state, userMenu: payload };
+    case mainActionTypes.SET_LANGUAGE:
+      return { ...state, userLanguage: payload };
+    case mainActionTypes.SET_ELEMENTS:
+      return { ...state, selectElement: payload };
+    case mainActionTypes.SET_TOKEN:
+      return { ...state, userToken: payload, is_authenticated: true };
+    case mainActionTypes.SET_USER_PREFERENCES:
+      return { ...state, userPreferences: payload };
+    case mainActionTypes.SET_SELECTED_MENU:
+      return { ...state, selectedMenu: payload };
+    case mainActionTypes.CLEAR_STATE:
+      return { ...intialState };
+
+    default:
+      return state;
   }
-  function setUserLanguage(lang) {
-    setLanguage(() => {
-      return lang;
-    });
-  }
-  function setUserToken(tokn) {
-    setToken(() => {
-      return tokn;
-    });
-  }
-  function setSelectedMenuItem(selected) {
-    setSelectedMenu(selected);
-  }
-  function setElementsItems(data) {
-    setElements(data);
-  }
-  function setUserPreferencesData(data) {
-    setUserPreferences(data);
-  }
-  function clearAll() {
-    setLanguage("en");
-    setToken("");
-    setMenu([]);
-    setElements([]);
-    setSelectedMenu({});
-    setUserPreferences([]);
-  }
+};
+
+export default function MainProvider({ children }) {
+  const [state, dispatch] = useReducer(mainReducer, intialState);
+
+  const dispatches = {
+    setUserMenu(data) {
+      dispatch({ type: mainActionTypes.SET_MENU, payload: data });
+    },
+    setUserLanguage(lang) {
+      dispatch({ type: mainActionTypes.SET_LANGUAGE, payload: lang });
+    },
+    setUserToken(tokn) {
+      dispatch({ type: mainActionTypes.SET_TOKEN, payload: tokn });
+    },
+    setSelectedMenuItem(selected) {
+      dispatch({ type: mainActionTypes.SET_SELECTED_MENU, payload: selected });
+    },
+    setElementsItems(data) {
+      dispatch({ type: mainActionTypes.SET_ELEMENTS, payload: data });
+    },
+    setUserPreferencesData(data) {
+      dispatch({ type: mainActionTypes.SET_USER_PREFERENCES, payload: data });
+    },
+    clearAll() {
+      dispatch({ type: mainActionTypes.CLEAR_STATE });
+    },
+  };
 
   return (
     <MainContext.Provider
       value={{
-        userLanguage: language,
-        userMenu: menu,
-        userToken: token,
-        selectedMenu: selectedMenu,
-        selectElement: elements,
-        userPreferences: userPreferences,
-        socket,
-        setSelectedMenuItem,
-        setUserMenu,
-        setUserLanguage,
-        setUserToken,
-        setElementsItems,
-        setUserPreferencesData,
-        clearAll,
+        ...state,
+        ...dispatches,
       }}
     >
       {children}
