@@ -16,8 +16,11 @@ export default {
               GH.`sheet_level_discount_amount`, GH.`net_total`, GH.`total_tax`, GH.`net_payable`,\
               GH.`additional_cost`, GH.`reciept_total`, GH.`created_by`, GH.`created_date`, \
               GH.`updated_by`, GH.`updated_date`, GH.`posted`, GH.`posted_by`, GH.`posted_date`, \
-              GH.`inovice_number`, GH.`invoice_date`, GH.`invoice_posted`,PH.purchase_number from  \
-              hims_f_procurement_grn_header GH,hims_f_procurement_po_header PH  where GH.po_id=PH.hims_f_procurement_po_header_id and GH.grn_number=?",
+              GH.`inovice_number`, GH.`invoice_date`, GH.`invoice_posted`,PH.purchase_number, V.vendor_name from  \
+              hims_f_procurement_grn_header GH \
+              inner join hims_f_procurement_po_header PH on GH.po_id=PH.hims_f_procurement_po_header_id \
+              inner join hims_d_vendor V on V.hims_d_vendor_id = GH.vendor_id \
+              where  GH.grn_number=?",
           values: [req.query.grn_number],
           printQuery: true
         })

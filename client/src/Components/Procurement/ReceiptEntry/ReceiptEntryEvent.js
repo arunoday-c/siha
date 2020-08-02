@@ -32,8 +32,8 @@ const textEventhandle = ($this, e) => {
     e.value === ""
       ? null
       : e.value || e.target.value === ""
-      ? null
-      : e.target.value;
+        ? null
+        : e.target.value;
 
   $this.setState({
     [name]: value
@@ -208,17 +208,17 @@ const DeliverySearch = ($this, e) => {
                   parseFloat(data.dn_entry_detail[i].quantity_outstanding) === 0
                     ? 0
                     : Math.abs(
-                        data.dn_entry_detail[i].dn_quantity -
-                          data.dn_entry_detail[i].quantity_outstanding
-                      );
+                      data.dn_entry_detail[i].dn_quantity -
+                      data.dn_entry_detail[i].quantity_outstanding
+                    );
 
                 data.dn_entry_detail[i].recieved_quantity =
                   parseFloat(data.dn_entry_detail[i].quantity_outstanding) === 0
                     ? data.dn_entry_detail[i].dn_quantity
                     : Math.abs(
-                        data.dn_entry_detail[i].quantity_recieved_todate -
-                          data.dn_entry_detail[i].quantity_outstanding
-                      );
+                      data.dn_entry_detail[i].quantity_recieved_todate -
+                      data.dn_entry_detail[i].quantity_outstanding
+                    );
 
                 data.dn_entry_detail[i].dn_header_id =
                   data.hims_f_procurement_dn_header_id;
@@ -340,8 +340,8 @@ const getCtrlCode = ($this, docNumber, row) => {
           } else {
             data.postEnable = false;
           }
-          data.location_name = row.loc_description;
-          data.vendor_name = row.vendor_name;
+          // data.location_name = row.loc_description;
+          // data.vendor_name = row.vendor_name;
           $this.setState(data, () => {
             getData($this);
           });
@@ -444,7 +444,7 @@ const getData = $this => {
         type: "ITEM_CATEGORY_GET_DATA",
         mappingName: "receiptitemcategory"
       },
-      afterSuccess: data => {}
+      afterSuccess: data => { }
     });
 
     $this.props.getItemGroup({

@@ -18,12 +18,12 @@ const executePDF = function executePDFMethod(options) {
           from hims_f_sales_quotation SQ \
           inner join  hims_d_customer C on  SQ.customer_id = C.hims_d_customer_id \
           inner join  hims_d_employee E on  SQ.sales_person_id = E.hims_d_employee_id \
-          where SQ.hims_f_sales_quotation_id =? ";
+          where SQ.hims_f_sales_quotation_id =? ;";
       } else {
         strQuery =
           "SELECT SQ.*, C.customer_name, SQ.sales_man as employee_name from hims_f_sales_quotation SQ \
           inner join  hims_d_customer C on  SQ.customer_id = C.hims_d_customer_id \
-          where SQ.hims_f_sales_quotation_id =? ";
+          where SQ.hims_f_sales_quotation_id =? ;";
       }
 
       options.mysql

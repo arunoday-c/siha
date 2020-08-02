@@ -75,6 +75,11 @@ class SalesInvoice extends Component {
         mappingName: "projects",
       },
     });
+
+    const queryParams = new URLSearchParams(this.props.location.search);
+    if (queryParams.get("invoice_number")) {
+      getCtrlCode(this, queryParams.get("invoice_number"));
+    }
   }
 
   render() {
@@ -144,17 +149,17 @@ class SalesInvoice extends Component {
           printArea={
             this.state.hims_f_sales_invoice_header_id !== null
               ? {
-                  menuitems: [
-                    {
-                      label: "Print Invoice",
-                      events: {
-                        onClick: () => {
-                          generateSalesInvoiceReport(this.state);
-                        },
+                menuitems: [
+                  {
+                    label: "Print Invoice",
+                    events: {
+                      onClick: () => {
+                        generateSalesInvoiceReport(this.state);
                       },
                     },
-                  ],
-                }
+                  },
+                ],
+              }
               : ""
           }
           selectedLang={this.state.selectedLang}
@@ -264,8 +269,8 @@ class SalesInvoice extends Component {
                 <InvoiceListService SALESInvoiceIOputs={this.state} />
               </div>
             ) : (
-              <InvoiceItemList SALESInvoiceIOputs={this.state} />
-            )}
+                <InvoiceItemList SALESInvoiceIOputs={this.state} />
+              )}
           </MyContext.Provider>
 
           <div className="row">

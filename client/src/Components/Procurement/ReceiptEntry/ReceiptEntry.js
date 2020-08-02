@@ -51,11 +51,16 @@ class ReceiptEntry extends Component {
       },
     });
 
-    if (
-      this.props.delivery_note_number !== undefined &&
-      this.props.delivery_note_number.length !== 0
-    ) {
-      getCtrlCode(this, this.props.delivery_note_number);
+    // if (
+    //   this.props.delivery_note_number !== undefined &&
+    //   this.props.delivery_note_number.length !== 0
+    // ) {
+    //   getCtrlCode(this, this.props.delivery_note_number);
+    // }
+
+    const queryParams = new URLSearchParams(this.props.location.search);
+    if (queryParams.get("grn_number")) {
+      getCtrlCode(this, queryParams.get("grn_number"));
     }
   }
 
@@ -126,17 +131,17 @@ class ReceiptEntry extends Component {
           printArea={
             this.state.hims_f_procurement_po_header_id !== null
               ? {
-                  menuitems: [
-                    {
-                      label: "Receipt Entry Report",
-                      events: {
-                        onClick: () => {
-                          generateReceiptEntryReport(this.state);
-                        },
+                menuitems: [
+                  {
+                    label: "Receipt Entry Report",
+                    events: {
+                      onClick: () => {
+                        generateReceiptEntryReport(this.state);
                       },
                     },
-                  ],
-                }
+                  },
+                ],
+              }
               : ""
           }
           selectedLang={this.state.selectedLang}

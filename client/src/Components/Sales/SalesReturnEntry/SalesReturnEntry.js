@@ -67,6 +67,11 @@ class SalesReturnEntry extends Component {
     this.setState({
       decimal_places: userToken.decimal_places,
     });
+
+    const queryParams = new URLSearchParams(this.props.location.search);
+    if (queryParams.get("sales_return_number")) {
+      getCtrlCode(this, queryParams.get("sales_return_number"));
+    }
   }
 
   render() {
@@ -74,8 +79,8 @@ class SalesReturnEntry extends Component {
       this.state.dataFinder === true
         ? " disableFinder"
         : this.state.dataExitst === false
-        ? ""
-        : " disableFinder";
+          ? ""
+          : " disableFinder";
 
     return (
       <div>
@@ -141,17 +146,17 @@ class SalesReturnEntry extends Component {
           printArea={
             this.state.hims_f_sales_return_header_id !== null
               ? {
-                  menuitems: [
-                    {
-                      label: "Print Report",
-                      events: {
-                        onClick: () => {
-                          generateSalesInvoice(this.state);
-                        },
+                menuitems: [
+                  {
+                    label: "Print Report",
+                    events: {
+                      onClick: () => {
+                        generateSalesInvoice(this.state);
                       },
                     },
-                  ],
-                }
+                  },
+                ],
+              }
               : ""
           }
           selectedLang={this.state.selectedLang}
