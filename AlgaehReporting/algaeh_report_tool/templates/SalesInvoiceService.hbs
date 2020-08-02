@@ -28,7 +28,7 @@
                     <td class="textArbRht" style="width:20%">العنوان</td>
                 </tr>
                 <tr>
-                    <td class="textEngLft" style="width:20%">PO No.</td>
+                    <td class="textEngLft" style="width:20%">PO No./Contarct No.</td>
                     <td colspan="2" class="textEngCtr" style="width:60%"><b>{{customer_po_no}}</b></td>
                     <td class="textArbRht" style="width:20%">:رقم الطلب</td>
                 </tr>
@@ -76,16 +76,11 @@
                 <thead>
                     <tr>
                         <th>Sl No.</th>
-                        <th>Service Name</th>
-                        <th>Price</th>
-                        <th>Qty</th>
-                        {{!-- <th>Frequency</th> --}}
-                        <th>Ext. Cost</th>
-                        <th>Disc. Amt.</th>
-                        <th>Net Ext. Cost</th>
-                        <th>Tax Amt.</th>
-                        <th>Total Amt. </th>
-
+                        <th>Service Name / اسم الخدمة</th>
+                        <th>Quantity/ الكمية</th>
+                        <th>Rate/ سعر الوحدة</th>
+                        <th>Vat %/ الضريبة</th>
+                        <th>Amount/ الإجمالي</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -94,13 +89,10 @@
                     <tr>
                         <td>{{inc @index}}</td>
                         <td>{{service_name}}</td>
-                        <td class="numberFld">{{unit_cost}}</td>
+
                         <td class="numberFld">{{quantity}}</td>
-                        {{!-- <td class="numberFld">{{service_frequency}}</td> --}}
-                        <td class="numberFld">{{extended_cost}}</td>
-                        <td class="numberFld">{{discount_amount}}</td>
-                        <td class="numberFld">{{net_extended_cost}}</td>
-                        <td class="numberFld">{{tax_amount}}</td>
+                        <td class="numberFld">{{unit_cost}}</td>
+                        <td>{{tax_percentage}}%</td>
                         <td class="numberFld">{{total_amount}}</td>
 
                     </tr>
@@ -113,14 +105,19 @@
                 {{!-- <td colspan="9">Net Total</td>
                     <td class="numberFld">{{net_payable}}</td> --}}
                 <tr class="footerTotalDown">
-                    <td class="textEngLft" style="width:20%">Total Amount Before VAT</td>
-                    <td colspan="7" class="textArbRht" style="width:60%">{{amount_before_vat}}</td>
-                    <td class="textArbRht" style="width:20%">الإجمالى قبل ضريبة القيمه المضافة</td>
+                    <td class="textEngLft" style="width:10%">Total Amount Before VAT</td>
+                    <td colspan="7" class="textArbRht" style="width:50%">{{amount_before_vat}}</td>
+                    <td class="textArbRht" style="width:10%">الإجمالى قبل ضريبة القيمه المضافة</td>
                 </tr>
                 <tr class="footerTotalDown">
-                    <td class="textEngLft" style="width:20%">VAT @ 15%</td>
+                    <td class="textEngLft" style="width:10%">Discount</td>
+                    <td colspan="7" class="textArbRht" style="width:50%">{{discount_amount}}</td>
+                    <td class="textArbRht" style="width:10%">خصم</td>
+                </tr>
+                <tr class="footerTotalDown">
+                    <td class="textEngLft" style="width:20%">VAT for non-exempt Items</td>
                     <td colspan="7" class="textArbRht" style="width:60%">{{total_tax}}</td>
-                    <td class="textArbRht" style="width:20%">قيمة الضريبة المضافة @ 15%</td>
+                    <td class="textArbRht" style="width:20%">قيمة الضريبة المضافة </td>
                 </tr>
                 <tr class="footerTotalDown">
                     <td class="textEngLft" style="width:20%">Total Including VAT</td>
@@ -128,7 +125,7 @@
                     <td class="textArbRht" style="width:20%">الإجمالي بعد ضريبة القيمة المضافة</td>
                 </tr>
                 <tr class="footerTotalDown">
-                    <td class="textEngLft" style="width:20%">Outstanding Balance {{SAR}}</td>
+                    <td class="textEngLft" style="width:20%">Outstanding Balance (SAR)</td>
                     <td colspan="7" class="textArbRht" style="width:60%">{{net_payable}}</td>
                     <td class="textArbRht" style="width:20%">الرصيد المستحق بالريال السعودي</td>
                 </tr>
@@ -144,7 +141,7 @@
             </table>
 
         </section>
-        <section>
+        {{!-- <section>
             <p>Finance Manager</p>
             <div style="width: 30%; height:50px; border-bottom:1px solid #000"></div>
         </section>
@@ -153,6 +150,6 @@
             <p>{{organization_name}}</p>
             <p>Bank Name: AlFransi Bank</p>
             <p>IBAN: SA56-5500-0000-0982-7860-0165</p>
-        </section>
+        </section> --}}
     </div>
 </body>

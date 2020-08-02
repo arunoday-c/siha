@@ -24,6 +24,9 @@ const executePDF = function executePDFMethod(options) {
           amount_before_vat: _.sumBy(options.result, s => parseFloat(s.net_extended_cost)).toFixed(
             decimal_places
           ),
+          discount_amount: parseFloat(options.result[0]["discount_amount"]).toFixed(
+            decimal_places
+          ),
           total_tax: parseFloat(options.result[0]["total_tax"]).toFixed(
             decimal_places
           ),
