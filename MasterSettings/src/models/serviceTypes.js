@@ -430,7 +430,7 @@ export default {
               printQuery: true
             })
             .then(pro_head_result => {
-              if (pro_head_result.insertId > 0) {
+              if (pro_head_result.insertId > 0 && input.ProcedureDetail.lenght > 0) {
                 let IncludeValues = ["item_id", "service_id", "qty"];
 
                 _mysql
@@ -458,6 +458,7 @@ export default {
                         printQuery: true
                       })
                       .then(services_insurance_network => {
+                        console.log("services_insurance_network", services_insurance_network)
                         const service_insurance = services_insurance_network[0];
                         const service_insurance_network =
                           services_insurance_network[1];
@@ -481,6 +482,7 @@ export default {
                             next: next
                           })
                             .then(insert_service => {
+                              console.log("insert_service", insert_service)
                               InsertintoServiceInsuranceNetwork({
                                 inputParam: input,
                                 services_id: service_id,
@@ -516,6 +518,70 @@ export default {
                     _mysql.rollBackTransaction(() => {
                       next(e);
                     });
+                  });
+              } else {
+                console.log("else")
+                _mysql
+                  .executeQuery({
+                    query:
+                      "SELECT insurance_id FROM hims_d_services_insurance group by insurance_id; \
+                          SELECT * FROM hims_d_services_insurance_network group by network_id;",
+                    printQuery: true
+                  })
+                  .then(services_insurance_network => {
+                    console.log("services_insurance_network", services_insurance_network)
+                    const service_insurance = services_insurance_network[0];
+                    const service_insurance_network =
+                      services_insurance_network[1];
+
+                    if (
+                      service_insurance.length == 0 &&
+                      service_insurance_network.length == 0
+                    ) {
+                      _mysql.commitTransaction(() => {
+                        _mysql.releaseConnection();
+                        req.records = services_insurance_network;
+                        next();
+                      });
+                    } else {
+                      InsertintoServiceInsurance({
+                        inputParam: input,
+                        services_id: service_id,
+                        service_insurance: service_insurance,
+                        _mysql: _mysql,
+                        req: req,
+                        next: next
+                      })
+                        .then(insert_service => {
+                          InsertintoServiceInsuranceNetwork({
+                            inputParam: input,
+                            services_id: service_id,
+                            service_insurance_network: service_insurance_network,
+                            _mysql: _mysql,
+                            req: req,
+                            next: next
+                          })
+                            .then(insert_service_network => {
+                              _mysql.commitTransaction(() => {
+                                _mysql.releaseConnection();
+                                req.records = insert_service_network;
+                                next();
+                              });
+                            })
+                            .catch(error => {
+                              _mysql.releaseConnection();
+                              next(error);
+                            });
+                        })
+                        .catch(error => {
+                          _mysql.releaseConnection();
+                          next(error);
+                        });
+                    }
+                  })
+                  .catch(error => {
+                    _mysql.releaseConnection();
+                    next(error);
                   });
               }
 
@@ -553,13 +619,14 @@ export default {
           query:
             "select hims_d_procedure_id,procedure_code,procedure_desc,procedure_status,PH.procedure_type,\
             PH.service_id as header_service_id,S.service_code as header_service_code,\
-            S.service_name as header_service_name,hims_d_procedure_detail_id, procedure_header_id, item_id,\
+            S.service_name as header_service_name, S.vat_percent, S.vat_applicable, \
+            hims_d_procedure_detail_id, procedure_header_id, item_id,\
             qty,PD.service_id,SR.service_code as detail_service_code,\
-            SR.service_name as detail_service_name from hims_d_procedure PH inner join \
-            hims_d_services S on PH.service_id=S.hims_d_services_id inner join hims_d_procedure_detail PD \
-            on PH.hims_d_procedure_id=PD.procedure_header_id\
-            inner join hims_d_services SR on PD.service_id=SR.hims_d_services_id\
-            where PH.record_status='A' and PD.record_status='A'" +
+            SR.service_name as detail_service_name, S.standard_fee as procedure_amount from hims_d_procedure PH \
+            inner join hims_d_services S on PH.service_id=S.hims_d_services_id \
+            left join hims_d_procedure_detail PD on PH.hims_d_procedure_id=PD.procedure_header_id\
+            left join hims_d_services SR on PD.service_id=SR.hims_d_services_id\
+            where PH.record_status='A' " +
             strQry +
             " order by hims_d_procedure_id desc;",
           printQuery: true
@@ -583,9 +650,6 @@ export default {
     const _mysql = new algaehMysql();
     try {
       let input = req.body;
-
-      const utilities = new algaehUtilities();
-      utilities.logger().log("input: ", input);
       _mysql
         .executeQueryWithTransaction({
           query:
@@ -896,14 +960,27 @@ export default {
         next(e);
       });
     }
-  }
+  },
+  releaseDB: (req, res, next) => {
+    const _options = req.connection == null ? {} : req.connection;
+    const _mysql = new algaehMysql(_options);
+    try {
+      _mysql.commitTransaction(() => {
+        _mysql.releaseConnection();
+        req.data = req.records.purchase_number;
+        next();
+      });
+    } catch (e) {
+      _mysql.rollBackTransaction(() => {
+        next(e);
+      });
+    }
+  },
 };
 
 function InsertintoServiceInsurance(options) {
   return new Promise((resolve, reject) => {
     try {
-      const utilities = new algaehUtilities();
-
       const inputParam = options.inputParam;
       const services_id = options.services_id;
       const service_insurance = options.service_insurance;
@@ -911,12 +988,8 @@ function InsertintoServiceInsurance(options) {
       const req = options.req;
       let strQuery = "";
 
-      utilities
-        .logger()
-        .log("InsertintoServiceInsurance: ", InsertintoServiceInsurance);
 
       if (service_insurance.length > 0) {
-        utilities.logger().log("service_insurance: ", service_insurance);
 
         for (let i = 0; i < service_insurance.length; i++) {
           strQuery += _mysql.mysqlQueryFormat(
@@ -942,7 +1015,6 @@ function InsertintoServiceInsurance(options) {
           );
 
           if (i == service_insurance.length - 1) {
-            utilities.logger().log("strQuery: ", strQuery);
             _mysql
               .executeQuery({
                 query: strQuery,
@@ -952,7 +1024,6 @@ function InsertintoServiceInsurance(options) {
                 resolve(detailresult);
               })
               .catch(error => {
-                console.log("erroe", error);
                 reject(error);
               });
           }
@@ -971,8 +1042,6 @@ function InsertintoServiceInsurance(options) {
 function InsertintoServiceInsuranceNetwork(options) {
   return new Promise((resolve, reject) => {
     try {
-      const utilities = new algaehUtilities();
-
       const inputParam = options.inputParam;
       const services_id = options.services_id;
       const service_insurance_network = options.service_insurance_network;
@@ -980,18 +1049,8 @@ function InsertintoServiceInsuranceNetwork(options) {
       const req = options.req;
       let strQuery = "";
 
-      utilities
-        .logger()
-        .log(
-          "InsertintoServiceInsuranceNetwork: ",
-          InsertintoServiceInsuranceNetwork
-        );
-
+      console.log("service_insurance_network.length", service_insurance_network.length)
       if (service_insurance_network.length > 0) {
-        utilities
-          .logger()
-          .log("service_insurance_network: ", service_insurance_network);
-
         for (let i = 0; i < service_insurance_network.length; i++) {
           strQuery += _mysql.mysqlQueryFormat(
             "INSERT INTO hims_d_services_insurance_network (`insurance_id`, `network_id`, `services_id`,\
@@ -1017,7 +1076,6 @@ function InsertintoServiceInsuranceNetwork(options) {
           );
 
           if (i == service_insurance_network.length - 1) {
-            utilities.logger().log("strQuery: ", strQuery);
             _mysql
               .executeQuery({
                 query: strQuery,
@@ -1032,7 +1090,8 @@ function InsertintoServiceInsuranceNetwork(options) {
           }
         }
       } else {
-        resolve();
+        console.log("Else resolve")
+        resolve({});
       }
     } catch (e) {
       reject(e);

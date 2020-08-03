@@ -12,6 +12,12 @@ export default function ProceduresEvent() {
         [name]: value
       });
     },
+    checkHandle: ($this, e) => {
+      let name = e.name || e.target.name;
+      $this.setState({
+        [name]: e.target.checked ? "Y" : "N"
+      });
+    },
 
     itemchangeText: ($this, e) => {
       let name = e.name || e.target.name;
@@ -122,12 +128,12 @@ export default function ProceduresEvent() {
       AlgaehValidation({
         alertTypeIcon: "warning",
         onSuccess: () => {
+          $this.state.service_code = $this.state.procedure_code;
+          $this.state.service_type_id = "2";
+          $this.state.service_name = $this.state.procedure_desc;
+          $this.state.service_status = "A";
+          $this.state.standard_fee = $this.state.procedure_amount;
           if ($this.state.hims_d_procedure_id === null) {
-            $this.state.service_code = $this.state.procedure_code;
-            $this.state.service_type_id = "2";
-            $this.state.service_name = $this.state.procedure_desc;
-            $this.state.service_status = "A";
-            $this.state.standard_fee = $this.state.procedure_amount;
             algaehApiCall({
               uri: "/serviceType/addProcedure",
               module: "masterSettings",
@@ -144,9 +150,8 @@ export default function ProceduresEvent() {
                       procedure_code: null,
                       procedure_desc: null,
                       procedure_amount: 0,
-                      total_service_amount: 0,
-                      profit_loss: null,
-                      pl_amount: 0,
+                      vat_applicable: "N",
+                      vat_percent: 0,
 
                       open: false,
                       ProcedureDetail: [],
