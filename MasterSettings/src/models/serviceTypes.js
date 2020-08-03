@@ -672,7 +672,7 @@ export default {
           if (headerResult != null) {
             new Promise((resolve, reject) => {
               try {
-                if (input.insertProcedure.length != 0) {
+                if (input.insertProcedure.length > 0) {
                   const IncludeValues = [
                     "procedure_header_id",
                     "item_id",
@@ -711,7 +711,7 @@ export default {
               }
             })
               .then(results => {
-                if (input.deleteProcedure.length != 0) {
+                if (input.deleteProcedure.length > 0) {
                   let qry = "";
                   let inputParam = req.body.deleteProcedure;
                   for (let i = 0; i < req.body.deleteProcedure.length; i++) {
