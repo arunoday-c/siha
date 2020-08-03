@@ -77,7 +77,7 @@ export function PrepaymentAuthList() {
     confirm({
       okText: "Authorize",
       okType: "primary",
-
+      icon: "",
       title: "Prepayment Request Authorization",
       content: `This request is made for 
 Prepayment Type: ${row.prepayment_desc}`,
@@ -100,7 +100,7 @@ Prepayment Type: ${row.prepayment_desc}`,
     confirm({
       okText: "Reject",
       okType: "danger",
-
+      icons: "",
       title: "Prepayment Request Authorization",
       content: `This request is made for 
 Prepayment Type: ${row.prepayment_desc}`,
@@ -129,7 +129,7 @@ Prepayment Type: ${row.prepayment_desc}`,
       <div>
         <form onSubmit={handleSubmit(getRequestForAuth)}>
           <div className="row inner-top-search">
-            <Controller
+            {/* <Controller
               control={control}
               name="hospital_id"
               render={({ onBlur, onChange, value }) => (
@@ -196,10 +196,10 @@ Prepayment Type: ${row.prepayment_desc}`,
                   }}
                 />
               )}
-            />
+            /> 
             {errors.cost_center_id && (
               <span>{errors.cost_center_id.message}</span>
-            )}
+            )}*/}
             <Controller
               control={control}
               name="prepayment_type_id"
@@ -237,6 +237,42 @@ Prepayment Type: ${row.prepayment_desc}`,
             )}
 
             <Controller
+              control={control}
+              name="prepayment_type_id"
+              render={({ value, onChange, onBlur }) => (
+                <AlgaehAutoComplete
+                  div={{ className: "col-2 form-group" }}
+                  label={{
+                    forceLabel: "Prepayment Status",
+                    isImp: false,
+                  }}
+                  selector={{
+                    value,
+                    onChange: (_, selected) => {
+                      onChange(selected);
+                      setValue("start_date", undefined);
+                      setValue("end_date", undefined);
+                    },
+                    onClear: () => {
+                      onChange("");
+                      setValue("start_date", undefined);
+                      setValue("end_date", undefined);
+                    },
+                    name: "prepayment_type_id",
+                    dataSource: {
+                      data: prePaymentTypes,
+                      textField: "prepayment_desc",
+                      valueField: "finance_d_prepayment_type_id",
+                    },
+                  }}
+                />
+              )}
+            />
+            {errors.prepayment_type_id && (
+              <span>{errors.prepayment_type_id.message}</span>
+            )}
+
+            {/* <Controller
               name="start_date"
               control={control}
               render={({ value, onChange }) => (
@@ -318,7 +354,7 @@ Prepayment Type: ${row.prepayment_desc}`,
                   // maxDate={moment().add(1, "days")}
                 />
               )}
-            />
+            /> */}
             <div className="col">
               <button
                 type="submit"
@@ -388,6 +424,11 @@ Prepayment Type: ${row.prepayment_desc}`,
                     {
                       fieldName: "employee_name",
                       label: "Employee Name",
+                      sortable: true,
+                    },
+                    {
+                      fieldName: "identity_no",
+                      label: "ID No.",
                       sortable: true,
                     },
                     {

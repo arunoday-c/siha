@@ -296,6 +296,11 @@ export function PrepaymentProcess() {
                       sortable: true,
                     },
                     {
+                      fieldName: "identity_no",
+                      label: "ID No.",
+                      sortable: true,
+                    },
+                    {
                       fieldName: "prepayment_amount",
                       label: "Prepayment Amt.",
                       sortable: true,

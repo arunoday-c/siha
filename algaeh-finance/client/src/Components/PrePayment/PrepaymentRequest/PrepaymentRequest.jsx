@@ -315,7 +315,7 @@ export function PrepaymentRequest() {
                     value: props.value,
                     className: "form-control",
                   }}
-                  others={{ disabled: true }}
+                  others={{ disabled: !prepayment_type_id }}
                   // maxDate={moment().add(1, "days")}
                 />
               )}
@@ -344,6 +344,42 @@ export function PrepaymentRequest() {
                 <AlgaehDataGrid
                   columns={[
                     {
+                      fieldName: "request_status",
+                      label: "Status",
+                      sortable: true,
+                      displayTemplate: (row) => {
+                        return (
+                          <span>
+                            {row.request_status === "P" ? (
+                              <span className="badge badge-warning">
+                                Pending
+                              </span>
+                            ) : row.request_status === "A" ? (
+                              <span className="badge badge-success">
+                                Approved
+                              </span>
+                            ) : row.request_status === "R" ? (
+                              <span className="badge badge-danger">
+                                Rejected
+                              </span>
+                            ) : row.request_status === "PD" ? (
+                              <span className="badge badge-danger">Paid</span>
+                            ) : row.request_status === "CN" ? (
+                              <span className="badge badge-danger">
+                                Cancelled
+                              </span>
+                            ) : row.request_status === "PR" ? (
+                              <span className="badge badge-danger">
+                                Processed
+                              </span>
+                            ) : (
+                              "------"
+                            )}
+                          </span>
+                        );
+                      },
+                    },
+                    {
                       fieldName: "hospital_name",
                       label: "Hospital Name",
                       sortable: true,
@@ -361,6 +397,11 @@ export function PrepaymentRequest() {
                     {
                       fieldName: "employee_name",
                       label: "Employee Name",
+                      sortable: true,
+                    },
+                    {
+                      fieldName: "identity_no",
+                      label: "ID No.",
                       sortable: true,
                     },
                     {
