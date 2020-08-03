@@ -10,7 +10,9 @@ const {
   updateServices,
   addProcedure,
   getProcedures,
-  updateProcedures
+  updateProcedures,
+  updateServicesOthrs,
+  releaseDB
 } = serviceModels;
 
 export default () => {
@@ -86,7 +88,7 @@ export default () => {
     next();
   });
 
-  api.put("/updateProcedures", updateProcedures, (req, res, next) => {
+  api.put("/updateProcedures", updateServicesOthrs, updateProcedures, (req, res, next) => {
     let result = req.records;
     res.status(utlities.httpStatus().ok).json({
       success: true,

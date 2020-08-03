@@ -1,18 +1,12 @@
 import React, { Component } from "react";
-import { withRouter } from "react-router-dom";
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
 
 import "./ProcedureSetup.scss";
 import "../../styles/site.scss";
 import { AlgaehLabel, AlgaehDataGrid } from "../Wrapper/algaehWrapper";
-import { AlgaehActions } from "../../actions/algaehActions";
-
 import ProcedureSetupEvent from "./ProcedureSetupEvent";
-
 import Procedures from "./Procedures/Procedures";
 
-class ProcedureSetup extends Component {
+export default class ProcedureSetup extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -22,24 +16,6 @@ class ProcedureSetup extends Component {
       all_procedures: []
     };
     ProcedureSetupEvent().getProcedure(this);
-  }
-
-  componentDidMount() {
-    if (
-      this.props.procedureservices === undefined ||
-      this.props.procedureservices.length === 0
-    ) {
-      this.props.getServices({
-        uri: "/serviceType/getService",
-        module: "masterSettings",
-        method: "GET",
-        data: { service_type_id: "2" },
-        redux: {
-          type: "SERVICES_GET_DATA",
-          mappingName: "procedureservices"
-        }
-      });
-    }
   }
 
   ShowModel(e) {
@@ -133,25 +109,36 @@ class ProcedureSetup extends Component {
                     },
 
                     {
-                      fieldName: "service_id",
-                      label: <AlgaehLabel label={{ forceLabel: "Service" }} />,
-                      displayTemplate: row => {
-                        let display =
-                          this.props.procedureservices === undefined
-                            ? []
-                            : this.props.procedureservices.filter(
-                              f => f.hims_d_services_id === row.service_id
-                            );
-
-                        return (
-                          <span>
-                            {display !== null && display.length !== 0
-                              ? display[0].service_name
-                              : ""}
+                      fieldName: "procedure_amount",
+                      label: <AlgaehLabel label={{ forceLabel: "Procedure Amount" }} />
+                    },
+                    {
+                      fieldName: "vat_applicable",
+                      label: (
+                        <AlgaehLabel label={{ fieldName: "vat_applicable" }} />
+                      ),
+                      displayTemplate: (row) => {
+                        return row.vat_applicable === "Y" ? "Yes" : "No";
+                      },
+                      others: {
+                        maxWidth: 150,
+                      },
+                    },
+                    {
+                      fieldName: "vat_percent",
+                      label: (
+                        <AlgaehLabel label={{ fieldName: "vat_percent" }} />
+                      ),
+                      displayTemplate: (row) => {
+                        return (< span >
+                          {parseFloat(row.vat_percent).toFixed(0)}%
                           </span>
                         );
-                      }
-                    }
+                      },
+                      others: {
+                        maxWidth: 150,
+                      },
+                    },
                   ]}
                   keyId="procedure_code"
                   dataSource={{
@@ -169,24 +156,3 @@ class ProcedureSetup extends Component {
   }
 }
 
-function mapStateToProps(state) {
-  return {
-    procedureservices: state.procedureservices
-  };
-}
-
-function mapDispatchToProps(dispatch) {
-  return bindActionCreators(
-    {
-      getServices: AlgaehActions
-    },
-    dispatch
-  );
-}
-
-export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(ProcedureSetup)
-);

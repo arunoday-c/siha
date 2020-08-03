@@ -10,6 +10,7 @@ export default function ProcedureSetupEvent() {
         method: "GET",
         onSuccess: response => {
           if (response.data.success) {
+            debugger
             let ItemList = Enumerable.from(response.data.records)
               .groupBy("$.hims_d_procedure_id", null, (k, g) => {
                 let firstRecordSet = Enumerable.from(g).firstOrDefault();
@@ -21,9 +22,13 @@ export default function ProcedureSetupEvent() {
                   procedure_desc: firstRecordSet.procedure_desc,
                   procedure_status: firstRecordSet.procedure_status,
                   service_id: firstRecordSet.header_service_id,
+                  header_service_name: firstRecordSet.header_service_name,
                   procedure_type: firstRecordSet.procedure_type,
+                  vat_applicable: firstRecordSet.vat_applicable,
+                  vat_percent: firstRecordSet.vat_percent,
+                  procedure_amount: firstRecordSet.procedure_amount,
 
-                  ProcedureDetail: g.getSource()
+                  ProcedureDetail: firstRecordSet.hims_d_procedure_detail_id === null ? [] : g.getSource()
                 };
               })
               .toArray();

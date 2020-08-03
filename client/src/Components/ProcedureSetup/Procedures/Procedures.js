@@ -30,6 +30,8 @@ class Procedures extends PureComponent {
       procedure_status: "A",
       service_id: null,
       procedure_amount: 0,
+      vat_applicable: "N",
+      vat_percent: 0,
 
       open: false,
       ProcedureDetail: [],
@@ -97,9 +99,8 @@ class Procedures extends PureComponent {
         procedure_code: null,
         procedure_desc: null,
         procedure_amount: 0,
-        total_service_amount: 0,
-        profit_loss: null,
-        pl_amount: 0,
+        vat_applicable: "N",
+        vat_percent: 0,
 
         open: false,
         ProcedureDetail: [],
@@ -117,6 +118,9 @@ class Procedures extends PureComponent {
 
   itemchangeText(e) {
     ProceduresEvent().itemchangeText(this, e);
+  }
+  checkHandle(e) {
+    ProceduresEvent().checkHandle(this, e);
   }
   eventHandaler(e) {
     ProceduresEvent().texthandle(this, e);
@@ -183,7 +187,7 @@ class Procedures extends PureComponent {
                     }}
                   />
 
-                  <AlagehAutoComplete
+                  {/* <AlagehAutoComplete
                     div={{ className: "col form-group" }}
                     label={{
                       forceLabel: "Service",
@@ -199,7 +203,7 @@ class Procedures extends PureComponent {
                       },
                       onChange: this.eventHandaler.bind(this),
                     }}
-                  />
+                  /> */}
 
                   <AlagehAutoComplete
                     div={{ className: "col form-group" }}
@@ -219,26 +223,71 @@ class Procedures extends PureComponent {
                     }}
                   />
 
-                  {this.state.hims_d_procedure_id === null ? (
-                    <AlagehFormGroup
-                      div={{ className: "col form-group" }}
-                      label={{
-                        forceLabel: "procedure amount",
-                      }}
-                      textBox={{
-                        decimal: { allowNegative: false },
-                        value: this.state.procedure_amount,
-                        className: "txt-fld",
-                        name: "procedure_amount",
-                        events: {
-                          onChange: this.eventHandaler.bind(this),
-                        },
-                        others: {
-                          placeholder: "0.00",
-                        },
-                      }}
-                    />
-                  ) : null}
+                  <AlagehFormGroup
+                    div={{ className: "col form-group" }}
+                    label={{
+                      forceLabel: "procedure amount",
+                    }}
+                    textBox={{
+                      decimal: { allowNegative: false },
+                      value: this.state.procedure_amount,
+                      className: "txt-fld",
+                      name: "procedure_amount",
+                      events: {
+                        onChange: this.eventHandaler.bind(this),
+                      },
+                      others: {
+                        placeholder: "0.00",
+                      },
+                    }}
+                  />
+
+                  <div className="col-12">
+                    <div className="row">
+                      <div className="col-6">
+                        <AlgaehLabel
+                          label={{ fieldName: "vat_applicable" }}
+                        />
+                        <div className=" customCheckbox ">
+                          <label className="checkbox inline">
+                            <input
+                              type="checkbox"
+                              name="vat_applicable"
+                              value="Y"
+                              checked={
+                                this.state.vat_applicable === "Y"
+                                  ? true
+                                  : false
+                              }
+                              onChange={this.checkHandle.bind(this)}
+                            />
+                            <span>Yes</span>
+                          </label>
+                        </div>
+                      </div>
+                      <AlagehFormGroup
+                        div={{ className: "col-6 form-group" }}
+                        label={{
+                          fieldName: "vat_percent"
+                        }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "vat_percent",
+                          value: this.state.vat_percent,
+                          events: {
+                            onChange: this.eventHandaler.bind(this)
+                          },
+                          others: {
+                            disabled:
+                              this.state.vat_applicable === "Y"
+                                ? false
+                                : true,
+                            type: "number"
+                          }
+                        }}
+                      />
+                    </div>
+                  </div>
                 </div>
 
                 <div className="row">
@@ -335,10 +384,10 @@ class Procedures extends PureComponent {
                                 this.props.inventoryitemlist === undefined
                                   ? []
                                   : this.props.inventoryitemlist.filter(
-                                      (f) =>
-                                        f.hims_d_inventory_item_master_id ===
-                                        row.item_id
-                                    );
+                                    (f) =>
+                                      f.hims_d_inventory_item_master_id ===
+                                      row.item_id
+                                  );
 
                               return (
                                 <span>
@@ -361,9 +410,9 @@ class Procedures extends PureComponent {
                                 this.props.displayservices === undefined
                                   ? []
                                   : this.props.displayservices.filter(
-                                      (f) =>
-                                        f.hims_d_services_id === row.service_id
-                                    );
+                                    (f) =>
+                                      f.hims_d_services_id === row.service_id
+                                  );
 
                               return (
                                 <span>
@@ -409,8 +458,8 @@ class Procedures extends PureComponent {
                       {this.state.hims_d_procedure_id === null ? (
                         <AlgaehLabel label={{ forceLabel: "Save" }} />
                       ) : (
-                        <AlgaehLabel label={{ forceLabel: "Update" }} />
-                      )}
+                          <AlgaehLabel label={{ forceLabel: "Update" }} />
+                        )}
                     </button>
                     <button
                       onClick={(e) => {
@@ -434,7 +483,6 @@ class Procedures extends PureComponent {
 
 function mapStateToProps(state) {
   return {
-    procedureservices: state.procedureservices,
     displayservices: state.displayservices,
     inventoryitemlist: state.inventoryitemlist,
   };
