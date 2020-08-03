@@ -402,13 +402,13 @@ export default {
               _mysql
                 .executeQuery({
                   query:
-                    "UPDATE `hims_f_patient_encounter` SET `cancelled`=?, `cancelled_by` = ?,`created_date` = ? \
-                  WHERE `visit_id`=?",
+                    "UPDATE `hims_f_patient_encounter` SET `cancelled`='Y', `cancelled_by` = ?,`created_date` = ? \
+                  WHERE `visit_id`=?; update hims_f_patient_visit set `visit_status`='CN' where hims_f_patient_visit_id=?",
                   values: [
-                    "Y",
                     req.userIdentity.algaeh_d_app_user_id,
                     new Date(),
                     inputParam.visit_id,
+                    inputParam.visit_id
                   ],
                   printQuery: true,
                 })
