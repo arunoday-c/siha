@@ -275,7 +275,7 @@ export const getPrepaymentRequests = (req, res, next) => {
       _mysql
         .executeQuery({
           query: `select finance_f_prepayment_request_id, prepayment_type_id,prepayment_desc,request_code,request_status,\
-    employee_id,employee_code ,E.full_name as employee_name , ROUND(prepayment_amount,${decimal_places}) as prepayment_amount, PR.start_date, PR.end_date,\
+    employee_id,employee_code ,E.full_name as employee_name ,E.identity_no , ROUND(prepayment_amount,${decimal_places}) as prepayment_amount, PR.start_date, PR.end_date,\
     hims_d_hospital_id,hospital_name ${selectStr}
     from finance_f_prepayment_request PR  inner join finance_d_prepayment_type PT \
     on PR.prepayment_type_id=PT.finance_d_prepayment_type_id\
@@ -360,7 +360,7 @@ export const getPrepaymentRequestToAuthorize = (req, res, next) => {
       _mysql
         .executeQuery({
           query: `select finance_f_prepayment_request_id, prepayment_type_id,prepayment_desc,request_code,request_status,\
-        employee_id,employee_code ,E.full_name as employee_name ,ROUND(prepayment_amount,${decimal_places}) as prepayment_amount, PR.start_date, PR.end_date,\
+        employee_id,employee_code ,E.full_name as employee_name ,E.identity_no,ROUND(prepayment_amount,${decimal_places}) as prepayment_amount, PR.start_date, PR.end_date,\
         hims_d_hospital_id,hospital_name ${selectStr}
         from finance_f_prepayment_request PR  inner join finance_d_prepayment_type PT \
         on PR.prepayment_type_id=PT.finance_d_prepayment_type_id\
@@ -633,7 +633,7 @@ export const loadPrepaymentsToProcess = (req, res, next) => {
         _mysql
           .executeQuery({
             query: `select finance_f_prepayment_request_id,finance_f_prepayment_detail_id, prepayment_type_id,prepayment_desc,request_code,
-      employee_id,employee_code ,E.full_name as employee_name , ROUND( amount,${decimal_places}) as  amount,
+      employee_id,employee_code ,E.full_name as employee_name ,E.identity_no, ROUND( amount,${decimal_places}) as  amount,
       ROUND(prepayment_amount,${decimal_places}) as prepayment_amount, hims_d_hospital_id,hospital_name,
       left(date_format(concat (D.year,'-',D.month,'-01'),'%Y-%M') ,8)as pay_month,PR.start_date, PR.end_date ${selectStr}
       from finance_f_prepayment_request PR  inner join finance_d_prepayment_type PT 

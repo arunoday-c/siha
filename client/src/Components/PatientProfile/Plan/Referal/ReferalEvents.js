@@ -50,7 +50,8 @@ const addReferal = $this => {
           sub_department_id: undefined,
           hospital_name: "",
           reason: "",
-          external_doc_name: ""
+          external_doc_name: "",
+          doctor_department: ""
         });
       },
       onFailure: error => {
@@ -77,6 +78,7 @@ const radioChange = ($this, e) => {
     sub_department_id: null,
     hospital_name: "",
     reason: "",
+    doctor_department: "",
     ..._external_doc_name
   });
 };

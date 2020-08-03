@@ -178,7 +178,7 @@ export function PrepaymentMaster() {
                   className: "col-2 form-group algaeh-text-fld",
                 }}
                 label={{
-                  forceLabel: "Duration (Days)",
+                  forceLabel: "Duration (Months)",
                   isImp: true,
                 }}
                 textBox={{
@@ -307,7 +307,7 @@ export function PrepaymentMaster() {
                     },
                     {
                       fieldName: "prepayment_duration",
-                      label: "Duration (Days)",
+                      label: "Duration (Months)",
                       align: "center",
                       sortable: true,
                       filterable: true,
