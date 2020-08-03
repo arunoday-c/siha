@@ -20,6 +20,10 @@ const mainActionTypes = {
   SET_ELEMENTS: "SET_ELEMENTS",
   SET_SELECTED_MENU: "SET_SELECTED_MENU",
   SET_USER_PREFERENCES: "SET_USER_PREFERENCES",
+  SET_TITLE: "SET_TITLE",
+  SET_NATIONALITY: "SET_NATIONALITY",
+  SET_RELIGION: "SET_RELIGION",
+  SET_COUNTRY: "SET_COUNTRY",
   CLEAR_STATE: "CLEAR_ALL",
 };
 
@@ -37,6 +41,14 @@ const mainReducer = (state, { type = "", payload = {} }) => {
       return { ...state, userPreferences: payload };
     case mainActionTypes.SET_SELECTED_MENU:
       return { ...state, selectedMenu: payload };
+    case mainActionTypes.SET_COUNTRY:
+      return { ...state, countries: payload };
+    case mainActionTypes.SET_NATIONALITY:
+      return { ...state, nationalities: payload };
+    case mainActionTypes.SET_RELIGION:
+      return { ...state, religions: payload };
+    case mainActionTypes.SET_TITLE:
+      return { ...state, titles: payload };
     case mainActionTypes.CLEAR_STATE:
       return { ...intialState };
 
@@ -66,6 +78,18 @@ export default function MainProvider({ children }) {
     },
     setUserPreferencesData(data) {
       dispatch({ type: mainActionTypes.SET_USER_PREFERENCES, payload: data });
+    },
+    setTitles(data) {
+      dispatch({ type: mainActionTypes.SET_TITLE, payload: data });
+    },
+    setCountries(data) {
+      dispatch({ type: mainActionTypes.SET_COUNTRY, payload: data });
+    },
+    setReligions(data) {
+      dispatch({ type: mainActionTypes.SET_RELIGION, payload: data });
+    },
+    setNationality(data) {
+      dispatch({ type: mainActionTypes.SET_NATIONALITY, payload: data });
     },
     clearAll() {
       dispatch({ type: mainActionTypes.CLEAR_STATE });

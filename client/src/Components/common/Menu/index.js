@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useContext } from "react";
 import "./menu.scss";
 import { useHistory, useLocation } from "react-router-dom";
-import { MainContext, getItem, tokenDecode } from "algaeh-react-components";
+import { MainContext, getItem } from "algaeh-react-components";
 import PasswordChange from "../passwordChange";
 import { Notifications } from "../Notifications";
 import Items from "./item";
@@ -16,8 +16,7 @@ function NavBars(props) {
     userLanguage,
     userToken,
     setUserLanguage,
-    setUserMenu,
-    setUserToken,
+
     setSelectedMenuItem,
     userMenu,
     socket,
@@ -32,20 +31,20 @@ function NavBars(props) {
   const [count, setCount] = useState(null);
 
   useEffect(() => {
-    if (Object.keys(userToken).length === 0) {
-      getItem("menu").then((result) => {
-        setUserMenu(result);
-      });
-      getItem("token").then((result) => {
-        if (result === null) {
-          history.push("/");
-          return;
-        }
-        const details = tokenDecode(result);
+    // if (is_authenticated) {
+    //   getItem("menu").then((result) => {
+    //     setUserMenu(result);
+    //   });
+    //   getItem("token").then((result) => {
+    //     if (result === null) {
+    //       history.push("/");
+    //       return;
+    //     }
+    //     const details = tokenDecode(result);
 
-        setUserToken(details);
-      });
-    }
+    //     setUserToken(details);
+    //   });
+    // }
     getItem("userSelectedMenu").then((item) => {
       if (item === null) return;
       setSelectedMenuItem(item);
