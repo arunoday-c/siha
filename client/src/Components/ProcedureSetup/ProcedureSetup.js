@@ -13,7 +13,7 @@ export default class ProcedureSetup extends Component {
       isOpen: false,
 
       ProceduresPop: {},
-      all_procedures: []
+      all_procedures: [],
     };
     ProcedureSetupEvent().getProcedure(this);
   }
@@ -22,7 +22,7 @@ export default class ProcedureSetup extends Component {
     this.setState({
       ...this.state,
       isOpen: !this.state.isOpen,
-      ProceduresPop: {}
+      ProceduresPop: {},
     });
   }
 
@@ -31,7 +31,7 @@ export default class ProcedureSetup extends Component {
       {
         ...this.state,
         isOpen: !this.state.isOpen,
-        ProceduresPop: {}
+        ProceduresPop: {},
       },
       () => {
         if (e === true) {
@@ -78,7 +78,7 @@ export default class ProcedureSetup extends Component {
                     {
                       fieldName: "action",
                       label: <AlgaehLabel label={{ fieldName: "action" }} />,
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         return (
                           <span>
                             <i
@@ -92,25 +92,50 @@ export default class ProcedureSetup extends Component {
                         maxWidth: 65,
                         resizable: false,
                         filterable: false,
-                        style: { textAlign: "center" }
-                      }
+                        style: { textAlign: "center" },
+                      },
                     },
                     {
                       fieldName: "procedure_code",
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Procedure Code" }} />
-                      )
+                      ),
+                      others: {
+                        maxWidth: 120,
+                      },
                     },
                     {
                       fieldName: "procedure_desc",
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Procedure Desc" }} />
-                      )
+                      ),
+                    },
+                    {
+                      fieldName: "procedure_arabic",
+                      label: (
+                        <AlgaehLabel
+                          label={{ forceLabel: "Description Arabic" }}
+                        />
+                      ),
                     },
 
                     {
+                      fieldName: "procedure_type",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Procedure Type" }} />
+                      ),
+                      others: {
+                        maxWidth: 120,
+                      },
+                    },
+                    {
                       fieldName: "procedure_amount",
-                      label: <AlgaehLabel label={{ forceLabel: "Procedure Amount" }} />
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Procedure Amt." }} />
+                      ),
+                      others: {
+                        maxWidth: 120,
+                      },
                     },
                     {
                       fieldName: "vat_applicable",
@@ -121,7 +146,7 @@ export default class ProcedureSetup extends Component {
                         return row.vat_applicable === "Y" ? "Yes" : "No";
                       },
                       others: {
-                        maxWidth: 150,
+                        maxWidth: 110,
                       },
                     },
                     {
@@ -130,19 +155,18 @@ export default class ProcedureSetup extends Component {
                         <AlgaehLabel label={{ fieldName: "vat_percent" }} />
                       ),
                       displayTemplate: (row) => {
-                        return (< span >
-                          {parseFloat(row.vat_percent).toFixed(0)}%
-                          </span>
+                        return (
+                          <span>{parseFloat(row.vat_percent).toFixed(0)}%</span>
                         );
                       },
                       others: {
-                        maxWidth: 150,
+                        maxWidth: 100,
                       },
                     },
                   ]}
                   keyId="procedure_code"
                   dataSource={{
-                    data: this.state.all_procedures
+                    data: this.state.all_procedures,
                   }}
                   filter={true}
                   paging={{ page: 0, rowsPerPage: 20 }}
@@ -155,4 +179,3 @@ export default class ProcedureSetup extends Component {
     );
   }
 }
-

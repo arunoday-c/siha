@@ -30,6 +30,8 @@ class Procedures extends PureComponent {
       procedure_status: "A",
       service_id: null,
       procedure_amount: 0,
+      vat_applicable: "N",
+      vat_percent: 0,
 
       open: false,
       ProcedureDetail: [],
@@ -97,9 +99,8 @@ class Procedures extends PureComponent {
         procedure_code: null,
         procedure_desc: null,
         procedure_amount: 0,
-        total_service_amount: 0,
-        profit_loss: null,
-        pl_amount: 0,
+        vat_applicable: "N",
+        vat_percent: 0,
 
         open: false,
         ProcedureDetail: [],
@@ -117,6 +118,9 @@ class Procedures extends PureComponent {
 
   itemchangeText(e) {
     ProceduresEvent().itemchangeText(this, e);
+  }
+  checkHandle(e) {
+    ProceduresEvent().checkHandle(this, e);
   }
   eventHandaler(e) {
     ProceduresEvent().texthandle(this, e);
@@ -142,6 +146,7 @@ class Procedures extends PureComponent {
       <React.Fragment>
         <div className="hptl-phase1-add-investigation-form">
           <AlgaehModalPopUp
+            class="ProcedureMastrModal"
             events={{
               onClose: this.onClose.bind(this),
             }}
@@ -149,41 +154,58 @@ class Procedures extends PureComponent {
             openPopup={this.props.show}
           >
             <div className="col-lg-12 popupInner">
-              <div className="col-12 popRightDiv" style={{ maxHeight: "76vh" }}>
-                <div className="row">
-                  <AlagehFormGroup
-                    div={{ className: "col form-group" }}
-                    label={{
-                      forceLabel: "Procedure Code",
-                      isImp: true,
-                    }}
-                    textBox={{
-                      className: "txt-fld",
-                      name: "procedure_code",
-                      value: this.state.procedure_code,
-                      events: {
-                        onChange: this.eventHandaler.bind(this),
-                      },
-                    }}
-                  />
+              <div className="row">
+                <div className="col-4 popLeftDiv">
+                  {" "}
+                  <div className="row">
+                    <AlagehFormGroup
+                      div={{ className: "col-6 form-group mandatory" }}
+                      label={{
+                        forceLabel: "Procedure Code",
+                        isImp: true,
+                      }}
+                      textBox={{
+                        className: "txt-fld",
+                        name: "procedure_code",
+                        value: this.state.procedure_code,
+                        events: {
+                          onChange: this.eventHandaler.bind(this),
+                        },
+                      }}
+                    />
 
-                  <AlagehFormGroup
-                    div={{ className: "col form-group" }}
-                    label={{
-                      forceLabel: "Description",
-                      isImp: true,
-                    }}
-                    textBox={{
-                      className: "txt-fld",
-                      name: "procedure_desc",
-                      value: this.state.procedure_desc,
-                      events: {
-                        onChange: this.eventHandaler.bind(this),
-                      },
-                    }}
-                  />
+                    <AlagehFormGroup
+                      div={{ className: "col-12 form-group mandatory" }}
+                      label={{
+                        forceLabel: "Description",
+                        isImp: true,
+                      }}
+                      textBox={{
+                        className: "txt-fld",
+                        name: "procedure_desc",
+                        value: this.state.procedure_desc,
+                        events: {
+                          onChange: this.eventHandaler.bind(this),
+                        },
+                      }}
+                    />
+                    <AlagehFormGroup
+                      div={{ className: "col-12 form-group" }}
+                      label={{
+                        forceLabel: "Description Arabic",
+                        isImp: false,
+                      }}
+                      textBox={{
+                        className: "txt-fld",
+                        name: "procedure_desc",
+                        value: this.state.procedure_desc,
+                        events: {
+                          onChange: this.eventHandaler.bind(this),
+                        },
+                      }}
+                    />
 
-                  <AlagehAutoComplete
+                    {/* <AlagehAutoComplete
                     div={{ className: "col form-group" }}
                     label={{
                       forceLabel: "Service",
@@ -199,31 +221,32 @@ class Procedures extends PureComponent {
                       },
                       onChange: this.eventHandaler.bind(this),
                     }}
-                  />
+                  /> */}
 
-                  <AlagehAutoComplete
-                    div={{ className: "col form-group" }}
-                    label={{
-                      forceLabel: "Procedure Type",
-                    }}
-                    selector={{
-                      name: "procedure_type",
-                      className: "select-fld",
-                      value: this.state.procedure_type,
-                      dataSource: {
-                        textField: "name",
-                        valueField: "value",
-                        data: GlobalVariables.PROCEDURE_TYPE,
-                      },
-                      onChange: this.eventHandaler.bind(this),
-                    }}
-                  />
-
-                  {this.state.hims_d_procedure_id === null ? (
-                    <AlagehFormGroup
-                      div={{ className: "col form-group" }}
+                    <AlagehAutoComplete
+                      div={{ className: "col-6 form-group mandatory" }}
                       label={{
-                        forceLabel: "procedure amount",
+                        forceLabel: "Procedure Type",
+                        isImp: true,
+                      }}
+                      selector={{
+                        name: "procedure_type",
+                        className: "select-fld",
+                        value: this.state.procedure_type,
+                        dataSource: {
+                          textField: "name",
+                          valueField: "value",
+                          data: GlobalVariables.PROCEDURE_TYPE,
+                        },
+                        onChange: this.eventHandaler.bind(this),
+                      }}
+                    />
+
+                    <AlagehFormGroup
+                      div={{ className: "col-6 form-group mandatory" }}
+                      label={{
+                        forceLabel: "Procedure Amt.",
+                        isImp: true,
                       }}
                       textBox={{
                         decimal: { allowNegative: false },
@@ -238,157 +261,205 @@ class Procedures extends PureComponent {
                         },
                       }}
                     />
-                  ) : null}
-                </div>
 
-                <div className="row">
-                  <AlagehAutoComplete
-                    div={{ className: "col-lg-5" }}
-                    label={{ forceLabel: "Item Name", isImp: true }}
-                    selector={{
-                      name: "item_id",
-                      className: "select-fld",
-                      value: this.state.item_id,
-                      dataSource: {
-                        textField: "item_description",
-                        valueField: "hims_d_inventory_item_master_id",
-                        data: this.props.inventoryitemlist,
-                      },
-                      onChange: this.itemchangeText.bind(this),
-                      onClear: () => {
-                        this.setState({
-                          item_id: null,
-                        });
-                      },
-                    }}
-                  />
-
-                  <AlagehFormGroup
-                    div={{ className: "col-2" }}
-                    label={{
-                      forceLabel: "Quantity",
-                      isImp: true,
-                    }}
-                    textBox={{
-                      number: {
-                        allowNegative: false,
-                        thousandSeparator: ",",
-                      },
-                      className: "txt-fld",
-                      name: "qty",
-                      value: this.state.qty,
-                      events: {
-                        onChange: this.eventHandaler.bind(this),
-                      },
-                      others: {
-                        step: "1",
-                      },
-                    }}
-                  />
-                  <div className="col-2 form-group">
-                    <button
-                      className="btn btn-primary"
-                      style={{ marginTop: 19 }}
-                      onClick={this.AddToList.bind(this)}
-                    >
-                      Add
-                    </button>
+                    <div className="col-6">
+                      <AlgaehLabel label={{ fieldName: "vat_applicable" }} />
+                      <div className=" customCheckbox ">
+                        <label className="checkbox inline">
+                          <input
+                            type="checkbox"
+                            name="vat_applicable"
+                            value="Y"
+                            checked={
+                              this.state.vat_applicable === "Y" ? true : false
+                            }
+                            onChange={this.checkHandle.bind(this)}
+                          />
+                          <span>Yes</span>
+                        </label>
+                      </div>
+                    </div>
+                    <AlagehFormGroup
+                      div={{ className: "col-6 form-group mandatory" }}
+                      label={{
+                        fieldName: "vat_percent",
+                      }}
+                      textBox={{
+                        className: "txt-fld",
+                        name: "vat_percent",
+                        value: this.state.vat_percent,
+                        events: {
+                          onChange: this.eventHandaler.bind(this),
+                        },
+                        others: {
+                          disabled:
+                            this.state.vat_applicable === "Y" ? false : true,
+                          type: "number",
+                        },
+                      }}
+                    />
                   </div>
                 </div>
-                <div className="portlet-body">
+                <div className="col-8 popRightDiv">
                   <div className="row">
-                    <div className="col-lg-12" id="procedureGrid_Cntr">
-                      <AlgaehDataGrid
-                        id="packages_detail_grid"
-                        columns={[
-                          {
-                            fieldName: "action",
-                            label: (
-                              <AlgaehLabel label={{ forceLabel: "Action" }} />
-                            ),
-                            displayTemplate: (row) => {
-                              return (
-                                <span>
-                                  <i
-                                    className="fas fa-trash-alt"
-                                    onClick={this.DeleteService.bind(this, row)}
-                                  />
-                                </span>
-                              );
-                            },
-                            others: {
-                              maxWidth: 65,
-                              resizable: false,
-                              filterable: false,
-                              style: { textAlign: "center" },
-                            },
-                          },
-                          {
-                            fieldName: "item_id",
-                            label: (
-                              <AlgaehLabel
-                                label={{ forceLabel: "Item Name" }}
-                              />
-                            ),
-                            displayTemplate: (row) => {
-                              let display =
-                                this.props.inventoryitemlist === undefined
-                                  ? []
-                                  : this.props.inventoryitemlist.filter(
-                                      (f) =>
-                                        f.hims_d_inventory_item_master_id ===
-                                        row.item_id
-                                    );
+                    <AlagehAutoComplete
+                      div={{ className: "col " }}
+                      label={{ forceLabel: "Item Name", isImp: true }}
+                      selector={{
+                        name: "item_id",
+                        className: "select-fld",
+                        value: this.state.item_id,
+                        dataSource: {
+                          textField: "item_description",
+                          valueField: "hims_d_inventory_item_master_id",
+                          data: this.props.inventoryitemlist,
+                        },
+                        onChange: this.itemchangeText.bind(this),
+                        onClear: () => {
+                          this.setState({
+                            item_id: null,
+                          });
+                        },
+                      }}
+                    />
 
-                              return (
-                                <span>
-                                  {display !== undefined && display.length !== 0
-                                    ? display[0].item_description
-                                    : ""}
-                                </span>
-                              );
+                    <AlagehFormGroup
+                      div={{ className: "col-3" }}
+                      label={{
+                        forceLabel: "Quantity",
+                        isImp: true,
+                      }}
+                      textBox={{
+                        number: {
+                          allowNegative: false,
+                          thousandSeparator: ",",
+                        },
+                        className: "txt-fld",
+                        name: "qty",
+                        value: this.state.qty,
+                        events: {
+                          onChange: this.eventHandaler.bind(this),
+                        },
+                        others: {
+                          step: "1",
+                        },
+                      }}
+                    />
+                    <div className="col-2 form-group">
+                      <button
+                        className="btn btn-default"
+                        style={{ marginTop: 21 }}
+                        onClick={this.AddToList.bind(this)}
+                      >
+                        Add
+                      </button>
+                    </div>
+                  </div>
+                  <div className="portlet-body">
+                    <div className="row">
+                      <div className="col-lg-12" id="procedureGrid_Cntr">
+                        <AlgaehDataGrid
+                          id="packages_detail_grid"
+                          columns={[
+                            {
+                              fieldName: "action",
+                              label: (
+                                <AlgaehLabel label={{ forceLabel: "Action" }} />
+                              ),
+                              displayTemplate: (row) => {
+                                return (
+                                  <span>
+                                    <i
+                                      className="fas fa-trash-alt"
+                                      onClick={this.DeleteService.bind(
+                                        this,
+                                        row
+                                      )}
+                                    />
+                                  </span>
+                                );
+                              },
+                              others: {
+                                maxWidth: 65,
+                                resizable: false,
+                                filterable: false,
+                                style: { textAlign: "center" },
+                              },
                             },
-                          },
-                          {
-                            fieldName: "service_id",
-                            label: (
-                              <AlgaehLabel
-                                label={{ forceLabel: "Service Name" }}
-                              />
-                            ),
-                            displayTemplate: (row) => {
-                              let display =
-                                this.props.displayservices === undefined
-                                  ? []
-                                  : this.props.displayservices.filter(
-                                      (f) =>
-                                        f.hims_d_services_id === row.service_id
-                                    );
+                            {
+                              fieldName: "item_id",
+                              label: (
+                                <AlgaehLabel
+                                  label={{ forceLabel: "Item Name" }}
+                                />
+                              ),
+                              displayTemplate: (row) => {
+                                let display =
+                                  this.props.inventoryitemlist === undefined
+                                    ? []
+                                    : this.props.inventoryitemlist.filter(
+                                        (f) =>
+                                          f.hims_d_inventory_item_master_id ===
+                                          row.item_id
+                                      );
 
-                              return (
-                                <span>
-                                  {display !== null && display.length !== 0
-                                    ? display[0].service_name
-                                    : ""}
-                                </span>
-                              );
+                                return (
+                                  <span>
+                                    {display !== undefined &&
+                                    display.length !== 0
+                                      ? display[0].item_description
+                                      : ""}
+                                  </span>
+                                );
+                              },
                             },
-                          },
-                          {
-                            fieldName: "qty",
-                            label: (
-                              <AlgaehLabel label={{ forceLabel: "Quantity" }} />
-                            ),
-                          },
-                        ]}
-                        keyId="packages_detail_grid"
-                        dataSource={{
-                          data: this.state.ProcedureDetail,
-                        }}
-                        // isEditable={true}
-                        filter={true}
-                        paging={{ page: 0, rowsPerPage: 10 }}
-                      />
+                            // {
+                            //   fieldName: "service_id",
+                            //   label: (
+                            //     <AlgaehLabel
+                            //       label={{ forceLabel: "Service Name" }}
+                            //     />
+                            //   ),
+                            //   displayTemplate: (row) => {
+                            //     let display =
+                            //       this.props.displayservices === undefined
+                            //         ? []
+                            //         : this.props.displayservices.filter(
+                            //             (f) =>
+                            //               f.hims_d_services_id ===
+                            //               row.service_id
+                            //           );
+
+                            //     return (
+                            //       <span>
+                            //         {display !== null && display.length !== 0
+                            //           ? display[0].service_name
+                            //           : ""}
+                            //       </span>
+                            //     );
+                            //   },
+                            // },
+                            {
+                              fieldName: "qty",
+                              label: (
+                                <AlgaehLabel
+                                  label={{ forceLabel: "Quantity" }}
+                                />
+                              ),
+                              others: {
+                                maxWidth: 100,
+                              },
+                            },
+                          ]}
+                          keyId="packages_detail_grid"
+                          dataSource={{
+                            data: this.state.ProcedureDetail,
+                          }}
+                          // isEditable={true}
+                          filter={true}
+                          paging={{ page: 0, rowsPerPage: 10 }}
+                        />
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -434,7 +505,6 @@ class Procedures extends PureComponent {
 
 function mapStateToProps(state) {
   return {
-    procedureservices: state.procedureservices,
     displayservices: state.displayservices,
     inventoryitemlist: state.inventoryitemlist,
   };
