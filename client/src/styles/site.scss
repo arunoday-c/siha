@@ -2288,6 +2288,7 @@ input.autoselect-input:disabled {
     .fa-exchange-alt,
     .fa-print,
     .fa-random,
+    .fa-undo-alt,
     .fa-paper-plane {
       cursor: pointer;
       border: 1px solid lighten($primary-color, 10%);
@@ -2303,7 +2304,6 @@ input.autoselect-input:disabled {
     }
 
     .fa-pen:hover,
-    .fa-trash-alt:hover,
     .fa-save:hover,
     .fa-times:hover,
     .fa-barcode:hover,
@@ -2329,9 +2329,12 @@ input.autoselect-input:disabled {
     .fa-paper-plane:hover {
       background: $primary-color;
       color: #fff;
+      border-color: $primary-color;
     }
 
-    .fa-thumbs-down:hover {
+    .fa-thumbs-down:hover,
+    .fa-undo-alt:hover,
+    .fa-trash-alt:hover {
       background: lightcoral;
       border: red;
       color: #fff;

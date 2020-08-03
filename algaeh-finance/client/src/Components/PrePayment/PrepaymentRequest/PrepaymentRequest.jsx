@@ -344,6 +344,28 @@ export function PrepaymentRequest() {
                 <AlgaehDataGrid
                   columns={[
                     {
+                      fieldName: "",
+                      label: "Actions",
+                      displayTemplate: (row) => {
+                        return (
+                          <>
+                            {row.request_status === "P" ? (
+                              <i
+                                className="fas fa-pen"
+                                // onClick={() => onEdit(row)}
+                              ></i>
+                            ) : (
+                              ""
+                            )}
+                            {/* <i
+                              className="fas fa-save"
+                              // onClick={() => onDelete(row)}
+                            ></i> */}
+                          </>
+                        );
+                      },
+                    },
+                    {
                       fieldName: "request_status",
                       label: "Status",
                       sortable: true,

@@ -1842,10 +1842,10 @@ td {
       min-width: 65px;
     }
   }
-  i.fa-pen,
-  i.fa-trash-alt,
-  i.fa-save,
-  i.fa-times,
+  .fa-pen,
+  .fa-trash-alt,
+  .fa-save,
+  .fa-times,
   .fa-barcode,
   .fa-check,
   .fa-flask,
@@ -1867,6 +1867,7 @@ td {
   .fa-exchange-alt,
   .fa-print,
   .fa-random,
+  .fa-undo-alt,
   .fa-paper-plane {
     cursor: pointer;
     border: 1px solid lighten($primary-color, 10%);
@@ -1881,10 +1882,9 @@ td {
     color: #313538;
   }
 
-  i.fa-pen:hover,
-  i.fa-trash-alt:hover,
-  i.fa-save:hover,
-  i.fa-times:hover,
+  .fa-pen:hover,
+  .fa-save:hover,
+  .fa-times:hover,
   .fa-barcode:hover,
   .fa-check:hover,
   .fa-flask:hover,
@@ -1908,9 +1908,12 @@ td {
   .fa-paper-plane:hover {
     background: $primary-color;
     color: #fff;
+    border-color: $primary-color;
   }
 
-  .fa-thumbs-down:hover {
+  .fa-thumbs-down:hover,
+  .fa-undo-alt:hover,
+  .fa-trash-alt:hover {
     background: lightcoral;
     border: red;
     color: #fff;

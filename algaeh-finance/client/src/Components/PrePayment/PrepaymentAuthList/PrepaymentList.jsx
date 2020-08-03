@@ -386,12 +386,18 @@ Prepayment Type: ${row.prepayment_desc}`,
                         if (row.request_status === "P") {
                           return (
                             <>
-                              <Button onClick={() => onClickAuthorize(row)}>
+                              <span onClick={() => onClickAuthorize(row)}>
+                                <i className="fas fa-check"></i>
+                              </span>
+                              <span onClick={() => onClickReject(row)}>
+                                <i className="fas fa-undo-alt"></i>
+                              </span>
+                              {/* <Button onClick={() => onClickAuthorize(row)}>
                                 Authorize
-                              </Button>
-                              <Button onClick={() => onClickReject(row)}>
+                              </Button> */}
+                              {/* <Button onClick={() => onClickReject(row)}>
                                 Reject
-                              </Button>
+                              </Button> */}
                             </>
                           );
                         } else if (row.request_status === "A") {
