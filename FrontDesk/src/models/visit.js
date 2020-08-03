@@ -66,11 +66,10 @@ export default {
       _mysql
         .executeQuery({
           query:
-            "select visit_code from hims_d_sub_department,hims_f_patient_visit where \
-          hims_f_patient_visit.sub_department_id=hims_d_sub_department.hims_d_sub_department_id \
-          and hims_d_sub_department.record_status='A' and hims_f_patient_visit.record_status='A' \
-          and hims_f_patient_visit.visit_date =DATE(now()) and hims_d_sub_department.hims_d_sub_department_id=?\
-          and hims_f_patient_visit.doctor_id=? and patient_id =? and hims_f_patient_visit.hospital_id=?",
+            "select visit_code from hims_d_sub_department SD,hims_f_patient_visit V where \
+          V.sub_department_id=SD.hims_d_sub_department_id and SD.record_status='A' and V.record_status='A' \
+          and V.visit_date =DATE(now()) and SD.hims_d_sub_department_id=?\
+          and V.doctor_id=? and patient_id =? and V.hospital_id=? and V.visit_status!='CN'",
           values: [
             inputParam.sub_department_id,
             inputParam.doctor_id,
