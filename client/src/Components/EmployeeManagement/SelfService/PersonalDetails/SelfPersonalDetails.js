@@ -1361,6 +1361,95 @@ class SelfPersonalDetails extends Component {
                 </div>
               </div>
             </div>
+          </div>
+
+          <div className="col-5">
+            <div className="portlet portlet-bordered margin-bottom-15">
+              {/* <div className="portlet-title">
+                <div className="caption">
+                  <h3 className="caption-subject">Payroll Information</h3>
+                </div>
+              </div> */}
+              <div className="portlet-body">
+                <div className="row">
+                  <AlagehAutoComplete
+                    div={{ className: "col-2 " }}
+                    label={{
+                      forceLabel: "Year",
+                      isImp: false,
+                    }}
+                    selector={{
+                      name: "year",
+                      className: "select-fld",
+                      value: this.state.year,
+                      dataSource: {
+                        textField: "name",
+                        valueField: "value",
+                        data: this.yearList,
+                      },
+                      onChange: this.dropDownHandle.bind(this),
+                    }}
+                  />{" "}
+                  <AlagehAutoComplete
+                    div={{ className: "col-3 paddingLeft" }}
+                    label={{
+                      forceLabel: "Month",
+                      isImp: false,
+                    }}
+                    selector={{
+                      name: "month",
+                      sort: "off",
+                      className: "select-fld",
+                      value: this.state.month,
+                      dataSource: {
+                        textField: "name",
+                        valueField: "value",
+                        data: GlobalVariables.MONTHS,
+                      },
+                      onChange: this.dropDownHandle.bind(this),
+                    }}
+                  />{" "}
+                  <div className="col paddingLeft">
+                    <button
+                      type="button"
+                      className="btn btn-default"
+                      style={{ marginTop: 19 }}
+                      onClick={this.generateSalarySlipESS.bind(this)}
+                    >
+                      Print Payslip
+                    </button>
+                  </div>
+                </div>
+                {/* <hr></hr>
+                <div className="row">
+                  <div className="col-8">
+                    <Doughnut
+                      data={PieData}
+                      height={160}
+                      //options={AdmissionsReadmissionDataOptions}
+                    />
+                  </div>{" "}
+                  <div className="col-4 salaryBreakup">
+                    <div className="row">
+                      <div className="col-12">
+                        <p>Earnings</p>
+                        <h4>0.00</h4>
+                      </div>
+                      <div className="col-12">
+                        {" "}
+                        <p>Deductions</p>
+                        <h4>0.00</h4>
+                      </div>
+                      <div className="col-12">
+                        {" "}
+                        <p>Total Net Salary</p>
+                        <h3>0.00</h3>
+                      </div>
+                    </div>
+                  </div>
+                </div> */}
+              </div>
+            </div>
             <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-title">
                 <div
@@ -2333,95 +2422,6 @@ class SelfPersonalDetails extends Component {
                     />
                   </div>
                 </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="col-5">
-            <div className="portlet portlet-bordered margin-bottom-15">
-              {/* <div className="portlet-title">
-                <div className="caption">
-                  <h3 className="caption-subject">Payroll Information</h3>
-                </div>
-              </div> */}
-              <div className="portlet-body">
-                <div className="row">
-                  <AlagehAutoComplete
-                    div={{ className: "col-2 " }}
-                    label={{
-                      forceLabel: "Year",
-                      isImp: false,
-                    }}
-                    selector={{
-                      name: "year",
-                      className: "select-fld",
-                      value: this.state.year,
-                      dataSource: {
-                        textField: "name",
-                        valueField: "value",
-                        data: this.yearList,
-                      },
-                      onChange: this.dropDownHandle.bind(this),
-                    }}
-                  />{" "}
-                  <AlagehAutoComplete
-                    div={{ className: "col-3 paddingLeft" }}
-                    label={{
-                      forceLabel: "Month",
-                      isImp: false,
-                    }}
-                    selector={{
-                      name: "month",
-                      sort: "off",
-                      className: "select-fld",
-                      value: this.state.month,
-                      dataSource: {
-                        textField: "name",
-                        valueField: "value",
-                        data: GlobalVariables.MONTHS,
-                      },
-                      onChange: this.dropDownHandle.bind(this),
-                    }}
-                  />{" "}
-                  <div className="col paddingLeft">
-                    <button
-                      type="button"
-                      className="btn btn-default"
-                      style={{ marginTop: 19 }}
-                      onClick={this.generateSalarySlipESS.bind(this)}
-                    >
-                      Print Payslip
-                    </button>
-                  </div>
-                </div>
-                {/* <hr></hr>
-                <div className="row">
-                  <div className="col-8">
-                    <Doughnut
-                      data={PieData}
-                      height={160}
-                      //options={AdmissionsReadmissionDataOptions}
-                    />
-                  </div>{" "}
-                  <div className="col-4 salaryBreakup">
-                    <div className="row">
-                      <div className="col-12">
-                        <p>Earnings</p>
-                        <h4>0.00</h4>
-                      </div>
-                      <div className="col-12">
-                        {" "}
-                        <p>Deductions</p>
-                        <h4>0.00</h4>
-                      </div>
-                      <div className="col-12">
-                        {" "}
-                        <p>Total Net Salary</p>
-                        <h3>0.00</h3>
-                      </div>
-                    </div>
-                  </div>
-                </div> */}
               </div>
             </div>
             {/* <div className="portlet portlet-bordered margin-bottom-15">
