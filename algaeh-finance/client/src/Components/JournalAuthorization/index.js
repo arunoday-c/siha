@@ -162,8 +162,8 @@ export default memo(function (props) {
             <i className="fas fa-thumbs-down" onClick={reject}></i>
           </>
         ) : (
-          <span>---</span>
-        )}
+            <span>---</span>
+          )}
       </>
     );
   };
@@ -404,17 +404,17 @@ export default memo(function (props) {
                         { fieldName: "payment_date", label: "Payment Date" },
                         // ...paymentTemplates,
                         /* Commented paymentTemplates there is no condition we can use directly   */
-                        {
-                          fieldName: "payment_mode",
-                          label: "Payment Mode",
-                          displayTemplate: (row) => {
-                            return row["payment_mode"] === "N"
-                              ? "NONE"
-                              : row["payment_mode"];
-                          },
-                        },
-                        { fieldName: "ref_no", label: "Reference No" },
-                        { fieldName: "cheque_date", label: "Cheque Date" },
+                        // {
+                        //   fieldName: "payment_mode",
+                        //   label: "Payment Mode",
+                        //   displayTemplate: (row) => {
+                        //     return row["payment_mode"] === "N"
+                        //       ? "NONE"
+                        //       : row["payment_mode"];
+                        //   },
+                        // },
+                        // { fieldName: "ref_no", label: "Reference No" },
+                        // { fieldName: "cheque_date", label: "Cheque Date" },
                         /* Commented End */
                         { fieldName: "amount", label: "Amount" },
                         { fieldName: "narration", label: "Narration" },
