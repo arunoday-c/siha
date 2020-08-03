@@ -56,6 +56,7 @@ export const ConfirmAuth = () => {
     checkToken().then(() => {
       AlgaehLoader({ show: false });
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // useEffect(() => {
