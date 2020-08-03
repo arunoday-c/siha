@@ -24,10 +24,12 @@ class Referal extends PureComponent {
     };
   }
   doctorDepartmentChangeHandler(item) {
+    debugger
     this.setState({
       sub_department_id: item.hims_d_sub_department_id,
       doctor_id: item.hims_d_employee_id,
-      hospital_name: item.hospital_name
+      hospital_name: item.hospital_name,
+      doctor_department: item.sub_department_name
     });
   }
   doctorDepartmentClearHandler() {
@@ -79,6 +81,7 @@ class Referal extends PureComponent {
                 { fieldName: "hospital_name" }
               ]}
               displayField="doctor_department"
+              value={this.state.doctor_department}
               template={row => {
                 return (
                   <div className="col-12 padd-10">
@@ -107,7 +110,14 @@ class Referal extends PureComponent {
                 );
               }}
               onClick={this.doctorDepartmentChangeHandler.bind(this)}
-              onClear={this.doctorDepartmentClearHandler.bind(this)}
+              onClear={() => {
+                this.state({
+                  sub_department_id: null,
+                  doctor_id: null,
+                  hospital_name: null,
+                  doctor_department: null
+                });
+              }}
             />
           ) : (
               <AlagehFormGroup
@@ -149,6 +159,9 @@ class Referal extends PureComponent {
               value: this.state.hospital_name,
               events: {
                 onChange: texthandle.bind(this, this)
+              },
+              others: {
+                disabled: this.state.radio
               }
             }}
           />
