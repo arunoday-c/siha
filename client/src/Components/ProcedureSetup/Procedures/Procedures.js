@@ -148,155 +148,177 @@ class Procedures extends PureComponent {
             title={this.props.HeaderCaption}
             openPopup={this.props.show}
           >
-            <div className="col-lg-12 popupInner">
-              <div className="col-12 popRightDiv" style={{ maxHeight: "76vh" }}>
-                <div className="row">
-                  <AlagehFormGroup
-                    div={{ className: "col form-group" }}
-                    label={{
-                      forceLabel: "Procedure Code",
-                      isImp: true,
-                    }}
-                    textBox={{
-                      className: "txt-fld",
-                      name: "procedure_code",
-                      value: this.state.procedure_code,
-                      events: {
-                        onChange: this.eventHandaler.bind(this),
-                      },
-                    }}
-                  />
-
-                  <AlagehFormGroup
-                    div={{ className: "col form-group" }}
-                    label={{
-                      forceLabel: "Description",
-                      isImp: true,
-                    }}
-                    textBox={{
-                      className: "txt-fld",
-                      name: "procedure_desc",
-                      value: this.state.procedure_desc,
-                      events: {
-                        onChange: this.eventHandaler.bind(this),
-                      },
-                    }}
-                  />
-
-                  <AlagehAutoComplete
-                    div={{ className: "col form-group" }}
-                    label={{
-                      forceLabel: "Service",
-                    }}
-                    selector={{
-                      name: "service_id",
-                      className: "select-fld",
-                      value: this.state.service_id,
-                      dataSource: {
-                        textField: "service_name",
-                        valueField: "hims_d_services_id",
-                        data: this.props.procedureservices,
-                      },
-                      onChange: this.eventHandaler.bind(this),
-                    }}
-                  />
-
-                  <AlagehAutoComplete
-                    div={{ className: "col form-group" }}
-                    label={{
-                      forceLabel: "Procedure Type",
-                    }}
-                    selector={{
-                      name: "procedure_type",
-                      className: "select-fld",
-                      value: this.state.procedure_type,
-                      dataSource: {
-                        textField: "name",
-                        valueField: "value",
-                        data: GlobalVariables.PROCEDURE_TYPE,
-                      },
-                      onChange: this.eventHandaler.bind(this),
-                    }}
-                  />
-
-                  {this.state.hims_d_procedure_id === null ? (
+            <div className="col-12 popupInner">
+              {" "}
+              <div className="row">
+                <div className="col-4 popLeftDiv">
+                  <div className="row">
                     <AlagehFormGroup
-                      div={{ className: "col form-group" }}
+                      div={{ className: "col-6 form-group mandatory" }}
                       label={{
-                        forceLabel: "procedure amount",
+                        forceLabel: "Procedure Code",
+                        isImp: true,
                       }}
                       textBox={{
-                        decimal: { allowNegative: false },
-                        value: this.state.procedure_amount,
                         className: "txt-fld",
-                        name: "procedure_amount",
+                        name: "procedure_code",
+                        value: this.state.procedure_code,
+                        events: {
+                          onChange: this.eventHandaler.bind(this),
+                        },
+                      }}
+                    />
+
+                    <AlagehFormGroup
+                      div={{ className: "col-12 form-group mandatory" }}
+                      label={{
+                        forceLabel: "Description",
+                        isImp: true,
+                      }}
+                      textBox={{
+                        className: "txt-fld",
+                        name: "procedure_desc",
+                        value: this.state.procedure_desc,
+                        events: {
+                          onChange: this.eventHandaler.bind(this),
+                        },
+                      }}
+                    />
+                    <AlagehFormGroup
+                      div={{ className: "col-12 form-group" }}
+                      label={{
+                        forceLabel: "Description in Arabic",
+                        isImp: false,
+                      }}
+                      textBox={{
+                        className: "txt-fld",
+                        name: "procedure_desc",
+                        value: this.state.procedure_desc,
+                        events: {
+                          onChange: this.eventHandaler.bind(this),
+                        },
+                      }}
+                    />
+
+                    {/* <AlagehAutoComplete
+                      div={{ className: "col-12 form-group" }}
+                      label={{
+                        forceLabel: "Service",
+                      }}
+                      selector={{
+                        name: "service_id",
+                        className: "select-fld",
+                        value: this.state.service_id,
+                        dataSource: {
+                          textField: "service_name",
+                          valueField: "hims_d_services_id",
+                          data: this.props.procedureservices,
+                        },
+                        onChange: this.eventHandaler.bind(this),
+                      }}
+                    /> */}
+
+                    <AlagehAutoComplete
+                      div={{ className: "col-6 form-group mandatory" }}
+                      label={{
+                        forceLabel: "Procedure Type",
+                        isImp: true,
+                      }}
+                      selector={{
+                        name: "procedure_type",
+                        className: "select-fld",
+                        value: this.state.procedure_type,
+                        dataSource: {
+                          textField: "name",
+                          valueField: "value",
+                          data: GlobalVariables.PROCEDURE_TYPE,
+                        },
+                        onChange: this.eventHandaler.bind(this),
+                      }}
+                    />
+
+                    {this.state.hims_d_procedure_id === null ? (
+                      <AlagehFormGroup
+                        div={{ className: "col-6 form-group mandatory" }}
+                        label={{
+                          forceLabel: "procedure Amt.",
+                          isImp: true,
+                        }}
+                        textBox={{
+                          decimal: { allowNegative: false },
+                          value: this.state.procedure_amount,
+                          className: "txt-fld",
+                          name: "procedure_amount",
+                          events: {
+                            onChange: this.eventHandaler.bind(this),
+                          },
+                          others: {
+                            placeholder: "0.00",
+                          },
+                        }}
+                      />
+                    ) : null}
+                  </div>
+                </div>
+
+                <div
+                  className="col-8 popRightDiv"
+                  style={{ maxHeight: "76vh" }}
+                >
+                  <div className="row">
+                    <AlagehAutoComplete
+                      div={{ className: "col-lg-5" }}
+                      label={{ forceLabel: "Item Name", isImp: true }}
+                      selector={{
+                        name: "item_id",
+                        className: "select-fld",
+                        value: this.state.item_id,
+                        dataSource: {
+                          textField: "item_description",
+                          valueField: "hims_d_inventory_item_master_id",
+                          data: this.props.inventoryitemlist,
+                        },
+                        onChange: this.itemchangeText.bind(this),
+                        onClear: () => {
+                          this.setState({
+                            item_id: null,
+                          });
+                        },
+                      }}
+                    />
+
+                    <AlagehFormGroup
+                      div={{ className: "col-2" }}
+                      label={{
+                        forceLabel: "Quantity",
+                        isImp: true,
+                      }}
+                      textBox={{
+                        number: {
+                          allowNegative: false,
+                          thousandSeparator: ",",
+                        },
+                        className: "txt-fld",
+                        name: "qty",
+                        value: this.state.qty,
                         events: {
                           onChange: this.eventHandaler.bind(this),
                         },
                         others: {
-                          placeholder: "0.00",
+                          step: "1",
                         },
                       }}
                     />
-                  ) : null}
-                </div>
+                    <div className="col-2 form-group">
+                      <button
+                        className="btn btn-primary"
+                        style={{ marginTop: 21 }}
+                        onClick={this.AddToList.bind(this)}
+                      >
+                        Add
+                      </button>
+                    </div>
 
-                <div className="row">
-                  <AlagehAutoComplete
-                    div={{ className: "col-lg-5" }}
-                    label={{ forceLabel: "Item Name", isImp: true }}
-                    selector={{
-                      name: "item_id",
-                      className: "select-fld",
-                      value: this.state.item_id,
-                      dataSource: {
-                        textField: "item_description",
-                        valueField: "hims_d_inventory_item_master_id",
-                        data: this.props.inventoryitemlist,
-                      },
-                      onChange: this.itemchangeText.bind(this),
-                      onClear: () => {
-                        this.setState({
-                          item_id: null,
-                        });
-                      },
-                    }}
-                  />
-
-                  <AlagehFormGroup
-                    div={{ className: "col-2" }}
-                    label={{
-                      forceLabel: "Quantity",
-                      isImp: true,
-                    }}
-                    textBox={{
-                      number: {
-                        allowNegative: false,
-                        thousandSeparator: ",",
-                      },
-                      className: "txt-fld",
-                      name: "qty",
-                      value: this.state.qty,
-                      events: {
-                        onChange: this.eventHandaler.bind(this),
-                      },
-                      others: {
-                        step: "1",
-                      },
-                    }}
-                  />
-                  <div className="col-2 form-group">
-                    <button
-                      className="btn btn-primary"
-                      style={{ marginTop: 19 }}
-                      onClick={this.AddToList.bind(this)}
-                    >
-                      Add
-                    </button>
-                  </div>
-                </div>
-                <div className="portlet-body">
-                  <div className="row">
                     <div className="col-lg-12" id="procedureGrid_Cntr">
                       <AlgaehDataGrid
                         id="packages_detail_grid"
