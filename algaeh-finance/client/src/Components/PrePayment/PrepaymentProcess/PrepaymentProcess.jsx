@@ -356,6 +356,11 @@ export function PrepaymentProcess() {
                     },
                     {
                       fieldName: "",
+                      label: "Amortize Amt.",
+                      sortable: true,
+                    },
+                    {
+                      fieldName: "",
                       label: "Balance Amt.",
                       sortable: true,
                     },
