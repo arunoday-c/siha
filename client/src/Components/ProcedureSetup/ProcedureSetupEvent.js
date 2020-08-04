@@ -3,14 +3,14 @@ import Enumerable from "linq";
 
 export default function ProcedureSetupEvent() {
   return {
-    getProcedure: $this => {
+    getProcedure: ($this) => {
       algaehApiCall({
         uri: "/serviceType/getProcedures",
         module: "masterSettings",
         method: "GET",
-        onSuccess: response => {
+        onSuccess: (response) => {
           if (response.data.success) {
-            debugger
+            debugger;
             let ItemList = Enumerable.from(response.data.records)
               .groupBy("$.hims_d_procedure_id", null, (k, g) => {
                 let firstRecordSet = Enumerable.from(g).firstOrDefault();
@@ -20,6 +20,7 @@ export default function ProcedureSetupEvent() {
                   procedure_code: firstRecordSet.procedure_code,
 
                   procedure_desc: firstRecordSet.procedure_desc,
+                  procedure_desc_arabic: firstRecordSet.procedure_desc_arabic,
                   procedure_status: firstRecordSet.procedure_status,
                   service_id: firstRecordSet.header_service_id,
                   header_service_name: firstRecordSet.header_service_name,
@@ -28,23 +29,26 @@ export default function ProcedureSetupEvent() {
                   vat_percent: firstRecordSet.vat_percent,
                   procedure_amount: firstRecordSet.procedure_amount,
 
-                  ProcedureDetail: firstRecordSet.hims_d_procedure_detail_id === null ? [] : g.getSource()
+                  ProcedureDetail:
+                    firstRecordSet.hims_d_procedure_detail_id === null
+                      ? []
+                      : g.getSource(),
                 };
               })
               .toArray();
 
             $this.setState({
-              all_procedures: ItemList
+              all_procedures: ItemList,
             });
           }
-        }
+        },
       });
     },
     OpenProcedureMaster: ($this, row) => {
       $this.setState({
         isOpen: !$this.state.isOpen,
-        ProceduresPop: row
+        ProceduresPop: row,
       });
-    }
+    },
   };
 }

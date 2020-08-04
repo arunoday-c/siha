@@ -27,6 +27,7 @@ class Procedures extends PureComponent {
       hims_d_procedure_id: null,
       procedure_code: null,
       procedure_desc: null,
+      procedure_desc_arabic: null,
       procedure_status: "A",
       service_id: null,
       procedure_amount: 0,
@@ -98,6 +99,7 @@ class Procedures extends PureComponent {
         hims_d_procedure_id: null,
         procedure_code: null,
         procedure_desc: null,
+        procedure_desc_arabic: null,
         procedure_amount: 0,
         vat_applicable: "N",
         vat_percent: 0,
@@ -190,15 +192,15 @@ class Procedures extends PureComponent {
                       }}
                     />
                     <AlagehFormGroup
-                      div={{ className: "col-12 form-group" }}
+                      div={{ className: "col-12 form-group arabic-txt-fld" }}
                       label={{
                         forceLabel: "Description Arabic",
                         isImp: false,
                       }}
                       textBox={{
                         className: "txt-fld",
-                        name: "procedure_desc",
-                        value: this.state.procedure_desc,
+                        name: "procedure_desc_arabic",
+                        value: this.state.procedure_desc_arabic,
                         events: {
                           onChange: this.eventHandaler.bind(this),
                         },

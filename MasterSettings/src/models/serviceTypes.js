@@ -8,7 +8,6 @@ export default {
     let inputParam = req.body;
     const _mysql = new algaehMysql();
     try {
-
       _mysql
         .executeQueryWithTransaction({
           query:
@@ -35,13 +34,13 @@ export default {
             inputParam.head_id,
             inputParam.child_id,
           ],
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           req.connection = {
             connection: _mysql.connection,
             isTransactionConnection: _mysql.isTransactionConnection,
-            pool: _mysql.pool
+            pool: _mysql.pool,
           };
           let service_id = result.insertId;
           let package_service_id = result.insertId;
@@ -50,12 +49,11 @@ export default {
               query:
                 "SELECT insurance_id FROM hims_d_services_insurance group by insurance_id; \
               SELECT insurance_id,network_id FROM hims_d_services_insurance_network group by network_id;",
-              printQuery: true
+              printQuery: true,
             })
-            .then(services_insurance_network => {
+            .then((services_insurance_network) => {
               const service_insurance = services_insurance_network[0];
-              const service_insurance_network =
-                services_insurance_network[1];
+              const service_insurance_network = services_insurance_network[1];
 
               if (
                 service_insurance.length == 0 &&
@@ -82,18 +80,18 @@ export default {
                   service_insurance: service_insurance,
                   _mysql: _mysql,
                   req: req,
-                  next: next
+                  next: next,
                 })
-                  .then(insert_service => {
+                  .then((insert_service) => {
                     InsertintoServiceInsuranceNetwork({
                       inputParam: inputParam,
                       services_id: service_id,
                       service_insurance_network: service_insurance_network,
                       _mysql: _mysql,
                       req: req,
-                      next: next
+                      next: next,
                     })
-                      .then(insert_service_network => {
+                      .then((insert_service_network) => {
                         if (inputParam.direct_call == true) {
                           _mysql.commitTransaction(() => {
                             _mysql.releaseConnection();
@@ -109,31 +107,30 @@ export default {
                           next();
                         }
                       })
-                      .catch(error => {
+                      .catch((error) => {
                         _mysql.rollBackTransaction(() => {
                           next(error);
                         });
                       });
                   })
-                  .catch(error => {
+                  .catch((error) => {
                     _mysql.rollBackTransaction(() => {
                       next(error);
                     });
                   });
               }
             })
-            .catch(error => {
+            .catch((error) => {
               _mysql.rollBackTransaction(() => {
                 next(error);
               });
             });
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.rollBackTransaction(() => {
             next(error);
           });
         });
-
     } catch (e) {
       _mysql.rollBackTransaction(() => {
         next(e);
@@ -150,9 +147,9 @@ export default {
           query:
             "select product_type from  hims_d_organization where hims_d_organization_id=1\
               and (product_type='HIMS_ERP' or product_type='FINANCE_ERP') limit 1; ",
-          printQuery: true
+          printQuery: true,
         })
-        .then(appResult => {
+        .then((appResult) => {
           let str = "";
 
           if (appResult.length > 0) {
@@ -187,21 +184,21 @@ export default {
                 req.userIdentity.algaeh_d_app_user_id,
                 new Date(),
                 inputParam.record_status,
-                inputParam.hims_d_services_id
+                inputParam.hims_d_services_id,
               ],
-              printQuery: true
+              printQuery: true,
             })
-            .then(result => {
+            .then((result) => {
               _mysql.releaseConnection();
               req.records = result;
               next();
             })
-            .catch(error => {
+            .catch((error) => {
               _mysql.releaseConnection();
               next(error);
             });
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -232,14 +229,14 @@ export default {
             _strAppend +
             " order by hims_d_service_type_id desc",
           values: inputValues,
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -290,14 +287,14 @@ export default {
             _strAppend +
             " order by hims_d_services_id desc",
           values: inputValues,
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -351,14 +348,14 @@ export default {
             _strAppend +
             " order by hims_d_services_id desc",
           values: inputValues,
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -403,34 +400,38 @@ export default {
           req.userIdentity.algaeh_d_app_user_id,
           new Date(),
           req.userIdentity.algaeh_d_app_user_id,
-          new Date()
+          new Date(),
         ],
 
-        printQuery: true
+        printQuery: true,
       })
-      .then(result => {
+      .then((result) => {
         let service_id = result.insertId;
         if (result.insertId > 0) {
           _mysql
             .executeQuery({
               query:
-                "INSERT INTO `hims_d_procedure` (procedure_code,procedure_desc,service_id,procedure_type,\
+                "INSERT INTO `hims_d_procedure` (procedure_code,procedure_desc,procedure_desc_arabic,service_id,procedure_type,\
                     created_by,created_date,updated_by,updated_date) values (?,?,?,?,?,?,?,?)",
               values: [
                 input.procedure_code,
                 input.procedure_desc,
+                input.procedure_desc_arabic,
                 result.insertId,
                 input.procedure_type,
                 req.userIdentity.algaeh_d_app_user_id,
                 new Date(),
                 req.userIdentity.algaeh_d_app_user_id,
-                new Date()
+                new Date(),
               ],
 
-              printQuery: true
+              printQuery: true,
             })
-            .then(pro_head_result => {
-              if (pro_head_result.insertId > 0 && input.ProcedureDetail.lenght > 0) {
+            .then((pro_head_result) => {
+              if (
+                pro_head_result.insertId > 0 &&
+                input.ProcedureDetail.lenght > 0
+              ) {
                 let IncludeValues = ["item_id", "service_id", "qty"];
 
                 _mysql
@@ -443,22 +444,25 @@ export default {
                       created_by: req.userIdentity.algaeh_d_app_user_id,
                       created_date: new Date(),
                       updated_by: req.userIdentity.algaeh_d_app_user_id,
-                      updated_date: new Date()
+                      updated_date: new Date(),
                     },
                     bulkInsertOrUpdate: true,
-                    printQuery: true
+                    printQuery: true,
                   })
 
-                  .then(detail_result => {
+                  .then((detail_result) => {
                     _mysql
                       .executeQuery({
                         query:
                           "SELECT insurance_id FROM hims_d_services_insurance group by insurance_id; \
                           SELECT * FROM hims_d_services_insurance_network group by network_id;",
-                        printQuery: true
+                        printQuery: true,
                       })
-                      .then(services_insurance_network => {
-                        console.log("services_insurance_network", services_insurance_network)
+                      .then((services_insurance_network) => {
+                        console.log(
+                          "services_insurance_network",
+                          services_insurance_network
+                        );
                         const service_insurance = services_insurance_network[0];
                         const service_insurance_network =
                           services_insurance_network[1];
@@ -479,57 +483,60 @@ export default {
                             service_insurance: service_insurance,
                             _mysql: _mysql,
                             req: req,
-                            next: next
+                            next: next,
                           })
-                            .then(insert_service => {
-                              console.log("insert_service", insert_service)
+                            .then((insert_service) => {
+                              console.log("insert_service", insert_service);
                               InsertintoServiceInsuranceNetwork({
                                 inputParam: input,
                                 services_id: service_id,
                                 service_insurance_network: service_insurance_network,
                                 _mysql: _mysql,
                                 req: req,
-                                next: next
+                                next: next,
                               })
-                                .then(insert_service_network => {
+                                .then((insert_service_network) => {
                                   _mysql.commitTransaction(() => {
                                     _mysql.releaseConnection();
                                     req.records = detail_result;
                                     next();
                                   });
                                 })
-                                .catch(error => {
+                                .catch((error) => {
                                   _mysql.releaseConnection();
                                   next(error);
                                 });
                             })
-                            .catch(error => {
+                            .catch((error) => {
                               _mysql.releaseConnection();
                               next(error);
                             });
                         }
                       })
-                      .catch(error => {
+                      .catch((error) => {
                         _mysql.releaseConnection();
                         next(error);
                       });
                   })
-                  .catch(e => {
+                  .catch((e) => {
                     _mysql.rollBackTransaction(() => {
                       next(e);
                     });
                   });
               } else {
-                console.log("else")
+                console.log("else");
                 _mysql
                   .executeQuery({
                     query:
                       "SELECT insurance_id FROM hims_d_services_insurance group by insurance_id; \
                           SELECT * FROM hims_d_services_insurance_network group by network_id;",
-                    printQuery: true
+                    printQuery: true,
                   })
-                  .then(services_insurance_network => {
-                    console.log("services_insurance_network", services_insurance_network)
+                  .then((services_insurance_network) => {
+                    console.log(
+                      "services_insurance_network",
+                      services_insurance_network
+                    );
                     const service_insurance = services_insurance_network[0];
                     const service_insurance_network =
                       services_insurance_network[1];
@@ -550,36 +557,36 @@ export default {
                         service_insurance: service_insurance,
                         _mysql: _mysql,
                         req: req,
-                        next: next
+                        next: next,
                       })
-                        .then(insert_service => {
+                        .then((insert_service) => {
                           InsertintoServiceInsuranceNetwork({
                             inputParam: input,
                             services_id: service_id,
                             service_insurance_network: service_insurance_network,
                             _mysql: _mysql,
                             req: req,
-                            next: next
+                            next: next,
                           })
-                            .then(insert_service_network => {
+                            .then((insert_service_network) => {
                               _mysql.commitTransaction(() => {
                                 _mysql.releaseConnection();
                                 req.records = insert_service_network;
                                 next();
                               });
                             })
-                            .catch(error => {
+                            .catch((error) => {
                               _mysql.releaseConnection();
                               next(error);
                             });
                         })
-                        .catch(error => {
+                        .catch((error) => {
                           _mysql.releaseConnection();
                           next(error);
                         });
                     }
                   })
-                  .catch(error => {
+                  .catch((error) => {
                     _mysql.releaseConnection();
                     next(error);
                   });
@@ -587,14 +594,14 @@ export default {
 
               //----------------
             })
-            .catch(e => {
+            .catch((e) => {
               _mysql.rollBackTransaction(() => {
                 next(e);
               });
             });
         }
       })
-      .catch(e => {
+      .catch((e) => {
         console.log("error", e);
         _mysql.rollBackTransaction(() => {
           next(e);
@@ -617,7 +624,7 @@ export default {
       _mysql
         .executeQuery({
           query:
-            "select hims_d_procedure_id,procedure_code,procedure_desc,procedure_status,PH.procedure_type,\
+            "select hims_d_procedure_id,procedure_code,procedure_desc,procedure_desc_arabic,procedure_status,PH.procedure_type,\
             PH.service_id as header_service_id,S.service_code as header_service_code,\
             S.service_name as header_service_name, S.vat_percent, S.vat_applicable, \
             hims_d_procedure_detail_id, procedure_header_id, item_id,\
@@ -629,14 +636,14 @@ export default {
             where PH.record_status='A' " +
             strQry +
             " order by hims_d_procedure_id desc;",
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -653,22 +660,23 @@ export default {
       _mysql
         .executeQueryWithTransaction({
           query:
-            "UPDATE `hims_d_procedure` SET `procedure_code`=?, `procedure_desc`=?, `service_id`=?,\
+            "UPDATE `hims_d_procedure` SET `procedure_code`=?, `procedure_desc`=?, `procedure_desc_arabic`=?, `service_id`=?,\
           `procedure_type`=?,`updated_date`=?, `updated_by`=? \
           WHERE record_status='A' and `hims_d_procedure_id`=?",
           values: [
             input.procedure_code,
             input.procedure_desc,
+            input.procedure_desc_arabic,
             input.service_id,
             input.procedure_type,
 
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
-            input.hims_d_procedure_id
+            input.hims_d_procedure_id,
           ],
-          printQuery: true
+          printQuery: true,
         })
-        .then(headerResult => {
+        .then((headerResult) => {
           if (headerResult != null) {
             new Promise((resolve, reject) => {
               try {
@@ -677,7 +685,7 @@ export default {
                     "procedure_header_id",
                     "item_id",
                     "service_id",
-                    "qty"
+                    "qty",
                   ];
 
                   _mysql
@@ -689,15 +697,15 @@ export default {
                         created_by: req.userIdentity.algaeh_d_app_user_id,
                         created_date: new Date(),
                         updated_by: req.userIdentity.algaeh_d_app_user_id,
-                        updated_date: new Date()
+                        updated_date: new Date(),
                       },
                       bulkInsertOrUpdate: true,
-                      printQuery: true
+                      printQuery: true,
                     })
-                    .then(insertProcedure => {
+                    .then((insertProcedure) => {
                       return resolve(insertProcedure);
                     })
-                    .catch(error => {
+                    .catch((error) => {
                       _mysql.rollBackTransaction(() => {
                         next(error);
                         reject(error);
@@ -710,7 +718,7 @@ export default {
                 reject(e);
               }
             })
-              .then(results => {
+              .then((results) => {
                 if (input.deleteProcedure.length > 0) {
                   let qry = "";
                   let inputParam = req.body.deleteProcedure;
@@ -724,16 +732,16 @@ export default {
                   _mysql
                     .executeQuery({
                       query: qry,
-                      printQuery: true
+                      printQuery: true,
                     })
-                    .then(deleteProcedure => {
+                    .then((deleteProcedure) => {
                       _mysql.commitTransaction(() => {
                         _mysql.releaseConnection();
                         req.records = deleteProcedure;
                         next();
                       });
                     })
-                    .catch(error => {
+                    .catch((error) => {
                       _mysql.rollBackTransaction(() => {
                         next(error);
                         reject(error);
@@ -747,7 +755,7 @@ export default {
                   });
                 }
               })
-              .catch(error => {
+              .catch((error) => {
                 _mysql.rollBackTransaction(() => {
                   next(error);
                 });
@@ -760,7 +768,7 @@ export default {
             });
           }
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.rollBackTransaction(() => {
             next(error);
           });
@@ -790,19 +798,19 @@ export default {
 
             req.userIdentity.algaeh_d_app_user_id,
             new Date(),
-            inputParam.service_id
+            inputParam.service_id,
           ],
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           req.connection = {
             connection: _mysql.connection,
             isTransactionConnection: _mysql.isTransactionConnection,
-            pool: _mysql.pool
+            pool: _mysql.pool,
           };
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.rollBackTransaction(() => {
             next(error);
           });
@@ -859,14 +867,14 @@ export default {
             _strAppend +
             " order by hims_d_services_id desc;",
           values: inputValues,
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -897,11 +905,11 @@ export default {
             req.userIdentity.algaeh_d_app_user_id,
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
-            new Date()
+            new Date(),
           ],
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           if (result.insertId > 0) {
             if (inputParam.branches.length > 0) {
               const insurtColumns = ["hospital_id"];
@@ -916,19 +924,19 @@ export default {
                     created_date: new Date(),
                     created_by: req.userIdentity.algaeh_d_app_user_id,
                     updated_date: new Date(),
-                    updated_by: req.userIdentity.algaeh_d_app_user_id
+                    updated_by: req.userIdentity.algaeh_d_app_user_id,
                   },
                   bulkInsertOrUpdate: true,
-                  printQuery: false
+                  printQuery: false,
                 })
-                .then(detailResult => {
+                .then((detailResult) => {
                   _mysql.commitTransaction(() => {
                     _mysql.releaseConnection();
                     req.records = detailResult;
                     next();
                   });
                 })
-                .catch(error => {
+                .catch((error) => {
                   _mysql.rollBackTransaction(() => {
                     next(error);
                   });
@@ -943,14 +951,14 @@ export default {
           } else {
             req.records = {
               invalid_data: true,
-              message: "Please provide valid input"
+              message: "Please provide valid input",
             };
             _mysql.rollBackTransaction(() => {
               next();
             });
           }
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.rollBackTransaction(() => {
             next(error);
           });
@@ -988,9 +996,7 @@ function InsertintoServiceInsurance(options) {
       const req = options.req;
       let strQuery = "";
 
-
       if (service_insurance.length > 0) {
-
         for (let i = 0; i < service_insurance.length; i++) {
           strQuery += _mysql.mysqlQueryFormat(
             "INSERT INTO hims_d_services_insurance (`insurance_id`, `services_id`, `service_code`,\
@@ -1010,7 +1016,7 @@ function InsertintoServiceInsurance(options) {
               inputParam.standard_fee,
               "N",
               req.userIdentity.algaeh_d_app_user_id,
-              req.userIdentity.algaeh_d_app_user_id
+              req.userIdentity.algaeh_d_app_user_id,
             ]
           );
 
@@ -1018,12 +1024,12 @@ function InsertintoServiceInsurance(options) {
             _mysql
               .executeQuery({
                 query: strQuery,
-                printQuery: true
+                printQuery: true,
               })
-              .then(detailresult => {
+              .then((detailresult) => {
                 resolve(detailresult);
               })
-              .catch(error => {
+              .catch((error) => {
                 reject(error);
               });
           }
@@ -1034,7 +1040,7 @@ function InsertintoServiceInsurance(options) {
     } catch (e) {
       reject(e);
     }
-  }).catch(e => {
+  }).catch((e) => {
     options.next(e);
   });
 }
@@ -1049,7 +1055,10 @@ function InsertintoServiceInsuranceNetwork(options) {
       const req = options.req;
       let strQuery = "";
 
-      console.log("service_insurance_network.length", service_insurance_network.length)
+      console.log(
+        "service_insurance_network.length",
+        service_insurance_network.length
+      );
       if (service_insurance_network.length > 0) {
         for (let i = 0; i < service_insurance_network.length; i++) {
           strQuery += _mysql.mysqlQueryFormat(
@@ -1071,7 +1080,7 @@ function InsertintoServiceInsuranceNetwork(options) {
               inputParam.standard_fee,
               "N",
               req.userIdentity.algaeh_d_app_user_id,
-              req.userIdentity.algaeh_d_app_user_id
+              req.userIdentity.algaeh_d_app_user_id,
             ]
           );
 
@@ -1079,24 +1088,24 @@ function InsertintoServiceInsuranceNetwork(options) {
             _mysql
               .executeQuery({
                 query: strQuery,
-                printQuery: true
+                printQuery: true,
               })
-              .then(detailresult => {
+              .then((detailresult) => {
                 resolve(detailresult);
               })
-              .catch(error => {
+              .catch((error) => {
                 reject(error);
               });
           }
         }
       } else {
-        console.log("Else resolve")
+        console.log("Else resolve");
         resolve({});
       }
     } catch (e) {
       reject(e);
     }
-  }).catch(e => {
+  }).catch((e) => {
     options.next(e);
   });
 }

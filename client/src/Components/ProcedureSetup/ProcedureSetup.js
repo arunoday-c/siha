@@ -109,14 +109,16 @@ export default class ProcedureSetup extends Component {
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Procedure Desc" }} />
                       ),
+                      others: { style: { textAlign: "left" } },
                     },
                     {
-                      fieldName: "procedure_arabic",
+                      fieldName: "procedure_desc_arabic",
                       label: (
                         <AlgaehLabel
                           label={{ forceLabel: "Description Arabic" }}
                         />
                       ),
+                      others: { style: { textAlign: "right" } },
                     },
 
                     {
@@ -124,6 +126,14 @@ export default class ProcedureSetup extends Component {
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Procedure Type" }} />
                       ),
+                      displayTemplate: (row) => {
+                        return (
+                          <span>
+                            {row.procedure_type === "DN" ? "Dental" : "General"}
+                          </span>
+                        );
+                      },
+
                       others: {
                         maxWidth: 120,
                       },
