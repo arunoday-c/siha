@@ -147,26 +147,6 @@ export function PrepaymentAuthList() {
   const onClickRevert = (row) => {
     setVisible(true);
     setrevertData(row)
-    // confirm({
-    //   okText: "Revert",
-    //   okType: "danger",
-    //   icon: "",
-    //   title: "Prepayment Revert",
-    //   content: `This request is made for 
-    //   Prepayment Type: ${row.prepayment_desc}`,
-
-    //   maskClosable: true,
-    //   onOk: async () => {
-    //     try {
-    //       await PayOrRejectReq("P", row.finance_f_prepayment_request_id, row.prepayment_amount);
-    //     } catch (e) {
-    //       AlgaehMessagePop({
-    //         type: "error",
-    //         display: e.message,
-    //       });
-    //     }
-    //   },
-    // });
   };
 
   const onClickRevertModel = () => {
@@ -185,26 +165,6 @@ export function PrepaymentAuthList() {
           display: e.message,
         });
       }
-      // confirm({
-      //   okText: "Revert",
-      //   okType: "danger",
-      //   icon: "",
-      //   title: "Prepayment Revert",
-      //   content: `This request is made for 
-      // Prepayment Type: ${revertData.prepayment_desc}`,
-
-      //   maskClosable: true,
-      //   onOk: async () => {
-      //     try {
-      //       await PayOrRejectReq("P", revertData.finance_f_prepayment_request_id, revertData.prepayment_amount);
-      //     } catch (e) {
-      //       AlgaehMessagePop({
-      //         type: "error",
-      //         display: e.message,
-      //       });
-      //     }
-      //   },
-      // });
     }
   };
 
@@ -272,34 +232,6 @@ Prepayment Type: ${row.prepayment_desc}`,
         >
           Process
         </AlgaehButton>
-
-        {/* <AlgaehDataGrid
-          columns={[
-            {
-              fieldName: "cost_center",
-              label: "Cost Center",
-              sortable: true,
-            },
-            {
-              fieldName: "amount",
-              label: "Amount",
-              sortable: true,
-            },
-            {
-              fieldName: "processed",
-              label: "Processed",
-              sortable: true,
-            },
-            {
-              fieldName: "pay_month",
-              label: "Pay Month",
-              sortable: true,
-            },
-          ]}
-          loading={false}
-          height="34vh"
-          data={current}
-        /> */}
       </Modal>
       <div>
         <form onSubmit={handleSubmit(getRequestForAuth)}>
@@ -560,9 +492,9 @@ Prepayment Type: ${row.prepayment_desc}`,
                               <span onClick={() => onClickAuthorize(row)}>
                                 <i className="fas fa-check"></i>
                               </span>
-                              <span onClick={() => onClickReject(row)}>
+                              {/* <span onClick={() => onClickReject(row)}>
                                 <i className="fas fa-undo-alt"></i>
-                              </span>
+                              </span> */}
                             </>
                           );
                         } else if (row.request_status === "A") {

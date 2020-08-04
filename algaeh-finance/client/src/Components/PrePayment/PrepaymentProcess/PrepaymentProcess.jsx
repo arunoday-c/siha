@@ -152,7 +152,7 @@ export function PrepaymentProcess() {
                   type="checkbox"
                   name="checkSelf"
                   checked=""
-                  // onChange={selectCheckBox.bind(this, this)}
+                // onChange={selectCheckBox.bind(this, this)}
                 />
                 <span>Yes</span>
               </label>
@@ -166,18 +166,23 @@ export function PrepaymentProcess() {
         <AlgaehDataGrid
           className="prePay_ProcessDetail_Grid"
           columns={[
-            {
-              fieldName: "",
-              label: "Action",
-              displayTemplate: (row) => {
-                return (
-                  <span>
-                    <i className="fas fa-pen"></i>
-                  </span>
-                );
-              },
-              others: { minWidth: 40 },
-            },
+            // {
+            //   fieldName: "",
+            //   label: "Action",
+            //   displayTemplate: (row) => {
+            //     return (
+            //       <>
+            //         {row.processed === "N" ? (
+            //           <span>
+            //             <i className="fas fa-pen"></i>
+            //           </span>) : (
+            //             ""
+            //           )}
+            //       </>
+            //     );
+            //   },
+            //   others: { minWidth: 40 },
+            // },
             {
               fieldName: "cost_center",
               label: "Cost Center",
@@ -191,6 +196,9 @@ export function PrepaymentProcess() {
             {
               fieldName: "processed",
               label: "Processed",
+              displayTemplate: row => {
+                return row.processed === "N" ? "No" : "Yes";
+              },
               sortable: true,
             },
             {
@@ -200,6 +208,18 @@ export function PrepaymentProcess() {
             },
           ]}
           loading={false}
+          isEditable={"editOnly"}
+          events={
+            {
+              // onDone: () => {},
+              onSaveShow: (row) => {
+                return row.processed === "N" ? true : false;
+              },
+              onEditShow: (row) => {
+                return row.processed === "N" ? true : false;
+              },
+            }
+          }
           // height="34vh"
           data={current}
         />
@@ -399,7 +419,7 @@ export function PrepaymentProcess() {
               <AlgaehButton
                 disabled={processList.length === list.length}
                 className="btn btn-default"
-                // onClick={clearState}
+              // onClick={clearState}
               >
                 Select All
               </AlgaehButton>
