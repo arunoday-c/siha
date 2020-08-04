@@ -129,14 +129,55 @@ export function PrepaymentProcess() {
   return (
     <Spin spinning={loading}>
       <Modal
+        className="prePay_Process_Modal"
         title="Request Details"
         visible={visible}
-        width={1080}
         footer={null}
         onCancel={() => setVisible(false)}
       >
+        <div className="row">
+          <div className="col">
+            <label className="style_Label ">Total Prepayment</label>
+            <h6>0.00</h6>
+          </div>{" "}
+          <div className="col">
+            <label className="style_Label ">Balance Prepayment</label>
+            <h6>0.00</h6>
+          </div>
+          <div className="col">
+            <label>Process Balance Prepayment</label>
+            <div className="customCheckbox">
+              <label className="checkbox block">
+                <input
+                  type="checkbox"
+                  name="checkSelf"
+                  checked=""
+                  // onChange={selectCheckBox.bind(this, this)}
+                />
+                <span>Yes</span>
+              </label>
+            </div>
+          </div>{" "}
+          {/* <div className="col">
+            <label className="style_Label ">Sum Prepayment</label>
+            <h6>0.00</h6>
+          </div> */}
+        </div>
         <AlgaehDataGrid
+          className="prePay_ProcessDetail_Grid"
           columns={[
+            {
+              fieldName: "",
+              label: "Action",
+              displayTemplate: (row) => {
+                return (
+                  <span>
+                    <i className="fas fa-pen"></i>
+                  </span>
+                );
+              },
+              others: { minWidth: 40 },
+            },
             {
               fieldName: "cost_center",
               label: "Cost Center",
@@ -159,7 +200,7 @@ export function PrepaymentProcess() {
             },
           ]}
           loading={false}
-          height="34vh"
+          // height="34vh"
           data={current}
         />
       </Modal>
@@ -223,7 +264,7 @@ export function PrepaymentProcess() {
               <button
                 type="submit"
                 className="btn btn-primary bttn-sm"
-                style={{ marginTop: 19 }}
+                style={{ marginTop: 18 }}
               >
                 Filter
               </button>
@@ -245,25 +286,33 @@ export function PrepaymentProcess() {
                   columns={[
                     {
                       fieldName: "finance_f_prepayment_detail_id",
+                      label: "Select",
+                      displayTemplate: (row) => {
+                        return (
+                          <Checkbox
+                            checked={processList.find(
+                              (item) =>
+                                item === row.finance_f_prepayment_detail_id
+                            )}
+                            onChange={() => addToList(row)}
+                          >
+                            {" "}
+                          </Checkbox>
+                        );
+                      },
+                      others: { maxWidth: 40 },
+                    },
+                    {
+                      fieldName: "",
                       label: "Action",
                       displayTemplate: (row) => {
                         return (
-                          <>
-                            <span onClick={() => getProcessDetails(row)}>
-                              <i className="fas fa-eye"></i>
-                            </span>
-                            <Checkbox
-                              checked={processList.find(
-                                (item) =>
-                                  item === row.finance_f_prepayment_detail_id
-                              )}
-                              onChange={() => addToList(row)}
-                            >
-                              {" "}
-                            </Checkbox>
-                          </>
+                          <span onClick={() => getProcessDetails(row)}>
+                            <i className="fas fa-eye"></i>
+                          </span>
                         );
                       },
+                      others: { minWidth: 40 },
                     },
                     {
                       fieldName: "prepayment_desc",
@@ -303,6 +352,11 @@ export function PrepaymentProcess() {
                     {
                       fieldName: "prepayment_amount",
                       label: "Prepayment Amt.",
+                      sortable: true,
+                    },
+                    {
+                      fieldName: "",
+                      label: "Balance Amt.",
                       sortable: true,
                     },
                     {

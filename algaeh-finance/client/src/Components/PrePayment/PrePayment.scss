@@ -3,3 +3,23 @@
     margin-top: 33px;
   }
 }
+.prePay_Process_Modal {
+  width: 50vw !important;
+  .ant-modal-close-x {
+    width: 38px;
+    height: 38px;
+    line-height: 38px;
+  }
+  .ant-modal-header {
+    padding: 8px 15px;
+  }
+  .ant-modal-body {
+    padding: 15px;
+  }
+  .prePay_ProcessDetail_Grid {
+    max-height: 55vh !important;
+  }
+}
+.ant-picker {
+  width: 100%;
+}
