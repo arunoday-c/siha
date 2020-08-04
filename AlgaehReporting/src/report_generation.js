@@ -411,7 +411,25 @@ export default {
                   const _header = req.headers;
 
                   const startGenerate = async () => {
-                    const styleObj = JSON.parse(_data.report_props);
+                    const baseObj = {
+                      header: {
+                        top: "150px",
+                        bottom: " ",
+                        right: " ",
+                        left: " ",
+                      },
+                      footer: {
+                        top: " ",
+                        bottom: "100px",
+                        right: " ",
+                        left: " ",
+                      },
+                      pageOrientation: "",
+                    };
+                    const styleObj = _data.report_props
+                      ? JSON.parse(_data.report_props)
+                      : baseObj;
+                    console.log("styleObj.header.bottom", styleObj);
                     const _outPath = _path + ".pdf";
                     _reportOutput.push(_outPath);
                     const browser = await puppeteer.launch({
@@ -448,16 +466,10 @@ export default {
                       );
 
                       // const styleObj = String(_data.report_props);
-                      console.log(
-                        "styleObj.header.bottom",
-                        styleObj.header.top
-                      );
+
                       _pdfTemplating["headerTemplate"] = _header;
                       _pdfTemplating["margin"] = {
-                        top:
-                          styleObj.header.top === " "
-                            ? "150px"
-                            : styleObj.header.top,
+                        top: styleObj.header.top,
                         // bottom: styleObj.header.bottom?styleObj.header.bottom:""
                         ..._inputParam.headerProps,
                       };
@@ -477,10 +489,7 @@ export default {
                       );
                       _pdfTemplating["margin"] = {
                         ..._pdfTemplating["margin"],
-                        bottom:
-                          styleObj.footer.bottom === " "
-                            ? "100px"
-                            : styleObj.footer.bottom,
+                        bottom: styleObj.footer.bottom,
                         ..._inputParam.footerProps,
                       };
                     } else {
@@ -504,10 +513,7 @@ export default {
 
                       _pdfTemplating["margin"] = {
                         ..._pdfTemplating["margin"],
-                        bottom:
-                          styleObj.footer.bottom === " "
-                            ? "50px"
-                            : styleObj.footer.bottom,
+                        bottom: styleObj.footer.bottom,
                         ..._inputParam.footerProps,
                       };
                     }
@@ -519,14 +525,19 @@ export default {
                       })
                     );
                     // await page.emulateMedia("screen");
-                    let pageOrentation =
-                      styleObj.pageOrientation !== " "
-                        ? { landscape: true }
-                        : _inputParam.pageOrentation == null
-                        ? {}
-                        : _inputParam.pageOrentation == "landscape"
-                        ? { landscape: true }
-                        : {};
+                    let pageOrentation = {
+                      landscape:
+                        styleObj.pageOrientation === "landscape" ||
+                        (_inputParam.pageOrentation !== null &&
+                          _inputParam.pageOrentation == "landscape"),
+                    };
+                    // styleObj.pageOrientation === "landscape"
+                    //   ? { landscape: true }
+                    //   : _inputParam.pageOrentation == null
+                    //   ? { landscape: false }
+                    //   : _inputParam.pageOrentation == "landscape"
+                    //   ? { landscape: true }
+                    //   : { landscape: false };
 
                     let pageSize =
                       _inputParam.pageSize == null
