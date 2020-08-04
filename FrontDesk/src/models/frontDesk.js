@@ -58,7 +58,7 @@ export default {
             _string_Data += " and patient_id=?";
             input_Values.push(hims_d_patient_id);
 
-            utilities.logger().log("expiry_visit: ", input.expiry_visit);
+            console.log("expiry_visit: ", input.expiry_visit);
 
             if (input.expiry_visit != null) {
               var expiry_date = moment(new Date()).format("YYYY-MM-DD");
@@ -67,18 +67,21 @@ export default {
                 " and date(visit_expiery_date) >= date('" + expiry_date + "')";
 
               _string_Data += " and visit_status='O'";
+            } else {
+              _string_Data += " and visit_status!='CN'";
             }
 
             _mysql
               .executeQuery({
                 query:
-                  "SELECT 0 radioselect,`hims_f_patient_visit_id`, `patient_id`,`visit_code`,`visit_status`\
-                , `visit_type`, `visit_date`, hims_f_patient_visit.`department_id`, hims_f_patient_visit.`sub_department_id`\
-                , `doctor_id`, `maternity_patient`, `is_mlc`, `mlc_accident_reg_no`\
-                , `mlc_police_station`, `mlc_wound_certified_date`, `insured`, `sec_insured`, `no_free_visit`,\
-                `visit_expiery_date`,`visit_status`,`sub_department_name`,`full_name`\
-                FROM `hims_f_patient_visit`, hims_d_sub_department SD, hims_d_employee E  WHERE hims_f_patient_visit.`record_status`='A' AND hims_f_patient_visit.sub_department_id = SD.hims_d_sub_department_id AND\
-                 doctor_id =E.hims_d_employee_id " +
+                  "SELECT 0 radioselect,`hims_f_patient_visit_id`, `patient_id`,`visit_code`,`visit_status`, \
+                  `visit_type`, `visit_date`, V.`department_id`, V.`sub_department_id`, \
+                  `doctor_id`, `maternity_patient`, `is_mlc`, `mlc_accident_reg_no`, \
+                  `mlc_police_station`, `mlc_wound_certified_date`, `insured`, `sec_insured`, `no_free_visit`,\
+                  `visit_expiery_date`,`visit_status`,`sub_department_name`,`full_name`\
+                  FROM `hims_f_patient_visit` V, hims_d_sub_department SD, hims_d_employee E  \
+                  WHERE V.`record_status`='A' AND V.sub_department_id = SD.hims_d_sub_department_id AND \
+                  doctor_id =E.hims_d_employee_id " +
                   _string_Data +
                   "  ORDER BY hims_f_patient_visit_id desc",
                 values: input_Values,

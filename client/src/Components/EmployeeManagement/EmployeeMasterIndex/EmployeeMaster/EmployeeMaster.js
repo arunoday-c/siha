@@ -10,6 +10,7 @@ import FamilyAndIdentification from "./FamilyAndIdentification/FamilyAndIdentifi
 import PayRollDetails from "./PayRollDetails/PayRollDetails";
 import OfficalDetails from "./OfficalDetails/OfficalDetails";
 import RulesDetails from "./RulesDetails/RulesDetails";
+import MoreDetails from "./MoreDetails/MoreDetails";
 
 import { AlgaehLabel, AlgaehModalPopUp } from "../../../Wrapper/algaehWrapper";
 import { AlgaehActions } from "../../../../actions/algaehActions";
@@ -313,7 +314,6 @@ class EmployeeMaster extends Component {
                         />
                       }
                     </li>
-
                     <li
                       algaehtabs={"OfficalDetails"}
                       className={"nav-item tab-button"}
@@ -340,7 +340,6 @@ class EmployeeMaster extends Component {
                         />
                       }
                     </li>*/}
-
                     {this.state.HRMS_Active === true ? (
                       <li
                         algaehtabs={"PayRollDetails"}
@@ -386,7 +385,6 @@ class EmployeeMaster extends Component {
                         }
                       </li>
                     ) : null}
-
                     {this.state.HRMS_Active === true ? (
                       <li
                         algaehtabs={"RulesDetails"}
@@ -397,6 +395,21 @@ class EmployeeMaster extends Component {
                           <AlgaehLabel
                             label={{
                               forceLabel: "Rules Details",
+                            }}
+                          />
+                        }
+                      </li>
+                    ) : null}{" "}
+                    {this.state.HRMS_Active === true ? (
+                      <li
+                        algaehtabs={"MoreDetails"}
+                        className={"nav-item tab-button"}
+                        onClick={this.openTab.bind(this)}
+                      >
+                        {
+                          <AlgaehLabel
+                            label={{
+                              forceLabel: "More Details",
                             }}
                           />
                         }
@@ -507,6 +520,22 @@ class EmployeeMaster extends Component {
                         }
                       </li>
                     ) : null}
+
+                    {this.state.HRMS_Active === true ? (
+                      <li
+                        algaehtabs={"MoreDetails"}
+                        className={"nav-item tab-button disableLi"}
+                        onClick={this.openTab.bind(this)}
+                      >
+                        {
+                          <AlgaehLabel
+                            label={{
+                              forceLabel: "More Details",
+                            }}
+                          />
+                        }
+                      </li>
+                    ) : null}
                   </ul>
                 )}
               </div>
@@ -535,6 +564,8 @@ class EmployeeMaster extends Component {
                   <FamilyAndIdentification EmpMasterIOputs={this} />
                 ) : this.state.pageDisplay === "RulesDetails" ? (
                   <RulesDetails EmpMasterIOputs={this} />
+                ) : this.state.pageDisplay === "MoreDetails" ? (
+                  <MoreDetails EmpMasterIOputs={this} />
                 ) : null}
               </div>
               {/* </MyContext.Provider> */}

@@ -532,25 +532,31 @@ class SalesQuotation extends Component {
                 </div>
               </div>
               <div className="col-12">
-                <div className="row">
-                  <MyContext.Provider
-                    value={{
-                      state: this.state,
-                      updateState: (obj) => {
-                        this.setState({ ...obj });
-                      },
-                    }}
-                  >
-                    <div className="col-6">
-                      <SalesListItems SALESIOputs={this.state} />
-                    </div>
-                    <div className="col-6">
-                      {this.state.services_required === "Y" ? (
+                <MyContext.Provider
+                  value={{
+                    state: this.state,
+                    updateState: (obj) => {
+                      this.setState({ ...obj });
+                    },
+                  }}
+                >
+                  {this.state.services_required === "Y" ? (
+                    <div className="row">
+                      <div className="col-6">
+                        <SalesListItems SALESIOputs={this.state} />
+                      </div>
+                      <div className="col-6">
                         <SalesListService SALESIOputs={this.state} />
-                      ) : null}
+                      </div>
                     </div>
-                  </MyContext.Provider>
-                </div>
+                  ) : (
+                    <div className="row">
+                      <div className="col-12">
+                        <SalesListItems SALESIOputs={this.state} />
+                      </div>
+                    </div>
+                  )}
+                </MyContext.Provider>
               </div>
 
               <div className="col-12">
@@ -734,7 +740,23 @@ class SalesQuotation extends Component {
 
             <div className="hptl-phase1-footer">
               <div className="row">
-                <div className="col-lg-12">
+                <div className="col-4 leftBtnGroup">
+                  {" "}
+                  <button
+                    type="button"
+                    className="btn btn-danger"
+                    onClick={CancelQuotation.bind(this, this)}
+                    disabled={this.state.cancelEnable}
+                  >
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Cancel",
+                        returnText: true,
+                      }}
+                    />
+                  </button>
+                </div>
+                <div className="col-8">
                   <button
                     type="button"
                     className="btn btn-primary"
@@ -744,19 +766,6 @@ class SalesQuotation extends Component {
                     <AlgaehLabel
                       label={{
                         forceLabel: "Save",
-                        returnText: true,
-                      }}
-                    />
-                  </button>
-                  <button
-                    type="button"
-                    className="btn btn-other"
-                    onClick={CancelQuotation.bind(this, this)}
-                    disabled={this.state.cancelEnable}
-                  >
-                    <AlgaehLabel
-                      label={{
-                        forceLabel: "Cancel",
                         returnText: true,
                       }}
                     />

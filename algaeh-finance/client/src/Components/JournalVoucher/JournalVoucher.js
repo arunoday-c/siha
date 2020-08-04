@@ -111,9 +111,9 @@ export default function JournalVoucher() {
                 displayTemplate: (row) => {
                   const valueRow =
                     row["hims_d_hospital_id"] !== undefined &&
-                    row["hims_d_hospital_id"] !== "" &&
-                    row["cost_center_id"] !== undefined &&
-                    row["cost_center_id"] !== ""
+                      row["hims_d_hospital_id"] !== "" &&
+                      row["cost_center_id"] !== undefined &&
+                      row["cost_center_id"] !== ""
                       ? `${row["hims_d_hospital_id"]}-${row["cost_center_id"]}`
                       : "";
                   return (
@@ -242,8 +242,8 @@ export default function JournalVoucher() {
           voucher_type === "sales"
             ? "receipt"
             : voucher_type === "purchase"
-            ? "payment"
-            : voucher_type;
+              ? "payment"
+              : voucher_type;
         setVoucherType(currentVoucher);
         const records = Details.map((single, index) => ({
           slno: index + 1,
@@ -270,8 +270,8 @@ export default function JournalVoucher() {
           voucher_type === "sales"
             ? "receipt"
             : voucher_type === "purchase"
-            ? "payment"
-            : null;
+              ? "payment"
+              : null;
         if (merdge !== undefined) {
           setDisableAmount(true);
           setMerdgeRecords(merdge);
@@ -347,36 +347,36 @@ export default function JournalVoucher() {
       return;
     }
 
-    if (voucherType === "receipt" || voucherType === "payment") {
-      if (payment.payment_mode) {
-        if (payment.payment_mode === "CHEQUE") {
-          if (!payment.ref_no || !payment.cheque_date) {
-            AlgaehMessagePop({
-              type: "error",
-              display: "Reference No and Cheque Date is mandatory",
-            });
-            setLoading(false);
-            return;
-          }
-        } else {
-          if (payment.payment_mode !== "CASH" && !payment.ref_no) {
-            AlgaehMessagePop({
-              type: "error",
-              display: "Reference Number is mandatory",
-            });
-            setLoading(false);
-            return;
-          }
-        }
-      } else {
-        AlgaehMessagePop({
-          type: "error",
-          display: "Please Select Any one of the payment mode",
-        });
-        setLoading(false);
-        return;
-      }
-    }
+    // if (voucherType === "receipt" || voucherType === "payment") {
+    //   if (payment.payment_mode) {
+    //     if (payment.payment_mode === "CHEQUE") {
+    //       if (!payment.ref_no || !payment.cheque_date) {
+    //         AlgaehMessagePop({
+    //           type: "error",
+    //           display: "Reference No and Cheque Date is mandatory",
+    //         });
+    //         setLoading(false);
+    //         return;
+    //       }
+    //     } else {
+    //       if (payment.payment_mode !== "CASH" && !payment.ref_no) {
+    //         AlgaehMessagePop({
+    //           type: "error",
+    //           display: "Reference Number is mandatory",
+    //         });
+    //         setLoading(false);
+    //         return;
+    //       }
+    //     }
+    //   } else {
+    //     AlgaehMessagePop({
+    //       type: "error",
+    //       display: "Please Select Any one of the payment mode",
+    //     });
+    //     setLoading(false);
+    //     return;
+    //   }
+    // }
 
     if (finOptions.cost_center_required !== "Y" && hospital_id === null) {
       AlgaehMessagePop({
@@ -422,7 +422,7 @@ export default function JournalVoucher() {
           type: "info",
           display: `Please select proper amount / account ${
             finOptions.cost_center_required === "Y" ? "/ cost center" : ""
-          }`, //"Please select an Account and enter proper amount",
+            }`, //"Please select an Account and enter proper amount",
         });
         setLoading(false);
         return;
@@ -441,13 +441,13 @@ export default function JournalVoucher() {
       voucher_type: voucherType,
       invoice_no:
         voucherType === "payment" ||
-        voucherType === "receipt" ||
-        voucherType === "credit_note" ||
-        voucherType === "debit_note"
+          voucherType === "receipt" ||
+          voucherType === "credit_note" ||
+          voucherType === "debit_note"
           ? selInvoice
           : voucherType === "purchase" || voucherType === "sales"
-          ? invoiceNo
-          : null,
+            ? invoiceNo
+            : null,
       // voucher_no: `${voucher_no}`,
       hospital_id: hospital_id,
       cost_center_id: cost_center_id,
@@ -679,35 +679,35 @@ export default function JournalVoucher() {
             voucherType === "receipt" ||
             voucherType === "credit_note" ||
             voucherType === "debit_note" ? (
-            <AlgaehAutoComplete
-              div={{ className: "col-2" }}
-              label={{
-                forceLabel: "Select Invoice No.",
-                isImp: true,
-              }}
-              selector={{
-                value: selInvoice,
-                dataSource: {
-                  data: invoiceData,
-                  valueField: "invoice_no",
-                  textField: "invoice_no",
-                },
-                onChange: (selected) => {
-                  setSelInvoice(selected.invoice_no);
-                },
-                onClear: () => {
-                  setSelInvoice("");
-                },
-              }}
-            />
-          ) : null}
+                <AlgaehAutoComplete
+                  div={{ className: "col-2" }}
+                  label={{
+                    forceLabel: "Select Invoice No.",
+                    isImp: true,
+                  }}
+                  selector={{
+                    value: selInvoice,
+                    dataSource: {
+                      data: invoiceData,
+                      valueField: "invoice_no",
+                      textField: "invoice_no",
+                    },
+                    onChange: (selected) => {
+                      setSelInvoice(selected.invoice_no);
+                    },
+                    onClear: () => {
+                      setSelInvoice("");
+                    },
+                  }}
+                />
+              ) : null}
 
-          <PaymentComponent
+          {/* <PaymentComponent
             show={show}
             {...payment}
             handleDrop={handlePaymentDrop}
             handleChange={setPayment}
-          />
+          /> */}
           {finOptions.cost_center_required !== "Y" ? (
             <AlgaehAutoComplete
               div={{ className: "col-2" }}

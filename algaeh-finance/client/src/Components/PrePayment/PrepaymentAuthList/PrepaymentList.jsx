@@ -12,16 +12,17 @@ import {
   Modal,
   Button,
 } from "algaeh-react-components";
-import moment from "moment";
 import { Controller, useForm } from "react-hook-form";
 import { PrePaymentContext } from "../Prepayment";
 import { newAlgaehApi } from "../../../hooks/";
+import { PaymentStatus } from "../../../utils/GlobalVariables";
 
 const { confirm } = Modal;
 
 export function PrepaymentAuthList() {
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [request_status, setRequestStatus] = useState("P");
   const { branchAndCenters, prePaymentTypes } = useContext(PrePaymentContext);
   const { control, errors, handleSubmit, setValue, watch, getValues } = useForm(
     {
@@ -35,6 +36,7 @@ export function PrepaymentAuthList() {
 
   const getRequestForAuth = async (data) => {
     try {
+      debugger
       const res = await newAlgaehApi({
         uri: "/prepayment/getPrepaymentRequestToAuthorize",
         module: "finance",
@@ -73,11 +75,34 @@ export function PrepaymentAuthList() {
     }
   };
 
+  const PayOrRejectReq = async (decision, id, reverted_amt) => {
+    try {
+      const res = await newAlgaehApi({
+        uri: "/prepayment/payPrepaymentRequest",
+        method: "PUT",
+        module: "finance",
+        data: {
+          auth_status: decision,
+          finance_f_prepayment_request_id: id,
+          reverted_amt: reverted_amt
+        },
+      });
+      if (res.data.success) {
+        getRequestForAuth(getValues());
+      }
+    } catch (e) {
+      AlgaehMessagePop({
+        type: "error",
+        display: e.message,
+      });
+    }
+  };
+
   const onClickAuthorize = (row) => {
     confirm({
       okText: "Authorize",
       okType: "primary",
-
+      icon: "",
       title: "Prepayment Request Authorization",
       content: `This request is made for 
 Prepayment Type: ${row.prepayment_desc}`,
@@ -96,11 +121,57 @@ Prepayment Type: ${row.prepayment_desc}`,
     });
   };
 
+  const onClickPay = (row) => {
+    confirm({
+      okText: "Pay",
+      okType: "primary",
+      icon: "",
+      title: "Pay Prepayment",
+      content: `This request is made for 
+      Prepayment Type: ${row.prepayment_desc}`,
+
+      maskClosable: true,
+      onOk: async () => {
+        try {
+          await PayOrRejectReq("PD", row.finance_f_prepayment_request_id, row.prepayment_amount);
+        } catch (e) {
+          AlgaehMessagePop({
+            type: "error",
+            display: e.message,
+          });
+        }
+      },
+    });
+  }
+
+  const onClickRevert = (row) => {
+    confirm({
+      okText: "Revert",
+      okType: "primary",
+      icon: "",
+      title: "Prepayment Revert",
+      content: `This request is made for 
+      Prepayment Type: ${row.prepayment_desc}`,
+
+      maskClosable: true,
+      onOk: async () => {
+        try {
+          await PayOrRejectReq("P", row.finance_f_prepayment_request_id, row.prepayment_amount);
+        } catch (e) {
+          AlgaehMessagePop({
+            type: "error",
+            display: e.message,
+          });
+        }
+      },
+    });
+  };
+
   const onClickReject = (row) => {
     confirm({
       okText: "Reject",
       okType: "danger",
-
+      icons: "",
       title: "Prepayment Request Authorization",
       content: `This request is made for 
 Prepayment Type: ${row.prepayment_desc}`,
@@ -129,7 +200,7 @@ Prepayment Type: ${row.prepayment_desc}`,
       <div>
         <form onSubmit={handleSubmit(getRequestForAuth)}>
           <div className="row inner-top-search">
-            <Controller
+            {/* <Controller
               control={control}
               name="hospital_id"
               render={({ onBlur, onChange, value }) => (
@@ -196,10 +267,42 @@ Prepayment Type: ${row.prepayment_desc}`,
                   }}
                 />
               )}
-            />
+            /> 
             {errors.cost_center_id && (
               <span>{errors.cost_center_id.message}</span>
+            )}*/}
+            <Controller
+              control={control}
+              name="request_status"
+              render={({ value, onChange, onBlur }) => (
+                <AlgaehAutoComplete
+                  div={{ className: "col-2 form-group" }}
+                  label={{
+                    forceLabel: "Prepayment Status",
+                    isImp: false,
+                  }}
+                  selector={{
+                    value,
+                    onChange: (_, selected) => {
+                      onChange(selected);
+                    },
+                    onClear: () => {
+                      onChange("");
+                    },
+                    name: "request_status",
+                    dataSource: {
+                      data: PaymentStatus,
+                      textField: "name",
+                      valueField: "value",
+                    },
+                  }}
+                />
+              )}
+            />
+            {errors.request_status && (
+              <span>{errors.request_status.message}</span>
             )}
+
             <Controller
               control={control}
               name="prepayment_type_id"
@@ -236,7 +339,7 @@ Prepayment Type: ${row.prepayment_desc}`,
               <span>{errors.prepayment_type_id.message}</span>
             )}
 
-            <Controller
+            {/* <Controller
               name="start_date"
               control={control}
               render={({ value, onChange }) => (
@@ -318,7 +421,7 @@ Prepayment Type: ${row.prepayment_desc}`,
                   // maxDate={moment().add(1, "days")}
                 />
               )}
-            />
+            /> */}
             <div className="col">
               <button
                 type="submit"
@@ -350,18 +453,27 @@ Prepayment Type: ${row.prepayment_desc}`,
                         if (row.request_status === "P") {
                           return (
                             <>
-                              <Button onClick={() => onClickAuthorize(row)}>
-                                Authorize
-                              </Button>
-                              <Button onClick={() => onClickReject(row)}>
-                                Reject
-                              </Button>
+                              <span onClick={() => onClickAuthorize(row)}>
+                                <i className="fas fa-check"></i>
+                              </span>
+                              <span onClick={() => onClickReject(row)}>
+                                <i className="fas fa-undo-alt"></i>
+                              </span>
                             </>
                           );
                         } else if (row.request_status === "A") {
-                          return "Authorized";
+                          return (
+                            <>
+                              <span onClick={() => onClickPay(row)}>
+                                <i className="fas fa-check"></i>
+                              </span>
+                              <span onClick={() => onClickRevert(row)}>
+                                <i className="fas fa-undo-alt"></i>
+                              </span>
+                            </>
+                          );
                         } else {
-                          return "Rejected";
+                          return "Paid";
                         }
                       },
                     },
@@ -388,6 +500,11 @@ Prepayment Type: ${row.prepayment_desc}`,
                     {
                       fieldName: "employee_name",
                       label: "Employee Name",
+                      sortable: true,
+                    },
+                    {
+                      fieldName: "identity_no",
+                      label: "ID No.",
                       sortable: true,
                     },
                     {

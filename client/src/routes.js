@@ -6,6 +6,10 @@ import Login from "./Components/Login/Login";
 import Layout from "./Components/common/layout";
 import Experiment from "./Components/Experiment";
 import ConcurrentTest from "./Components/concurrent-test";
+import { useQuery } from "react-query";
+import { newAlgaehApi } from "./hooks";
+import { ProtectedRoute } from "./ProtectedRoute";
+import { ConfirmAuth } from "./confirm-auth";
 import { MainContext } from "algaeh-react-components";
 
 const HISDashboard = React.lazy(() =>
@@ -551,12 +555,20 @@ function LoadComponent({ path, noSecurityCheck, children }) {
   );
 }
 
-const appRoutes = [
+const publicRoutes = [
   {
     path: "/",
     isExactPath: true,
     component: <Login />,
   },
+  {
+    path: "/confirm-auth",
+    isExactPath: true,
+    component: <ConfirmAuth />,
+  },
+];
+
+const privateRoutes = [
   {
     path: "/NoDashboard",
     isExactPath: true,
@@ -1339,16 +1351,59 @@ const appRoutes = [
 
 function Routes() {
   const context = useContext(MainContext);
-  const { userToken } = context;
+  const {
+    userToken,
+    is_authenticated,
+    setTitles,
+    setCountries,
+    setReligions,
+    setNationality,
+  } = context;
+
+  useQuery(
+    "common-data",
+    () => {
+      return Promise.all([
+        newAlgaehApi({
+          uri: "/masters/get/title",
+          method: "GET",
+        }),
+        newAlgaehApi({
+          uri: "/masters/get/nationality",
+          method: "GET",
+        }),
+        newAlgaehApi({
+          uri: "/masters/get/relegion",
+          method: "GET",
+        }),
+        newAlgaehApi({
+          uri: "/masters/get/countryStateCity",
+          method: "GET",
+        }),
+      ]);
+    },
+    {
+      enabled: is_authenticated,
+      refetchOnWindowFocus: false,
+      staleTime: Infinity,
+      onSuccess: (data) => {
+        setTitles(data[0]?.data.records);
+        setNationality(data[1]?.data.records);
+        setReligions(data[2]?.data.records);
+        setCountries(data[3]?.data.records);
+      },
+    }
+  );
+
   return (
     <BrowserRouter>
       {Object.entries(userToken).length ? <IdleManager /> : null}
 
       <Switch>
-        {appRoutes.map((routeItem, idx) => {
+        {publicRoutes.map((routeItem, idx) => {
           // const others = routeItem.others === undefined ? {} : routeItem.others;
           const path = routeItem.path.replace("/?", "?");
-          const noSecurityCheck = routeItem.noSecurityCheck;
+
           return (
             <Route
               key={routeItem.path}
@@ -1356,17 +1411,27 @@ function Routes() {
               exact={routeItem.isExactPath}
               strict={true}
               render={(params) => {
-                if (routeItem.path === "/") return routeItem.component;
-                else {
-                  return (
-                    <LoadComponent
-                      path={path}
-                      noSecurityCheck={noSecurityCheck}
-                    >
-                      {routeItem.component}
-                    </LoadComponent>
-                  );
-                }
+                return routeItem.component;
+              }}
+            />
+          );
+        })}
+        {privateRoutes.map((routeItem, idx) => {
+          // const others = routeItem.others === undefined ? {} : routeItem.others;
+          const path = routeItem.path.replace("/?", "?");
+          const noSecurityCheck = routeItem.noSecurityCheck;
+          return (
+            <ProtectedRoute
+              key={routeItem.path}
+              path={path}
+              exact={routeItem.isExactPath}
+              strict={true}
+              render={(params) => {
+                return (
+                  <LoadComponent path={path} noSecurityCheck={noSecurityCheck}>
+                    {routeItem.component}
+                  </LoadComponent>
+                );
               }}
             />
           );

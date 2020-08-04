@@ -13,6 +13,7 @@ export default memo(function (props) {
   const [data, setData] = useState([]);
   const [indeterminate, setIndeterminate] = useState(false);
   const [checkAll, setCheckAll] = useState(false);
+  const [selectAmount, setSelectedAmount] = useState(0);
   const [info, setInfo] = useState({
     over_due: "0.00",
     total_receivable: "0.00",
@@ -67,14 +68,17 @@ export default memo(function (props) {
   };
 
   function onChangeCheck(checked, row) {
+    debugger
     row["checked"] = checked;
     const filterCheck = data.filter((f) => f.checked === true);
     if (data.length === filterCheck.length) {
       setCheckAll(true);
       setIndeterminate(false);
+      setSelectedAmount(checked === true ? parseFloat(selectAmount) + parseFloat(row.balance_amount) : parseFloat(selectAmount) - parseFloat(row.balance_amount))
     } else {
       setCheckAll(false);
       setIndeterminate(true);
+      setSelectedAmount(checked === true ? parseFloat(selectAmount) + parseFloat(row.balance_amount) : parseFloat(selectAmount) - parseFloat(row.balance_amount))
     }
   }
   function onClickSendSelected() {
@@ -170,7 +174,7 @@ export default memo(function (props) {
                     <h3 className="caption-subject">
                       Customer Payment Details
                     </h3>
-                  </div>{" "}
+                  </div>
                   <div className="actions">
                     <button
                       className="btn btn-default"
@@ -188,6 +192,13 @@ export default memo(function (props) {
                 </div>
                 <div className="portlet-body">
                   <div className="row">
+                    <div className="col">
+                      <span>
+                        <h3>
+                          Selected Invoice Amount :{selectAmount}
+                        </h3>
+                      </span>
+                    </div>
                     <div
                       className="col-lg-12 customCheckboxGrid"
                       id="customerDetailGrid_Cntr"

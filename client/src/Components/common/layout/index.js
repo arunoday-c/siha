@@ -1,43 +1,43 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext } from "react";
 import "../AlgaehmainPage/AlgaehmainPage.scss";
 import Menu from "../Menu";
-import { MainContext, getItem, tokenDecode } from "algaeh-react-components";
+import { MainContext } from "algaeh-react-components";
 export default function Layout({ path, noSecurityCheck, children }) {
   const {
+    // userMenu,
     userLanguage,
-    userToken,
-    setUserMenu,
-    setUserToken,
-    setElementsItems,
-    setSelectedMenuItem,
-    setUserPreferencesData,
+    // setUserMenu,
+    // setUserToken,
+    // setElementsItems,
+    // setSelectedMenuItem,
+    // setUserPreferencesData,
   } = useContext(MainContext);
-  const [pageLoading, setPageLoading] = useState(false);
-  const [text] = useState("Please wait configure is in process");
+  // const [pageLoading, setPageLoading] = useState(false);
+  // const [text] = useState("Please wait configure is in process");
 
-  useEffect(() => {
-    if (Object.keys(userToken).length > 0) {
-      setPageLoading(true);
-    } else {
-      getItem("menu").then((result) => {
-        setUserMenu(result);
-        getItem("elements").then((result) => {
-          setElementsItems(result);
-        });
-        getItem("token").then((result) => {
-          const details = tokenDecode(result);
-          setUserToken(details);
-          setPageLoading(true);
-        });
-        getItem("userSelectedMenu").then((result) => {
-          setSelectedMenuItem(result);
-        });
-        getItem("userPreferences").then((result) => {
-          setUserPreferencesData(result);
-        });
-      });
-    }
-  }, []); // eslint-disable-line
+  // useEffect(() => {
+  //   if (userMenu.length) {
+  //     setPageLoading(true);
+  //   } else {
+  //     getItem("menu").then((result) => {
+  //       setUserMenu(result);
+  //       getItem("elements").then((result) => {
+  //         setElementsItems(result);
+  //       });
+  //       getItem("token").then((result) => {
+  //         const details = tokenDecode(result);
+  //         setUserToken(details);
+  //         setPageLoading(true);
+  //       });
+  //       getItem("userSelectedMenu").then((result) => {
+  //         setSelectedMenuItem(result);
+  //       });
+  //       getItem("userPreferences").then((result) => {
+  //         setUserPreferencesData(result);
+  //       });
+  //     });
+  //   }
+  // }, []); // eslint-disable-line
 
   // function checkHasAccessToPage() {
   //   if (noSecurityCheck === true) return true;
@@ -74,7 +74,8 @@ export default function Layout({ path, noSecurityCheck, children }) {
         }`}
         id="hisapp"
       >
-        {pageLoading ? <>{children}</> : <center>{text}</center>}
+        {/* {pageLoading ? <>{children}</> : <center>{text}</center>} */}
+        <>{children}</>
       </main>
     </>
   );

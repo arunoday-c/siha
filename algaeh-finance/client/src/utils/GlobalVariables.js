@@ -28,6 +28,12 @@ export const AccountType = [
   { name: "Child", value: "C" }
 ];
 
+export const PaymentStatus = [
+  { name: "Pending", value: "P" },
+  { name: "Authorized", value: "A" },
+  { name: "Paid", value: "PD" }
+];
+
 export const currency_list = [
   { value: "AED", name: "United Arab Emirates Dirham" },
   { value: "AFN", name: "Afghan Afghani" },

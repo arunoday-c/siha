@@ -9,7 +9,13 @@ export default function ProceduresEvent() {
       let value = e.value || e.target.value;
 
       $this.setState({
-        [name]: value
+        [name]: value,
+      });
+    },
+    checkHandle: ($this, e) => {
+      let name = e.name || e.target.name;
+      $this.setState({
+        [name]: e.target.checked ? "Y" : "N",
       });
     },
 
@@ -20,7 +26,7 @@ export default function ProceduresEvent() {
       $this.setState({
         [name]: value,
         item_category_id: e.selected.category_id,
-        s_service: e.selected.service_id
+        s_service: e.selected.service_id,
       });
     },
     serviceHandeler: ($this, e) => {
@@ -29,19 +35,19 @@ export default function ProceduresEvent() {
 
       $this.setState({
         [name]: value,
-        s_service_amount: e.selected.standard_fee
+        s_service_amount: e.selected.standard_fee,
       });
     },
 
     serviceTypeHandeler: ($this, e) => {
       $this.setState({
-        [e.name]: e.value
+        [e.name]: e.value,
       });
     },
-    AddToList: $this => {
+    AddToList: ($this) => {
       // let isError = false;
 
-      let SelectedService = _.filter($this.state.ProcedureDetail, f => {
+      let SelectedService = _.filter($this.state.ProcedureDetail, (f) => {
         return f.item_id === $this.state.item_id;
       });
 
@@ -52,7 +58,7 @@ export default function ProceduresEvent() {
         let InputObj = {
           service_id: $this.state.s_service,
           item_id: $this.state.item_id,
-          qty: $this.state.qty
+          qty: $this.state.qty,
         };
 
         if ($this.state.hims_d_procedure_id !== null) {
@@ -60,7 +66,7 @@ export default function ProceduresEvent() {
             procedure_header_id: $this.state.hims_d_procedure_id,
             item_id: $this.state.item_id,
             service_id: $this.state.s_service,
-            qty: $this.state.qty
+            qty: $this.state.qty,
           };
           insertProcedure.push(InsertObj);
         }
@@ -72,12 +78,12 @@ export default function ProceduresEvent() {
           item_id: null,
           s_service: null,
           insertProcedure: insertProcedure,
-          qty: 1
+          qty: 1,
         });
       } else {
         swalMessage({
           title: "Selected Item already exists.",
-          type: "warning"
+          type: "warning",
         });
       }
     },
@@ -89,7 +95,7 @@ export default function ProceduresEvent() {
       if ($this.state.hims_d_procedure_id !== null) {
         if (row.hims_d_procedure_detail_id !== undefined) {
           deleteProcedure.push({
-            hims_d_procedure_detail_id: row.hims_d_procedure_detail_id
+            hims_d_procedure_detail_id: row.hims_d_procedure_detail_id,
           });
         } else {
           for (let k = 0; k < insertProcedure.length; k++) {
@@ -112,7 +118,7 @@ export default function ProceduresEvent() {
       $this.setState({
         ProcedureDetail: ProcedureDetail,
         deleteProcedure: deleteProcedure,
-        insertProcedure: insertProcedure
+        insertProcedure: insertProcedure,
       });
     },
 
@@ -122,31 +128,32 @@ export default function ProceduresEvent() {
       AlgaehValidation({
         alertTypeIcon: "warning",
         onSuccess: () => {
+          $this.state.service_code = $this.state.procedure_code;
+          $this.state.service_type_id = "2";
+          $this.state.service_name = $this.state.procedure_desc;
+          $this.state.service_name = $this.state.procedure_desc_arabic;
+          $this.state.service_status = "A";
+          $this.state.standard_fee = $this.state.procedure_amount;
           if ($this.state.hims_d_procedure_id === null) {
-            $this.state.service_code = $this.state.procedure_code;
-            $this.state.service_type_id = "2";
-            $this.state.service_name = $this.state.procedure_desc;
-            $this.state.service_status = "A";
-            $this.state.standard_fee = $this.state.procedure_amount;
             algaehApiCall({
               uri: "/serviceType/addProcedure",
               module: "masterSettings",
               data: $this.state,
-              onSuccess: response => {
+              onSuccess: (response) => {
                 if (response.data.success === true) {
                   swalMessage({
                     type: "success",
-                    title: "Saved successfully . ."
+                    title: "Saved successfully . .",
                   });
                   $this.setState(
                     {
                       hims_d_procedure_id: null,
                       procedure_code: null,
                       procedure_desc: null,
+                      procedure_desc_arabic: null,
                       procedure_amount: 0,
-                      total_service_amount: 0,
-                      profit_loss: null,
-                      pl_amount: 0,
+                      vat_applicable: "N",
+                      vat_percent: 0,
 
                       open: false,
                       ProcedureDetail: [],
@@ -154,14 +161,14 @@ export default function ProceduresEvent() {
                       insertProcedure: [],
                       s_service_amount: null,
                       s_service_type: null,
-                      s_service: null
+                      s_service: null,
                     },
                     () => {
                       $this.props.onClose && $this.props.onClose(true);
                     }
                   );
                 }
-              }
+              },
             });
           } else {
             algaehApiCall({
@@ -169,17 +176,18 @@ export default function ProceduresEvent() {
               module: "masterSettings",
               data: $this.state,
               method: "PUT",
-              onSuccess: response => {
+              onSuccess: (response) => {
                 if (response.data.success === true) {
                   swalMessage({
                     type: "success",
-                    title: "Updated successfully . ."
+                    title: "Updated successfully . .",
                   });
                   $this.setState(
                     {
                       hims_d_procedure_id: null,
                       procedure_code: null,
                       procedure_desc: null,
+                      procedure_desc_arabic: null,
                       procedure_amount: 0,
                       total_service_amount: 0,
                       profit_loss: null,
@@ -191,18 +199,18 @@ export default function ProceduresEvent() {
                       insertProcedure: [],
                       s_service_amount: null,
                       s_service_type: null,
-                      s_service: null
+                      s_service: null,
                     },
                     () => {
                       $this.props.onClose && $this.props.onClose(true);
                     }
                   );
                 }
-              }
+              },
             });
           }
-        }
+        },
       });
-    }
+    },
   };
 }

@@ -1,5 +1,10 @@
-#procedureGrid_Cntr {
-  .ReactTable {
-    max-height: 80vh !important;
+.ProcedureMastrModal {
+  .algaeh-modal {
+    width: 65vw;
+  }
+  #packages_detail_grid {
+    .ReactTable {
+      max-height: 53vh !important;
+    }
   }
 }

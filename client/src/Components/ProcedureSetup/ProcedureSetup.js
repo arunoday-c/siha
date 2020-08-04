@@ -1,52 +1,28 @@
 import React, { Component } from "react";
-import { withRouter } from "react-router-dom";
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
 
 import "./ProcedureSetup.scss";
 import "../../styles/site.scss";
 import { AlgaehLabel, AlgaehDataGrid } from "../Wrapper/algaehWrapper";
-import { AlgaehActions } from "../../actions/algaehActions";
-
 import ProcedureSetupEvent from "./ProcedureSetupEvent";
-
 import Procedures from "./Procedures/Procedures";
 
-class ProcedureSetup extends Component {
+export default class ProcedureSetup extends Component {
   constructor(props) {
     super(props);
     this.state = {
       isOpen: false,
 
       ProceduresPop: {},
-      all_procedures: []
+      all_procedures: [],
     };
     ProcedureSetupEvent().getProcedure(this);
-  }
-
-  componentDidMount() {
-    if (
-      this.props.procedureservices === undefined ||
-      this.props.procedureservices.length === 0
-    ) {
-      this.props.getServices({
-        uri: "/serviceType/getService",
-        module: "masterSettings",
-        method: "GET",
-        data: { service_type_id: "2" },
-        redux: {
-          type: "SERVICES_GET_DATA",
-          mappingName: "procedureservices"
-        }
-      });
-    }
   }
 
   ShowModel(e) {
     this.setState({
       ...this.state,
       isOpen: !this.state.isOpen,
-      ProceduresPop: {}
+      ProceduresPop: {},
     });
   }
 
@@ -55,7 +31,7 @@ class ProcedureSetup extends Component {
       {
         ...this.state,
         isOpen: !this.state.isOpen,
-        ProceduresPop: {}
+        ProceduresPop: {},
       },
       () => {
         if (e === true) {
@@ -102,7 +78,7 @@ class ProcedureSetup extends Component {
                     {
                       fieldName: "action",
                       label: <AlgaehLabel label={{ fieldName: "action" }} />,
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         return (
                           <span>
                             <i
@@ -116,46 +92,91 @@ class ProcedureSetup extends Component {
                         maxWidth: 65,
                         resizable: false,
                         filterable: false,
-                        style: { textAlign: "center" }
-                      }
+                        style: { textAlign: "center" },
+                      },
                     },
                     {
                       fieldName: "procedure_code",
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Procedure Code" }} />
-                      )
+                      ),
+                      others: {
+                        maxWidth: 120,
+                      },
                     },
                     {
                       fieldName: "procedure_desc",
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Procedure Desc" }} />
-                      )
+                      ),
+                      others: { style: { textAlign: "left" } },
+                    },
+                    {
+                      fieldName: "procedure_desc_arabic",
+                      label: (
+                        <AlgaehLabel
+                          label={{ forceLabel: "Description Arabic" }}
+                        />
+                      ),
+                      others: { style: { textAlign: "right" } },
                     },
 
                     {
-                      fieldName: "service_id",
-                      label: <AlgaehLabel label={{ forceLabel: "Service" }} />,
-                      displayTemplate: row => {
-                        let display =
-                          this.props.procedureservices === undefined
-                            ? []
-                            : this.props.procedureservices.filter(
-                              f => f.hims_d_services_id === row.service_id
-                            );
-
+                      fieldName: "procedure_type",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Procedure Type" }} />
+                      ),
+                      displayTemplate: (row) => {
                         return (
                           <span>
-                            {display !== null && display.length !== 0
-                              ? display[0].service_name
-                              : ""}
+                            {row.procedure_type === "DN" ? "Dental" : "General"}
                           </span>
                         );
-                      }
-                    }
+                      },
+
+                      others: {
+                        maxWidth: 120,
+                      },
+                    },
+                    {
+                      fieldName: "procedure_amount",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Procedure Amt." }} />
+                      ),
+                      others: {
+                        maxWidth: 120,
+                      },
+                    },
+                    {
+                      fieldName: "vat_applicable",
+                      label: (
+                        <AlgaehLabel label={{ fieldName: "vat_applicable" }} />
+                      ),
+                      displayTemplate: (row) => {
+                        return row.vat_applicable === "Y" ? "Yes" : "No";
+                      },
+                      others: {
+                        maxWidth: 110,
+                      },
+                    },
+                    {
+                      fieldName: "vat_percent",
+                      label: (
+                        <AlgaehLabel label={{ fieldName: "vat_percent" }} />
+                      ),
+                      displayTemplate: (row) => {
+                        return (
+                          <span>{parseFloat(row.vat_percent).toFixed(0)}%</span>
+                        );
+                      },
+                      others: {
+                        maxWidth: 100,
+                      },
+                    },
                   ]}
                   keyId="procedure_code"
                   dataSource={{
-                    data: this.state.all_procedures
+                    data: this.state.all_procedures,
                   }}
                   filter={true}
                   paging={{ page: 0, rowsPerPage: 20 }}
@@ -168,25 +189,3 @@ class ProcedureSetup extends Component {
     );
   }
 }
-
-function mapStateToProps(state) {
-  return {
-    procedureservices: state.procedureservices
-  };
-}
-
-function mapDispatchToProps(dispatch) {
-  return bindActionCreators(
-    {
-      getServices: AlgaehActions
-    },
-    dispatch
-  );
-}
-
-export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(ProcedureSetup)
-);
