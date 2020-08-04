@@ -2,7 +2,14 @@ import React, { useContext } from "react";
 import { Redirect, Route } from "react-router-dom";
 import { MainContext } from "algaeh-react-components";
 
-export const ProtectedRoute = ({ render, path, exact, key, strict }) => {
+export const ProtectedRoute = ({
+  render,
+  path,
+  exact,
+  key,
+  strict,
+  ...props
+}) => {
   const { is_authenticated } = useContext(MainContext);
   // const routeComponent = (props) =>
   //   is_authenticated ? (

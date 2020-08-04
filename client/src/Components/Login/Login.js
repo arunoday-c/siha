@@ -34,7 +34,7 @@ import "./Login.scss";
 // import { from } from "linq";
 import noUserImg from "../../assets/images/nobody_m.original.webp";
 function Login(props) {
-  const { history } = props;
+  const { history, location } = props;
   const remebermeUser = getCookie("userName");
   const [login, setLogin] = useState({
     username: remebermeUser,
@@ -145,11 +145,11 @@ function Login(props) {
             onSuccess: (response) => {
               const { success, records, message } = response.data;
               if (success === true) {
-                const redirect = (redPage) => {
-                  setLoginLoad(false);
-                  setCookie("ScreenName", redPage);
-                  history.push(`/${redPage}`);
-                };
+                // const redirect = (redPage) => {
+                //   setLoginLoad(false);
+                //   setCookie("ScreenName", redPage);
+                //   history.push(`/${redPage}`);
+                // };
                 setItem("token", records.token).then(() => {
                   getActiveModulesForUser()
                     .then((userMenu) => {
@@ -165,29 +165,38 @@ function Login(props) {
                                 { userPreferences: userPreference },
                                 "landing_page"
                               ).then((result) => {
-                                let redPage =
-                                  records.page_to_redirect === null
-                                    ? "NoDashboard"
-                                    : records.page_to_redirect.replace(
-                                        /\s/g,
-                                        ""
-                                      );
-                                if (result !== undefined) {
-                                  const resource = result["preference"].find(
-                                    (f) => f.controlName === "page"
-                                  );
-                                  if (resource !== undefined)
-                                    redPage = resource.controlValue;
-                                }
-                                redirect(redPage);
+                                // let redPage =
+                                //   records.page_to_redirect === null
+                                //     ? "NoDashboard"
+                                //     : records.page_to_redirect.replace(
+                                //         /\s/g,
+                                //         ""
+                                //       );
+                                // if (result !== undefined) {
+                                //   const resource = result["preference"].find(
+                                //     (f) => f.controlName === "page"
+                                //   );
+                                //   if (resource !== undefined)
+                                //     redPage = resource.controlValue;
+                                // }
+                                // redirect(redPage);
+                                setLoginLoad(false);
+
+                                history.push("/confirm-auth", {
+                                  from: location?.state?.from,
+                                });
                               });
                             })
                             .catch(() => {
-                              const redPage =
-                                records.page_to_redirect === null
-                                  ? "NoDashboard"
-                                  : records.page_to_redirect.replace(/\s/g, "");
-                              redirect(redPage);
+                              setLoginLoad(false);
+                              history.push("/confirm-auth", {
+                                from: location?.state?.from,
+                              });
+                              // const redPage =
+                              //   records.page_to_redirect === null
+                              //     ? "NoDashboard"
+                              //     : records.page_to_redirect.replace(/\s/g, "");
+                              // redirect(redPage);
                             });
                           // const redPage =
                           //   records.page_to_redirect === null
@@ -346,12 +355,12 @@ function Login(props) {
           getActiveModulesForUser()
             .then((userMenu) => {
               setSelectedMenu(userMenu, records.page_to_redirect).then(() => {
-                const redirect = (redPage) => {
-                  setLoginLoad(false);
-                  setCookie("ScreenName", redPage);
-                  setCookie("HospitalId", records.hospital_id);
-                  history.push(`/${redPage}`);
-                };
+                // const redirect = (redPage) => {
+                //   setLoginLoad(false);
+                //   setCookie("ScreenName", redPage);
+                //   setCookie("HospitalId", records.hospital_id);
+                //   history.push(`/${redPage}`);
+                // };
                 getUserPrefrencesDetails({ user_id: records.keyData.user_id })
                   .then((userPreference) => {
                     setItem("userPreferences", userPreference);
@@ -360,27 +369,36 @@ function Login(props) {
                       { userPreferences: userPreference },
                       "landing_page"
                     ).then((result) => {
-                      let redPage =
-                        records.page_to_redirect === null
-                          ? "NoDashboard"
-                          : records.page_to_redirect.replace(/\s/g, "");
+                      // let redPage =
+                      //   records.page_to_redirect === null
+                      //     ? "NoDashboard"
+                      //     : records.page_to_redirect.replace(/\s/g, "");
 
-                      if (result !== undefined) {
-                        const resource = result["preference"].find(
-                          (f) => f.controlName === "page"
-                        );
-                        if (resource !== undefined)
-                          redPage = resource.controlValue;
-                      }
-                      redirect(redPage);
+                      // if (result !== undefined) {
+                      //   const resource = result["preference"].find(
+                      //     (f) => f.controlName === "page"
+                      //   );
+                      //   if (resource !== undefined)
+                      //     redPage = resource.controlValue;
+                      // }
+                      setLoginLoad(false);
+
+                      history.push("/confirm-auth", {
+                        from: location?.state?.from,
+                      });
+                      // redirect(redPage);
                     });
                   })
                   .catch((error) => {
-                    const redPage =
-                      records.page_to_redirect === null
-                        ? "NoDashboard"
-                        : records.page_to_redirect.replace(/\s/g, "");
-                    redirect(redPage);
+                    setLoginLoad(false);
+                    history.push("/confirm-auth", {
+                      from: location?.state?.from,
+                    });
+                    // const redPage =
+                    //   records.page_to_redirect === null
+                    //     ? "NoDashboard"
+                    //     : records.page_to_redirect.replace(/\s/g, "");
+                    // redirect(redPage);
                   });
               });
             })
