@@ -443,9 +443,8 @@ export const authorizePrepaymentRequest = (req, res, next) => {
 export const payPrepaymentRequest = (req, res, next) => {
   const _mysql = new algaehMysql();
 
-  let { auth_status, finance_f_prepayment_request_id, reverted_amt } = req.body;
+  let { auth_status, finance_f_prepayment_request_id, reverted_amt, revert_reason } = req.body;
 
-  console.log("req.body", req.body)
   if (auth_status == "PD") {
     _mysql
       .executeQueryWithTransaction({
@@ -631,8 +630,9 @@ export const payPrepaymentRequest = (req, res, next) => {
     _mysql
       .executeQuery({
         query:
-          "update finance_f_prepayment_request set request_status='P', reverted_amt=? where finance_f_prepayment_request_id=?;",
+          "update finance_f_prepayment_request set request_status='P', revert_reason=?, reverted_amt=? where finance_f_prepayment_request_id=?;",
         values: [
+          revert_reason,
           reverted_amt,
           finance_f_prepayment_request_id
         ],
@@ -725,7 +725,7 @@ export const processPrepayments = (req, res, next) => {
   if (detail_ids.length > 0) {
     _mysql
       .executeQuery({
-        query: "  SELECT cost_center_type  FROM finance_options limit 1; ",
+        query: "SELECT cost_center_type  FROM finance_options limit 1; ",
       })
       .then((options) => {
         let CR_groupByStr = "";
@@ -748,21 +748,21 @@ export const processPrepayments = (req, res, next) => {
             from  finance_f_prepayment_detail D   inner join finance_f_prepayment_request PR on 
             D.prepayment_request_id=PR.finance_f_prepayment_request_id
             inner join finance_d_prepayment_type PT  on PR.prepayment_type_id = PT.finance_d_prepayment_type_id
-            where  D.finance_f_prepayment_detail_id in (?) and D.processed='N' and PR.request_status='A' 
+            where  D.finance_f_prepayment_detail_id in (?) and D.processed='N' and PR.request_status='PD' 
             group by PT.finance_d_prepayment_type_id ${CR_groupByStr}; 
             select  D.finance_f_prepayment_detail_id,sum(D.amount) as amount, PT.expense_head_id,PT.expense_child_id ,
             D.project_id,D.sub_department_id,D.hospital_id
             from  finance_f_prepayment_detail D   inner join finance_f_prepayment_request PR on 
             D.prepayment_request_id=PR.finance_f_prepayment_request_id
             inner join finance_d_prepayment_type PT  on PR.prepayment_type_id = PT.finance_d_prepayment_type_id
-            where D.finance_f_prepayment_detail_id in (?) and D.processed='N' and PR.request_status='A' 
+            where D.finance_f_prepayment_detail_id in (?) and D.processed='N' and PR.request_status='PD' 
             group by PT.finance_d_prepayment_type_id ${DR_groupByStr} for update;         
             select  D.finance_f_prepayment_detail_id,sum(D.amount) as amount 
             from  finance_f_prepayment_detail D   inner join finance_f_prepayment_request PR on  
             D.prepayment_request_id=PR.finance_f_prepayment_request_id
-            where D.finance_f_prepayment_detail_id in (?) and D.processed='N' and PR.request_status='A' ; `,
+            where D.finance_f_prepayment_detail_id in (?) and D.processed='N' and PR.request_status='PD' ; `,
             values: [detail_ids, detail_ids, detail_ids],
-            printQuery: false,
+            printQuery: true,
           })
           .then((result) => {
             const credit_side = result[0];
@@ -865,14 +865,14 @@ export const processPrepayments = (req, res, next) => {
                               query: `update finance_f_prepayment_detail D inner join
                                     finance_f_prepayment_request PR on D.prepayment_request_id=PR.finance_f_prepayment_request_id
                                     set D.processed='Y' ,updated_by=?,updated_date=? where D.finance_f_prepayment_detail_id in (?)
-                                    and D.processed='N' and PR.request_status='A' ; `,
+                                    and D.processed='N' and PR.request_status='PD' ; `,
                               values: [
                                 req.userIdentity.algaeh_d_app_user_id,
                                 new Date(),
                                 detail_ids,
                               ],
 
-                              printQuery: false,
+                              printQuery: true,
                             })
                             .then((updte) => {
                               _mysql.commitTransaction(() => {
