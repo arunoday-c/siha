@@ -417,7 +417,7 @@ class StaffCashCollection extends Component {
                     <button
                       onClick={this.getCashHandoverDetails.bind(this)}
                       className="btn btn-primary float-right"
-                      style={{ marginTop: 19 }}
+                      style={{ marginTop: 20 }}
                     >
                       Apply
                     </button>

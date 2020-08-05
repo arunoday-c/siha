@@ -4,7 +4,7 @@ import {
   AlagehAutoComplete,
   AlagehFormGroup,
   AlgaehLabel,
-  AlgaehDataGrid
+  AlgaehDataGrid,
 } from "../../Wrapper/algaehWrapper";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import swal from "sweetalert2";
@@ -22,7 +22,7 @@ class AppointmentClinics extends Component {
       description: "",
       description_error: false,
       description_error_text: "",
-      all_docs: []
+      all_docs: [],
     };
   }
 
@@ -53,7 +53,7 @@ class AppointmentClinics extends Component {
   deptDropDownHandler(value) {
     this.setState({ [value.name]: value.value }, () => {
       let dept = Enumerable.from(this.state.departments)
-        .where(w => w.sub_department_id === this.state.sub_department_id)
+        .where((w) => w.sub_department_id === this.state.sub_department_id)
         .firstOrDefault();
       this.setState({ doctors: dept.doctors });
     });
@@ -65,17 +65,17 @@ class AppointmentClinics extends Component {
       module: "frontDesk",
       method: "GET",
       data: {},
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           this.setState({ appointmentRooms: response.data.records });
         }
       },
-      onFailure: error => {
+      onFailure: (error) => {
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -85,17 +85,17 @@ class AppointmentClinics extends Component {
       module: "frontDesk",
       method: "GET",
       data: {},
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           this.setState({ appointmentClinics: response.data.records });
         }
       },
-      onFailure: error => {
+      onFailure: (error) => {
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -104,21 +104,21 @@ class AppointmentClinics extends Component {
       uri: "/department/get/get_All_Doctors_DepartmentWise",
       module: "masterSettings",
       method: "GET",
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           this.setState({
             departments: response.data.records.departmets,
             doctors: response.data.records.doctors,
-            all_docs: response.data.records.doctors
+            all_docs: response.data.records.doctors,
           });
         }
       },
-      onFailure: error => {
+      onFailure: (error) => {
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -136,8 +136,8 @@ class AppointmentClinics extends Component {
       confirmButtonText: "Yes",
       confirmButtonColor: "#44b8bd",
       cancelButtonColor: "#d33",
-      cancelButtonText: "No"
-    }).then(willDelete => {
+      cancelButtonText: "No",
+    }).then((willDelete) => {
       if (willDelete.value) {
         algaehApiCall({
           uri: "/appointment/updateAppointmentClinic",
@@ -148,25 +148,25 @@ class AppointmentClinics extends Component {
             sub_department_id: data.sub_department_id,
             provider_id: data.provider_id,
             room_id: data.room_id,
-            hims_d_appointment_clinic_id: data.hims_d_appointment_clinic_id
+            hims_d_appointment_clinic_id: data.hims_d_appointment_clinic_id,
           },
           method: "PUT",
-          onSuccess: response => {
+          onSuccess: (response) => {
             if (response.data.success) {
               swalMessage({
                 title: "Record deleted successfully . .",
-                type: "success"
+                type: "success",
               });
 
               this.getAppointmentClinics();
             }
           },
-          onFailure: error => {
+          onFailure: (error) => {
             swalMessage({
               title: error.message,
-              type: "warning"
+              type: "warning",
             });
-          }
+          },
         });
       }
     });
@@ -183,24 +183,24 @@ class AppointmentClinics extends Component {
         sub_department_id: data.sub_department_id,
         provider_id: data.provider_id,
         room_id: data.room_id,
-        hims_d_appointment_clinic_id: data.hims_d_appointment_clinic_id
+        hims_d_appointment_clinic_id: data.hims_d_appointment_clinic_id,
       },
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           swalMessage({
             title: "Record updated successfully",
-            type: "success"
+            type: "success",
           });
 
           this.getAppointmentClinics();
         }
       },
-      onFailure: error => {
+      onFailure: (error) => {
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -209,7 +209,7 @@ class AppointmentClinics extends Component {
       description: "",
       sub_department_id: null,
       provider_id: null,
-      room_id: null
+      room_id: null,
     });
   }
 
@@ -227,26 +227,26 @@ class AppointmentClinics extends Component {
             description: this.state.description,
             sub_department_id: this.state.sub_department_id,
             provider_id: this.state.provider_id,
-            room_id: this.state.room_id
+            room_id: this.state.room_id,
           },
-          onSuccess: response => {
+          onSuccess: (response) => {
             if (response.data.success) {
               this.getAppointmentClinics();
               this.clearSaveState();
               swalMessage({
                 title: "Record Added Successfully",
-                type: "success"
+                type: "success",
               });
             }
           },
-          onFailure: error => {
+          onFailure: (error) => {
             swalMessage({
               title: error.message,
-              type: "error"
+              type: "error",
             });
-          }
+          },
         });
-      }
+      },
     });
   }
 
@@ -254,7 +254,7 @@ class AppointmentClinics extends Component {
     let dept = Enumerable.from(
       this.state.departments.length !== 0 ? this.state.departments : null
     )
-      .where(w => w.sub_department_id === id)
+      .where((w) => w.sub_department_id === id)
       .firstOrDefault();
     return dept !== undefined ? dept.sub_department_name : "";
   }
@@ -263,7 +263,7 @@ class AppointmentClinics extends Component {
     let doc = Enumerable.from(
       this.state.all_docs.length !== 0 ? this.state.all_docs : null
     )
-      .where(w => w.employee_id === id)
+      .where((w) => w.employee_id === id)
       .firstOrDefault();
     return doc !== undefined ? doc.full_name : "";
   }
@@ -274,7 +274,7 @@ class AppointmentClinics extends Component {
         ? this.state.appointmentRooms
         : null
     )
-      .where(w => w.hims_d_appointment_room_id === id)
+      .where((w) => w.hims_d_appointment_room_id === id)
       .firstOrDefault();
     return room !== undefined ? room.roomDesc : "";
   }
@@ -287,18 +287,18 @@ class AppointmentClinics extends Component {
             div={{ className: "col-3 form-group mandatory" }}
             label={{
               fieldName: "description",
-              isImp: true
+              isImp: true,
             }}
             textBox={{
               className: "txt-fld",
               name: "description",
               value: this.state.description,
               events: {
-                onChange: this.changeTexts.bind(this)
+                onChange: this.changeTexts.bind(this),
               },
 
               error: this.state.description_error,
-              helperText: this.state.description_error_text
+              helperText: this.state.description_error_text,
             }}
           />
 
@@ -306,7 +306,7 @@ class AppointmentClinics extends Component {
             div={{ className: "col-3 form-group mandatory" }}
             label={{
               fieldName: "department_name",
-              isImp: true
+              isImp: true,
             }}
             selector={{
               name: "sub_department_id",
@@ -315,9 +315,9 @@ class AppointmentClinics extends Component {
               dataSource: {
                 textField: "sub_department_name",
                 valueField: "sub_department_id",
-                data: this.state.departments
+                data: this.state.departments,
               },
-              onChange: this.deptDropDownHandler.bind(this)
+              onChange: this.deptDropDownHandler.bind(this),
             }}
           />
 
@@ -325,7 +325,7 @@ class AppointmentClinics extends Component {
             div={{ className: "col-3 form-group mandatory" }}
             label={{
               fieldName: "doctor",
-              isImp: true
+              isImp: true,
             }}
             selector={{
               name: "provider_id",
@@ -334,9 +334,9 @@ class AppointmentClinics extends Component {
               dataSource: {
                 textField: "full_name",
                 valueField: "employee_id",
-                data: this.state.doctors
+                data: this.state.doctors,
               },
-              onChange: this.dropDownHandler.bind(this)
+              onChange: this.dropDownHandler.bind(this),
             }}
           />
 
@@ -344,7 +344,7 @@ class AppointmentClinics extends Component {
             div={{ className: "col-2 form-group mandatory" }}
             label={{
               fieldName: "room",
-              isImp: true
+              isImp: true,
             }}
             selector={{
               name: "room_id",
@@ -353,15 +353,15 @@ class AppointmentClinics extends Component {
               dataSource: {
                 textField: "roomDesc",
                 valueField: "hims_d_appointment_room_id",
-                data: this.state.appointmentRooms
+                data: this.state.appointmentRooms,
               },
-              onChange: this.dropDownHandler.bind(this)
+              onChange: this.dropDownHandler.bind(this),
             }}
           />
 
           <div className="col">
             <button
-              style={{ marginTop: 19 }}
+              style={{ marginTop: 20 }}
               onClick={this.addAppointmentClinics.bind(this)}
               type="button"
               className="btn btn-primary"
@@ -389,7 +389,7 @@ class AppointmentClinics extends Component {
                           label: (
                             <AlgaehLabel label={{ fieldName: "description" }} />
                           ),
-                          editorTemplate: row => {
+                          editorTemplate: (row) => {
                             return (
                               <AlagehFormGroup
                                 div={{ className: "col" }}
@@ -401,17 +401,17 @@ class AppointmentClinics extends Component {
                                     onChange: this.changeGridEditors.bind(
                                       this,
                                       row
-                                    )
+                                    ),
                                   },
                                   others: {
                                     errormessage:
                                       "Description - cannot be blank",
-                                    required: true
-                                  }
+                                    required: true,
+                                  },
                                 }}
                               />
                             );
-                          }
+                          },
                         },
                         {
                           fieldName: "sub_department_id",
@@ -420,10 +420,10 @@ class AppointmentClinics extends Component {
                               label={{ fieldName: "department_name" }}
                             />
                           ),
-                          displayTemplate: row => {
+                          displayTemplate: (row) => {
                             return this.getDeptName(row.sub_department_id);
                           },
-                          editorTemplate: row => {
+                          editorTemplate: (row) => {
                             return (
                               <AlagehAutoComplete
                                 div={{ className: "col" }}
@@ -434,31 +434,31 @@ class AppointmentClinics extends Component {
                                   dataSource: {
                                     textField: "sub_department_name",
                                     valueField: "sub_department_id",
-                                    data: this.state.departments
+                                    data: this.state.departments,
                                   },
                                   others: {
                                     errormessage:
                                       "Department - cannot be blank",
-                                    required: true
+                                    required: true,
                                   },
                                   onChange: this.changeGridEditors.bind(
                                     this,
                                     row
-                                  )
+                                  ),
                                 }}
                               />
                             );
-                          }
+                          },
                         },
                         {
                           fieldName: "provider_id",
                           label: (
                             <AlgaehLabel label={{ fieldName: "doctor" }} />
                           ),
-                          displayTemplate: row => {
+                          displayTemplate: (row) => {
                             return this.getDoctorName(row.provider_id);
                           },
-                          editorTemplate: row => {
+                          editorTemplate: (row) => {
                             return (
                               <AlagehAutoComplete
                                 div={{ className: "col" }}
@@ -469,28 +469,28 @@ class AppointmentClinics extends Component {
                                   dataSource: {
                                     textField: "full_name",
                                     valueField: "employee_id",
-                                    data: this.state.all_docs
+                                    data: this.state.all_docs,
                                   },
                                   others: {
                                     errormessage: "Doctor - cannot be blank",
-                                    required: true
+                                    required: true,
                                   },
                                   onChange: this.changeGridEditors.bind(
                                     this,
                                     row
-                                  )
+                                  ),
                                 }}
                               />
                             );
-                          }
+                          },
                         },
                         {
                           fieldName: "room_id",
                           label: <AlgaehLabel label={{ fieldName: "room" }} />,
-                          displayTemplate: row => {
+                          displayTemplate: (row) => {
                             return this.getRoomName(row.room_id);
                           },
-                          editorTemplate: row => {
+                          editorTemplate: (row) => {
                             return (
                               <AlagehAutoComplete
                                 div={{ className: "col" }}
@@ -501,25 +501,25 @@ class AppointmentClinics extends Component {
                                   dataSource: {
                                     textField: "roomDesc",
                                     valueField: "hims_d_appointment_room_id",
-                                    data: this.state.appointmentRooms
+                                    data: this.state.appointmentRooms,
                                   },
                                   others: {
                                     errormessage: "Room - cannot be blank",
-                                    required: true
+                                    required: true,
                                   },
                                   onChange: this.changeGridEditors.bind(
                                     this,
                                     row
-                                  )
+                                  ),
                                 }}
                               />
                             );
-                          }
-                        }
+                          },
+                        },
                       ]}
                       keyId="hims_d_appointment_clinic_id"
                       dataSource={{
-                        data: this.state.appointmentClinics
+                        data: this.state.appointmentClinics,
                       }}
                       filter={true}
                       isEditable={true}
@@ -527,7 +527,7 @@ class AppointmentClinics extends Component {
                       events={{
                         onEdit: () => {},
                         onDelete: this.deleteAppointmentClinics.bind(this),
-                        onDone: this.updateAppointmentClinics.bind(this)
+                        onDone: this.updateAppointmentClinics.bind(this),
                       }}
                     />
                   </div>

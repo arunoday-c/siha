@@ -9,13 +9,13 @@ import moment from "moment";
 import {
   AlagehFormGroup,
   AlgaehDataGrid,
-  AlgaehLabel
+  AlgaehLabel,
 } from "../../Wrapper/algaehWrapper";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import {
   algaehApiCall,
   swalMessage,
-  getCookie
+  getCookie,
 } from "../../../utils/algaehApiCall";
 import { setGlobal, AlgaehValidation } from "../../../utils/GlobalFunctions";
 import Options from "../../../Options.json";
@@ -30,7 +30,7 @@ class TermsConditions extends Component {
       terms_cond_status: "A",
       terms_cond_description: null,
 
-      buttonText: <span>Add to List</span>
+      buttonText: <span>Add to List</span>,
     };
 
     this.baseState = this.state;
@@ -46,7 +46,7 @@ class TermsConditions extends Component {
     let prevLang = getCookie("Language");
     setGlobal({ selectedLang: prevLang });
     this.setState({
-      selectedLang: prevLang
+      selectedLang: prevLang,
     });
     if (
       this.props.terms_conditions === undefined ||
@@ -58,8 +58,8 @@ class TermsConditions extends Component {
         method: "GET",
         redux: {
           type: "TERMS_COND_GET_DATA",
-          mappingName: "terms_conditions"
-        }
+          mappingName: "terms_conditions",
+        },
       });
     }
   }
@@ -85,7 +85,7 @@ class TermsConditions extends Component {
             uri: "/salseSetup/addTermsConditions",
             module: "masterSettings",
             data: this.state,
-            onSuccess: response => {
+            onSuccess: (response) => {
               if (response.data.success === true) {
                 this.resetState();
                 //Handle Successful Add here
@@ -95,15 +95,15 @@ class TermsConditions extends Component {
                   method: "GET",
                   redux: {
                     type: "TERMS_COND_GET_DATA",
-                    mappingName: "terms_conditions"
-                  }
+                    mappingName: "terms_conditions",
+                  },
                 });
                 swalMessage({
                   title: "Added successfully",
-                  type: "success"
+                  type: "success",
                 });
               }
-            }
+            },
           });
         } else {
           algaehApiCall({
@@ -111,7 +111,7 @@ class TermsConditions extends Component {
             module: "masterSettings",
             method: "PUT",
             data: this.state,
-            onSuccess: response => {
+            onSuccess: (response) => {
               if (response.data.success === true) {
                 this.resetState();
                 //Handle Successful Add here
@@ -121,18 +121,18 @@ class TermsConditions extends Component {
                   method: "GET",
                   redux: {
                     type: "TERMS_COND_GET_DATA",
-                    mappingName: "terms_conditions"
-                  }
+                    mappingName: "terms_conditions",
+                  },
                 });
                 swalMessage({
                   title: "Updated successfully",
-                  type: "success"
+                  type: "success",
                 });
               }
-            }
+            },
           });
         }
-      }
+      },
     });
   }
 
@@ -142,7 +142,7 @@ class TermsConditions extends Component {
       short_name: row.short_name,
       terms_cond_status: row.terms_cond_status,
       terms_cond_description: row.terms_cond_description,
-      buttonText: <span>Update</span>
+      buttonText: <span>Update</span>,
     });
   }
 
@@ -154,18 +154,18 @@ class TermsConditions extends Component {
             div={{ className: "col-2 form-group mandatory" }}
             label={{
               fieldName: "short_name",
-              isImp: true
+              isImp: true,
             }}
             textBox={{
               className: "txt-fld",
               name: "short_name",
               value: this.state.short_name,
               events: {
-                onChange: this.changeTexts.bind(this)
+                onChange: this.changeTexts.bind(this),
               },
               others: {
-                tabIndex: "1"
-              }
+                tabIndex: "1",
+              },
             }}
           />
 
@@ -173,7 +173,7 @@ class TermsConditions extends Component {
             div={{ className: "col form-group  mandatory" }}
             label={{
               fieldName: "terms_cond_description",
-              isImp: true
+              isImp: true,
             }}
             textBox={{
               className: "txt-fld",
@@ -181,15 +181,15 @@ class TermsConditions extends Component {
               value: this.state.terms_cond_description,
 
               events: {
-                onChange: this.changeTexts.bind(this)
-              }
+                onChange: this.changeTexts.bind(this),
+              },
             }}
           />
 
           <div className="col-2">
             <AlgaehLabel
               label={{
-                fieldName: "status"
+                fieldName: "status",
               }}
             />
             <div className="customRadio" style={{ borderBottom: 0 }}>
@@ -204,7 +204,7 @@ class TermsConditions extends Component {
                 <span>
                   <AlgaehLabel
                     label={{
-                      fieldName: "active"
+                      fieldName: "active",
                     }}
                   />
                 </span>
@@ -220,7 +220,7 @@ class TermsConditions extends Component {
                 <span>
                   <AlgaehLabel
                     label={{
-                      fieldName: "inactive"
+                      fieldName: "inactive",
                     }}
                   />
                 </span>
@@ -228,7 +228,7 @@ class TermsConditions extends Component {
             </div>
           </div>
 
-          <div className="col-2" style={{ marginTop: 19 }}>
+          <div className="col-2" style={{ marginTop: 20 }}>
             <button
               onClick={this.addTermsConditions.bind(this)}
               className="btn btn-primary"
@@ -254,7 +254,7 @@ class TermsConditions extends Component {
                           label: (
                             <AlgaehLabel label={{ fieldName: "action" }} />
                           ),
-                          displayTemplate: row => {
+                          displayTemplate: (row) => {
                             return (
                               <span>
                                 <i
@@ -270,8 +270,8 @@ class TermsConditions extends Component {
                           others: {
                             maxWidth: 90,
                             resizable: false,
-                            style: { textAlign: "center" }
-                          }
+                            style: { textAlign: "center" },
+                          },
                         },
                         {
                           fieldName: "short_name",
@@ -280,8 +280,8 @@ class TermsConditions extends Component {
                           ),
                           disabled: true,
                           others: {
-                            maxWidth: 250
-                          }
+                            maxWidth: 250,
+                          },
                         },
                         {
                           fieldName: "terms_cond_description",
@@ -291,22 +291,22 @@ class TermsConditions extends Component {
                             />
                           ),
                           others: {
-                            style: { textAlign: "left" }
-                          }
+                            style: { textAlign: "left" },
+                          },
                         },
                         {
                           fieldName: "created_by",
                           label: (
                             <AlgaehLabel label={{ fieldName: "created_by" }} />
                           ),
-                          displayTemplate: row => {
+                          displayTemplate: (row) => {
                             let display =
                               this.props.userdrtails === undefined
                                 ? []
                                 : this.props.userdrtails.filter(
-                                  f =>
-                                    f.algaeh_d_app_user_id === row.created_by
-                                );
+                                    (f) =>
+                                      f.algaeh_d_app_user_id === row.created_by
+                                  );
 
                             return (
                               <span>
@@ -317,8 +317,8 @@ class TermsConditions extends Component {
                             );
                           },
                           others: {
-                            maxWidth: 150
-                          }
+                            maxWidth: 150,
+                          },
                         },
                         {
                           fieldName: "created_date",
@@ -327,36 +327,36 @@ class TermsConditions extends Component {
                               label={{ fieldName: "created_date" }}
                             />
                           ),
-                          displayTemplate: row => {
+                          displayTemplate: (row) => {
                             return (
                               <span>{this.dateFormater(row.created_date)}</span>
                             );
                           },
                           others: {
-                            maxWidth: 150
-                          }
+                            maxWidth: 150,
+                          },
                         },
                         {
                           fieldName: "terms_cond_status",
                           label: (
                             <AlgaehLabel label={{ fieldName: "status" }} />
                           ),
-                          displayTemplate: row => {
+                          displayTemplate: (row) => {
                             return row.terms_cond_status === "A"
                               ? "Active"
                               : "Inactive";
                           },
                           others: {
-                            maxWidth: 80
-                          }
-                        }
+                            maxWidth: 80,
+                          },
+                        },
                       ]}
                       keyId="terms_cond_description"
                       dataSource={{
                         data:
                           this.props.terms_conditions === undefined
                             ? []
-                            : this.props.terms_conditions
+                            : this.props.terms_conditions,
                       }}
                       filter={true}
                       isEditable={false}
@@ -376,14 +376,14 @@ class TermsConditions extends Component {
 function mapStateToProps(state) {
   return {
     terms_conditions: state.terms_conditions,
-    userdrtails: state.userdrtails
+    userdrtails: state.userdrtails,
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getTermsConditions: AlgaehActions
+      getTermsConditions: AlgaehActions,
     },
     dispatch
   );

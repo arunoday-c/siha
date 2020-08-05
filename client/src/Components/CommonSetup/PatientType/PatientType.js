@@ -7,7 +7,7 @@ import {
   AlagehAutoComplete,
   AlagehFormGroup,
   AlgaehDataGrid,
-  AlgaehLabel
+  AlgaehLabel,
 } from "../../Wrapper/algaehWrapper";
 
 import { withRouter } from "react-router-dom";
@@ -29,7 +29,7 @@ class PatientType extends Component {
       patitent_type_desc: "",
       arabic_patitent_type_desc: "",
       row: [],
-      gridrefresh: true
+      gridrefresh: true,
     };
     this.baseState = this.state;
   }
@@ -42,17 +42,17 @@ class PatientType extends Component {
       data: {
         fields: "patient_type_code",
         tableName: "hims_d_patient_type",
-        keyFieldName: "hims_d_patient_type_id"
+        keyFieldName: "hims_d_patient_type_id",
       },
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success === true) {
           const placeHolder =
             response.data.records.length > 0 ? response.data.records[0] : {};
           that.setState({
-            patient_type_code_placeHolder: placeHolder.patient_type_code
+            patient_type_code_placeHolder: placeHolder.patient_type_code,
           });
         }
-      }
+      },
     });
   }
 
@@ -67,8 +67,8 @@ class PatientType extends Component {
         method: "GET",
         redux: {
           type: "PAT_TYP_GET_DATA",
-          mappingName: "patienttypes"
-        }
+          mappingName: "patienttypes",
+        },
       });
     }
   }
@@ -88,8 +88,8 @@ class PatientType extends Component {
       confirmButtonText: "Yes",
       confirmButtonColor: "#44b8bd",
       cancelButtonColor: "#d33",
-      cancelButtonText: "No"
-    }).then(willDelete => {
+      cancelButtonText: "No",
+    }).then((willDelete) => {
       if (willDelete.value) {
         let data = { hims_d_patient_type_id: id };
         algaehApiCall({
@@ -97,11 +97,11 @@ class PatientType extends Component {
           module: "masterSettings",
           data: data,
           method: "DELETE",
-          onSuccess: response => {
+          onSuccess: (response) => {
             if (response.data.success) {
               swalMessage({
                 title: "Record deleted successfully . .",
-                type: "success"
+                type: "success",
               });
 
               this.props.getPatienttypes({
@@ -110,17 +110,17 @@ class PatientType extends Component {
                 method: "GET",
                 redux: {
                   type: "PAT_TYP_GET_DATA",
-                  mappingName: "patienttypes"
-                }
+                  mappingName: "patienttypes",
+                },
               });
             }
           },
-          onFailure: error => {
+          onFailure: (error) => {
             swalMessage({
               title: error.response.data.message,
-              type: "error"
+              type: "error",
             });
-          }
+          },
         });
       }
     });
@@ -147,7 +147,7 @@ class PatientType extends Component {
           uri: "/patientType/add",
           module: "masterSettings",
           data: this.state,
-          onSuccess: response => {
+          onSuccess: (response) => {
             if (response.data.success === true) {
               this.props.getPatienttypes({
                 uri: "/patientType/getPatientType",
@@ -155,26 +155,26 @@ class PatientType extends Component {
                 method: "GET",
                 redux: {
                   type: "PAT_TYP_GET_DATA",
-                  mappingName: "patienttypes"
-                }
+                  mappingName: "patienttypes",
+                },
               });
               this.resetState();
               swalMessage({
                 title: "Patient Type added successfully",
-                type: "success"
+                type: "success",
               });
             } else {
               //Handle unsuccessful Add here.
             }
           },
-          onFailure: error => {
+          onFailure: (error) => {
             swalMessage({
               title: error.response.data.message,
-              type: "error"
+              type: "error",
             });
-          }
+          },
         });
-      }
+      },
     });
   }
 
@@ -184,22 +184,22 @@ class PatientType extends Component {
       module: "masterSettings",
       data: data,
       method: "PUT",
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           swalMessage({
             title: "Record updated successfully . .",
-            type: "success"
+            type: "success",
           });
 
           // data.onDoneFinish();
         }
       },
-      onFailure: error => {
+      onFailure: (error) => {
         swalMessage({
           title: error.response.data.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -222,19 +222,19 @@ class PatientType extends Component {
             div={{ className: "col-2  form-group mandatory" }}
             label={{
               fieldName: "type_code",
-              isImp: true
+              isImp: true,
             }}
             textBox={{
               className: "txt-fld",
               name: "patient_type_code",
               value: this.state.patient_type_code,
               events: {
-                onChange: this.changeTexts.bind(this)
+                onChange: this.changeTexts.bind(this),
               },
               others: {
                 tabIndex: "1",
-                placeholder: this.state.patient_type_code_placeHolder
-              }
+                placeholder: this.state.patient_type_code_placeHolder,
+              },
             }}
           />
 
@@ -242,15 +242,15 @@ class PatientType extends Component {
             div={{ className: "col-3  form-group mandatory" }}
             label={{
               fieldName: "type_desc",
-              isImp: true
+              isImp: true,
             }}
             textBox={{
               className: "txt-fld",
               name: "patitent_type_desc",
               value: this.state.patitent_type_desc,
               events: {
-                onChange: this.changeTexts.bind(this)
-              }
+                onChange: this.changeTexts.bind(this),
+              },
             }}
           />
 
@@ -258,18 +258,18 @@ class PatientType extends Component {
             div={{ className: "col-3 form-group mandatory arabic-txt-fld" }}
             label={{
               fieldName: "arabic_type_desc",
-              isImp: true
+              isImp: true,
             }}
             textBox={{
               className: "txt-fld",
               name: "arabic_patitent_type_desc",
               value: this.state.arabic_patitent_type_desc,
               events: {
-                onChange: this.changeTexts.bind(this)
-              }
+                onChange: this.changeTexts.bind(this),
+              },
             }}
           />
-          <div className="col" style={{ marginTop: 19 }}>
+          <div className="col" style={{ marginTop: 20 }}>
             <button
               onClick={this.addPatientType.bind(this)}
               className="btn btn-primary"
@@ -294,14 +294,14 @@ class PatientType extends Component {
                           label: (
                             <AlgaehLabel label={{ fieldName: "type_code" }} />
                           ),
-                          disabled: true
+                          disabled: true,
                         },
                         {
                           fieldName: "patitent_type_desc",
                           label: (
                             <AlgaehLabel label={{ fieldName: "type_desc" }} />
                           ),
-                          editorTemplate: row => {
+                          editorTemplate: (row) => {
                             return (
                               <AlagehFormGroup
                                 div={{}}
@@ -313,17 +313,17 @@ class PatientType extends Component {
                                     onChange: this.onchangegridcol.bind(
                                       this,
                                       row
-                                    )
+                                    ),
                                   },
                                   others: {
                                     errormessage:
                                       "Description - cannot be blank",
-                                    required: true
-                                  }
+                                    required: true,
+                                  },
                                 }}
                               />
                             );
-                          }
+                          },
                         },
                         {
                           fieldName: "arabic_patitent_type_desc",
@@ -332,7 +332,7 @@ class PatientType extends Component {
                               label={{ fieldName: "arabic_type_desc" }}
                             />
                           ),
-                          editorTemplate: row => {
+                          editorTemplate: (row) => {
                             return (
                               <AlagehFormGroup
                                 div={{}}
@@ -344,29 +344,29 @@ class PatientType extends Component {
                                     onChange: this.onchangegridcol.bind(
                                       this,
                                       row
-                                    )
+                                    ),
                                   },
                                   others: {
                                     errormessage:
                                       "Arabic Name - cannot be blank",
-                                    required: true
-                                  }
+                                    required: true,
+                                  },
                                 }}
                               />
                             );
-                          }
+                          },
                         },
                         {
                           fieldName: "created_by",
                           label: (
                             <AlgaehLabel label={{ fieldName: "created_by" }} />
                           ),
-                          displayTemplate: row => {
+                          displayTemplate: (row) => {
                             let display =
                               this.props.userdrtails === undefined
                                 ? []
                                 : this.props.userdrtails.filter(
-                                    f =>
+                                    (f) =>
                                       f.algaeh_d_app_user_id === row.created_by
                                   );
 
@@ -378,12 +378,12 @@ class PatientType extends Component {
                               </span>
                             );
                           },
-                          editorTemplate: row => {
+                          editorTemplate: (row) => {
                             let display =
                               this.props.userdrtails === undefined
                                 ? []
                                 : this.props.userdrtails.filter(
-                                    f =>
+                                    (f) =>
                                       f.algaeh_d_app_user_id === row.created_by
                                   );
 
@@ -394,7 +394,7 @@ class PatientType extends Component {
                                   : ""}
                               </span>
                             );
-                          }
+                          },
                         },
                         {
                           fieldName: "created_date",
@@ -402,28 +402,28 @@ class PatientType extends Component {
                           label: (
                             <AlgaehLabel label={{ forceLabel: "Added Date" }} />
                           ),
-                          displayTemplate: row => {
+                          displayTemplate: (row) => {
                             return (
                               <span>{this.dateFormater(row.created_date)}</span>
                             );
                           },
-                          editorTemplate: row => {
+                          editorTemplate: (row) => {
                             return (
                               <span>{this.dateFormater(row.created_date)}</span>
                             );
-                          }
+                          },
                         },
                         {
                           fieldName: "patient_status",
                           label: (
                             <AlgaehLabel label={{ fieldName: "status" }} />
                           ),
-                          displayTemplate: row => {
+                          displayTemplate: (row) => {
                             return row.patient_status === "A"
                               ? "Active"
                               : "Inactive";
                           },
-                          editorTemplate: row => {
+                          editorTemplate: (row) => {
                             return (
                               <AlagehAutoComplete
                                 div={{}}
@@ -434,7 +434,7 @@ class PatientType extends Component {
                                   dataSource: {
                                     textField: "name",
                                     valueField: "value",
-                                    data: GlobalVariables.FORMAT_STATUS
+                                    data: GlobalVariables.FORMAT_STATUS,
                                   },
                                   onChange: this.onchangegridcol.bind(
                                     this,
@@ -442,28 +442,28 @@ class PatientType extends Component {
                                   ),
                                   others: {
                                     errormessage: "Status - cannot be blank",
-                                    required: true
-                                  }
+                                    required: true,
+                                  },
                                 }}
                               />
                             );
-                          }
-                        }
+                          },
+                        },
                       ]}
                       keyId="patient_type_code"
                       dataSource={{
                         data:
                           this.props.patienttypes === undefined
                             ? []
-                            : this.props.patienttypes
+                            : this.props.patienttypes,
                       }}
                       filter={true}
                       isEditable={true}
                       paging={{ page: 0, rowsPerPage: 10 }}
                       events={{
                         onDelete: this.deletePatientType.bind(this),
-                        onEdit: row => {},
-                        onDone: this.updatePatientType.bind(this)
+                        onEdit: (row) => {},
+                        onDone: this.updatePatientType.bind(this),
                       }}
                     />
                   </div>
@@ -480,14 +480,14 @@ class PatientType extends Component {
 function mapStateToProps(state) {
   return {
     patienttypes: state.patienttypes,
-    userdrtails: state.userdrtails
+    userdrtails: state.userdrtails,
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getPatienttypes: AlgaehActions
+      getPatienttypes: AlgaehActions,
     },
     dispatch
   );

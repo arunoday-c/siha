@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import "./formula.scss";
 import {
   AlagehFormGroup,
-  AlgaehDataGrid
+  AlgaehDataGrid,
   // AlagehAutoComplete
 } from "../../Wrapper/algaehWrapper";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
@@ -12,7 +12,7 @@ class Formula extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      formulas: []
+      formulas: [],
     };
     this.getFormulas();
   }
@@ -21,19 +21,19 @@ class Formula extends Component {
     algaehApiCall({
       uri: "/algaehMasters/getFormulas",
       method: "GET",
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           this.setState({
-            formulas: response.data.records
+            formulas: response.data.records,
           });
         }
       },
-      onError: error => {
+      onError: (error) => {
         swalMessage({
           title: error.message,
-          type: "success"
+          type: "success",
         });
-      }
+      },
     });
   }
 
@@ -41,7 +41,7 @@ class Formula extends Component {
     this.setState({
       algaeh_d_formulas_id: "",
       formula_for: "",
-      formula: ""
+      formula: "",
     });
   }
 
@@ -67,24 +67,24 @@ class Formula extends Component {
       data: {
         algaeh_d_formulas_id: this.state.algaeh_d_formulas_id,
         formula_for: this.state.formula_for,
-        formula: this.state.formula
+        formula: this.state.formula,
       },
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           this.getFormulas();
           this.clearState();
           swalMessage({
             title: "Added Successfully",
-            type: "success"
+            type: "success",
           });
         }
       },
-      onError: error => {
+      onError: (error) => {
         swalMessage({
           title: error.message,
-          type: "success"
+          type: "success",
         });
-      }
+      },
     });
   }
 
@@ -93,24 +93,24 @@ class Formula extends Component {
       uri: "/algaehMasters/deleteFormula",
       method: "DELETE",
       data: {
-        algaeh_d_formulas_id: data.algaeh_d_formulas_id
+        algaeh_d_formulas_id: data.algaeh_d_formulas_id,
       },
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           swalMessage({
             title: "Record updated successfully",
-            type: "success"
+            type: "success",
           });
 
           this.getFormulas();
         }
       },
-      onFailure: error => {
+      onFailure: (error) => {
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -121,24 +121,24 @@ class Formula extends Component {
       data: {
         algaeh_d_formulas_id: data.algaeh_d_formulas_id,
         formula_for: data.formula_for,
-        formula: data.formula
+        formula: data.formula,
       },
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           swalMessage({
             title: "Record updated successfully",
-            type: "success"
+            type: "success",
           });
 
           this.getFormulas();
         }
       },
-      onFailure: error => {
+      onFailure: (error) => {
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -150,52 +150,52 @@ class Formula extends Component {
             div={{ className: "col-1 form-group mandatory" }}
             label={{
               forceLabel: "formula id",
-              isImp: true
+              isImp: true,
             }}
             textBox={{
               className: "txt-fld",
               name: "algaeh_d_formulas_id",
               value: this.state.algaeh_d_formulas_id,
               events: {
-                onChange: this.changeTexts.bind(this)
-              }
+                onChange: this.changeTexts.bind(this),
+              },
             }}
           />
           <AlagehFormGroup
             div={{ className: "col-1 form-group mandatory" }}
             label={{
               forceLabel: "Formula For",
-              isImp: true
+              isImp: true,
             }}
             textBox={{
               className: "txt-fld",
               name: "formula_for",
               value: this.state.formula_for,
               events: {
-                onChange: this.changeTexts.bind(this)
-              }
+                onChange: this.changeTexts.bind(this),
+              },
             }}
           />
           <AlagehFormGroup
             div={{ className: "col form-group mandatory" }}
             label={{
               forceLabel: "Formula",
-              isImp: true
+              isImp: true,
             }}
             textBox={{
               className: "txt-fld",
               name: "formula",
               value: this.state.formula,
               events: {
-                onChange: this.changeTexts.bind(this)
-              }
+                onChange: this.changeTexts.bind(this),
+              },
             }}
           />
 
           <div className="col-3">
             <button
               type="submit"
-              style={{ marginTop: 19 }}
+              style={{ marginTop: 20 }}
               onClick={this.addFormulas.bind(this)}
               className="btn btn-primary"
             >
@@ -225,28 +225,28 @@ class Formula extends Component {
                         columns={[
                           {
                             fieldName: "algaeh_d_formulas_id",
-                            label: "Formula ID"
+                            label: "Formula ID",
                           },
                           {
                             fieldName: "formula_for",
-                            label: "Formula For"
+                            label: "Formula For",
                           },
 
                           {
                             fieldName: "formula",
-                            label: "Formula"
-                          }
+                            label: "Formula",
+                          },
                         ]}
                         keyId="algaeh_d_formulas_id"
                         dataSource={{
-                          data: this.state.formulas
+                          data: this.state.formulas,
                         }}
                         isEditable={true}
                         paging={{ page: 0, rowsPerPage: 10 }}
                         events={{
                           onEdit: () => {},
                           onDelete: this.deleteformulas.bind(this),
-                          onDone: this.updateformulas.bind(this)
+                          onDone: this.updateformulas.bind(this),
                         }}
                       />
                     </div>

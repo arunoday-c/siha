@@ -930,7 +930,7 @@ class FinalSettlement extends Component {
                               <button
                                 onClick={this.addEarning.bind(this)}
                                 className="btn btn-primary"
-                                style={{ marginTop: 19 }}
+                                style={{ marginTop: 20 }}
                                 disabled={this.state.disableSave}
                               >
                                 Add
@@ -1085,7 +1085,7 @@ class FinalSettlement extends Component {
                               <button
                                 onClick={this.addDeduction.bind(this)}
                                 className="btn btn-primary"
-                                style={{ marginTop: 19 }}
+                                style={{ marginTop: 20 }}
                                 disabled={this.state.disableSave}
                               >
                                 Add

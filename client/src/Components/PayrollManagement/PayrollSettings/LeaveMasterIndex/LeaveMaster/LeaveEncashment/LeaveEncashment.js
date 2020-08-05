@@ -60,7 +60,7 @@ function LeaveEncashment(props) {
               <button
                 onClick={myParent.addLeaveEncash.bind(myParent)}
                 className="btn btn-primary"
-                style={{ marginTop: 19 }}
+                style={{ marginTop: 20 }}
               >
                 Add to List
               </button>

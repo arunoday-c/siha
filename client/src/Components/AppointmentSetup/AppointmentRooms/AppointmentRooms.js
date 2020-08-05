@@ -4,7 +4,7 @@ import {
   AlagehFormGroup,
   AlgaehDataGrid,
   AlgaehLabel,
-  AlagehAutoComplete
+  AlagehAutoComplete,
 } from "../../Wrapper/algaehWrapper";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import swal from "sweetalert2";
@@ -17,7 +17,7 @@ class AppointmentRooms extends Component {
     super(props);
     this.state = {
       appointmentRooms: [],
-      description: ""
+      description: "",
     };
     this.baseState = this.state;
   }
@@ -30,37 +30,37 @@ class AppointmentRooms extends Component {
       confirmButtonText: "Yes",
       confirmButtonColor: "#44b8bd",
       cancelButtonColor: "#d33",
-      cancelButtonText: "No"
-    }).then(willDelete => {
+      cancelButtonText: "No",
+    }).then((willDelete) => {
       if (willDelete.value) {
         algaehApiCall({
           uri: "/appointment/deleteAppointmentRoom",
           module: "frontDesk",
           data: {
-            hims_d_appointment_room_id: data.hims_d_appointment_room_id
+            hims_d_appointment_room_id: data.hims_d_appointment_room_id,
           },
           method: "DELETE",
-          onSuccess: response => {
+          onSuccess: (response) => {
             if (response.data.success) {
               swalMessage({
                 title: "Record deleted successfully . .",
-                type: "success"
+                type: "success",
               });
 
               this.getAppointmentRooms();
             } else if (!response.data.success) {
               swalMessage({
                 title: response.data.records.message,
-                type: "error"
+                type: "error",
               });
             }
           },
-          onFailure: error => {
+          onFailure: (error) => {
             swalMessage({
               title: error.message,
-              type: "error"
+              type: "error",
             });
-          }
+          },
         });
       }
     });
@@ -75,24 +75,24 @@ class AppointmentRooms extends Component {
         record_status: "A",
         hims_d_appointment_room_id: data.hims_d_appointment_room_id,
         description: data.description,
-        room_active: data.room_active
+        room_active: data.room_active,
       },
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           swalMessage({
             title: "Record updated successfully",
-            type: "success"
+            type: "success",
           });
 
           this.getAppointmentRooms();
         }
       },
-      onFailure: error => {
+      onFailure: (error) => {
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -123,17 +123,17 @@ class AppointmentRooms extends Component {
       uri: "/appointment/getAppointmentRoom",
       module: "frontDesk",
       method: "GET",
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           this.setState({ appointmentRooms: response.data.records });
         }
       },
-      onFailure: error => {
+      onFailure: (error) => {
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -148,26 +148,26 @@ class AppointmentRooms extends Component {
           module: "frontDesk",
           method: "POST",
           data: {
-            description: this.state.description
+            description: this.state.description,
           },
-          onSuccess: response => {
+          onSuccess: (response) => {
             if (response.data.success) {
               swalMessage({
                 title: "Record added successfully",
-                type: "success"
+                type: "success",
               });
               this.resetState();
               this.getAppointmentRooms();
             }
           },
-          onFailure: error => {
+          onFailure: (error) => {
             swalMessage({
               title: error.message,
-              type: "error"
+              type: "error",
             });
-          }
+          },
         });
-      }
+      },
     });
   }
 
@@ -179,21 +179,21 @@ class AppointmentRooms extends Component {
             div={{ className: "col-3 form-group mandatory" }}
             label={{
               fieldName: "roomName",
-              isImp: true
+              isImp: true,
             }}
             textBox={{
               className: "txt-fld",
               name: "description",
               value: this.state.description,
               events: {
-                onChange: this.changeTexts.bind(this)
-              }
+                onChange: this.changeTexts.bind(this),
+              },
             }}
           />
 
           <div className="col-3">
             <button
-              style={{ marginTop: 19 }}
+              style={{ marginTop: 20 }}
               onClick={this.addAppointmentRooms.bind(this)}
               type="button"
               className="btn btn-primary"
@@ -222,7 +222,7 @@ class AppointmentRooms extends Component {
                           label: (
                             <AlgaehLabel label={{ fieldName: "description" }} />
                           ),
-                          editorTemplate: row => {
+                          editorTemplate: (row) => {
                             return (
                               <AlagehFormGroup
                                 div={{}}
@@ -234,17 +234,17 @@ class AppointmentRooms extends Component {
                                     onChange: this.changeGridEditors.bind(
                                       this,
                                       row
-                                    )
+                                    ),
                                   },
                                   others: {
                                     errormessage:
                                       "Description - cannot be blank",
-                                    required: true
-                                  }
+                                    required: true,
+                                  },
                                 }}
                               />
                             );
-                          }
+                          },
                         },
                         {
                           fieldName: "created_date",
@@ -253,32 +253,32 @@ class AppointmentRooms extends Component {
                               label={{ fieldName: "created_date" }}
                             />
                           ),
-                          displayTemplate: row => {
+                          displayTemplate: (row) => {
                             return (
                               <span>
                                 {moment(row.created_date).format("DD-MM-YYYY")}
                               </span>
                             );
                           },
-                          editorTemplate: row => {
+                          editorTemplate: (row) => {
                             return (
                               <span>
                                 {moment(row.created_date).format("DD-MM-YYYY")}
                               </span>
                             );
-                          }
+                          },
                         },
                         {
                           fieldName: "room_active",
                           label: (
                             <AlgaehLabel label={{ fieldName: "room_status" }} />
                           ),
-                          displayTemplate: row => {
+                          displayTemplate: (row) => {
                             return row.room_active === "Y"
                               ? "Active"
                               : "Inactive";
                           },
-                          editorTemplate: row => {
+                          editorTemplate: (row) => {
                             return (
                               <AlagehAutoComplete
                                 div={{}}
@@ -289,25 +289,25 @@ class AppointmentRooms extends Component {
                                   dataSource: {
                                     textField: "name",
                                     valueField: "value",
-                                    data: GlobalVariables.FORMAT_ACT_INACT
+                                    data: GlobalVariables.FORMAT_ACT_INACT,
                                   },
                                   others: {
                                     errormessage: "Status - cannot be blank",
-                                    required: true
+                                    required: true,
                                   },
                                   onChange: this.changeGridEditors.bind(
                                     this,
                                     row
-                                  )
+                                  ),
                                 }}
                               />
                             );
-                          }
-                        }
+                          },
+                        },
                       ]}
                       keyId="hims_d_appointment_room_id"
                       dataSource={{
-                        data: this.state.appointmentRooms
+                        data: this.state.appointmentRooms,
                       }}
                       filter={true}
                       isEditable={true}
@@ -315,7 +315,7 @@ class AppointmentRooms extends Component {
                       events={{
                         onEdit: () => {},
                         onDelete: this.deleteApptRooms.bind(this),
-                        onDone: this.updateApptRooms.bind(this)
+                        onDone: this.updateApptRooms.bind(this),
                       }}
                     />
                   </div>

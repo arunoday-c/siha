@@ -222,7 +222,7 @@ class LabInvestigation extends Component {
                   <div className="col" style={{ padding: 0 }}>
                     <button
                       className="btn btn-primary"
-                      style={{ marginTop: 19 }}
+                      style={{ marginTop: 20 }}
                       onClick={this.AddAnalytes}
                     >
                       Add

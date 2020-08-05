@@ -8,7 +8,7 @@ import {
   AlagehAutoComplete,
   AlagehFormGroup,
   AlgaehDataGrid,
-  AlgaehLabel
+  AlgaehLabel,
 } from "../../../Wrapper/algaehWrapper";
 import ProjectActMgmntEvent from "./ProjectActMgmntEvent";
 import { AlgaehActions } from "../../../../actions/algaehActions";
@@ -19,7 +19,7 @@ class ProjectActivityMgmnt extends Component {
     this.state = {
       activity_id: null,
       description: null,
-      sub_description: null
+      sub_description: null,
     };
     if (
       this.props.main_activites === undefined ||
@@ -99,24 +99,24 @@ class ProjectActivityMgmnt extends Component {
             div={{ className: "col form-group" }}
             label={{
               forceLabel: "Enter Main Activity",
-              isImp: true
+              isImp: true,
             }}
             textBox={{
               className: "txt-fld",
               name: "description",
               value: this.state.description,
               events: {
-                onChange: this.eventHandaler.bind(this)
+                onChange: this.eventHandaler.bind(this),
               },
               option: {
-                type: "text"
-              }
+                type: "text",
+              },
             }}
           />
 
           <div className="col-2 form-group">
             <button
-              style={{ marginTop: 19 }}
+              style={{ marginTop: 20 }}
               className="btn btn-primary"
               onClick={this.addEvent.bind(this, "Main")}
             >
@@ -129,7 +129,7 @@ class ProjectActivityMgmnt extends Component {
             div={{ className: "col form-group" }}
             label={{
               forceLabel: "Select Main Activity",
-              isImp: true
+              isImp: true,
             }}
             selector={{
               name: "activity_id",
@@ -138,37 +138,37 @@ class ProjectActivityMgmnt extends Component {
               dataSource: {
                 textField: "description",
                 valueField: "hims_d_activity_id",
-                data: this.props.main_activites
+                data: this.props.main_activites,
               },
               onChange: this.eventHandaler.bind(this),
               onClear: () => {
                 this.setState({
-                  activity_id: null
+                  activity_id: null,
                 });
-              }
+              },
             }}
           />
           <AlagehFormGroup
             div={{ className: "col form-group" }}
             label={{
               forceLabel: "Enter Sub Activity",
-              isImp: true
+              isImp: true,
             }}
             textBox={{
               className: "txt-fld",
               name: "sub_description",
               value: this.state.sub_description,
               events: {
-                onChange: this.eventHandaler.bind(this)
+                onChange: this.eventHandaler.bind(this),
               },
               option: {
-                type: "text"
-              }
+                type: "text",
+              },
             }}
           />
           <div className="col-2 form-group">
             <button
-              style={{ marginTop: 19 }}
+              style={{ marginTop: 20 }}
               className="btn btn-primary"
               onClick={this.addEvent.bind(this, "Sub")}
             >
@@ -204,7 +204,7 @@ class ProjectActivityMgmnt extends Component {
                               label={{ forceLabel: "Main Activity Name" }}
                             />
                           ),
-                          editorTemplate: row => {
+                          editorTemplate: (row) => {
                             return (
                               <AlagehFormGroup
                                 div={{ className: "col" }}
@@ -216,18 +216,18 @@ class ProjectActivityMgmnt extends Component {
                                     onChange: this.changeGridEditors.bind(
                                       this,
                                       row
-                                    )
+                                    ),
                                   },
                                   others: {
                                     errormessage:
                                       "Main Activity Name cannot be blank",
-                                    required: true
-                                  }
+                                    required: true,
+                                  },
                                 }}
                               />
                             );
-                          }
-                        }
+                          },
+                        },
                       ]}
                       keyId="mainActivityGrid"
                       dataSource={{ data: this.props.main_activites }}
@@ -236,7 +236,7 @@ class ProjectActivityMgmnt extends Component {
                       events={{
                         onEdit: () => {},
                         // onDelete: this.deleteDesignation.bind(this),
-                        onDone: this.updateActivity.bind(this, "Main")
+                        onDone: this.updateActivity.bind(this, "Main"),
                       }}
                     />
                   </div>
@@ -271,12 +271,12 @@ class ProjectActivityMgmnt extends Component {
                               label={{ forceLabel: "Main Activity Name" }}
                             />
                           ),
-                          displayTemplate: row => {
+                          displayTemplate: (row) => {
                             let display =
                               this.props.main_activites === undefined
                                 ? []
                                 : this.props.main_activites.filter(
-                                    f =>
+                                    (f) =>
                                       f.hims_d_activity_id === row.activity_id
                                   );
 
@@ -288,7 +288,7 @@ class ProjectActivityMgmnt extends Component {
                               </span>
                             );
                           },
-                          editorTemplate: row => {
+                          editorTemplate: (row) => {
                             return (
                               <AlagehAutoComplete
                                 div={{}}
@@ -299,20 +299,20 @@ class ProjectActivityMgmnt extends Component {
                                   dataSource: {
                                     textField: "description",
                                     valueField: "hims_d_activity_id",
-                                    data: this.props.main_activites
+                                    data: this.props.main_activites,
                                   },
                                   others: {
                                     errormessage: "Select Main Activity.",
-                                    required: true
+                                    required: true,
                                   },
                                   onChange: this.changeGridEditors.bind(
                                     this,
                                     row
-                                  )
+                                  ),
                                 }}
                               />
                             );
-                          }
+                          },
                         },
                         {
                           fieldName: "description",
@@ -321,7 +321,7 @@ class ProjectActivityMgmnt extends Component {
                               label={{ forceLabel: "Sub Activity Name" }}
                             />
                           ),
-                          editorTemplate: row => {
+                          editorTemplate: (row) => {
                             return (
                               <AlagehFormGroup
                                 div={{ className: "col" }}
@@ -333,18 +333,18 @@ class ProjectActivityMgmnt extends Component {
                                     onChange: this.changeGridEditors.bind(
                                       this,
                                       row
-                                    )
+                                    ),
                                   },
                                   others: {
                                     errormessage:
                                       "Sub Activity Name cannot be blank",
-                                    required: true
-                                  }
+                                    required: true,
+                                  },
                                 }}
                               />
                             );
-                          }
-                        }
+                          },
+                        },
                       ]}
                       keyId="subActivityGrid"
                       dataSource={{ data: this.props.sub_activites }}
@@ -354,7 +354,7 @@ class ProjectActivityMgmnt extends Component {
                       events={{
                         onEdit: () => {},
                         // onDelete: this.deleteDesignation.bind(this),
-                        onDone: this.updateActivity.bind(this, "Sub")
+                        onDone: this.updateActivity.bind(this, "Sub"),
                       }}
                     />
                   </div>
@@ -371,7 +371,7 @@ class ProjectActivityMgmnt extends Component {
 function mapStateToProps(state) {
   return {
     main_activites: state.main_activites,
-    sub_activites: state.sub_activites
+    sub_activites: state.sub_activites,
   };
 }
 
@@ -379,15 +379,12 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
       getActivity: AlgaehActions,
-      getSubActivity: AlgaehActions
+      getSubActivity: AlgaehActions,
     },
     dispatch
   );
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(ProjectActivityMgmnt)
+  connect(mapStateToProps, mapDispatchToProps)(ProjectActivityMgmnt)
 );

@@ -327,7 +327,7 @@ class EmployeeGroups extends Component {
           <AlgaehSecurityElement elementCode="READ_ONLY_ACCESS">
             <div className="col form-group">
               <button
-                style={{ marginTop: 19 }}
+                style={{ marginTop: 20 }}
                 className="btn btn-primary"
                 id="srch-sch"
                 onClick={this.addEmployeeGroups.bind(this)}

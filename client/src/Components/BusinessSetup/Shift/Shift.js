@@ -4,7 +4,7 @@ import {
   AlagehFormGroup,
   AlgaehDataGrid,
   AlgaehLabel,
-  AlagehAutoComplete
+  AlagehAutoComplete,
 } from "../../Wrapper/algaehWrapper";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import GlobalVariables from "../../../utils/GlobalVariables.json";
@@ -18,7 +18,7 @@ class Shift extends Component {
     this.state = {
       shifts: [],
       break: "N",
-      shift_end_day: "SD"
+      shift_end_day: "SD",
     };
   }
 
@@ -34,7 +34,7 @@ class Shift extends Component {
       shift_abbreviation: "",
       shift_end_day: "SD",
       break_start: null,
-      break_end: null
+      break_end: null,
     });
   }
 
@@ -43,17 +43,17 @@ class Shift extends Component {
       uri: "/shiftAndCounter/getShiftMaster",
       module: "masterSettings",
       method: "GET",
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           this.setState({ shifts: response.data.records });
         }
       },
-      onFailure: error => {
+      onFailure: (error) => {
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -83,27 +83,27 @@ class Shift extends Component {
             break_start: this.state.break_start,
             break_end: this.state.break_end,
             shift_abbreviation: this.state.shift_abbreviation,
-            shift_end_day: this.state.shift_end_day
+            shift_end_day: this.state.shift_end_day,
           },
-          onSuccess: response => {
+          onSuccess: (response) => {
             if (response.data.success) {
               swalMessage({
                 title: "Shift added Successfully",
-                type: "success"
+                type: "success",
               });
 
               this.getShifts();
               this.clearState();
             }
           },
-          onFailure: error => {
+          onFailure: (error) => {
             swalMessage({
               title: error.response.data.message,
-              type: "error"
+              type: "error",
             });
-          }
+          },
         });
-      }
+      },
     });
   }
 
@@ -115,8 +115,8 @@ class Shift extends Component {
       confirmButtonText: "Yes",
       confirmButtonColor: "#",
       cancelButtonColor: "#d33",
-      cancelButtonText: "No"
-    }).then(willDelete => {
+      cancelButtonText: "No",
+    }).then((willDelete) => {
       if (willDelete.value) {
         algaehApiCall({
           uri: "/shiftAndCounter/updateShiftMaster",
@@ -128,25 +128,25 @@ class Shift extends Component {
             arabic_name: data.arabic_name,
             shift_status: data.shift_status,
             hims_d_shift_id: data.hims_d_shift_id,
-            shift_end_day: data.shift_end_day
+            shift_end_day: data.shift_end_day,
           },
           method: "PUT",
-          onSuccess: response => {
+          onSuccess: (response) => {
             if (response.data.success) {
               swalMessage({
                 title: "Record deleted successfully . .",
-                type: "success"
+                type: "success",
               });
 
               this.getShifts();
             }
           },
-          onFailure: error => {
+          onFailure: (error) => {
             swalMessage({
               title: error.message,
-              type: "error"
+              type: "error",
             });
-          }
+          },
         });
       }
     });
@@ -171,25 +171,25 @@ class Shift extends Component {
         break_start: data.break_start,
         break_end: data.break_end,
         shift_abbreviation: data.shift_abbreviation,
-        shift_end_day: data.shift_end_day
+        shift_end_day: data.shift_end_day,
       },
       method: "PUT",
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           swalMessage({
             title: "Record updated successfully . .",
-            type: "success"
+            type: "success",
           });
 
           this.getShifts();
         }
       },
-      onFailure: error => {
+      onFailure: (error) => {
         swalMessage({
           title: error.response.data.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -199,7 +199,7 @@ class Shift extends Component {
 
   changeChecks(e) {
     this.setState({
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
   }
 
@@ -218,45 +218,45 @@ class Shift extends Component {
             div={{ className: "col-2 form-group mandatory" }}
             label={{
               fieldName: "shift_code",
-              isImp: true
+              isImp: true,
             }}
             textBox={{
               className: "txt-fld",
               name: "shift_code",
               value: this.state.shift_code,
               events: {
-                onChange: this.changeTexts.bind(this)
-              }
+                onChange: this.changeTexts.bind(this),
+              },
             }}
           />
           <AlagehFormGroup
             div={{ className: "col-3 form-group mandatory" }}
             label={{
               fieldName: "shift_description",
-              isImp: true
+              isImp: true,
             }}
             textBox={{
               className: "txt-fld",
               name: "shift_description",
               value: this.state.shift_description,
               events: {
-                onChange: this.changeTexts.bind(this)
-              }
+                onChange: this.changeTexts.bind(this),
+              },
             }}
           />
           <AlagehFormGroup
             div={{ className: "col-3 form-group arabic-txt-fld mandatory" }}
             label={{
               fieldName: "arabic_name",
-              isImp: true
+              isImp: true,
             }}
             textBox={{
               className: "txt-fld",
               name: "arabic_name",
               value: this.state.arabic_name,
               events: {
-                onChange: this.changeTexts.bind(this)
-              }
+                onChange: this.changeTexts.bind(this),
+              },
             }}
           />
 
@@ -264,15 +264,15 @@ class Shift extends Component {
             div={{ className: "col-2 form-group mandatory" }}
             label={{
               forceLabel: "Abbreviation",
-              isImp: true
+              isImp: true,
             }}
             textBox={{
               className: "txt-fld",
               name: "shift_abbreviation",
               value: this.state.shift_abbreviation,
               events: {
-                onChange: this.changeTexts.bind(this)
-              }
+                onChange: this.changeTexts.bind(this),
+              },
             }}
           />
 
@@ -280,72 +280,72 @@ class Shift extends Component {
             div={{ className: "col-1 form-group mandatory" }}
             label={{
               forceLabel: "In Time 1",
-              isImp: true
+              isImp: true,
             }}
             textBox={{
               className: "txt-fld",
               name: "in_time1",
               value: this.state.in_time1,
               events: {
-                onChange: this.changeTexts.bind(this)
+                onChange: this.changeTexts.bind(this),
               },
               others: {
-                type: "time"
-              }
+                type: "time",
+              },
             }}
           />
           <AlagehFormGroup
             div={{ className: "col-1 form-group mandatory" }}
             label={{
               forceLabel: "Out Time 1",
-              isImp: true
+              isImp: true,
             }}
             textBox={{
               className: "txt-fld",
               name: "out_time1",
               value: this.state.out_time1,
               events: {
-                onChange: this.changeTexts.bind(this)
+                onChange: this.changeTexts.bind(this),
               },
               others: {
-                type: "time"
-              }
+                type: "time",
+              },
             }}
           />
           <AlagehFormGroup
             div={{ className: "col-1 form-group" }}
             label={{
               forceLabel: "In Time 2",
-              isImp: false
+              isImp: false,
             }}
             textBox={{
               className: "txt-fld",
               name: "in_time2",
               value: this.state.in_time2,
               events: {
-                onChange: this.changeTexts.bind(this)
+                onChange: this.changeTexts.bind(this),
               },
               others: {
-                type: "time"
-              }
+                type: "time",
+              },
             }}
           />
           <AlagehFormGroup
             div={{ className: "col-1 form-group" }}
             label={{
               forceLabel: "Out Time 2",
-              isImp: false
+              isImp: false,
             }}
             textBox={{
               className: "txt-fld",
               name: "out_time2",
               value: this.state.out_time2,
               events: {
-                onChange: this.changeTexts.bind(this)
+                onChange: this.changeTexts.bind(this),
               },
               others: {
-                type: "time"
-              }
+                type: "time",
+              },
             }}
           />
 
@@ -409,36 +409,36 @@ class Shift extends Component {
                 div={{ className: "col-2 form-group mandatory" }}
                 label={{
                   forceLabel: "Break Start",
-                  isImp: true
+                  isImp: true,
                 }}
                 textBox={{
                   className: "txt-fld",
                   name: "break_start",
                   value: this.state.break_start,
                   events: {
-                    onChange: this.changeTexts.bind(this)
+                    onChange: this.changeTexts.bind(this),
                   },
                   others: {
-                    type: "time"
-                  }
+                    type: "time",
+                  },
                 }}
               />
               <AlagehFormGroup
                 div={{ className: "col-2 form-group mandatory" }}
                 label={{
                   forceLabel: "Break End",
-                  isImp: true
+                  isImp: true,
                 }}
                 textBox={{
                   className: "txt-fld",
                   name: "break_end",
                   value: this.state.break_end,
                   events: {
-                    onChange: this.changeTexts.bind(this)
+                    onChange: this.changeTexts.bind(this),
                   },
                   others: {
-                    type: "time"
-                  }
+                    type: "time",
+                  },
                 }}
               />
             </React.Fragment>
@@ -447,7 +447,7 @@ class Shift extends Component {
           <div className="col form-group">
             <button
               type="submit"
-              style={{ marginTop: 19 }}
+              style={{ marginTop: 20 }}
               onClick={this.addShift.bind(this)}
               className="btn btn-primary"
             >
@@ -472,7 +472,7 @@ class Shift extends Component {
                       label: (
                         <AlgaehLabel label={{ fieldName: "shift_code" }} />
                       ),
-                      disabled: true
+                      disabled: true,
                     },
                     {
                       fieldName: "shift_description",
@@ -481,7 +481,7 @@ class Shift extends Component {
                           label={{ fieldName: "shift_description" }}
                         />
                       ),
-                      editorTemplate: row => {
+                      editorTemplate: (row) => {
                         return (
                           <AlagehFormGroup
                             div={{ className: "col" }}
@@ -490,23 +490,26 @@ class Shift extends Component {
                               name: "shift_description",
                               value: row.shift_description,
                               events: {
-                                onChange: this.changeGridEditors.bind(this, row)
+                                onChange: this.changeGridEditors.bind(
+                                  this,
+                                  row
+                                ),
                               },
                               others: {
                                 errormessage: "Description - cannot be blank",
-                                required: true
-                              }
+                                required: true,
+                              },
                             }}
                           />
                         );
-                      }
+                      },
                     },
                     {
                       fieldName: "arabic_name",
                       label: (
                         <AlgaehLabel label={{ fieldName: "arabic_name" }} />
                       ),
-                      editorTemplate: row => {
+                      editorTemplate: (row) => {
                         return (
                           <AlagehFormGroup
                             div={{ className: "col" }}
@@ -515,34 +518,37 @@ class Shift extends Component {
                               className: "txt-fld",
                               name: "arabic_name",
                               events: {
-                                onChange: this.changeGridEditors.bind(this, row)
+                                onChange: this.changeGridEditors.bind(
+                                  this,
+                                  row
+                                ),
                               },
                               others: {
                                 errormessage: "Arabic Name - cannot be blank",
-                                required: true
-                              }
+                                required: true,
+                              },
                             }}
                           />
                         );
-                      }
+                      },
                     },
                     {
                       fieldName: "in_time1",
                       label: (
                         <AlgaehLabel label={{ forceLabel: "In Time 1" }} />
                       ),
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         return (
                           <span>
                             {row.in_time1 !== null
                               ? moment(row.in_time1, "HH:mm:ss").format(
-                                "hh:mm a"
-                              )
+                                  "hh:mm a"
+                                )
                               : "------"}
                           </span>
                         );
                       },
-                      editorTemplate: row => {
+                      editorTemplate: (row) => {
                         return (
                           <AlagehFormGroup
                             div={{ className: "col" }}
@@ -551,35 +557,38 @@ class Shift extends Component {
                               name: "in_time1",
                               value: row.in_time1,
                               events: {
-                                onChange: this.changeGridEditors.bind(this, row)
+                                onChange: this.changeGridEditors.bind(
+                                  this,
+                                  row
+                                ),
                               },
                               others: {
                                 errormessage: "In Time 1 - cannot be blank",
                                 required: true,
-                                type: "time"
-                              }
+                                type: "time",
+                              },
                             }}
                           />
                         );
-                      }
+                      },
                     },
                     {
                       fieldName: "out_time1",
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Out Time 1" }} />
                       ),
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         return (
                           <span>
                             {row.out_time1 !== null
                               ? moment(row.out_time1, "HH:mm:ss").format(
-                                "hh:mm a"
-                              )
+                                  "hh:mm a"
+                                )
                               : "------"}
                           </span>
                         );
                       },
-                      editorTemplate: row => {
+                      editorTemplate: (row) => {
                         return (
                           <AlagehFormGroup
                             div={{ className: "col" }}
@@ -588,35 +597,38 @@ class Shift extends Component {
                               name: "out_time1",
                               value: row.out_time1,
                               events: {
-                                onChange: this.changeGridEditors.bind(this, row)
+                                onChange: this.changeGridEditors.bind(
+                                  this,
+                                  row
+                                ),
                               },
                               others: {
                                 errormessage: "Out Time 1 - cannot be blank",
                                 required: true,
-                                type: "time"
-                              }
+                                type: "time",
+                              },
                             }}
                           />
                         );
-                      }
+                      },
                     },
                     {
                       fieldName: "in_time2",
                       label: (
                         <AlgaehLabel label={{ forceLabel: "In Time 2" }} />
                       ),
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         return (
                           <span>
                             {row.in_time2 !== null
                               ? moment(row.in_time2, "HH:mm:ss").format(
-                                "hh:mm a"
-                              )
+                                  "hh:mm a"
+                                )
                               : "------"}
                           </span>
                         );
                       },
-                      editorTemplate: row => {
+                      editorTemplate: (row) => {
                         return (
                           <AlagehFormGroup
                             div={{ className: "col" }}
@@ -625,35 +637,38 @@ class Shift extends Component {
                               name: "in_time2",
                               value: row.in_time2,
                               events: {
-                                onChange: this.changeGridEditors.bind(this, row)
+                                onChange: this.changeGridEditors.bind(
+                                  this,
+                                  row
+                                ),
                               },
                               others: {
                                 errormessage: "In Time 2 - cannot be blank",
                                 required: true,
-                                type: "time"
-                              }
+                                type: "time",
+                              },
                             }}
                           />
                         );
-                      }
+                      },
                     },
                     {
                       fieldName: "out_time2",
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Out Time 2" }} />
                       ),
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         return (
                           <span>
                             {row.out_time2 !== null
                               ? moment(row.out_time2, "HH:mm:ss").format(
-                                "hh:mm a"
-                              )
+                                  "hh:mm a"
+                                )
                               : "------"}
                           </span>
                         );
                       },
-                      editorTemplate: row => {
+                      editorTemplate: (row) => {
                         return (
                           <AlagehFormGroup
                             div={{ className: "col" }}
@@ -662,17 +677,20 @@ class Shift extends Component {
                               name: "out_time2",
                               value: row.out_time2,
                               events: {
-                                onChange: this.changeGridEditors.bind(this, row)
+                                onChange: this.changeGridEditors.bind(
+                                  this,
+                                  row
+                                ),
                               },
                               others: {
                                 errormessage: "Out Time 2 - cannot be blank",
                                 required: true,
-                                type: "time"
-                              }
+                                type: "time",
+                              },
                             }}
                           />
                         );
-                      }
+                      },
                     },
                     {
                       fieldName: "shift_end_day",
@@ -680,18 +698,18 @@ class Shift extends Component {
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Shift End Date" }} />
                       ),
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         return (
                           <span>
                             {row.shift_end_day === "SD"
                               ? "Same Date"
                               : row.shift_end_day === "ND"
-                                ? "Next Date"
-                                : "------"}
+                              ? "Next Date"
+                              : "------"}
                           </span>
                         );
                       },
-                      editorTemplate: row => {
+                      editorTemplate: (row) => {
                         return (
                           <AlagehAutoComplete
                             div={{ className: "col" }}
@@ -702,33 +720,33 @@ class Shift extends Component {
                               dataSource: {
                                 textField: "name",
                                 valueField: "value",
-                                data: GlobalVariables.SHIFT_END
+                                data: GlobalVariables.SHIFT_END,
                               },
                               others: {
                                 errormessage: "Status - cannot be blank",
-                                required: true
+                                required: true,
                               },
-                              onChange: this.changeGridEditors.bind(this, row)
+                              onChange: this.changeGridEditors.bind(this, row),
                             }}
                           />
                         );
-                      }
+                      },
                     },
                     {
                       fieldName: "break",
                       label: <AlgaehLabel label={{ forceLabel: "Break" }} />,
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         return (
                           <span>
                             {row.break === "Y"
                               ? "YES"
                               : row.break === "N"
-                                ? "NO"
-                                : "------"}
+                              ? "NO"
+                              : "------"}
                           </span>
                         );
                       },
-                      editorTemplate: row => {
+                      editorTemplate: (row) => {
                         return (
                           <AlagehAutoComplete
                             div={{ className: "col" }}
@@ -739,35 +757,35 @@ class Shift extends Component {
                               dataSource: {
                                 textField: "name",
                                 valueField: "value",
-                                data: GlobalVariables.FORMAT_YESNO
+                                data: GlobalVariables.FORMAT_YESNO,
                               },
                               others: {
                                 errormessage: "Status - cannot be blank",
-                                required: true
+                                required: true,
                               },
-                              onChange: this.changeGridEditors.bind(this, row)
+                              onChange: this.changeGridEditors.bind(this, row),
                             }}
                           />
                         );
-                      }
+                      },
                     },
                     {
                       fieldName: "break_start",
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Break Start" }} />
                       ),
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         return (
                           <span>
                             {row.break_start !== null
                               ? moment(row.break_start, "HH:mm:ss").format(
-                                "hh:mm a"
-                              )
+                                  "hh:mm a"
+                                )
                               : "------"}
                           </span>
                         );
                       },
-                      editorTemplate: row => {
+                      editorTemplate: (row) => {
                         return (
                           <AlagehFormGroup
                             div={{ className: "col" }}
@@ -776,35 +794,38 @@ class Shift extends Component {
                               name: "break_start",
                               value: row.break_start,
                               events: {
-                                onChange: this.changeGridEditors.bind(this, row)
+                                onChange: this.changeGridEditors.bind(
+                                  this,
+                                  row
+                                ),
                               },
                               others: {
                                 errormessage: "Break Start - cannot be blank",
                                 required: true,
-                                type: "time"
-                              }
+                                type: "time",
+                              },
                             }}
                           />
                         );
-                      }
+                      },
                     },
                     {
                       fieldName: "break_end",
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Break End" }} />
                       ),
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         return (
                           <span>
                             {row.break_end !== null
                               ? moment(row.break_end, "HH:mm:ss").format(
-                                "hh:mm a"
-                              )
+                                  "hh:mm a"
+                                )
                               : "------"}
                           </span>
                         );
                       },
-                      editorTemplate: row => {
+                      editorTemplate: (row) => {
                         return (
                           <AlagehFormGroup
                             div={{ className: "col" }}
@@ -813,17 +834,20 @@ class Shift extends Component {
                               name: "break_end",
                               value: row.break_end,
                               events: {
-                                onChange: this.changeGridEditors.bind(this, row)
+                                onChange: this.changeGridEditors.bind(
+                                  this,
+                                  row
+                                ),
                               },
                               others: {
                                 errormessage: "Break End - cannot be blank",
                                 required: true,
-                                type: "time"
-                              }
+                                type: "time",
+                              },
                             }}
                           />
                         );
-                      }
+                      },
                     },
                     {
                       fieldName: "shift_abbreviation",
@@ -832,7 +856,7 @@ class Shift extends Component {
                           label={{ forceLabel: "Shift Abbreviation" }}
                         />
                       ),
-                      editorTemplate: row => {
+                      editorTemplate: (row) => {
                         return (
                           <AlagehFormGroup
                             div={{ className: "col" }}
@@ -841,31 +865,34 @@ class Shift extends Component {
                               name: "shift_abbreviation",
                               value: row.shift_abbreviation,
                               events: {
-                                onChange: this.changeGridEditors.bind(this, row)
+                                onChange: this.changeGridEditors.bind(
+                                  this,
+                                  row
+                                ),
                               },
                               others: {
                                 errormessage:
                                   "Shift Abbreviation - cannot be blank",
-                                required: true
-                              }
+                                required: true,
+                              },
                             }}
                           />
                         );
-                      }
+                      },
                     },
                     {
                       fieldName: "shift_status",
                       label: (
                         <AlgaehLabel label={{ fieldName: "shift_status" }} />
                       ),
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         return (
                           <span>
                             {row.shift_status === "A" ? "Active" : "Inactive"}
                           </span>
                         );
                       },
-                      editorTemplate: row => {
+                      editorTemplate: (row) => {
                         return (
                           <AlagehAutoComplete
                             div={{ className: "col" }}
@@ -876,33 +903,33 @@ class Shift extends Component {
                               dataSource: {
                                 textField: "name",
                                 valueField: "value",
-                                data: GlobalVariables.FORMAT_STATUS
+                                data: GlobalVariables.FORMAT_STATUS,
                               },
                               others: {
                                 errormessage: "Status - cannot be blank",
-                                required: true
+                                required: true,
                               },
-                              onChange: this.changeGridEditors.bind(this, row)
+                              onChange: this.changeGridEditors.bind(this, row),
                             }}
                           />
                         );
-                      }
-                    }
+                      },
+                    },
                   ]}
                   keyId="hims_d_shift_id"
                   dataSource={{
-                    data: this.state.shifts
+                    data: this.state.shifts,
                   }}
                   filter={true}
                   isEditable={true}
                   actions={{
-                    allowDelete: false
+                    allowDelete: false,
                   }}
                   paging={{ page: 0, rowsPerPage: 10 }}
                   events={{
-                    onEdit: () => { },
+                    onEdit: () => {},
                     onDelete: this.deleteShifts.bind(this),
-                    onDone: this.updateShifts.bind(this)
+                    onDone: this.updateShifts.bind(this),
                   }}
                 />
               </div>

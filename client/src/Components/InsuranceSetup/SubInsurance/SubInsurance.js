@@ -294,7 +294,7 @@ class SubInsurance extends PureComponent {
                         }}
                       /> */}
 
-                      <div className="col" style={{ marginTop: 19 }}>
+                      <div className="col" style={{ marginTop: 20 }}>
                         <button
                           className="btn btn-primary"
                           onClick={saveSubInsurance.bind(this, this, context)}

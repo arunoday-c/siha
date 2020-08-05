@@ -50,8 +50,9 @@ body {
   -o-transition: all 0.2s ease-in-out;
   -webkit-transition: all 0.2s ease-in-out;
   transition: all 0.2s ease-in-out;
-  min-height: 31px;
-  min-width: 31px;
+  min-height: $formMinHt;
+  max-height: $formMaxHt;
+  border-radius: $borderRadius;
   -webkit-transition: width 2s; /* Safari */
   transition: width 2s;
   font-size: 0.8em !important;
@@ -2083,8 +2084,9 @@ input.autoselect-input:disabled {
     padding: 0 20px 0 7px;
     line-height: 26px;
     border: 1px solid #dededf;
-    height: 30px;
-    border-radius: 4px;
+    min-height: $formMinHt;
+    max-height: $formMaxHt;
+    border-radius: $borderRadius;
     font-size: 1rem;
     position: relative;
     background-color: #fff;

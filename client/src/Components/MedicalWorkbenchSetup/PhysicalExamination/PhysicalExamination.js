@@ -442,7 +442,7 @@ class PhysicalExamination extends Component {
                     <div className="col">
                       <button
                         className="btn btn-primary"
-                        style={{ marginTop: 19 }}
+                        style={{ marginTop: 20 }}
                         onClick={this.addExaminationType}
                       >
                         Add
@@ -611,7 +611,7 @@ class PhysicalExamination extends Component {
                     <div className="col">
                       <button
                         className="btn btn-primary"
-                        style={{ marginTop: 19 }}
+                        style={{ marginTop: 20 }}
                         onClick={this.addExamDesc.bind(this)}
                       >
                         Add
@@ -748,7 +748,7 @@ class PhysicalExamination extends Component {
                     <div className="col">
                       <button
                         className="btn btn-primary"
-                        style={{ marginTop: 19 }}
+                        style={{ marginTop: 20 }}
                         onClick={this.addExaminationCategory.bind(this)}
                       >
                         Add

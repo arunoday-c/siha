@@ -5,7 +5,7 @@ import "./LeaveSalaryAccural.scss";
 import {
   AlagehAutoComplete,
   AlgaehLabel,
-  AlgaehDataGrid
+  AlgaehDataGrid,
 } from "../../../Wrapper/algaehWrapper";
 import { getYears, GetAmountFormart } from "../../../../utils/GlobalFunctions";
 import GlobalVariables from "../../../../utils/GlobalVariables.json";
@@ -14,7 +14,7 @@ import {
   texthandle,
   LoadLeaveAccrual,
   employeeSearch,
-  ClearData
+  ClearData,
 } from "./LeaveSalaryAccuralEvent";
 
 export default class LeaveSalaryAccural extends Component {
@@ -27,7 +27,7 @@ export default class LeaveSalaryAccural extends Component {
       employee_name: null,
       leave_salary_accrual: [],
       leave_salary: null,
-      airfair_amount: null
+      airfair_amount: null,
     };
   }
 
@@ -83,7 +83,7 @@ export default class LeaveSalaryAccural extends Component {
               div={{ className: "col-1 mandatory form-group" }}
               label={{
                 forceLabel: "Year",
-                isImp: true
+                isImp: true,
               }}
               selector={{
                 name: "year",
@@ -92,14 +92,14 @@ export default class LeaveSalaryAccural extends Component {
                 dataSource: {
                   textField: "name",
                   valueField: "value",
-                  data: allYears
+                  data: allYears,
                 },
                 onChange: texthandle.bind(this, this),
                 onClear: () => {
                   this.setState({
-                    year: null
+                    year: null,
                   });
-                }
+                },
               }}
             />
 
@@ -107,7 +107,7 @@ export default class LeaveSalaryAccural extends Component {
               div={{ className: "col-2 mandatory form-group" }}
               label={{
                 forceLabel: "Month",
-                isImp: true
+                isImp: true,
               }}
               selector={{
                 sort: "off",
@@ -117,21 +117,21 @@ export default class LeaveSalaryAccural extends Component {
                 dataSource: {
                   textField: "name",
                   valueField: "value",
-                  data: GlobalVariables.MONTHS
+                  data: GlobalVariables.MONTHS,
                 },
                 onChange: texthandle.bind(this, this),
                 onClear: () => {
                   this.setState({
-                    month: null
+                    month: null,
                   });
-                }
+                },
               }}
             />
 
             <div className="col-3">
               <button
                 className="btn btn-primary"
-                style={{ marginTop: 19 }}
+                style={{ marginTop: 20 }}
                 onClick={LoadLeaveAccrual.bind(this, this)}
               >
                 Load
@@ -160,7 +160,7 @@ export default class LeaveSalaryAccural extends Component {
                           <AlgaehLabel
                             label={{ forceLabel: "Employee Code" }}
                           />
-                        )
+                        ),
                       },
                       {
                         fieldName: "full_name",
@@ -168,25 +168,25 @@ export default class LeaveSalaryAccural extends Component {
                           <AlgaehLabel
                             label={{ forceLabel: "Employee Name" }}
                           />
-                        )
+                        ),
                       },
                       {
                         fieldName: "leave_salary_number",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Accural No." }} />
-                        )
+                        ),
                       },
                       {
                         fieldName: "leave_salary",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Leave Salary" }} />
-                        )
+                        ),
                       },
                       {
                         fieldName: "leave_days",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Leave Days" }} />
-                        )
+                        ),
                       },
                       {
                         fieldName: "airfare_amount",
@@ -194,8 +194,8 @@ export default class LeaveSalaryAccural extends Component {
                           <AlgaehLabel
                             label={{ forceLabel: "Airfare Amount" }}
                           />
-                        )
-                      }
+                        ),
+                      },
                     ]}
                     keyId=""
                     dataSource={{ data: this.state.leave_salary_accrual }}
@@ -214,7 +214,7 @@ export default class LeaveSalaryAccural extends Component {
                 <div className="col-3">
                   <AlgaehLabel
                     label={{
-                      forceLabel: "Leave Salary"
+                      forceLabel: "Leave Salary",
                     }}
                   />
                   <h6>{GetAmountFormart(this.state.leave_salary)}</h6>
@@ -222,7 +222,7 @@ export default class LeaveSalaryAccural extends Component {
                 <div className="col-3">
                   <AlgaehLabel
                     label={{
-                      forceLabel: "Airfare Amount"
+                      forceLabel: "Airfare Amount",
                     }}
                   />
                   <h6>{GetAmountFormart(this.state.airfair_amount)}</h6>

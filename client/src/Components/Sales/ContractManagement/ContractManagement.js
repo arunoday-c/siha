@@ -611,7 +611,7 @@ class ContractManagement extends Component {
                           onClick={AddSerices.bind(this, this)}
                           disabled={this.state.addItemButton}
                           tabIndex="5"
-                          style={{ marginTop: 19 }}
+                          style={{ marginTop: 20 }}
                         >
                           Add Service
                         </button>
