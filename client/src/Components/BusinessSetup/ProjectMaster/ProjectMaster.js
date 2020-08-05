@@ -143,7 +143,7 @@ class EmployeeGroups extends Component {
                   <button
                     type="button"
                     className="btn btn-primary"
-                    style={{ marginTop: 19 }}
+                    style={{ marginTop: 20 }}
                   >
                     <label className="style_Label ">Add</label>
                   </button>
@@ -292,7 +292,7 @@ class EmployeeGroups extends Component {
           <AlgaehSecurityElement elementCode="READ_ONLY_ACCESS">
             <div className="col form-group">
               <button
-                style={{ marginTop: 19 }}
+                style={{ marginTop: 20 }}
                 className="btn btn-primary"
                 id="srch-sch"
                 onClick={this.addProjectMaster.bind(this)}
@@ -581,7 +581,7 @@ class EmployeeGroups extends Component {
                       paging={{ page: 0, rowsPerPage: 20 }}
                       filter={true}
                       events={{
-                        onEdit: () => { },
+                        onEdit: () => {},
                         onDelete: this.deleteEmployeeGroups.bind(this),
                         onDone: this.updateProjectMaster.bind(this),
                       }}

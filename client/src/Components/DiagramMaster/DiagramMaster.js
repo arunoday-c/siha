@@ -5,7 +5,7 @@ import {
   AlgaehLabel,
   AlgaehDataGrid,
   AlagehAutoComplete,
-  AlagehFormGroup
+  AlagehFormGroup,
 } from "../Wrapper/algaehWrapper";
 import swal from "sweetalert2";
 import { algaehApiCall, swalMessage } from "../../utils/algaehApiCall";
@@ -22,7 +22,7 @@ export default class DiagramMaster extends Component {
 
       image_desc: null,
       image_link: null,
-      hims_d_employee_speciality_id: null
+      hims_d_employee_speciality_id: null,
     };
   }
 
@@ -35,19 +35,19 @@ export default class DiagramMaster extends Component {
     algaehApiCall({
       uri: "/diagram/getDiagrams",
       method: "GET",
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           this.setState({
-            diagrams: response.data.records
+            diagrams: response.data.records,
           });
         }
       },
-      onError: error => {
+      onError: (error) => {
         swalMessage({
           title: error.message,
-          type: "success"
+          type: "success",
         });
-      }
+      },
     });
   }
 
@@ -56,7 +56,7 @@ export default class DiagramMaster extends Component {
       diagram_id: "",
       image_desc: "",
       image_link: "",
-      hims_d_employee_speciality_id: ""
+      hims_d_employee_speciality_id: "",
     });
   }
 
@@ -82,24 +82,24 @@ export default class DiagramMaster extends Component {
       method: "POST",
       data: {
         image_desc: this.state.image_desc,
-        hims_d_employee_speciality_id: this.state.hims_d_employee_speciality_id
+        hims_d_employee_speciality_id: this.state.hims_d_employee_speciality_id,
       },
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           this.getDiagrams();
           this.clearState();
           swalMessage({
             title: "Added Successfully",
-            type: "success"
+            type: "success",
           });
         }
       },
-      onError: error => {
+      onError: (error) => {
         swalMessage({
           title: error.message,
-          type: "success"
+          type: "success",
         });
-      }
+      },
     });
   }
   addDiagrams() {
@@ -112,27 +112,27 @@ export default class DiagramMaster extends Component {
           data: {
             image_desc: this.state.image_desc,
             hims_d_employee_speciality_id: this.state
-              .hims_d_employee_speciality_id
+              .hims_d_employee_speciality_id,
           },
-          onSuccess: response => {
+          onSuccess: (response) => {
             if (response.data.success) {
               swalMessage({
                 title: "Added Successfully",
-                type: "success"
+                type: "success",
               });
 
               this.getDiagrams();
               this.clearState();
             }
           },
-          onFailure: error => {
+          onFailure: (error) => {
             swalMessage({
               title: error.response.data.message,
-              type: "error"
+              type: "error",
             });
-          }
+          },
         });
-      }
+      },
     });
   }
 
@@ -144,37 +144,37 @@ export default class DiagramMaster extends Component {
       confirmButtonText: "Yes",
       confirmButtonColor: "#44b8bd",
       cancelButtonColor: "#d33",
-      cancelButtonText: "No"
-    }).then(willDelete => {
+      cancelButtonText: "No",
+    }).then((willDelete) => {
       if (willDelete.value) {
         algaehApiCall({
           uri: "/diagram/deleteDiagram",
 
           data: {
-            diagram_id: data.diagram_id
+            diagram_id: data.diagram_id,
           },
           method: "DELETE",
-          onSuccess: response => {
+          onSuccess: (response) => {
             if (response.data.success) {
               swalMessage({
                 title: "Record deleted successfully . .",
-                type: "success"
+                type: "success",
               });
 
               this.getDiagrams();
             } else if (!response.data.success) {
               swalMessage({
                 title: response.data.message,
-                type: "error"
+                type: "error",
               });
             }
           },
-          onFailure: error => {
+          onFailure: (error) => {
             swalMessage({
               title: error.message,
-              type: "error"
+              type: "error",
             });
-          }
+          },
         });
       }
     });
@@ -187,24 +187,24 @@ export default class DiagramMaster extends Component {
       data: {
         image_desc: data.image_desc,
         hims_d_employee_speciality_id: data.hims_d_employee_speciality_id,
-        diagram_id: data.diagram_id
+        diagram_id: data.diagram_id,
       },
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           swalMessage({
             title: "Record updated successfully",
-            type: "success"
+            type: "success",
           });
 
           this.getDiagrams();
         }
       },
-      onFailure: error => {
+      onFailure: (error) => {
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -212,19 +212,19 @@ export default class DiagramMaster extends Component {
     algaehApiCall({
       uri: "/department/get/subdepartment",
       method: "GET",
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           this.setState({
-            departments: response.data.records
+            departments: response.data.records,
           });
         }
       },
-      onError: error => {
+      onError: (error) => {
         swalMessage({
           title: error.message,
-          type: "success"
+          type: "success",
         });
-      }
+      },
     });
   }
 
@@ -234,19 +234,19 @@ export default class DiagramMaster extends Component {
       method: "GET",
       module: "masterSettings",
       data: { [value.name]: value.value },
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           this.setState({
-            specialities: response.data.records
+            specialities: response.data.records,
           });
         }
       },
-      onError: error => {
+      onError: (error) => {
         swalMessage({
           title: error.message,
-          type: "success"
+          type: "success",
         });
-      }
+      },
     });
   }
 
@@ -302,7 +302,7 @@ export default class DiagramMaster extends Component {
                     div={{ className: "col-lg-2" }}
                     label={{
                       forceLabel: "department",
-                      isImp: true
+                      isImp: true,
                     }}
                     selector={{
                       name: "sub_department_id",
@@ -311,9 +311,9 @@ export default class DiagramMaster extends Component {
                       dataSource: {
                         textField: "sub_department_name",
                         valueField: "hims_d_sub_department_id",
-                        data: this.state.departments
+                        data: this.state.departments,
                       },
-                      onChange: this.deptDropDownHandler.bind(this)
+                      onChange: this.deptDropDownHandler.bind(this),
                     }}
                   />
 
@@ -321,7 +321,7 @@ export default class DiagramMaster extends Component {
                     div={{ className: "col-lg-2" }}
                     label={{
                       forceLabel: "employee speciality",
-                      isImp: true
+                      isImp: true,
                     }}
                     selector={{
                       name: "hims_d_employee_speciality_id",
@@ -330,9 +330,9 @@ export default class DiagramMaster extends Component {
                       dataSource: {
                         textField: "speciality_name",
                         valueField: "hims_d_employee_speciality_id",
-                        data: this.state.specialities
+                        data: this.state.specialities,
                       },
-                      onChange: this.dropDownHandle.bind(this)
+                      onChange: this.dropDownHandle.bind(this),
                     }}
                   />
 
@@ -340,21 +340,21 @@ export default class DiagramMaster extends Component {
                     div={{ className: "col-lg-3" }}
                     label={{
                       forceLabel: "diagram name",
-                      isImp: true
+                      isImp: true,
                     }}
                     textBox={{
                       className: "txt-fld",
                       name: "image_desc",
                       value: this.state.image_desc,
                       events: {
-                        onChange: this.changeTexts.bind(this)
-                      }
+                        onChange: this.changeTexts.bind(this),
+                      },
                     }}
                   />
                   <div className="col-lg-3">
                     <button
                       type="submit"
-                      style={{ marginTop: 19 }}
+                      style={{ marginTop: 20 }}
                       onClick={this.addDiagrams.bind(this)}
                       className="btn btn-primary"
                     >
@@ -376,7 +376,7 @@ export default class DiagramMaster extends Component {
                               label={{ forceLabel: "SPECIALITY " }}
                             />
                           ),
-                          disabled: true
+                          disabled: true,
                         },
                         {
                           fieldName: "image_desc",
@@ -385,7 +385,7 @@ export default class DiagramMaster extends Component {
                               label={{ forceLabel: "DiagramName" }}
                             />
                           ),
-                          editorTemplate: row => {
+                          editorTemplate: (row) => {
                             return (
                               <AlagehFormGroup
                                 div={{ className: "col" }}
@@ -397,17 +397,17 @@ export default class DiagramMaster extends Component {
                                     onChange: this.changeGridEditors.bind(
                                       this,
                                       row
-                                    )
+                                    ),
                                   },
                                   others: {
                                     errormessage:
                                       "description - cannot be blank",
-                                    required: false
-                                  }
+                                    required: false,
+                                  },
                                 }}
                               />
                             );
-                          }
+                          },
                         },
                         {
                           fieldName: "Diagram_Image",
@@ -416,8 +416,8 @@ export default class DiagramMaster extends Component {
                               label={{ forceLabel: "Diagram Preview" }}
                             />
                           ),
-                          disabled: true
-                        }
+                          disabled: true,
+                        },
                       ]}
                       keyId="diagram_id"
                       dataSource={{ data: this.state.diagrams }}
@@ -425,9 +425,9 @@ export default class DiagramMaster extends Component {
                       filter={true}
                       paging={{ page: 0, rowsPerPage: 20 }}
                       events={{
-                        onEdit: () => { },
+                        onEdit: () => {},
                         onDelete: this.deleteDiagram.bind(this),
-                        onDone: this.updateDiagram.bind(this)
+                        onDone: this.updateDiagram.bind(this),
                       }}
                       others={{}}
                     />

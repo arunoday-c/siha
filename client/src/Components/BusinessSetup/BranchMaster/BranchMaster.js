@@ -1125,7 +1125,7 @@ export default class BranchMaster extends Component {
                     <button
                       type="button"
                       className="btn btn-primary"
-                      style={{ marginTop: 19, float: "right" }}
+                      style={{ marginTop: 20, float: "right" }}
                       onClick={this.assignDepartments.bind(this)}
                       disabled={
                         this.state.selectedBranchName === "" ? true : false
@@ -1136,7 +1136,7 @@ export default class BranchMaster extends Component {
                     <button
                       type="button"
                       className="btn btn-default"
-                      style={{ marginTop: 19, marginRight: 10, float: "right" }}
+                      style={{ marginTop: 20, marginRight: 10, float: "right" }}
                       onClick={this.clearAll.bind(this)}
                     >
                       Clear

@@ -7,7 +7,7 @@ import {
   AlagehFormGroup,
   AlgaehDataGrid,
   AlgaehLabel,
-  AlgaehModalPopUp
+  AlgaehModalPopUp,
 } from "../../../Wrapper/algaehWrapper";
 import AlgaehAutoSearch from "../../../Wrapper/autoSearch";
 import spotlightSearch from "../../../../Search/spotlightSearch.json";
@@ -21,7 +21,7 @@ import {
   updateBillDetail,
   EditGrid,
   ItemChargable,
-  makeZeroIngrid
+  makeZeroIngrid,
 } from "./OrderConsumablesHandaler";
 import "./OrderConsumables.scss";
 import "../../../../styles/site.scss";
@@ -71,7 +71,7 @@ class OrderConsumables extends Component {
       addNewService: false,
       inventory_location_id: this.props.inventory_location_id,
       item_notchargable: "N",
-      itemchargable: false
+      itemchargable: false,
     };
   }
 
@@ -79,7 +79,7 @@ class OrderConsumables extends Component {
     let prevLang = getCookie("Language");
 
     this.setState({
-      selectedLang: prevLang
+      selectedLang: prevLang,
     });
 
     this.getPatientInsurance();
@@ -92,13 +92,13 @@ class OrderConsumables extends Component {
       method: "GET",
       data: {
         patient_id: this.state.patient_id,
-        patient_visit_id: this.state.visit_id
+        patient_visit_id: this.state.visit_id,
       },
       redux: {
         type: "EXIT_INSURANCE_GET_DATA",
-        mappingName: "existinginsurance"
+        mappingName: "existinginsurance",
       },
-      afterSuccess: data => {
+      afterSuccess: (data) => {
         if (data.length > 0) {
           this.setState({
             insured: "Y",
@@ -110,7 +110,7 @@ class OrderConsumables extends Component {
             secondary_insurance_provider_id:
               data[0].secondary_insurance_provider_id,
             secondary_network_id: data[0].secondary_network_id,
-            secondary_network_office_id: data[0].secondary_network_office_id
+            secondary_network_office_id: data[0].secondary_network_office_id,
           });
         } else {
           this.setState({
@@ -121,22 +121,22 @@ class OrderConsumables extends Component {
             sec_insured: null,
             secondary_insurance_provider_id: null,
             secondary_network_id: null,
-            secondary_network_office_id: null
+            secondary_network_office_id: null,
           });
         }
-      }
+      },
     });
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
     let Location_name =
       this.props.inventorylocations !== undefined &&
-        this.props.inventorylocations.length > 0
-        ? _.filter(this.props.inventorylocations, f => {
-          return (
-            f.hims_d_inventory_location_id === nextProps.inventory_location_id
-          );
-        })
+      this.props.inventorylocations.length > 0
+        ? _.filter(this.props.inventorylocations, (f) => {
+            return (
+              f.hims_d_inventory_location_id === nextProps.inventory_location_id
+            );
+          })
         : [];
 
     if (
@@ -160,13 +160,13 @@ class OrderConsumables extends Component {
           inventory_location_id: nextProps.inventory_location_id,
           location_name: Location_name[0].location_description,
           location_type: Location_name[0].location_type,
-          insured: "N"
+          insured: "N",
         });
       }
     }
   }
 
-  onClose = e => {
+  onClose = (e) => {
     const { current_patient, visit_id } = Window.global;
     this.setState(
       {
@@ -205,7 +205,7 @@ class OrderConsumables extends Component {
         discount_amount: null,
         net_total: null,
         item_notchargable: "N",
-        itemchargable: false
+        itemchargable: false,
       },
       () => {
         this.props.onClose && this.props.onClose(e);
@@ -217,7 +217,7 @@ class OrderConsumables extends Component {
       <div className="hptl-phase1-ordering-services-form">
         <AlgaehModalPopUp
           events={{
-            onClose: this.onClose.bind(this)
+            onClose: this.onClose.bind(this),
           }}
           title="Order Consumable"
           openPopup={this.props.open}
@@ -249,7 +249,7 @@ class OrderConsumables extends Component {
                 <div className="col-2">
                   <AlgaehLabel
                     label={{
-                      forceLabel: "Location Name"
+                      forceLabel: "Location Name",
                     }}
                   />
                   <h6>
@@ -269,7 +269,7 @@ class OrderConsumables extends Component {
                     expirydt,
                     qtyhand,
                     covered,
-                    pre_approval
+                    pre_approval,
                   }) => {
                     let properStyle;
                     if (this.state.insured === "Y") {
@@ -329,11 +329,11 @@ class OrderConsumables extends Component {
                   value={this.state.item_description}
                   extraParameters={{
                     insurance_id: this.state.insurance_provider_id,
-                    inventory_location_id: this.state.inventory_location_id
+                    inventory_location_id: this.state.inventory_location_id,
                   }}
                   searchName="insitemmaster"
                   onClick={selectItemHandeler.bind(this, this)}
-                  ref={attReg => {
+                  ref={(attReg) => {
                     this.attReg = attReg;
                   }}
                 />
@@ -356,7 +356,7 @@ class OrderConsumables extends Component {
                 <div className="col-2">
                   <button
                     className="btn btn-primary"
-                    style={{ marginTop: 19 }}
+                    style={{ marginTop: 20 }}
                     onClick={ProcessService.bind(this, this)}
                     disabled={this.state.addNewService}
                   >
@@ -372,7 +372,7 @@ class OrderConsumables extends Component {
                       {
                         fieldName: "actions",
                         label: <AlgaehLabel label={{ forceLabel: "Action" }} />,
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return (
                             <span>
                               <i
@@ -381,7 +381,7 @@ class OrderConsumables extends Component {
                               />
                             </span>
                           );
-                        }
+                        },
                       },
                       {
                         fieldName: "service_type_id",
@@ -390,15 +390,15 @@ class OrderConsumables extends Component {
                             label={{ fieldName: "service_type_id" }}
                           />
                         ),
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           let display =
                             this.props.servicetype === undefined
                               ? []
                               : this.props.servicetype.filter(
-                                f =>
-                                  f.hims_d_service_type_id ===
-                                  row.service_type_id
-                              );
+                                  (f) =>
+                                    f.hims_d_service_type_id ===
+                                    row.service_type_id
+                                );
 
                           return (
                             <span>
@@ -410,15 +410,15 @@ class OrderConsumables extends Component {
                             </span>
                           );
                         },
-                        editorTemplate: row => {
+                        editorTemplate: (row) => {
                           let display =
                             this.props.servicetype === undefined
                               ? []
                               : this.props.servicetype.filter(
-                                f =>
-                                  f.hims_d_service_type_id ===
-                                  row.service_type_id
-                              );
+                                  (f) =>
+                                    f.hims_d_service_type_id ===
+                                    row.service_type_id
+                                );
 
                           return (
                             <span>
@@ -429,7 +429,7 @@ class OrderConsumables extends Component {
                                 : ""}
                             </span>
                           );
-                        }
+                        },
                       },
 
                       {
@@ -437,13 +437,14 @@ class OrderConsumables extends Component {
                         label: (
                           <AlgaehLabel label={{ fieldName: "services_id" }} />
                         ),
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           let display =
                             this.props.serviceslist === undefined
                               ? []
                               : this.props.serviceslist.filter(
-                                f => f.hims_d_services_id === row.services_id
-                              );
+                                  (f) =>
+                                    f.hims_d_services_id === row.services_id
+                                );
 
                           return (
                             <span>
@@ -455,13 +456,14 @@ class OrderConsumables extends Component {
                             </span>
                           );
                         },
-                        editorTemplate: row => {
+                        editorTemplate: (row) => {
                           let display =
                             this.props.serviceslist === undefined
                               ? []
                               : this.props.serviceslist.filter(
-                                f => f.hims_d_services_id === row.services_id
-                              );
+                                  (f) =>
+                                    f.hims_d_services_id === row.services_id
+                                );
 
                           return (
                             <span>
@@ -474,8 +476,8 @@ class OrderConsumables extends Component {
                           );
                         },
                         others: {
-                          minWidth: 250
-                        }
+                          minWidth: 250,
+                        },
                       },
                       {
                         fieldName: "batchno",
@@ -483,30 +485,30 @@ class OrderConsumables extends Component {
                           <AlgaehLabel label={{ forceLabel: "Batch No." }} />
                         ),
                         others: {
-                          minWidth: 200
+                          minWidth: 200,
                         },
-                        disabled: true
+                        disabled: true,
                       },
                       {
                         fieldName: "expirydt",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Expiry Date" }} />
                         ),
-                        disabled: true
+                        disabled: true,
                       },
                       {
                         fieldName: "unit_cost",
                         label: (
                           <AlgaehLabel label={{ fieldName: "unit_cost" }} />
                         ),
-                        disabled: true
+                        disabled: true,
                       },
                       {
                         fieldName: "quantity",
                         label: (
                           <AlgaehLabel label={{ fieldName: "quantity" }} />
                         ),
-                        disabled: true
+                        disabled: true,
                       },
 
                       {
@@ -516,8 +518,8 @@ class OrderConsumables extends Component {
                         ),
                         disabled: true,
                         others: {
-                          minWidth: 90
-                        }
+                          minWidth: 90,
+                        },
                       },
                       {
                         fieldName: "discount_percentage",
@@ -526,7 +528,7 @@ class OrderConsumables extends Component {
                             label={{ fieldName: "discount_percentage" }}
                           />
                         ),
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return (
                             <AlagehFormGroup
                               div={{}}
@@ -540,17 +542,17 @@ class OrderConsumables extends Component {
                                     this,
                                     this,
                                     row
-                                  )
+                                  ),
                                 },
                                 others: {
                                   disabled:
                                     this.state.insured === "Y" ? true : false,
-                                  onBlur: makeZeroIngrid.bind(this, this, row)
-                                }
+                                  onBlur: makeZeroIngrid.bind(this, this, row),
+                                },
                               }}
                             />
                           );
-                        }
+                        },
                       },
                       {
                         fieldName: "discount_amout",
@@ -559,7 +561,7 @@ class OrderConsumables extends Component {
                             label={{ fieldName: "discount_amout" }}
                           />
                         ),
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return (
                             <AlagehFormGroup
                               div={{}}
@@ -573,17 +575,17 @@ class OrderConsumables extends Component {
                                     this,
                                     this,
                                     row
-                                  )
+                                  ),
                                 },
                                 others: {
                                   disabled:
                                     this.state.insured === "Y" ? true : false,
-                                  onBlur: makeZeroIngrid.bind(this, this, row)
-                                }
+                                  onBlur: makeZeroIngrid.bind(this, this, row),
+                                },
                               }}
                             />
                           );
-                        }
+                        },
                       },
 
                       {
@@ -591,30 +593,30 @@ class OrderConsumables extends Component {
                         label: (
                           <AlgaehLabel label={{ fieldName: "net_amout" }} />
                         ),
-                        disabled: true
+                        disabled: true,
                       },
                       {
                         fieldName: "insurance_yesno",
                         label: (
                           <AlgaehLabel label={{ fieldName: "insurance" }} />
                         ),
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return row.insurance_yesno === "Y"
                             ? "Covered"
                             : "Not Covered";
                         },
-                        editorTemplate: row => {
+                        editorTemplate: (row) => {
                           return row.insurance_yesno === "Y"
                             ? "Covered"
                             : "Not Covered";
-                        }
+                        },
                       },
                       {
                         fieldName: "pre_approval",
                         label: (
                           <AlgaehLabel label={{ fieldName: "pre_approval" }} />
                         ),
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return (
                             <span>
                               {row.pre_approval === "Y"
@@ -623,7 +625,7 @@ class OrderConsumables extends Component {
                             </span>
                           );
                         },
-                        editorTemplate: row => {
+                        editorTemplate: (row) => {
                           return (
                             <span>
                               {row.pre_approval === "Y"
@@ -631,14 +633,14 @@ class OrderConsumables extends Component {
                                 : "Not Required"}
                             </span>
                           );
-                        }
+                        },
                       },
                       {
                         fieldName: "total_tax",
                         label: (
                           <AlgaehLabel label={{ fieldName: "total_tax" }} />
                         ),
-                        disabled: true
+                        disabled: true,
                       },
                       {
                         fieldName: "patient_payable",
@@ -647,7 +649,7 @@ class OrderConsumables extends Component {
                             label={{ fieldName: "patient_payable" }}
                           />
                         ),
-                        disabled: true
+                        disabled: true,
                       },
                       {
                         fieldName: "company_payble",
@@ -656,12 +658,12 @@ class OrderConsumables extends Component {
                             label={{ fieldName: "company_payble" }}
                           />
                         ),
-                        disabled: true
-                      }
+                        disabled: true,
+                      },
                     ]}
                     keyId="service_type_id"
                     dataSource={{
-                      data: this.state.orderconsumabledata
+                      data: this.state.orderconsumabledata,
                     }}
                     // isEditable={true}
                     paging={{ page: 0, rowsPerPage: 10 }}
@@ -670,7 +672,7 @@ class OrderConsumables extends Component {
                       onDelete: deleteServices.bind(this, this),
                       onEdit: EditGrid.bind(this, this),
                       onCancel: EditGrid.bind(this, this),
-                      onDone: updateBillDetail.bind(this, this)
+                      onDone: updateBillDetail.bind(this, this),
                     }}
                   />
                 </div>
@@ -682,7 +684,7 @@ class OrderConsumables extends Component {
                     <div className="col">
                       <AlgaehLabel
                         label={{
-                          fieldName: "sub_ttl"
+                          fieldName: "sub_ttl",
                         }}
                       />
                       <h5>{GetAmountFormart(this.state.sub_total_amount)}</h5>
@@ -690,7 +692,7 @@ class OrderConsumables extends Component {
                     <div className="col">
                       <AlgaehLabel
                         label={{
-                          fieldName: "dsct_amt"
+                          fieldName: "dsct_amt",
                         }}
                       />
                       <h5>{GetAmountFormart(this.state.discount_amount)}</h5>
@@ -699,7 +701,7 @@ class OrderConsumables extends Component {
                     <div className="col">
                       <AlgaehLabel
                         label={{
-                          fieldName: "net_ttl"
+                          fieldName: "net_ttl",
                         }}
                       />
                       <h5>{GetAmountFormart(this.state.net_total)}</h5>
@@ -712,7 +714,7 @@ class OrderConsumables extends Component {
                     <div className="col">
                       <AlgaehLabel
                         label={{
-                          fieldName: "pat_payable"
+                          fieldName: "pat_payable",
                         }}
                       />
                       <h5>{GetAmountFormart(this.state.patient_payable)}</h5>
@@ -720,7 +722,7 @@ class OrderConsumables extends Component {
                     <div className="col">
                       <AlgaehLabel
                         label={{
-                          fieldName: "co_payable"
+                          fieldName: "co_payable",
                         }}
                       />
                       <h5>{GetAmountFormart(this.state.company_payble)}</h5>
@@ -762,7 +764,7 @@ function mapStateToProps(state) {
     existinginsurance: state.existinginsurance,
     serviceslist: state.serviceslist,
     orderedList: state.orderedList,
-    inventorylocations: state.inventorylocations
+    inventorylocations: state.inventorylocations,
   };
 }
 
@@ -773,7 +775,7 @@ function mapDispatchToProps(dispatch) {
       getServices: AlgaehActions,
       generateBill: AlgaehActions,
       getPatientInsurance: AlgaehActions,
-      billingCalculations: AlgaehActions
+      billingCalculations: AlgaehActions,
     },
     dispatch
   );

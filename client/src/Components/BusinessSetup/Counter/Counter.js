@@ -4,7 +4,7 @@ import {
   AlagehFormGroup,
   AlgaehDataGrid,
   AlgaehLabel,
-  AlagehAutoComplete
+  AlagehAutoComplete,
 } from "../../Wrapper/algaehWrapper";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import GlobalVariables from "../../../utils/GlobalVariables.json";
@@ -15,7 +15,7 @@ class Counter extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      counters: []
+      counters: [],
     };
   }
 
@@ -23,7 +23,7 @@ class Counter extends Component {
     this.setState({
       counter_code: "",
       counter_description: "",
-      arabic_name: ""
+      arabic_name: "",
     });
   }
 
@@ -33,17 +33,17 @@ class Counter extends Component {
       module: "masterSettings",
       method: "GET",
       data: {},
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           this.setState({ counters: response.data.records });
         }
       },
-      onFailure: error => {
+      onFailure: (error) => {
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -65,27 +65,27 @@ class Counter extends Component {
           data: {
             counter_code: this.state.counter_code,
             counter_description: this.state.counter_description,
-            arabic_name: this.state.arabic_name
+            arabic_name: this.state.arabic_name,
           },
-          onSuccess: response => {
+          onSuccess: (response) => {
             if (response.data.success) {
               swalMessage({
                 title: "Counter added successfully",
-                type: "success"
+                type: "success",
               });
 
               this.getCounters();
               this.clearState();
             }
           },
-          onFailure: error => {
+          onFailure: (error) => {
             swalMessage({
               title: error.response.data.message,
-              type: "error"
+              type: "error",
             });
-          }
+          },
         });
-      }
+      },
     });
   }
 
@@ -97,8 +97,8 @@ class Counter extends Component {
       confirmButtonText: "Yes",
       confirmButtonColor: "#",
       cancelButtonColor: "#d33",
-      cancelButtonText: "No"
-    }).then(willDelete => {
+      cancelButtonText: "No",
+    }).then((willDelete) => {
       if (willDelete.value) {
         algaehApiCall({
           uri: "/shiftAndCounter/updateCounterMaster",
@@ -109,25 +109,25 @@ class Counter extends Component {
             counter_description: data.counter_description,
             arabic_name: data.arabic_name,
             counter_status: data.counter_status,
-            hims_d_counter_id: data.hims_d_counter_id
+            hims_d_counter_id: data.hims_d_counter_id,
           },
           method: "PUT",
-          onSuccess: response => {
+          onSuccess: (response) => {
             if (response.data.success) {
               swalMessage({
                 title: "Record deleted successfully . .",
-                type: "success"
+                type: "success",
               });
 
               this.getCounters();
             }
           },
-          onFailure: error => {
+          onFailure: (error) => {
             swalMessage({
               title: error.message,
-              type: "error"
+              type: "error",
             });
-          }
+          },
         });
       }
     });
@@ -143,24 +143,24 @@ class Counter extends Component {
         counter_description: data.counter_description,
         arabic_name: data.arabic_name,
         counter_status: data.counter_status,
-        hims_d_counter_id: data.hims_d_counter_id
+        hims_d_counter_id: data.hims_d_counter_id,
       },
       method: "PUT",
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           swalMessage({
             title: "Record updated successfully . .",
-            type: "success"
+            type: "success",
           });
           this.getCounters();
         }
       },
-      onFailure: error => {
+      onFailure: (error) => {
         swalMessage({
           title: error.response.data.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -184,52 +184,52 @@ class Counter extends Component {
               div={{ className: "col-3 form-group mandatory" }}
               label={{
                 fieldName: "counter_code",
-                isImp: true
+                isImp: true,
               }}
               textBox={{
                 className: "txt-fld",
                 name: "counter_code",
                 value: this.state.counter_code,
                 events: {
-                  onChange: this.changeTexts.bind(this)
-                }
+                  onChange: this.changeTexts.bind(this),
+                },
               }}
             />
             <AlagehFormGroup
               div={{ className: "col-3 form-group mandatory" }}
               label={{
                 fieldName: "counter_description",
-                isImp: true
+                isImp: true,
               }}
               textBox={{
                 className: "txt-fld",
                 name: "counter_description",
                 value: this.state.counter_description,
                 events: {
-                  onChange: this.changeTexts.bind(this)
-                }
+                  onChange: this.changeTexts.bind(this),
+                },
               }}
             />
             <AlagehFormGroup
               div={{ className: "col-3  arabic-txt-fld form-group mandatory" }}
               label={{
                 fieldName: "arabic_name",
-                isImp: true
+                isImp: true,
               }}
               textBox={{
                 className: "txt-fld",
                 name: "arabic_name",
                 value: this.state.arabic_name,
                 events: {
-                  onChange: this.changeTexts.bind(this)
-                }
+                  onChange: this.changeTexts.bind(this),
+                },
               }}
             />
 
             <div className="col-lg-3">
               <button
                 onClick={this.addCounter.bind(this)}
-                style={{ marginTop: 19 }}
+                style={{ marginTop: 20 }}
                 className="btn btn-primary"
               >
                 Add to List
@@ -251,7 +251,7 @@ class Counter extends Component {
                         label: (
                           <AlgaehLabel label={{ fieldName: "counter_code" }} />
                         ),
-                        disabled: true
+                        disabled: true,
                       },
                       {
                         fieldName: "counter_description",
@@ -260,7 +260,7 @@ class Counter extends Component {
                             label={{ fieldName: "counter_description" }}
                           />
                         ),
-                        editorTemplate: row => {
+                        editorTemplate: (row) => {
                           return (
                             <AlagehFormGroup
                               div={{ className: "col" }}
@@ -272,23 +272,23 @@ class Counter extends Component {
                                   onChange: this.changeGridEditors.bind(
                                     this,
                                     row
-                                  )
+                                  ),
                                 },
                                 others: {
                                   errormessage: "Description - cannot be blank",
-                                  required: true
-                                }
+                                  required: true,
+                                },
                               }}
                             />
                           );
-                        }
+                        },
                       },
                       {
                         fieldName: "arabic_name",
                         label: (
                           <AlgaehLabel label={{ fieldName: "arabic_name" }} />
                         ),
-                        editorTemplate: row => {
+                        editorTemplate: (row) => {
                           return (
                             <AlagehFormGroup
                               div={{ className: "col" }}
@@ -300,16 +300,16 @@ class Counter extends Component {
                                   onChange: this.changeGridEditors.bind(
                                     this,
                                     row
-                                  )
+                                  ),
                                 },
                                 others: {
                                   errormessage: "Arabic Name - cannot be blank",
-                                  required: true
-                                }
+                                  required: true,
+                                },
                               }}
                             />
                           );
-                        }
+                        },
                       },
                       {
                         fieldName: "counter_status",
@@ -318,7 +318,7 @@ class Counter extends Component {
                             label={{ fieldName: "counter_status" }}
                           />
                         ),
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return (
                             <span>
                               {row.counter_status === "A"
@@ -327,7 +327,7 @@ class Counter extends Component {
                             </span>
                           );
                         },
-                        editorTemplate: row => {
+                        editorTemplate: (row) => {
                           return (
                             <AlagehAutoComplete
                               div={{ className: "col" }}
@@ -338,33 +338,36 @@ class Counter extends Component {
                                 dataSource: {
                                   textField: "name",
                                   valueField: "value",
-                                  data: GlobalVariables.FORMAT_STATUS
+                                  data: GlobalVariables.FORMAT_STATUS,
                                 },
                                 others: {
                                   errormessage: "Status - cannot be blank",
-                                  required: true
+                                  required: true,
                                 },
-                                onChange: this.changeGridEditors.bind(this, row)
+                                onChange: this.changeGridEditors.bind(
+                                  this,
+                                  row
+                                ),
                               }}
                             />
                           );
-                        }
-                      }
+                        },
+                      },
                     ]}
                     keyId="hims_d_counter_id"
                     dataSource={{
-                      data: this.state.counters
+                      data: this.state.counters,
                     }}
                     filter={true}
                     isEditable={true}
                     actions={{
-                      allowDelete: false
+                      allowDelete: false,
                     }}
                     paging={{ page: 0, rowsPerPage: 10 }}
                     events={{
-                      onEdit: () => { },
+                      onEdit: () => {},
                       onDelete: this.deleteCounters.bind(this),
-                      onDone: this.updatecounters.bind(this)
+                      onDone: this.updatecounters.bind(this),
                     }}
                   />
                 </div>

@@ -292,7 +292,7 @@ class CompanyAccount extends Component {
           <AlgaehSecurityElement elementCode="READ_ONLY_ACCESS">
             <div className="col">
               <button
-                style={{ marginTop: 19 }}
+                style={{ marginTop: 20 }}
                 className="btn btn-primary"
                 onClick={this.addCompanyAccount.bind(this)}
               >

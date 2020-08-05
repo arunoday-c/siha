@@ -385,7 +385,7 @@ class BankMaster extends Component {
                 <AlgaehSecurityElement elementCode="READ_ONLY_ACCESS">
                   <div className="col">
                     <button
-                      style={{ marginTop: 19 }}
+                      style={{ marginTop: 20 }}
                       className="btn btn-primary"
                       onClick={this.addBank.bind(this)}
                     >
@@ -659,7 +659,7 @@ class BankMaster extends Component {
 
                   <div className="col-4">
                     <button
-                      style={{ marginTop: 19 }}
+                      style={{ marginTop: 20 }}
                       className="btn btn-primary"
                       onClick={this.addCardMaster.bind(this)}
                     >

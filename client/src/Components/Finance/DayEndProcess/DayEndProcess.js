@@ -189,52 +189,50 @@ class DayEndProcess extends Component {
     }
   }
   DrillDownScree(row) {
-    debugger
+    debugger;
     if (row.from_screen === "FD0002" || row.from_screen === "BL0001") {
       // Billing
-      this.props.history.push(
-        `/OPBilling?bill_code=${row.document_number}`
-      )
+      this.props.history.push(`/OPBilling?bill_code=${row.document_number}`);
     } else if (row.from_screen === "BL0003") {
       // Billing
       this.props.history.push(
         `/OPBillCancellation?bill_cancel_number=${row.document_number}`
-      )
+      );
     } else if (row.from_screen === "INV0009") {
       // Inventory Transfer
       this.props.history.push(
         `/InvTransferEntry?transfer_number=${row.document_number}`
-      )
+      );
     } else if (row.from_screen === "INV0007") {
       // Inventory Consumorion
       this.props.history.push(
         `/InvConsumptionEntry?consumption_number=${row.document_number}`
-      )
+      );
     } else if (row.from_screen === "SAL005") {
       // Sales Invoice
       this.props.history.push(
         `/SalesInvoice?invoice_number=${row.document_number}`
-      )
+      );
     } else if (row.from_screen === "SAL008") {
       //Sales Return
       this.props.history.push(
         `/SalesReturnEntry?sales_return_number=${row.document_number}`
-      )
+      );
     } else if (row.from_screen === "PR0003") {
       // Delivery Note
       this.props.history.push(
         `/DeliveryNoteEntry?delivery_note_number=${row.document_number}`
-      )
+      );
     } else if (row.from_screen === "PR0004") {
       //Receipt Entry
       this.props.history.push(
         `/ReceiptEntry?grn_number=${row.document_number}`
-      )
+      );
     } else if (row.from_screen === "PR0006") {
       //Purchase Return
       this.props.history.push(
         `/PurchaseReturnEntry?purchase_return_number=${row.document_number}`
-      )
+      );
     }
   }
   onOpenPreviewPopUP(row, that) {
@@ -537,7 +535,7 @@ class DayEndProcess extends Component {
                 <div className="col">
                   <button
                     className="btn btn-primary"
-                    style={{ marginTop: 19 }}
+                    style={{ marginTop: 20 }}
                     onClick={this.getDayEndProcess.bind(this)}
                   >
                     Preview

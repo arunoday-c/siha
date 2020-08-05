@@ -244,7 +244,7 @@ class DepreciationReversal extends Component {
               }}
             />
             <div className="col">
-              <button className="btn btn-primary" style={{ marginTop: 19 }}>
+              <button className="btn btn-primary" style={{ marginTop: 20 }}>
                 Add to List
               </button>
             </div>

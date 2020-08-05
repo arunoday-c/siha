@@ -373,7 +373,7 @@ class ManualAttendance extends Component {
 
           <div className="col-1 form-group">
             <button
-              style={{ marginTop: 19 }}
+              style={{ marginTop: 20 }}
               className="btn btn-default"
               onClick={this.LoadData.bind(this)}
             >
@@ -437,7 +437,7 @@ class ManualAttendance extends Component {
 
                   <div className="col">
                     <button
-                      style={{ marginTop: 19 }}
+                      style={{ marginTop: 20 }}
                       className="btn btn-default"
                       onClick={this.AddToAll.bind(this)}
                       disabled={this.state.apply_all}

@@ -15,7 +15,7 @@ export default class AttendanceRegularization extends Component {
     super(props);
     this.state = {
       loading: false,
-      regularization_list: []
+      regularization_list: [],
     };
   }
 
@@ -33,11 +33,11 @@ export default class AttendanceRegularization extends Component {
         ) {
           swalMessage({
             title: "Please Select a proper Date Range",
-            type: "warning"
+            type: "warning",
           });
         } else {
           this.setState({
-            loading: true
+            loading: true,
           });
 
           algaehApiCall({
@@ -47,36 +47,36 @@ export default class AttendanceRegularization extends Component {
             data: {
               from_date: this.state.from_date,
               to_date: this.state.to_date,
-              type: "auth"
+              type: "auth",
             },
-            onSuccess: res => {
+            onSuccess: (res) => {
               if (res.data.success) {
                 this.setState({
                   regularization_list: res.data.result,
-                  loading: false
+                  loading: false,
                 });
               } else if (!res.data.success) {
                 this.setState({
-                  loading: false
+                  loading: false,
                 });
                 swalMessage({
                   title: res.data.result.message,
-                  type: "error"
+                  type: "error",
                 });
               }
             },
-            onFailure: err => {
+            onFailure: (err) => {
               swalMessage({
                 title: err.message,
-                type: "error"
+                type: "error",
               });
               this.setState({
-                loading: false
+                loading: false,
               });
-            }
+            },
           });
         }
-      }
+      },
     });
   }
 
@@ -104,7 +104,7 @@ export default class AttendanceRegularization extends Component {
       minutes: diff_munite,
       worked_hours: worked_hours,
       employee_id: data.employee_id,
-      attendance_date: data.attendance_date
+      attendance_date: data.attendance_date,
     };
     swal({
       title:
@@ -116,34 +116,34 @@ export default class AttendanceRegularization extends Component {
       confirmButtonText: "Yes",
       confirmButtonColor: "#44b8bd",
       cancelButtonColor: "#d33",
-      cancelButtonText: "No"
-    }).then(willDelete => {
+      cancelButtonText: "No",
+    }).then((willDelete) => {
       if (willDelete.value) {
         algaehApiCall({
           uri: "/attendance/regularizeAttendance",
           method: "PUT",
           data: IntputObj,
           module: "hrManagement",
-          onSuccess: res => {
+          onSuccess: (res) => {
             if (res.data.success) {
               swalMessage({
                 title: "Record Updated Successfully. .",
-                type: "success"
+                type: "success",
               });
               this.loadRegularizationList();
             }
           },
-          onFailure: err => {
+          onFailure: (err) => {
             swalMessage({
               title: err.message,
-              type: "error"
+              type: "error",
             });
-          }
+          },
         });
       } else {
         swalMessage({
           title: "Request Cancelled",
-          type: "error"
+          type: "error",
         });
       }
     });
@@ -157,21 +157,21 @@ export default class AttendanceRegularization extends Component {
             div={{ className: "col-3 margin-bottom-15" }}
             label={{
               forceLabel: "From Date",
-              isImp: true
+              isImp: true,
             }}
             textBox={{
               className: "txt-fld",
               name: "from_date",
               others: {
-                tabIndex: "1"
-              }
+                tabIndex: "1",
+              },
             }}
             events={{
-              onChange: selDate => {
+              onChange: (selDate) => {
                 this.setState({
-                  from_date: selDate
+                  from_date: selDate,
                 });
-              }
+              },
             }}
             maxDate={new Date()}
             value={this.state.from_date}
@@ -180,21 +180,21 @@ export default class AttendanceRegularization extends Component {
             div={{ className: "col-3 margin-bottom-15" }}
             label={{
               forceLabel: "To Date",
-              isImp: true
+              isImp: true,
             }}
             textBox={{
               className: "txt-fld",
               name: "to_date",
               others: {
-                tabIndex: "2"
-              }
+                tabIndex: "2",
+              },
             }}
             events={{
-              onChange: selDate => {
+              onChange: (selDate) => {
                 this.setState({
-                  to_date: selDate
+                  to_date: selDate,
                 });
-              }
+              },
             }}
             minDate={this.state.from_date}
             maxDate={new Date()}
@@ -205,7 +205,7 @@ export default class AttendanceRegularization extends Component {
               onClick={this.loadRegularizationList.bind(this)}
               type="button"
               className="btn btn-primary"
-              style={{ marginTop: 19 }}
+              style={{ marginTop: 20 }}
             >
               {!this.state.loading ? (
                 <span>Load</span>
@@ -234,13 +234,13 @@ export default class AttendanceRegularization extends Component {
                     {
                       Header: <b>Actions</b>,
                       id: "hims_f_attendance_regularize_id",
-                      accessor: d => (
+                      accessor: (d) => (
                         <span
                           style={{
                             pointerEvents:
                               d.regularize_status !== "PEN" ? "none" : null,
                             opacity:
-                              d.regularize_status !== "PEN" ? "0.1" : null
+                              d.regularize_status !== "PEN" ? "0.1" : null,
                           }}
                         >
                           <i
@@ -260,7 +260,7 @@ export default class AttendanceRegularization extends Component {
                             className="fa fa-times"
                           />
                         </span>
-                      )
+                      ),
                     },
                     {
                       Header: "Regularization",
@@ -272,9 +272,9 @@ export default class AttendanceRegularization extends Component {
                         // },
                         {
                           Header: <b>Reason</b>,
-                          accessor: "regularization_reason"
-                        }
-                      ]
+                          accessor: "regularization_reason",
+                        },
+                      ],
                     },
                     {
                       Header: "Employee",
@@ -282,13 +282,13 @@ export default class AttendanceRegularization extends Component {
                       columns: [
                         {
                           Header: <b>Code</b>,
-                          accessor: "employee_code"
+                          accessor: "employee_code",
                         },
                         {
                           Header: <b>Name</b>,
-                          accessor: "employee_name"
-                        }
-                      ]
+                          accessor: "employee_name",
+                        },
+                      ],
                     },
                     {
                       Header: "Attendance",
@@ -297,10 +297,10 @@ export default class AttendanceRegularization extends Component {
                         {
                           Header: <b>Date</b>,
                           id: "attendance_date",
-                          accessor: d =>
-                            moment(d.attendance_date).format("DD-MM-YYYY")
-                        }
-                      ]
+                          accessor: (d) =>
+                            moment(d.attendance_date).format("DD-MM-YYYY"),
+                        },
+                      ],
                     },
                     {
                       Header: "Login Time",
@@ -310,18 +310,18 @@ export default class AttendanceRegularization extends Component {
                         {
                           Header: <b>Old</b>,
                           id: "punch_in_time",
-                          accessor: d =>
-                            d.punch_in_time ? d.punch_in_time : "------"
+                          accessor: (d) =>
+                            d.punch_in_time ? d.punch_in_time : "------",
                         },
                         {
                           Header: <b>New</b>,
                           id: "regularize_in_time",
-                          accessor: d =>
+                          accessor: (d) =>
                             moment(d.regularize_in_time, "HH:mm:ss").format(
                               "HH:mm A"
-                            )
-                        }
-                      ]
+                            ),
+                        },
+                      ],
                     },
                     {
                       Header: "Login Out",
@@ -330,18 +330,18 @@ export default class AttendanceRegularization extends Component {
                         {
                           Header: <b>Old</b>,
                           id: "punch_out_time",
-                          accessor: d =>
-                            d.punch_out_time ? d.punch_out_time : "------"
+                          accessor: (d) =>
+                            d.punch_out_time ? d.punch_out_time : "------",
                         },
                         {
                           Header: <b>New</b>,
                           id: "regularize_out_time",
-                          accessor: d =>
+                          accessor: (d) =>
                             moment(d.regularize_out_time, "HH:mm:ss").format(
                               "HH:mm A"
-                            )
-                        }
-                      ]
+                            ),
+                        },
+                      ],
                     },
                     {
                       Header: "Regularization",
@@ -350,7 +350,7 @@ export default class AttendanceRegularization extends Component {
                         {
                           id: "regularize_status",
                           Header: <b>Status</b>,
-                          accessor: d =>
+                          accessor: (d) =>
                             d.regularize_status === "PEN" ? (
                               <span className="badge badge-warning">
                                 Pending
@@ -365,10 +365,10 @@ export default class AttendanceRegularization extends Component {
                               </span>
                             ) : (
                               "------"
-                            )
-                        }
-                      ]
-                    }
+                            ),
+                        },
+                      ],
+                    },
                   ]}
                   loading={this.state.loading}
                   filterable

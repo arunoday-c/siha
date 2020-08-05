@@ -1010,7 +1010,7 @@ class DeptMaster extends Component {
           <div className="col align-middle">
             <button
               className="btn btn-primary"
-              style={{ marginTop: 19 }}
+              style={{ marginTop: 20 }}
               onClick={this.addDepartment.bind(this)}
             >
               Add to List

@@ -7,7 +7,7 @@ import {
   Spin,
   Modal,
   AlgaehFormGroup,
-  AlgaehButton
+  AlgaehButton,
 } from "algaeh-react-components";
 import { Controller, useForm } from "react-hook-form";
 import { PrePaymentContext } from "../Prepayment";
@@ -83,7 +83,7 @@ export function PrepaymentAuthList() {
           auth_status: decision,
           finance_f_prepayment_request_id: id,
           reverted_amt: reverted_amt,
-          revert_reason: revert_reason
+          revert_reason: revert_reason,
         },
       });
       if (res.data.success) {
@@ -133,7 +133,11 @@ export function PrepaymentAuthList() {
       maskClosable: true,
       onOk: async () => {
         try {
-          await PayOrRejectReq("PD", row.finance_f_prepayment_request_id, row.prepayment_amount);
+          await PayOrRejectReq(
+            "PD",
+            row.finance_f_prepayment_request_id,
+            row.prepayment_amount
+          );
         } catch (e) {
           AlgaehMessagePop({
             type: "error",
@@ -142,15 +146,15 @@ export function PrepaymentAuthList() {
         }
       },
     });
-  }
+  };
 
   const onClickRevert = (row) => {
     setVisible(true);
-    setrevertData(row)
+    setrevertData(row);
   };
 
   const onClickRevertModel = () => {
-    debugger
+    debugger;
     if (revert_reason === null || revert_reason === "") {
       AlgaehMessagePop({
         type: "error",
@@ -158,7 +162,11 @@ export function PrepaymentAuthList() {
       });
     } else {
       try {
-        PayOrRejectReq("P", revertData.finance_f_prepayment_request_id, revertData.prepayment_amount);
+        PayOrRejectReq(
+          "P",
+          revertData.finance_f_prepayment_request_id,
+          revertData.prepayment_amount
+        );
       } catch (e) {
         AlgaehMessagePop({
           type: "error",
@@ -205,7 +213,6 @@ Prepayment Type: ${row.prepayment_desc}`,
         footer={null}
         onCancel={() => setVisible(false)}
       >
-
         <AlgaehFormGroup
           div={{
             className: "col-12 form-group  mandatory",
@@ -226,10 +233,7 @@ Prepayment Type: ${row.prepayment_desc}`,
           }}
         />
 
-        <AlgaehButton
-          className="btn btn-primary"
-          onClick={onClickRevertModel}
-        >
+        <AlgaehButton className="btn btn-primary" onClick={onClickRevertModel}>
           Process
         </AlgaehButton>
       </Modal>
@@ -462,7 +466,7 @@ Prepayment Type: ${row.prepayment_desc}`,
               <button
                 type="submit"
                 className="btn btn-primary bttn-sm"
-                style={{ marginTop: 19 }}
+                style={{ marginTop: 20 }}
               >
                 Filter
               </button>

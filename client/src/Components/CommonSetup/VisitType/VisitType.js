@@ -9,7 +9,7 @@ import {
   AlagehFormGroup,
   AlgaehDataGrid,
   AlagehAutoComplete,
-  AlgaehLabel
+  AlgaehLabel,
 } from "../../Wrapper/algaehWrapper";
 import GlobalVariables from "../../../utils/GlobalVariables";
 import swal from "sweetalert2";
@@ -18,7 +18,7 @@ import { FORMAT_YESNO } from "../../../utils/GlobalVariables.json";
 import {
   algaehApiCall,
   swalMessage,
-  getCookie
+  getCookie,
 } from "../../../utils/algaehApiCall";
 import { setGlobal, AlgaehValidation } from "../../../utils/GlobalFunctions";
 import Options from "../../../Options.json";
@@ -42,7 +42,7 @@ class VisitType extends Component {
       hims_d_visit_type_id: "",
       deleteId: "",
       selectedLang: "en",
-      consultation: "N"
+      consultation: "N",
     };
 
     this.baseState = this.state;
@@ -55,17 +55,17 @@ class VisitType extends Component {
       data: {
         fields: "visit_type_code",
         tableName: "hims_d_visit_type",
-        keyFieldName: "hims_d_visit_type_id"
+        keyFieldName: "hims_d_visit_type_id",
       },
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success === true) {
           const placeHolder =
             response.data.records.length > 0 ? response.data.records[0] : {};
           that.setState({
-            visit_type_code_placeHolder: placeHolder.visit_type_code
+            visit_type_code_placeHolder: placeHolder.visit_type_code,
           });
         }
-      }
+      },
     });
   }
   showconfirmDialog(id) {
@@ -76,8 +76,8 @@ class VisitType extends Component {
       confirmButtonText: "Yes",
       confirmButtonColor: "#44b8bd",
       cancelButtonColor: "#d33",
-      cancelButtonText: "No"
-    }).then(willDelete => {
+      cancelButtonText: "No",
+    }).then((willDelete) => {
       if (willDelete.value) {
         let data = { hims_d_visit_type_id: id };
         algaehApiCall({
@@ -85,11 +85,11 @@ class VisitType extends Component {
           module: "masterSettings",
           data: data,
           method: "DELETE",
-          onSuccess: response => {
+          onSuccess: (response) => {
             if (response.data.success) {
               swalMessage({
                 title: "Record deleted successfully . .",
-                type: "success"
+                type: "success",
               });
 
               this.props.getVisittypes({
@@ -98,17 +98,17 @@ class VisitType extends Component {
                 method: "GET",
                 redux: {
                   type: "VISITTYPE_GET_DATA",
-                  mappingName: "visittypes"
-                }
+                  mappingName: "visittypes",
+                },
               });
             }
           },
-          onFailure: error => {
+          onFailure: (error) => {
             swalMessage({
               title: error.response.data.message,
-              type: "error"
+              type: "error",
             });
-          }
+          },
         });
       }
     });
@@ -141,7 +141,7 @@ class VisitType extends Component {
     let prevLang = getCookie("Language");
     setGlobal({ selectedLang: prevLang });
     this.setState({
-      selectedLang: prevLang
+      selectedLang: prevLang,
     });
     if (
       this.props.visittypes === undefined ||
@@ -153,8 +153,8 @@ class VisitType extends Component {
         method: "GET",
         redux: {
           type: "VISITTYPE_GET_DATA",
-          mappingName: "visittypes"
-        }
+          mappingName: "visittypes",
+        },
       });
     }
   }
@@ -172,13 +172,13 @@ class VisitType extends Component {
   addVisit(e) {
     e.preventDefault();
 
-    const exit_consultation = _.filter(this.props.visittypes, f => {
+    const exit_consultation = _.filter(this.props.visittypes, (f) => {
       return f.consultation === "Y";
     });
     if (exit_consultation.length > 0) {
       swalMessage({
         title: "Consultation already exists, Only one Consultation can add",
-        type: "warning"
+        type: "warning",
       });
       return;
     }
@@ -190,7 +190,7 @@ class VisitType extends Component {
           uri: "/visitType/add",
           module: "masterSettings",
           data: this.state,
-          onSuccess: response => {
+          onSuccess: (response) => {
             if (response.data.success === true) {
               this.resetState();
               //Handle Successful Add here
@@ -200,25 +200,25 @@ class VisitType extends Component {
                 method: "GET",
                 redux: {
                   type: "VISITTYPE_GET_DATA",
-                  mappingName: "visittypes"
-                }
+                  mappingName: "visittypes",
+                },
               });
               swalMessage({
                 title: "Visa Type added successfully",
-                type: "success"
+                type: "success",
               });
             } else {
               //Handle unsuccessful Add here.
             }
           },
-          onFailure: error => {
+          onFailure: (error) => {
             swalMessage({
               title: error.response.data.message,
-              type: "error"
+              type: "error",
             });
-          }
+          },
         });
-      }
+      },
     });
   }
 
@@ -232,11 +232,11 @@ class VisitType extends Component {
       buttonText: (
         <AlgaehLabel
           label={{
-            fieldName: "Updatebutton"
+            fieldName: "Updatebutton",
           }}
         />
       ),
-      hims_d_visit_type_id: data.hims_d_visit_type_id
+      hims_d_visit_type_id: data.hims_d_visit_type_id,
     });
   }
 
@@ -246,11 +246,11 @@ class VisitType extends Component {
       module: "masterSettings",
       data: data,
       method: "PUT",
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           swalMessage({
             title: "Record updated successfully . .",
-            type: "success"
+            type: "success",
           });
 
           this.props.getVisittypes({
@@ -259,17 +259,17 @@ class VisitType extends Component {
             method: "GET",
             redux: {
               type: "VISITTYPE_GET_DATA",
-              mappingName: "visittypes"
-            }
+              mappingName: "visittypes",
+            },
           });
         }
       },
-      onFailure: error => {
+      onFailure: (error) => {
         swalMessage({
           title: error.response.data.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -302,19 +302,19 @@ class VisitType extends Component {
             div={{ className: "col-2 form-group mandatory" }}
             label={{
               fieldName: "type_code",
-              isImp: true
+              isImp: true,
             }}
             textBox={{
               className: "txt-fld",
               name: "visit_type_code",
               value: this.state.visit_type_code,
               events: {
-                onChange: this.changeTexts.bind(this)
+                onChange: this.changeTexts.bind(this),
               },
               others: {
                 tabIndex: "1",
-                placeholder: this.state.visit_type_code_placeHolder
-              }
+                placeholder: this.state.visit_type_code_placeHolder,
+              },
             }}
           />
 
@@ -322,7 +322,7 @@ class VisitType extends Component {
             div={{ className: "col-3 form-group mandatory" }}
             label={{
               fieldName: "type_desc",
-              isImp: true
+              isImp: true,
             }}
             textBox={{
               className: "txt-fld",
@@ -330,8 +330,8 @@ class VisitType extends Component {
               value: this.state.visit_type_desc,
 
               events: {
-                onChange: this.changeTexts.bind(this)
-              }
+                onChange: this.changeTexts.bind(this),
+              },
             }}
           />
 
@@ -339,7 +339,7 @@ class VisitType extends Component {
             div={{ className: "col-3 form-group mandatory arabic-txt-fld" }}
             label={{
               fieldName: "arabic_type_desc",
-              isImp: true
+              isImp: true,
             }}
             textBox={{
               className: "txt-fld",
@@ -347,15 +347,15 @@ class VisitType extends Component {
               value: this.state.arabic_visit_type_desc,
 
               events: {
-                onChange: this.changeTexts.bind(this)
-              }
+                onChange: this.changeTexts.bind(this),
+              },
             }}
           />
 
           <AlagehAutoComplete
             div={{ className: "col-2  form-group" }}
             label={{
-              fieldName: "consultation"
+              fieldName: "consultation",
             }}
             selector={{
               name: "consultation",
@@ -365,13 +365,13 @@ class VisitType extends Component {
                 textField:
                   this.state.selectedLang === "en" ? "name" : "arabic_name",
                 valueField: "value",
-                data: FORMAT_YESNO
+                data: FORMAT_YESNO,
               },
-              onChange: this.changeTexts.bind(this)
+              onChange: this.changeTexts.bind(this),
             }}
           />
 
-          <div className="col" style={{ marginTop: 19 }}>
+          <div className="col" style={{ marginTop: 20 }}>
             <button
               onClick={this.addVisit.bind(this)}
               className="btn btn-primary"
@@ -395,14 +395,14 @@ class VisitType extends Component {
                           label: (
                             <AlgaehLabel label={{ fieldName: "type_code" }} />
                           ),
-                          disabled: true
+                          disabled: true,
                         },
                         {
                           fieldName: "visit_type_desc",
                           label: (
                             <AlgaehLabel label={{ fieldName: "type_desc" }} />
                           ),
-                          editorTemplate: row => {
+                          editorTemplate: (row) => {
                             return (
                               <AlagehFormGroup
                                 div={{}}
@@ -414,17 +414,17 @@ class VisitType extends Component {
                                     onChange: this.onchangegridcol.bind(
                                       this,
                                       row
-                                    )
+                                    ),
                                   },
                                   others: {
                                     errormessage:
                                       "Description - cannot be blank",
-                                    required: true
-                                  }
+                                    required: true,
+                                  },
                                 }}
                               />
                             );
-                          }
+                          },
                         },
                         {
                           fieldName: "arabic_visit_type_desc",
@@ -433,7 +433,7 @@ class VisitType extends Component {
                               label={{ fieldName: "arabic_type_desc" }}
                             />
                           ),
-                          editorTemplate: row => {
+                          editorTemplate: (row) => {
                             return (
                               <AlagehFormGroup
                                 div={{}}
@@ -445,17 +445,17 @@ class VisitType extends Component {
                                     onChange: this.onchangegridcol.bind(
                                       this,
                                       row
-                                    )
+                                    ),
                                   },
                                   others: {
                                     errormessage:
                                       "Arabic Name - cannot be blank",
-                                    required: true
-                                  }
+                                    required: true,
+                                  },
                                 }}
                               />
                             );
-                          }
+                          },
                         },
                         {
                           fieldName: "consultation",
@@ -464,10 +464,10 @@ class VisitType extends Component {
                               label={{ fieldName: "consultation" }}
                             />
                           ),
-                          displayTemplate: row => {
+                          displayTemplate: (row) => {
                             return row.consultation === "N" ? "No" : "Yes";
                           },
-                          editorTemplate: row => {
+                          editorTemplate: (row) => {
                             return row.consultation === "N" ? "No" : "Yes";
                             // return (
                             //   <AlagehAutoComplete
@@ -491,19 +491,19 @@ class VisitType extends Component {
                             //   />
                             // );
                           },
-                          others: { maxWidth: 100 }
+                          others: { maxWidth: 100 },
                         },
                         {
                           fieldName: "created_by",
                           label: (
                             <AlgaehLabel label={{ fieldName: "created_by" }} />
                           ),
-                          displayTemplate: row => {
+                          displayTemplate: (row) => {
                             let display =
                               this.props.userdrtails === undefined
                                 ? []
                                 : this.props.userdrtails.filter(
-                                    f =>
+                                    (f) =>
                                       f.algaeh_d_app_user_id === row.created_by
                                   );
 
@@ -515,12 +515,12 @@ class VisitType extends Component {
                               </span>
                             );
                           },
-                          editorTemplate: row => {
+                          editorTemplate: (row) => {
                             let display =
                               this.props.userdrtails === undefined
                                 ? []
                                 : this.props.userdrtails.filter(
-                                    f =>
+                                    (f) =>
                                       f.algaeh_d_app_user_id === row.created_by
                                   );
 
@@ -531,7 +531,7 @@ class VisitType extends Component {
                                   : ""}
                               </span>
                             );
-                          }
+                          },
                         },
                         {
                           fieldName: "created_date",
@@ -540,28 +540,28 @@ class VisitType extends Component {
                               label={{ fieldName: "created_date" }}
                             />
                           ),
-                          displayTemplate: row => {
+                          displayTemplate: (row) => {
                             return (
                               <span>{this.dateFormater(row.created_date)}</span>
                             );
                           },
-                          editorTemplate: row => {
+                          editorTemplate: (row) => {
                             return (
                               <span>{this.dateFormater(row.created_date)}</span>
                             );
-                          }
+                          },
                         },
                         {
                           fieldName: "visit_status",
                           label: (
                             <AlgaehLabel label={{ fieldName: "status" }} />
                           ),
-                          displayTemplate: row => {
+                          displayTemplate: (row) => {
                             return row.visit_status === "A"
                               ? "Active"
                               : "Inactive";
                           },
-                          editorTemplate: row => {
+                          editorTemplate: (row) => {
                             return (
                               <AlagehAutoComplete
                                 div={{}}
@@ -572,33 +572,36 @@ class VisitType extends Component {
                                   dataSource: {
                                     textField: "name",
                                     valueField: "value",
-                                    data: GlobalVariables.FORMAT_STATUS
+                                    data: GlobalVariables.FORMAT_STATUS,
                                   },
                                   others: {
                                     errormessage: "Status - cannot be blank",
-                                    required: true
+                                    required: true,
                                   },
-                                  onChange: this.onchangegridcol.bind(this, row)
+                                  onChange: this.onchangegridcol.bind(
+                                    this,
+                                    row
+                                  ),
                                 }}
                               />
                             );
-                          }
-                        }
+                          },
+                        },
                       ]}
                       keyId="visit_type_code"
                       dataSource={{
                         data:
                           this.props.visittypes === undefined
                             ? []
-                            : this.props.visittypes
+                            : this.props.visittypes,
                       }}
                       filter={true}
                       isEditable={true}
                       paging={{ page: 0, rowsPerPage: 10 }}
                       events={{
                         onDelete: this.deleteVisitType.bind(this),
-                        onEdit: row => {},
-                        onDone: this.updateVisitType.bind(this)
+                        onEdit: (row) => {},
+                        onDone: this.updateVisitType.bind(this),
                       }}
                     />
                   </div>
@@ -615,14 +618,14 @@ class VisitType extends Component {
 function mapStateToProps(state) {
   return {
     visittypes: state.visittypes,
-    userdrtails: state.userdrtails
+    userdrtails: state.userdrtails,
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getVisittypes: AlgaehActions
+      getVisittypes: AlgaehActions,
     },
     dispatch
   );
