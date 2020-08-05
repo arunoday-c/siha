@@ -222,6 +222,34 @@ export const addPrepaymentRequest = (req, res, next) => {
 };
 
 //created by:irfan
+export const updatePrepaymentRequest = (req, res, next) => {
+  const _mysql = new algaehMysql();
+
+  const input = req.body;
+  _mysql
+    .executeQuery({
+      query:
+        "UPDATE finance_f_prepayment_request set prepayment_amount=?,start_date=?, end_date=? \
+        where finance_f_prepayment_request_id=?",
+      values: [
+        input.prepayment_amount,
+        input.start_date,
+        input.end_date,
+        input.finance_f_prepayment_request_id
+      ],
+    })
+    .then((result) => {
+      _mysql.releaseConnection();
+      req.records = result;
+      next();
+    })
+    .catch((e) => {
+      _mysql.releaseConnection();
+      next(e);
+    });
+};
+
+//created by:irfan
 export const getPrepaymentRequests = (req, res, next) => {
   const _mysql = new algaehMysql();
 
