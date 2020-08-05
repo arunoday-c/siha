@@ -748,11 +748,12 @@ export default class MiscEarningsDeductionsNew extends Component {
                         },
                       }}
                     />
-                    <div className="col" style={{ paddingTop: 19 }}>
+                    <div className="col">
                       <button
                         type="button"
                         className="btn btn-default"
                         onClick={this.applyAmount.bind(this)}
+                        style={{ marginTop: 20 }}
                       >
                         Assign to all
                       </button>
