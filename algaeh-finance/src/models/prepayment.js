@@ -221,7 +221,8 @@ export const addPrepaymentRequest = (req, res, next) => {
     });
 };
 
-//created by:irfan
+//created by:Nowshad
+//To update Prepayment request
 export const updatePrepaymentRequest = (req, res, next) => {
   const _mysql = new algaehMysql();
 
@@ -236,6 +237,34 @@ export const updatePrepaymentRequest = (req, res, next) => {
         input.start_date,
         input.end_date,
         input.finance_f_prepayment_request_id,
+      ],
+    })
+    .then((result) => {
+      _mysql.releaseConnection();
+      req.records = result;
+      next();
+    })
+    .catch((e) => {
+      _mysql.releaseConnection();
+      next(e);
+    });
+};
+
+
+//created by:Nowshad
+//To update Prepayment Amortize amount to respective cost center
+export const updatePrepaymentDetail = (req, res, next) => {
+  const _mysql = new algaehMysql();
+
+  const input = req.body;
+  _mysql
+    .executeQuery({
+      query:
+        "UPDATE finance_f_prepayment_detail set hospital_id=?, project_id=? where finance_f_prepayment_detail_id=?",
+      values: [
+        input.hospital_id,
+        input.project_id,
+        input.finance_f_prepayment_detail_id
       ],
     })
     .then((result) => {
