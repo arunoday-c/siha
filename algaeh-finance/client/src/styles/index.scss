@@ -1550,15 +1550,19 @@ td {
 //Semantic UI CSS Owerwrite Start Here //
 
 .ui.fluid.dropdown {
-  min-height: 30px !important;
-  max-height: 30px !important;
+  min-height:$formMinHt !important;
+  max-height:$formMaxHt !important;
   padding: 0;
+  border-radius: $borderRadius !important;
 }
 .mandatory {
   .ui.selection.dropdown {
     border: 1px solid rgb(225, 173, 70);
   }
   .ant-select-selection {
+    border: 1px solid rgb(225, 173, 70);
+  }
+  .ant-select-selector {
     border: 1px solid rgb(225, 173, 70);
   }
 }
@@ -1595,8 +1599,8 @@ td {
 .ui.input > input {
   font-weight: 700;
   font-size: 0.9em;
-  min-height: 30px !important;
-  max-height: 30px !important;
+  min-height:$formMinHt !important;
+  max-height:$formMaxHt !important;
   padding: 0.3em 0.5em;
 }
 
@@ -1626,11 +1630,6 @@ td {
   .print-area .dropdown-menu {
     left: 5px;
     right: inherit;
-  }
-  .hdg_bredcrump {
-    //   background: url("./assets/images/breadcrump_border_Ar.webp") no-repeat top
-    //     left #fff !important;
-    height: 74px;
   }
 
   .hptl-phase1-add-patient-form .primary-details,

@@ -120,28 +120,28 @@ export default function InsuranceStatement() {
               />
             }
             // breadStyle={this.props.breadStyle}
-            pageNavPath={[
-              {
-                pageName: (
-                  <AlgaehLabel
-                    label={{
-                      fieldName: "form_home",
-                      align: "ltr",
-                    }}
-                  />
-                ),
-              },
-              {
-                pageName: (
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Insurance Statement ",
-                      align: "ltr",
-                    }}
-                  />
-                ),
-              },
-            ]}
+            // pageNavPath={[
+            //   {
+            //     pageName: (
+            //       <AlgaehLabel
+            //         label={{
+            //           fieldName: "form_home",
+            //           align: "ltr",
+            //         }}
+            //       />
+            //     ),
+            //   },
+            //   {
+            //     pageName: (
+            //       <AlgaehLabel
+            //         label={{
+            //           forceLabel: "Insurance Statement ",
+            //           align: "ltr",
+            //         }}
+            //       />
+            //     ),
+            //   },
+            // ]}
             soptlightSearch={{
               label: (
                 <AlgaehLabel

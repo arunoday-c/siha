@@ -7,7 +7,7 @@ import {
   AlgaehLabel,
   AlagehFormGroup,
   AlagehAutoComplete,
-  AlgaehDateHandler
+  AlgaehDateHandler,
 } from "../../Wrapper/algaehWrapper";
 import Options from "../../../Options.json";
 import moment from "moment";
@@ -27,25 +27,25 @@ class DepreciationEntry extends Component {
             />
           }
           breadStyle={this.props.breadStyle}
-          pageNavPath={[
-            {
-              pageName: (
-                <AlgaehLabel
-                  label={{
-                    forceLabel: "Home",
-                    align: "ltr"
-                  }}
-                />
-              )
-            },
-            {
-              pageName: (
-                <AlgaehLabel
-                  label={{ forceLabel: "Depreciation Entry", align: "ltr" }}
-                />
-              )
-            }
-          ]}
+          // pageNavPath={[
+          //   {
+          //     pageName: (
+          //       <AlgaehLabel
+          //         label={{
+          //           forceLabel: "Home",
+          //           align: "ltr"
+          //         }}
+          //       />
+          //     )
+          //   },
+          //   {
+          //     pageName: (
+          //       <AlgaehLabel
+          //         label={{ forceLabel: "Depreciation Entry", align: "ltr" }}
+          //       />
+          //     )
+          //   }
+          // ]}
           soptlightSearch={{
             label: (
               <AlgaehLabel
@@ -55,20 +55,20 @@ class DepreciationEntry extends Component {
             value: this.state.document_number,
             selectValue: "document_number",
             events: {
-              onChange: null //getCtrlCode.bind(this, this)
+              onChange: null, //getCtrlCode.bind(this, this)
             },
             jsonFile: {
               fileName: "spotlightSearch",
-              fieldName: "initialStock.intstock"
+              fieldName: "initialStock.intstock",
             },
-            searchName: "initialstock"
+            searchName: "initialstock",
           }}
           userArea={
             <div className="row">
               <div className="col">
                 <AlgaehLabel
                   label={{
-                    forceLabel: "Depreciation Date"
+                    forceLabel: "Depreciation Date",
                   }}
                 />
                 <h6>
@@ -89,52 +89,52 @@ class DepreciationEntry extends Component {
             <AlagehFormGroup
               div={{ className: "col-6" }}
               label={{
-                forceLabel: "Asset Desc."
+                forceLabel: "Asset Desc.",
               }}
               textBox={{
                 className: "txt-fld",
                 name: "batchno",
                 value: this.state.batchno,
                 events: {
-                  onChange: null
+                  onChange: null,
                 },
                 others: {
                   // disabled: true
-                }
+                },
               }}
             />
             <AlagehFormGroup
               div={{ className: "col-2" }}
               label={{
-                forceLabel: "Year/Period"
+                forceLabel: "Year/Period",
               }}
               textBox={{
                 className: "txt-fld",
                 name: "batchno",
                 value: this.state.batchno,
                 events: {
-                  onChange: null
+                  onChange: null,
                 },
                 others: {
                   // disabled: true
-                }
+                },
               }}
             />
             <AlagehFormGroup
               div={{ className: "col-2" }}
               label={{
-                forceLabel: "Last Period"
+                forceLabel: "Last Period",
               }}
               textBox={{
                 className: "txt-fld",
                 name: "batchno",
                 value: this.state.batchno,
                 events: {
-                  onChange: null
+                  onChange: null,
                 },
                 others: {
                   // disabled: true
-                }
+                },
               }}
             />
             <AlagehAutoComplete
@@ -147,10 +147,10 @@ class DepreciationEntry extends Component {
                 dataSource: {
                   textField: "item_description",
                   valueField: "hims_d_item_master_id",
-                  data: this.props.itemlist
+                  data: this.props.itemlist,
                 },
                 onChange: null,
-                onClear: null
+                onClear: null,
               }}
             />
           </div>
@@ -160,12 +160,12 @@ class DepreciationEntry extends Component {
               label={{ forceLabel: "From Date" }}
               textBox={{
                 className: "txt-fld",
-                name: "expiry_date"
+                name: "expiry_date",
               }}
               minDate={new Date()}
               //disabled={true}
               events={{
-                onChange: null
+                onChange: null,
               }}
               value={this.state.expiry_date}
             />
@@ -175,12 +175,12 @@ class DepreciationEntry extends Component {
               label={{ forceLabel: "To Date" }}
               textBox={{
                 className: "txt-fld",
-                name: "expiry_date"
+                name: "expiry_date",
               }}
               minDate={new Date()}
               //disabled={true}
               events={{
-                onChange: null
+                onChange: null,
               }}
               value={this.state.expiry_date}
             />
@@ -194,10 +194,10 @@ class DepreciationEntry extends Component {
                 dataSource: {
                   textField: "item_description",
                   valueField: "hims_d_item_master_id",
-                  data: this.props.itemlist
+                  data: this.props.itemlist,
                 },
                 onChange: null,
-                onClear: null
+                onClear: null,
               }}
             />
             <div className="col">
@@ -235,25 +235,25 @@ class DepreciationEntry extends Component {
                         fieldName: "item_id",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Asset Code" }} />
-                        )
+                        ),
                       },
 
                       {
                         fieldName: "item_category",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Asset Desc." }} />
-                        )
+                        ),
                       },
                       {
                         fieldName: "qtyhand",
                         label: <AlgaehLabel label={{ forceLabel: "Method" }} />,
-                        disabled: true
+                        disabled: true,
                       },
                       {
                         fieldName: "expiry_date",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Fiscal Year" }} />
-                        )
+                        ),
                       },
                       {
                         fieldName: "batchno",
@@ -262,18 +262,18 @@ class DepreciationEntry extends Component {
                             label={{ forceLabel: "Fiscal Period" }}
                           />
                         ),
-                        disabled: true
+                        disabled: true,
                       },
                       {
                         fieldName: "uom_id",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Actual Year" }} />
-                        )
-                      }
+                        ),
+                      },
                     ]}
                     keyId="service_type_id"
                     dataSource={{
-                      data: this.state.pharmacy_stock_detail
+                      data: this.state.pharmacy_stock_detail,
                     }}
                     isEditable={true}
                     paging={{ page: 0, rowsPerPage: 10 }}

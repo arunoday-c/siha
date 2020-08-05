@@ -119,25 +119,25 @@ class PurchaseOrderEntry extends Component {
             />
           }
           breadStyle={this.props.breadStyle}
-          pageNavPath={[
-            {
-              pageName: (
-                <AlgaehLabel
-                  label={{
-                    forceLabel: "Home",
-                    align: "ltr",
-                  }}
-                />
-              ),
-            },
-            {
-              pageName: (
-                <AlgaehLabel
-                  label={{ forceLabel: "Purchase Order Entry", align: "ltr" }}
-                />
-              ),
-            },
-          ]}
+          // pageNavPath={[
+          //   {
+          //     pageName: (
+          //       <AlgaehLabel
+          //         label={{
+          //           forceLabel: "Home",
+          //           align: "ltr",
+          //         }}
+          //       />
+          //     ),
+          //   },
+          //   {
+          //     pageName: (
+          //       <AlgaehLabel
+          //         label={{ forceLabel: "Purchase Order Entry", align: "ltr" }}
+          //       />
+          //     ),
+          //   },
+          // ]}
           soptlightSearch={{
             label: (
               <AlgaehLabel

@@ -15,14 +15,14 @@ import {
   // radioChange,
   getTransList,
   datehandle,
-  changeEventHandaler
+  changeEventHandaler,
 } from "./InvAcknowledgeListEvent";
 
 import {
   AlgaehDataGrid,
   AlgaehLabel,
   AlagehAutoComplete,
-  AlgaehDateHandler
+  AlgaehDateHandler,
 } from "../../Wrapper/algaehWrapper";
 import moment from "moment";
 import { AlgaehActions } from "../../../actions/algaehActions";
@@ -43,7 +43,7 @@ class InvAcknowledgeList extends Component {
         to_date,
         from_location_id,
         to_location_id,
-        ack_done
+        ack_done,
       } = this.props.prev;
       this.setState(
         {
@@ -51,7 +51,7 @@ class InvAcknowledgeList extends Component {
           to_date,
           from_location_id,
           to_location_id,
-          ack_done
+          ack_done,
         },
         () => getTransList(this)
       );
@@ -63,7 +63,7 @@ class InvAcknowledgeList extends Component {
           from_location_id: null,
           to_location_id: null,
           requisition_list: [],
-          ack_done: null
+          ack_done: null,
         },
         () => getTransList(this)
       );
@@ -75,12 +75,12 @@ class InvAcknowledgeList extends Component {
       method: "GET",
       redux: {
         type: "INV_LOCATIOS_GET_DATA",
-        mappingName: "inventorylocations"
-      }
+        mappingName: "inventorylocations",
+      },
     });
   }
 
-  ourOwnMiniNavigator = obj => {
+  ourOwnMiniNavigator = (obj) => {
     const { requisition_list, ...rest } = this.state;
     let sendObj = Object.assign(rest, obj);
     this.props.new_routeComponents(sendObj);
@@ -97,28 +97,28 @@ class InvAcknowledgeList extends Component {
               />
             }
             breadStyle={this.props.breadStyle}
-            pageNavPath={[
-              {
-                pageName: (
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Home",
-                      align: "ltr"
-                    }}
-                  />
-                )
-              },
-              {
-                pageName: (
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Acknowledge List",
-                      align: "ltr"
-                    }}
-                  />
-                )
-              }
-            ]}
+            // pageNavPath={[
+            //   {
+            //     pageName: (
+            //       <AlgaehLabel
+            //         label={{
+            //           forceLabel: "Home",
+            //           align: "ltr"
+            //         }}
+            //       />
+            //     )
+            //   },
+            //   {
+            //     pageName: (
+            //       <AlgaehLabel
+            //         label={{
+            //           forceLabel: "Acknowledge List",
+            //           align: "ltr"
+            //         }}
+            //       />
+            //     )
+            //   }
+            // ]}
           />
           <div
             className="row inner-top-search"
@@ -131,7 +131,7 @@ class InvAcknowledgeList extends Component {
                   label={{ forceLabel: "From Date" }}
                   textBox={{ className: "txt-fld", name: "from_date" }}
                   events={{
-                    onChange: datehandle.bind(this, this)
+                    onChange: datehandle.bind(this, this),
                   }}
                   value={this.state.from_date}
                 />
@@ -140,7 +140,7 @@ class InvAcknowledgeList extends Component {
                   label={{ forceLabel: "To Date" }}
                   textBox={{ className: "txt-fld", name: "to_date" }}
                   events={{
-                    onChange: datehandle.bind(this, this)
+                    onChange: datehandle.bind(this, this),
                   }}
                   value={this.state.to_date}
                 />
@@ -154,17 +154,17 @@ class InvAcknowledgeList extends Component {
                     dataSource: {
                       textField: "location_description",
                       valueField: "hims_d_inventory_location_id",
-                      data: this.props.inventorylocations
+                      data: this.props.inventorylocations,
                     },
                     onChange: changeEventHandaler.bind(this, this),
                     onClear: () => {
                       this.setState(
                         {
-                          to_location_id: null
+                          to_location_id: null,
                         },
                         () => getTransList(this)
                       );
-                    }
+                    },
                   }}
                 />
 
@@ -178,17 +178,17 @@ class InvAcknowledgeList extends Component {
                     dataSource: {
                       textField: "name",
                       valueField: "value",
-                      data: GlobalVariables.ACK_STATUS
+                      data: GlobalVariables.ACK_STATUS,
                     },
                     onChange: changeEventHandaler.bind(this, this),
                     onClear: () => {
                       this.setState(
                         {
-                          ack_done: null
+                          ack_done: null,
                         },
                         () => getTransList(this)
                       );
-                    }
+                    },
                   }}
                 />
               </div>
@@ -205,7 +205,7 @@ class InvAcknowledgeList extends Component {
                       {
                         fieldName: "action",
                         label: <AlgaehLabel label={{ forceLabel: "action" }} />,
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return (
                             <span>
                               <i
@@ -215,7 +215,7 @@ class InvAcknowledgeList extends Component {
                                     RQ_Screen: "InvTransferEntry",
                                     transfer_number: row.transfer_number,
                                     from_location_id: row.from_location_id,
-                                    to_location_id: row.to_location_id
+                                    to_location_id: row.to_location_id,
                                   });
                                 }}
                               />
@@ -225,15 +225,15 @@ class InvAcknowledgeList extends Component {
                         others: {
                           maxWidth: 100,
                           resizable: false,
-                          style: { textAlign: "center" }
-                        }
+                          style: { textAlign: "center" },
+                        },
                       },
                       {
                         fieldName: "ack_done",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Ack Status" }} />
                         ),
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return row.ack_done === "Y" ? (
                             <span className="badge badge-success">
                               Acknowledged
@@ -245,8 +245,8 @@ class InvAcknowledgeList extends Component {
                         others: {
                           maxWidth: 120,
                           resizable: false,
-                          style: { textAlign: "center" }
-                        }
+                          style: { textAlign: "center" },
+                        },
                       },
                       {
                         fieldName: "transfer_number",
@@ -259,8 +259,8 @@ class InvAcknowledgeList extends Component {
                         others: {
                           maxWidth: 150,
                           resizable: false,
-                          style: { textAlign: "center" }
-                        }
+                          style: { textAlign: "center" },
+                        },
                       },
                       {
                         fieldName: "transfer_date",
@@ -269,7 +269,7 @@ class InvAcknowledgeList extends Component {
                             label={{ forceLabel: "Transfer Date" }}
                           />
                         ),
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return (
                             <span>{dateFormater(this, row.transfer_date)}</span>
                           );
@@ -278,8 +278,8 @@ class InvAcknowledgeList extends Component {
                         disabled: true,
                         others: {
                           maxWidth: 150,
-                          resizable: false
-                        }
+                          resizable: false,
+                        },
                       },
                       {
                         fieldName: "from_location_id",
@@ -289,7 +289,7 @@ class InvAcknowledgeList extends Component {
                           />
                         ),
 
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           let x;
                           if (
                             this.props.inventorylocations !== undefined &&
@@ -297,7 +297,7 @@ class InvAcknowledgeList extends Component {
                           ) {
                             x = Enumerable.from(this.props.inventorylocations)
                               .where(
-                                w =>
+                                (w) =>
                                   w.hims_d_inventory_location_id ===
                                   row.from_location_id
                               )
@@ -312,8 +312,8 @@ class InvAcknowledgeList extends Component {
                         disabled: true,
                         others: {
                           resizable: false,
-                          style: { textAlign: "center" }
-                        }
+                          style: { textAlign: "center" },
+                        },
                       },
                       {
                         fieldName: "to_location_id",
@@ -323,7 +323,7 @@ class InvAcknowledgeList extends Component {
                           />
                         ),
 
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           let x;
                           if (
                             this.props.inventorylocations !== undefined &&
@@ -331,7 +331,7 @@ class InvAcknowledgeList extends Component {
                           ) {
                             x = Enumerable.from(this.props.inventorylocations)
                               .where(
-                                w =>
+                                (w) =>
                                   w.hims_d_inventory_location_id ===
                                   row.to_location_id
                               )
@@ -345,13 +345,13 @@ class InvAcknowledgeList extends Component {
                         },
                         others: {
                           resizable: false,
-                          style: { textAlign: "center" }
-                        }
-                      }
+                          style: { textAlign: "center" },
+                        },
+                      },
                     ]}
                     keyId="transfer_number"
                     dataSource={{
-                      data: this.state.requisition_list
+                      data: this.state.requisition_list,
                     }}
                     noDataText="No data available for location"
                     paging={{ page: 0, rowsPerPage: 10 }}
@@ -368,14 +368,14 @@ class InvAcknowledgeList extends Component {
 
 function mapStateToProps(state) {
   return {
-    inventorylocations: state.inventorylocations
+    inventorylocations: state.inventorylocations,
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getLocation: AlgaehActions
+      getLocation: AlgaehActions,
     },
     dispatch
   );

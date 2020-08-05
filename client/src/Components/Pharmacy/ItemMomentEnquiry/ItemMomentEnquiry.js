@@ -8,7 +8,7 @@ import {
   AlgaehLabel,
   AlagehAutoComplete,
   AlgaehDateHandler,
-  AlagehFormGroup
+  AlagehFormGroup,
 } from "../../Wrapper/algaehWrapper";
 
 import BreadCrumb from "../../common/BreadCrumb/BreadCrumb.js";
@@ -17,7 +17,7 @@ import {
   dateFormater,
   datehandle,
   ProcessItemMoment,
-  dateValidate
+  dateValidate,
 } from "./ItemMomentEnquiryEvents";
 import "./ItemMomentEnquiry.scss";
 import "../../../styles/site.scss";
@@ -35,7 +35,7 @@ class ItemMomentEnquiry extends Component {
       from_date: null,
       to_date: null,
       barcode: null,
-      transaction_type: null
+      transaction_type: null,
     };
   }
 
@@ -47,8 +47,8 @@ class ItemMomentEnquiry extends Component {
       method: "GET",
       redux: {
         type: "ITEM_GET_DATA",
-        mappingName: "itemlist"
-      }
+        mappingName: "itemlist",
+      },
     });
 
     this.props.getLocation({
@@ -57,8 +57,8 @@ class ItemMomentEnquiry extends Component {
       method: "GET",
       redux: {
         type: "ANALYTES_GET_DATA",
-        mappingName: "locations"
-      }
+        mappingName: "locations",
+      },
     });
 
     if (this.props.itemuom === undefined || this.props.itemuom.length === 0) {
@@ -68,8 +68,8 @@ class ItemMomentEnquiry extends Component {
         method: "GET",
         redux: {
           type: "ITEM_UOM_GET_DATA",
-          mappingName: "itemuom"
-        }
+          mappingName: "itemuom",
+        },
       });
     }
   }
@@ -85,28 +85,28 @@ class ItemMomentEnquiry extends Component {
               />
             }
             breadStyle={this.props.breadStyle}
-            pageNavPath={[
-              {
-                pageName: (
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Home",
-                      align: "ltr"
-                    }}
-                  />
-                )
-              },
-              {
-                pageName: (
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Item Movement Enquiry",
-                      align: "ltr"
-                    }}
-                  />
-                )
-              }
-            ]}
+            // pageNavPath={[
+            //   {
+            //     pageName: (
+            //       <AlgaehLabel
+            //         label={{
+            //           forceLabel: "Home",
+            //           align: "ltr"
+            //         }}
+            //       />
+            //     )
+            //   },
+            //   {
+            //     pageName: (
+            //       <AlgaehLabel
+            //         label={{
+            //           forceLabel: "Item Movement Enquiry",
+            //           align: "ltr"
+            //         }}
+            //       />
+            //     )
+            //   }
+            // ]}
           />
 
           <div className="hptl-phase1-item-moment-enquiry-form">
@@ -122,7 +122,7 @@ class ItemMomentEnquiry extends Component {
                     textBox={{ className: "txt-fld", name: "from_date" }}
                     events={{
                       onChange: datehandle.bind(this, this),
-                      onBlur: dateValidate.bind(this, this)
+                      onBlur: dateValidate.bind(this, this),
                     }}
                     value={this.state.from_date}
                   />
@@ -132,7 +132,7 @@ class ItemMomentEnquiry extends Component {
                     textBox={{ className: "txt-fld", name: "to_date" }}
                     events={{
                       onChange: datehandle.bind(this, this),
-                      onBlur: dateValidate.bind(this, this)
+                      onBlur: dateValidate.bind(this, this),
                     }}
                     maxDate={new Date()}
                     value={this.state.to_date}
@@ -147,28 +147,28 @@ class ItemMomentEnquiry extends Component {
                       dataSource: {
                         textField: "item_description",
                         valueField: "hims_d_item_master_id",
-                        data: this.props.itemlist
+                        data: this.props.itemlist,
                       },
                       onChange: changeTexts.bind(this, this),
                       onClear: () => {
                         this.setState({
-                          item_code_id: null
+                          item_code_id: null,
                         });
-                      }
+                      },
                     }}
                   />
                   <AlagehFormGroup
                     div={{ className: "col" }}
                     label={{
-                      forceLabel: "Item Barcode"
+                      forceLabel: "Item Barcode",
                     }}
                     textBox={{
                       className: "txt-fld",
                       name: "barcode",
                       value: this.state.barcode,
                       events: {
-                        onChange: changeTexts.bind(this, this)
-                      }
+                        onChange: changeTexts.bind(this, this),
+                      },
                     }}
                   />
                   <AlagehAutoComplete
@@ -181,15 +181,15 @@ class ItemMomentEnquiry extends Component {
                       dataSource: {
                         textField: "location_description",
                         valueField: "hims_d_pharmacy_location_id",
-                        data: this.props.locations
+                        data: this.props.locations,
                       },
 
                       onChange: changeTexts.bind(this, this),
                       onClear: () => {
                         this.setState({
-                          location_id: null
+                          location_id: null,
                         });
-                      }
+                      },
                     }}
                   />
 
@@ -203,14 +203,14 @@ class ItemMomentEnquiry extends Component {
                       dataSource: {
                         textField: "name",
                         valueField: "value",
-                        data: GlobalVariables.FORMAT_TRANSACTION_TYPE
+                        data: GlobalVariables.FORMAT_TRANSACTION_TYPE,
                       },
                       onClear: () => {
                         this.setState({
-                          transaction_type: null
+                          transaction_type: null,
                         });
                       },
-                      onChange: changeTexts.bind(this, this)
+                      onChange: changeTexts.bind(this, this),
                     }}
                   />
 
@@ -245,32 +245,33 @@ class ItemMomentEnquiry extends Component {
                           label={{ forceLabel: "Transaction Type" }}
                         />
                       ),
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         return row.transaction_type === "MR"
                           ? "Material Requisition"
                           : row.transaction_type === "ST"
-                            ? "Stock Transfer"
-                            : row.transaction_type === "POS"
-                              ? "Point of Sale"
-                              : row.transaction_type === "SRT"
-                                ? "Sales Return"
-                                : row.transaction_type === "INT"
-                                  ? "Opening Stock"
-                                  : row.transaction_type === "CS"
-                                    ? "Consumption"
-                                    : row.transaction_type === "REC"
-                                      ? "Receipt"
-                                      : row.transaction_type === "PO"
-                                        ? "Purchase Order"
-                                        : row.transaction_type === "DNA"
-                                          ? "Delivery Note"
-                                          : row.transaction_type === "ACK"
-                                            ? "Transfer Acknowledge"
-                                            : row.transaction_type === "PR"
-                                              ? "Purchase Return"
-                                              : row.transaction_type === "AD"
-                                                ? "Stock Adjustment" : "";
-                      }
+                          ? "Stock Transfer"
+                          : row.transaction_type === "POS"
+                          ? "Point of Sale"
+                          : row.transaction_type === "SRT"
+                          ? "Sales Return"
+                          : row.transaction_type === "INT"
+                          ? "Opening Stock"
+                          : row.transaction_type === "CS"
+                          ? "Consumption"
+                          : row.transaction_type === "REC"
+                          ? "Receipt"
+                          : row.transaction_type === "PO"
+                          ? "Purchase Order"
+                          : row.transaction_type === "DNA"
+                          ? "Delivery Note"
+                          : row.transaction_type === "ACK"
+                          ? "Transfer Acknowledge"
+                          : row.transaction_type === "PR"
+                          ? "Purchase Return"
+                          : row.transaction_type === "AD"
+                          ? "Stock Adjustment"
+                          : "";
+                      },
                     },
                     {
                       fieldName: "transaction_date",
@@ -279,24 +280,24 @@ class ItemMomentEnquiry extends Component {
                           label={{ forceLabel: "Transaction Date" }}
                         />
                       ),
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         return (
                           <span>{dateFormater(row.transaction_date)}</span>
                         );
-                      }
+                      },
                     },
                     {
                       fieldName: "from_location_id",
                       label: <AlgaehLabel label={{ forceLabel: "Location" }} />,
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         let display =
                           this.props.locations === undefined
                             ? []
                             : this.props.locations.filter(
-                              f =>
-                                f.hims_d_pharmacy_location_id ===
-                                row.from_location_id
-                            );
+                                (f) =>
+                                  f.hims_d_pharmacy_location_id ===
+                                  row.from_location_id
+                              );
 
                         return (
                           <span>
@@ -305,21 +306,21 @@ class ItemMomentEnquiry extends Component {
                               : ""}
                           </span>
                         );
-                      }
+                      },
                     },
                     {
                       fieldName: "item_code_id",
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Item Name" }} />
                       ),
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         let display =
                           this.props.itemlist === undefined
                             ? []
                             : this.props.itemlist.filter(
-                              f =>
-                                f.hims_d_item_master_id === row.item_code_id
-                            );
+                                (f) =>
+                                  f.hims_d_item_master_id === row.item_code_id
+                              );
 
                         return (
                           <span>
@@ -332,16 +333,16 @@ class ItemMomentEnquiry extends Component {
                                   row.operation === "+"
                                     ? "fas fa-arrow-up green"
                                     : row.operation === "-"
-                                      ? "fas fa-arrow-down red"
-                                      : ""
+                                    ? "fas fa-arrow-down red"
+                                    : ""
                                 }
                               />
                             ) : (
-                                ""
-                              )}
+                              ""
+                            )}
                           </span>
                         );
-                      }
+                      },
                     },
                     {
                       fieldName: "transaction_uom",
@@ -350,15 +351,15 @@ class ItemMomentEnquiry extends Component {
                           label={{ forceLabel: "Unit of Measure" }}
                         />
                       ),
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         let display =
                           this.props.itemuom === undefined
                             ? []
                             : this.props.itemuom.filter(
-                              f =>
-                                f.hims_d_pharmacy_uom_id ===
-                                row.transaction_uom
-                            );
+                                (f) =>
+                                  f.hims_d_pharmacy_uom_id ===
+                                  row.transaction_uom
+                              );
 
                         return (
                           <span>
@@ -367,28 +368,30 @@ class ItemMomentEnquiry extends Component {
                               : ""}
                           </span>
                         );
-                      }
+                      },
                     },
 
                     {
                       fieldName: "batchno",
-                      label: <AlgaehLabel label={{ forceLabel: "Batch No." }} />
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Batch No." }} />
+                      ),
                     },
                     {
                       fieldName: "expiry_date",
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Expiry Date" }} />
                       ),
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         return <span>{dateFormater(row.expiry_date)}</span>;
-                      }
+                      },
                     },
                     {
                       fieldName: "transaction_qty",
                       label: <AlgaehLabel label={{ forceLabel: "Quantity" }} />,
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         return parseFloat(row.transaction_qty);
-                      }
+                      },
                     },
                     // {
                     //   fieldName: "average_cost",
@@ -408,7 +411,7 @@ class ItemMomentEnquiry extends Component {
                   ]}
                   keyId="item_id"
                   dataSource={{
-                    data: this.state.itemmoment
+                    data: this.state.itemmoment,
                   }}
                   paging={{ page: 0, rowsPerPage: 20 }}
                 />
@@ -425,7 +428,7 @@ function mapStateToProps(state) {
   return {
     itemlist: state.itemlist,
     locations: state.locations,
-    itemuom: state.itemuom
+    itemuom: state.itemuom,
   };
 }
 
@@ -434,15 +437,12 @@ function mapDispatchToProps(dispatch) {
     {
       getItems: AlgaehActions,
       getLocation: AlgaehActions,
-      getItemUOM: AlgaehActions
+      getItemUOM: AlgaehActions,
     },
     dispatch
   );
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(ItemMomentEnquiry)
+  connect(mapStateToProps, mapDispatchToProps)(ItemMomentEnquiry)
 );

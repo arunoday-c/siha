@@ -14,14 +14,14 @@ import {
   // radioChange,
   getRequisitionList,
   datehandle,
-  changeEventHandaler
+  changeEventHandaler,
 } from "./InvRequisitionListEvent";
 
 import {
   AlgaehDataGrid,
   AlgaehLabel,
   AlagehAutoComplete,
-  AlgaehDateHandler
+  AlgaehDateHandler,
 } from "../../Wrapper/algaehWrapper";
 import moment from "moment";
 import { AlgaehActions } from "../../../actions/algaehActions";
@@ -42,7 +42,7 @@ class InvRequisitionList extends Component {
         to_date,
         from_location_id,
         to_location_id,
-        status
+        status,
       } = this.props.prev;
       this.setState(
         {
@@ -50,7 +50,7 @@ class InvRequisitionList extends Component {
           to_date,
           from_location_id,
           to_location_id,
-          status
+          status,
         },
         () => getRequisitionList(this)
       );
@@ -64,7 +64,7 @@ class InvRequisitionList extends Component {
           requisition_list: [],
           radioYes: true,
           authorize1: "Y",
-          status: "1"
+          status: "1",
         },
         () => getRequisitionList(this)
       );
@@ -76,12 +76,12 @@ class InvRequisitionList extends Component {
       method: "GET",
       redux: {
         type: "INV_LOCATIOS_GET_DATA",
-        mappingName: "inventorylocations"
-      }
+        mappingName: "inventorylocations",
+      },
     });
   }
 
-  ourOwnMiniNavigator = obj => {
+  ourOwnMiniNavigator = (obj) => {
     const { requisition_list, radioYes, authorize1, ...rest } = this.state;
     let sendObj = Object.assign(rest, obj);
     this.props.new_routeComponents(sendObj);
@@ -98,28 +98,28 @@ class InvRequisitionList extends Component {
               />
             }
             breadStyle={this.props.breadStyle}
-            pageNavPath={[
-              {
-                pageName: (
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Home",
-                      align: "ltr"
-                    }}
-                  />
-                )
-              },
-              {
-                pageName: (
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Requisition Auth List",
-                      align: "ltr"
-                    }}
-                  />
-                )
-              }
-            ]}
+            // pageNavPath={[
+            //   {
+            //     pageName: (
+            //       <AlgaehLabel
+            //         label={{
+            //           forceLabel: "Home",
+            //           align: "ltr"
+            //         }}
+            //       />
+            //     )
+            //   },
+            //   {
+            //     pageName: (
+            //       <AlgaehLabel
+            //         label={{
+            //           forceLabel: "Requisition Auth List",
+            //           align: "ltr"
+            //         }}
+            //       />
+            //     )
+            //   }
+            // ]}
           />
           <div
             className="row inner-top-search"
@@ -132,7 +132,7 @@ class InvRequisitionList extends Component {
                   label={{ forceLabel: "From Date" }}
                   textBox={{ className: "txt-fld", name: "from_date" }}
                   events={{
-                    onChange: datehandle.bind(this, this)
+                    onChange: datehandle.bind(this, this),
                   }}
                   value={this.state.from_date}
                 />
@@ -141,7 +141,7 @@ class InvRequisitionList extends Component {
                   label={{ forceLabel: "To Date" }}
                   textBox={{ className: "txt-fld", name: "to_date" }}
                   events={{
-                    onChange: datehandle.bind(this, this)
+                    onChange: datehandle.bind(this, this),
                   }}
                   value={this.state.to_date}
                 />
@@ -155,14 +155,17 @@ class InvRequisitionList extends Component {
                     dataSource: {
                       textField: "location_description",
                       valueField: "hims_d_inventory_location_id",
-                      data: this.props.inventorylocations
+                      data: this.props.inventorylocations,
                     },
                     onChange: changeEventHandaler.bind(this, this),
                     onClear: () => {
-                      this.setState({
-                        from_location_id: null
-                      }, () => getRequisitionList(this));
-                    }
+                      this.setState(
+                        {
+                          from_location_id: null,
+                        },
+                        () => getRequisitionList(this)
+                      );
+                    },
                   }}
                 />
 
@@ -176,14 +179,17 @@ class InvRequisitionList extends Component {
                     dataSource: {
                       textField: "location_description",
                       valueField: "hims_d_inventory_location_id",
-                      data: this.props.inventorylocations
+                      data: this.props.inventorylocations,
                     },
                     onChange: changeEventHandaler.bind(this, this),
                     onClear: () => {
-                      this.setState({
-                        to_location_id: null
-                      }, () => getRequisitionList(this));
-                    }
+                      this.setState(
+                        {
+                          to_location_id: null,
+                        },
+                        () => getRequisitionList(this)
+                      );
+                    },
                   }}
                 />
 
@@ -197,14 +203,17 @@ class InvRequisitionList extends Component {
                     dataSource: {
                       textField: "name",
                       valueField: "value",
-                      data: GlobalVariables.REQUSITION_STATUS
+                      data: GlobalVariables.REQUSITION_STATUS,
                     },
                     onChange: changeEventHandaler.bind(this, this),
                     onClear: () => {
-                      this.setState({
-                        status: null
-                      }, () => getRequisitionList(this));
-                    }
+                      this.setState(
+                        {
+                          status: null,
+                        },
+                        () => getRequisitionList(this)
+                      );
+                    },
                   }}
                 />
 
@@ -247,25 +256,26 @@ class InvRequisitionList extends Component {
                       {
                         fieldName: "action",
                         label: <AlgaehLabel label={{ forceLabel: "action" }} />,
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return (
                             <span>
                               <i
                                 style={{
                                   pointerEvents:
                                     row.cancel === "Y" ? "none" : "",
-                                  opacity: row.cancel === "Y" ? "0.1" : ""
+                                  opacity: row.cancel === "Y" ? "0.1" : "",
                                 }}
                                 className="fas fa-check"
                                 onClick={() => {
                                   this.ourOwnMiniNavigator({
                                     RQ_Screen: "InvRequisitionEntry",
                                     material_requisition_number:
-                                      row.material_requisition_number
+                                      row.material_requisition_number,
                                   });
                                 }}
                               />
-                              {row.trans_pending === true && row.requistion_type === "MR" ? (
+                              {row.trans_pending === true &&
+                              row.requistion_type === "MR" ? (
                                 <i
                                   className="fa fa-exchange-alt"
                                   onClick={() => {
@@ -273,7 +283,7 @@ class InvRequisitionList extends Component {
                                       RQ_Screen: "InvTransferEntry",
                                       hims_f_inventory_material_header_id:
                                         row.hims_f_inventory_material_header_id,
-                                      from_location: row.to_location_id
+                                      from_location: row.to_location_id,
                                     });
                                   }}
                                 />
@@ -284,34 +294,44 @@ class InvRequisitionList extends Component {
                         others: {
                           maxWidth: 100,
                           resizable: false,
-                          style: { textAlign: "center" }
-                        }
+                          style: { textAlign: "center" },
+                        },
                       },
                       {
                         fieldName: "status",
                         label: <AlgaehLabel label={{ forceLabel: "Status" }} />,
                         displayTemplate: (row) => {
-                          return (row.is_completed && row.requistion_type === "MR") === "Y" ? (
+                          return (row.is_completed &&
+                            row.requistion_type === "MR") === "Y" ? (
                             <span className="badge badge-success">
                               Transfer Completed
                             </span>
-                          ) : (row.is_completed === "Y" && row.requistion_type === "PR") ? (
+                          ) : row.is_completed === "Y" &&
+                            row.requistion_type === "PR" ? (
                             <span className="badge badge-success">
                               PO Generated
                             </span>
-                          ) : (row.authorize1 === 'Y' && row.authorie2 === 'Y' && row.is_completed === 'N' && row.requistion_type === "MR") ? (
+                          ) : row.authorize1 === "Y" &&
+                            row.authorie2 === "Y" &&
+                            row.is_completed === "N" &&
+                            row.requistion_type === "MR" ? (
                             <span className="badge badge-warning">
                               Transfer Pending
                             </span>
-                          ) : (row.authorize1 === 'Y' && row.authorie2 === 'Y' && row.is_completed === 'N' && row.requistion_type === "PR") ? (
+                          ) : row.authorize1 === "Y" &&
+                            row.authorie2 === "Y" &&
+                            row.is_completed === "N" &&
+                            row.requistion_type === "PR" ? (
                             <span className="badge badge-warning">
                               PO Not Generated
-                              </span>
-                          ) : (row.authorize1 === 'N' && row.authorie2 === 'N') ? (
+                            </span>
+                          ) : row.authorize1 === "N" &&
+                            row.authorie2 === "N" ? (
                             <span className="badge badge-danger">
                               Auth 1 Pending
                             </span>
-                          ) : (row.authorize1 === 'Y' && row.authorie2 === 'N') ? (
+                          ) : row.authorize1 === "Y" &&
+                            row.authorie2 === "N" ? (
                             <span className="badge badge-danger">
                               Auth 2 Pending
                             </span>
@@ -338,8 +358,8 @@ class InvRequisitionList extends Component {
                         disabled: true,
                         others: {
                           resizable: false,
-                          style: { textAlign: "center" }
-                        }
+                          style: { textAlign: "center" },
+                        },
                       },
                       {
                         fieldName: "req_type",
@@ -351,8 +371,8 @@ class InvRequisitionList extends Component {
                         disabled: true,
                         others: {
                           resizable: false,
-                          style: { textAlign: "center" }
-                        }
+                          style: { textAlign: "center" },
+                        },
                       },
 
                       {
@@ -362,7 +382,7 @@ class InvRequisitionList extends Component {
                             label={{ forceLabel: "Requistion Date" }}
                           />
                         ),
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return (
                             <span>
                               {dateFormater(this, row.requistion_date)}
@@ -374,8 +394,8 @@ class InvRequisitionList extends Component {
                         others: {
                           maxWidth: 200,
                           resizable: false,
-                          style: { textAlign: "left" }
-                        }
+                          style: { textAlign: "left" },
+                        },
                       },
                       {
                         fieldName: "from_location_id",
@@ -385,7 +405,7 @@ class InvRequisitionList extends Component {
                           />
                         ),
 
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           let x;
                           if (
                             this.props.inventorylocations !== undefined &&
@@ -393,7 +413,7 @@ class InvRequisitionList extends Component {
                           ) {
                             x = Enumerable.from(this.props.inventorylocations)
                               .where(
-                                w =>
+                                (w) =>
                                   w.hims_d_inventory_location_id ===
                                   row.from_location_id
                               )
@@ -409,8 +429,8 @@ class InvRequisitionList extends Component {
                         others: {
                           maxWidth: 200,
                           resizable: false,
-                          style: { textAlign: "center" }
-                        }
+                          style: { textAlign: "center" },
+                        },
                       },
                       {
                         fieldName: "to_location_id",
@@ -418,7 +438,7 @@ class InvRequisitionList extends Component {
                           <AlgaehLabel label={{ forceLabel: "To Location" }} />
                         ),
 
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           let x;
                           if (
                             this.props.inventorylocations !== undefined &&
@@ -426,7 +446,7 @@ class InvRequisitionList extends Component {
                           ) {
                             x = Enumerable.from(this.props.inventorylocations)
                               .where(
-                                w =>
+                                (w) =>
                                   w.hims_d_inventory_location_id ===
                                   row.to_location_id
                               )
@@ -441,13 +461,13 @@ class InvRequisitionList extends Component {
                         others: {
                           maxWidth: 200,
                           resizable: false,
-                          style: { textAlign: "center" }
-                        }
-                      }
+                          style: { textAlign: "center" },
+                        },
+                      },
                     ]}
                     keyId="material_requisition_number"
                     dataSource={{
-                      data: this.state.requisition_list
+                      data: this.state.requisition_list,
                     }}
                     noDataText="No data available for location"
                     paging={{ page: 0, rowsPerPage: 10 }}
@@ -465,7 +485,7 @@ class InvRequisitionList extends Component {
 function mapStateToProps(state) {
   return {
     inventorylocations: state.inventorylocations,
-    inventoryrequisitionlist: state.inventoryrequisitionlist
+    inventoryrequisitionlist: state.inventoryrequisitionlist,
   };
 }
 
@@ -473,15 +493,12 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
       getLocation: AlgaehActions,
-      getRequisitionList: AlgaehActions
+      getRequisitionList: AlgaehActions,
     },
     dispatch
   );
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(InvRequisitionList)
+  connect(mapStateToProps, mapDispatchToProps)(InvRequisitionList)
 );

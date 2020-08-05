@@ -739,7 +739,7 @@ input[type="type"] {
   font-size: $textFontSize;
   padding: 4px 6px 4px;
   border: 1px solid #d3d3d3;
-  border-radius: 2px;
+  border-radius: $borderRadius !important;
   background: $color-white;
   width: 100%;
 }
@@ -839,10 +839,11 @@ textarea {
     width: 99%;
     text-transform: uppercase;
     border: 1px solid #d3d3d3;
-    border-radius: 4px;
+    border-radius: $borderRadius;
     background: $color-white;
     font-size: 0.9em;
-    height: 30px;
+    min-height: $formMinHt !important;
+    max-height: $formMaxHt !important;
     font-weight: 700;
   }
   input[type="date"]::-webkit-calendar-picker-indicator,
@@ -909,7 +910,8 @@ textarea {
   .algaeh-datePicker input[type="datetime-local"],
   .algaeh-datePicker input[type="month"],
   .algaeh-datePicker input[type="year"],
-  .ant-select-selection {
+  .ant-select-selection,
+  .ant-select-selector {
     background-color: none;
     border: 1px solid #d9ae58;
   }

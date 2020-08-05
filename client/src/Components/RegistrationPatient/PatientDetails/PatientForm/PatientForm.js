@@ -258,7 +258,7 @@ class AddPatientForm extends Component {
                         }}
                       />
                       <AlgaehFormGroup
-                        div={{ className: "col-lg-4 mandatory" }}
+                        div={{ className: "col-4 mandatory" }}
                         label={{
                           fieldName: "full_name",
                           isImp: true,
@@ -270,6 +270,7 @@ class AddPatientForm extends Component {
                           others: {
                             disabled: this.state.existingPatient,
                             tabIndex: "2",
+                            type: "text",
                           },
                         }}
                         events={{
