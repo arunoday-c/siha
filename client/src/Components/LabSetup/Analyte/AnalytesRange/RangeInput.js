@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import {
   AlagehFormGroup,
-  AlagehAutoComplete
+  AlagehAutoComplete,
 } from "../../../Wrapper/algaehWrapper";
 import variableJson from "../../../../utils/GlobalVariables.json";
 export default function RangeInput({ addAnalyte, analyteType }) {
@@ -19,7 +19,7 @@ export default function RangeInput({ addAnalyte, analyteType }) {
     from_oprator: "notselected",
     to_operator: "notselected",
     low_operator: "notselected",
-    high_operator: "notselected"
+    high_operator: "notselected",
   };
 
   const [inputs, setinputs] = useState(baseInput);
@@ -27,9 +27,9 @@ export default function RangeInput({ addAnalyte, analyteType }) {
   function handleChange(e) {
     const name = e.name || e.target.name;
     const value = e.value || e.target.value;
-    setinputs(state => ({
+    setinputs((state) => ({
       ...state,
-      [name]: value
+      [name]: value,
     }));
   }
 
@@ -57,7 +57,7 @@ export default function RangeInput({ addAnalyte, analyteType }) {
         div={{ className: "col" }}
         label={{
           forceLabel: "Gender",
-          isImp: false
+          isImp: false,
         }}
         selector={{
           name: "gender",
@@ -66,16 +66,16 @@ export default function RangeInput({ addAnalyte, analyteType }) {
           dataSource: {
             textField: "name",
             valueField: "value",
-            data: variableJson.LEAVE_GENDER
+            data: variableJson.LEAVE_GENDER,
           },
-          onChange: handleChange
+          onChange: handleChange,
         }}
       />
       <AlagehAutoComplete
         div={{ className: "col" }}
         label={{
           forceLabel: "Age Type",
-          isImp: false
+          isImp: false,
         }}
         selector={{
           name: "age_type",
@@ -84,9 +84,9 @@ export default function RangeInput({ addAnalyte, analyteType }) {
           dataSource: {
             textField: "name",
             valueField: "value",
-            data: variableJson.LAB_AGE_TYPE
+            data: variableJson.LAB_AGE_TYPE,
           },
-          onChange: handleChange
+          onChange: handleChange,
         }}
       />
       {/* <AlagehAutoComplete
@@ -119,22 +119,22 @@ export default function RangeInput({ addAnalyte, analyteType }) {
         div={{ className: "col" }}
         label={{
           forceLabel: `From Age (in ${TYPES[inputs.age_type]})`,
-          isImp: false
+          isImp: false,
         }}
         textBox={{
           className: "txt-fld",
           name: "from_age",
           value: inputs.from_age,
           number: {
-            allowNegative: false
+            allowNegative: false,
           },
           events: {
-            onChange: handleChange
+            onChange: handleChange,
           },
           others: {
-            opposite: "to_age"
+            opposite: "to_age",
             // onBlur: onLostFocus
-          }
+          },
         }}
       />
       {/* <AlagehAutoComplete
@@ -167,22 +167,22 @@ export default function RangeInput({ addAnalyte, analyteType }) {
         div={{ className: "col" }}
         label={{
           forceLabel: `To Age (in ${TYPES[inputs.age_type]})`,
-          isImp: false
+          isImp: false,
         }}
         textBox={{
           className: "txt-fld",
           name: "to_age",
           number: {
-            allowNegative: false
+            allowNegative: false,
           },
           value: inputs.to_age,
           events: {
-            onChange: handleChange
+            onChange: handleChange,
           },
           others: {
-            opposite: "from_age"
+            opposite: "from_age",
             //   onBlur: onLostFocus
-          }
+          },
         }}
       />
 
@@ -217,7 +217,7 @@ export default function RangeInput({ addAnalyte, analyteType }) {
           <AlagehFormGroup
             div={{ className: "col" }}
             label={{
-              forceLabel: "Low"
+              forceLabel: "Low",
             }}
             textBox={{
               decimal: { allowNegative: false },
@@ -225,8 +225,8 @@ export default function RangeInput({ addAnalyte, analyteType }) {
               name: "normal_low",
               value: inputs.normal_low,
               events: {
-                onChange: handleChange
-              }
+                onChange: handleChange,
+              },
             }}
           />
           {/* <AlagehAutoComplete
@@ -258,7 +258,7 @@ export default function RangeInput({ addAnalyte, analyteType }) {
           <AlagehFormGroup
             div={{ className: "col" }}
             label={{
-              forceLabel: "High"
+              forceLabel: "High",
             }}
             textBox={{
               decimal: { allowNegative: false },
@@ -266,8 +266,8 @@ export default function RangeInput({ addAnalyte, analyteType }) {
               name: "normal_high",
               value: inputs.normal_high,
               events: {
-                onChange: handleChange
-              }
+                onChange: handleChange,
+              },
             }}
           />
           {/* <AlagehFormGroup
@@ -305,38 +305,38 @@ export default function RangeInput({ addAnalyte, analyteType }) {
         <AlagehFormGroup
           div={{ className: "col" }}
           label={{
-            forceLabel: "Qualitative value"
+            forceLabel: "Qualitative value",
           }}
           textBox={{
             className: "txt-fld",
             name: "normal_qualitative_value",
             value: inputs.normal_qualitative_value,
             events: {
-              onChange: handleChange
-            }
+              onChange: handleChange,
+            },
           }}
         />
       ) : (
-            <AlagehFormGroup
-              div={{ className: "col" }}
-              label={{
-                forceLabel: "Text"
-              }}
-              textBox={{
-                className: "txt-fld",
-                name: "text_value",
-                value: inputs.text_value,
-                events: {
-                  onChange: handleChange
-                }
-              }}
-            />
-          )}
+        <AlagehFormGroup
+          div={{ className: "col" }}
+          label={{
+            forceLabel: "Text",
+          }}
+          textBox={{
+            className: "txt-fld",
+            name: "text_value",
+            value: inputs.text_value,
+            events: {
+              onChange: handleChange,
+            },
+          }}
+        />
+      )}
 
       <div className="col" style={{ padding: 0 }}>
         <button
           className="btn btn-primary"
-          style={{ marginTop: 19 }}
+          style={{ marginTop: 20 }}
           onClick={onSubmit}
         >
           Add

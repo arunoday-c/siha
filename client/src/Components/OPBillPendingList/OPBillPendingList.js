@@ -10,13 +10,10 @@ import "./../../styles/site.scss";
 import {
   AlgaehDataGrid,
   AlgaehLabel,
-  AlgaehDateHandler
+  AlgaehDateHandler,
 } from "../Wrapper/algaehWrapper";
 
-import {
-  getBillPatientList,
-  datehandle
-} from "./OPBillPendingListEvents";
+import { getBillPatientList, datehandle } from "./OPBillPendingListEvents";
 
 import { AlgaehActions } from "../../actions/algaehActions";
 // import moment from "moment";
@@ -29,25 +26,23 @@ class OPBillPendingList extends Component {
     this.state = {
       today_date: new Date(),
       patient_list: [],
-      patient_id: null
+      patient_id: null,
     };
   }
 
   componentDidMount() {
     if (this.props.backToAuth) {
-      const {
-        today_date
-      } = this.props.prev;
+      const { today_date } = this.props.prev;
       this.setState(
         {
-          today_date
+          today_date,
         },
         () => getBillPatientList(this)
       );
     } else {
       this.setState(
         {
-          today_date: new Date()
+          today_date: new Date(),
         },
         () => getBillPatientList(this)
       );
@@ -60,7 +55,7 @@ class OPBillPendingList extends Component {
   //     }
   //   }
 
-  ourOwnMiniNavigator = obj => {
+  ourOwnMiniNavigator = (obj) => {
     const { requisition_list, radioYes, authorize1, ...rest } = this.state;
     let sendObj = Object.assign(rest, obj);
     this.props.new_routeComponents(sendObj);
@@ -77,25 +72,25 @@ class OPBillPendingList extends Component {
               />
             }
             breadStyle={this.props.breadStyle}
-            pageNavPath={[
-              {
-                pageName: (
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Home",
-                      align: "ltr"
-                    }}
-                  />
-                )
-              },
-              {
-                pageName: (
-                  <AlgaehLabel
-                    label={{ forceLabel: "OP-Bill Pending List", align: "ltr" }}
-                  />
-                )
-              }
-            ]}
+            // pageNavPath={[
+            //   {
+            //     pageName: (
+            //       <AlgaehLabel
+            //         label={{
+            //           forceLabel: "Home",
+            //           align: "ltr"
+            //         }}
+            //       />
+            //     )
+            //   },
+            //   {
+            //     pageName: (
+            //       <AlgaehLabel
+            //         label={{ forceLabel: "OP-Bill Pending List", align: "ltr" }}
+            //       />
+            //     )
+            //   }
+            // ]}
           />
 
           <div className="row inner-top-search" style={{ marginTop: 78 }}>
@@ -139,7 +134,7 @@ class OPBillPendingList extends Component {
               label={{ forceLabel: "Select Date" }}
               textBox={{ className: "txt-fld", name: "today_date" }}
               events={{
-                onChange: datehandle.bind(this, this)
+                onChange: datehandle.bind(this, this),
               }}
               value={this.state.today_date}
             />
@@ -180,7 +175,7 @@ class OPBillPendingList extends Component {
                       {
                         fieldName: "action",
                         label: <AlgaehLabel label={{ forceLabel: "action" }} />,
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return (
                             <span>
                               <i
@@ -188,7 +183,7 @@ class OPBillPendingList extends Component {
                                 onClick={() => {
                                   this.ourOwnMiniNavigator({
                                     RQ_Screen: "OPBilling",
-                                    patient_code: row.patient_code
+                                    patient_code: row.patient_code,
                                   });
                                 }}
                               />
@@ -199,8 +194,8 @@ class OPBillPendingList extends Component {
                           maxWidth: 100,
                           resizable: false,
                           style: { textAlign: "center" },
-                          filterable: false
-                        }
+                          filterable: false,
+                        },
                       },
                       {
                         fieldName: "patient_code",
@@ -211,20 +206,20 @@ class OPBillPendingList extends Component {
                         others: {
                           maxWidth: 200,
                           resizable: false,
-                          style: { textAlign: "center" }
-                        }
+                          style: { textAlign: "center" },
+                        },
                       },
                       {
                         fieldName: "full_name",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Patient Name" }} />
                         ),
-                        disabled: true
-                      }
+                        disabled: true,
+                      },
                     ]}
                     keyId="patient_code"
                     dataSource={{
-                      data: this.state.patient_list
+                      data: this.state.patient_list,
                     }}
                     filter={true}
                     paging={{ page: 0, rowsPerPage: 10 }}
@@ -241,22 +236,19 @@ class OPBillPendingList extends Component {
 
 function mapStateToProps(state) {
   return {
-    patientlist: state.patientlist
+    patientlist: state.patientlist,
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getBillPatientList: AlgaehActions
+      getBillPatientList: AlgaehActions,
     },
     dispatch
   );
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(OPBillPendingList)
+  connect(mapStateToProps, mapDispatchToProps)(OPBillPendingList)
 );

@@ -5,7 +5,7 @@ import {
   // AlgaehDataGrid,
   // AlgaehLabel,
   // AlagehFormGroup,
-  AlagehAutoComplete
+  AlagehAutoComplete,
   // AlgaehDateHandler
 } from "../../Wrapper/algaehWrapper";
 
@@ -13,7 +13,7 @@ class FinanceMapping extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      pageDisplay: "FinanceMapping"
+      pageDisplay: "FinanceMapping",
     };
   }
 
@@ -37,7 +37,7 @@ class FinanceMapping extends Component {
                       name: "",
                       className: "select-fld",
                       dataSource: {},
-                      others: {}
+                      others: {},
                     }}
                   />{" "}
                   <AlagehAutoComplete
@@ -47,72 +47,72 @@ class FinanceMapping extends Component {
                       name: "",
                       className: "select-fld",
                       dataSource: {},
-                      others: {}
+                      others: {},
                     }}
                   />
                   <AlagehAutoComplete
                     div={{ className: "col-3 form-group" }}
                     label={{
                       forceLabel: "OP Patient Receivable A/c",
-                      isImp: false
+                      isImp: false,
                     }}
                     selector={{
                       name: "",
                       className: "select-fld",
                       dataSource: {},
-                      others: {}
+                      others: {},
                     }}
                   />{" "}
                   <AlagehAutoComplete
                     div={{ className: "col-3 form-group" }}
                     label={{
                       forceLabel: "OP Sheet Level Discount A/c",
-                      isImp: false
+                      isImp: false,
                     }}
                     selector={{
                       name: "",
                       className: "select-fld",
                       dataSource: {},
-                      others: {}
+                      others: {},
                     }}
                   />{" "}
                   <AlagehAutoComplete
                     div={{ className: "col-3 form-group" }}
                     label={{
                       forceLabel: "OP Package Discount A/c",
-                      isImp: false
+                      isImp: false,
                     }}
                     selector={{
                       name: "",
                       className: "select-fld",
                       dataSource: {},
-                      others: {}
+                      others: {},
                     }}
                   />
                   <AlagehAutoComplete
                     div={{ className: "col-3 form-group" }}
                     label={{
                       forceLabel: "OP Credit Settlement Clearing A/c",
-                      isImp: false
+                      isImp: false,
                     }}
                     selector={{
                       name: "",
                       className: "select-fld",
                       dataSource: {},
-                      others: {}
+                      others: {},
                     }}
                   />
                   <AlagehAutoComplete
                     div={{ className: "col-3 form-group" }}
                     label={{
                       forceLabel: "OP Discount write off A/c",
-                      isImp: false
+                      isImp: false,
                     }}
                     selector={{
                       name: "",
                       className: "select-fld",
                       dataSource: {},
-                      others: {}
+                      others: {},
                     }}
                   />
                   <AlagehAutoComplete
@@ -122,7 +122,7 @@ class FinanceMapping extends Component {
                       name: "",
                       className: "select-fld",
                       dataSource: {},
-                      others: {}
+                      others: {},
                     }}
                   />
                 </div>
@@ -130,7 +130,7 @@ class FinanceMapping extends Component {
                   <div className="col">
                     <button
                       className="btn btn-primary"
-                      style={{ float: "right", marginTop: 19 }}
+                      style={{ float: "right", marginTop: 20 }}
                     >
                       Map/Update
                     </button>
@@ -155,33 +155,33 @@ class FinanceMapping extends Component {
                       name: "",
                       className: "select-fld",
                       dataSource: {},
-                      others: {}
+                      others: {},
                     }}
                   />{" "}
                   <AlagehAutoComplete
                     div={{ className: "col form-group" }}
                     label={{
                       forceLabel: "Default Sales Tax Group",
-                      isImp: false
+                      isImp: false,
                     }}
                     selector={{
                       name: "",
                       className: "select-fld",
                       dataSource: {},
-                      others: {}
+                      others: {},
                     }}
                   />{" "}
                   <AlagehAutoComplete
                     div={{ className: "col form-group" }}
                     label={{
                       forceLabel: "Patient Receivable Amount",
-                      isImp: false
+                      isImp: false,
                     }}
                     selector={{
                       name: "",
                       className: "select-fld",
                       dataSource: {},
-                      others: {}
+                      others: {},
                     }}
                   />
                 </div>
@@ -189,7 +189,7 @@ class FinanceMapping extends Component {
                   <div className="col">
                     <button
                       className="btn btn-primary"
-                      style={{ float: "right", marginTop: 19 }}
+                      style={{ float: "right", marginTop: 20 }}
                     >
                       Map/Update
                     </button>
@@ -211,13 +211,13 @@ class FinanceMapping extends Component {
                     div={{ className: "col-3 form-group" }}
                     label={{
                       forceLabel: "Salary wages and payable A/c",
-                      isImp: false
+                      isImp: false,
                     }}
                     selector={{
                       name: "",
                       className: "select-fld",
                       dataSource: {},
-                      others: {}
+                      others: {},
                     }}
                   />
                   <AlagehAutoComplete
@@ -227,20 +227,20 @@ class FinanceMapping extends Component {
                       name: "",
                       className: "select-fld",
                       dataSource: {},
-                      others: {}
+                      others: {},
                     }}
                   />{" "}
                   <AlagehAutoComplete
                     div={{ className: "col-3 form-group" }}
                     label={{
                       forceLabel: "Leave Salary payable A/c",
-                      isImp: false
+                      isImp: false,
                     }}
                     selector={{
                       name: "",
                       className: "select-fld",
                       dataSource: {},
-                      others: {}
+                      others: {},
                     }}
                   />{" "}
                   <AlagehAutoComplete
@@ -250,33 +250,33 @@ class FinanceMapping extends Component {
                       name: "",
                       className: "select-fld",
                       dataSource: {},
-                      others: {}
+                      others: {},
                     }}
                   />{" "}
                   <AlagehAutoComplete
                     div={{ className: "col-3 form-group" }}
                     label={{
                       forceLabel: "Final Settlement payable A/c",
-                      isImp: false
+                      isImp: false,
                     }}
                     selector={{
                       name: "",
                       className: "select-fld",
                       dataSource: {},
-                      others: {}
+                      others: {},
                     }}
                   />{" "}
                   <AlagehAutoComplete
                     div={{ className: "col-3 form-group" }}
                     label={{
                       forceLabel: "Loan write off account",
-                      isImp: false
+                      isImp: false,
                     }}
                     selector={{
                       name: "",
                       className: "select-fld",
                       dataSource: {},
-                      others: {}
+                      others: {},
                     }}
                   />
                 </div>
@@ -284,7 +284,7 @@ class FinanceMapping extends Component {
                   <div className="col">
                     <button
                       className="btn btn-primary"
-                      style={{ float: "right", marginTop: 19 }}
+                      style={{ float: "right", marginTop: 20 }}
                     >
                       Map/Update
                     </button>

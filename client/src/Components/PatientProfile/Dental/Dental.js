@@ -3126,7 +3126,7 @@ class Dental extends Component {
                   value={this.state.consult_date}
                 /> */}
 
-              <div className="col-lg-2" style={{ marginTop: 19 }}>
+              <div className="col-lg-2" style={{ marginTop: 20 }}>
                 <ButtonType
                   classname="btn-primary"
                   onClick={this.addTreatementPlan.bind(this, this)}

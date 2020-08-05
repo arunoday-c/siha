@@ -5,7 +5,7 @@ import {
   AlagehAutoComplete,
   AlgaehDataGrid,
   AlgaehLabel,
-  AlgaehModalPopUp
+  AlgaehModalPopUp,
 } from "../../Wrapper/algaehWrapper";
 // import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import GlobalVariables from "../../../utils/GlobalVariables.json";
@@ -27,7 +27,7 @@ import {
   onClose,
   addComments,
   updateComments,
-  onchangegridcol
+  onchangegridcol,
 } from "./MicroGroupEvent";
 
 class MicroGroupType extends Component {
@@ -47,7 +47,7 @@ class MicroGroupType extends Component {
       selected_group_name: null,
       comments_data: [],
       commet: "",
-      commnet_name: null
+      commnet_name: null,
     };
 
     getmicroGroups(this, this);
@@ -58,7 +58,7 @@ class MicroGroupType extends Component {
       <div className="MicroGroup">
         <AlgaehModalPopUp
           events={{
-            onClose: onClose.bind(this, this)
+            onClose: onClose.bind(this, this),
           }}
           title="Map Antibioties"
           openPopup={this.state.showGroupAntibiotic}
@@ -71,7 +71,7 @@ class MicroGroupType extends Component {
                     <div className="col-12">
                       <AlgaehLabel
                         label={{
-                          forceLabel: "Group Name"
+                          forceLabel: "Group Name",
                         }}
                       />
                       <h6>
@@ -90,15 +90,15 @@ class MicroGroupType extends Component {
                         dataSource: {
                           textField: "antibiotic_name",
                           valueField: "hims_d_antibiotic_id",
-                          data: this.props.antibiotic
+                          data: this.props.antibiotic,
                         },
 
                         onChange: textHandle.bind(this, this),
                         onClear: () => {
                           this.setState({
-                            antibiotic_id: null
+                            antibiotic_id: null,
                           });
-                        }
+                        },
                       }}
                     />
 
@@ -112,15 +112,15 @@ class MicroGroupType extends Component {
                         dataSource: {
                           textField: "name",
                           valueField: "value",
-                          data: GlobalVariables.ANTI_GROUP_TYPE
+                          data: GlobalVariables.ANTI_GROUP_TYPE,
                         },
 
                         onChange: textHandle.bind(this, this),
                         onClear: () => {
                           this.setState({
-                            group_types: null
+                            group_types: null,
                           });
-                        }
+                        },
                       }}
                     />
 
@@ -128,7 +128,7 @@ class MicroGroupType extends Component {
                       <button
                         className="btn btn-primary"
                         onClick={addGroupAntiMap.bind(this, this)}
-                        style={{ marginTop: 19 }}
+                        style={{ marginTop: 20 }}
                       >
                         Add to List
                       </button>
@@ -149,12 +149,12 @@ class MicroGroupType extends Component {
                                 label={{ forceLabel: "Antibiotics Name" }}
                               />
                             ),
-                            displayTemplate: row => {
+                            displayTemplate: (row) => {
                               let display =
                                 this.props.antibiotic === undefined
                                   ? []
                                   : this.props.antibiotic.filter(
-                                      f =>
+                                      (f) =>
                                         f.hims_d_antibiotic_id ===
                                         row.antibiotic_id
                                     );
@@ -168,7 +168,7 @@ class MicroGroupType extends Component {
                               );
                             },
 
-                            editorTemplate: row => {
+                            editorTemplate: (row) => {
                               return (
                                 <AlagehAutoComplete
                                   div={{}}
@@ -179,18 +179,18 @@ class MicroGroupType extends Component {
                                     dataSource: {
                                       textField: "antibiotic_name",
                                       valueField: "hims_d_antibiotic_id",
-                                      data: this.props.antibiotic
+                                      data: this.props.antibiotic,
                                     },
 
                                     onChange: changeGridEditors.bind(
                                       this,
                                       this,
                                       row
-                                    )
+                                    ),
                                   }}
                                 />
                               );
-                            }
+                            },
                           },
 
                           {
@@ -200,9 +200,9 @@ class MicroGroupType extends Component {
                                 label={{ forceLabel: "Group Type" }}
                               />
                             ),
-                            displayTemplate: row => {
+                            displayTemplate: (row) => {
                               let display = GlobalVariables.ANTI_GROUP_TYPE.filter(
-                                f => f.value === row.group_types
+                                (f) => f.value === row.group_types
                               );
 
                               return (
@@ -214,7 +214,7 @@ class MicroGroupType extends Component {
                               );
                             },
 
-                            editorTemplate: row => {
+                            editorTemplate: (row) => {
                               return (
                                 <AlagehAutoComplete
                                   div={{}}
@@ -225,18 +225,18 @@ class MicroGroupType extends Component {
                                     dataSource: {
                                       textField: "name",
                                       valueField: "value",
-                                      data: GlobalVariables.ANTI_GROUP_TYPE
+                                      data: GlobalVariables.ANTI_GROUP_TYPE,
                                     },
 
                                     onChange: changeGridEditors.bind(
                                       this,
                                       this,
                                       row
-                                    )
+                                    ),
                                   }}
                                 />
                               );
-                            }
+                            },
                           },
 
                           {
@@ -244,12 +244,12 @@ class MicroGroupType extends Component {
                             label: (
                               <label className="style_Label">Status</label>
                             ),
-                            displayTemplate: row => {
+                            displayTemplate: (row) => {
                               return row.map_status === "A"
                                 ? "Active"
                                 : "Inactive";
                             },
-                            editorTemplate: row => {
+                            editorTemplate: (row) => {
                               return (
                                 <AlagehAutoComplete
                                   div={{}}
@@ -260,39 +260,39 @@ class MicroGroupType extends Component {
                                     dataSource: {
                                       textField: "name",
                                       valueField: "value",
-                                      data: GlobalVariables.FORMAT_STATUS
+                                      data: GlobalVariables.FORMAT_STATUS,
                                     },
                                     others: {
                                       errormessage: "Status - cannot be blank",
-                                      required: true
+                                      required: true,
                                     },
                                     onChange: changeGridEditors.bind(
                                       this,
                                       this,
                                       row
-                                    )
+                                    ),
                                   }}
                                 />
                               );
                             },
                             others: {
-                              maxWidth: 100
-                            }
-                          }
+                              maxWidth: 100,
+                            },
+                          },
                         ]}
                         keyId="hims_d_sub_department_id"
                         dataSource={{
-                          data: this.state.microAntbiotic
+                          data: this.state.microAntbiotic,
                         }}
                         isEditable={true}
                         actions={{
-                          allowDelete: false
+                          allowDelete: false,
                         }}
                         paging={{ page: 0, rowsPerPage: 10 }}
                         events={{
                           //onDelete: this.deleteSubDepartment.bind(this),
-                          onEdit: row => {},
-                          onDone: updateGroupAntiMap.bind(this, this)
+                          onEdit: (row) => {},
+                          onDone: updateGroupAntiMap.bind(this, this),
                         }}
                       />
                     </div>
@@ -310,15 +310,15 @@ class MicroGroupType extends Component {
                       div={{ className: "col-12 form-group" }}
                       label={{
                         forceLabel: "Comment Name",
-                        isImp: true
+                        isImp: true,
                       }}
                       textBox={{
                         className: "txt-fld",
                         name: "commnet_name",
                         value: this.state.commnet_name,
                         events: {
-                          onChange: textHandle.bind(this, this)
-                        }
+                          onChange: textHandle.bind(this, this),
+                        },
                       }}
                     />
                     <div className="col-12">
@@ -355,14 +355,14 @@ class MicroGroupType extends Component {
                                 label={{ forceLabel: "Comment Name" }}
                               />
                             ),
-                            disabled: true
+                            disabled: true,
                           },
                           {
                             fieldName: "commet",
                             label: (
                               <AlgaehLabel label={{ forceLabel: "Comment" }} />
                             ),
-                            editorTemplate: row => {
+                            editorTemplate: (row) => {
                               return (
                                 <AlagehFormGroup
                                   div={{}}
@@ -375,28 +375,28 @@ class MicroGroupType extends Component {
                                         this,
                                         this,
                                         row
-                                      )
+                                      ),
                                     },
                                     others: {
                                       errormessage: "Comment - cannot be blank",
-                                      required: true
-                                    }
+                                      required: true,
+                                    },
                                   }}
                                 />
                               );
-                            }
+                            },
                           },
                           {
                             fieldName: "comment_status",
                             label: (
                               <AlgaehLabel label={{ forceLabel: "status" }} />
                             ),
-                            displayTemplate: row => {
+                            displayTemplate: (row) => {
                               return row.comment_status === "A"
                                 ? "Active"
                                 : "Inactive";
                             },
-                            editorTemplate: row => {
+                            editorTemplate: (row) => {
                               return (
                                 <AlagehAutoComplete
                                   div={{}}
@@ -407,7 +407,7 @@ class MicroGroupType extends Component {
                                     dataSource: {
                                       textField: "name",
                                       valueField: "value",
-                                      data: GlobalVariables.FORMAT_STATUS
+                                      data: GlobalVariables.FORMAT_STATUS,
                                     },
                                     onChange: onchangegridcol.bind(
                                       this,
@@ -416,28 +416,28 @@ class MicroGroupType extends Component {
                                     ),
                                     others: {
                                       errormessage: "Status - cannot be blank",
-                                      required: true
-                                    }
+                                      required: true,
+                                    },
                                   }}
                                 />
                               );
-                            }
-                          }
+                            },
+                          },
                         ]}
                         keyId="hims_d_group_comment_id"
                         dataSource={{
-                          data: this.state.comments_data
+                          data: this.state.comments_data,
                         }}
                         filter={false}
                         isEditable={true}
                         actions={{
-                          allowDelete: false
+                          allowDelete: false,
                         }}
                         paging={{ page: 0, rowsPerPage: 10 }}
                         events={{
                           // onDelete: this.deleteIDType.bind(this),
-                          onEdit: row => {},
-                          onDone: updateComments.bind(this, this)
+                          onEdit: (row) => {},
+                          onDone: updateComments.bind(this, this),
                         }}
                       />
                     </div>
@@ -457,7 +457,7 @@ class MicroGroupType extends Component {
                     onClick={() => {
                       this.setState({
                         microAntbiotic: [],
-                        showGroupAntibiotic: false
+                        showGroupAntibiotic: false,
                       });
                     }}
                   >
@@ -474,7 +474,7 @@ class MicroGroupType extends Component {
             div={{ className: "col-2 form-group" }}
             label={{
               forceLabel: "Organism Type",
-              isImp: true
+              isImp: true,
             }}
             selector={{
               name: "group_type",
@@ -483,9 +483,9 @@ class MicroGroupType extends Component {
               dataSource: {
                 textField: "name",
                 valueField: "value",
-                data: GlobalVariables.MICRO_GROUP_TYPE
+                data: GlobalVariables.MICRO_GROUP_TYPE,
               },
-              onChange: dropDownHandle.bind(this, this)
+              onChange: dropDownHandle.bind(this, this),
             }}
           />
 
@@ -493,15 +493,15 @@ class MicroGroupType extends Component {
             div={{ className: "col-2 form-group" }}
             label={{
               forceLabel: "Group Code",
-              isImp: true
+              isImp: true,
             }}
             textBox={{
               className: "txt-fld",
               name: "group_code",
               value: this.state.group_code,
               events: {
-                onChange: textHandle.bind(this, this)
-              }
+                onChange: textHandle.bind(this, this),
+              },
             }}
           />
 
@@ -509,15 +509,15 @@ class MicroGroupType extends Component {
             div={{ className: "col form-group" }}
             label={{
               forceLabel: "Group Name",
-              isImp: true
+              isImp: true,
             }}
             textBox={{
               className: "txt-fld",
               name: "group_name",
               value: this.state.group_name,
               events: {
-                onChange: textHandle.bind(this, this)
-              }
+                onChange: textHandle.bind(this, this),
+              },
             }}
           />
 
@@ -525,22 +525,22 @@ class MicroGroupType extends Component {
             div={{ className: "col form-group arabic-txt-fld" }}
             label={{
               forceLabel: "Group Arabic Name",
-              isImp: true
+              isImp: true,
             }}
             textBox={{
               className: "txt-fld",
               name: "arabic_group_name",
               value: this.state.arabic_group_name,
               events: {
-                onChange: textHandle.bind(this, this)
-              }
+                onChange: textHandle.bind(this, this),
+              },
             }}
           />
 
           <div className="col align-middle">
             <button
               className="btn btn-primary"
-              style={{ marginTop: 19 }}
+              style={{ marginTop: 20 }}
               onClick={addMicroGroup.bind(this, this)}
             >
               Add to List
@@ -566,7 +566,7 @@ class MicroGroupType extends Component {
                         <AlgaehLabel label={{ forceLabel: "Antibiotic" }} />
                       ),
 
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         return (
                           <i
                             className="fas fa-plus"
@@ -574,7 +574,7 @@ class MicroGroupType extends Component {
                           />
                         );
                       },
-                      editorTemplate: row => {
+                      editorTemplate: (row) => {
                         return (
                           <i
                             className="fas fa-plus"
@@ -585,9 +585,9 @@ class MicroGroupType extends Component {
                       others: {
                         maxWidth: 100,
                         style: {
-                          textAlign: "center"
-                        }
-                      }
+                          textAlign: "center",
+                        },
+                      },
                     },
 
                     {
@@ -595,7 +595,7 @@ class MicroGroupType extends Component {
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Organism Type" }} />
                       ),
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         return (
                           <span>
                             {row.group_type === "F"
@@ -604,7 +604,7 @@ class MicroGroupType extends Component {
                           </span>
                         );
                       },
-                      editorTemplate: row => {
+                      editorTemplate: (row) => {
                         return (
                           <span>
                             {row.group_type === "F"
@@ -614,8 +614,8 @@ class MicroGroupType extends Component {
                         );
                       },
                       others: {
-                        maxWidth: 150
-                      }
+                        maxWidth: 150,
+                      },
                     },
                     {
                       fieldName: "group_code",
@@ -625,15 +625,15 @@ class MicroGroupType extends Component {
 
                       disabled: true,
                       others: {
-                        maxWidth: 150
-                      }
+                        maxWidth: 150,
+                      },
                     },
                     {
                       fieldName: "group_name",
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Group Name" }} />
                       ),
-                      editorTemplate: row => {
+                      editorTemplate: (row) => {
                         return (
                           <AlagehFormGroup
                             div={{ className: "col" }}
@@ -646,16 +646,16 @@ class MicroGroupType extends Component {
                                   this,
                                   this,
                                   row
-                                )
+                                ),
                               },
                               others: {
                                 errormessage: "Name - cannot be blank",
-                                required: true
-                              }
+                                required: true,
+                              },
                             }}
                           />
                         );
-                      }
+                      },
                     },
                     {
                       fieldName: "arabic_group_name",
@@ -664,7 +664,7 @@ class MicroGroupType extends Component {
                           label={{ forceLabel: "Group Arabic Name" }}
                         />
                       ),
-                      editorTemplate: row => {
+                      editorTemplate: (row) => {
                         return (
                           <AlagehFormGroup
                             div={{ className: "col " }}
@@ -677,28 +677,28 @@ class MicroGroupType extends Component {
                                   this,
                                   this,
                                   row
-                                )
+                                ),
                               },
                               others: {
                                 errormessage: "Arabic Name - cannot be blank",
-                                required: true
-                              }
+                                required: true,
+                              },
                             }}
                           />
                         );
-                      }
+                      },
                     },
                     {
                       fieldName: "group_status",
                       label: <AlgaehLabel label={{ forceLabel: "Status" }} />,
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         return (
                           <span>
                             {row.group_status === "A" ? "Active" : "Inactive"}
                           </span>
                         );
                       },
-                      editorTemplate: row => {
+                      editorTemplate: (row) => {
                         return (
                           <AlagehAutoComplete
                             div={{}}
@@ -709,35 +709,35 @@ class MicroGroupType extends Component {
                               dataSource: {
                                 textField: "name",
                                 valueField: "value",
-                                data: GlobalVariables.FORMAT_STATUS
+                                data: GlobalVariables.FORMAT_STATUS,
                               },
                               others: {
                                 errormessage: "Status - cannot be blank",
-                                required: true
+                                required: true,
                               },
-                              onChange: changeGridEditors.bind(this, this, row)
+                              onChange: changeGridEditors.bind(this, this, row),
                             }}
                           />
                         );
                       },
                       others: {
-                        maxWidth: 100
-                      }
-                    }
+                        maxWidth: 100,
+                      },
+                    },
                   ]}
                   filter={true}
                   keyId="group_code"
                   dataSource={{
-                    data: this.state.microGroups
+                    data: this.state.microGroups,
                   }}
                   isEditable={true}
                   actions={{
-                    allowDelete: false
+                    allowDelete: false,
                   }}
                   paging={{ page: 0, rowsPerPage: 10 }}
                   events={{
-                    onEdit: row => {},
-                    onDone: updateMicroGroup.bind(this, this)
+                    onEdit: (row) => {},
+                    onDone: updateMicroGroup.bind(this, this),
                   }}
                 />
               </div>
@@ -751,14 +751,14 @@ class MicroGroupType extends Component {
 
 function mapStateToProps(state) {
   return {
-    antibiotic: state.antibiotic
+    antibiotic: state.antibiotic,
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getAntibiotic: AlgaehActions
+      getAntibiotic: AlgaehActions,
     },
     dispatch
   );

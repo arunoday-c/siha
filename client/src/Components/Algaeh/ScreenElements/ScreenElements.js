@@ -3,7 +3,7 @@ import "./screen_elements.scss";
 import {
   AlagehFormGroup,
   AlgaehDataGrid,
-  AlagehAutoComplete
+  AlagehAutoComplete,
 } from "../../Wrapper/algaehWrapper";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import { AlgaehTreeSearch } from "algaeh-react-components";
@@ -17,7 +17,7 @@ class ScreenElements extends Component {
       extra_props: "",
       props_type: undefined,
       landing_page: undefined,
-      assignedScreens: []
+      assignedScreens: [],
     };
     this.getComponents();
     this.getScreenElements();
@@ -27,19 +27,19 @@ class ScreenElements extends Component {
     algaehApiCall({
       uri: "/algaehMasters/getAlgaehScreenElement",
       method: "GET",
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           this.setState({
-            screen_elements: response.data.records
+            screen_elements: response.data.records,
           });
         }
       },
-      onError: error => {
+      onError: (error) => {
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -47,19 +47,19 @@ class ScreenElements extends Component {
     algaehApiCall({
       uri: "/algaehMasters/getAlgaehComponentsWithScreens",
       method: "GET",
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           this.setState({
-            components: response.data.records
+            components: response.data.records,
           });
         }
       },
-      onError: error => {
+      onError: (error) => {
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -73,24 +73,24 @@ class ScreenElements extends Component {
         screen_element_name: this.state.screen_element_name,
         component_id: component_id[2],
         extra_props: this.state.extra_props,
-        props_type: this.state.props_type
+        props_type: this.state.props_type,
       },
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           this.getScreenElements();
           this.clearState();
           swalMessage({
             title: "Records Added Successfully",
-            type: "success"
+            type: "success",
           });
         }
       },
-      onError: error => {
+      onError: (error) => {
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -100,7 +100,7 @@ class ScreenElements extends Component {
       screen_element_name: "",
       component_id: null,
       extra_props: "",
-      props_type: undefined
+      props_type: undefined,
     });
   }
 
@@ -128,17 +128,17 @@ class ScreenElements extends Component {
       <div className="screen_elements">
         <div className="row inner-top-search margin-bottom-15">
           <AlgaehTreeSearch
-            div={{ className: "col-2 mandatory form-group" }}
+            div={{ className: "col mandatory form-group" }}
             label={{
               forceLabel: "Component",
-              isImp: true
+              isImp: true,
             }}
             tree={{
               treeDefaultExpandAll: true,
               data: this.state.components,
               textField: "label",
-              showLine: true,
-              valueField: node => {
+              showline: true,
+              valueField: (node) => {
                 if (
                   node.algaeh_d_app_component_id !== null &&
                   node.algaeh_d_app_component_id !== undefined
@@ -160,59 +160,59 @@ class ScreenElements extends Component {
                 // const seleted = value.split("-");
                 this.setState({ selected_component: value });
               },
-              value: this.state.selected_component
+              value: this.state.selected_component,
             }}
           />
 
           <AlagehFormGroup
-            div={{ className: "col-2 mandatory form-group" }}
+            div={{ className: "col mandatory form-group" }}
             label={{
               forceLabel: "Screen Element Code",
-              isImp: true
+              isImp: true,
             }}
             textBox={{
               className: "txt-fld",
               name: "screen_element_code",
               value: this.state.screen_element_code,
               events: {
-                onChange: this.changeTexts.bind(this)
-              }
+                onChange: this.changeTexts.bind(this),
+              },
             }}
           />
           <AlagehFormGroup
-            div={{ className: "col-2 mandatory form-group" }}
+            div={{ className: "col mandatory form-group" }}
             label={{
               forceLabel: "Screen Element Name",
-              isImp: true
+              isImp: true,
             }}
             textBox={{
               className: "txt-fld",
               name: "screen_element_name",
               value: this.state.screen_element_name,
               events: {
-                onChange: this.changeTexts.bind(this)
-              }
+                onChange: this.changeTexts.bind(this),
+              },
             }}
           />
 
           <AlagehFormGroup
-            div={{ className: "col-3 form-group" }}
+            div={{ className: "col form-group" }}
             label={{
-              forceLabel: "Extra Props"
+              forceLabel: "Extra Props",
             }}
             textBox={{
               className: "txt-fld",
               name: "extra_props",
               value: this.state.extra_props,
               events: {
-                onChange: this.changeTexts.bind(this)
-              }
+                onChange: this.changeTexts.bind(this),
+              },
             }}
           />
           <AlagehAutoComplete
-            div={{ className: "col-2 mandatory form-group" }}
+            div={{ className: "col mandatory form-group" }}
             label={{
-              forceLabel: "Props Type"
+              forceLabel: "Props Type",
             }}
             selector={{
               name: "props_type",
@@ -223,16 +223,16 @@ class ScreenElements extends Component {
                 valueField: "value",
                 data: [
                   { value: "D", text: "Decision Making" },
-                  { value: "S", text: "Stages" }
-                ]
+                  { value: "S", text: "Stages" },
+                ],
               },
-              onChange: this.dropDownHandle.bind(this)
+              onChange: this.dropDownHandle.bind(this),
             }}
           />
-          <div className="col">
+          <div className="col-1">
             <button
               type="submit"
-              style={{ marginTop: 19 }}
+              style={{ marginTop: 20 }}
               onClick={this.addScreenElements.bind(this)}
               className="btn btn-primary"
             >
@@ -264,39 +264,39 @@ class ScreenElements extends Component {
                       columns={[
                         {
                           fieldName: "screen_element_code",
-                          label: "Screen Element Code"
+                          label: "Screen Element Code",
                         },
                         {
                           fieldName: "screen_element_name",
-                          label: "Screen Element Name"
+                          label: "Screen Element Name",
                         },
                         {
                           fieldName: "component_name",
-                          label: "Component"
+                          label: "Component",
                         },
                         {
                           fieldName: "extra_props",
-                          label: "Extra Props"
+                          label: "Extra Props",
                         },
                         {
                           fieldName: "props_type",
-                          label: "Props Type"
-                        }
+                          label: "Props Type",
+                        },
                       ]}
                       keyId="algaeh_d_module_id"
                       dataSource={{
-                        data: this.state.screen_elements
+                        data: this.state.screen_elements,
                       }}
                       filter={true}
                       isEditable={true}
                       actions={{
-                        allowDelete: false
+                        allowDelete: false,
                       }}
                       paging={{ page: 0, rowsPerPage: 10 }}
                       events={{
                         onEdit: () => {},
                         onDelete: this.deleteScreenElements.bind(this),
-                        onDone: this.updateScreenElements.bind(this)
+                        onDone: this.updateScreenElements.bind(this),
                       }}
                     />
                   </div>

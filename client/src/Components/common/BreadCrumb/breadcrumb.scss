@@ -17,6 +17,9 @@
   .header {
     margin-top: 15px;
     margin-bottom: 5px;
+    display: table-cell;
+    vertical-align: middle;
+    height: 75px;
     label {
       font-weight: 300;
       text-transform: capitalize;
@@ -90,6 +93,7 @@
     border: 1px solid lighten($color-black, 80%);
     border-radius: 5px;
     margin-left: 0;
+    margin-top: 10px;
     div {
       border: 1px solid lighten($color-black, 80%);
       border-radius: 5px 0 0 5px;

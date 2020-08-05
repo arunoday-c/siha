@@ -4,7 +4,7 @@ import {
   AlagehFormGroup,
   AlgaehDataGrid,
   AlagehAutoComplete,
-  AlgaehLabel
+  AlgaehLabel,
 } from "../../Wrapper/algaehWrapper";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import { AlgaehTreeSearch } from "algaeh-react-components";
@@ -15,7 +15,7 @@ class Components extends Component {
     super(props);
     this.state = {
       screens: [],
-      selected_screen: null
+      selected_screen: null,
     };
     this.getComponents();
     this.getScreens();
@@ -25,22 +25,22 @@ class Components extends Component {
     algaehApiCall({
       uri: "/algaehMasters/getAlgaehScreensWithModules",
       method: "GET",
-      onSuccess: response => {
+      onSuccess: (response) => {
         const { success, records } = response.data;
         if (success) {
           this.setState({
-            screens: records
+            screens: records,
           });
         }
       },
-      onCatch: error => {
+      onCatch: (error) => {
         console.error(error);
         const { message } = error.response.data;
         swalMessage({
           title: message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
 
     // algaehApiCall({
@@ -65,19 +65,19 @@ class Components extends Component {
     algaehApiCall({
       uri: "/algaehMasters/getAlgaehComponents",
       method: "GET",
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           this.setState({
-            components: response.data.records
+            components: response.data.records,
           });
         }
       },
-      onCatch: error => {
+      onCatch: (error) => {
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -89,24 +89,24 @@ class Components extends Component {
       data: {
         screen_id: screen_id[1],
         component_code: this.state.component_code,
-        component_name: this.state.component_name
+        component_name: this.state.component_name,
       },
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           this.getComponents();
           this.clearState();
           swalMessage({
             title: "Records added successfully",
-            type: "success"
+            type: "success",
           });
         }
       },
-      onCatch: error => {
+      onCatch: (error) => {
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -114,7 +114,7 @@ class Components extends Component {
     this.setState({
       screen_id: null,
       component_code: "",
-      component_name: ""
+      component_name: "",
     });
   }
 
@@ -133,29 +133,28 @@ class Components extends Component {
     row.update();
   }
 
-  deleteComponents() { }
+  deleteComponents() {}
   updateComponents(row) {
-
     algaehApiCall({
       uri: "/algaehMasters/updateAlgaehComponent",
       method: "PUT",
       data: row,
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           this.getComponents();
           this.clearState();
           swalMessage({
             title: "Records Updated successfully",
-            type: "success"
+            type: "success",
           });
         }
       },
-      onCatch: error => {
+      onCatch: (error) => {
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -167,14 +166,14 @@ class Components extends Component {
             div={{ className: "col-2 mandatory form-group" }}
             label={{
               forceLabel: "Screen",
-              isImp: true
+              isImp: true,
             }}
             tree={{
               treeDefaultExpandAll: true,
               data: this.state.screens,
               textField: "label",
-              showLine: true,
-              valueField: node => {
+              showline: true,
+              valueField: (node) => {
                 if (
                   node["algaeh_app_screens_id"] !== null ||
                   node["algaeh_app_screens_id"] !== undefined
@@ -187,7 +186,7 @@ class Components extends Component {
                 // const seleted = value.split("-");
                 this.setState({ selected_screen: value });
               },
-              value: this.state.selected_screen
+              value: this.state.selected_screen,
             }}
           />
           {/* <AlagehAutoComplete
@@ -212,37 +211,37 @@ class Components extends Component {
             div={{ className: "col-2 mandatory form-group" }}
             label={{
               forceLabel: "Component Code",
-              isImp: true
+              isImp: true,
             }}
             textBox={{
               className: "txt-fld",
               name: "component_code",
               value: this.state.component_code,
               events: {
-                onChange: this.changeTexts.bind(this)
-              }
+                onChange: this.changeTexts.bind(this),
+              },
             }}
           />
           <AlagehFormGroup
             div={{ className: "col-3 mandatory form-group" }}
             label={{
               forceLabel: "Component Name",
-              isImp: true
+              isImp: true,
             }}
             textBox={{
               className: "txt-fld",
               name: "component_name",
               value: this.state.component_name,
               events: {
-                onChange: this.changeTexts.bind(this)
-              }
+                onChange: this.changeTexts.bind(this),
+              },
             }}
           />
 
           <div className="col">
             <button
               type="submit"
-              style={{ marginTop: 19 }}
+              style={{ marginTop: 20 }}
               onClick={this.addComponents.bind(this)}
               className="btn btn-primary"
             >
@@ -271,27 +270,24 @@ class Components extends Component {
                           {
                             fieldName: "screen_name",
                             label: "Screen",
-                            others:
-                              { disabled: true }
+                            others: { disabled: true },
                           },
                           {
                             fieldName: "component_code",
                             label: "Component Code",
-                            others:
-                              { disabled: true }
+                            others: { disabled: true },
                           },
                           {
                             fieldName: "component_name",
                             label: "Component Name",
-                            others:
-                              { disabled: true }
+                            others: { disabled: true },
                           },
                           {
                             fieldName: "record_status",
                             label: (
                               <AlgaehLabel label={{ forceLabel: "Status" }} />
                             ),
-                            displayTemplate: row => {
+                            displayTemplate: (row) => {
                               return (
                                 <span>
                                   {row.record_status === "A"
@@ -300,7 +296,7 @@ class Components extends Component {
                                 </span>
                               );
                             },
-                            editorTemplate: row => {
+                            editorTemplate: (row) => {
                               return (
                                 <AlagehAutoComplete
                                   div={{ className: "col" }}
@@ -311,36 +307,36 @@ class Components extends Component {
                                     dataSource: {
                                       textField: "name",
                                       valueField: "value",
-                                      data: GlobalVariables.FORMAT_STATUS
+                                      data: GlobalVariables.FORMAT_STATUS,
                                     },
                                     others: {
                                       errormessage: "Status - cannot be blank",
-                                      required: true
+                                      required: true,
                                     },
                                     onChange: this.changeGridEditors.bind(
                                       this,
                                       row
-                                    )
+                                    ),
                                   }}
                                 />
                               );
-                            }
-                          }
+                            },
+                          },
                         ]}
                         keyId="algaeh_d_module_id"
                         dataSource={{
-                          data: this.state.components
+                          data: this.state.components,
                         }}
                         filter={true}
                         isEditable={true}
                         actions={{
-                          allowDelete: false
+                          allowDelete: false,
                         }}
                         paging={{ page: 0, rowsPerPage: 10 }}
                         events={{
-                          onEdit: () => { },
+                          onEdit: () => {},
                           onDelete: this.deleteComponents.bind(this),
-                          onDone: this.updateComponents.bind(this)
+                          onDone: this.updateComponents.bind(this),
                         }}
                       />
                     </div>

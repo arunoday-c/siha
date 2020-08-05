@@ -5,7 +5,7 @@ import {
   AlagehFormGroup,
   AlagehAutoComplete,
   AlgaehDataGrid,
-  AlgaehLabel
+  AlgaehLabel,
 } from "../../../Wrapper/algaehWrapper";
 import { AlgaehValidation } from "../../../../utils/GlobalFunctions";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
@@ -15,7 +15,7 @@ class DocumentMaster extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      docs: []
+      docs: [],
     };
     this.getDocTypes();
   }
@@ -25,38 +25,38 @@ class DocumentMaster extends Component {
       uri: "/hrSettings/getDocumentsMaster",
       method: "GET",
       module: "hrManagement",
-      onSuccess: res => {
+      onSuccess: (res) => {
         if (res.data.success) {
           this.setState({
-            docs: res.data.records
+            docs: res.data.records,
           });
         }
       },
-      onFailure: err => {
+      onFailure: (err) => {
         swalMessage({
           title: err.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
   clearState() {
     this.setState({
       document_type: null,
-      document_description: null
+      document_description: null,
     });
   }
 
   changeTexts(e) {
     this.setState({
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
   }
 
   dropDownHandler(value) {
     this.setState({
-      [value.name]: value.value
+      [value.name]: value.value,
     });
   }
 
@@ -70,22 +70,22 @@ class DocumentMaster extends Component {
           module: "hrManagement",
           method: "PUT",
           data: data,
-          onSuccess: response => {
+          onSuccess: (response) => {
             if (response.data.success) {
               swalMessage({
                 title: "Record updated successfully",
-                type: "success"
+                type: "success",
               });
             }
           },
-          onFailure: error => {
+          onFailure: (error) => {
             swalMessage({
               title: error.message,
-              type: "error"
+              type: "error",
             });
-          }
+          },
         });
-      }
+      },
     });
   }
 
@@ -152,27 +152,27 @@ class DocumentMaster extends Component {
           data: {
             document_type: this.state.document_type,
             document_description: this.state.document_description,
-            arabic_name: this.state.arabic_name
+            arabic_name: this.state.arabic_name,
           },
           module: "hrManagement",
-          onSuccess: res => {
+          onSuccess: (res) => {
             if (res.data.success) {
               swalMessage({
                 title: "Record Added Successfully",
-                type: "success"
+                type: "success",
               });
               this.getDocTypes();
               this.clearState();
             }
           },
-          onFailure: err => {
+          onFailure: (err) => {
             swalMessage({
               title: err.message,
-              type: "error"
+              type: "error",
             });
-          }
+          },
         });
-      }
+      },
     });
   }
 
@@ -184,15 +184,15 @@ class DocumentMaster extends Component {
             div={{ className: "col-2 form-group mandatory" }}
             label={{
               forceLabel: "Description",
-              isImp: true
+              isImp: true,
             }}
             textBox={{
               className: "txt-fld",
               name: "document_description",
               value: this.state.document_description,
               events: {
-                onChange: this.changeTexts.bind(this)
-              }
+                onChange: this.changeTexts.bind(this),
+              },
             }}
           />
 
@@ -206,21 +206,21 @@ class DocumentMaster extends Component {
               dataSource: {
                 textField: "name",
                 valueField: "value",
-                data: DOC_TYPE
+                data: DOC_TYPE,
               },
               onChange: this.dropDownHandler.bind(this),
               onClear: () => {
                 this.setState({
-                  document_type: null
+                  document_type: null,
                 });
               },
-              others: {}
+              others: {},
             }}
           />
 
           <div className="col form-group">
             <button
-              style={{ marginTop: 19 }}
+              style={{ marginTop: 20 }}
               className="btn btn-primary"
               id="srch-sch"
               onClick={this.addDocType.bind(this)}
@@ -248,7 +248,7 @@ class DocumentMaster extends Component {
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Description" }} />
                         ),
-                        editorTemplate: row => {
+                        editorTemplate: (row) => {
                           return (
                             <AlagehFormGroup
                               div={{ className: "col" }}
@@ -260,16 +260,16 @@ class DocumentMaster extends Component {
                                   onChange: this.changeGridEditors.bind(
                                     this,
                                     row
-                                  )
+                                  ),
                                 },
                                 others: {
                                   errormessage: "Description - cannot be blank",
-                                  required: true
-                                }
+                                  required: true,
+                                },
                               }}
                             />
                           );
-                        }
+                        },
                       },
                       {
                         fieldName: "document_type",
@@ -278,7 +278,7 @@ class DocumentMaster extends Component {
                             label={{ forceLabel: "Document Type" }}
                           />
                         ),
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return (
                             <span>
                               {row.document_type === "C"
@@ -289,7 +289,7 @@ class DocumentMaster extends Component {
                             </span>
                           );
                         },
-                        editorTemplate: row => {
+                        editorTemplate: (row) => {
                           return (
                             <AlagehAutoComplete
                               selector={{
@@ -299,7 +299,7 @@ class DocumentMaster extends Component {
                                 dataSource: {
                                   textField: "name",
                                   valueField: "value",
-                                  data: DOC_TYPE
+                                  data: DOC_TYPE,
                                 },
                                 onChange: this.changeGridEditors.bind(
                                   this,
@@ -307,31 +307,31 @@ class DocumentMaster extends Component {
                                 ),
                                 others: {
                                   errormessage: "Type - cannot be blank",
-                                  required: true
-                                }
+                                  required: true,
+                                },
                               }}
                             />
                           );
-                        }
+                        },
                       },
                       {
                         fieldName: "created_date",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Created Date" }} />
                         ),
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return (
                             <span>
                               {moment(row.created_date).format("DD-MM-YYYY")}
                             </span>
                           );
                         },
-                        disabled: true
-                      }
+                        disabled: true,
+                      },
                     ]}
                     keyId="hims_d_document_type_id"
                     dataSource={{
-                      data: this.state.docs
+                      data: this.state.docs,
                     }}
                     isEditable={true}
                     filter={true}
@@ -339,7 +339,7 @@ class DocumentMaster extends Component {
                     events={{
                       onEdit: () => {},
                       onDelete: this.deleteDocument.bind(this),
-                      onDone: this.updateDocument.bind(this)
+                      onDone: this.updateDocument.bind(this),
                     }}
                   />
                 </div>

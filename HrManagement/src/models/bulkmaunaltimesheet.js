@@ -164,6 +164,16 @@ function excelManualTimeSheet(req, res, next) {
                       fgColor: { argb: colorR.replace("#", "") },
                     };
                   }
+                  cell.note = {
+                    texts: [
+                      {
+                        text: "Project Name :=  ",
+                      },
+                      {
+                        text: valueColor[2],
+                      },
+                    ],
+                  };
                 } else {
                   cell.note = {
                     texts: [

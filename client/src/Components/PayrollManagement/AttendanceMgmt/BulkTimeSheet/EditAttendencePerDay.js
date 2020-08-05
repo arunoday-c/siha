@@ -113,7 +113,7 @@ export default function EditAttendencePerDay(props) {
               selector={{
                 name: "project_id",
                 className: "select-fld",
-                value: projectId || undefined,
+                value: project_state.project_id || undefined,
                 dataSource: {
                   textField: "project_desc",
                   valueField: "hims_d_project_id",

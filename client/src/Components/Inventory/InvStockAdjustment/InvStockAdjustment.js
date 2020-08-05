@@ -79,25 +79,25 @@ class InvStockAdjustment extends Component {
                             />
                         }
                         breadStyle={this.props.breadStyle}
-                        pageNavPath={[
-                            {
-                                pageName: (
-                                    <AlgaehLabel
-                                        label={{
-                                            forceLabel: "Home",
-                                            align: "ltr"
-                                        }}
-                                    />
-                                )
-                            },
-                            {
-                                pageName: (
-                                    <AlgaehLabel
-                                        label={{ forceLabel: "Stock Adjustment", align: "ltr" }}
-                                    />
-                                )
-                            }
-                        ]}
+                        // pageNavPath={[
+                        //     {
+                        //         pageName: (
+                        //             <AlgaehLabel
+                        //                 label={{
+                        //                     forceLabel: "Home",
+                        //                     align: "ltr"
+                        //                 }}
+                        //             />
+                        //         )
+                        //     },
+                        //     {
+                        //         pageName: (
+                        //             <AlgaehLabel
+                        //                 label={{ forceLabel: "Stock Adjustment", align: "ltr" }}
+                        //             />
+                        //         )
+                        //     }
+                        // ]}
                         soptlightSearch={{
                             label: (
                                 <AlgaehLabel

@@ -1297,7 +1297,7 @@ class LoanRequest extends Component {
                       <button
                         type="button"
                         className="btn btn-primary"
-                        style={{ marginTop: 19 }}
+                        style={{ marginTop: 20 }}
                         onClick={this.applyAdvance.bind(this)}
                       >
                         Request

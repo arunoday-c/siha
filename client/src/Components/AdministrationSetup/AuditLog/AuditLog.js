@@ -229,7 +229,7 @@ export default class AuditLog extends Component {
           <div className="col-2">
             <button
               type="submit"
-              style={{ marginTop: 19 }}
+              style={{ marginTop: 20 }}
               onClick={this.handleClear.bind(this)}
               className="btn btn-default"
             >
@@ -237,7 +237,7 @@ export default class AuditLog extends Component {
             </button>{" "}
             <button
               type="submit"
-              style={{ marginTop: 19, marginLeft: 10 }}
+              style={{ marginTop: 20, marginLeft: 10 }}
               onClick={this.auditlogData.bind(this)}
               className="btn btn-primary"
             >

@@ -438,14 +438,14 @@ class EOSGratuity extends Component {
           <div className="col">
             <button
               onClick={this.clearState.bind(this)}
-              style={{ marginTop: 19 }}
+              style={{ marginTop: 20 }}
               className="btn btn-default"
             >
               Clear
             </button>{" "}
             <button
               onClick={this.loadEmployeeDetails.bind(this)}
-              style={{ marginTop: 19, marginLeft: 5 }}
+              style={{ marginTop: 20, marginLeft: 5 }}
               className="btn btn-primary"
             >
               {!this.state.loading ? (

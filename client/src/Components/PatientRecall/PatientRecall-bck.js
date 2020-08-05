@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import {
   AlgaehDataGrid,
   AlgaehDateHandler,
-  AlagehAutoComplete
+  AlagehAutoComplete,
 } from "../Wrapper/algaehWrapper";
 import { algaehApiCall, swalMessage } from "../../utils/algaehApiCall";
 // import { AlgaehValidation } from "../../utils/GlobalFunctions";
@@ -18,7 +18,7 @@ class PatientRecall extends Component {
       patients: [],
       sub_department_id: null,
       provider_id: null,
-      date_of_recall: new Date()
+      date_of_recall: new Date(),
     };
     this.getDoctorsAndDepts();
   }
@@ -31,7 +31,7 @@ class PatientRecall extends Component {
     ) {
       swalMessage({
         title: "Department/Doctor/Date is mandatory to load data.",
-        type: "warning"
+        type: "warning",
       });
       return;
     }
@@ -49,19 +49,19 @@ class PatientRecall extends Component {
       uri: "/doctorsWorkBench/getFollowUp",
       method: "GET",
       data: inputObj,
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           this.setState({
-            patients: response.data.records
+            patients: response.data.records,
           });
         }
       },
-      onFailure: error => {
+      onFailure: (error) => {
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -70,11 +70,11 @@ class PatientRecall extends Component {
     if (inRange) {
       swalMessage({
         title: "Date cannot be past Date.",
-        type: "warning"
+        type: "warning",
       });
       event.target.focus();
       this.setState({
-        [event.target.name]: null
+        [event.target.name]: null,
       });
     }
   }
@@ -84,13 +84,13 @@ class PatientRecall extends Component {
       case "sub_department_id":
         this.setState({
           [value.name]: value.value,
-          doctors: value.selected.doctors
+          doctors: value.selected.doctors,
         });
         return;
 
       default:
         this.setState({
-          [value.name]: value.value
+          [value.name]: value.value,
         });
 
         return;
@@ -109,19 +109,19 @@ class PatientRecall extends Component {
       uri: "/department/get/get_All_Doctors_DepartmentWise",
       module: "masterSettings",
       method: "GET",
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           this.setState({
-            departments: response.data.records.departmets
+            departments: response.data.records.departmets,
           });
         }
       },
-      onFailure: error => {
+      onFailure: (error) => {
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -180,16 +180,16 @@ class PatientRecall extends Component {
             label={{ forceLabel: "Date" }}
             textBox={{
               className: "txt-fld",
-              name: "date_of_recall"
+              name: "date_of_recall",
             }}
             minDate={new Date()}
             events={{
-              onChange: selectedDate => {
+              onChange: (selectedDate) => {
                 this.setState({
-                  date_of_recall: selectedDate
+                  date_of_recall: selectedDate,
                 });
               },
-              onBlur: this.dateValidate.bind(this)
+              onBlur: this.dateValidate.bind(this),
             }}
             value={this.state.date_of_recall}
           />
@@ -197,7 +197,7 @@ class PatientRecall extends Component {
           <div className="col form-group">
             <button
               onClick={this.loadPatients.bind(this)}
-              style={{ marginTop: 19 }}
+              style={{ marginTop: 20 }}
               className="btn btn-primary"
             >
               LOAD
@@ -223,13 +223,13 @@ class PatientRecall extends Component {
                       others: {
                         maxWidth: 150,
                         resizable: false,
-                        style: { textAlign: "center" }
-                      }
+                        style: { textAlign: "center" },
+                      },
                     },
                     {
                       fieldName: "patient_code",
                       label: "Patient Code",
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         return (
                           <span onClick={() => {}} className="pat-code">
                             {row.patient_code}
@@ -239,35 +239,35 @@ class PatientRecall extends Component {
                       others: {
                         maxWidth: 150,
                         resizable: false,
-                        style: { textAlign: "center" }
+                        style: { textAlign: "center" },
                       },
-                      className: drow => {
+                      className: (drow) => {
                         return "greenCell";
-                      }
+                      },
                     },
                     {
                       fieldName: "full_name",
                       label: "Patient Name",
                       others: {
                         resizable: false,
-                        style: { textAlign: "center" }
-                      }
+                        style: { textAlign: "center" },
+                      },
                     },
                     {
                       fieldName: "sub_department_name",
                       label: "Department",
                       others: {
                         resizable: false,
-                        style: { textAlign: "center" }
-                      }
+                        style: { textAlign: "center" },
+                      },
                     },
                     {
                       fieldName: "employee_name",
                       label: "Doctor",
                       others: {
                         resizable: false,
-                        style: { textAlign: "center" }
-                      }
+                        style: { textAlign: "center" },
+                      },
                     },
                     {
                       fieldName: "gender",
@@ -275,13 +275,13 @@ class PatientRecall extends Component {
                       others: {
                         maxWidth: 90,
                         resizable: false,
-                        style: { textAlign: "center" }
-                      }
+                        style: { textAlign: "center" },
+                      },
                     },
                     {
                       fieldName: "date_of_birth",
                       label: "Date of Birth",
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         return (
                           <span>{this.dateFormater(row.date_of_birth)}</span>
                         );
@@ -289,8 +289,8 @@ class PatientRecall extends Component {
                       others: {
                         maxWidth: 120,
                         resizable: false,
-                        style: { textAlign: "center" }
-                      }
+                        style: { textAlign: "center" },
+                      },
                     },
                     {
                       fieldName: "contact_number",
@@ -298,21 +298,21 @@ class PatientRecall extends Component {
                       others: {
                         maxWidth: 180,
                         resizable: false,
-                        style: { textAlign: "center" }
-                      }
-                    }
+                        style: { textAlign: "center" },
+                      },
+                    },
                   ]}
                   keyId="index"
                   dataSource={{
-                    data: this.state.patients
+                    data: this.state.patients,
                   }}
                   isEditable={false}
                   filter={true}
                   paging={{ page: 0, rowsPerPage: 20 }}
                   events={{
-                    onDelete: row => {},
-                    onEdit: row => {},
-                    onDone: row => {}
+                    onDelete: (row) => {},
+                    onEdit: (row) => {},
+                    onDone: (row) => {},
                   }}
                 />
               </div>

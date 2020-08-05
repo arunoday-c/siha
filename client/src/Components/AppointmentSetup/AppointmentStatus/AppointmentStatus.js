@@ -4,7 +4,7 @@ import {
   AlagehFormGroup,
   AlgaehDataGrid,
   AlgaehLabel,
-  AlagehAutoComplete
+  AlagehAutoComplete,
 } from "../../Wrapper/algaehWrapper";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import swal from "sweetalert2";
@@ -21,7 +21,7 @@ class AppointmentStatus extends Component {
       description: "",
       default_status: "",
       isEditable: true,
-      disableAdd: null
+      disableAdd: null,
     };
 
     this.baseState = this.state;
@@ -58,7 +58,7 @@ class AppointmentStatus extends Component {
       this.state.default_status === "Y"
         ? this.setState({ steps: 1 })
         : this.setState({
-            steps: this.state.appointmentStatus.length + 1
+            steps: this.state.appointmentStatus.length + 1,
           });
     });
   }
@@ -85,48 +85,48 @@ class AppointmentStatus extends Component {
           confirmButtonText: "Yes",
           confirmButtonColor: "#44b8bd",
           cancelButtonColor: "#d33",
-          cancelButtonText: "No"
-        }).then(willDelete => {
+          cancelButtonText: "No",
+        }).then((willDelete) => {
           if (willDelete.value) {
             this.hasDuplicates(this.state.steps_list)
               ? swalMessage({
                   title:
                     "There are repeated values, please re-check the status",
                   type: "warning",
-                  timer: 5000
+                  timer: 5000,
                 })
               : algaehApiCall({
                   uri: "/appointment/appointmentStatusAuthorized",
                   module: "frontDesk",
                   method: "PUT",
-                  onSuccess: response => {
+                  onSuccess: (response) => {
                     if (response.data.success) {
                       this.setState({
-                        isEditable: false
+                        isEditable: false,
                       });
                       swalMessage({
                         title: "Status Authorized successfully . .",
-                        type: "success"
+                        type: "success",
                       });
                       this.getAppointmentStatus();
                     }
                   },
-                  onFailure: error => {
+                  onFailure: (error) => {
                     swalMessage({
                       title: error.message,
-                      type: "error"
+                      type: "error",
                     });
-                  }
+                  },
                 });
           } else {
             swalMessage({
               title: "Not authorized",
-              type: "error"
+              type: "error",
             });
           }
         })
       : swalMessage({
-          title: "Please add the status first and then authorize"
+          title: "Please add the status first and then authorize",
         });
   }
 
@@ -138,8 +138,8 @@ class AppointmentStatus extends Component {
       confirmButtonText: "Yes",
       confirmButtonColor: "#44b8bd",
       cancelButtonColor: "#d33",
-      cancelButtonText: "No"
-    }).then(willDelete => {
+      cancelButtonText: "No",
+    }).then((willDelete) => {
       if (willDelete.value) {
         algaehApiCall({
           uri: "/appointment/updateAppointmentStatus",
@@ -149,25 +149,25 @@ class AppointmentStatus extends Component {
             color_code: data.color_code,
             description: data.description,
             default_status: data.default_status,
-            record_status: "I"
+            record_status: "I",
           },
           method: "PUT",
-          onSuccess: response => {
+          onSuccess: (response) => {
             if (response.data.success) {
               swalMessage({
                 title: "Record deleted successfully . .",
-                type: "success"
+                type: "success",
               });
 
               this.getAppointmentStatus();
             }
           },
-          onFailure: error => {
+          onFailure: (error) => {
             swalMessage({
               title: error.message,
-              type: "error"
+              type: "error",
             });
-          }
+          },
         });
       }
     });
@@ -183,26 +183,26 @@ class AppointmentStatus extends Component {
         description: data.description,
         default_status: data.default_status,
         steps: data.steps,
-        record_status: "A"
+        record_status: "A",
       },
       method: "PUT",
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           swalMessage({
             title: "Record updated successfully . .",
-            type: "success"
+            type: "success",
           });
 
           this.getAppointmentStatus();
         }
       },
-      onFailure: error => {
+      onFailure: (error) => {
         swalMessage({
           title: error.response.data.message,
-          type: "error"
+          type: "error",
         });
         this.getAppointmentStatus();
-      }
+      },
     });
   }
 
@@ -211,26 +211,26 @@ class AppointmentStatus extends Component {
       uri: "/appointment/getAppointmentStatus",
       module: "frontDesk",
       method: "GET",
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           this.setState(
             {
-              appointmentStatus: response.data.records
+              appointmentStatus: response.data.records,
             },
             () => {
               this.setState({
                 //steps: this.state.appointmentStatus.length + 1,
-                min_steps: this.state.appointmentStatus.length + 1
+                min_steps: this.state.appointmentStatus.length + 1,
               });
 
               let steps_list = Enumerable.from(this.state.appointmentStatus)
-                .select(w => w.steps)
+                .select((w) => w.steps)
                 .toArray();
 
               this.setState({ steps_list: steps_list });
 
               let authCount = Enumerable.from(this.state.appointmentStatus)
-                .where(w => w.authorized === "Y")
+                .where((w) => w.authorized === "Y")
                 .toArray().length;
 
               if (
@@ -240,7 +240,7 @@ class AppointmentStatus extends Component {
                 this.setState(
                   {
                     isEditable: false,
-                    disableAdd: "none"
+                    disableAdd: "none",
                   },
                   () => {}
                 );
@@ -249,12 +249,12 @@ class AppointmentStatus extends Component {
           );
         }
       },
-      onFailure: error => {
+      onFailure: (error) => {
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -272,7 +272,7 @@ class AppointmentStatus extends Component {
           ? swalMessage({
               title:
                 "Order already exists please select a unique order number?",
-              type: "warning"
+              type: "warning",
             })
           : algaehApiCall({
               uri: "/appointment/addAppointmentStatus",
@@ -282,22 +282,22 @@ class AppointmentStatus extends Component {
                 color_code: this.state.color_code,
                 description: this.state.description,
                 default_status: this.state.default_status,
-                steps: this.state.steps
+                steps: this.state.steps,
               },
-              onSuccess: response => {
+              onSuccess: (response) => {
                 if (response.data.success) {
                   swalMessage({
                     title: "Record added successfully",
-                    type: "success"
+                    type: "success",
                   });
 
                   this.resetState();
                   this.getAppointmentStatus();
                 }
               },
-              onFailure: error => {}
+              onFailure: (error) => {},
             });
-      }
+      },
     });
   }
 
@@ -313,36 +313,36 @@ class AppointmentStatus extends Component {
             div={{ className: "col-2 form-group mandatory" }}
             label={{
               fieldName: "color_code",
-              isImp: true
+              isImp: true,
             }}
             textBox={{
               className: "txt-fld",
               name: "color_code",
               value: this.state.color_code,
               events: {
-                onChange: this.changeTexts.bind(this)
+                onChange: this.changeTexts.bind(this),
               },
               others: {
                 type: "color",
                 required: true,
                 checkvalidation: "$value === #ffffff",
-                errormessage: "Please Select a color"
-              }
+                errormessage: "Please Select a color",
+              },
             }}
           />
           <AlagehFormGroup
             div={{ className: "col-2 form-group mandatory" }}
             label={{
               fieldName: "description",
-              isImp: true
+              isImp: true,
             }}
             textBox={{
               className: "txt-fld",
               name: "description",
               value: this.state.description,
               events: {
-                onChange: this.changeTexts.bind(this)
-              }
+                onChange: this.changeTexts.bind(this),
+              },
             }}
           />
 
@@ -350,7 +350,7 @@ class AppointmentStatus extends Component {
             div={{ className: "col-2 form-group mandatory" }}
             label={{
               fieldName: "default_status",
-              isImp: true
+              isImp: true,
             }}
             selector={{
               name: "default_status",
@@ -359,9 +359,9 @@ class AppointmentStatus extends Component {
               dataSource: {
                 textField: "name",
                 valueField: "value",
-                data: GlobalVariables.FORMAT_APPT_STATUS
+                data: GlobalVariables.FORMAT_APPT_STATUS,
               },
-              onChange: this.dropDownHandler.bind(this)
+              onChange: this.dropDownHandler.bind(this),
             }}
           />
 
@@ -369,28 +369,28 @@ class AppointmentStatus extends Component {
             div={{ className: "col-1 form-group mandatory" }}
             label={{
               fieldName: "steps",
-              isImp: true
+              isImp: true,
             }}
             textBox={{
               className: "txt-fld",
               name: "steps",
               value: this.state.steps,
               events: {
-                onChange: this.changeTexts.bind(this)
+                onChange: this.changeTexts.bind(this),
               },
               others: {
                 type: "number",
                 disabled: true,
-                min: this.state.min_steps
-              }
+                min: this.state.min_steps,
+              },
             }}
           />
 
           <div className="col">
             <button
               style={{
-                marginTop: 19,
-                pointerEvents: this.state.disableAdd
+                marginTop: 20,
+                pointerEvents: this.state.disableAdd,
               }}
               onClick={this.addAppointmentStatus.bind(this)}
               type="button"
@@ -399,7 +399,7 @@ class AppointmentStatus extends Component {
               Add to List
             </button>
             <button
-              style={{ marginTop: 19, marginLeft: 15, float: "right" }}
+              style={{ marginTop: 20, marginLeft: 15, float: "right" }}
               onClick={this.authorizeApptStatus.bind(this)}
               className="btn btn-default"
             >
@@ -427,19 +427,19 @@ class AppointmentStatus extends Component {
                           label: (
                             <AlgaehLabel label={{ fieldName: "color_code" }} />
                           ),
-                          displayTemplate: row => {
+                          displayTemplate: (row) => {
                             return (
                               <div
                                 className="col"
                                 style={{
                                   backgroundColor: "" + row.color_code,
                                   height: "20px",
-                                  margin: "auto"
+                                  margin: "auto",
                                 }}
                               />
                             );
                           },
-                          editorTemplate: row => {
+                          editorTemplate: (row) => {
                             return (
                               <div className="row">
                                 <AlagehFormGroup
@@ -452,26 +452,26 @@ class AppointmentStatus extends Component {
                                       onChange: this.changeGridEditors.bind(
                                         this,
                                         row
-                                      )
+                                      ),
                                     },
                                     others: {
                                       type: "color",
                                       checkvalidation: "#ffffff",
                                       errormessage: "Please Select a color",
-                                      required: true
-                                    }
+                                      required: true,
+                                    },
                                   }}
                                 />
                               </div>
                             );
-                          }
+                          },
                         },
                         {
                           fieldName: "statusDesc",
                           label: (
                             <AlgaehLabel label={{ fieldName: "description" }} />
                           ),
-                          editorTemplate: row => {
+                          editorTemplate: (row) => {
                             return (
                               <AlagehFormGroup
                                 div={{ className: "col" }}
@@ -483,17 +483,17 @@ class AppointmentStatus extends Component {
                                     onChange: this.changeGridEditors.bind(
                                       this,
                                       row
-                                    )
+                                    ),
                                   },
                                   others: {
                                     errormessage:
                                       "Description - cannot be blank",
-                                    required: true
-                                  }
+                                    required: true,
+                                  },
                                 }}
                               />
                             );
-                          }
+                          },
                         },
                         {
                           fieldName: "default_status",
@@ -502,7 +502,7 @@ class AppointmentStatus extends Component {
                               label={{ fieldName: "default_status" }}
                             />
                           ),
-                          displayTemplate: row => {
+                          displayTemplate: (row) => {
                             return row.default_status === "Y"
                               ? "Yes"
                               : row.default_status === "N"
@@ -513,7 +513,7 @@ class AppointmentStatus extends Component {
                               ? "Create Visit"
                               : "----------";
                           },
-                          editorTemplate: row => {
+                          editorTemplate: (row) => {
                             return (
                               <AlagehAutoComplete
                                 div={{ className: "col" }}
@@ -524,7 +524,7 @@ class AppointmentStatus extends Component {
                                   dataSource: {
                                     textField: "name",
                                     valueField: "value",
-                                    data: GlobalVariables.FORMAT_APPT_STATUS
+                                    data: GlobalVariables.FORMAT_APPT_STATUS,
                                   },
                                   onChange: this.changeGridEditors.bind(
                                     this,
@@ -532,12 +532,12 @@ class AppointmentStatus extends Component {
                                   ),
                                   others: {
                                     errormessage: "Cannot be blank",
-                                    required: true
-                                  }
+                                    required: true,
+                                  },
                                 }}
                               />
                             );
-                          }
+                          },
                         },
                         {
                           fieldName: "steps",
@@ -546,7 +546,7 @@ class AppointmentStatus extends Component {
                             <AlgaehLabel label={{ forceLabel: "Steps" }} />
                           ),
 
-                          editorTemplate: row => {
+                          editorTemplate: (row) => {
                             return (
                               <AlagehFormGroup
                                 div={{ className: "col" }}
@@ -558,19 +558,19 @@ class AppointmentStatus extends Component {
                                     onChange: this.changeGridEditors.bind(
                                       this,
                                       row
-                                    )
+                                    ),
                                   },
                                   others: {
                                     type: "number",
                                     errormessage: "Cannot be blank",
                                     required: true,
                                     max: this.state.appointmentStatus.length,
-                                    min: 1
-                                  }
+                                    min: 1,
+                                  },
                                 }}
                               />
                             );
-                          }
+                          },
                         },
                         {
                           fieldName: "authorized",
@@ -580,25 +580,25 @@ class AppointmentStatus extends Component {
                           ),
 
                           disabled: false,
-                          displayTemplate: row => {
+                          displayTemplate: (row) => {
                             return (
                               <span>
                                 {row.authorized === "Y" ? "Yes" : "No"}
                               </span>
                             );
                           },
-                          editorTemplate: row => {
+                          editorTemplate: (row) => {
                             return (
                               <span>
                                 {row.authorized === "Y" ? "Yes" : "No"}
                               </span>
                             );
-                          }
-                        }
+                          },
+                        },
                       ]}
                       keyId="hims_d_appointment_status_id"
                       dataSource={{
-                        data: this.state.appointmentStatus
+                        data: this.state.appointmentStatus,
                       }}
                       isEditable={this.state.isEditable}
                       filter={true}
@@ -612,7 +612,7 @@ class AppointmentStatus extends Component {
                                 swalMessage({
                                   title:
                                     "Already Authorized Cannot Edit/Delete",
-                                  type: "error"
+                                  type: "error",
                                 });
                               },
                         onDone:
@@ -622,10 +622,10 @@ class AppointmentStatus extends Component {
                                 swalMessage({
                                   title:
                                     "Already Authorized Cannot Edit/Delete",
-                                  type: "error"
+                                  type: "error",
                                 });
                                 this.getAppointmentStatus();
-                              }
+                              },
                       }}
                     />
                   </div>

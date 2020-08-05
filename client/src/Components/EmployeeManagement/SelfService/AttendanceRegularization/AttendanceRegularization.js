@@ -3,7 +3,7 @@ import "./att_rglzn.scss";
 import {
   AlgaehDateHandler,
   AlagehFormGroup,
-  AlgaehLabel
+  AlgaehLabel,
 } from "../../../Wrapper/algaehWrapper";
 import { AlgaehValidation } from "../../../../utils/GlobalFunctions";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
@@ -34,7 +34,7 @@ class AttendanceRegularization extends Component {
       punch_out_time: props.regularize.punch_out_time
         ? moment(props.regularize.punch_out_time, "HH:mm:ss").format("hh:mm a")
         : null,
-      absent_id: props.regularize.absent_id
+      absent_id: props.regularize.absent_id,
     };
   }
 
@@ -47,7 +47,7 @@ class AttendanceRegularization extends Component {
 
   textHandler(e) {
     this.setState({
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
   }
 
@@ -59,7 +59,7 @@ class AttendanceRegularization extends Component {
       punch_out_time: "00:00",
       regularize_in_time: null,
       regularize_out_time: null,
-      regularization_reason: null
+      regularization_reason: null,
     });
   }
 
@@ -68,22 +68,22 @@ class AttendanceRegularization extends Component {
       uri: "/attendance/getEmployeeAttendReg",
       method: "GET",
       data: {
-        employee_id: this.state.hims_d_employee_id
+        employee_id: this.state.hims_d_employee_id,
       },
       module: "hrManagement",
-      onSuccess: res => {
+      onSuccess: (res) => {
         if (res.data.success) {
           this.setState({
-            regularization_list: res.data.result
+            regularization_list: res.data.result,
           });
         }
       },
-      onFailure: err => {
+      onFailure: (err) => {
         swalMessage({
           title: err.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -98,7 +98,7 @@ class AttendanceRegularization extends Component {
         ) {
           swalMessage({
             title: "Please Select a proper Date Range",
-            type: "warning"
+            type: "warning",
           });
         } else if (
           moment(this.state.login_date).format("YYYYMMDD") ===
@@ -108,7 +108,7 @@ class AttendanceRegularization extends Component {
         ) {
           swalMessage({
             title: "Please Select a proper time range",
-            type: "warning"
+            type: "warning",
           });
         } else {
           algaehApiCall({
@@ -140,27 +140,27 @@ class AttendanceRegularization extends Component {
               regularization_reason: this.state.regularization_reason,
               regularize_status: "PEN",
               hims_f_attendance_regularize_id: this.state
-                .hims_f_attendance_regularize_id
+                .hims_f_attendance_regularize_id,
             },
-            onSuccess: res => {
+            onSuccess: (res) => {
               if (res.data.success) {
                 swalMessage({
                   title: "Requested Successfully",
-                  type: "success"
+                  type: "success",
                 });
                 this.clearState();
                 this.getRegularizationRequests();
               }
             },
-            onFailure: err => {
+            onFailure: (err) => {
               swalMessage({
                 title: err.message,
-                type: "error"
+                type: "error",
               });
-            }
+            },
           });
         }
-      }
+      },
     });
   }
 
@@ -180,22 +180,22 @@ class AttendanceRegularization extends Component {
                   div={{ className: "col-6 margin-bottom-15" }}
                   label={{
                     forceLabel: "Login Date",
-                    isImp: true
+                    isImp: true,
                   }}
                   textBox={{
                     className: "txt-fld",
                     name: "login_date",
                     others: {
-                      tabIndex: "1"
-                    }
+                      tabIndex: "1",
+                    },
                   }}
                   maxDate={new Date()}
                   events={{
-                    onChange: selDate => {
+                    onChange: (selDate) => {
                       this.setState({
-                        login_date: selDate
+                        login_date: selDate,
                       });
-                    }
+                    },
                   }}
                   value={this.state.login_date}
                 />
@@ -203,22 +203,22 @@ class AttendanceRegularization extends Component {
                   div={{ className: "col-6 margin-bottom-15" }}
                   label={{
                     forceLabel: "Logout Date",
-                    isImp: true
+                    isImp: true,
                   }}
                   textBox={{
                     className: "txt-fld",
                     name: "logout_date",
                     others: {
-                      tabIndex: "2"
-                    }
+                      tabIndex: "2",
+                    },
                   }}
                   minDate={this.state.login_date}
                   events={{
-                    onChange: selDate => {
+                    onChange: (selDate) => {
                       this.setState({
-                        logout_date: selDate
+                        logout_date: selDate,
                       });
-                    }
+                    },
                   }}
                   value={this.state.logout_date}
                 />
@@ -226,7 +226,7 @@ class AttendanceRegularization extends Component {
                 <div className="col-6">
                   <AlgaehLabel
                     label={{
-                      forceLabel: "Old In-Time"
+                      forceLabel: "Old In-Time",
                     }}
                   />
                   <h6>
@@ -238,7 +238,7 @@ class AttendanceRegularization extends Component {
                 <div className="col-6">
                   <AlgaehLabel
                     label={{
-                      forceLabel: "Old Out-Time"
+                      forceLabel: "Old Out-Time",
                     }}
                   />
                   <h6>
@@ -252,7 +252,7 @@ class AttendanceRegularization extends Component {
                   div={{ className: "col-6 margin-bottom-15" }}
                   label={{
                     forceLabel: "New In-Time",
-                    isImp: true
+                    isImp: true,
                   }}
                   textBox={{
                     className: "txt-fld",
@@ -260,19 +260,19 @@ class AttendanceRegularization extends Component {
                     value: this.state.regularize_in_time,
                     others: {
                       tabIndex: "3",
-                      type: "time"
+                      type: "time",
                     },
 
                     events: {
-                      onChange: this.textHandler.bind(this)
-                    }
+                      onChange: this.textHandler.bind(this),
+                    },
                   }}
                 />
                 <AlagehFormGroup
                   div={{ className: "col-6 margin-bottom-15" }}
                   label={{
                     forceLabel: "New Out-Time",
-                    isImp: true
+                    isImp: true,
                   }}
                   textBox={{
                     className: "txt-fld",
@@ -280,33 +280,33 @@ class AttendanceRegularization extends Component {
                     value: this.state.regularize_out_time,
                     others: {
                       tabIndex: "4",
-                      type: "time"
+                      type: "time",
                     },
                     events: {
-                      onChange: this.textHandler.bind(this)
-                    }
+                      onChange: this.textHandler.bind(this),
+                    },
                   }}
                 />
                 <AlagehFormGroup
                   div={{ className: "col-12" }}
                   label={{
                     forceLabel: "Reason for Regularization",
-                    isImp: true
+                    isImp: true,
                   }}
                   textBox={{
                     className: "txt-fld",
                     name: "regularization_reason",
                     value: this.state.regularization_reason,
                     events: {
-                      onChange: this.textHandler.bind(this)
-                    }
+                      onChange: this.textHandler.bind(this),
+                    },
                   }}
                 />
                 <div className="col-3 margin-bottom-15">
                   <button
                     type="button"
                     className="btn btn-primary"
-                    style={{ marginTop: 19 }}
+                    style={{ marginTop: 20 }}
                     onClick={this.requestRegularization.bind(this)}
                   >
                     {this.state.hims_f_attendance_regularize_id
@@ -342,7 +342,7 @@ class AttendanceRegularization extends Component {
                           {
                             id: "regularize_status",
                             Header: <b>Status</b>,
-                            accessor: d =>
+                            accessor: (d) =>
                               d.regularize_status === "PEN" ? (
                                 <span className="badge badge-warning">
                                   Pending
@@ -357,9 +357,9 @@ class AttendanceRegularization extends Component {
                                 </span>
                               ) : (
                                 "------"
-                              )
-                          }
-                        ]
+                              ),
+                          },
+                        ],
                       },
                       {
                         Header: "Applied",
@@ -371,8 +371,8 @@ class AttendanceRegularization extends Component {
                             label: (
                               <AlgaehLabel label={{ forceLabel: "Status" }} />
                             ),
-                            accessor: d =>
-                              moment(d.created_date).format("DD-MM-YYYY")
+                            accessor: (d) =>
+                              moment(d.created_date).format("DD-MM-YYYY"),
                           },
                           // {
                           //   Header: <b>Code</b>,
@@ -380,9 +380,9 @@ class AttendanceRegularization extends Component {
                           // },
                           {
                             Header: <b>Reason</b>,
-                            accessor: "regularization_reason"
-                          }
-                        ]
+                            accessor: "regularization_reason",
+                          },
+                        ],
                       },
                       {
                         Header: "Attendance",
@@ -391,10 +391,10 @@ class AttendanceRegularization extends Component {
                           {
                             Header: <b>Date</b>,
                             id: "attendance_date",
-                            accessor: d =>
-                              moment(d.attendance_date).format("DD-MM-YYYY")
-                          }
-                        ]
+                            accessor: (d) =>
+                              moment(d.attendance_date).format("DD-MM-YYYY"),
+                          },
+                        ],
                       },
                       {
                         Header: "Login Time",
@@ -404,18 +404,18 @@ class AttendanceRegularization extends Component {
                           {
                             Header: <b>Old</b>,
                             id: "punch_in_time",
-                            accessor: d =>
-                              d.punch_in_time ? d.punch_in_time : "------"
+                            accessor: (d) =>
+                              d.punch_in_time ? d.punch_in_time : "------",
                           },
                           {
                             Header: <b>New</b>,
                             id: "regularize_in_time",
-                            accessor: d =>
+                            accessor: (d) =>
                               moment(d.regularize_in_time, "HH:mm:ss").format(
                                 "HH:mm A"
-                              )
-                          }
-                        ]
+                              ),
+                          },
+                        ],
                       },
                       {
                         Header: "Logout Time",
@@ -424,19 +424,19 @@ class AttendanceRegularization extends Component {
                           {
                             Header: <b>Old</b>,
                             id: "punch_out_time",
-                            accessor: d =>
-                              d.punch_out_time ? d.punch_out_time : "------"
+                            accessor: (d) =>
+                              d.punch_out_time ? d.punch_out_time : "------",
                           },
                           {
                             Header: <b>New</b>,
                             id: "regularize_out_time",
-                            accessor: d =>
+                            accessor: (d) =>
                               moment(d.regularize_out_time, "HH:mm:ss").format(
                                 "HH:mm A"
-                              )
-                          }
-                        ]
-                      }
+                              ),
+                          },
+                        ],
+                      },
                     ]}
                     defaultPageSize={10}
                     className="-striped -highlight"

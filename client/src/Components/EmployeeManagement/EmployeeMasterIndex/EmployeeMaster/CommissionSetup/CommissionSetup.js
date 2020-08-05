@@ -9,7 +9,7 @@ import {
   AlagehFormGroup,
   AlagehAutoComplete,
   AlgaehDataGrid,
-  AlgaehLabel
+  AlgaehLabel,
 } from "../../../../Wrapper/algaehWrapper";
 
 import {
@@ -22,7 +22,7 @@ import {
   numberSet,
   deleteServiceComm,
   getServiceTypeDepartments,
-  getServiceDepartments
+  getServiceDepartments,
 } from "./CommissionSetupEvents";
 
 import AlgaehLoader from "../../../../Wrapper/fullPageLoader";
@@ -42,7 +42,7 @@ class CommissionSetup extends Component {
       op_credit_commission_percent: 0,
       ip_cash_commission_percent: 0,
       ip_credit_commission_percent: 0,
-      service_type_typ_id: null
+      service_type_typ_id: null,
     };
     // AlgaehLoader({ show: true });
   }
@@ -81,7 +81,7 @@ class CommissionSetup extends Component {
                 className="col-lg-6"
                 style={{
                   borderRight: "1px solid #d3d3d3",
-                  paddingBottom: 10
+                  paddingBottom: 10,
                 }}
               >
                 <h6
@@ -89,7 +89,7 @@ class CommissionSetup extends Component {
                     borderBottom: "1px solid #ccc",
                     paddingBottom: 5,
                     paddingTop: 10,
-                    fontSize: "0.9rem"
+                    fontSize: "0.9rem",
                   }}
                 >
                   Service Commission
@@ -99,7 +99,7 @@ class CommissionSetup extends Component {
                     div={{ className: "col mandatory form-group" }}
                     label={{
                       fieldName: "service_type_id",
-                      isImp: true
+                      isImp: true,
                     }}
                     selector={{
                       name: "service_type_typ_id",
@@ -108,22 +108,22 @@ class CommissionSetup extends Component {
                       dataSource: {
                         textField: "service_type",
                         valueField: "hims_d_service_type_id",
-                        data: this.props.empservicetype
+                        data: this.props.empservicetype,
                       },
                       others: { disabled: this.state.Billexists },
                       onChange: serviceTypeHandeler.bind(this, this),
                       onClear: () => {
                         this.setState({
-                          service_type_typ_id: null
+                          service_type_typ_id: null,
                         });
-                      }
+                      },
                     }}
                   />
 
                   <AlagehFormGroup
                     div={{ className: "col form-group" }}
                     label={{
-                      fieldName: "op_cash_comission_percent"
+                      fieldName: "op_cash_comission_percent",
                     }}
                     textBox={{
                       decimal: { allowNegative: false },
@@ -131,15 +131,15 @@ class CommissionSetup extends Component {
                       name: "op_cash_servtyp_percent",
                       value: this.state.op_cash_servtyp_percent,
                       events: {
-                        onChange: numberSet.bind(this, this)
-                      }
+                        onChange: numberSet.bind(this, this),
+                      },
                     }}
                   />
 
                   <AlagehFormGroup
                     div={{ className: "col form-group" }}
                     label={{
-                      fieldName: "op_credit_comission_percent"
+                      fieldName: "op_credit_comission_percent",
                     }}
                     textBox={{
                       decimal: { allowNegative: false },
@@ -147,8 +147,8 @@ class CommissionSetup extends Component {
                       name: "op_credit_servtyp_percent",
                       value: this.state.op_credit_servtyp_percent,
                       events: {
-                        onChange: numberSet.bind(this, this)
-                      }
+                        onChange: numberSet.bind(this, this),
+                      },
                     }}
                   />
                 </div>
@@ -156,7 +156,7 @@ class CommissionSetup extends Component {
                   <AlagehFormGroup
                     div={{ className: "col form-group" }}
                     label={{
-                      fieldName: "ip_cash_commission_percent"
+                      fieldName: "ip_cash_commission_percent",
                     }}
                     textBox={{
                       decimal: { allowNegative: false },
@@ -164,14 +164,14 @@ class CommissionSetup extends Component {
                       name: "ip_cash_servtyp_percent",
                       value: this.state.ip_cash_servtyp_percent,
                       events: {
-                        onChange: numberSet.bind(this, this)
-                      }
+                        onChange: numberSet.bind(this, this),
+                      },
                     }}
                   />
                   <AlagehFormGroup
                     div={{ className: "col form-group" }}
                     label={{
-                      fieldName: "ip_credit_commission_percent"
+                      fieldName: "ip_credit_commission_percent",
                     }}
                     textBox={{
                       decimal: { allowNegative: false },
@@ -179,8 +179,8 @@ class CommissionSetup extends Component {
                       name: "ip_credit_servtyp_percent",
                       value: this.state.ip_credit_servtyp_percent,
                       events: {
-                        onChange: numberSet.bind(this, this)
-                      }
+                        onChange: numberSet.bind(this, this),
+                      },
                     }}
                   />
 
@@ -188,7 +188,7 @@ class CommissionSetup extends Component {
                     <button
                       type="button"
                       className="btn btn-default"
-                      style={{ marginTop: 19 }}
+                      style={{ marginTop: 20 }}
                       onClick={AddSeviceTypeComm.bind(this, this)}
                     >
                       Add
@@ -206,7 +206,7 @@ class CommissionSetup extends Component {
                           label: (
                             <AlgaehLabel label={{ fieldName: "action" }} />
                           ),
-                          displayTemplate: row => {
+                          displayTemplate: (row) => {
                             return (
                               <span>
                                 <i
@@ -223,8 +223,8 @@ class CommissionSetup extends Component {
                             );
                           },
                           others: {
-                            maxWidth: 50
-                          }
+                            maxWidth: 50,
+                          },
                         },
                         {
                           fieldName: "service_type_id",
@@ -233,12 +233,12 @@ class CommissionSetup extends Component {
                               label={{ fieldName: "service_type_id" }}
                             />
                           ),
-                          displayTemplate: row => {
+                          displayTemplate: (row) => {
                             let display =
                               _servicetypelist === undefined
                                 ? []
                                 : _servicetypelist.filter(
-                                    f =>
+                                    (f) =>
                                       f.hims_d_service_type_id ===
                                       row.service_type_id
                                   );
@@ -252,7 +252,7 @@ class CommissionSetup extends Component {
                                   : ""}
                               </span>
                             );
-                          }
+                          },
                         },
 
                         {
@@ -260,20 +260,20 @@ class CommissionSetup extends Component {
                           label: (
                             <AlgaehLabel
                               label={{
-                                fieldName: "op_cash_comission_percent"
+                                fieldName: "op_cash_comission_percent",
                               }}
                             />
-                          )
+                          ),
                         },
                         {
                           fieldName: "op_credit_comission_percent",
                           label: (
                             <AlgaehLabel
                               label={{
-                                fieldName: "op_credit_comission_percent"
+                                fieldName: "op_credit_comission_percent",
                               }}
                             />
-                          )
+                          ),
                         },
 
                         {
@@ -281,10 +281,10 @@ class CommissionSetup extends Component {
                           label: (
                             <AlgaehLabel
                               label={{
-                                fieldName: "ip_cash_commission_percent"
+                                fieldName: "ip_cash_commission_percent",
                               }}
                             />
-                          )
+                          ),
                         },
 
                         {
@@ -292,18 +292,18 @@ class CommissionSetup extends Component {
                           label: (
                             <AlgaehLabel
                               label={{
-                                fieldName: "ip_credit_commission_percent"
+                                fieldName: "ip_credit_commission_percent",
                               }}
                             />
-                          )
-                        }
+                          ),
+                        },
                       ]}
                       keyId="service_type_id"
                       dataSource={{
                         data:
                           this.state.servTypeCommission === undefined
                             ? []
-                            : this.state.servTypeCommission
+                            : this.state.servTypeCommission,
                       }}
                       paging={{ page: 0, rowsPerPage: 10 }}
                     />
@@ -316,7 +316,7 @@ class CommissionSetup extends Component {
                     borderBottom: "1px solid #ccc",
                     paddingBottom: 5,
                     paddingTop: 10,
-                    fontSize: "0.9rem"
+                    fontSize: "0.9rem",
                   }}
                 >
                   Service Type Commission
@@ -326,7 +326,7 @@ class CommissionSetup extends Component {
                     div={{ className: "col mandatory form-group" }}
                     label={{
                       fieldName: "service_type_id",
-                      isImp: true
+                      isImp: true,
                     }}
                     selector={{
                       name: "service_type_id",
@@ -335,15 +335,15 @@ class CommissionSetup extends Component {
                       dataSource: {
                         textField: "service_type",
                         valueField: "hims_d_service_type_id",
-                        data: this.props.empservicetype
+                        data: this.props.empservicetype,
                       },
 
                       onChange: serviceServTypeHandeler.bind(this, this),
                       onClear: () => {
                         this.setState({
-                          service_type_id: null
+                          service_type_id: null,
                         });
-                      }
+                      },
                     }}
                   />
 
@@ -351,7 +351,7 @@ class CommissionSetup extends Component {
                     div={{ className: "col-5 mandatory form-group" }}
                     label={{
                       forceLabel: "Select Service Type",
-                      isImp: true
+                      isImp: true,
                     }}
                     selector={{
                       name: "services_id",
@@ -360,21 +360,21 @@ class CommissionSetup extends Component {
                       dataSource: {
                         textField: "service_name",
                         valueField: "hims_d_services_id",
-                        data: this.props.empservices
+                        data: this.props.empservices,
                       },
                       onChange: texthandle.bind(this, this),
                       onClear: () => {
                         this.setState({
-                          services_id: null
+                          services_id: null,
                         });
-                      }
+                      },
                     }}
                   />
 
                   <AlagehFormGroup
                     div={{ className: "col form-group" }}
                     label={{
-                      fieldName: "op_cash_comission_percent"
+                      fieldName: "op_cash_comission_percent",
                     }}
                     textBox={{
                       decimal: { allowNegative: false },
@@ -382,8 +382,8 @@ class CommissionSetup extends Component {
                       name: "op_cash_commission_percent",
                       value: this.state.op_cash_commission_percent,
                       events: {
-                        onChange: numberSet.bind(this, this)
-                      }
+                        onChange: numberSet.bind(this, this),
+                      },
                     }}
                   />
                 </div>
@@ -391,7 +391,7 @@ class CommissionSetup extends Component {
                   <AlagehFormGroup
                     div={{ className: "col form-group" }}
                     label={{
-                      fieldName: "op_credit_comission_percent"
+                      fieldName: "op_credit_comission_percent",
                     }}
                     textBox={{
                       decimal: { allowNegative: false },
@@ -399,14 +399,14 @@ class CommissionSetup extends Component {
                       name: "op_credit_commission_percent",
                       value: this.state.op_credit_commission_percent,
                       events: {
-                        onChange: numberSet.bind(this, this)
-                      }
+                        onChange: numberSet.bind(this, this),
+                      },
                     }}
                   />
                   <AlagehFormGroup
                     div={{ className: "col form-group" }}
                     label={{
-                      fieldName: "ip_cash_commission_percent"
+                      fieldName: "ip_cash_commission_percent",
                     }}
                     textBox={{
                       decimal: { allowNegative: false },
@@ -414,14 +414,14 @@ class CommissionSetup extends Component {
                       name: "ip_cash_commission_percent",
                       value: this.state.ip_cash_commission_percent,
                       events: {
-                        onChange: numberSet.bind(this, this)
-                      }
+                        onChange: numberSet.bind(this, this),
+                      },
                     }}
                   />
                   <AlagehFormGroup
                     div={{ className: "col form-group" }}
                     label={{
-                      fieldName: "ip_credit_commission_percent"
+                      fieldName: "ip_credit_commission_percent",
                     }}
                     textBox={{
                       decimal: { allowNegative: false },
@@ -429,8 +429,8 @@ class CommissionSetup extends Component {
                       name: "ip_credit_commission_percent",
                       value: this.state.ip_credit_commission_percent,
                       events: {
-                        onChange: numberSet.bind(this, this)
-                      }
+                        onChange: numberSet.bind(this, this),
+                      },
                     }}
                   />
 
@@ -438,7 +438,7 @@ class CommissionSetup extends Component {
                     <button
                       type="button"
                       className="btn btn-default"
-                      style={{ marginTop: 19 }}
+                      style={{ marginTop: 20 }}
                       onClick={AddServiceComm.bind(this, this)}
                     >
                       Add
@@ -456,7 +456,7 @@ class CommissionSetup extends Component {
                           label: (
                             <AlgaehLabel label={{ fieldName: "action" }} />
                           ),
-                          displayTemplate: row => {
+                          displayTemplate: (row) => {
                             return (
                               <span>
                                 <i
@@ -473,8 +473,8 @@ class CommissionSetup extends Component {
                             );
                           },
                           others: {
-                            maxWidth: 50
-                          }
+                            maxWidth: 50,
+                          },
                         },
                         {
                           fieldName: "service_type_id",
@@ -483,12 +483,12 @@ class CommissionSetup extends Component {
                               label={{ fieldName: "service_type_id" }}
                             />
                           ),
-                          displayTemplate: row => {
+                          displayTemplate: (row) => {
                             let display =
                               _servicetypelist === undefined
                                 ? []
                                 : _servicetypelist.filter(
-                                    f =>
+                                    (f) =>
                                       f.hims_d_service_type_id ===
                                       row.service_type_id
                                   );
@@ -502,7 +502,7 @@ class CommissionSetup extends Component {
                                   : ""}
                               </span>
                             );
-                          }
+                          },
                         },
 
                         {
@@ -510,12 +510,12 @@ class CommissionSetup extends Component {
                           label: (
                             <AlgaehLabel label={{ fieldName: "services_id" }} />
                           ),
-                          displayTemplate: row => {
+                          displayTemplate: (row) => {
                             let display =
                               _serviceslist === undefined
                                 ? []
                                 : _serviceslist.filter(
-                                    f =>
+                                    (f) =>
                                       f.hims_d_services_id === row.services_id
                                   );
 
@@ -528,7 +528,7 @@ class CommissionSetup extends Component {
                                   : ""}
                               </span>
                             );
-                          }
+                          },
                         },
 
                         {
@@ -536,20 +536,20 @@ class CommissionSetup extends Component {
                           label: (
                             <AlgaehLabel
                               label={{
-                                fieldName: "op_cash_comission_percent"
+                                fieldName: "op_cash_comission_percent",
                               }}
                             />
-                          )
+                          ),
                         },
                         {
                           fieldName: "op_credit_commission_percent",
                           label: (
                             <AlgaehLabel
                               label={{
-                                fieldName: "op_credit_comission_percent"
+                                fieldName: "op_credit_comission_percent",
                               }}
                             />
-                          )
+                          ),
                         },
 
                         {
@@ -557,10 +557,10 @@ class CommissionSetup extends Component {
                           label: (
                             <AlgaehLabel
                               label={{
-                                fieldName: "ip_cash_commission_percent"
+                                fieldName: "ip_cash_commission_percent",
                               }}
                             />
-                          )
+                          ),
                         },
 
                         {
@@ -568,18 +568,18 @@ class CommissionSetup extends Component {
                           label: (
                             <AlgaehLabel
                               label={{
-                                fieldName: "ip_credit_commission_percent"
+                                fieldName: "ip_credit_commission_percent",
                               }}
                             />
-                          )
-                        }
+                          ),
+                        },
                       ]}
                       keyId="service_type_id"
                       dataSource={{
                         data:
                           this.state.serviceComm === undefined
                             ? []
-                            : this.state.serviceComm
+                            : this.state.serviceComm,
                       }}
                       paging={{ page: 0, rowsPerPage: 10 }}
                     />
@@ -602,7 +602,7 @@ function mapStateToProps(state) {
     empservicetype: state.empservicetype,
 
     servTypeCommission: state.servTypeCommission,
-    serviceComm: state.serviceComm
+    serviceComm: state.serviceComm,
   };
 }
 
@@ -611,7 +611,7 @@ function mapDispatchToProps(dispatch) {
     {
       getServices: AlgaehActions,
       getDoctorServiceTypeCommission: AlgaehActions,
-      getDoctorServiceCommission: AlgaehActions
+      getDoctorServiceCommission: AlgaehActions,
     },
     dispatch
   );

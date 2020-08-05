@@ -11,7 +11,7 @@ import {
   AlagehFormGroup,
   AlgaehDataGrid,
   AlagehAutoComplete,
-  AlgaehLabel
+  AlgaehLabel,
 } from "../../Wrapper/algaehWrapper";
 import GlobalVariables from "../../../utils/GlobalVariables";
 import swal from "sweetalert2";
@@ -35,7 +35,7 @@ class VisaType extends Component {
       row: [],
       id: "",
       openDialog: false,
-      buttonText: "ADD TO LIST"
+      buttonText: "ADD TO LIST",
     };
     this.baseState = this.state;
   }
@@ -48,17 +48,17 @@ class VisaType extends Component {
       data: {
         fields: "visa_type_code",
         tableName: "hims_d_visa_type",
-        keyFieldName: "hims_d_visa_type_id"
+        keyFieldName: "hims_d_visa_type_id",
       },
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success === true) {
           const placeHolder =
             response.data.records.length > 0 ? response.data.records[0] : {};
           that.setState({
-            visa_type_code_placeHolder: placeHolder.visa_type_code
+            visa_type_code_placeHolder: placeHolder.visa_type_code,
           });
         }
-      }
+      },
     });
   }
 
@@ -86,7 +86,7 @@ class VisaType extends Component {
           uri: "/visaType/addVisa",
           module: "masterSettings",
           data: this.state,
-          onSuccess: response => {
+          onSuccess: (response) => {
             if (response.data.success === true) {
               //Handle Successful Add here
               this.props.getVisatypes({
@@ -95,26 +95,26 @@ class VisaType extends Component {
                 method: "GET",
                 redux: {
                   type: "VISA_GET_DATA",
-                  mappingName: "visatypes"
-                }
+                  mappingName: "visatypes",
+                },
               });
               this.resetState();
               swalMessage({
                 title: "Visa Type added successfully",
-                type: "success"
+                type: "success",
               });
             } else {
               //Handle unsuccessful Add here.
             }
           },
-          onFailure: error => {
+          onFailure: (error) => {
             swalMessage({
               title: error.response.data.message,
-              type: "error"
+              type: "error",
             });
-          }
+          },
         });
-      }
+      },
     });
   }
 
@@ -125,11 +125,11 @@ class VisaType extends Component {
       module: "masterSettings",
       data: data,
       method: "PUT",
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           swalMessage({
             title: "Record updated successfully . .",
-            type: "success"
+            type: "success",
           });
 
           this.props.getVisatypes({
@@ -138,17 +138,17 @@ class VisaType extends Component {
             method: "GET",
             redux: {
               type: "VISA_GET_DATA",
-              mappingName: "visatypes"
-            }
+              mappingName: "visatypes",
+            },
           });
         }
       },
-      onFailure: error => {
+      onFailure: (error) => {
         swalMessage({
           title: error.response.data.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -167,8 +167,8 @@ class VisaType extends Component {
         method: "GET",
         redux: {
           type: "VISA_GET_DATA",
-          mappingName: "visatypes"
-        }
+          mappingName: "visatypes",
+        },
       });
     }
   }
@@ -205,8 +205,8 @@ class VisaType extends Component {
       confirmButtonText: "Yes",
       confirmButtonColor: "#44b8bd",
       cancelButtonColor: "#d33",
-      cancelButtonText: "No"
-    }).then(willDelete => {
+      cancelButtonText: "No",
+    }).then((willDelete) => {
       if (willDelete.value) {
         let data = { hims_d_visa_type_id: id };
         algaehApiCall({
@@ -214,11 +214,11 @@ class VisaType extends Component {
           module: "masterSettings",
           data: data,
           method: "DELETE",
-          onSuccess: response => {
+          onSuccess: (response) => {
             if (response.data.success) {
               swalMessage({
                 title: "Record deleted successfully . .",
-                type: "success"
+                type: "success",
               });
 
               this.props.getVisatypes({
@@ -227,17 +227,17 @@ class VisaType extends Component {
                 method: "GET",
                 redux: {
                   type: "VISA_GET_DATA",
-                  mappingName: "visatypes"
-                }
+                  mappingName: "visatypes",
+                },
               });
             }
           },
-          onFailure: error => {
+          onFailure: (error) => {
             swalMessage({
               title: error.response.data.message,
-              type: "error"
+              type: "error",
             });
-          }
+          },
         });
       }
     });
@@ -263,19 +263,19 @@ class VisaType extends Component {
             div={{ className: "col-2  form-group mandatory" }}
             label={{
               fieldName: "type_code",
-              isImp: true
+              isImp: true,
             }}
             textBox={{
               className: "txt-fld",
               name: "visa_type_code",
               value: this.state.visa_type_code,
               events: {
-                onChange: this.changeTexts.bind(this)
+                onChange: this.changeTexts.bind(this),
               },
               others: {
                 tabIndex: "1",
-                placeholder: this.state.visa_type_code_placeHolder
-              }
+                placeholder: this.state.visa_type_code_placeHolder,
+              },
             }}
           />
 
@@ -283,34 +283,34 @@ class VisaType extends Component {
             div={{ className: "col-3 form-group mandatory" }}
             label={{
               fieldName: "type_desc",
-              isImp: true
+              isImp: true,
             }}
             textBox={{
               className: "txt-fld",
               name: "visa_type",
               value: this.state.visa_type,
               events: {
-                onChange: this.changeTexts.bind(this)
-              }
+                onChange: this.changeTexts.bind(this),
+              },
             }}
           />
           <AlagehFormGroup
             div={{ className: "col-3  form-group mandatory arabic-txt-fld" }}
             label={{
               fieldName: "arabic_type_desc",
-              isImp: true
+              isImp: true,
             }}
             textBox={{
               className: "txt-fld",
               name: "arabic_visa_type",
               value: this.state.arabic_visa_type,
               events: {
-                onChange: this.changeTexts.bind(this)
-              }
+                onChange: this.changeTexts.bind(this),
+              },
             }}
           />
 
-          <div className="col" style={{ marginTop: 19 }}>
+          <div className="col" style={{ marginTop: 20 }}>
             <button
               onClick={this.addVisaType.bind(this)}
               className="btn btn-primary"
@@ -335,14 +335,14 @@ class VisaType extends Component {
                           label: (
                             <AlgaehLabel label={{ fieldName: "type_code" }} />
                           ),
-                          disabled: true
+                          disabled: true,
                         },
                         {
                           fieldName: "visa_type",
                           label: (
                             <AlgaehLabel label={{ fieldName: "type_desc" }} />
                           ),
-                          editorTemplate: row => {
+                          editorTemplate: (row) => {
                             return (
                               <AlagehFormGroup
                                 div={{}}
@@ -354,17 +354,17 @@ class VisaType extends Component {
                                     onChange: this.onchangegridcol.bind(
                                       this,
                                       row
-                                    )
+                                    ),
                                   },
                                   others: {
                                     errormessage:
                                       "Description - cannot be blank",
-                                    required: true
-                                  }
+                                    required: true,
+                                  },
                                 }}
                               />
                             );
-                          }
+                          },
                         },
                         {
                           fieldName: "arabic_visa_type",
@@ -373,7 +373,7 @@ class VisaType extends Component {
                               label={{ fieldName: "arabic_type_desc" }}
                             />
                           ),
-                          editorTemplate: row => {
+                          editorTemplate: (row) => {
                             return (
                               <AlagehFormGroup
                                 div={{}}
@@ -385,29 +385,29 @@ class VisaType extends Component {
                                     onChange: this.onchangegridcol.bind(
                                       this,
                                       row
-                                    )
+                                    ),
                                   },
                                   others: {
                                     errormessage:
                                       "Arabic Name - cannot be blank",
-                                    required: true
-                                  }
+                                    required: true,
+                                  },
                                 }}
                               />
                             );
-                          }
+                          },
                         },
                         {
                           fieldName: "created_by",
                           label: (
                             <AlgaehLabel label={{ fieldName: "created_by" }} />
                           ),
-                          displayTemplate: row => {
+                          displayTemplate: (row) => {
                             let display =
                               this.props.userdrtails === undefined
                                 ? []
                                 : this.props.userdrtails.filter(
-                                    f =>
+                                    (f) =>
                                       f.algaeh_d_app_user_id === row.created_by
                                   );
 
@@ -419,12 +419,12 @@ class VisaType extends Component {
                               </span>
                             );
                           },
-                          editorTemplate: row => {
+                          editorTemplate: (row) => {
                             let display =
                               this.props.userdrtails === undefined
                                 ? []
                                 : this.props.userdrtails.filter(
-                                    f =>
+                                    (f) =>
                                       f.algaeh_d_app_user_id === row.created_by
                                   );
 
@@ -435,7 +435,7 @@ class VisaType extends Component {
                                   : ""}
                               </span>
                             );
-                          }
+                          },
                         },
                         {
                           fieldName: "created_date",
@@ -444,28 +444,28 @@ class VisaType extends Component {
                               label={{ fieldName: "created_date" }}
                             />
                           ),
-                          displayTemplate: row => {
+                          displayTemplate: (row) => {
                             return (
                               <span>{this.dateFormater(row.created_date)}</span>
                             );
                           },
-                          editorTemplate: row => {
+                          editorTemplate: (row) => {
                             return (
                               <span>{this.dateFormater(row.created_date)}</span>
                             );
-                          }
+                          },
                         },
                         {
                           fieldName: "visa_status",
                           label: (
                             <AlgaehLabel label={{ fieldName: "status" }} />
                           ),
-                          displayTemplate: row => {
+                          displayTemplate: (row) => {
                             return row.visa_status === "A"
                               ? "Active"
                               : "Inactive";
                           },
-                          editorTemplate: row => {
+                          editorTemplate: (row) => {
                             return (
                               <AlagehAutoComplete
                                 div={{}}
@@ -476,7 +476,7 @@ class VisaType extends Component {
                                   dataSource: {
                                     textField: "name",
                                     valueField: "value",
-                                    data: GlobalVariables.FORMAT_STATUS
+                                    data: GlobalVariables.FORMAT_STATUS,
                                   },
                                   onChange: this.onchangegridcol.bind(
                                     this,
@@ -484,31 +484,31 @@ class VisaType extends Component {
                                   ),
                                   others: {
                                     errormessage: "Status - cannot be blank",
-                                    required: true
-                                  }
+                                    required: true,
+                                  },
                                 }}
                               />
                             );
-                          }
-                        }
+                          },
+                        },
                       ]}
                       keyId="visa_type_code"
                       dataSource={{
                         data:
                           this.props.visatypes === undefined
                             ? []
-                            : this.props.visatypes
+                            : this.props.visatypes,
                       }}
                       filter={true}
                       isEditable={true}
                       paging={{ page: 0, rowsPerPage: 10 }}
                       events={{
                         onDelete: this.deleteVisaType.bind(this),
-                        onEdit: row => {},
+                        onEdit: (row) => {},
                         // onDone: row => {
                         //   alert(JSON.stringify(row));
                         // }
-                        onDone: this.updateVisaTypes.bind(this)
+                        onDone: this.updateVisaTypes.bind(this),
                       }}
                     />
                   </div>
@@ -525,14 +525,14 @@ class VisaType extends Component {
 function mapStateToProps(state) {
   return {
     visatypes: state.visatypes,
-    userdrtails: state.userdrtails
+    userdrtails: state.userdrtails,
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getVisatypes: AlgaehActions
+      getVisatypes: AlgaehActions,
     },
     dispatch
   );

@@ -163,25 +163,25 @@ class InitialStock extends Component {
             }
             breadStyle={this.props.breadStyle}
             //breadWidth={this.props.breadWidth}
-            pageNavPath={[
-              {
-                pageName: (
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Home",
-                      align: "ltr",
-                    }}
-                  />
-                ),
-              },
-              {
-                pageName: (
-                  <AlgaehLabel
-                    label={{ forceLabel: "Opening Stock", align: "ltr" }}
-                  />
-                ),
-              },
-            ]}
+            // pageNavPath={[
+            //   {
+            //     pageName: (
+            //       <AlgaehLabel
+            //         label={{
+            //           forceLabel: "Home",
+            //           align: "ltr",
+            //         }}
+            //       />
+            //     ),
+            //   },
+            //   {
+            //     pageName: (
+            //       <AlgaehLabel
+            //         label={{ forceLabel: "Opening Stock", align: "ltr" }}
+            //       />
+            //     ),
+            //   },
+            // ]}
             soptlightSearch={{
               label: (
                 <AlgaehLabel
@@ -525,7 +525,7 @@ class InitialStock extends Component {
                   <div className="col">
                     <button
                       className="btn btn-primary"
-                      style={{ marginTop: 19 }}
+                      style={{ marginTop: 20 }}
                       onClick={AddItems.bind(this, this)}
                       disabled={this.state.dataExitst}
                     >

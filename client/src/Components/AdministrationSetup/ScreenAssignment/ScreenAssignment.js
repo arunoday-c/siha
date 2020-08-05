@@ -271,7 +271,7 @@ class ScreenAssignment extends Component {
             {" "}
             <button
               type="button"
-              style={{ marginTop: 19 }}
+              style={{ marginTop: 20 }}
               className="btn btn-default"
               onClick={this.clearState.bind(this)}
             >
@@ -305,7 +305,7 @@ class ScreenAssignment extends Component {
                   type="button"
                   className="btn btn-default"
                   onClick={assignLandingPage.bind(this)}
-                  style={{ marginTop: 19 }}
+                  style={{ marginTop: 20 }}
                 >
                   <AlgaehLabel label={{ forceLabel: "Apply" }} />
                 </button>

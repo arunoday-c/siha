@@ -302,7 +302,7 @@ class HospitalServiceSetup extends Component {
                 <button
                   className="btn btn-default"
                   onClick={this.clearData.bind(this)}
-                  style={{ marginTop: 19 }}
+                  style={{ marginTop: 20 }}
                 >
                   Clear
                 </button>
