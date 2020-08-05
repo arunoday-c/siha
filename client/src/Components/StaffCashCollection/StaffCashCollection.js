@@ -341,25 +341,25 @@ class StaffCashCollection extends Component {
             />
           }
           breadStyle={this.props.breadStyle}
-          pageNavPath={[
-            {
-              pageName: (
-                <AlgaehLabel
-                  label={{
-                    fieldName: "front_desk",
-                    align: "ltr",
-                  }}
-                />
-              ),
-            },
-            {
-              pageName: (
-                <AlgaehLabel
-                  label={{ fieldName: "staff_cash_collection", align: "ltr" }}
-                />
-              ),
-            },
-          ]}
+          // pageNavPath={[
+          //   {
+          //     pageName: (
+          //       <AlgaehLabel
+          //         label={{
+          //           fieldName: "front_desk",
+          //           align: "ltr",
+          //         }}
+          //       />
+          //     ),
+          //   },
+          //   {
+          //     pageName: (
+          //       <AlgaehLabel
+          //         label={{ fieldName: "staff_cash_collection", align: "ltr" }}
+          //       />
+          //     ),
+          //   },
+          // ]}
         />
         <div className="row" style={{ marginTop: 90 }}>
           <div className="col-3">

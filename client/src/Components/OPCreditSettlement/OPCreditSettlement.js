@@ -103,19 +103,21 @@ class OPCreditSettlement extends Component {
       <div className="" style={{ marginBottom: "50px" }}>
         <BreadCrumb
           title={
-            <AlgaehLabel label={{ fieldName: "form_opcreidt", align: "ltr" }} />
+            <AlgaehLabel
+              label={{ forceLabel: "OP Credit Settlement", align: "ltr" }}
+            />
           }
           breadStyle={this.props.breadStyle}
-          pageNavPath={[
-            {
-              pageName: (
-                <AlgaehLabel label={{ fieldName: "form_name", align: "ltr" }} />
-              ),
-            },
-            {
-              pageName: <AlgaehLabel label={{ fieldName: "credit_number" }} />,
-            },
-          ]}
+          // pageNavPath={[
+          //   {
+          //     pageName: (
+          //       <AlgaehLabel label={{ forceLabel: "Billing", align: "ltr" }} />
+          //     ),
+          //   },
+          //   {
+          //     pageName: <AlgaehLabel label={{ fieldName: "credit_number" }} />,
+          //   },
+          // ]}
           soptlightSearch={{
             label: (
               <AlgaehLabel

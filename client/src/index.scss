@@ -1561,6 +1561,7 @@ td {
   min-height: 30px !important;
   max-height: 30px !important;
   padding: 0;
+  border-radius: $borderRadius !important;
 }
 .mandatory {
   .ui.selection.dropdown {
@@ -1667,7 +1668,9 @@ td {
   .ui.selection.dropdown > .search.icon {
     text-align: left;
     left: 0;
+    border-radius: $borderRadius;
   }
+
   .ui.dropdown .menu {
     right: 0;
   }

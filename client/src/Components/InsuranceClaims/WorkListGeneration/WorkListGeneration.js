@@ -12,7 +12,7 @@ class WorkListGeneration extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      selectedLang: "en"
+      selectedLang: "en",
     };
   }
 
@@ -24,23 +24,23 @@ class WorkListGeneration extends Component {
             <AlgaehLabel label={{ fieldName: "form_name", align: "ltr" }} />
           }
           breadStyle={this.props.breadStyle}
-          pageNavPath={[
-            {
-              pageName: (
-                <AlgaehLabel
-                  label={{
-                    fieldName: "form_home",
-                    align: "ltr"
-                  }}
-                />
-              )
-            },
-            {
-              pageName: (
-                <AlgaehLabel label={{ fieldName: "form_name", align: "ltr" }} />
-              )
-            }
-          ]}
+          // pageNavPath={[
+          //   {
+          //     pageName: (
+          //       <AlgaehLabel
+          //         label={{
+          //           fieldName: "form_home",
+          //           align: "ltr"
+          //         }}
+          //       />
+          //     )
+          //   },
+          //   {
+          //     pageName: (
+          //       <AlgaehLabel label={{ fieldName: "form_name", align: "ltr" }} />
+          //     )
+          //   }
+          // ]}
         />
       </div>
     );

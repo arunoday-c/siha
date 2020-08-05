@@ -11,17 +11,16 @@ import {
   datehandle,
   getSampleCollectionDetails,
   AcceptandRejectSample,
-  Refresh
+  Refresh,
 } from "./AccessionAcknowledgementHandaler";
 
 import {
   AlgaehDataGrid,
   AlgaehLabel,
   AlgaehDateHandler,
-  AlgaehModalPopUp
+  AlgaehModalPopUp,
 } from "../../Wrapper/algaehWrapper";
 import Enumerable from "linq";
-
 
 import { AlgaehActions } from "../../../actions/algaehActions";
 import moment from "moment";
@@ -47,17 +46,17 @@ class AccessionAcknowledgement extends Component {
       selectedRow: {},
       remarks: "",
       proiorty: null,
-      status: null
+      status: null,
     };
   }
 
-  changeDateFormat = date => {
+  changeDateFormat = (date) => {
     if (date != null) {
       return moment(date).format(Options.datetimeFormat);
     }
   };
 
-  changeTimeFormat = date => {
+  changeTimeFormat = (date) => {
     if (date != null) {
       return moment(date).format(Options.timeFormat);
     }
@@ -66,12 +65,12 @@ class AccessionAcknowledgement extends Component {
   ShowCollectionModel(row, e) {
     this.setState({
       isOpen: !this.state.isOpen,
-      selected_patient: row
+      selected_patient: row,
     });
   }
   CloseCollectionModel(e) {
     this.setState({
-      isOpen: !this.state.isOpen
+      isOpen: !this.state.isOpen,
     });
   }
 
@@ -93,18 +92,18 @@ class AccessionAcknowledgement extends Component {
       //   return f.status === "O";
       // });
 
-      _Collected = _.filter(this.state.sample_collection, f => {
+      _Collected = _.filter(this.state.sample_collection, (f) => {
         return f.status === "CL";
       });
 
-      _Validated = _.filter(this.state.sample_collection, f => {
+      _Validated = _.filter(this.state.sample_collection, (f) => {
         return f.status === "V";
       });
-      _Confirmed = _.filter(this.state.sample_collection, f => {
+      _Confirmed = _.filter(this.state.sample_collection, (f) => {
         return f.status === "CF";
       });
 
-      _Cancelled = _.filter(this.state.sample_collection, f => {
+      _Cancelled = _.filter(this.state.sample_collection, (f) => {
         return f.status === "CN";
       });
     }
@@ -120,9 +119,9 @@ class AccessionAcknowledgement extends Component {
           events={{
             onClose: () => {
               this.setState({
-                reject_popup: false
+                reject_popup: false,
               });
-            }
+            },
           }}
         >
           {/* <AlagehFormGroup
@@ -170,7 +169,7 @@ class AccessionAcknowledgement extends Component {
                 onClick={() => {
                   this.setState({
                     reject_popup: false,
-                    remarks: ""
+                    remarks: "",
                   });
                 }}
                 type="button"
@@ -183,32 +182,6 @@ class AccessionAcknowledgement extends Component {
         </AlgaehModalPopUp>
 
         <div className="hptl-phase1-accession-acknowledgement-form">
-          {/* <BreadCrumb
-            title={
-              <AlgaehLabel label={{ fieldName: "form_name", align: "ltr" }} />
-            }
-            breadStyle={this.props.breadStyle}
-            pageNavPath={[
-              {
-                pageName: (
-                  <AlgaehLabel
-                    label={{
-                      fieldName: "form_home",
-                      align: "ltr"
-                    }}
-                  />
-                )
-              },
-              {
-                pageName: (
-                  <AlgaehLabel
-                    label={{ fieldName: "form_name", align: "ltr" }}
-                  />
-                )
-              }
-            ]}
-          /> */}
-
           <div
             className="row inner-top-search"
             style={{ paddingBottom: "10px" }}
@@ -218,7 +191,7 @@ class AccessionAcknowledgement extends Component {
               label={{ fieldName: "from_date" }}
               textBox={{ className: "txt-fld", name: "from_date" }}
               events={{
-                onChange: datehandle.bind(this, this)
+                onChange: datehandle.bind(this, this),
               }}
               value={this.state.from_date}
             />
@@ -227,7 +200,7 @@ class AccessionAcknowledgement extends Component {
               label={{ fieldName: "to_date" }}
               textBox={{ className: "txt-fld", name: "to_date" }}
               events={{
-                onChange: datehandle.bind(this, this)
+                onChange: datehandle.bind(this, this),
               }}
               value={this.state.to_date}
             />
@@ -309,7 +282,7 @@ class AccessionAcknowledgement extends Component {
                       {
                         fieldName: "action",
                         label: <AlgaehLabel label={{ fieldName: "action" }} />,
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return (
                             <span>
                               <i
@@ -318,7 +291,7 @@ class AccessionAcknowledgement extends Component {
                                     row.sample_status === "A" ? "none" : "",
 
                                   opacity:
-                                    row.sample_status === "A" ? "0.1" : ""
+                                    row.sample_status === "A" ? "0.1" : "",
                                 }}
                                 className="fa fa-check"
                                 aria-hidden="true"
@@ -336,14 +309,14 @@ class AccessionAcknowledgement extends Component {
                                     row.sample_status === "A" ? "none" : "",
 
                                   opacity:
-                                    row.sample_status === "A" ? "0.1" : ""
+                                    row.sample_status === "A" ? "0.1" : "",
                                 }}
                                 className="fa fa-times"
                                 aria-hidden="true"
                                 onClick={() => {
                                   this.setState({
                                     reject_popup: true,
-                                    selectedRow: row
+                                    selectedRow: row,
                                   });
                                 }}
                               />
@@ -354,15 +327,15 @@ class AccessionAcknowledgement extends Component {
                           maxWidth: 120,
                           resizable: false,
                           style: { textAlign: "center" },
-                          filterable: false
-                        }
+                          filterable: false,
+                        },
                       },
                       {
                         fieldName: "ordered_date",
                         label: (
                           <AlgaehLabel label={{ fieldName: "ordered_date" }} />
                         ),
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return (
                             <span>
                               {this.changeDateFormat(row.ordered_date)}
@@ -373,8 +346,8 @@ class AccessionAcknowledgement extends Component {
                         others: {
                           maxWidth: 150,
                           resizable: false,
-                          style: { textAlign: "center" }
-                        }
+                          style: { textAlign: "center" },
+                        },
                       },
 
                       {
@@ -382,21 +355,21 @@ class AccessionAcknowledgement extends Component {
                         label: (
                           <AlgaehLabel label={{ fieldName: "proiorty" }} />
                         ),
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return row.test_type === "S" ? (
                             <span className="badge badge-danger">Stat</span>
                           ) : (
-                              <span className="badge badge-secondary">
-                                Routine
+                            <span className="badge badge-secondary">
+                              Routine
                             </span>
-                            );
+                          );
                         },
                         disabled: true,
                         others: {
                           maxWidth: 90,
                           resizable: false,
-                          style: { textAlign: "center" }
-                        }
+                          style: { textAlign: "center" },
+                        },
                       },
                       {
                         fieldName: "sample_status",
@@ -405,7 +378,7 @@ class AccessionAcknowledgement extends Component {
                             label={{ forceLabel: "Specimen Status" }}
                           />
                         ),
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return row.sample_status === "N" ? (
                             <span className="badge badge-warning">Pending</span>
                           ) : row.sample_status === "A" ? (
@@ -420,8 +393,8 @@ class AccessionAcknowledgement extends Component {
                         others: {
                           maxWidth: 140,
                           resizable: false,
-                          style: { textAlign: "center" }
-                        }
+                          style: { textAlign: "center" },
+                        },
                       },
 
                       {
@@ -435,8 +408,8 @@ class AccessionAcknowledgement extends Component {
                         others: {
                           maxWidth: 140,
                           resizable: false,
-                          style: { textAlign: "center" }
-                        }
+                          style: { textAlign: "center" },
+                        },
                       },
                       {
                         fieldName: "patient_code",
@@ -447,8 +420,8 @@ class AccessionAcknowledgement extends Component {
                         others: {
                           maxWidth: 150,
                           resizable: false,
-                          style: { textAlign: "center" }
-                        }
+                          style: { textAlign: "center" },
+                        },
                       },
                       {
                         fieldName: "full_name",
@@ -458,8 +431,8 @@ class AccessionAcknowledgement extends Component {
                         disabled: true,
                         others: {
                           resizable: false,
-                          style: { textAlign: "left" }
-                        }
+                          style: { textAlign: "left" },
+                        },
                       },
                       {
                         fieldName: "service_name",
@@ -470,15 +443,15 @@ class AccessionAcknowledgement extends Component {
                         disabled: true,
                         others: {
                           resizable: false,
-                          style: { textAlign: "center" }
-                        }
+                          style: { textAlign: "center" },
+                        },
                       },
                       {
                         fieldName: "status",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Test Status" }} />
                         ),
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return row.status === "CL" ? (
                             <span className="badge badge-secondary">
                               Collected
@@ -492,24 +465,24 @@ class AccessionAcknowledgement extends Component {
                               Confirmed
                             </span>
                           ) : (
-                                  <span className="badge badge-success">
-                                    Validated
+                            <span className="badge badge-success">
+                              Validated
                             </span>
-                                );
+                          );
                         },
                         disabled: true,
                         others: {
                           maxWidth: 90,
                           resizable: false,
-                          style: { textAlign: "center" }
-                        }
-                      }
+                          style: { textAlign: "center" },
+                        },
+                      },
                     ]}
                     keyId="patient_code"
                     dataSource={{
                       data: Enumerable.from(this.state.sample_collection)
-                        .where(w => w.status !== "O")
-                        .toArray()
+                        .where((w) => w.status !== "O")
+                        .toArray(),
                     }}
                     filter={true}
                     noDataText="No data available for selected period"
@@ -527,22 +500,19 @@ class AccessionAcknowledgement extends Component {
 
 function mapStateToProps(state) {
   return {
-    samplecollection: state.samplecollection
+    samplecollection: state.samplecollection,
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getSampleCollection: AlgaehActions
+      getSampleCollection: AlgaehActions,
     },
     dispatch
   );
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(AccessionAcknowledgement)
+  connect(mapStateToProps, mapDispatchToProps)(AccessionAcknowledgement)
 );
