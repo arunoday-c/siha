@@ -6,7 +6,7 @@ import {
   AlagehAutoComplete,
   AlagehFormGroup,
   AlgaehLabel,
-  AlgaehModalPopUp
+  AlgaehModalPopUp,
 } from "../../Wrapper/algaehWrapper";
 import GlobalVariables from "../../../utils/GlobalVariables.json";
 import moment from "moment";
@@ -14,7 +14,7 @@ import {
   texthandle,
   datehandle,
   getAllAllergies,
-  getPatientAllergies
+  getPatientAllergies,
 } from "./AllergiesHandlers";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
@@ -34,7 +34,7 @@ class Allergies extends Component {
       allAllergies: [],
       patientAllergies: [],
       allSpecificAllergies: [],
-      allPatientAllergies: []
+      allPatientAllergies: [],
     };
     this.addAllergies = this.addAllergies.bind(this);
     this.handleClose = this.handleClose.bind(this);
@@ -48,9 +48,9 @@ class Allergies extends Component {
     // )
     getPatientAllergies(this);
     // else {
-    getAllAllergies(this, data => {
+    getAllAllergies(this, (data) => {
       this.setState({
-        allSpecificAllergies: this.getPerticularAllergyList(data)
+        allSpecificAllergies: this.getPerticularAllergyList(data),
       });
     });
     let _allergies = Enumerable.from(this.props.patient_allergies)
@@ -67,14 +67,14 @@ class Allergies extends Component {
               : k === "C"
               ? "Chemical & Others"
               : "",
-          allergyList: g.getSource()
+          allergyList: g.getSource(),
         };
       })
       .toArray();
 
     this.setState({
       patientAllergies: _allergies,
-      allPatientAllergies: this.props.patient_allergies
+      allPatientAllergies: this.props.patient_allergies,
     });
     // }
   }
@@ -90,7 +90,7 @@ class Allergies extends Component {
       allergy_inactive: "N",
       allergy_onset: "",
       allergy_severity: "",
-      allergy_onset_date: null
+      allergy_onset_date: null,
       //...this.baseState
     });
   }
@@ -104,7 +104,7 @@ class Allergies extends Component {
     ) {
       swalMessage({
         title: "There is no allergy selected.",
-        type: "info"
+        type: "info",
       });
       return;
     }
@@ -119,18 +119,18 @@ class Allergies extends Component {
         onset_date: this.state.allergy_onset_date,
         severity: this.state.allergy_severity,
         comment: this.state.allergy_comment,
-        allergy_inactive: this.state.allergy_inactive
+        allergy_inactive: this.state.allergy_inactive,
       },
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           getPatientAllergies(this);
           this.resetAllergies();
           swalMessage({
             title: "Allergy added successfully . .",
-            type: "success"
+            type: "success",
           });
         }
-      }
+      },
     });
   }
 
@@ -139,10 +139,10 @@ class Allergies extends Component {
       this.props.allallergies === undefined ||
       this.props.allallergies.length === 0
     ) {
-      getAllAllergies(this, data => {
+      getAllAllergies(this, (data) => {
         this.setState({
           openAllergyModal: true,
-          allSpecificAllergies: this.getPerticularAllergyList(data)
+          allSpecificAllergies: this.getPerticularAllergyList(data),
         });
       });
     } else {
@@ -150,14 +150,14 @@ class Allergies extends Component {
         openAllergyModal: true,
         allSpecificAllergies: this.getPerticularAllergyList(
           this.props.allallergies
-        )
+        ),
       });
     }
   }
   getPerticularAllergyList(allergies, allergy_type) {
     allergy_type = allergy_type || this.state.allergy_value;
     return Enumerable.from(allergies)
-      .where(w => w.allergy_type === allergy_type)
+      .where((w) => w.allergy_type === allergy_type)
       .toArray();
   }
 
@@ -168,15 +168,15 @@ class Allergies extends Component {
       uri: "/doctorsWorkbench/updatePatientAllergy",
       method: "PUT",
       data: data,
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           getPatientAllergies(this);
           swalMessage({
             title: "Record updated successfully . .",
-            type: "success"
+            type: "success",
           });
         }
-      }
+      },
     });
   }
 
@@ -188,8 +188,8 @@ class Allergies extends Component {
       confirmButtonText: "Yes",
       confirmButtonColor: "#44b8bd",
       cancelButtonColor: "#d33",
-      cancelButtonText: "No"
-    }).then(willDelete => {
+      cancelButtonText: "No",
+    }).then((willDelete) => {
       if (willDelete.value) {
         let data = {
           allergy_inactive: row.allergy_inactive,
@@ -198,22 +198,22 @@ class Allergies extends Component {
           severity: row.severity,
           onset_date: row.onset_date,
           record_status: "I",
-          hims_f_patient_allergy_id: row.hims_f_patient_allergy_id
+          hims_f_patient_allergy_id: row.hims_f_patient_allergy_id,
         };
         algaehApiCall({
           uri: "/doctorsWorkBench/updatePatientAllergy",
           data: data,
           method: "PUT",
-          onSuccess: response => {
+          onSuccess: (response) => {
             if (response.data.success) {
               swalMessage({
                 title: "Record deleted successfully . .",
-                type: "success"
+                type: "success",
               });
               getPatientAllergies(this);
             }
           },
-          onFailure: error => {}
+          onFailure: (error) => {},
         });
       }
     });
@@ -226,7 +226,7 @@ class Allergies extends Component {
         allSpecificAllergies: this.getPerticularAllergyList(
           this.props.allallergies,
           value.value
-        )
+        ),
       };
     }
     this.setState({ [value.name]: value.value, ..._filter_allergies });
@@ -236,7 +236,7 @@ class Allergies extends Component {
   }
   texthandle(e) {
     this.setState({
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
   }
 
@@ -251,7 +251,7 @@ class Allergies extends Component {
     this.reloadState();
   }
 
-  changeDateFormat = date => {
+  changeDateFormat = (date) => {
     if (date != null) {
       return moment(date).format(Options.dateFormat);
     }
@@ -263,7 +263,7 @@ class Allergies extends Component {
         {/* Allergy Modal Start*/}
         <AlgaehModalPopUp
           events={{
-            onClose: this.handleClose.bind(this)
+            onClose: this.handleClose.bind(this),
           }}
           title={this.props.HeaderCaption}
           openPopup={this.props.openAllergyModal}
@@ -278,7 +278,7 @@ class Allergies extends Component {
                       label={{
                         forceLabel: "Allergy Type",
                         fieldName: "sample",
-                        isImp: true
+                        isImp: true,
                       }}
                       selector={{
                         name: "allergy_value",
@@ -287,10 +287,10 @@ class Allergies extends Component {
                         dataSource: {
                           textField: "name",
                           valueField: "value",
-                          data: GlobalVariables.ALLERGY_TYPES
+                          data: GlobalVariables.ALLERGY_TYPES,
                         },
                         onChange: this.allergyDropdownHandler.bind(this),
-                        autoComplete: "off"
+                        autoComplete: "off",
                       }}
                     />
 
@@ -299,7 +299,7 @@ class Allergies extends Component {
                       label={{
                         forceLabel: "Select a Alergy",
                         fieldName: "sample",
-                        isImp: true
+                        isImp: true,
                       }}
                       selector={{
                         name: "hims_d_allergy_id",
@@ -308,10 +308,10 @@ class Allergies extends Component {
                         dataSource: {
                           textField: "allergy_name",
                           valueField: "hims_d_allergy_id",
-                          data: this.state.allSpecificAllergies
+                          data: this.state.allSpecificAllergies,
                         },
                         onChange: this.dropDownHandle.bind(this),
-                        autoComplete: "off"
+                        autoComplete: "off",
                       }}
                     />
 
@@ -319,7 +319,7 @@ class Allergies extends Component {
                       div={{ className: "col-lg-12 margin-top-15" }}
                       label={{
                         forceLabel: "Onset",
-                        isImp: true
+                        isImp: true,
                       }}
                       selector={{
                         name: "allergy_onset",
@@ -328,10 +328,10 @@ class Allergies extends Component {
                         dataSource: {
                           textField: "name",
                           valueField: "value",
-                          data: GlobalVariables.ALLERGY_ONSET
+                          data: GlobalVariables.ALLERGY_ONSET,
                         },
                         onChange: this.dropDownHandle.bind(this),
-                        autoComplete: "off"
+                        autoComplete: "off",
                       }}
                     />
 
@@ -339,15 +339,15 @@ class Allergies extends Component {
                       <AlgaehDateHandler
                         div={{ className: "col-lg-12 margin-top-15" }}
                         label={{
-                          forceLabel: "Onset Date"
+                          forceLabel: "Onset Date",
                         }}
                         textBox={{
                           className: "txt-fld",
-                          name: "allergy_onset_date"
+                          name: "allergy_onset_date",
                         }}
                         maxDate={new Date()}
                         events={{
-                          onChange: datehandle.bind(this, this)
+                          onChange: datehandle.bind(this, this),
                         }}
                         value={this.state.allergy_onset_date}
                       />
@@ -358,7 +358,7 @@ class Allergies extends Component {
                       label={{
                         forceLabel: "Severity",
                         fieldName: "sample",
-                        isImp: true
+                        isImp: true,
                       }}
                       selector={{
                         name: "allergy_severity",
@@ -367,10 +367,10 @@ class Allergies extends Component {
                         dataSource: {
                           textField: "name",
                           valueField: "value",
-                          data: GlobalVariables.PAIN_SEVERITY
+                          data: GlobalVariables.PAIN_SEVERITY,
                         },
                         onChange: this.dropDownHandle.bind(this),
-                        autoComplete: "off"
+                        autoComplete: "off",
                       }}
                     />
 
@@ -378,19 +378,19 @@ class Allergies extends Component {
                       div={{ className: "col-lg-12 margin-top-15" }}
                       label={{
                         fieldName: "comments",
-                        isImp: false
+                        isImp: false,
                       }}
                       textBox={{
                         className: "txt-fld",
                         name: "allergy_comment",
                         others: {
                           multiline: true,
-                          rows: "4"
+                          rows: "4",
                         },
                         value: this.state.allergy_comment,
                         events: {
-                          onChange: this.texthandle.bind(this)
-                        }
+                          onChange: this.texthandle.bind(this),
+                        },
                       }}
                     />
                   </div>
@@ -410,7 +410,7 @@ class Allergies extends Component {
                             />
                           ),
 
-                          displayTemplate: data => {
+                          displayTemplate: (data) => {
                             return (
                               <span>
                                 {data.allergy_type === "F" ? (
@@ -429,7 +429,7 @@ class Allergies extends Component {
                               </span>
                             );
                           },
-                          editorTemplate: data => {
+                          editorTemplate: (data) => {
                             return (
                               <span>
                                 {data.allergy_type === "F" ? (
@@ -448,7 +448,7 @@ class Allergies extends Component {
                               </span>
                             );
                           },
-                          others: { minWidth: 150 }
+                          others: { minWidth: 150 },
                         },
                         {
                           fieldName: "allergy_name",
@@ -458,17 +458,17 @@ class Allergies extends Component {
                             />
                           ),
                           disabled: true,
-                          editorTemplate: data => {
+                          editorTemplate: (data) => {
                             return <span>{data.allergy_name}</span>;
                           },
-                          others: { minWidth: 150 }
+                          others: { minWidth: 150 },
                         },
                         {
                           fieldName: "onset",
                           label: (
                             <AlgaehLabel label={{ forceLabel: "Onset" }} />
                           ),
-                          displayTemplate: data => {
+                          displayTemplate: (data) => {
                             return data.onset === "A" ? (
                               <span>Adulthood</span>
                             ) : data.onset === "T" ? (
@@ -483,10 +483,12 @@ class Allergies extends Component {
                               ""
                             );
                           },
-                          editorTemplate: data => {
+                          editorTemplate: (data) => {
                             return (
                               <AlagehAutoComplete
-                                div={{}}
+                                div={{
+                                  className: " noLabel",
+                                }}
                                 selector={{
                                   name: "onset",
                                   className: "select-fld",
@@ -494,44 +496,46 @@ class Allergies extends Component {
                                   dataSource: {
                                     textField: "name",
                                     valueField: "value",
-                                    data: GlobalVariables.ALLERGY_ONSET
+                                    data: GlobalVariables.ALLERGY_ONSET,
                                   },
                                   others: {
-                                    disabled: true
+                                    disabled: true,
                                   },
 
                                   onChange: this.changeOnsetEdit.bind(
                                     this,
                                     data
-                                  )
+                                  ),
                                 }}
                               />
                             );
-                          }
+                          },
                         },
                         {
                           fieldName: "onset_date",
                           label: (
                             <AlgaehLabel label={{ forceLabel: "Onset Date" }} />
                           ),
-                          displayTemplate: data => {
+                          displayTemplate: (data) => {
                             return (
                               <span>
                                 {this.changeDateFormat(data.onset_date)}
                               </span>
                             );
                           },
-                          editorTemplate: data => {
+                          editorTemplate: (data) => {
                             return (
                               <AlgaehDateHandler
-                                div={{}}
+                                div={{
+                                  className: " noLabel",
+                                }}
                                 textBox={{
                                   className: "txt-fld hidden",
-                                  name: "onset_date"
+                                  name: "onset_date",
                                 }}
                                 minDate={new Date()}
                                 events={{
-                                  onChange: datehandle.bind(this, this, data)
+                                  onChange: datehandle.bind(this, this, data),
                                 }}
                                 // disabled={data.onset === "O" ? false : true}
                                 disabled={true}
@@ -540,15 +544,15 @@ class Allergies extends Component {
                             );
                           },
                           others: {
-                            minWidth: 130
-                          }
+                            minWidth: 130,
+                          },
                         },
                         {
                           fieldName: "severity",
                           label: (
                             <AlgaehLabel label={{ forceLabel: "Severity" }} />
                           ),
-                          displayTemplate: data => {
+                          displayTemplate: (data) => {
                             return data.severity === "MI" ? (
                               <span>Mild</span>
                             ) : data.severity === "MO" ? (
@@ -559,10 +563,12 @@ class Allergies extends Component {
                               ""
                             );
                           },
-                          editorTemplate: data => {
+                          editorTemplate: (data) => {
                             return (
                               <AlagehAutoComplete
-                                div={{}}
+                                div={{
+                                  className: " noLabel",
+                                }}
                                 selector={{
                                   name: "severity",
                                   className: "select-fld",
@@ -570,47 +576,55 @@ class Allergies extends Component {
                                   dataSource: {
                                     textField: "name",
                                     valueField: "value",
-                                    data: GlobalVariables.PAIN_SEVERITY
+                                    data: GlobalVariables.PAIN_SEVERITY,
                                   },
-                                  onChange: texthandle.bind(this, this, data)
+                                  onChange: texthandle.bind(this, this, data),
                                 }}
                               />
                             );
-                          }
+                          },
                         },
                         {
                           fieldName: "comment",
                           label: (
                             <AlgaehLabel label={{ forceLabel: "Comment" }} />
                           ),
-                          editorTemplate: data => {
+                          displayTemplate: (data) => {
+                            return <span>{data.comment}</span>;
+                          },
+                          editorTemplate: (data) => {
                             return (
                               <AlagehFormGroup
-                                div={{}}
+                                div={{
+                                  className: " noLabel",
+                                }}
                                 textBox={{
                                   className: "txt-fld",
                                   name: "comment",
                                   value: data.comment,
                                   events: {
-                                    onChange: texthandle.bind(this, this, data)
-                                  }
+                                    onChange: texthandle.bind(this, this, data),
+                                  },
                                 }}
                               />
                             );
                           },
-                          others: { minWidth: 400 }
-                        }
+                          others: {
+                            minWidth: 200,
+                            style: { textAlign: "left" },
+                          },
+                        },
                       ]}
                       keyId="hims_f_patient_allergy_id"
                       dataSource={{
-                        data: this.state.allPatientAllergies
+                        data: this.state.allPatientAllergies,
                       }}
                       isEditable={true}
                       paging={{ page: 0, rowsPerPage: 10 }}
                       events={{
                         onDelete: this.deleteAllergy.bind(this),
-                        onEdit: row => {},
-                        onDone: this.updatePatientAllergy.bind(this)
+                        onEdit: (row) => {},
+                        onDone: this.updatePatientAllergy.bind(this),
                       }}
                     />
                   </div>
@@ -705,7 +719,7 @@ class Allergies extends Component {
   }
   decissionAllergyOnset(row) {
     const _onSet = Enumerable.from(GlobalVariables.ALLERGY_ONSET)
-      .where(w => w.value === row.onset)
+      .where((w) => w.value === row.onset)
       .firstOrDefault();
     if (_onSet) {
       return _onSet.name;
@@ -716,7 +730,7 @@ class Allergies extends Component {
 function mapStateToProps(state) {
   return {
     allallergies: state.allallergies,
-    patient_allergies: state.patient_allergies
+    patient_allergies: state.patient_allergies,
   };
 }
 
@@ -724,7 +738,7 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
       getAllAllergies: AlgaehActions,
-      getPatientAllergies: AlgaehActions
+      getPatientAllergies: AlgaehActions,
     },
     dispatch
   );

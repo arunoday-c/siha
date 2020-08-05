@@ -1,16 +1,13 @@
 /* eslint-disable eqeqeq */
 import React, { useContext, useEffect, useState } from "react";
 import {
-  //   AlgaehFormGroup,
-  AlgaehDateHandler,
   AlgaehAutoComplete,
   AlgaehDataGrid,
-  //   AlgaehTreeSearch,
   AlgaehMessagePop,
-  //   AlgaehButton,
   Spin,
   Modal,
-  Button,
+  AlgaehFormGroup,
+  AlgaehButton
 } from "algaeh-react-components";
 import { Controller, useForm } from "react-hook-form";
 import { PrePaymentContext } from "../Prepayment";
@@ -22,7 +19,9 @@ const { confirm } = Modal;
 export function PrepaymentAuthList() {
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [request_status, setRequestStatus] = useState("P");
+  const [visible, setVisible] = useState(false);
+  const [revertData, setrevertData] = useState({});
+  const [revert_reason, setRevertReson] = useState(null);
   const { branchAndCenters, prePaymentTypes } = useContext(PrePaymentContext);
   const { control, errors, handleSubmit, setValue, watch, getValues } = useForm(
     {
@@ -36,7 +35,6 @@ export function PrepaymentAuthList() {
 
   const getRequestForAuth = async (data) => {
     try {
-      debugger
       const res = await newAlgaehApi({
         uri: "/prepayment/getPrepaymentRequestToAuthorize",
         module: "finance",
@@ -84,10 +82,12 @@ export function PrepaymentAuthList() {
         data: {
           auth_status: decision,
           finance_f_prepayment_request_id: id,
-          reverted_amt: reverted_amt
+          reverted_amt: reverted_amt,
+          revert_reason: revert_reason
         },
       });
       if (res.data.success) {
+        setVisible(false);
         getRequestForAuth(getValues());
       }
     } catch (e) {
@@ -105,7 +105,7 @@ export function PrepaymentAuthList() {
       icon: "",
       title: "Prepayment Request Authorization",
       content: `This request is made for 
-Prepayment Type: ${row.prepayment_desc}`,
+      Prepayment Type: ${row.prepayment_desc}`,
 
       maskClosable: true,
       onOk: async () => {
@@ -145,26 +145,27 @@ Prepayment Type: ${row.prepayment_desc}`,
   }
 
   const onClickRevert = (row) => {
-    confirm({
-      okText: "Revert",
-      okType: "primary",
-      icon: "",
-      title: "Prepayment Revert",
-      content: `This request is made for 
-      Prepayment Type: ${row.prepayment_desc}`,
+    setVisible(true);
+    setrevertData(row)
+  };
 
-      maskClosable: true,
-      onOk: async () => {
-        try {
-          await PayOrRejectReq("P", row.finance_f_prepayment_request_id, row.prepayment_amount);
-        } catch (e) {
-          AlgaehMessagePop({
-            type: "error",
-            display: e.message,
-          });
-        }
-      },
-    });
+  const onClickRevertModel = () => {
+    debugger
+    if (revert_reason === null || revert_reason === "") {
+      AlgaehMessagePop({
+        type: "error",
+        display: "Reason is Mandatory.",
+      });
+    } else {
+      try {
+        PayOrRejectReq("P", revertData.finance_f_prepayment_request_id, revertData.prepayment_amount);
+      } catch (e) {
+        AlgaehMessagePop({
+          type: "error",
+          display: e.message,
+        });
+      }
+    }
   };
 
   const onClickReject = (row) => {
@@ -190,13 +191,48 @@ Prepayment Type: ${row.prepayment_desc}`,
     });
   };
 
-  const { hospital_id: ihospital, prepayment_type_id } = watch([
-    "hospital_id",
-    "prepayment_type_id",
-  ]);
+  // const { hospital_id: ihospital, prepayment_type_id } = watch([
+  //   "hospital_id",
+  //   "prepayment_type_id",
+  // ]);
 
   return (
     <Spin spinning={loading}>
+      <Modal
+        title="Prepayment Revert"
+        visible={visible}
+        width={1080}
+        footer={null}
+        onCancel={() => setVisible(false)}
+      >
+
+        <AlgaehFormGroup
+          div={{
+            className: "col-12 form-group  mandatory",
+          }}
+          label={{
+            forceLabel: "Reason",
+            isImp: true,
+          }}
+          textBox={{
+            type: "text",
+            value: revert_reason,
+            className: "form-control",
+            id: "name",
+            onChange: (e) => {
+              setRevertReson(e.target.value);
+            },
+            autoComplete: false,
+          }}
+        />
+
+        <AlgaehButton
+          className="btn btn-primary"
+          onClick={onClickRevertModel}
+        >
+          Process
+        </AlgaehButton>
+      </Modal>
       <div>
         <form onSubmit={handleSubmit(getRequestForAuth)}>
           <div className="row inner-top-search">
@@ -456,9 +492,9 @@ Prepayment Type: ${row.prepayment_desc}`,
                               <span onClick={() => onClickAuthorize(row)}>
                                 <i className="fas fa-check"></i>
                               </span>
-                              <span onClick={() => onClickReject(row)}>
+                              {/* <span onClick={() => onClickReject(row)}>
                                 <i className="fas fa-undo-alt"></i>
-                              </span>
+                              </span> */}
                             </>
                           );
                         } else if (row.request_status === "A") {

@@ -77,6 +77,9 @@ export function PrepaymentRequest() {
   const onSubmit = (e) => {
     addRequest(e);
   };
+  const changeGridEditors = (row) => {
+    console.log("row", row);
+  };
 
   const { hospital_id: ihospital, prepayment_type_id } = watch([
     "hospital_id",
@@ -343,28 +346,28 @@ export function PrepaymentRequest() {
               <div className="portlet-body">
                 <AlgaehDataGrid
                   columns={[
-                    {
-                      fieldName: "",
-                      label: "Actions",
-                      displayTemplate: (row) => {
-                        return (
-                          <>
-                            {row.request_status === "P" ? (
-                              <i
-                                className="fas fa-pen"
-                                // onClick={() => onEdit(row)}
-                              ></i>
-                            ) : (
-                              ""
-                            )}
-                            {/* <i
-                              className="fas fa-save"
-                              // onClick={() => onDelete(row)}
-                            ></i> */}
-                          </>
-                        );
-                      },
-                    },
+                    // {
+                    //   fieldName: "",
+                    //   label: "Actions",
+                    //   displayTemplate: (row) => {
+                    //     return (
+                    //       <>
+                    //         {row.request_status === "P" ? (
+                    //           <i
+                    //             className="fas fa-pen"
+                    //             // onClick={() => onEdit(row)}
+                    //           ></i>
+                    //         ) : (
+                    //           ""
+                    //         )}
+                    //         {/* <i
+                    //           className="fas fa-save"
+                    //           // onClick={() => onDelete(row)}
+                    //         ></i> */}
+                    //       </>
+                    //     );
+                    //   },
+                    // },
                     {
                       fieldName: "request_status",
                       label: "Status",
@@ -435,6 +438,28 @@ export function PrepaymentRequest() {
                       fieldName: "prepayment_amount",
                       label: "Prepayment Amt.",
                       sortable: true,
+                      editorTemplate: (row) => {
+                        return (
+                          <AlgaehFormGroup
+                            div={{ className: "col" }}
+                            textBox={{
+                              className: "txt-fld",
+                              name: "prepayment_amount",
+                              value: row.prepayment_amount,
+                              events: {
+                                onChange: () => {
+                                  changeGridEditors(row);
+                                },
+                              },
+                              others: {
+                                errormessage:
+                                  "Prepayment Amt. - cannot be blank",
+                                required: true,
+                              },
+                            }}
+                          />
+                        );
+                      },
                     },
                     {
                       fieldName: "start_date",
@@ -447,11 +472,19 @@ export function PrepaymentRequest() {
                       sortable: true,
                     },
                   ]}
+                  isEditable={"editOnly"}
                   loading={false}
                   height="34vh"
                   data={requests}
                   pagination={true}
-                  events={{}}
+                  events={
+                    {
+                      // onDone: () => {},
+                      // onSaveShow: (row) => {
+                      //   // return row.request_status === "P" ? true : false;
+                      // },
+                    }
+                  }
                   others={{}}
                 />
               </div>
