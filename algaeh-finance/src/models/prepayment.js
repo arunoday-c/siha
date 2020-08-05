@@ -229,8 +229,8 @@ export const updatePrepaymentRequest = (req, res, next) => {
   _mysql
     .executeQuery({
       query:
-        "UPDATE finance_f_prepayment_request prepayment_amount=?,start_date=?,\
-          end_date=? where finance_f_prepayment_request_id=?",
+        "UPDATE finance_f_prepayment_request set prepayment_amount=?,start_date=?, end_date=? \
+        where finance_f_prepayment_request_id=?",
       values: [
         input.prepayment_amount,
         input.start_date,
