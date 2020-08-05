@@ -1550,8 +1550,8 @@ td {
 //Semantic UI CSS Owerwrite Start Here //
 
 .ui.fluid.dropdown {
-  min-height: 30px !important;
-  max-height: 30px !important;
+  min-height:$formMinHt !important;
+  max-height:$formMaxHt !important;
   padding: 0;
   border-radius: $borderRadius !important;
 }
@@ -1599,8 +1599,8 @@ td {
 .ui.input > input {
   font-weight: 700;
   font-size: 0.9em;
-  min-height: 30px !important;
-  max-height: 30px !important;
+  min-height:$formMinHt !important;
+  max-height:$formMaxHt !important;
   padding: 0.3em 0.5em;
 }
 
