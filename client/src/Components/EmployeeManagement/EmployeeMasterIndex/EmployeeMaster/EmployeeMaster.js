@@ -10,7 +10,7 @@ import FamilyAndIdentification from "./FamilyAndIdentification/FamilyAndIdentifi
 import PayRollDetails from "./PayRollDetails/PayRollDetails";
 import OfficalDetails from "./OfficalDetails/OfficalDetails";
 import RulesDetails from "./RulesDetails/RulesDetails";
-import MoreDetails from "./MoreDetails/MoreDetails";
+// import MoreDetails from "./MoreDetails/MoreDetails";
 
 import { AlgaehLabel, AlgaehModalPopUp } from "../../../Wrapper/algaehWrapper";
 import { AlgaehActions } from "../../../../actions/algaehActions";
@@ -400,7 +400,7 @@ class EmployeeMaster extends Component {
                         }
                       </li>
                     ) : null}{" "}
-                    {this.state.HRMS_Active === true ? (
+                    {/* {this.state.HRMS_Active === true ? (
                       <li
                         algaehtabs={"MoreDetails"}
                         className={"nav-item tab-button"}
@@ -414,7 +414,7 @@ class EmployeeMaster extends Component {
                           />
                         }
                       </li>
-                    ) : null}
+                    ) : null} */}
                   </ul>
                 ) : (
                   <ul className="nav">
@@ -521,7 +521,7 @@ class EmployeeMaster extends Component {
                       </li>
                     ) : null}
 
-                    {this.state.HRMS_Active === true ? (
+                    {/* {this.state.HRMS_Active === true ? (
                       <li
                         algaehtabs={"MoreDetails"}
                         className={"nav-item tab-button disableLi"}
@@ -535,7 +535,7 @@ class EmployeeMaster extends Component {
                           />
                         }
                       </li>
-                    ) : null}
+                    ) : null} */}
                   </ul>
                 )}
               </div>
@@ -564,9 +564,9 @@ class EmployeeMaster extends Component {
                   <FamilyAndIdentification EmpMasterIOputs={this} />
                 ) : this.state.pageDisplay === "RulesDetails" ? (
                   <RulesDetails EmpMasterIOputs={this} />
-                ) : this.state.pageDisplay === "MoreDetails" ? (
-                  <MoreDetails EmpMasterIOputs={this} />
-                ) : null}
+                ) : // ) : this.state.pageDisplay === "MoreDetails" ? (
+                //   <MoreDetails EmpMasterIOputs={this} />
+                null}
               </div>
               {/* </MyContext.Provider> */}
             </div>
