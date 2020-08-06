@@ -25,12 +25,9 @@ export function InsuranceDetails({ control, trigger }) {
 
   return (
     <Spin spinning={false}>
-      <div
-        className="hptl-phase1-insurance-details margin-top-15"
-        onFocus={() => trigger()}
-      >
+      <div className="hptl-phase1-insurance-details margin-top-15">
         <div className="insurance-section">
-          <Tabs type="card">
+          <Tabs type="card" onFocus={() => trigger()}>
             <TabPane
               tab={
                 <AlgaehLabel
