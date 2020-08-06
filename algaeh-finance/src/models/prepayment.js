@@ -221,7 +221,8 @@ export const addPrepaymentRequest = (req, res, next) => {
     });
 };
 
-//created by:irfan
+//created by:Nowshad
+//To update Prepayment request
 export const updatePrepaymentRequest = (req, res, next) => {
   const _mysql = new algaehMysql();
 
@@ -235,7 +236,35 @@ export const updatePrepaymentRequest = (req, res, next) => {
         input.prepayment_amount,
         input.start_date,
         input.end_date,
-        input.finance_f_prepayment_request_id
+        input.finance_f_prepayment_request_id,
+      ],
+    })
+    .then((result) => {
+      _mysql.releaseConnection();
+      req.records = result;
+      next();
+    })
+    .catch((e) => {
+      _mysql.releaseConnection();
+      next(e);
+    });
+};
+
+
+//created by:Nowshad
+//To update Prepayment Amortize amount to respective cost center
+export const updatePrepaymentDetail = (req, res, next) => {
+  const _mysql = new algaehMysql();
+
+  const input = req.body;
+  _mysql
+    .executeQuery({
+      query:
+        "UPDATE finance_f_prepayment_detail set hospital_id=?, project_id=? where finance_f_prepayment_detail_id=?",
+      values: [
+        input.hospital_id,
+        input.project_id,
+        input.finance_f_prepayment_detail_id
       ],
     })
     .then((result) => {
@@ -302,7 +331,7 @@ export const getPrepaymentRequests = (req, res, next) => {
       }
       _mysql
         .executeQuery({
-          query: `select finance_f_prepayment_request_id, prepayment_type_id,prepayment_desc,request_code,request_status,\
+          query: `select finance_f_prepayment_request_id, prepayment_type_id,prepayment_desc,prepayment_duration,request_code,request_status,\
     employee_id,employee_code ,E.full_name as employee_name ,E.identity_no , ROUND(prepayment_amount,${decimal_places}) as prepayment_amount, PR.start_date, PR.end_date,\
     hims_d_hospital_id,hospital_name ${selectStr}
     from finance_f_prepayment_request PR  inner join finance_d_prepayment_type PT \
@@ -429,7 +458,7 @@ export const authorizePrepaymentRequest = (req, res, next) => {
         values: [
           req.userIdentity.algaeh_d_app_user_id,
           new Date(),
-          finance_f_prepayment_request_id
+          finance_f_prepayment_request_id,
         ],
         printQuery: true,
       })
@@ -471,7 +500,12 @@ export const authorizePrepaymentRequest = (req, res, next) => {
 export const payPrepaymentRequest = (req, res, next) => {
   const _mysql = new algaehMysql();
 
-  let { auth_status, finance_f_prepayment_request_id, reverted_amt, revert_reason } = req.body;
+  let {
+    auth_status,
+    finance_f_prepayment_request_id,
+    reverted_amt,
+    revert_reason,
+  } = req.body;
 
   if (auth_status == "PD") {
     _mysql
@@ -610,9 +644,7 @@ export const payPrepaymentRequest = (req, res, next) => {
                         .executeQueryWithTransaction({
                           query:
                             "update finance_f_prepayment_request set request_status='PD' where finance_f_prepayment_request_id=?;",
-                          values: [
-                            finance_f_prepayment_request_id,
-                          ],
+                          values: [finance_f_prepayment_request_id],
 
                           printQuery: false,
                         })
@@ -659,11 +691,7 @@ export const payPrepaymentRequest = (req, res, next) => {
       .executeQuery({
         query:
           "update finance_f_prepayment_request set request_status='P', revert_reason=?, reverted_amt=? where finance_f_prepayment_request_id=?;",
-        values: [
-          revert_reason,
-          reverted_amt,
-          finance_f_prepayment_request_id
-        ],
+        values: [revert_reason, reverted_amt, finance_f_prepayment_request_id],
       })
       .then((result) => {
         _mysql.releaseConnection();
