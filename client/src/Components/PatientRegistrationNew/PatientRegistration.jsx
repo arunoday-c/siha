@@ -83,25 +83,6 @@ export function PatientRegistration() {
               label={{ fieldName: "form_patregister", align: "ltr" }}
             />
           }
-          pageNavPath={[
-            {
-              pageName: (
-                <AlgaehLabel
-                  label={{
-                    fieldName: "form_home",
-                    align: "ltr",
-                  }}
-                />
-              ),
-            },
-            {
-              pageName: (
-                <AlgaehLabel
-                  label={{ fieldName: "form_patregister", align: "ltr" }}
-                />
-              ),
-            },
-          ]}
           soptlightSearch={{
             label: (
               <AlgaehLabel
