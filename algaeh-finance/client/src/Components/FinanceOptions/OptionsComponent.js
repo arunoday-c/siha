@@ -70,7 +70,7 @@ function OptionsComponent({
                     onChange: handleDropDown,
                   }}
                 />
-                <div className="col">
+                <div className="col-3">
                   <label>Cost Center Type</label>
                   <div className="customRadio">
                     <label className="radio inline">
@@ -122,10 +122,14 @@ function OptionsComponent({
                     </label>
                   </div>
                 </div>
+              </div>{" "}
+              <hr></hr>
+              <div className="row">
+                {" "}
                 <AlgaehAutoComplete
                   div={{ className: "col-2" }}
                   label={{
-                    forceLabel: "Start month",
+                    forceLabel: "FY Start month",
                     isImp: true,
                   }}
                   selector={{
@@ -142,7 +146,7 @@ function OptionsComponent({
                 <AlgaehAutoComplete
                   div={{ className: "col-2" }}
                   label={{
-                    forceLabel: "End month",
+                    forceLabel: "FY End month",
                     isImp: true,
                   }}
                   selector={{
@@ -156,13 +160,65 @@ function OptionsComponent({
                     onChange: handleDropDown,
                   }}
                 />
+                <div className="col-2">
+                  <label>Allow Negative Amount</label>
+                  <div className="customRadio">
+                    <label className="radio inline">
+                      <input
+                        type="radio"
+                        value="Y"
+                        onChange={handleChange}
+                        name="allow_negative_balance"
+                        checked={allow_negative_balance === "Y"}
+                      />
+                      <span>Yes</span>
+                    </label>
+
+                    <label className="radio inline">
+                      <input
+                        type="radio"
+                        value="N"
+                        onChange={handleChange}
+                        name="allow_negative_balance"
+                        checked={allow_negative_balance === "N"}
+                      />
+                      <span>No</span>
+                    </label>
+                  </div>
+                </div>
+                <div className="col-2">
+                  <label>Post GRNI Account</label>
+                  <div className="customRadio">
+                    <label className="radio inline">
+                      <input
+                        type="radio"
+                        value="Y"
+                        onChange={handleChange}
+                        name="grni_required"
+                        checked={grni_required === "Y"}
+                      />
+                      <span>Yes</span>
+                    </label>
+
+                    <label className="radio inline">
+                      <input
+                        type="radio"
+                        value="N"
+                        onChange={handleChange}
+                        name="grni_required"
+                        checked={grni_required === "N"}
+                      />
+                      <span>No</span>
+                    </label>
+                  </div>
+                </div>
               </div>
               <hr></hr>
               <div className="row">
                 <AlgaehAutoComplete
                   div={{ className: "col-2 form-group" }}
                   label={{
-                    forceLabel: "MAX AUTHORIZATION LEVEL",
+                    forceLabel: "JV AUTH LEVEL",
                     isImp: true,
                   }}
                   selector={{
@@ -177,7 +233,7 @@ function OptionsComponent({
                   }}
                 />
                 <div className="col-2">
-                  <label>Auth Level 1 Limit Required?</label>
+                  <label>Limit Amt. Req. for Level 1?</label>
                   <div className="customRadio">
                     <label className="radio inline">
                       <input
@@ -207,7 +263,7 @@ function OptionsComponent({
                     className: "form-group algaeh-text-fld col-2",
                   }}
                   label={{
-                    forceLabel: "Auth LEVEL 1 Limit (Above)",
+                    forceLabel: "Limit Amount (Above)",
                     isImp: true,
                   }}
                   textBox={{
@@ -220,60 +276,6 @@ function OptionsComponent({
                     onChange: handleChange,
                   }}
                 />
-
-                <div className="col-2">
-                  <label>Allow Negative Amount</label>
-                  <div className="customRadio">
-                    <label className="radio inline">
-                      <input
-                        type="radio"
-                        value="Y"
-                        onChange={handleChange}
-                        name="allow_negative_balance"
-                        checked={allow_negative_balance === "Y"}
-                      />
-                      <span>Yes</span>
-                    </label>
-
-                    <label className="radio inline">
-                      <input
-                        type="radio"
-                        value="N"
-                        onChange={handleChange}
-                        name="allow_negative_balance"
-                        checked={allow_negative_balance === "N"}
-                      />
-                      <span>No</span>
-                    </label>
-                  </div>
-                </div>
-
-                <div className="col-2">
-                  <label>Post GRNI Account</label>
-                  <div className="customRadio">
-                    <label className="radio inline">
-                      <input
-                        type="radio"
-                        value="Y"
-                        onChange={handleChange}
-                        name="grni_required"
-                        checked={grni_required === "Y"}
-                      />
-                      <span>Yes</span>
-                    </label>
-
-                    <label className="radio inline">
-                      <input
-                        type="radio"
-                        value="N"
-                        onChange={handleChange}
-                        name="grni_required"
-                        checked={grni_required === "N"}
-                      />
-                      <span>No</span>
-                    </label>
-                  </div>
-                </div>
               </div>
             </div>
           </div>
