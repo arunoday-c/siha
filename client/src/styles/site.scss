@@ -2450,6 +2450,7 @@ input.autoselect-input:disabled {
   max-height: $formMaxHt;
 }
 .ant-tabs {
+  overflow: inherit !important;
   .ant-tabs-nav {
     margin: 0 !important;
     .ant-tabs-tab {
