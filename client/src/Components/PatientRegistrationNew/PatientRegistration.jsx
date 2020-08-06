@@ -121,8 +121,8 @@ export function PatientRegistration() {
         selectedLang={userLanguage}
       />
       <div className="spacing-push">
-        <div className="row">
-          <form onSubmit={handleSubmit(onSubmit)}>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <div className="row">
             <div className="algaeh-md-12 algaeh-lg-12 algaeh-xl-8">
               <Demographics
                 control={control}
@@ -136,8 +136,8 @@ export function PatientRegistration() {
             <div className="algaeh-md-12 algaeh-lg-12 algaeh-xl-4">
               <BillDetails control={control} trigger={trigger} />
             </div>
-          </form>
-        </div>
+          </div>
+        </form>
       </div>
     </div>
   );
