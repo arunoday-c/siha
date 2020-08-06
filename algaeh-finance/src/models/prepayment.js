@@ -993,7 +993,7 @@ export const getPrepaymentDetails = (req, res, next) => {
       let joinStr = "";
 
       if (options[0]["cost_center_type"] == "P") {
-        selectStr += ` ,D.project_id as cost_center_id, CONCAT(D.hospital_id, '-', D.project_id) as c_id, P.project_desc as cost_center`;
+        selectStr += ` ,D.project_id as cost_center_id, P.project_desc as cost_center`;
         joinStr += ` left join hims_d_project P on D.project_id=P.hims_d_project_id `;
       } else if (options[0]["cost_center_type"] == "SD") {
         selectStr += ` ,D.sub_department_id   as cost_center_id, SD.sub_department_name as cost_center`;

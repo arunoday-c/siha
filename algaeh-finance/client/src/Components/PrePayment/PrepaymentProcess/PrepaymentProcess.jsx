@@ -212,7 +212,7 @@ export function PrepaymentProcess() {
                   type="checkbox"
                   name="checkSelf"
                   checked=""
-                  // onChange={selectCheckBox.bind(this, this)}
+                // onChange={selectCheckBox.bind(this, this)}
                 />
                 <span>Yes</span>
               </label>
@@ -244,19 +244,18 @@ export function PrepaymentProcess() {
             //   others: { minWidth: 40 },
             // },
             {
-              fieldName: "c_id",
+              fieldName: "cost_center_id",
               label: "Cost Center",
               sortable: true,
               displayTemplate: (row) => {
                 return <span>{row.cost_center}</span>;
               },
               editorTemplate: (row) => {
-                console.log("row", row);
                 const valueRow =
                   row.hospital_id !== undefined &&
-                  row.hospital_id !== "" &&
-                  row.cost_center_id !== undefined &&
-                  row.cost_center_id !== ""
+                    row.hospital_id !== "" &&
+                    row.cost_center_id !== undefined &&
+                    row.cost_center_id !== ""
                     ? `${row.hospital_id}-${row.cost_center_id}`
                     : "";
                 return (
