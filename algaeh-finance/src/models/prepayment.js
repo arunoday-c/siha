@@ -1004,7 +1004,7 @@ export const getPrepaymentDetails = (req, res, next) => {
         .executeQuery({
           query: ` select finance_f_prepayment_detail_id, ROUND(amount,${decimal_places}) as amount,
         left(date_format(concat (D.year,'-',D.month,'-01'),'%Y-%M') ,8)as pay_month,
-        processed, DATE(D.updated_date) as processed_date, U.username as processed_by ${selectStr}
+        processed, DATE(D.updated_date) as processed_date, U.username as processed_by, D.hospital_id ${selectStr}
         from finance_f_prepayment_detail D left join algaeh_d_app_user U
         on D.updated_by=U.algaeh_d_app_user_id ${joinStr} where prepayment_request_id=? ; `,
           values: [req.query.finance_f_prepayment_request_id],
