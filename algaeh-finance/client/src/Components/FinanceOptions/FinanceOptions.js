@@ -82,6 +82,10 @@ export default function FinanceOptions(props) {
             .then((res) => {
               if (res.data.success) {
                 setFinOptions(res.data.result[0]);
+                AlgaehMessagePop({
+                  type: "success",
+                  display: "Save Successfully",
+                });
               }
             })
             .catch((e) => console.log(e));

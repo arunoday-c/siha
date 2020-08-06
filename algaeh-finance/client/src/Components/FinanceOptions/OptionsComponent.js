@@ -21,6 +21,8 @@ function OptionsComponent({
     auth_level,
     auth1_limit_amount,
     auth1_limit,
+    allow_negative_balance,
+    grni_required,
   } = options;
   return (
     <div className="FinanceOptions">
@@ -175,7 +177,7 @@ function OptionsComponent({
                   }}
                 />
                 <div className="col-2">
-                  <label>Auth Level 1 Limit Required ?</label>
+                  <label>Auth Level 1 Limit Required?</label>
                   <div className="customRadio">
                     <label className="radio inline">
                       <input
@@ -218,6 +220,60 @@ function OptionsComponent({
                     onChange: handleChange,
                   }}
                 />
+
+                <div className="col-2">
+                  <label>Allow Negative Amount</label>
+                  <div className="customRadio">
+                    <label className="radio inline">
+                      <input
+                        type="radio"
+                        value="Y"
+                        onChange={handleChange}
+                        name="allow_negative_balance"
+                        checked={allow_negative_balance === "Y"}
+                      />
+                      <span>Yes</span>
+                    </label>
+
+                    <label className="radio inline">
+                      <input
+                        type="radio"
+                        value="N"
+                        onChange={handleChange}
+                        name="allow_negative_balance"
+                        checked={allow_negative_balance === "N"}
+                      />
+                      <span>No</span>
+                    </label>
+                  </div>
+                </div>
+
+                <div className="col-2">
+                  <label>Post GRNI Account</label>
+                  <div className="customRadio">
+                    <label className="radio inline">
+                      <input
+                        type="radio"
+                        value="Y"
+                        onChange={handleChange}
+                        name="grni_required"
+                        checked={grni_required === "Y"}
+                      />
+                      <span>Yes</span>
+                    </label>
+
+                    <label className="radio inline">
+                      <input
+                        type="radio"
+                        value="N"
+                        onChange={handleChange}
+                        name="grni_required"
+                        checked={grni_required === "N"}
+                      />
+                      <span>No</span>
+                    </label>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
