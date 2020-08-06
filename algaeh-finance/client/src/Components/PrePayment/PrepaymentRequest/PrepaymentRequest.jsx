@@ -141,6 +141,27 @@ export function PrepaymentRequest() {
   //     />
   //   );
   // };
+  const statusForEditor = (row) => {
+    return (
+      <span>
+        {row.request_status === "P" ? (
+          <span className="badge badge-warning">Pending</span>
+        ) : row.request_status === "A" ? (
+          <span className="badge badge-success">Approved</span>
+        ) : row.request_status === "R" ? (
+          <span className="badge badge-danger">Rejected</span>
+        ) : row.request_status === "PD" ? (
+          <span className="badge badge-danger">Paid</span>
+        ) : row.request_status === "CN" ? (
+          <span className="badge badge-danger">Cancelled</span>
+        ) : row.request_status === "PR" ? (
+          <span className="badge badge-danger">Processed</span>
+        ) : (
+          "------"
+        )}
+      </span>
+    );
+  };
   const onSubmit = (e) => {
     addRequest(e);
   };
@@ -452,66 +473,10 @@ export function PrepaymentRequest() {
                       label: "Status",
                       sortable: true,
                       displayTemplate: (row) => {
-                        return (
-                          <span>
-                            {row.request_status === "P" ? (
-                              <span className="badge badge-warning">
-                                Pending
-                              </span>
-                            ) : row.request_status === "A" ? (
-                              <span className="badge badge-success">
-                                Approved
-                              </span>
-                            ) : row.request_status === "R" ? (
-                              <span className="badge badge-danger">
-                                Rejected
-                              </span>
-                            ) : row.request_status === "PD" ? (
-                              <span className="badge badge-danger">Paid</span>
-                            ) : row.request_status === "CN" ? (
-                              <span className="badge badge-danger">
-                                Cancelled
-                              </span>
-                            ) : row.request_status === "PR" ? (
-                              <span className="badge badge-danger">
-                                Processed
-                              </span>
-                            ) : (
-                              "------"
-                            )}
-                          </span>
-                        );
+                        return statusForEditor(row);
                       },
                       editorTemplate: (row) => {
-                        return (
-                          <span>
-                            {row.request_status === "P" ? (
-                              <span className="badge badge-warning">
-                                Pending
-                              </span>
-                            ) : row.request_status === "A" ? (
-                              <span className="badge badge-success">
-                                Approved
-                              </span>
-                            ) : row.request_status === "R" ? (
-                              <span className="badge badge-danger">
-                                Rejected
-                              </span>
-                            ) : row.request_status === "PD" ? (
-                              <span className="badge badge-danger">Paid</span>
-                            ) : row.request_status === "CN" ? (
-                              <span className="badge badge-danger">
-                                Cancelled
-                              </span>
-                            ) : row.request_status === "PR" ? (
-                              <span className="badge badge-danger">
-                                Processed
-                              </span>
-                            ) : (
-                              "------"
-                            )}
-                          </span>
-                        );
+                        return statusForEditor(row);
                       },
                     },
                     {

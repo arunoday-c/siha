@@ -50,11 +50,6 @@ async function getDemoData() {
 export function Demographics({ control, setValue, clearErrors, errors }) {
   const { country_id: country, state_id, date_of_birth } = useWatch({
     control,
-    defaultValue: {
-      country_id: null,
-      state_id: null,
-      date_of_birth: undefined,
-    },
     name: ["country_id", "state_id", "date_of_birth"],
   });
   const { fieldNameFn } = useLangFieldName();
@@ -82,7 +77,7 @@ export function Demographics({ control, setValue, clearErrors, errors }) {
   const patientIdCard = useRef(null);
 
   const states = country
-    ? countries.filter((i) => i.hims_d_country_id == country)[0]?.states
+    ? countries?.filter((i) => i.hims_d_country_id == country)[0]?.states
     : [];
 
   const cities = state_id
