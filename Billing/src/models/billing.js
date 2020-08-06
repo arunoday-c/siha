@@ -189,9 +189,9 @@ export default {
             inputParam.receiveable_amount,
             inputParam.balance_credit,
 
-            inputParam.created_by,
+            req.userIdentity.algaeh_d_app_user_id,
             new Date(),
-            inputParam.updated_by,
+            req.userIdentity.algaeh_d_app_user_id,
             new Date(),
             inputParam.copay_amount,
             inputParam.deductable_amount,
@@ -227,7 +227,7 @@ export default {
                         `updated_by`=?, `updated_date`=? WHERE `hims_d_patient_id`=?",
                       values: [
                         inputParam.advance_amount,
-                        inputParam.updated_by,
+                        req.userIdentity.algaeh_d_app_user_id,
                         new Date(),
                         inputParam.patient_id,
                       ],
