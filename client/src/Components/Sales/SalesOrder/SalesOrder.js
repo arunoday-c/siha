@@ -800,7 +800,7 @@ class SalesOrder extends Component {
                   <div className="col">
                     <AlgaehLabel
                       label={{
-                        forceLabel: "Discount Amount",
+                        forceLabel: "Net Discount",
                       }}
                     />
                     <h6>{GetAmountFormart(this.state.discount_amount)}</h6>
