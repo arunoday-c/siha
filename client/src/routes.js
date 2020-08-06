@@ -42,6 +42,10 @@ const FinDashboard = React.lazy(() =>
 const PatientRegistration = React.lazy(() =>
   retry(() => import("./Components/RegistrationPatient/RegistrationPatient"))
 );
+
+const PatientRegistrationNew = React.lazy(() =>
+  retry(() => import("./Components/PatientRegistrationNew"))
+);
 // const Layout = React.lazy(() =>
 //   retry(() => import("./Components/common/layout"))
 // );
@@ -690,6 +694,11 @@ const privateRoutes = [
     path: "/FrontDesk",
     isExactPath: true,
     component: <PatientRegistration />,
+  },
+  {
+    path: "/PatientRegistration",
+    isExactPath: true,
+    component: <PatientRegistrationNew />,
   },
   {
     path: "/Appointment",
