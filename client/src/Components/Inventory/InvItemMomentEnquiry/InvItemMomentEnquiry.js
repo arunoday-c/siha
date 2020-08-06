@@ -8,7 +8,7 @@ import {
   AlgaehDataGrid,
   AlgaehLabel,
   AlagehAutoComplete,
-  AlgaehDateHandler
+  AlgaehDateHandler,
 } from "../../Wrapper/algaehWrapper";
 
 import BreadCrumb from "../../common/BreadCrumb/BreadCrumb.js";
@@ -17,7 +17,7 @@ import {
   dateFormater,
   datehandle,
   ProcessItemMoment,
-  dateValidate
+  dateValidate,
 } from "./InvItemMomentEnquiryEvents";
 import "./InvItemMomentEnquiry.scss";
 import "../../../styles/site.scss";
@@ -35,7 +35,7 @@ class InvItemMomentEnquiry extends Component {
       from_date: null,
       to_date: null,
       barcode: null,
-      transaction_type: null
+      transaction_type: null,
     };
   }
 
@@ -47,8 +47,8 @@ class InvItemMomentEnquiry extends Component {
       data: { item_status: "A" },
       redux: {
         type: "ITEM_GET_DATA",
-        mappingName: "inventoryitemlist"
-      }
+        mappingName: "inventoryitemlist",
+      },
     });
 
     this.props.getLocation({
@@ -57,8 +57,8 @@ class InvItemMomentEnquiry extends Component {
       method: "GET",
       redux: {
         type: "ANALYTES_GET_DATA",
-        mappingName: "inventorylocations"
-      }
+        mappingName: "inventorylocations",
+      },
     });
 
     if (this.props.itemuom === undefined || this.props.itemuom.length === 0) {
@@ -68,8 +68,8 @@ class InvItemMomentEnquiry extends Component {
         method: "GET",
         redux: {
           type: "ITEM_UOM_GET_DATA",
-          mappingName: "inventoryitemuom"
-        }
+          mappingName: "inventoryitemuom",
+        },
       });
     }
   }
@@ -85,25 +85,25 @@ class InvItemMomentEnquiry extends Component {
               />
             }
             breadStyle={this.props.breadStyle}
-            pageNavPath={[
-              {
-                pageName: (
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Home",
-                      align: "ltr"
-                    }}
-                  />
-                )
-              },
-              {
-                pageName: (
-                  <AlgaehLabel
-                    label={{ forceLabel: "Item Moment Enquiry", align: "ltr" }}
-                  />
-                )
-              }
-            ]}
+            // pageNavPath={[
+            //   {
+            //     pageName: (
+            //       <AlgaehLabel
+            //         label={{
+            //           forceLabel: "Home",
+            //           align: "ltr"
+            //         }}
+            //       />
+            //     )
+            //   },
+            //   {
+            //     pageName: (
+            //       <AlgaehLabel
+            //         label={{ forceLabel: "Item Moment Enquiry", align: "ltr" }}
+            //       />
+            //     )
+            //   }
+            // ]}
           />
 
           <div
@@ -122,7 +122,7 @@ class InvItemMomentEnquiry extends Component {
                     textBox={{ className: "txt-fld", name: "from_date" }}
                     events={{
                       onChange: datehandle.bind(this, this),
-                      onBlur: dateValidate.bind(this, this)
+                      onBlur: dateValidate.bind(this, this),
                     }}
                     value={this.state.from_date}
                   />
@@ -132,7 +132,7 @@ class InvItemMomentEnquiry extends Component {
                     textBox={{ className: "txt-fld", name: "to_date" }}
                     events={{
                       onChange: datehandle.bind(this, this),
-                      onBlur: dateValidate.bind(this, this)
+                      onBlur: dateValidate.bind(this, this),
                     }}
                     maxDate={new Date()}
                     value={this.state.to_date}
@@ -147,29 +147,29 @@ class InvItemMomentEnquiry extends Component {
                       dataSource: {
                         textField: "item_description",
                         valueField: "hims_d_inventory_item_master_id",
-                        data: this.props.inventoryitemlist
+                        data: this.props.inventoryitemlist,
                       },
                       onChange: changeTexts.bind(this, this),
                       onClear: () => {
                         this.setState({
-                          item_code_id: null
+                          item_code_id: null,
                         });
-                      }
+                      },
                     }}
                   />
 
                   <AlagehFormGroup
                     div={{ className: "col" }}
                     label={{
-                      forceLabel: "Item Barcode"
+                      forceLabel: "Item Barcode",
                     }}
                     textBox={{
                       className: "txt-fld",
                       name: "barcode",
                       value: this.state.barcode,
                       events: {
-                        onChange: changeTexts.bind(this, this)
-                      }
+                        onChange: changeTexts.bind(this, this),
+                      },
                     }}
                   />
 
@@ -183,14 +183,14 @@ class InvItemMomentEnquiry extends Component {
                       dataSource: {
                         textField: "location_description",
                         valueField: "hims_d_inventory_location_id",
-                        data: this.props.inventorylocations
+                        data: this.props.inventorylocations,
                       },
                       onClear: () => {
                         this.setState({
-                          location_id: null
+                          location_id: null,
                         });
                       },
-                      onChange: changeTexts.bind(this, this)
+                      onChange: changeTexts.bind(this, this),
                     }}
                   />
 
@@ -204,14 +204,14 @@ class InvItemMomentEnquiry extends Component {
                       dataSource: {
                         textField: "name",
                         valueField: "value",
-                        data: GlobalVariables.FORMAT_TRANSACTION_TYPE
+                        data: GlobalVariables.FORMAT_TRANSACTION_TYPE,
                       },
                       onClear: () => {
                         this.setState({
-                          transaction_type: null
+                          transaction_type: null,
                         });
                       },
-                      onChange: changeTexts.bind(this, this)
+                      onChange: changeTexts.bind(this, this),
                     }}
                   />
 
@@ -239,33 +239,35 @@ class InvItemMomentEnquiry extends Component {
                           label={{ forceLabel: "Transaction Type" }}
                         />
                       ),
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         return row.transaction_type === "MR"
                           ? "Material Requisition"
                           : row.transaction_type === "ST"
-                            ? "Stock Transfer"
-                            : row.transaction_type === "POS"
-                              ? "Point of Sale"
-                              : row.transaction_type === "SRT"
-                                ? "Sales Return"
-                                : row.transaction_type === "INT"
-                                  ? "Opening Stock"
-                                  : row.transaction_type === "CS"
-                                    ? "Consumption"
-                                    : row.transaction_type === "REC"
-                                      ? "Receipt"
-                                      : row.transaction_type === "PO"
-                                        ? "Purchase Order"
-                                        : row.transaction_type === "DNA"
-                                          ? "Delivery Note"
-                                          : row.transaction_type === "ACK"
-                                            ? "Transfer Acknowledge"
-                                            : row.transaction_type === "PR"
-                                              ? "Purchase Return"
-                                              : row.transaction_type === "AD"
-                                                ? "Stock Adjustment" : row.transaction_type === "SDN"
-                                                  ? "Sales Dispatch Note" : "";
-                      }
+                          ? "Stock Transfer"
+                          : row.transaction_type === "POS"
+                          ? "Point of Sale"
+                          : row.transaction_type === "SRT"
+                          ? "Sales Return"
+                          : row.transaction_type === "INT"
+                          ? "Opening Stock"
+                          : row.transaction_type === "CS"
+                          ? "Consumption"
+                          : row.transaction_type === "REC"
+                          ? "Receipt"
+                          : row.transaction_type === "PO"
+                          ? "Purchase Order"
+                          : row.transaction_type === "DNA"
+                          ? "Delivery Note"
+                          : row.transaction_type === "ACK"
+                          ? "Transfer Acknowledge"
+                          : row.transaction_type === "PR"
+                          ? "Purchase Return"
+                          : row.transaction_type === "AD"
+                          ? "Stock Adjustment"
+                          : row.transaction_type === "SDN"
+                          ? "Sales Dispatch Note"
+                          : "";
+                      },
                     },
                     {
                       fieldName: "transaction_date",
@@ -274,24 +276,24 @@ class InvItemMomentEnquiry extends Component {
                           label={{ forceLabel: "Transaction Date" }}
                         />
                       ),
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         return (
                           <span>{dateFormater(row.transaction_date)}</span>
                         );
-                      }
+                      },
                     },
                     {
                       fieldName: "from_location_id",
                       label: <AlgaehLabel label={{ forceLabel: "Location" }} />,
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         let display =
                           this.props.inventorylocations === undefined
                             ? []
                             : this.props.inventorylocations.filter(
-                              f =>
-                                f.hims_d_inventory_location_id ===
-                                row.from_location_id
-                            );
+                                (f) =>
+                                  f.hims_d_inventory_location_id ===
+                                  row.from_location_id
+                              );
 
                         return (
                           <span>
@@ -300,22 +302,22 @@ class InvItemMomentEnquiry extends Component {
                               : ""}
                           </span>
                         );
-                      }
+                      },
                     },
                     {
                       fieldName: "item_code_id",
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Item Name" }} />
                       ),
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         let display =
                           this.props.inventoryitemlist === undefined
                             ? []
                             : this.props.inventoryitemlist.filter(
-                              f =>
-                                f.hims_d_inventory_item_master_id ===
-                                row.item_code_id
-                            );
+                                (f) =>
+                                  f.hims_d_inventory_item_master_id ===
+                                  row.item_code_id
+                              );
 
                         return (
                           <span>
@@ -328,16 +330,16 @@ class InvItemMomentEnquiry extends Component {
                                   row.operation === "+"
                                     ? "fas fa-arrow-up green"
                                     : row.operation === "-"
-                                      ? "fas fa-arrow-down red"
-                                      : ""
+                                    ? "fas fa-arrow-down red"
+                                    : ""
                                 }
                               />
                             ) : (
-                                ""
-                              )}
+                              ""
+                            )}
                           </span>
                         );
-                      }
+                      },
                     },
                     {
                       fieldName: "transaction_uom",
@@ -346,15 +348,15 @@ class InvItemMomentEnquiry extends Component {
                           label={{ forceLabel: "Unit of Measure" }}
                         />
                       ),
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         let display =
                           this.props.inventoryitemuom === undefined
                             ? []
                             : this.props.inventoryitemuom.filter(
-                              f =>
-                                f.hims_d_inventory_uom_id ===
-                                row.transaction_uom
-                            );
+                                (f) =>
+                                  f.hims_d_inventory_uom_id ===
+                                  row.transaction_uom
+                              );
 
                         return (
                           <span>
@@ -363,28 +365,30 @@ class InvItemMomentEnquiry extends Component {
                               : ""}
                           </span>
                         );
-                      }
+                      },
                     },
 
                     {
                       fieldName: "batchno",
-                      label: <AlgaehLabel label={{ forceLabel: "Batch No." }} />
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Batch No." }} />
+                      ),
                     },
                     {
                       fieldName: "expiry_date",
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Expiry Date" }} />
                       ),
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         return <span>{dateFormater(row.expiry_date)}</span>;
-                      }
+                      },
                     },
                     {
                       fieldName: "transaction_qty",
                       label: <AlgaehLabel label={{ forceLabel: "Quantity" }} />,
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         return parseFloat(row.transaction_qty);
-                      }
+                      },
                     },
                     // {
                     //   fieldName: "average_cost",
@@ -404,7 +408,7 @@ class InvItemMomentEnquiry extends Component {
                   ]}
                   keyId="item_id"
                   dataSource={{
-                    data: this.state.Inventory_Itemmoment
+                    data: this.state.Inventory_Itemmoment,
                   }}
                   paging={{ page: 0, rowsPerPage: 20 }}
                 />
@@ -422,7 +426,7 @@ function mapStateToProps(state) {
     inventoryitemlist: state.inventoryitemlist,
     inventorylocations: state.inventorylocations,
     insuranceitemmoment: state.insuranceitemmoment,
-    inventoryitemuom: state.inventoryitemuom
+    inventoryitemuom: state.inventoryitemuom,
   };
 }
 
@@ -432,15 +436,12 @@ function mapDispatchToProps(dispatch) {
       getItems: AlgaehActions,
       getLocation: AlgaehActions,
       getItemMoment: AlgaehActions,
-      getItemUOM: AlgaehActions
+      getItemUOM: AlgaehActions,
     },
     dispatch
   );
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(InvItemMomentEnquiry)
+  connect(mapStateToProps, mapDispatchToProps)(InvItemMomentEnquiry)
 );

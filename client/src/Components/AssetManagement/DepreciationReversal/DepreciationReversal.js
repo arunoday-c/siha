@@ -7,7 +7,7 @@ import {
   AlgaehLabel,
   AlagehFormGroup,
   AlagehAutoComplete,
-  AlgaehDateHandler
+  AlgaehDateHandler,
 } from "../../Wrapper/algaehWrapper";
 import Options from "../../../Options.json";
 import moment from "moment";
@@ -25,33 +25,33 @@ class DepreciationReversal extends Component {
             <AlgaehLabel
               label={{
                 forceLabel: "Depreciation/Reversal Entry",
-                align: "ltr"
+                align: "ltr",
               }}
             />
           }
           breadStyle={this.props.breadStyle}
-          pageNavPath={[
-            {
-              pageName: (
-                <AlgaehLabel
-                  label={{
-                    forceLabel: "Home",
-                    align: "ltr"
-                  }}
-                />
-              )
-            },
-            {
-              pageName: (
-                <AlgaehLabel
-                  label={{
-                    forceLabel: "Depreciation/Reversal Entry",
-                    align: "ltr"
-                  }}
-                />
-              )
-            }
-          ]}
+          // pageNavPath={[
+          //   {
+          //     pageName: (
+          //       <AlgaehLabel
+          //         label={{
+          //           forceLabel: "Home",
+          //           align: "ltr"
+          //         }}
+          //       />
+          //     )
+          //   },
+          //   {
+          //     pageName: (
+          //       <AlgaehLabel
+          //         label={{
+          //           forceLabel: "Depreciation/Reversal Entry",
+          //           align: "ltr"
+          //         }}
+          //       />
+          //     )
+          //   }
+          // ]}
           soptlightSearch={{
             label: (
               <AlgaehLabel
@@ -61,20 +61,20 @@ class DepreciationReversal extends Component {
             value: this.state.document_number,
             selectValue: "document_number",
             events: {
-              onChange: null //getCtrlCode.bind(this, this)
+              onChange: null, //getCtrlCode.bind(this, this)
             },
             jsonFile: {
               fileName: "spotlightSearch",
-              fieldName: "initialStock.intstock"
+              fieldName: "initialStock.intstock",
             },
-            searchName: "initialstock"
+            searchName: "initialstock",
           }}
           userArea={
             <div className="row">
               <div className="col">
                 <AlgaehLabel
                   label={{
-                    forceLabel: "Depreciation Date"
+                    forceLabel: "Depreciation Date",
                   }}
                 />
                 <h6>
@@ -102,11 +102,11 @@ class DepreciationReversal extends Component {
                 dataSource: {
                   textField: "location_description",
                   valueField: "hims_d_pharmacy_location_id",
-                  data: this.props.locations
+                  data: this.props.locations,
                 },
 
                 onChange: null,
-                onClear: null
+                onClear: null,
               }}
             />
             <AlagehAutoComplete
@@ -119,11 +119,11 @@ class DepreciationReversal extends Component {
                 dataSource: {
                   textField: "location_description",
                   valueField: "hims_d_pharmacy_location_id",
-                  data: this.props.locations
+                  data: this.props.locations,
                 },
 
                 onChange: null,
-                onClear: null
+                onClear: null,
               }}
             />
 
@@ -137,11 +137,11 @@ class DepreciationReversal extends Component {
                 dataSource: {
                   textField: "location_description",
                   valueField: "hims_d_pharmacy_location_id",
-                  data: this.props.locations
+                  data: this.props.locations,
                 },
 
                 onChange: null,
-                onClear: null
+                onClear: null,
               }}
             />
 
@@ -155,10 +155,10 @@ class DepreciationReversal extends Component {
                 dataSource: {
                   textField: "item_description",
                   valueField: "hims_d_item_master_id",
-                  data: this.props.itemlist
+                  data: this.props.itemlist,
                 },
                 onChange: null,
-                onClear: null
+                onClear: null,
               }}
             />
             <AlgaehDateHandler
@@ -166,12 +166,12 @@ class DepreciationReversal extends Component {
               label={{ forceLabel: "Transaction Date" }}
               textBox={{
                 className: "txt-fld",
-                name: "expiry_date"
+                name: "expiry_date",
               }}
               minDate={new Date()}
               //disabled={true}
               events={{
-                onChange: null
+                onChange: null,
               }}
               value={this.state.expiry_date}
             />
@@ -187,10 +187,10 @@ class DepreciationReversal extends Component {
                 dataSource: {
                   textField: "item_description",
                   valueField: "hims_d_item_master_id",
-                  data: this.props.itemlist
+                  data: this.props.itemlist,
                 },
                 onChange: null,
-                onClear: null
+                onClear: null,
               }}
             />
             <AlagehAutoComplete
@@ -203,48 +203,48 @@ class DepreciationReversal extends Component {
                 dataSource: {
                   textField: "item_description",
                   valueField: "hims_d_item_master_id",
-                  data: this.props.itemlist
+                  data: this.props.itemlist,
                 },
                 onChange: null,
-                onClear: null
+                onClear: null,
               }}
             />
             <AlagehFormGroup
               div={{ className: "col-4" }}
               label={{
-                forceLabel: "Asset Desc."
+                forceLabel: "Asset Desc.",
               }}
               textBox={{
                 className: "txt-fld",
                 name: "batchno",
                 value: this.state.batchno,
                 events: {
-                  onChange: null
+                  onChange: null,
                 },
                 others: {
                   // disabled: true
-                }
+                },
               }}
             />
             <AlagehFormGroup
               div={{ className: "col" }}
               label={{
-                forceLabel: "Asset Group."
+                forceLabel: "Asset Group.",
               }}
               textBox={{
                 className: "txt-fld",
                 name: "batchno",
                 value: this.state.batchno,
                 events: {
-                  onChange: null
+                  onChange: null,
                 },
                 others: {
                   // disabled: true
-                }
+                },
               }}
             />
             <div className="col">
-              <button className="btn btn-primary" style={{ marginTop: 19 }}>
+              <button className="btn btn-primary" style={{ marginTop: 20 }}>
                 Add to List
               </button>
             </div>
@@ -278,25 +278,25 @@ class DepreciationReversal extends Component {
                         fieldName: "item_id",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Asset Code" }} />
-                        )
+                        ),
                       },
 
                       {
                         fieldName: "item_category",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Asset Desc." }} />
-                        )
+                        ),
                       },
                       {
                         fieldName: "qtyhand",
                         label: <AlgaehLabel label={{ forceLabel: "Method" }} />,
-                        disabled: true
+                        disabled: true,
                       },
                       {
                         fieldName: "expiry_date",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Fiscal Year" }} />
-                        )
+                        ),
                       },
                       {
                         fieldName: "batchno",
@@ -305,18 +305,18 @@ class DepreciationReversal extends Component {
                             label={{ forceLabel: "Fiscal Period" }}
                           />
                         ),
-                        disabled: true
+                        disabled: true,
                       },
                       {
                         fieldName: "uom_id",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Actual Year" }} />
-                        )
-                      }
+                        ),
+                      },
                     ]}
                     keyId="service_type_id"
                     dataSource={{
-                      data: this.state.pharmacy_stock_detail
+                      data: this.state.pharmacy_stock_detail,
                     }}
                     isEditable={true}
                     paging={{ page: 0, rowsPerPage: 10 }}

@@ -16,14 +16,14 @@ import {
   // radioChange,
   getRequisitionList,
   datehandle,
-  changeEventHandaler
+  changeEventHandaler,
 } from "./RequisitionListEvent";
 
 import {
   AlgaehDataGrid,
   AlgaehLabel,
   AlagehAutoComplete,
-  AlgaehDateHandler
+  AlgaehDateHandler,
 } from "../../Wrapper/algaehWrapper";
 import moment from "moment";
 import { AlgaehActions } from "../../../actions/algaehActions";
@@ -44,7 +44,7 @@ class RequisitionList extends Component {
         to_date,
         from_location_id,
         to_location_id,
-        status
+        status,
       } = this.props.prev;
       this.setState(
         {
@@ -52,7 +52,7 @@ class RequisitionList extends Component {
           to_date,
           from_location_id,
           to_location_id,
-          status
+          status,
         },
         () => getRequisitionList(this)
       );
@@ -67,7 +67,7 @@ class RequisitionList extends Component {
           requisition_list: [],
           radioYes: true,
           authorize1: "Y",
-          status: "1"
+          status: "1",
         },
         () => getRequisitionList(this)
       );
@@ -79,12 +79,12 @@ class RequisitionList extends Component {
       method: "GET",
       redux: {
         type: "LOCATIOS_GET_DATA",
-        mappingName: "locations"
-      }
+        mappingName: "locations",
+      },
     });
   }
 
-  ourOwnMiniNavigator = obj => {
+  ourOwnMiniNavigator = (obj) => {
     const { requisition_list, radioYes, authorize1, ...rest } = this.state;
     let sendObj = Object.assign(rest, obj);
     this.props.new_routeComponents(sendObj);
@@ -101,28 +101,28 @@ class RequisitionList extends Component {
               />
             }
             breadStyle={this.props.breadStyle}
-            pageNavPath={[
-              {
-                pageName: (
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Home",
-                      align: "ltr"
-                    }}
-                  />
-                )
-              },
-              {
-                pageName: (
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Requisition Auth List",
-                      align: "ltr"
-                    }}
-                  />
-                )
-              }
-            ]}
+            // pageNavPath={[
+            //   {
+            //     pageName: (
+            //       <AlgaehLabel
+            //         label={{
+            //           forceLabel: "Home",
+            //           align: "ltr"
+            //         }}
+            //       />
+            //     )
+            //   },
+            //   {
+            //     pageName: (
+            //       <AlgaehLabel
+            //         label={{
+            //           forceLabel: "Requisition Auth List",
+            //           align: "ltr"
+            //         }}
+            //       />
+            //     )
+            //   }
+            // ]}
           />
           <div
             className="row inner-top-search"
@@ -135,7 +135,7 @@ class RequisitionList extends Component {
                   label={{ forceLabel: "From Date" }}
                   textBox={{ className: "txt-fld", name: "from_date" }}
                   events={{
-                    onChange: datehandle.bind(this, this)
+                    onChange: datehandle.bind(this, this),
                   }}
                   value={this.state.from_date}
                 />
@@ -144,7 +144,7 @@ class RequisitionList extends Component {
                   label={{ forceLabel: "To Date" }}
                   textBox={{ className: "txt-fld", name: "to_date" }}
                   events={{
-                    onChange: datehandle.bind(this, this)
+                    onChange: datehandle.bind(this, this),
                   }}
                   value={this.state.to_date}
                 />
@@ -158,14 +158,14 @@ class RequisitionList extends Component {
                     dataSource: {
                       textField: "location_description",
                       valueField: "hims_d_pharmacy_location_id",
-                      data: this.props.locations
+                      data: this.props.locations,
                     },
                     onChange: changeEventHandaler.bind(this, this),
                     onClear: () => {
                       this.setState({
-                        from_location_id: null
+                        from_location_id: null,
                       });
-                    }
+                    },
                   }}
                 />
 
@@ -179,14 +179,14 @@ class RequisitionList extends Component {
                     dataSource: {
                       textField: "location_description",
                       valueField: "hims_d_pharmacy_location_id",
-                      data: this.props.locations
+                      data: this.props.locations,
                     },
                     onChange: changeEventHandaler.bind(this, this),
                     onClear: () => {
                       this.setState({
-                        to_location_id: null
+                        to_location_id: null,
                       });
-                    }
+                    },
                   }}
                 />
 
@@ -200,14 +200,14 @@ class RequisitionList extends Component {
                     dataSource: {
                       textField: "name",
                       valueField: "value",
-                      data: GlobalVariables.REQUSITION_STATUS
+                      data: GlobalVariables.REQUSITION_STATUS,
                     },
                     onChange: changeEventHandaler.bind(this, this),
                     onClear: () => {
                       this.setState({
-                        status: null
+                        status: null,
                       });
-                    }
+                    },
                   }}
                 />
               </div>
@@ -224,21 +224,21 @@ class RequisitionList extends Component {
                       {
                         fieldName: "action",
                         label: <AlgaehLabel label={{ forceLabel: "action" }} />,
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return (
                             <span>
                               <i
                                 style={{
                                   pointerEvents:
                                     row.cancel === "Y" ? "none" : "",
-                                  opacity: row.cancel === "Y" ? "0.1" : ""
+                                  opacity: row.cancel === "Y" ? "0.1" : "",
                                 }}
                                 className="fas fa-check"
                                 onClick={() => {
                                   this.ourOwnMiniNavigator({
                                     RQ_Screen: "RequisitionEntry",
                                     material_requisition_number:
-                                      row.material_requisition_number
+                                      row.material_requisition_number,
                                   });
                                 }}
                               />
@@ -250,7 +250,7 @@ class RequisitionList extends Component {
                                       RQ_Screen: "TransferEntry",
                                       hims_f_pharamcy_material_header_id:
                                         row.hims_f_pharamcy_material_header_id,
-                                      from_location: row.to_location_id
+                                      from_location: row.to_location_id,
                                     });
                                   }}
                                 />
@@ -261,8 +261,8 @@ class RequisitionList extends Component {
                         others: {
                           maxWidth: 100,
                           resizable: false,
-                          style: { textAlign: "center" }
-                        }
+                          style: { textAlign: "center" },
+                        },
                       },
                       {
                         fieldName: "material_requisition_number",
@@ -274,8 +274,8 @@ class RequisitionList extends Component {
                         disabled: true,
                         others: {
                           resizable: false,
-                          style: { textAlign: "center" }
-                        }
+                          style: { textAlign: "center" },
+                        },
                       },
                       {
                         fieldName: "requistion_date",
@@ -284,7 +284,7 @@ class RequisitionList extends Component {
                             label={{ forceLabel: "Requistion Date" }}
                           />
                         ),
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return (
                             <span>
                               {dateFormater(this, row.requistion_date)}
@@ -296,8 +296,8 @@ class RequisitionList extends Component {
                         others: {
                           maxWidth: 200,
                           resizable: false,
-                          style: { textAlign: "left" }
-                        }
+                          style: { textAlign: "left" },
+                        },
                       },
                       {
                         fieldName: "from_location_id",
@@ -307,7 +307,7 @@ class RequisitionList extends Component {
                           />
                         ),
                         //created by Adnan
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           let x;
                           if (
                             this.props.locations !== undefined &&
@@ -315,7 +315,7 @@ class RequisitionList extends Component {
                           ) {
                             x = Enumerable.from(this.props.locations)
                               .where(
-                                w =>
+                                (w) =>
                                   w.hims_d_pharmacy_location_id ===
                                   row.from_location_id
                               )
@@ -331,8 +331,8 @@ class RequisitionList extends Component {
                         others: {
                           maxWidth: 200,
                           resizable: false,
-                          style: { textAlign: "center" }
-                        }
+                          style: { textAlign: "center" },
+                        },
                         //created by Adnan
                       },
                       {
@@ -341,7 +341,7 @@ class RequisitionList extends Component {
                           <AlgaehLabel label={{ forceLabel: "To Location" }} />
                         ),
                         //created by Adnan
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           let x;
                           if (
                             this.props.locations !== undefined &&
@@ -349,7 +349,7 @@ class RequisitionList extends Component {
                           ) {
                             x = Enumerable.from(this.props.locations)
                               .where(
-                                w =>
+                                (w) =>
                                   w.hims_d_pharmacy_location_id ===
                                   row.to_location_id
                               )
@@ -365,13 +365,13 @@ class RequisitionList extends Component {
                         others: {
                           maxWidth: 200,
                           resizable: false,
-                          style: { textAlign: "center" }
-                        }
-                      }
+                          style: { textAlign: "center" },
+                        },
+                      },
                     ]}
                     keyId="material_requisition_number"
                     dataSource={{
-                      data: this.state.requisition_list
+                      data: this.state.requisition_list,
                     }}
                     noDataText="No data available for location"
                     paging={{ page: 0, rowsPerPage: 10 }}
@@ -389,7 +389,7 @@ class RequisitionList extends Component {
 function mapStateToProps(state) {
   return {
     locations: state.locations,
-    requisitionlist: state.requisitionlist
+    requisitionlist: state.requisitionlist,
   };
 }
 
@@ -397,15 +397,12 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
       getLocation: AlgaehActions,
-      getRequisitionList: AlgaehActions
+      getRequisitionList: AlgaehActions,
     },
     dispatch
   );
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(RequisitionList)
+  connect(mapStateToProps, mapDispatchToProps)(RequisitionList)
 );

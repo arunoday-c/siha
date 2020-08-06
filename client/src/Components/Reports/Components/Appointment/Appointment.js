@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import {
   AlagehAutoComplete,
   AlgaehDateHandler,
-  AlagehFormGroup
+  AlagehFormGroup,
 } from "../../../Wrapper/algaehWrapper";
 import { APPT_TYPE } from "../../../../utils/GlobalVariables.json";
 import AlgaehSearch from "../../../Wrapper/globalSearch";
@@ -17,7 +17,7 @@ export default class Appointment extends Component {
       doctors: [],
       departments: [],
       all_docs: false,
-      all_depts: false
+      all_depts: false,
     };
   }
 
@@ -30,12 +30,12 @@ export default class Appointment extends Component {
       ? this.setState({
           [e.target.name]: !this.state.all_docs,
           employee_id: null,
-          hims_d_sub_department_id: null
+          hims_d_sub_department_id: null,
         })
       : this.setState({
           [e.target.name]: !this.state.all_depts,
           employee_id: null,
-          hims_d_sub_department_id: null
+          hims_d_sub_department_id: null,
         });
   }
 
@@ -43,7 +43,7 @@ export default class Appointment extends Component {
     value.name === "hims_d_sub_department_id"
       ? this.setState({
           [value.name]: value.value,
-          doctors: value.selected.doctors
+          doctors: value.selected.doctors,
         })
       : // : value.name === "employee_id"
         // ? this.setState({
@@ -51,32 +51,32 @@ export default class Appointment extends Component {
         //     departments: value.selected.departments
         //   })
         this.setState({
-          [value.name]: value.value
+          [value.name]: value.value,
         });
   }
 
   changeTexts(e) {
     this.setState({
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
   }
 
   patientSearch() {
     AlgaehSearch({
       searchGrid: {
-        columns: FrontDesk
+        columns: FrontDesk,
       },
       searchName: "patients",
       uri: "/gloabelSearch/get",
       onContainsChange: (text, serchBy, callBack) => {
         callBack(text);
       },
-      onRowSelect: row => {
+      onRowSelect: (row) => {
         this.setState({
           patient_code: row.patient_code,
-          patient_id: row.hims_d_patient_id
+          patient_id: row.hims_d_patient_id,
         });
-      }
+      },
     });
   }
 
@@ -93,15 +93,15 @@ export default class Appointment extends Component {
                 label={{ forceLabel: "From Date", isImp: true }}
                 textBox={{
                   className: "txt-fld",
-                  name: "from_date"
+                  name: "from_date",
                 }}
                 maxDate={new Date()}
                 events={{
-                  onChange: selectedDate => {
+                  onChange: (selectedDate) => {
                     this.setState({
-                      from_date: selectedDate
+                      from_date: selectedDate,
                     });
-                  }
+                  },
                 }}
                 value={this.state.from_date}
               />
@@ -110,15 +110,15 @@ export default class Appointment extends Component {
                 label={{ forceLabel: "To Date", isImp: true }}
                 textBox={{
                   className: "txt-fld",
-                  name: "to_date"
+                  name: "to_date",
                 }}
                 maxDate={new Date()}
                 events={{
-                  onChange: selectedDate => {
+                  onChange: (selectedDate) => {
                     this.setState({
-                      to_date: selectedDate
+                      to_date: selectedDate,
                     });
-                  }
+                  },
                 }}
                 value={this.state.to_date}
               />
@@ -127,7 +127,7 @@ export default class Appointment extends Component {
                 div={{ className: "col-lg-3" }}
                 label={{
                   forceLabel: "Appointment Type",
-                  isImp: true
+                  isImp: true,
                 }}
                 selector={{
                   name: "appt_type",
@@ -136,13 +136,13 @@ export default class Appointment extends Component {
                   dataSource: {
                     textField: "name",
                     valueField: "value",
-                    data: APPT_TYPE
+                    data: APPT_TYPE,
                   },
-                  onChange: this.dropDownHandle.bind(this)
+                  onChange: this.dropDownHandle.bind(this),
                 }}
               />
 
-              <div className="col-lg-2" style={{ marginTop: 19 }}>
+              <div className="col-lg-2" style={{ marginTop: 20 }}>
                 <input
                   name="all_docs"
                   checked={this.state.all_docs}
@@ -157,7 +157,7 @@ export default class Appointment extends Component {
                 div={{ className: "col-lg-3" }}
                 label={{
                   forceLabel: "Doctors",
-                  isImp: true
+                  isImp: true,
                 }}
                 selector={{
                   name: "employee_id",
@@ -166,12 +166,12 @@ export default class Appointment extends Component {
                   dataSource: {
                     textField: "full_name",
                     valueField: "employee_id",
-                    data: this.state.doctors
+                    data: this.state.doctors,
                   },
                   onChange: this.dropDownHandle.bind(this),
                   others: {
-                    disabled: this.state.all_docs
-                  }
+                    disabled: this.state.all_docs,
+                  },
                 }}
               />
             </div>
@@ -187,15 +187,15 @@ export default class Appointment extends Component {
                 label={{ forceLabel: "From Date", isImp: true }}
                 textBox={{
                   className: "txt-fld",
-                  name: "from_date"
+                  name: "from_date",
                 }}
                 maxDate={new Date()}
                 events={{
-                  onChange: selectedDate => {
+                  onChange: (selectedDate) => {
                     this.setState({
-                      from_date: selectedDate
+                      from_date: selectedDate,
                     });
-                  }
+                  },
                 }}
                 value={this.state.from_date}
               />
@@ -204,15 +204,15 @@ export default class Appointment extends Component {
                 label={{ forceLabel: "To Date", isImp: true }}
                 textBox={{
                   className: "txt-fld",
-                  name: "to_date"
+                  name: "to_date",
                 }}
                 maxDate={new Date()}
                 events={{
-                  onChange: selectedDate => {
+                  onChange: (selectedDate) => {
                     this.setState({
-                      to_date: selectedDate
+                      to_date: selectedDate,
                     });
-                  }
+                  },
                 }}
                 value={this.state.to_date}
               />
@@ -221,7 +221,7 @@ export default class Appointment extends Component {
                 div={{ className: "col-lg-3" }}
                 label={{
                   forceLabel: "Office / Branch",
-                  isImp: true
+                  isImp: true,
                 }}
                 selector={{
                   name: "appt_type",
@@ -230,9 +230,9 @@ export default class Appointment extends Component {
                   dataSource: {
                     textField: "name",
                     valueField: "value",
-                    data: APPT_TYPE
+                    data: APPT_TYPE,
                   },
-                  onChange: this.dropDownHandle.bind(this)
+                  onChange: this.dropDownHandle.bind(this),
                 }}
               />
 
@@ -240,18 +240,18 @@ export default class Appointment extends Component {
                 div={{ className: "col-lg-3" }}
                 label={{
                   forceLabel: "Patient Code",
-                  isImp: false
+                  isImp: false,
                 }}
                 textBox={{
                   className: "txt-fld",
                   name: "patient_code",
                   others: {
-                    disabled: true
+                    disabled: true,
                   },
                   value: this.state.patient_code,
                   events: {
-                    onChange: null
-                  }
+                    onChange: null,
+                  },
                 }}
               />
 
@@ -263,7 +263,7 @@ export default class Appointment extends Component {
                   style={{
                     marginLeft: "-65%",
                     cursor: "pointer",
-                    marginTop: "28px"
+                    marginTop: "28px",
                   }}
                 />
               </div>
@@ -280,15 +280,15 @@ export default class Appointment extends Component {
                 label={{ forceLabel: "From Date", isImp: true }}
                 textBox={{
                   className: "txt-fld",
-                  name: "from_date"
+                  name: "from_date",
                 }}
                 maxDate={new Date()}
                 events={{
-                  onChange: selectedDate => {
+                  onChange: (selectedDate) => {
                     this.setState({
-                      from_date: selectedDate
+                      from_date: selectedDate,
                     });
-                  }
+                  },
                 }}
                 value={this.state.from_date}
               />
@@ -297,18 +297,18 @@ export default class Appointment extends Component {
                 div={{ className: "col-lg-2" }}
                 label={{
                   forceLabel: "From Time",
-                  isImp: true
+                  isImp: true,
                 }}
                 textBox={{
                   className: "txt-fld",
                   name: "from_time",
                   value: this.state.from_time,
                   events: {
-                    onChange: this.changeTexts.bind(this)
+                    onChange: this.changeTexts.bind(this),
                   },
                   others: {
-                    type: "time"
-                  }
+                    type: "time",
+                  },
                 }}
               />
 
@@ -317,15 +317,15 @@ export default class Appointment extends Component {
                 label={{ forceLabel: "To Date", isImp: true }}
                 textBox={{
                   className: "txt-fld",
-                  name: "to_date"
+                  name: "to_date",
                 }}
                 maxDate={new Date()}
                 events={{
-                  onChange: selectedDate => {
+                  onChange: (selectedDate) => {
                     this.setState({
-                      to_date: selectedDate
+                      to_date: selectedDate,
                     });
-                  }
+                  },
                 }}
                 value={this.state.to_date}
               />
@@ -334,18 +334,18 @@ export default class Appointment extends Component {
                 div={{ className: "col-lg-2" }}
                 label={{
                   forceLabel: "To Time",
-                  isImp: true
+                  isImp: true,
                 }}
                 textBox={{
                   className: "txt-fld",
                   name: "to_time",
                   value: this.state.to_time,
                   events: {
-                    onChange: this.changeTexts.bind(this)
+                    onChange: this.changeTexts.bind(this),
                   },
                   others: {
-                    type: "time"
-                  }
+                    type: "time",
+                  },
                 }}
               />
 
@@ -353,7 +353,7 @@ export default class Appointment extends Component {
                 div={{ className: "col-lg-3" }}
                 label={{
                   forceLabel: "Office / Branch",
-                  isImp: true
+                  isImp: true,
                 }}
                 selector={{
                   name: "appt_type",
@@ -362,13 +362,13 @@ export default class Appointment extends Component {
                   dataSource: {
                     textField: "name",
                     valueField: "value",
-                    data: APPT_TYPE
+                    data: APPT_TYPE,
                   },
-                  onChange: this.dropDownHandle.bind(this)
+                  onChange: this.dropDownHandle.bind(this),
                 }}
               />
 
-              <div className="col-lg-2" style={{ marginTop: 19 }}>
+              <div className="col-lg-2" style={{ marginTop: 20 }}>
                 <input
                   name="all_depts"
                   checked={this.state.all_depts}
@@ -383,7 +383,7 @@ export default class Appointment extends Component {
                 div={{ className: "col-lg-3" }}
                 label={{
                   forceLabel: "Department",
-                  isImp: true
+                  isImp: true,
                 }}
                 selector={{
                   name: "hims_d_sub_department_id",
@@ -392,16 +392,16 @@ export default class Appointment extends Component {
                   dataSource: {
                     textField: "sub_department_name",
                     valueField: "sub_department_id",
-                    data: this.state.departments
+                    data: this.state.departments,
                   },
                   onChange: this.dropDownHandle.bind(this),
                   others: {
-                    disabled: this.state.all_depts
-                  }
+                    disabled: this.state.all_depts,
+                  },
                 }}
               />
 
-              <div className="col-lg-2" style={{ marginTop: 19 }}>
+              <div className="col-lg-2" style={{ marginTop: 20 }}>
                 <input
                   name="all_docs"
                   checked={this.state.all_docs}
@@ -416,7 +416,7 @@ export default class Appointment extends Component {
                 div={{ className: "col-lg-3" }}
                 label={{
                   forceLabel: "Doctor",
-                  isImp: true
+                  isImp: true,
                 }}
                 selector={{
                   name: "employee_id",
@@ -425,12 +425,12 @@ export default class Appointment extends Component {
                   dataSource: {
                     textField: "full_name",
                     valueField: "employee_id",
-                    data: this.state.doctors
+                    data: this.state.doctors,
                   },
                   onChange: this.dropDownHandle.bind(this),
                   others: {
-                    disabled: this.state.all_docs
-                  }
+                    disabled: this.state.all_docs,
+                  },
                 }}
               />
             </div>
@@ -445,15 +445,15 @@ export default class Appointment extends Component {
                 label={{ forceLabel: "From Date", isImp: true }}
                 textBox={{
                   className: "txt-fld",
-                  name: "from_date"
+                  name: "from_date",
                 }}
                 maxDate={new Date()}
                 events={{
-                  onChange: selectedDate => {
+                  onChange: (selectedDate) => {
                     this.setState({
-                      from_date: selectedDate
+                      from_date: selectedDate,
                     });
-                  }
+                  },
                 }}
                 value={this.state.from_date}
               />
@@ -462,18 +462,18 @@ export default class Appointment extends Component {
                 div={{ className: "col-lg-2" }}
                 label={{
                   forceLabel: "From Time",
-                  isImp: true
+                  isImp: true,
                 }}
                 textBox={{
                   className: "txt-fld",
                   name: "from_time",
                   value: this.state.from_time,
                   events: {
-                    onChange: this.changeTexts.bind(this)
+                    onChange: this.changeTexts.bind(this),
                   },
                   others: {
-                    type: "time"
-                  }
+                    type: "time",
+                  },
                 }}
               />
 
@@ -482,15 +482,15 @@ export default class Appointment extends Component {
                 label={{ forceLabel: "To Date", isImp: true }}
                 textBox={{
                   className: "txt-fld",
-                  name: "to_date"
+                  name: "to_date",
                 }}
                 maxDate={new Date()}
                 events={{
-                  onChange: selectedDate => {
+                  onChange: (selectedDate) => {
                     this.setState({
-                      to_date: selectedDate
+                      to_date: selectedDate,
                     });
-                  }
+                  },
                 }}
                 value={this.state.to_date}
               />
@@ -499,18 +499,18 @@ export default class Appointment extends Component {
                 div={{ className: "col-lg-2" }}
                 label={{
                   forceLabel: "To Time",
-                  isImp: true
+                  isImp: true,
                 }}
                 textBox={{
                   className: "txt-fld",
                   name: "to_time",
                   value: this.state.to_time,
                   events: {
-                    onChange: this.changeTexts.bind(this)
+                    onChange: this.changeTexts.bind(this),
                   },
                   others: {
-                    type: "time"
-                  }
+                    type: "time",
+                  },
                 }}
               />
 
@@ -518,7 +518,7 @@ export default class Appointment extends Component {
                 div={{ className: "col-lg-3" }}
                 label={{
                   forceLabel: "Office / Branch",
-                  isImp: true
+                  isImp: true,
                 }}
                 selector={{
                   name: "appt_type",
@@ -527,12 +527,12 @@ export default class Appointment extends Component {
                   dataSource: {
                     textField: "name",
                     valueField: "value",
-                    data: APPT_TYPE
+                    data: APPT_TYPE,
                   },
-                  onChange: this.dropDownHandle.bind(this)
+                  onChange: this.dropDownHandle.bind(this),
                 }}
               />
-              <div className="col-lg-2" style={{ marginTop: 19 }}>
+              <div className="col-lg-2" style={{ marginTop: 20 }}>
                 <input
                   name="all_depts"
                   checked={this.state.all_depts}
@@ -547,7 +547,7 @@ export default class Appointment extends Component {
                 div={{ className: "col-lg-3" }}
                 label={{
                   forceLabel: "Department",
-                  isImp: true
+                  isImp: true,
                 }}
                 selector={{
                   name: "hims_d_sub_department_id",
@@ -556,15 +556,15 @@ export default class Appointment extends Component {
                   dataSource: {
                     textField: "sub_department_name",
                     valueField: "sub_department_id",
-                    data: this.state.departments
+                    data: this.state.departments,
                   },
                   onChange: this.dropDownHandle.bind(this),
                   others: {
-                    disabled: this.state.all_depts
-                  }
+                    disabled: this.state.all_depts,
+                  },
                 }}
               />
-              <div className="col-lg-2" style={{ marginTop: 19 }}>
+              <div className="col-lg-2" style={{ marginTop: 20 }}>
                 <input
                   name="all_docs"
                   checked={this.state.all_docs}
@@ -579,7 +579,7 @@ export default class Appointment extends Component {
                 div={{ className: "col-lg-3" }}
                 label={{
                   forceLabel: "Doctor",
-                  isImp: true
+                  isImp: true,
                 }}
                 selector={{
                   name: "employee_id",
@@ -588,12 +588,12 @@ export default class Appointment extends Component {
                   dataSource: {
                     textField: "full_name",
                     valueField: "employee_id",
-                    data: this.state.doctors
+                    data: this.state.doctors,
                   },
                   onChange: this.dropDownHandle.bind(this),
                   others: {
-                    disabled: this.state.all_docs
-                  }
+                    disabled: this.state.all_docs,
+                  },
                 }}
               />
             </div>
@@ -609,15 +609,15 @@ export default class Appointment extends Component {
                 label={{ forceLabel: "From Date", isImp: true }}
                 textBox={{
                   className: "txt-fld",
-                  name: "from_date"
+                  name: "from_date",
                 }}
                 maxDate={new Date()}
                 events={{
-                  onChange: selectedDate => {
+                  onChange: (selectedDate) => {
                     this.setState({
-                      from_date: selectedDate
+                      from_date: selectedDate,
                     });
-                  }
+                  },
                 }}
                 value={this.state.from_date}
               />
@@ -626,18 +626,18 @@ export default class Appointment extends Component {
                 div={{ className: "col-lg-2" }}
                 label={{
                   forceLabel: "From Time",
-                  isImp: true
+                  isImp: true,
                 }}
                 textBox={{
                   className: "txt-fld",
                   name: "from_time",
                   value: this.state.from_time,
                   events: {
-                    onChange: this.changeTexts.bind(this)
+                    onChange: this.changeTexts.bind(this),
                   },
                   others: {
-                    type: "time"
-                  }
+                    type: "time",
+                  },
                 }}
               />
 
@@ -646,15 +646,15 @@ export default class Appointment extends Component {
                 label={{ forceLabel: "To Date", isImp: true }}
                 textBox={{
                   className: "txt-fld",
-                  name: "to_date"
+                  name: "to_date",
                 }}
                 maxDate={new Date()}
                 events={{
-                  onChange: selectedDate => {
+                  onChange: (selectedDate) => {
                     this.setState({
-                      to_date: selectedDate
+                      to_date: selectedDate,
                     });
-                  }
+                  },
                 }}
                 value={this.state.to_date}
               />
@@ -663,18 +663,18 @@ export default class Appointment extends Component {
                 div={{ className: "col-lg-2" }}
                 label={{
                   forceLabel: "To Time",
-                  isImp: true
+                  isImp: true,
                 }}
                 textBox={{
                   className: "txt-fld",
                   name: "to_time",
                   value: this.state.to_time,
                   events: {
-                    onChange: this.changeTexts.bind(this)
+                    onChange: this.changeTexts.bind(this),
                   },
                   others: {
-                    type: "time"
-                  }
+                    type: "time",
+                  },
                 }}
               />
 
@@ -682,7 +682,7 @@ export default class Appointment extends Component {
                 div={{ className: "col-lg-3" }}
                 label={{
                   forceLabel: "Office / Branch",
-                  isImp: true
+                  isImp: true,
                 }}
                 selector={{
                   name: "appt_type",
@@ -691,9 +691,9 @@ export default class Appointment extends Component {
                   dataSource: {
                     textField: "name",
                     valueField: "value",
-                    data: APPT_TYPE
+                    data: APPT_TYPE,
                   },
-                  onChange: this.dropDownHandle.bind(this)
+                  onChange: this.dropDownHandle.bind(this),
                 }}
               />
 
@@ -701,7 +701,7 @@ export default class Appointment extends Component {
                 div={{ className: "col-lg-3" }}
                 label={{
                   forceLabel: "Users",
-                  isImp: true
+                  isImp: true,
                 }}
                 selector={{
                   name: "hims_d_sub_department_id",
@@ -710,13 +710,13 @@ export default class Appointment extends Component {
                   dataSource: {
                     textField: "sub_department_name",
                     valueField: "hims_d_sub_department_id",
-                    data: this.state.departments
+                    data: this.state.departments,
                   },
-                  onChange: this.dropDownHandle.bind(this)
+                  onChange: this.dropDownHandle.bind(this),
                 }}
               />
 
-              <div className="col-lg-2" style={{ marginTop: 19 }}>
+              <div className="col-lg-2" style={{ marginTop: 20 }}>
                 <input
                   name="all_depts"
                   checked={this.state.all_depts}
@@ -731,7 +731,7 @@ export default class Appointment extends Component {
                 div={{ className: "col-lg-3" }}
                 label={{
                   forceLabel: "Department",
-                  isImp: true
+                  isImp: true,
                 }}
                 selector={{
                   name: "hims_d_sub_department_id",
@@ -740,16 +740,16 @@ export default class Appointment extends Component {
                   dataSource: {
                     textField: "sub_department_name",
                     valueField: "sub_department_id",
-                    data: this.state.departments
+                    data: this.state.departments,
                   },
                   onChange: this.dropDownHandle.bind(this),
                   others: {
-                    disabled: this.state.all_depts
-                  }
+                    disabled: this.state.all_depts,
+                  },
                 }}
               />
 
-              <div className="col-lg-2" style={{ marginTop: 19 }}>
+              <div className="col-lg-2" style={{ marginTop: 20 }}>
                 <input
                   name="all_docs"
                   checked={this.state.all_docs}
@@ -764,7 +764,7 @@ export default class Appointment extends Component {
                 div={{ className: "col-lg-3" }}
                 label={{
                   forceLabel: "Doctor",
-                  isImp: true
+                  isImp: true,
                 }}
                 selector={{
                   name: "employee_id",
@@ -773,12 +773,12 @@ export default class Appointment extends Component {
                   dataSource: {
                     textField: "full_name",
                     valueField: "employee_id",
-                    data: this.state.doctors
+                    data: this.state.doctors,
                   },
                   onChange: this.dropDownHandle.bind(this),
                   others: {
-                    disabled: this.state.all_docs
-                  }
+                    disabled: this.state.all_docs,
+                  },
                 }}
               />
 
@@ -786,7 +786,7 @@ export default class Appointment extends Component {
                 div={{ className: "col-lg-3" }}
                 label={{
                   forceLabel: "Appointment Type",
-                  isImp: true
+                  isImp: true,
                 }}
                 selector={{
                   name: "appt_type",
@@ -795,9 +795,9 @@ export default class Appointment extends Component {
                   dataSource: {
                     textField: "name",
                     valueField: "value",
-                    data: APPT_TYPE
+                    data: APPT_TYPE,
                   },
-                  onChange: this.dropDownHandle.bind(this)
+                  onChange: this.dropDownHandle.bind(this),
                 }}
               />
 
@@ -805,7 +805,7 @@ export default class Appointment extends Component {
                 div={{ className: "col-lg-3" }}
                 label={{
                   forceLabel: "Appointment Status",
-                  isImp: true
+                  isImp: true,
                 }}
                 selector={{
                   name: "hims_d_sub_department_id",
@@ -814,9 +814,9 @@ export default class Appointment extends Component {
                   dataSource: {
                     textField: "sub_department_name",
                     valueField: "hims_d_sub_department_id",
-                    data: this.state.departments
+                    data: this.state.departments,
                   },
-                  onChange: this.dropDownHandle.bind(this)
+                  onChange: this.dropDownHandle.bind(this),
                 }}
               />
             </div>
@@ -832,15 +832,15 @@ export default class Appointment extends Component {
                 label={{ forceLabel: "From Date", isImp: true }}
                 textBox={{
                   className: "txt-fld",
-                  name: "from_date"
+                  name: "from_date",
                 }}
                 maxDate={new Date()}
                 events={{
-                  onChange: selectedDate => {
+                  onChange: (selectedDate) => {
                     this.setState({
-                      from_date: selectedDate
+                      from_date: selectedDate,
                     });
-                  }
+                  },
                 }}
                 value={this.state.from_date}
               />
@@ -849,20 +849,20 @@ export default class Appointment extends Component {
                 label={{ forceLabel: "To Date", isImp: true }}
                 textBox={{
                   className: "txt-fld",
-                  name: "to_date"
+                  name: "to_date",
                 }}
                 maxDate={new Date()}
                 events={{
-                  onChange: selectedDate => {
+                  onChange: (selectedDate) => {
                     this.setState({
-                      to_date: selectedDate
+                      to_date: selectedDate,
                     });
-                  }
+                  },
                 }}
                 value={this.state.to_date}
               />
 
-              <div className="col-lg-2" style={{ marginTop: 19 }}>
+              <div className="col-lg-2" style={{ marginTop: 20 }}>
                 <input
                   name="all_depts"
                   checked={this.state.all_depts}
@@ -877,7 +877,7 @@ export default class Appointment extends Component {
                 div={{ className: "col-lg-3" }}
                 label={{
                   forceLabel: "Department",
-                  isImp: true
+                  isImp: true,
                 }}
                 selector={{
                   name: "hims_d_sub_department_id",
@@ -886,16 +886,16 @@ export default class Appointment extends Component {
                   dataSource: {
                     textField: "sub_department_name",
                     valueField: "sub_department_id",
-                    data: this.state.departments
+                    data: this.state.departments,
                   },
                   onChange: this.dropDownHandle.bind(this),
                   others: {
-                    disabled: this.state.all_depts
-                  }
+                    disabled: this.state.all_depts,
+                  },
                 }}
               />
 
-              <div className="col-lg-2" style={{ marginTop: 19 }}>
+              <div className="col-lg-2" style={{ marginTop: 20 }}>
                 <input
                   name="all_docs"
                   checked={this.state.all_docs}
@@ -910,7 +910,7 @@ export default class Appointment extends Component {
                 div={{ className: "col-lg-3" }}
                 label={{
                   forceLabel: "Doctor",
-                  isImp: true
+                  isImp: true,
                 }}
                 selector={{
                   name: "employee_id",
@@ -919,12 +919,12 @@ export default class Appointment extends Component {
                   dataSource: {
                     textField: "full_name",
                     valueField: "employee_id",
-                    data: this.state.doctors
+                    data: this.state.doctors,
                   },
                   onChange: this.dropDownHandle.bind(this),
                   others: {
-                    disabled: this.state.all_docs
-                  }
+                    disabled: this.state.all_docs,
+                  },
                 }}
               />
             </div>

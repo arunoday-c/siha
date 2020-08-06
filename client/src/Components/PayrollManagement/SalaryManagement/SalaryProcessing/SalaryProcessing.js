@@ -313,7 +313,7 @@ class SalaryProcessing extends Component {
               <button
                 type="button"
                 className="btn btn-primary"
-                style={{ marginTop: 19 }}
+                style={{ marginTop: 20 }}
                 onClick={SalaryProcess.bind(this, this, "load")}
               >
                 Load

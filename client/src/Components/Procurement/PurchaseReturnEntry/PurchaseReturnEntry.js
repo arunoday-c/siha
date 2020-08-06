@@ -83,7 +83,6 @@ class PurchaseReturnEntry extends Component {
     if (queryParams.get("purchase_return_number")) {
       getCtrlCode(this, queryParams.get("purchase_return_number"));
     }
-
   }
 
   render() {
@@ -91,15 +90,15 @@ class PurchaseReturnEntry extends Component {
       this.state.po_return_from === null
         ? []
         : Enumerable.from(this.props.polocations)
-          .where((w) => w.location_type === "WH")
-          .toArray();
+            .where((w) => w.location_type === "WH")
+            .toArray();
 
     const class_finder =
       this.state.dataFinder === true
         ? " disableFinder"
         : this.state.ReqData === false
-          ? ""
-          : " disableFinder";
+        ? ""
+        : " disableFinder";
 
     return (
       <div>
@@ -110,25 +109,25 @@ class PurchaseReturnEntry extends Component {
             />
           }
           breadStyle={this.props.breadStyle}
-          pageNavPath={[
-            {
-              pageName: (
-                <AlgaehLabel
-                  label={{
-                    forceLabel: "Home",
-                    align: "ltr",
-                  }}
-                />
-              ),
-            },
-            {
-              pageName: (
-                <AlgaehLabel
-                  label={{ forceLabel: "Purchase Return Entry", align: "ltr" }}
-                />
-              ),
-            },
-          ]}
+          // pageNavPath={[
+          //   {
+          //     pageName: (
+          //       <AlgaehLabel
+          //         label={{
+          //           forceLabel: "Home",
+          //           align: "ltr",
+          //         }}
+          //       />
+          //     ),
+          //   },
+          //   {
+          //     pageName: (
+          //       <AlgaehLabel
+          //         label={{ forceLabel: "Purchase Return Entry", align: "ltr" }}
+          //       />
+          //     ),
+          //   },
+          // ]}
           soptlightSearch={{
             label: (
               <AlgaehLabel
@@ -165,25 +164,25 @@ class PurchaseReturnEntry extends Component {
           printArea={
             this.state.purchase_return_number !== null
               ? {
-                menuitems: [
-                  {
-                    label: "Receipt for Internal",
-                    events: {
-                      onClick: () => {
-                        generatePOReceipt(this.state);
+                  menuitems: [
+                    {
+                      label: "Receipt for Internal",
+                      events: {
+                        onClick: () => {
+                          generatePOReceipt(this.state);
+                        },
                       },
                     },
-                  },
-                  {
-                    label: "Receipt for Vendor",
-                    events: {
-                      onClick: () => {
-                        generatePOReceiptNoPrice(this.state);
+                    {
+                      label: "Receipt for Vendor",
+                      events: {
+                        onClick: () => {
+                          generatePOReceiptNoPrice(this.state);
+                        },
                       },
                     },
-                  },
-                ],
-              }
+                  ],
+                }
               : ""
           }
           selectedLang={this.state.selectedLang}
@@ -208,7 +207,7 @@ class PurchaseReturnEntry extends Component {
                       data: GlobalVariables.PO_FROM,
                     },
                     others: {
-                      disabled: this.state.dataExitst
+                      disabled: this.state.dataExitst,
                     },
                     onChange: poforhandle.bind(this, this),
                     onClear: () => {

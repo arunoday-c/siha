@@ -239,25 +239,25 @@ class UpdatePatientDetails extends Component {
           }
           breadStyle={this.props.breadStyle}
           //breadWidth={this.props.breadWidth}
-          pageNavPath={[
-            {
-              pageName: (
-                <AlgaehLabel
-                  label={{
-                    fieldName: "form_home",
-                    align: "ltr",
-                  }}
-                />
-              ),
-            },
-            {
-              pageName: (
-                <AlgaehLabel
-                  label={{ forceLabel: "Update Patient Details", align: "ltr" }}
-                />
-              ),
-            },
-          ]}
+          // pageNavPath={[
+          //   {
+          //     pageName: (
+          //       <AlgaehLabel
+          //         label={{
+          //           fieldName: "form_home",
+          //           align: "ltr",
+          //         }}
+          //       />
+          //     ),
+          //   },
+          //   {
+          //     pageName: (
+          //       <AlgaehLabel
+          //         label={{ forceLabel: "Update Patient Details", align: "ltr" }}
+          //       />
+          //     ),
+          //   },
+          // ]}
           soptlightSearch={{
             label: (
               <AlgaehLabel

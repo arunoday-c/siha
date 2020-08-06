@@ -19,29 +19,37 @@ export default {
       .executeQuery({
         query:
           "UPDATE hims_f_project_roster set project_id=? where hims_f_project_roster_id=?;\
-          UPDATE hims_f_daily_time_sheet set worked_hours=?, hours=?, minutes=? where hims_f_daily_time_sheet_id=?;",
+          UPDATE hims_f_daily_time_sheet set worked_hours=?, hours=?, minutes=?,project_id=? where hims_f_daily_time_sheet_id=?;",
         values: [
           input.project_id,
           input.hims_f_project_roster_id,
           input.worked_hours,
           worked_hrs_mints[0] === undefined ? 0 : worked_hrs_mints[0],
           worked_hrs_mints[1] === undefined ? 0 : worked_hrs_mints[1],
+          input.project_id,
           input.hims_f_daily_time_sheet_id,
         ],
-        printQuery: false,
+        printQuery: true,
       })
       .then((update_result) => {
+        // select hims_f_daily_time_sheet_id,TS.sub_department_id, TS.employee_id, TS.attendance_date, \
+        //        status,worked_hours,employee_code,full_name as employee_name,PR.hims_f_project_roster_id,\
+        //       PR.project_id,P.project_code,P.project_desc,P.abbreviation from  hims_f_daily_time_sheet TS \
+        //       inner join hims_d_employee E on TS.employee_id=E.hims_d_employee_id\
+        //       inner join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id\
+        //       left join hims_f_project_roster PR on TS.employee_id=PR.employee_id and TS.hospital_id=PR.hospital_id  and TS.attendance_date=PR.attendance_date\
+        //       left join hims_d_project P on PR.project_id=P.hims_d_project_id where \
+        //       TS.hims_f_daily_time_sheet_id=? and PR.hims_f_project_roster_id=?;",
         _mysql
           .executeQuery({
             query:
               "select hims_f_daily_time_sheet_id,TS.sub_department_id, TS.employee_id, TS.attendance_date, \
-               status,worked_hours,employee_code,full_name as employee_name,PR.hims_f_project_roster_id,\
-              PR.project_id,P.project_code,P.project_desc,P.abbreviation from  hims_f_daily_time_sheet TS \
+               status,worked_hours,employee_code,full_name as employee_name ,\
+              TS.project_id,P.project_code,P.project_desc,P.abbreviation from  hims_f_daily_time_sheet TS \
               inner join hims_d_employee E on TS.employee_id=E.hims_d_employee_id\
               inner join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id\
-              left join hims_f_project_roster PR on TS.employee_id=PR.employee_id and TS.hospital_id=PR.hospital_id  and TS.attendance_date=PR.attendance_date\
-              left join hims_d_project P on PR.project_id=P.hims_d_project_id where \
-              TS.hims_f_daily_time_sheet_id=? and PR.hims_f_project_roster_id=?;",
+              left join hims_d_project P on TS.project_id=P.hims_d_project_id where \
+              TS.hims_f_daily_time_sheet_id=?  ",
             values: [
               input.hims_f_daily_time_sheet_id,
               input.hims_f_project_roster_id,
@@ -6316,6 +6324,7 @@ export default {
                                 attendance_date: attUplded.attendance_date,
                                 status: attUplded.status,
                                 worked_hours: attUplded.worked_hours,
+                                project_id: attUplded.project_id,
                               });
                             } else {
                               data.push({

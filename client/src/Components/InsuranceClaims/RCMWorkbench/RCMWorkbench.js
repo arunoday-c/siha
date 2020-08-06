@@ -551,14 +551,14 @@ class RCMWorkbench extends Component {
                   <button
                     onClick={this.getInvoicesForClaims}
                     className="btn btn-primary"
-                    style={{ marginTop: 19, marginLeft: 5, float: "right" }}
+                    style={{ marginTop: 20, marginLeft: 5, float: "right" }}
                   >
                     Load
                   </button>
                   <button
                     onClick={this.clearSearch}
                     className="btn btn-default"
-                    style={{ marginTop: 19, float: "right" }}
+                    style={{ marginTop: 20, float: "right" }}
                   >
                     Clear
                   </button>
@@ -578,14 +578,14 @@ class RCMWorkbench extends Component {
                   <button
                     onClick={this.getInvoicesForClaims}
                     className="btn btn-primary"
-                    style={{ marginTop: 19, marginLeft: 5, float: "right" }}
+                    style={{ marginTop: 20, marginLeft: 5, float: "right" }}
                   >
                     Load
                   </button>
                   <button
                     onClick={this.clearSearch}
                     className="btn btn-default"
-                    style={{ marginTop: 19, float: "right" }}
+                    style={{ marginTop: 20, float: "right" }}
                   >
                     Clear
                   </button>

@@ -27,7 +27,7 @@ import {
   clearItemDetails,
   dateValidate,
   setDataFromRequest,
-  getData
+  getData,
 } from "./RequestForQuotationEvents";
 import { RawSecurityComponent } from "algaeh-react-components";
 
@@ -48,33 +48,31 @@ class RequestForQuotation extends Component {
     ) {
       setDataFromRequest(this);
     } else {
-      let quotation_for = "", bothExisits = true
+      let quotation_for = "",
+        bothExisits = true;
       RawSecurityComponent({ componentCode: "REQ_INVENTORY" }).then(
         (result) => {
           if (result === "show") {
             getData(this, "INV");
-            quotation_for = "INV"
-            bothExisits = false
+            quotation_for = "INV";
+            bothExisits = false;
           }
         }
       );
 
-      RawSecurityComponent({ componentCode: "REQ_PHARMACY" }).then(
-        (result) => {
-          if (result === "show") {
-            getData(this, "PHR");
-            quotation_for = "PHR"
-            bothExisits = bothExisits === false ? false : true
-          } else {
-            bothExisits = true
-          }
-          this.setState({
-            quotation_for: quotation_for,
-            bothExisits: bothExisits
-          });
-
+      RawSecurityComponent({ componentCode: "REQ_PHARMACY" }).then((result) => {
+        if (result === "show") {
+          getData(this, "PHR");
+          quotation_for = "PHR";
+          bothExisits = bothExisits === false ? false : true;
+        } else {
+          bothExisits = true;
         }
-      );
+        this.setState({
+          quotation_for: quotation_for,
+          bothExisits: bothExisits,
+        });
+      });
     }
   }
 
@@ -88,25 +86,25 @@ class RequestForQuotation extends Component {
             />
           }
           breadStyle={this.props.breadStyle}
-          pageNavPath={[
-            {
-              pageName: (
-                <AlgaehLabel
-                  label={{
-                    forceLabel: "Home",
-                    align: "ltr",
-                  }}
-                />
-              ),
-            },
-            {
-              pageName: (
-                <AlgaehLabel
-                  label={{ forceLabel: "Request For Quotation", align: "ltr" }}
-                />
-              ),
-            },
-          ]}
+          // pageNavPath={[
+          //   {
+          //     pageName: (
+          //       <AlgaehLabel
+          //         label={{
+          //           forceLabel: "Home",
+          //           align: "ltr",
+          //         }}
+          //       />
+          //     ),
+          //   },
+          //   {
+          //     pageName: (
+          //       <AlgaehLabel
+          //         label={{ forceLabel: "Request For Quotation", align: "ltr" }}
+          //       />
+          //     ),
+          //   },
+          // ]}
           soptlightSearch={{
             label: (
               <AlgaehLabel
@@ -135,8 +133,8 @@ class RequestForQuotation extends Component {
                 <h6>
                   {this.state.quotation_date
                     ? moment(this.state.quotation_date).format(
-                      Options.dateFormat
-                    )
+                        Options.dateFormat
+                      )
                     : Options.dateFormat}
                 </h6>
               </div>
@@ -145,17 +143,17 @@ class RequestForQuotation extends Component {
           printArea={
             this.state.hims_f_procurement_req_quotation_header_id !== null
               ? {
-                menuitems: [
-                  {
-                    label: "Print Quotation",
-                    events: {
-                      onClick: () => {
-                        generateRequestQuotation(this.state);
+                  menuitems: [
+                    {
+                      label: "Print Quotation",
+                      events: {
+                        onClick: () => {
+                          generateRequestQuotation(this.state);
+                        },
                       },
                     },
-                  },
-                ],
-              }
+                  ],
+                }
               : ""
           }
           selectedLang={this.state.selectedLang}
@@ -180,8 +178,11 @@ class RequestForQuotation extends Component {
                       data: GlobalVariables.PO_FROM,
                     },
                     others: {
-                      disabled:
-                        this.state.bothExisits ? true : this.state.quotation_detail.length > 0 ? true : false,
+                      disabled: this.state.bothExisits
+                        ? true
+                        : this.state.quotation_detail.length > 0
+                        ? true
+                        : false,
                     },
                     onChange: poforhandle.bind(this, this),
                     onClear: () => {

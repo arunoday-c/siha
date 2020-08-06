@@ -5,7 +5,7 @@ import {
   AlagehAutoComplete,
   AlagehFormGroup,
   AlgaehDataGrid,
-  AlgaehDateHandler
+  AlgaehDateHandler,
 } from "../../Wrapper/algaehWrapper";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import GlobalVariables from "../../../utils/GlobalVariables.json";
@@ -19,7 +19,7 @@ class CategorySpeciality extends Component {
     this.state = {
       categories: [],
       specialities: [],
-      cat_specialities: []
+      cat_specialities: [],
     };
 
     this.getCategories();
@@ -32,7 +32,7 @@ class CategorySpeciality extends Component {
       category_id: null,
       speciality_id: null,
       description: null,
-      effective_start_date: null
+      effective_start_date: null,
     });
   }
 
@@ -42,19 +42,19 @@ class CategorySpeciality extends Component {
       module: "masterSettings",
       method: "GET",
       data: {
-        employee_category_status: "A"
+        employee_category_status: "A",
       },
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           this.setState({ categories: response.data.records });
         }
       },
-      onFailure: error => {
+      onFailure: (error) => {
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
   getSpecialities() {
@@ -63,19 +63,19 @@ class CategorySpeciality extends Component {
       module: "masterSettings",
       method: "GET",
       data: {
-        speciality_status: "A"
+        speciality_status: "A",
       },
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           this.setState({ specialities: response.data.records });
         }
       },
-      onFailure: error => {
+      onFailure: (error) => {
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -92,26 +92,26 @@ class CategorySpeciality extends Component {
             speciality_id: this.state.speciality_id,
             description: this.state.description,
             effective_start_date: this.state.effective_start_date,
-            category_speciality_status: "A"
+            category_speciality_status: "A",
           },
-          onSuccess: response => {
+          onSuccess: (response) => {
             if (response.data.success) {
               swalMessage({
                 title: "Record Added Successfully",
-                type: "success"
+                type: "success",
               });
               this.resetSaveState();
               this.getCategorySpecialityMap();
             }
           },
-          onFailure: error => {
+          onFailure: (error) => {
             swalMessage({
               title: error.message,
-              type: "error"
+              type: "error",
             });
-          }
+          },
         });
-      }
+      },
     });
   }
 
@@ -120,17 +120,17 @@ class CategorySpeciality extends Component {
       uri: "/specialityAndCategory/getCategorySpecialityMap",
       module: "masterSettings",
       method: "GET",
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           this.setState({ cat_specialities: response.data.records });
         }
       },
-      onFailure: error => {
+      onFailure: (error) => {
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -142,38 +142,38 @@ class CategorySpeciality extends Component {
       confirmButtonText: "Yes",
       confirmButtonColor: "#44b8bd",
       cancelButtonColor: "#d33",
-      cancelButtonText: "No"
-    }).then(willDelete => {
+      cancelButtonText: "No",
+    }).then((willDelete) => {
       if (willDelete.value) {
         algaehApiCall({
           uri: "/specialityAndCategory/deleteCategorySpecialityMap",
           module: "masterSettings",
           data: {
             hims_m_category_speciality_mappings_id:
-              data.hims_m_category_speciality_mappings_id
+              data.hims_m_category_speciality_mappings_id,
           },
           method: "DELETE",
-          onSuccess: response => {
+          onSuccess: (response) => {
             if (response.data.success) {
               swalMessage({
                 title: "Record deleted successfully . .",
-                type: "success"
+                type: "success",
               });
 
               this.getCategorySpecialityMap();
             } else if (!response.data.success) {
               swalMessage({
                 title: response.data.message,
-                type: "error"
+                type: "error",
               });
             }
           },
-          onFailure: error => {
+          onFailure: (error) => {
             swalMessage({
               title: error.message,
-              type: "error"
+              type: "error",
             });
-          }
+          },
         });
       }
     });
@@ -182,71 +182,71 @@ class CategorySpeciality extends Component {
   updateCategorySpeciality(data) {
     data.category_speciality_status === "I"
       ? algaehApiCall({
-        uri: "/specialityAndCategory/updateCategorySpecialityMap",
-        module: "masterSettings",
-        data: {
-          hims_m_category_speciality_mappings_id:
-            data.hims_m_category_speciality_mappings_id
-        },
-        method: "PUT",
-        onSuccess: response => {
-          if (response.data.records.success) {
+          uri: "/specialityAndCategory/updateCategorySpecialityMap",
+          module: "masterSettings",
+          data: {
+            hims_m_category_speciality_mappings_id:
+              data.hims_m_category_speciality_mappings_id,
+          },
+          method: "PUT",
+          onSuccess: (response) => {
+            if (response.data.records.success) {
+              swalMessage({
+                title: "Record updated successfully",
+                type: "success",
+              });
+              this.getCategorySpecialityMap();
+            } else if (!response.data.records.success) {
+              swalMessage({
+                title: response.data.records.message,
+                type: "error",
+              });
+            }
+          },
+          onFailure: (error) => {
             swalMessage({
-              title: "Record updated successfully",
-              type: "success"
+              title: error.message,
+              type: "error",
             });
-            this.getCategorySpecialityMap();
-          } else if (!response.data.records.success) {
-            swalMessage({
-              title: response.data.records.message,
-              type: "error"
-            });
-          }
-        },
-        onFailure: error => {
-          swalMessage({
-            title: error.message,
-            type: "error"
-          });
-        }
-      })
+          },
+        })
       : algaehApiCall({
-        uri: "/specialityAndCategory/updateCategorySpecialityMap",
-        module: "masterSettings",
-        data: {
-          category_id: data.category_id,
-          speciality_id: data.speciality_id,
-          description: data.description,
-          category_speciality_status: "A"
-        },
-        method: "PUT",
-        onSuccess: response => {
-          if (response.data.success) {
+          uri: "/specialityAndCategory/updateCategorySpecialityMap",
+          module: "masterSettings",
+          data: {
+            category_id: data.category_id,
+            speciality_id: data.speciality_id,
+            description: data.description,
+            category_speciality_status: "A",
+          },
+          method: "PUT",
+          onSuccess: (response) => {
+            if (response.data.success) {
+              swalMessage({
+                title: "Record updated successfully",
+                type: "success",
+              });
+              this.getCategorySpecialityMap();
+            }
+          },
+          onFailure: (error) => {
             swalMessage({
-              title: "Record updated successfully",
-              type: "success"
+              title: error.message,
+              type: "error",
             });
-            this.getCategorySpecialityMap();
-          }
-        },
-        onFailure: error => {
-          swalMessage({
-            title: error.message,
-            type: "error"
-          });
-        }
-      });
+          },
+        });
   }
 
   changeTexts(e) {
     this.setState({
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
   }
 
   handleDropDown(value) {
     this.setState({
-      [value.name]: value.value
+      [value.name]: value.value,
     });
   }
 
@@ -265,7 +265,7 @@ class CategorySpeciality extends Component {
             div={{ className: "col form-group mandatory" }}
             label={{
               fieldName: "speciality",
-              isImp: true
+              isImp: true,
             }}
             selector={{
               name: "speciality_id",
@@ -274,9 +274,9 @@ class CategorySpeciality extends Component {
               dataSource: {
                 textField: "speciality_name",
                 valueField: "hims_d_employee_speciality_id",
-                data: this.state.specialities
+                data: this.state.specialities,
               },
-              onChange: this.handleDropDown.bind(this)
+              onChange: this.handleDropDown.bind(this),
             }}
           />
 
@@ -284,7 +284,7 @@ class CategorySpeciality extends Component {
             div={{ className: "col form-group mandatory" }}
             label={{
               fieldName: "category",
-              isImp: true
+              isImp: true,
             }}
             selector={{
               name: "category_id",
@@ -293,9 +293,9 @@ class CategorySpeciality extends Component {
               dataSource: {
                 textField: "employee_category_name",
                 valueField: "hims_employee_category_id",
-                data: this.state.categories
+                data: this.state.categories,
               },
-              onChange: this.handleDropDown.bind(this)
+              onChange: this.handleDropDown.bind(this),
             }}
           />
 
@@ -303,15 +303,15 @@ class CategorySpeciality extends Component {
             div={{ className: "col form-group mandatory" }}
             label={{
               fieldName: "description",
-              isImp: true
+              isImp: true,
             }}
             textBox={{
               className: "txt-fld",
               name: "description",
               value: this.state.description,
               events: {
-                onChange: this.changeTexts.bind(this)
-              }
+                onChange: this.changeTexts.bind(this),
+              },
             }}
           />
 
@@ -319,19 +319,19 @@ class CategorySpeciality extends Component {
             div={{ className: "col form-group mandatory" }}
             label={{
               fieldName: "effective_start_date",
-              isImp: true
+              isImp: true,
             }}
             textBox={{
               className: "txt-fld",
-              name: "effective_start_date"
+              name: "effective_start_date",
             }}
             // maxDate={new Date()}
             events={{
-              onChange: selDate => {
+              onChange: (selDate) => {
                 this.setState({
-                  effective_start_date: selDate
+                  effective_start_date: selDate,
                 });
-              }
+              },
             }}
             value={this.state.effective_start_date}
           />
@@ -339,7 +339,7 @@ class CategorySpeciality extends Component {
           <div className="col">
             <button
               onClick={this.addCategorySpecialityMappings.bind(this)}
-              style={{ marginTop: 19 }}
+              style={{ marginTop: 20 }}
               className="btn btn-primary"
             >
               Add to list
@@ -383,10 +383,10 @@ class CategorySpeciality extends Component {
                         label: (
                           <AlgaehLabel label={{ fieldName: "speciality" }} />
                         ),
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           let x = Enumerable.from(this.state.specialities)
                             .where(
-                              w =>
+                              (w) =>
                                 w.hims_d_employee_speciality_id ===
                                 row.speciality_id
                             )
@@ -398,10 +398,10 @@ class CategorySpeciality extends Component {
                             </span>
                           );
                         },
-                        editorTemplate: row => {
+                        editorTemplate: (row) => {
                           let x = Enumerable.from(this.state.specialities)
                             .where(
-                              w =>
+                              (w) =>
                                 w.hims_d_employee_speciality_id ===
                                 row.speciality_id
                             )
@@ -412,17 +412,17 @@ class CategorySpeciality extends Component {
                               {x !== undefined ? x.speciality_name : ""}
                             </span>
                           );
-                        }
+                        },
                       },
                       {
                         fieldName: "category_id",
                         label: (
                           <AlgaehLabel label={{ fieldName: "category" }} />
                         ),
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           let x = Enumerable.from(this.state.categories)
                             .where(
-                              w =>
+                              (w) =>
                                 w.hims_employee_category_id === row.category_id
                             )
                             .firstOrDefault();
@@ -433,10 +433,10 @@ class CategorySpeciality extends Component {
                             </span>
                           );
                         },
-                        editorTemplate: row => {
+                        editorTemplate: (row) => {
                           let x = Enumerable.from(this.state.categories)
                             .where(
-                              w =>
+                              (w) =>
                                 w.hims_employee_category_id === row.category_id
                             )
                             .firstOrDefault();
@@ -446,7 +446,7 @@ class CategorySpeciality extends Component {
                               {x !== undefined ? x.employee_category_name : ""}
                             </span>
                           );
-                        }
+                        },
                       },
 
                       {
@@ -454,7 +454,7 @@ class CategorySpeciality extends Component {
                         label: (
                           <AlgaehLabel label={{ fieldName: "description" }} />
                         ),
-                        editorTemplate: row => {
+                        editorTemplate: (row) => {
                           return (
                             <AlagehFormGroup
                               div={{ className: "col" }}
@@ -466,27 +466,27 @@ class CategorySpeciality extends Component {
                                   onChange: this.changeGridEditors.bind(
                                     this,
                                     row
-                                  )
+                                  ),
                                 },
                                 others: {
                                   errormessage: "Description - cannot be blank",
-                                  required: true
-                                }
+                                  required: true,
+                                },
                               }}
                             />
                           );
-                        }
+                        },
                       },
 
                       {
                         fieldName: "category_speciality_status",
                         label: <AlgaehLabel label={{ fieldName: "status" }} />,
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return row.category_speciality_status === "A"
                             ? "Active"
                             : "Inactive";
                         },
-                        editorTemplate: row => {
+                        editorTemplate: (row) => {
                           return (
                             <AlagehAutoComplete
                               div={{}}
@@ -497,33 +497,36 @@ class CategorySpeciality extends Component {
                                 dataSource: {
                                   textField: "name",
                                   valueField: "value",
-                                  data: GlobalVariables.FORMAT_STATUS
+                                  data: GlobalVariables.FORMAT_STATUS,
                                 },
                                 others: {
                                   errormessage: "Status - cannot be blank",
-                                  required: true
+                                  required: true,
                                 },
-                                onChange: this.changeGridEditors.bind(this, row)
+                                onChange: this.changeGridEditors.bind(
+                                  this,
+                                  row
+                                ),
                               }}
                             />
                           );
-                        }
-                      }
+                        },
+                      },
                     ]}
                     keyId="hims_d_counter_id"
                     dataSource={{
-                      data: this.state.cat_specialities
+                      data: this.state.cat_specialities,
                     }}
                     filter={true}
                     isEditable={true}
                     actions={{
-                      allowDelete: false
+                      allowDelete: false,
                     }}
                     paging={{ page: 0, rowsPerPage: 10 }}
                     events={{
-                      onEdit: () => { },
+                      onEdit: () => {},
                       //onDelete: this.deleteCategorySpecialityMap.bind(this),
-                      onDone: () => { }
+                      onDone: () => {},
                     }}
                   />
                 </div>

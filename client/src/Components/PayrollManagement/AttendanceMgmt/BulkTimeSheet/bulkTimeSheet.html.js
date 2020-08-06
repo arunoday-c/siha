@@ -220,7 +220,7 @@ function BulkTimeSheet(props) {
                           {item.roster.map((itm, indx) => {
                             return (
                               <TableCells
-                                itm={{ ...itm, project_id: item.project_id }}
+                                itm={{ ...itm, project_id: itm.project_id }}
                                 indx={indx}
                                 key={`${item.employee_id}_${itm.attendance_date}`}
                                 employee_name={item.employee_name}

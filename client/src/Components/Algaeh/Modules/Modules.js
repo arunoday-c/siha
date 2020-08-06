@@ -4,7 +4,7 @@ import {
   AlagehFormGroup,
   AlgaehDataGrid,
   AlagehAutoComplete,
-  AlgaehLabel
+  AlgaehLabel,
 } from "../../Wrapper/algaehWrapper";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import GlobalVariables from "../../../utils/GlobalVariables.json";
@@ -13,7 +13,7 @@ class Modules extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      modules: []
+      modules: [],
     };
     this.getModules();
   }
@@ -22,19 +22,19 @@ class Modules extends Component {
     algaehApiCall({
       uri: "/algaehMasters/getAlgaehModules",
       method: "GET",
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           this.setState({
-            modules: response.data.records
+            modules: response.data.records,
           });
         }
       },
-      onError: error => {
+      onError: (error) => {
         swalMessage({
           title: error.message,
-          type: "success"
+          type: "success",
         });
-      }
+      },
     });
   }
 
@@ -43,21 +43,21 @@ class Modules extends Component {
       uri: "/algaehMasters/deleteAlgaehModule",
       method: "DELETE",
       data: { algaeh_d_module_id: row.algaeh_d_module_id },
-      onSuccess: response => {
+      onSuccess: (response) => {
         const { message } = response.data;
         swalMessage({
           title: message,
-          type: "success"
+          type: "success",
         });
         this.getModules();
       },
-      onCatch: error => {
+      onCatch: (error) => {
         const { message } = error.response.data;
         swalMessage({
           title: message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -69,7 +69,7 @@ class Modules extends Component {
       access_by: "",
       icons: "",
       other_language: "",
-      display_order: ""
+      display_order: "",
     });
   }
 
@@ -99,24 +99,24 @@ class Modules extends Component {
         access_by: this.state.access_by,
         icons: "fas fa-" + this.state.icons,
         other_language: this.state.other_language,
-        display_order: this.state.display_order
+        display_order: this.state.display_order,
       },
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           this.getModules();
           this.clearState();
           swalMessage({
             title: "Added Successfully",
-            type: "success"
+            type: "success",
           });
         }
       },
-      onError: error => {
+      onError: (error) => {
         swalMessage({
           title: error.message,
-          type: "success"
+          type: "success",
         });
-      }
+      },
     });
   }
 
@@ -139,22 +139,22 @@ class Modules extends Component {
         licence_key: data.licence_key,
         module_name: data.module_name,
         display_order: data.display_order,
-        record_status: data.record_status
+        record_status: data.record_status,
       },
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           swalMessage({
             title: "Record updated successfully",
-            type: "success"
+            type: "success",
           });
         }
       },
-      onCatch: error => {
+      onCatch: (error) => {
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
   onTextChange(row, e) {
@@ -169,60 +169,60 @@ class Modules extends Component {
             div={{ className: "col-2 form-group mandatory" }}
             label={{
               forceLabel: "Module Code",
-              isImp: true
+              isImp: true,
             }}
             textBox={{
               className: "txt-fld",
               name: "module_code",
               value: this.state.module_code,
               events: {
-                onChange: this.changeTexts.bind(this)
-              }
+                onChange: this.changeTexts.bind(this),
+              },
             }}
           />
           <AlagehFormGroup
             div={{ className: "col-3 form-group mandatory" }}
             label={{
               forceLabel: "Module Name",
-              isImp: true
+              isImp: true,
             }}
             textBox={{
               className: "txt-fld",
               name: "module_name",
               value: this.state.module_name,
               events: {
-                onChange: this.changeTexts.bind(this)
-              }
+                onChange: this.changeTexts.bind(this),
+              },
             }}
           />
           <AlagehFormGroup
             div={{ className: "col-3 form-group mandatory" }}
             label={{
               forceLabel: "Licence Key",
-              isImp: true
+              isImp: true,
             }}
             textBox={{
               className: "txt-fld",
               name: "licence_key",
               value: this.state.licence_key,
               events: {
-                onChange: this.changeTexts.bind(this)
-              }
+                onChange: this.changeTexts.bind(this),
+              },
             }}
           />
           <AlagehFormGroup
             div={{ className: "col-2 form-group mandatory" }}
             label={{
               forceLabel: "Icon name (Font-Awesome)",
-              isImp: true
+              isImp: true,
             }}
             textBox={{
               className: "txt-fld",
               name: "icons",
               value: this.state.icons,
               events: {
-                onChange: this.changeTexts.bind(this)
-              }
+                onChange: this.changeTexts.bind(this),
+              },
             }}
           />
           <span>
@@ -232,21 +232,21 @@ class Modules extends Component {
             div={{ className: "col-2 form-group mandatory" }}
             label={{
               forceLabel: "Other Language",
-              isImp: true
+              isImp: true,
             }}
             textBox={{
               className: "txt-fld",
               name: "other_language",
               value: this.state.other_language,
               events: {
-                onChange: this.changeTexts.bind(this)
-              }
+                onChange: this.changeTexts.bind(this),
+              },
             }}
           />
           <AlagehAutoComplete
             div={{ className: "col-2 form-group mandatory" }}
             label={{
-              forceLabel: "Access By"
+              forceLabel: "Access By",
             }}
             selector={{
               name: "access_by",
@@ -255,9 +255,9 @@ class Modules extends Component {
               dataSource: {
                 textField: "name",
                 valueField: "value",
-                data: GlobalVariables.ACCESS_BY
+                data: GlobalVariables.ACCESS_BY,
               },
-              onChange: this.dropDownHandle.bind(this)
+              onChange: this.dropDownHandle.bind(this),
             }}
           />
 
@@ -265,25 +265,25 @@ class Modules extends Component {
             div={{ className: "col-2 form-group mandatory" }}
             label={{
               forceLabel: "Display Order",
-              isImp: true
+              isImp: true,
             }}
             textBox={{
               className: "txt-fld",
               name: "display_order",
               value: this.state.display_order,
               events: {
-                onChange: this.changeTexts.bind(this)
+                onChange: this.changeTexts.bind(this),
               },
               others: {
-                type: "number"
-              }
+                type: "number",
+              },
             }}
           />
 
           <AlagehAutoComplete
             div={{ className: "col-2 form-group" }}
             label={{
-              forceLabel: "Module Plan"
+              forceLabel: "Module Plan",
             }}
             selector={{
               name: "module_plan",
@@ -292,16 +292,16 @@ class Modules extends Component {
               dataSource: {
                 textField: "name",
                 valueField: "value",
-                data: GlobalVariables.MODULE_PLAN
+                data: GlobalVariables.MODULE_PLAN,
               },
-              onChange: this.dropDownHandle.bind(this)
+              onChange: this.dropDownHandle.bind(this),
             }}
           />
 
           <div className="col">
             <button
               type="submit"
-              style={{ marginTop: 19 }}
+              style={{ marginTop: 20 }}
               onClick={this.addModules.bind(this)}
               className="btn btn-primary"
             >
@@ -334,10 +334,10 @@ class Modules extends Component {
                                 label={{ forceLabel: "Module Code" }}
                               />
                             ),
-                            editorTemplate: row => (
+                            editorTemplate: (row) => (
                               <span>{row.module_code}</span>
                             ),
-                            disabled: true
+                            disabled: true,
                           },
                           {
                             fieldName: "module_name",
@@ -346,7 +346,7 @@ class Modules extends Component {
                                 label={{ forceLabel: "Module Name" }}
                               />
                             ),
-                            editorTemplate: row => (
+                            editorTemplate: (row) => (
                               <AlagehFormGroup
                                 div={{}}
                                 textBox={{
@@ -354,12 +354,12 @@ class Modules extends Component {
                                   className: "txt-fld",
                                   name: "module_name",
                                   events: {
-                                    onChange: this.onTextChange.bind(this, row)
-                                  }
+                                    onChange: this.onTextChange.bind(this, row),
+                                  },
                                 }}
                               />
                             ),
-                            disabled: true
+                            disabled: true,
                           },
                           {
                             fieldName: "module_plan",
@@ -368,32 +368,32 @@ class Modules extends Component {
                                 label={{ forceLabel: "Module Plan" }}
                               />
                             ),
-                            displayTemplate: row => {
+                            displayTemplate: (row) => {
                               return (
                                 <span>
                                   {row.module_plan === "S"
                                     ? "Silver"
                                     : row.module_plan === "G"
-                                      ? "Gold"
-                                      : row.module_plan === "P"
-                                        ? "Platinum"
-                                        : ""}
+                                    ? "Gold"
+                                    : row.module_plan === "P"
+                                    ? "Platinum"
+                                    : ""}
                                 </span>
                               );
                             },
-                            editorTemplate: row => {
+                            editorTemplate: (row) => {
                               return (
                                 <span>
                                   {row.module_plan === "S"
                                     ? "Silver"
                                     : row.module_plan === "G"
-                                      ? "Gold"
-                                      : row.module_plan === "P"
-                                        ? "Platinum"
-                                        : ""}
+                                    ? "Gold"
+                                    : row.module_plan === "P"
+                                    ? "Platinum"
+                                    : ""}
                                 </span>
                               );
-                            }
+                            },
                           },
 
                           {
@@ -401,13 +401,13 @@ class Modules extends Component {
                             label: (
                               <AlgaehLabel label={{ forceLabel: "Icons" }} />
                             ),
-                            displayTemplate: row => (
+                            displayTemplate: (row) => (
                               <i className={row.icons + " fa-2x"}></i>
                             ),
-                            editorTemplate: row => (
+                            editorTemplate: (row) => (
                               <i className={row.icons + " fa-2x"}></i>
                             ),
-                            disabled: true
+                            disabled: true,
                           },
                           {
                             fieldName: "other_language",
@@ -416,7 +416,7 @@ class Modules extends Component {
                                 label={{ forceLabel: "Other Language" }}
                               />
                             ),
-                            editorTemplate: row => (
+                            editorTemplate: (row) => (
                               <AlagehFormGroup
                                 div={{}}
                                 textBox={{
@@ -424,12 +424,12 @@ class Modules extends Component {
                                   className: "txt-fld",
                                   name: "other_language",
                                   events: {
-                                    onChange: this.onTextChange.bind(this, row)
-                                  }
+                                    onChange: this.onTextChange.bind(this, row),
+                                  },
                                 }}
                               />
                             ),
-                            disabled: true
+                            disabled: true,
                           },
                           {
                             fieldName: "licence_key",
@@ -439,7 +439,7 @@ class Modules extends Component {
                               />
                             ),
                             disabled: true,
-                            editorTemplate: row => {
+                            editorTemplate: (row) => {
                               return (
                                 <AlagehFormGroup
                                   div={{}}
@@ -451,12 +451,12 @@ class Modules extends Component {
                                       onChange: this.onTextChange.bind(
                                         this,
                                         row
-                                      )
-                                    }
+                                      ),
+                                    },
                                   }}
                                 />
                               );
-                            }
+                            },
                           },
                           {
                             fieldName: "display_order",
@@ -465,7 +465,7 @@ class Modules extends Component {
                                 label={{ forceLabel: "Display Order" }}
                               />
                             ),
-                            editorTemplate: row => {
+                            editorTemplate: (row) => {
                               return (
                                 <AlagehFormGroup
                                   div={{}}
@@ -477,22 +477,22 @@ class Modules extends Component {
                                       onChange: this.onchangegridcol.bind(
                                         this,
                                         row
-                                      )
+                                      ),
                                     },
                                     others: {
-                                      type: "number"
-                                    }
+                                      type: "number",
+                                    },
                                   }}
                                 />
                               );
-                            }
+                            },
                           },
                           {
                             fieldName: "record_status",
                             label: (
                               <AlgaehLabel label={{ forceLabel: "Status" }} />
                             ),
-                            displayTemplate: row => {
+                            displayTemplate: (row) => {
                               return (
                                 <span>
                                   {row.record_status === "A"
@@ -501,7 +501,7 @@ class Modules extends Component {
                                 </span>
                               );
                             },
-                            editorTemplate: row => {
+                            editorTemplate: (row) => {
                               return (
                                 <AlagehAutoComplete
                                   div={{ className: "col" }}
@@ -512,36 +512,36 @@ class Modules extends Component {
                                     dataSource: {
                                       textField: "name",
                                       valueField: "value",
-                                      data: GlobalVariables.FORMAT_STATUS
+                                      data: GlobalVariables.FORMAT_STATUS,
                                     },
                                     others: {
                                       errormessage: "Status - cannot be blank",
-                                      required: true
+                                      required: true,
                                     },
                                     onChange: this.changeGridEditors.bind(
                                       this,
                                       row
-                                    )
+                                    ),
                                   }}
                                 />
                               );
-                            }
-                          }
+                            },
+                          },
                         ]}
                         keyId="algaeh_d_module_id"
                         dataSource={{
-                          data: this.state.modules
+                          data: this.state.modules,
                         }}
                         filter={true}
                         isEditable={true}
                         actions={{
-                          allowDelete: false
+                          allowDelete: false,
                         }}
                         paging={{ page: 0, rowsPerPage: 10 }}
                         events={{
-                          onEdit: () => { },
+                          onEdit: () => {},
                           // onDelete: this.deleteModules.bind(this),
-                          onDone: this.updateModules.bind(this)
+                          onDone: this.updateModules.bind(this),
                         }}
                       />
                     </div>

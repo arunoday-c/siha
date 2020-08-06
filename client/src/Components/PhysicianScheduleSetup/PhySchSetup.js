@@ -1453,7 +1453,7 @@ class PhySchSetup extends Component {
                     style={{ textAlign: "right", paddingLeft: 0 }}
                   >
                     <button
-                      style={{ marginTop: 19 }}
+                      style={{ marginTop: 20 }}
                       className="btn btn-default"
                       id="srch-sch"
                       onClick={this.getApptSchedule.bind(this)}

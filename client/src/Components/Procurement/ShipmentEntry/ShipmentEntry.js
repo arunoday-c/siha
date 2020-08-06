@@ -8,7 +8,7 @@ import {
   AlgaehLabel,
   AlagehFormGroup,
   AlagehAutoComplete,
-  AlgaehDateHandler
+  AlgaehDateHandler,
 } from "../../Wrapper/algaehWrapper";
 import Options from "../../../Options.json";
 import moment from "moment";
@@ -35,25 +35,25 @@ class ShipmentEntry extends Component {
             />
           }
           breadStyle={this.props.breadStyle}
-          pageNavPath={[
-            {
-              pageName: (
-                <AlgaehLabel
-                  label={{
-                    forceLabel: "Home",
-                    align: "ltr"
-                  }}
-                />
-              )
-            },
-            {
-              pageName: (
-                <AlgaehLabel
-                  label={{ forceLabel: "Shipment Entry", align: "ltr" }}
-                />
-              )
-            }
-          ]}
+          // pageNavPath={[
+          //   {
+          //     pageName: (
+          //       <AlgaehLabel
+          //         label={{
+          //           forceLabel: "Home",
+          //           align: "ltr"
+          //         }}
+          //       />
+          //     )
+          //   },
+          //   {
+          //     pageName: (
+          //       <AlgaehLabel
+          //         label={{ forceLabel: "Shipment Entry", align: "ltr" }}
+          //       />
+          //     )
+          //   }
+          // ]}
           soptlightSearch={{
             label: (
               <AlgaehLabel
@@ -63,20 +63,20 @@ class ShipmentEntry extends Component {
             value: this.state.grn_number,
             selectValue: "grn_number",
             events: {
-              onChange: null
+              onChange: null,
             },
             jsonFile: {
               fileName: "spotlightSearch",
-              fieldName: "Shipment.ShipmentEntry"
+              fieldName: "Shipment.ShipmentEntry",
             },
-            searchName: "ShipmentEntry"
+            searchName: "ShipmentEntry",
           }}
           userArea={
             <div className="row">
               <div className="col">
                 <AlgaehLabel
                   label={{
-                    forceLabel: "Shipment Date"
+                    forceLabel: "Shipment Date",
                   }}
                 />
                 <h6>
@@ -106,13 +106,13 @@ class ShipmentEntry extends Component {
                     dataSource: {
                       textField: "name",
                       valueField: "value",
-                      data: GlobalVariables.PO_FROM
+                      data: GlobalVariables.PO_FROM,
                     },
                     others: {
-                      disabled: this.state.dataExitst
+                      disabled: this.state.dataExitst,
                     },
                     onChange: null,
-                    onClear: null
+                    onClear: null,
                   }}
                 />
                 <AlagehAutoComplete
@@ -134,13 +134,13 @@ class ShipmentEntry extends Component {
                         this.state.grn_for === "PHR"
                           ? "hims_d_pharmacy_location_id"
                           : "hims_d_inventory_location_id",
-                      data: ""
+                      data: "",
                     },
                     others: {
-                      disabled: this.state.dataExitst
+                      disabled: this.state.dataExitst,
                     },
                     onChange: null,
-                    onClear: null
+                    onClear: null,
                   }}
                 />
 
@@ -154,20 +154,20 @@ class ShipmentEntry extends Component {
                     dataSource: {
                       textField: "vendor_name",
                       valueField: "hims_d_vendor_id",
-                      data: this.props.Shipmentvendors
+                      data: this.props.Shipmentvendors,
                     },
                     others: {
-                      disabled: this.state.dataExitst
+                      disabled: this.state.dataExitst,
                     },
                     onChange: null,
-                    onClear: null
+                    onClear: null,
                   }}
                 />
 
                 <AlagehFormGroup
                   div={{ className: "col" }}
                   label={{
-                    forceLabel: "Delivery Note No."
+                    forceLabel: "Delivery Note No.",
                   }}
                   textBox={{
                     value: this.state.delivery_note_number,
@@ -175,17 +175,17 @@ class ShipmentEntry extends Component {
                     name: "delivery_note_number",
 
                     events: {
-                      onChange: null
+                      onChange: null,
                     },
                     others: {
-                      disabled: true
-                    }
+                      disabled: true,
+                    },
                   }}
                 />
                 <div
                   className="col-lg-1"
                   style={{
-                    paddingLeft: 0
+                    paddingLeft: 0,
                   }}
                 >
                   <span
@@ -199,7 +199,7 @@ class ShipmentEntry extends Component {
                           ? "none"
                           : this.state.ReqData === true
                           ? "none"
-                          : ""
+                          : "",
                     }}
                     onClick={null}
                   />
@@ -216,13 +216,13 @@ class ShipmentEntry extends Component {
                     dataSource: {
                       textField: "name",
                       valueField: "value",
-                      data: GlobalVariables.PAYMENT_TERMS
+                      data: GlobalVariables.PAYMENT_TERMS,
                     },
                     others: {
-                      disabled: this.state.dataExitst
+                      disabled: this.state.dataExitst,
                     },
                     onChange: null,
-                    onClear: null
+                    onClear: null,
                   }}
                 />
                 <AlgaehDateHandler
@@ -230,12 +230,12 @@ class ShipmentEntry extends Component {
                   label={{ forceLabel: "Expected Arrival" }}
                   textBox={{
                     className: "txt-fld",
-                    name: "expiry_date"
+                    name: "expiry_date",
                   }}
                   minDate={new Date()}
                   disabled={true}
                   events={{
-                    onChange: null
+                    onChange: null,
                   }}
                   value={this.state.expiry_date}
                 />
@@ -261,9 +261,9 @@ class ShipmentEntry extends Component {
           <MyContext.Provider
             value={{
               state: this.state,
-              updateState: obj => {
+              updateState: (obj) => {
                 this.setState({ ...obj });
-              }
+              },
             }}
           >
             <ShipmentItemList ShipmentEntryInp={this.state} />
@@ -281,7 +281,7 @@ class ShipmentEntry extends Component {
                   <AlgaehLabel
                     label={{
                       forceLabel: "Save",
-                      returnText: true
+                      returnText: true,
                     }}
                   />
                 </button>
@@ -305,7 +305,7 @@ class ShipmentEntry extends Component {
                   <AlgaehLabel
                     label={{
                       forceLabel: "Post",
-                      returnText: true
+                      returnText: true,
                     }}
                   />
                 </button>

@@ -40,7 +40,7 @@ class BreadCrumb extends PureComponent {
   showSpotlightSearch() {
     if (this.props.soptlightSearch !== undefined) {
       return (
-        <div className="col  margin-top-15">
+        <div className="col">
           <div
             className="row spotlightSearchBox"
             onClick={SearchDetails.bind(this, this)}

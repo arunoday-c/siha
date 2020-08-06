@@ -95,34 +95,6 @@ class StockEnquiry extends Component {
     return (
       <React.Fragment>
         <div className="hptl-phase1-speciman-collection-form">
-          {/* <BreadCrumb
-            title={
-              <AlgaehLabel
-                label={{ forceLabel: "Stock Enquiry", align: "ltr" }}
-              />
-            }
-            breadStyle={this.props.breadStyle}
-            pageNavPath={[
-              {
-                pageName: (
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Home",
-                      align: "ltr",
-                    }}
-                  />
-                ),
-              },
-              {
-                pageName: (
-                  <AlgaehLabel
-                    label={{ forceLabel: "Stock Enquiry", align: "ltr" }}
-                  />
-                ),
-              },
-            ]}
-          /> */}
-
           <div
             className="row inner-top-search"
             style={{ paddingBottom: "10px" }}

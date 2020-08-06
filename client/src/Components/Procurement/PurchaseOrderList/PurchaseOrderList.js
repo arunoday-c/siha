@@ -107,25 +107,25 @@ class PurchaseOrderList extends Component {
               />
             }
             breadStyle={this.props.breadStyle}
-            pageNavPath={[
-              {
-                pageName: (
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Home",
-                      align: "ltr",
-                    }}
-                  />
-                ),
-              },
-              {
-                pageName: (
-                  <AlgaehLabel
-                    label={{ forceLabel: "Purchase Auth List", align: "ltr" }}
-                  />
-                ),
-              },
-            ]}
+            // pageNavPath={[
+            //   {
+            //     pageName: (
+            //       <AlgaehLabel
+            //         label={{
+            //           forceLabel: "Home",
+            //           align: "ltr",
+            //         }}
+            //       />
+            //     ),
+            //   },
+            //   {
+            //     pageName: (
+            //       <AlgaehLabel
+            //         label={{ forceLabel: "Purchase Auth List", align: "ltr" }}
+            //       />
+            //     ),
+            //   },
+            // ]}
           />
           <div
             className="row inner-top-search"

@@ -368,7 +368,7 @@ class JournalAuthorization extends Component {
               <div className="col">
                 <button
                   className="btn btn-primary"
-                  style={{ marginTop: 19 }}
+                  style={{ marginTop: 20 }}
                   onClick={this.getDayEndProcess.bind(this)}
                 >
                   Preview

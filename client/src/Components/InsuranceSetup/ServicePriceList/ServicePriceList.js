@@ -9,7 +9,7 @@ import {
   AlgaehLabel,
   AlgaehDataGrid,
   AlagehAutoComplete,
-  AlagehFormGroup
+  AlagehFormGroup,
 } from "../../Wrapper/algaehWrapper";
 import ButtonType from "../../Wrapper/algaehButton";
 
@@ -23,7 +23,7 @@ import {
   serviceTypeHandeler,
   getPriceList,
   Refresh,
-  networkhandle
+  networkhandle,
 } from "./ServicePriceListHandaler";
 import GlobalVariables from "../../../utils/GlobalVariables";
 
@@ -35,7 +35,7 @@ class ServicePriceList extends PureComponent {
       corporate_discount: 0,
       dummy: true,
       view_by: "C",
-      state_change: true
+      state_change: true,
     };
     this.baseState = this.state;
   }
@@ -53,8 +53,8 @@ class ServicePriceList extends PureComponent {
         redux: {
           type: "PRICE_LIST_GET_DATA",
           mappingName: "pricelist",
-          data: []
-        }
+          data: [],
+        },
       });
     }
 
@@ -68,8 +68,8 @@ class ServicePriceList extends PureComponent {
         method: "GET",
         redux: {
           type: "SERVIES_TYPES_GET_DATA",
-          mappingName: "insservicetype"
-        }
+          mappingName: "insservicetype",
+        },
       });
     }
   }
@@ -79,8 +79,8 @@ class ServicePriceList extends PureComponent {
       redux: {
         type: "PRICE_LIST_GET_DATA",
         mappingName: "pricelist",
-        data: []
-      }
+        data: [],
+      },
     });
     if (e.target.value === "P") {
       this.props.getNetworkPlans({
@@ -89,23 +89,23 @@ class ServicePriceList extends PureComponent {
         printInput: true,
         data: {
           insuranceProviderId: this.state.insurance_provider_id,
-          price_from: "P"
+          price_from: "P",
         },
         redux: {
           type: "NETWORK_PLAN_GET_DATA",
-          mappingName: "pricefromplans"
+          mappingName: "pricefromplans",
         },
-        afterSuccess: data => { }
+        afterSuccess: (data) => {},
       });
       this.setState({
         [e.target.name]: e.target.value,
-        network_id: null
+        network_id: null,
       });
     } else {
       getPriceList(this, this);
       this.setState({
         [e.target.name]: e.target.value,
-        network_id: null
+        network_id: null,
       });
     }
   }
@@ -124,7 +124,7 @@ class ServicePriceList extends PureComponent {
                 <div className="col">
                   <AlgaehLabel
                     label={{
-                      forceLabel: "Insurar Name"
+                      forceLabel: "Insurar Name",
                     }}
                   />
                   <h6>
@@ -163,7 +163,7 @@ class ServicePriceList extends PureComponent {
                   <AlagehAutoComplete
                     div={{ className: "col" }}
                     label={{
-                      forceLabel: "Select Policy"
+                      forceLabel: "Select Policy",
                     }}
                     selector={{
                       name: "network_id",
@@ -172,9 +172,9 @@ class ServicePriceList extends PureComponent {
                       dataSource: {
                         textField: "network_type",
                         valueField: "hims_d_insurance_network_id",
-                        data: this.props.pricefromplans
+                        data: this.props.pricefromplans,
                       },
-                      onChange: networkhandle.bind(this, this)
+                      onChange: networkhandle.bind(this, this),
                     }}
                   />
                 ) : null}
@@ -182,7 +182,7 @@ class ServicePriceList extends PureComponent {
                 <AlagehAutoComplete
                   div={{ className: "col-2 form-group" }}
                   label={{
-                    forceLabel: "Filter by Service"
+                    forceLabel: "Filter by Service",
                   }}
                   selector={{
                     name: "service_type_id",
@@ -194,16 +194,16 @@ class ServicePriceList extends PureComponent {
                           ? "service_type"
                           : "arabic_service_type",
                       valueField: "hims_d_service_type_id",
-                      data: this.props.insservicetype
+                      data: this.props.insservicetype,
                     },
-                    onChange: serviceTypeHandeler.bind(this, this)
+                    onChange: serviceTypeHandeler.bind(this, this),
                   }}
                 />
 
                 <div className="col-2">
                   <button
                     className="btn btn-default"
-                    style={{ marginTop: 19 }}
+                    style={{ marginTop: 20 }}
                     onClick={Refresh.bind(this, this)}
                   >
                     Refresh List
@@ -216,22 +216,22 @@ class ServicePriceList extends PureComponent {
                     <AlagehFormGroup
                       div={{ className: "col" }}
                       label={{
-                        fieldName: "corporate_discount"
+                        fieldName: "corporate_discount",
                       }}
                       textBox={{
                         value: this.state.corporate_discount,
                         className: "txt-fld",
                         name: "corporate_discount",
                         events: {
-                          onChange: texthandle.bind(this, this)
-                        }
+                          onChange: texthandle.bind(this, this),
+                        },
                       }}
                     />
                     <AlagehAutoComplete
                       div={{ className: "col-5" }}
                       label={{
                         fieldName: "applicable",
-                        isImp: true
+                        isImp: true,
                       }}
                       selector={{
                         name: "applicable",
@@ -243,13 +243,13 @@ class ServicePriceList extends PureComponent {
                               ? "name"
                               : "arabic_name",
                           valueField: "value",
-                          data: GlobalVariables.FORMAT_DISCOUNT
+                          data: GlobalVariables.FORMAT_DISCOUNT,
                         },
-                        onChange: texthandle.bind(this, this)
+                        onChange: texthandle.bind(this, this),
                       }}
                     />
 
-                    <div className="col-2" style={{ marginTop: 19 }}>
+                    <div className="col-2" style={{ marginTop: 20 }}>
                       <ButtonType
                         classname="btn-primary"
                         onClick={bulkUpdate.bind(
@@ -259,7 +259,7 @@ class ServicePriceList extends PureComponent {
                         )}
                         label={{
                           forceLabel: "Apply",
-                          returnText: true
+                          returnText: true,
                         }}
                       />
                     </div>
@@ -271,7 +271,7 @@ class ServicePriceList extends PureComponent {
                       div={{ className: "col-8" }}
                       label={{
                         fieldName: "pre_approval",
-                        isImp: true
+                        isImp: true,
                       }}
                       selector={{
                         name: "pre_approval",
@@ -280,18 +280,18 @@ class ServicePriceList extends PureComponent {
                         dataSource: {
                           textField: "name",
                           valueField: "value",
-                          data: GlobalVariables.FORMAT_YESNO
+                          data: GlobalVariables.FORMAT_YESNO,
                         },
-                        onChange: texthandle.bind(this, this)
+                        onChange: texthandle.bind(this, this),
                       }}
                     />
-                    <div className="col-2" style={{ marginTop: 19 }}>
+                    <div className="col-2" style={{ marginTop: 20 }}>
                       <ButtonType
                         classname="btn-primary"
                         onClick={bulkUpdate.bind(this, this, "pre_approval")}
                         label={{
                           forceLabel: "Apply",
-                          returnText: true
+                          returnText: true,
                         }}
                       />
                     </div>
@@ -303,7 +303,7 @@ class ServicePriceList extends PureComponent {
                       div={{ className: "col" }}
                       label={{
                         fieldName: "covered",
-                        isImp: true
+                        isImp: true,
                       }}
                       selector={{
                         name: "covered",
@@ -312,19 +312,19 @@ class ServicePriceList extends PureComponent {
                         dataSource: {
                           textField: "name",
                           valueField: "value",
-                          data: GlobalVariables.FORMAT_YESNO
+                          data: GlobalVariables.FORMAT_YESNO,
                         },
-                        onChange: texthandle.bind(this, this)
+                        onChange: texthandle.bind(this, this),
                       }}
                     />
 
-                    <div className="col" style={{ marginTop: 19 }}>
+                    <div className="col" style={{ marginTop: 20 }}>
                       <ButtonType
                         classname="btn-primary"
                         onClick={bulkUpdate.bind(this, this, "covered")}
                         label={{
                           forceLabel: "Apply",
-                          returnText: true
+                          returnText: true,
                         }}
                       />
                     </div>
@@ -343,13 +343,13 @@ class ServicePriceList extends PureComponent {
                       label: (
                         <AlgaehLabel label={{ fieldName: "service_name" }} />
                       ),
-                      disabled: true
+                      disabled: true,
                     },
 
                     {
                       fieldName: "cpt_code",
                       label: <AlgaehLabel label={{ fieldName: "cpt_code" }} />,
-                      editorTemplate: row => {
+                      editorTemplate: (row) => {
                         return (
                           <AlagehFormGroup
                             div={{}}
@@ -358,12 +358,12 @@ class ServicePriceList extends PureComponent {
                               className: "txt-fld",
                               name: "cpt_code",
                               events: {
-                                onChange: onchangegridcol.bind(this, this, row)
-                              }
+                                onChange: onchangegridcol.bind(this, this, row),
+                              },
                             }}
                           />
                         );
-                      }
+                      },
                     },
                     {
                       fieldName: "insurance_service_name",
@@ -372,7 +372,7 @@ class ServicePriceList extends PureComponent {
                           label={{ fieldName: "insurance_service_name" }}
                         />
                       ),
-                      editorTemplate: row => {
+                      editorTemplate: (row) => {
                         return (
                           <AlagehFormGroup
                             div={{}}
@@ -381,20 +381,20 @@ class ServicePriceList extends PureComponent {
                               className: "txt-fld",
                               name: "insurance_service_name",
                               events: {
-                                onChange: onchangegridcol.bind(this, this, row)
-                              }
+                                onChange: onchangegridcol.bind(this, this, row),
+                              },
                             }}
                           />
                         );
-                      }
+                      },
                     },
                     {
                       fieldName: "gross_amt",
                       label: <AlgaehLabel label={{ fieldName: "gross_amt" }} />,
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         return row.gross_amt;
                       },
-                      editorTemplate: row => {
+                      editorTemplate: (row) => {
                         return (
                           <AlagehFormGroup
                             div={{}}
@@ -408,12 +408,12 @@ class ServicePriceList extends PureComponent {
                                   this,
                                   this,
                                   row
-                                )
-                              }
+                                ),
+                              },
                             }}
                           />
                         );
-                      }
+                      },
                     },
                     {
                       fieldName: "corporate_discount_amt",
@@ -422,10 +422,10 @@ class ServicePriceList extends PureComponent {
                           label={{ fieldName: "corporate_discount_amt" }}
                         />
                       ),
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         return row.corporate_discount_amt;
                       },
-                      editorTemplate: row => {
+                      editorTemplate: (row) => {
                         return (
                           <AlagehFormGroup
                             div={{}}
@@ -439,33 +439,33 @@ class ServicePriceList extends PureComponent {
                                   this,
                                   this,
                                   row
-                                )
-                              }
+                                ),
+                              },
                             }}
                           />
                         );
-                      }
+                      },
                     },
                     {
                       fieldName: "net_amount",
                       label: (
                         <AlgaehLabel label={{ fieldName: "net_amount" }} />
                       ),
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         return row.net_amount !== null ? row.net_amount : null;
                       },
 
-                      disabled: true
+                      disabled: true,
                     },
                     {
                       fieldName: "pre_approval",
                       label: (
                         <AlgaehLabel label={{ fieldName: "pre_approval" }} />
                       ),
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         return row.pre_approval === "N" ? "No" : "Yes";
                       },
-                      editorTemplate: row => {
+                      editorTemplate: (row) => {
                         return (
                           <AlagehAutoComplete
                             div={{}}
@@ -476,21 +476,21 @@ class ServicePriceList extends PureComponent {
                               dataSource: {
                                 textField: "name",
                                 valueField: "value",
-                                data: GlobalVariables.FORMAT_YESNO
+                                data: GlobalVariables.FORMAT_YESNO,
                               },
-                              onChange: onchangegridcol.bind(this, this, row)
+                              onChange: onchangegridcol.bind(this, this, row),
                             }}
                           />
                         );
-                      }
+                      },
                     },
                     {
                       fieldName: "covered",
                       label: <AlgaehLabel label={{ fieldName: "covered" }} />,
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         return row.covered === "N" ? "No" : "Yes";
                       },
-                      editorTemplate: row => {
+                      editorTemplate: (row) => {
                         return (
                           <AlagehAutoComplete
                             div={{}}
@@ -501,14 +501,14 @@ class ServicePriceList extends PureComponent {
                               dataSource: {
                                 textField: "name",
                                 valueField: "value",
-                                data: GlobalVariables.FORMAT_YESNO
+                                data: GlobalVariables.FORMAT_YESNO,
                               },
-                              onChange: onchangegridcol.bind(this, this, row)
+                              onChange: onchangegridcol.bind(this, this, row),
                             }}
                           />
                         );
-                      }
-                    }
+                      },
+                    },
                   ]}
                   keyId="service_name"
                   filter={true}
@@ -516,14 +516,14 @@ class ServicePriceList extends PureComponent {
                     data:
                       this.props.pricelist === undefined
                         ? []
-                        : this.props.pricelist
+                        : this.props.pricelist,
                   }}
                   isEditable={true}
                   paging={{ page: 0, rowsPerPage: 5 }}
                   events={{
                     // onDelete: this.deleteVisaType.bind(this),
-                    onEdit: row => { },
-                    onDone: updatePriceList.bind(this, this)
+                    onEdit: (row) => {},
+                    onDone: updatePriceList.bind(this, this),
                   }}
                 />
               </div>
@@ -539,7 +539,7 @@ function mapStateToProps(state) {
   return {
     pricelist: state.pricelist,
     insservicetype: state.insservicetype,
-    pricefromplans: state.pricefromplans
+    pricefromplans: state.pricefromplans,
   };
 }
 
@@ -549,15 +549,12 @@ function mapDispatchToProps(dispatch) {
       getPriceList: AlgaehActions,
       initialPriceList: AlgaehActions,
       getServiceTypes: AlgaehActions,
-      getNetworkPlans: AlgaehActions
+      getNetworkPlans: AlgaehActions,
     },
     dispatch
   );
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(ServicePriceList)
+  connect(mapStateToProps, mapDispatchToProps)(ServicePriceList)
 );

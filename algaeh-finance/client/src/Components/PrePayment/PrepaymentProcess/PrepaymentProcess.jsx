@@ -7,7 +7,7 @@ import {
   Checkbox,
   AlgaehButton,
   Modal,
-  //   AlgaehTreeSearch,
+  // AlgaehTreeSearch,
   AlgaehMessagePop,
   DatePicker,
   Spin,
@@ -152,7 +152,7 @@ export function PrepaymentProcess() {
                   type="checkbox"
                   name="checkSelf"
                   checked=""
-                // onChange={selectCheckBox.bind(this, this)}
+                  // onChange={selectCheckBox.bind(this, this)}
                 />
                 <span>Yes</span>
               </label>
@@ -187,7 +187,68 @@ export function PrepaymentProcess() {
               fieldName: "cost_center",
               label: "Cost Center",
               sortable: true,
+              // editorTemplate: (row) => {
+              //   const valueRow =
+              //     row["hims_d_hospital_id"] !== undefined &&
+              //     row["hims_d_hospital_id"] !== "" &&
+              //     row["cost_center_id"] !== undefined &&
+              //     row["cost_center_id"] !== ""
+              //       ? `${row["hims_d_hospital_id"]}-${row["cost_center_id"]}`
+              //       : "";
+              //   return (
+              //     <AlgaehTreeSearch
+              //       tree={{
+              //         treeDefaultExpandAll: true,
+              //         updateInternally: true,
+              //         // data: result,
+              //         disableHeader: true,
+              //         textField: "hospital_name",
+              //         valueField: "hims_d_hospital_id",
+              //         children: {
+              //           node: "cost_centers",
+              //           textField: "cost_center",
+              //           valueField: (node) => {
+              //             const { hims_d_hospital_id, cost_center_id } = node;
+              //             if (cost_center_id === undefined) {
+              //               return hims_d_hospital_id;
+              //             } else {
+              //               return `${hims_d_hospital_id}-${cost_center_id}`;
+              //             }
+              //           },
+              //         },
+              //         value: valueRow,
+              //         onChange: (value) => {
+              //           if (value !== undefined) {
+              //             const detl = value.split("-");
+              //             row["hims_d_hospital_id"] = detl[0];
+              //             row["cost_center_id"] = detl[1];
+              //           } else {
+              //             row["hims_d_hospital_id"] = undefined;
+              //             row["cost_center_id"] = undefined;
+              //           }
             },
+            // }}
+            // />
+            // <AlgaehAutoComplete
+            //   selector={{
+            //     updateInternally: true,
+            //     dataSource: {
+            //       data: center.cost_centers,
+            //       valueField: "cost_center_id",
+            //       textField: "cost_center",
+            //     },
+            //     value: row["cost_center_id"],
+            //     onChange: (details) => {
+            //       row["cost_center_id"] = details["cost_center_id"];
+            //     },
+            //     onClear: () => {
+            //       row["cost_center_id"] = null;
+            //     },
+            //   }}
+            // />
+            //     );
+            //   },
+            // },
             {
               fieldName: "amount",
               label: "Amount",
@@ -196,7 +257,7 @@ export function PrepaymentProcess() {
             {
               fieldName: "processed",
               label: "Processed",
-              displayTemplate: row => {
+              displayTemplate: (row) => {
                 return row.processed === "N" ? "No" : "Yes";
               },
               sortable: true,
@@ -209,17 +270,15 @@ export function PrepaymentProcess() {
           ]}
           loading={false}
           isEditable={"editOnly"}
-          events={
-            {
-              // onDone: () => {},
-              onSaveShow: (row) => {
-                return row.processed === "N" ? true : false;
-              },
-              onEditShow: (row) => {
-                return row.processed === "N" ? true : false;
-              },
-            }
-          }
+          events={{
+            // onDone: () => {},
+            onSaveShow: (row) => {
+              return row.processed === "N" ? true : false;
+            },
+            onEditShow: (row) => {
+              return row.processed === "N" ? true : false;
+            },
+          }}
           // height="34vh"
           data={current}
         />
@@ -419,7 +478,7 @@ export function PrepaymentProcess() {
               <AlgaehButton
                 disabled={processList.length === list.length}
                 className="btn btn-default"
-              // onClick={clearState}
+                // onClick={clearState}
               >
                 Select All
               </AlgaehButton>

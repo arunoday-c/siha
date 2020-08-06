@@ -79,8 +79,8 @@ class SalesReturnEntry extends Component {
       this.state.dataFinder === true
         ? " disableFinder"
         : this.state.dataExitst === false
-          ? ""
-          : " disableFinder";
+        ? ""
+        : " disableFinder";
 
     return (
       <div>
@@ -91,25 +91,25 @@ class SalesReturnEntry extends Component {
             />
           }
           breadStyle={this.props.breadStyle}
-          pageNavPath={[
-            {
-              pageName: (
-                <AlgaehLabel
-                  label={{
-                    forceLabel: "Home",
-                    align: "ltr",
-                  }}
-                />
-              ),
-            },
-            {
-              pageName: (
-                <AlgaehLabel
-                  label={{ forceLabel: "Sales Return Entry", align: "ltr" }}
-                />
-              ),
-            },
-          ]}
+          // pageNavPath={[
+          //   {
+          //     pageName: (
+          //       <AlgaehLabel
+          //         label={{
+          //           forceLabel: "Home",
+          //           align: "ltr",
+          //         }}
+          //       />
+          //     ),
+          //   },
+          //   {
+          //     pageName: (
+          //       <AlgaehLabel
+          //         label={{ forceLabel: "Sales Return Entry", align: "ltr" }}
+          //       />
+          //     ),
+          //   },
+          // ]}
           soptlightSearch={{
             label: (
               <AlgaehLabel
@@ -146,17 +146,17 @@ class SalesReturnEntry extends Component {
           printArea={
             this.state.hims_f_sales_return_header_id !== null
               ? {
-                menuitems: [
-                  {
-                    label: "Print Report",
-                    events: {
-                      onClick: () => {
-                        generateSalesInvoice(this.state);
+                  menuitems: [
+                    {
+                      label: "Print Report",
+                      events: {
+                        onClick: () => {
+                          generateSalesInvoice(this.state);
+                        },
                       },
                     },
-                  },
-                ],
-              }
+                  ],
+                }
               : ""
           }
           selectedLang={this.state.selectedLang}

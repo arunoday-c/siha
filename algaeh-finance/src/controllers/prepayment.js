@@ -13,7 +13,8 @@ import {
   getPrepaymentDetails,
   updatePrepaymentCostCenter,
   payPrepaymentRequest,
-  updatePrepaymentRequest
+  updatePrepaymentRequest,
+  updatePrepaymentDetail
 } from "../models/prepayment";
 import utlities from "algaeh-utilities";
 
@@ -77,6 +78,16 @@ export default () => {
   });
 
   api.put("/updatePrepaymentRequest", updatePrepaymentRequest, (req, res, next) => {
+    res
+      .status(utlities.AlgaehUtilities().httpStatus().ok)
+      .json({
+        success: true,
+        result: req.records,
+      })
+      .end();
+  });
+
+  api.put("/updatePrepaymentDetail", updatePrepaymentDetail, (req, res, next) => {
     res
       .status(utlities.AlgaehUtilities().httpStatus().ok)
       .json({

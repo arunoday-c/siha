@@ -100,25 +100,25 @@ class InvStockEnquiry extends Component {
               />
             }
             breadStyle={this.props.breadStyle}
-            pageNavPath={[
-              {
-                pageName: (
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Home",
-                      align: "ltr",
-                    }}
-                  />
-                ),
-              },
-              {
-                pageName: (
-                  <AlgaehLabel
-                    label={{ forceLabel: "Stock Enquiry", align: "ltr" }}
-                  />
-                ),
-              },
-            ]}
+            // pageNavPath={[
+            //   {
+            //     pageName: (
+            //       <AlgaehLabel
+            //         label={{
+            //           forceLabel: "Home",
+            //           align: "ltr",
+            //         }}
+            //       />
+            //     ),
+            //   },
+            //   {
+            //     pageName: (
+            //       <AlgaehLabel
+            //         label={{ forceLabel: "Stock Enquiry", align: "ltr" }}
+            //       />
+            //     ),
+            //   },
+            // ]}
           />
 
           <div

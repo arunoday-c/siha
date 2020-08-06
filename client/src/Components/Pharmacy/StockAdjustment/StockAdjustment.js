@@ -6,7 +6,7 @@ import {
   AlagehFormGroup,
   AlgaehLabel,
   AlagehAutoComplete,
-  AlgaehDataGrid
+  AlgaehDataGrid,
 } from "../../Wrapper/algaehWrapper";
 import moment from "moment";
 // import BreadCrumb from "../../common/BreadCrumb/BreadCrumb.js";
@@ -20,7 +20,7 @@ import {
   batchEventHandaler,
   adjustQtyHandaler,
   AddItemtoList,
-  adjustAmtHandaler
+  adjustAmtHandaler,
   // generateReport,
 } from "./StockAdjustmentEvents";
 
@@ -52,7 +52,7 @@ class StockAdjustment extends Component {
       location_selected: false,
       saveEnable: true,
       location_name: null,
-      dataExists: false
+      dataExists: false,
     };
   }
   componentDidMount() {
@@ -62,8 +62,8 @@ class StockAdjustment extends Component {
       method: "GET",
       redux: {
         type: "LOCATIOS_GET_DATA",
-        mappingName: "poslocations"
-      }
+        mappingName: "poslocations",
+      },
     });
   }
 
@@ -77,58 +77,58 @@ class StockAdjustment extends Component {
             />
           }
           breadStyle={this.props.breadStyle}
-          pageNavPath={[
-            {
-              pageName: (
-                <AlgaehLabel
-                  label={{
-                    forceLabel: "Home",
-                    align: "ltr"
-                  }}
-                />
-              )
-            },
-            {
-              pageName: (
-                <AlgaehLabel
-                  label={{ forceLabel: "Stock Adjustment", align: "ltr" }}
-                />
-              )
-            }
-          ]}
+          // pageNavPath={[
+          //   {
+          //     pageName: (
+          //       <AlgaehLabel
+          //         label={{
+          //           forceLabel: "Home",
+          //           align: "ltr"
+          //         }}
+          //       />
+          //     )
+          //   },
+          //   {
+          //     pageName: (
+          //       <AlgaehLabel
+          //         label={{ forceLabel: "Stock Adjustment", align: "ltr" }}
+          //       />
+          //     )
+          //   }
+          // ]}
           soptlightSearch={{
             label: (
               <AlgaehLabel
                 label={{
                   forceLabel: "Adjustment Number",
-                  returnText: true
+                  returnText: true,
                 }}
               />
             ),
             value: this.state.adjustment_number,
             selectValue: "adjustment_number",
             events: {
-              onChange: getCtrlCode.bind(this, this)
+              onChange: getCtrlCode.bind(this, this),
             },
             jsonFile: {
               fileName: "spotlightSearch",
-              fieldName: "AdjustmentEntry.AdjEntry"
+              fieldName: "AdjustmentEntry.AdjEntry",
             },
-            searchName: "ADJEntry"
+            searchName: "ADJEntry",
           }}
           userArea={
             <div className="row">
               <div className="col">
                 <AlgaehLabel
                   label={{
-                    forceLabel: "Adjustment Date"
+                    forceLabel: "Adjustment Date",
                   }}
                 />
                 <h6>
                   {this.state.adjustment_date
                     ? moment(this.state.adjustment_date).format(
-                      Options.dateFormat
-                    )
+                        Options.dateFormat
+                      )
                     : Options.dateFormat}
                 </h6>
               </div>
@@ -385,7 +385,7 @@ class StockAdjustment extends Component {
                       dataSource: {
                         textField: "location_description",
                         valueField: "hims_d_pharmacy_location_id",
-                        data: this.props.poslocations
+                        data: this.props.poslocations,
                       },
                       onChange: LocationchangeTexts.bind(this, this),
                       autoComplete: "off",
@@ -393,14 +393,14 @@ class StockAdjustment extends Component {
                         disabled:
                           this.state.dataExists === true
                             ? true
-                            : this.state.location_selected
-                      }
+                            : this.state.location_selected,
+                      },
                     }}
                   />
                   <div className="col-6">
                     <AlgaehLabel
                       label={{
-                        forceLabel: "Location Type"
+                        forceLabel: "Location Type",
                       }}
                     />
                     <h6>
@@ -408,8 +408,8 @@ class StockAdjustment extends Component {
                         ? this.state.location_type === "WH"
                           ? "Warehouse"
                           : this.state.location_type === "MS"
-                            ? "Main Store"
-                            : "Sub Store"
+                          ? "Main Store"
+                          : "Sub Store"
                         : "----------"}
                     </h6>
                   </div>
@@ -420,7 +420,7 @@ class StockAdjustment extends Component {
                     label={{ forceLabel: "Select Item", isImp: true }}
                     title="Search Items"
                     id="item_id_search"
-                    template={result => {
+                    template={(result) => {
                       return (
                         <section className="resultSecStyles">
                           <div className="row">
@@ -441,11 +441,11 @@ class StockAdjustment extends Component {
                     value={this.state.item_description}
                     searchName="itemmaster"
                     extraParameters={{
-                      pharmacy_location_id: this.state.location_id
+                      pharmacy_location_id: this.state.location_id,
                     }}
                     onClick={itemchangeText.bind(this, this)}
                     others={{
-                      disabled: this.state.dataExists
+                      disabled: this.state.dataExists,
                     }}
                     onClear={() => {
                       this.setState({
@@ -464,10 +464,10 @@ class StockAdjustment extends Component {
                         reason: null,
                         sales_uom: null,
                         qtyhand: 0,
-                        sales_price: 0
+                        sales_price: 0,
                       });
                     }}
-                    ref={attReg => {
+                    ref={(attReg) => {
                       this.attReg = attReg;
                     }}
                   />
@@ -475,7 +475,7 @@ class StockAdjustment extends Component {
                     div={{ className: "col-6 form-group mandatory" }}
                     label={{
                       forceLabel: "Select Batch",
-                      isImp: true
+                      isImp: true,
                     }}
                     selector={{
                       name: "batchno",
@@ -484,12 +484,12 @@ class StockAdjustment extends Component {
                       dataSource: {
                         textField: "batchno",
                         valueField: "batchno",
-                        data: this.state.Batch_Items
+                        data: this.state.Batch_Items,
                       },
                       onChange: batchEventHandaler.bind(this, this),
                       autoComplete: "off",
                       others: {
-                        disabled: this.state.dataExists
+                        disabled: this.state.dataExists,
                       },
                       onClear: () => {
                         this.setState({
@@ -497,9 +497,9 @@ class StockAdjustment extends Component {
                           adjust_qty: 0,
                           adjust_amount: 0,
                           qtyhand: null,
-                          sales_price: null
+                          sales_price: null,
                         });
-                      }
+                      },
                     }}
                   />
                 </div>
@@ -507,7 +507,7 @@ class StockAdjustment extends Component {
                   <div className="col-4">
                     <AlgaehLabel
                       label={{
-                        forceLabel: "UOM"
+                        forceLabel: "UOM",
                       }}
                     />
                     <h6>
@@ -519,7 +519,7 @@ class StockAdjustment extends Component {
                   <div className="col-4">
                     <AlgaehLabel
                       label={{
-                        forceLabel: "Item Qty"
+                        forceLabel: "Item Qty",
                       }}
                     />
                     <h6>
@@ -531,7 +531,7 @@ class StockAdjustment extends Component {
                   <div className="col-4">
                     <AlgaehLabel
                       label={{
-                        forceLabel: "Item Amt"
+                        forceLabel: "Item Amt",
                       }}
                     />
                     <h6>
@@ -546,7 +546,7 @@ class StockAdjustment extends Component {
                     div={{ className: "col-12 form-group mandatory" }}
                     label={{
                       forceLabel: "Adjustment Type",
-                      isImp: true
+                      isImp: true,
                     }}
                     selector={{
                       name: "adjustment_type",
@@ -555,110 +555,110 @@ class StockAdjustment extends Component {
                       dataSource: {
                         textField: "name",
                         valueField: "value",
-                        data: GlobalVariables.ADJUSTMENT_TYPE
+                        data: GlobalVariables.ADJUSTMENT_TYPE,
                       },
                       onChange: texthandle.bind(this, this),
                       autoComplete: "off",
                       others: {
-                        disabled: this.state.dataExists
+                        disabled: this.state.dataExists,
                       },
                       onClear: () => {
                         this.setState({
                           adjustment_type: null,
                           adjust_qty: 0,
-                          adjust_amount: 0
+                          adjust_amount: 0,
                         });
-                      }
+                      },
                     }}
                   />
                   {this.state.adjustment_type === "IQ" ||
-                    this.state.adjustment_type === "DQ" ||
-                    this.state.adjustment_type === "BI" ||
-                    this.state.adjustment_type === "BD" ? (
-                      <AlagehFormGroup
-                        div={{
-                          className: "col-6 form-group mandatory"
-                        }}
-                        label={{
-                          forceLabel: "Adjust Qty",
-                          isImp:
-                            this.state.adjustment_type === "IQ" ||
-                              this.state.adjustment_type === "DQ" ||
-                              this.state.adjustment_type === "BI" ||
-                              this.state.adjustment_type === "BD"
-                              ? true
-                              : false
-                        }}
-                        textBox={{
-                          number: {
-                            allowNegative: false,
-                            thousandSeparator: ","
-                          },
-                          className: "txt-fld",
-                          name: "adjust_qty",
-                          value: this.state.adjust_qty,
-                          dontAllowKeys: ["-", "e"],
-                          events: {
-                            onChange: adjustQtyHandaler.bind(this, this)
-                          },
-                          others: {
-                            disabled: this.state.dataExists
-                          }
-                        }}
-                      />
-                    ) : null}
+                  this.state.adjustment_type === "DQ" ||
+                  this.state.adjustment_type === "BI" ||
+                  this.state.adjustment_type === "BD" ? (
+                    <AlagehFormGroup
+                      div={{
+                        className: "col-6 form-group mandatory",
+                      }}
+                      label={{
+                        forceLabel: "Adjust Qty",
+                        isImp:
+                          this.state.adjustment_type === "IQ" ||
+                          this.state.adjustment_type === "DQ" ||
+                          this.state.adjustment_type === "BI" ||
+                          this.state.adjustment_type === "BD"
+                            ? true
+                            : false,
+                      }}
+                      textBox={{
+                        number: {
+                          allowNegative: false,
+                          thousandSeparator: ",",
+                        },
+                        className: "txt-fld",
+                        name: "adjust_qty",
+                        value: this.state.adjust_qty,
+                        dontAllowKeys: ["-", "e"],
+                        events: {
+                          onChange: adjustQtyHandaler.bind(this, this),
+                        },
+                        others: {
+                          disabled: this.state.dataExists,
+                        },
+                      }}
+                    />
+                  ) : null}
 
                   {this.state.adjustment_type === "IA" ||
-                    this.state.adjustment_type === "DA" ||
-                    this.state.adjustment_type === "BI" ||
-                    this.state.adjustment_type === "BD" ? (
-                      <AlagehFormGroup
-                        div={{
-                          className: "col-6 form-group mandatory"
-                        }}
-                        label={{
-                          forceLabel: "Adjust Amt.",
-                          isImp:
-                            this.state.adjustment_type === "IA" ||
-                              this.state.adjustment_type === "DA" ||
-                              this.state.adjustment_type === "BI" ||
-                              this.state.adjustment_type === "BD"
-                              ? true
-                              : false
-                        }}
-                        textBox={{
-                          decimal: { allowNegative: false },
-                          className: "txt-fld",
-                          name: "adjust_amount",
-                          value: this.state.adjust_amount,
-                          events: {
-                            onChange: texthandle.bind(this, this)
-                          },
-                          others: {
-                            disabled: this.state.dataExists,
-                            onBlur: adjustAmtHandaler.bind(this, this)
-                          }
-                        }}
-                      />
-                    ) : null}
+                  this.state.adjustment_type === "DA" ||
+                  this.state.adjustment_type === "BI" ||
+                  this.state.adjustment_type === "BD" ? (
+                    <AlagehFormGroup
+                      div={{
+                        className: "col-6 form-group mandatory",
+                      }}
+                      label={{
+                        forceLabel: "Adjust Amt.",
+                        isImp:
+                          this.state.adjustment_type === "IA" ||
+                          this.state.adjustment_type === "DA" ||
+                          this.state.adjustment_type === "BI" ||
+                          this.state.adjustment_type === "BD"
+                            ? true
+                            : false,
+                      }}
+                      textBox={{
+                        decimal: { allowNegative: false },
+                        className: "txt-fld",
+                        name: "adjust_amount",
+                        value: this.state.adjust_amount,
+                        events: {
+                          onChange: texthandle.bind(this, this),
+                        },
+                        others: {
+                          disabled: this.state.dataExists,
+                          onBlur: adjustAmtHandaler.bind(this, this),
+                        },
+                      }}
+                    />
+                  ) : null}
 
                   <AlagehFormGroup
                     div={{ className: "col-12 form-group mandatory" }}
                     label={{
                       forceLabel: "Reson for Adjust",
-                      isImp: true
+                      isImp: true,
                     }}
                     textBox={{
                       className: "txt-fld",
                       name: "reason",
                       value: this.state.reason,
                       events: {
-                        onChange: texthandle.bind(this, this)
+                        onChange: texthandle.bind(this, this),
                       },
                       others: {
                         disabled: this.state.dataExists,
-                        placeholder: "Enter Reason"
-                      }
+                        placeholder: "Enter Reason",
+                      },
                     }}
                   />
                   <div className="col-12" style={{ textAlign: "right" }}>
@@ -670,7 +670,7 @@ class StockAdjustment extends Component {
                       <AlgaehLabel
                         label={{
                           forceLabel: "Add to List",
-                          returnText: true
+                          returnText: true,
                         }}
                       />
                     </button>
@@ -701,40 +701,40 @@ class StockAdjustment extends Component {
                               label: (
                                 <AlgaehLabel
                                   label={{
-                                    forceLabel: "Adjustment Type"
+                                    forceLabel: "Adjustment Type",
                                   }}
                                 />
                               ),
-                              displayTemplate: row => {
+                              displayTemplate: (row) => {
                                 let display = GlobalVariables.ADJUSTMENT_TYPE.filter(
-                                  f => f.value === row.adjustment_type
+                                  (f) => f.value === row.adjustment_type
                                 );
 
                                 return (
                                   <span>
                                     {display !== undefined &&
-                                      display.length !== 0
+                                    display.length !== 0
                                       ? display[0].name
                                       : ""}
                                   </span>
                                 );
-                              }
+                              },
                             },
                             {
                               fieldName: "item_description",
                               label: (
                                 <AlgaehLabel
                                   label={{
-                                    forceLabel: "Item Description"
+                                    forceLabel: "Item Description",
                                   }}
                                 />
-                              )
+                              ),
                             },
                             {
                               fieldName: "uom_description",
                               label: (
                                 <AlgaehLabel label={{ forceLabel: "UOM" }} />
-                              )
+                              ),
                             },
                             {
                               fieldName: "batchno",
@@ -742,30 +742,30 @@ class StockAdjustment extends Component {
                                 <AlgaehLabel
                                   label={{ forceLabel: "Batch No." }}
                                 />
-                              )
+                              ),
                             },
                             {
                               fieldName: "expirydate",
                               label: (
                                 <AlgaehLabel
                                   label={{
-                                    forceLabel: "Expiry Date"
+                                    forceLabel: "Expiry Date",
                                   }}
                                 />
-                              )
+                              ),
                             },
                             {
                               fieldName: "qtyhand",
                               label: (
                                 <AlgaehLabel
                                   label={{
-                                    forceLabel: "Current Stock"
+                                    forceLabel: "Current Stock",
                                   }}
                                 />
                               ),
-                              displayTemplate: row => {
+                              displayTemplate: (row) => {
                                 return parseFloat(row.qtyhand);
-                              }
+                              },
                             },
                             {
                               fieldName: "quantity",
@@ -774,37 +774,37 @@ class StockAdjustment extends Component {
                                   label={{ forceLabel: "Adjust Qty" }}
                                 />
                               ),
-                              displayTemplate: row => {
+                              displayTemplate: (row) => {
                                 return parseFloat(row.quantity);
-                              }
+                              },
                             },
                             {
                               fieldName: "sales_price",
                               label: (
                                 <AlgaehLabel
                                   label={{
-                                    forceLabel: "Adjust Amount"
+                                    forceLabel: "Adjust Amount",
                                   }}
                                 />
-                              )
+                              ),
                             },
                             {
                               fieldName: "reason",
                               label: (
                                 <AlgaehLabel label={{ forceLabel: "Reason" }} />
-                              )
-                            }
+                              ),
+                            },
                           ]}
                           keyId="stockAdjustGrid"
                           dataSource={{
-                            data: this.state.pharmacy_stock_detail
+                            data: this.state.pharmacy_stock_detail,
                           }}
                           isEditable={false}
                           paging={{ page: 0, rowsPerPage: 10 }}
                           events={{
-                            onDelete: rows => { }, //deleteDeptUser.bind(this, this),
-                            onEdit: row => { },
-                            onDone: rows => { } //updateDeptUser.bind(this, this)
+                            onDelete: (rows) => {}, //deleteDeptUser.bind(this, this),
+                            onEdit: (row) => {},
+                            onDone: (rows) => {}, //updateDeptUser.bind(this, this)
                           }}
                         />
                       </div>
@@ -820,19 +820,19 @@ class StockAdjustment extends Component {
                       <AlagehFormGroup
                         div={{ className: "col" }}
                         label={{
-                          forceLabel: "Comments"
+                          forceLabel: "Comments",
                         }}
                         textBox={{
                           className: "txt-fld",
                           name: "comments",
                           value: this.state.comments,
                           events: {
-                            onChange: texthandle.bind(this, this)
+                            onChange: texthandle.bind(this, this),
                           },
                           others: {
                             disabled: this.state.dataExists,
-                            placeholder: "Enter Comments"
-                          }
+                            placeholder: "Enter Comments",
+                          },
                         }}
                       />
                     </div>
@@ -855,7 +855,7 @@ class StockAdjustment extends Component {
                 <AlgaehLabel
                   label={{
                     forceLabel: "Save",
-                    returnText: true
+                    returnText: true,
                   }}
                 />
               </button>
@@ -879,14 +879,14 @@ class StockAdjustment extends Component {
 
 function mapStateToProps(state) {
   return {
-    poslocations: state.poslocations
+    poslocations: state.poslocations,
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getLocation: AlgaehActions
+      getLocation: AlgaehActions,
     },
     dispatch
   );

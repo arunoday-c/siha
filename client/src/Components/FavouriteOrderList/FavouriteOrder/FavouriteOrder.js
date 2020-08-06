@@ -10,7 +10,7 @@ import {
   AlagehFormGroup,
   AlagehAutoComplete,
   AlgaehDataGrid,
-  AlgaehModalPopUp
+  AlgaehModalPopUp,
 } from "../../Wrapper/algaehWrapper";
 import FavouriteOrderEvent from "./FavouriteOrderEvent";
 import { AlgaehActions } from "../../../actions/algaehActions";
@@ -30,7 +30,7 @@ class FavouriteOrder extends PureComponent {
       insert_favourite_details: [],
       delete_favourite_details: [],
       s_service_type: null,
-      s_service: null
+      s_service: null,
     };
   }
 
@@ -45,8 +45,8 @@ class FavouriteOrder extends PureComponent {
         method: "GET",
         redux: {
           type: "SERVIES_TYPES_GET_DATA",
-          mappingName: "servicetype"
-        }
+          mappingName: "servicetype",
+        },
       });
     }
 
@@ -56,8 +56,8 @@ class FavouriteOrder extends PureComponent {
       method: "GET",
       redux: {
         type: "SERVICES_GET_DATA",
-        mappingName: "serviceslist"
-      }
+        mappingName: "serviceslist",
+      },
     });
   }
 
@@ -74,7 +74,7 @@ class FavouriteOrder extends PureComponent {
     }
   }
 
-  onClose = e => {
+  onClose = (e) => {
     this.setState(
       {
         hims_d_favourite_orders_header_id: null,
@@ -83,7 +83,7 @@ class FavouriteOrder extends PureComponent {
         doctor_id: null,
         favourite_details: [],
         insert_favourite_details: [],
-        delete_favourite_details: []
+        delete_favourite_details: [],
       },
       () => {
         this.props.onClose && this.props.onClose(false);
@@ -123,7 +123,7 @@ class FavouriteOrder extends PureComponent {
           <AlgaehModalPopUp
             class="addServerFav"
             events={{
-              onClose: this.onClose.bind(this)
+              onClose: this.onClose.bind(this),
             }}
             title={this.props.HeaderCaption}
             openPopup={this.props.show}
@@ -135,15 +135,15 @@ class FavouriteOrder extends PureComponent {
                     div={{ className: "col form-group" }}
                     label={{
                       forceLabel: "Description",
-                      isImp: true
+                      isImp: true,
                     }}
                     textBox={{
                       className: "txt-fld",
                       name: "favourite_description",
                       value: this.state.favourite_description,
                       events: {
-                        onChange: this.eventHandaler.bind(this)
-                      }
+                        onChange: this.eventHandaler.bind(this),
+                      },
                     }}
                   />
                   {this.props.from !== "ClinicalDesk" ? (
@@ -151,7 +151,7 @@ class FavouriteOrder extends PureComponent {
                       div={{ className: "col mandatory" }}
                       label={{
                         forceLabel: "Select Doctor",
-                        isImp: true
+                        isImp: true,
                       }}
                       selector={{
                         name: "doctor_id",
@@ -160,15 +160,15 @@ class FavouriteOrder extends PureComponent {
                         dataSource: {
                           textField: "full_name",
                           valueField: "employee_id",
-                          data: this.props.frontproviders
+                          data: this.props.frontproviders,
                         },
 
                         onChange: this.eventHandaler.bind(this),
                         onClear: () => {
                           this.setState({
-                            doctor_id: null
+                            doctor_id: null,
                           });
-                        }
+                        },
                       }}
                     />
                   ) : null}
@@ -180,7 +180,7 @@ class FavouriteOrder extends PureComponent {
                     label={{ forceLabel: "Search Investigation" }}
                     title="Search Investigation"
                     id="service_id_search"
-                    template={({ service_name, service_type }) => {                      
+                    template={({ service_name, service_type }) => {
                       return (
                         <div className={`row resultSecStyles`}>
                           <div className="col-12 padd-10">
@@ -203,7 +203,7 @@ class FavouriteOrder extends PureComponent {
                     value={this.state.service_name}
                     searchName="servicemaster"
                     onClick={this.serviceHandeler.bind(this)}
-                    ref={attReg => {
+                    ref={(attReg) => {
                       this.attReg = attReg;
                     }}
                   />
@@ -265,7 +265,7 @@ class FavouriteOrder extends PureComponent {
                   <div className="col-2 form-group">
                     <button
                       className="btn btn-primary"
-                      style={{ marginTop: 19 }}
+                      style={{ marginTop: 20 }}
                       onClick={this.AddToList.bind(this)}
                     >
                       Add
@@ -283,7 +283,7 @@ class FavouriteOrder extends PureComponent {
                             label: (
                               <AlgaehLabel label={{ forceLabel: "Action" }} />
                             ),
-                            displayTemplate: row => {
+                            displayTemplate: (row) => {
                               return (
                                 <span>
                                   <i
@@ -297,8 +297,8 @@ class FavouriteOrder extends PureComponent {
                               maxWidth: 65,
                               resizable: false,
                               filterable: false,
-                              style: { textAlign: "center" }
-                            }
+                              style: { textAlign: "center" },
+                            },
                           },
                           {
                             fieldName: "service_type_id",
@@ -307,12 +307,12 @@ class FavouriteOrder extends PureComponent {
                                 label={{ forceLabel: "Service Type" }}
                               />
                             ),
-                            displayTemplate: row => {
+                            displayTemplate: (row) => {
                               let display =
                                 this.props.servicetype === undefined
                                   ? []
                                   : this.props.servicetype.filter(
-                                      f =>
+                                      (f) =>
                                         f.hims_d_service_type_id ===
                                         row.service_type_id
                                     );
@@ -326,8 +326,8 @@ class FavouriteOrder extends PureComponent {
                               );
                             },
                             others: {
-                              maxWidth: 180
-                            }
+                              maxWidth: 180,
+                            },
                           },
 
                           {
@@ -337,12 +337,12 @@ class FavouriteOrder extends PureComponent {
                                 label={{ forceLabel: "Service Name" }}
                               />
                             ),
-                            displayTemplate: row => {
+                            displayTemplate: (row) => {
                               let display =
                                 this.props.serviceslist === undefined
                                   ? []
                                   : this.props.serviceslist.filter(
-                                      f =>
+                                      (f) =>
                                         f.hims_d_services_id === row.services_id
                                     );
 
@@ -353,12 +353,12 @@ class FavouriteOrder extends PureComponent {
                                     : ""}
                                 </span>
                               );
-                            }
-                          }
+                            },
+                          },
                         ]}
                         keyId="favourite_detail_grid"
                         dataSource={{
-                          data: this.state.favourite_details
+                          data: this.state.favourite_details,
                         }}
                         // isEditable={true}
                         filter={true}
@@ -388,7 +388,7 @@ class FavouriteOrder extends PureComponent {
                       )}
                     </button>
                     <button
-                      onClick={e => {
+                      onClick={(e) => {
                         this.onClose(e);
                       }}
                       type="button"
@@ -412,7 +412,7 @@ function mapStateToProps(state) {
     servicetype: state.servicetype,
     serviceslist: state.serviceslist,
     opbilservices: state.opbilservices,
-    frontproviders: state.frontproviders
+    frontproviders: state.frontproviders,
   };
 }
 
@@ -420,15 +420,12 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
       getServiceTypes: AlgaehActions,
-      getServices: AlgaehActions
+      getServices: AlgaehActions,
     },
     dispatch
   );
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(FavouriteOrder)
+  connect(mapStateToProps, mapDispatchToProps)(FavouriteOrder)
 );

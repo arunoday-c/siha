@@ -542,7 +542,7 @@ class DNItemList extends Component {
                         <button
                           className="btn btn-default"
                           style={{
-                            marginTop: 19,
+                            marginTop: 20,
                           }}
                           onClick={AddtoList.bind(this, this, context)}
                           disabled={this.state.addItemButton}

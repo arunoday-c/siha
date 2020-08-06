@@ -124,7 +124,7 @@ class EmployeePaymentCancel extends Component {
               <button
                 type="button"
                 className="btn btn-default"
-                style={{ marginTop: 19, marginLeft: 10 }}
+                style={{ marginTop: 20, marginLeft: 10 }}
                 onClick={() => {
                   this.setState({
                     sel_payment_type: "",
@@ -137,7 +137,7 @@ class EmployeePaymentCancel extends Component {
               <button
                 type="button"
                 className="btn btn-primary"
-                style={{ marginTop: 19 }}
+                style={{ marginTop: 20 }}
                 onClick={getEmployeePayments.bind(this, this)}
               >
                 Load
