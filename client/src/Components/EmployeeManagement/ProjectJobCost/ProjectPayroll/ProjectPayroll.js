@@ -423,7 +423,7 @@ class ProjectPayroll extends Component {
                         {
                           fieldName: "basic_cost",
                           label: (
-                            <AlgaehLabel label={{ forceLabel: "Basic Amt" }} />
+                            <AlgaehLabel label={{ forceLabel: "Gross Amt." }} />
                           ),
                           displayTemplate: (row) => {
                             return GetAmountFormart(row.basic_cost);
