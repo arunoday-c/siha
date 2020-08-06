@@ -44,6 +44,7 @@ export const ConfirmAuth = () => {
           setLoading(false);
         } else {
           setVerified(false);
+          setLoading(false);
         }
       } catch (e) {
         setVerified(false);
@@ -59,13 +60,6 @@ export const ConfirmAuth = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // useEffect(() => {
-  //     if(is_authenticated){
-  //         setVerified(true)
-  //     }
-
-  // }, [is_authenticated])
-
   if (loading) {
     return null;
   } else {
@@ -74,18 +68,19 @@ export const ConfirmAuth = () => {
         <Redirect
           to={
             location?.state?.from?.pathname
-              ? location.state.from.pathname
+              ? { ...location?.state?.from }
               : userToken?.page_to_redirect
               ? userToken?.page_to_redirect.replace(/\s/g, "")
               : "/NoDashboard"
           }
         />
       );
+    } else {
+      return (
+        <Redirect
+          to={{ pathname: "/", state: { from: location?.state?.from } }}
+        />
+      );
     }
-
-    if (!verified) {
-      return <Redirect to={"/"} />;
-    }
-    return null;
   }
 };

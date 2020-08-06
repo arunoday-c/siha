@@ -35,7 +35,7 @@ export async function generateHeaders(extra) {
 }
 
 export default async function newAlgaehApi(
-  inputs = { uri: "", method: "", module: "", data: {}, extraHeaders: {} }
+  inputs = { uri: "", method: "GET", module: "", data: {}, extraHeaders: {} }
 ) {
   // const token = await getItem("token");
   // const headers = {
@@ -60,6 +60,6 @@ export default async function newAlgaehApi(
     response = await axios(responseObj);
     return response;
   } catch (e) {
-    throw Error(e.response.data.message || e.message);
+    throw new Error(e?.response?.data?.message || e?.message);
   }
 }
