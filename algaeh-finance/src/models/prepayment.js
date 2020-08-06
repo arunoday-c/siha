@@ -250,7 +250,6 @@ export const updatePrepaymentRequest = (req, res, next) => {
     });
 };
 
-
 //created by:Nowshad
 //To update Prepayment Amortize amount to respective cost center
 export const updatePrepaymentDetail = (req, res, next) => {
@@ -264,7 +263,7 @@ export const updatePrepaymentDetail = (req, res, next) => {
       values: [
         input.hospital_id,
         input.project_id,
-        input.finance_f_prepayment_detail_id
+        input.finance_f_prepayment_detail_id,
       ],
     })
     .then((result) => {
@@ -994,7 +993,7 @@ export const getPrepaymentDetails = (req, res, next) => {
       let joinStr = "";
 
       if (options[0]["cost_center_type"] == "P") {
-        selectStr += ` ,D.project_id as cost_center_id, P.project_desc as cost_center`;
+        selectStr += ` ,D.project_id as cost_center_id, CONCAT(D.hospital_id, '-', D.project_id) as c_id, P.project_desc as cost_center`;
         joinStr += ` left join hims_d_project P on D.project_id=P.hims_d_project_id `;
       } else if (options[0]["cost_center_type"] == "SD") {
         selectStr += ` ,D.sub_department_id   as cost_center_id, SD.sub_department_name as cost_center`;
@@ -1004,7 +1003,7 @@ export const getPrepaymentDetails = (req, res, next) => {
         .executeQuery({
           query: ` select finance_f_prepayment_detail_id, ROUND(amount,${decimal_places}) as amount,
         left(date_format(concat (D.year,'-',D.month,'-01'),'%Y-%M') ,8)as pay_month,
-        processed, DATE(D.updated_date) as processed_date, U.username as processed_by, D.hospital_id ${selectStr}
+        processed, DATE(D.updated_date) as processed_date, U.username as processed_by, D.hospital_id,D.project_id,D.prepayment_request_id ${selectStr}
         from finance_f_prepayment_detail D left join algaeh_d_app_user U
         on D.updated_by=U.algaeh_d_app_user_id ${joinStr} where prepayment_request_id=? ; `,
           values: [req.query.finance_f_prepayment_request_id],
