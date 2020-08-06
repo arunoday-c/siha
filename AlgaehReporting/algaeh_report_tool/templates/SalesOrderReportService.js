@@ -1,15 +1,13 @@
-
 const executePDF = function executePDFMethod(options) {
   return new Promise(function (resolve, reject) {
     try {
-
       const decimal_places = options.args.crypto.decimal_places;
       if (options.result.length > 0) {
         resolve({
           sub_total: parseFloat(options.result[0]["sub_total"]).toFixed(
             decimal_places
           ),
-          discount_amount: parseFloat(options.result[0]["discount_amount"]).toFixed(
+          net_discount: parseFloat(options.result[0]["net_discount"]).toFixed(
             decimal_places
           ),
           net_total: parseFloat(options.result[0]["net_total"]).toFixed(
@@ -31,7 +29,7 @@ const executePDF = function executePDFMethod(options) {
           employee_name: options.result[0]["employee_name"],
           narration: options.result[0]["narration"],
           address: options.result[0]["address"],
-          detailList: options.result
+          detailList: options.result,
         });
       } else {
         resolve({ detailList: options.result });
