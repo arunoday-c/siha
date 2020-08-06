@@ -492,7 +492,7 @@ class PointOfSale extends Component {
                 </button>
                 <button
                   type="button"
-                  className="btn btn-default"
+                  className="btn btn-danger"
                   onClick={CancelPosEntry.bind(this, this)}
                   disabled={this.state.saveEnable}
                 >
