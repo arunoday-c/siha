@@ -1988,3 +1988,21 @@ th {
   opacity: 0.4;
   pointer-events: none;
 }
+.algaehFldError {
+  .ant-select-selector,
+  .algaeh-text-fld input,
+  .ant-picker-default {
+    background-color: #fdeef0 !important;
+    border: 1px solid #ff3855 !important;
+  }
+  .errorMsg {
+    position: absolute;
+    top: 49px;
+    left: 15px;
+    font-size: 9px;
+    color: #fff;
+    background: #ff3956 !important;
+    padding: 0 3px;
+    border-radius: 0 0 2px 2px;
+  }
+}

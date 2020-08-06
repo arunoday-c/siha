@@ -2426,3 +2426,21 @@ input.autoselect-input:disabled {
     }
   }
 }
+.algaehFldError {
+  .ant-select-selector,
+  .algaeh-text-fld input,
+  .ant-picker-default {
+    background-color: lighten($color-red, 95%) !important;
+    border: 1px solid lighten($color-red, 45%) !important;
+  }
+  .errorMsg {
+    position: absolute;
+    top: 49px;
+    left: 15px;
+    font-size: 9px;
+    color: #fff;
+    background: lighten($color-red, 45%) !important;
+    padding: 0 3px;
+    border-radius: 0 0 2px 2px;
+  }
+}
