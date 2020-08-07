@@ -14,7 +14,7 @@ import {
   AlgaehLabel,
   AlagehFormGroup,
   AlgaehDataGrid,
-  AlgaehModalPopUp
+  AlgaehModalPopUp,
 } from "../../../Wrapper/algaehWrapper";
 import _ from "lodash";
 import { AlgaehActions } from "../../../../actions/algaehActions";
@@ -27,29 +27,27 @@ class PackageDetail extends Component {
     this.state = {
       package_detail: [],
       qty: 0,
-      s_service: null
+      s_service: null,
     };
   }
 
-  onClose = e => {
+  onClose = (e) => {
     this.props.onClose && this.props.onClose(this.state);
   };
 
   UNSAFE_componentWillReceiveProps(newProps) {
-    
     if (newProps.package_detail !== null) {
       this.setState({ ...this.state, ...newProps.package_detail });
     }
   }
 
   serviceHandeler(e) {
-    
     this.setState({
       s_service: e.hims_d_services_id,
       s_service_type: e.service_type_id,
       insurance_service_name: e.service_name,
       s_service_name: e.service_name,
-      s_service_amount: e.standard_fee
+      s_service_amount: e.standard_fee,
     });
   }
 
@@ -58,29 +56,29 @@ class PackageDetail extends Component {
     if (this.state.s_service_type === null) {
       swalMessage({
         type: "warning",
-        title: "Select Service Type."
+        title: "Select Service Type.",
       });
       return;
     } else if (this.state.s_service === null) {
       swalMessage({
         type: "warning",
-        title: "Select Service."
+        title: "Select Service.",
       });
       return;
     } else if (this.state.qty === "" || this.state.qty === 0) {
       swalMessage({
         type: "warning",
-        title: "Enter Quantity."
+        title: "Enter Quantity.",
       });
       return;
     }
-    let SelectedService = _.filter(package_detail, f => {
+    let SelectedService = _.filter(package_detail, (f) => {
       return (
         f.service_type_id === this.state.s_service_type &&
         f.service_id === this.state.s_service
       );
     });
-    
+
     if (SelectedService.length === 0) {
       let profit_loss = "P";
       let InputObj = {
@@ -90,11 +88,11 @@ class PackageDetail extends Component {
         qty: this.state.qty,
         available_qty: this.state.qty,
         tot_service_amount:
-          parseFloat(this.state.qty) * parseFloat(this.state.s_service_amount)
+          parseFloat(this.state.qty) * parseFloat(this.state.s_service_amount),
       };
 
       package_detail.push(InputObj);
-      let actual_amount = _.sumBy(package_detail, s =>
+      let actual_amount = _.sumBy(package_detail, (s) =>
         parseFloat(s.tot_service_amount)
       );
       let pl_amount =
@@ -119,23 +117,22 @@ class PackageDetail extends Component {
         actual_amount: actual_amount,
         pl_amount: pl_amount,
         profit_loss: profit_loss,
-        qty: 0
+        qty: 0,
       });
     } else {
       swalMessage({
         title: "Selected Service already exists.",
-        type: "warning"
+        type: "warning",
       });
     }
   }
 
   deletePackageDetail(row, e) {
-    
     let package_detail = this.state.package_detail;
     let _index = package_detail.indexOf(row);
 
     package_detail.splice(_index, 1);
-    let actual_amount = _.sumBy(package_detail, s =>
+    let actual_amount = _.sumBy(package_detail, (s) =>
       parseFloat(s.tot_service_amount)
     );
 
@@ -149,13 +146,13 @@ class PackageDetail extends Component {
     }
     this.setState({
       package_detail: package_detail,
-      actual_amount: actual_amount
+      actual_amount: actual_amount,
     });
   }
 
   texthandle(e) {
     this.setState({
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
   }
 
@@ -165,7 +162,7 @@ class PackageDetail extends Component {
         <div>
           <AlgaehModalPopUp
             events={{
-              onClose: this.onClose.bind(this)
+              onClose: this.onClose.bind(this),
             }}
             title="Package Services"
             openPopup={this.props.show}
@@ -180,7 +177,7 @@ class PackageDetail extends Component {
                         label={{ forceLabel: "Select Service" }}
                         title="Search Services"
                         id="service_id_search"
-                        template={result => {
+                        template={(result) => {
                           return (
                             <section className="resultSecStyles">
                               <div className="row">
@@ -200,7 +197,7 @@ class PackageDetail extends Component {
                         value={this.state.s_service_name}
                         searchName="servicepackagemas"
                         onClick={this.serviceHandeler.bind(this)}
-                        ref={attReg => {
+                        ref={(attReg) => {
                           this.attReg = attReg;
                         }}
                       />
@@ -209,29 +206,29 @@ class PackageDetail extends Component {
                         div={{ className: "col-2" }}
                         label={{
                           forceLabel: "Quantity",
-                          isImp: true
+                          isImp: true,
                         }}
                         textBox={{
                           number: {
                             allowNegative: false,
-                            thousandSeparator: ","
+                            thousandSeparator: ",",
                           },
                           className: "txt-fld",
                           name: "qty",
                           value: this.state.qty,
                           dontAllowKeys: ["-", "e", "."],
                           events: {
-                            onChange: this.texthandle.bind(this)
+                            onChange: this.texthandle.bind(this),
                           },
                           others: {
-                            step: "1"
-                          }
+                            step: "1",
+                          },
                         }}
                       />
                       <div className="col-2 form-group">
                         <AlgaehLabel
                           label={{
-                            forceLabel: "Actual Amount"
+                            forceLabel: "Actual Amount",
                           }}
                         />
                         <h6>{GetAmountFormart(this.state.actual_amount)}</h6>
@@ -239,7 +236,7 @@ class PackageDetail extends Component {
                       <div className="col-2 form-group">
                         <AlgaehLabel
                           label={{
-                            forceLabel: "Package Price"
+                            forceLabel: "Package Price",
                           }}
                         />
                         <h6>{GetAmountFormart(this.state.unit_cost)}</h6>
@@ -275,7 +272,7 @@ class PackageDetail extends Component {
                       <div className="col-2 form-group">
                         <button
                           className="btn btn-primary"
-                          style={{ marginTop: 19 }}
+                          style={{ marginTop: 20 }}
                           onClick={this.AddtoList.bind(this)}
                         >
                           Add
@@ -295,7 +292,7 @@ class PackageDetail extends Component {
                             label: (
                               <AlgaehLabel label={{ forceLabel: "Action" }} />
                             ),
-                            displayTemplate: row => {
+                            displayTemplate: (row) => {
                               return (
                                 <span>
                                   <i
@@ -310,8 +307,8 @@ class PackageDetail extends Component {
                             },
                             others: {
                               show:
-                                this.state.package_type === "D" ? true : false
-                            }
+                                this.state.package_type === "D" ? true : false,
+                            },
                           },
                           {
                             fieldName: "service_type_id",
@@ -320,12 +317,12 @@ class PackageDetail extends Component {
                                 label={{ fieldName: "service_type_id" }}
                               />
                             ),
-                            displayTemplate: row => {
+                            displayTemplate: (row) => {
                               let display =
                                 this.props.servicetype === undefined
                                   ? []
                                   : this.props.servicetype.filter(
-                                      f =>
+                                      (f) =>
                                         f.hims_d_service_type_id ===
                                         row.service_type_id
                                     );
@@ -337,7 +334,7 @@ class PackageDetail extends Component {
                                     : ""}
                                 </span>
                               );
-                            }
+                            },
                           },
 
                           {
@@ -347,12 +344,12 @@ class PackageDetail extends Component {
                                 label={{ fieldName: "services_id" }}
                               />
                             ),
-                            displayTemplate: row => {
+                            displayTemplate: (row) => {
                               let display =
                                 this.props.serviceslist === undefined
                                   ? []
                                   : this.props.serviceslist.filter(
-                                      f =>
+                                      (f) =>
                                         f.hims_d_services_id === row.service_id
                                     );
 
@@ -366,23 +363,23 @@ class PackageDetail extends Component {
                             },
 
                             others: {
-                              minWidth: 400
-                            }
+                              minWidth: 400,
+                            },
                           },
                           {
                             fieldName: "qty",
                             label: (
                               <AlgaehLabel label={{ forceLabel: "Qty" }} />
                             ),
-                            others: { maxWidth: 80, align: "center" }
+                            others: { maxWidth: 80, align: "center" },
                           },
                           {
                             fieldName: "tot_service_amount",
                             label: (
                               <AlgaehLabel label={{ forceLabel: "Amount" }} />
                             ),
-                            others: { maxWidth: 80, align: "center" }
-                          }
+                            others: { maxWidth: 80, align: "center" },
+                          },
                         ]}
                         keyId="actionCheck"
                         dataSource={{ data: this.state.package_detail }}
@@ -403,7 +400,7 @@ class PackageDetail extends Component {
                     <button
                       type="button"
                       className="btn btn-default"
-                      onClick={e => {
+                      onClick={(e) => {
                         this.onClose(e);
                       }}
                     >
@@ -426,7 +423,7 @@ function mapStateToProps(state) {
     serviceslist: state.serviceslist,
     patient_profile: state.patient_profile,
     inventorylocations: state.inventorylocations,
-    inventoryitemlist: state.inventoryitemlist
+    inventoryitemlist: state.inventoryitemlist,
   };
 }
 
@@ -434,15 +431,12 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
       getLocation: AlgaehActions,
-      getItems: AlgaehActions
+      getItems: AlgaehActions,
     },
     dispatch
   );
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(PackageDetail)
+  connect(mapStateToProps, mapDispatchToProps)(PackageDetail)
 );

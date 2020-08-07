@@ -1413,7 +1413,7 @@ class SelfPersonalDetails extends Component {
                     <button
                       type="button"
                       className="btn btn-default"
-                      style={{ marginTop: 19 }}
+                      style={{ marginTop: 20 }}
                       onClick={this.generateSalarySlipESS.bind(this)}
                     >
                       Print Payslip

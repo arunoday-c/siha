@@ -50,8 +50,9 @@ body {
   -o-transition: all 0.2s ease-in-out;
   -webkit-transition: all 0.2s ease-in-out;
   transition: all 0.2s ease-in-out;
-  min-height: 31px;
-  min-width: 31px;
+  min-height: $formMinHt;
+  max-height: $formMaxHt;
+  border-radius: $borderRadius;
   -webkit-transition: width 2s; /* Safari */
   transition: width 2s;
   font-size: 0.8em !important;
@@ -783,7 +784,7 @@ input[type="type"] {
   font-size: $textFontSize;
   padding: 4px 6px 4px;
   border: 1px solid #d3d3d3;
-  border-radius: 2px;
+  border-radius: $borderRadius !important;
   background: $color-white;
   width: 100%;
 }
@@ -883,10 +884,11 @@ textarea {
     width: 99%;
     text-transform: uppercase;
     border: 1px solid #d3d3d3;
-    border-radius: 4px;
+    border-radius: $borderRadius;
     background: $color-white;
     font-size: 0.9em;
-    height: 30px;
+    min-height: $formMinHt !important;
+    max-height: $formMaxHt !important;
     font-weight: 700;
   }
   input[type="date"]::-webkit-calendar-picker-indicator,
@@ -945,10 +947,11 @@ textarea {
     width: 99%;
     text-transform: uppercase;
     border: 1px solid #d3d3d3;
-    border-radius: 4px;
+    border-radius: $borderRadius;
     background: $color-white;
     font-size: 0.9em;
-    height: 30px;
+    min-height: $formMinHt !important;
+    max-height: $formMaxHt !important;
     font-weight: 700;
   }
   input[type="text"]::-webkit-calendar-picker-indicator,
@@ -1016,7 +1019,8 @@ textarea {
   .algaeh-datePicker input[type="datetime-local"],
   .algaeh-datePicker input[type="month"],
   .algaeh-datePicker input[type="year"],
-  .ant-select-selection {
+  .ant-select-selection,
+  .ant-select-selector {
     background-color: none;
     border: 1px solid #d9ae58;
   }
@@ -1211,7 +1215,7 @@ input.autoselect-input:disabled {
   }
 }
 .colorPrimary {
-  background-color: #dbad64;
+  background-color: $gold-color;
 
   h2 {
     color: $color-white;
@@ -1581,7 +1585,7 @@ input.autoselect-input:disabled {
     }
   }
   .colorPrimary {
-    background-color: #dbad64;
+    background-color: $gold-color;
 
     h2 {
       color: $color-white;
@@ -1718,14 +1722,14 @@ input.autoselect-input:disabled {
     &:hover {
       background-color: #fffcf8;
       color: #9e670f;
-      border-color: #dbad64;
+      border-color: $gold-color;
       cursor: pointer;
     }
     &.active {
-      background-color: #dbad64;
+      background-color: $gold-color;
       color: $color-white;
       pointer-events: none;
-      border-color: #dbad64;
+      border-color: $gold-color;
     }
     &:focus {
       outline: none;
@@ -2080,8 +2084,9 @@ input.autoselect-input:disabled {
     padding: 0 20px 0 7px;
     line-height: 26px;
     border: 1px solid #dededf;
-    height: 30px;
-    border-radius: 4px;
+    min-height: $formMinHt;
+    max-height: $formMaxHt;
+    border-radius: $borderRadius;
     font-size: 1rem;
     position: relative;
     background-color: #fff;
@@ -2419,5 +2424,79 @@ input.autoselect-input:disabled {
     .table-scroll {
       min-height: 70vh;
     }
+  }
+}
+.algaehFldError {
+  .ant-select-selector,
+  .algaeh-text-fld input,
+  .ant-picker-default {
+    background-color: lighten($color-red, 95%) !important;
+    border: 1px solid lighten($color-red, 45%) !important;
+  }
+  .errorMsg {
+    position: absolute;
+    top: 49px;
+    left: 15px;
+    font-size: 9px;
+    color: #fff;
+    background: lighten($color-red, 45%) !important;
+    padding: 0 3px;
+    border-radius: 0 0 2px 2px;
+  }
+}
+/*====================== New Patient Registration CSS starts here ======================*/
+.ant-input {
+  min-height: $formMinHt;
+  max-height: $formMaxHt;
+}
+.ant-tabs {
+  overflow: inherit !important;
+  .ant-tabs-nav {
+    margin: 0 !important;
+    .ant-tabs-tab {
+      // display: none;
+      padding: 2px 10px !important;
+      font-weight: normal !important;
+      background-color: #f3f3f3 !important;
+      border: 1px solid #d3d3d3 !important;
+      border-top-right-radius: $borderRadius !important;
+      border-top-left-radius: $borderRadius !important;
+      border-bottom: none !important;
+
+      &:hover {
+        background-color: #fffcf8 !important;
+        color: #9e670f !important;
+        border-color: $gold-color !important;
+        cursor: pointer !important;
+      }
+      &:focus {
+        outline: none !important;
+      }
+      label {
+        cursor: pointer !important;
+      }
+    }
+    .ant-tabs-tab-active {
+      background-color: $gold-color !important;
+
+      pointer-events: none !important;
+      border-color: $gold-color !important;
+      label {
+        color: $color-white !important;
+      }
+    }
+  }
+  .ant-tabs-content-holder {
+    padding: 5px 0 !important;
+    background-color: $color-white !important;
+    border: 1px solid #d3d3d3 !important;
+  }
+}
+.hptl-phase1-fd-billing-form {
+  .Paper {
+    background-color: $color-white;
+    border: 1px solid #d3d3d3;
+    padding: 15px;
+    margin-top: 15px;
   }
 }

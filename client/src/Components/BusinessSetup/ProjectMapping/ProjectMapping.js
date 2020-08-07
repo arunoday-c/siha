@@ -129,7 +129,7 @@ class ProjectMapping extends Component {
             <div className="col form-group">
               <button
                 onClick={this.addDivisionProject.bind(this)}
-                style={{ marginTop: 19 }}
+                style={{ marginTop: 20 }}
                 className="btn btn-primary"
               >
                 <span>Add to list</span>

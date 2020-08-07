@@ -349,7 +349,7 @@ class LoanMaster extends Component {
             <div className="col-2 form-group">
               <button
                 onClick={this.addLoanMaster.bind(this)}
-                style={{ marginTop: 19 }}
+                style={{ marginTop: 20 }}
                 className="btn btn-primary"
               >
                 ADD TO LIST

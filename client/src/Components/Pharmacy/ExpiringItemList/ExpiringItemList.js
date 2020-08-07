@@ -5,7 +5,7 @@ import { bindActionCreators } from "redux";
 import {
   AlgaehDataGrid,
   AlgaehLabel,
-  AlagehAutoComplete
+  AlagehAutoComplete,
 } from "../../Wrapper/algaehWrapper";
 import BreadCrumb from "../../common/BreadCrumb/BreadCrumb.js";
 
@@ -22,7 +22,7 @@ class ExpiringItemList extends Component {
 
     this.state = {
       item_list: [],
-      location_id: null
+      location_id: null,
     };
   }
 
@@ -33,8 +33,8 @@ class ExpiringItemList extends Component {
       method: "GET",
       redux: {
         type: "ANALYTES_GET_DATA",
-        mappingName: "locations"
-      }
+        mappingName: "locations",
+      },
     });
   }
 
@@ -44,17 +44,17 @@ class ExpiringItemList extends Component {
       method: "GET",
       module: "pharmacy",
       data: { location_id: this.state.location_id },
-      onSuccess: res => {
+      onSuccess: (res) => {
         if (res.data.success) {
           this.setState({ item_list: res.data.records });
         }
       },
-      onFailure: err => {
+      onFailure: (err) => {
         swalMessage({
           title: err.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -79,20 +79,20 @@ class ExpiringItemList extends Component {
       module: "pharmacy",
       data: this.state,
       method: "POST",
-      onSuccess: res => {
+      onSuccess: (res) => {
         if (res.data.success) {
           swalMessage({
             title: "Saved Successfully",
-            type: "success"
+            type: "success",
           });
         }
       },
-      onFailure: err => {
+      onFailure: (err) => {
         swalMessage({
           title: err.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -107,25 +107,25 @@ class ExpiringItemList extends Component {
               />
             }
             breadStyle={this.props.breadStyle}
-            pageNavPath={[
-              {
-                pageName: (
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Home",
-                      align: "ltr"
-                    }}
-                  />
-                )
-              },
-              {
-                pageName: (
-                  <AlgaehLabel
-                    label={{ forceLabel: "Expiring Item List", align: "ltr" }}
-                  />
-                )
-              }
-            ]}
+            // pageNavPath={[
+            //   {
+            //     pageName: (
+            //       <AlgaehLabel
+            //         label={{
+            //           forceLabel: "Home",
+            //           align: "ltr"
+            //         }}
+            //       />
+            //     )
+            //   },
+            //   {
+            //     pageName: (
+            //       <AlgaehLabel
+            //         label={{ forceLabel: "Expiring Item List", align: "ltr" }}
+            //       />
+            //     )
+            //   }
+            // ]}
           />
 
           <div
@@ -144,16 +144,16 @@ class ExpiringItemList extends Component {
                     dataSource: {
                       textField: "location_description",
                       valueField: "hims_d_pharmacy_location_id",
-                      data: this.props.locations
+                      data: this.props.locations,
                     },
                     onChange: this.changeTexts.bind(this),
                     onClear: () => {
                       this.setState({
                         location_id: null,
-                        item_list: []
+                        item_list: [],
                       });
                     },
-                    autoComplete: "off"
+                    autoComplete: "off",
                   }}
                 />
 
@@ -177,7 +177,7 @@ class ExpiringItemList extends Component {
                 columns={[
                   {
                     fieldName: "item_description",
-                    label: <AlgaehLabel label={{ forceLabel: "Item Name" }} />
+                    label: <AlgaehLabel label={{ forceLabel: "Item Name" }} />,
                   },
 
                   {
@@ -185,18 +185,18 @@ class ExpiringItemList extends Component {
                     label: (
                       <AlgaehLabel label={{ forceLabel: "Expiry Date" }} />
                     ),
-                    displayTemplate: row => {
+                    displayTemplate: (row) => {
                       return <span>{this.dateFormater(row.expiry_date)}</span>;
-                    }
+                    },
                   },
                   {
                     fieldName: "batchno",
-                    label: <AlgaehLabel label={{ forceLabel: "Batch No." }} />
-                  }
+                    label: <AlgaehLabel label={{ forceLabel: "Batch No." }} />,
+                  },
                 ]}
                 keyId="item_id"
                 dataSource={{
-                  data: this.state.item_list
+                  data: this.state.item_list,
                 }}
                 noDataText="No Expiry Items available for selected Location"
                 isEditable={false}
@@ -204,7 +204,7 @@ class ExpiringItemList extends Component {
                 paging={{ page: 0, rowsPerPage: 20 }}
                 events={{
                   // onDelete: deleteStock.bind(this, this),
-                  onEdit: row => {}
+                  onEdit: (row) => {},
                   // onDone: updateStockDetils.bind(this, this)
                 }}
               />
@@ -218,22 +218,19 @@ class ExpiringItemList extends Component {
 
 function mapStateToProps(state) {
   return {
-    locations: state.locations
+    locations: state.locations,
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getLocation: AlgaehActions
+      getLocation: AlgaehActions,
     },
     dispatch
   );
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(ExpiringItemList)
+  connect(mapStateToProps, mapDispatchToProps)(ExpiringItemList)
 );

@@ -9,13 +9,13 @@ import "./../../../styles/site.scss";
 import {
   datehandle,
   getSampleCollectionDetails,
-  Refresh
+  Refresh,
 } from "./SampleCollectionHandaler";
 
 import {
   AlgaehDataGrid,
   AlgaehLabel,
-  AlgaehDateHandler
+  AlgaehDateHandler,
 } from "../../Wrapper/algaehWrapper";
 
 import { AlgaehActions } from "../../../actions/algaehActions";
@@ -40,17 +40,17 @@ class SampleCollection extends Component {
       selected_patient: null,
       status: null,
       isOpen: false,
-      proiorty: null
+      proiorty: null,
     };
   }
 
-  changeDateFormat = date => {
+  changeDateFormat = (date) => {
     if (date != null) {
       return moment(date).format(Options.datetimeFormat);
     }
   };
 
-  changeTimeFormat = date => {
+  changeTimeFormat = (date) => {
     if (date != null) {
       return moment(date).format(Options.timeFormat);
     }
@@ -59,13 +59,13 @@ class SampleCollection extends Component {
   ShowCollectionModel(row, e) {
     this.setState({
       isOpen: !this.state.isOpen,
-      selected_patient: row
+      selected_patient: row,
     });
   }
   CloseCollectionModel(e) {
     this.setState(
       {
-        isOpen: !this.state.isOpen
+        isOpen: !this.state.isOpen,
       },
       () => {
         getSampleCollectionDetails(this, this);
@@ -85,18 +85,18 @@ class SampleCollection extends Component {
     let _Confirmed = [];
     let _Validated = [];
     if (this.state.sample_collection !== undefined) {
-      _Ordered = _.filter(this.state.sample_collection, f => {
+      _Ordered = _.filter(this.state.sample_collection, (f) => {
         return f.status === "O";
       });
 
-      _Collected = _.filter(this.state.sample_collection, f => {
+      _Collected = _.filter(this.state.sample_collection, (f) => {
         return f.status === "CL";
       });
 
-      _Validated = _.filter(this.state.sample_collection, f => {
+      _Validated = _.filter(this.state.sample_collection, (f) => {
         return f.status === "V";
       });
-      _Confirmed = _.filter(this.state.sample_collection, f => {
+      _Confirmed = _.filter(this.state.sample_collection, (f) => {
         return f.status === "CF";
       });
 
@@ -110,31 +110,6 @@ class SampleCollection extends Component {
     return (
       <React.Fragment>
         <div className="hptl-phase1-speciman-collection-form">
-          {/* <BreadCrumb
-            title={
-              <AlgaehLabel label={{ fieldName: "form_name", align: "ltr" }} />
-            }
-            breadStyle={this.props.breadStyle}
-            pageNavPath={[
-              {
-                pageName: (
-                  <AlgaehLabel
-                    label={{
-                      fieldName: "form_home",
-                      align: "ltr"
-                    }}
-                  />
-                )
-              },
-              {
-                pageName: (
-                  <AlgaehLabel
-                    label={{ fieldName: "form_name", align: "ltr" }}
-                  />
-                )
-              }
-            ]}
-          /> */}
           <div
             className="row inner-top-search"
             style={{ paddingBottom: "10px" }}
@@ -144,7 +119,7 @@ class SampleCollection extends Component {
               label={{ fieldName: "from_date" }}
               textBox={{ className: "txt-fld", name: "from_date" }}
               events={{
-                onChange: datehandle.bind(this, this)
+                onChange: datehandle.bind(this, this),
               }}
               value={this.state.from_date}
             />
@@ -153,7 +128,7 @@ class SampleCollection extends Component {
               label={{ fieldName: "to_date" }}
               textBox={{ className: "txt-fld", name: "to_date" }}
               events={{
-                onChange: datehandle.bind(this, this)
+                onChange: datehandle.bind(this, this),
               }}
               value={this.state.to_date}
             />{" "}
@@ -346,7 +321,7 @@ class SampleCollection extends Component {
                       {
                         fieldName: "action",
                         label: <AlgaehLabel label={{ fieldName: "action" }} />,
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return (
                             <span>
                               <i
@@ -363,15 +338,15 @@ class SampleCollection extends Component {
                           maxWidth: 70,
                           resizable: false,
                           filterable: false,
-                          style: { textAlign: "center" }
-                        }
+                          style: { textAlign: "center" },
+                        },
                       },
                       {
                         fieldName: "ordered_date",
                         label: (
                           <AlgaehLabel label={{ fieldName: "ordered_date" }} />
                         ),
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return (
                             <span>
                               {this.changeDateFormat(row.ordered_date)}
@@ -382,8 +357,8 @@ class SampleCollection extends Component {
                         others: {
                           maxWidth: 150,
                           resizable: false,
-                          style: { textAlign: "center" }
-                        }
+                          style: { textAlign: "center" },
+                        },
                       },
                       {
                         fieldName: "number_of_tests",
@@ -393,29 +368,29 @@ class SampleCollection extends Component {
                         others: {
                           maxWidth: 90,
                           resizable: false,
-                          style: { textAlign: "center" }
-                        }
+                          style: { textAlign: "center" },
+                        },
                       },
                       {
                         fieldName: "test_type",
                         label: (
                           <AlgaehLabel label={{ fieldName: "proiorty" }} />
                         ),
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return row.test_type === "S" ? (
                             <span className="badge badge-danger">Stat</span>
                           ) : (
-                              <span className="badge badge-secondary">
-                                Routine
+                            <span className="badge badge-secondary">
+                              Routine
                             </span>
-                            );
+                          );
                         },
                         disabled: true,
                         others: {
                           maxWidth: 80,
                           resizable: false,
-                          style: { textAlign: "center" }
-                        }
+                          style: { textAlign: "center" },
+                        },
                       },
                       {
                         fieldName: "patient_code",
@@ -426,8 +401,8 @@ class SampleCollection extends Component {
                         others: {
                           maxWidth: 150,
                           resizable: false,
-                          style: { textAlign: "center" }
-                        }
+                          style: { textAlign: "center" },
+                        },
                       },
                       {
                         fieldName: "full_name",
@@ -437,8 +412,8 @@ class SampleCollection extends Component {
                         disabled: true,
                         others: {
                           resizable: false,
-                          style: { textAlign: "left" }
-                        }
+                          style: { textAlign: "left" },
+                        },
                       },
                       // {
                       //   fieldName: "visit_code",
@@ -455,7 +430,7 @@ class SampleCollection extends Component {
                       {
                         fieldName: "status",
                         label: <AlgaehLabel label={{ fieldName: "status" }} />,
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return row.status === "O" ? (
                             <span className="badge badge-light">Ordered</span>
                           ) : row.status === "CL" ? (
@@ -471,22 +446,22 @@ class SampleCollection extends Component {
                               Confirmed
                             </span>
                           ) : (
-                                    <span className="badge badge-success">
-                                      Validated
+                            <span className="badge badge-success">
+                              Validated
                             </span>
-                                  );
+                          );
                         },
                         disabled: true,
                         others: {
                           maxWidth: 90,
                           resizable: false,
-                          style: { textAlign: "center" }
-                        }
-                      }
+                          style: { textAlign: "center" },
+                        },
+                      },
                     ]}
                     keyId="patient_code"
                     dataSource={{
-                      data: this.state.sample_collection
+                      data: this.state.sample_collection,
                     }}
                     filter={true}
                     noDataText="No data available for selected period"
@@ -500,9 +475,9 @@ class SampleCollection extends Component {
           <MyContext.Provider
             value={{
               state: this.state,
-              updateState: obj => {
+              updateState: (obj) => {
                 this.setState({ ...obj });
-              }
+              },
             }}
           >
             <SampleCollectionModal
@@ -510,7 +485,7 @@ class SampleCollection extends Component {
                 <AlgaehLabel
                   label={{
                     fieldName: "sample_collection",
-                    align: "ltr"
+                    align: "ltr",
                   }}
                 />
               }
@@ -527,22 +502,19 @@ class SampleCollection extends Component {
 
 function mapStateToProps(state) {
   return {
-    samplecollection: state.samplecollection
+    samplecollection: state.samplecollection,
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getSampleCollection: AlgaehActions
+      getSampleCollection: AlgaehActions,
     },
     dispatch
   );
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(SampleCollection)
+  connect(mapStateToProps, mapDispatchToProps)(SampleCollection)
 );

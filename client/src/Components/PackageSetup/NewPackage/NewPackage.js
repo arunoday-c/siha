@@ -817,7 +817,7 @@ class NewPackage extends PureComponent {
                     <div className="col-2 form-group">
                       <button
                         className="btn btn-primary"
-                        style={{ marginTop: 19 }}
+                        style={{ marginTop: 20 }}
                         onClick={this.AddToList.bind(this)}
                         // disabled={this.state.approvedPack}
                       >

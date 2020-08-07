@@ -246,7 +246,7 @@ export default memo(function (props = { data: [] }) {
       </div>
       <div className="col-12" style={{ textAlign: "right" }}>
         <button
-          style={{ marginTop: 19 }}
+          style={{ marginTop: 20 }}
           className="btn btn-primary"
           onClick={onPublish}
         >

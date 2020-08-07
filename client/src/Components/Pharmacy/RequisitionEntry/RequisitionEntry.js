@@ -129,25 +129,25 @@ class RequisitionEntry extends Component {
               />
             }
             breadStyle={this.props.breadStyle}
-            pageNavPath={[
-              {
-                pageName: (
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Home",
-                      align: "ltr",
-                    }}
-                  />
-                ),
-              },
-              {
-                pageName: (
-                  <AlgaehLabel
-                    label={{ forceLabel: "Material Requisition", align: "ltr" }}
-                  />
-                ),
-              },
-            ]}
+            // pageNavPath={[
+            //   {
+            //     pageName: (
+            //       <AlgaehLabel
+            //         label={{
+            //           forceLabel: "Home",
+            //           align: "ltr",
+            //         }}
+            //       />
+            //     ),
+            //   },
+            //   {
+            //     pageName: (
+            //       <AlgaehLabel
+            //         label={{ forceLabel: "Material Requisition", align: "ltr" }}
+            //       />
+            //     ),
+            //   },
+            // ]}
             soptlightSearch={{
               label: (
                 <AlgaehLabel

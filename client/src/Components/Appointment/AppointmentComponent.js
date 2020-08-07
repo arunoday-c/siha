@@ -614,7 +614,7 @@ function AppointmentComponent(props) {
                 }}
               />
 
-              <div className="col-lg-1 form-group" style={{ marginTop: 19 }}>
+              <div className="col-lg-1 form-group" style={{ marginTop: 20 }}>
                 <button
                   id="load-appt-sch"
                   type="submit"

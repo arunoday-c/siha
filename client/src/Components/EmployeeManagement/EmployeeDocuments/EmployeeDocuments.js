@@ -568,7 +568,7 @@ class EmployeeDocuments extends Component {
             /> */}
             <div className="col form-group">
               <button
-                style={{ marginTop: 19 }}
+                style={{ marginTop: 20 }}
                 className="btn btn-primary"
                 onClick={this.onClearEmployeeHandler.bind(this)}
               >

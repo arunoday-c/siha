@@ -982,14 +982,14 @@ export default class EmployeeShiftRostering extends Component {
           <div className="col form-group">
             <button
               onClick={this.clearData.bind(this)}
-              style={{ marginTop: 19 }}
+              style={{ marginTop: 20 }}
               className="btn btn-default"
             >
               Clear
             </button>{" "}
             <button
               onClick={this.getEmployeesForShiftRoster.bind(this)}
-              style={{ marginTop: 19, marginLeft: 5 }}
+              style={{ marginTop: 20, marginLeft: 5 }}
               className="btn btn-primary"
               disabled={this.state.loading}
             >

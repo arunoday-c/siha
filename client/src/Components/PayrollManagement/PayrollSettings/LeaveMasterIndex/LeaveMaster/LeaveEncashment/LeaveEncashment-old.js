@@ -78,7 +78,7 @@
 //             />
 
 //             <div className="col-2">
-//               <button className="btn btn-primary" style={{ marginTop: 19 }}>
+//               <button className="btn btn-primary" style={{ marginTop: 20 }}>
 //                 Add to List
 //               </button>
 //             </div>

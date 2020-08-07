@@ -7,7 +7,7 @@ import {
   Checkbox,
   AlgaehButton,
   Modal,
-  //   AlgaehTreeSearch,
+  AlgaehTreeSearch,
   AlgaehMessagePop,
   DatePicker,
   Spin,
@@ -25,6 +25,8 @@ export function PrepaymentProcess() {
   const [current, setCurrent] = useState(null);
   const [processList, setProcessList] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [costCenter, setCostCenter] = useState([]);
+  const [selectAll, setSelectAll] = useState(false);
   const { control, errors, handleSubmit, getValues } = useForm({
     shouldFocusError: true,
     defaultValues: {
@@ -35,11 +37,17 @@ export function PrepaymentProcess() {
   });
 
   useEffect(() => {
-    loadListToProcess(getValues());
+    Promise.all([
+      loadListToProcess(getValues()),
+      getCostCentersForVoucher(),
+    ]).then(() => {
+      setLoading(false);
+    });
   }, []); // eslint-disable-line
 
   const addToList = (row) => {
     setProcessList((state) => {
+      debugger;
       const idx = state.findIndex(
         (item) => item === row.finance_f_prepayment_detail_id
       );
@@ -51,7 +59,27 @@ export function PrepaymentProcess() {
       }
     });
   };
+  const getCostCentersForVoucher = async () => {
+    try {
+      const res = await newAlgaehApi({
+        uri: "/finance_masters/getCostCentersForVoucher",
+        method: "GET",
+        module: "finance",
+      });
+      if (res.data.success) {
+        setCostCenter(res.data.result);
+        // setLoading(false);
+      }
+    } catch (e) {
+      setLoading(false);
+      AlgaehMessagePop({
+        type: "error",
+        display: e.message,
+      });
+    }
+  };
 
+  // }
   const loadListToProcess = async (data) => {
     try {
       const res = await newAlgaehApi({
@@ -65,7 +93,36 @@ export function PrepaymentProcess() {
       });
       if (res.data.success) {
         setList(res.data.result);
-        setLoading(false);
+        // setLoading(false);
+      }
+    } catch (e) {
+      setLoading(false);
+      AlgaehMessagePop({
+        type: "error",
+        display: e.message,
+      });
+    }
+  };
+  const updateProcessList = async (data) => {
+    // debugger;
+    const hospitalId = parseInt(data.hospital_id);
+    try {
+      const res = await newAlgaehApi({
+        uri: "/prepayment/updatePrepaymentDetail",
+        method: "PUT",
+        data: {
+          finance_f_prepayment_detail_id: data.finance_f_prepayment_detail_id,
+          hospital_id: hospitalId,
+          project_id: data.cost_center_id,
+        },
+        module: "finance",
+      });
+      if (res.data.success) {
+        debugger;
+        console.log("data", data);
+        getProcessDetails(data);
+        // setList(res.data.result);
+        // setLoading(false);
       }
     } catch (e) {
       setLoading(false);
@@ -81,6 +138,7 @@ export function PrepaymentProcess() {
   };
 
   const onProcess = async () => {
+    debugger;
     setLoading(true);
     try {
       const res = await newAlgaehApi({
@@ -92,6 +150,7 @@ export function PrepaymentProcess() {
         },
       });
       if (res.data.success) {
+        debugger;
         loadListToProcess(getValues());
         setProcessList([]);
       }
@@ -110,7 +169,8 @@ export function PrepaymentProcess() {
         uri: "/prepayment/getPrepaymentDetails",
         module: "finance",
         data: {
-          finance_f_prepayment_request_id: row.finance_f_prepayment_request_id,
+          finance_f_prepayment_request_id:
+            row.finance_f_prepayment_request_id || row.prepayment_request_id,
         },
       });
       if (res.data.success) {
@@ -152,7 +212,7 @@ export function PrepaymentProcess() {
                   type="checkbox"
                   name="checkSelf"
                   checked=""
-                  // onChange={selectCheckBox.bind(this, this)}
+                // onChange={selectCheckBox.bind(this, this)}
                 />
                 <span>Yes</span>
               </label>
@@ -166,40 +226,140 @@ export function PrepaymentProcess() {
         <AlgaehDataGrid
           className="prePay_ProcessDetail_Grid"
           columns={[
+            // {
+            //   fieldName: "",
+            //   label: "Action",
+            //   displayTemplate: (row) => {
+            //     return (
+            //       <>
+            //         {row.processed === "N" ? (
+            //           <span>
+            //             <i className="fas fa-pen"></i>
+            //           </span>) : (
+            //             ""
+            //           )}
+            //       </>
+            //     );
+            //   },
+            //   others: { minWidth: 40 },
+            // },
             {
-              fieldName: "",
-              label: "Action",
-              displayTemplate: (row) => {
-                return (
-                  <span>
-                    <i className="fas fa-pen"></i>
-                  </span>
-                );
-              },
-              others: { minWidth: 40 },
-            },
-            {
-              fieldName: "cost_center",
+              fieldName: "cost_center_id",
               label: "Cost Center",
               sortable: true,
+              displayTemplate: (row) => {
+                return <span>{row.cost_center}</span>;
+              },
+              editorTemplate: (row) => {
+                const valueRow =
+                  row.hospital_id !== undefined &&
+                    row.hospital_id !== "" &&
+                    row.cost_center_id !== undefined &&
+                    row.cost_center_id !== ""
+                    ? `${row.hospital_id}-${row.cost_center_id}`
+                    : "";
+                return (
+                  <AlgaehTreeSearch
+                    // div={{ className: "col-10" }}
+                    tree={{
+                      treeDefaultExpandAll: true,
+                      updateInternally: true,
+                      data: costCenter,
+                      disableHeader: true,
+                      textField: "hospital_name",
+                      valueField: "hims_d_hospital_id",
+                      children: {
+                        node: "cost_centers",
+                        textField: "cost_center",
+                        valueField: (node) => {
+                          console.log("nodeee", node);
+                          const { hims_d_hospital_id, cost_center_id } = node;
+                          if (cost_center_id === undefined) {
+                            return hims_d_hospital_id;
+                          } else {
+                            return `${hims_d_hospital_id}-${cost_center_id}`;
+                          }
+                        },
+                      },
+
+                      value: valueRow,
+                      onChange: (value) => {
+                        if (value !== undefined) {
+                          const detl = value.split("-");
+                          row.hospital_id = detl[0];
+                          row.cost_center_id = detl[1];
+                        } else {
+                          row.hospital_id = undefined;
+                          row.cost_center_id = undefined;
+                        }
+                      },
+                    }}
+                  />
+                );
+              },
             },
+            // }}
+            // />
+            // <AlgaehAutoComplete
+            //   selector={{
+            //     updateInternally: true,
+            //     dataSource: {
+            //       data: center.cost_centers,
+            //       valueField: "cost_center_id",
+            //       textField: "cost_center",
+            //     },
+            //     value: row["cost_center_id"],
+            //     onChange: (details) => {
+            //       row["cost_center_id"] = details["cost_center_id"];
+            //     },
+            //     onClear: () => {
+            //       row["cost_center_id"] = null;
+            //     },
+            //   }}
+            // />
+            //     );
+            //   },
+            // },
             {
               fieldName: "amount",
               label: "Amount",
               sortable: true,
+              editorTemplate: (row) => {
+                return row.amount;
+              },
             },
             {
               fieldName: "processed",
               label: "Processed",
+              displayTemplate: (row) => {
+                return row.processed === "N" ? "No" : "Yes";
+              },
               sortable: true,
+              editorTemplate: (row) => {
+                return row.processed === "N" ? "No" : "Yes";
+              },
             },
             {
               fieldName: "pay_month",
               label: "Pay Month",
               sortable: true,
+              editorTemplate: (row) => {
+                return row.pay_month;
+              },
             },
           ]}
           loading={false}
+          isEditable={"editOnly"}
+          events={{
+            // onDone: () => {},
+            onSave: updateProcessList,
+            // onSaveShow: (row) => {
+            //   return row.processed === "N" ? true : false;
+            // },
+            onEditShow: (row) => {
+              return !row.processed === "N";
+            },
+          }}
           // height="34vh"
           data={current}
         />
@@ -399,7 +559,9 @@ export function PrepaymentProcess() {
               <AlgaehButton
                 disabled={processList.length === list.length}
                 className="btn btn-default"
-                // onClick={clearState}
+                onClick={() => {
+                  setSelectAll(true);
+                }}
               >
                 Select All
               </AlgaehButton>

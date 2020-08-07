@@ -5,7 +5,7 @@ import {
   AlgaehLabel,
   AlgaehDataGrid,
   AlgaehDateHandler,
-  AlagehFormGroup
+  AlagehFormGroup,
 } from "../../../Wrapper/algaehWrapper";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 // import GlobalVariables from "../../../../utils/GlobalVariables.json";
@@ -16,7 +16,7 @@ class EarningsDeductions extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      earning_deductions: []
+      earning_deductions: [],
     };
 
     this.getEarningDeductions();
@@ -41,7 +41,7 @@ class EarningsDeductions extends Component {
       general_ledger: "",
       allow_round_off: "",
       round_off_type: "",
-      round_off_amount: ""
+      round_off_amount: "",
     });
   }
 
@@ -69,23 +69,23 @@ class EarningsDeductions extends Component {
         general_ledger: data.general_ledger,
         allow_round_off: data.allow_round_off,
         round_off_type: data.round_off_type,
-        round_off_amount: data.round_off_amount
+        round_off_amount: data.round_off_amount,
       },
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           swalMessage({
             title: "Record updated successfully",
-            type: "success"
+            type: "success",
           });
           this.getEarningDeductions();
         }
       },
-      onFailure: error => {
+      onFailure: (error) => {
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -97,39 +97,39 @@ class EarningsDeductions extends Component {
       confirmButtonText: "Yes",
       confirmButtonColor: "#44b8bd",
       cancelButtonColor: "#d33",
-      cancelButtonText: "No"
-    }).then(willDelete => {
+      cancelButtonText: "No",
+    }).then((willDelete) => {
       if (willDelete.value) {
         algaehApiCall({
           uri: "/payrollsettings/deleteEarningDeduction",
           module: "hrManagement",
           data: {
-            hims_d_earning_deduction_id: data.hims_d_earning_deduction_id
+            hims_d_earning_deduction_id: data.hims_d_earning_deduction_id,
           },
           method: "DELETE",
-          onSuccess: response => {
+          onSuccess: (response) => {
             if (response.data.records.success) {
               swalMessage({
                 title: "Record deleted successfully . .",
-                type: "success"
+                type: "success",
               });
 
               this.getEarningDeductions();
             } else if (!response.data.records.success) {
               swalMessage({
                 title: response.data.records.message,
-                type: "error"
+                type: "error",
               });
             }
           },
-          onFailure: error => {
+          onFailure: (error) => {
             swalMessage({
               title: error.message,
-              type: "error"
+              type: "error",
             });
-          }
+          },
         });
-      } 
+      }
     });
   }
 
@@ -161,20 +161,20 @@ class EarningsDeductions extends Component {
             general_ledger: this.state.general_ledger,
             allow_round_off: this.state.allow_round_off,
             round_off_type: this.state.round_off_type,
-            round_off_amount: this.state.round_off_amount
+            round_off_amount: this.state.round_off_amount,
           },
-          onSuccess: res => {
+          onSuccess: (res) => {
             if (res.data.success) {
               this.clearState();
               swalMessage({
                 title: "Record added successfully",
-                type: "success"
+                type: "success",
               });
             }
           },
-          onFailure: err => {}
+          onFailure: (err) => {},
         });
-      }
+      },
     });
   }
 
@@ -183,27 +183,27 @@ class EarningsDeductions extends Component {
       uri: "/payrollsettings/getEarningDeduction",
       module: "hrManagement",
       method: "GET",
-      onSuccess: res => {
+      onSuccess: (res) => {
         if (res.data.success) {
           this.setState({
-            earning_deductions: res.data.records
+            earning_deductions: res.data.records,
           });
         }
       },
 
-      onFailure: err => {}
+      onFailure: (err) => {},
     });
   }
 
   dropDownHandler(value) {
     this.setState({
-      [value.name]: value.value
+      [value.name]: value.value,
     });
   }
 
   changeTexts(e) {
     this.setState({
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
   }
 
@@ -234,14 +234,14 @@ class EarningsDeductions extends Component {
                           div={{ className: "col mandatory" }}
                           label={{
                             forceLabel: "Select a Year",
-                            isImp: true
+                            isImp: true,
                           }}
                           textBox={{
                             className: "txt-fld",
                             name: "date_of_recall",
                             other: {
-                              type: "year"
-                            }
+                              type: "year",
+                            },
                           }}
                           minDate={new Date()}
                           events={
@@ -259,7 +259,7 @@ class EarningsDeductions extends Component {
                           div={{ className: "col mandatory" }}
                           label={{
                             forceLabel: "Filter by Branch",
-                            isImp: false
+                            isImp: false,
                           }}
                           selector={{
                             name: "provider_id",
@@ -268,8 +268,8 @@ class EarningsDeductions extends Component {
                             dataSource: {
                               textField: "full_name",
                               valueField: "employee_id",
-                              data: this.state.doctors
-                            }
+                              data: this.state.doctors,
+                            },
                             //onChange: this.dropDownHandle.bind(this)
                           }}
                         />
@@ -351,7 +351,7 @@ class EarningsDeductions extends Component {
                             style={{
                               float: "right",
                               marginTop: 10,
-                              marginBottom: 10
+                              marginBottom: 10,
                             }}
                           >
                             Apply
@@ -369,11 +369,11 @@ class EarningsDeductions extends Component {
                           div={{ className: "col-12" }}
                           label={{
                             forceLabel: "Select a Date",
-                            isImp: false
+                            isImp: false,
                           }}
                           textBox={{
                             className: "txt-fld",
-                            name: "date_of_recall"
+                            name: "date_of_recall",
                           }}
                           minDate={new Date()}
                           events={
@@ -405,7 +405,7 @@ class EarningsDeductions extends Component {
                           div={{ className: "col-6 ApplicableSelect" }}
                           label={{
                             forceLabel: "Applicable for",
-                            isImp: false
+                            isImp: false,
                           }}
                           selector={{
                             name: "provider_id",
@@ -414,8 +414,8 @@ class EarningsDeductions extends Component {
                             dataSource: {
                               textField: "full_name",
                               valueField: "employee_id",
-                              data: this.state.doctors
-                            }
+                              data: this.state.doctors,
+                            },
                             //onChange: this.dropDownHandle.bind(this)
                           }}
                         />
@@ -423,7 +423,7 @@ class EarningsDeductions extends Component {
                           div={{ className: "col-12" }}
                           label={{
                             forceLabel: "Enter Reason",
-                            isImp: false
+                            isImp: false,
                           }}
                           textBox={{
                             className: "txt-fld",
@@ -431,7 +431,7 @@ class EarningsDeductions extends Component {
                             value: "",
                             events: {
                               //onChange: this.changeTexts.bind(this)
-                            }
+                            },
                           }}
                         />
                         <div className="col-12">
@@ -439,7 +439,7 @@ class EarningsDeductions extends Component {
                             style={{
                               float: "right",
                               marginTop: 10,
-                              marginBottom: 10
+                              marginBottom: 10,
                             }}
                             // onClick={this.loadPatients.bind(this)}
                             className="btn btn-primary"
@@ -458,7 +458,7 @@ class EarningsDeductions extends Component {
           {/* <div className="col form-group">
             <button
               // onClick={this.loadPatients.bind(this)}
-              style={{ marginTop: 19 }}
+              style={{ marginTop: 20 }}
               className="btn btn-primary"
             >
               LOAD
@@ -479,7 +479,7 @@ class EarningsDeductions extends Component {
                         fieldName: "HolidayDate",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Holiday Date" }} />
-                        )
+                        ),
                         // others: {
                         //   filterable: true
                         // }
@@ -490,24 +490,24 @@ class EarningsDeductions extends Component {
                           <AlgaehLabel
                             label={{ forceLabel: "Holyday Description" }}
                           />
-                        )
+                        ),
                       },
                       {
                         fieldName: "short_desc",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Total Days" }} />
-                        )
+                        ),
                       },
                       {
                         fieldName: "holiday_type",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Holiday Type" }} />
-                        )
-                      }
+                        ),
+                      },
                     ]}
                     keyId="hims_d_employee_group_id"
                     dataSource={{
-                      data: this.state.earning_deductions
+                      data: this.state.earning_deductions,
                     }}
                     isEditable={false}
                     filterable
@@ -515,7 +515,7 @@ class EarningsDeductions extends Component {
                     events={{
                       onEdit: () => {},
                       onDelete: this.deleteEarningsDeductions.bind(this),
-                      onDone: this.updateEarningsDeductions.bind(this)
+                      onDone: this.updateEarningsDeductions.bind(this),
                     }}
                   />
                 </div>

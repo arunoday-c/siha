@@ -295,13 +295,13 @@ class ProjectPayroll extends Component {
           <div className="col-2 form-group">
             <button
               onClick={this.clearState.bind(this)}
-              style={{ marginTop: 19 }}
+              style={{ marginTop: 20 }}
               className="btn btn-default"
             >
               Clear
             </button>{" "}
             <button
-              style={{ marginTop: 19, marginLeft: 5 }}
+              style={{ marginTop: 20, marginLeft: 5 }}
               className="btn btn-primary"
               onClick={this.LoadData.bind(this)}
             >
@@ -423,7 +423,7 @@ class ProjectPayroll extends Component {
                         {
                           fieldName: "basic_cost",
                           label: (
-                            <AlgaehLabel label={{ forceLabel: "Basic Amt" }} />
+                            <AlgaehLabel label={{ forceLabel: "Gross Amt." }} />
                           ),
                           displayTemplate: (row) => {
                             return GetAmountFormart(row.basic_cost);

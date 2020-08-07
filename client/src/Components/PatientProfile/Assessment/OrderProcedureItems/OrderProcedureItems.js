@@ -11,7 +11,7 @@ import {
   AlgaehLabel,
   AlagehFormGroup,
   AlgaehDataGrid,
-  AlgaehModalPopUp
+  AlgaehModalPopUp,
 } from "../../../Wrapper/algaehWrapper";
 import _ from "lodash";
 
@@ -43,7 +43,7 @@ class OrderProcedureItems extends Component {
       location_id: null,
       patient_id: null,
       episode_id: null,
-      quantity: 0
+      quantity: 0,
     };
   }
   getDepartments() {
@@ -58,13 +58,13 @@ class OrderProcedureItems extends Component {
         method: "GET",
         redux: {
           type: "ITEM_GET_DATA",
-          mappingName: "inventoryitemlist"
-        }
+          mappingName: "inventoryitemlist",
+        },
       });
     }
   }
 
-  onClose = e => {
+  onClose = (e) => {
     this.setState(
       {
         inventory_location_id: null,
@@ -88,7 +88,7 @@ class OrderProcedureItems extends Component {
         location_id: null,
         patient_id: null,
         episode_id: null,
-        quantity: 0
+        quantity: 0,
       },
       () => {
         this.props.onClose && this.props.onClose(e);
@@ -104,7 +104,7 @@ class OrderProcedureItems extends Component {
     let Location_name =
       this.props.inventorylocations !== undefined &&
       this.props.inventorylocations.length > 0
-        ? _.filter(this.props.inventorylocations, f => {
+        ? _.filter(this.props.inventorylocations, (f) => {
             return (
               f.hims_d_inventory_location_id ===
               newProps.inputsparameters.inventory_location_id
@@ -117,7 +117,7 @@ class OrderProcedureItems extends Component {
         inventory_location_id: newProps.inputsparameters.inventory_location_id,
         location_name: Location_name[0].location_description,
         location_type: Location_name[0].location_type,
-        procedure_id: newProps.inputsparameters.procedure_id
+        procedure_id: newProps.inputsparameters.procedure_id,
       });
     }
   }
@@ -149,7 +149,7 @@ class OrderProcedureItems extends Component {
         <div>
           <AlgaehModalPopUp
             events={{
-              onClose: this.onClose.bind(this)
+              onClose: this.onClose.bind(this),
             }}
             title="Procedure Items"
             openPopup={this.props.show}
@@ -161,7 +161,7 @@ class OrderProcedureItems extends Component {
                     <div className="col-3">
                       <AlgaehLabel
                         label={{
-                          forceLabel: "Patient Code"
+                          forceLabel: "Patient Code",
                         }}
                       />
                       <h6>
@@ -173,7 +173,7 @@ class OrderProcedureItems extends Component {
                     <div className="col-3">
                       <AlgaehLabel
                         label={{
-                          forceLabel: "Patient Name"
+                          forceLabel: "Patient Name",
                         }}
                       />
                       <h6>
@@ -186,7 +186,7 @@ class OrderProcedureItems extends Component {
                     <div className="col-3">
                       <AlgaehLabel
                         label={{
-                          forceLabel: "Procedure Name"
+                          forceLabel: "Procedure Name",
                         }}
                       />
                       <h6>
@@ -199,7 +199,7 @@ class OrderProcedureItems extends Component {
                     <div className="col-3">
                       <AlgaehLabel
                         label={{
-                          forceLabel: "Location Name"
+                          forceLabel: "Location Name",
                         }}
                       />
                       <h6>
@@ -217,7 +217,7 @@ class OrderProcedureItems extends Component {
                           {/* <label>Working Days</label> */}
                           <div
                             className="customRadio"
-                            style={{ marginTop: 19 }}
+                            style={{ marginTop: 20 }}
                           >
                             <label className="radio inline">
                               <input
@@ -260,24 +260,24 @@ class OrderProcedureItems extends Component {
                           div={{ className: "col-2 form-group" }}
                           label={{
                             forceLabel: "Qty",
-                            isImp: false
+                            isImp: false,
                           }}
                           textBox={{
                             number: {
                               allowNegative: false,
-                              thousandSeparator: ","
+                              thousandSeparator: ",",
                             },
                             className: "txt-fld",
                             name: "quantity",
                             dontAllowKeys: ["-", "e", "."],
                             value: this.state.quantity,
-                            events: { onChange: this.quantityEvent.bind(this) }
+                            events: { onChange: this.quantityEvent.bind(this) },
                           }}
                         />
                         <div className="col-1">
                           <button
                             className="btn btn-primary"
-                            style={{ float: "right", marginTop: 19 }}
+                            style={{ float: "right", marginTop: 20 }}
                             onClick={this.addItems.bind(this)}
                           >
                             Add Item
@@ -295,7 +295,7 @@ class OrderProcedureItems extends Component {
                             label: (
                               <AlgaehLabel label={{ forceLabel: "Action" }} />
                             ),
-                            displayTemplate: row => {
+                            displayTemplate: (row) => {
                               return (
                                 <span>
                                   <i
@@ -305,7 +305,7 @@ class OrderProcedureItems extends Component {
                                 </span>
                               );
                             },
-                            others: { maxWidth: 80, align: "center" }
+                            others: { maxWidth: 80, align: "center" },
                           },
                           {
                             fieldName: "item_id",
@@ -314,12 +314,12 @@ class OrderProcedureItems extends Component {
                                 label={{ forceLabel: "Item Name" }}
                               />
                             ),
-                            displayTemplate: row => {
+                            displayTemplate: (row) => {
                               let display =
                                 this.props.inventoryitemlist === undefined
                                   ? []
                                   : this.props.inventoryitemlist.filter(
-                                      f =>
+                                      (f) =>
                                         f.hims_d_inventory_item_master_id ===
                                         row.item_id
                                     );
@@ -332,24 +332,24 @@ class OrderProcedureItems extends Component {
                                 </span>
                               );
                             },
-                            disabled: true
+                            disabled: true,
                           },
                           {
                             fieldName: "quantity",
                             label: (
                               <AlgaehLabel label={{ forceLabel: "Qty" }} />
                             ),
-                            displayTemplate: row => {
+                            displayTemplate: (row) => {
                               return <span>{parseFloat(row.quantity)}</span>;
                             },
-                            others: { maxWidth: 80, align: "center" }
+                            others: { maxWidth: 80, align: "center" },
                           },
                           {
                             fieldName: "batchno",
                             label: (
                               <AlgaehLabel label={{ forceLabel: "Batch" }} />
                             ),
-                            others: { maxWidth: 250, align: "center" }
+                            others: { maxWidth: 250, align: "center" },
                           },
                           {
                             fieldName: "expirydt",
@@ -358,7 +358,7 @@ class OrderProcedureItems extends Component {
                                 label={{ forceLabel: "Item Expiry" }}
                               />
                             ),
-                            others: { maxWidth: 150, align: "center" }
+                            others: { maxWidth: 150, align: "center" },
                           },
                           {
                             fieldName: "qtyhand",
@@ -367,11 +367,11 @@ class OrderProcedureItems extends Component {
                                 label={{ forceLabel: "Qty in Hand" }}
                               />
                             ),
-                            displayTemplate: row => {
+                            displayTemplate: (row) => {
                               return <span>{parseFloat(row.qtyhand)}</span>;
                             },
-                            others: { maxWidth: 150, align: "center" }
-                          }
+                            others: { maxWidth: 150, align: "center" },
+                          },
                         ]}
                         keyId="actionCheck"
                         dataSource={{ data: this.state.Procedure_items }}
@@ -399,7 +399,7 @@ class OrderProcedureItems extends Component {
                     <button
                       type="button"
                       className="btn btn-default"
-                      onClick={e => {
+                      onClick={(e) => {
                         this.onClose(e);
                       }}
                     >
@@ -420,7 +420,7 @@ function mapStateToProps(state) {
   return {
     patient_profile: state.patient_profile,
     inventorylocations: state.inventorylocations,
-    inventoryitemlist: state.inventoryitemlist
+    inventoryitemlist: state.inventoryitemlist,
   };
 }
 
@@ -428,7 +428,7 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
       getLocation: AlgaehActions,
-      getItems: AlgaehActions
+      getItems: AlgaehActions,
     },
     dispatch
   );

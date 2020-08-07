@@ -231,16 +231,16 @@ class OPBillCancellation extends Component {
             />
           }
           breadStyle={this.props.breadStyle}
-          pageNavPath={[
-            {
-              pageName: (
-                <AlgaehLabel label={{ fieldName: "form_name", align: "ltr" }} />
-              ),
-            },
-            {
-              pageName: <AlgaehLabel label={{ fieldName: "bill_number" }} />,
-            },
-          ]}
+          // pageNavPath={[
+          //   {
+          //     pageName: (
+          //       <AlgaehLabel label={{ fieldName: "form_name", align: "ltr" }} />
+          //     ),
+          //   },
+          //   {
+          //     pageName: <AlgaehLabel label={{ fieldName: "bill_number" }} />,
+          //   },
+          // ]}
           soptlightSearch={{
             label: (
               <AlgaehLabel
@@ -277,17 +277,17 @@ class OPBillCancellation extends Component {
           printArea={
             this.state.bill_cancel_number !== null
               ? {
-                menuitems: [
-                  {
-                    label: "Print Receipt",
-                    events: {
-                      onClick: () => {
-                        generateReceipt(this, this);
+                  menuitems: [
+                    {
+                      label: "Print Receipt",
+                      events: {
+                        onClick: () => {
+                          generateReceipt(this, this);
+                        },
                       },
                     },
-                  },
-                ],
-              }
+                  ],
+                }
               : ""
           }
           selectedLang={this.state.selectedLang}
@@ -317,7 +317,7 @@ class OPBillCancellation extends Component {
             <div className="col-lg-12">
               <button
                 type="button"
-                className="btn btn-primary"
+                className="btn btn-danger"
                 onClick={this.CancelOPBill.bind(this)}
                 disabled={this.state.saveEnable}
               >

@@ -636,12 +636,13 @@ export default {
           _mysql
             .executeQuery({
               query:
-                "INSERT INTO `finance_account_head` (account_code,account_name, arabic_account_name, account_parent,\
+                "INSERT INTO `finance_account_head` (account_code,group_code,account_name, arabic_account_name, account_parent,\
                    group_type,account_level,created_from,sort_order,parent_acc_id,hierarchy_path,root_id\
                 ,created_date, created_by, updated_date, updated_by)\
-                VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
               values: [
                 account_code,
+                input.ledger_code,
                 input.account_name,
                 input.arabic_account_name,
                 account_parent,
@@ -1291,13 +1292,13 @@ export default {
                               headRes[0]["amount"]
                             )} where finance_voucher_header_id=${
                               BalanceInvoice[0]["finance_voucher_header_id"]
-                            };`;
+                              };`;
                           } else {
                             updateQry = `update finance_voucher_header set settled_amount=settled_amount+${parseFloat(
                               headRes[0]["amount"]
                             )} where finance_voucher_header_id=${
                               BalanceInvoice[0]["finance_voucher_header_id"]
-                            };`;
+                              };`;
                           }
                         }
 
@@ -2338,11 +2339,11 @@ function calcAmount(account_heads, levels, decimal_places) {
 
           item["cred_minus_deb"] = parseFloat(
             parseFloat(item["total_credit_amount"]) -
-              parseFloat(item["total_debit_amount"])
+            parseFloat(item["total_debit_amount"])
           ).toFixed(decimal_places);
           item["deb_minus_cred"] = parseFloat(
             parseFloat(item["total_debit_amount"]) -
-              parseFloat(item["total_credit_amount"])
+            parseFloat(item["total_credit_amount"])
           ).toFixed(decimal_places);
 
           return item;

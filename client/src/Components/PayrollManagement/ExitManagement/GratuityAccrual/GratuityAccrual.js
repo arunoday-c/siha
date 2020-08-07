@@ -149,14 +149,14 @@ export default class GratuityAccrual extends Component {
             <div className="col-2">
               <button
                 className="btn btn-default"
-                style={{ marginTop: 19, marginRight: 10 }}
+                style={{ marginTop: 20, marginRight: 10 }}
                 onClick={ClearData.bind(this, this)}
               >
                 Clear
               </button>
               <button
                 className="btn btn-primary"
-                style={{ marginTop: 19 }}
+                style={{ marginTop: 20 }}
                 onClick={LoadGratuityAccrual.bind(this, this)}
               >
                 Load

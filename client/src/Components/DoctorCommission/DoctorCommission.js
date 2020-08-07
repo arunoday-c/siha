@@ -8,7 +8,7 @@ import {
   AlgaehDataGrid,
   AlgaehLabel,
   AlagehAutoComplete,
-  AlgaehDateHandler
+  AlgaehDateHandler,
 } from "../Wrapper/algaehWrapper";
 
 import BreadCrumb from "../common/BreadCrumb/BreadCrumb.js";
@@ -19,7 +19,7 @@ import {
   ClearData,
   CalculateCommission,
   AdjustAmountCalculate,
-  dateValidate
+  dateValidate,
 } from "./DoctorCommissionEvents";
 import "./DoctorCommission.scss";
 import "../../styles/site.scss";
@@ -48,7 +48,7 @@ class DoctorCommission extends Component {
       op_commision: 0,
       op_credit_comission: 0,
       gross_comission: 0,
-      comission_payable: 0
+      comission_payable: 0,
     };
   }
 
@@ -59,14 +59,14 @@ class DoctorCommission extends Component {
       method: "GET",
       redux: {
         type: "DOCTOR_GET_DATA",
-        mappingName: "providers"
+        mappingName: "providers",
       },
-      afterSuccess: data => {
+      afterSuccess: (data) => {
         let providers = Enumerable.from(data)
-          .where(w => w.isdoctor === "Y")
+          .where((w) => w.isdoctor === "Y")
           .toArray();
         this.setState({ providers: providers });
-      }
+      },
     });
 
     this.props.getServiceTypes({
@@ -75,8 +75,8 @@ class DoctorCommission extends Component {
       method: "GET",
       redux: {
         type: "SERVIES_TYPES_GET_DATA",
-        mappingName: "servicetype"
-      }
+        mappingName: "servicetype",
+      },
     });
 
     this.props.getServices({
@@ -85,8 +85,8 @@ class DoctorCommission extends Component {
       method: "GET",
       redux: {
         type: "SERVICES_GET_DATA",
-        mappingName: "services"
-      }
+        mappingName: "services",
+      },
     });
   }
 
@@ -108,25 +108,25 @@ class DoctorCommission extends Component {
             }
             breadStyle={this.props.breadStyle}
             //breadWidth={this.props.breadWidth}
-            pageNavPath={[
-              {
-                pageName: (
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Home",
-                      align: "ltr"
-                    }}
-                  />
-                )
-              },
-              {
-                pageName: (
-                  <AlgaehLabel
-                    label={{ forceLabel: "Doctor's Commission", align: "ltr" }}
-                  />
-                )
-              }
-            ]}
+            // pageNavPath={[
+            //   {
+            //     pageName: (
+            //       <AlgaehLabel
+            //         label={{
+            //           forceLabel: "Home",
+            //           align: "ltr"
+            //         }}
+            //       />
+            //     )
+            //   },
+            //   {
+            //     pageName: (
+            //       <AlgaehLabel
+            //         label={{ forceLabel: "Doctor's Commission", align: "ltr" }}
+            //       />
+            //     )
+            //   }
+            // ]}
             soptlightSearch={{
               label: (
                 <AlgaehLabel
@@ -136,28 +136,28 @@ class DoctorCommission extends Component {
               value: this.state.commission_number,
               selectValue: "commission_number",
               events: {
-                onChange: null
+                onChange: null,
               },
               jsonFile: {
                 fileName: "spotlightSearch",
-                fieldName: "DoctorCommission.doccpmmission"
+                fieldName: "DoctorCommission.doccpmmission",
               },
-              searchName: "DoctorCommission"
+              searchName: "DoctorCommission",
             }}
             userArea={
               <AlgaehDateHandler
                 div={{ className: "col" }}
                 label={{
                   forceLabel: "Commision Date",
-                  isImp: true
+                  isImp: true,
                 }}
                 textBox={{
                   className: "txt-fld",
-                  name: "bread_registration_date"
+                  name: "bread_registration_date",
                 }}
                 disabled={true}
                 events={{
-                  onChange: null
+                  onChange: null,
                 }}
                 value={this.state.doctoCommGrid_date}
               />
@@ -175,7 +175,7 @@ class DoctorCommission extends Component {
                 div={{ className: "col" }}
                 label={{
                   forceLabel: "Doctor",
-                  isImp: true
+                  isImp: true,
                 }}
                 selector={{
                   name: "doctor_id",
@@ -184,10 +184,10 @@ class DoctorCommission extends Component {
                   dataSource: {
                     textField: "full_name",
                     valueField: "hims_d_employee_id",
-                    data: this.state.providers
+                    data: this.state.providers,
                   },
 
-                  onChange: changeTexts.bind(this, this)
+                  onChange: changeTexts.bind(this, this),
                 }}
               />
 
@@ -198,7 +198,7 @@ class DoctorCommission extends Component {
                 maxDate={new Date()}
                 events={{
                   onChange: datehandle.bind(this, this),
-                  onBlur: dateValidate.bind(this, this)
+                  onBlur: dateValidate.bind(this, this),
                 }}
                 value={this.state.from_date}
               />
@@ -210,7 +210,7 @@ class DoctorCommission extends Component {
                 maxDate={new Date()}
                 events={{
                   onChange: datehandle.bind(this, this),
-                  onBlur: dateValidate.bind(this, this)
+                  onBlur: dateValidate.bind(this, this),
                 }}
                 value={this.state.to_date}
               />
@@ -219,7 +219,7 @@ class DoctorCommission extends Component {
                 div={{ className: "col" }}
                 label={{
                   forceLabel: "Select Type",
-                  isImp: true
+                  isImp: true,
                 }}
                 selector={{
                   name: "select_type",
@@ -228,16 +228,16 @@ class DoctorCommission extends Component {
                   dataSource: {
                     textField: "name",
                     valueField: "value",
-                    data: GlobalVariables.SERVICE_COMMISSION
+                    data: GlobalVariables.SERVICE_COMMISSION,
                   },
 
-                  onChange: changeTexts.bind(this, this)
+                  onChange: changeTexts.bind(this, this),
                 }}
               />
               <AlagehAutoComplete
                 div={{ className: "col" }}
                 label={{
-                  forceLabel: "Service Type"
+                  forceLabel: "Service Type",
                 }}
                 selector={{
                   name: "select_service",
@@ -246,18 +246,18 @@ class DoctorCommission extends Component {
                   dataSource: {
                     textField: "service_type",
                     valueField: "hims_d_service_type_id",
-                    data: this.props.servicetype
+                    data: this.props.servicetype,
                   },
                   others: {
-                    disabled: this.state.select_type === "AS" ? true : false
+                    disabled: this.state.select_type === "AS" ? true : false,
                   },
-                  onChange: changeTexts.bind(this, this)
+                  onChange: changeTexts.bind(this, this),
                 }}
               />
               <AlagehAutoComplete
                 div={{ className: "col" }}
                 label={{
-                  forceLabel: "Case Type"
+                  forceLabel: "Case Type",
                 }}
                 selector={{
                   name: "case_type",
@@ -266,12 +266,12 @@ class DoctorCommission extends Component {
                   dataSource: {
                     textField: "name",
                     valueField: "value",
-                    data: GlobalVariables.CASE_TYPE
+                    data: GlobalVariables.CASE_TYPE,
                   },
                   others: {
-                    disabled: true
+                    disabled: true,
                   },
-                  onChange: changeTexts.bind(this, this)
+                  onChange: changeTexts.bind(this, this),
                 }}
               />
 
@@ -311,18 +311,18 @@ class DoctorCommission extends Component {
                             <AlgaehLabel
                               label={{ forceLabel: "Bill Number" }}
                             />
-                          )
+                          ),
                         },
                         {
                           fieldName: "bill_date",
                           label: (
                             <AlgaehLabel label={{ forceLabel: "Bill Date" }} />
                           ),
-                          displayTemplate: row => {
+                          displayTemplate: (row) => {
                             return (
                               <span>{this.dateFormater(row.bill_date)}</span>
                             );
-                          }
+                          },
                         },
                         {
                           fieldName: "servtype_id",
@@ -331,15 +331,15 @@ class DoctorCommission extends Component {
                               label={{ forceLabel: "Service Type" }}
                             />
                           ),
-                          displayTemplate: row => {
+                          displayTemplate: (row) => {
                             let display =
                               this.props.servicetype === undefined
                                 ? []
                                 : this.props.servicetype.filter(
-                                  f =>
-                                    f.hims_d_service_type_id ===
-                                    row.servtype_id
-                                );
+                                    (f) =>
+                                      f.hims_d_service_type_id ===
+                                      row.servtype_id
+                                  );
 
                             return (
                               <span>
@@ -348,20 +348,21 @@ class DoctorCommission extends Component {
                                   : ""}
                               </span>
                             );
-                          }
+                          },
                         },
                         {
                           fieldName: "service_id",
                           label: (
                             <AlgaehLabel label={{ forceLabel: "Service" }} />
                           ),
-                          displayTemplate: row => {
+                          displayTemplate: (row) => {
                             let display =
                               this.props.services === undefined
                                 ? []
                                 : this.props.services.filter(
-                                  f => f.hims_d_services_id === row.service_id
-                                );
+                                    (f) =>
+                                      f.hims_d_services_id === row.service_id
+                                  );
 
                             return (
                               <span>
@@ -370,19 +371,19 @@ class DoctorCommission extends Component {
                                   : ""}
                               </span>
                             );
-                          }
+                          },
                         },
                         {
                           fieldName: "quantity",
                           label: (
                             <AlgaehLabel label={{ forceLabel: "Quantity" }} />
-                          )
+                          ),
                         },
                         {
                           fieldName: "unit_cost",
                           label: (
                             <AlgaehLabel label={{ forceLabel: "Unit Cost" }} />
-                          )
+                          ),
                         },
                         {
                           fieldName: "extended_cost",
@@ -390,7 +391,7 @@ class DoctorCommission extends Component {
                             <AlgaehLabel
                               label={{ forceLabel: "Extended Cost" }}
                             />
-                          )
+                          ),
                         },
                         {
                           fieldName: "discount_amount",
@@ -398,7 +399,7 @@ class DoctorCommission extends Component {
                             <AlgaehLabel
                               label={{ forceLabel: "Discount Amount" }}
                             />
-                          )
+                          ),
                         },
 
                         {
@@ -407,19 +408,19 @@ class DoctorCommission extends Component {
                             <AlgaehLabel
                               label={{ forceLabel: "Patient Share" }}
                             />
-                          )
+                          ),
                         },
                         {
                           fieldName: "company_share",
                           label: (
                             <AlgaehLabel label={{ forceLabel: "Co. Share" }} />
-                          )
+                          ),
                         },
                         {
                           fieldName: "net_amount",
                           label: (
                             <AlgaehLabel label={{ forceLabel: "Net Amount" }} />
-                          )
+                          ),
                         },
                         // {
                         //   fieldName: "op_cash_comission_type",
@@ -435,7 +436,7 @@ class DoctorCommission extends Component {
                             <AlgaehLabel
                               label={{ forceLabel: "OP Cash Comm. %" }}
                             />
-                          )
+                          ),
                         },
 
                         {
@@ -444,7 +445,7 @@ class DoctorCommission extends Component {
                             <AlgaehLabel
                               label={{ forceLabel: "OP Cash Comm. Amount" }}
                             />
-                          )
+                          ),
                         },
                         {
                           fieldName: "op_cash_comission",
@@ -452,7 +453,7 @@ class DoctorCommission extends Component {
                             <AlgaehLabel
                               label={{ forceLabel: "OP Cash Comm." }}
                             />
-                          )
+                          ),
                         },
                         // {
                         //   fieldName: "op_crd_comission_type",
@@ -468,7 +469,7 @@ class DoctorCommission extends Component {
                             <AlgaehLabel
                               label={{ forceLabel: "OP Criedt Comm. %" }}
                             />
-                          )
+                          ),
                         },
                         {
                           fieldName: "op_crd_comission_amount",
@@ -476,7 +477,7 @@ class DoctorCommission extends Component {
                             <AlgaehLabel
                               label={{ forceLabel: "OP Criedt Comm. Amount" }}
                             />
-                          )
+                          ),
                         },
                         {
                           fieldName: "op_crd_comission",
@@ -484,17 +485,17 @@ class DoctorCommission extends Component {
                             <AlgaehLabel
                               label={{ forceLabel: "OP Criedt Comm." }}
                             />
-                          )
-                        }
+                          ),
+                        },
                       ]}
                       keyId="item_id"
                       dataSource={{
-                        data: this.state.billscommission
+                        data: this.state.billscommission,
                       }}
                       paging={{ page: 0, rowsPerPage: 10 }}
                       events={{
                         //   onDelete: deleteServices.bind(this, this),
-                        onEdit: row => { }
+                        onEdit: (row) => {},
                         // onDone: this.updateBillDetail.bind(this)
                       }}
                     />
@@ -507,7 +508,7 @@ class DoctorCommission extends Component {
               <div className="col">
                 <AlgaehLabel
                   label={{
-                    forceLabel: "OP Commision"
+                    forceLabel: "OP Commision",
                   }}
                 />
                 <h6>{GetAmountFormart(this.state.op_commision)}</h6>
@@ -515,7 +516,7 @@ class DoctorCommission extends Component {
               <div className="col">
                 <AlgaehLabel
                   label={{
-                    forceLabel: "OP Credit Comission"
+                    forceLabel: "OP Credit Comission",
                   }}
                 />
                 <h6>{GetAmountFormart(this.state.op_credit_comission)}</h6>
@@ -524,7 +525,7 @@ class DoctorCommission extends Component {
               <div className="col">
                 <AlgaehLabel
                   label={{
-                    forceLabel: "Gross Comission"
+                    forceLabel: "Gross Comission",
                   }}
                 />
                 <h6>{GetAmountFormart(this.state.gross_comission)}</h6>
@@ -535,7 +536,7 @@ class DoctorCommission extends Component {
               <AlagehFormGroup
                 div={{ className: "col" }}
                 label={{
-                  forceLabel: "Adjust Amount"
+                  forceLabel: "Adjust Amount",
                 }}
                 textBox={{
                   decimal: { allowNegative: false },
@@ -544,18 +545,18 @@ class DoctorCommission extends Component {
                   name: "adjust_amount",
 
                   events: {
-                    onChange: AdjustAmountCalculate.bind(this, this)
+                    onChange: AdjustAmountCalculate.bind(this, this),
                   },
                   others: {
-                    placeholder: "0.00"
-                  }
+                    placeholder: "0.00",
+                  },
                 }}
               />
 
               <div className="col">
                 <AlgaehLabel
                   label={{
-                    forceLabel: "Comission Payable"
+                    forceLabel: "Comission Payable",
                   }}
                 />
                 <h6>{GetAmountFormart(this.state.comission_payable)}</h6>
@@ -595,7 +596,7 @@ class DoctorCommission extends Component {
                     <AlgaehLabel
                       label={{
                         forceLabel: "Generate Payment",
-                        returnText: true
+                        returnText: true,
                       }}
                     />
                   </button>
@@ -616,7 +617,7 @@ function mapStateToProps(state) {
     doctorcommission: state.doctorcommission,
     billscommission: state.billscommission,
     services: state.services,
-    headercommission: state.headercommission
+    headercommission: state.headercommission,
   };
 }
 
@@ -629,15 +630,12 @@ function mapDispatchToProps(dispatch) {
       getDoctorsCommission: AlgaehActions,
       getServices: AlgaehActions,
       CalculateCommission: AlgaehActions,
-      calculateCommission: AlgaehActions
+      calculateCommission: AlgaehActions,
     },
     dispatch
   );
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(DoctorCommission)
+  connect(mapStateToProps, mapDispatchToProps)(DoctorCommission)
 );
