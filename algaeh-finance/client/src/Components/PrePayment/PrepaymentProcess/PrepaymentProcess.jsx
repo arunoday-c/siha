@@ -26,7 +26,7 @@ export function PrepaymentProcess() {
   const [processList, setProcessList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [costCenter, setCostCenter] = useState([]);
-  const [selectAll, setSelectAll] = useState(false);
+
   const { control, errors, handleSubmit, getValues } = useForm({
     shouldFocusError: true,
     defaultValues: {
@@ -47,7 +47,6 @@ export function PrepaymentProcess() {
 
   const addToList = (row) => {
     setProcessList((state) => {
-      debugger;
       const idx = state.findIndex(
         (item) => item === row.finance_f_prepayment_detail_id
       );
@@ -93,7 +92,7 @@ export function PrepaymentProcess() {
       });
       if (res.data.success) {
         setList(res.data.result);
-        // setLoading(false);
+        setLoading(false);
       }
     } catch (e) {
       setLoading(false);
@@ -103,8 +102,16 @@ export function PrepaymentProcess() {
       });
     }
   };
+  const SelectAllList = () => {
+    setProcessList(
+      list
+        .filter((item) => {
+          return item.processed === "N";
+        })
+        .map((i) => i.finance_f_prepayment_detail_id)
+    );
+  };
   const updateProcessList = async (data) => {
-    // debugger;
     const hospitalId = parseInt(data.hospital_id);
     try {
       const res = await newAlgaehApi({
@@ -118,8 +125,6 @@ export function PrepaymentProcess() {
         module: "finance",
       });
       if (res.data.success) {
-        debugger;
-        console.log("data", data);
         getProcessDetails(data);
         // setList(res.data.result);
         // setLoading(false);
@@ -138,7 +143,6 @@ export function PrepaymentProcess() {
   };
 
   const onProcess = async () => {
-    debugger;
     setLoading(true);
     try {
       const res = await newAlgaehApi({
@@ -150,7 +154,6 @@ export function PrepaymentProcess() {
         },
       });
       if (res.data.success) {
-        debugger;
         loadListToProcess(getValues());
         setProcessList([]);
       }
@@ -175,6 +178,7 @@ export function PrepaymentProcess() {
       });
       if (res.data.success) {
         setCurrent(res.data.result);
+
         setVisible(true);
       }
     } catch (e) {
@@ -184,6 +188,29 @@ export function PrepaymentProcess() {
         display: e.message,
       });
     }
+  };
+  const getTotalAmt = () => {
+    let totalAmount = 0;
+    if (current) {
+      current.forEach((element) => {
+        return (totalAmount += parseFloat(element.amount));
+      });
+    }
+
+    return totalAmount;
+  };
+  const getBalAmt = () => {
+    let balanceAmt = 0;
+    if (current) {
+      const notProcessed = current
+        .filter((element) => {
+          return element.processed === "N";
+        })
+        .forEach((item) => {
+          return (balanceAmt += parseFloat(item.amount));
+        });
+    }
+    return balanceAmt;
   };
 
   return (
@@ -198,11 +225,11 @@ export function PrepaymentProcess() {
         <div className="row">
           <div className="col">
             <label className="style_Label ">Total Prepayment</label>
-            <h6>0.00</h6>
+            <h6>{getTotalAmt()}</h6>
           </div>{" "}
           <div className="col">
             <label className="style_Label ">Balance Prepayment</label>
-            <h6>0.00</h6>
+            <h6>{getBalAmt()}</h6>
           </div>
           <div className="col">
             <label>Process Balance Prepayment</label>
@@ -212,7 +239,7 @@ export function PrepaymentProcess() {
                   type="checkbox"
                   name="checkSelf"
                   checked=""
-                // onChange={selectCheckBox.bind(this, this)}
+                  // onChange={selectCheckBox.bind(this, this)}
                 />
                 <span>Yes</span>
               </label>
@@ -253,11 +280,12 @@ export function PrepaymentProcess() {
               editorTemplate: (row) => {
                 const valueRow =
                   row.hospital_id !== undefined &&
-                    row.hospital_id !== "" &&
-                    row.cost_center_id !== undefined &&
-                    row.cost_center_id !== ""
+                  row.hospital_id !== "" &&
+                  row.cost_center_id !== undefined &&
+                  row.cost_center_id !== ""
                     ? `${row.hospital_id}-${row.cost_center_id}`
                     : "";
+
                 return (
                   <AlgaehTreeSearch
                     // div={{ className: "col-10" }}
@@ -272,7 +300,6 @@ export function PrepaymentProcess() {
                         node: "cost_centers",
                         textField: "cost_center",
                         valueField: (node) => {
-                          console.log("nodeee", node);
                           const { hims_d_hospital_id, cost_center_id } = node;
                           if (cost_center_id === undefined) {
                             return hims_d_hospital_id;
@@ -448,7 +475,7 @@ export function PrepaymentProcess() {
                       fieldName: "finance_f_prepayment_detail_id",
                       label: "Select",
                       displayTemplate: (row) => {
-                        return (
+                        return row.processed === "N" ? (
                           <Checkbox
                             checked={processList.find(
                               (item) =>
@@ -458,7 +485,7 @@ export function PrepaymentProcess() {
                           >
                             {" "}
                           </Checkbox>
-                        );
+                        ) : null;
                       },
                       others: { maxWidth: 40 },
                     },
@@ -467,7 +494,11 @@ export function PrepaymentProcess() {
                       label: "Action",
                       displayTemplate: (row) => {
                         return (
-                          <span onClick={() => getProcessDetails(row)}>
+                          <span
+                            onClick={() => {
+                              getProcessDetails(row);
+                            }}
+                          >
                             <i className="fas fa-eye"></i>
                           </span>
                         );
@@ -516,7 +547,7 @@ export function PrepaymentProcess() {
                     },
                     {
                       fieldName: "",
-                      label: "Amortize Amt.",
+                      label: "Auortize Amt.",
                       sortable: true,
                     },
                     {
@@ -559,9 +590,7 @@ export function PrepaymentProcess() {
               <AlgaehButton
                 disabled={processList.length === list.length}
                 className="btn btn-default"
-                onClick={() => {
-                  setSelectAll(true);
-                }}
+                onClick={SelectAllList}
               >
                 Select All
               </AlgaehButton>
