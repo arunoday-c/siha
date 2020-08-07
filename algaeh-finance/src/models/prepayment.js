@@ -742,7 +742,7 @@ export const loadPrepaymentsToProcess = (req, res, next) => {
             query: `select finance_f_prepayment_request_id,finance_f_prepayment_detail_id, prepayment_type_id,prepayment_desc,request_code,
       employee_id,employee_code ,E.full_name as employee_name ,E.identity_no, ROUND( amount,${decimal_places}) as  amount,
       ROUND(prepayment_amount,${decimal_places}) as prepayment_amount, hims_d_hospital_id,hospital_name,
-      left(date_format(concat (D.year,'-',D.month,'-01'),'%Y-%M') ,8)as pay_month,PR.start_date, PR.end_date, PR.processed ${selectStr}
+      left(date_format(concat (D.year,'-',D.month,'-01'),'%Y-%M') ,8)as pay_month,PR.start_date, PR.end_date, D.processed ${selectStr}
       from finance_f_prepayment_request PR  inner join finance_d_prepayment_type PT 
       on PR.prepayment_type_id=PT.finance_d_prepayment_type_id inner join finance_f_prepayment_detail D 
       on PR.finance_f_prepayment_request_id=D.prepayment_request_id
