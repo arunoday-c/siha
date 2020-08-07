@@ -63,7 +63,7 @@ class PatientProfile extends Component {
       openSickLeave: false,
       openPatientAttendance: false,
       OCAFData: [],
-      chart_type: "",
+      department_type: "",
       alergyExist: "",
       showAllergyPopup: true,
       patientAllergies: [],
@@ -77,6 +77,7 @@ class PatientProfile extends Component {
     // if (patientDetails === undefined) {
     //   this.props.history.push("/DoctorsWorkbench");
     // }
+    debugger
     this.setState(
       {
         alergyExist: "",
@@ -87,7 +88,7 @@ class PatientProfile extends Component {
             this.props.patient_profile.length > 0
             ? this.props.patient_profile[0].patient_code
             : "",
-        chart_type: patientDetails["chart_type"],
+        department_type: patientDetails["department_type"],
       },
       () => {
         getPatientProfile(this);
@@ -797,11 +798,11 @@ class PatientProfile extends Component {
               <li onClick={this.openDCAFReport.bind(this, _pat_profile)}>
                 <span>DCAF Report</span>
               </li> */}
-              {this.state.chart_type === "D" ? (
+              {this.state.department_type === "D" ? (
                 <li onClick={this.openDCAFReport.bind(this, _pat_profile)}>
                   <span>DCAF Report</span>
                 </li>
-              ) : this.state.chart_type === "O" ? (
+              ) : this.state.department_type === "O" ? (
                 <li onClick={this.openOCAFReport.bind(this, _pat_profile)}>
                   <span>OCAF Report</span>
                 </li>
@@ -836,7 +837,7 @@ class PatientProfile extends Component {
                 </span>
               </li>
 
-              {this.state.chart_type === "D" ? (
+              {this.state.department_type === "D" ? (
                 <li className="nav-item">
                   <span
                     onClick={this.changeTabs}
@@ -846,7 +847,7 @@ class PatientProfile extends Component {
                     Dental
                   </span>
                 </li>
-              ) : this.state.chart_type === "O" ? (
+              ) : this.state.department_type === "O" ? (
                 <li className="nav-item">
                   <span
                     onClick={this.changeTabs}

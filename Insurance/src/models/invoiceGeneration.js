@@ -385,7 +385,7 @@ export default {
           arabic_provider_name as arabic_insurance_provider_name ,\
           insurance_sub_code as sub_insurance_provider_code,insurance_sub_name as sub_insurance_provider,\
           arabic_sub_name as arabic_sub_insurance_provider, network_type,arabic_network_type,\
-          NET_OF.price_from,NET_OF.employer,NET_OF.policy_number,SD.chart_type\
+          NET_OF.price_from,NET_OF.employer,NET_OF.policy_number,SD.department_type\
          from  hims_f_invoice_header IH  inner join hims_f_patient P on IH.patient_id=P.hims_d_patient_id \
           inner join hims_f_patient_visit V on IH.visit_id=V.hims_f_patient_visit_id \
          inner join hims_d_sub_department SD on SD.hims_d_sub_department_id=V.sub_department_id \

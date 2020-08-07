@@ -153,7 +153,7 @@ export default {
         query =
           "select hims_d_sub_department_id, sub_department_code, sub_department_name, arabic_sub_department_name,\
             inventory_location_id,sub_department_desc, department_id, SD.effective_start_date, SD.effective_end_date, \
-            chart_type, sub_department_status,vitals_mandatory, D.department_name  from  hims_d_sub_department SD, \
+            SD.department_type, sub_department_status,vitals_mandatory, D.department_name  from  hims_d_sub_department SD, \
             hims_d_department D where SD.record_status='A' and D.hims_d_department_id = SD.department_id \
             and department_id=? order by hims_d_sub_department_id desc";
 
@@ -162,7 +162,7 @@ export default {
         query =
           "select hims_d_sub_department_id, sub_department_code, sub_department_name, arabic_sub_department_name,\
             inventory_location_id,sub_department_desc, department_id, SD.effective_start_date, SD.effective_end_date, \
-            chart_type, sub_department_status, vitals_mandatory, D.department_name from  \
+            SD.department_type, sub_department_status, vitals_mandatory, D.department_name from  \
             hims_d_sub_department SD, hims_d_department D\
              where SD.record_status='A' and D.hims_d_department_id = SD.department_id \
             order by hims_d_sub_department_id desc";
@@ -199,7 +199,7 @@ export default {
         query:
           "INSERT INTO `hims_d_sub_department` (sub_department_code,sub_department_name,\
             arabic_sub_department_name,sub_department_desc,inventory_location_id,department_id,effective_start_date,\
-            effective_end_date,chart_type,created_date, created_by, updated_date, updated_by)\
+            effective_end_date,department_type,created_date, created_by, updated_date, updated_by)\
             VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?)",
         values: [
           input.sub_department_code,
@@ -210,7 +210,7 @@ export default {
           input.department_id,
           input.effective_start_date,
           input.effective_end_date,
-          input.chart_type,
+          input.department_type,
           new Date(),
           req.userIdentity.algaeh_d_app_user_id,
           new Date(),
@@ -238,7 +238,7 @@ export default {
         query:
           "UPDATE `hims_d_sub_department`\
         SET `sub_department_name`=?, `sub_department_desc`=?,arabic_sub_department_name=?\
-        , `effective_start_date`=?, `effective_end_date`=? ,`chart_type`=?\
+        , `effective_start_date`=?, `effective_end_date`=? ,`department_type`=?\
         ,`updated_date`=?, `updated_by`=?,`vitals_mandatory`=? \
         WHERE `record_status`='A' AND `hims_d_sub_department_id`=? ;",
         values: [
@@ -247,7 +247,7 @@ export default {
           input.arabic_sub_department_name,
           input.effective_start_date,
           input.effective_end_date,
-          input.chart_type,
+          input.department_type,
           new Date(),
           req.userIdentity.algaeh_d_app_user_id,
           input.vitals_mandatory,

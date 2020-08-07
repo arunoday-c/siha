@@ -39,7 +39,7 @@ let getPreAprovalList = (req, res, next) => {
         requested_quantity, submission_type, insurance_service_name, SA.doctor_id, SA.patient_id,visit_id,\
         PAT.patient_code,PAT.full_name, refer_no, gross_amt,billing_updated,\
         net_amount, approved_amount, approved_no, apprv_remarks, apprv_date, rejected_reason,\
-        apprv_status,SA.created_date,SA.created_by, SD.chart_type, SD.sub_department_name, \
+        apprv_status,SA.created_date,SA.created_by, SD.department_type, SD.sub_department_name, \
         PI.primary_card_number as card_no, E.full_name as doctor_name, INS.insurance_provider_name \
         from hims_f_service_approval SA inner join hims_f_patient PAT ON SA.patient_id=PAT.hims_d_patient_id \
         inner join hims_d_employee E on E.hims_d_employee_id = SA.doctor_id \
@@ -105,7 +105,7 @@ let getMedicationAprovalList = (req, res, next) => {
         requested_quantity, submission_type, insurance_service_name, SA.doctor_id, SA.patient_id,visit_id,\
         PAT.patient_code,PAT.full_name, refer_no, gross_amt,\
         net_amount, approved_amount, approved_no, apprv_remarks, apprv_date, rejected_reason,\
-        apprv_status,SA.created_date,SA.created_by, SD.chart_type, billing_updated, SD.sub_department_name,  \
+        apprv_status,SA.created_date,SA.created_by, SD.department_type, billing_updated, SD.sub_department_name,  \
         PI.primary_card_number as card_no, E.full_name as doctor_name, INS.insurance_provider_name \
         from hims_f_medication_approval SA left join hims_f_patient PAT ON SA.patient_id=PAT.hims_d_patient_id \
         left join hims_d_employee E on E.hims_d_employee_id = SA.doctor_id \
@@ -162,7 +162,7 @@ let getMedicationAprovalList = (req, res, next) => {
   //       requested_quantity, submission_type, insurance_service_name, SA.doctor_id, SA.patient_id,visit_id,\
   //       PAT.patient_code,PAT.full_name, refer_no, gross_amt,\
   //       net_amount, approved_amount, approved_no, apprv_remarks, apprv_date, rejected_reason,\
-  //       apprv_status,SA.created_date,SA.created_by, SD.chart_type,billing_updated \
+  //       apprv_status,SA.created_date,SA.created_by, SD.department_type,billing_updated \
   //       from ((hims_f_medication_approval SA left join hims_f_patient PAT ON SA.patient_id=PAT.hims_d_patient_id) \
   //       inner join \
   //       hims_d_services SR on SR.hims_d_services_id=SA.service_id left join \

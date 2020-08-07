@@ -124,7 +124,7 @@ const getPreAprovalList = $this => {
               insurance_provider_id: firstRecordSet.insurance_provider_id,
               patient_id: firstRecordSet.patient_id,
               visit_id: firstRecordSet.visit_id,
-              chart_type: firstRecordSet.chart_type,
+              department_type: firstRecordSet.department_type,
               icd_code: firstRecordSet.icd_code,
               number_of_Services: g.getSource().length,
               apprv_status: firstRecordSet.apprv_status,
@@ -163,7 +163,7 @@ const CloseOrderModel = ($this, e) => {
 };
 
 const openUCAFReport = ($this, row) => {
-  if (row.chart_type === "N") {
+  if (row.department_type === "N") {
     algaehApiCall({
       uri: "/ucaf/getPatientUCAF",
       method: "GET",
@@ -233,7 +233,7 @@ const getMedicationAprovalList = $this => {
               insurance_provider_id: firstRecordSet.insurance_provider_id,
               patient_id: firstRecordSet.patient_id,
               visit_id: firstRecordSet.visit_id,
-              chart_type: firstRecordSet.chart_type,
+              department_type: firstRecordSet.department_type,
               icd_code: firstRecordSet.icd_code,
               number_of_Services: g.getSource().length,
               apprv_status: firstRecordSet.apprv_status,

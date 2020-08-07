@@ -941,7 +941,7 @@ let getMyDay = (req, res, next) => {
           "select  E.hims_f_patient_encounter_id, P.patient_code, P.full_name, P.gender, P.age, E.patient_id,\
             V.appointment_patient, V.new_visit_patient, E.provider_id, E.`status`, E.nurse_examine, E.checked_in,\
             E.payment_type, E.episode_id, E.encounter_id, E.`source`, E.updated_date as encountered_date, \
-            E.visit_id, sub_department_id, SD.chart_type, SD.vitals_mandatory,	P.primary_id_no, \
+            E.visit_id, sub_department_id, SD.department_type, SD.vitals_mandatory,	P.primary_id_no, \
 	          ID.identity_document_name, V.visit_expiery_date, V.visit_status from hims_f_patient_encounter E\
             INNER JOIN hims_f_patient P ON E.patient_id=P.hims_d_patient_id \
             inner join hims_f_patient_visit V on E.visit_id=V.hims_f_patient_visit_id  \

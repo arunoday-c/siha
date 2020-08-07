@@ -285,41 +285,41 @@ class ValidateBills extends PureComponent {
 
     this.state.icd_code !== null
       ? algaehApiCall({
-          uri: "/invoiceGeneration/addInvoiceIcd",
-          data: {
-            invoice_header_id: invoice.hims_f_invoice_header_id,
-            patient_id: invoice.patient_id,
-            episode_id: invoice.episode_id,
-            daignosis_id: this.state.hims_d_icd_id,
-            diagnosis_type: "P",
-            final_daignosis: "Y",
-          },
-          module: "insurance",
-          method: "POST",
-          onSuccess: (res) => {
-            if (res.data.success) {
-              swalMessage({
-                title: "Record added successfully",
-                type: "success",
-              });
-              this.setState({
-                icd_code: null,
-                hims_d_icd_id: null,
-              });
-              this.getInvoiceICDs();
-            }
-          },
-          onError: (err) => {
+        uri: "/invoiceGeneration/addInvoiceIcd",
+        data: {
+          invoice_header_id: invoice.hims_f_invoice_header_id,
+          patient_id: invoice.patient_id,
+          episode_id: invoice.episode_id,
+          daignosis_id: this.state.hims_d_icd_id,
+          diagnosis_type: "P",
+          final_daignosis: "Y",
+        },
+        module: "insurance",
+        method: "POST",
+        onSuccess: (res) => {
+          if (res.data.success) {
             swalMessage({
-              title: err.message,
-              type: "error",
+              title: "Record added successfully",
+              type: "success",
             });
-          },
-        })
+            this.setState({
+              icd_code: null,
+              hims_d_icd_id: null,
+            });
+            this.getInvoiceICDs();
+          }
+        },
+        onError: (err) => {
+          swalMessage({
+            title: err.message,
+            type: "error",
+          });
+        },
+      })
       : swalMessage({
-          title: "Please select an ICD",
-          type: "warning",
-        });
+        title: "Please select an ICD",
+        type: "warning",
+      });
   }
 
   //TODO
@@ -583,8 +583,8 @@ class ValidateBills extends PureComponent {
                                   Pending
                                 </span>
                               ) : (
-                                "----"
-                              )}
+                                        "----"
+                                      )}
                             </span>
                           );
                         },
@@ -699,9 +699,9 @@ class ValidateBills extends PureComponent {
                     isEditable={false}
                     paging={{ page: 0, rowsPerPage: 2 }}
                     events={{
-                      onDelete: (row) => {},
-                      onEdit: (row) => {},
-                      onDone: (row) => {},
+                      onDelete: (row) => { },
+                      onEdit: (row) => { },
+                      onDone: (row) => { },
                     }}
                   />
                 </div>
@@ -846,8 +846,8 @@ class ValidateBills extends PureComponent {
                     actions={{ allowDelete: false }}
                     paging={{ page: 0, rowsPerPage: 10 }}
                     events={{
-                      onDelete: (row) => {},
-                      onEdit: (row) => {},
+                      onDelete: (row) => { },
+                      onEdit: (row) => { },
                       onDone: this.updateInvoiceDetail.bind(this),
                     }}
                   />
@@ -875,7 +875,7 @@ class ValidateBills extends PureComponent {
                             ),
                           }}
                           renderPrevState={this.state.patInsuranceFrontImg}
-                          // forceRefresh={this.state.forceRefresh}
+                        // forceRefresh={this.state.forceRefresh}
                         />
                       </div>
 
@@ -1060,9 +1060,9 @@ class ValidateBills extends PureComponent {
                       isEditable={false}
                       paging={{ page: 0, rowsPerPage: 10 }}
                       events={{
-                        onDelete: (row) => {},
-                        onEdit: (row) => {},
-                        onDone: (row) => {},
+                        onDelete: (row) => { },
+                        onEdit: (row) => { },
+                        onDone: (row) => { },
                       }}
                     />
                   </div>
@@ -1077,7 +1077,7 @@ class ValidateBills extends PureComponent {
             className="btn btn-primary"
             disabled={
               this.state.invoices.claim_validated === "V" ||
-              this.state.invoices.claim_validated === "X"
+                this.state.invoices.claim_validated === "X"
                 ? true
                 : false
             }
@@ -1139,21 +1139,21 @@ class ValidateBills extends PureComponent {
             POS Credit Invoice
           </button>
 
-          {this.state.invoices.chart_type === "N" ? (
+          {this.state.invoices.department_type === "N" ? (
             <button
               onClick={this.openUCAFReport.bind(this)}
               className="btn btn-default"
             >
               UCAF
             </button>
-          ) : this.state.invoices.chart_type === "O" ? (
+          ) : this.state.invoices.department_type === "O" ? (
             <button
               className="btn btn-default"
               onClick={this.openOCAFReport.bind(this)}
             >
               OCAF
             </button>
-          ) : this.state.invoices.chart_type === "D" ? (
+          ) : this.state.invoices.department_type === "D" ? (
             <button
               className="btn btn-default"
               onClick={this.openDCAFReport.bind(this)}
