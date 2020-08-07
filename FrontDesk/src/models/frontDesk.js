@@ -488,6 +488,7 @@ export function getDoctorAndDepartment(req, res, next) {
             and  D.department_type='CLINICAL' where E.employee_status='A'  and SD.sub_department_status='A'
             and SD.record_status='A' and E.record_status ='A' and services_id is not null;
      `,
+        printQuery: true,
       })
       .then((result) => {
         const docDept = _.chain(result)
@@ -497,6 +498,7 @@ export function getDoctorAndDepartment(req, res, next) {
               sub_department_name,
               arabic_sub_department_name,
               sub_department_id,
+              department_type,
             } = detail[0];
             return {
               label: sub_department_name,
@@ -507,6 +509,8 @@ export function getDoctorAndDepartment(req, res, next) {
                   label: item.full_name,
                   arlabel: item.arabic_name,
                   value: item.employee_id,
+                  sub_department_id,
+                  department_type,
                 };
               }),
             };

@@ -22,10 +22,7 @@ app.use(compression());
 
 process.env.MYSQL_KEYS = JSON.stringify(keys.default);
 if (process.env.NODE_ENV === "development") {
-  new SwaggerConfiguration(
-    "Front Desk Api's",
-    "Complete front desk api's"
-  ).Geteate(app);
+  new SwaggerConfiguration("Front Desk Api's").Geteate(app);
 }
 
 app.use((req, res, next) => {
