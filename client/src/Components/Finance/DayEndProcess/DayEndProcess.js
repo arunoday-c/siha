@@ -650,6 +650,16 @@ class DayEndProcess extends Component {
                           disabled: true,
                         },
                         {
+                          fieldName: "invoice_no",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Invoice No." }}
+                            />
+                          ),
+                          disabled: true,
+                        },
+
+                        {
                           fieldName: "transaction_date",
                           label: (
                             <AlgaehLabel
