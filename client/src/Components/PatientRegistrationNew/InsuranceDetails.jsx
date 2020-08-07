@@ -1,9 +1,9 @@
-import React from "react";
-// import { useQuery } from "react-query";
-// import { Controller, useWatch } from "react-hook-form";
+import React, { useState, useEffect, useContext } from "react";
+import { useQuery } from "react-query";
+import { Controller, useWatch } from "react-hook-form";
 // import moment from "moment";
 import {
-  // MainContext,
+  MainContext,
   Tabs,
   AlgaehLabel,
   AlgaehAutoComplete,
@@ -14,20 +14,90 @@ import {
 } from "algaeh-react-components";
 import { useLangFieldName } from "./patientHooks";
 import AlgaehFileUploader from "../Wrapper/algaehFileUpload";
+import AlgaehSearch from "../Wrapper/globalSearch";
+import InsuranceFields from "../../Search/Insurance.json";
+import { newAlgaehApi } from "../../hooks/";
+
 // import { fieldNameFn } from "./index";
-// import { newAlgaehApi } from "../../hooks/";
 // import GenericData from "../../utils/GlobalVariables.json";
 const { TabPane } = Tabs;
 
-export function InsuranceDetails({ control, trigger }) {
+const getPatientInsurance = async (key, { patient_id }) => {
+  const res = await newAlgaehApi({
+    uri: "/patientRegistration/getPatientInsurance",
+    module: "frontDesk",
+    data: { patient_id },
+    method: "GET",
+  });
+  return res?.data?.records;
+};
+
+export function InsuranceDetails({ control, errors, clearErrors, setValue }) {
+  const { userToken } = useContext(MainContext);
   const { fieldNameFn } = useLangFieldName();
-  // const { userLanguage } = useContext(MainContext);
+  const [isInsurance, setIsInsurance] = useState(false);
+  const [insuranceList, setInsuranceList] = useState([]);
+  const disabled = !isInsurance;
+  const hims_d_patient_id = useWatch({ control, name: "hims_d_patient_id" });
+  const { isLoading, data: patientInsurance } = useQuery(
+    ["patient-insurance", { patient_id: hims_d_patient_id }],
+    getPatientInsurance,
+    {
+      enabled: !!hims_d_patient_id,
+      refetchOnWindowFocus: false,
+      initialData: [],
+      initialStale: true,
+    }
+  );
+  const dropDownData = insuranceList?.length ? insuranceList : patientInsurance;
+
+  useEffect(() => {
+    const fieldNames = [
+      "primary_insurance_provider_id",
+      "primary_sub_id",
+      "primary_network_id",
+      "primary_policy_num",
+      "primary_card_number",
+      "primary_effective_start_date",
+      "primary_effective_end_date",
+    ];
+    if (!isInsurance) {
+      fieldNames.map((item) => setValue(item, ""));
+      clearErrors(fieldNames);
+    }
+  }, [isInsurance]);
+
+  // const onChange = (e) => console.log(e);
+
+  const AddInsurance = () => {
+    AlgaehSearch({
+      searchGrid: {
+        columns: InsuranceFields,
+      },
+      searchName: "new_insurance",
+      uri: "/gloabelSearch/get",
+      inputs: `netoff.hospital_id =  ${userToken?.hims_d_hospital_id}`,
+      onContainsChange: (text, serchBy, callback) => {
+        callback(text);
+      },
+      onRowSelect: (row) => {
+        console.log(row, "selected");
+        setInsuranceList([row]);
+        setValue("primary_insurance_provider_id", row?.insurance_provider_id);
+        setValue("primary_sub_id", row?.sub_insurance_provider_id);
+        setValue("primary_network_id", row?.network_id);
+        setValue("primary_policy_num", row?.policy_number);
+        setValue("primary_effective_start_date", row?.effective_start_date);
+        setValue("primary_effective_end_date", row?.effective_end_date);
+      },
+    });
+  };
 
   return (
-    <Spin spinning={false}>
+    <Spin spinning={isLoading}>
       <div className="hptl-phase1-insurance-details margin-top-15">
         <div className="insurance-section">
-          <Tabs type="card" onFocus={() => trigger()}>
+          <Tabs type="card">
             <TabPane
               tab={
                 <AlgaehLabel
@@ -56,13 +126,8 @@ export function InsuranceDetails({ control, trigger }) {
                               <input
                                 type="radio"
                                 name="insuredYes"
-                                value="Y"
-                                checked={
-                                  false
-                                  //   this.state.insured === "Y" ? true : false
-                                }
-                                // onChange={radioChange.bind(this, this, context)}
-                                // disabled={this.state.hideInsurance}
+                                checked={isInsurance}
+                                onChange={() => setIsInsurance(true)}
                               />
                               <span>{fieldNameFn("Yes", "نعم")}</span>
                             </label>
@@ -70,13 +135,8 @@ export function InsuranceDetails({ control, trigger }) {
                               <input
                                 type="radio"
                                 name="insuredNo"
-                                value="N"
-                                checked={
-                                  true
-                                  //   this.state.insured === "N" ? true : false
-                                }
-                                // disabled={this.state.hideInsurance}
-                                // onChange={radioChange.bind(this, this, context)}
+                                checked={!isInsurance}
+                                onChange={() => setIsInsurance(false)}
                               />
                               <span>{fieldNameFn("No", "لا")}</span>
                             </label>
@@ -89,173 +149,271 @@ export function InsuranceDetails({ control, trigger }) {
                           <button
                             type="button"
                             className="btn btn-primary btn-rounded"
-                            // disabled={this.state.insuranceYes}
-                            // onClick={InsuranceDetails.bind(this, this, context)}
+                            onClick={AddInsurance}
+                            disabled={!isInsurance}
                           >
                             <i className="fas fa-plus" />
                           </button>
                         </div>
-                        <AlgaehAutoComplete
-                          div={{ className: "col-3" }}
-                          label={{
-                            fieldName: "insurance_id",
-                            isImp: true,
-                          }}
-                          selector={{
-                            name: "primary_insurance_provider_id",
-                            className: "select-fld",
-                            // value: this.state.primary_insurance_provider_id,
-                            dataSource: {
-                              textField: "insurance_provider_name",
-                              // this.state.selectedLang == "en" ? "insurance_provider_name" : "name",
-                              valueField: "insurance_provider_id",
-                              data: [],
-                            },
-                            // onChange: insurancehandle.bind(this, this, context),
-                            others: {
-                              disabled: true,
+                        <Controller
+                          control={control}
+                          name="primary_insurance_provider_id"
+                          rules={{
+                            required: {
+                              value: isInsurance,
+                              message: "Field is Required",
                             },
                           }}
+                          render={({ value, onChange }) => (
+                            <AlgaehAutoComplete
+                              div={{ className: "col-3" }}
+                              label={{
+                                fieldName: "insurance_id",
+                                isImp: isInsurance,
+                              }}
+                              error={errors}
+                              selector={{
+                                name: "primary_insurance_provider_id",
+                                className: "select-fld",
+                                onChange: (_, selected) => onChange(selected),
+                                value,
+                                onClear: () => onChange(""),
+                                dataSource: {
+                                  textField: fieldNameFn(
+                                    "insurance_provider_name",
+                                    "name"
+                                  ),
+                                  valueField: "insurance_provider_id",
+                                  data: dropDownData,
+                                },
+                                others: {
+                                  disabled,
+                                },
+                              }}
+                            />
+                          )}
                         />
 
-                        <AlgaehAutoComplete
-                          div={{ className: "col-3" }}
-                          label={{
-                            fieldName: "sub_insurance_id",
-                            isImp: true,
-                          }}
-                          selector={{
-                            name: "primary_sub_id",
-                            className: "select-fld",
-                            // value: this.state.primary_sub_id,
-                            dataSource: {
-                              textField: "sub_insurance_provider_name",
-                              // this.state.selectedLang == "en" ? "sub_insurance_provider_name" : "name",
-                              valueField: "sub_insurance_provider_id",
-                              data: [],
+                        <Controller
+                          control={control}
+                          name="primary_sub_id"
+                          rules={{
+                            required: {
+                              value: isInsurance,
+                              message: "Field is Required",
                             },
-                            // onChange: insurancehandle.bind(this, this, context),
-                            others: {
-                              disabled: true,
-                            },
-                            // onClear: clearinsurancehandle.bind(
-                            //   this,
-                            //   this,
-                            //   context
-                            // ),
                           }}
+                          render={({ value, onChange }) => (
+                            <AlgaehAutoComplete
+                              div={{ className: "col-3" }}
+                              label={{
+                                fieldName: "sub_insurance_id",
+                                isImp: isInsurance,
+                              }}
+                              error={errors}
+                              selector={{
+                                name: "primary_sub_id",
+                                className: "select-fld",
+                                onChange: (_, selected) => onChange(selected),
+                                value,
+                                onClear: () => onChange(""),
+                                dataSource: {
+                                  textField: "sub_insurance_provider_name",
+                                  // this.state.selectedLang == "en" ? "sub_insurance_provider_name" : "name",
+                                  valueField: "sub_insurance_provider_id",
+                                  data: dropDownData,
+                                },
+                                // onChange: insurancehandle.bind(this, this, context),
+                                others: {
+                                  disabled,
+                                },
+                              }}
+                            />
+                          )}
                         />
-                        <AlgaehAutoComplete
-                          div={{ className: "col-3" }}
-                          label={{
-                            fieldName: "policy_id",
-                            isImp: true,
-                          }}
-                          selector={{
-                            name: "primary_network_id",
-                            className: "select-fld",
-                            // value: this.state.primary_network_id,
-                            dataSource: {
-                              textField: "network_type",
-                              // this.state.selectedLang == "en" ? "network_type" : "name",
-                              valueField: "network_id",
-                              data: [],
+
+                        <Controller
+                          control={control}
+                          name="primary_network_id"
+                          rules={{
+                            required: {
+                              value: isInsurance,
+                              message: "Field is Required",
                             },
-                            // onChange: insurancehandle.bind(this, this, context),
-                            others: {
-                              disabled: true,
-                            },
-                            // onClear: clearinsurancehandle.bind(
-                            //   this,
-                            //   this,
-                            //   context
-                            // ),
                           }}
+                          error={errors}
+                          render={({ value, onChange }) => (
+                            <AlgaehAutoComplete
+                              div={{ className: "col-3" }}
+                              label={{
+                                fieldName: "policy_id",
+                                isImp: isInsurance,
+                              }}
+                              error={errors}
+                              selector={{
+                                name: "primary_network_id",
+                                className: "select-fld",
+                                onChange: (_, selected) => onChange(selected),
+                                value,
+                                onClear: () => onChange(""),
+                                dataSource: {
+                                  textField: fieldNameFn(
+                                    "network_type",
+                                    "name"
+                                  ),
+                                  valueField: "network_id",
+                                  data: dropDownData,
+                                },
+                                others: {
+                                  disabled,
+                                },
+                              }}
+                            />
+                          )}
                         />
                       </div>
                       <div className="row primary-box-container">
-                        <AlgaehAutoComplete
-                          div={{ className: "col-3" }}
-                          label={{
-                            fieldName: "plan_id",
-                            isImp: true,
-                          }}
-                          selector={{
-                            name: "primary_policy_num",
-                            className: "select-fld",
-                            // value: this.state.primary_policy_num,
-                            dataSource: {
-                              textField: "policy_number",
-                              valueField: "policy_number",
-                              data: [],
+                        <Controller
+                          control={control}
+                          name="primary_policy_num"
+                          rules={{
+                            required: {
+                              value: isInsurance,
+                              message: "Field is Required",
                             },
-                            // onChange: insurancehandle.bind(this, this, context),
-                            others: {
-                              disabled: true,
+                          }}
+                          render={({ onChange, value }) => (
+                            <AlgaehAutoComplete
+                              div={{ className: "col-3" }}
+                              label={{
+                                fieldName: "plan_id",
+                                isImp: isInsurance,
+                              }}
+                              error={errors}
+                              selector={{
+                                name: "primary_policy_num",
+                                className: "select-fld",
+                                onChange: (_, selected) => onChange(selected),
+                                value,
+                                onClear: () => onChange(""),
+                                dataSource: {
+                                  textField: "policy_number",
+                                  valueField: "policy_number",
+                                  data: dropDownData,
+                                },
+                                others: {
+                                  disabled,
+                                },
+                              }}
+                            />
+                          )}
+                        />
+
+                        <Controller
+                          control={control}
+                          name="primary_card_number"
+                          rules={{
+                            required: {
+                              value: isInsurance,
+                              message: "Field is Required",
                             },
-                            // onClear: clearinsurancehandle.bind(
-                            //   this,
-                            //   this,
-                            //   context
-                            // ),
                           }}
+                          render={(props) => (
+                            <AlgaehFormGroup
+                              div={{ className: "col-3" }}
+                              label={{
+                                fieldName: "card_number",
+                                isImp: isInsurance,
+                              }}
+                              error={errors}
+                              textBox={{
+                                className: "txt-fld",
+                                name: "primary_card_number",
+                                ...props,
+                                disabled,
+                              }}
+                            />
+                          )}
                         />
 
-                        <AlgaehFormGroup
-                          div={{ className: "col-3" }}
-                          label={{
-                            fieldName: "card_number",
-                            isImp: true,
+                        <Controller
+                          control={control}
+                          name="primary_effective_start_date"
+                          rules={{
+                            required: {
+                              value: isInsurance,
+                              message: "Field is Required",
+                            },
                           }}
-                          textBox={{
-                            className: "txt-fld",
-                            name: "primary_card_number",
-                            // value: this.state.primary_card_number,
-                            // events: {
-                            //   onChange: texthandle.bind(this, this, context),
-                            // },
-
-                            disabled: true,
-                          }}
+                          render={({ onChange, value }) => (
+                            <AlgaehDateHandler
+                              div={{ className: "col-3" }}
+                              label={{
+                                fieldName: "effective_start_date",
+                                isImp: isInsurance,
+                              }}
+                              error={errors}
+                              textBox={{
+                                className: "txt-fld",
+                                name: "primary_effective_start_date",
+                                value: value || undefined,
+                              }}
+                              maxDate={new Date()}
+                              others={{ disabled }}
+                              events={{
+                                onChange: (mdate) => {
+                                  if (mdate) {
+                                    onChange(mdate._d);
+                                  } else {
+                                    onChange(undefined);
+                                  }
+                                },
+                                onClear: () => {
+                                  onChange(undefined);
+                                },
+                              }}
+                            />
+                          )}
                         />
 
-                        <AlgaehDateHandler
-                          div={{ className: "col-3" }}
-                          label={{
-                            fieldName: "effective_start_date",
-                            isImp: true,
+                        <Controller
+                          control={control}
+                          name="primary_effective_end_date"
+                          rules={{
+                            required: {
+                              value: isInsurance,
+                              message: "Field is Required",
+                            },
                           }}
-                          textBox={{
-                            className: "txt-fld",
-                            name: "primary_effective_start_date",
-                          }}
-                          maxDate={new Date()}
-                          others={{ disabled: true }}
-                          //   events={
-                          //     {
-                          //       // onChange: datehandle.bind(this, this, context),
-                          //     }
-                          //   }
-                          //   value={this.state.primary_effective_start_date}
-                        />
-
-                        <AlgaehDateHandler
-                          div={{ className: "col-3" }}
-                          label={{
-                            fieldName: "expiry_date",
-                            isImp: true,
-                          }}
-                          others={{ disabled: true }}
-                          textBox={{
-                            className: "txt-fld",
-                            name: "primary_effective_end_date",
-                          }}
-                          minDate={new Date()}
-                          //   events={{
-                          //     onChange: enddatehandle.bind(this, this, context),
-                          //   }}
-                          //   value={this.state.primary_effective_end_date}
-                          disabled={true}
+                          render={({ onChange, value }) => (
+                            <AlgaehDateHandler
+                              div={{ className: "col-3" }}
+                              label={{
+                                fieldName: "expiry_date",
+                                isImp: isInsurance,
+                              }}
+                              error={errors}
+                              others={{ disabled }}
+                              textBox={{
+                                className: "txt-fld",
+                                name: "primary_effective_end_date",
+                                value: value || undefined,
+                              }}
+                              minDate={new Date()}
+                              events={{
+                                onChange: (mdate) => {
+                                  if (mdate) {
+                                    onChange(mdate._d);
+                                  } else {
+                                    onChange(undefined);
+                                  }
+                                },
+                                onClear: () => {
+                                  onChange(undefined);
+                                },
+                              }}
+                            />
+                          )}
                         />
                       </div>
                     </div>
@@ -272,7 +430,7 @@ export function InsuranceDetails({ control, trigger }) {
                             noImage="insurance-card-front"
                             name="patInsuranceFrontImg"
                             accept="image/*"
-                            showActions={false}
+                            showActions={isInsurance}
                             textAltMessage="Insurance Card Front Side"
                             serviceParameters={{
                               uniqueID: "null" + "_front",
@@ -296,7 +454,7 @@ export function InsuranceDetails({ control, trigger }) {
                             noImage="insurance-card-back"
                             name="patInsuranceBackImg"
                             accept="image/*"
-                            showActions={false}
+                            showActions={isInsurance}
                             textAltMessage="Insurance Card Back Side"
                             serviceParameters={{
                               uniqueID: null + "_back",

@@ -64,6 +64,22 @@ let algaehSearchConfig = (searchName, req) => {
         groupBy: " GROUP By netoff.hims_d_insurance_network_office_id",
       },
       {
+        searchName: "new_insurance",
+        searchQuery:
+          "select SQL_CALC_FOUND_ROWS Ins.hims_d_insurance_provider_id as insurance_provider_id,Ins.insurance_provider_name, Ins.effective_end_date,Ins.effective_start_date,\
+          sIns.hims_d_insurance_sub_id as sub_insurance_provider_id, sIns.insurance_sub_name as sub_insurance_provider_name,Ins.insurance_type,\
+          CASE WHEN Ins.insurance_type='I' THEN 'Insurance' else 'Corporate Client' END as insurance_type_d,\
+          net.hims_d_insurance_network_id as network_id,  net.network_type, net.effective_start_date as net_effective_start_date, net.effective_end_date as net_effective_end_date, \
+          netoff.hims_d_insurance_network_office_id, netoff.policy_number from \
+          (((hims_d_insurance_network_office netoff INNER JOIN  hims_d_insurance_network net \
+          ON netoff.network_id=net.hims_d_insurance_network_id)INNER JOIN hims_d_insurance_sub sIns ON \
+          net.insurance_sub_id=sIns.hims_d_insurance_sub_id )INNER JOIN hims_d_insurance_provider Ins ON \
+          sIns.insurance_provider_id=Ins.hims_d_insurance_provider_id ) where netoff.record_status='A' \
+          and sIns.record_status='A' and Ins.record_status='A'",
+        orderBy: "netoff.hims_d_insurance_network_office_id desc",
+        groupBy: " GROUP By netoff.hims_d_insurance_network_office_id",
+      },
+      {
         searchName: "visit",
         searchQuery:
           "select SQL_CALC_FOUND_ROWS  full_name, patient_code, contact_number, nationality_id,pv.visit_code, pv.visit_date,\

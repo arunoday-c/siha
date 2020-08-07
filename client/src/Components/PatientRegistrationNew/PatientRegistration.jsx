@@ -36,6 +36,7 @@ export function PatientRegistration() {
     trigger,
     errors,
     reset,
+    formState,
     clearErrors,
   } = useForm({
     reValidateMode: "onChange",
@@ -72,8 +73,12 @@ export function PatientRegistration() {
     },
   });
 
-  const onSubmit = (input) => console.log(input, "input");
+  const savePatient = (e) => {
+    console.log(e);
+  };
+  const onSubmit = (input) => savePatient(input);
 
+  console.log(errors, "errors");
   return (
     <Spin spinning={isLoading}>
       <div id="attach">
@@ -152,11 +157,32 @@ export function PatientRegistration() {
                   errors={errors}
                   clearErrors={clearErrors}
                 />
-                <InsuranceDetails control={control} trigger={trigger} />
+                <InsuranceDetails
+                  control={control}
+                  trigger={trigger}
+                  errors={errors}
+                  clearErrors={clearErrors}
+                  setValue={setValue}
+                />
                 <VisitDetails control={control} trigger={trigger} />
               </div>
               <div className="algaeh-md-12 algaeh-lg-12 algaeh-xl-4">
                 <BillDetails control={control} trigger={trigger} />
+              </div>
+            </div>
+            <div className="hptl-phase1-footer">
+              <div className="row">
+                <div className="col-lg-12">
+                  <button
+                    type="submit"
+                    className="btn btn-primary"
+                    disabled={formState?.isValid}
+                  >
+                    <AlgaehLabel
+                      label={{ fieldName: "btn_save", returnText: true }}
+                    />
+                  </button>
+                </div>
               </div>
             </div>
           </form>

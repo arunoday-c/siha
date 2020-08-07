@@ -13,7 +13,7 @@ import {
   Spin,
 } from "algaeh-react-components";
 import AlgaehFileUploader from "../Wrapper/algaehFileUpload";
-import { newAlgaehApi } from "../../hooks/";
+import { newAlgaehApi, useQueryParams } from "../../hooks/";
 import GenericData from "../../utils/GlobalVariables.json";
 import { useLangFieldName } from "./patientHooks";
 const { TabPane } = Tabs;
@@ -47,7 +47,10 @@ async function getDemoData() {
   };
 }
 
-export function Demographics({ control, setValue, clearErrors, errors }) {
+export function Demographics({ control, setValue, errors }) {
+  const queryParams = useQueryParams();
+  const patient_code = queryParams.get("patient_code");
+  const disabled = !!patient_code;
   const { country_id: country, state_id, date_of_birth } = useWatch({
     control,
     name: ["country_id", "state_id", "date_of_birth"],
@@ -151,7 +154,7 @@ export function Demographics({ control, setValue, clearErrors, errors }) {
                                   onChange("");
                                 },
                                 others: {
-                                  disabled: false,
+                                  disabled,
                                   tabIndex: "1",
                                 },
                               }}
@@ -176,7 +179,7 @@ export function Demographics({ control, setValue, clearErrors, errors }) {
                                 className: "txt-fld",
                                 name: "full_name",
                                 placeholder: "Enter Full Name",
-                                disabled: false,
+                                disabled,
                                 tabIndex: "2",
                               }}
 
@@ -214,7 +217,7 @@ export function Demographics({ control, setValue, clearErrors, errors }) {
                                 className: "txt-fld",
                                 name: "arabic_name",
 
-                                disabled: false,
+                                disabled,
                                 tabIndex: "3",
                                 placeholder: "أدخل الاسم العربي",
                                 id: "arabicName",
@@ -252,7 +255,7 @@ export function Demographics({ control, setValue, clearErrors, errors }) {
                                   onChange("");
                                 },
                                 others: {
-                                  disabled: false,
+                                  disabled,
                                   tabIndex: "4",
                                 },
                               }}
@@ -281,6 +284,7 @@ export function Demographics({ control, setValue, clearErrors, errors }) {
                                 name: "date_of_birth",
                                 value,
                               }}
+                              others={{ disabled }}
                               maxDate={new Date()}
                               events={{
                                 onChange: (mdate) => {
@@ -305,7 +309,7 @@ export function Demographics({ control, setValue, clearErrors, errors }) {
                           }}
                           gregorianDate={date_of_birth || null}
                           label={{ forceLabel: "Hijiri Date" }}
-                          textBox={{ className: "txt-fld" }}
+                          textBox={{ className: "txt-fld", disabled }}
                           type="hijri"
                           events={{
                             onChange: ({ target }) => {
@@ -368,7 +372,7 @@ export function Demographics({ control, setValue, clearErrors, errors }) {
                                 ...props,
                                 className: "txt-fld",
                                 name: "contact_number",
-                                disabled: false,
+                                disabled,
                                 tabIndex: "10",
                                 placeholder: "(+01)123-456-7890",
                                 type: "number",
@@ -408,7 +412,7 @@ export function Demographics({ control, setValue, clearErrors, errors }) {
                                   onChange("");
                                 },
                                 others: {
-                                  disabled: false,
+                                  disabled,
                                   tabIndex: "11",
                                 },
                               }}
@@ -444,7 +448,7 @@ export function Demographics({ control, setValue, clearErrors, errors }) {
                                   onChange("");
                                 },
                                 others: {
-                                  disabled: false,
+                                  disabled,
                                   tabIndex: "12",
                                 },
                               }}
@@ -482,7 +486,7 @@ export function Demographics({ control, setValue, clearErrors, errors }) {
                                   onChange("");
                                 },
                                 others: {
-                                  disabled: false,
+                                  disabled,
                                   tabIndex: "13",
                                 },
                               }}
@@ -508,7 +512,7 @@ export function Demographics({ control, setValue, clearErrors, errors }) {
                                   ...props,
                                   className: "txt-fld",
                                   name: "employee_id",
-                                  disabled: false,
+                                  disabled,
                                   type: "text",
                                   tabIndex: "14",
                                 }}
@@ -547,7 +551,7 @@ export function Demographics({ control, setValue, clearErrors, errors }) {
                                   onChange("");
                                 },
                                 others: {
-                                  disabled: false,
+                                  disabled,
                                   tabIndex: "17",
                                 },
                               }}
@@ -583,7 +587,7 @@ export function Demographics({ control, setValue, clearErrors, errors }) {
                                   onChange("");
                                 },
                                 others: {
-                                  disabled: false,
+                                  disabled,
                                   tabIndex: "18",
                                 },
                               }}
@@ -619,7 +623,7 @@ export function Demographics({ control, setValue, clearErrors, errors }) {
                                   onChange("");
                                 },
                                 others: {
-                                  disabled: false,
+                                  disabled,
                                   tabIndex: "19",
                                 },
                               }}
@@ -654,7 +658,7 @@ export function Demographics({ control, setValue, clearErrors, errors }) {
                                   onChange("");
                                 },
                                 others: {
-                                  disabled: false,
+                                  disabled,
                                   tabIndex: "20",
                                 },
                               }}
@@ -693,7 +697,7 @@ export function Demographics({ control, setValue, clearErrors, errors }) {
                                   onChange("");
                                 },
                                 others: {
-                                  disabled: false,
+                                  disabled,
                                   tabIndex: "21",
                                 },
                               }}
@@ -715,7 +719,7 @@ export function Demographics({ control, setValue, clearErrors, errors }) {
                                 ...props,
                                 className: "txt-fld",
                                 name: "address1",
-                                disabled: false,
+                                disabled,
                                 placeholder: "Enter Full Address 1",
                                 tabIndex: "22",
                               }}
@@ -807,7 +811,7 @@ export function Demographics({ control, setValue, clearErrors, errors }) {
                                   onChange("");
                                 },
                                 others: {
-                                  disabled: false,
+                                  disabled,
                                   tabIndex: "15",
                                 },
                               }}
@@ -830,7 +834,7 @@ export function Demographics({ control, setValue, clearErrors, errors }) {
                                 ...props,
                                 className: "txt-fld",
                                 name: "primary_id_no",
-                                disabled: false,
+                                disabled,
                                 tabIndex: "16",
                                 placeholder: "Enter ID Number",
                               }}
