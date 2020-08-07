@@ -570,13 +570,16 @@ export default {
   getProviders: (req, res, next) => {
     const _mysql = new algaehMysql();
     try {
+      // "SELECT E.*, E.hims_d_employee_id as employee_id ,E.services_id, SD.department_type, SD.department_id \
+      // FROM hims_d_employee E \
+      // left join hims_d_sub_department SD on SD.hims_d_sub_department_id = E.sub_department_id \
+      // where isdoctor = 'Y' and employee_status = 'A' and E.hospital_id=?;",
       _mysql
         .executeQuery({
-          query:
-            "SELECT E.*, E.hims_d_employee_id as employee_id ,E.services_id, SD.department_type, SD.department_id \
+          query: `SELECT E.employee_code,E.full_name,E.title_id,E.arabic_name,E.employee_designation_id,E.sub_department_id, E.hims_d_employee_id as employee_id ,E.services_id, SD.department_type, SD.department_id \
             FROM hims_d_employee E \
             left join hims_d_sub_department SD on SD.hims_d_sub_department_id = E.sub_department_id \
-            where isdoctor = 'Y' and employee_status = 'A' and E.hospital_id=?;",
+            where isdoctor = 'Y' and employee_status = 'A' and E.hospital_id=?;`,
           values: [req.userIdentity.hospital_id],
         })
         .then((result) => {

@@ -1,6 +1,6 @@
 import { Router } from "express";
 import utlities from "algaeh-utilities";
-import frontModels from "../models/frontDesk";
+import frontModels, { getDoctorAndDepartment } from "../models/frontDesk";
 import regModels from "../models/patientRegistration";
 import visitModels from "../models/visit";
 import billModels from "algaeh-billing/src/models/billing";
@@ -11,7 +11,7 @@ import opModels from "algaeh-billing/src/models/opCreditSettlement";
 const {
   insertPatientVisitData,
   addPatientInsuranceData,
-  addEpisodeEncounterData
+  addEpisodeEncounterData,
 } = visitModels;
 const { insertPatientData } = regModels;
 const {
@@ -19,7 +19,7 @@ const {
   addFrontDesk,
   updateFrontDesk,
   getCashHandoverDetails,
-  updateCashHandoverDetails
+  updateCashHandoverDetails,
 } = frontModels;
 
 const {
@@ -27,7 +27,7 @@ const {
   addBillData,
   addtoDayEnd,
   addCashHandover,
-  updatePatientPackage
+  updatePatientPackage,
 } = billModels;
 
 const { insertLadOrderedServices } = labModels;
@@ -37,6 +37,7 @@ const { getPatientwiseBill } = opModels;
 
 export default () => {
   const api = Router();
+
   api.get("/get", selectFrontDesk, getPatientwiseBill, (req, res, next) => {
     let _billriedt = req.bill_criedt;
     let _frontdesk = req.records;
@@ -44,7 +45,7 @@ export default () => {
     let result = { ..._frontdesk, ..._billriedt };
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
       success: true,
-      records: result
+      records: result,
     });
   });
 
@@ -78,8 +79,8 @@ export default () => {
 
           records: {
             internal_error: req.records.internal_error,
-            message: req.records.message
-          }
+            message: req.records.message,
+          },
         });
       } else {
         next();
@@ -90,7 +91,7 @@ export default () => {
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
-        records: req.records
+        records: req.records,
       });
     }
   );
@@ -135,8 +136,8 @@ export default () => {
           success: false,
           records: {
             internal_error: req.records.internal_error,
-            message: req.records.message
-          }
+            message: req.records.message,
+          },
         });
       } else {
         next();
@@ -146,7 +147,7 @@ export default () => {
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
-        records: req.records
+        records: req.records,
       });
     }
   );
@@ -157,7 +158,7 @@ export default () => {
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
-        records: req.records
+        records: req.records,
       });
     }
   );
@@ -168,10 +169,20 @@ export default () => {
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
-        records: req.records
+        records: req.records,
       });
     }
   );
 
+  api.get("/getDoctorAndDepartment", getDoctorAndDepartment, (req, res) => {
+    res
+      .status(utlities.AlgaehUtilities().httpStatus().ok)
+      .json({
+        success: true,
+        records: req.records,
+      })
+      .end();
+    delete req.records;
+  });
   return api;
 };

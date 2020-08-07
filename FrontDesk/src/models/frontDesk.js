@@ -148,7 +148,7 @@ export default {
       if (req.body.consultation === "Y") {
         numGens.push("PAT_BILL", "RECEIPT");
       }
-      console.log("numGens", numGens)
+      console.log("numGens", numGens);
       _mysql
         .generateRunningNumber({
           user_id: req.userIdentity.algaeh_d_app_user_id,
@@ -261,9 +261,9 @@ export default {
   getCashHandoverDetails: (req, res, next) => {
     const _mysql = new algaehMysql();
     try {
-      let strQry = ""
+      let strQry = "";
       if (req.query.user_wise == "true") {
-        strQry = " and D.casher_id = " + req.userIdentity.algaeh_d_app_user_id
+        strQry = " and D.casher_id = " + req.userIdentity.algaeh_d_app_user_id;
       }
       _mysql
         .executeQuery({
@@ -475,3 +475,52 @@ export default {
     }
   },
 };
+export function getDoctorAndDepartment(req, res, next) {
+  const _mysql = new algaehMysql();
+  try {
+    _mysql
+      .executeQuery({
+        query: `
+     select E.hims_d_employee_id as employee_id, E.sub_department_id, E.full_name, E.arabic_name, E.services_id,
+            SD.department_id, SD.sub_department_name, SD.arabic_sub_department_name, SD.department_type 
+            from hims_d_employee E inner join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id 
+            and  E.isdoctor='Y' inner join hims_d_department D on SD.department_id=D.hims_d_department_id 
+            and  D.department_type='CLINICAL' where E.employee_status='A'  and SD.sub_department_status='A'
+            and SD.record_status='A' and E.record_status ='A' and services_id is not null;
+     `,
+      })
+      .then((result) => {
+        const docDept = _.chain(result)
+          .groupBy((g) => g.sub_department_id)
+          .map((detail, key) => {
+            const {
+              sub_department_name,
+              arabic_sub_department_name,
+              sub_department_id,
+            } = detail[0];
+            return {
+              label: sub_department_name,
+              arlabel: arabic_sub_department_name,
+              value: sub_department_id,
+              children: detail.map((item) => {
+                return {
+                  label: item.full_name,
+                  arlabel: item.arabic_name,
+                  value: item.employee_id,
+                };
+              }),
+            };
+          })
+          .value();
+        req.records = docDept;
+        next();
+      })
+      .catch((error) => {
+        _mysql.releaseConnection();
+        next(error);
+      });
+  } catch (e) {
+    _mysql.releaseConnection();
+    next(e);
+  }
+}
