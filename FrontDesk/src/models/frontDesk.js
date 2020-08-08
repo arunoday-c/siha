@@ -509,6 +509,7 @@ export function getDoctorAndDepartment(req, res, next) {
                   label: item.full_name,
                   arlabel: item.arabic_name,
                   value: item.employee_id,
+                  services_id: item.services_id,
                   sub_department_id,
                   department_type,
                 };
