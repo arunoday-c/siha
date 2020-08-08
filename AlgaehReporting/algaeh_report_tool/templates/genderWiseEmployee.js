@@ -1,7 +1,7 @@
 // const algaehUtilities = require("algaeh-utilities/utilities");
 
 const executePDF = function executePDFMethod(options) {
-  return new Promise(function(resolve, reject) {
+  return new Promise(function (resolve, reject) {
     try {
       const _ = options.loadash;
 
@@ -10,7 +10,7 @@ const executePDF = function executePDFMethod(options) {
 
       const params = options.args.reportParams;
 
-      params.forEach(para => {
+      params.forEach((para) => {
         input[para["name"]] = para["value"];
       });
 
@@ -57,21 +57,21 @@ const executePDF = function executePDFMethod(options) {
           left join hims_d_employee_group G on E.employee_group_id=G.hims_d_employee_group_id
           where E.hospital_id=? and E.record_status='A'  ${strQuery}; `,
           values: [input.hospital_id, input.hospital_id],
-          printQuery: true
+          printQuery: true,
         })
-        .then(res => {
+        .then((res) => {
           options.mysql.releaseConnection();
           const hospital_name = res[0][0]["hospital_name"];
           const result = res[1];
 
           if (result.length > 0) {
             const genderWiseEmp = _.chain(result)
-              .groupBy(g => g.sex)
-              .map(m => {
+              .groupBy((g) => g.sex)
+              .map((m) => {
                 return {
                   geder: m[0]["sex"],
                   no_employee: m.length,
-                  details: m
+                  details: m,
                 };
               })
               .value();
@@ -79,17 +79,17 @@ const executePDF = function executePDFMethod(options) {
             resolve({
               hospital_name: hospital_name,
               no_employees: result.length,
-              result: genderWiseEmp
+              result: genderWiseEmp,
             });
           } else {
             resolve({
               hospital_name: hospital_name,
               no_employees: result.length,
-              result: result
+              result: result,
             });
           }
         })
-        .catch(e => {
+        .catch((e) => {
           console.log("e:", e);
           options.mysql.releaseConnection();
           reject(e);
