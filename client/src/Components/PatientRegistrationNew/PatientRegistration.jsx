@@ -3,6 +3,7 @@ import { useQuery } from "react-query";
 import { useForm } from "react-hook-form";
 import moment from "moment";
 import { useLocation, useHistory } from "react-router-dom";
+import { FProvider } from "./FrontdeskContext";
 import {
   MainContext,
   AlgaehLabel,
@@ -39,14 +40,14 @@ export function PatientRegistration() {
     formState,
     clearErrors,
   } = useForm({
-    reValidateMode: "onChange",
+    reValidateMode: "onSubmit",
     shouldFocusError: true,
-    criteriaMode: "firstError",
   });
   const { userLanguage, userToken } = useContext(MainContext);
   const isEmpIdRequired = userToken?.requied_emp_id === "Y";
   const queryParams = useQueryParams();
   const patient_code = queryParams.get("patient_code");
+  console.log(formState, "form");
   // const appointment_id = queryParams.get("appointment_id");
 
   const { isLoading } = useQuery(["patient", { patient_code }], getPatient, {
@@ -78,116 +79,123 @@ export function PatientRegistration() {
   };
   const onSubmit = (input) => savePatient(input);
 
-  console.log(errors, "errors");
   return (
     <Spin spinning={isLoading}>
-      <div id="attach">
-        <BreadCrumb
-          title={
-            <AlgaehLabel
-              label={{ fieldName: "form_patregister", align: "ltr" }}
-            />
-          }
-          soptlightSearch={{
-            label: (
+      <FProvider>
+        <div id="attach">
+          <BreadCrumb
+            title={
               <AlgaehLabel
-                label={{ fieldName: "patient_code", returnText: true }}
+                label={{ fieldName: "form_patregister", align: "ltr" }}
               />
-            ),
-            value: patient_code,
-            selectValue: "patient_code",
-            events: {
-              onChange: (code) =>
-                history.push(`${location.pathname}?patient_code=${code}`),
-            },
-            jsonFile: {
-              fileName: "spotlightSearch",
-              fieldName: isEmpIdRequired
-                ? "frontDesk.emp_id_patients"
-                : "frontDesk.patients",
-            },
-            searchName: "patients",
-          }}
-          userArea={
-            <div className="row">
-              <div className="col">
+            }
+            soptlightSearch={{
+              label: (
                 <AlgaehLabel
-                  label={{
-                    fieldName: "registered_date",
-                  }}
+                  label={{ fieldName: "patient_code", returnText: true }}
                 />
-                <h6>{moment().format("DD-MM-YYYY")}</h6>
-              </div>
-            </div>
-          }
-          editData={{
-            events: {
-              onClick: () => {},
-            },
-          }}
-          printArea={
-            patient_code
-              ? {
-                  menuitems: [
-                    {
-                      label: "ID Card",
-                      events: {
-                        onClick: () => {},
-                      },
-                    },
-                    {
-                      label: "Advance/Refund Receipt",
-                      events: {
-                        onClick: () => {},
-                      },
-                    },
-                  ],
-                }
-              : ""
-          }
-          selectedLang={userLanguage}
-        />
-        <div className="spacing-push">
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <div className="row">
-              <div className="algaeh-md-12 algaeh-lg-12 algaeh-xl-8">
-                <Demographics
-                  control={control}
-                  setValue={setValue}
-                  errors={errors}
-                  clearErrors={clearErrors}
-                />
-                <InsuranceDetails
-                  control={control}
-                  trigger={trigger}
-                  errors={errors}
-                  clearErrors={clearErrors}
-                  setValue={setValue}
-                />
-                <VisitDetails control={control} trigger={trigger} />
-              </div>
-              <div className="algaeh-md-12 algaeh-lg-12 algaeh-xl-4">
-                <BillDetails control={control} trigger={trigger} />
-              </div>
-            </div>
-            <div className="hptl-phase1-footer">
+              ),
+              value: patient_code,
+              selectValue: "patient_code",
+              events: {
+                onChange: (code) =>
+                  history.push(`${location.pathname}?patient_code=${code}`),
+              },
+              jsonFile: {
+                fileName: "spotlightSearch",
+                fieldName: isEmpIdRequired
+                  ? "frontDesk.emp_id_patients"
+                  : "frontDesk.patients",
+              },
+              searchName: "patients",
+            }}
+            userArea={
               <div className="row">
-                <div className="col-lg-12">
-                  <button
-                    type="submit"
-                    className="btn btn-primary"
-                    disabled={formState?.isValid}
-                  >
-                    <AlgaehLabel
-                      label={{ fieldName: "btn_save", returnText: true }}
-                    />
-                  </button>
+                <div className="col">
+                  <AlgaehLabel
+                    label={{
+                      fieldName: "registered_date",
+                    }}
+                  />
+                  <h6>{moment().format("DD-MM-YYYY")}</h6>
                 </div>
               </div>
-            </div>
-          </form>
+            }
+            editData={{
+              events: {
+                onClick: () => {},
+              },
+            }}
+            printArea={
+              patient_code
+                ? {
+                    menuitems: [
+                      {
+                        label: "ID Card",
+                        events: {
+                          onClick: () => {},
+                        },
+                      },
+                      {
+                        label: "Advance/Refund Receipt",
+                        events: {
+                          onClick: () => {},
+                        },
+                      },
+                    ],
+                  }
+                : ""
+            }
+            selectedLang={userLanguage}
+          />
+          <div className="spacing-push">
+            <form>
+              <div className="row">
+                <div className="algaeh-md-12 algaeh-lg-12 algaeh-xl-8">
+                  <Demographics
+                    control={control}
+                    setValue={setValue}
+                    errors={errors}
+                    clearErrors={clearErrors}
+                  />
+                  <InsuranceDetails
+                    control={control}
+                    trigger={trigger}
+                    errors={errors}
+                    clearErrors={clearErrors}
+                    setValue={setValue}
+                  />
+                  <VisitDetails
+                    control={control}
+                    trigger={trigger}
+                    setValue={setValue}
+                  />
+                </div>
+                <div className="algaeh-md-12 algaeh-lg-12 algaeh-xl-4">
+                  <BillDetails control={control} trigger={trigger} />
+                </div>
+              </div>
+              <div className="hptl-phase1-footer">
+                <div className="row">
+                  <div className="col-lg-12">
+                    <button
+                      type="submit"
+                      className="btn btn-primary"
+                      onClick={handleSubmit(onSubmit)}
+                      // onClick={() => trigger()}
+                      // disabled={!formState?.isValid}
+                    >
+                      <AlgaehLabel
+                        label={{ fieldName: "btn_save", returnText: true }}
+                      />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
         </div>
-      </div>
+      </FProvider>
     </Spin>
   );
 }
