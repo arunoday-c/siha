@@ -621,9 +621,11 @@ function AppointmentComponent(props) {
                   onClick={props.getAppointmentSchedule}
                   className="btn btn-primary"
                 >
-                  {getLabelFromLanguage({ fieldName: "loadData" })}
+                  {/* {getLabelFromLanguage({ fieldName: "loadData" })} */}
+                  Load
                 </button>
               </div>
+
               <AlgaehAutoSearch
                 div={{ className: "col-3" }}
                 label={{ forceLabel: "Patient Search" }}
