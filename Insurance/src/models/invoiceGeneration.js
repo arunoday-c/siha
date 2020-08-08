@@ -395,7 +395,8 @@ export default {
           left join hims_d_insurance_network NET on IH.network_id=NET.hims_d_insurance_network_id\
           left join hims_d_insurance_network_office NET_OF on IH.network_office_id=NET_OF.hims_d_insurance_network_office_id\
           where P.record_status='A' and  V.record_status='A' and V.record_status='A' and E.record_status='A'\
-          and IP.record_status='A' and SI.record_status='A' and  NET.record_status='A' and NET_OF.record_status='A' " +
+          and IP.record_status='A' and SI.record_status='A' and  NET.record_status='A' and NET_OF.record_status='A' \
+          and IH.insurance_statement_id IS NULL " +
               _qryStr +
               "; \
           	SELECT hims_f_invoice_details_id, invoice_header_id, bill_header_id, bill_detail_id,\
@@ -407,11 +408,11 @@ export default {
               on IH.hims_f_invoice_header_id =ID.invoice_header_id inner join hims_d_service_type ST on \
                ID.service_type_id=ST.hims_d_service_type_id inner join hims_d_services S on \
                ID.service_id=S.hims_d_services_id left join hims_d_cpt_code C on ID.cpt_code=C.cpt_code where \
-               ST.record_status='A'  and S.record_status='A' " +
+               ST.record_status='A'  and S.record_status='A' and IH.insurance_statement_id IS NULL " +
               _qryStr +
               "; select hims_f_invoice_icd_id, invoice_header_id from  hims_f_invoice_header IH\
               INNER JOIN hims_f_invoice_icd  ICD on IH.hims_f_invoice_header_id=ICD.invoice_header_id \
-             where ICD.record_status='A' " +
+             where ICD.record_status='A' and IH.insurance_statement_id IS NULL " +
               _qryStr,
             values: [..._values, ..._values, ..._values],
             printQuery: true

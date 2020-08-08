@@ -412,7 +412,7 @@
       }
     ]
   },
-  "Invoice": {
+  "Insurance": {
     "InvoiceGen": [
       {
         "fieldName": "invoice_number",
@@ -433,6 +433,20 @@
       {
         "fieldName": "full_name",
         "label": "Patient Name"
+      }
+    ],
+    "InsuranceStatement": [
+      {
+        "fieldName": "insurance_statement_number",
+        "label": "Invoice Number"
+      },
+      {
+        "fieldName": "insurance_provider_name",
+        "label": "Insurance Name"
+      },
+      {
+        "fieldName": "insurance_sub_name",
+        "label": "Sub Insurance Name"
       }
     ]
   },

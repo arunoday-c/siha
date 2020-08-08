@@ -17,7 +17,7 @@ import AlgaehFileUploader from "../Wrapper/algaehFileUpload";
 import AlgaehSearch from "../Wrapper/globalSearch";
 import InsuranceFields from "../../Search/Insurance.json";
 import { newAlgaehApi } from "../../hooks/";
-
+import { FrontdeskContext } from "./FrontdeskContext";
 // import { fieldNameFn } from "./index";
 // import GenericData from "../../utils/GlobalVariables.json";
 const { TabPane } = Tabs;
@@ -32,8 +32,15 @@ const getPatientInsurance = async (key, { patient_id }) => {
   return res?.data?.records;
 };
 
-export function InsuranceDetails({ control, errors, clearErrors, setValue }) {
+export function InsuranceDetails({
+  control,
+  errors,
+  clearErrors,
+  setValue,
+  trigger,
+}) {
   const { userToken } = useContext(MainContext);
+  const { setInsuranceInfo } = useContext(FrontdeskContext);
   const { fieldNameFn } = useLangFieldName();
   const [isInsurance, setIsInsurance] = useState(false);
   const [insuranceList, setInsuranceList] = useState([]);
@@ -43,7 +50,7 @@ export function InsuranceDetails({ control, errors, clearErrors, setValue }) {
     ["patient-insurance", { patient_id: hims_d_patient_id }],
     getPatientInsurance,
     {
-      enabled: !!hims_d_patient_id,
+      enabled: !!hims_d_patient_id && isInsurance,
       refetchOnWindowFocus: false,
       initialData: [],
       initialStale: true,
@@ -56,6 +63,7 @@ export function InsuranceDetails({ control, errors, clearErrors, setValue }) {
       "primary_insurance_provider_id",
       "primary_sub_id",
       "primary_network_id",
+      "primary_network_office_id",
       "primary_policy_num",
       "primary_card_number",
       "primary_effective_start_date",
@@ -64,10 +72,10 @@ export function InsuranceDetails({ control, errors, clearErrors, setValue }) {
     if (!isInsurance) {
       fieldNames.map((item) => setValue(item, ""));
       clearErrors(fieldNames);
+      setInsuranceInfo(null);
+      setInsuranceList([]);
     }
-  }, [isInsurance]);
-
-  // const onChange = (e) => console.log(e);
+  }, [isInsurance]); //eslint-disable-line
 
   const AddInsurance = () => {
     AlgaehSearch({
@@ -86,6 +94,8 @@ export function InsuranceDetails({ control, errors, clearErrors, setValue }) {
         setValue("primary_insurance_provider_id", row?.insurance_provider_id);
         setValue("primary_sub_id", row?.sub_insurance_provider_id);
         setValue("primary_network_id", row?.network_id);
+        setInsuranceInfo(row?.network_office_id);
+        // setValue("primary_network_office_id", row?.network_office_id);
         setValue("primary_policy_num", row?.policy_number);
         setValue("primary_effective_start_date", row?.effective_start_date);
         setValue("primary_effective_end_date", row?.effective_end_date);
@@ -175,7 +185,41 @@ export function InsuranceDetails({ control, errors, clearErrors, setValue }) {
                               selector={{
                                 name: "primary_insurance_provider_id",
                                 className: "select-fld",
-                                onChange: (_, selected) => onChange(selected),
+                                onChange: (_, selected) => {
+                                  onChange(selected);
+                                  const [current] = dropDownData?.filter(
+                                    (item) =>
+                                      item.insurance_provider_id == selected
+                                  );
+                                  setValue(
+                                    "primary_insurance_provider_id",
+                                    current?.insurance_provider_id
+                                  );
+                                  setValue(
+                                    "primary_sub_id",
+                                    current?.sub_insurance_provider_id
+                                  );
+                                  setValue(
+                                    "primary_network_id",
+                                    current?.network_id
+                                  );
+                                  setInsuranceInfo(
+                                    current?.hims_d_insurance_network_office_id
+                                  );
+                                  setValue(
+                                    "primary_policy_num",
+                                    current?.policy_number
+                                  );
+                                  setValue(
+                                    "primary_effective_start_date",
+                                    current?.primary_effective_start_date
+                                  );
+                                  setValue(
+                                    "primary_effective_end_date",
+                                    current?.effective_end_date
+                                  );
+                                  trigger();
+                                },
                                 value,
                                 onClear: () => onChange(""),
                                 dataSource: {
@@ -433,7 +477,7 @@ export function InsuranceDetails({ control, errors, clearErrors, setValue }) {
                             showActions={isInsurance}
                             textAltMessage="Insurance Card Front Side"
                             serviceParameters={{
-                              uniqueID: "null" + "_front",
+                              uniqueID: null + "_front",
                               fileType: "Patients",
                               //   processDelay: this.imageDetails.bind(
                               //     this,

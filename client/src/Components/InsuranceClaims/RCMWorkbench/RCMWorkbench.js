@@ -11,7 +11,7 @@ import {
   AlgaehDateHandler,
   // AlagehFormGroup,
 } from "../../Wrapper/algaehWrapper";
-import { texthandle } from "./RCMWorkbenchEvent";
+import { texthandle, ClaimSearch } from "./RCMWorkbenchEvent";
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
 import AlgaehSearch from "../../Wrapper/globalSearch";
 import ValidateBills from "./ValidateBills/ValidateBills";
@@ -47,6 +47,7 @@ class RCMWorkbench extends Component {
         this.setState(
           {
             [value.name]: value.value,
+            claims: []
           },
           () => {
             algaehApiCall({
@@ -63,7 +64,7 @@ class RCMWorkbench extends Component {
                   });
                 }
               },
-              onError: (error) => {},
+              onError: (error) => { },
             });
           }
         );
@@ -72,6 +73,7 @@ class RCMWorkbench extends Component {
       default:
         this.setState({
           [value.name]: value.value,
+          claims: []
         });
         break;
     }
@@ -157,8 +159,12 @@ class RCMWorkbench extends Component {
               AlgaehLoader({ show: false });
             }
           },
-          onError: (error) => {
+          onFailure: (error) => {
             AlgaehLoader({ show: false });
+            swalMessage({
+              title: error.message,
+              type: "error",
+            });
           },
         });
       },
@@ -177,7 +183,7 @@ class RCMWorkbench extends Component {
           });
         }
       },
-      onError: (error) => {},
+      onError: (error) => { },
     });
   }
 
@@ -288,14 +294,46 @@ class RCMWorkbench extends Component {
   }
 
   openReviewSubmit() {
-    this.validatedClaims.length === 0
-      ? swalMessage({
-          title: "please select atleast one invoice to submit",
-          type: "warning",
-        })
-      : this.setState({
-          openSubmit: true,
-        });
+    debugger
+    if (this.validatedClaims.length === 0) {
+      swalMessage({
+        title: "please select atleast one invoice to submit",
+        type: "warning",
+      })
+    } else {
+
+
+      const invoice_ids = _.map(this.validatedClaims, (o) => {
+        return o.hims_f_invoice_header_id;
+      });
+
+      console.log("invoice_ids", invoice_ids)
+      AlgaehLoader({ show: true });
+      algaehApiCall({
+        uri: "/insurance/saveMultiStatement",
+        module: "insurance",
+        method: "POST",
+        data: { invoiceList: invoice_ids },
+        onSuccess: (response) => {
+          if (response.data.success) {
+            swalMessage({
+              title: "Statement Generated",
+              type: "success",
+            });
+            AlgaehLoader({ show: false });
+          } else {
+            swalMessage({
+              title: response.data.records,
+              type: "error",
+            });
+            AlgaehLoader({ show: false });
+          }
+        },
+        onError: (error) => {
+          AlgaehLoader({ show: false });
+        },
+      });
+    }
   }
 
   handleClose() {
@@ -478,6 +516,7 @@ class RCMWorkbench extends Component {
                       this.setState({
                         insurance_provider_id: null,
                         sub_insurance_id: null,
+                        claims: []
                       });
                     },
                   }}
@@ -498,6 +537,7 @@ class RCMWorkbench extends Component {
                     onClear: () => {
                       this.setState({
                         sub_insurance_id: null,
+                        claims: []
                       });
                     },
                   }}
@@ -525,6 +565,7 @@ class RCMWorkbench extends Component {
                     onChange: (selDate) => {
                       this.setState({
                         from_date: selDate,
+                        claims: []
                       });
                     },
                   }}
@@ -542,6 +583,7 @@ class RCMWorkbench extends Component {
                     onChange: (selDate) => {
                       this.setState({
                         to_date: selDate,
+                        claims: []
                       });
                     },
                   }}
@@ -565,33 +607,34 @@ class RCMWorkbench extends Component {
                 </div>
               </>
             ) : (
-              <>
-                <div className="col-3 globalSearchCntr form-group">
-                  <AlgaehLabel label={{ forceLabel: "Search Statement No" }} />
-                  <h6>
-                    {/* {this.state.emp_name ? this.state.emp_name : "------"} */}
-                    {"Search Statement No"}
-                    <i className="fas fa-search fa-lg"></i>
-                  </h6>
-                </div>
-                <div className="col-2">
-                  <button
-                    onClick={this.getInvoicesForClaims}
-                    className="btn btn-primary"
-                    style={{ marginTop: 20, marginLeft: 5, float: "right" }}
-                  >
-                    Load
+                <>
+                  <div className="col-2 globalSearchCntr form-group">
+                    <AlgaehLabel label={{ forceLabel: "Search Statement No." }} />
+                    <h6 onClick={ClaimSearch.bind(this, this)}              >
+                      {this.state.insurance_statement_number
+                        ? this.state.insurance_statement_number
+                        : "Search Statement No."}
+                      <i className="fas fa-search fa-lg"></i>
+                    </h6>
+                  </div>
+                  <div className="col-2">
+                    <button
+                      onClick={this.getInvoicesForClaims}
+                      className="btn btn-primary"
+                      style={{ marginTop: 20, marginLeft: 5, float: "right" }}
+                    >
+                      Load
                   </button>
-                  <button
-                    onClick={this.clearSearch}
-                    className="btn btn-default"
-                    style={{ marginTop: 20, float: "right" }}
-                  >
-                    Clear
+                    <button
+                      onClick={this.clearSearch}
+                      className="btn btn-default"
+                      style={{ marginTop: 20, float: "right" }}
+                    >
+                      Clear
                   </button>
-                </div>
-              </>
-            )}
+                  </div>
+                </>
+              )}
           </div>
         </div>
 
@@ -691,8 +734,8 @@ class RCMWorkbench extends Component {
                                 Pending
                               </span>
                             ) : (
-                              "----"
-                            )}
+                                      "----"
+                                    )}
                           </span>
                         );
                       },
@@ -869,14 +912,14 @@ class RCMWorkbench extends Component {
                   filter={true}
                   isEditable={false}
                   paging={{ page: 0, rowsPerPage: 20 }}
-                  // events={{
-                  //   onDelete: deletePosDetail.bind(this, this, context),
-                  //   onEdit: row => {},
-                  //   onDone: updatePosDetail.bind(this, this)
-                  // }}
-                  // onRowSelect={row => {
-                  //   getItemLocationStock(this, row);
-                  // }}
+                // events={{
+                //   onDelete: deletePosDetail.bind(this, this, context),
+                //   onEdit: row => {},
+                //   onDone: updatePosDetail.bind(this, this)
+                // }}
+                // onRowSelect={row => {
+                //   getItemLocationStock(this, row);
+                // }}
                 />
               </div>
             </div>

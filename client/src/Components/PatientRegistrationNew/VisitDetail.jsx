@@ -1,6 +1,6 @@
-import React from "react";
-// import { useQuery } from "react-query";
-// import { Controller, useWatch } from "react-hook-form";
+import React, { useContext } from "react";
+import { useQuery } from "react-query";
+import { Controller, useWatch } from "react-hook-form";
 import moment from "moment";
 import {
   //   MainContext,
@@ -8,27 +8,64 @@ import {
   AlgaehLabel,
   AlgaehAutoComplete,
   AlgaehFormGroup,
-  //   AlgaehDateHandler,
+  AlgaehTreeSearch,
   AlgaehDataGrid,
-  //   AlgaehHijriDatePicker,
   Spin,
 } from "algaeh-react-components";
 import { useLangFieldName } from "./patientHooks";
-// import { newAlgaehApi } from "../../hooks/";
+import { newAlgaehApi } from "../../hooks/";
+import { FrontdeskContext } from "./FrontdeskContext";
 // import GenericData from "../../utils/GlobalVariables.json";
 const { TabPane } = Tabs;
 
-export function VisitDetails({ control, trigger }) {
+const getDoctorData = async () => {
+  const result = await Promise.all([
+    newAlgaehApi({
+      uri: "/frontDesk/getDoctorAndDepartment",
+      module: "frontDesk",
+      method: "GET",
+    }),
+    newAlgaehApi({
+      uri: "/visitType/get",
+      module: "masterSettings",
+      method: "GET",
+    }),
+  ]);
+  return {
+    doctors: result[0]?.data?.records,
+    visitTypes: result[1]?.data?.records,
+  };
+};
+
+export function VisitDetails({ control, setValue, trigger }) {
   const { fieldNameFn } = useLangFieldName();
-  const insured = "Y";
-  let department_type, hims_d_patient_id;
+  const { setServiceInfo } = useContext(FrontdeskContext);
+  const { data, isLoading } = useQuery("doctors-data", getDoctorData, {
+    refetchOnWindowFocus: false,
+    cacheTime: Infinity,
+    initialData: {
+      doctors: [],
+      visitTypes: [],
+    },
+    initialStale: true,
+  });
+  const {
+    hims_d_patient_id,
+    primary_insurance_provider_id,
+    department_type,
+  } = useWatch({
+    control,
+    name: [
+      "hims_d_patient_id",
+      "primary_insurance_provider_id",
+      "department_type",
+    ],
+  });
+  const insured = !!primary_insurance_provider_id;
 
   return (
-    <Spin spinning={false}>
-      <div
-        className="hptl-phase1-consultation-details margin-top-15"
-        onFocus={() => trigger()}
-      >
+    <Spin spinning={isLoading}>
+      <div className="hptl-phase1-consultation-details margin-top-15">
         <div className="consultation-section">
           <Tabs type="card">
             <TabPane
@@ -46,25 +83,69 @@ export function VisitDetails({ control, trigger }) {
                   <div className="row">
                     <div className="col-lg-4 primary-details">
                       <div className="row primary-box-container">
-                        <AlgaehAutoComplete
-                          div={{ className: "col-lg-6 mandatory" }}
-                          label={{
-                            fieldName: "visit_type",
-                            isImp: true,
-                          }}
-                          selector={{
-                            name: "visit_type",
-                            className: "select-fld",
+                        <Controller
+                          name="visit_type"
+                          control={control}
+                          render={({ onChange, value }) => (
+                            <AlgaehAutoComplete
+                              div={{ className: "col-lg-6 mandatory" }}
+                              label={{
+                                fieldName: "visit_type",
+                                isImp: true,
+                              }}
+                              selector={{
+                                name: "visit_type",
+                                className: "select-fld",
+                                value,
+                                onChange: (_, selected) => {
+                                  onChange(selected);
+                                },
+                                onClear: () => onChange(""),
+                                dataSource: {
+                                  textField: fieldNameFn("visit_type_desc"),
+                                  valueField: "hims_d_visit_type_id",
+                                  data: data?.visitTypes,
+                                },
+                                others: {
+                                  disabled: false,
+                                },
+                              }}
+                            />
+                          )}
+                        />
 
-                            dataSource: {
-                              textField: fieldNameFn("visit_type_desc"),
-                              valueField: "hims_d_visit_type_id",
-                              //   data: this.props.visittypes
-                            },
-                            others: {
-                              disabled: false,
-                            },
-                          }}
+                        <Controller
+                          control={control}
+                          name="doctor"
+                          rules={{ required: "Required" }}
+                          render={({ onChange, value }) => (
+                            <AlgaehTreeSearch
+                              div={{ className: "col form-group" }}
+                              label={{
+                                fieldName: "doctor_id",
+                                isImp: true,
+                                align: "ltr",
+                              }}
+                              tree={{
+                                disableHeader: true,
+                                treeDefaultExpandAll: true,
+                                onChange: (selected) => {
+                                  setServiceInfo(selected);
+                                  onChange(selected);
+                                },
+                                name: "doctor",
+                                data: data?.doctors,
+                                textField: fieldNameFn("label", "arlabel"),
+                                valueField: (node) => {
+                                  if (node?.sub_department_id) {
+                                    return `${node?.sub_department_id}-${node?.services_id}-${node?.value}-${node?.department_type}`;
+                                  } else {
+                                    return node?.value;
+                                  }
+                                },
+                              }}
+                            />
+                          )}
                         />
                       </div>
                       <div className="row primary-box-container">
@@ -79,8 +160,7 @@ export function VisitDetails({ control, trigger }) {
                       </div>
                       <div className="row">
                         <div className="col-lg-12">
-                          {department_type === "D" &&
-                          hims_d_patient_id !== null ? (
+                          {department_type === "D" && !!hims_d_patient_id ? (
                             <div className="row">
                               <div
                                 className="col-lg-4"
@@ -102,11 +182,7 @@ export function VisitDetails({ control, trigger }) {
                                       //   context
                                       // )}
                                     />
-                                    <span>
-                                      {this.state.selectedLang === "en"
-                                        ? "Yes"
-                                        : "نعم"}
-                                    </span>
+                                    <span>{fieldNameFn("Yes", "نعم")}</span>
                                   </label>
                                 </div>
                               </div>
@@ -142,7 +218,7 @@ export function VisitDetails({ control, trigger }) {
                         </div>
 
                         <div className="col-lg-12">
-                          {insured === "Y" ? (
+                          {insured ? (
                             <div className="row">
                               <div
                                 className="col-lg-4"

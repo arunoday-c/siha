@@ -1537,11 +1537,11 @@ export function saveMultiStatement(req, res, next) {
     const { algaeh_d_app_user_id } = req.userIdentity;
     _mysql
       .executeQueryWithTransaction({
-        query: `select hims_f_invoice_header_id,insurance_provider_id,sub_insurance_id,gross_amount, discount_amount, net_amount, patient_resp, 
-        patient_tax, patient_payable, company_resp, company_tax, company_payable, sec_company_resp, sec_company_tax, 
-        sec_company_payable, submission_date, submission_ammount, remittance_date, remittance_ammount, 
-        denial_ammount,P.prefix,P.insurance_statement_count from hims_f_invoice_header as H inner join hims_d_insurance_provider as P on
-        H.insurance_provider_id = P.hims_d_insurance_provider_id
+        query: `select hims_f_invoice_header_id,insurance_provider_id,sub_insurance_id,gross_amount, discount_amount, 
+        net_amount, patient_resp, patient_tax, patient_payable, company_resp, company_tax, company_payable, 
+        sec_company_resp, sec_company_tax, sec_company_payable, submission_date, submission_ammount, 
+        remittance_date, remittance_ammount, denial_ammount,P.prefix,P.insurance_statement_count from hims_f_invoice_header as H 
+        inner join hims_d_insurance_provider as P on H.insurance_provider_id = P.hims_d_insurance_provider_id 
         where hims_f_invoice_header_id in (?) FOR UPDATE;`,
         values: [invoiceList],
         printQuery: true,
@@ -1554,31 +1554,32 @@ export function saveMultiStatement(req, res, next) {
             insurance_provider_id,
             sub_insurance_id,
           } = result[0];
-          const total_gross_amount = _.sumBy(result, (s) => s.gross_amount);
+          const total_gross_amount = _.sumBy(result, (s) => parseFloat(s.gross_amount));
           const total_company_responsibility = _.sumBy(
             result,
-            (s) => s.company_resp
+            (s) => parseFloat(s.company_resp)
           );
-          const total_company_vat = _.sumBy(result, (s) => s.company_tax);
+          const total_company_vat = _.sumBy(result, (s) => parseFloat(s.company_tax));
           const total_company_payable = _.sumBy(
             result,
-            (s) => s.company_payable
+            (s) => parseFloat(s.company_payable)
           );
           const total_remittance_amount = 0;
           const total_balance_amount =
             total_gross_amount - total_remittance_amount;
 
-          const update_ins_count = insurance_statement_count + 1;
+          const update_ins_count = parseInt(insurance_statement_count) + 1;
 
           const invNum = `${prefix}-${moment().format(
             "YY"
           )}-${update_ins_count}`;
+
           _mysql
             .executeQuery({
-              query: `insert into hims_f_insurance_statement(insurance_statement_number,total_gross_amount,
-              total_company_responsibility,total_company_vat,total_company_payable,total_remittance_amount,
-              total_balance_amount,insurance_provider_id,sub_insurance_id,created_by,created_date,updated_by,
-              updated_date,insurance_status)`,
+              query: `insert into hims_f_insurance_statement(insurance_statement_number, total_gross_amount,
+              total_company_responsibility, total_company_vat, total_company_payable, total_remittance_amount,
+              total_balance_amount, insurance_provider_id, sub_insurance_id, created_by, created_date, updated_by,
+              updated_date, insurance_status)VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
               values: [
                 invNum,
                 total_gross_amount,
@@ -1595,12 +1596,15 @@ export function saveMultiStatement(req, res, next) {
                 new Date(),
                 "P",
               ],
+              printQuery: true
             })
             .then((result) => {
               _mysql
                 .executeQuery({
-                  query: `update hims_d_insurance_provider set insurance_statement_count=? where hims_d_insurance_provider_id=?`,
-                  values: [update_ins_count, insurance_provider_id],
+                  query: `update hims_d_insurance_provider set insurance_statement_count=? 
+                  where hims_d_insurance_provider_id=?; update hims_f_invoice_header set insurance_statement_id=? where hims_f_invoice_header_id in (?);`,
+                  values: [update_ins_count, insurance_provider_id, result.insertId, invoiceList],
+                  printQuery: true
                 })
                 .then((updated) => {
                   _mysql.commitTransaction(() => {
@@ -1623,6 +1627,31 @@ export function saveMultiStatement(req, res, next) {
               });
             });
         }
+      })
+      .catch((error) => {
+        _mysql.closeConnection(() => {
+          next(error);
+        });
+      });
+  } catch (error) {
+    _mysql.releaseConnection();
+  }
+};
+export function getInsuranceStatement(req, res, next) {
+  const _mysql = new algaehMysql();
+  try {
+    _mysql
+      .executeQueryWithTransaction({
+        query: `select * from hims_f_insurance_statement where hims_f_insurance_statement_id = ?;
+        select * from hims_f_invoice_header where insurance_statement_id=?;`,
+        values: [req.query.hims_f_insurance_statement_id, req.query.hims_f_insurance_statement_id],
+        printQuery: true,
+      })
+      .then((result) => {
+        let final_result = { ...result[0][0], ...{ claims: result[1] } }
+        _mysql.releaseConnection();
+        req.records = final_result;
+        next();
       })
       .catch((error) => {
         _mysql.closeConnection(() => {
