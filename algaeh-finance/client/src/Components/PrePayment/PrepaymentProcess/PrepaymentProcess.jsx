@@ -17,6 +17,7 @@ import { newAlgaehApi } from "../../../hooks/";
 import moment from "moment";
 import { Controller, useForm } from "react-hook-form";
 import { PrePaymentContext } from "../Prepayment";
+import { swalMessage } from "../../../utils/algaehApiCall";
 
 export function PrepaymentProcess() {
   const { prePaymentTypes } = useContext(PrePaymentContext);
@@ -113,28 +114,36 @@ export function PrepaymentProcess() {
   };
   const updateProcessList = async (data) => {
     const hospitalId = parseInt(data.hospital_id);
-    try {
-      const res = await newAlgaehApi({
-        uri: "/prepayment/updatePrepaymentDetail",
-        method: "PUT",
-        data: {
-          finance_f_prepayment_detail_id: data.finance_f_prepayment_detail_id,
-          hospital_id: hospitalId,
-          project_id: data.cost_center_id,
-        },
-        module: "finance",
+    if (!data.finance_f_prepayment_detail_id) {
+      swalMessage({
+        title: "warning",
+        message: "please select Cost Center ",
       });
-      if (res.data.success) {
-        getProcessDetails(data);
-        // setList(res.data.result);
-        // setLoading(false);
+    } else {
+      try {
+        const res = await newAlgaehApi({
+          uri: "/prepayment/updatePrepaymentDetail",
+          method: "PUT",
+          data: {
+            finance_f_prepayment_detail_id: data.finance_f_prepayment_detail_id,
+            hospital_id: hospitalId,
+            project_id: data.cost_center_id,
+          },
+          module: "finance",
+        });
+        if (res.data.success) {
+          getProcessDetails(data);
+          loadListToProcess(getValues());
+          // setList(res.data.result);
+          // setLoading(false);
+        }
+      } catch (e) {
+        setLoading(false);
+        AlgaehMessagePop({
+          type: "error",
+          display: e.message,
+        });
       }
-    } catch (e) {
-      setLoading(false);
-      AlgaehMessagePop({
-        type: "error",
-        display: e.message,
-      });
     }
   };
 
@@ -197,7 +206,7 @@ export function PrepaymentProcess() {
       });
     }
 
-    return totalAmount;
+    return totalAmount.toFixed(3);
   };
   const getBalAmt = () => {
     let balanceAmt = 0;
@@ -210,7 +219,7 @@ export function PrepaymentProcess() {
           return (balanceAmt += parseFloat(item.amount));
         });
     }
-    return balanceAmt;
+    return balanceAmt.toFixed(3);
   };
 
   return (
@@ -286,7 +295,9 @@ export function PrepaymentProcess() {
                     ? `${row.hospital_id}-${row.cost_center_id}`
                     : "";
 
-                return (
+                return row.processed === "Y" ? (
+                  row.cost_center
+                ) : (
                   <AlgaehTreeSearch
                     // div={{ className: "col-10" }}
                     tree={{

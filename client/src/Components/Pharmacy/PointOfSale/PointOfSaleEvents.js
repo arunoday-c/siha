@@ -235,58 +235,71 @@ const ClearData = ($this, e) => {
   IOputs.total_quantity = 0;
   IOputs.dataExitst = false;
 
-  let _screenName = getCookie("ScreenName").replace("/", "");
+  IOputs.Cashchecked =
+    $this.state.default_pay_type === "CH" ? true : false;
+  IOputs.Cardchecked =
+    $this.state.default_pay_type === "CD" ? true : false;
 
-  algaehApiCall({
-    uri: "/userPreferences/get",
-    data: {
-      screenName: _screenName,
-      identifier: "PharmacyLocation"
-    },
-    method: "GET",
-    onSuccess: response => {
-      if (response.data.records.selectedValue !== undefined) {
-        IOputs.location_id = response.data.records.selectedValue;
-      }
-      algaehApiCall({
-        uri: "/userPreferences/get",
-        data: {
-          screenName: _screenName,
-          identifier: "LocationType"
-        },
-        method: "GET",
-        onSuccess: response => {
-          if (response.data.records.selectedValue !== undefined) {
-            IOputs.location_type = response.data.records.selectedValue;
-          }
-          IOputs.Cashchecked =
-            $this.state.default_pay_type === "CH" ? true : false;
-          IOputs.Cardchecked =
-            $this.state.default_pay_type === "CD" ? true : false;
-
-          $this.setState(IOputs, () => {
-            const element = ReactDOM.findDOMNode(
-              document.getElementById("root")
-            ).querySelector("input[name='item_id']");
-            element.focus();
-          });
-          getCashiersAndShiftMAP($this);
-        },
-        onFailure: error => {
-          swalMessage({
-            title: error.message,
-            type: "error"
-          });
-        }
-      });
-    },
-    onFailure: error => {
-      swalMessage({
-        title: error.message,
-        type: "error"
-      });
-    }
+  $this.setState(IOputs, () => {
+    const element = ReactDOM.findDOMNode(
+      document.getElementById("root")
+    ).querySelector("input[name='item_id']");
+    element.focus();
   });
+  getCashiersAndShiftMAP($this);
+
+  // let _screenName = getCookie("ScreenName").replace("/", "");
+
+  // algaehApiCall({
+  //   uri: "/userPreferences/get",
+  //   data: {
+  //     screenName: _screenName,
+  //     identifier: "PharmacyLocation"
+  //   },
+  //   method: "GET",
+  //   onSuccess: response => {
+  //     if (response.data.records.selectedValue !== undefined) {
+  //       IOputs.location_id = response.data.records.selectedValue;
+  //     }
+  //     algaehApiCall({
+  //       uri: "/userPreferences/get",
+  //       data: {
+  //         screenName: _screenName,
+  //         identifier: "LocationType"
+  //       },
+  //       method: "GET",
+  //       onSuccess: response => {
+  //         if (response.data.records.selectedValue !== undefined) {
+  //           IOputs.location_type = response.data.records.selectedValue;
+  //         }
+  //         IOputs.Cashchecked =
+  //           $this.state.default_pay_type === "CH" ? true : false;
+  //         IOputs.Cardchecked =
+  //           $this.state.default_pay_type === "CD" ? true : false;
+
+  //         $this.setState(IOputs, () => {
+  //           const element = ReactDOM.findDOMNode(
+  //             document.getElementById("root")
+  //           ).querySelector("input[name='item_id']");
+  //           element.focus();
+  //         });
+  //         getCashiersAndShiftMAP($this);
+  //       },
+  //       onFailure: error => {
+  //         swalMessage({
+  //           title: error.message,
+  //           type: "error"
+  //         });
+  //       }
+  //     });
+  //   },
+  //   onFailure: error => {
+  //     swalMessage({
+  //       title: error.message,
+  //       type: "error"
+  //     });
+  //   }
+  // });
 };
 
 const GenerateReciept = ($this, callBack) => {
