@@ -90,7 +90,16 @@ let algaehSearchConfig = (searchName, req) => {
           hospitalId,
         orderBy: "pv.hims_f_patient_visit_id desc",
       },
-
+      {
+        searchName: "invoice_visit",
+        searchQuery:
+          "select SQL_CALC_FOUND_ROWS  full_name, patient_code, contact_number, nationality_id,pv.visit_code, pv.visit_date,\
+          pv.patient_id, pv.hims_f_patient_visit_id, \
+          pv.insured, pv.sec_insured,pv.episode_id FROM hims_f_patient,hims_f_patient_visit pv where  \
+          pv.patient_id=hims_f_patient.hims_d_patient_id and pv.record_status='A' and pv.hospital_id=" +
+          hospitalId,
+        orderBy: "pv.hims_f_patient_visit_id desc",
+      },
       {
         searchName: "DoctorCommission",
         searchQuery:
@@ -1016,6 +1025,15 @@ let algaehSearchConfig = (searchName, req) => {
           where date(V.visit_expiery_date) > date(now())  and V.hospital_id=" +
           hospitalId,
         orderBy: "V.hims_f_patient_visit_id desc",
+      },
+      {
+        searchName: "InsuranceStatement",
+        searchQuery:
+          `select hims_f_insurance_statement_id, insurance_statement_number, insurance_sub_name, insurance_provider_name
+          from hims_f_insurance_statement S 
+          inner join hims_d_insurance_provider P on S.insurance_provider_id = P.hims_d_insurance_provider_id
+          inner join hims_d_insurance_sub SU on S.sub_insurance_id = SU.hims_d_insurance_sub_id`,
+        orderBy: "S.hims_f_insurance_statement_id desc",
       },
       ...search_global1,
     ],
