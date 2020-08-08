@@ -1,9 +1,9 @@
-import React from "react";
-// import { useQuery } from "react-query";
-// import { Controller, useWatch } from "react-hook-form";
+import React, { useContext } from "react";
+import { useQuery } from "react-query";
+import { useWatch } from "react-hook-form";
 import moment from "moment";
 import {
-  //   MainContext,
+  MainContext,
   AlgaehLabel,
   AlgaehAutoComplete,
   AlgaehFormGroup,
@@ -13,14 +13,120 @@ import {
   Spin,
 } from "algaeh-react-components";
 import { useLangFieldName } from "./patientHooks";
-// import { newAlgaehApi } from "../../hooks/";
+import { newAlgaehApi } from "../../hooks/";
+import { FrontdeskContext } from "./FrontdeskContext";
 // import GenericData from "../../utils/GlobalVariables.json";
 
+const getBillDetails = async (
+  key,
+  {
+    services_id,
+    nationality_id,
+    default_nationality_id,
+    local_vat_applicable,
+    primary_insurance_provider_id,
+    primary_network_id,
+    primary_network_office_id,
+  }
+) => {
+  const details = await newAlgaehApi({
+    uri: "/billing/getBillDetails",
+    module: "billing",
+    method: "POST",
+    data: [
+      {
+        hims_d_services_id: parseInt(services_id, 10),
+        zeroBill: false,
+        FollowUp: false,
+        insured: primary_insurance_provider_id ? "Y" : "N",
+        primary_insurance_provider_id,
+        primary_network_id,
+        primary_network_office_id,
+        vat_applicable:
+          default_nationality_id == nationality_id ? local_vat_applicable : "Y",
+      },
+    ],
+  });
+
+  return details?.data?.records;
+};
+
+const getBillCalculations = async (key, { billInfo }) => {
+  const res = await newAlgaehApi({
+    uri: "/billing/billingCalculations",
+    data: { ...billInfo, existing_treat: false, follow_up: false },
+    method: "POST",
+    module: "billing",
+  });
+  return res?.data?.records;
+};
+
 export function BillDetails({ control, trigger }) {
+  const { default_nationality_id, local_vat_applicable } = useContext(
+    MainContext
+  );
+  const { services_id, primary_network_office_id } = useContext(
+    FrontdeskContext
+  );
   const { fieldNameFn } = useLangFieldName();
+  const {
+    nationality_id,
+    primary_insurance_provider_id,
+    primary_network_id,
+  } = useWatch({
+    control,
+    name: [
+      "nationality_id",
+      "primary_insurance_provider_id",
+      "primary_network_id",
+      "primary_network_office_id",
+    ],
+  });
+
+  const { isLoading: infoLoading, data: billInfo } = useQuery(
+    [
+      "billdetails",
+      {
+        services_id,
+        nationality_id,
+        primary_insurance_provider_id,
+        primary_network_id,
+        primary_network_office_id,
+        default_nationality_id,
+        local_vat_applicable,
+      },
+    ],
+    getBillDetails,
+    {
+      enabled: !!services_id,
+      retry: 3,
+      refetchOnWindowFocus: false,
+      onSuccess: (data) => {
+        console.log(data);
+      },
+    }
+  );
+
+  const { isLoading: calcLoading, data: billData } = useQuery(
+    ["billCalculations", { billInfo }],
+    getBillCalculations,
+    {
+      refetchOnWindowFocus: false,
+      enabled: !!billInfo,
+      retry: 3,
+      onSuccess: (data) => {
+        debugger;
+        console.log(data);
+      },
+      onError: (err) => {
+        debugger;
+        console.log(err);
+      },
+    }
+  );
 
   return (
-    <Spin spinning={false}>
+    <Spin spinning={infoLoading || calcLoading}>
       <div className="hptl-phase1-fd-billing-form">
         <div className="row">
           <div className="algaeh-md-4 algaeh-lg-4 algaeh-xl-12  primary-details">
@@ -48,13 +154,13 @@ export function BillDetails({ control, trigger }) {
                     paddingTop: 4,
                   }}
                 >
-                  {/* {this.state.from_package === true ? ( */}
+                  {/* {this.state.from_package === true ? (
                   <span
                     className="alert alert-warning animated flash slow infinite utalizeStatus"
                     role="alert"
                   >
                     Utilized From Package
-                  </span>
+                  </span> */}
                   {/* ) : null} 
                   {/* {this.state.follow_up === true ? ( *
                   <span
@@ -70,14 +176,14 @@ export function BillDetails({ control, trigger }) {
                   </span>
                    ) : null} */}
                 </div>
-                {/* {this.state.due_amount > 0 ? ( */}
+                {/* {this.state.due_amount > 0 ? ( 
                 <div className="col">
                   <AlgaehLabel label={{ forceLabel: "Due Amount" }} />
                   <h6 style={{ color: "red" }}>
-                    0.00{/* {GetAmountFormart(this.state.due_amount)} */}
+                    {billData?.}
                   </h6>
                 </div>
-                {/* ) : null} */}
+                ) : null}  */}
               </div>
               <hr style={{ margin: "0.3rem 0rem" }} />
               <div className="row primary-box-container">
@@ -87,9 +193,7 @@ export function BillDetails({ control, trigger }) {
                       fieldName: "gross_total",
                     }}
                   />
-
-                  {/* <h6>{GetAmountFormart(this.state.gross_total)}</h6> */}
-                  <h6>{0.0}</h6>
+                  <h6>{billData?.gross_total}</h6>
                 </div>
 
                 <div className="col">
@@ -98,7 +202,7 @@ export function BillDetails({ control, trigger }) {
                       fieldName: "patient_payable",
                     }}
                   />
-                  <h6>0.00</h6>
+                  <h6>{billData?.patient_payable}</h6>
                 </div>
               </div>
               <hr style={{ margin: "0.3rem 0rem" }} />
@@ -143,7 +247,7 @@ export function BillDetails({ control, trigger }) {
                     fieldName: "advance_adjust",
                   }}
                   textBox={{
-                    //   value: this.state.advance_adjust,
+                    value: billData?.advance_adjust,
                     className: "txt-fld",
                     name: "advance_adjust",
                     //   events: {
@@ -165,7 +269,7 @@ export function BillDetails({ control, trigger }) {
                   }}
                   textBox={{
                     //   decimal: { allowNegative: false },
-                    //   value: this.state.sheet_discount_percentage,
+                    value: billData?.sheet_discount_percentage,
                     className: "txt-fld",
                     name: "sheet_discount_percentage",
                     //   events: {
@@ -189,7 +293,7 @@ export function BillDetails({ control, trigger }) {
                     //   decimal: {
                     //     allowNegative: false
                     //   },
-                    //   value: this.state.sheet_discount_amount,
+                    value: billData?.sheet_discount_amount,
                     className: "txt-fld",
                     name: "sheet_discount_amount",
 
@@ -231,7 +335,7 @@ export function BillDetails({ control, trigger }) {
                     }}
                   />
                   {/* <h6>{GetAmountFormart(this.state.net_amount)}</h6> */}
-                  <h6>{0.0}</h6>
+                  <h6>{billData?.net_amount}</h6>
                 </div>
 
                 <AlgaehFormGroup
@@ -271,7 +375,7 @@ export function BillDetails({ control, trigger }) {
                   />
                   <h4>
                     {/* {GetAmountFormart(this.state.receiveable_amount)} */}
-                    {0.0}
+                    {billData?.receiveable_amount}
                   </h4>
                 </div>
                 <div className="col highlightGrey">
@@ -369,7 +473,7 @@ export function BillDetails({ control, trigger }) {
                     textBox={{
                       className: "txt-fld",
                       name: "cash_amount",
-
+                      value: billData?.cash_amount,
                       placeholder: "0.00",
                     }}
                   />

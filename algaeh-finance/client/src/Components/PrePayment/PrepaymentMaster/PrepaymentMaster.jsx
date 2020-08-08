@@ -254,6 +254,40 @@ export function PrepaymentMaster() {
               />
             )}
           />
+          <Controller
+            name="prepayment_duration"
+            control={control}
+            rules={{ required: "Required" }}
+            render={(props) => (
+              <AlgaehFormGroup
+                div={{
+                  className: "col-2 form-group algaeh-text-fld",
+                }}
+                label={{
+                  forceLabel: "Duration (Months)",
+                  isImp: true,
+                }}
+                textBox={{
+                  type: "text",
+                  className: "form-control",
+                  ...props,
+                }}
+              />
+            )}
+          />
+          {errors.prepayment_duration && (
+            <span>{errors.prepayment_duration.message}</span>
+          )}
+
+          <div className="col-2">
+            <label>Employee Requiried</label>
+            <div className="customCheckbox">
+              <label className="checkbox inline">
+                <input type="checkbox" value="yes" name="" />
+                <span>Yes</span>
+              </label>
+            </div>
+          </div>
 
           <div className="col-2">
             <button
@@ -381,6 +415,12 @@ export function PrepaymentMaster() {
                           return null;
                         }
                       },
+                    },
+                    {
+                      fieldName: "",
+                      label: "Employee Required",
+                      sortable: true,
+                      filterable: true,
                     },
                   ]}
                   isFilterable={true}

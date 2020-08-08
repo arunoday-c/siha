@@ -13,7 +13,7 @@ const VisitSearch = ($this, e) => {
     searchGrid: {
       columns: spotlightSearch.VisitDetails.VisitList,
     },
-    searchName: "visit",
+    searchName: "invoice_visit",
     uri: "/gloabelSearch/get",
     inputs: input,
     onContainsChange: (text, serchBy, callBack) => {

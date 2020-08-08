@@ -213,7 +213,7 @@ class InvoiceGeneration extends Component {
             },
             jsonFile: {
               fileName: "spotlightSearch",
-              fieldName: "Invoice.InvoiceGen",
+              fieldName: "Insurance.InvoiceGen",
             },
             searchName: "InvoiceGen",
           }}
@@ -277,7 +277,7 @@ class InvoiceGeneration extends Component {
             >
               {this.state.visit_code
                 ? this.state.visit_code
-                : "Search Employee"}
+                : "Search Visit"}
               <i className="fas fa-search fa-lg"></i>
             </h6>
           </div>
@@ -376,10 +376,10 @@ class InvoiceGeneration extends Component {
                           this.props.servicetype === undefined
                             ? []
                             : this.props.servicetype.filter(
-                                (f) =>
-                                  f.hims_d_service_type_id ===
-                                  parseInt(row.service_type_id, 10)
-                              );
+                              (f) =>
+                                f.hims_d_service_type_id ===
+                                parseInt(row.service_type_id, 10)
+                            );
 
                         return (
                           <span>
@@ -396,10 +396,10 @@ class InvoiceGeneration extends Component {
                           this.props.servicetype === undefined
                             ? []
                             : this.props.servicetype.filter(
-                                (f) =>
-                                  f.hims_d_service_type_id ===
-                                  parseInt(row.service_type_id, 10)
-                              );
+                              (f) =>
+                                f.hims_d_service_type_id ===
+                                parseInt(row.service_type_id, 10)
+                            );
 
                         return (
                           <span>
@@ -422,8 +422,8 @@ class InvoiceGeneration extends Component {
                           this.props.serviceslist === undefined
                             ? []
                             : this.props.serviceslist.filter(
-                                (f) => f.hims_d_services_id === row.service_id
-                              );
+                              (f) => f.hims_d_services_id === row.service_id
+                            );
 
                         return (
                           <span>
@@ -440,8 +440,8 @@ class InvoiceGeneration extends Component {
                           this.props.serviceslist === undefined
                             ? []
                             : this.props.serviceslist.filter(
-                                (f) => f.hims_d_services_id === row.service_id
-                              );
+                              (f) => f.hims_d_services_id === row.service_id
+                            );
 
                         return (
                           <span>
@@ -651,8 +651,8 @@ class InvoiceGeneration extends Component {
                           <h6>
                             {this.state.effective_end_date
                               ? moment(this.state.effective_end_date).format(
-                                  Options.dateFormat
-                                )
+                                Options.dateFormat
+                              )
                               : "---"}
                           </h6>
                         </div>

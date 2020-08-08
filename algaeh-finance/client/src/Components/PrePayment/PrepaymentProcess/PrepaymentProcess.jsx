@@ -645,6 +645,28 @@ export function PrepaymentProcess() {
             </div>
           </div>
         </div>
+        <div className="row">
+          <div className="col-4"></div>
+          <div className="col-8">
+            <div className="row">
+              {" "}
+              <div className="col">
+                <label className="style_Label ">Net Total</label>
+                <h6>0.00</h6>
+              </div>{" "}
+              <div className="col">
+                <label className="style_Label ">
+                  Net Current Month Expense Out
+                </label>
+                <h6>0.00</h6>
+              </div>{" "}
+              <div className="col">
+                <label className="style_Label ">Net Balance</label>
+                <h6>0.00</h6>
+              </div>{" "}
+            </div>
+          </div>
+        </div>
         <div className="hptl-phase1-footer">
           <div className="row">
             <div className="col-12">

@@ -1,4 +1,4 @@
-export default function Income({ hospital_id, RECEIPT_TYPE }) {
+export default function Income({ hospital_id, RECEIPT_TYPE, cashier_id }) {
   return {
     name: "Income",
     submenu: [
@@ -15,8 +15,8 @@ export default function Income({ hospital_id, RECEIPT_TYPE }) {
             isImp: true,
             others: {
               maxDate: new Date(),
-              minDate: null
-            }
+              minDate: null,
+            },
           },
           {
             className: "col-2 form-group mandatory",
@@ -25,10 +25,10 @@ export default function Income({ hospital_id, RECEIPT_TYPE }) {
             isImp: true,
             others: {
               maxDate: new Date(),
-              minDate: null
-            }
-          }
-        ]
+              minDate: null,
+            },
+          },
+        ],
       },
       {
         subitem: "OP Billing Summary",
@@ -44,14 +44,14 @@ export default function Income({ hospital_id, RECEIPT_TYPE }) {
             isImp: true,
             label: "Branch",
             link: {
-              uri: "/organization/getOrganizationByUser"
+              uri: "/organization/getOrganizationByUser",
             },
             value: hospital_id,
             dataSource: {
               textField: "hospital_name",
               valueField: "hims_d_hospital_id",
-              data: undefined
-            }
+              data: undefined,
+            },
           },
           {
             className: "col-2 form-group mandatory",
@@ -60,8 +60,8 @@ export default function Income({ hospital_id, RECEIPT_TYPE }) {
             isImp: true,
             others: {
               maxDate: new Date(),
-              minDate: null
-            }
+              minDate: null,
+            },
           },
           {
             className: "col-2 form-group mandatory",
@@ -70,10 +70,10 @@ export default function Income({ hospital_id, RECEIPT_TYPE }) {
             isImp: true,
             others: {
               maxDate: new Date(),
-              minDate: null
-            }
-          }
-        ]
+              minDate: null,
+            },
+          },
+        ],
       },
       {
         subitem: "OP Billing Detail",
@@ -88,14 +88,14 @@ export default function Income({ hospital_id, RECEIPT_TYPE }) {
             isImp: true,
             label: "Branch",
             link: {
-              uri: "/organization/getOrganizationByUser"
+              uri: "/organization/getOrganizationByUser",
             },
             value: hospital_id,
             dataSource: {
               textField: "hospital_name",
               valueField: "hims_d_hospital_id",
-              data: undefined
-            }
+              data: undefined,
+            },
           },
           {
             className: "col-2 form-group mandatory",
@@ -104,8 +104,8 @@ export default function Income({ hospital_id, RECEIPT_TYPE }) {
             isImp: true,
             others: {
               maxDate: new Date(),
-              minDate: null
-            }
+              minDate: null,
+            },
           },
           {
             className: "col-2 form-group mandatory",
@@ -114,8 +114,8 @@ export default function Income({ hospital_id, RECEIPT_TYPE }) {
             isImp: true,
             others: {
               maxDate: new Date(),
-              minDate: null
-            }
+              minDate: null,
+            },
           },
           {
             className: "col-2 form-group",
@@ -125,15 +125,15 @@ export default function Income({ hospital_id, RECEIPT_TYPE }) {
             isImp: false,
             link: {
               uri: "/serviceType",
-              module: "masterSettings"
+              module: "masterSettings",
             },
             dataSource: {
               textField: "service_type",
               valueField: "hims_d_service_type_id",
-              data: undefined
-            }
-          }
-        ]
+              data: undefined,
+            },
+          },
+        ],
       },
       {
         subitem: "Daily Cash Collection Consolidated",
@@ -149,8 +149,8 @@ export default function Income({ hospital_id, RECEIPT_TYPE }) {
             isImp: true,
             others: {
               maxDate: new Date(),
-              minDate: null
-            }
+              minDate: null,
+            },
           },
           {
             className: "col-2 form-group mandatory",
@@ -159,10 +159,10 @@ export default function Income({ hospital_id, RECEIPT_TYPE }) {
             isImp: true,
             others: {
               maxDate: new Date(),
-              minDate: null
-            }
-          }
-        ]
+              minDate: null,
+            },
+          },
+        ],
       },
       {
         subitem: "List of Receipt",
@@ -182,7 +182,7 @@ export default function Income({ hospital_id, RECEIPT_TYPE }) {
             dataSource: {
               textField: "name",
               valueField: "value",
-              data: RECEIPT_TYPE
+              data: RECEIPT_TYPE,
             },
             events: {
               onChange: (reportState, currentValue, callback) => {
@@ -190,13 +190,13 @@ export default function Income({ hospital_id, RECEIPT_TYPE }) {
                   currentValue.value === "OP"
                     ? "opBillReceipt"
                     : currentValue.value === "AD"
-                      ? "advanceReceipt"
-                      : currentValue.value === "OPC"
-                        ? "opCreditReceipt"
-                        : "";
+                    ? "advanceReceipt"
+                    : currentValue.value === "OPC"
+                    ? "opCreditReceipt"
+                    : "";
                 callback({ reportQuery: reportQuery });
-              }
-            }
+              },
+            },
           },
           {
             className: "col-2 form-group mandatory",
@@ -205,8 +205,8 @@ export default function Income({ hospital_id, RECEIPT_TYPE }) {
             isImp: true,
             others: {
               maxDate: new Date(),
-              minDate: null
-            }
+              minDate: null,
+            },
           },
           {
             className: "col-2 form-group mandatory",
@@ -215,8 +215,8 @@ export default function Income({ hospital_id, RECEIPT_TYPE }) {
             isImp: true,
             others: {
               maxDate: new Date(),
-              minDate: null
-            }
+              minDate: null,
+            },
           },
           {
             className: "col-2 form-group mandatory",
@@ -226,14 +226,14 @@ export default function Income({ hospital_id, RECEIPT_TYPE }) {
             isImp: true,
             label: "Branch",
             link: {
-              uri: "/organization/getOrganizationByUser"
+              uri: "/organization/getOrganizationByUser",
             },
             value: hospital_id,
             dataSource: {
               textField: "hospital_name",
               valueField: "hims_d_hospital_id",
-              data: undefined
-            }
+              data: undefined,
+            },
           },
           {
             type: "dropdown",
@@ -243,32 +243,32 @@ export default function Income({ hospital_id, RECEIPT_TYPE }) {
             label: "Department",
             link: {
               uri: "/department/get/get_All_Doctors_DepartmentWise",
-              module: "masterSettings"
+              module: "masterSettings",
             },
             manupulation: (response, reportState, stateProperty) => {
               reportState.setState({
-                [stateProperty]: response.records.departmets
+                [stateProperty]: response.records.departmets,
               });
             },
             dataSource: {
               textField: "sub_department_name",
               valueField: "sub_department_id",
-              data: undefined
+              data: undefined,
             },
             events: {
               onChange: (reportState, currentEvent) => {
                 reportState.setState({
                   sub_department_id: currentEvent.value,
-                  provider_id_list: currentEvent.selected.doctors
+                  provider_id_list: currentEvent.selected.doctors,
                 });
               },
               onClear: (reportState, currentName) => {
                 reportState.setState({
                   [currentName]: undefined,
-                  provider_id_list: []
+                  provider_id_list: [],
                 });
-              }
-            }
+              },
+            },
           },
           {
             type: "dropdown",
@@ -279,10 +279,10 @@ export default function Income({ hospital_id, RECEIPT_TYPE }) {
             dataSource: {
               textField: "full_name",
               valueField: "employee_id",
-              data: undefined
-            }
-          }
-        ]
+              data: undefined,
+            },
+          },
+        ],
       },
       {
         subitem: "Daily Transaction",
@@ -299,14 +299,14 @@ export default function Income({ hospital_id, RECEIPT_TYPE }) {
             isImp: true,
             label: "Branch",
             link: {
-              uri: "/organization/getOrganizationByUser"
+              uri: "/organization/getOrganizationByUser",
             },
             value: hospital_id,
             dataSource: {
               textField: "hospital_name",
               valueField: "hims_d_hospital_id",
-              data: undefined
-            }
+              data: undefined,
+            },
           },
           {
             className: "col-2 form-group mandatory",
@@ -315,8 +315,8 @@ export default function Income({ hospital_id, RECEIPT_TYPE }) {
             isImp: true,
             others: {
               maxDate: new Date(),
-              minDate: null
-            }
+              minDate: null,
+            },
           },
           {
             className: "col-2 form-group mandatory",
@@ -325,8 +325,8 @@ export default function Income({ hospital_id, RECEIPT_TYPE }) {
             isImp: true,
             others: {
               maxDate: new Date(),
-              minDate: null
-            }
+              minDate: null,
+            },
           },
           {
             type: "dropdown",
@@ -336,32 +336,32 @@ export default function Income({ hospital_id, RECEIPT_TYPE }) {
             label: "Department",
             link: {
               uri: "/department/get/get_All_Doctors_DepartmentWise",
-              module: "masterSettings"
+              module: "masterSettings",
             },
             manupulation: (response, reportState, stateProperty) => {
               reportState.setState({
-                [stateProperty]: response.records.departmets
+                [stateProperty]: response.records.departmets,
               });
             },
             dataSource: {
               textField: "sub_department_name",
               valueField: "sub_department_id",
-              data: undefined
+              data: undefined,
             },
             events: {
               onChange: (reportState, currentEvent) => {
                 reportState.setState({
                   sub_department_id: currentEvent.value,
-                  provider_id_list: currentEvent.selected.doctors
+                  provider_id_list: currentEvent.selected.doctors,
                 });
               },
               onClear: (reportState, currentName) => {
                 reportState.setState({
                   [currentName]: undefined,
-                  provider_id_list: []
+                  provider_id_list: [],
                 });
-              }
-            }
+              },
+            },
           },
           {
             type: "dropdown",
@@ -372,11 +372,75 @@ export default function Income({ hospital_id, RECEIPT_TYPE }) {
             dataSource: {
               textField: "full_name",
               valueField: "employee_id",
-              data: undefined
-            }
-          }
-        ]
-      }
-    ]
+              data: undefined,
+            },
+          },
+        ],
+      },
+      {
+        subitem: "User Wise Bill",
+        reportName: "userWiseBill",
+        requireIframe: true,
+        pageSize: "A4",
+        pageOrentation: "portrait", //"portrait",
+        reportParameters: [
+          // {
+          //   className: "col-2 form-group mandatory",
+          //   type: "dropdown",
+          //   name: "hospital_id",
+          //   initialLoad: true,
+          //   isImp: true,
+          //   label: "Branch",
+          //   link: {
+          //     uri: "/organization/getOrganizationByUser",
+          //   },
+          //   value: hospital_id,
+          //   dataSource: {
+          //     textField: "hospital_name",
+          //     valueField: "hims_d_hospital_id",
+          //     data: undefined,
+          //   },
+          // },
+          {
+            className: "col-2 form-group mandatory",
+            type: "date",
+            name: "from_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null,
+            },
+          },
+          {
+            className: "col-2 form-group mandatory",
+            type: "date",
+            name: "to_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null,
+            },
+          },
+          {
+            className: "col-2 form-group",
+            type: "dropdown",
+            name: "cashier_name",
+            initialLoad: true,
+            isImp: false,
+            label: "Select Cashier",
+            link: {
+              uri: "/shiftAndCounter/getCashiers",
+              module: "masterSettings",
+            },
+            value: cashier_id,
+            dataSource: {
+              textField: "cashier_name",
+              valueField: "cashier_id",
+              data: undefined,
+            },
+          },
+        ],
+      },
+    ],
   };
 }
