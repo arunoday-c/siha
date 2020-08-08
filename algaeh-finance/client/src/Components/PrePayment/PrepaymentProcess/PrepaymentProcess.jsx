@@ -15,10 +15,11 @@ import {
 } from "algaeh-react-components";
 import { newAlgaehApi } from "../../../hooks/";
 import moment from "moment";
+import swal from "sweetalert2";
 import { Controller, useForm } from "react-hook-form";
 import { PrePaymentContext } from "../Prepayment";
 import { swalMessage } from "../../../utils/algaehApiCall";
-
+const { confirm } = Modal;
 export function PrepaymentProcess() {
   const { prePaymentTypes } = useContext(PrePaymentContext);
   const [list, setList] = useState([]);
@@ -27,6 +28,7 @@ export function PrepaymentProcess() {
   const [processList, setProcessList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [costCenter, setCostCenter] = useState([]);
+  const [proBalPrePay, setProBalPrePay] = useState(false);
 
   const { control, errors, handleSubmit, getValues } = useForm({
     shouldFocusError: true,
@@ -78,8 +80,45 @@ export function PrepaymentProcess() {
       });
     }
   };
+  const bookBalancePrePay = () => {
+    let pending_payments = [];
+
+    current
+      .filter((item) => {
+        return item.processed === "N";
+      })
+      .map((item) => {
+        pending_payments.push(item.finance_f_prepayment_detail_id);
+      });
+    setProcessList(pending_payments);
+
+    onProcess(pending_payments);
+    return;
+  };
 
   // }
+  const processBalPrePay = () => {
+    confirm({
+      okText: "Authorize",
+      okType: "primary",
+      icon: "",
+      title: "",
+      content: `This request is made for 
+      Prepayment Type:`,
+
+      maskClosable: true,
+      onOk: async () => {
+        try {
+          await bookBalancePrePay();
+        } catch (e) {
+          AlgaehMessagePop({
+            type: "error",
+            display: e.message,
+          });
+        }
+      },
+    });
+  };
   const loadListToProcess = async (data) => {
     try {
       const res = await newAlgaehApi({
@@ -112,13 +151,21 @@ export function PrepaymentProcess() {
         .map((i) => i.finance_f_prepayment_detail_id)
     );
   };
+  const checkBoxCheck = (e) => {
+    if (e.target.checked) {
+      return setProBalPrePay(true);
+    } else {
+      return setProBalPrePay(false);
+    }
+  };
   const updateProcessList = async (data) => {
     const hospitalId = parseInt(data.hospital_id);
-    if (!data.finance_f_prepayment_detail_id) {
+    if (data.cost_center_id === undefined) {
       swalMessage({
-        title: "warning",
-        message: "please select Cost Center ",
+        title: "Please Select Cost Center",
+        type: "error",
       });
+      return;
     } else {
       try {
         const res = await newAlgaehApi({
@@ -151,7 +198,7 @@ export function PrepaymentProcess() {
     loadListToProcess(e);
   };
 
-  const onProcess = async () => {
+  const onProcess = async (data) => {
     setLoading(true);
     try {
       const res = await newAlgaehApi({
@@ -159,12 +206,13 @@ export function PrepaymentProcess() {
         module: "finance",
         method: "PUT",
         data: {
-          detail_ids: processList,
+          detail_ids: data ? data : processList,
         },
       });
       if (res.data.success) {
         loadListToProcess(getValues());
         setProcessList([]);
+        setVisible(false);
       }
     } catch (e) {
       setLoading(false);
@@ -247,13 +295,23 @@ export function PrepaymentProcess() {
                 <input
                   type="checkbox"
                   name="checkSelf"
-                  checked=""
-                  // onChange={selectCheckBox.bind(this, this)}
+                  value="yes"
+                  checked={proBalPrePay}
+                  onChange={checkBoxCheck}
                 />
                 <span>Yes</span>
               </label>
             </div>
           </div>{" "}
+          {
+            <button
+              className="btn btn-default"
+              onClick={processBalPrePay}
+              disabled={proBalPrePay ? false : true}
+            >
+              Process
+            </button>
+          }
           {/* <div className="col">
             <label className="style_Label ">Sum Prepayment</label>
             <h6>0.00</h6>
