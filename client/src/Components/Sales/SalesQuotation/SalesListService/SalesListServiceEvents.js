@@ -122,7 +122,7 @@ const AddSerices = ($this, context) => {
 
   if (serviceData.length > 0) {
     swalMessage({
-      title: "Selected Setvice already added in the list.",
+      title: "Selected Service with the frequency already added in the list.",
       type: "warning",
     });
   } else {

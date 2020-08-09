@@ -334,11 +334,12 @@ export default {
             "SELECT IM.item_code,IM.item_description, IM.stocking_uom_id,coalesce(ILR.reorder_qty, IM.reorder_qty,0) as reorder_qty, \
             hims_m_inventory_item_location_id, IL.item_id, inventory_location_id, item_location_status, \
             batchno, expirydt, barcode, sum(qtyhand) as qtyhand, qtypo, cost_uom,avgcost, last_purchase_cost, \
-            grn_id, grnno, sale_price, mrp_price, sales_uom,\
+            grn_id, grnno, sale_price, mrp_price, sales_uom, uom_description as stock_uom,\
             CASE WHEN sum(qtyhand)<=coalesce(ILR.reorder_qty, IM.reorder_qty,0) THEN 'R'   else 'NR' END as reorder \
             from hims_d_inventory_item_master IM \
             left  join hims_m_inventory_item_location IL on IM.hims_d_inventory_item_master_id=IL.item_id \
             left  join hims_d_inv_location_reorder ILR on ILR.item_id=IL.item_id and location_id=? \
+            left  join hims_d_inventory_uom IU on IU.hims_d_inventory_uom_id=IM.stocking_uom_id \
             where qtyhand>0" +
             strAppend +
             "group by item_id order by date(expirydt)",

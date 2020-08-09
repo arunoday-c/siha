@@ -94,7 +94,8 @@ const AddSerices = ($this, context) => {
     let serviceData = Enumerable.from($this.state.sales_order_services)
         .where(
             w =>
-                w.services_id === $this.state.services_id
+                w.services_id === $this.state.services_id &&
+                w.service_frequency === $this.state.service_frequency
         )
         .toArray();
     if ($this.state.services_id === null) {
@@ -127,7 +128,7 @@ const AddSerices = ($this, context) => {
     }
     if (serviceData.length > 0) {
         swalMessage({
-            title: "Selected Setvice already added in the list.",
+            title: "Selected Service with the frequency already added in the list.",
             type: "warning"
         });
     } else {

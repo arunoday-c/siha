@@ -580,8 +580,6 @@ export default {
     try {
       let _strQry = "";
       let intValues = [];
-      const utilities = new algaehUtilities();
-      utilities.logger().log("req.query: ", req.query.location_status);
 
       if (req.query.hims_d_inventory_location_id != null) {
         _strQry += "and hims_d_inventory_location_id=?";
@@ -606,6 +604,13 @@ export default {
         req.query.git_location !== undefined
       ) {
         _strQry += `and git_location= '${req.query.git_location}'`;
+      }
+
+      if (
+        req.query.location_type !== null &&
+        req.query.location_type !== undefined
+      ) {
+        _strQry += `and location_type= '${req.query.location_type}'`;
       }
 
       _mysql

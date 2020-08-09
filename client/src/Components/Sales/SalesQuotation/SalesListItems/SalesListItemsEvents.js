@@ -103,6 +103,37 @@ const numberchangeTexts = ($this, context, e) => {
   }
 };
 
+const getItemLocationStock = ($this, value) => {
+  debugger
+  algaehApiCall({
+    uri: "/inventoryGlobal/getItemLocationStock",
+    module: "inventory",
+    method: "GET",
+    data: {
+      inventory_location_id: $this.props.inventorylocation[0].hims_d_inventory_location_id,
+      item_id: value.item_id,
+    },
+    onSuccess: (response) => {
+      if (response.data.success === true) {
+        let data = response.data.records;
+        if (data.length > 0) {
+          let total_quantity = _.sumBy(data, (s) => {
+            return parseFloat(s.qtyhand);
+          });
+
+          debugger
+
+          $this.setState({
+            qtyhand: total_quantity,
+            stock_uom: data[0].stock_uom
+          });
+        }
+        AlgaehLoader({ show: false });
+      }
+    },
+  });
+};
+
 const itemchangeText = ($this, e, ctrl) => {
   AlgaehLoader({ show: true });
   let name = ctrl;
@@ -118,6 +149,8 @@ const itemchangeText = ($this, e, ctrl) => {
     },
     onSuccess: (response) => {
       if (response.data.success) {
+        getItemLocationStock($this, { item_id: value });
+
         let data = response.data.records;
         if (data.length > 0) {
           const sales_conversion_factor = _.find(
