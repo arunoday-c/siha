@@ -315,14 +315,9 @@ INSERT INTO `hims_d_nationality` (`hims_d_nationality_id`, `nationality_code`, `
 INSERT INTO `hims_d_nationality` (`hims_d_nationality_id`, `nationality_code`, `nationality`, `record_status`) VALUES ('157', 'NAT10157', 'Zambian                                                     ', 'A');
 INSERT INTO `hims_d_nationality` (`hims_d_nationality_id`, `nationality_code`, `nationality`, `record_status`) VALUES ('158', 'NAT10158', 'Zimbabwean                                                  ', 'A');
 
+-- Default Religion
+INSERT INTO `hims_d_religion` (`hims_d_religion_id`, `religion_code`, `religion_name`, `arabic_religion_name`, `created_by`, `created_date`, `updated_by`, `updated_date`, `record_status`) VALUES ('1', 'REG001', 'Muslim', 'مسلم', '1', now(), '1', now(), 'A');
+INSERT INTO `hims_d_religion` (`hims_d_religion_id`, `religion_code`, `religion_name`, `arabic_religion_name`, `created_by`, `created_date`, `updated_by`, `updated_date`, `record_status`) VALUES ('2', 'REG002', 'Hindu', 'الهندوسي', '1', now(), '1', now(),'A');
+INSERT INTO `hims_d_religion` (`hims_d_religion_id`, `religion_code`, `religion_name`, `arabic_religion_name`, `created_by`, `created_date`, `updated_by`, `updated_date`, `record_status`) VALUES ('3', 'REG003', 'Christian', 'مسيحي', '1', now(), '1', now(), 'A');
 
-
- 
-
-
-
-
-
-
-
-
+-- Few Clinical Designation
