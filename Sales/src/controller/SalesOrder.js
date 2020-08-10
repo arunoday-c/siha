@@ -8,12 +8,20 @@ import {
     updateSalesOrderEntry,
     cancelSalesServiceOrder,
     ValidateContract,
-    getContractSalesOrder
+    getContractSalesOrder,
+    postSalesOrder
 } from "../models/SalesOrder";
 
 export default function SalesOrder() {
     const api = Router();
     api.post(`/addSalesOrder`, addSalesOrder, (req, res, next) => {
+        res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+            success: true,
+            records: req.records
+        });
+    });
+
+    api.post(`/postSalesOrder`, postSalesOrder, (req, res, next) => {
         res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
             success: true,
             records: req.records

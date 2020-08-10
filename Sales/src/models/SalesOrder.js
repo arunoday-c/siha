@@ -1,5 +1,6 @@
 import algaehMysql from "algaeh-mysql";
 import mysql from "mysql";
+import _ from "lodash";
 
 export function getSalesOrder(req, res, next) {
     const _mysql = new algaehMysql();
@@ -297,6 +298,191 @@ export function addSalesOrder(req, res, next) {
     }
 }
 
+export function postSalesOrder(req, res, next) {
+    const _mysql = new algaehMysql();
+
+    try {
+        let buffer = "";
+        req.on("data", (chunk) => {
+            buffer += chunk.toString();
+        });
+
+        req.on("end", () => {
+            let input = JSON.parse(buffer);
+            req.body = input;
+
+
+            _mysql
+                .executeQuery({
+                    query:
+                        "UPDATE hims_f_sales_order set is_posted= ?, sub_total=?, discount_amount=?, net_total=?, \
+                        total_tax=?, net_payable=?, narration=?, updated_date=?, updated_by=? \
+                        where hims_f_sales_order_id=?",
+                    values: [
+                        input.is_posted,
+                        input.sub_total,
+                        input.discount_amount,
+                        input.net_total,
+                        input.total_tax,
+                        input.net_payable,
+                        input.narration,
+                        new Date(),
+                        req.userIdentity.algaeh_d_app_user_id,
+                        input.hims_f_sales_order_id,
+                    ],
+                    printQuery: true,
+                })
+                .then((headerResult) => {
+                    // console.log("headerResult", headerResult);
+                    let strQuery = "";
+                    if (input.delete_sales_order_items.length > 0) {
+                        strQuery += mysql.format(
+                            "DELETE FROM hims_f_sales_order_items where hims_f_sales_order_items_id in (?);",
+                            [input.delete_sales_order_items]
+                        );
+                    }
+                    else if (input.delete_sales_order_services.length > 0) {
+                        strQuery += mysql.format(
+                            "DELETE FROM hims_f_sales_order_services where hims_f_sales_order_services_id in (?);",
+                            [input.delete_sales_order_services]
+                        );
+                    } else {
+                        strQuery += "select 1=1"
+                    }
+
+                    console.log("strQuery", strQuery)
+                    const ins_sales_order_items = _.filter(
+                        input.sales_order_items,
+                        (f) => {
+                            return (
+                                f.hims_f_sales_order_items_id === null ||
+                                f.hims_f_sales_order_items_id === undefined
+                            );
+                        }
+                    );
+                    const ins_sales_order_services = _.filter(
+                        input.sales_order_services,
+                        (f) => {
+                            return (
+                                f.hims_f_sales_order_services_id === null ||
+                                f.hims_f_sales_order_services_id === undefined
+                            );
+                        }
+                    );
+
+                    let IncludeValues = [];
+                    if (ins_sales_order_items.length > 0) {
+                        IncludeValues = [
+                            "item_id",
+                            "uom_id",
+                            "unit_cost",
+                            "quantity",
+                            "extended_cost",
+                            "discount_percentage",
+                            "discount_amount",
+                            "net_extended_cost",
+                            "tax_percentage",
+                            "tax_amount",
+                            "total_amount",
+                            "quantity_outstanding",
+                        ];
+
+                        _mysql
+                            .executeQuery({
+                                query: "INSERT INTO hims_f_sales_order_items(??) VALUES ? ;" + strQuery,
+                                values: ins_sales_order_items,
+                                includeValues: IncludeValues,
+                                extraValues: {
+                                    sales_order_id: input.hims_f_sales_order_id,
+                                },
+                                bulkInsertOrUpdate: true,
+                                printQuery: true,
+                            })
+                            .then((detailResult) => {
+                                _mysql.commitTransaction(() => {
+                                    _mysql.releaseConnection();
+                                    req.records = { sales_order_number: input.sales_order_number };
+                                    return next();
+                                });
+                            })
+                            .catch((error) => {
+                                _mysql.rollBackTransaction(() => {
+                                    next(error);
+                                });
+                            });
+                    } else if (ins_sales_order_services.length > 0) {
+                        IncludeValues = [
+                            "services_id",
+                            "service_frequency",
+                            "unit_cost",
+                            "quantity",
+                            "extended_cost",
+                            "discount_percentage",
+                            "discount_amount",
+                            "net_extended_cost",
+                            "tax_percentage",
+                            "tax_amount",
+                            "total_amount",
+                            "comments",
+                        ];
+
+                        _mysql
+                            .executeQuery({
+                                query:
+                                    "INSERT INTO hims_f_sales_order_services(??) VALUES ? ;" + strQuery,
+                                values: ins_sales_order_services,
+                                includeValues: IncludeValues,
+                                extraValues: {
+                                    sales_order_id: input.hims_f_sales_order_id,
+                                },
+                                bulkInsertOrUpdate: true,
+                                printQuery: true,
+                            })
+                            .then((detailResult) => {
+                                _mysql.commitTransaction(() => {
+                                    _mysql.releaseConnection();
+                                    req.records = { sales_order_number: input.sales_order_number };
+                                    return next();
+                                });
+                            })
+                            .catch((error) => {
+                                _mysql.rollBackTransaction(() => {
+                                    next(error);
+                                });
+                            });
+                    } else {
+                        _mysql
+                            .executeQuery({
+                                query: strQuery,
+                                printQuery: true,
+                            })
+                            .then((result) => {
+                                _mysql.commitTransaction(() => {
+                                    _mysql.releaseConnection();
+                                    req.records = { sales_order_number: input.sales_order_number };
+                                    next();
+                                });
+                            })
+                            .catch((error) => {
+                                _mysql.rollBackTransaction(() => {
+                                    next(error);
+                                });
+                            });
+                    }
+                })
+                .catch((e) => {
+                    _mysql.rollBackTransaction(() => {
+                        next(e);
+                    });
+                });
+        });
+    } catch (e) {
+        _mysql.rollBackTransaction(() => {
+            next(e);
+        });
+    }
+}
+
 export function getSalesQuotationForOrder(req, res, next) {
     const _mysql = new algaehMysql();
     // const utilities = new algaehUtilities();
@@ -409,7 +595,7 @@ export function getSalesOrderList(req, res, next) {
             _strAppend += "";
         } else if (inputParam.status == "1") {
             //Pending To Authorize 1
-            _strAppend += " and authorize1 = 'N' and cancelled='N'";
+            _strAppend += " and is_posted = 'Y' and authorize1 = 'N' and cancelled='N'";
         } else if (inputParam.status == "2") {
             //Pending To Authorize 2
             _strAppend +=

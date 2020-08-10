@@ -11,6 +11,7 @@ const texthandle = ($this, ctrl, e) => {
   e = ctrl || e;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
+  debugger
   switch (name) {
     case "sales_order_mode":
       $this.setState({
@@ -369,13 +370,14 @@ const ClearData = ($this, e) => {
     organizations: [],
     contract_number: null,
     contract_id: null,
+    dataPosted: true
     // services_required: "N"
   };
 
   $this.setState(IOputs);
 };
 
-const SaveSalesOrderEnrty = ($this) => {
+const SaveSalesOrderEnrty = ($this, from) => {
   AlgaehValidation({
     querySelector: "data-validate='HeaderDiv'",
     alertTypeIcon: "warning",
@@ -387,10 +389,11 @@ const SaveSalesOrderEnrty = ($this) => {
         });
         return;
       }
+      let InputObj = $this.state
       let order_detail =
-        $this.state.sales_order_mode === "I"
-          ? $this.state.sales_order_items
-          : $this.state.sales_order_services;
+        InputObj.sales_order_mode === "I"
+          ? InputObj.sales_order_items
+          : InputObj.sales_order_services;
       let qty_exists = Enumerable.from(order_detail).any(
         (w) => parseFloat(w.quantity) === 0 || w.quantity === ""
       );
@@ -401,25 +404,42 @@ const SaveSalesOrderEnrty = ($this) => {
         });
         return;
       }
-      $this.state.quote_validity =
-        $this.state.sales_order_mode === "S"
+      InputObj.quote_validity =
+        InputObj.sales_order_mode === "S"
           ? null
-          : moment($this.state.quote_validity, "YYYY-MM-DD").format(
-              "YYYY-MM-DD"
-            );
+          : moment(InputObj.quote_validity, "YYYY-MM-DD").format(
+            "YYYY-MM-DD"
+          );
 
-      $this.state.delivery_date =
-        $this.state.sales_order_mode === "S"
+      InputObj.delivery_date =
+        InputObj.sales_order_mode === "S"
           ? null
-          : moment($this.state.delivery_date, "YYYY-MM-DD").format(
-              "YYYY-MM-DD"
-            );
+          : moment(InputObj.delivery_date, "YYYY-MM-DD").format(
+            "YYYY-MM-DD"
+          );
+
+
+      let strUri = "";
+      let strMessage = "Saved successfully";
+
+      if (from === "P") {
+        InputObj.is_posted = "Y";
+        strMessage = "Sent for authorization";
+      }
+
+      if (InputObj.hims_f_sales_order_id !== null) {
+        strUri = "/SalesOrder/postSalesOrder";
+      } else {
+        strUri = "/SalesOrder/addSalesOrder";
+      }
       const settings = { header: undefined, footer: undefined };
+
+      debugger
       AlgaehLoader({ show: true });
       algaehApiCall({
-        uri: "/SalesOrder/addSalesOrder",
+        uri: strUri,
         skipParse: true,
-        data: Buffer.from(JSON.stringify($this.state), "utf8"),
+        data: Buffer.from(JSON.stringify(InputObj), "utf8"),
         module: "sales",
         method: "POST",
         header: {
@@ -428,26 +448,36 @@ const SaveSalesOrderEnrty = ($this) => {
         },
         onSuccess: (response) => {
           if (response.data.success) {
-            $this.setState(
-              {
-                sales_order_number: response.data.records.sales_order_number,
-                hims_f_sales_order_id:
-                  response.data.records.hims_f_sales_order_id,
-                saveEnable: true,
-                dataExists: true,
-                grid_edit: true,
-              },
-              () => {
-                if ($this.state.invoice_files.length) {
-                  $this.saveDocument();
-                }
-              }
-            );
+            debugger
+            getCtrlCode($this, response.data.records.sales_order_number);
+            if ($this.state.invoice_files.length) {
+              $this.saveDocument();
+            }
+            // if (from === "P") {
+            //   if ($this.context.socket.connected) {
+            //     $this.context.socket.emit("SALE_LST_AUTH1", sendJsonBody);
+            //   }
+            // }
+            // $this.setState(
+            //   {
+            //     sales_order_number: response.data.records.sales_order_number,
+            //     hims_f_sales_order_id:
+            //       response.data.records.hims_f_sales_order_id,
+            //     saveEnable: true,
+            //     dataExists: true,
+            //     grid_edit: true,
+            //   },
+            //   () => {
+            //     if ($this.state.invoice_files.length) {
+            //       $this.saveDocument();
+            //     }
+            //   }
+            // );
             swalMessage({
               type: "success",
-              title: "Saved successfully ...",
+              title: strMessage,
             });
-            AlgaehLoader({ show: false });
+            // AlgaehLoader({ show: false });
           } else {
             AlgaehLoader({ show: false });
             swalMessage({
@@ -500,16 +530,24 @@ const getCtrlCode = ($this, docNumber) => {
             data.grid_edit = false;
           }
         }
+        debugger
         if (data.sales_order_mode === "I") {
           data.sales_order_items = data.order_detail;
         } else {
           data.sales_order_services = data.order_detail;
         }
-        data.saveEnable = true;
-        data.dataExists = true;
 
-        data.addedItem = true;
+        data.dataExists = true;
         data.selectedData = true;
+        if (data.is_posted === "Y") {
+          data.saveEnable = true;
+          data.addedItem = true;
+          data.dataPosted = true
+        } else {
+          data.saveEnable = false;
+          data.addedItem = false;
+          data.dataPosted = false
+        }
         // let project_details = $this.state.cost_projects.find(
         //   f => f.cost_center_id === data.project_id
         // );
