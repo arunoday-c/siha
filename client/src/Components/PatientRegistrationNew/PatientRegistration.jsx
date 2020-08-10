@@ -50,29 +50,33 @@ export function PatientRegistration() {
   console.log(formState, "form");
   // const appointment_id = queryParams.get("appointment_id");
 
-  const { isLoading } = useQuery(["patient", { patient_code }], getPatient, {
-    enabled: !!patient_code,
-    refetchOnWindowFocus: false,
-    initialData: {
-      bill_criedt: [],
-      patientRegistration: null,
-      identities: [],
-    },
-    retry: 0,
-    initialStale: true,
-    onSuccess: (data) => {
-      if (data?.patientRegistration) {
-        reset(data?.patientRegistration);
-      }
-    },
-    onError: (err) => {
-      AlgaehMessagePop({
-        display: err?.message,
-        type: "error",
-      });
-      history.push(location.pathname);
-    },
-  });
+  const { isLoading, data: patientData } = useQuery(
+    ["patient", { patient_code }],
+    getPatient,
+    {
+      enabled: !!patient_code,
+      refetchOnWindowFocus: false,
+      initialData: {
+        bill_criedt: [],
+        patientRegistration: null,
+        identities: [],
+      },
+      retry: 0,
+      initialStale: true,
+      onSuccess: (data) => {
+        if (data?.patientRegistration) {
+          reset(data?.patientRegistration);
+        }
+      },
+      onError: (err) => {
+        AlgaehMessagePop({
+          display: err?.message,
+          type: "error",
+        });
+        history.push(location.pathname);
+      },
+    }
+  );
 
   const savePatient = (e) => {
     console.log(e);
@@ -169,10 +173,16 @@ export function PatientRegistration() {
                     control={control}
                     trigger={trigger}
                     setValue={setValue}
+                    visits={patientData?.visitDetails}
                   />
                 </div>
                 <div className="algaeh-md-12 algaeh-lg-12 algaeh-xl-4">
-                  <BillDetails control={control} trigger={trigger} />
+                  <BillDetails
+                    control={control}
+                    trigger={trigger}
+                    setValue={setValue}
+                    patient={patientData?.patientRegistration}
+                  />
                 </div>
               </div>
               <div className="hptl-phase1-footer">

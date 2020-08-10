@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import { useQuery } from "react-query";
-import { useWatch } from "react-hook-form";
+import { useWatch, Controller } from "react-hook-form";
 import moment from "moment";
 import {
   MainContext,
@@ -61,13 +61,39 @@ const getBillCalculations = async (key, { billInfo }) => {
   return res?.data?.records;
 };
 
-export function BillDetails({ control, trigger }) {
+const getShiftMappings = async () => {
+  const res = await newAlgaehApi({
+    uri: "/shiftAndCounter/getCashiersAndShiftMAP",
+    module: "masterSettings",
+    method: "GET",
+    data: { for: "T" },
+  });
+  return res.data?.records;
+};
+
+const checkVisits = async (
+  key,
+  { sub_department_id, doctor_id, patient_id }
+) => {
+  const res = await newAlgaehApi({
+    uri: "/visit/checkVisitExists",
+    module: "frontDesk",
+    method: "get",
+    data: { sub_department_id, doctor_id, patient_id },
+  });
+  return res.data?.records;
+};
+
+export function BillDetails({ control, trigger, setValue, patient = null }) {
   const { default_nationality_id, local_vat_applicable } = useContext(
     MainContext
   );
-  const { services_id, primary_network_office_id } = useContext(
-    FrontdeskContext
-  );
+  const {
+    services_id,
+    sub_department_id,
+    doctor_id,
+    primary_network_office_id,
+  } = useContext(FrontdeskContext);
   const { fieldNameFn } = useLangFieldName();
   const {
     nationality_id,
@@ -115,18 +141,50 @@ export function BillDetails({ control, trigger }) {
       enabled: !!billInfo,
       retry: 3,
       onSuccess: (data) => {
-        debugger;
         console.log(data);
       },
       onError: (err) => {
-        debugger;
         console.log(err);
       },
     }
   );
 
+  const { isLoading: shiftLoading, data: shiftMappings } = useQuery(
+    "userMappings",
+    getShiftMappings,
+    {
+      refetchOnWindowFocus: false,
+      cacheTime: Infinity,
+      retry: 3,
+      onSuccess: (data) => {
+        setValue("shift_id", data[0]?.shift_id);
+      },
+      onError: (err) => {
+        console.log(err);
+      },
+    }
+  );
+
+  const { isLoading: visitLoading, data: prevVisits } = useQuery(
+    [
+      "checkVisits",
+      { sub_department_id, doctor_id, patient_id: patient?.hims_d_patient_id },
+    ],
+    checkVisits,
+    {
+      refetchOnWindowFocus: false,
+      enabled: !!patient && !!doctor_id,
+      onSuccess: (data) => {
+        debugger;
+        console.log(data, "visit");
+      },
+    }
+  );
+
+  const follow_up = !!prevVisits?.length;
+
   return (
-    <Spin spinning={infoLoading || calcLoading}>
+    <Spin spinning={infoLoading || calcLoading || shiftLoading || visitLoading}>
       <div className="hptl-phase1-fd-billing-form">
         <div className="row">
           <div className="algaeh-md-4 algaeh-lg-4 algaeh-xl-12  primary-details">
@@ -160,16 +218,16 @@ export function BillDetails({ control, trigger }) {
                     role="alert"
                   >
                     Utilized From Package
-                  </span> */}
-                  {/* ) : null} 
-                  {/* {this.state.follow_up === true ? ( *
-                  <span
-                    className="alert alert-warning animated flash slow infinite utalizeStatus"
-                    role="alert"
-                  >
-                    Follow Up Visit
-                  </span>
-                  {/* ) : null} *
+                  </span> 
+                   ) : null} */}
+                  {follow_up ? (
+                    <span
+                      className="alert alert-warning animated flash slow infinite utalizeStatus"
+                      role="alert"
+                    >
+                      Follow Up Visit
+                    </span>
+                  ) : null}
                   {/* {this.state.existing_treat === true ? ( 
                   <span className="alert alert-warning animated flash slow infinite utalizeStatus">
                     Utilized From Existing Treatment
@@ -241,73 +299,73 @@ export function BillDetails({ control, trigger }) {
           <div className="algaeh-md-8 algaeh-lg-8 algaeh-xl-12  secondary-details">
             <div className="Paper">
               <div className="row">
-                <AlgaehFormGroup
-                  div={{ className: "col-3" }}
-                  label={{
-                    fieldName: "advance_adjust",
-                  }}
-                  textBox={{
-                    value: billData?.advance_adjust,
-                    className: "txt-fld",
-                    name: "advance_adjust",
-                    //   events: {
-                    //     // onChange: adjustadvance.bind(this, this, context)
-                    //   },
-
-                    placeholder: "0.00",
-                    // onBlur: makeZero.bind(this, this, context),
-                    // onFocus: e => {
-                    //   e.target.oldvalue = e.target.value;
-                    // },
-                    // disabled: this.state.savedData
-                  }}
+                <Controller
+                  control={control}
+                  name="advance_adjust"
+                  render={(props) => (
+                    <AlgaehFormGroup
+                      div={{ className: "col-3" }}
+                      label={{
+                        fieldName: "advance_adjust",
+                      }}
+                      textBox={{
+                        value: billData?.advance_adjust,
+                        className: "txt-fld",
+                        name: "advance_adjust",
+                        ...props,
+                        placeholder: "0.00",
+                      }}
+                    />
+                  )}
                 />
-                <AlgaehFormGroup
-                  div={{ className: "col-6" }}
-                  label={{
-                    fieldName: "sheet_discount",
-                  }}
-                  textBox={{
-                    //   decimal: { allowNegative: false },
-                    value: billData?.sheet_discount_percentage,
-                    className: "txt-fld",
-                    name: "sheet_discount_percentage",
-                    //   events: {
-                    //     onChange: discounthandle.bind(this, this, context)
-                    //   },
-                    //   others: {
-                    placeholder: "0.00",
-                    // onBlur: makeDiscountZero.bind(this, this, context),
-                    // onFocus: e => {
-                    //   e.target.oldvalue = e.target.value;
-                    // },
-                    // disabled: this.state.savedData
-                  }}
+
+                <Controller
+                  control={control}
+                  name="sheet_discount_percentage"
+                  render={(props) => (
+                    <AlgaehFormGroup
+                      div={{ className: "col-6" }}
+                      label={{
+                        fieldName: "sheet_discount",
+                      }}
+                      textBox={{
+                        defaultValue: billData?.sheet_discount_percentage,
+                        className: "txt-fld",
+                        name: "sheet_discount_percentage",
+                        ...props,
+                        placeholder: "0.00",
+                      }}
+                    />
+                  )}
                 />
-                <AlgaehFormGroup
-                  div={{ className: "col-3" }}
-                  label={{
-                    fieldName: "sheet_discount_amount",
-                  }}
-                  textBox={{
-                    //   decimal: {
-                    //     allowNegative: false
-                    //   },
-                    value: billData?.sheet_discount_amount,
-                    className: "txt-fld",
-                    name: "sheet_discount_amount",
 
-                    //   events: {
-                    //     onChange: discounthandle.bind(this, this, context)
-                    //   },
+                <Controller
+                  control={control}
+                  name="sheet_discount_amount"
+                  render={({ onBlur, onChange, value }) => (
+                    <AlgaehFormGroup
+                      div={{ className: "col-3" }}
+                      label={{
+                        fieldName: "sheet_discount_amount",
+                      }}
+                      textBox={{
+                        value: billData?.sheet_discount_amount,
+                        className: "txt-fld",
+                        name: "sheet_discount_amount",
 
-                    placeholder: "0.00",
-                    // onBlur: makeZero.bind(this, this, context),
-                    // onFocus: e => {
-                    //   e.target.oldvalue = e.target.value;
-                    // },
-                    // disabled: this.state.savedData,
-                  }}
+                        //   events: {
+                        //     onChange: discounthandle.bind(this, this, context)
+                        //   },
+
+                        placeholder: "0.00",
+                        // onBlur: makeZero.bind(this, this, context),
+                        // onFocus: e => {
+                        //   e.target.oldvalue = e.target.value;
+                        // },
+                        // disabled: this.state.savedData,
+                      }}
+                    />
+                  )}
                 />
               </div>
 
@@ -337,36 +395,25 @@ export function BillDetails({ control, trigger }) {
                   {/* <h6>{GetAmountFormart(this.state.net_amount)}</h6> */}
                   <h6>{billData?.net_amount}</h6>
                 </div>
-
-                <AlgaehFormGroup
-                  div={{ className: "col" }}
-                  label={{
-                    fieldName: "credit_amount",
-                  }}
-                  textBox={{
-                    //   decimal: { allowNegative: false },
-                    //   value: this.state.credit_amount,
-                    className: "txt-fld",
-                    name: "credit_amount",
-                    //   events: {
-                    //     // onChange: credittexthandle.bind(this, this, context)
-                    //   },
-                    //   others: {
-                    placeholder: "0.00",
-                    // onBlur: makeZero.bind(this, this, context),
-                    // onFocus: e => {
-                    //   e.target.oldvalue = e.target.value;
-                    // },
-                    // disabled: this.state.savedData
-                    //   },
-                    //   security: {
-                    //     component_code: "FD_PR_BIL",
-                    //     module_code: "FTDSK",
-                    //     screen_code: "FD0002",
-                    //     screen_element_code: "CA"
-                    //   }
-                  }}
+                <Controller
+                  control={control}
+                  name="credit_amount"
+                  render={(props) => (
+                    <AlgaehFormGroup
+                      div={{ className: "col" }}
+                      label={{
+                        fieldName: "credit_amount",
+                      }}
+                      textBox={{
+                        className: "txt-fld",
+                        name: "credit_amount",
+                        placeholder: "0.00",
+                        ...props,
+                      }}
+                    />
+                  )}
                 />
+
                 <div className="col highlightGreen">
                   <AlgaehLabel
                     label={{
@@ -426,26 +473,34 @@ export function BillDetails({ control, trigger }) {
                     </h6>
                   </div>
 
-                  <AlgaehAutoComplete
-                    div={{ className: "col-3  mandatory" }}
-                    label={{
-                      fieldName: "shift_id",
-                      isImp: true,
-                    }}
-                    //   userPrefernce={true}
-                    selector={{
-                      name: "shift_id",
-                      className: "select-fld",
-                      // value: this.state.shift_id,
-                      dataSource: {
-                        textField: fieldNameFn(
-                          "shift_description",
-                          "arabic_name"
-                        ),
-                        data: [],
-                      },
-                      disabled: false,
-                    }}
+                  <Controller
+                    control={control}
+                    name="shift_id"
+                    render={({ onBlur, onChange, value }) => (
+                      <AlgaehAutoComplete
+                        div={{ className: "col-3  mandatory" }}
+                        label={{
+                          fieldName: "shift_id",
+                          isImp: true,
+                        }}
+                        selector={{
+                          name: "shift_id",
+                          className: "select-fld",
+                          value,
+                          dataSource: {
+                            textField: fieldNameFn(
+                              "shift_description",
+                              "arabic_name"
+                            ),
+                            valueField: "shift_id",
+                            data: shiftMappings ?? [],
+                          },
+                          onChange: (_, selected) => onChange(selected),
+                          onClear: () => onChange(""),
+                          disabled: false,
+                        }}
+                      />
+                    )}
                   />
                 </div>
                 <hr style={{ margin: "0.3rem 0rem" }} />
@@ -463,19 +518,25 @@ export function BillDetails({ control, trigger }) {
                       <span style={{ fontSize: "0.8rem" }}>Pay by Cash</span>
                     </label>
                   </div>
-
-                  <AlgaehFormGroup
-                    div={{ className: "col-2 mandatory" }}
-                    label={{
-                      fieldName: "amount",
-                      isImp: true,
-                    }}
-                    textBox={{
-                      className: "txt-fld",
-                      name: "cash_amount",
-                      value: billData?.cash_amount,
-                      placeholder: "0.00",
-                    }}
+                  <Controller
+                    control={control}
+                    name="cash_amount"
+                    defaultValue={billData?.cash_amount}
+                    render={(props) => (
+                      <AlgaehFormGroup
+                        div={{ className: "col-2 mandatory" }}
+                        label={{
+                          fieldName: "amount",
+                          isImp: true,
+                        }}
+                        textBox={{
+                          ...props,
+                          className: "txt-fld",
+                          name: "cash_amount",
+                          placeholder: "0.00",
+                        }}
+                      />
+                    )}
                   />
                 </div>
                 {/* Card */}
@@ -500,55 +561,68 @@ export function BillDetails({ control, trigger }) {
                     </label>
                   </div>
 
-                  <AlgaehFormGroup
-                    div={{ className: "col-2  mandatory" }}
-                    label={{
-                      fieldName: "amount",
-                      isImp: true,
-                    }}
-                    textBox={{
-                      className: "txt-fld",
-                      name: "card_amount",
-
-                      placeholder: "0.00",
-                    }}
-                  />
-                  <AlgaehFormGroup
-                    div={{
-                      className: "col no-padding-left-right  mandatory",
-                    }}
-                    label={{
-                      fieldName: "card_check_number",
-                    }}
-                    textBox={{
-                      className: "txt-fld",
-                      name: "card_number",
-
-                      disabled: false,
-                    }}
+                  <Controller
+                    control={control}
+                    name="card_amount"
+                    render={(props) => (
+                      <AlgaehFormGroup
+                        div={{ className: "col-2  mandatory" }}
+                        label={{
+                          fieldName: "amount",
+                          isImp: true,
+                        }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "card_amount",
+                          ...props,
+                          placeholder: "0.00",
+                        }}
+                      />
+                    )}
                   />
 
-                  <AlgaehDateHandler
-                    div={{ className: "col" }}
-                    label={{
-                      fieldName: "expiry_date",
-                    }}
-                    textBox={{
-                      className: "txt-fld",
-                      name: "card_date",
-                    }}
-                    //   disabled={
-                    //     this.state.savedData === true
-                    //       ? true
-                    //       : !this.state.Cardchecked
-                    //   }
-                    minDate={new Date()}
-                    events={
-                      {
-                        // onChange: datehandle.bind(this, this, context)
-                      }
-                    }
-                    //   value={this.state.card_date}
+                  <Controller
+                    control={control}
+                    name="card_number"
+                    render={(props) => (
+                      <AlgaehFormGroup
+                        div={{
+                          className: "col no-padding-left-right  mandatory",
+                        }}
+                        label={{
+                          fieldName: "card_check_number",
+                        }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "card_number",
+                          ...props,
+                          disabled: false,
+                        }}
+                      />
+                    )}
+                  />
+
+                  <Controller
+                    control={control}
+                    name=""
+                    render={({ onBlur, onChange, value }) => (
+                      <AlgaehDateHandler
+                        div={{ className: "col" }}
+                        label={{
+                          fieldName: "expiry_date",
+                        }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "card_date",
+                        }}
+                        minDate={new Date()}
+                        events={{
+                          onChange: (mdate) => onChange(mdate._d),
+                          onClear: () => onChange(undefined),
+                        }}
+                        value={value}
+                      />
+                    )}
                   />
                 </div>
 

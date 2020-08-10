@@ -25,7 +25,6 @@ function reducer(state, { type, payload }) {
       };
     case TYPES.setInsuranceInfo:
       return { ...state, primary_network_office_id: payload };
-
     default:
       return state;
   }
