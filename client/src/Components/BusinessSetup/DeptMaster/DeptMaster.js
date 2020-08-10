@@ -441,7 +441,7 @@ class DeptMaster extends Component {
           department_name: this.state.department_name,
           arabic_department_name: this.state.department_name_arabic,
           department_desc: this.state.department_name,
-          department_type: this.state.s_department_type,
+          department_type: this.state.department_type,
           effective_start_date: this.state.effective_start_date,
         };
 
