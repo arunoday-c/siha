@@ -1121,13 +1121,17 @@ let load_orders_for_bill = (req, res, next) => {
           OS.`billed`, OS.`quantity`, OS.`unit_cost`, OS.`gross_amount`, OS.`discount_amout`, OS.`discount_percentage`, \
           OS.`net_amout`, OS.`copay_percentage`, OS.`copay_amount`, OS.`deductable_amount`, OS.`deductable_percentage`, \
           OS.`tax_inclusive`, OS.`patient_tax`, OS.`company_tax`, OS.`total_tax`, OS.`patient_resp`, OS.`patient_payable`, \
-          OS.`comapany_resp`, OS.`company_payble`, OS.`sec_company`, OS.`sec_deductable_percentage`, OS.`sec_deductable_amount`,\
-          OS.`sec_company_res`, OS.`sec_company_tax`, OS.`sec_company_paybale`, OS.`sec_copay_percntage`, OS.`sec_copay_amount`,OS.teeth_number,OS.`created_by`, OS.`created_date`, OS.`updated_by`, OS.`updated_date`, \
-          OS.`record_status`,S.`hims_d_services_id`, S.`service_code`, S.`cpt_code`, S.`service_name`, S.`arabic_service_name`, \
-          S.`service_desc`, S.`sub_department_id`, S.`hospital_id`, S.`service_type_id`, S.`procedure_type`, S.`standard_fee`, \
-          S.`followup_free_fee`, S.`followup_paid_fee`, S.`discount`, S.`vat_applicable`, S.`vat_percent`, S.`service_status`,\
-          S.`physiotherapy_service` FROM `hims_f_ordered_services` OS,  `hims_d_services` S WHERE \
-          OS.services_id = S.hims_d_services_id and  OS.`record_status`='A' and visit_id=? AND OS.`billed`='N'; \
+          OS.`comapany_resp`, OS.`company_payble`, OS.`sec_company`, OS.`sec_deductable_percentage`, \
+          OS.`sec_deductable_amount`, OS.`sec_company_res`, OS.`sec_company_tax`, OS.`sec_company_paybale`, \
+          OS.`sec_copay_percntage`, OS.`sec_copay_amount`,OS.teeth_number, OS.`created_by`, OS.`created_date`, \
+          OS.`updated_by`, OS.`updated_date`, OS.`record_status`,S.`hims_d_services_id`, S.`service_code`, S.`cpt_code`, \
+          S.`service_name`, S.`arabic_service_name`, S.`service_desc`, S.`sub_department_id`, S.`hospital_id`, \
+          S.`procedure_type`, S.`standard_fee`, S.`followup_free_fee`, S.`followup_paid_fee`, S.`discount`, \
+          S.`vat_applicable`, S.`vat_percent`, S.`service_status`, S.`physiotherapy_service`, ST.`service_type` \
+          FROM `hims_f_ordered_services` OS \
+          inner join  `hims_d_services` S on OS.services_id = S.hims_d_services_id  \
+          inner join  `hims_d_service_type` ST on OS.service_type_id = ST.hims_d_service_type_id  \
+          WHERE visit_id=? AND OS.`billed`='N'; \
             SELECT  OS.`hims_f_ordered_inventory_id` as ordered_inventory_id, OS.`patient_id`, OS.`visit_id`,\
           OS.`doctor_id`, OS.`service_type_id`, OS.`trans_package_detail_id`,\
           OS.`services_id`, OS.`insurance_yesno`, OS.`insurance_provider_id`, OS.`insurance_sub_id`, \
@@ -1143,9 +1147,10 @@ let load_orders_for_bill = (req, res, next) => {
           S.`hims_d_services_id`, S.`service_code`, S.`cpt_code`, S.`service_name`, S.`arabic_service_name`, \
           S.`service_desc`, S.`sub_department_id`, S.`hospital_id`, S.`service_type_id`, S.`procedure_type`, \
           S.`standard_fee`, S.`followup_free_fee`, S.`followup_paid_fee`, S.`discount`, S.`vat_applicable`, \
-          S.`vat_percent`, S.`service_status` FROM `hims_f_ordered_inventory` OS,  `hims_d_services` S WHERE \
-          OS.services_id = S.hims_d_services_id and \
-          OS.`record_status`='A' and item_notchargable='N' and  OS.visit_id=? AND OS.`billed`='N';\
+          S.`vat_percent`, S.`service_status`, ST.`service_type` FROM `hims_f_ordered_inventory` OS\
+          inner join  `hims_d_services` S on OS.services_id = S.hims_d_services_id  \
+          inner join  `hims_d_service_type` ST on OS.service_type_id = ST.hims_d_service_type_id  \
+          WHERE OS.`record_status`='A' and item_notchargable='N' and  OS.visit_id=? AND OS.`billed`='N';\
             SELECT  OS.`hims_f_package_header_id` as ordered_package_id, OS.`patient_id`, OS.`visit_id`, OS.`doctor_id`,\
           OS.`service_type_id`, OS.`services_id`, OS.`insurance_yesno`, OS.`insurance_provider_id`,\
           OS.`insurance_sub_id`, OS.`network_id`, OS.`insurance_network_office_id`, OS.`policy_number`,\
@@ -1159,9 +1164,10 @@ let load_orders_for_bill = (req, res, next) => {
           OS.`record_status`, S.`hims_d_services_id`, S.`service_code`, S.`cpt_code`, S.`service_name`,\
           S.`arabic_service_name`, S.`service_desc`, S.`sub_department_id`, S.`hospital_id`, S.`service_type_id`,\
           S.`procedure_type`, S.`standard_fee`, S.`followup_free_fee`, S.`followup_paid_fee`, S.`discount`,\
-          S.`vat_applicable`, S.`vat_percent`, S.`service_status` FROM `hims_f_package_header` OS, \
-          `hims_d_services` S WHERE OS.services_id = S.hims_d_services_id and  OS.`record_status`='A' \
-          and visit_id=? AND OS.`billed`='N' AND OS.package_visit_type='S';",
+          S.`vat_applicable`, S.`vat_percent`, S.`service_status`, ST.`service_type` FROM `hims_f_package_header` OS \
+          inner join  `hims_d_services` S on OS.services_id = S.hims_d_services_id  \
+          inner join  `hims_d_service_type` ST on OS.service_type_id = ST.hims_d_service_type_id  \
+          WHERE OS.`record_status`='A' and visit_id=? AND OS.`billed`='N' AND OS.package_visit_type='S';",
           values: [req.query.visit_id, req.query.visit_id, req.query.visit_id],
           printQuery: true,
         })
@@ -2013,6 +2019,10 @@ let getPatientPackage = (req, res, next) => {
       str += ` and H.package_visit_type='${req.query.package_visit_type}' `;
     }
 
+    if (req.query.package_visit_type != "ALL") {
+      str += ` and H.package_visit_type='M' `;
+    }
+
     if (req.query.closed != null) {
       str += ` and H.closed='${req.query.closed}' `;
     }
@@ -2030,12 +2040,12 @@ let getPatientPackage = (req, res, next) => {
               PM.package_name,P.full_name,P.patient_code, PM.cancellation_policy, \
               PM.cancellation_amount as can_amt, PM.package_code from hims_f_package_header H, \
               hims_d_package_header PM, hims_f_patient P where H.patient_id = P.hims_d_patient_id \
-              and PM.hims_d_package_header_id = H.package_id and  H.record_status='A' and H.package_visit_type='M' \
+              and PM.hims_d_package_header_id = H.package_id and  H.record_status='A' \
               and H.hospital_id=?  ${str};
               select D.*,0 as quantity, D.service_id as services_id from hims_f_package_header H  \
               inner join hims_f_package_detail D\
               on H.hims_f_package_header_id=D.package_header_id where H.record_status='A' \
-              and package_visit_type='M' and H.hospital_id=?  ${str};  `,
+              and H.hospital_id=?  ${str};  `,
         values: [req.userIdentity.hospital_id, req.userIdentity.hospital_id],
         printQuery: true,
       })
@@ -2046,7 +2056,7 @@ let getPatientPackage = (req, res, next) => {
         header.forEach((item) => {
           const package_details = details.filter((detail) => {
             return (
-              detail["package_header_id"] == item["hims_f_package_header_id"] && detail["package_visit_type"] == "M"
+              detail["package_header_id"] == item["hims_f_package_header_id"]
             );
           });
 
