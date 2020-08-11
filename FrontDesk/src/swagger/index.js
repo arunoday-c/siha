@@ -128,6 +128,10 @@
  *    employee_id:
  *     type: number
  *     nullable: true
+ *    ScreenCode:
+ *     type: string
+ *     required: true
+ *     description: screen code from cookies
  *  PatientVist:
  *   type: object
  *   properties:
@@ -463,15 +467,15 @@
  *     type: number
  *     format: decimal
  *     default: 0
- *    teeth_number:
- *     type: number
- *     nullable: true
- *    ordered_services_id:
- *     type: number
- *     required: true
- *    ordered_inventory_id:
- *     type: number
- *     required: true
+ *   #teeth_number:
+ *   #type: number
+ *   #nullable: true
+ *   #ordered_services_id:
+ *     #type: number
+ *     #required: true
+ *    #ordered_inventory_id:
+ *     #type: number
+ *     #required: true
  *
  *
  */
