@@ -38,6 +38,7 @@
  *    - $ref: "#/definitions/PatientInsurance"
  *    - $ref: "#/definitions/PatientReceptHeader"
  *    - $ref: "#/definitions/BillingHeader"
+ *    - $ref: "#/definitions/PackageHeader"
  *   properties:
  *    billdetails:
  *     type: array
@@ -47,7 +48,12 @@
  *     type: array
  *     items:
  *      $ref: "#/definitions/PatientReceptDetails"
- *
+ *    package_details:
+ *     type: array
+ *     default: []
+ *     items:
+ *      $ref: "#/definitions/PackageDetails"
+ *     applicable: visit is of multi visit package else its []
  *  patientDemgraphics:
  *   type: object
  *   properties:
@@ -476,6 +482,45 @@
  *    #ordered_inventory_id:
  *     #type: number
  *     #required: true
+ *  PackageHeader:
+ *   type: object
+ *   properties:
+ *    balance_amount:
+ *     type: number
+ *     format: decimal
+ *     required: true
+ *     default: 0
+ *     applicable: when package is there else its null
+ *    actual_utilize_amount:
+ *     type: number
+ *     format: decimal
+ *     required: true
+ *     default: 0
+ *     applicable: when package is there else its null
+ *    utilize_amount:
+ *     type: number
+ *     format: decimal
+ *     required: true
+ *     default: 0
+ *     applicable: when package is there else its null
+ *    hims_f_package_header_id:
+ *     type: number
+ *     required: true
+ *     applicable: when package is there else its null
+ *  PackageDetails:
+ *   type: object
+ *   properties:
+ *    utilized_qty:
+ *     type: number
+ *     required: true
+ *     default: 0
+ *    available_qty:
+ *     type: number
+ *     required: true
+ *     default: 0
+ *    hims_f_package_detail_id:
+ *     type: number
+ *     required: true
  *
  *
  */
