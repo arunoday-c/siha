@@ -2,10 +2,12 @@
  * @swagger
  * /frontDesk/getDoctorAndDepartment:
  *  get:
- *    description: Return doctor and departments in tree style
- *    responses:
- *      '200':
- *        description: successful response
+ *   tags:
+ *    - Patient Registration
+ *   description: Return doctor and departments in tree style
+ *   responses:
+ *    '200':
+ *      description: successful response
  */
 
 /**
@@ -521,7 +523,45 @@
  *    hims_f_package_detail_id:
  *     type: number
  *     required: true
- *
+ *  AppointmentPatientDetails:
+ *   type: object
+ *   properties:
+ *    patient_id:
+ *     type: number
+ *     nullable: true
+ *    patient_code:
+ *     type: string
+ *     nullable: true
+ *    provider_id:
+ *     type: number
+ *     nullable: false
+ *    sub_department_id:
+ *     type: number
+ *    title_id:
+ *     type: number
+ *     nullable: false
+ *    patient_name:
+ *     type: string
+ *     nullable: false
+ *    arabic_name:
+ *     type: string
+ *     nullable: false
+ *    date_of_birth:
+ *     type: string
+ *     format: "YYYY-MM-DD"
+ *     nullable: false
+ *    age:
+ *     type: number
+ *     nullable: false
+ *    contact_number:
+ *     type: string
+ *     nullable: false
+ *    gender:
+ *     type: string
+ *     nullable: false
+ *    email:
+ *     type: string
+ *     nullable: true
  *
  */
 
@@ -530,23 +570,54 @@
  *
  * /frontDesk/add:
  *   post:
- *     produces:
- *       - application/json
- *     parameters:
- *       - name: body
- *         description: Save Patient demographics visit and bill
- *         in:  body
- *         required: true
- *         type: string
- *         schema:
- *           $ref: '#/definitions/patientRegistration'
- *     responses:
- *       200:
- *         description: Return Patient Code along with a success message
- *         schema:
- *           $ref: '#/definitions/Success'
- *       400:
- *        description: Return message
+ *    tags:
+ *     - Patient Registration
+ *    produces:
+ *      - application/json
+ *    parameters:
+ *      - name: body
+ *        description: Save Patient demographics visit and bill
+ *        in:  body
+ *        required: true
+ *        type: string
  *        schema:
- *          $ref: '#/definitions/Error'
+ *         $ref: '#/definitions/patientRegistration'
+ *    responses:
+ *     200:
+ *      description: Return Patient Code along with a success message
+ *      schema:
+ *       $ref: '#/definitions/Success'
+ *     400:
+ *      description: Return message
+ *      schema:
+ *       $ref: '#/definitions/Error'
+ */
+/**
+ * @swagger
+ *
+ * /appointment/getPatientDetilsByAppId:
+ *  get:
+ *   tags:
+ *    - Appointment
+ *   produces:
+ *    -application/json
+ *   parameters:
+ *    - name: application_id
+ *      description: Get patient demographics by appointment ID
+ *      in: query
+ *      required: true
+ *      type: string
+ *   responses:
+ *    200:
+ *     description: Return Details
+ *     schema:
+ *      properties:
+ *       success:
+ *        type: boolean
+ *       records:
+ *        $ref: "#/definitions/AppointmentPatientDetails"
+ *    400:
+ *     decription: Return failure message
+ *     schema:
+ *      $ref: "#/definitions/Error"
  */
