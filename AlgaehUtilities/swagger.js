@@ -12,7 +12,12 @@ export default function Configure(title) {
       },
       host: `localhost:${process.env.PORT}`,
       basePath: "/api/v1/",
-
+      //we can see modules
+      // definitions: {
+      //   inBody: {
+      //     type: {},
+      //   },
+      // },
       securityDefinitions: {
         JWTKey: { type: "apiKey", in: "header", name: "x-api-key" },
         ClientKey: { type: "apiKey", in: "header", name: "x-client-ip" },
