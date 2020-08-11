@@ -34,7 +34,7 @@ class SalesOrdListItems extends Component {
 
             addItemButton: true,
             item_description: "",
-            addedItem: true,
+            addedItem: false,
 
             item_id: null,
             quantity: 0,
@@ -141,7 +141,7 @@ class SalesOrdListItems extends Component {
                                                 this.attReg = attReg;
                                             }}
                                             others={{
-                                                disabled: this.state.dataExists
+                                                disabled: this.state.addedItem
                                             }}
                                         />
 
