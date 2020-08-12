@@ -21,12 +21,14 @@ export function PrepaymentMaster() {
   const [accounts, setAccounts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [types, setTypes] = useState([]);
-  const { control, errors, handleSubmit, reset, setValue } = useForm({
+
+  const { control, errors, handleSubmit, reset, setValue, register } = useForm({
     defaultValues: {
       prepayment_desc: "",
       prepayment_duration: "",
       prepayment_gl: "",
       expense_gl: "",
+      employees_req: false,
     },
   });
 
@@ -55,11 +57,12 @@ export function PrepaymentMaster() {
   };
 
   const addPreType = (e) => {
+    let employees_req = e.employee_req ? "Y" : "N";
     newAlgaehApi({
       uri: "/prepayment/createPrepaymentTypes",
       method: "POST",
       module: "finance",
-      data: { ...e },
+      data: { ...e, employees_req },
     })
       .then((res) => {
         if (res.data.success) {
@@ -153,11 +156,14 @@ export function PrepaymentMaster() {
                 div={{
                   className: "col form-group algaeh-text-fld",
                 }}
+                // error={errors}
                 label={{
                   forceLabel: "Prepayment Desc.",
                   isImp: true,
                 }}
+                P
                 textBox={{
+                  name: "prepayment_desc",
                   type: "text",
                   className: "form-control",
                   ...props,
@@ -165,9 +171,7 @@ export function PrepaymentMaster() {
               />
             )}
           />
-          {errors.prepayment_desc && (
-            <span>{errors.prepayment_desc.message}</span>
-          )}
+
           <Controller
             name="prepayment_duration"
             control={control}
@@ -177,11 +181,13 @@ export function PrepaymentMaster() {
                 div={{
                   className: "col-2 form-group algaeh-text-fld",
                 }}
+                error={errors}
                 label={{
                   forceLabel: "Duration (Months)",
                   isImp: true,
                 }}
                 textBox={{
+                  name: "prepayment_duration",
                   type: "text",
                   className: "form-control",
                   ...props,
@@ -189,9 +195,7 @@ export function PrepaymentMaster() {
               />
             )}
           />
-          {errors.prepayment_duration && (
-            <span>{errors.prepayment_duration.message}</span>
-          )}
+
           <Controller
             control={control}
             name="prepayment_gl"
@@ -204,9 +208,10 @@ export function PrepaymentMaster() {
                   isImp: true,
                   align: "ltr",
                 }}
+                error={errors}
                 tree={{
                   treeDefaultExpandAll: true,
-                  name: "prepayment_head_id",
+                  name: "prepayment_gl",
                   data: accounts,
                   textField: "label",
                   ...props,
@@ -235,9 +240,10 @@ export function PrepaymentMaster() {
                   isImp: true,
                   align: "ltr",
                 }}
+                error={errors}
                 tree={{
                   treeDefaultExpandAll: true,
-                  name: "expense_head_id",
+                  name: "expense_gl",
                   data: accounts,
                   ...props,
                   textField: "label",
@@ -254,7 +260,7 @@ export function PrepaymentMaster() {
               />
             )}
           />
-          <Controller
+          {/* <Controller
             name="prepayment_duration"
             control={control}
             rules={{ required: "Required" }}
@@ -274,16 +280,19 @@ export function PrepaymentMaster() {
                 }}
               />
             )}
-          />
-          {errors.prepayment_duration && (
-            <span>{errors.prepayment_duration.message}</span>
-          )}
+          /> */}
 
           <div className="col-2">
             <label>Employee Requiried</label>
             <div className="customCheckbox">
               <label className="checkbox inline">
-                <input type="checkbox" value="yes" name="" />
+                <input
+                  type="checkbox"
+                  // value="yes"
+
+                  name="employee_req"
+                  ref={register({ required: false })}
+                />
                 <span>Yes</span>
               </label>
             </div>
@@ -417,10 +426,13 @@ export function PrepaymentMaster() {
                       },
                     },
                     {
-                      fieldName: "",
+                      fieldName: "employees_req",
                       label: "Employee Required",
                       sortable: true,
                       filterable: true,
+                      displayTemplate: (row) => {
+                        return row.employees_req === "Y" ? "YES" : "NO";
+                      },
                     },
                   ]}
                   isFilterable={true}
