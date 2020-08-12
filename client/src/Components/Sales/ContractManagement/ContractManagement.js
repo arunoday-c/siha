@@ -34,7 +34,7 @@ import {
   getCtrlCode,
   employeeSearch,
   getCostCenters,
-  updateContract,
+  // updateContract,
 } from "./ContractManagementEvents";
 import Options from "../../../Options.json";
 import moment from "moment";
@@ -928,7 +928,20 @@ class ContractManagement extends Component {
         <div className="hptl-phase1-footer">
           <div className="row">
             <div className="col-lg-12">
-              {this.state.editMode ? (
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={SaveContract.bind(this, this)}
+                disabled={this.state.saveEnable}
+              >
+                <AlgaehLabel
+                  label={{
+                    forceLabel: this.state.editMode ? "Update Contract" : "Save Contract",
+                    returnText: true,
+                  }}
+                />
+              </button>
+              {/* {this.state.editMode ? (
                 <button
                   type="button"
                   className="btn btn-primary"
@@ -943,20 +956,8 @@ class ContractManagement extends Component {
                   />
                 </button>
               ) : (
-                  <button
-                    type="button"
-                    className="btn btn-primary"
-                    onClick={SaveContract.bind(this, this)}
-                    disabled={this.state.saveEnable}
-                  >
-                    <AlgaehLabel
-                      label={{
-                        forceLabel: "Save Contract",
-                        returnText: true,
-                      }}
-                    />
-                  </button>
-                )}
+                  
+                )} */}
 
               <button
                 type="button"
