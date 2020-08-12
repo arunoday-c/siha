@@ -463,17 +463,25 @@ class PurchaseOrderEntry extends Component {
             <POItemList POEntry={this.state} />
           </MyContext.Provider>
         </div>
+        {this.props.purchase_auth === true ?
+          <div>
 
-        <div>
-          <textarea
-            value={this.state.comment}
-            name="comment"
-            onChange={texthandle.bind(this, this)}
-          >
-            {this.state.comment}
-          </textarea>
+            <AlgaehLabel
+              label={{
+                forceLabel: "Comments",
+              }}
+            />
 
-        </div>
+            <textarea
+              value={this.state.comment}
+              name="comment"
+              onChange={texthandle.bind(this, this)}
+            >
+              {this.state.comment}
+            </textarea>
+
+          </div>
+          : null}
 
         <AlgaehSecurityComponent componentCode="PUR_ORD_MAINT">
           <div className="hptl-phase1-footer">

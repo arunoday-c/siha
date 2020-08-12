@@ -1026,7 +1026,6 @@ const CancelPOEntry = ($this) => {
     cancelButtonText: "No",
   }).then((willReject) => {
     if (willReject.value) {
-      debugger
       if ($this.state.comment === "" || $this.state.comment === null) {
         swalMessage({
           title: "While rejecting comments is mandatory.",
