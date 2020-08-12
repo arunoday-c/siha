@@ -269,6 +269,41 @@ export function PrepaymentProcess() {
     }
     return balanceAmt.toFixed(3);
   };
+  const balCurrentMonth = () => {
+    let balCurrMonth = 0;
+    if (list) {
+      const notProcessed = list
+        .filter((element) => {
+          return element.processed === "N";
+        })
+        .forEach((item) => {
+          return (balCurrMonth += parseFloat(item.amount));
+        });
+    }
+    return balCurrMonth.toFixed(2);
+  };
+  const netCurrMnthExp = () => {
+    let netCurrExp = 0;
+    if (list) {
+      const processed = list
+        .filter((element) => {
+          return element.processed === "Y";
+        })
+        .forEach((item) => {
+          return (netCurrExp += parseFloat(item.amount));
+        });
+    }
+    return netCurrExp.toFixed(2);
+  };
+  const netTotal = () => {
+    let netTotal = 0;
+    if (list) {
+      const processed = list.forEach((item) => {
+        return (netTotal += parseFloat(item.amount));
+      });
+    }
+    return netTotal.toFixed(2);
+  };
 
   return (
     <Spin spinning={loading}>
@@ -652,17 +687,17 @@ export function PrepaymentProcess() {
               {" "}
               <div className="col">
                 <label className="style_Label ">Net Total</label>
-                <h6>0.00</h6>
+                <h6>{netTotal()}</h6>
               </div>{" "}
               <div className="col">
                 <label className="style_Label ">
                   Net Current Month Expense Out
                 </label>
-                <h6>0.00</h6>
+                <h6>{netCurrMnthExp()}</h6>
               </div>{" "}
               <div className="col">
                 <label className="style_Label ">Net Balance</label>
-                <h6>0.00</h6>
+                <h6>{balCurrentMonth()}</h6>
               </div>{" "}
             </div>
           </div>

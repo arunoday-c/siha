@@ -1,6 +1,8 @@
 import { Router } from "express";
 import utlities from "algaeh-utilities";
-import appointmentModels from "../models/appointment";
+import appointmentModels, {
+  getPatientDetailsWithAppNo,
+} from "../models/appointment";
 
 const {
   addAppointmentStatus,
@@ -308,6 +310,19 @@ export default () => {
       });
     }
   });
-
+  api.get(
+    "/getPatientDetilsByAppId",
+    getPatientDetailsWithAppNo,
+    (req, res) => {
+      res
+        .status(utlities.AlgaehUtilities().httpStatus().ok)
+        .json({
+          success: true,
+          records: req.records,
+        })
+        .end();
+      delete req.records;
+    }
+  );
   return api;
 };

@@ -12,11 +12,20 @@ import moment from "moment";
 import { Controller, useForm } from "react-hook-form";
 import { PrePaymentContext } from "../Prepayment";
 import { newAlgaehApi } from "../../../hooks";
-// import { uspdatePrepaymentRequest } from "../../../../../src/models/prepayment";
+import { Upload, Modal } from "antd";
+import _ from "lodash";
 
+// import { uspdatePrepaymentRequest } from "../../../../../src/models/prepayment";
+const { Dragger } = Upload;
+const { confirm } = Modal;
 export function PrepaymentRequest() {
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [payment_reqDoc, setPayment_reqDoc] = useState([]);
+  const [prepayment_docs, setPrePayment_docs] = useState([]);
+  const [visible, setVisible] = useState(false);
+  const [disableEdit, setDisableEdit] = useState(false);
+  const [payReqID, setPayReqID] = useState(null);
 
   const { branchAndCenters, prePaymentTypes, employees } = useContext(
     PrePaymentContext
@@ -56,8 +65,10 @@ export function PrepaymentRequest() {
         method: "PUT",
         data: {
           prepayment_amount: data.prepayment_amount,
-          finance_f_prepayment_request_id: data.finance_f_prepayment_request_id,
+          prepayment_remarks: data.prepayment_remarks,
+          finance_f_prepayment_request_id: payReqID,
           start_date: data.start_date,
+          // prepayment_remarks: data.prepayment_remarks,
           end_date: moment(
             moment(data.start_date, "YYYY-MM-DD").add(
               data.prepayment_duration - 1,
@@ -68,6 +79,7 @@ export function PrepaymentRequest() {
         module: "finance",
       });
       if (res.data.success) {
+        setPayReqID(null);
         getRequest().then(() => {
           AlgaehMessagePop({
             type: "success",
@@ -85,7 +97,53 @@ export function PrepaymentRequest() {
   // const datechangeGrid = (e, ) => {
 
   // };
+  const saveDocument = (files = [], contract_no, contract_id) => {
+    const formData = new FormData();
+    formData.append("contract_no", contract_no);
+    formData.append("contract_id", contract_id);
+    files.forEach((file, index) => {
+      formData.append(`file_${index}`, file, file.name);
+    });
 
+    newAlgaehApi({
+      uri: "/saveContractDoc",
+      data: formData,
+      extraHeaders: { "Content-Type": "multipart/form-data" },
+      method: "POST",
+      module: "documentManagement",
+    })
+      .then((value) => {
+        return getRequest();
+      })
+      .catch((e) => console.log(e));
+  };
+  const getDocuments = (contract_no) => {
+    newAlgaehApi({
+      uri: "/getContractDoc",
+      module: "documentManagement",
+      method: "GET",
+      data: {
+        contract_no,
+      },
+    })
+      .then((res) => {
+        if (res.data.success) {
+          let { data } = res.data;
+
+          return setPrePayment_docs(data), setPayment_reqDoc([]);
+        }
+      })
+      .catch((e) => {
+        AlgaehMessagePop({
+          type: "error",
+          display: e.message,
+        });
+      });
+  };
+  const openPrepayDocModal = (data) => {
+    setVisible(true);
+    getDocuments(data.request_code);
+  };
   const addRequest = async (data) => {
     try {
       const res = await newAlgaehApi({
@@ -99,12 +157,9 @@ export function PrepaymentRequest() {
         module: "finance",
       });
       if (res.data.success) {
-        getRequest().then(() => {
-          AlgaehMessagePop({
-            type: "success",
-            display: "Request Added successfully",
-          });
-        });
+        const result = res.data.result;
+
+        saveDocument(payment_reqDoc, result.request_code, result.insertId);
       }
     } catch (e) {
       AlgaehMessagePop({
@@ -162,8 +217,35 @@ export function PrepaymentRequest() {
       </span>
     );
   };
+  const editRow = (data) => {
+    setValue("hospital_id", data.hims_d_hospital_id);
+    setValue("cost_center_id", data.cost_center_id);
+    setValue("prepayment_type_id", data.prepayment_type_id);
+    setValue("employee_id", data.employee_id);
+    setValue("prepayment_amount", data.prepayment_amount);
+    setValue("prepayment_remarks", data.prepayment_remarks);
+    setValue("start_date", moment(data.start_date).format("YYYY-MM-DD"));
+    setValue(
+      "end_date",
+      moment(
+        moment(data.start_date, "YYYY-MM-DD").add(
+          data.prepayment_duration - 1,
+          "months"
+        )
+      ).format("YYYY-MM-DD")
+    );
+    setValue("prepayment_remarks", data.prepayment_remarks);
+    setDisableEdit(true);
+    setPayReqID(data.finance_f_prepayment_request_id);
+
+    getDocuments(data.request_code);
+  };
   const onSubmit = (e) => {
-    addRequest(e);
+    if (payReqID != null) {
+      updatePrePayReq(e);
+    } else {
+      addRequest(e);
+    }
   };
 
   const changeGridEditors = (row, e) => {
@@ -181,11 +263,57 @@ export function PrepaymentRequest() {
     // row.update();
   };
 
-  const { hospital_id: ihospital, prepayment_type_id } = watch([
+  const { hospital_id: ihospital, prepayment_type_id, employee_id } = watch([
     "hospital_id",
     "prepayment_type_id",
+    "employee_id",
   ]);
+  let employeeDetails = employees.filter((item) => {
+    return item.employee_id == employee_id;
+  });
+  // console.log("identity_no", identity_no);
+  const downloadDoc = (doc) => {
+    const link = document.createElement("a");
+    link.download = doc.filename;
+    link.href = `data:${doc.filetype};base64,${doc.document}`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
 
+  const deleteDoc = (doc) => {
+    confirm({
+      title: `Are you sure you want to delete this file?`,
+      content: `${doc.filename}`,
+      icon: "",
+      okText: "Yes",
+      okType: "danger",
+      cancelText: "No",
+      onOk() {
+        onDelete(doc);
+      },
+      onCancel() {
+        console.log("Cancel");
+      },
+    });
+  };
+
+  const onDelete = (doc) => {
+    newAlgaehApi({
+      uri: "/deleteContractDoc",
+      method: "DELETE",
+      module: "documentManagement",
+      data: { id: doc._id },
+    }).then((res) => {
+      if (res.data.success) {
+        const prePaymentDoc = prepayment_docs.filter(
+          (item) => item._id !== doc._id
+        );
+
+        return setPrePayment_docs(prePaymentDoc);
+      }
+    });
+  };
   return (
     <Spin spinning={loading}>
       <div style={{ paddingTop: 15 }}>
@@ -214,6 +342,9 @@ export function PrepaymentRequest() {
                             isImp: true,
                           }}
                           selector={{
+                            others: {
+                              disabled: disableEdit,
+                            },
                             value,
                             onChange: (_, selected) => {
                               onChange(selected);
@@ -246,7 +377,7 @@ export function PrepaymentRequest() {
                           }}
                           selector={{
                             others: {
-                              disabled: !ihospital,
+                              disabled: !ihospital || disableEdit,
                             },
                             value,
                             onChange: (_, selected) => {
@@ -285,6 +416,9 @@ export function PrepaymentRequest() {
                             isImp: true,
                           }}
                           selector={{
+                            others: {
+                              disabled: disableEdit,
+                            },
                             value,
                             onChange: (_, selected) => {
                               onChange(selected);
@@ -321,6 +455,9 @@ export function PrepaymentRequest() {
                             isImp: true,
                           }}
                           selector={{
+                            others: {
+                              disabled: disableEdit,
+                            },
                             value,
                             onChange: (_, selected) => {
                               onChange(selected);
@@ -342,10 +479,18 @@ export function PrepaymentRequest() {
                         />
                       )}
                     />
+                    <div className="col">
+                      <label className="style_Label ">Employee ID</label>
+                      <h6>
+                        {employeeDetails.length !== 0
+                          ? employeeDetails[0].identity_no
+                          : null}
+                      </h6>
+                    </div>
                     <Controller
                       control={control}
                       // rules={{ required: "Prepayment Remarks" }}
-                      name="prepayment_amount"
+                      name="prepayment_remarks"
                       render={(props) => (
                         <AlgaehFormGroup
                           div={{
@@ -353,7 +498,7 @@ export function PrepaymentRequest() {
                           }}
                           label={{
                             forceLabel: "Prepayment Remarks",
-                            isImp: true,
+                            // isImp: true,
                           }}
                           textBox={{
                             ...props,
@@ -363,8 +508,8 @@ export function PrepaymentRequest() {
                         />
                       )}
                     />
-                    {errors.employee_id && (
-                      <span>{errors.employee_id.message}</span>
+                    {errors.prepayment_remarks && (
+                      <span>{errors.prepayment_remarks.message}</span>
                     )}
                     <Controller
                       control={control}
@@ -462,36 +607,78 @@ export function PrepaymentRequest() {
                         />
                       )}
                     />
-                    <Controller
-                      control={control}
-                      // rules={{ required: "Attachment" }}
-                      name="prepayment_amount"
-                      render={(props) => (
-                        <AlgaehFormGroup
-                          div={{
-                            className: "col-12 form-group algaeh-text-fld",
-                          }}
-                          label={{
-                            forceLabel: "Attachment",
-                            isImp: true,
-                          }}
-                          textBox={{
-                            ...props,
-                            type: "text",
-                            className: "form-control",
-                          }}
-                        />
-                      )}
-                    />
-                    <div className="col-12">
-                      <button
-                        type="submit"
-                        className="btn btn-primary bttn-sm"
-                        style={{ marginTop: 20 }}
-                      >
-                        Add to list
-                      </button>
+                    <div className="portlet-body">
+                      <div className="row">
+                        <div className="col-12">
+                          <Dragger
+                            accept=".doc,.docx,application/msword,.pdf"
+                            name="payment_reqDoc"
+                            onRemove={(file) => {
+                              setPayment_reqDoc((state) => {
+                                const index = state.indexOf(file);
+                                const newFileList = [...state];
+                                newFileList.splice(index, 1);
+                                return newFileList;
+                              });
+                            }}
+                            beforeUpload={(file) => {
+                              setPayment_reqDoc((state) => {
+                                return [...state, file];
+                              });
+                              return false;
+                            }}
+                            // disabled={this.state.dataExists && !this.state.editMode}
+                            fileList={payment_reqDoc}
+                          >
+                            <p className="upload-drag-icon">
+                              <i className="fas fa-file-upload"></i>
+                            </p>
+                            <p className="ant-upload-text">
+                              {payment_reqDoc
+                                ? `Click or Drag a file to replace the current file`
+                                : `Click or Drag a file to this area to upload`}
+                            </p>
+                          </Dragger>
+                        </div>
+                        <div className="col-3"></div>
+                        <div className="col-6">
+                          <div className="row">
+                            <div className="col-12">
+                              <ul className="contractAttachmentList">
+                                {prepayment_docs.length && disableEdit ? (
+                                  prepayment_docs.map((doc) => (
+                                    <li>
+                                      <b> {doc.filename} </b>
+                                      <span>
+                                        <i
+                                          className="fas fa-download"
+                                          onClick={() => downloadDoc(doc)}
+                                        ></i>
+                                        <i
+                                          className="fas fa-trash"
+                                          onClick={() => deleteDoc(doc)}
+                                        ></i>
+                                      </span>
+                                    </li>
+                                  ))
+                                ) : (
+                                  <div className="col-12 noAttachment" key={1}>
+                                    <p>No Attachments Available</p>
+                                  </div>
+                                )}
+                              </ul>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                     </div>
+                    <button
+                      type="submit"
+                      className="btn btn-primary bttn-sm"
+                      style={{ marginTop: 20 }}
+                    >
+                      {disableEdit ? "Update" : "Add to List"}
+                    </button>
                   </div>
                 </div>
               </form>
@@ -509,6 +696,22 @@ export function PrepaymentRequest() {
               <div className="portlet-body" id="PreRequestGrid">
                 <AlgaehDataGrid
                   columns={[
+                    {
+                      fieldName: "ACTION",
+                      label: "Action",
+                      displayTemplate: (row) => {
+                        return (
+                          <div>
+                            <i
+                              className="fas fa-pen"
+                              onClick={() => {
+                                editRow(row);
+                              }}
+                            ></i>
+                          </div>
+                        );
+                      },
+                    },
                     // {
                     //   fieldName: "",
                     //   label: "Actions",
@@ -538,111 +741,111 @@ export function PrepaymentRequest() {
                       displayTemplate: (row) => {
                         return statusForEditor(row);
                       },
-                      editorTemplate: (row) => {
-                        return statusForEditor(row);
-                      },
+                      // editorTemplate: (row) => {
+                      //   return statusForEditor(row);
+                      // },
                     },
                     {
                       fieldName: "hospital_name",
                       label: "Hospital Name",
                       sortable: true,
-                      editorTemplate: (row) => {
-                        return row.hospital_name;
-                      },
+                      // editorTemplate: (row) => {
+                      //   return row.hospital_name;
+                      // },
                     },
                     {
                       fieldName: "cost_center",
                       label: "Cost Center",
                       sortable: true,
-                      editorTemplate: (row) => {
-                        return row.cost_center;
-                      },
+                      // editorTemplate: (row) => {
+                      //   return row.cost_center;
+                      // },
                     },
                     {
                       fieldName: "employee_code",
                       label: "Employee Code",
                       sortable: true,
-                      editorTemplate: (row) => {
-                        return row.employee_code;
-                      },
+                      // editorTemplate: (row) => {
+                      //   return row.employee_code;
+                      // },
                     },
                     {
                       fieldName: "employee_name",
                       label: "Employee Name",
                       sortable: true,
-                      editorTemplate: (row) => {
-                        return row.employee_name;
-                      },
+                      // editorTemplate: (row) => {
+                      //   return row.employee_name;
+                      // },
                     },
                     {
                       fieldName: "identity_no",
                       label: "ID No.",
                       sortable: true,
-                      editorTemplate: (row) => {
-                        return row.identity_no;
-                      },
+                      // editorTemplate: (row) => {
+                      //   return row.identity_no;
+                      // },
                     },
                     {
                       fieldName: "prepayment_desc",
                       label: "Prepayment Type",
                       sortable: true,
-                      editorTemplate: (row) => {
-                        return row.prepayment_desc;
-                      },
+                      // editorTemplate: (row) => {
+                      //   return row.prepayment_desc;
+                      // },
                     },
                     {
                       fieldName: "prepayment_amount",
                       label: "Prepayment Amt.",
                       sortable: true,
-                      editorTemplate: (row) => {
-                        return (
-                          <AlgaehFormGroup
-                            div={{ className: "col" }}
-                            textBox={{
-                              className: "txt-fld",
-                              name: "prepayment_amount",
-                              defaultValue: row.prepayment_amount,
+                      // editorTemplate: (row) => {
+                      //   return (
+                      //     <AlgaehFormGroup
+                      //       div={{ className: "col" }}
+                      //       textBox={{
+                      //         className: "txt-fld",
+                      //         name: "prepayment_amount",
+                      //         defaultValue: row.prepayment_amount,
 
-                              onChange: (e) => {
-                                changeGridEditors(row, e);
-                              },
+                      //         onChange: (e) => {
+                      //           changeGridEditors(row, e);
+                      //         },
 
-                              others: {
-                                errormessage:
-                                  "Prepayment Amt. - cannot be blank",
-                                required: true,
-                              },
-                            }}
-                          />
-                        );
-                      },
+                      //         others: {
+                      //           errormessage:
+                      //             "Prepayment Amt. - cannot be blank",
+                      //           required: true,
+                      //         },
+                      //       }}
+                      //     />
+                      //   );
+                      // },
                     },
                     {
                       fieldName: "start_date",
                       label: "Prepayment Start date",
                       sortable: true,
-                      editorTemplate: (row) => {
-                        return (
-                          <AlgaehDateHandler
-                            label={{}}
-                            textBox={{
-                              className: "form-control",
-                              name: "end_date",
-                              updateInternally: true,
-                            }}
-                            events={{
-                              onChange: (e) => {
-                                changeGridDates(row, e);
-                              },
-                              // onClear: () => {
-                              //   onChange(undefined);
-                              //   setValue("end_date", undefined);
-                              // },
-                            }}
-                            others={{ defaultValue: moment(row.start_date) }}
-                          />
-                        );
-                      },
+                      // editorTemplate: (row) => {
+                      //   return (
+                      //     <AlgaehDateHandler
+                      //       label={{}}
+                      //       textBox={{
+                      //         className: "form-control",
+                      //         name: "end_date",
+                      //         updateInternally: true,
+                      //       }}
+                      //       events={{
+                      //         onChange: (e) => {
+                      //           changeGridDates(row, e);
+                      //         },
+                      //         // onClear: () => {
+                      //         //   onChange(undefined);
+                      //         //   setValue("end_date", undefined);
+                      //         // },
+                      //       }}
+                      //       others={{ defaultValue: moment(row.start_date) }}
+                      //     />
+                      //   );
+                      // },
                     },
                     {
                       fieldName: "end_date",
@@ -653,19 +856,83 @@ export function PrepaymentRequest() {
                       //   return null;
                       // },
                     },
+                    {
+                      fieldName: "prepayment_remarks",
+                      label: "Remarks",
+                      sortable: true,
+                      // displayTemplate: (row) => {
+                      //   return row.
+                      // }
+
+                      // editorTemplate: (row) => {
+                      //   return null;
+                      // },
+                    },
+                    {
+                      // fieldName: "",
+                      label: "Attached Document",
+                      sortable: true,
+                      displayTemplate: (row) => {
+                        // <span>{row.english_name}</span>
+                        return (
+                          <div>
+                            <Modal
+                              title="Notify Users List"
+                              title="Request Details"
+                              visible={visible}
+                              footer={null}
+                              onCancel={() => setVisible(false)}
+                            >
+                              <ul className="contractAttachmentList">
+                                {prepayment_docs.length ? (
+                                  prepayment_docs.map((doc) => (
+                                    <li>
+                                      <b> {doc.filename} </b>
+                                      <span>
+                                        <i
+                                          className="fas fa-download"
+                                          onClick={() => downloadDoc(doc)}
+                                        ></i>
+                                      </span>
+                                    </li>
+                                  ))
+                                ) : (
+                                  <div className="col-12 noAttachment" key={1}>
+                                    <p>No Attachments Available</p>
+                                  </div>
+                                )}
+                              </ul>
+                            </Modal>
+                            <span
+                              onClick={() => {
+                                openPrepayDocModal(row);
+                              }}
+                            >
+                              <i className="fas fa-eye"></i>
+                            </span>
+                          </div>
+                        );
+                      },
+                      others: { minWidth: 40 },
+                    },
+                    // editorTemplate: (row) => {
+                    //   return null;
+                    // },
                   ]}
-                  isEditable={"editOnly"}
+                  // isEditable={"editOnly"}
                   loading={false}
                   // height="70vh"
                   data={requests}
                   pagination={true}
-                  events={{
-                    onSave: updatePrePayReq,
-                    // onEdit:
-                    onEditShow: (row) => {
-                      return row.request_status === "A";
-                    },
-                  }}
+                  events={
+                    {
+                      // onSave: updatePrePayReq,
+                      // onEdit:
+                      // onEditShow: (row) => {
+                      //   return row.request_status === "A";
+                      // },
+                    }
+                  }
                   others={{}}
                 />
               </div>

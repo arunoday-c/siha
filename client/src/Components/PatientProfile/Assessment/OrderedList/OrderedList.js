@@ -97,7 +97,8 @@ class OrderedList extends PureComponent {
       uri: "/orderAndPreApproval/getPatientPackage",
       method: "GET",
       data: {
-        patient_id: current_patient //Window.global["current_patient"]
+        patient_id: current_patient, //Window.global["current_patient"]
+        package_visit_type: 'ALL'
       },
       redux: {
         type: "PAIENT_PACKAGE_GET_DATA",
@@ -187,7 +188,8 @@ class OrderedList extends PureComponent {
           uri: "/orderAndPreApproval/getPatientPackage",
           method: "GET",
           data: {
-            patient_id: current_patient //Window.global["current_patient"]
+            patient_id: current_patient, //Window.global["current_patient"]
+            package_visit_type: 'ALL'
           },
           redux: {
             type: "ORDER_SERVICES_GET_DATA",
@@ -342,7 +344,8 @@ class OrderedList extends PureComponent {
           uri: "/orderAndPreApproval/getPatientPackage",
           method: "GET",
           data: {
-            patient_id: current_patient //Window.global["current_patient"]
+            patient_id: current_patient, //Window.global["current_patient"]
+            package_visit_type: 'ALL'
           },
           redux: {
             type: "ORDER_SERVICES_GET_DATA",
@@ -497,7 +500,8 @@ class OrderedList extends PureComponent {
                 uri: "/orderAndPreApproval/getPatientPackage",
                 method: "GET",
                 data: {
-                  patient_id: current_patient //Window.global["current_patient"]
+                  patient_id: current_patient, //Window.global["current_patient"]
+                  package_visit_type: 'ALL'
                 },
                 redux: {
                   type: "PAIENT_PACKAGE_GET_DATA",
@@ -595,7 +599,8 @@ class OrderedList extends PureComponent {
                 uri: "/orderAndPreApproval/getPatientPackage",
                 method: "GET",
                 data: {
-                  patient_id: current_patient //Window.global["current_patient"]
+                  patient_id: current_patient, //Window.global["current_patient"]
+                  package_visit_type: 'ALL'
                 },
                 redux: {
                   type: "ORDER_SERVICES_GET_DATA",
@@ -889,11 +894,11 @@ class OrderedList extends PureComponent {
                           return (
                             <span>
                               <i
-                                // style={{
-                                //   pointerEvents:
-                                //     row.billed && row.trans_package_detail_id > 0 === "N" ? "" : "none",
-                                //   opacity: row.billed && row.trans_package_detail_id > 0 === "N" ? "" : "0.1"
-                                // }}
+                                style={{
+                                  pointerEvents:
+                                    row.billed === "N" ? "" : "none",
+                                  opacity: row.billed === "N" ? "" : "0.1"
+                                }}
                                 className="fas fa-trash-alt"
                                 onClick={this.DeleteInvOrderItems.bind(
                                   this,
@@ -905,6 +910,15 @@ class OrderedList extends PureComponent {
                         },
                         others: {
                           fixed: "left"
+                        }
+                      },
+                      {
+                        fieldName: "billed",
+                        label: (
+                          <AlgaehLabel label={{ fieldName: "Billed" }} />
+                        ),
+                        displayTemplate: row => {
+                          return row.billed === "N" ? "No" : "Yes";
                         }
                       },
                       {
@@ -984,7 +998,7 @@ class OrderedList extends PureComponent {
                           <AlgaehLabel label={{ forceLabel: "Chargable" }} />
                         ),
                         displayTemplate: row => {
-                          return row.item_notchargable === "Y" ? "Yes" : "No";
+                          return row.item_notchargable === "N" ? "Yes" : "No";
                         },
                         disabled: true
                       },
@@ -1078,15 +1092,22 @@ class OrderedList extends PureComponent {
                             displayTemplate: row => {
                               return (
                                 <span>
-                                  <i
+                                  {row.package_visit_type === "M" ? <i
                                     className="fas fa-eye"
                                     onClick={this.ShowPackageUtilize.bind(
                                       this,
                                       row
                                     )}
-                                  />
+
+                                  /> : null}
+
 
                                   <i
+                                    style={{
+                                      pointerEvents:
+                                        row.billed === "N" ? "" : "none",
+                                      opacity: row.billed === "N" ? "" : "0.1"
+                                    }}
                                     onClick={this.DeleteOrderedPackage.bind(
                                       this,
                                       row
@@ -1098,6 +1119,15 @@ class OrderedList extends PureComponent {
                             },
                             others: {
                               fixed: "left"
+                            }
+                          },
+                          {
+                            fieldName: "billed",
+                            label: (
+                              <AlgaehLabel label={{ fieldName: "Billed" }} />
+                            ),
+                            displayTemplate: row => {
+                              return row.billed === "N" ? "No" : "Yes";
                             }
                           },
                           {

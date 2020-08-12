@@ -2570,3 +2570,28 @@ function getDaysArray(start, end, days) {
 
   return arr;
 }
+export function getPatientDetailsWithAppNo(req, res, next) {
+  const _mysql = new algaehMysql();
+  const { application_id } = req.query;
+  try {
+    _mysql
+      .executeQuery({
+        query: `select patient_id, patient_code, provider_id, sub_department_id, title_id, 
+     patient_name, arabic_name, date_of_birth, age, contact_number, email, 
+     gender from hims_f_patient_appointment where hims_f_patient_appointment_id=?`,
+        values: [application_id],
+      })
+      .then((result) => {
+        _mysql.releaseConnection();
+        req.records = result.length > 0 ? result[0] : {};
+        next();
+      })
+      .catch((error) => {
+        _mysql.releaseConnection();
+        next(error);
+      });
+  } catch (error) {
+    _mysql.releaseConnection();
+    next(error);
+  }
+}

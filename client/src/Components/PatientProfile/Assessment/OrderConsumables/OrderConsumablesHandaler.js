@@ -495,16 +495,18 @@ const SaveOrdersServices = ($this, e) => {
     method: "POST",
     onSuccess: (response) => {
       if (response.data.success === true) {
-        $this.state.transaction_type = "CS";
-        $this.state.location_id = $this.state.inventory_location_id;
+        let inputOb = $this.state
+        inputOb.transaction_type = "CS";
+        inputOb.location_id = $this.state.inventory_location_id;
         // $this.state.location_type = $this.state.location_type;
-        $this.state.inventory_stock_detail = $this.state.orderconsumabledata;
-        $this.state.provider_id = Window.global["provider_id"];
-        $this.state.transaction_date = new Date();
+        inputOb.inventory_stock_detail = $this.state.orderconsumabledata;
+        inputOb.provider_id = Window.global["provider_id"];
+        inputOb.transaction_date = new Date();
+        inputOb.ScreenCode = "INV0007"
         algaehApiCall({
           uri: "/inventoryconsumption/addInventoryConsumption",
           module: "inventory",
-          data: $this.state,
+          data: inputOb,
           onSuccess: (response) => {
             AlgaehLoader({ show: false });
             if (response.data.success === true) {

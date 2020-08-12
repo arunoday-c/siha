@@ -25,6 +25,7 @@ export const createPrepaymentTypes = (req, res, next) => {
     prepayment_duration,
     prepayment_gl,
     expense_gl,
+    employees_req,
   } = input;
 
   let prepayment_head_id,
@@ -54,8 +55,9 @@ export const createPrepaymentTypes = (req, res, next) => {
         prepayment_head_id,
         prepayment_child_id,
         expense_head_id ,
-        expense_child_id
-        ) value(?,?,?,?,?,?)`,
+        expense_child_id,
+        employees_req
+        ) value(?,?,?,?,?,?,?)`,
       printQuery: false,
       values: [
         prepayment_desc,
@@ -64,6 +66,7 @@ export const createPrepaymentTypes = (req, res, next) => {
         prepayment_child_id || null,
         expense_head_id || null,
         expense_child_id || null,
+        employees_req,
       ],
     })
     .then((res) => {
@@ -182,7 +185,7 @@ export const addPrepaymentRequest = (req, res, next) => {
             .executeQuery({
               query:
                 "insert into finance_f_prepayment_request (prepayment_type_id,request_code,employee_id,prepayment_amount,start_date,\
-          end_date,hospital_id,project_id,sub_department_id,created_by,created_date)  values(?,?,?,?,?,?,?,?,?,?,?);  ",
+          end_date,hospital_id,project_id,sub_department_id,prepayment_remarks,created_by,created_date)  values(?,?,?,?,?,?,?,?,?,?,?,?);  ",
               values: [
                 input.prepayment_type_id,
                 numgen[voucher_type],
@@ -193,6 +196,7 @@ export const addPrepaymentRequest = (req, res, next) => {
                 input.hospital_id,
                 project_id,
                 sub_department_id,
+                prepayment_remarks,
                 req.userIdentity.algaeh_d_app_user_id,
                 new Date(),
               ],
@@ -200,7 +204,7 @@ export const addPrepaymentRequest = (req, res, next) => {
             .then((result) => {
               _mysql.commitTransaction(() => {
                 _mysql.releaseConnection();
-                req.records = result;
+                req.records = { ...result, request_code: numgen[voucher_type] };
                 next();
               });
             })
@@ -230,9 +234,10 @@ export const updatePrepaymentRequest = (req, res, next) => {
   _mysql
     .executeQuery({
       query:
-        "UPDATE finance_f_prepayment_request set prepayment_amount=?,start_date=?, end_date=? \
+        "UPDATE finance_f_prepayment_request set prepayment_remarks=?, prepayment_amount=?,start_date=?, end_date=? \
         where finance_f_prepayment_request_id=?",
       values: [
+        input.prepayment_remarks,
         input.prepayment_amount,
         input.start_date,
         input.end_date,
@@ -330,7 +335,7 @@ export const getPrepaymentRequests = (req, res, next) => {
       }
       _mysql
         .executeQuery({
-          query: `select finance_f_prepayment_request_id, prepayment_type_id,prepayment_desc,prepayment_duration,request_code,request_status,\
+          query: `select finance_f_prepayment_request_id, prepayment_type_id,prepayment_remarks,prepayment_desc,prepayment_duration,request_code,request_status,\
     employee_id,employee_code ,E.full_name as employee_name ,E.identity_no , ROUND(prepayment_amount,${decimal_places}) as prepayment_amount, PR.start_date, PR.end_date,\
     hims_d_hospital_id,hospital_name ${selectStr}
     from finance_f_prepayment_request PR  inner join finance_d_prepayment_type PT \

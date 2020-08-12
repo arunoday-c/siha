@@ -61,15 +61,15 @@ export default {
             _stringData +
             " order by hims_f_rad_order_id desc",
           values: inputValues,
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           utilities.logger().log("result: ", result);
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -125,16 +125,16 @@ export default {
         "billed",
         "ordered_date",
         "ordered_by",
-        "test_type"
+        "test_type",
       ];
       // let Services = req.records.ResultOfFetchOrderIds || req.body.billdetails;
       const radServices = new LINQ(req.body.billdetails)
         .Where(
-          w =>
+          (w) =>
             w.service_type_id ==
             appsettings.hims_d_service_type.service_type_id.Radiology
         )
-        .Select(s => {
+        .Select((s) => {
           return {
             ordered_services_id: s.hims_f_ordered_services_id || null,
             patient_id: req.body.patient_id,
@@ -144,12 +144,12 @@ export default {
             billed: req.body.billed,
             ordered_date: s.created_date,
             ordered_by: s.ordered_by,
-            test_type: s.test_type
+            test_type: s.test_type,
           };
         })
         .ToArray();
 
-      utilities.logger().log("radServices: ", radServices.length);
+      // utilities.logger().log("radServices: ", radServices.length);
       if (radServices.length > 0) {
         _mysql
           .executeQuery({
@@ -158,12 +158,12 @@ export default {
             includeValues: IncludeValues,
             extraValues: {
               created_by: req.userIdentity.algaeh_d_app_user_id,
-              updated_by: req.userIdentity.algaeh_d_app_user_id
+              updated_by: req.userIdentity.algaeh_d_app_user_id,
             },
             bulkInsertOrUpdate: true,
-            printQuery: true
+            printQuery: true,
           })
-          .then(insert_rad_order => {
+          .then((insert_rad_order) => {
             utilities.logger().log("insert_rad_order: ");
             utilities
               .logger()
@@ -178,7 +178,7 @@ export default {
               let result = {
                 receipt_number: inputParam.receipt_number,
                 bill_number: inputParam.bill_number,
-                hims_f_billing_header_id: inputParam.hims_f_billing_header_id
+                hims_f_billing_header_id: inputParam.hims_f_billing_header_id,
               };
               _mysql.commitTransaction(() => {
                 _mysql.releaseConnection();
@@ -187,7 +187,7 @@ export default {
               });
             }
           })
-          .catch(e => {
+          .catch((e) => {
             _mysql.rollBackTransaction(() => {
               next(e);
             });
@@ -201,9 +201,9 @@ export default {
         //     inputParam.hims_f_billing_header_id
         //   );
 
-        utilities
-          .logger()
-          .log("inputParam.consultation: ", inputParam.consultation);
+        // utilities
+        //   .logger()
+        //   .log("inputParam.consultation: ", inputParam.consultation);
         if (inputParam.consultation == "Y") {
           req.records = radServices;
           next();
@@ -211,7 +211,7 @@ export default {
           let result = {
             receipt_number: inputParam.receipt_number,
             bill_number: inputParam.bill_number,
-            hims_f_billing_header_id: inputParam.hims_f_billing_header_id
+            hims_f_billing_header_id: inputParam.hims_f_billing_header_id,
           };
           _mysql.commitTransaction(() => {
             _mysql.releaseConnection();
@@ -231,7 +231,7 @@ export default {
     const _mysql = new algaehMysql();
     try {
       const utilities = new algaehUtilities();
-      utilities.logger().log("updateRadOrderedServices ");
+      // utilities.logger().log("updateRadOrderedServices ");
       let inputParam = { ...req.body };
       if (inputParam.scheduled_by == null && inputParam.status == "S") {
         inputParam.scheduled_by = req.userIdentity.algaeh_d_app_user_id;
@@ -278,16 +278,16 @@ export default {
             inputParam.template_id,
             inputParam.result_html,
             inputParam.comments,
-            inputParam.hims_f_rad_order_id
+            inputParam.hims_f_rad_order_id,
           ],
-          printQuery: true
+          printQuery: true,
         })
-        .then(update_rad_order => {
+        .then((update_rad_order) => {
           _mysql.releaseConnection();
           req.records = update_rad_order;
           next();
         })
-        .catch(e => {
+        .catch((e) => {
           _mysql.releaseConnection();
           next(e);
         });
@@ -301,7 +301,7 @@ export default {
     const _mysql = new algaehMysql();
     try {
       const utilities = new algaehUtilities();
-      utilities.logger().log("getRadTemplateList: ");
+      // utilities.logger().log("getRadTemplateList: ");
 
       _mysql
         .executeQuery({
@@ -311,14 +311,14 @@ export default {
             FROM hims_d_investigation_test IT, \
             hims_d_rad_template_detail TD  WHERE IT.hims_d_investigation_test_id = TD.test_id AND services_id=?",
           values: [req.query.services_id],
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -336,17 +336,17 @@ export default {
     try {
       let OrderServices = new LINQ(req.body.billdetails)
         .Where(
-          w =>
+          (w) =>
             w.hims_f_ordered_services_id != null &&
             w.service_type_id ==
-            appsettings.hims_d_service_type.service_type_id.Radiology
+              appsettings.hims_d_service_type.service_type_id.Radiology
         )
-        .Select(s => {
+        .Select((s) => {
           return {
             ordered_services_id: s.hims_f_ordered_services_id,
             billed: "Y",
             updated_date: new Date(),
-            updated_by: req.userIdentity.algaeh_d_app_user_id
+            updated_by: req.userIdentity.algaeh_d_app_user_id,
           };
         })
         .ToArray();
@@ -362,7 +362,7 @@ export default {
               OrderServices[i].billed,
               moment().format("YYYY-MM-DD HH:mm"),
               OrderServices[i].updated_by,
-              OrderServices[i].ordered_services_id
+              OrderServices[i].ordered_services_id,
             ]
           );
         }
@@ -372,9 +372,9 @@ export default {
         _mysql
           .executeQuery({
             query: qry,
-            printQuery: true
+            printQuery: true,
           })
-          .then(rad_result => {
+          .then((rad_result) => {
             utilities
               .logger()
               .log(
@@ -384,7 +384,7 @@ export default {
             let result = {
               receipt_number: req.body.receipt_number,
               bill_number: req.body.bill_number,
-              hims_f_billing_header_id: req.body.hims_f_billing_header_id
+              hims_f_billing_header_id: req.body.hims_f_billing_header_id,
             };
             _mysql.commitTransaction(() => {
               _mysql.releaseConnection();
@@ -392,7 +392,7 @@ export default {
               next();
             });
           })
-          .catch(e => {
+          .catch((e) => {
             _mysql.rollBackTransaction(() => {
               next(e);
             });
@@ -406,5 +406,5 @@ export default {
         next(e);
       });
     }
-  }
+  },
 };

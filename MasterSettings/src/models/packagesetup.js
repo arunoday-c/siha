@@ -193,9 +193,7 @@ export default {
           if (headerResult != null) {
             let strQuery = "";
             let inpData = req.body.updatePakageDetail;
-            if (req.body.updatePakageDetail.length === 0) {
-              strQuery = "select 1";
-            } else {
+            if (req.body.updatePakageDetail.length > 0) {
               for (let i = 0; i < req.body.updatePakageDetail.length; i++) {
                 strQuery += mysql.format(
                   "UPDATE `hims_d_package_detail` set qty=?, tot_service_amount=?, appropriate_amount=? \
@@ -210,98 +208,69 @@ export default {
               }
             }
 
+            if (req.body.deletePackage.length > 0) {
+              for (let i = 0; i < req.body.deletePackage.length; i++) {
+                let inputParam = req.body.deletePackage;
+                strQuery += mysql.format(
+                  "DELETE FROM `hims_d_package_detail` where hims_d_package_detail_id=?;",
+                  [inputParam[i].hims_d_package_detail_id]
+                );
+              }
+            } else {
+              strQuery += "select 1=1"
+            }
+
             _mysql
               .executeQuery({
                 query: strQuery,
                 printQuery: true
               })
               .then(updatePakageDetail => {
-                new Promise((resolve, reject) => {
-                  try {
-                    if (input.insertPackage.length != 0) {
-                      const IncludeValues = [
-                        "package_header_id",
-                        "service_type_id",
-                        "service_id",
-                        "service_amount",
-                        "qty",
-                        "tot_service_amount",
-                        "appropriate_amount"
-                      ];
+                if (input.insertPackage.length > 0) {
+                  const IncludeValues = [
+                    "package_header_id",
+                    "service_type_id",
+                    "service_id",
+                    "service_amount",
+                    "qty",
+                    "tot_service_amount",
+                    "appropriate_amount"
+                  ];
 
-                      _mysql
-                        .executeQuery({
-                          query:
-                            "INSERT INTO hims_d_package_detail(??) VALUES ?",
-                          values: input.insertPackage,
-                          includeValues: IncludeValues,
-                          extraValues: {
-                            created_by: req.userIdentity.algaeh_d_app_user_id,
-                            created_date: new Date(),
-                            updated_by: req.userIdentity.algaeh_d_app_user_id,
-                            updated_date: new Date()
-                          },
-                          bulkInsertOrUpdate: true,
-                          printQuery: true
-                        })
-                        .then(insertPackage => {
-                          return resolve(insertPackage);
-                        })
-                        .catch(error => {
-                          _mysql.rollBackTransaction(() => {
-                            next(error);
-                            reject(error);
-                          });
-                        });
-                    } else {
-                      return resolve();
-                    }
-                  } catch (e) {
-                    reject(e);
-                  }
-                })
-                  .then(results => {
-                    if (input.deletePackage.length != 0) {
-                      let qry = "";
-                      let inputParam = req.body.deletePackage;
-                      for (let i = 0; i < req.body.deletePackage.length; i++) {
-                        qry += mysql.format(
-                          "DELETE FROM `hims_d_package_detail` where hims_d_package_detail_id=?;",
-                          [inputParam[i].hims_d_package_detail_id]
-                        );
-                      }
-
-                      _mysql
-                        .executeQuery({
-                          query: qry,
-                          printQuery: true
-                        })
-                        .then(deletePackage => {
-                          _mysql.commitTransaction(() => {
-                            _mysql.releaseConnection();
-                            req.records = deletePackage;
-                            next();
-                          });
-                        })
-                        .catch(error => {
-                          _mysql.rollBackTransaction(() => {
-                            next(error);
-                            reject(error);
-                          });
-                        });
-                    } else {
+                  _mysql
+                    .executeQuery({
+                      query:
+                        "INSERT INTO hims_d_package_detail(??) VALUES ?",
+                      values: input.insertPackage,
+                      includeValues: IncludeValues,
+                      extraValues: {
+                        created_by: req.userIdentity.algaeh_d_app_user_id,
+                        created_date: new Date(),
+                        updated_by: req.userIdentity.algaeh_d_app_user_id,
+                        updated_date: new Date()
+                      },
+                      bulkInsertOrUpdate: true,
+                      printQuery: true
+                    })
+                    .then(insertPackage => {
                       _mysql.commitTransaction(() => {
                         _mysql.releaseConnection();
-                        req.records = results;
+                        req.records = insertPackage;
                         next();
                       });
-                    }
-                  })
-                  .catch(error => {
-                    _mysql.rollBackTransaction(() => {
-                      next(error);
+                    })
+                    .catch(error => {
+                      _mysql.rollBackTransaction(() => {
+                        next(error);
+                      });
                     });
+                } else {
+                  _mysql.commitTransaction(() => {
+                    _mysql.releaseConnection();
+                    req.records = results;
+                    next();
                   });
+                }
               })
               .catch(error => {
                 _mysql.rollBackTransaction(() => {

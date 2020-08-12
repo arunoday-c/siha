@@ -2,10 +2,12 @@
  * @swagger
  * /frontDesk/getDoctorAndDepartment:
  *  get:
- *    description: Return doctor and departments in tree style
- *    responses:
- *      '200':
- *        description: successful response
+ *   tags:
+ *    - Patient Registration
+ *   description: Return doctor and departments in tree style
+ *   responses:
+ *    '200':
+ *      description: successful response
  */
 
 /**
@@ -38,6 +40,7 @@
  *    - $ref: "#/definitions/PatientInsurance"
  *    - $ref: "#/definitions/PatientReceptHeader"
  *    - $ref: "#/definitions/BillingHeader"
+ *    - $ref: "#/definitions/PackageHeader"
  *   properties:
  *    billdetails:
  *     type: array
@@ -47,7 +50,12 @@
  *     type: array
  *     items:
  *      $ref: "#/definitions/PatientReceptDetails"
- *
+ *    package_details:
+ *     type: array
+ *     default: []
+ *     items:
+ *      $ref: "#/definitions/PackageDetails"
+ *     applicable: visit is of multi visit package else its []
  *  patientDemgraphics:
  *   type: object
  *   properties:
@@ -128,6 +136,10 @@
  *    employee_id:
  *     type: number
  *     nullable: true
+ *    ScreenCode:
+ *     type: string
+ *     required: true
+ *     description: screen code from cookies
  *  PatientVist:
  *   type: object
  *   properties:
@@ -463,16 +475,93 @@
  *     type: number
  *     format: decimal
  *     default: 0
- *    teeth_number:
+ *   #teeth_number:
+ *   #type: number
+ *   #nullable: true
+ *   #ordered_services_id:
+ *     #type: number
+ *     #required: true
+ *    #ordered_inventory_id:
+ *     #type: number
+ *     #required: true
+ *  PackageHeader:
+ *   type: object
+ *   properties:
+ *    balance_amount:
+ *     type: number
+ *     format: decimal
+ *     required: true
+ *     default: 0
+ *     applicable: when package is there else its null
+ *    actual_utilize_amount:
+ *     type: number
+ *     format: decimal
+ *     required: true
+ *     default: 0
+ *     applicable: when package is there else its null
+ *    utilize_amount:
+ *     type: number
+ *     format: decimal
+ *     required: true
+ *     default: 0
+ *     applicable: when package is there else its null
+ *    hims_f_package_header_id:
+ *     type: number
+ *     required: true
+ *     applicable: when package is there else its null
+ *  PackageDetails:
+ *   type: object
+ *   properties:
+ *    utilized_qty:
+ *     type: number
+ *     required: true
+ *     default: 0
+ *    available_qty:
+ *     type: number
+ *     required: true
+ *     default: 0
+ *    hims_f_package_detail_id:
+ *     type: number
+ *     required: true
+ *  AppointmentPatientDetails:
+ *   type: object
+ *   properties:
+ *    patient_id:
  *     type: number
  *     nullable: true
- *    ordered_services_id:
+ *    patient_code:
+ *     type: string
+ *     nullable: true
+ *    provider_id:
  *     type: number
- *     required: true
- *    ordered_inventory_id:
+ *     nullable: false
+ *    sub_department_id:
  *     type: number
- *     required: true
- *
+ *    title_id:
+ *     type: number
+ *     nullable: false
+ *    patient_name:
+ *     type: string
+ *     nullable: false
+ *    arabic_name:
+ *     type: string
+ *     nullable: false
+ *    date_of_birth:
+ *     type: string
+ *     format: "YYYY-MM-DD"
+ *     nullable: false
+ *    age:
+ *     type: number
+ *     nullable: false
+ *    contact_number:
+ *     type: string
+ *     nullable: false
+ *    gender:
+ *     type: string
+ *     nullable: false
+ *    email:
+ *     type: string
+ *     nullable: true
  *
  */
 
@@ -481,23 +570,54 @@
  *
  * /frontDesk/add:
  *   post:
- *     produces:
- *       - application/json
- *     parameters:
- *       - name: body
- *         description: Save Patient demographics visit and bill
- *         in:  body
- *         required: true
- *         type: string
- *         schema:
- *           $ref: '#/definitions/patientRegistration'
- *     responses:
- *       200:
- *         description: Return Patient Code along with a success message
- *         schema:
- *           $ref: '#/definitions/Success'
- *       400:
- *        description: Return message
+ *    tags:
+ *     - Patient Registration
+ *    produces:
+ *      - application/json
+ *    parameters:
+ *      - name: body
+ *        description: Save Patient demographics visit and bill
+ *        in:  body
+ *        required: true
+ *        type: string
  *        schema:
- *          $ref: '#/definitions/Error'
+ *         $ref: '#/definitions/patientRegistration'
+ *    responses:
+ *     200:
+ *      description: Return Patient Code along with a success message
+ *      schema:
+ *       $ref: '#/definitions/Success'
+ *     400:
+ *      description: Return message
+ *      schema:
+ *       $ref: '#/definitions/Error'
+ */
+/**
+ * @swagger
+ *
+ * /appointment/getPatientDetilsByAppId:
+ *  get:
+ *   tags:
+ *    - Appointment
+ *   produces:
+ *    -application/json
+ *   parameters:
+ *    - name: application_id
+ *      description: Get patient demographics by appointment ID
+ *      in: query
+ *      required: true
+ *      type: string
+ *   responses:
+ *    200:
+ *     description: Return Details
+ *     schema:
+ *      properties:
+ *       success:
+ *        type: boolean
+ *       records:
+ *        $ref: "#/definitions/AppointmentPatientDetails"
+ *    400:
+ *     decription: Return failure message
+ *     schema:
+ *      $ref: "#/definitions/Error"
  */
