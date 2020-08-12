@@ -25,7 +25,7 @@ export function PrepaymentRequest() {
   const [prepayment_docs, setPrePayment_docs] = useState([]);
   const [visible, setVisible] = useState(false);
   const [disableEdit, setDisableEdit] = useState(false);
-  const [payReqID, setPayReqID] = useState(null);
+  const [payReqID, setPayReqID] = useState({});
 
   const { branchAndCenters, prePaymentTypes, employees } = useContext(
     PrePaymentContext
@@ -59,6 +59,11 @@ export function PrepaymentRequest() {
   };
   const updatePrePayReq = async (data) => {
     data.start_date = moment(data.start_date).format("YYYY-MM-DD");
+    saveDocument(
+      payment_reqDoc,
+      payReqID.request_code,
+      payReqID.finance_f_prepayment_request_id
+    );
     try {
       const res = await newAlgaehApi({
         uri: "/prepayment/updatePrepaymentRequest",
@@ -66,7 +71,8 @@ export function PrepaymentRequest() {
         data: {
           prepayment_amount: data.prepayment_amount,
           prepayment_remarks: data.prepayment_remarks,
-          finance_f_prepayment_request_id: payReqID,
+          finance_f_prepayment_request_id:
+            payReqID.finance_f_prepayment_request_id,
           start_date: data.start_date,
           // prepayment_remarks: data.prepayment_remarks,
           end_date: moment(
@@ -79,7 +85,7 @@ export function PrepaymentRequest() {
         module: "finance",
       });
       if (res.data.success) {
-        setPayReqID(null);
+        setPayReqID({});
         getRequest().then(() => {
           AlgaehMessagePop({
             type: "success",
@@ -236,12 +242,12 @@ export function PrepaymentRequest() {
     );
     setValue("prepayment_remarks", data.prepayment_remarks);
     setDisableEdit(true);
-    setPayReqID(data.finance_f_prepayment_request_id);
+    setPayReqID(data);
 
     getDocuments(data.request_code);
   };
   const onSubmit = (e) => {
-    if (payReqID != null) {
+    if (payReqID.finance_f_prepayment_request_id != null) {
       updatePrePayReq(e);
     } else {
       addRequest(e);
@@ -700,7 +706,8 @@ export function PrepaymentRequest() {
                       fieldName: "ACTION",
                       label: "Action",
                       displayTemplate: (row) => {
-                        return (
+                        return row.request_status === "P" ||
+                          row.request_status === "R" ? (
                           <div>
                             <i
                               className="fas fa-pen"
@@ -709,7 +716,7 @@ export function PrepaymentRequest() {
                               }}
                             ></i>
                           </div>
-                        );
+                        ) : null;
                       },
                     },
                     // {

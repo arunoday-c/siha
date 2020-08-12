@@ -13,6 +13,7 @@ import { Controller, useForm } from "react-hook-form";
 import { PrePaymentContext } from "../Prepayment";
 import { newAlgaehApi } from "../../../hooks/";
 import { PaymentStatus } from "../../../utils/GlobalVariables";
+import { Button, Tooltip } from "antd";
 
 const { confirm } = Modal;
 
@@ -154,7 +155,6 @@ export function PrepaymentAuthList() {
   };
 
   const onClickRevertModel = () => {
-    debugger;
     if (revert_reason === null || revert_reason === "") {
       AlgaehMessagePop({
         type: "error",
@@ -504,12 +504,22 @@ Prepayment Type: ${row.prepayment_desc}`,
                         } else if (row.request_status === "A") {
                           return (
                             <>
-                              <span onClick={() => onClickPay(row)}>
+                              <Tooltip title="Pay">
+                                <span onClick={() => onClickPay(row)}>
+                                  <i className="fas fa-check"></i>
+                                </span>
+                              </Tooltip>
+                              {/* <span onClick={() => onClickPay(row)}>
                                 <i className="fas fa-check"></i>
-                              </span>
-                              <span onClick={() => onClickRevert(row)}>
+                              </span> */}
+                              {/* <span onClick={() => onClickRevert(row)}>
                                 <i className="fas fa-undo-alt"></i>
-                              </span>
+                              </span> */}
+                              <Tooltip title="Revert back">
+                                <span onClick={() => onClickRevert(row)}>
+                                  <i className="fas fa-undo-alt"></i>
+                                </span>
+                              </Tooltip>
                             </>
                           );
                         } else {
