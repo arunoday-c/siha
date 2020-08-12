@@ -26,6 +26,8 @@ export function PrepaymentRequest() {
   const [visible, setVisible] = useState(false);
   const [disableEdit, setDisableEdit] = useState(false);
   const [payReqID, setPayReqID] = useState({});
+  const [employees_req, setEmployeeReq] = useState("N");
+  const [identity_no, setEmployeeIDNum] = useState(null);
 
   const { branchAndCenters, prePaymentTypes, employees } = useContext(
     PrePaymentContext
@@ -218,8 +220,8 @@ export function PrepaymentRequest() {
         ) : row.request_status === "PR" ? (
           <span className="badge badge-danger">Processed</span>
         ) : (
-          "------"
-        )}
+                      "------"
+                    )}
       </span>
     );
   };
@@ -353,8 +355,10 @@ export function PrepaymentRequest() {
                             },
                             value,
                             onChange: (_, selected) => {
+                              debugger
                               onChange(selected);
                               setValue("employee_id", "");
+                              setEmployeeIDNum("");
                               setValue("cost_center_id", "");
                             },
                             name: "hospital_id",
@@ -396,9 +400,9 @@ export function PrepaymentRequest() {
                             dataSource: {
                               data: ihospital
                                 ? branchAndCenters.filter(
-                                    (item) =>
-                                      item.hims_d_hospital_id == ihospital
-                                  )[0].cost_centers
+                                  (item) =>
+                                    item.hims_d_hospital_id == ihospital
+                                )[0].cost_centers
                                 : [],
                               valueField: "cost_center_id",
                               textField: "cost_center",
@@ -427,9 +431,11 @@ export function PrepaymentRequest() {
                             },
                             value,
                             onChange: (_, selected) => {
+                              debugger
                               onChange(selected);
                               setValue("start_date", undefined);
                               setValue("end_date", undefined);
+                              setEmployeeReq(_.employees_req)
                             },
                             onClear: () => {
                               onChange("");
@@ -449,50 +455,55 @@ export function PrepaymentRequest() {
                     {errors.prepayment_type_id && (
                       <span>{errors.prepayment_type_id.message}</span>
                     )}
-                    <Controller
-                      name="employee_id"
-                      control={control}
-                      rules={{ required: "Please select an employee" }}
-                      render={({ value, onBlur, onChange }) => (
-                        <AlgaehAutoComplete
-                          div={{ className: "col-12 form-group " }}
-                          label={{
-                            forceLabel: "Employee",
-                            isImp: true,
-                          }}
-                          selector={{
-                            others: {
-                              disabled: disableEdit,
-                            },
-                            value,
-                            onChange: (_, selected) => {
-                              onChange(selected);
-                            },
-                            onBlur: (_, selected) => {
-                              onBlur(selected);
-                            },
-                            name: "employee_id",
-                            dataSource: {
-                              data: ihospital
-                                ? employees.filter(
+                    {employees_req === "Y" ?
+                      <Controller
+                        name="employee_id"
+                        control={control}
+                        rules={{ required: "Please select an employee" }}
+                        render={({ value, onBlur, onChange }) => (
+                          <AlgaehAutoComplete
+                            div={{ className: "col-12 form-group " }}
+                            label={{
+                              forceLabel: "Employee",
+                              isImp: true,
+                            }}
+                            selector={{
+                              others: {
+                                disabled: disableEdit,
+                              },
+                              value,
+                              onChange: (_, selected) => {
+                                debugger
+                                onChange(selected);
+                                setEmployeeIDNum(_.identity_no)
+                              },
+                              onBlur: (_, selected) => {
+                                onBlur(selected);
+                              },
+                              name: "employee_id",
+                              dataSource: {
+                                data: ihospital
+                                  ? employees.filter(
                                     (item) => item.hospital_id == ihospital
                                   )
-                                : employees,
-                              textField: "full_name",
-                              valueField: "hims_d_employee_id",
-                            },
-                          }}
-                        />
-                      )}
-                    />
-                    <div className="col">
-                      <label className="style_Label ">Employee ID</label>
-                      <h6>
-                        {employeeDetails.length !== 0
-                          ? employeeDetails[0].identity_no
-                          : null}
-                      </h6>
-                    </div>
+                                  : employees,
+                                textField: "full_name",
+                                valueField: "hims_d_employee_id",
+                              },
+                            }}
+                          />
+                        )}
+                      /> : null}
+
+                    {employees_req === "Y" ?
+                      <div className="col">
+                        <label className="style_Label ">Employee ID</label>
+                        <h6>
+                          {identity_no
+                            ? identity_no
+                            : "-----"}
+                        </h6>
+                      </div> : null}
                     <Controller
                       control={control}
                       // rules={{ required: "Prepayment Remarks" }}
@@ -585,7 +596,7 @@ export function PrepaymentRequest() {
                             },
                           }}
                           others={{ disabled: !prepayment_type_id }}
-                          // maxDate={moment().add(1, "days")}
+                        // maxDate={moment().add(1, "days")}
                         />
                       )}
                     />
@@ -609,7 +620,7 @@ export function PrepaymentRequest() {
                             className: "form-control",
                           }}
                           others={{ disabled: !prepayment_type_id }}
-                          // maxDate={moment().add(1, "days")}
+                        // maxDate={moment().add(1, "days")}
                         />
                       )}
                     />
@@ -668,10 +679,10 @@ export function PrepaymentRequest() {
                                     </li>
                                   ))
                                 ) : (
-                                  <div className="col-12 noAttachment" key={1}>
-                                    <p>No Attachments Available</p>
-                                  </div>
-                                )}
+                                    <div className="col-12 noAttachment" key={1}>
+                                      <p>No Attachments Available</p>
+                                    </div>
+                                  )}
                               </ul>
                             </div>
                           </div>
@@ -708,15 +719,15 @@ export function PrepaymentRequest() {
                       displayTemplate: (row) => {
                         return row.request_status === "P" ||
                           row.request_status === "R" ? (
-                          <div>
-                            <i
-                              className="fas fa-pen"
-                              onClick={() => {
-                                editRow(row);
-                              }}
-                            ></i>
-                          </div>
-                        ) : null;
+                            <div>
+                              <i
+                                className="fas fa-pen"
+                                onClick={() => {
+                                  editRow(row);
+                                }}
+                              ></i>
+                            </div>
+                          ) : null;
                       },
                     },
                     // {
@@ -904,10 +915,10 @@ export function PrepaymentRequest() {
                                     </li>
                                   ))
                                 ) : (
-                                  <div className="col-12 noAttachment" key={1}>
-                                    <p>No Attachments Available</p>
-                                  </div>
-                                )}
+                                    <div className="col-12 noAttachment" key={1}>
+                                      <p>No Attachments Available</p>
+                                    </div>
+                                  )}
                               </ul>
                             </Modal>
                             <span

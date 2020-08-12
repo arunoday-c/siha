@@ -89,6 +89,7 @@ export const updatePrepaymentTypes = (req, res, next) => {
     prepayment_gl,
     expense_gl,
     finance_d_prepayment_type_id,
+    employees_req
   } = input;
 
   let prepayment_head_id,
@@ -111,7 +112,8 @@ export const updatePrepaymentTypes = (req, res, next) => {
   _mysql
     .executeQuery({
       query: `update finance_d_prepayment_type set 
-      prepayment_desc=?,prepayment_duration=?, prepayment_head_id=?,  prepayment_child_id=?, expense_head_id=?, expense_child_id=? where finance_d_prepayment_type_id=? and record_status='A'`,
+      prepayment_desc=?,prepayment_duration=?, prepayment_head_id=?,  prepayment_child_id=?, expense_head_id=?, \
+      expense_child_id=?, employees_req=? where finance_d_prepayment_type_id=? and record_status='A'`,
       printQuery: false,
       values: [
         prepayment_desc,
@@ -120,6 +122,7 @@ export const updatePrepaymentTypes = (req, res, next) => {
         prepayment_child_id || null,
         expense_head_id || null,
         expense_child_id || null,
+        employees_req,
         finance_d_prepayment_type_id,
       ],
     })
@@ -196,10 +199,11 @@ export const addPrepaymentRequest = (req, res, next) => {
                 input.hospital_id,
                 project_id,
                 sub_department_id,
-                prepayment_remarks,
+                input.prepayment_remarks,
                 req.userIdentity.algaeh_d_app_user_id,
                 new Date(),
               ],
+              printQuery: true
             })
             .then((result) => {
               _mysql.commitTransaction(() => {
