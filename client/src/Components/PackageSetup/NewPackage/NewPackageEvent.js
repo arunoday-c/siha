@@ -144,11 +144,12 @@ export default function NewPackageEvent() {
       }
     },
     DeleteService: ($this, row) => {
+
       let PakageDetail = $this.state.PakageDetail;
       let deletePackage = $this.state.deletePackage;
       let insertPackage = $this.state.insertPackage;
 
-      debugger
+
       if ($this.state.hims_d_package_header_id !== null) {
         if (row.hims_d_package_detail_id !== undefined) {
           deletePackage.push({
@@ -287,6 +288,7 @@ export default function NewPackageEvent() {
           } else {
             InputObj.approved = "N";
           }
+
           if (InputObj.hims_d_package_header_id === null) {
             InputObj.service_code = InputObj.package_code;
             InputObj.service_type_id = "14";
@@ -317,7 +319,43 @@ export default function NewPackageEvent() {
                         type: "success",
                         title: "Saved successfully . ."
                       });
-                      $this.props.onClose && $this.props.onClose(true);
+                      $this.setState(
+                        {
+                          hims_d_package_header_id: null,
+                          package_code: null,
+                          package_name: null,
+                          package_amount: 0,
+                          total_service_amount: 0,
+                          profit_loss: null,
+                          pl_amount: 0,
+
+                          PakageDetail: [],
+                          deletePackage: [],
+                          insertPackage: [],
+                          s_service_amount: null,
+                          s_service_type: null,
+                          s_service: null,
+                          package_type: "S",
+                          package_visit_type: "S",
+                          advance_percentage: 0,
+                          advance_amount: 0,
+                          advance_type: "P",
+                          qty: 1,
+                          approveEnable: true,
+                          approvedPack: false,
+                          radioActive: true,
+                          radioInactive: false,
+                          package_status: "A",
+                          cancellation_policy: "AC",
+                          cancellation_per: 0,
+                          cancellation_amount: 0,
+                          cancellation_type: "P",
+                          vat_applicable: "N",
+                          vat_percent: 0,
+                        },
+                        () => {
+                          $this.props.onClose && $this.props.onClose(false);
+                        })
                     });
                   }
                 }
@@ -354,7 +392,43 @@ export default function NewPackageEvent() {
                       type: "success",
                       title: "Updated successfully . ."
                     });
-                    $this.props.onClose && $this.props.onClose(true);
+                    $this.setState(
+                      {
+                        hims_d_package_header_id: null,
+                        package_code: null,
+                        package_name: null,
+                        package_amount: 0,
+                        total_service_amount: 0,
+                        profit_loss: null,
+                        pl_amount: 0,
+
+                        PakageDetail: [],
+                        deletePackage: [],
+                        insertPackage: [],
+                        s_service_amount: null,
+                        s_service_type: null,
+                        s_service: null,
+                        package_type: "S",
+                        package_visit_type: "S",
+                        advance_percentage: 0,
+                        advance_amount: 0,
+                        advance_type: "P",
+                        qty: 1,
+                        approveEnable: true,
+                        approvedPack: false,
+                        radioActive: true,
+                        radioInactive: false,
+                        package_status: "A",
+                        cancellation_policy: "AC",
+                        cancellation_per: 0,
+                        cancellation_amount: 0,
+                        cancellation_type: "P",
+                        vat_applicable: "N",
+                        vat_percent: 0,
+                      },
+                      () => {
+                        $this.props.onClose && $this.props.onClose(false);
+                      })
                   });
                 }
               }
@@ -479,7 +553,43 @@ export default function NewPackageEvent() {
                   type: "success",
                   title: "Updated successfully . ."
                 });
-                $this.props.onClose && $this.props.onClose(true);
+                $this.setState(
+                  {
+                    hims_d_package_header_id: null,
+                    package_code: null,
+                    package_name: null,
+                    package_amount: 0,
+                    total_service_amount: 0,
+                    profit_loss: null,
+                    pl_amount: 0,
+
+                    PakageDetail: [],
+                    deletePackage: [],
+                    insertPackage: [],
+                    s_service_amount: null,
+                    s_service_type: null,
+                    s_service: null,
+                    package_type: "S",
+                    package_visit_type: "S",
+                    advance_percentage: 0,
+                    advance_amount: 0,
+                    advance_type: "P",
+                    qty: 1,
+                    approveEnable: true,
+                    approvedPack: false,
+                    radioActive: true,
+                    radioInactive: false,
+                    package_status: "A",
+                    cancellation_policy: "AC",
+                    cancellation_per: 0,
+                    cancellation_amount: 0,
+                    cancellation_type: "P",
+                    vat_applicable: "N",
+                    vat_percent: 0,
+                  },
+                  () => {
+                    $this.props.onClose && $this.props.onClose(false);
+                  })
               }
             }
           });
