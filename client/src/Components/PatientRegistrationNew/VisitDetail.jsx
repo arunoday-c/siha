@@ -37,7 +37,7 @@ const getDoctorData = async () => {
   };
 };
 
-export function VisitDetails({ control, setValue, trigger }) {
+export function VisitDetails({ control, setValue, trigger, visits = [] }) {
   const { fieldNameFn } = useLangFieldName();
   const { setServiceInfo } = useContext(FrontdeskContext);
   const { data, isLoading } = useQuery("doctors-data", getDoctorData, {
@@ -387,7 +387,7 @@ export function VisitDetails({ control, setValue, trigger }) {
                           },
                         ]}
                         keyId="visit_code"
-                        data={[]}
+                        data={visits ?? []}
                         paging={{ page: 0, rowsPerPage: 3 }}
                         events={{}}
                       />

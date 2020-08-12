@@ -36,7 +36,7 @@ class SalesOrdListService extends Component {
 
       addItemButton: true,
       service_name: "",
-      addedItem: true,
+      addedItem: false,
 
       services_id: null,
       quantity: 0,
@@ -161,7 +161,7 @@ class SalesOrdListService extends Component {
                         this.attReg = attReg;
                       }}
                       others={{
-                        disabled: this.state.dataExists,
+                        disabled: this.state.addedItem,
                       }}
                     />
 

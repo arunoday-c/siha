@@ -320,11 +320,11 @@ const SavePOEnrty = ($this, from) => {
     $this.state.po_entry_detail = $this.state.inventory_stock_detail;
   }
   let strUri = "";
-  let strMessage = "Saved successfully . .";
+  let strMessage = "Saved successfully";
 
   if (from === "P") {
     $this.state.is_posted = "Y";
-    strMessage = "Send for authorization successfully";
+    strMessage = "Sent for authorization";
   }
 
   if ($this.state.hims_f_procurement_po_header_id !== null) {
@@ -579,7 +579,7 @@ const getData = ($this, po_from) => {
         type: "ITEM_CATEGORY_GET_DATA",
         mappingName: "poitemcategory",
       },
-      afterSuccess: (data) => {},
+      afterSuccess: (data) => { },
     });
 
     $this.props.getItemGroup({

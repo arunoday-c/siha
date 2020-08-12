@@ -106,7 +106,7 @@ export default {
             E.employee_code,E.gross_salary, S.hims_f_salary_id,S.salary_processed \
             from hims_f_attendance_monthly as A inner join  hims_d_employee as E \
             on  E.hims_d_employee_id = A.employee_id and A.hospital_id = E.hospital_id \
-            left join hims_f_salary as S on  S.`year`=A.`year` and S.`month` = A.`month` and (S.salary_type='NS' OR S.salary_type='FS') \
+            left join hims_f_salary as S on  S.`year`=A.`year` and S.`month` = A.`month` and (S.salary_type='NS' OR S.salary_type='FS' OR S.salary_type='LS') \
             and S.employee_id = A.employee_id   where A.`year`=? and A.`month`=? and A.hospital_id=?" +
               _stringData +
               " and  (S.salary_processed is null or  S.salary_processed='N');";

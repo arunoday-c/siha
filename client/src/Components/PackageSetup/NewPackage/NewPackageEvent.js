@@ -148,6 +148,7 @@ export default function NewPackageEvent() {
       let deletePackage = $this.state.deletePackage;
       let insertPackage = $this.state.insertPackage;
 
+      debugger
       if ($this.state.hims_d_package_header_id !== null) {
         if (row.hims_d_package_detail_id !== undefined) {
           deletePackage.push({

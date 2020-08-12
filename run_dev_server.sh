@@ -49,10 +49,10 @@ startServer () {
   startServer "./Sockets" "sockets"
 
   # # # # # HRMS Modules #
-  startServer "./HrManagement" "hr_server"
+  # startServer "./HrManagement" "hr_server"
 
   # # # # HIS Modules #
-  #  startServer "./FrontDesk" "front_desk_server" 
+   startServer "./FrontDesk" "front_desk_server" 
    startServer "./Billing" "billing_server" 
    startServer "./MRD" "mrd_server" 
    startServer "./ClinicalDesk" "clinical_desk" 

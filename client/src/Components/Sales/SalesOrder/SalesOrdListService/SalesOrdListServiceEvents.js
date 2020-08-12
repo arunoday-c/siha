@@ -215,11 +215,17 @@ const deleteSalesDetail = ($this, context, row) => {
     let sales_order_services = $this.state.sales_order_services;
     const _index = sales_order_services.indexOf(row);
     sales_order_services.splice(_index, 1);
+    let delete_sales_order_services = [];
+
+    if (row.hims_f_sales_order_services_id !== null) {
+        delete_sales_order_services.push(row.hims_f_sales_order_services_id);
+    }
 
     if (sales_order_services.length === 0) {
         if (context !== undefined) {
             context.updateState({
                 sales_order_services: sales_order_services,
+                delete_sales_order_services: delete_sales_order_services,
                 discount_amount: 0,
                 sub_total: 0,
                 total_tax: 0,
@@ -254,7 +260,7 @@ const deleteSalesDetail = ($this, context, row) => {
         if (context !== undefined) {
             context.updateState({
                 sales_order_services: sales_order_services,
-
+                delete_sales_order_services: delete_sales_order_services,
                 sub_total: sub_total,
                 discount_amount: discount_amount,
                 net_total: net_total,

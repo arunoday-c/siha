@@ -40,6 +40,7 @@ export default {
         })
         .then((headerRcptResult) => {
           // utilities.logger().log("headerRcptResult: ", headerRcptResult);
+
           if (
             headerRcptResult.insertId != null &&
             headerRcptResult.insertId != ""
@@ -108,20 +109,22 @@ export default {
         return;
       }
       let inputParam = { ...req.body };
-      if (
-        inputParam.billdetails == null ||
-        inputParam.billdetails.length == 0
-      ) {
-        const errorGen = utilities
-          .httpStatus()
-          .generateError(
-            httpStatus.badRequest,
-            "Please select atleast one service."
-          );
-        _mysql.rollBackTransaction(() => {
-          next(errorGen);
-        });
-        return;
+      if (inputParam.net_amount > 0) {
+        if (
+          inputParam.billdetails == null ||
+          inputParam.billdetails.length == 0
+        ) {
+          const errorGen = utilities
+            .httpStatus()
+            .generateError(
+              httpStatus.badRequest,
+              "Please select atleast one service."
+            );
+          _mysql.rollBackTransaction(() => {
+            next(errorGen);
+          });
+          return;
+        }
       }
 
       if (
@@ -161,17 +164,22 @@ export default {
             inputParam.bill_number,
             inputParam.receipt_header_id,
             inputParam.incharge_or_provider,
-            inputParam.bill_date != null
-              ? new Date(inputParam.bill_date)
-              : inputParam.bill_date,
+            // inputParam.bill_date != null
+            //   ? new Date(inputParam.bill_date)
+            //   : inputParam.bill_date,
+            new Date(),
             inputParam.advance_amount,
-            inputParam.advance_adjust,
-            inputParam.discount_amount,
+            inputParam.advance_adjust === "" ? 0 : inputParam.advance_adjust,
+            inputParam.discount_amount === "" ? 0 : inputParam.discount_amount,
             inputParam.sub_total_amount,
             inputParam.total_tax,
             inputParam.billing_status,
-            inputParam.sheet_discount_amount,
-            inputParam.sheet_discount_percentage,
+            inputParam.sheet_discount_amount === ""
+              ? 0
+              : inputParam.sheet_discount_amount,
+            inputParam.sheet_discount_percentage === ""
+              ? 0
+              : inputParam.sheet_discount_percentage,
             inputParam.net_amount,
             inputParam.net_total,
             inputParam.company_res,
@@ -828,7 +836,7 @@ export default {
           internal_error: true,
           message: "No receipt details",
         };
-        _mysql.rollBackTransaction(() => { });
+        _mysql.rollBackTransaction(() => {});
         next();
         return;
       } else if (
@@ -1956,16 +1964,20 @@ export default {
     try {
       let inputParam = req.body;
 
-      if (inputParam.consultation == "Y") {
-        for (let i = 0; i < inputParam.package_details.length; i++) {
-          inputParam.package_details[i].visit_id = inputParam.visit_id;
-          inputParam.package_details[i].doctor_id = inputParam.doctor_id;
-        }
-      }
+      // if (inputParam.consultation == "Y") {
+      //   for (let i = 0; i < inputParam.package_details.length; i++) {
+      //     inputParam.package_details[i].visit_id = inputParam.visit_id;
+      //     inputParam.package_details[i].doctor_id = inputParam.doctor_id;
+      //   }
+      // }
       req.body.incharge_or_provider = req.body.doctor_id;
       req.body.billed = "N";
       let qry = "";
       for (let i = 0; i < inputParam.package_details.length; i++) {
+        if (inputParam.consultation == "Y") {
+          inputParam.package_details[i].visit_id = inputParam.visit_id;
+          inputParam.package_details[i].doctor_id = inputParam.doctor_id;
+        }
         qry += mysql.format(
           "UPDATE `hims_f_package_detail` SET utilized_qty=?, available_qty=?,utilized_date=?,utilized_by=? \
           where hims_f_package_detail_id=?;",
@@ -2016,7 +2028,7 @@ export default {
                 })
                 .then((update_header) => {
                   if (req.connection == null) {
-                    utilities.logger().log("connection : ");
+                    // utilities.logger().log("connection : ");
                     req.connection = {
                       connection: _mysql.connection,
                       isTransactionConnection: _mysql.isTransactionConnection,
@@ -2366,7 +2378,7 @@ export default {
                     prices = allCompany_price.find((item) => {
                       return (
                         item.insurance_id ==
-                        input[i]["primary_insurance_provider_id"] &&
+                          input[i]["primary_insurance_provider_id"] &&
                         item.services_id == input[i]["hims_d_services_id"]
                       );
                     });
@@ -2558,8 +2570,8 @@ export default {
                     deductable_amount =
                       deductable_percentage !== null
                         ? (parseFloat(net_amout) *
-                          parseFloat(deductable_percentage)) /
-                        100
+                            parseFloat(deductable_percentage)) /
+                          100
                         : 0;
 
                     deductable_amount = utilities.decimalPoints(
@@ -2689,7 +2701,10 @@ export default {
                       approval_amt =
                         parseFloat(approval_amt) + parseFloat(company_payble);
                     }
-                    if (preapp_limit_amount > 0 && approval_amt > preapp_limit_amount) {
+                    if (
+                      preapp_limit_amount > 0 &&
+                      approval_amt > preapp_limit_amount
+                    ) {
                       preapp_limit_exceed = "Y";
                     }
                   }
@@ -2703,7 +2718,10 @@ export default {
                         ? parseFloat(unit_cost)
                         : parseFloat(records.followup_free_fee);
                   } else {
-                    if (is_insurance.length > 0 && policydtls.insurance_type === "C") {
+                    if (
+                      is_insurance.length > 0 &&
+                      policydtls.insurance_type === "C"
+                    ) {
                       if (policydtls.company_service_price_type == "N") {
                         unit_cost =
                           unit_cost != 0
@@ -2715,14 +2733,13 @@ export default {
                             ? unit_cost
                             : parseFloat(policydtls.gross_amt);
                       }
-
                     } else {
                       unit_cost =
                         from_pos == "Y"
                           ? parseFloat(unit_cost)
                           : unit_cost != 0
-                            ? parseFloat(unit_cost)
-                            : parseFloat(records.standard_fee);
+                          ? parseFloat(unit_cost)
+                          : parseFloat(records.standard_fee);
                     }
                   }
                   // if (FollowUp === true) {
@@ -3675,12 +3692,12 @@ export default {
                   .then((header_result) => {
                     let project_id = null;
 
-                    let headerDayEnd = []
+                    let headerDayEnd = [];
                     if (header_result.length > 1) {
-                      headerDayEnd = header_result[0]
-                      project_id = header_result[1][0].project_id
+                      headerDayEnd = header_result[0];
+                      project_id = header_result[1][0].project_id;
                     } else {
-                      headerDayEnd = header_result
+                      headerDayEnd = header_result;
                     }
 
                     const month = moment().format("M");
@@ -4215,22 +4232,19 @@ function getBillDetailsFunctionality(req, res, next, resolve) {
                   });
                 }
               } else {
-
-
                 if (FollowUp === true) {
                   unit_cost =
                     unit_cost != 0 ? unit_cost : records.followup_free_fee;
                 } else {
                   if (insured == "Y") {
                     unit_cost = policydtls.gross_amt;
-
                   } else {
                     unit_cost =
                       from_pos == "Y"
                         ? unit_cost
                         : unit_cost != 0
-                          ? unit_cost
-                          : records.standard_fee;
+                        ? unit_cost
+                        : records.standard_fee;
                   }
                 }
 

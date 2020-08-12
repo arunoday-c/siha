@@ -69,15 +69,15 @@ export default {
             _stringData +
             " order by hims_f_lab_order_id desc",
           values: inputValues,
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           utilities.logger().log("result: ", result);
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -95,14 +95,14 @@ export default {
           query:
             " select comments from hims_f_lab_order WHERE hims_f_lab_order_id = ?",
           values: [req.query.hims_f_lab_order_id],
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result[0];
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -128,11 +128,11 @@ export default {
         ...new Set(
           new LINQ(req.body.billdetails)
             .Where(
-              w =>
+              (w) =>
                 w.service_type_id ==
                 appsettings.hims_d_service_type.service_type_id.Lab
             )
-            .Select(s => {
+            .Select((s) => {
               return {
                 ordered_services_id: s.hims_f_ordered_services_id || null,
                 patient_id: req.body.patient_id,
@@ -141,11 +141,11 @@ export default {
                 service_id: s.services_id,
                 billed: req.body.billed,
                 ordered_date: s.created_date,
-                test_type: s.test_type
+                test_type: s.test_type,
               };
             })
             .ToArray()
-        )
+        ),
       ];
 
       const IncludeValues = [
@@ -156,7 +156,7 @@ export default {
         "service_id",
         "billed",
         "ordered_date",
-        "test_type"
+        "test_type",
       ];
 
       utilities.logger().log("labServices: ", labServices.length);
@@ -169,14 +169,14 @@ export default {
             extraValues: {
               created_by: req.userIdentity.algaeh_d_app_user_id,
               updated_by: req.userIdentity.algaeh_d_app_user_id,
-              hospital_id: req.userIdentity.hospital_id
+              hospital_id: req.userIdentity.hospital_id,
             },
             bulkInsertOrUpdate: true,
-            printQuery: true
+            printQuery: true,
           })
-          .then(insert_lab_order => {
+          .then((insert_lab_order) => {
             const get_services_id = new LINQ(labServices)
-              .Select(s => {
+              .Select((s) => {
                 return s.service_id;
               })
               .ToArray();
@@ -194,11 +194,11 @@ export default {
                   input.date_of_birth,
                   input.date_of_birth,
                   input.date_of_birth,
-                  input.date_of_birth
+                  input.date_of_birth,
                 ],
-                printQuery: true
+                printQuery: true,
               })
-              .then(results => {
+              .then((results) => {
                 let investigation_test = results[0];
                 const age_data = results[1][0];
                 const age_type = age_data["age_type"];
@@ -217,7 +217,7 @@ export default {
                 }
 
                 const test_id = new LINQ(investigation_test)
-                  .Select(s => {
+                  .Select((s) => {
                     return s.hims_d_investigation_test_id;
                   })
                   .ToArray();
@@ -240,11 +240,11 @@ export default {
                       test_id,
                       input.gender,
                       age_type,
-                      age
+                      age,
                     ],
-                    printQuery: true
+                    printQuery: true,
                   })
-                  .then(specimentRecords => {
+                  .then((specimentRecords) => {
                     if (
                       specimentRecords[0] == null ||
                       specimentRecords[0].length == 0
@@ -262,12 +262,12 @@ export default {
                     }
 
                     const insertedLabSample = new LINQ(specimentRecords[0])
-                      .Select(s => {
+                      .Select((s) => {
                         return {
                           order_id: new LINQ(specimentRecords[1])
-                            .Where(w => w.service_id == s.services_id)
+                            .Where((w) => w.service_id == s.services_id)
                             .FirstOrDefault().hims_f_lab_order_id,
-                          sample_id: s.specimen_id
+                          sample_id: s.specimen_id,
                         };
                       })
                       .ToArray();
@@ -282,12 +282,12 @@ export default {
                         includeValues: sample,
                         extraValues: {
                           created_by: req.userIdentity.algaeh_d_app_user_id,
-                          updated_by: req.userIdentity.algaeh_d_app_user_id
+                          updated_by: req.userIdentity.algaeh_d_app_user_id,
                         },
                         bulkInsertOrUpdate: true,
-                        printQuery: true
+                        printQuery: true,
                       })
-                      .then(insert_lab_sample => {
+                      .then((insert_lab_sample) => {
                         if (
                           specimentRecords[2] == null &&
                           specimentRecords[2].length == 0
@@ -312,25 +312,25 @@ export default {
                           "critical_low",
                           "critical_high",
                           "normal_low",
-                          "normal_high"
+                          "normal_high",
                         ];
                         utilities
                           .logger()
                           .log("specimentRecords: ", specimentRecords[2]);
 
                         const labAnalytes = new LINQ(specimentRecords[2])
-                          .Select(s => {
+                          .Select((s) => {
                             return {
                               analyte_id: s.analyte_id,
                               order_id: new LINQ(specimentRecords[1])
-                                .Where(w => w.service_id == s.services_id)
+                                .Where((w) => w.service_id == s.services_id)
                                 .FirstOrDefault().hims_f_lab_order_id,
                               analyte_type: s.analyte_type,
                               result_unit: s.result_unit,
                               critical_low: s.critical_low,
                               critical_high: s.critical_high,
                               normal_low: s.normal_low,
-                              normal_high: s.normal_high
+                              normal_high: s.normal_high,
                             };
                           })
                           .ToArray();
@@ -347,12 +347,12 @@ export default {
                                 created_by:
                                   req.userIdentity.algaeh_d_app_user_id,
                                 updated_by:
-                                  req.userIdentity.algaeh_d_app_user_id
+                                  req.userIdentity.algaeh_d_app_user_id,
                               },
                               bulkInsertOrUpdate: true,
-                              printQuery: true
+                              printQuery: true,
                             })
-                            .then(ord_analytes => {
+                            .then((ord_analytes) => {
                               if (req.connection == null) {
                                 // _mysql.commitTransaction(() => {
                                 //   _mysql.releaseConnection();
@@ -363,7 +363,7 @@ export default {
                                 next();
                               }
                             })
-                            .catch(e => {
+                            .catch((e) => {
                               _mysql.rollBackTransaction(() => {
                                 next(e);
                               });
@@ -380,25 +380,25 @@ export default {
                           }
                         }
                       })
-                      .catch(e => {
+                      .catch((e) => {
                         _mysql.rollBackTransaction(() => {
                           next(e);
                         });
                       });
                   })
-                  .catch(e => {
+                  .catch((e) => {
                     _mysql.rollBackTransaction(() => {
                       next(e);
                     });
                   });
               })
-              .catch(e => {
+              .catch((e) => {
                 _mysql.rollBackTransaction(() => {
                   next(e);
                 });
               });
           })
-          .catch(e => {
+          .catch((e) => {
             _mysql.rollBackTransaction(() => {
               next(e);
             });
@@ -424,10 +424,10 @@ export default {
           : req.records.ResultOfFetchOrderIds;
 
       const labServices = Services.filter(
-        f =>
+        (f) =>
           f.service_type_id ==
           appsettings.hims_d_service_type.service_type_id.Lab
-      ).map(s => {
+      ).map((s) => {
         return {
           ordered_services_id: s.hims_f_ordered_services_id || null,
           patient_id: req.body.patient_id,
@@ -436,7 +436,7 @@ export default {
           service_id: s.services_id,
           billed: req.body.billed,
           ordered_date: s.created_date,
-          test_type: s.test_type
+          test_type: s.test_type,
         };
       });
 
@@ -449,7 +449,7 @@ export default {
           "service_id",
           "billed",
           "ordered_date",
-          "test_type"
+          "test_type",
         ];
 
         _mysql
@@ -460,13 +460,13 @@ export default {
             extraValues: {
               created_by: req.userIdentity.algaeh_d_app_user_id,
               updated_by: req.userIdentity.algaeh_d_app_user_id,
-              hospital_id: req.userIdentity.hospital_id
+              hospital_id: req.userIdentity.hospital_id,
             },
             bulkInsertOrUpdate: true,
-            printQuery: true
+            printQuery: true,
           })
-          .then(insert_lab_order => {
-            const get_services_id = labServices.map(s => {
+          .then((insert_lab_order) => {
+            const get_services_id = labServices.map((s) => {
               return s.service_id;
             });
             _mysql
@@ -487,12 +487,16 @@ export default {
                   req.body.date_of_birth,
                   req.body.date_of_birth,
                   req.body.date_of_birth,
-                  req.body.date_of_birth
+                  req.body.date_of_birth,
                 ],
-                printQuery: true
+                printQuery: true,
               })
-              .then(investigation_test => {
-                const no_analyte = investigation_test[0].find(f => {
+              .then((investigation_test) => {
+                let invst_test = [];
+                if (investigation_test.length > 0) {
+                  invst_test = investigation_test[0];
+                }
+                const no_analyte = invst_test.find((f) => {
                   return f.test_section != "M" && f.analyte_id == null;
                 });
                 if (no_analyte) {
@@ -501,12 +505,12 @@ export default {
                       httpStatus.generateError(
                         httpStatus.forbidden,
                         "Analytes not deifined for the test :" +
-                        no_analyte["description"]
+                          no_analyte["description"]
                       )
                     );
                   });
                 } else {
-                  const test_id = investigation_test[0].map(s => {
+                  const test_id = invst_test.map((s) => {
                     return s.hims_d_investigation_test_id;
                   });
 
@@ -553,27 +557,27 @@ export default {
                         req.body.gender,
                         age_type,
                         age,
-                        test_id
+                        test_id,
                       ],
-                      printQuery: true
+                      printQuery: true,
                     })
-                    .then(specimentRecords => {
+                    .then((specimentRecords) => {
                       if (specimentRecords[0].length > 0) {
                         const specimen_list = specimentRecords[0];
                         const lab_orders = specimentRecords[1];
                         const all_analytes = specimentRecords[2];
                         const inserteLabSample = [];
 
-                        lab_orders.forEach(ord => {
+                        lab_orders.forEach((ord) => {
                           let temp = specimen_list
-                            .filter(f => {
+                            .filter((f) => {
                               return f.services_id == ord.service_id;
                             })
-                            .map(m => {
+                            .map((m) => {
                               return {
                                 sample_id: m.specimen_id,
                                 test_id: m.test_id,
-                                order_id: ord.hims_f_lab_order_id
+                                order_id: ord.hims_f_lab_order_id,
                               };
                             });
                           inserteLabSample.push(...temp);
@@ -589,16 +593,16 @@ export default {
                             includeValues: sample,
                             extraValues: {
                               created_by: req.userIdentity.algaeh_d_app_user_id,
-                              updated_by: req.userIdentity.algaeh_d_app_user_id
+                              updated_by: req.userIdentity.algaeh_d_app_user_id,
                             },
                             bulkInsertOrUpdate: true,
-                            printQuery: true
+                            printQuery: true,
                           })
-                          .then(insert_lab_sample => {
+                          .then((insert_lab_sample) => {
                             if (all_analytes.length > 0) {
-                              all_analytes.map(item => {
+                              all_analytes.map((item) => {
                                 const order_dtails = inserteLabSample.find(
-                                  f => {
+                                  (f) => {
                                     return item.test_id == f.test_id;
                                   }
                                 );
@@ -616,7 +620,7 @@ export default {
                                 "normal_low",
                                 "normal_high",
                                 "text_value",
-                                "normal_qualitative_value"
+                                "normal_qualitative_value",
                               ];
                               _mysql
                                 .executeQuery({
@@ -628,12 +632,12 @@ export default {
                                     created_by:
                                       req.userIdentity.algaeh_d_app_user_id,
                                     updated_by:
-                                      req.userIdentity.algaeh_d_app_user_id
+                                      req.userIdentity.algaeh_d_app_user_id,
                                   },
                                   bulkInsertOrUpdate: true,
-                                  printQuery: true
+                                  printQuery: true,
                                 })
-                                .then(ord_analytes => {
+                                .then((ord_analytes) => {
                                   if (req.connection == null) {
                                     req.records = insert_lab_sample;
                                     next();
@@ -641,7 +645,7 @@ export default {
                                     next();
                                   }
                                 })
-                                .catch(e => {
+                                .catch((e) => {
                                   _mysql.rollBackTransaction(() => {
                                     next(e);
                                   });
@@ -655,7 +659,7 @@ export default {
                               }
                             }
                           })
-                          .catch(e => {
+                          .catch((e) => {
                             _mysql.rollBackTransaction(() => {
                               next(e);
                             });
@@ -671,20 +675,20 @@ export default {
                         });
                       }
                     })
-                    .catch(e => {
+                    .catch((e) => {
                       _mysql.rollBackTransaction(() => {
                         next(e);
                       });
                     });
                 }
               })
-              .catch(e => {
+              .catch((e) => {
                 _mysql.rollBackTransaction(() => {
                   next(e);
                 });
               });
           })
-          .catch(e => {
+          .catch((e) => {
             _mysql.rollBackTransaction(() => {
               next(e);
             });
@@ -723,11 +727,11 @@ export default {
               req.userIdentity.algaeh_d_app_user_id,
               inputParam.hims_d_lab_sample_id,
               inputParam.service_id,
-              inputParam.hims_d_hospital_id
+              inputParam.hims_d_hospital_id,
             ],
-            printQuery: true
+            printQuery: true,
           })
-          .then(update_lab_sample => {
+          .then((update_lab_sample) => {
             utilities.logger().log("update_lab_sample: ", update_lab_sample);
             inputParam.container_id = update_lab_sample[1][0].container_id;
             inputParam.container_code = update_lab_sample[1][0].container_code;
@@ -735,14 +739,14 @@ export default {
               update_lab_sample[2][0].lab_location_code;
             resolve(update_lab_sample);
           })
-          .catch(e => {
+          .catch((e) => {
             _mysql.rollBackTransaction(() => {
               next(e);
               reject(e);
             });
           });
       })
-        .then(result => {
+        .then((result) => {
           utilities.logger().log("result: ", result);
           if (result != null) {
             let _date = new Date();
@@ -756,23 +760,23 @@ export default {
                   values: [
                     inputParam.hims_d_hospital_id,
                     inputParam.container_id,
-                    _date
+                    _date,
                   ],
-                  printQuery: true
+                  printQuery: true,
                 })
-                .then(container_mapping => {
+                .then((container_mapping) => {
                   utilities
                     .logger()
                     .log("container_mapping: ", container_mapping);
                   resolve(container_mapping);
                 })
-                .catch(e => {
+                .catch((e) => {
                   _mysql.rollBackTransaction(() => {
                     next(e);
                     reject(e);
                   });
                 });
-            }).then(record => {
+            }).then((record) => {
               let query = "";
               let condition = [];
               let padNum = "";
@@ -825,21 +829,21 @@ export default {
                     "',status='CL' where hims_f_lab_order_id=" +
                     inputParam.hims_f_lab_order_id,
                   values: condition,
-                  printQuery: true
+                  printQuery: true,
                 })
-                .then(result => {
+                .then((result) => {
                   utilities.logger().log("result: ", result);
                   _mysql.commitTransaction(() => {
                     _mysql.releaseConnection();
                     req.records = {
                       collected: inputParam.collected,
                       collected_by: req.userIdentity.algaeh_d_app_user_id,
-                      collected_date: new Date()
+                      collected_date: new Date(),
                     };
                     next();
                   });
                 })
-                .catch(e => {
+                .catch((e) => {
                   _mysql.rollBackTransaction(() => {
                     next(e);
                   });
@@ -847,7 +851,7 @@ export default {
             });
           }
         })
-        .catch(e => {
+        .catch((e) => {
           _mysql.rollBackTransaction(() => {
             next(e);
           });
@@ -869,15 +873,15 @@ export default {
             "SELECT *,la.description from hims_f_ord_analytes, hims_d_lab_analytes la where hims_f_ord_analytes.record_status='A' \
           and la.hims_d_lab_analytes_id = hims_f_ord_analytes.analyte_id AND order_id=? order by hims_f_ord_analytes_id",
           values: [req.query.order_id],
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
 
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
 
           next(error);
@@ -896,14 +900,14 @@ export default {
             "SELECT MR.*,A.antibiotic_name from hims_f_micro_result MR, hims_d_antibiotic A where  \
            A.hims_d_antibiotic_id = MR.antibiotic_id AND order_id=?",
           values: [req.query.order_id],
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
 
           next(error);
@@ -931,31 +935,31 @@ export default {
         input.remarks,
         new Date(),
         input.updated_by,
-        input.hims_d_lab_sample_id
+        input.hims_d_lab_sample_id,
       ];
       _mysql
         .executeQueryWithTransaction({
           query: queryBuilder,
           values: inputs,
-          printQuery: true
+          printQuery: true,
         })
-        .then(results => {
+        .then((results) => {
           if (input.status == "R") {
             _mysql
               .executeQuery({
                 query:
                   "UPDATE `hims_f_lab_order` SET `status`='O',updated_date=?,updated_by=?  WHERE `hims_f_lab_order_id`=?;",
                 values: [new Date(), input.updated_by, input.order_id],
-                printQuery: true
+                printQuery: true,
               })
-              .then(lab_order => {
+              .then((lab_order) => {
                 _mysql.commitTransaction(() => {
                   _mysql.releaseConnection();
                   req.records = lab_order;
                   next();
                 });
               })
-              .catch(error => {
+              .catch((error) => {
                 _mysql.rollBackTransaction(() => {
                   next(e);
                 });
@@ -968,7 +972,7 @@ export default {
             });
           }
         })
-        .catch(e => {
+        .catch((e) => {
           _mysql.rollBackTransaction(() => {
             next(e);
           });
@@ -988,16 +992,20 @@ export default {
       let inputParam = req.body;
       console.log(req.body, "body");
 
-      let status_C = new LINQ(inputParam).Where(w => w.status == "C").ToArray()
-        .length;
-      let status_V = new LINQ(inputParam).Where(w => w.status == "V").ToArray()
-        .length;
+      let status_C = new LINQ(inputParam)
+        .Where((w) => w.status == "C")
+        .ToArray().length;
+      let status_V = new LINQ(inputParam)
+        .Where((w) => w.status == "V")
+        .ToArray().length;
 
-      let status_N = new LINQ(inputParam).Where(w => w.status == "N").ToArray()
-        .length;
+      let status_N = new LINQ(inputParam)
+        .Where((w) => w.status == "N")
+        .ToArray().length;
 
-      let status_E = new LINQ(inputParam).Where(w => w.status == "E").ToArray()
-        .length;
+      let status_E = new LINQ(inputParam)
+        .Where((w) => w.status == "E")
+        .ToArray().length;
       utilities.logger().log("runtype: ");
       // let runtype = new LINQ(inputParam)
       //   .Where(w => w.run_type != null)
@@ -1097,7 +1105,7 @@ export default {
             moment().format("YYYY-MM-DD HH:mm"),
             req.userIdentity.algaeh_d_app_user_id,
             inputParam[i].order_id,
-            inputParam[i].hims_f_ord_analytes_id
+            inputParam[i].hims_f_ord_analytes_id,
           ]
         );
       }
@@ -1106,9 +1114,9 @@ export default {
       _mysql
         .executeQuery({
           query: qry,
-          printQuery: true
+          printQuery: true,
         })
-        .then(results => {
+        .then((results) => {
           utilities.logger().log("results: ", results);
           if (results != null && ref != null) {
             _mysql
@@ -1124,11 +1132,11 @@ export default {
                   req.userIdentity.algaeh_d_app_user_id,
                   inputParam[0].comments,
                   inputParam[0].critical_status,
-                  inputParam[0].order_id
+                  inputParam[0].order_id,
                 ],
-                printQuery: true
+                printQuery: true,
               })
-              .then(update_lab_order => {
+              .then((update_lab_order) => {
                 utilities.logger().log("update_lab_order: ", update_lab_order);
                 _mysql.commitTransaction(() => {
                   _mysql.releaseConnection();
@@ -1136,12 +1144,12 @@ export default {
                     results,
                     entered_by: entered_by,
                     confirmed_by: confirmed_by,
-                    validated_by: validated_by
+                    validated_by: validated_by,
                   };
                   next();
                 });
               })
-              .catch(e => {
+              .catch((e) => {
                 _mysql.rollBackTransaction(() => {
                   next(e);
                 });
@@ -1153,13 +1161,13 @@ export default {
                 results,
                 entered_by: entered_by,
                 confirmed_by: confirmed_by,
-                validated_by: validated_by
+                validated_by: validated_by,
               };
               next();
             });
           }
         })
-        .catch(e => {
+        .catch((e) => {
           _mysql.rollBackTransaction(() => {
             next(e);
           });
@@ -1197,30 +1205,30 @@ export default {
                 inputParam.microAntbiotic[i].susceptible,
                 inputParam.microAntbiotic[i].intermediate,
                 inputParam.microAntbiotic[i].resistant,
-                inputParam.microAntbiotic[i].hims_f_micro_result_id
+                inputParam.microAntbiotic[i].hims_f_micro_result_id,
               ]
             );
           }
           qry = {
             query: updateQuery,
-            printQuery: true
+            printQuery: true,
           };
         } else {
           let insertedValues = [
             "antibiotic_id",
             "susceptible",
             "intermediate",
-            "resistant"
+            "resistant",
           ];
           qry = {
             query: "INSERT INTO hims_f_micro_result(??) VALUES ?",
             values: inputParam.microAntbiotic,
             includeValues: insertedValues,
             extraValues: {
-              order_id: inputParam.hims_f_lab_order_id
+              order_id: inputParam.hims_f_lab_order_id,
             },
             bulkInsertOrUpdate: true,
-            printQuery: true
+            printQuery: true,
           };
         }
         entered_by = req.userIdentity.algaeh_d_app_user_id;
@@ -1239,13 +1247,13 @@ export default {
               inputParam.microAntbiotic[i].susceptible,
               inputParam.microAntbiotic[i].intermediate,
               inputParam.microAntbiotic[i].resistant,
-              inputParam.microAntbiotic[i].hims_f_micro_result_id
+              inputParam.microAntbiotic[i].hims_f_micro_result_id,
             ]
           );
         }
         qry = {
           query: updateQuery,
-          printQuery: true
+          printQuery: true,
         };
         confirmed_by = req.userIdentity.algaeh_d_app_user_id;
         strQuery +=
@@ -1263,13 +1271,13 @@ export default {
               inputParam.microAntbiotic[i].susceptible,
               inputParam.microAntbiotic[i].intermediate,
               inputParam.microAntbiotic[i].resistant,
-              inputParam.microAntbiotic[i].hims_f_micro_result_id
+              inputParam.microAntbiotic[i].hims_f_micro_result_id,
             ]
           );
         }
         qry = {
           query: updateQuery,
-          printQuery: true
+          printQuery: true,
         };
         validated_by = req.userIdentity.algaeh_d_app_user_id;
         strQuery +=
@@ -1284,7 +1292,7 @@ export default {
 
       _mysql
         .executeQueryWithTransaction(qry)
-        .then(results => {
+        .then((results) => {
           utilities.logger().log("results: ", results);
           if (results != null) {
             _mysql
@@ -1302,11 +1310,11 @@ export default {
                   moment().format("YYYY-MM-DD HH:mm"),
                   req.userIdentity.algaeh_d_app_user_id,
                   inputParam.comments,
-                  inputParam.hims_f_lab_order_id
+                  inputParam.hims_f_lab_order_id,
                 ],
-                printQuery: true
+                printQuery: true,
               })
-              .then(update_lab_order => {
+              .then((update_lab_order) => {
                 utilities.logger().log("update_lab_order: ", update_lab_order);
                 _mysql.commitTransaction(() => {
                   _mysql.releaseConnection();
@@ -1314,12 +1322,12 @@ export default {
                     results,
                     entered_by: entered_by,
                     confirmed_by: confirmed_by,
-                    validated_by: validated_by
+                    validated_by: validated_by,
                   };
                   next();
                 });
               })
-              .catch(e => {
+              .catch((e) => {
                 _mysql.rollBackTransaction(() => {
                   next(e);
                 });
@@ -1331,13 +1339,13 @@ export default {
                 results,
                 entered_by: entered_by,
                 confirmed_by: confirmed_by,
-                validated_by: validated_by
+                validated_by: validated_by,
               };
               next();
             });
           }
         })
-        .catch(e => {
+        .catch((e) => {
           _mysql.rollBackTransaction(() => {
             next(e);
           });
@@ -1358,17 +1366,17 @@ export default {
       utilities.logger().log("billdetails: ", req.body.billdetails);
       let OrderServices = new LINQ(req.body.billdetails)
         .Where(
-          w =>
+          (w) =>
             w.hims_f_ordered_services_id > 0 &&
             w.service_type_id ==
-            appsettings.hims_d_service_type.service_type_id.Lab
+              appsettings.hims_d_service_type.service_type_id.Lab
         )
-        .Select(s => {
+        .Select((s) => {
           return {
             ordered_services_id: s.hims_f_ordered_services_id,
             billed: "Y",
             updated_date: new Date(),
-            updated_by: req.userIdentity.algaeh_d_app_user_id
+            updated_by: req.userIdentity.algaeh_d_app_user_id,
           };
         })
         .ToArray();
@@ -1386,7 +1394,7 @@ export default {
               OrderServices[i].billed,
               moment().format("YYYY-MM-DD HH:mm"),
               OrderServices[i].updated_by,
-              OrderServices[i].ordered_services_id
+              OrderServices[i].ordered_services_id,
             ]
           );
         }
@@ -1394,13 +1402,13 @@ export default {
         _mysql
           .executeQuery({
             query: qry,
-            printQuery: true
+            printQuery: true,
           })
-          .then(result => {
+          .then((result) => {
             req.records = { LAB: false };
             next();
           })
-          .catch(e => {
+          .catch((e) => {
             _mysql.rollBackTransaction(() => {
               next(e);
             });
@@ -1430,16 +1438,16 @@ export default {
             select OA.analyte_id,OA.result,OA.critical_type from hims_f_ord_analytes  OA    inner join hims_d_lab_analytes A on \
             OA.analyte_id=A.hims_d_lab_analytes_id  where OA.order_id=?; ",
             values: [req.query.cur_order_id, req.query.pre_order_id],
-            printQuery: true
+            printQuery: true,
           })
-          .then(result => {
+          .then((result) => {
             _mysql.releaseConnection();
 
             if (result[0].length > 0) {
               const outputArray = [];
 
-              result[0].forEach(item => {
-                const data = result[1].find(val => {
+              result[0].forEach((item) => {
+                const data = result[1].find((val) => {
                   return val["analyte_id"] == item["analyte_id"];
                 });
 
@@ -1459,7 +1467,7 @@ export default {
                     pre_result: data["result"],
                     cur_critical_type: item["critical_type"],
                     pre_critical_type: data["critical_type"],
-                    valur_flucuate: valur_flucuate
+                    valur_flucuate: valur_flucuate,
                   });
                 }
               });
@@ -1470,14 +1478,14 @@ export default {
               next();
             }
           })
-          .catch(e => {
+          .catch((e) => {
             _mysql.releaseConnection();
             next(e);
           });
       } else {
         req.records = {
           invalid_input: true,
-          message: "Please provide Valid cur_order_id and pre_order_id"
+          message: "Please provide Valid cur_order_id and pre_order_id",
         };
         next();
       }
@@ -1503,17 +1511,17 @@ export default {
             req.query.patient_id,
             req.query.provider_id,
             req.query.service_id,
-            req.query.visit_id
+            req.query.visit_id,
           ],
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
 
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
 
           next(error);
@@ -1535,9 +1543,9 @@ export default {
           query:
             "select hims_f_lab_order_id from hims_f_lab_order where lab_id_number=?;",
           values: [input.sampleNo],
-          printQuery: true
+          printQuery: true,
         })
-        .then(lab_order => {
+        .then((lab_order) => {
           // MachineId
           if (lab_order.length > 0) {
             _mysql
@@ -1546,9 +1554,9 @@ export default {
                   "select hims_f_ord_analytes_id, analyte_id, critical_low, normal_low, normal_high, critical_high \
                   from hims_f_ord_analytes where order_id=?;",
                 values: [lab_order[0].hims_f_lab_order_id],
-                printQuery: true
+                printQuery: true,
               })
-              .then(ord_analytes => {
+              .then((ord_analytes) => {
                 let strResultUpdate = "";
                 for (let i = 0; i < input.result.length; i++) {
                   _mysql
@@ -1558,12 +1566,12 @@ export default {
                       where H.hims_m_machine_analytes_header_id = D.machine_analytes_header_id and \
                       H.machine_id = ? and machine_analyte_code=?;",
                       values: [input.MachineId, input.result[i].tesCode],
-                      printQuery: true
+                      printQuery: true,
                     })
-                    .then(analyte_data => {
+                    .then((analyte_data) => {
                       let selected_analyte = _.find(
                         ord_analytes,
-                        f => f.analyte_id === analyte_data[0].analyte_id
+                        (f) => f.analyte_id === analyte_data[0].analyte_id
                       );
 
                       let critical_type = "";
@@ -1596,7 +1604,7 @@ export default {
                         [
                           input.result[i].rawResult,
                           critical_type,
-                          selected_analyte.hims_f_ord_analytes_id
+                          selected_analyte.hims_f_ord_analytes_id,
                         ]
                       );
 
@@ -1604,26 +1612,26 @@ export default {
                         _mysql
                           .executeQuery({
                             query: strResultUpdate,
-                            printQuery: true
+                            printQuery: true,
                           })
-                          .then(update_result => {
+                          .then((update_result) => {
                             _mysql.releaseConnection();
                             req.records = update_result;
                             next();
                           })
-                          .catch(e => {
+                          .catch((e) => {
                             _mysql.releaseConnection();
                             next(e);
                           });
                       }
                     })
-                    .catch(e => {
+                    .catch((e) => {
                       _mysql.releaseConnection();
                       next(e);
                     });
                 }
               })
-              .catch(e => {
+              .catch((e) => {
                 _mysql.releaseConnection();
                 next(e);
               });
@@ -1633,7 +1641,7 @@ export default {
             next();
           }
         })
-        .catch(e => {
+        .catch((e) => {
           _mysql.releaseConnection();
           next(e);
         });
@@ -1641,5 +1649,5 @@ export default {
       _mysql.releaseConnection();
       next(e);
     }
-  }
+  },
 };

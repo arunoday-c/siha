@@ -2,7 +2,6 @@ import algaehMysql from "algaeh-mysql";
 import algaehUtilities from "algaeh-utilities/utilities";
 
 export default {
-
   registerPatient: (req, res, next) => {
     const _mysql = new algaehMysql();
     //ss
@@ -34,7 +33,7 @@ export default {
         table_name: "hims_f_app_numgen",
         ...custom,
       })
-      .then(generatedNumbers => {
+      .then((generatedNumbers) => {
         req.connection = {
           connection: _mysql.connection,
           isTransactionConnection: _mysql.isTransactionConnection,
@@ -44,7 +43,7 @@ export default {
         req.body.patient_code = generatedNumbers.PAT_REGS;
         next();
       })
-      .catch(e => {
+      .catch((e) => {
         _mysql.rollBackTransaction(() => {
           next(e);
         });
@@ -56,10 +55,10 @@ export default {
     const _mysql = new algaehMysql(_options);
     try {
       let inputparam = { ...req.body };
-      const utilities = new algaehUtilities();
+      // const utilities = new algaehUtilities();
 
-      console.log("genNumber: ", inputparam.patient_code);
-      inputparam.registration_date = new Date();
+      // console.log("genNumber: ", inputparam.patient_code);
+      // inputparam.registration_date = new Date();
       _mysql
         .executeQuery({
           query:
@@ -74,9 +73,10 @@ export default {
            VALUES (?,?,?,?, ?, ?, ?, ?, ?,?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?);",
           values: [
             inputparam.patient_code,
-            inputparam.registration_date != null
-              ? new Date(inputparam.registration_date)
-              : inputparam.registration_date,
+            new Date(),
+            // inputparam.registration_date != null
+            //   ? new Date(inputparam.registration_date)
+            //   : inputparam.registration_date,
             inputparam.title_id,
             inputparam.first_name,
             inputparam.middle_name,
@@ -116,11 +116,11 @@ export default {
             inputparam.state_id,
             inputparam.country_id,
             inputparam.employee_id,
-            req.userIdentity.hospital_id
+            req.userIdentity.hospital_id,
           ],
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           req.body.patient_id = result.insertId;
 
           if (req.connection == null) {
@@ -133,7 +133,7 @@ export default {
             next();
           }
         })
-        .catch(e => {
+        .catch((e) => {
           _mysql.rollBackTransaction(() => {
             next(e);
           });
@@ -153,15 +153,15 @@ export default {
           query:
             "select ins_services_amount, approval_limit_yesno from hims_f_patient_visit where hims_f_patient_visit_id=?",
           values: [req.query.hims_f_patient_visit_id],
-          printQuery: true
+          printQuery: true,
         })
-        .then(VisitServiceAmount => {
+        .then((VisitServiceAmount) => {
           console.log("VisitServiceAmount", VisitServiceAmount);
           _mysql.releaseConnection();
           req.records = VisitServiceAmount;
           next();
         })
-        .catch(e => {
+        .catch((e) => {
           _mysql.releaseConnection();
           next(e);
         });
@@ -224,16 +224,16 @@ export default {
               inputParam.patient_id,
               inputParam.patient_visit_id,
               inputParam.patient_id,
-              inputParam.patient_visit_id
+              inputParam.patient_visit_id,
             ],
-            printQuery: true
+            printQuery: true,
           })
-          .then(result => {
+          .then((result) => {
             _mysql.releaseConnection();
             req.records = result;
             next();
           })
-          .catch(e => {
+          .catch((e) => {
             _mysql.releaseConnection();
             next(e);
           });
@@ -267,14 +267,14 @@ export default {
                  INNER JOIN hims_d_insurance_network_office netoff ON mIns.secondary_policy_num=netoff.policy_number) where mIns.patient_id=?\
                  GROUP BY mIns.secondary_policy_num);",
             values: [inputParam.patient_id, inputParam.patient_id],
-            printQuery: true
+            printQuery: true,
           })
-          .then(result => {
+          .then((result) => {
             _mysql.releaseConnection();
             req.records = result;
             next();
           })
-          .catch(e => {
+          .catch((e) => {
             _mysql.releaseConnection();
             next(e);
           });
@@ -341,16 +341,16 @@ export default {
             inputparam.employee_id,
             req.userIdentity.algaeh_d_app_user_id,
             new Date(),
-            inputparam.hims_d_patient_id
+            inputparam.hims_d_patient_id,
           ],
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(e => {
+        .catch((e) => {
           _mysql.releaseConnection();
           next(e);
         });
@@ -379,14 +379,14 @@ export default {
               left join algaeh_d_app_user U on A.created_by = U.algaeh_d_app_user_id
               where A.hims_f_patient_id = ? and A.record_status = 'A' and R.record_status = 'A';`,
           values: [inputParam.patient_id],
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(e => {
+        .catch((e) => {
           _mysql.releaseConnection();
           next(e);
         });

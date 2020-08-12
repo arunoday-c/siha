@@ -176,10 +176,12 @@ export default {
                 : inputParam.visit_expiery_date,
               inputParam.episode_id,
               inputParam.appointment_id,
-              inputParam.appointment_patient,
+              // inputParam.appointment_patient,
+              inputParam.appointment_id ? "Y" : "N",
               inputParam.new_visit_patient,
               req.userIdentity.hospital_id,
-              inputParam.eligible,
+              // inputParam.eligible,
+              inputParam.eligible_reference_number ? "Y" : "N",
               inputParam.eligible_reference_number,
             ],
             printQuery: true,
@@ -489,8 +491,8 @@ export default {
 
       const utilities = new algaehUtilities();
       /* Select statemwnt  */
-      utilities.logger().log("addPatientInsuranceData: ");
-      utilities.logger().log("insured: ", input.insured);
+      //utilities.logger().log("addPatientInsuranceData: ");
+      //utilities.logger().log("insured: ", input.insured);
 
       if (input.insured == "Y") {
         _mysql
@@ -558,7 +560,7 @@ export default {
             });
           });
       } else {
-        utilities.logger().log("insured: ", "N");
+        //  utilities.logger().log("insured: ", "N");
         next();
       }
     } catch (e) {

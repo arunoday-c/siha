@@ -24,17 +24,17 @@ export default {
               new Date(),
               req.userIdentity.algaeh_d_app_user_id,
               new Date(),
-              req.userIdentity.algaeh_d_app_user_id
+              req.userIdentity.algaeh_d_app_user_id,
             ],
-            printQuery: true
+            printQuery: true,
           })
-          .then(result => {
+          .then((result) => {
             _mysql.releaseConnection();
             req.records = result;
             resolve(result);
             next();
           })
-          .catch(error => {
+          .catch((error) => {
             _mysql.releaseConnection();
 
             next(error);
@@ -43,7 +43,7 @@ export default {
         _mysql.releaseConnection();
         next(e);
       }
-    }).catch(e => {
+    }).catch((e) => {
       _mysql.releaseConnection();
       reject(error);
       next(e);
@@ -72,17 +72,17 @@ export default {
               input.arabic_department_name,
               new Date(),
               input.updated_by,
-              input.hims_d_department_id
+              input.hims_d_department_id,
             ],
-            printQuery: true
+            printQuery: true,
           })
-          .then(result => {
+          .then((result) => {
             _mysql.releaseConnection();
             req.records = result;
             resolve(result);
             next();
           })
-          .catch(error => {
+          .catch((error) => {
             _mysql.releaseConnection();
 
             next(error);
@@ -91,7 +91,7 @@ export default {
         _mysql.releaseConnection();
         next(e);
       }
-    }).catch(e => {
+    }).catch((e) => {
       _mysql.releaseConnection();
       reject(error);
       next(e);
@@ -124,14 +124,14 @@ export default {
         .executeQuery({
           query: query,
           values: values,
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -172,15 +172,15 @@ export default {
         .executeQuery({
           query: query,
           values: values,
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
 
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
 
           next(error);
@@ -214,17 +214,17 @@ export default {
           new Date(),
           req.userIdentity.algaeh_d_app_user_id,
           new Date(),
-          req.userIdentity.algaeh_d_app_user_id
+          req.userIdentity.algaeh_d_app_user_id,
         ],
-        printQuery: true
+        printQuery: true,
       })
-      .then(result => {
+      .then((result) => {
         _mysql.releaseConnection();
         req.records = result;
 
         next();
       })
-      .catch(error => {
+      .catch((error) => {
         _mysql.releaseConnection();
         next(error);
       });
@@ -251,17 +251,17 @@ export default {
           new Date(),
           req.userIdentity.algaeh_d_app_user_id,
           input.vitals_mandatory,
-          input.hims_d_sub_department_id
+          input.hims_d_sub_department_id,
         ],
-        printQuery: true
+        printQuery: true,
       })
-      .then(result => {
+      .then((result) => {
         _mysql.releaseConnection();
         req.records = result;
 
         next();
       })
-      .catch(error => {
+      .catch((error) => {
         _mysql.releaseConnection();
         next(error);
       });
@@ -274,15 +274,15 @@ export default {
       .executeQuery({
         query:
           "UPDATE hims_d_department SET  record_status='I' WHERE hims_d_department_id=?;",
-        values: [req.body.hims_d_department_id]
+        values: [req.body.hims_d_department_id],
       })
-      .then(result => {
+      .then((result) => {
         _mysql.releaseConnection();
         req.records = result;
 
         next();
       })
-      .catch(error => {
+      .catch((error) => {
         _mysql.releaseConnection();
         next(error);
       });
@@ -326,16 +326,16 @@ export default {
      and hims_d_employee.employee_status='A'\
      and hims_d_department.department_type='CLINICAL'\
      and hims_d_employee.isdoctor='Y'\
-     group by hims_m_employee_department_mappings.employee_id,hims_m_employee_department_mappings.services_id,hims_m_employee_department_mappings.sub_department_id;"
+     group by hims_m_employee_department_mappings.employee_id,hims_m_employee_department_mappings.services_id,hims_m_employee_department_mappings.sub_department_id;",
       })
-      .then(results => {
+      .then((results) => {
         _mysql.releaseConnection();
-        let departments = new LINQ(results).GroupBy(g => g.sub_department_id);
-        let doctors = new LINQ(results).GroupBy(g => g.employee_id);
+        let departments = new LINQ(results).GroupBy((g) => g.sub_department_id);
+        let doctors = new LINQ(results).GroupBy((g) => g.employee_id);
         req.records = { departments: departments, doctors: doctors };
         next();
       })
-      .catch(error => {
+      .catch((error) => {
         _mysql.releaseConnection();
         next(error);
       });
@@ -344,7 +344,7 @@ export default {
   selectdoctors: (req, res, next) => {
     let input = req.query;
     const _mysql = new algaehMysql();
-
+    const { algaeh_d_app_user_id } = req.userIdentity;
     _mysql
       .executeQuery({
         query:
@@ -353,16 +353,17 @@ export default {
             from hims_d_employee E inner join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id \
             and  E.isdoctor='Y' inner join hims_d_department D on SD.department_id=D.hims_d_department_id \
             and  D.department_type='CLINICAL' where E.employee_status='A'  and SD.sub_department_status='A'\
-            and SD.record_status='A' and E.record_status ='A' and services_id is not null;"
+            and SD.record_status='A' and E.record_status ='A'  and services_id is not null;",
+        // values: [algaeh_d_app_user_id],and E.hospital_id=?
       })
-      .then(results => {
+      .then((results) => {
         _mysql.releaseConnection();
-        let departments = new LINQ(results).GroupBy(g => g.sub_department_id);
-        let doctors = new LINQ(results).GroupBy(g => g.employee_id);
+        let departments = new LINQ(results).GroupBy((g) => g.sub_department_id);
+        let doctors = new LINQ(results).GroupBy((g) => g.employee_id);
         req.records = { departments: departments, doctors: doctors };
         next();
       })
-      .catch(error => {
+      .catch((error) => {
         _mysql.releaseConnection();
         next(error);
       });
@@ -398,18 +399,18 @@ export default {
      and hims_d_department.department_type='CLINICAL'\
      and hims_d_employee.isdoctor='Y'\
      and AP.record_status='A' and hims_d_employee.hims_d_employee_id=AP.provider_id \
-     group by hims_m_employee_department_mappings.employee_id,hims_m_employee_department_mappings.sub_department_id;"
+     group by hims_m_employee_department_mappings.employee_id,hims_m_employee_department_mappings.sub_department_id;",
       })
-      .then(results => {
+      .then((results) => {
         _mysql.releaseConnection();
-        let departments = new LINQ(results).GroupBy(g => g.sub_dept_id);
-        let doctors = new LINQ(results).GroupBy(g => g.provider_id);
+        let departments = new LINQ(results).GroupBy((g) => g.sub_dept_id);
+        let doctors = new LINQ(results).GroupBy((g) => g.provider_id);
 
         req.records = { departments: departments, doctors: doctors };
 
         next();
       })
-      .catch(error => {
+      .catch((error) => {
         _mysql.releaseConnection();
         next(error);
       });
@@ -429,18 +430,18 @@ export default {
             inner join hims_d_department D on SD.department_id=D.hims_d_department_id  and  D.department_type='CLINICAL'\
             left join hims_d_appointment_clinic AP on E.hims_d_employee_id=AP.provider_id \
             where E.employee_status='A'  and SD.sub_department_status='A' \
-            and SD.record_status='A' and E.record_status ='A' and services_id is not null;"
+            and SD.record_status='A' and E.record_status ='A' and services_id is not null;",
       })
-      .then(results => {
+      .then((results) => {
         _mysql.releaseConnection();
-        let departments = new LINQ(results).GroupBy(g => g.sub_dept_id);
-        let doctors = new LINQ(results).GroupBy(g => g.provider_id);
+        let departments = new LINQ(results).GroupBy((g) => g.sub_dept_id);
+        let doctors = new LINQ(results).GroupBy((g) => g.provider_id);
 
         req.records = { departments: departments, doctors: doctors };
 
         next();
       })
-      .catch(error => {
+      .catch((error) => {
         _mysql.releaseConnection();
         next(error);
       });
@@ -454,15 +455,15 @@ export default {
       .executeQuery({
         query:
           "UPDATE hims_d_sub_department SET  record_status='I' WHERE hims_d_sub_department_id=?",
-        values: [req.body.hims_d_sub_department_id]
+        values: [req.body.hims_d_sub_department_id],
       })
-      .then(result => {
+      .then((result) => {
         _mysql.releaseConnection();
         req.records = result;
 
         next();
       })
-      .catch(error => {
+      .catch((error) => {
         _mysql.releaseConnection();
         next(error);
       });
@@ -475,15 +476,15 @@ export default {
       .executeQuery({
         query:
           "UPDATE hims_d_sub_department SET  sub_department_status='I' WHERE hims_d_sub_department_id=?",
-        values: [req.body.hims_d_sub_department_id]
+        values: [req.body.hims_d_sub_department_id],
       })
-      .then(result => {
+      .then((result) => {
         _mysql.releaseConnection();
         req.records = result;
 
         next();
       })
-      .catch(error => {
+      .catch((error) => {
         _mysql.releaseConnection();
         next(error);
       });
@@ -496,17 +497,17 @@ export default {
       .executeQuery({
         query:
           "UPDATE hims_d_department SET  department_status='I' WHERE hims_d_department_id=?",
-        values: [req.body.hims_d_department_id]
+        values: [req.body.hims_d_department_id],
       })
-      .then(result => {
+      .then((result) => {
         _mysql.releaseConnection();
         req.records = result;
 
         next();
       })
-      .catch(error => {
+      .catch((error) => {
         _mysql.releaseConnection();
         next(error);
       });
-  }
+  },
 };
