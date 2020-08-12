@@ -22,7 +22,7 @@ export default {
       inv_requisition_id: null,
       from_multiple_requisition: "N",
       payment_terms: "",
-      comment: null,
+      comment: "",
       sub_total: 0,
       detail_discount: 0,
       extended_total: 0,

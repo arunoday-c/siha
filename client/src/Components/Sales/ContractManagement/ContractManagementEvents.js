@@ -62,7 +62,7 @@ export const datehandle = ($this, ctrl, e) => {
   }
 };
 
-export const ClearData = ($this, e) => {
+export const ClearData = ($this) => {
   let IOputs = {
     hims_f_contract_management_id: null,
     contract_number: null,
@@ -94,6 +94,7 @@ export const ClearData = ($this, e) => {
     incharge_employee_id: null,
     notification_days1: null,
     notification_days2: null,
+    delete_services: []
   };
 
   $this.setState(IOputs);
@@ -114,9 +115,11 @@ export const SaveContract = ($this) => {
         }
       }
 
+
       AlgaehLoader({ show: true });
       $this.state.terms_conditions = $this.state.comment_list.join("<br/>");
       if ($this.state.hims_f_contract_management_id !== null) {
+
         algaehApiCall({
           uri: "/ContractManagement/updateContractManagement",
           module: "sales",
@@ -327,14 +330,14 @@ export function getDocuments(contract_no, $this) {
 
 export const getCtrlCode = ($this, docNumber, row) => {
   AlgaehLoader({ show: true });
-
+  ClearData($this)
   algaehApiCall({
     uri: "/ContractManagement/getContractManagement",
     module: "sales",
     method: "GET",
     data: {
       contract_number: docNumber,
-      HRMNGMT_Active: $this.state.HRMNGMT_Active,
+      HRMNGMT_Active: $this.HRMNGMT_Active,
     },
     onSuccess: (response) => {
       if (response.data.success) {
@@ -352,6 +355,7 @@ export const getCtrlCode = ($this, docNumber, row) => {
 
         data.saveEnable = true;
         data.dataExists = true;
+
         $this.setState({
           ...data,
           organizations: project.branches,
@@ -432,16 +436,22 @@ export const servicechangeText = ($this, e, ctrl) => {
 };
 
 export const deleteContarctServices = ($this, row) => {
-  let { contract_services } = $this.state;
+  let { contract_services, delete_services } = $this.state;
   let _index = contract_services.indexOf(row);
-  if ($this.state.editMode) {
-    contract_services[_index].record_status = "I";
-  } else {
-    contract_services.splice(_index, 1);
+  // if ($this.state.editMode) {
+  //   contract_services[_index].record_status = "I";
+  // } else {
+
+  // }
+
+  if (row.hims_f_contract_management_services_id !== null) {
+    delete_services.push(row.hims_f_contract_management_services_id);
   }
 
+  contract_services.splice(_index, 1);
   $this.setState({
     contract_services,
+    delete_services,
     saveEnable: contract_services.length > 0 ? false : true,
   });
 };

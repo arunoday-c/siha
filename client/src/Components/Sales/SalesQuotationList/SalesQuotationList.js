@@ -48,10 +48,10 @@ class SalesQuotationList extends Component {
 
     this.HRMNGMT_Active =
       userToken.product_type === "HIMS_ERP" ||
-      userToken.product_type === "HRMS" ||
-      userToken.product_type === "HRMS_ERP" ||
-      userToken.product_type === "FINANCE_ERP" ||
-      userToken.product_type === "NO_FINANCE"
+        userToken.product_type === "HRMS" ||
+        userToken.product_type === "HRMS_ERP" ||
+        userToken.product_type === "FINANCE_ERP" ||
+        userToken.product_type === "NO_FINANCE"
         ? true
         : false;
 
@@ -289,8 +289,8 @@ class SalesQuotationList extends Component {
                               Cancelled
                             </span>
                           ) : (
-                            <span className="badge badge-success">Closed</span>
-                          );
+                                  <span className="badge badge-success">Closed</span>
+                                );
                         },
                         disabled: true,
                         others: {
@@ -347,20 +347,20 @@ class SalesQuotationList extends Component {
                           style: { textAlign: "center" },
                         },
                       },
-                      // {
-                      //   fieldName: "employee_name",
-                      //   label: (
-                      //     <AlgaehLabel
-                      //       label={{ forceLabel: "Sales Person" }}
-                      //     />
-                      //   ),
-                      //   disabled: true,
-                      //   others: {
-                      //     maxWidth: 150,
-                      //     resizable: false,
-                      //     style: { textAlign: "center" }
-                      //   }
-                      // },
+                      {
+                        fieldName: "full_name",
+                        label: (
+                          <AlgaehLabel
+                            label={{ forceLabel: "Sales Person" }}
+                          />
+                        ),
+                        disabled: true,
+                        others: {
+                          maxWidth: 150,
+                          resizable: false,
+                          style: { textAlign: "center" }
+                        }
+                      },
                       {
                         fieldName: "quote_validity",
                         label: (

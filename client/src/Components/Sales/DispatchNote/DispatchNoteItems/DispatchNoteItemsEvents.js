@@ -43,9 +43,9 @@ const onchangegridcol = ($this, context, row, e) => {
     item_details.dispatched_quantity = dispatched_quantity;
 
     item_details.quantity_outstanding =
-      item_details.ordered_quantity -
-      item_details.delivered_to_date -
-      dispatched_quantity;
+      parseFloat(item_details.ordered_quantity) -
+      parseFloat(item_details.delivered_to_date) -
+      parseFloat(dispatched_quantity);
 
     // item_details.ordered_quantity = item_details.quantity
     if (item_details.quantity_outstanding < 0) {
