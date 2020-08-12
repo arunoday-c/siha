@@ -117,6 +117,7 @@ export const SaveContract = ($this) => {
       AlgaehLoader({ show: true });
       $this.state.terms_conditions = $this.state.comment_list.join("<br/>");
       if ($this.state.hims_f_contract_management_id !== null) {
+        debugger
         algaehApiCall({
           uri: "/ContractManagement/updateContractManagement",
           module: "sales",
@@ -334,7 +335,7 @@ export const getCtrlCode = ($this, docNumber, row) => {
     method: "GET",
     data: {
       contract_number: docNumber,
-      HRMNGMT_Active: $this.state.HRMNGMT_Active,
+      HRMNGMT_Active: $this.HRMNGMT_Active,
     },
     onSuccess: (response) => {
       if (response.data.success) {
@@ -434,14 +435,23 @@ export const servicechangeText = ($this, e, ctrl) => {
 export const deleteContarctServices = ($this, row) => {
   let { contract_services } = $this.state;
   let _index = contract_services.indexOf(row);
-  if ($this.state.editMode) {
-    contract_services[_index].record_status = "I";
-  } else {
-    contract_services.splice(_index, 1);
+  // if ($this.state.editMode) {
+  //   contract_services[_index].record_status = "I";
+  // } else {
+
+  // }
+
+
+  let delete_services = $this.state.delete_services
+
+  if (row.hims_f_contract_management_services_id !== null) {
+    delete_services.push(row.hims_f_contract_management_services_id);
   }
 
+  contract_services.splice(_index, 1);
   $this.setState({
-    contract_services,
+    contract_services: contract_services,
+    delete_services: delete_services,
     saveEnable: contract_services.length > 0 ? false : true,
   });
 };

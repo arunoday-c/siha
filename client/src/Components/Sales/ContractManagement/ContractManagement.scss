@@ -14,6 +14,11 @@
   }
 }
 
+.disableFinder {
+  opacity: 0.4;
+  pointer-events: none;
+}
+
 .upload-drag-icon i {
   font-size: 3rem;
 }

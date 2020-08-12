@@ -973,9 +973,10 @@ export default {
       _mysql
         .executeQuery({
           query:
-            "UPDATE hims_f_procurement_po_header set cancelled = 'Y', cancel_by = ? , cancel_date = ? \
+            "UPDATE hims_f_procurement_po_header set cancelled = 'Y', comment=?, cancel_by = ? , cancel_date = ? \
             WHERE `hims_f_procurement_po_header_id`=?;",
           values: [
+            req.body.comment,
             req.userIdentity.algaeh_d_app_user_id,
             new Date(),
             req.body.hims_f_procurement_po_header_id,

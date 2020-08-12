@@ -86,6 +86,7 @@ class ContractManagement extends Component {
       project_id: null,
 
       organizations: [],
+      delete_services: []
     };
   }
 
@@ -100,10 +101,12 @@ class ContractManagement extends Component {
 
     this.HRMNGMT_Active =
       userToken.product_type === "HIMS_ERP" ||
-      userToken.product_type === "HRMS" ||
-      userToken.product_type === "HRMS_ERP" ||
-      userToken.product_type === "FINANCE_ERP" ||
-      userToken.product_type === "NO_FINANCE";
+        userToken.product_type === "HRMS" ||
+        userToken.product_type === "HRMS_ERP" ||
+        userToken.product_type === "FINANCE_ERP" ||
+        userToken.product_type === "NO_FINANCE"
+        ? true
+        : false;
 
     this.props.getCustomerMaster({
       uri: "/customer/getCustomerMaster",
@@ -173,7 +176,7 @@ class ContractManagement extends Component {
   };
 
   render() {
-    const class_finder = this.state.dataExists === true ? " disableFinder" : "";
+    const class_finder = this.state.dataExists === true && this.state.editMode === false ? " disableFinder" : "";
     return (
       <div>
         <BreadCrumb
@@ -230,8 +233,8 @@ class ContractManagement extends Component {
                 <h6>
                   {this.state.contract_date
                     ? moment(this.state.contract_date).format(
-                        Options.dateFormat
-                      )
+                      Options.dateFormat
+                    )
                     : Options.dateFormat}
                 </h6>
               </div>
@@ -644,12 +647,12 @@ class ContractManagement extends Component {
                                       style={{
                                         pointerEvents:
                                           this.state.dataExists &&
-                                          !this.state.editMode
+                                            !this.state.editMode
                                             ? "none"
                                             : "",
                                         opacity:
                                           this.state.dataExists &&
-                                          !this.state.editMode
+                                            !this.state.editMode
                                             ? "0.1"
                                             : "",
                                       }}
@@ -690,7 +693,7 @@ class ContractManagement extends Component {
                                 return (
                                   <span>
                                     {display !== undefined &&
-                                    display.length !== 0
+                                      display.length !== 0
                                       ? display[0].name
                                       : ""}
                                   </span>
@@ -727,11 +730,7 @@ class ContractManagement extends Component {
                           ]}
                           keyId="service_type_id"
                           dataSource={{
-                            data: this.state.editMode
-                              ? this.state.contract_services.filter(
-                                  (item) => item.record_status === "A"
-                                )
-                              : this.state.contract_services,
+                            data: this.state.contract_services,
                           }}
                           paging={{ page: 0, rowsPerPage: 10 }}
                         />
@@ -811,10 +810,10 @@ class ContractManagement extends Component {
                               </li>
                             ))
                           ) : (
-                            <div className="col-12 noAttachment" key={1}>
-                              <p>No Attachments Available</p>
-                            </div>
-                          )}
+                              <div className="col-12 noAttachment" key={1}>
+                                <p>No Attachments Available</p>
+                              </div>
+                            )}
                         </ul>
                       </div>
                     </div>
@@ -894,13 +893,13 @@ class ContractManagement extends Component {
                       <ol>
                         {this.state.comment_list.length > 0
                           ? this.state.comment_list.map((row, index) => {
-                              return (
-                                <React.Fragment key={index}>
-                                  <li key={index}>
-                                    <span>{row}</span>
-                                    <span>
-                                      {" "}
-                                      {this.state.dataExists &&
+                            return (
+                              <React.Fragment key={index}>
+                                <li key={index}>
+                                  <span>{row}</span>
+                                  <span>
+                                    {" "}
+                                    {this.state.dataExists &&
                                       !this.state.editMode ? null : (
                                         <i
                                           className="fas fa-times"
@@ -911,11 +910,11 @@ class ContractManagement extends Component {
                                           )}
                                         ></i>
                                       )}
-                                    </span>
-                                  </li>
-                                </React.Fragment>
-                              );
-                            })
+                                  </span>
+                                </li>
+                              </React.Fragment>
+                            );
+                          })
                           : null}
                       </ol>
                     </div>
@@ -944,20 +943,20 @@ class ContractManagement extends Component {
                   />
                 </button>
               ) : (
-                <button
-                  type="button"
-                  className="btn btn-primary"
-                  onClick={SaveContract.bind(this, this)}
-                  disabled={this.state.saveEnable}
-                >
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Save Contract",
-                      returnText: true,
-                    }}
-                  />
-                </button>
-              )}
+                  <button
+                    type="button"
+                    className="btn btn-primary"
+                    onClick={SaveContract.bind(this, this)}
+                    disabled={this.state.saveEnable}
+                  >
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Save Contract",
+                        returnText: true,
+                      }}
+                    />
+                  </button>
+                )}
 
               <button
                 type="button"

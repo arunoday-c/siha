@@ -14,6 +14,7 @@ export function getContractManagement(req, res, next) {
         "SELECT * from hims_f_contract_management CM where contract_number =? ";
     }
 
+    console.log("strQuery", strQuery)
     _mysql
       .executeQuery({
         query: strQuery,
@@ -266,6 +267,8 @@ export function updateContractManagement(req, res, next) {
   const update_services = contract_services.filter(
     (item) => !!item.hims_f_contract_management_services_id
   );
+
+  const delete_services = req.body.delete_services
   try {
     _mysql
       .executeQueryWithTransaction({
@@ -325,6 +328,18 @@ export function updateContractManagement(req, res, next) {
                 "created_by",
                 "created_date",
               ],
+              bulkInsertOrUpdate: true,
+              printQuery: true,
+            })
+          );
+        }
+
+        if (delete_services.length) {
+          execArray.push(
+            _mysql.executeQuery({
+              query: `DELETE FROM hims_f_contract_management_services where hims_f_contract_management_services_id=?`,
+              values: delete_services,
+              where: ["hims_f_contract_management_services_id"],
               bulkInsertOrUpdate: true,
               printQuery: true,
             })

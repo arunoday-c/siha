@@ -1026,13 +1026,22 @@ const CancelPOEntry = ($this) => {
     cancelButtonText: "No",
   }).then((willReject) => {
     if (willReject.value) {
+      debugger
+      if ($this.state.comment === "" || $this.state.comment === null) {
+        swalMessage({
+          title: "While rejecting comments is mandatory.",
+          type: "warning",
+        });
+        return;
+      }
       AlgaehLoader({ show: true });
       algaehApiCall({
         uri: "/PurchaseOrderEntry/cancelPurchaseOrderEntry",
         module: "procurement",
         data: {
+          comment: $this.state.comment,
           hims_f_procurement_po_header_id:
-            $this.state.hims_f_procurement_po_header_id,
+            $this.state.hims_f_procurement_po_header_id
         },
         method: "PUT",
         onSuccess: (response) => {
