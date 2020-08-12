@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { useQuery } from "react-query";
 import { useWatch, Controller } from "react-hook-form";
 import moment from "moment";
@@ -15,6 +15,7 @@ import {
 import { useLangFieldName } from "./patientHooks";
 import { newAlgaehApi } from "../../hooks/";
 import { FrontdeskContext } from "./FrontdeskContext";
+import { BillDetailModal } from "./BillDetailModal";
 // import GenericData from "../../utils/GlobalVariables.json";
 
 const getBillDetails = async (
@@ -85,6 +86,7 @@ const checkVisits = async (
 };
 
 export function BillDetails({ control, trigger, setValue, patient = null }) {
+  const [visible, setVisible] = useState(false);
   const { default_nationality_id, local_vat_applicable } = useContext(
     MainContext
   );
@@ -93,7 +95,11 @@ export function BillDetails({ control, trigger, setValue, patient = null }) {
     sub_department_id,
     doctor_id,
     primary_network_office_id,
+    setBillInfo,
+    disabled,
+    savedPatient,
   } = useContext(FrontdeskContext);
+  // const disabled = !!bill_number && !!receipt_number;
   const { fieldNameFn } = useLangFieldName();
   const {
     nationality_id,
@@ -127,8 +133,10 @@ export function BillDetails({ control, trigger, setValue, patient = null }) {
       enabled: !!services_id,
       retry: 3,
       refetchOnWindowFocus: false,
+
       onSuccess: (data) => {
         console.log(data);
+        setBillInfo(data);
       },
     }
   );
@@ -141,11 +149,50 @@ export function BillDetails({ control, trigger, setValue, patient = null }) {
       enabled: !!billInfo,
       retry: 3,
       onSuccess: (data) => {
-        console.log(data);
+        setValue("advance_adjust", data?.advance_adjust);
+        setValue("sheet_discount_percentage", data?.sheet_discount_percentage);
+        setValue("sheet_discount_amount", data?.sheet_discount_amount);
+        setValue("credit_amount", data?.credit_amount);
+        setValue("cash_amount", data?.receiveable_amount);
+        setValue("card_amount", data?.card_amount);
+        setValue("card_number", data?.card_number);
+        setValue("card_date", data?.card_date);
       },
       onError: (err) => {
         console.log(err);
       },
+      initialData: {
+        advance_adjust: 0,
+        card_amount: 0,
+        cash_amount: 0,
+        cheque_amount: 0,
+        company_payble: 0,
+        company_res: 0,
+        company_tax: 0,
+        copay_amount: 0,
+        deductable_amount: 0,
+        discount_amount: 0,
+        gross_total: 0,
+        net_amount: 0,
+        net_total: 0,
+        patient_payable: 0,
+        patient_res: 0,
+        patient_tax: 0,
+        receiveable_amount: 0,
+        s_patient_tax: 0,
+        sec_company_paybale: 0,
+        sec_company_res: 0,
+        sec_company_tax: 0,
+        sec_copay_amount: 0,
+        sec_deductable_amount: 0,
+        sheet_discount_amount: 0,
+        sheet_discount_percentage: 0,
+        sub_total_amount: 0,
+        total_amount: 0,
+        total_tax: 0,
+        unbalanced_amount: 0,
+      },
+      initialStale: true,
     }
   );
 
@@ -154,6 +201,7 @@ export function BillDetails({ control, trigger, setValue, patient = null }) {
     getShiftMappings,
     {
       refetchOnWindowFocus: false,
+      staleTime: Infinity,
       cacheTime: Infinity,
       retry: 3,
       onSuccess: (data) => {
@@ -175,7 +223,6 @@ export function BillDetails({ control, trigger, setValue, patient = null }) {
       refetchOnWindowFocus: false,
       enabled: !!patient && !!doctor_id,
       onSuccess: (data) => {
-        debugger;
         console.log(data, "visit");
       },
     }
@@ -185,6 +232,19 @@ export function BillDetails({ control, trigger, setValue, patient = null }) {
 
   return (
     <Spin spinning={infoLoading || calcLoading || shiftLoading || visitLoading}>
+      <BillDetailModal
+        visible={visible}
+        onClose={() => setVisible(false)}
+        billData={billInfo}
+        title={
+          <AlgaehLabel
+            label={{
+              fieldName: "bill_details",
+              align: "ltr",
+            }}
+          />
+        }
+      />
       <div className="hptl-phase1-fd-billing-form">
         <div className="row">
           <div className="algaeh-md-4 algaeh-lg-4 algaeh-xl-12  primary-details">
@@ -194,8 +254,8 @@ export function BillDetails({ control, trigger, setValue, patient = null }) {
                   <button
                     className="btn btn-default btn-sm"
                     type="button"
-                    //   onClick={this.ShowBillDetails.bind(this)}
-                    //   disabled={this.state.billdetail}
+                    onClick={() => setVisible(true)}
+                    disabled={!billInfo}
                   >
                     <AlgaehLabel
                       label={{
@@ -309,7 +369,7 @@ export function BillDetails({ control, trigger, setValue, patient = null }) {
                         fieldName: "advance_adjust",
                       }}
                       textBox={{
-                        value: billData?.advance_adjust,
+                        disabled,
                         className: "txt-fld",
                         name: "advance_adjust",
                         ...props,
@@ -329,8 +389,9 @@ export function BillDetails({ control, trigger, setValue, patient = null }) {
                         fieldName: "sheet_discount",
                       }}
                       textBox={{
-                        defaultValue: billData?.sheet_discount_percentage,
+                        // defaultValue: billData?.sheet_discount_percentage,
                         className: "txt-fld",
+                        disabled,
                         name: "sheet_discount_percentage",
                         ...props,
                         placeholder: "0.00",
@@ -342,27 +403,18 @@ export function BillDetails({ control, trigger, setValue, patient = null }) {
                 <Controller
                   control={control}
                   name="sheet_discount_amount"
-                  render={({ onBlur, onChange, value }) => (
+                  render={(props) => (
                     <AlgaehFormGroup
                       div={{ className: "col-3" }}
                       label={{
                         fieldName: "sheet_discount_amount",
                       }}
                       textBox={{
-                        value: billData?.sheet_discount_amount,
                         className: "txt-fld",
+                        disabled,
                         name: "sheet_discount_amount",
-
-                        //   events: {
-                        //     onChange: discounthandle.bind(this, this, context)
-                        //   },
-
+                        ...props,
                         placeholder: "0.00",
-                        // onBlur: makeZero.bind(this, this, context),
-                        // onFocus: e => {
-                        //   e.target.oldvalue = e.target.value;
-                        // },
-                        // disabled: this.state.savedData,
                       }}
                     />
                   )}
@@ -406,6 +458,7 @@ export function BillDetails({ control, trigger, setValue, patient = null }) {
                       }}
                       textBox={{
                         className: "txt-fld",
+                        disabled,
                         name: "credit_amount",
                         placeholder: "0.00",
                         ...props,
@@ -452,9 +505,8 @@ export function BillDetails({ control, trigger, setValue, patient = null }) {
                       }}
                     />
                     <h6>
-                      {/* {this.state.receipt_number
-                              ? this.state.receipt_number
-                              : fieldNameFn("Not Generated", "غير مولدة") */}
+                      {savedPatient?.receipt_number ??
+                        fieldNameFn("Not Generated", "غير مولدة")}
                     </h6>
                   </div>
                   <div className="col-lg-3">
@@ -464,12 +516,9 @@ export function BillDetails({ control, trigger, setValue, patient = null }) {
                       }}
                     />
                     <h6>
-                      {/* {this.state.receipt_date
-                              ? moment(this.state.receipt_date).format(
-                                "DD-MM-YYYY"
-                              )
-                              : "DD/MM/YYYY"} */}
-                      dd/MM/YYYY
+                      {savedPatient?.receipt_number
+                        ? moment().format("DD-MM-YYYY")
+                        : "DD/MM/YYYY"}
                     </h6>
                   </div>
 
@@ -487,6 +536,9 @@ export function BillDetails({ control, trigger, setValue, patient = null }) {
                           name: "shift_id",
                           className: "select-fld",
                           value,
+                          others: {
+                            disabled,
+                          },
                           dataSource: {
                             textField: fieldNameFn(
                               "shift_description",
@@ -497,7 +549,6 @@ export function BillDetails({ control, trigger, setValue, patient = null }) {
                           },
                           onChange: (_, selected) => onChange(selected),
                           onClear: () => onChange(""),
-                          disabled: false,
                         }}
                       />
                     )}
@@ -521,7 +572,6 @@ export function BillDetails({ control, trigger, setValue, patient = null }) {
                   <Controller
                     control={control}
                     name="cash_amount"
-                    defaultValue={billData?.cash_amount}
                     render={(props) => (
                       <AlgaehFormGroup
                         div={{ className: "col-2 mandatory" }}
@@ -531,6 +581,7 @@ export function BillDetails({ control, trigger, setValue, patient = null }) {
                         }}
                         textBox={{
                           ...props,
+                          disabled,
                           className: "txt-fld",
                           name: "cash_amount",
                           placeholder: "0.00",
@@ -549,6 +600,7 @@ export function BillDetails({ control, trigger, setValue, patient = null }) {
                       <input
                         type="checkbox"
                         name="Pay by Card"
+                        disabled={disabled}
                         //   checked={this.state.Cardchecked}
                         //   onChange={checkcardhandler.bind(
                         //     this,
@@ -574,6 +626,7 @@ export function BillDetails({ control, trigger, setValue, patient = null }) {
                         textBox={{
                           className: "txt-fld",
                           name: "card_amount",
+                          disabled,
                           ...props,
                           placeholder: "0.00",
                         }}
@@ -593,10 +646,10 @@ export function BillDetails({ control, trigger, setValue, patient = null }) {
                           fieldName: "card_check_number",
                         }}
                         textBox={{
+                          disabled,
                           className: "txt-fld",
                           name: "card_number",
                           ...props,
-                          disabled: false,
                         }}
                       />
                     )}
@@ -604,7 +657,7 @@ export function BillDetails({ control, trigger, setValue, patient = null }) {
 
                   <Controller
                     control={control}
-                    name=""
+                    name="card_date"
                     render={({ onBlur, onChange, value }) => (
                       <AlgaehDateHandler
                         div={{ className: "col" }}
@@ -614,6 +667,7 @@ export function BillDetails({ control, trigger, setValue, patient = null }) {
                         textBox={{
                           className: "txt-fld",
                           name: "card_date",
+                          disabled,
                         }}
                         minDate={new Date()}
                         events={{
@@ -636,7 +690,7 @@ export function BillDetails({ control, trigger, setValue, patient = null }) {
                       }}
                     />
                     <h6>
-                      0.00
+                      {billData?.unbalanced_amount}
                       {/* {GetAmountFormart(this.state.unbalanced_amount)} */}
                     </h6>
                   </div>

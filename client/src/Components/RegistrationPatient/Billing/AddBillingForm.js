@@ -6,7 +6,7 @@ import {
   AlgaehDateHandler,
   AlagehFormGroup,
   AlagehAutoComplete,
-  AlgaehLabel
+  AlgaehLabel,
 } from "../../Wrapper/algaehWrapper";
 import moment from "moment";
 import {
@@ -22,7 +22,7 @@ import {
   cashtexthCal,
   cardtexthCal,
   makeZero,
-  makeDiscountZero
+  makeDiscountZero,
 } from "./AddBillingDetails";
 
 import MyContext from "../../../utils/MyContext.js";
@@ -41,7 +41,7 @@ export default class AddBillingForm extends Component {
 
       errorInCash: false,
       errorInCard: false,
-      errorInCheck: false
+      errorInCheck: false,
     };
   }
 
@@ -57,7 +57,7 @@ export default class AddBillingForm extends Component {
   ShowBillDetails(e) {
     this.setState({
       ...this.state,
-      isOpen: !this.state.isOpen
+      isOpen: !this.state.isOpen,
     });
   }
 
@@ -65,7 +65,7 @@ export default class AddBillingForm extends Component {
     return (
       <React.Fragment>
         <MyContext.Consumer>
-          {context => (
+          {(context) => (
             <div className="hptl-phase1-fd-billing-form">
               <div className="row">
                 <div className="algaeh-md-4 algaeh-lg-4 algaeh-xl-12  primary-details">
@@ -91,7 +91,7 @@ export default class AddBillingForm extends Component {
                         >
                           <AlgaehLabel
                             label={{
-                              fieldName: "bill_details"
+                              fieldName: "bill_details",
                             }}
                           />
                           {/* Bill Details */}
@@ -102,14 +102,14 @@ export default class AddBillingForm extends Component {
                             <AlgaehLabel
                               label={{
                                 fieldName: "bill_details",
-                                align: "ltr"
+                                align: "ltr",
                               }}
                             />
                           }
                           BillingIOputs={{
                             frontDesk: true,
                             selectedLang: this.state.selectedLang,
-                            billdetails: this.state.billdetails
+                            billdetails: this.state.billdetails,
                           }}
                           show={this.state.isOpen}
                           onClose={this.ShowBillDetails.bind(this)}
@@ -119,7 +119,7 @@ export default class AddBillingForm extends Component {
                         className="col-6"
                         style={{
                           textAlign: "right",
-                          paddingTop: 4
+                          paddingTop: 4,
                         }}
                       >
                         {this.state.from_package === true ? (
@@ -158,7 +158,7 @@ export default class AddBillingForm extends Component {
                       <div className="col">
                         <AlgaehLabel
                           label={{
-                            fieldName: "gross_total"
+                            fieldName: "gross_total",
                           }}
                         />
 
@@ -168,7 +168,7 @@ export default class AddBillingForm extends Component {
                       <div className="col">
                         <AlgaehLabel
                           label={{
-                            fieldName: "patient_payable"
+                            fieldName: "patient_payable",
                           }}
                         />
                         <h6>{GetAmountFormart(this.state.patient_payable)}</h6>
@@ -179,22 +179,22 @@ export default class AddBillingForm extends Component {
                       <div className="col-lg-6">
                         <AlgaehLabel
                           label={{
-                            fieldName: "bill"
+                            fieldName: "bill",
                           }}
                         />
                         <h6>
                           {this.state.bill_number
                             ? this.state.bill_number
                             : this.state.selectedLang === "en"
-                              ? "Not Generated"
-                              : "غير مولدة"}
+                            ? "Not Generated"
+                            : "غير مولدة"}
                         </h6>
                       </div>
 
                       <div className="col-lg-6">
                         <AlgaehLabel
                           label={{
-                            fieldName: "bill_date"
+                            fieldName: "bill_date",
                           }}
                         />
                         <h6>
@@ -213,7 +213,7 @@ export default class AddBillingForm extends Component {
                       <AlagehFormGroup
                         div={{ className: "col-3" }}
                         label={{
-                          fieldName: "advance_adjust"
+                          fieldName: "advance_adjust",
                         }}
                         textBox={{
                           decimal: { allowNegative: false },
@@ -221,22 +221,22 @@ export default class AddBillingForm extends Component {
                           className: "txt-fld",
                           name: "advance_adjust",
                           events: {
-                            onChange: adjustadvance.bind(this, this, context)
+                            onChange: adjustadvance.bind(this, this, context),
                           },
                           others: {
                             placeholder: "0.00",
                             onBlur: makeZero.bind(this, this, context),
-                            onFocus: e => {
+                            onFocus: (e) => {
                               e.target.oldvalue = e.target.value;
                             },
-                            disabled: this.state.savedData
-                          }
+                            disabled: this.state.savedData,
+                          },
                         }}
                       />
                       <AlagehFormGroup
                         div={{ className: "col-6" }}
                         label={{
-                          fieldName: "sheet_discount"
+                          fieldName: "sheet_discount",
                         }}
                         textBox={{
                           decimal: { allowNegative: false },
@@ -244,42 +244,42 @@ export default class AddBillingForm extends Component {
                           className: "txt-fld",
                           name: "sheet_discount_percentage",
                           events: {
-                            onChange: discounthandle.bind(this, this, context)
+                            onChange: discounthandle.bind(this, this, context),
                           },
                           others: {
                             placeholder: "0.00",
                             onBlur: makeDiscountZero.bind(this, this, context),
-                            onFocus: e => {
+                            onFocus: (e) => {
                               e.target.oldvalue = e.target.value;
                             },
-                            disabled: this.state.savedData
-                          }
+                            disabled: this.state.savedData,
+                          },
                         }}
                       />
                       <AlagehFormGroup
                         div={{ className: "col-3" }}
                         label={{
-                          fieldName: "sheet_discount_amount"
+                          fieldName: "sheet_discount_amount",
                         }}
                         textBox={{
                           decimal: {
-                            allowNegative: false
+                            allowNegative: false,
                           },
                           value: this.state.sheet_discount_amount,
                           className: "txt-fld",
                           name: "sheet_discount_amount",
 
                           events: {
-                            onChange: discounthandle.bind(this, this, context)
+                            onChange: discounthandle.bind(this, this, context),
                           },
                           others: {
                             placeholder: "0.00",
                             onBlur: makeZero.bind(this, this, context),
-                            onFocus: e => {
+                            onFocus: (e) => {
                               e.target.oldvalue = e.target.value;
                             },
-                            disabled: this.state.savedData
-                          }
+                            disabled: this.state.savedData,
+                          },
                         }}
                       />
                     </div>
@@ -288,13 +288,13 @@ export default class AddBillingForm extends Component {
                     <div
                       className="row"
                       style={{
-                        marginBottom: 10
+                        marginBottom: 10,
                       }}
                     >
                       <div className="col">
                         <AlgaehLabel
                           label={{
-                            fieldName: "advance"
+                            fieldName: "advance",
                           }}
                         />
                         <h6>{GetAmountFormart(this.state.advance_amount)}</h6>
@@ -303,7 +303,7 @@ export default class AddBillingForm extends Component {
                       <div className="col">
                         <AlgaehLabel
                           label={{
-                            fieldName: "net_amount"
+                            fieldName: "net_amount",
                           }}
                         />
                         <h6>{GetAmountFormart(this.state.net_amount)}</h6>
@@ -312,7 +312,7 @@ export default class AddBillingForm extends Component {
                       <AlagehFormGroup
                         div={{ className: "col" }}
                         label={{
-                          fieldName: "credit_amount"
+                          fieldName: "credit_amount",
                         }}
                         textBox={{
                           decimal: { allowNegative: false },
@@ -320,28 +320,32 @@ export default class AddBillingForm extends Component {
                           className: "txt-fld",
                           name: "credit_amount",
                           events: {
-                            onChange: credittexthandle.bind(this, this, context)
+                            onChange: credittexthandle.bind(
+                              this,
+                              this,
+                              context
+                            ),
                           },
                           others: {
                             placeholder: "0.00",
                             onBlur: makeZero.bind(this, this, context),
-                            onFocus: e => {
+                            onFocus: (e) => {
                               e.target.oldvalue = e.target.value;
                             },
-                            disabled: this.state.savedData
+                            disabled: this.state.savedData,
                           },
                           security: {
                             component_code: "FD_PR_BIL",
                             module_code: "FTDSK",
                             screen_code: "FD0002",
-                            screen_element_code: "CA"
-                          }
+                            screen_element_code: "CA",
+                          },
                         }}
                       />
                       <div className="col highlightGreen">
                         <AlgaehLabel
                           label={{
-                            fieldName: "receiveable_amount"
+                            fieldName: "receiveable_amount",
                           }}
                         />
                         <h4>
@@ -351,7 +355,7 @@ export default class AddBillingForm extends Component {
                       <div className="col highlightGrey">
                         <AlgaehLabel
                           label={{
-                            fieldName: "balance_due"
+                            fieldName: "balance_due",
                           }}
                         />
                         <h6>{GetAmountFormart(this.state.balance_credit)}</h6>
@@ -363,35 +367,35 @@ export default class AddBillingForm extends Component {
                       style={{
                         background: " #e9feff",
                         border: " 1px solid #44b8bd",
-                        borderRadius: 5
+                        borderRadius: 5,
                       }}
                     >
                       <div className="row secondary-box-container">
                         <div className="col-lg-3">
                           <AlgaehLabel
                             label={{
-                              fieldName: "receipt_number"
+                              fieldName: "receipt_number",
                             }}
                           />
                           <h6>
                             {this.state.receipt_number
                               ? this.state.receipt_number
                               : this.state.selectedLang === "en"
-                                ? "Not Generated"
-                                : "غير مولدة"}
+                              ? "Not Generated"
+                              : "غير مولدة"}
                           </h6>
                         </div>
                         <div className="col-lg-3">
                           <AlgaehLabel
                             label={{
-                              fieldName: "receipt_date"
+                              fieldName: "receipt_date",
                             }}
                           />
                           <h6>
                             {this.state.receipt_date
                               ? moment(this.state.receipt_date).format(
-                                "DD-MM-YYYY"
-                              )
+                                  "DD-MM-YYYY"
+                                )
                               : "DD/MM/YYYY"}
                           </h6>
                         </div>
@@ -425,7 +429,7 @@ export default class AddBillingForm extends Component {
                           div={{ className: "col-3  mandatory" }}
                           label={{
                             fieldName: "shift_id",
-                            isImp: true
+                            isImp: true,
                           }}
                           userPrefernce={true}
                           selector={{
@@ -438,18 +442,18 @@ export default class AddBillingForm extends Component {
                                   ? "shift_description"
                                   : "arabic_name",
                               valueField: "shift_id",
-                              data: this.state.shift_assinged
+                              data: this.state.shift_assinged,
                             },
 
                             onChange: texthandle.bind(this, this, context),
                             others: {
-                              disabled: this.state.savedData
+                              disabled: this.state.savedData,
                             },
                             onClear: () => {
                               this.setState({
-                                shift_id: null
+                                shift_id: null,
                               });
-                            }
+                            },
                           }}
                         />
                       </div>
@@ -488,7 +492,7 @@ export default class AddBillingForm extends Component {
                           div={{ className: "col-2 mandatory" }}
                           label={{
                             fieldName: "amount",
-                            isImp: true
+                            isImp: true,
                           }}
                           textBox={{
                             decimal: { allowNegative: false },
@@ -501,15 +505,19 @@ export default class AddBillingForm extends Component {
                             error: this.state.errorInCash,
                             value: this.state.cash_amount,
                             events: {
-                              onChange: cashtexthandle.bind(this, this, context)
+                              onChange: cashtexthandle.bind(
+                                this,
+                                this,
+                                context
+                              ),
                             },
                             others: {
                               placeholder: "0.00",
                               onBlur: cashtexthCal.bind(this, this, context),
-                              onFocus: e => {
+                              onFocus: (e) => {
                                 e.target.oldvalue = e.target.value;
-                              }
-                            }
+                              },
+                            },
                           }}
                         />
                       </div>
@@ -567,7 +575,7 @@ export default class AddBillingForm extends Component {
                           div={{ className: "col-2  mandatory" }}
                           label={{
                             fieldName: "amount",
-                            isImp: this.state.Cardchecked
+                            isImp: this.state.Cardchecked,
                           }}
                           textBox={{
                             disabled:
@@ -580,23 +588,27 @@ export default class AddBillingForm extends Component {
                             error: this.state.errorInCard,
                             value: this.state.card_amount,
                             events: {
-                              onChange: cardtexthandle.bind(this, this, context)
+                              onChange: cardtexthandle.bind(
+                                this,
+                                this,
+                                context
+                              ),
                             },
                             others: {
                               placeholder: "0.00",
                               onBlur: cardtexthCal.bind(this, this, context),
-                              onFocus: e => {
+                              onFocus: (e) => {
                                 e.target.oldvalue = e.target.value;
-                              }
-                            }
+                              },
+                            },
                           }}
                         />
                         <AlagehFormGroup
                           div={{
-                            className: "col no-padding-left-right  mandatory"
+                            className: "col no-padding-left-right  mandatory",
                           }}
                           label={{
-                            fieldName: "card_check_number"
+                            fieldName: "card_check_number",
                           }}
                           textBox={{
                             // card: { creditCard: true },
@@ -608,26 +620,26 @@ export default class AddBillingForm extends Component {
                             name: "card_number",
                             value: this.state.card_number,
                             events: {
-                              onChange: texthandle.bind(this, this, context)
+                              onChange: texthandle.bind(this, this, context),
                             },
                             others: {
                               disabled:
                                 this.state.savedData === true
                                   ? true
-                                  : !this.state.Cardchecked
+                                  : !this.state.Cardchecked,
                               // placeholder: "0000-0000-0000-0000"
-                            }
+                            },
                           }}
                         />
 
                         <AlgaehDateHandler
                           div={{ className: "col" }}
                           label={{
-                            fieldName: "expiry_date"
+                            fieldName: "expiry_date",
                           }}
                           textBox={{
                             className: "txt-fld",
-                            name: "card_date"
+                            name: "card_date",
                           }}
                           disabled={
                             this.state.savedData === true
@@ -636,7 +648,7 @@ export default class AddBillingForm extends Component {
                           }
                           minDate={new Date()}
                           events={{
-                            onChange: datehandle.bind(this, this, context)
+                            onChange: datehandle.bind(this, this, context),
                           }}
                           value={this.state.card_date}
                         />
@@ -758,7 +770,7 @@ export default class AddBillingForm extends Component {
                         <div className="col-lg-5">
                           <AlgaehLabel
                             label={{
-                              fieldName: "unbalanced_amount"
+                              fieldName: "unbalanced_amount",
                             }}
                           />
                           <h6>

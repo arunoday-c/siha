@@ -15,6 +15,7 @@ import {
 import AlgaehFileUploader from "../Wrapper/algaehFileUpload";
 import { newAlgaehApi, useQueryParams } from "../../hooks/";
 import GenericData from "../../utils/GlobalVariables.json";
+import { FrontdeskContext } from "./FrontdeskContext";
 import { useLangFieldName } from "./patientHooks";
 const { TabPane } = Tabs;
 const { FORMAT_GENDER, FORMAT_MARTIALSTS } = GenericData;
@@ -50,7 +51,8 @@ async function getDemoData() {
 export function Demographics({ control, setValue, errors }) {
   const queryParams = useQueryParams();
   const patient_code = queryParams.get("patient_code");
-  const disabled = !!patient_code;
+  const { savedPatient } = useContext(FrontdeskContext);
+  const disabled = !!patient_code || !!savedPatient?.patient_code;
   const { country_id: country, state_id, date_of_birth } = useWatch({
     control,
     name: ["country_id", "state_id", "date_of_birth"],
@@ -858,7 +860,151 @@ export function Demographics({ control, setValue, errors }) {
               }
               key="otherInfo"
             >
-              Other Info
+              <div className="hptl-phase1-add-other-form">
+                {/* <div className="main-details" /> */}
+                <div className="col-lg-12">
+                  <div className="row" style={{ paddingBottom: "10px" }}>
+                    <Controller
+                      control={control}
+                      name="secondary_contact_number"
+                      render={(props) => (
+                        <AlgaehFormGroup
+                          div={{ className: "col" }}
+                          label={{
+                            fieldName: "secondary_contact_number",
+                          }}
+                          textBox={{
+                            ...props,
+                            className: "txt-fld",
+                            name: "secondary_contact_number",
+                            placeholder: "(+01)123-456-7890",
+                            type: "number",
+                            disabled,
+                          }}
+                        />
+                      )}
+                    />
+
+                    <Controller
+                      control={control}
+                      name="emergency_contact_number"
+                      render={(props) => (
+                        <AlgaehFormGroup
+                          div={{ className: "col" }}
+                          label={{
+                            fieldName: "emergency_contact_number",
+                          }}
+                          textBox={{
+                            ...props,
+                            className: "txt-fld",
+                            name: "emergency_contact_number",
+                            placeholder: "(+01)123-456-7890",
+                            type: "number",
+                          }}
+                        />
+                      )}
+                    />
+
+                    <Controller
+                      control={control}
+                      name="emergency_contact_name"
+                      render={(props) => (
+                        <AlgaehFormGroup
+                          div={{ className: "col" }}
+                          label={{
+                            fieldName: "emergency_contact_name",
+                          }}
+                          textBox={{
+                            className: "txt-fld",
+                            name: "emergency_contact_name",
+                            ...props,
+                            disabled,
+                          }}
+                        />
+                      )}
+                    />
+
+                    <Controller
+                      control={control}
+                      name="relationship_with_patient"
+                      render={(props) => (
+                        <AlgaehFormGroup
+                          div={{ className: "col" }}
+                          label={{
+                            fieldName: "relationship_with_patient",
+                          }}
+                          textBox={{
+                            className: "txt-fld",
+                            name: "relationship_with_patient",
+                            ...props,
+                            disabled,
+                          }}
+                        />
+                      )}
+                    />
+
+                    <Controller
+                      control={control}
+                      name="email"
+                      render={(props) => (
+                        <AlgaehFormGroup
+                          div={{ className: "col" }}
+                          label={{
+                            fieldName: "email",
+                          }}
+                          textBox={{
+                            className: "txt-fld",
+                            name: "email",
+                            placeholder: "Enter Email Address",
+                            type: "email",
+                            disabled,
+                          }}
+                        />
+                      )}
+                    />
+                  </div>
+                  <div className="row" style={{ paddingBottom: "10px" }}>
+                    <Controller
+                      control={control}
+                      name="postal_code"
+                      render={(props) => (
+                        <AlgaehFormGroup
+                          div={{ className: "col-lg-3" }}
+                          label={{
+                            fieldName: "postal_code",
+                          }}
+                          textBox={{
+                            className: "txt-fld",
+                            name: "postal_code",
+                            ...props,
+                          }}
+                        />
+                      )}
+                    />
+
+                    <Controller
+                      control={control}
+                      name="address2"
+                      render={(props) => (
+                        <AlgaehFormGroup
+                          div={{ className: "col" }}
+                          label={{
+                            fieldName: "address2",
+                          }}
+                          textBox={{
+                            className: "txt-fld",
+                            name: "address2",
+                            ...props,
+                            disabled,
+                            placeholder: "Enter Full Address 2",
+                          }}
+                        />
+                      )}
+                    />
+                  </div>
+                </div>
+              </div>
+              )}
             </TabPane>
           </Tabs>
         </div>
