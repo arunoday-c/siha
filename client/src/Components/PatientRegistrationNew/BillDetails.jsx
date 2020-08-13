@@ -87,7 +87,7 @@ export function BillDetails({ control, trigger, setValue, patient = null }) {
     doctor_id,
     primary_network_office_id,
     setBillInfo,
-    disabled,
+    disabled: globalDisable,
     savedPatient,
   } = useContext(FrontdeskContext);
   // const disabled = !!bill_number && !!receipt_number;
@@ -148,6 +148,8 @@ export function BillDetails({ control, trigger, setValue, patient = null }) {
   );
 
   const [billData, setBillData] = useState(null);
+
+  const disabled = globalDisable || !billData;
 
   useEffect(() => {
     if (billData) {
