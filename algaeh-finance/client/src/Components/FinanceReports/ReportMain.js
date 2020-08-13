@@ -21,16 +21,23 @@ export default function ReportMain({
           selectedFilter={selectedFilter}
           layout={layout}
           dates={dates}
+          type="balance"
         />
       );
     case "PL":
       return (
-        <PnLReport
+        <Balance
           selectedFilter={selectedFilter}
           layout={layout}
-          finOptions={finOptions}
-          organization={organization}
+          dates={dates}
+          type="pandl"
         />
+        // <PnLReport
+        //   selectedFilter={selectedFilter}
+        //   layout={layout}
+        //   finOptions={finOptions}
+        //   organization={organization}
+        // />
       );
     case "TB":
       return (

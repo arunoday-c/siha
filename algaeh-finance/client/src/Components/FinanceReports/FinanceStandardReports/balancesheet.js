@@ -13,9 +13,11 @@ export default function BalanceSheet({
   layout,
   dates,
   selectedFilter,
+  type,
 }) {
   const [columns, setColumns] = useState([]);
   const [data, setData] = useState([]);
+  const [firstLevel, setFirstLevel] = useState([]);
   const [stopLoading, setStopLoading] = useState(undefined);
   const [preview, setPreview] = useState(undefined);
   const [rangeDate, setRangeDate] = useState([dates[0], dates[1]]);
@@ -77,19 +79,22 @@ export default function BalanceSheet({
           },
         ];
         setFilter(newFilter);
+        setFirstLevel([]);
         setReportType(filterKey);
       } else {
         setFilter([
+          {
+            className: "col-3 form-group",
+            type: "DH|RANGE",
+            data: "RANGE",
+          },
+        ]);
+        setFirstLevel([
           {
             className: "col-2 form-group",
             type: "AC",
             data: "BASEDON",
             initalStates: "by_year",
-          },
-          {
-            className: "col-3 form-group",
-            type: "DH|RANGE",
-            data: "RANGE",
           },
         ]);
         setReportType("balancesheet");
@@ -97,15 +102,17 @@ export default function BalanceSheet({
     } else {
       setFilter([
         {
+          className: "col-3 form-group",
+          type: "DH|RANGE",
+          data: "RANGE",
+        },
+      ]);
+      setFirstLevel([
+        {
           className: "col-2 form-group",
           type: "AC",
           data: "BASEDON",
           initalStates: "by_year",
-        },
-        {
-          className: "col-3 form-group",
-          type: "DH|RANGE",
-          data: "RANGE",
         },
       ]);
     }
@@ -145,9 +152,12 @@ export default function BalanceSheet({
       prev_from_date = prevDateRange[0].format("YYYY-MM-DD");
       prev_to_date = prevDateRange[1].format("YYYY-MM-DD");
     }
-
+    let uri = "/balanceSheetComparison/getBalanceSheet";
+    if (type === "pandl") {
+      uri = "/pl_comparison/getPlComparison";
+    }
     newAlgaehApi({
-      uri: "/balanceSheetComparison/getBalanceSheet",
+      uri: uri,
       module: "finance",
       data: {
         from_date,
@@ -164,25 +174,11 @@ export default function BalanceSheet({
       .then((response) => {
         const { records } = response.data;
 
-        const { columns: col, asset, liabilities } = records;
-        let cols = col.map((item) => {
-          return {
-            fieldName: item.column_id,
-            label: item.label,
-          };
-        });
-        cols.unshift({
-          fieldName: "label",
-          label: "Ledger Name",
-          freezable: true,
-        });
-        let details = [];
-        //For asset
-        details.push(asset);
-        //For liabilities
-        details.push(liabilities);
-        setColumns(cols);
-        setData(details);
+        if (type === "balance") {
+          forBalanceComparision(records);
+        } else if (type === "pandl") {
+          forPandLComparision(records);
+        }
         if (typeof stopLoading === "function") stopLoading();
       })
       .catch((error) => {
@@ -192,6 +188,61 @@ export default function BalanceSheet({
           display: error.message,
         });
       });
+  }
+  function forBalanceComparision(records) {
+    const { columns: col, asset, liabilities } = records;
+    let cols = col.map((item) => {
+      return {
+        fieldName: item.column_id,
+        label: item.label,
+      };
+    });
+    cols.unshift({
+      fieldName: "label",
+      label: "Ledger Name",
+      freezable: true,
+    });
+    let details = [];
+    //For asset
+    details.push(asset);
+    //For liabilities
+    details.push(liabilities);
+    setColumns(cols);
+    setData(details);
+  }
+  function forPandLComparision(records) {
+    const { columns, income, Direct_expense, Indirect_expense } = records;
+    let cols = columns.map((col) => {
+      const { column_id, label } = col;
+      return {
+        fieldName: column_id,
+        label: label,
+      };
+    });
+
+    cols.unshift({
+      fieldName: "label",
+      label: "Ledger Name",
+      freezable: true,
+      // filterable: true
+    });
+    setColumns(cols);
+    let createBox = [];
+    //For income
+    createBox.push(income);
+    //For Direct Expense
+    createBox.push(Direct_expense);
+    //For Indirect Expense
+    //For Indirect Expense
+    if (Array.isArray(Indirect_expense)) {
+      Indirect_expense.forEach((item) => {
+        createBox.push(item);
+      });
+    } else {
+      createBox.push(Indirect_expense);
+    }
+    setData(createBox);
+    console.log("Here done");
   }
 
   function loadBalanceSheet(excel) {
@@ -214,8 +265,13 @@ export default function BalanceSheet({
         ? "T"
         : "M";
     //balanceSheet_report/getBalanceSheet?from_date=2018-01-28&to_date=2020-08-20&display_column_by=[M,Y,T,CC]
+    ///profit_and_loss_report/getProfitAndLoss?from_date=2019-01-28&to_date=2020-08-20&display_column_by=[M,Y,T,CC]
+    let uri = "/balanceSheet_report/getBalanceSheet";
+    if (type === "pandl") {
+      uri = "/profit_and_loss_report/getProfitAndLoss";
+    }
     newAlgaehApi({
-      uri: "/balanceSheet_report/getBalanceSheet", //"/financeReports/getBalanceSheet",
+      uri: uri,
       module: "finance",
       data: {
         from_date: f_date,
@@ -228,39 +284,12 @@ export default function BalanceSheet({
     })
       .then((res) => {
         const { records } = res.data;
-        const { columns, asset, liabilities } = records;
-        let cols = [];
-        cols = columns.map((item) => {
-          return { fieldName: item.column_id, label: item.label };
-        });
-        cols.unshift({
-          fieldName: "label",
-          label: "Ledger Name",
-          freezable: true,
-        });
-        setColumns(cols);
-        let details = [];
-        //For asset
-        details.push(asset);
-        //For liabilities
-        details.push(liabilities);
-        setData(details);
-        // if (excel) {
-        //   handleFile(res.data, "balance_sheet");
-        // } else {
-        //   const { asset, liabilities } = res.data.result;
-        //   let records = [];
-        //   //For asset
-        //   records.push(asset);
-        //   //For liabilities
-        //   records.push(liabilities);
+        if (type === "balance") {
+          forBalanceSheet(records);
+        } else if (type === "pandl") {
+          forPandL(records);
+        }
 
-        //   setColumns([
-        //     { fieldName: "label", label: "Ledger Name", freezable: true },
-        //     { fieldName: "subtitle", label: "Total" },
-        //   ]);
-        //   setData(records);
-        // }
         if (typeof stopLoading === "function") stopLoading();
       })
       .catch((e) => {
@@ -271,6 +300,72 @@ export default function BalanceSheet({
         });
       });
   }
+  function forPandL(records) {
+    const {
+      columns,
+      income,
+      Direct_expense,
+      Indirect_expense,
+      gross_profit,
+      net_profit,
+    } = records;
+    let cols = [];
+    cols = columns.map((item) => {
+      return { fieldName: item.column_id, label: item.label };
+    });
+    cols.unshift({
+      fieldName: "label",
+      label: "Ledger Name",
+      freezable: true,
+    });
+    setColumns(cols);
+    let details = [];
+    //for Income
+    if (Array.isArray(income)) {
+      income.forEach((item) => {
+        details.push(item);
+      });
+    } else {
+      details.push(income);
+    }
+    //for Direct_expense
+    if (Array.isArray(Direct_expense)) {
+      Direct_expense.forEach((item) => {
+        details.push(item);
+      });
+    } else {
+      details.push(Direct_expense);
+    }
+    //for Indirect_expense
+    if (Array.isArray(Indirect_expense)) {
+      Indirect_expense.forEach((item) => {
+        details.push(item);
+      });
+    } else {
+      details.push(Indirect_expense);
+    }
+    setData(details);
+  }
+  function forBalanceSheet(records) {
+    const { columns, asset, liabilities } = records;
+    let cols = [];
+    cols = columns.map((item) => {
+      return { fieldName: item.column_id, label: item.label };
+    });
+    cols.unshift({
+      fieldName: "label",
+      label: "Ledger Name",
+      freezable: true,
+    });
+    setColumns(cols);
+    let details = [];
+    //For asset
+    details.push(asset);
+    //For liabilities
+    details.push(liabilities);
+    setData(details);
+  }
+
   function filterBuilder(existing, updated) {
     const newFilter = existing.concat(updated);
     return newFilter;
@@ -280,38 +375,7 @@ export default function BalanceSheet({
     <>
       <div className="row inner-top-search">
         <Filter
-          filters={filterBuilder(
-            [
-              // {
-              //   className: "col-2 form-group",
-              //   type: "AC",
-              //   data: "PERIOD",
-              //   initalStates: "TMTD",
-              //   dependent: ["Range"],
-              // },
-              // {
-              //   className: "col-3 form-group",
-              //   type: "DH|RANGE",
-              //   data: "RANGE",
-              //   initalStates: rangeDate,
-              //   onChange: (selected, val, cb) => {
-              //     if (filter.length > 0) {
-              //       const frdt = selected[0].clone();
-              //       const tdt = selected[1].clone();
-              //       const previousfrom = frdt.subtract(1, "years");
-              //       const previousto = tdt.subtract(1, "years");
-              //       cb({
-              //         PREVIOUSRANGE: [previousfrom, previousto],
-              //         RANGE: selected,
-              //       });
-              //     } else {
-              //       cb({ RANGE: selected });
-              //     }
-              //   },
-              // },
-            ],
-            filter
-          )}
+          filters={[firstLevel, filterBuilder([], filter)]}
           callBack={(inputs, cb) => {
             const { PREVIOUSRANGE, RANGE, BASEDON } = inputs;
             setRangeDate(RANGE);
@@ -330,7 +394,7 @@ export default function BalanceSheet({
       </div>
 
       <ReportLayout
-        title={`Balance Sheet ${
+        title={`${type === "pandl" ? "Profit and Loss" : "Balance Sheet"}  ${
           reportType === "comparison" ? "Comparison" : ""
         }`}
         columns={preview === undefined ? [] : columns}
