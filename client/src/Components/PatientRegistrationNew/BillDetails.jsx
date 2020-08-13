@@ -28,7 +28,7 @@ const getBillDetails = async (
     primary_insurance_provider_id,
     primary_network_id,
     primary_network_office_id,
-    prevVisits
+    prevVisits,
   }
 ) => {
   const details = await newAlgaehApi({
@@ -88,9 +88,11 @@ const checkVisits = async (
 
 export function BillDetails({ control, trigger, setValue, patient = null }) {
   const [visible, setVisible] = useState(false);
-  const { default_nationality_id, local_vat_applicable, service_dis_percentage } = useContext(
-    MainContext
-  );
+  const {
+    default_nationality_id,
+    local_vat_applicable,
+    service_dis_percentage,
+  } = useContext(MainContext);
   const {
     services_id,
     sub_department_id,
@@ -119,10 +121,15 @@ export function BillDetails({ control, trigger, setValue, patient = null }) {
       "primary_insurance_provider_id",
       "primary_network_id",
       "primary_network_office_id",
+      "cash_amount",
+      "credit_amount",
+      "card_amount",
+      "advance_adjust",
+      "sheet_discount_amount",
+      "sheet_discount_percentage",
     ],
   });
 
-  
   const { isLoading: visitLoading, data: prevVisits } = useQuery(
     [
       "checkVisits",
@@ -168,10 +175,10 @@ export function BillDetails({ control, trigger, setValue, patient = null }) {
   const [billData, setBillData] = useState(null);
 
   useEffect(() => {
-    if(billData){
-      setBillData(null)
+    if (billData) {
+      setBillData(null);
     }
-  }, [services_id])
+  }, [services_id]);
 
   function calculateBillDetails(billData = {}) {
     const sendingObject = { ...billData };
@@ -216,71 +223,76 @@ export function BillDetails({ control, trigger, setValue, patient = null }) {
   }
 
   useEffect(() => {
-    const sendingObject = {...billData}
-    console.log(sendingObject)
-    
-  }, [cash_amount, card_amount, credit_amount,sheet_discount_percentage, sheet_discount_amount, advance_adjust ])
-    // else {
-    //   //Reciept
+    const sendingObject = { ...billData };
+    console.log(sendingObject);
+  }, [
+    cash_amount,
+    card_amount,
+    credit_amount,
+    sheet_discount_percentage,
+    sheet_discount_amount,
+    advance_adjust,
+  ]);
+  // else {
+  //   //Reciept
 
-    //   if (inputParam.isReceipt == false) {
-    //     // Sheet Level Discount Nullify
-    //     sendingObject.sheet_discount_percentage = 0;
-    //     sendingObject.sheet_discount_amount = 0;
+  //   if (inputParam.isReceipt == false) {
+  //     // Sheet Level Discount Nullify
+  //     sendingObject.sheet_discount_percentage = 0;
+  //     sendingObject.sheet_discount_amount = 0;
 
-    //     if (inputParam.sheet_discount_amount > 0) {
-    //       sendingObject.sheet_discount_percentage =
-    //         (inputParam.sheet_discount_amount / inputParam.gross_total) * 100;
+  //     if (inputParam.sheet_discount_amount > 0) {
+  //       sendingObject.sheet_discount_percentage =
+  //         (inputParam.sheet_discount_amount / inputParam.gross_total) * 100;
 
-    //       sendingObject.sheet_discount_amount =
-    //         inputParam.sheet_discount_amount;
-    //     } else if (inputParam.sheet_discount_percentage > 0) {
-    //       sendingObject.sheet_discount_percentage =
-    //         inputParam.sheet_discount_percentage;
-    //       sendingObject.sheet_discount_amount =
-    //         (inputParam.gross_total * inputParam.sheet_discount_percentage) /
-    //         100;
-    //     }
+  //       sendingObject.sheet_discount_amount =
+  //         inputParam.sheet_discount_amount;
+  //     } else if (inputParam.sheet_discount_percentage > 0) {
+  //       sendingObject.sheet_discount_percentage =
+  //         inputParam.sheet_discount_percentage;
+  //       sendingObject.sheet_discount_amount =
+  //         (inputParam.gross_total * inputParam.sheet_discount_percentage) /
+  //         100;
+  //     }
 
-    //     sendingObject.sheet_discount_amount = sendingObject.sheet_discount_amount.toFixed(
-    //       2
-    //     );
-    //     sendingObject.sheet_discount_percentage = sendingObject.sheet_discount_percentage.toFixed(
-    //       2
-    //     );
+  //     sendingObject.sheet_discount_amount = sendingObject.sheet_discount_amount.toFixed(
+  //       2
+  //     );
+  //     sendingObject.sheet_discount_percentage = sendingObject.sheet_discount_percentage.toFixed(
+  //       2
+  //     );
 
-    //     sendingObject.net_amount =
-    //       inputParam.gross_total - sendingObject.sheet_discount_amount;
+  //     sendingObject.net_amount =
+  //       inputParam.gross_total - sendingObject.sheet_discount_amount;
 
-    //     if (inputParam.credit_amount > 0) {
-    //       sendingObject.receiveable_amount =
-    //         sendingObject.net_amount -
-    //         inputParam.advance_adjust -
-    //         inputParam.credit_amount;
-    //     } else {
-    //       sendingObject.receiveable_amount =
-    //         sendingObject.net_amount - inputParam.advance_adjust;
-    //     }
+  //     if (inputParam.credit_amount > 0) {
+  //       sendingObject.receiveable_amount =
+  //         sendingObject.net_amount -
+  //         inputParam.advance_adjust -
+  //         inputParam.credit_amount;
+  //     } else {
+  //       sendingObject.receiveable_amount =
+  //         sendingObject.net_amount - inputParam.advance_adjust;
+  //     }
 
-    //     sendingObject.cash_amount = sendingObject.receiveable_amount;
-    //     sendingObject.card_amount = 0;
-    //     sendingObject.cheque_amount = 0;
-    //   } else {
-    //     sendingObject.card_amount = inputParam.card_amount;
-    //     sendingObject.cheque_amount = inputParam.cheque_amount;
-    //     sendingObject.cash_amount = inputParam.cash_amount;
-    //     sendingObject.receiveable_amount = inputParam.receiveable_amount;
-    //   }
+  //     sendingObject.cash_amount = sendingObject.receiveable_amount;
+  //     sendingObject.card_amount = 0;
+  //     sendingObject.cheque_amount = 0;
+  //   } else {
+  //     sendingObject.card_amount = inputParam.card_amount;
+  //     sendingObject.cheque_amount = inputParam.cheque_amount;
+  //     sendingObject.cash_amount = inputParam.cash_amount;
+  //     sendingObject.receiveable_amount = inputParam.receiveable_amount;
+  //   }
 
-    //   sendingObject.total_amount =
-    //     sendingObject.cash_amount +
-    //     sendingObject.card_amount +
-    //     sendingObject.cheque_amount;
+  //   sendingObject.total_amount =
+  //     sendingObject.cash_amount +
+  //     sendingObject.card_amount +
+  //     sendingObject.cheque_amount;
 
-    //   sendingObject.unbalanced_amount =
-    //     sendingObject.receiveable_amount - sendingObject.total_amount;
-    // }
-  
+  //   sendingObject.unbalanced_amount =
+  //     sendingObject.receiveable_amount - sendingObject.total_amount;
+  // }
 
   // const { isLoading: calcLoading, data: billData } = useQuery(
   //   ["billCalculations", { billInfo }],
@@ -347,15 +359,17 @@ export function BillDetails({ control, trigger, setValue, patient = null }) {
       staleTime: Infinity,
       cacheTime: Infinity,
       retry: 3,
-      onSuccess: (data) => {
-        setValue("shift_id", data[0]?.shift_id);
-      },
       onError: (err) => {
         console.log(err);
       },
     }
   );
 
+  useEffect(() => {
+    if (shiftMappings?.length) {
+      setValue("shift_id", shiftMappings[0]?.shift_id);
+    }
+  }, [shiftMappings, patient]);
 
   const follow_up = !!prevVisits?.length;
 
@@ -520,7 +534,8 @@ export function BillDetails({ control, trigger, setValue, patient = null }) {
                       textBox={{
                         // defaultValue: billData?.sheet_discount_percentage,
                         className: "txt-fld",
-                        disabled: !parseInt(service_dis_percentage, 10) || disabled,
+                        disabled:
+                          !parseInt(service_dis_percentage, 10) || disabled,
                         name: "sheet_discount_percentage",
                         ...props,
                         placeholder: "0.00",
@@ -540,7 +555,8 @@ export function BillDetails({ control, trigger, setValue, patient = null }) {
                       }}
                       textBox={{
                         className: "txt-fld",
-                        disabled: !parseInt(service_dis_percentage, 10) || disabled,
+                        disabled:
+                          !parseInt(service_dis_percentage, 10) || disabled,
                         name: "sheet_discount_amount",
                         ...props,
                         placeholder: "0.00",
