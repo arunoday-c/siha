@@ -4,42 +4,73 @@
     <div class="print-body">
 
         <section>
+            {{!-- <table class="tableForLabel" cell-padding="0">
+                <tr>
+                    <td><label class="textEnLft">Total Employees</label>:<span class="valueText">{{no_employees}}</span>
+                    </td>
+                </tr>
+            </table> --}}
+
+
+        </section>
+        <section>
             <table class="tableForData" cell-padding="0">
                 <thead>
                     <tr>
                         <th>Sl No.</th>
-                        <th>Username</th>
-                        <th>Bill Number</th>
-                        <th>Bill Date</th>
-                        <th>Bill Amount</th>
+                        <th>Patient Code</th>
+                        <th>Patient Name</th>
+                        <th>Visit No.</th>
+                        <th>Visit Date</th>
+                        <th>Bill No.</th>
+                        <th>Bill Date.</th>
+                        <th>Net Amount</th>
                     </tr>
+
                 </thead>
                 <tbody>
+                    {{!-- <tr>
+                        <td colspan="10"></td>
+                        <td colspan="1"><span class="textFloatRight">Total No.
+                                Employees: <b>{{no_employees}}</b></span></td>
+
+                    </tr> --}}
                     {{#hasElement result}}
+
 
                     {{#each result}}
                     <tr>
-                        <td colspan="2" class="tableSubHdg">Users: {{user}}<span class="textFloatRight">No Employees:
-                                {{no_bill}} | {{totalNet}}</span>
-                        </td>
+                        <td colspan="8" class="tableSubHdg">{{cashier_name}}</td>
+
                     </tr>
-                    {{#each details}}
+                    {{#each doctors}}
+                    <tr>
+                        <td colspan="7" class="tableSubHdg2">{{service_name}}
+                        </td>
+                        <td class="tableSubHdg2 numberFld"><b>{{totalAmt}}</b></td>
+                    </tr>
+                    {{#each docs}}
                     <tr>
                         <td>{{inc @index}}</td>
-                        <td class="txtFld">{{user_display_name}}</td>
-                        <td class="txtFld">{{bill_number}}</td>
-                        <td class="">{{bill_date}}</td>
-                        <td class="numberFld">{{net_amount}}</td>
+                        <td>{{patient_code}}</td>
+                        <td excelborder='{"top":{"style":"thin","color":{"argb":"dddddd"}},"left":{"style":"thin","color":{"argb":"dddddd"}},"bottom":{"style":"thin","color":{"argb":"dddddd"}},"right":{"style":"thin","color":{"argb":"dddddd"}}}'
+                            class="txtFld">{{full_name}}</td>
+                        <td>{{visit_code}}</td>
+                        <td>{{visit_date}}</td>
+                        <td>{{bill_number}}</td>
+                        <td>{{bill_date}}</td>
+                        <td class="numberFld">{{net_amout}}</td>
                     </tr>
-                    {{/each }}
-                    {{/each }}
+                    {{/each }}{{/each }}{{/each }}
                     {{else}}
                     <tr>
-                        <td colspan="3" class="noResultTextReport">No Records Found</td>
+                        <td colspan="8  " class="noResultTextReport">No Records Found</td>
                     </tr>{{/hasElement }}
                 </tbody>
+
             </table>
         </section>
         {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
+
     </div>
 </body>

@@ -150,23 +150,23 @@ export default function Income({ hospital_id, RECEIPT_TYPE, cashier_id }) {
         pageSize: "A4",
         pageOrentation: "portrait", //"portrait",
         reportParameters: [
-          // {
-          //   className: "col-3 form-group mandatory",
-          //   type: "dropdown",
-          //   name: "hospital_id",
-          //   initialLoad: true,
-          //   isImp: true,
-          //   label: "Branch",
-          //   link: {
-          //     uri: "/organization/getOrganizationByUser",
-          //   },
-          //   value: hospital_id,
-          //   dataSource: {
-          //     textField: "hospital_name",
-          //     valueField: "hims_d_hospital_id",
-          //     data: undefined,
-          //   },
-          // },
+          {
+            className: "col-3 form-group mandatory",
+            type: "dropdown",
+            name: "hospital_id",
+            initialLoad: true,
+            isImp: true,
+            label: "Branch",
+            link: {
+              uri: "/organization/getOrganizationByUser",
+            },
+            value: hospital_id,
+            dataSource: {
+              textField: "hospital_name",
+              valueField: "hims_d_hospital_id",
+              data: undefined,
+            },
+          },
           {
             className: "col-3 form-group mandatory",
             type: "date",
