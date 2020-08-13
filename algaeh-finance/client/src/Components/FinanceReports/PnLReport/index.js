@@ -306,12 +306,12 @@ export default function PnLReport({
       colType = "comparison";
     }
     switch (colType) {
-      case "by_year":
-        return <ByYear data={data} layout={layout} />;
-      case "by_center":
-        return <ByCostCenter data={data} layout={layout} />;
-      case "total":
-        return <PnLTree data={data} layout={layout} style={style} />;
+      // case "by_year":
+      //   return <ByYear data={data} layout={layout} />;
+      // case "by_center":
+      //   return <ByCostCenter data={data} layout={layout} />;
+      // case "total":
+      //   return <PnLTree data={data} layout={layout} style={style} />;
       case "comparison":
         return <Comparision data={data} layout={layout} />;
       default:
@@ -350,80 +350,82 @@ export default function PnLReport({
     <>
       <div className="row inner-top-search">
         <Filter
-          filters={filterBuilder(
-            [
-              {
-                className: "col-2 form-group",
-                type: "AC",
-                data: {
-                  dataSource: {
-                    data: organization,
-                    valueField: "hims_d_hospital_id",
-                    textField: "hospital_name",
+          filters={[
+            filterBuilder(
+              [
+                {
+                  className: "col-2 form-group",
+                  type: "AC",
+                  data: {
+                    dataSource: {
+                      data: organization,
+                      valueField: "hims_d_hospital_id",
+                      textField: "hospital_name",
+                    },
+                  },
+                  title: "Branch",
+                  initalStates: String(branch_id),
+                  onChange: (value) => {
+                    onChangingBranch(value, true);
                   },
                 },
-                title: "Branch",
-                initalStates: String(branch_id),
-                onChange: (value) => {
-                  onChangingBranch(value, true);
+                {
+                  className: "col-2 form-group",
+                  type: "AC",
+                  data: "PERIOD",
+                  initalStates: "TMTD",
+                  dependent: ["RANGE"],
                 },
-              },
-              {
-                className: "col-2 form-group",
-                type: "AC",
-                data: "PERIOD",
-                initalStates: "TMTD",
-                dependent: ["RANGE"],
-              },
-              {
-                className: "col-3 form-group",
-                type: "DH|RANGE",
-                data: "YEAR",
-                title: "RANGE",
-                maxDate: moment(),
-                initalStates: [moment().startOf("month"), moment()],
-                onChange: (selected, val, cb) => {
-                  if (filter.length > 0) {
-                    const frdt = selected[0].clone();
-                    const tdt = selected[1].clone();
-                    const previousfrom = frdt.subtract(1, "years");
-                    const previousto = tdt.subtract(1, "years");
-                    cb({
-                      PREVIOUSRANGE: [previousfrom, previousto],
-                      RANGE: selected,
-                    });
-                  } else {
-                    cb({ RANGE: selected });
-                  }
-                },
-              },
-              {
-                className: "col-2 form-group",
-                type: "AC",
-                data: {
-                  dataSource: {
-                    data: costCenters,
-                    valueField: "cost_center_id",
-                    textField: "cost_center",
+                {
+                  className: "col-3 form-group",
+                  type: "DH|RANGE",
+                  data: "YEAR",
+                  title: "RANGE",
+                  maxDate: moment(),
+                  initalStates: [moment().startOf("month"), moment()],
+                  onChange: (selected, val, cb) => {
+                    if (filter.length > 0) {
+                      const frdt = selected[0].clone();
+                      const tdt = selected[1].clone();
+                      const previousfrom = frdt.subtract(1, "years");
+                      const previousto = tdt.subtract(1, "years");
+                      cb({
+                        PREVIOUSRANGE: [previousfrom, previousto],
+                        RANGE: selected,
+                      });
+                    } else {
+                      cb({ RANGE: selected });
+                    }
                   },
                 },
-                title: "COST CENTER",
-                initalStates:
-                  cost_center_id !== undefined
-                    ? String(cost_center_id)
-                    : cost_center_id,
-              },
-              {
-                className: "col-2 form-group",
-                type: "AC",
-                data: "BASEDON",
-                title: "Based on",
-                initalStates:
-                  columnType === "comparison" ? undefined : columnType,
-              },
-            ],
-            filter
-          )}
+                {
+                  className: "col-2 form-group",
+                  type: "AC",
+                  data: {
+                    dataSource: {
+                      data: costCenters,
+                      valueField: "cost_center_id",
+                      textField: "cost_center",
+                    },
+                  },
+                  title: "COST CENTER",
+                  initalStates:
+                    cost_center_id !== undefined
+                      ? String(cost_center_id)
+                      : cost_center_id,
+                },
+                {
+                  className: "col-2 form-group",
+                  type: "AC",
+                  data: "BASEDON",
+                  title: "Based on",
+                  initalStates:
+                    columnType === "comparison" ? undefined : columnType,
+                },
+              ],
+              filter
+            ),
+          ]}
           callBack={(inputs, cb) => {
             onloadReport(inputs, cb);
           }}
