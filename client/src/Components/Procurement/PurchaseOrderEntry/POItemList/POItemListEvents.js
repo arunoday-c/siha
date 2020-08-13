@@ -57,7 +57,7 @@ const extendCostHandle = ($this, context, e) => {
     value === ""
       ? 0
       : ((discount_amount / parseFloat($this.state.extended_price)) *
-        100).toFixed($this.state.decimal_places);
+        100).toFixed(6);
 
   const unit_cost = (
     parseFloat(value) / parseFloat($this.state.order_quantity)
