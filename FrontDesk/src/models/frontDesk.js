@@ -482,7 +482,7 @@ export function getDoctorAndDepartment(req, res, next) {
     _mysql
       .executeQuery({
         query: `
-        select E.hims_d_employee_id as employee_id, E.sub_department_id, E.full_name, E.arabic_name, E.services_id,
+        select distinct UE.employee_id, E.sub_department_id, E.full_name, E.arabic_name, E.services_id,
         SD.department_id, SD.sub_department_name, SD.arabic_sub_department_name, SD.department_type 
         from hims_d_employee E inner join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id 
         and  E.isdoctor='Y' inner join hims_d_department D on SD.department_id=D.hims_d_department_id 
