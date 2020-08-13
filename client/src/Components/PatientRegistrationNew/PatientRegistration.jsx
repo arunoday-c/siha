@@ -377,7 +377,7 @@ export function PatientRegistration() {
           }
           selectedLang={userLanguage}
         />
-        <div className="spacing-push">
+        <div className="spacing-push" style={{ marginBottom: "3rem" }}>
           <form>
             <div className="row">
               <div className="algaeh-md-12 algaeh-lg-12 algaeh-xl-8">
