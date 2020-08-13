@@ -23,7 +23,7 @@ export default function ProjectPayroll({
         pageOrentation: "landscape",
         reportParameters: [
           {
-            className: "col-2 form-group mandatory",
+            className: "col-3 form-group mandatory",
             type: "dropdown",
             name: "year",
             isImp: true,
@@ -39,7 +39,7 @@ export default function ProjectPayroll({
             // }
           },
           {
-            className: "col-2 form-group mandatory",
+            className: "col-3 form-group mandatory",
             type: "dropdown",
             sort: "off",
             name: "month",
@@ -56,7 +56,7 @@ export default function ProjectPayroll({
             },
           },
           {
-            className: "col-2 form-group mandatory",
+            className: "col-3 form-group mandatory",
             type: "dropdown",
             name: "hospital_id",
             initialLoad: true,
@@ -73,7 +73,7 @@ export default function ProjectPayroll({
             },
           },
           {
-            className: "col-2 form-group",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "project_id",
             initialLoad: true,
@@ -91,7 +91,7 @@ export default function ProjectPayroll({
             // }
           },
           {
-            className: "col-2 form-group",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "employee_group_id",
             initialLoad: true,
@@ -107,7 +107,7 @@ export default function ProjectPayroll({
             },
           },
           {
-            className: "col-2 form-group",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "department_id",
             initialLoad: true,
@@ -147,7 +147,7 @@ export default function ProjectPayroll({
             },
           },
           {
-            className: "col-2 form-group",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "sub_department_id",
             isImp: false,
@@ -159,7 +159,7 @@ export default function ProjectPayroll({
             },
           },
           {
-            className: "col-2 form-group",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "is_local",
             initialLoad: true,
@@ -186,7 +186,7 @@ export default function ProjectPayroll({
         pageOrentation: "landscape",
         reportParameters: [
           {
-            className: "col-2 form-group mandatory",
+            className: "col-3 form-group mandatory",
             type: "dropdown",
             name: "year",
             isImp: true,
@@ -202,7 +202,7 @@ export default function ProjectPayroll({
             // }
           },
           {
-            className: "col-2 form-group mandatory",
+            className: "col-3 form-group mandatory",
             type: "dropdown",
             sort: "off",
             name: "month",
@@ -219,7 +219,7 @@ export default function ProjectPayroll({
             },
           },
           {
-            className: "col-2 form-group mandatory",
+            className: "col-3 form-group mandatory",
             type: "dropdown",
             name: "hospital_id",
             initialLoad: true,
@@ -236,7 +236,7 @@ export default function ProjectPayroll({
             },
           },
           {
-            className: "col-2 form-group",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "project_id",
             initialLoad: true,
@@ -254,7 +254,7 @@ export default function ProjectPayroll({
             // }
           },
           {
-            className: "col-2 form-group",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "employee_group_id",
             initialLoad: true,
@@ -270,7 +270,7 @@ export default function ProjectPayroll({
             },
           },
           {
-            className: "col-2 form-group",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "department_id",
             initialLoad: true,
@@ -310,7 +310,7 @@ export default function ProjectPayroll({
             },
           },
           {
-            className: "col-2 form-group",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "sub_department_id",
             isImp: false,
@@ -322,7 +322,7 @@ export default function ProjectPayroll({
             },
           },
           {
-            className: "col-2 form-group",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "is_local",
             initialLoad: true,
@@ -349,7 +349,7 @@ export default function ProjectPayroll({
         pageOrentation: "landscape",
         reportParameters: [
           {
-            className: "col-2 form-group mandatory",
+            className: "col-3 form-group mandatory",
             type: "dropdown",
             name: "year",
             isImp: true,
@@ -365,7 +365,7 @@ export default function ProjectPayroll({
             // }
           },
           {
-            className: "col-2 form-group mandatory",
+            className: "col-3 form-group mandatory",
             type: "dropdown",
             sort: "off",
             name: "month",
@@ -382,7 +382,7 @@ export default function ProjectPayroll({
             },
           },
           {
-            className: "col-2 form-group mandatory",
+            className: "col-3 form-group mandatory",
             type: "dropdown",
             name: "hospital_id",
             initialLoad: true,
@@ -400,7 +400,7 @@ export default function ProjectPayroll({
           },
 
           {
-            className: "col-2 form-group",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "designation_id",
             initialLoad: true,
@@ -417,7 +417,7 @@ export default function ProjectPayroll({
             },
           },
           {
-            className: "col-2 form-group",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "project_id",
             initialLoad: true,
@@ -435,7 +435,7 @@ export default function ProjectPayroll({
             // }
           },
           {
-            className: "col-2 form-group",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "employee_group_id",
             initialLoad: true,
@@ -451,7 +451,7 @@ export default function ProjectPayroll({
             },
           },
           {
-            className: "col-2 form-group",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "is_local",
             initialLoad: true,
@@ -478,7 +478,7 @@ export default function ProjectPayroll({
         pageOrentation: "portrait",
         reportParameters: [
           {
-            className: "col-2 form-group mandatory",
+            className: "col-3 form-group mandatory",
             type: "dropdown",
             name: "year",
             isImp: true,
@@ -494,7 +494,7 @@ export default function ProjectPayroll({
             // }
           },
           {
-            className: "col-2 form-group mandatory",
+            className: "col-3 form-group mandatory",
             type: "dropdown",
             sort: "off",
             name: "month",
@@ -511,7 +511,7 @@ export default function ProjectPayroll({
             },
           },
           {
-            className: "col-2 form-group mandatory",
+            className: "col-3 form-group mandatory",
             type: "dropdown",
             name: "hospital_id",
             initialLoad: true,
@@ -529,7 +529,7 @@ export default function ProjectPayroll({
           },
 
           {
-            className: "col-2 form-group",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "designation_id",
             initialLoad: true,
@@ -546,7 +546,7 @@ export default function ProjectPayroll({
             },
           },
           {
-            className: "col-2 form-group",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "project_id",
             initialLoad: true,
@@ -564,7 +564,7 @@ export default function ProjectPayroll({
             // }
           },
           {
-            className: "col-2 form-group",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "employee_group_id",
             initialLoad: true,
@@ -580,7 +580,7 @@ export default function ProjectPayroll({
             },
           },
           {
-            className: "col-2 form-group",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "is_local",
             initialLoad: true,

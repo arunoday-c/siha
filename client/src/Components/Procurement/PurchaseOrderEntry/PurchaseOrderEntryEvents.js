@@ -6,6 +6,7 @@ import AlgaehSearch from "../../Wrapper/globalSearch";
 import spotlightSearch from "../../../Search/spotlightSearch.json";
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
 import POEntry from "../../../Models/POEntry";
+// import swal from "sweetalert2";
 import swal from "sweetalert2";
 
 let texthandlerInterval = null;
@@ -18,6 +19,15 @@ const texthandle = ($this, e) => {
     [name]: value,
   });
 };
+// const textComment = (e) => {
+//   debugger;
+//   let name = e.name || e.target.name;
+//   let value = e.value || e.target.value;
+
+//   this.setState({
+//     [name]: value,
+//   });
+// };
 
 const loctexthandle = ($this, e) => {
   let name = e.name || e.target.name;
@@ -579,7 +589,7 @@ const getData = ($this, po_from) => {
         type: "ITEM_CATEGORY_GET_DATA",
         mappingName: "poitemcategory",
       },
-      afterSuccess: (data) => { },
+      afterSuccess: (data) => {},
     });
 
     $this.props.getItemGroup({
@@ -1019,6 +1029,16 @@ const CancelPOEntry = ($this) => {
   swal({
     title: "Are you Sure you want to Reject?",
     type: "warning",
+    // html: `<div>
+    // <AlgaehLabel label={{ forceLabel: "Comments",}}/>
+
+    // </div >`,
+    input: "text",
+    inputPlaceholder: "Comments",
+    inputAttributes: {
+      autocapitalize: "off",
+      autocorrect: "off",
+    },
     showCancelButton: true,
     confirmButtonText: "Yes",
     confirmButtonColor: "#44b8bd",
@@ -1026,21 +1046,21 @@ const CancelPOEntry = ($this) => {
     cancelButtonText: "No",
   }).then((willReject) => {
     if (willReject.value) {
-      if ($this.state.comment === "" || $this.state.comment === null) {
-        swalMessage({
-          title: "While rejecting comments is mandatory.",
-          type: "warning",
-        });
-        return;
-      }
+      // if (willReject.value === "" || willReject.value === null) {
+      //   Swal.fire({
+      //     title: "While rejecting comments is mandatory.",
+      //     type: "warning",
+      //   });
+      //   return;
+      // }
       AlgaehLoader({ show: true });
       algaehApiCall({
         uri: "/PurchaseOrderEntry/cancelPurchaseOrderEntry",
         module: "procurement",
         data: {
-          comment: $this.state.comment,
+          comment: willReject.value,
           hims_f_procurement_po_header_id:
-            $this.state.hims_f_procurement_po_header_id
+            $this.state.hims_f_procurement_po_header_id,
         },
         method: "PUT",
         onSuccess: (response) => {
@@ -1060,6 +1080,12 @@ const CancelPOEntry = ($this) => {
           });
         },
       });
+    } else {
+      swal({
+        title: "While rejecting comments is mandatory.",
+        type: "warning",
+      });
+      return;
     }
   });
 };

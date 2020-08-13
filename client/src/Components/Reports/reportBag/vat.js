@@ -3,7 +3,7 @@ export default function Vat({
   moment,
   allYears,
   MONTHS,
-  algaehApiCall
+  algaehApiCall,
 }) {
   return {
     name: "VAT Reports",
@@ -16,59 +16,59 @@ export default function Vat({
         pageOrentation: "landscape", //"portrait",
         reportParameters: [
           {
-            className: "col-2 form-group mandatory",
+            className: "col-3 form-group mandatory",
             type: "dropdown",
             name: "hospital_id",
             initialLoad: true,
             isImp: true,
             label: "branch",
             link: {
-              uri: "/organization/getOrganizationByUser"
+              uri: "/organization/getOrganizationByUser",
             },
             value: hospital_id,
             dataSource: {
               textField: "hospital_name",
               valueField: "hims_d_hospital_id",
-              data: undefined
-            }
+              data: undefined,
+            },
           },
           {
-            className: "col-2 form-group mandatory",
+            className: "col-3 form-group mandatory",
             type: "date",
             name: "from_date",
             isImp: true,
             others: {
               maxDate: new Date(),
-              minDate: null
-            }
+              minDate: null,
+            },
           },
           {
-            className: "col-2 form-group mandatory",
+            className: "col-3 form-group mandatory",
             type: "date",
             name: "to_date",
             isImp: true,
             others: {
               maxDate: new Date(),
-              minDate: null
-            }
+              minDate: null,
+            },
           },
           {
-            className: "col-2 form-group",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "nationality_id",
             initialLoad: true,
             isImp: false,
             label: "nationality",
             link: {
-              uri: "/masters/get/nationality"
+              uri: "/masters/get/nationality",
             },
             dataSource: {
               textField: "nationality",
               valueField: "hims_d_nationality_id",
-              data: undefined
-            }
-          }
-        ]
+              data: undefined,
+            },
+          },
+        ],
       },
       {
         subitem: "Monthly VAT Report",
@@ -78,24 +78,24 @@ export default function Vat({
         pageOrentation: "landscape", //"portrait",
         reportParameters: [
           {
-            className: "col-2 form-group mandatory",
+            className: "col-3 form-group mandatory",
             type: "dropdown",
             name: "hospital_id",
             initialLoad: true,
             isImp: true,
             label: "branch",
             link: {
-              uri: "/organization/getOrganizationByUser"
+              uri: "/organization/getOrganizationByUser",
             },
             value: hospital_id,
             dataSource: {
               textField: "hospital_name",
               valueField: "hims_d_hospital_id",
-              data: undefined
-            }
+              data: undefined,
+            },
           },
           {
-            className: "col-2 form-group",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "year",
             isImp: true,
@@ -104,11 +104,11 @@ export default function Vat({
             dataSource: {
               textField: "name",
               valueField: "value",
-              data: allYears
-            }
+              data: allYears,
+            },
           },
           {
-            className: "col-2 form-group",
+            className: "col-3 form-group",
             type: "dropdown",
             sort: "off",
             name: "month",
@@ -118,13 +118,13 @@ export default function Vat({
             dataSource: {
               textField: "name",
               valueField: "value",
-              data: MONTHS
+              data: MONTHS,
             },
             others: {
-              sort: "off"
-            }
-          }
-        ]
+              sort: "off",
+            },
+          },
+        ],
       },
       {
         subitem: "Company wise VAT Report",
@@ -134,67 +134,67 @@ export default function Vat({
         pageOrentation: "landscape", //"portrait",
         reportParameters: [
           {
-            className: "col-2 form-group mandatory",
+            className: "col-3 form-group mandatory",
             type: "dropdown",
             name: "hospital_id",
             initialLoad: true,
             isImp: true,
             label: "branch",
             link: {
-              uri: "/organization/getOrganizationByUser"
+              uri: "/organization/getOrganizationByUser",
             },
             value: hospital_id,
             dataSource: {
               textField: "hospital_name",
               valueField: "hims_d_hospital_id",
-              data: undefined
-            }
+              data: undefined,
+            },
           },
           {
-            className: "col-2 form-group mandatory",
+            className: "col-3 form-group mandatory",
             type: "date",
             name: "from_date",
             isImp: true,
             others: {
               maxDate: new Date(),
-              minDate: null
-            }
+              minDate: null,
+            },
           },
           {
-            className: "col-2 form-group mandatory",
+            className: "col-3 form-group mandatory",
             type: "date",
             name: "to_date",
             isImp: true,
             others: {
               maxDate: new Date(),
-              minDate: null
-            }
+              minDate: null,
+            },
           },
           {
-            className: "col-2 form-group",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "nationality_id",
             initialLoad: true,
             isImp: false,
             label: "nationality",
             link: {
-              uri: "/masters/get/nationality"
+              uri: "/masters/get/nationality",
             },
             dataSource: {
               textField: "nationality",
               valueField: "hims_d_nationality_id",
-              data: undefined
-            }
+              data: undefined,
+            },
           },
           {
-            className: "col-2 form-group",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "",
             initialLoad: true,
             isImp: false,
             label: "Company",
             link: {
-              uri: "/insurance/getInsuranceProviders"
+              uri: "/insurance/getInsuranceProviders",
             },
             events: {
               onChange: (reportState, currentEvent) => {
@@ -205,26 +205,26 @@ export default function Vat({
                   method: "GET",
                   data: { hospital_id: currentEvent.value },
 
-                  onSuccess: result => {
+                  onSuccess: (result) => {
                     reportState.setState({
-                      location_id_list: result.data.records
+                      location_id_list: result.data.records,
                     });
-                  }
+                  },
                 });
               },
               onClear: (reportState, currentName) => {
                 reportState.setState({
                   [currentName]: undefined,
-                  location_id_list: []
+                  location_id_list: [],
                 });
-              }
+              },
             },
             dataSource: {
               textField: "insurance_provider_name",
-              valueField: "hims_d_insurance_provider_id"
-            }
-          }
-        ]
+              valueField: "hims_d_insurance_provider_id",
+            },
+          },
+        ],
       },
       {
         subitem: "Patient Wise VAT Report",
@@ -234,67 +234,67 @@ export default function Vat({
         pageOrentation: "landscape", //"portrait",
         reportParameters: [
           {
-            className: "col-2 form-group mandatory",
+            className: "col-3 form-group mandatory",
             type: "dropdown",
             name: "hospital_id",
             initialLoad: true,
             isImp: true,
             label: "branch",
             link: {
-              uri: "/organization/getOrganizationByUser"
+              uri: "/organization/getOrganizationByUser",
             },
             value: hospital_id,
             dataSource: {
               textField: "hospital_name",
               valueField: "hims_d_hospital_id",
-              data: undefined
-            }
+              data: undefined,
+            },
           },
           {
-            className: "col-2 form-group mandatory",
+            className: "col-3 form-group mandatory",
             type: "date",
             name: "from_date",
             isImp: true,
             others: {
               maxDate: new Date(),
-              minDate: null
-            }
+              minDate: null,
+            },
           },
           {
-            className: "col-2 form-group mandatory",
+            className: "col-3 form-group mandatory",
             type: "date",
             name: "to_date",
             isImp: true,
             others: {
               maxDate: new Date(),
-              minDate: null
-            }
+              minDate: null,
+            },
           },
           {
-            className: "col-2 form-group",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "nationality_id",
             initialLoad: true,
             isImp: false,
             label: "nationality",
             link: {
-              uri: "/masters/get/nationality"
+              uri: "/masters/get/nationality",
             },
             dataSource: {
               textField: "nationality",
               valueField: "hims_d_nationality_id",
-              data: undefined
-            }
+              data: undefined,
+            },
           },
           {
-            className: "col-2 form-group",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "",
             initialLoad: true,
             isImp: false,
             label: "Company",
             link: {
-              uri: "/insurance/getInsuranceProviders"
+              uri: "/insurance/getInsuranceProviders",
             },
             events: {
               onChange: (reportState, currentEvent) => {
@@ -305,27 +305,27 @@ export default function Vat({
                   method: "GET",
                   data: { hospital_id: currentEvent.value },
 
-                  onSuccess: result => {
+                  onSuccess: (result) => {
                     reportState.setState({
-                      location_id_list: result.data.records
+                      location_id_list: result.data.records,
                     });
-                  }
+                  },
                 });
               },
               onClear: (reportState, currentName) => {
                 reportState.setState({
                   [currentName]: undefined,
-                  location_id_list: []
+                  location_id_list: [],
                 });
-              }
+              },
             },
             dataSource: {
               textField: "insurance_provider_name",
-              valueField: "hims_d_insurance_provider_id"
-            }
-          }
-        ]
-      }
-    ]
+              valueField: "hims_d_insurance_provider_id",
+            },
+          },
+        ],
+      },
+    ],
   };
 }

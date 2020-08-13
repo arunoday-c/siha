@@ -16,16 +16,16 @@ const executePDF = function executePDFMethod(options) {
 
       let strQuery = "";
 
-      if (input.cashier_name > 0) {
-        strQuery += ` and PV.created_by= ${input.cashier_name}`;
+      if (input.sub_department_id > 0) {
+        strQuery += ` and PV.sub_department_id= ${input.sub_department_id}`;
+      }
+      if (input.provider_id > 0) {
+        strQuery += ` and PV.doctor_id= ${input.provider_id}`;
       }
 
       options.mysql
         .executeQuery({
-          query: `select PV.created_by, PV.visit_code,PV.visit_date, PV.department_id, D.department_name,PV.sub_department_id, 
-          SD.sub_department_name, E.full_name as doctor_name, E.employee_code, E.hims_d_employee_id, 
-          SE.service_name as service_name, P.patient_code, P.full_name, BD.services_id, BD.net_amout, 
-          EU.full_name as cashier_name, EU.employee_code as cashier_code, BH.bill_number, BH.bill_date
+          query: `select PV.visit_code,PV.visit_date, PV.department_id, D.department_name,PV.sub_department_id, SD.sub_department_name, E.full_name as doctor_name, E.employee_code, E.hims_d_employee_id, SE.service_name as service_name, P.patient_code, P.full_name, BD.net_amout
 from  hims_f_patient_visit PV
 inner join hims_f_billing_header BH on PV.hims_f_patient_visit_id=BH.visit_id
 inner join hims_f_billing_details BD on BH.hims_f_billing_header_id=BD.hims_f_billing_header_id
@@ -35,8 +35,6 @@ left join hims_d_sub_department SD on PV.sub_department_id=SD.hims_d_sub_departm
 left join hims_d_department D on PV.department_id=D.hims_d_department_id
 inner join hims_d_employee E on PV.doctor_id=E.hims_d_employee_id
 inner join hims_f_patient P on PV.patient_id=P.hims_d_patient_id
-inner join algaeh_d_app_user U on PV.created_by=U.algaeh_d_app_user_id
-inner join hims_d_employee EU on U.employee_id = EU.hims_d_employee_id
 where date(PV.visit_date) between date(?) and date(?) and PV.hospital_id=? ${strQuery};`,
           values: [input.from_date, input.to_date, input.hospital_id],
           printQuery: true,
@@ -44,18 +42,20 @@ where date(PV.visit_date) between date(?) and date(?) and PV.hospital_id=? ${str
         .then((res) => {
           options.mysql.releaseConnection();
           const result = res;
-          const cashierWise = _.chain(result)
-            .groupBy((g) => g.created_by)
+          const subDepartmentWise = _.chain(result)
+            .groupBy((g) => g.sub_department_id)
             .map((subDept) => {
-              const { cashier_name } = subDept[0];
+              const { sub_department_name } = subDept[0];
               return {
-                cashier_name,
+                sub_department_name,
                 doctors: _.chain(subDept)
-                  .groupBy((g) => g.services_id)
+                  .groupBy((g) => g.hims_d_employee_id)
                   .map((docs) => {
-                    const { service_name } = docs[0];
+                    const { employee_code, doctor_name } = docs[0];
                     return {
-                      service_name,
+                      employee_code,
+                      doctor_name,
+                      totalPatient: docs.length,
                       totalAmt: options.currencyFormat(
                         _.sumBy(docs, (s) => parseFloat(s.net_amout)),
                         options.args.crypto
@@ -77,7 +77,8 @@ where date(PV.visit_date) between date(?) and date(?) and PV.hospital_id=? ${str
               };
             })
             .value();
-          resolve({ result: cashierWise });
+          console.log(JSON.stringify(subDepartmentWise));
+          resolve({ result: subDepartmentWise });
         })
         .catch((e) => {
           console.log("e:", e);

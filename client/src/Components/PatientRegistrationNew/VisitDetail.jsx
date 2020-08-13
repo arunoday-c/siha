@@ -13,7 +13,7 @@ import {
   Spin,
 } from "algaeh-react-components";
 import { useLangFieldName } from "./patientHooks";
-import { newAlgaehApi, useQueryParams } from "../../hooks/";
+import { newAlgaehApi } from "../../hooks/";
 import { FrontdeskContext } from "./FrontdeskContext";
 // import GenericData from "../../utils/GlobalVariables.json";
 const { TabPane } = Tabs;
@@ -41,14 +41,15 @@ export function VisitDetails({
   control,
   setValue,
   trigger,
+  errors,
   visits = [],
   packages = [],
 }) {
-  const queryParams = useQueryParams();
-  const bill_number = queryParams.get("bill_number");
-  const disabled = !!bill_number;
+  // const queryParams = useQueryParams();
   const { fieldNameFn } = useLangFieldName();
-  const { setServiceInfo, setConsultationInfo } = useContext(FrontdeskContext);
+  const { setServiceInfo, setConsultationInfo, disabled } = useContext(
+    FrontdeskContext
+  );
   const { data, isLoading } = useQuery("doctors-data", getDoctorData, {
     refetchOnWindowFocus: false,
     cacheTime: Infinity,
@@ -96,6 +97,7 @@ export function VisitDetails({
                         <Controller
                           name="visit_type"
                           control={control}
+                          rules={{ required: "Please select Visit Type" }}
                           render={({ onChange, value }) => (
                             <AlgaehAutoComplete
                               div={{ className: "col-lg-6 mandatory" }}
@@ -103,12 +105,12 @@ export function VisitDetails({
                                 fieldName: "visit_type",
                                 isImp: true,
                               }}
+                              error={errors}
                               selector={{
                                 name: "visit_type",
                                 className: "select-fld",
                                 value,
                                 onChange: (data, selected) => {
-                                  debugger;
                                   setConsultationInfo(data);
                                   onChange(selected);
                                 },
@@ -129,7 +131,7 @@ export function VisitDetails({
                         <Controller
                           control={control}
                           name="doctor"
-                          rules={{ required: "Required" }}
+                          rules={{ required: "Please Select a doctor" }}
                           render={({ onChange, value }) => (
                             <AlgaehTreeSearch
                               div={{ className: "col form-group" }}
@@ -138,6 +140,7 @@ export function VisitDetails({
                                 isImp: true,
                                 align: "ltr",
                               }}
+                              error={errors}
                               tree={{
                                 disableHeader: true,
                                 treeDefaultExpandAll: true,
@@ -146,6 +149,7 @@ export function VisitDetails({
                                   onChange(selected);
                                 },
                                 disabled,
+                                value,
                                 name: "doctor",
                                 data: data?.doctors,
                                 textField: fieldNameFn("label", "arlabel"),

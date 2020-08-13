@@ -60,6 +60,16 @@ const savePatient = async (data) => {
   return result.data?.records;
 };
 
+const updatePatient = async (data) => {
+  const result = await newAlgaehApi({
+    uri: "/frontDesk/update",
+    module: "frontDesk",
+    data,
+    method: "POST",
+  });
+  return result.data?.records;
+};
+
 export function PatientRegistration() {
   const { userLanguage, userToken } = useContext(MainContext);
   const [save, { isLoading: saveLoading }] = useMutation(savePatient, {
@@ -68,6 +78,16 @@ export function PatientRegistration() {
       setDisable(true);
       AlgaehMessagePop({
         display: "Patient Saved Successfully",
+        type: "success",
+      });
+    },
+  });
+  const [update, { isLoading: updateLoading }] = useMutation(updatePatient, {
+    onSuccess: (data) => {
+      setSavedPatient(data);
+      setDisable(true);
+      AlgaehMessagePop({
+        display: "Patient Updated Successfully",
         type: "success",
       });
     },
@@ -81,7 +101,6 @@ export function PatientRegistration() {
     trigger,
     errors,
     reset,
-    formState,
     clearErrors,
   } = useForm({
     reValidateMode: "onSubmit",
@@ -104,11 +123,11 @@ export function PatientRegistration() {
     setDisable,
     setSavedPatient,
     clearState,
+    setServiceInfo,
   } = useContext(FrontdeskContext);
   const isEmpIdRequired = userToken?.requied_emp_id === "Y";
   const queryParams = useQueryParams();
   const patient_code = queryParams.get("patient_code");
-  console.log(formState, "form");
   const appointment_id = queryParams.get("appointment_id");
 
   const { isLoading, data: patientData } = useQuery(
@@ -146,7 +165,7 @@ export function PatientRegistration() {
       enabled: !!appointment_id,
       refetchOnWindowFocus: false,
       onSuccess: (data) => {
-        debugger;
+        const doctor = `${data?.sub_department_id}-${data?.services_id}-${data?.provider_id}-${data?.department_type}`;
         if (!patient_code) {
           reset({
             ...data,
@@ -154,7 +173,15 @@ export function PatientRegistration() {
             visit_type: 10,
             full_name: data?.patient_name,
             doctor_id: data?.provider_id,
+            doctor,
           });
+          setServiceInfo(doctor);
+        } else {
+          setValue("consultation", "Y");
+          setValue("doctor", doctor);
+          setValue("doctor_id", data?.provider_id);
+          setValue("visit_type", 10);
+          setServiceInfo(doctor);
         }
       },
     }
@@ -175,48 +202,66 @@ export function PatientRegistration() {
   );
 
   const onSubmit = (input) => {
-    save({
-      ...input,
-      sub_department_id: parseInt(sub_department_id, 10),
-      services_id: parseInt(services_id, 10),
-      service_type_id: parseInt(services_id, 10),
-      doctor_id: parseInt(doctor_id, 10),
-      department_type: parseInt(department_type, 10),
-      ...billInfo,
-      consultation: consultationInfo?.consultation,
-      maternity_patient: "N",
-      is_mlc: "N",
-      existing_plan: "N",
-      ...billInfo,
-      receiptdetails: [
-        {
-          amount: billInfo?.receiveable_amount,
-        },
-      ],
-    });
+    let inputData;
+    if (!patient_code) {
+      inputData = { ...input };
+      save({
+        ...inputData,
+        ...billInfo,
+        sub_department_id: parseInt(sub_department_id, 10),
+        services_id: parseInt(services_id, 10),
+        service_type_id: parseInt(services_id, 10),
+        doctor_id: parseInt(doctor_id, 10),
+        department_type: parseInt(department_type, 10),
+        consultation: consultationInfo?.consultation,
+        maternity_patient: "N",
+        is_mlc: "N",
+        existing_plan: "N",
+        receiptdetails: [
+          {
+            amount: billInfo?.net_amount,
+          },
+        ],
+      });
+    } else {
+      const {} = input;
+      inputData = {
+        patient_code,
+        visit_type: input?.visit_type,
+        shift_id: input?.shift_id,
+        hims_d_patient_id: patientData?.patientRegistration?.hims_d_patient_id,
+        patient_id: patientData?.patientRegistration?.hims_d_patient_id,
+        primary_insurance_provider_id: input?.primary_insurance_provider_id,
+        primary_sub_id: input?.primary_sub_id,
+        primary_network_id: input?.primary_network_id,
+        primary_network_office_id: input?.primary_network_office_id,
+        primary_policy_num: input?.primary_policy_num,
+        primary_card_number: input?.primary_card_number,
+        primary_effective_start_date: input?.primary_effective_start_date,
+        primary_effective_end_date: input?.primary_effective_end_date,
+      };
+      update({
+        ...inputData,
+        ...billInfo,
+        sub_department_id: parseInt(sub_department_id, 10),
+        services_id: parseInt(services_id, 10),
+        service_type_id: parseInt(services_id, 10),
+        doctor_id: parseInt(doctor_id, 10),
+        department_type: parseInt(department_type, 10),
+        consultation: consultationInfo?.consultation,
+        maternity_patient: "N",
+        is_mlc: "N",
+        existing_plan: "N",
+        receiptdetails: [
+          {
+            amount: billInfo?.net_amount,
+          },
+        ],
+      });
+    }
   };
 
   const onClear = () => {
-    // reset({
-    //   title_id: "",
-    //   full_name: "",
-    //   arabic_name: "",
-    //   gender: "",
-    //   date_of_birth: "",
-    //   contact_number: "",
-    //   doctor: "",
-    //   patient_type: "",
-    //   country_id: "",
-    //   nationality_id: "",
-    //   marital_status: "",
-    //   religion_id: "",
-    //   visa_type_id: "",
-    //   state_id: "",
-    //   city_id: "",
-    //   address1: "",
-    //   primary_identity_id: "",
-    //   primary_id_no: "",
-    // });
     reset({
       advance_adjust: 0,
       approval_amt: 0,
@@ -255,10 +300,15 @@ export function PatientRegistration() {
       visit_type: "",
     });
     clearState();
+    history.push(location.pathname);
   };
 
   return (
-    <Spin spinning={isLoading || packLoading || saveLoading || appLoading}>
+    <Spin
+      spinning={
+        isLoading || packLoading || saveLoading || appLoading || updateLoading
+      }
+    >
       <div id="attach">
         <BreadCrumb
           title={
@@ -275,8 +325,10 @@ export function PatientRegistration() {
             value: patient_code,
             selectValue: "patient_code",
             events: {
-              onChange: (code) =>
-                history.push(`${location.pathname}?patient_code=${code}`),
+              onChange: (code) => {
+                debugger;
+                history.push(`${location.pathname}?patient_code=${code}`);
+              },
             },
             jsonFile: {
               fileName: "spotlightSearch",
@@ -325,7 +377,7 @@ export function PatientRegistration() {
           }
           selectedLang={userLanguage}
         />
-        <div className="spacing-push">
+        <div className="spacing-push" style={{ marginBottom: "3rem" }}>
           <form>
             <div className="row">
               <div className="algaeh-md-12 algaeh-lg-12 algaeh-xl-8">
@@ -348,6 +400,7 @@ export function PatientRegistration() {
                   setValue={setValue}
                   visits={patientData?.visitDetails}
                   packages={packages}
+                  errors={errors}
                 />
               </div>
               <div className="algaeh-md-12 algaeh-lg-12 algaeh-xl-4">
@@ -376,7 +429,7 @@ export function PatientRegistration() {
                     type="submit"
                     className="btn btn-primary"
                     onClick={onClear}
-                    disabled={!disabled}
+                    disabled={!disabled && !appointment_id && !patient_code}
                   >
                     <AlgaehLabel
                       label={{ fieldName: "btn_clear", returnText: true }}

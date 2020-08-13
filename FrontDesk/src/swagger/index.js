@@ -569,6 +569,22 @@
  *     type: string
  *     enum: ['D','E','O','N','PH','I']
  *     default: "N"
+ *  UpdatePatientCheckIn:
+ *   type: object
+ *   properties:
+ *    application_id:
+ *     type: number
+ *     required: true
+ *    appointment_status_id:
+ *     type: number
+ *     required: true
+ *    patient_id:
+ *     type: number
+ *     required: true
+ *    patient_code:
+ *     type: string
+ *     required: true
+ *
  */
 
 /**
@@ -594,9 +610,43 @@
  *      schema:
  *       $ref: '#/definitions/Success'
  *     400:
+ *      description: Return error message
+ *      schema:
+ *       $ref: '#/definitions/Error'
+ */
+/**
+ * @swagger
+ * /frontdesk/update:
+ *  post:
+ *   tags:
+ *    - Patient Registration
+ *   produces:
+ *    - application/json
+ *   parameters:
+ *    - name: body
+ *      discription: Update patient with new visit
+ *      in: body
+ *      required: true
+ *      schema:
+ *       properties:
+ *          patient_code:
+ *           type: string
+ *           required: true
+ *          patient_id:
+ *           type: number
+ *           required: true
+ *       allOf:
+ *        - $ref: "#/definitions/patientRegistration"
+ *   responses:
+ *     200:
+ *      description: Return Patient Code along with a success message
+ *      schema:
+ *       $ref: '#/definitions/Success'
+ *     400:
  *      description: Return message
  *      schema:
  *       $ref: '#/definitions/Error'
+ *
  */
 /**
  * @swagger
@@ -624,6 +674,36 @@
  *        $ref: "#/definitions/AppointmentPatientDetails"
  *    400:
  *     decription: Return failure message
+ *     schema:
+ *      $ref: "#/definitions/Error"
+ */
+/**
+ * @swagger
+ * /appointment/updateCheckIn:
+ *  put:
+ *   tags:
+ *    - Appointment
+ *   produces:
+ *    -application/json
+ *   parameters:
+ *    - name: body
+ *      discription: Update Checkin status of an appointment
+ *      in: body
+ *      required: true
+ *      schema:
+ *       $ref: "#/definitions/UpdatePatientCheckIn"
+ *   responses:
+ *    200:
+ *     description: Return success with messag
+ *     schema:
+ *      properties:
+ *       success:
+ *        type: boolean
+ *       message:
+ *        type: string
+ *        default: Updated Successfully
+ *    400:
+ *     decription: Return error message
  *     schema:
  *      $ref: "#/definitions/Error"
  */

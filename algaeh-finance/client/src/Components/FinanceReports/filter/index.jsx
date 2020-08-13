@@ -52,156 +52,171 @@ export default memo(function (props) {
 
   return (
     <>
-      {filters.map((filter, index) => {
-        const {
-          type,
-          className,
-          title,
-          data,
-          component,
-          others,
-          maxDate,
-          minDate,
-          onChange,
-          dependent,
-          isImp,
-          onClear,
-        } = filter;
+      <div className="col-12">
+        {filters.map((records, idx) => (
+          <div className="row" key={idx}>
+            {records.map((filter, index) => {
+              const {
+                type,
+                className,
+                title,
+                data,
+                component,
+                others,
+                maxDate,
+                minDate,
+                onChange,
+                dependent,
+                isImp,
+                onClear,
+              } = filter;
 
-        if (component !== undefined) {
-          return component;
-        }
-        const dta = typeof data === "string" ? details[data] : data;
-        const hasComponent = type.includes("DH") ? "DH" : type;
-        const oth = others !== undefined ? { others: others } : {};
-
-        const int =
-          typeof data === "string" && title === undefined
-            ? data.toUpperCase().replace(/ /gi, "")
-            : title.toUpperCase().replace(/ /gi, "");
-        let name = title === undefined ? data : title;
-        switch (hasComponent) {
-          case "AC":
-            return (
-              <AlgaehAutoComplete
-                key={index}
-                div={{ className: className === undefined ? "col" : className }}
-                label={{
-                  forceLabel: title === undefined ? data : title,
-                  isImp: isImp === undefined ? false : isImp,
-                }}
-                selector={{
-                  value: inputs[int],
-                  ...dta,
-                  onChange: (_, value) => {
-                    let dpt = {};
-
-                    if (dependent !== undefined) {
-                      let depen = {};
-                      const { depend } = _;
-                      dependent.forEach((item) => {
-                        const itm = item.toUpperCase().replace(/ /gi, "");
-                        depen[itm] = depend !== undefined ? depend.type : "";
-                        dpt[itm] = depend !== undefined ? depend.value : "";
-                        if (
-                          depend !== undefined &&
-                          depend.title !== undefined
-                        ) {
-                          depen[`title_${itm}`] = depend["title"];
-                        }
-                      });
-                      setDependency((state) => {
-                        return { ...state, ...depen };
-                      });
-                    }
-
-                    updateInput({ [int]: value, ...dpt });
-
-                    if (typeof onChange === "function")
-                      onChange(value, inputs, updateInput);
-                  },
-                  onClear: () => {
-                    updateInput({ [int]: undefined });
-                    if (typeof onChange === "function") onClear(updateInput);
-                  },
-                  ...oth,
-                }}
-              />
-            );
-          case "DH":
-            const hasType = type.split("|");
-            let typeString = "";
-            if (hasType.length >= 1) {
-              typeString = hasType[1].toLowerCase();
-            }
-
-            if (dependency !== undefined) {
-              if (dependency[int] !== undefined) {
-                typeString = dependency[int];
-
-                if (dependency[`title_${int}`] !== undefined) {
-                  name = dependency[`title_${int}`];
-                }
+              if (component !== undefined) {
+                return component;
               }
-            }
-            const dtype =
-              typeString !== "" ? { type: typeString.toLowerCase() } : {};
+              const dta = typeof data === "string" ? details[data] : data;
+              const hasComponent = type.includes("DH") ? "DH" : type;
+              const oth = others !== undefined ? { others: others } : {};
+              const int =
+                typeof data === "string" && title === undefined
+                  ? data.toUpperCase().replace(/ /gi, "")
+                  : title.toUpperCase().replace(/ /gi, "");
+              let name = title === undefined ? data : title;
+              switch (hasComponent) {
+                case "AC":
+                  return (
+                    <AlgaehAutoComplete
+                      key={index}
+                      div={{
+                        className: className === undefined ? "col" : className,
+                      }}
+                      label={{
+                        forceLabel: title === undefined ? data : title,
+                        isImp: isImp === undefined ? false : isImp,
+                      }}
+                      selector={{
+                        value: inputs[int],
+                        ...dta,
+                        onChange: (_, value) => {
+                          let dpt = {};
 
-            return (
-              <AlgaehDateHandler
-                key={index}
-                div={{ className: className === undefined ? "col" : className }}
-                label={{
-                  forceLabel: name,
-                  isImp: isImp === undefined ? false : isImp,
-                }}
-                maxDate={maxDate}
-                minDate={minDate}
-                {...dtype}
-                textBox={{
-                  value: inputs[int],
-                }}
-                events={{
-                  onChange: (selected) => {
-                    if (typeof onChange === "function")
-                      onChange(selected, inputs, updateInput);
-                    else {
-                      if (selected === null) {
-                        updateInput({ [int]: undefined });
-                      } else {
-                        if (typeString !== "" && typeString === "year") {
-                          updateInput({ [int]: selected.year().toString() });
-                        } else {
-                          updateInput({
-                            [int]: selected,
-                          });
-                        }
+                          if (dependent !== undefined) {
+                            let depen = {};
+                            const { depend } = _;
+                            dependent.forEach((item) => {
+                              const itm = item.toUpperCase().replace(/ /gi, "");
+                              depen[itm] =
+                                depend !== undefined ? depend.type : "";
+                              dpt[itm] =
+                                depend !== undefined ? depend.value : "";
+                              if (
+                                depend !== undefined &&
+                                depend.title !== undefined
+                              ) {
+                                depen[`title_${itm}`] = depend["title"];
+                              }
+                            });
+                            setDependency((state) => {
+                              return { ...state, ...depen };
+                            });
+                          }
+
+                          updateInput({ [int]: value, ...dpt });
+
+                          if (typeof onChange === "function")
+                            onChange(value, inputs, updateInput);
+                        },
+                        onClear: () => {
+                          updateInput({ [int]: undefined });
+                          if (typeof onChange === "function")
+                            onClear(updateInput);
+                        },
+                        ...oth,
+                      }}
+                    />
+                  );
+                case "DH":
+                  const hasType = type.split("|");
+                  let typeString = "";
+                  if (hasType.length >= 1) {
+                    typeString = hasType[1].toLowerCase();
+                  }
+
+                  if (dependency !== undefined) {
+                    if (dependency[int] !== undefined) {
+                      typeString = dependency[int];
+
+                      if (dependency[`title_${int}`] !== undefined) {
+                        name = dependency[`title_${int}`];
                       }
                     }
-                  },
-                }}
-                {...oth}
-              />
-            );
-          case "CH":
-            return (
-              <Checkbox
-                className={className === undefined ? "col" : className}
-                key={index}
-                checked={inputs[int] === "Y" ? true : false}
-                onChange={(e) => {
-                  const checked = e.target.checked ? "Y" : "N";
-                  updateInput({ [int]: checked });
-                  if (typeof onChange === "function") onChange(checked, inputs);
-                }}
-              >
-                {name}
-              </Checkbox>
-            );
-          default:
-            return null;
-        }
-      })}
+                  }
+                  const dtype =
+                    typeString !== "" ? { type: typeString.toLowerCase() } : {};
+
+                  return (
+                    <AlgaehDateHandler
+                      key={index}
+                      div={{
+                        className: className === undefined ? "col" : className,
+                      }}
+                      label={{
+                        forceLabel: name,
+                        isImp: isImp === undefined ? false : isImp,
+                      }}
+                      maxDate={maxDate}
+                      minDate={minDate}
+                      {...dtype}
+                      textBox={{
+                        value: inputs[int],
+                      }}
+                      events={{
+                        onChange: (selected) => {
+                          if (typeof onChange === "function")
+                            onChange(selected, inputs, updateInput);
+                          else {
+                            if (selected === null) {
+                              updateInput({ [int]: undefined });
+                            } else {
+                              if (typeString !== "" && typeString === "year") {
+                                updateInput({
+                                  [int]: selected.year().toString(),
+                                });
+                              } else {
+                                updateInput({
+                                  [int]: selected,
+                                });
+                              }
+                            }
+                          }
+                        },
+                      }}
+                      {...oth}
+                    />
+                  );
+                case "CH":
+                  return (
+                    <Checkbox
+                      className={className === undefined ? "col" : className}
+                      key={index}
+                      checked={inputs[int] === "Y" ? true : false}
+                      onChange={(e) => {
+                        const checked = e.target.checked ? "Y" : "N";
+                        updateInput({ [int]: checked });
+                        if (typeof onChange === "function")
+                          onChange(checked, inputs);
+                      }}
+                    >
+                      {name}
+                    </Checkbox>
+                  );
+                default:
+                  return null;
+              }
+            })}
+          </div>
+        ))}
+      </div>
       <div className="col">
         <AlgaehButton
           className="btn btn-primary"

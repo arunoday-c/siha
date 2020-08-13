@@ -39,7 +39,7 @@ export function PrepaymentRequest() {
     });
   }, []);
 
-  const { control, errors, handleSubmit, setValue, watch } = useForm({
+  const { control, errors, handleSubmit, setValue, reset, watch } = useForm({
     shouldFocusError: true,
   });
 
@@ -50,7 +50,9 @@ export function PrepaymentRequest() {
         module: "finance",
       });
       if (res.data.success) {
+        // debugger;
         setRequests(res.data.result);
+        resetForm();
       }
     } catch (e) {
       AlgaehMessagePop({
@@ -91,7 +93,7 @@ export function PrepaymentRequest() {
         getRequest().then(() => {
           AlgaehMessagePop({
             type: "success",
-            display: "Request Added successfully",
+            display: "Request Updated successfully",
           });
         });
       }
@@ -122,6 +124,10 @@ export function PrepaymentRequest() {
     })
       .then((value) => {
         return getRequest();
+        AlgaehMessagePop({
+          type: "success",
+          display: "Request Added successfully",
+        });
       })
       .catch((e) => console.log(e));
   };
@@ -166,12 +172,15 @@ export function PrepaymentRequest() {
       });
       if (res.data.success) {
         const result = res.data.result;
-
+        AlgaehMessagePop({
+          type: "success",
+          display: "Request Added successfully",
+        });
         saveDocument(payment_reqDoc, result.request_code, result.insertId);
       }
     } catch (e) {
       AlgaehMessagePop({
-        type: "success",
+        type: "warning",
         display: e.message,
       });
     }
@@ -220,10 +229,29 @@ export function PrepaymentRequest() {
         ) : row.request_status === "PR" ? (
           <span className="badge badge-danger">Processed</span>
         ) : (
-                      "------"
-                    )}
+          "------"
+        )}
       </span>
     );
+  };
+  const resetForm = () => {
+    reset({
+      hospital_id: "",
+      cost_center_id: "",
+      prepayment_type_id: "",
+      employee_id: null,
+      prepayment_amount: null,
+      start_date: "",
+      end_date: "",
+      prepayment_remarks: "",
+    });
+    // setRequests([]);
+    setPayment_reqDoc([]);
+    setPrePayment_docs([]);
+    setPayReqID({});
+    setEmployeeIDNum(null);
+    setDisableEdit(false);
+    setEmployeeReq("N");
   };
   const editRow = (data) => {
     setValue("hospital_id", data.hims_d_hospital_id);
@@ -355,7 +383,6 @@ export function PrepaymentRequest() {
                             },
                             value,
                             onChange: (_, selected) => {
-                              debugger
                               onChange(selected);
                               setValue("employee_id", "");
                               setEmployeeIDNum("");
@@ -400,9 +427,9 @@ export function PrepaymentRequest() {
                             dataSource: {
                               data: ihospital
                                 ? branchAndCenters.filter(
-                                  (item) =>
-                                    item.hims_d_hospital_id == ihospital
-                                )[0].cost_centers
+                                    (item) =>
+                                      item.hims_d_hospital_id == ihospital
+                                  )[0].cost_centers
                                 : [],
                               valueField: "cost_center_id",
                               textField: "cost_center",
@@ -431,11 +458,10 @@ export function PrepaymentRequest() {
                             },
                             value,
                             onChange: (_, selected) => {
-                              debugger
                               onChange(selected);
                               setValue("start_date", undefined);
                               setValue("end_date", undefined);
-                              setEmployeeReq(_.employees_req)
+                              setEmployeeReq(_.employees_req);
                             },
                             onClear: () => {
                               onChange("");
@@ -455,7 +481,7 @@ export function PrepaymentRequest() {
                     {errors.prepayment_type_id && (
                       <span>{errors.prepayment_type_id.message}</span>
                     )}
-                    {employees_req === "Y" ?
+                    {employees_req === "Y" ? (
                       <Controller
                         name="employee_id"
                         control={control}
@@ -473,9 +499,8 @@ export function PrepaymentRequest() {
                               },
                               value,
                               onChange: (_, selected) => {
-                                debugger
                                 onChange(selected);
-                                setEmployeeIDNum(_.identity_no)
+                                setEmployeeIDNum(_.identity_no);
                               },
                               onBlur: (_, selected) => {
                                 onBlur(selected);
@@ -484,8 +509,8 @@ export function PrepaymentRequest() {
                               dataSource: {
                                 data: ihospital
                                   ? employees.filter(
-                                    (item) => item.hospital_id == ihospital
-                                  )
+                                      (item) => item.hospital_id == ihospital
+                                    )
                                   : employees,
                                 textField: "full_name",
                                 valueField: "hims_d_employee_id",
@@ -493,17 +518,14 @@ export function PrepaymentRequest() {
                             }}
                           />
                         )}
-                      /> : null}
-
-                    {employees_req === "Y" ?
+                      />
+                    ) : null}
+                    {employees_req === "Y" ? (
                       <div className="col">
                         <label className="style_Label ">Employee ID</label>
-                        <h6>
-                          {identity_no
-                            ? identity_no
-                            : "-----"}
-                        </h6>
-                      </div> : null}
+                        <h6>{identity_no ? identity_no : "-----"}</h6>
+                      </div>
+                    ) : null}
                     <Controller
                       control={control}
                       // rules={{ required: "Prepayment Remarks" }}
@@ -596,7 +618,7 @@ export function PrepaymentRequest() {
                             },
                           }}
                           others={{ disabled: !prepayment_type_id }}
-                        // maxDate={moment().add(1, "days")}
+                          // maxDate={moment().add(1, "days")}
                         />
                       )}
                     />
@@ -620,7 +642,7 @@ export function PrepaymentRequest() {
                             className: "form-control",
                           }}
                           others={{ disabled: !prepayment_type_id }}
-                        // maxDate={moment().add(1, "days")}
+                          // maxDate={moment().add(1, "days")}
                         />
                       )}
                     />
@@ -679,10 +701,10 @@ export function PrepaymentRequest() {
                                     </li>
                                   ))
                                 ) : (
-                                    <div className="col-12 noAttachment" key={1}>
-                                      <p>No Attachments Available</p>
-                                    </div>
-                                  )}
+                                  <div className="col-12 noAttachment" key={1}>
+                                    <p>No Attachments Available</p>
+                                  </div>
+                                )}
                               </ul>
                             </div>
                           </div>
@@ -695,6 +717,16 @@ export function PrepaymentRequest() {
                       style={{ marginTop: 20 }}
                     >
                       {disableEdit ? "Update" : "Add to List"}
+                    </button>
+                  </div>
+                  <div>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        resetForm();
+                      }}
+                    >
+                      Clear
                     </button>
                   </div>
                 </div>
@@ -719,15 +751,15 @@ export function PrepaymentRequest() {
                       displayTemplate: (row) => {
                         return row.request_status === "P" ||
                           row.request_status === "R" ? (
-                            <div>
-                              <i
-                                className="fas fa-pen"
-                                onClick={() => {
-                                  editRow(row);
-                                }}
-                              ></i>
-                            </div>
-                          ) : null;
+                          <div>
+                            <i
+                              className="fas fa-pen"
+                              onClick={() => {
+                                editRow(row);
+                              }}
+                            ></i>
+                          </div>
+                        ) : null;
                       },
                     },
                     // {
@@ -915,10 +947,10 @@ export function PrepaymentRequest() {
                                     </li>
                                   ))
                                 ) : (
-                                    <div className="col-12 noAttachment" key={1}>
-                                      <p>No Attachments Available</p>
-                                    </div>
-                                  )}
+                                  <div className="col-12 noAttachment" key={1}>
+                                    <p>No Attachments Available</p>
+                                  </div>
+                                )}
                               </ul>
                             </Modal>
                             <span

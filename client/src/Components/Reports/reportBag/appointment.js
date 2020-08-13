@@ -10,7 +10,7 @@ export default function Appointment() {
         pageOrentation: "landscape", //"portrait",
         reportParameters: [
           {
-            className: "col-2 form-group mandatory",
+            className: "col-3 form-group mandatory",
             type: "date",
             name: "from_date",
             isImp: true,
@@ -20,7 +20,7 @@ export default function Appointment() {
             },
           },
           {
-            className: "col-2 form-group mandatory",
+            className: "col-3 form-group mandatory",
             type: "date",
             name: "to_date",
             isImp: true,
@@ -30,7 +30,7 @@ export default function Appointment() {
             },
           },
           {
-            className: "col-2 form-group mandatory",
+            className: "col-3 form-group mandatory",
             type: "dropdown",
             name: "sub_department_id",
             initialLoad: true,
@@ -70,7 +70,7 @@ export default function Appointment() {
             },
           },
           {
-            className: "col-2 form-group mandatory",
+            className: "col-3 form-group mandatory",
             type: "dropdown",
             name: "provider_id",
             initialLoad: true,
@@ -83,7 +83,7 @@ export default function Appointment() {
             },
           },
           {
-            className: "col-2 form-group",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "status_id",
             initialLoad: true,

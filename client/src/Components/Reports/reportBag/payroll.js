@@ -40,7 +40,7 @@ export default function Payroll({
             // }
           },
           {
-            className: "col-2 form-group mandatory",
+            className: "col-3 form-group mandatory",
             type: "dropdown",
             sort: "off",
             name: "month",
@@ -57,7 +57,7 @@ export default function Payroll({
             },
           },
           {
-            className: "col-2 form-group mandatory",
+            className: "col-3 form-group mandatory",
             type: "dropdown",
             name: "hospital_id",
             initialLoad: true,
@@ -74,7 +74,7 @@ export default function Payroll({
             },
           },
           {
-            className: "col-2 form-group",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "employee_group_id",
             initialLoad: true,
@@ -89,7 +89,7 @@ export default function Payroll({
             },
           },
           {
-            className: "col-2 form-group",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "department_id",
             initialLoad: true,
@@ -129,7 +129,7 @@ export default function Payroll({
             },
           },
           {
-            className: "col-2 form-group",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "sub_department_id",
             isImp: false,
@@ -141,7 +141,7 @@ export default function Payroll({
             },
           },
           {
-            className: "col-2 form-group",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "is_local",
             initialLoad: true,
@@ -164,7 +164,7 @@ export default function Payroll({
         pageOrentation: "landscape", //"portrait",
         reportParameters: [
           {
-            className: "col-2 form-group mandatory",
+            className: "col-3 form-group mandatory",
             type: "dropdown",
             name: "hospital_id",
             initialLoad: true,
@@ -205,19 +205,19 @@ export default function Payroll({
             },
           },
           {
-            className: "col-2 form-group mandatory",
+            className: "col-3 form-group mandatory",
             type: "date",
             name: "from_date",
             isImp: true,
           },
           {
-            className: "col-2 form-group mandatory",
+            className: "col-3 form-group mandatory",
             type: "date",
             name: "to_date",
             isImp: true,
           },
           {
-            className: "col-2 form-group",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "employee_group_id",
             initialLoad: true,
@@ -232,7 +232,7 @@ export default function Payroll({
             },
           },
           {
-            className: "col-2 form-group",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "department_id",
             initialLoad: true,
@@ -264,7 +264,7 @@ export default function Payroll({
             },
           },
           {
-            className: "col-2 form-group",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "sub_department_id",
             isImp: false,
@@ -276,7 +276,7 @@ export default function Payroll({
             },
           },
           {
-            className: "col-2 form-group",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "hims_d_leave_id",
             initialLoad: true,
@@ -292,7 +292,7 @@ export default function Payroll({
             },
           },
           {
-            className: "col-2 form-group",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "status",
             initialLoad: true,
@@ -306,7 +306,7 @@ export default function Payroll({
             },
           },
           {
-            className: "col-2 form-group",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "is_local",
             initialLoad: true,
@@ -330,7 +330,7 @@ export default function Payroll({
         input: "sub_department_id=?",
         reportParameters: [
           {
-            className: "col-2 form-group mandatory",
+            className: "col-3 form-group mandatory",
             type: "dropdown",
             name: "hospital_id",
             initialLoad: true,
@@ -347,7 +347,7 @@ export default function Payroll({
             },
           },
           {
-            className: "col-2 form-group",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "employee_group_id",
             initialLoad: true,
@@ -362,7 +362,7 @@ export default function Payroll({
             },
           },
           {
-            className: "col-2 form-group",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "department_id",
             initialLoad: true,
@@ -402,7 +402,7 @@ export default function Payroll({
             },
           },
           {
-            className: "col-2 form-group",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "sub_department_id",
             isImp: false,
@@ -414,7 +414,7 @@ export default function Payroll({
             },
           },
           {
-            className: "col-2 form-group",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "is_local",
             initialLoad: true,
@@ -438,7 +438,7 @@ export default function Payroll({
         pageOrentation: "landscape",
         reportParameters: [
           {
-            className: "col-2 form-group mandatory",
+            className: "col-3 form-group mandatory",
             type: "dropdown",
             name: "year",
             isImp: true,
@@ -454,7 +454,7 @@ export default function Payroll({
             // }
           },
           {
-            className: "col-2 form-group mandatory",
+            className: "col-3 form-group mandatory",
             type: "dropdown",
             sort: "off",
             name: "month",
@@ -471,7 +471,7 @@ export default function Payroll({
             },
           },
           {
-            className: "col-2 form-group mandatory",
+            className: "col-3 form-group mandatory",
             type: "dropdown",
             name: "hospital_id",
             initialLoad: true,
@@ -488,7 +488,7 @@ export default function Payroll({
             },
           },
           {
-            className: "col-2 form-group",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "employee_group_id",
             initialLoad: true,
@@ -503,7 +503,7 @@ export default function Payroll({
             },
           },
           {
-            className: "col-2 form-group",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "department_id",
             initialLoad: true,
@@ -543,7 +543,7 @@ export default function Payroll({
             },
           },
           {
-            className: "col-2 form-group",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "sub_department_id",
             isImp: false,
@@ -555,7 +555,7 @@ export default function Payroll({
             },
           },
           {
-            className: "col-2 form-group",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "is_local",
             initialLoad: true,
@@ -577,7 +577,7 @@ export default function Payroll({
       //   pageOrentation: "landscape", //"portrait",
       //   reportParameters: [
       //     {
-      //       className: "col-2 form-group",
+      //       className: "col-3 form-group",
       //       type: "dropdown",
       //       name: "hospital_id",
       //       initialLoad: true,
@@ -593,7 +593,7 @@ export default function Payroll({
       //       }
       //     },
       //     {
-      //       className: "col-2 form-group",
+      //       className: "col-3 form-group",
       //       type: "dropdown",
       //       name: "department_id",
       //       initialLoad: true,
@@ -633,7 +633,7 @@ export default function Payroll({
       //       }
       //     },
       //     {
-      //       className: "col-2 form-group",
+      //       className: "col-3 form-group",
       //       type: "dropdown",
       //       name: "sub_department_id",
       //       isImp: false,
@@ -645,7 +645,7 @@ export default function Payroll({
       //       }
       //     },
       //     {
-      //       className: "col-2 form-group",
+      //       className: "col-3 form-group",
       //       type: "date",
       //       name: "from_date",
       //       isImp: true,
@@ -655,7 +655,7 @@ export default function Payroll({
       //       }
       //     },
       //     {
-      //       className: "col-2 form-group",
+      //       className: "col-3 form-group",
       //       type: "date",
       //       name: "to_date",
       //       isImp: true,
@@ -675,7 +675,7 @@ export default function Payroll({
         pageOrentation: "landscape", //"portrait",
         reportParameters: [
           {
-            className: "col-2 form-group mandatory",
+            className: "col-3 form-group mandatory",
             type: "dropdown",
             name: "hospital_id",
             initialLoad: true,
@@ -692,7 +692,7 @@ export default function Payroll({
             },
           },
           {
-            className: "col-2 form-group mandatory",
+            className: "col-3 form-group mandatory",
             type: "date",
             name: "from_date",
             isImp: true,
@@ -702,7 +702,7 @@ export default function Payroll({
             },
           },
           {
-            className: "col-2 form-group mandatory",
+            className: "col-3 form-group mandatory",
             type: "date",
             name: "to_date",
             isImp: true,
@@ -712,7 +712,7 @@ export default function Payroll({
             },
           },
           {
-            className: "col-2 form-group",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "status",
             initialLoad: true,
@@ -726,7 +726,7 @@ export default function Payroll({
             },
           },
           {
-            className: "col-2 form-group",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "employee_group_id",
             initialLoad: true,
@@ -741,7 +741,7 @@ export default function Payroll({
             },
           },
           {
-            className: "col-2 form-group",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "department_id",
             initialLoad: true,
@@ -781,7 +781,7 @@ export default function Payroll({
             },
           },
           {
-            className: "col-2 form-group",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "sub_department_id",
             isImp: false,
@@ -793,7 +793,7 @@ export default function Payroll({
             },
           },
           {
-            className: "col-2 form-group",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "is_local",
             initialLoad: true,
@@ -817,7 +817,7 @@ export default function Payroll({
         pageOrentation: "landscape",
         reportParameters: [
           {
-            className: "col-2 mandatory form-group",
+            className: "col-3 mandatory form-group",
             type: "dropdown",
             name: "year",
             isImp: true,
@@ -833,7 +833,7 @@ export default function Payroll({
             // }
           },
           {
-            className: "col-2 form-group mandatory",
+            className: "col-3 form-group mandatory",
             type: "dropdown",
             sort: "off",
             name: "month",
@@ -850,7 +850,7 @@ export default function Payroll({
             },
           },
           {
-            className: "col-2 form-group mandatory",
+            className: "col-3 form-group mandatory",
             type: "dropdown",
             name: "hospital_id",
             initialLoad: true,
@@ -867,7 +867,7 @@ export default function Payroll({
             },
           },
           {
-            className: "col-2 form-group mandatory",
+            className: "col-3 form-group mandatory",
             type: "dropdown",
             name: "employee_group_id",
             initialLoad: true,
@@ -883,7 +883,7 @@ export default function Payroll({
             },
           },
           {
-            className: "col-2 form-group",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "department_id",
             initialLoad: true,
@@ -923,7 +923,7 @@ export default function Payroll({
             },
           },
           {
-            className: "col-2 form-group",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "sub_department_id",
             isImp: false,
@@ -935,7 +935,7 @@ export default function Payroll({
             },
           },
           {
-            className: "col-2 form-group",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "is_local",
             initialLoad: true,
@@ -958,7 +958,7 @@ export default function Payroll({
         pageOrentation: "landscape", //"portrait",
         reportParameters: [
           {
-            className: "col-2 mandatory form-group",
+            className: "col-3 mandatory form-group",
             type: "dropdown",
             name: "year",
             isImp: true,
@@ -974,7 +974,7 @@ export default function Payroll({
             // }
           },
           {
-            className: "col-2 form-group mandatory",
+            className: "col-3 form-group mandatory",
             type: "dropdown",
             sort: "off",
             name: "month",
@@ -991,7 +991,7 @@ export default function Payroll({
             },
           },
           {
-            className: "col-2 form-group mandatory",
+            className: "col-3 form-group mandatory",
             type: "dropdown",
             name: "hospital_id",
             initialLoad: true,
@@ -1008,7 +1008,7 @@ export default function Payroll({
             },
           },
           {
-            className: "col-2 form-group mandatory",
+            className: "col-3 form-group mandatory",
             type: "dropdown",
             name: "employee_group_id",
             initialLoad: true,
@@ -1024,7 +1024,7 @@ export default function Payroll({
             },
           },
           {
-            className: "col-2 form-group",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "department_id",
             initialLoad: true,
@@ -1064,7 +1064,7 @@ export default function Payroll({
             },
           },
           {
-            className: "col-2 form-group",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "sub_department_id",
             isImp: false,
@@ -1076,7 +1076,7 @@ export default function Payroll({
             },
           },
           {
-            className: "col-2 form-group",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "is_local",
             initialLoad: true,
@@ -1100,7 +1100,7 @@ export default function Payroll({
         pageOrentation: "landscape",
         reportParameters: [
           {
-            className: "col-2 form-group mandatory",
+            className: "col-3 form-group mandatory",
             type: "dropdown",
             name: "year",
             isImp: true,
@@ -1116,7 +1116,7 @@ export default function Payroll({
             // }
           },
           {
-            className: "col-2 form-group mandatory",
+            className: "col-3 form-group mandatory",
             type: "dropdown",
             sort: "off",
             name: "month",
@@ -1133,7 +1133,7 @@ export default function Payroll({
             },
           },
           {
-            className: "col-2 form-group mandatory",
+            className: "col-3 form-group mandatory",
             type: "dropdown",
             name: "hospital_id",
             initialLoad: true,
@@ -1150,7 +1150,7 @@ export default function Payroll({
             },
           },
           {
-            className: "col-2 form-group",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "employee_group_id",
             initialLoad: true,
@@ -1165,7 +1165,7 @@ export default function Payroll({
             },
           },
           {
-            className: "col-2 form-group",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "department_id",
             initialLoad: true,
@@ -1205,7 +1205,7 @@ export default function Payroll({
             },
           },
           {
-            className: "col-2 form-group",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "sub_department_id",
             isImp: false,
@@ -1217,7 +1217,7 @@ export default function Payroll({
             },
           },
           {
-            className: "col-2 form-group",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "is_local",
             initialLoad: true,
@@ -1240,7 +1240,7 @@ export default function Payroll({
         pageOrentation: "landscape", //"portrait",
         reportParameters: [
           {
-            className: "col-2 mandatory form-group",
+            className: "col-3 mandatory form-group",
             type: "dropdown",
             name: "year",
             isImp: true,
@@ -1256,7 +1256,7 @@ export default function Payroll({
             // }
           },
           {
-            className: "col-2 form-group mandatory",
+            className: "col-3 form-group mandatory",
             type: "dropdown",
             sort: "off",
             name: "month",
@@ -1273,7 +1273,7 @@ export default function Payroll({
             },
           },
           {
-            className: "col-2 form-group mandatory",
+            className: "col-3 form-group mandatory",
             type: "dropdown",
             name: "hospital_id",
             initialLoad: true,
@@ -1290,7 +1290,7 @@ export default function Payroll({
             },
           },
           {
-            className: "col-2 form-group mandatory",
+            className: "col-3 form-group mandatory",
             type: "dropdown",
             name: "employee_group_id",
             initialLoad: true,
@@ -1306,7 +1306,7 @@ export default function Payroll({
             },
           },
           {
-            className: "col-2 form-group",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "department_id",
             initialLoad: true,
@@ -1346,7 +1346,7 @@ export default function Payroll({
             },
           },
           {
-            className: "col-2 form-group",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "sub_department_id",
             isImp: false,
@@ -1358,7 +1358,7 @@ export default function Payroll({
             },
           },
           {
-            className: "col-2 form-group",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "is_local",
             initialLoad: true,
@@ -1382,7 +1382,7 @@ export default function Payroll({
         pageOrentation: "landscape",
         reportParameters: [
           {
-            className: "col-2 form-group mandatory",
+            className: "col-3 form-group mandatory",
             type: "dropdown",
             name: "hospital_id",
             initialLoad: true,
@@ -1406,7 +1406,7 @@ export default function Payroll({
             },
           },
           {
-            className: "col-2 form-group mandatory",
+            className: "col-3 form-group mandatory",
             type: "dropdown",
             name: "year",
             sort: "off",
@@ -1428,7 +1428,7 @@ export default function Payroll({
             },
           },
           {
-            className: "col-2 form-group mandatory",
+            className: "col-3 form-group mandatory",
             type: "dropdown",
             sort: "off",
             name: "month",
@@ -1453,7 +1453,7 @@ export default function Payroll({
           },
 
           {
-            className: "col-2 form-group mandatory",
+            className: "col-3 form-group mandatory",
             type: "dropdown",
             name: "edType",
 
@@ -1524,7 +1524,7 @@ export default function Payroll({
             },
           },
           {
-            className: "col-2 form-group",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "employee_group_id",
             initialLoad: true,
@@ -1547,7 +1547,7 @@ export default function Payroll({
           },
 
           {
-            className: "col-2 form-group",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "earning_deductions_id",
             isImp: false,
@@ -1566,7 +1566,7 @@ export default function Payroll({
             },
           },
           {
-            className: "col-2 form-group",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "is_local",
             initialLoad: true,
@@ -1588,7 +1588,7 @@ export default function Payroll({
         requireIframe: true,
         reportParameters: [
           {
-            className: "col-2 form-group mandatory",
+            className: "col-3 form-group mandatory",
             type: "dropdown",
             name: "hospital_id",
             initialLoad: true,
@@ -1629,7 +1629,7 @@ export default function Payroll({
             },
           },
           {
-            className: "col-2 form-group mandatory",
+            className: "col-3 form-group mandatory",
             type: "dropdown",
             name: "year",
             sort: "off",
@@ -1651,7 +1651,7 @@ export default function Payroll({
             },
           },
           {
-            className: "col-2 form-group mandatory",
+            className: "col-3 form-group mandatory",
             type: "dropdown",
             sort: "off",
             name: "month",
@@ -1675,7 +1675,7 @@ export default function Payroll({
             },
           },
           {
-            className: "col-2 form-group",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "employee_group_id",
             initialLoad: true,
@@ -1690,7 +1690,7 @@ export default function Payroll({
             },
           },
           {
-            className: "col-2 form-group",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "hims_d_leave_id",
             initialLoad: true,
@@ -1706,7 +1706,7 @@ export default function Payroll({
             },
           },
           {
-            className: "col-2 form-group",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "is_local",
             initialLoad: true,
@@ -1728,7 +1728,7 @@ export default function Payroll({
         requireIframe: true,
         reportParameters: [
           {
-            className: "col-2 form-group mandatory",
+            className: "col-3 form-group mandatory",
             type: "dropdown",
             name: "hospital_id",
             initialLoad: true,
@@ -1769,7 +1769,7 @@ export default function Payroll({
             // },
           },
           {
-            className: "col-2 form-group mandatory",
+            className: "col-3 form-group mandatory",
             type: "dropdown",
             name: "year",
             sort: "off",
@@ -1791,7 +1791,7 @@ export default function Payroll({
             },
           },
           {
-            className: "col-2 form-group mandatory",
+            className: "col-3 form-group mandatory",
             type: "dropdown",
             sort: "off",
             name: "month",
@@ -1815,7 +1815,7 @@ export default function Payroll({
             },
           },
           {
-            className: "col-2 form-group",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "status",
             initialLoad: true,

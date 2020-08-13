@@ -8,7 +8,7 @@ export default function Patient() {
         reportQuery: "patOutstandingSum",
         reportParameters: [
           {
-            className: "col-2 form-group mandatory",
+            className: "col-3 form-group mandatory",
             type: "date",
             name: "till_date",
             label: "Till Date",
