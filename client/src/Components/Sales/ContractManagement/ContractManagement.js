@@ -526,7 +526,7 @@ class ContractManagement extends Component {
                         columns={spotlightSearch.Services.servicemaster}
                         displayField="service_name"
                         value={this.state.service_name}
-                        searchName="servicemaster"
+                        searchName="servicetypeservice"
                         onClick={servicechangeText.bind(this, this)}
                         extraParameters={{
                           service_type_id: 7,
