@@ -697,7 +697,7 @@ export default class ReportUI extends Component {
           _controls.push(
             <div
               key={i}
-              className="customCheckbox col-2"
+              className="customCheckbox col-3"
               style={{ border: "none", marginTop: "28px" }}
             >
               <label className="checkbox" style={{ color: "rgb(33, 37, 41)" }}>
@@ -721,7 +721,7 @@ export default class ReportUI extends Component {
                 : _param.default
               : this.state[_param.name + "_checked"];
           _controls.push(
-            <div key={i} className="customRadio col-2">
+            <div key={i} className="customRadio col-3">
               <label className="radio inline">
                 <input
                   type="radio"
@@ -775,7 +775,7 @@ export default class ReportUI extends Component {
           className={
             _isBarcodeReport
               ? "algaehModalWrapper barcodePopup"
-              : "algaehModalWrapper"
+              : "algaehModalWrapper mainReportPopup"
           }
         >
           <div className="algaeh-modal">
@@ -869,7 +869,7 @@ export default class ReportUI extends Component {
                 </h5>
                 <div className="row">
                   <AlagehAutoComplete
-                    div={{ className: "col-2" }}
+                    div={{ className: "col-3" }}
                     label={{
                       forceLabel: "Page Size",
                     }}
@@ -891,7 +891,7 @@ export default class ReportUI extends Component {
                     }}
                   />
                   <AlagehAutoComplete
-                    div={{ className: "col-2" }}
+                    div={{ className: "col-3" }}
                     label={{
                       forceLabel: "Page Layout",
                     }}

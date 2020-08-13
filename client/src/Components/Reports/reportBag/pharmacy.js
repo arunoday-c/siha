@@ -3,7 +3,7 @@ export default function Pharmacy({
   algaehApiCall,
   FORMAT_PAYTYPE,
   EXPIRY_STATUS,
-  moment
+  moment,
 }) {
   return {
     name: "Pharmacy",
@@ -16,50 +16,50 @@ export default function Pharmacy({
         pageOrentation: "landscape", //"portrait",
         reportParameters: [
           {
-            className: "col-2 form-group mandatory",
+            className: "col-3 form-group mandatory",
             type: "date",
             name: "from_date",
             isImp: true,
             others: {
               maxDate: new Date(),
-              minDate: null
-            }
+              minDate: null,
+            },
           },
           {
-            className: "col-2 form-group mandatory",
+            className: "col-3 form-group mandatory",
             type: "time",
             name: "from_time",
             label: "From Time",
             isImp: true,
-            value: "00:00"
+            value: "00:00",
           },
           {
-            className: "col-2 form-group mandatory",
+            className: "col-3 form-group mandatory",
             type: "date",
             name: "to_date",
             isImp: true,
             others: {
               maxDate: new Date(),
-              minDate: null
-            }
+              minDate: null,
+            },
           },
           {
-            className: "col-2 form-group mandatory",
+            className: "col-3 form-group mandatory",
             type: "time",
             name: "to_time",
             label: "To Time",
             isImp: true,
-            value: "23:59"
+            value: "23:59",
           },
           {
-            className: "col-2 form-group mandatory",
+            className: "col-3 form-group mandatory",
             type: "dropdown",
             name: "hospital_id",
             initialLoad: true,
             isImp: true,
             label: "branch",
             link: {
-              uri: "/organization/getOrganizationByUser"
+              uri: "/organization/getOrganizationByUser",
             },
             events: {
               onChange: (reportState, currentEvent) => {
@@ -70,29 +70,29 @@ export default function Pharmacy({
                   method: "GET",
                   data: { hospital_id: currentEvent.value },
 
-                  onSuccess: result => {
+                  onSuccess: (result) => {
                     reportState.setState({
-                      cashier_id_list: result.data.records
+                      cashier_id_list: result.data.records,
                     });
-                  }
+                  },
                 });
               },
               onClear: (reportState, currentName) => {
                 reportState.setState({
                   [currentName]: undefined,
-                  cashier_id_list: []
+                  cashier_id_list: [],
                 });
-              }
+              },
             },
             value: hospital_id,
             dataSource: {
               textField: "hospital_name",
               valueField: "hims_d_hospital_id",
-              data: undefined
-            }
+              data: undefined,
+            },
           },
           {
-            className: "col-2 form-group mandatory",
+            className: "col-3 form-group mandatory",
             type: "dropdown",
             name: "location_id",
 
@@ -103,16 +103,16 @@ export default function Pharmacy({
               uri: "/pharmacy/getPharmacyLocation",
               module: "pharmacy",
               data: {
-                allow_pos: "Y"
-              }
+                allow_pos: "Y",
+              },
             },
             dataSource: {
               textField: "location_description",
-              valueField: "hims_d_pharmacy_location_id"
-            }
+              valueField: "hims_d_pharmacy_location_id",
+            },
           },
           {
-            className: "col-2 form-group",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "pay_type",
             initialLoad: true,
@@ -122,11 +122,11 @@ export default function Pharmacy({
             dataSource: {
               textField: "name",
               valueField: "value",
-              data: FORMAT_PAYTYPE
-            }
+              data: FORMAT_PAYTYPE,
+            },
           },
           {
-            className: "col-2 form-group",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "cashier_id",
 
@@ -135,10 +135,10 @@ export default function Pharmacy({
             dataSource: {
               textField: "full_name",
               valueField: "algaeh_d_app_user_id",
-              data: []
-            }
-          }
-        ]
+              data: [],
+            },
+          },
+        ],
         //reportParameters: () => <Pharmacy ui="asset_warty_exp_rep" />
       },
       {
@@ -148,44 +148,44 @@ export default function Pharmacy({
         requireIframe: true,
         reportParameters: [
           {
-            className: "col-2 form-group mandatory",
+            className: "col-3 form-group mandatory",
             type: "date",
             name: "from_date",
             isImp: true,
             others: {
               maxDate: new Date(),
-              minDate: null
-            }
+              minDate: null,
+            },
           },
           {
-            className: "col-2 form-group mandatory",
+            className: "col-3 form-group mandatory",
             type: "date",
             name: "to_date",
             isImp: true,
             others: {
               maxDate: new Date(),
-              minDate: null
-            }
+              minDate: null,
+            },
           },
           {
-            className: "col-2 form-group mandatory",
+            className: "col-3 form-group mandatory",
             type: "dropdown",
             name: "hospital_id",
             initialLoad: true,
             isImp: true,
             label: "branch",
             link: {
-              uri: "/organization/getOrganizationByUser"
+              uri: "/organization/getOrganizationByUser",
             },
             value: hospital_id,
             dataSource: {
               textField: "hospital_name",
               valueField: "hims_d_hospital_id",
-              data: undefined
-            }
+              data: undefined,
+            },
           },
           {
-            className: "col-2 form-group mandatory",
+            className: "col-3 form-group mandatory",
             type: "dropdown",
             name: "location_id",
             initialLoad: true,
@@ -195,15 +195,15 @@ export default function Pharmacy({
               uri: "/pharmacy/getPharmacyLocation",
               module: "pharmacy",
               data: {
-                allow_pos: "Y"
-              }
+                allow_pos: "Y",
+              },
             },
             dataSource: {
               textField: "location_description",
-              valueField: "hims_d_pharmacy_location_id"
-            }
-          }
-        ]
+              valueField: "hims_d_pharmacy_location_id",
+            },
+          },
+        ],
         //reportParameters: () => <Pharmacy ui="asset_warty_exp_rep" />
       },
       {
@@ -213,44 +213,44 @@ export default function Pharmacy({
         requireIframe: true,
         reportParameters: [
           {
-            className: "col-2 form-group mandatory",
+            className: "col-3 form-group mandatory",
             type: "date",
             name: "from_date",
             isImp: true,
             others: {
               maxDate: new Date(),
-              minDate: null
-            }
+              minDate: null,
+            },
           },
           {
-            className: "col-2 form-group mandatory",
+            className: "col-3 form-group mandatory",
             type: "date",
             name: "to_date",
             isImp: true,
             others: {
               maxDate: new Date(),
-              minDate: null
-            }
+              minDate: null,
+            },
           },
           {
-            className: "col-2 form-group mandatory",
+            className: "col-3 form-group mandatory",
             type: "dropdown",
             name: "hospital_id",
             initialLoad: true,
             isImp: true,
             label: "branch",
             link: {
-              uri: "/organization/getOrganizationByUser"
+              uri: "/organization/getOrganizationByUser",
             },
             value: hospital_id,
             dataSource: {
               textField: "hospital_name",
               valueField: "hims_d_hospital_id",
-              data: undefined
-            }
+              data: undefined,
+            },
           },
           {
-            className: "col-2 form-group mandatory",
+            className: "col-3 form-group mandatory",
             type: "dropdown",
             name: "location_id",
             initialLoad: true,
@@ -260,15 +260,15 @@ export default function Pharmacy({
               uri: "/pharmacy/getPharmacyLocation",
               module: "pharmacy",
               data: {
-                allow_pos: "Y"
-              }
+                allow_pos: "Y",
+              },
             },
             dataSource: {
               textField: "location_description",
-              valueField: "hims_d_pharmacy_location_id"
-            }
-          }
-        ]
+              valueField: "hims_d_pharmacy_location_id",
+            },
+          },
+        ],
         //reportParameters: () => <Pharmacy ui="asset_warty_exp_rep" />
       },
       {
@@ -278,45 +278,45 @@ export default function Pharmacy({
         requireIframe: true,
         reportParameters: [
           {
-            className: "col-2 form-group mandatory",
+            className: "col-3 form-group mandatory",
             type: "date",
             name: "from_date",
             isImp: true,
             others: {
               maxDate: new Date(),
-              minDate: null
-            }
+              minDate: null,
+            },
           },
           {
-            className: "col-2 form-group mandatory",
+            className: "col-3 form-group mandatory",
             type: "date",
             name: "to_date",
             isImp: true,
             others: {
               maxDate: new Date(),
-              minDate: null
-            }
+              minDate: null,
+            },
           },
 
           {
-            className: "col-2 form-group mandatory",
+            className: "col-3 form-group mandatory",
             type: "dropdown",
             name: "hospital_id",
             initialLoad: true,
             isImp: true,
             label: "branch",
             link: {
-              uri: "/organization/getOrganizationByUser"
+              uri: "/organization/getOrganizationByUser",
             },
             value: hospital_id,
             dataSource: {
               textField: "hospital_name",
               valueField: "hims_d_hospital_id",
-              data: undefined
-            }
+              data: undefined,
+            },
           },
           {
-            className: "col-2 form-group mandatory",
+            className: "col-3 form-group mandatory",
             type: "dropdown",
             name: "location_id",
             initialLoad: true,
@@ -326,15 +326,15 @@ export default function Pharmacy({
               uri: "/pharmacy/getPharmacyLocation",
               module: "pharmacy",
               data: {
-                allow_pos: "Y"
-              }
+                allow_pos: "Y",
+              },
             },
             dataSource: {
               textField: "location_description",
-              valueField: "hims_d_pharmacy_location_id"
-            }
-          }
-        ]
+              valueField: "hims_d_pharmacy_location_id",
+            },
+          },
+        ],
         //reportParameters: () => <Pharmacy ui="asset_warty_exp_rep" />
       },
       {
@@ -345,14 +345,14 @@ export default function Pharmacy({
         pageOrentation: "landscape", //"portrait",
         reportParameters: [
           {
-            className: "col-2 form-group mandatory",
+            className: "col-3 form-group mandatory",
             type: "dropdown",
             name: "hospital_id",
             initialLoad: true,
             isImp: true,
             label: "branch",
             link: {
-              uri: "/organization/getOrganizationByUser"
+              uri: "/organization/getOrganizationByUser",
             },
             events: {
               onChange: (reportState, currentEvent) => {
@@ -363,29 +363,29 @@ export default function Pharmacy({
                   method: "GET",
                   data: { hospital_id: currentEvent.value },
 
-                  onSuccess: result => {
+                  onSuccess: (result) => {
                     reportState.setState({
-                      location_id_list: result.data.records
+                      location_id_list: result.data.records,
                     });
-                  }
+                  },
                 });
               },
               onClear: (reportState, currentName) => {
                 reportState.setState({
                   [currentName]: undefined,
-                  location_id_list: []
+                  location_id_list: [],
                 });
-              }
+              },
             },
             value: hospital_id,
             dataSource: {
               textField: "hospital_name",
               valueField: "hims_d_hospital_id",
-              data: undefined
-            }
+              data: undefined,
+            },
           },
           {
-            className: "col-2 form-group mandatory",
+            className: "col-3 form-group mandatory",
             type: "dropdown",
             name: "expiry_status",
             initialLoad: true,
@@ -394,34 +394,34 @@ export default function Pharmacy({
             dataSource: {
               textField: "name",
               valueField: "value",
-              data: EXPIRY_STATUS
-            }
+              data: EXPIRY_STATUS,
+            },
           },
 
           {
-            className: "col-2 form-group mandatory",
+            className: "col-3 form-group mandatory",
             type: "date",
             name: "from_date",
             isImp: true,
             others: {
               maxDate: new Date(),
-              minDate: null
-            }
+              minDate: null,
+            },
           },
 
           {
-            className: "col-2 form-group mandatory",
+            className: "col-3 form-group mandatory",
             type: "date",
             name: "to_date",
             isImp: true,
             others: {
               maxDate: new Date(),
-              minDate: null
-            }
+              minDate: null,
+            },
           },
 
           {
-            className: "col-2 form-group",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "location_id",
             initialLoad: true,
@@ -430,12 +430,12 @@ export default function Pharmacy({
             dataSource: {
               textField: "location_description",
               valueField: "hims_d_pharmacy_location_id",
-              data: []
-            }
+              data: [],
+            },
           },
 
           {
-            className: "col-2 form-group",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "group_id",
             initialLoad: true,
@@ -444,11 +444,11 @@ export default function Pharmacy({
             dataSource: {
               textField: "group_description",
               valueField: "hims_d_item_group_id",
-              data: []
+              data: [],
             },
             link: {
               uri: "/pharmacy/getItemGroup",
-              module: "pharmacy"
+              module: "pharmacy",
             },
             events: {
               onChange: (reportState, currentEvent) => {
@@ -459,23 +459,23 @@ export default function Pharmacy({
                   method: "GET",
                   data: { hims_d_item_category_id: currentEvent.value },
 
-                  onSuccess: result => {
+                  onSuccess: (result) => {
                     reportState.setState({
-                      category_id_list: result.data.records
+                      category_id_list: result.data.records,
                     });
-                  }
+                  },
                 });
               },
               onClear: (reportState, currentName) => {
                 reportState.setState({
                   [currentName]: undefined,
-                  category_id_list: []
+                  category_id_list: [],
                 });
-              }
-            }
+              },
+            },
           },
           {
-            className: "col-2 form-group",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "category_id",
             initialLoad: true,
@@ -484,7 +484,7 @@ export default function Pharmacy({
             dataSource: {
               textField: "category_desc",
               valueField: "hims_d_item_category_id",
-              data: []
+              data: [],
             },
             events: {
               onChange: (reportState, currentEvent) => {
@@ -495,24 +495,24 @@ export default function Pharmacy({
                   method: "GET",
                   data: { category_id: currentEvent.value },
 
-                  onSuccess: result => {
+                  onSuccess: (result) => {
                     reportState.setState({
-                      item_id_list: result.data.records
+                      item_id_list: result.data.records,
                     });
-                  }
+                  },
                 });
               },
               onClear: (reportState, currentName) => {
                 reportState.setState({
                   [currentName]: undefined,
-                  item_id_list: []
+                  item_id_list: [],
                 });
-              }
-            }
+              },
+            },
           },
 
           {
-            className: "col-2 form-group",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "item_id",
             initialLoad: true,
@@ -521,10 +521,10 @@ export default function Pharmacy({
             dataSource: {
               textField: "item_description",
               valueField: "hims_d_item_master_id",
-              data: []
-            }
-          }
-        ]
+              data: [],
+            },
+          },
+        ],
       },
       {
         subitem: "Consumption List",
@@ -532,14 +532,14 @@ export default function Pharmacy({
         requireIframe: true,
         reportParameters: [
           {
-            className: "col-2 form-group mandatory",
+            className: "col-3 form-group mandatory",
             type: "dropdown",
             name: "hospital_id",
             initialLoad: true,
             isImp: true,
             label: "branch",
             link: {
-              uri: "/organization/getOrganizationByUser"
+              uri: "/organization/getOrganizationByUser",
             },
             events: {
               onChange: (reportState, currentEvent) => {
@@ -550,30 +550,30 @@ export default function Pharmacy({
                   method: "GET",
                   data: { hospital_id: currentEvent.value },
 
-                  onSuccess: result => {
+                  onSuccess: (result) => {
                     reportState.setState({
-                      location_id_list: result.data.records
+                      location_id_list: result.data.records,
                     });
-                  }
+                  },
                 });
               },
               onClear: (reportState, currentName) => {
                 reportState.setState({
                   [currentName]: undefined,
-                  location_id_list: []
+                  location_id_list: [],
                 });
-              }
+              },
             },
             value: hospital_id,
             dataSource: {
               textField: "hospital_name",
               valueField: "hims_d_hospital_id",
-              data: undefined
-            }
+              data: undefined,
+            },
           },
 
           {
-            className: "col-2 form-group mandatory",
+            className: "col-3 form-group mandatory",
             type: "dropdown",
             name: "location_id",
             initialLoad: true,
@@ -582,18 +582,18 @@ export default function Pharmacy({
             dataSource: {
               textField: "location_description",
               valueField: "hims_d_pharmacy_location_id",
-              data: []
+              data: [],
             },
             events: {
               onClear: (reportState, currentName) => {
                 reportState.setState({
-                  [currentName]: undefined
+                  [currentName]: undefined,
                 });
-              }
-            }
+              },
+            },
           },
           {
-            className: "col-2 form-group mandatory",
+            className: "col-3 form-group mandatory",
             type: "dropdown",
             name: "stockUsed",
 
@@ -608,33 +608,33 @@ export default function Pharmacy({
                   stockUsed: "1 months",
                   stockUsedValue: moment()
                     .add(-1, "months")
-                    .format("YYYY-MM-DD")
+                    .format("YYYY-MM-DD"),
                 },
                 {
                   stockUsed: "2 months",
                   stockUsedValue: moment()
                     .add(-2, "months")
-                    .format("YYYY-MM-DD")
+                    .format("YYYY-MM-DD"),
                 },
                 {
                   stockUsed: "3 months",
                   stockUsedValue: moment()
                     .add(-3, "months")
-                    .format("YYYY-MM-DD")
-                }
-              ]
+                    .format("YYYY-MM-DD"),
+                },
+              ],
             },
             events: {
               onClear: (reportState, currentName) => {
                 reportState.setState({
-                  [currentName]: undefined
+                  [currentName]: undefined,
                 });
-              }
-            }
+              },
+            },
           },
 
           {
-            className: "col-2 form-group",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "item_id",
             initialLoad: true,
@@ -643,22 +643,22 @@ export default function Pharmacy({
 
             link: {
               uri: "/pharmacy/getItemMaster",
-              module: "pharmacy"
+              module: "pharmacy",
             },
             dataSource: {
               textField: "item_description",
               valueField: "hims_d_item_master_id",
-              data: undefined
+              data: undefined,
             },
             events: {
               onClear: (reportState, currentName) => {
                 reportState.setState({
-                  [currentName]: undefined
+                  [currentName]: undefined,
                 });
-              }
-            }
-          }
-        ]
+              },
+            },
+          },
+        ],
       },
       {
         subitem: "Items Stock Register - Category wise",
@@ -666,14 +666,14 @@ export default function Pharmacy({
         requireIframe: true,
         reportParameters: [
           {
-            className: "col-2 form-group mandatory",
+            className: "col-3 form-group mandatory",
             type: "dropdown",
             name: "hospital_id",
             initialLoad: true,
             isImp: true,
             label: "branch",
             link: {
-              uri: "/organization/getOrganizationByUser"
+              uri: "/organization/getOrganizationByUser",
             },
             events: {
               onChange: (reportState, currentEvent) => {
@@ -684,51 +684,51 @@ export default function Pharmacy({
                   method: "GET",
                   data: { hospital_id: currentEvent.value },
 
-                  onSuccess: result => {
+                  onSuccess: (result) => {
                     reportState.setState({
-                      location_id_list: result.data.records
+                      location_id_list: result.data.records,
                     });
-                  }
+                  },
                 });
               },
               onClear: (reportState, currentName) => {
                 reportState.setState({
                   [currentName]: undefined,
-                  location_id_list: []
+                  location_id_list: [],
                 });
-              }
+              },
             },
             value: hospital_id,
             dataSource: {
               textField: "hospital_name",
               valueField: "hims_d_hospital_id",
-              data: undefined
-            }
+              data: undefined,
+            },
           },
           {
-            className: "col-2 form-group mandatory",
+            className: "col-3 form-group mandatory",
             type: "date",
             name: "from_date",
             isImp: true,
             label: "From Date",
             others: {
               maxDate: new Date(),
-              minDate: null
-            }
+              minDate: null,
+            },
           },
           {
-            className: "col-2 form-group mandatory",
+            className: "col-3 form-group mandatory",
             type: "date",
             name: "to_date",
             isImp: true,
             label: "To Date",
             others: {
               maxDate: new Date(),
-              minDate: null
-            }
+              minDate: null,
+            },
           },
           {
-            className: "col-2 form-group mandatory",
+            className: "col-3 form-group mandatory",
             type: "dropdown",
             name: "location_id",
             initialLoad: true,
@@ -737,11 +737,11 @@ export default function Pharmacy({
             dataSource: {
               textField: "location_description",
               valueField: "hims_d_pharmacy_location_id",
-              data: []
-            }
+              data: [],
+            },
           },
           {
-            className: "col-2 form-group mandatory",
+            className: "col-3 form-group mandatory",
             type: "dropdown",
             name: "category_id",
             initialLoad: true,
@@ -750,12 +750,12 @@ export default function Pharmacy({
 
             link: {
               uri: "/pharmacy/getItemCategory",
-              module: "pharmacy"
+              module: "pharmacy",
             },
             dataSource: {
               textField: "category_desc",
               valueField: "hims_d_item_category_id",
-              data: undefined
+              data: undefined,
             },
             events: {
               onChange: (reportState, currentEvent) => {
@@ -766,24 +766,24 @@ export default function Pharmacy({
                   method: "GET",
                   data: { category_id: currentEvent.value },
 
-                  onSuccess: result => {
+                  onSuccess: (result) => {
                     reportState.setState({
-                      item_id_list: result.data.records
+                      item_id_list: result.data.records,
                     });
-                  }
+                  },
                 });
               },
               onClear: (reportState, currentName) => {
                 reportState.setState({
                   [currentName]: undefined,
-                  item_id_list: []
+                  item_id_list: [],
                 });
-              }
-            }
+              },
+            },
           },
 
           {
-            className: "col-2 form-group",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "item_id",
             initialLoad: true,
@@ -792,10 +792,10 @@ export default function Pharmacy({
             dataSource: {
               textField: "item_description",
               valueField: "hims_d_item_master_id",
-              data: []
-            }
-          }
-        ]
+              data: [],
+            },
+          },
+        ],
       },
       {
         subitem: "Items Stock Register - Date wise",
@@ -803,14 +803,14 @@ export default function Pharmacy({
         requireIframe: true,
         reportParameters: [
           {
-            className: "col-2 form-group mandatory",
+            className: "col-3 form-group mandatory",
             type: "dropdown",
             name: "hospital_id",
             initialLoad: true,
             isImp: true,
             label: "branch",
             link: {
-              uri: "/organization/getOrganizationByUser"
+              uri: "/organization/getOrganizationByUser",
             },
             events: {
               onChange: (reportState, currentEvent) => {
@@ -821,51 +821,51 @@ export default function Pharmacy({
                   method: "GET",
                   data: { hospital_id: currentEvent.value },
 
-                  onSuccess: result => {
+                  onSuccess: (result) => {
                     reportState.setState({
-                      location_id_list: result.data.records
+                      location_id_list: result.data.records,
                     });
-                  }
+                  },
                 });
               },
               onClear: (reportState, currentName) => {
                 reportState.setState({
                   [currentName]: undefined,
-                  location_id_list: []
+                  location_id_list: [],
                 });
-              }
+              },
             },
             value: hospital_id,
             dataSource: {
               textField: "hospital_name",
               valueField: "hims_d_hospital_id",
-              data: undefined
-            }
+              data: undefined,
+            },
           },
 
           {
-            className: "col-2 form-group mandatory",
+            className: "col-3 form-group mandatory",
             type: "date",
             name: "from_date",
             isImp: true,
             others: {
               maxDate: new Date(),
-              minDate: null
-            }
+              minDate: null,
+            },
           },
           {
-            className: "col-2 form-group mandatory",
+            className: "col-3 form-group mandatory",
             type: "date",
             name: "to_date",
             isImp: true,
             others: {
               maxDate: new Date(),
-              minDate: null
-            }
+              minDate: null,
+            },
           },
 
           {
-            className: "col-2 form-group mandatory",
+            className: "col-3 form-group mandatory",
             type: "dropdown",
             name: "location_id",
             initialLoad: true,
@@ -874,12 +874,12 @@ export default function Pharmacy({
             dataSource: {
               textField: "location_description",
               valueField: "hims_d_pharmacy_location_id",
-              data: []
-            }
+              data: [],
+            },
           },
 
           {
-            className: "col-2 form-group mandatory",
+            className: "col-3 form-group mandatory",
             type: "dropdown",
             name: "item_id",
             initialLoad: true,
@@ -888,15 +888,15 @@ export default function Pharmacy({
 
             link: {
               uri: "/pharmacy/getItemMaster",
-              module: "pharmacy"
+              module: "pharmacy",
             },
             dataSource: {
               textField: "item_description",
               valueField: "hims_d_item_master_id",
-              data: undefined
-            }
-          }
-        ]
+              data: undefined,
+            },
+          },
+        ],
       },
       {
         subitem: "GP Statement - Bill Wise",
@@ -906,34 +906,34 @@ export default function Pharmacy({
         pageOrentation: "landscape", //"portrait",
         reportParameters: [
           {
-            className: "col-2 form-group mandatory",
+            className: "col-3 form-group mandatory",
             type: "date",
             name: "from_date",
             isImp: true,
             others: {
               maxDate: new Date(),
-              minDate: null
-            }
+              minDate: null,
+            },
           },
           {
-            className: "col-2 form-group mandatory",
+            className: "col-3 form-group mandatory",
             type: "date",
             name: "to_date",
             isImp: true,
             others: {
               maxDate: new Date(),
-              minDate: null
-            }
+              minDate: null,
+            },
           },
           {
-            className: "col-2 form-group mandatory",
+            className: "col-3 form-group mandatory",
             type: "dropdown",
             name: "hospital_id",
             initialLoad: true,
             isImp: true,
             label: "branch",
             link: {
-              uri: "/organization/getOrganizationByUser"
+              uri: "/organization/getOrganizationByUser",
             },
             events: {
               onChange: (reportState, currentEvent) => {
@@ -944,30 +944,30 @@ export default function Pharmacy({
                   method: "GET",
                   data: { hospital_id: currentEvent.value },
 
-                  onSuccess: result => {
+                  onSuccess: (result) => {
                     reportState.setState({
-                      location_id_list: result.data.records
+                      location_id_list: result.data.records,
                     });
-                  }
+                  },
                 });
               },
               onClear: (reportState, currentName) => {
                 reportState.setState({
                   [currentName]: undefined,
-                  location_id_list: []
+                  location_id_list: [],
                 });
-              }
+              },
             },
             value: hospital_id,
             dataSource: {
               textField: "hospital_name",
               valueField: "hims_d_hospital_id",
-              data: undefined
-            }
+              data: undefined,
+            },
           },
 
           {
-            className: "col-2 form-group",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "location_id",
             initialLoad: true,
@@ -976,10 +976,10 @@ export default function Pharmacy({
             dataSource: {
               textField: "location_description",
               valueField: "hims_d_pharmacy_location_id",
-              data: []
-            }
-          }
-        ]
+              data: [],
+            },
+          },
+        ],
         //reportParameters: () => <Pharmacy ui="asset_warty_exp_rep" />
       },
       {
@@ -988,34 +988,34 @@ export default function Pharmacy({
         requireIframe: true,
         reportParameters: [
           {
-            className: "col-2 form-group mandatory",
+            className: "col-3 form-group mandatory",
             type: "date",
             name: "from_date",
             isImp: true,
             others: {
               maxDate: new Date(),
-              minDate: null
-            }
+              minDate: null,
+            },
           },
           {
-            className: "col-2 form-group mandatory",
+            className: "col-3 form-group mandatory",
             type: "date",
             name: "to_date",
             isImp: true,
             others: {
               maxDate: new Date(),
-              minDate: null
-            }
+              minDate: null,
+            },
           },
           {
-            className: "col-2 form-group",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "hospital_id",
             initialLoad: true,
             isImp: false,
             label: "branch",
             link: {
-              uri: "/organization/getOrganizationByUser"
+              uri: "/organization/getOrganizationByUser",
             },
             events: {
               onChange: (reportState, currentEvent) => {
@@ -1026,30 +1026,30 @@ export default function Pharmacy({
                   method: "GET",
                   data: { hospital_id: currentEvent.value },
 
-                  onSuccess: result => {
+                  onSuccess: (result) => {
                     reportState.setState({
-                      location_id_list: result.data.records
+                      location_id_list: result.data.records,
                     });
-                  }
+                  },
                 });
               },
               onClear: (reportState, currentName) => {
                 reportState.setState({
                   [currentName]: undefined,
-                  location_id_list: []
+                  location_id_list: [],
                 });
-              }
+              },
             },
             value: hospital_id,
             dataSource: {
               textField: "hospital_name",
               valueField: "hims_d_hospital_id",
-              data: undefined
-            }
+              data: undefined,
+            },
           },
 
           {
-            className: "col-2 form-group",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "location_id",
             initialLoad: true,
@@ -1058,10 +1058,10 @@ export default function Pharmacy({
             dataSource: {
               textField: "location_description",
               valueField: "hims_d_pharmacy_location_id",
-              data: []
-            }
-          }
-        ]
+              data: [],
+            },
+          },
+        ],
         //reportParameters: () => <Pharmacy ui="asset_warty_exp_rep" />
       },
       {
@@ -1070,14 +1070,14 @@ export default function Pharmacy({
         requireIframe: true,
         reportParameters: [
           {
-            className: "col-2 form-group mandatory",
+            className: "col-3 form-group mandatory",
             type: "dropdown",
             name: "hospital_id",
             initialLoad: true,
             isImp: true,
             label: "branch",
             link: {
-              uri: "/organization/getOrganizationByUser"
+              uri: "/organization/getOrganizationByUser",
             },
             events: {
               onChange: (reportState, currentEvent) => {
@@ -1088,50 +1088,50 @@ export default function Pharmacy({
                   method: "GET",
                   data: { hospital_id: currentEvent.value },
 
-                  onSuccess: result => {
+                  onSuccess: (result) => {
                     reportState.setState({
-                      location_id_list: result.data.records
+                      location_id_list: result.data.records,
                     });
-                  }
+                  },
                 });
               },
               onClear: (reportState, currentName) => {
                 reportState.setState({
                   [currentName]: undefined,
-                  location_id_list: []
+                  location_id_list: [],
                 });
-              }
+              },
             },
             value: hospital_id,
             dataSource: {
               textField: "hospital_name",
               valueField: "hims_d_hospital_id",
-              data: undefined
-            }
+              data: undefined,
+            },
           },
           {
-            className: "col-2 mandatory  form-group",
+            className: "col-3 mandatory  form-group",
             type: "date",
             name: "from_date",
             isImp: true,
             others: {
               maxDate: new Date(),
-              minDate: null
-            }
+              minDate: null,
+            },
           },
 
           {
-            className: "col-2 mandatory  form-group",
+            className: "col-3 mandatory  form-group",
             type: "date",
             name: "to_date",
             isImp: true,
             others: {
               maxDate: new Date(),
-              minDate: null
-            }
-          }
+              minDate: null,
+            },
+          },
           // {
-          //   className: "col-2 form-group mandatory",
+          //   className: "col-3 form-group mandatory",
           //   type: "dropdown",
           //   name: "location_id",
           //   initialLoad: true,
@@ -1143,7 +1143,7 @@ export default function Pharmacy({
           //     data: []
           //   }
           // }
-        ]
+        ],
       },
       {
         subitem: "Transfer Report",
@@ -1151,14 +1151,14 @@ export default function Pharmacy({
         requireIframe: true,
         reportParameters: [
           {
-            className: "col-2 form-group mandatory",
+            className: "col-3 form-group mandatory",
             type: "dropdown",
             name: "hospital_id",
             initialLoad: true,
             isImp: true,
             label: "branch",
             link: {
-              uri: "/organization/getOrganizationByUser"
+              uri: "/organization/getOrganizationByUser",
             },
             events: {
               onChange: (reportState, currentEvent) => {
@@ -1169,50 +1169,50 @@ export default function Pharmacy({
                   method: "GET",
                   data: { hospital_id: currentEvent.value },
 
-                  onSuccess: result => {
+                  onSuccess: (result) => {
                     reportState.setState({
-                      location_id_list: result.data.records
+                      location_id_list: result.data.records,
                     });
-                  }
+                  },
                 });
               },
               onClear: (reportState, currentName) => {
                 reportState.setState({
                   [currentName]: undefined,
-                  location_id_list: []
+                  location_id_list: [],
                 });
-              }
+              },
             },
             value: hospital_id,
             dataSource: {
               textField: "hospital_name",
               valueField: "hims_d_hospital_id",
-              data: undefined
-            }
+              data: undefined,
+            },
           },
           {
-            className: "col-2 mandatory  form-group",
+            className: "col-3 mandatory  form-group",
             type: "date",
             name: "from_date",
             isImp: true,
             others: {
               maxDate: new Date(),
-              minDate: null
-            }
+              minDate: null,
+            },
           },
 
           {
-            className: "col-2 mandatory  form-group",
+            className: "col-3 mandatory  form-group",
             type: "date",
             name: "to_date",
             isImp: true,
             others: {
               maxDate: new Date(),
-              minDate: null
-            }
+              minDate: null,
+            },
           },
           {
-            className: "col-2 form-group mandatory",
+            className: "col-3 form-group mandatory",
             type: "dropdown",
             name: "location_id",
             initialLoad: true,
@@ -1221,11 +1221,11 @@ export default function Pharmacy({
             dataSource: {
               textField: "location_description",
               valueField: "hims_d_pharmacy_location_id",
-              data: []
-            }
-          }
-        ]
-      }
+              data: [],
+            },
+          },
+        ],
+      },
 
       // {
       //   subitem: "GP Statment ItemWise Report",
@@ -1248,7 +1248,7 @@ export default function Pharmacy({
       //   pageOrentation: "portrait", //"portrait",
       //   reportParameters: [
       //     {
-      //       className: "col-2 form-group",
+      //       className: "col-3 form-group",
       //       type: "date",
       //       name: "from_date",
       //       isImp: true,
@@ -1258,7 +1258,7 @@ export default function Pharmacy({
       //       }
       //     },
       //     {
-      //       className: "col-2 form-group",
+      //       className: "col-3 form-group",
       //       type: "date",
       //       name: "to_date",
       //       isImp: true,
@@ -1269,6 +1269,6 @@ export default function Pharmacy({
       //     }
       //   ]
       // }
-    ]
+    ],
   };
 }

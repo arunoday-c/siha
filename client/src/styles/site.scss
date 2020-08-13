@@ -2435,13 +2435,33 @@ input.autoselect-input:disabled {
   }
   .errorMsg {
     position: absolute;
-    top: 49px;
-    left: 15px;
-    font-size: 9px;
-    color: #fff;
+    top: 53px !important;
+    left: 15px !important;
+    right: 15px !important;
+    font-size: 7px !important;
+    color: $color-white !important;
     background: lighten($color-red, 45%) !important;
     padding: 0 3px;
     border-radius: 0 0 2px 2px;
+    text-transform: uppercase;
+  }
+
+  input[type="text"],
+  input[type="number"],
+  input[type="tel"],
+  input[type="email"],
+  input[type="password"],
+  input[type="type"],
+  input.autoselect-input,
+  .algaeh-datePicker input[type="date"],
+  .algaeh-datePicker input[type="time"],
+  .algaeh-datePicker input[type="datetime-local"],
+  .algaeh-datePicker input[type="month"],
+  .algaeh-datePicker input[type="year"],
+  .ant-select-selection,
+  .ant-select-selector {
+    background-color: #fdeef0 !important;
+    border: 1px solid #ff3855 !important;
   }
 }
 /*====================== New Patient Registration CSS starts here ======================*/
@@ -2498,5 +2518,13 @@ input.autoselect-input:disabled {
     border: 1px solid #d3d3d3;
     padding: 15px;
     margin-top: 15px;
+  }
+}
+.mainReportPopup {
+  .algaeh-modal {
+    max-width: 55vw;
+    .popupInner {
+      min-height: 50vh !important;
+    }
   }
 }
