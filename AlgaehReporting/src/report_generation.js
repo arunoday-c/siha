@@ -1253,7 +1253,7 @@ export default {
                                       .replace(/&amp;/gi, "&");
                                     if (!isNaN(cell.value)) {
                                       cell.alignment = {
-                                        vertical: "top",
+                                        vertical: "middle",
                                         horizontal: "right",
                                       };
                                     }

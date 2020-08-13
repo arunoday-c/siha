@@ -1,0 +1,75 @@
+{{{importStyle 'css/algaehReportStyles.css'}}}
+
+<body>
+    <div class="print-body">
+
+        <section>
+            {{!-- <table class="tableForLabel" cell-padding="0">
+                <tr>
+                    <td><label class="textEnLft">Total Employees</label>:<span class="valueText">{{no_employees}}</span>
+                    </td>
+                </tr>
+            </table> --}}
+
+
+        </section>
+        <section>
+            <table class="tableForData" cell-padding="0">
+                <thead>
+                    <tr>
+                        <th>Sl No.</th>
+                        <th>Patient Code</th>
+                        <th>Patient Name</th>
+                        <th>Visit No.</th>
+                        <th>Visit Date</th>
+                        <th>Service</th>
+                        <th>Net Amount</th>
+                    </tr>
+
+                </thead>
+                <tbody>
+                    {{!-- <tr>
+                        <td colspan="10"></td>
+                        <td colspan="1"><span class="textFloatRight">Total No.
+                                Employees: <b>{{no_employees}}</b></span></td>
+
+                    </tr> --}}
+                    {{#hasElement result}}
+
+
+                    {{#each result}}
+                    <tr>
+                        <td colspan="6" class="tableSubHdg">{{sub_department_name}}</td>
+                        <td class="tableSubHdg numberFld">{{totalPatient}}</td>
+
+                    </tr>
+                    {{#each doctors}}
+                    <tr>
+                        <td colspan="6" class="tableSubHdg2">Dr. {{doctor_name}} ({{employee_code}})
+                        </td>
+                        <td class="tableSubHdg2 numberFld"><b>{{totalAmt}}</b></td>
+                    </tr>
+                    {{#each docs}}
+                    <tr>
+                        <td>{{inc @index}}</td>
+                        <td>{{patient_code}}</td>
+                        <td excelborder='{"top":{"style":"thin","color":{"argb":"dddddd"}},"left":{"style":"thin","color":{"argb":"dddddd"}},"bottom":{"style":"thin","color":{"argb":"dddddd"}},"right":{"style":"thin","color":{"argb":"dddddd"}}}'
+                            class="txtFld">{{full_name}}</td>
+                        <td>{{visit_code}}</td>
+                        <td>{{visit_date}}</td>
+                        <td>{{service_name}}</td>
+                        <td class="numberFld">{{net_amout}}</td>
+                    </tr>
+                    {{/each }}{{/each }}{{/each }}
+                    {{else}}
+                    <tr>
+                        <td colspan="6" class="noResultTextReport">No Records Found</td>
+                    </tr>{{/hasElement }}
+                </tbody>
+
+            </table>
+        </section>
+        {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
+
+    </div>
+</body>

@@ -2500,3 +2500,11 @@ input.autoselect-input:disabled {
     margin-top: 15px;
   }
 }
+.mainReportPopup {
+  .algaeh-modal {
+    max-width: 55vw;
+    .popupInner {
+      min-height: 50vh !important;
+    }
+  }
+}
