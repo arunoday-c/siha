@@ -562,7 +562,13 @@
  *    email:
  *     type: string
  *     nullable: true
- *
+ *    services_id:
+ *     type: number
+ *     nullable: false
+ *    department_type:
+ *     type: string
+ *     enum: ['D','E','O','N','PH','I']
+ *     default: "N"
  */
 
 /**

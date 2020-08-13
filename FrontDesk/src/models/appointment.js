@@ -2576,9 +2576,12 @@ export function getPatientDetailsWithAppNo(req, res, next) {
   try {
     _mysql
       .executeQuery({
-        query: `select patient_id, patient_code, provider_id, sub_department_id, title_id, 
-     patient_name, arabic_name, date_of_birth, age, contact_number, email, 
-     gender from hims_f_patient_appointment where hims_f_patient_appointment_id=?`,
+        query: `select patient_id, patient_code, PA.provider_id, PA.sub_department_id, PA.title_id, 
+        patient_name, PA.arabic_name, PA.date_of_birth, PA.age, PA.contact_number, PA.email, 
+        PA.gender,E.services_id,SD.department_type from hims_f_patient_appointment as PA 
+       inner join hims_d_employee as E on E.hims_d_employee_id = PA.provider_id
+     inner join hims_d_sub_department as SD on PA.sub_department_id =SD.hims_d_sub_department_id
+       where PA.hims_f_patient_appointment_id=?`,
         values: [application_id],
       })
       .then((result) => {

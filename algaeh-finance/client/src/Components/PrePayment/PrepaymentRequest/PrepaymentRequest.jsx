@@ -26,6 +26,8 @@ export function PrepaymentRequest() {
   const [visible, setVisible] = useState(false);
   const [disableEdit, setDisableEdit] = useState(false);
   const [payReqID, setPayReqID] = useState({});
+  const [employees_req, setEmployeeReq] = useState("N");
+  const [identity_no, setEmployeeIDNum] = useState(null);
 
   const { branchAndCenters, prePaymentTypes, employees } = useContext(
     PrePaymentContext
@@ -37,7 +39,7 @@ export function PrepaymentRequest() {
     });
   }, []);
 
-  const { control, errors, handleSubmit, setValue, watch } = useForm({
+  const { control, errors, handleSubmit, setValue, reset, watch } = useForm({
     shouldFocusError: true,
   });
 
@@ -48,7 +50,9 @@ export function PrepaymentRequest() {
         module: "finance",
       });
       if (res.data.success) {
+        // debugger;
         setRequests(res.data.result);
+        resetForm();
       }
     } catch (e) {
       AlgaehMessagePop({
@@ -89,7 +93,7 @@ export function PrepaymentRequest() {
         getRequest().then(() => {
           AlgaehMessagePop({
             type: "success",
-            display: "Request Added successfully",
+            display: "Request Updated successfully",
           });
         });
       }
@@ -120,6 +124,10 @@ export function PrepaymentRequest() {
     })
       .then((value) => {
         return getRequest();
+        AlgaehMessagePop({
+          type: "success",
+          display: "Request Added successfully",
+        });
       })
       .catch((e) => console.log(e));
   };
@@ -164,12 +172,15 @@ export function PrepaymentRequest() {
       });
       if (res.data.success) {
         const result = res.data.result;
-
+        AlgaehMessagePop({
+          type: "success",
+          display: "Request Added successfully",
+        });
         saveDocument(payment_reqDoc, result.request_code, result.insertId);
       }
     } catch (e) {
       AlgaehMessagePop({
-        type: "success",
+        type: "warning",
         display: e.message,
       });
     }
@@ -222,6 +233,25 @@ export function PrepaymentRequest() {
         )}
       </span>
     );
+  };
+  const resetForm = () => {
+    reset({
+      hospital_id: "",
+      cost_center_id: "",
+      prepayment_type_id: "",
+      employee_id: null,
+      prepayment_amount: null,
+      start_date: "",
+      end_date: "",
+      prepayment_remarks: "",
+    });
+    // setRequests([]);
+    setPayment_reqDoc([]);
+    setPrePayment_docs([]);
+    setPayReqID({});
+    setEmployeeIDNum(null);
+    setDisableEdit(false);
+    setEmployeeReq("N");
   };
   const editRow = (data) => {
     setValue("hospital_id", data.hims_d_hospital_id);
@@ -355,6 +385,7 @@ export function PrepaymentRequest() {
                             onChange: (_, selected) => {
                               onChange(selected);
                               setValue("employee_id", "");
+                              setEmployeeIDNum("");
                               setValue("cost_center_id", "");
                             },
                             name: "hospital_id",
@@ -430,6 +461,7 @@ export function PrepaymentRequest() {
                               onChange(selected);
                               setValue("start_date", undefined);
                               setValue("end_date", undefined);
+                              setEmployeeReq(_.employees_req);
                             },
                             onClear: () => {
                               onChange("");
@@ -449,50 +481,51 @@ export function PrepaymentRequest() {
                     {errors.prepayment_type_id && (
                       <span>{errors.prepayment_type_id.message}</span>
                     )}
-                    <Controller
-                      name="employee_id"
-                      control={control}
-                      rules={{ required: "Please select an employee" }}
-                      render={({ value, onBlur, onChange }) => (
-                        <AlgaehAutoComplete
-                          div={{ className: "col-12 form-group " }}
-                          label={{
-                            forceLabel: "Employee",
-                            isImp: true,
-                          }}
-                          selector={{
-                            others: {
-                              disabled: disableEdit,
-                            },
-                            value,
-                            onChange: (_, selected) => {
-                              onChange(selected);
-                            },
-                            onBlur: (_, selected) => {
-                              onBlur(selected);
-                            },
-                            name: "employee_id",
-                            dataSource: {
-                              data: ihospital
-                                ? employees.filter(
-                                    (item) => item.hospital_id == ihospital
-                                  )
-                                : employees,
-                              textField: "full_name",
-                              valueField: "hims_d_employee_id",
-                            },
-                          }}
-                        />
-                      )}
-                    />
-                    <div className="col">
-                      <label className="style_Label ">Employee ID</label>
-                      <h6>
-                        {employeeDetails.length !== 0
-                          ? employeeDetails[0].identity_no
-                          : null}
-                      </h6>
-                    </div>
+                    {employees_req === "Y" ? (
+                      <Controller
+                        name="employee_id"
+                        control={control}
+                        rules={{ required: "Please select an employee" }}
+                        render={({ value, onBlur, onChange }) => (
+                          <AlgaehAutoComplete
+                            div={{ className: "col-12 form-group " }}
+                            label={{
+                              forceLabel: "Employee",
+                              isImp: true,
+                            }}
+                            selector={{
+                              others: {
+                                disabled: disableEdit,
+                              },
+                              value,
+                              onChange: (_, selected) => {
+                                onChange(selected);
+                                setEmployeeIDNum(_.identity_no);
+                              },
+                              onBlur: (_, selected) => {
+                                onBlur(selected);
+                              },
+                              name: "employee_id",
+                              dataSource: {
+                                data: ihospital
+                                  ? employees.filter(
+                                      (item) => item.hospital_id == ihospital
+                                    )
+                                  : employees,
+                                textField: "full_name",
+                                valueField: "hims_d_employee_id",
+                              },
+                            }}
+                          />
+                        )}
+                      />
+                    ) : null}
+                    {employees_req === "Y" ? (
+                      <div className="col">
+                        <label className="style_Label ">Employee ID</label>
+                        <h6>{identity_no ? identity_no : "-----"}</h6>
+                      </div>
+                    ) : null}
                     <Controller
                       control={control}
                       // rules={{ required: "Prepayment Remarks" }}
@@ -684,6 +717,16 @@ export function PrepaymentRequest() {
                       style={{ marginTop: 20 }}
                     >
                       {disableEdit ? "Update" : "Add to List"}
+                    </button>
+                  </div>
+                  <div>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        resetForm();
+                      }}
+                    >
+                      Clear
                     </button>
                   </div>
                 </div>

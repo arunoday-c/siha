@@ -207,7 +207,6 @@ export default {
                 );
               }
             }
-
             if (req.body.deletePackage.length > 0) {
               for (let i = 0; i < req.body.deletePackage.length; i++) {
                 let inputParam = req.body.deletePackage;
@@ -267,7 +266,7 @@ export default {
                 } else {
                   _mysql.commitTransaction(() => {
                     _mysql.releaseConnection();
-                    req.records = results;
+                    req.records = updatePakageDetail;
                     next();
                   });
                 }

@@ -40,7 +40,9 @@ export function InsuranceDetails({
   trigger,
 }) {
   const { userToken } = useContext(MainContext);
-  const { setInsuranceInfo } = useContext(FrontdeskContext);
+  const { setInsuranceInfo, disabled: saveDisable } = useContext(
+    FrontdeskContext
+  );
   const { fieldNameFn } = useLangFieldName();
   const [isInsurance, setIsInsurance] = useState(false);
   const [insuranceList, setInsuranceList] = useState([]);
@@ -136,6 +138,7 @@ export function InsuranceDetails({
                               <input
                                 type="radio"
                                 name="insuredYes"
+                                disabled={saveDisable}
                                 checked={isInsurance}
                                 onChange={() => setIsInsurance(true)}
                               />
@@ -145,6 +148,7 @@ export function InsuranceDetails({
                               <input
                                 type="radio"
                                 name="insuredNo"
+                                disabled={saveDisable}
                                 checked={!isInsurance}
                                 onChange={() => setIsInsurance(false)}
                               />

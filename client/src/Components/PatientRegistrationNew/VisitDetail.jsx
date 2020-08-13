@@ -13,7 +13,7 @@ import {
   Spin,
 } from "algaeh-react-components";
 import { useLangFieldName } from "./patientHooks";
-import { newAlgaehApi } from "../../hooks/";
+import { newAlgaehApi, useQueryParams } from "../../hooks/";
 import { FrontdeskContext } from "./FrontdeskContext";
 // import GenericData from "../../utils/GlobalVariables.json";
 const { TabPane } = Tabs;
@@ -37,9 +37,18 @@ const getDoctorData = async () => {
   };
 };
 
-export function VisitDetails({ control, setValue, trigger, visits = [] }) {
+export function VisitDetails({
+  control,
+  setValue,
+  trigger,
+  visits = [],
+  packages = [],
+}) {
+  const queryParams = useQueryParams();
+  const bill_number = queryParams.get("bill_number");
+  const disabled = !!bill_number;
   const { fieldNameFn } = useLangFieldName();
-  const { setServiceInfo } = useContext(FrontdeskContext);
+  const { setServiceInfo, setConsultationInfo } = useContext(FrontdeskContext);
   const { data, isLoading } = useQuery("doctors-data", getDoctorData, {
     refetchOnWindowFocus: false,
     cacheTime: Infinity,
@@ -61,6 +70,7 @@ export function VisitDetails({ control, setValue, trigger, visits = [] }) {
       "department_type",
     ],
   });
+
   const insured = !!primary_insurance_provider_id;
 
   return (
@@ -97,7 +107,9 @@ export function VisitDetails({ control, setValue, trigger, visits = [] }) {
                                 name: "visit_type",
                                 className: "select-fld",
                                 value,
-                                onChange: (_, selected) => {
+                                onChange: (data, selected) => {
+                                  debugger;
+                                  setConsultationInfo(data);
                                   onChange(selected);
                                 },
                                 onClear: () => onChange(""),
@@ -107,7 +119,7 @@ export function VisitDetails({ control, setValue, trigger, visits = [] }) {
                                   data: data?.visitTypes,
                                 },
                                 others: {
-                                  disabled: false,
+                                  disabled,
                                 },
                               }}
                             />
@@ -133,6 +145,7 @@ export function VisitDetails({ control, setValue, trigger, visits = [] }) {
                                   setServiceInfo(selected);
                                   onChange(selected);
                                 },
+                                disabled,
                                 name: "doctor",
                                 data: data?.doctors,
                                 textField: fieldNameFn("label", "arlabel"),
@@ -203,7 +216,7 @@ export function VisitDetails({ control, setValue, trigger, visits = [] }) {
                                     //   data: this.props.dentalplans
                                   },
                                   others: {
-                                    disabled: true,
+                                    disabled,
                                   },
                                   // onChange: texthandle.bind(this, this, context),
                                   onClear: () => {
@@ -257,7 +270,7 @@ export function VisitDetails({ control, setValue, trigger, visits = [] }) {
 
                                   // onChange: texthandle.bind(this, this, context)
 
-                                  disabled: false,
+                                  disabled,
                                 }}
                               />
                             </div>
@@ -269,7 +282,7 @@ export function VisitDetails({ control, setValue, trigger, visits = [] }) {
                     <div className="col-lg-8 secondary-details">
                       <h6>
                         <AlgaehLabel label={{ fieldName: "PastVisit" }} />
-                        {true ? (
+                        {packages?.length ? (
                           <span className="packageStatus">
                             {" "}
                             Package Exists{" "}

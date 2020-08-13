@@ -80,6 +80,7 @@ export function PrepaymentMaster() {
       module: "finance",
       data: {
         ...e,
+        employees_req: e.employee_req ? "Y" : "N",
         finance_d_prepayment_type_id: current.finance_d_prepayment_type_id,
       },
     })
