@@ -600,6 +600,40 @@
  */
 /**
  * @swagger
+ * /frontdesk/update:
+ *  post:
+ *   tags:
+ *    - Patient Registration
+ *   produces:
+ *    - application/json
+ *   parameters:
+ *    - name: body
+ *      discription: Update patient with new visit
+ *      in: body
+ *      required: true
+ *      schema:
+ *       properties:
+ *          patient_code:
+ *           type: string
+ *           required: true
+ *          patient_id:
+ *           type: number
+ *           required: true
+ *       allOf:
+ *        - $ref: "#/definitions/patientRegistration"
+ *   responses:
+ *     200:
+ *      description: Return Patient Code along with a success message
+ *      schema:
+ *       $ref: '#/definitions/Success'
+ *     400:
+ *      description: Return message
+ *      schema:
+ *       $ref: '#/definitions/Error'
+ *
+ */
+/**
+ * @swagger
  *
  * /appointment/getPatientDetilsByAppId:
  *  get:
