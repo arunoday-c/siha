@@ -181,6 +181,7 @@ export function PatientRegistration() {
           setValue("doctor", doctor);
           setValue("doctor_id", data?.provider_id);
           setValue("visit_type", 10);
+          setServiceInfo(doctor);
         }
       },
     }
