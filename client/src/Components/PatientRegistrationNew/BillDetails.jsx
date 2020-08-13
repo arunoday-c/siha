@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { useQuery } from "react-query";
 import { useWatch, Controller } from "react-hook-form";
 import moment from "moment";
@@ -28,6 +28,7 @@ const getBillDetails = async (
     primary_insurance_provider_id,
     primary_network_id,
     primary_network_office_id,
+    prevVisits
   }
 ) => {
   const details = await newAlgaehApi({
@@ -37,8 +38,8 @@ const getBillDetails = async (
     data: [
       {
         hims_d_services_id: parseInt(services_id, 10),
-        zeroBill: false,
-        FollowUp: false,
+        zeroBill: !!prevVisits.length,
+        FollowUp: !!prevVisits.length,
         insured: primary_insurance_provider_id ? "Y" : "N",
         primary_insurance_provider_id,
         primary_network_id,
@@ -52,15 +53,15 @@ const getBillDetails = async (
   return details?.data?.records;
 };
 
-const getBillCalculations = async (key, { billInfo }) => {
-  const res = await newAlgaehApi({
-    uri: "/billing/billingCalculations",
-    data: { ...billInfo, existing_treat: false, follow_up: false },
-    method: "POST",
-    module: "billing",
-  });
-  return res?.data?.records;
-};
+// const getBillCalculations = async (key, { billInfo }) => {
+//   const res = await newAlgaehApi({
+//     uri: "/billing/billingCalculations",
+//     data: { ...billInfo, existing_treat: false, follow_up: false },
+//     method: "POST",
+//     module: "billing",
+//   });
+//   return res?.data?.records;
+// };
 
 const getShiftMappings = async () => {
   const res = await newAlgaehApi({
@@ -87,7 +88,7 @@ const checkVisits = async (
 
 export function BillDetails({ control, trigger, setValue, patient = null }) {
   const [visible, setVisible] = useState(false);
-  const { default_nationality_id, local_vat_applicable } = useContext(
+  const { default_nationality_id, local_vat_applicable, service_dis_percentage } = useContext(
     MainContext
   );
   const {
@@ -105,6 +106,12 @@ export function BillDetails({ control, trigger, setValue, patient = null }) {
     nationality_id,
     primary_insurance_provider_id,
     primary_network_id,
+    cash_amount,
+    credit_amount,
+    card_amount,
+    advance_adjust,
+    sheet_discount_amount,
+    sheet_discount_percentage,
   } = useWatch({
     control,
     name: [
@@ -114,6 +121,22 @@ export function BillDetails({ control, trigger, setValue, patient = null }) {
       "primary_network_office_id",
     ],
   });
+
+  
+  const { isLoading: visitLoading, data: prevVisits } = useQuery(
+    [
+      "checkVisits",
+      { sub_department_id, doctor_id, patient_id: patient?.hims_d_patient_id },
+    ],
+    checkVisits,
+    {
+      refetchOnWindowFocus: false,
+      enabled: !!patient && !!doctor_id,
+      onSuccess: (data) => {
+        console.log(data, "visit");
+      },
+    }
+  );
 
   const { isLoading: infoLoading, data: billInfo } = useQuery(
     [
@@ -126,75 +149,195 @@ export function BillDetails({ control, trigger, setValue, patient = null }) {
         primary_network_office_id,
         default_nationality_id,
         local_vat_applicable,
+        prevVisits,
       },
     ],
     getBillDetails,
     {
-      enabled: !!services_id,
+      enabled: !!services_id && !!prevVisits,
       retry: 3,
       refetchOnWindowFocus: false,
 
       onSuccess: (data) => {
-        console.log(data);
         setBillInfo(data);
+        calculateBillDetails(data?.billdetails[0]);
       },
     }
   );
 
-  const { isLoading: calcLoading, data: billData } = useQuery(
-    ["billCalculations", { billInfo }],
-    getBillCalculations,
-    {
-      refetchOnWindowFocus: false,
-      enabled: !!billInfo,
-      retry: 3,
-      onSuccess: (data) => {
-        setValue("advance_adjust", data?.advance_adjust);
-        setValue("sheet_discount_percentage", data?.sheet_discount_percentage);
-        setValue("sheet_discount_amount", data?.sheet_discount_amount);
-        setValue("credit_amount", data?.credit_amount);
-        setValue("cash_amount", data?.receiveable_amount);
-        setValue("card_amount", data?.card_amount);
-        setValue("card_number", data?.card_number);
-        setValue("card_date", data?.card_date);
-      },
-      onError: (err) => {
-        console.log(err);
-      },
-      initialData: {
-        advance_adjust: 0,
-        card_amount: 0,
-        cash_amount: 0,
-        cheque_amount: 0,
-        company_payble: 0,
-        company_res: 0,
-        company_tax: 0,
-        copay_amount: 0,
-        deductable_amount: 0,
-        discount_amount: 0,
-        gross_total: 0,
-        net_amount: 0,
-        net_total: 0,
-        patient_payable: 0,
-        patient_res: 0,
-        patient_tax: 0,
-        receiveable_amount: 0,
-        s_patient_tax: 0,
-        sec_company_paybale: 0,
-        sec_company_res: 0,
-        sec_company_tax: 0,
-        sec_copay_amount: 0,
-        sec_deductable_amount: 0,
-        sheet_discount_amount: 0,
-        sheet_discount_percentage: 0,
-        sub_total_amount: 0,
-        total_amount: 0,
-        total_tax: 0,
-        unbalanced_amount: 0,
-      },
-      initialStale: true,
+  const [billData, setBillData] = useState(null);
+
+  useEffect(() => {
+    if(billData){
+      setBillData(null)
     }
-  );
+  }, [services_id])
+
+  function calculateBillDetails(billData = {}) {
+    const sendingObject = { ...billData };
+
+    // Sheet Level Discount Nullify
+    sendingObject.sheet_discount_amount = 0;
+    sendingObject.sheet_discount_percentage = 0;
+    sendingObject.advance_adjust = 0;
+    sendingObject.net_amount = billData?.patient_payable;
+    sendingObject.receiveable_amount = billData?.patient_payable;
+
+    //Reciept
+    sendingObject.cash_amount = sendingObject.net_amount;
+    sendingObject.total_amount = sendingObject.net_amount;
+    sendingObject.gross_total = sendingObject.net_amount;
+
+    sendingObject.unbalanced_amount = 0;
+    sendingObject.card_amount = 0;
+
+    sendingObject.patient_payable = sendingObject.patient_payable.toFixed(2);
+    sendingObject.total_tax = sendingObject.total_tax.toFixed(2);
+    sendingObject.patient_tax = sendingObject.patient_tax.toFixed(2);
+    sendingObject.company_tax = sendingObject.company_tax.toFixed(2);
+    sendingObject.sec_company_tax = sendingObject.sec_company_tax.toFixed(2);
+
+    setBillData(sendingObject);
+    setValue("advance_adjust", sendingObject?.advance_adjust);
+    setValue(
+      "sheet_discount_percentage",
+      sendingObject?.sheet_discount_percentage
+    );
+    setValue("sheet_discount_amount", sendingObject?.sheet_discount_amount);
+    setValue(
+      "sheet_discount_percentage",
+      sendingObject?.sheet_discount_percentage
+    );
+    setValue("credit_amount", sendingObject?.credit_amount);
+    setValue("cash_amount", sendingObject?.cash_amount);
+    setValue("card_amount", sendingObject?.card_amount);
+    setValue("card_number", sendingObject?.card_number);
+    setValue("card_date", sendingObject?.card_date);
+  }
+
+  useEffect(() => {
+    const sendingObject = {...billData}
+    console.log(sendingObject)
+    
+  }, [cash_amount, card_amount, credit_amount,sheet_discount_percentage, sheet_discount_amount, advance_adjust ])
+    // else {
+    //   //Reciept
+
+    //   if (inputParam.isReceipt == false) {
+    //     // Sheet Level Discount Nullify
+    //     sendingObject.sheet_discount_percentage = 0;
+    //     sendingObject.sheet_discount_amount = 0;
+
+    //     if (inputParam.sheet_discount_amount > 0) {
+    //       sendingObject.sheet_discount_percentage =
+    //         (inputParam.sheet_discount_amount / inputParam.gross_total) * 100;
+
+    //       sendingObject.sheet_discount_amount =
+    //         inputParam.sheet_discount_amount;
+    //     } else if (inputParam.sheet_discount_percentage > 0) {
+    //       sendingObject.sheet_discount_percentage =
+    //         inputParam.sheet_discount_percentage;
+    //       sendingObject.sheet_discount_amount =
+    //         (inputParam.gross_total * inputParam.sheet_discount_percentage) /
+    //         100;
+    //     }
+
+    //     sendingObject.sheet_discount_amount = sendingObject.sheet_discount_amount.toFixed(
+    //       2
+    //     );
+    //     sendingObject.sheet_discount_percentage = sendingObject.sheet_discount_percentage.toFixed(
+    //       2
+    //     );
+
+    //     sendingObject.net_amount =
+    //       inputParam.gross_total - sendingObject.sheet_discount_amount;
+
+    //     if (inputParam.credit_amount > 0) {
+    //       sendingObject.receiveable_amount =
+    //         sendingObject.net_amount -
+    //         inputParam.advance_adjust -
+    //         inputParam.credit_amount;
+    //     } else {
+    //       sendingObject.receiveable_amount =
+    //         sendingObject.net_amount - inputParam.advance_adjust;
+    //     }
+
+    //     sendingObject.cash_amount = sendingObject.receiveable_amount;
+    //     sendingObject.card_amount = 0;
+    //     sendingObject.cheque_amount = 0;
+    //   } else {
+    //     sendingObject.card_amount = inputParam.card_amount;
+    //     sendingObject.cheque_amount = inputParam.cheque_amount;
+    //     sendingObject.cash_amount = inputParam.cash_amount;
+    //     sendingObject.receiveable_amount = inputParam.receiveable_amount;
+    //   }
+
+    //   sendingObject.total_amount =
+    //     sendingObject.cash_amount +
+    //     sendingObject.card_amount +
+    //     sendingObject.cheque_amount;
+
+    //   sendingObject.unbalanced_amount =
+    //     sendingObject.receiveable_amount - sendingObject.total_amount;
+    // }
+  
+
+  // const { isLoading: calcLoading, data: billData } = useQuery(
+  //   ["billCalculations", { billInfo }],
+  //   getBillCalculations,
+  //   {
+  //     refetchOnWindowFocus: false,
+  //     enabled: !!billInfo,
+  //     retry: 3,
+  //     onSuccess: (data) => {
+  //       setValue("advance_adjust", data?.advance_adjust);
+  //       setValue("sheet_discount_percentage", data?.sheet_discount_percentage);
+  //       setValue("sheet_discount_amount", data?.sheet_discount_amount);
+  //       setValue("credit_amount", data?.credit_amount);
+  //       setValue("cash_amount", data?.receiveable_amount);
+  //       setValue("card_amount", data?.card_amount);
+  //       setValue("card_number", data?.card_number);
+  //       setValue("card_date", data?.card_date);
+  //     },
+  //     onError: (err) => {
+  //       console.log(err);
+  //     },
+  //     initialData: {
+  //       advance_adjust: 0,
+  //       card_amount: 0,
+  //       cash_amount: 0,
+  //       cheque_amount: 0,
+  //       company_payble: 0,
+  //       company_res: 0,
+  //       company_tax: 0,
+  //       copay_amount: 0,
+  //       deductable_amount: 0,
+  //       discount_amount: 0,
+  //       gross_total: 0,
+  //       net_amount: 0,
+  //       net_total: 0,
+  //       patient_payable: 0,
+  //       patient_res: 0,
+  //       patient_tax: 0,
+  //       receiveable_amount: 0,
+  //       s_patient_tax: 0,
+  //       sec_company_paybale: 0,
+  //       sec_company_res: 0,
+  //       sec_company_tax: 0,
+  //       sec_copay_amount: 0,
+  //       sec_deductable_amount: 0,
+  //       sheet_discount_amount: 0,
+  //       sheet_discount_percentage: 0,
+  //       sub_total_amount: 0,
+  //       total_amount: 0,
+  //       total_tax: 0,
+  //       unbalanced_amount: 0,
+  //     },
+  //     initialStale: true,
+  //   }
+  // );
+
+  // const unbalanced_amount = billData?re
 
   const { isLoading: shiftLoading, data: shiftMappings } = useQuery(
     "userMappings",
@@ -213,25 +356,11 @@ export function BillDetails({ control, trigger, setValue, patient = null }) {
     }
   );
 
-  const { isLoading: visitLoading, data: prevVisits } = useQuery(
-    [
-      "checkVisits",
-      { sub_department_id, doctor_id, patient_id: patient?.hims_d_patient_id },
-    ],
-    checkVisits,
-    {
-      refetchOnWindowFocus: false,
-      enabled: !!patient && !!doctor_id,
-      onSuccess: (data) => {
-        console.log(data, "visit");
-      },
-    }
-  );
 
   const follow_up = !!prevVisits?.length;
 
   return (
-    <Spin spinning={infoLoading || calcLoading || shiftLoading || visitLoading}>
+    <Spin spinning={infoLoading || shiftLoading || visitLoading}>
       <BillDetailModal
         visible={visible}
         onClose={() => setVisible(false)}
@@ -391,7 +520,7 @@ export function BillDetails({ control, trigger, setValue, patient = null }) {
                       textBox={{
                         // defaultValue: billData?.sheet_discount_percentage,
                         className: "txt-fld",
-                        disabled,
+                        disabled: !parseInt(service_dis_percentage, 10) || disabled,
                         name: "sheet_discount_percentage",
                         ...props,
                         placeholder: "0.00",
@@ -411,7 +540,7 @@ export function BillDetails({ control, trigger, setValue, patient = null }) {
                       }}
                       textBox={{
                         className: "txt-fld",
-                        disabled,
+                        disabled: !parseInt(service_dis_percentage, 10) || disabled,
                         name: "sheet_discount_amount",
                         ...props,
                         placeholder: "0.00",
@@ -564,7 +693,11 @@ export function BillDetails({ control, trigger, setValue, patient = null }) {
                     style={{ border: "none", marginTop: "28px" }}
                   >
                     <label className="checkbox" style={{ color: "#212529" }}>
-                      <input type="checkbox" name="Pay by Cash" />
+                      <input
+                        type="checkbox"
+                        name="Pay by Cash"
+                        checked={true}
+                      />
 
                       <span style={{ fontSize: "0.8rem" }}>Pay by Cash</span>
                     </label>
@@ -626,7 +759,7 @@ export function BillDetails({ control, trigger, setValue, patient = null }) {
                         textBox={{
                           className: "txt-fld",
                           name: "card_amount",
-                          disabled,
+                          disabled: true,
                           ...props,
                           placeholder: "0.00",
                         }}
@@ -646,7 +779,7 @@ export function BillDetails({ control, trigger, setValue, patient = null }) {
                           fieldName: "card_check_number",
                         }}
                         textBox={{
-                          disabled,
+                          disabled: true,
                           className: "txt-fld",
                           name: "card_number",
                           ...props,
@@ -667,7 +800,7 @@ export function BillDetails({ control, trigger, setValue, patient = null }) {
                         textBox={{
                           className: "txt-fld",
                           name: "card_date",
-                          disabled,
+                          disabled: true,
                         }}
                         minDate={new Date()}
                         events={{
