@@ -165,8 +165,8 @@ export function PatientRegistration() {
       enabled: !!appointment_id,
       refetchOnWindowFocus: false,
       onSuccess: (data) => {
+        const doctor = `${data?.sub_department_id}-${data?.services_id}-${data?.provider_id}-${data?.department_type}`;
         if (!patient_code) {
-          const doctor = `${data?.sub_department_id}-${data?.services_id}-${data?.provider_id}-${data?.department_type}`;
           reset({
             ...data,
             consultation: "Y",
@@ -175,6 +175,12 @@ export function PatientRegistration() {
             doctor_id: data?.provider_id,
             doctor,
           });
+          setServiceInfo(doctor);
+        } else {
+          setValue("consultation", "Y");
+          setValue("doctor", doctor);
+          setValue("doctor_id", data?.provider_id);
+          setValue("visit_type", 10);
           setServiceInfo(doctor);
         }
       },
@@ -423,7 +429,7 @@ export function PatientRegistration() {
                     type="submit"
                     className="btn btn-primary"
                     onClick={onClear}
-                    disabled={!disabled && !appointment_id}
+                    disabled={!disabled && !appointment_id && !patient_code}
                   >
                     <AlgaehLabel
                       label={{ fieldName: "btn_clear", returnText: true }}

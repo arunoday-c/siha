@@ -7,34 +7,34 @@ export default function Insurance({ algaehApiCall }) {
         template_name: "allClaimStatementInsurance",
         reportParameters: [
           {
-            className: "col-2 form-group mandatory",
+            className: "col-3 form-group mandatory",
             type: "date",
             name: "from_date",
             isImp: true,
             others: {
               maxDate: new Date(),
-              minDate: null
-            }
+              minDate: null,
+            },
           },
           {
-            className: "col-2 form-group mandatory",
+            className: "col-3 form-group mandatory",
             type: "date",
             name: "to_date",
             isImp: true,
             others: {
               maxDate: new Date(),
-              minDate: null
-            }
+              minDate: null,
+            },
           },
           {
-            className: "col-2 form-group mandatory",
+            className: "col-3 form-group mandatory",
             type: "dropdown",
             name: "",
             initialLoad: true,
             isImp: true,
             label: "Company",
             link: {
-              uri: "/insurance/getInsuranceProviders"
+              uri: "/insurance/getInsuranceProviders",
             },
             events: {
               onChange: (reportState, currentEvent) => {
@@ -45,27 +45,27 @@ export default function Insurance({ algaehApiCall }) {
                   method: "GET",
                   data: { hospital_id: currentEvent.value },
 
-                  onSuccess: result => {
+                  onSuccess: (result) => {
                     reportState.setState({
-                      location_id_list: result.data.records
+                      location_id_list: result.data.records,
                     });
-                  }
+                  },
                 });
               },
               onClear: (reportState, currentName) => {
                 reportState.setState({
                   [currentName]: undefined,
-                  location_id_list: []
+                  location_id_list: [],
                 });
-              }
+              },
             },
             dataSource: {
               textField: "insurance_provider_name",
-              valueField: "hims_d_insurance_provider_id"
-            }
+              valueField: "hims_d_insurance_provider_id",
+            },
           },
           {
-            className: "col-2 form-group mandatory",
+            className: "col-3 form-group mandatory",
             type: "dropdown",
             name: "",
             initialLoad: true,
@@ -75,11 +75,11 @@ export default function Insurance({ algaehApiCall }) {
               // textField: "full_name",
               // valueField: "employee_id",
               // data: undefined
-            }
-          }
-        ]
+            },
+          },
+        ],
         //reportParameters: () => <Insurance ui="asset_warty_exp_rep" />
-      }
-    ]
+      },
+    ],
   };
 }

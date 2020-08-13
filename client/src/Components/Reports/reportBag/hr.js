@@ -23,7 +23,7 @@ export default function Hr({
         pageOrentation: "landscape",
         reportParameters: [
           {
-            className: "col-2 form-group mandatory",
+            className: "col-3 form-group mandatory",
             type: "dropdown",
             name: "hospital_id",
             initialLoad: true,
@@ -64,7 +64,7 @@ export default function Hr({
             },
           },
           {
-            className: "col-2 form-group",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "employee_group_id",
             initialLoad: true,
@@ -80,7 +80,7 @@ export default function Hr({
             },
           },
           {
-            className: "col-2 form-group",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "department_id",
             initialLoad: true,
@@ -112,7 +112,7 @@ export default function Hr({
             },
           },
           {
-            className: "col-2 form-group",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "sub_department_id",
             isImp: false,
@@ -124,7 +124,7 @@ export default function Hr({
             },
           },
           {
-            className: "col-2 form-group",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "employee_status",
             initialLoad: true,
@@ -138,7 +138,7 @@ export default function Hr({
             },
           },
           {
-            className: "col-2 form-group",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "employee_type",
             initialLoad: true,
@@ -162,7 +162,7 @@ export default function Hr({
         pageOrentation: "landscape",
         reportParameters: [
           {
-            className: "col-2 form-group mandatory",
+            className: "col-3 form-group mandatory",
             type: "dropdown",
             name: "hospital_id",
             initialLoad: true,
@@ -203,7 +203,7 @@ export default function Hr({
             },
           },
           {
-            className: "col-2 form-group mandatory",
+            className: "col-3 form-group mandatory",
             type: "dropdown",
             name: "age_range",
             initialLoad: true,
@@ -217,7 +217,7 @@ export default function Hr({
             },
           },
           {
-            className: "col-2 form-group mandatory",
+            className: "col-3 form-group mandatory",
             type: "text",
             name: "age",
             initialLoad: false,
@@ -231,7 +231,7 @@ export default function Hr({
             },
           },
           {
-            className: "col-2 form-group",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "employee_group_id",
             initialLoad: true,
@@ -247,7 +247,7 @@ export default function Hr({
             },
           },
           {
-            className: "col-2 form-group",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "department_id",
             initialLoad: true,
@@ -279,7 +279,7 @@ export default function Hr({
             },
           },
           {
-            className: "col-2 form-group",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "sub_department_id",
             isImp: false,
@@ -301,7 +301,7 @@ export default function Hr({
         pageOrentation: "landscape",
         reportParameters: [
           {
-            className: "col-2 form-group mandatory",
+            className: "col-3 form-group mandatory",
             type: "dropdown",
             name: "hospital_id",
             initialLoad: true,
@@ -342,7 +342,7 @@ export default function Hr({
             },
           },
           {
-            className: "col-2 form-group",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "sex",
             initialLoad: true,
@@ -356,7 +356,7 @@ export default function Hr({
             },
           },
           {
-            className: "col-2 form-group",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "employee_group_id",
             initialLoad: true,
@@ -372,7 +372,7 @@ export default function Hr({
             },
           },
           {
-            className: "col-2 form-group",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "department_id",
             initialLoad: true,
@@ -404,7 +404,7 @@ export default function Hr({
             },
           },
           {
-            className: "col-2 form-group",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "sub_department_id",
             isImp: false,
@@ -426,7 +426,7 @@ export default function Hr({
         pageOrentation: "landscape",
         reportParameters: [
           {
-            className: "col-2 form-group mandatory",
+            className: "col-3 form-group mandatory",
             type: "dropdown",
             name: "hospital_id",
             initialLoad: true,
@@ -467,7 +467,7 @@ export default function Hr({
             },
           },
           {
-            className: "col-2 form-group",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "nationality_id",
             initialLoad: true,
@@ -483,7 +483,7 @@ export default function Hr({
             },
           },
           {
-            className: "col-2 form-group",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "employee_group_id",
             initialLoad: true,
@@ -499,7 +499,7 @@ export default function Hr({
             },
           },
           {
-            className: "col-2 form-group",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "department_id",
             initialLoad: true,
@@ -531,7 +531,7 @@ export default function Hr({
             },
           },
           {
-            className: "col-2 form-group",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "sub_department_id",
             isImp: false,
@@ -553,7 +553,7 @@ export default function Hr({
         pageOrentation: "landscape",
         reportParameters: [
           {
-            className: "col-2 form-group mandatory",
+            className: "col-3 form-group mandatory",
             type: "dropdown",
             name: "hospital_id",
             initialLoad: true,
@@ -594,7 +594,7 @@ export default function Hr({
             },
           },
           {
-            className: "col-2 form-group",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "country_id",
             initialLoad: true,
@@ -610,7 +610,7 @@ export default function Hr({
             },
           },
           {
-            className: "col-2 form-group",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "employee_group_id",
             initialLoad: true,
@@ -626,7 +626,7 @@ export default function Hr({
             },
           },
           {
-            className: "col-2 form-group",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "department_id",
             initialLoad: true,
@@ -658,7 +658,7 @@ export default function Hr({
             },
           },
           {
-            className: "col-2 form-group",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "sub_department_id",
             isImp: false,
@@ -680,7 +680,7 @@ export default function Hr({
         pageOrentation: "landscape",
         reportParameters: [
           {
-            className: "col-2 form-group mandatory",
+            className: "col-3 form-group mandatory",
             type: "dropdown",
             name: "hospital_id",
             initialLoad: true,
@@ -721,7 +721,7 @@ export default function Hr({
             },
           },
           {
-            className: "col-2 form-group",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "religion_id",
             initialLoad: true,
@@ -737,7 +737,7 @@ export default function Hr({
             },
           },
           {
-            className: "col-2 form-group",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "employee_group_id",
             initialLoad: true,
@@ -753,7 +753,7 @@ export default function Hr({
             },
           },
           {
-            className: "col-2 form-group",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "department_id",
             initialLoad: true,
@@ -785,7 +785,7 @@ export default function Hr({
             },
           },
           {
-            className: "col-2 form-group",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "sub_department_id",
             isImp: false,
@@ -807,7 +807,7 @@ export default function Hr({
         pageOrentation: "landscape",
         reportParameters: [
           {
-            className: "col-2 form-group mandatory",
+            className: "col-3 form-group mandatory",
             type: "dropdown",
             name: "hospital_id",
             initialLoad: true,
@@ -848,7 +848,7 @@ export default function Hr({
             },
           },
           {
-            className: "col-2 form-group",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "designation_id",
             initialLoad: true,
@@ -865,7 +865,7 @@ export default function Hr({
             },
           },
           {
-            className: "col-2 form-group",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "employee_group_id",
             initialLoad: true,
@@ -881,7 +881,7 @@ export default function Hr({
             },
           },
           {
-            className: "col-2 form-group",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "department_id",
             initialLoad: true,
@@ -913,7 +913,7 @@ export default function Hr({
             },
           },
           {
-            className: "col-2 ",
+            className: "col-3 ",
             type: "dropdown",
             name: "sub_department_id",
             isImp: false,
@@ -935,7 +935,7 @@ export default function Hr({
         pageOrentation: "landscape",
         reportParameters: [
           {
-            className: "col-2 form-group mandatory",
+            className: "col-3 form-group mandatory",
             type: "dropdown",
             name: "hospital_id",
             initialLoad: true,
@@ -976,7 +976,7 @@ export default function Hr({
             },
           },
           {
-            className: "col-2 form-group",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "employee_group_id",
             initialLoad: true,
@@ -993,7 +993,7 @@ export default function Hr({
           },
 
           {
-            className: "col-2 form-group",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "employee_status",
             initialLoad: true,
@@ -1017,7 +1017,7 @@ export default function Hr({
         pageOrentation: "landscape",
         reportParameters: [
           {
-            className: "col-2 form-group mandatory",
+            className: "col-3 form-group mandatory",
             type: "dropdown",
             name: "hospital_id",
             initialLoad: true,
@@ -1058,7 +1058,7 @@ export default function Hr({
             },
           },
           {
-            className: "col-2 form-group",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "date_of_join",
             initialLoad: true,
@@ -1072,7 +1072,7 @@ export default function Hr({
             },
           },
           {
-            className: "col-2 form-group",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "year",
             isImp: false,
@@ -1085,7 +1085,7 @@ export default function Hr({
             },
           },
           {
-            className: "col-2 form-group",
+            className: "col-3 form-group",
             type: "dropdown",
             sort: "off",
             name: "month",
@@ -1102,7 +1102,7 @@ export default function Hr({
             },
           },
           {
-            className: "col-2 form-group",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "employee_group_id",
             initialLoad: true,
@@ -1118,7 +1118,7 @@ export default function Hr({
             },
           },
           {
-            className: "col-2 form-group",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "department_id",
             initialLoad: true,
@@ -1150,7 +1150,7 @@ export default function Hr({
             },
           },
           {
-            className: "col-2 form-group",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "sub_department_id",
             isImp: false,
