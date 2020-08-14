@@ -191,7 +191,8 @@ class DisPatientForm extends Component {
 function mapStateToProps(state) {
   return {
     patienttype: state.patienttype,
-    existinsurance: state.existinsurance
+    existinsurance: state.existinsurance,
+    PatientPackageList: state.PatientPackageList
   };
 }
 
@@ -199,7 +200,8 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
       getPatientType: AlgaehActions,
-      getPatientInsurance: AlgaehActions
+      getPatientInsurance: AlgaehActions,
+      getPatientPackage: AlgaehActions
     },
     dispatch
   );

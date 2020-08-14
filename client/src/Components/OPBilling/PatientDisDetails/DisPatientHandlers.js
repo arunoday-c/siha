@@ -61,6 +61,26 @@ const selectVisit = ($this, context, e) => {
         });
       }
 
+      $this.props.getPatientPackage({
+        uri: "/orderAndPreApproval/getPatientPackage",
+        method: "GET",
+        data: {
+          patient_id: $this.state.patient_id,
+          closed: "N",
+        },
+        redux: {
+          type: "ORDER_SERVICES_GET_DATA",
+          mappingName: "PatientPackageList",
+        },
+        afterSuccess: (data) => {
+          if (data.length !== 0 || data.length === undefined) {
+            $this.setState({
+              pack_balance_amount: data[0].balance_amount
+            });
+          }
+        },
+      });
+
       algaehApiCall({
         uri: "/orderAndPreApproval/load_orders_for_bill",
         method: "GET",

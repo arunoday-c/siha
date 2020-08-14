@@ -181,13 +181,13 @@ export default function PackageSetupEvent() {
                 utilize_amount +
                 (parseFloat(InputObj.package_details[i].appropriate_amount) /
                   parseFloat(InputObj.package_details[i].qty)) *
-                  parseFloat(InputObj.package_details[i].quantity);
+                parseFloat(InputObj.package_details[i].quantity);
 
               actual_utilize_amount =
                 actual_utilize_amount +
                 (parseFloat(InputObj.package_details[i].tot_service_amount) /
                   parseFloat(InputObj.package_details[i].qty)) *
-                  parseFloat(InputObj.package_details[i].quantity);
+                parseFloat(InputObj.package_details[i].quantity);
 
               InputObj.package_details[i].patient_id = $this.props.patient_id;
               InputObj.package_details[i].visit_id = $this.props.visit_id;
@@ -195,7 +195,6 @@ export default function PackageSetupEvent() {
               InputObj.package_details[i].trans_package_detail_id =
                 InputObj.package_details[i].hims_f_package_detail_id;
             }
-
             if ($this.state.package_visit_type === "M") {
               InputObj.utilize_amount = (
                 parseFloat(InputObj.utilize_amount) + utilize_amount
@@ -210,16 +209,16 @@ export default function PackageSetupEvent() {
                 parseFloat(InputObj.advance_amount) -
                 parseFloat(InputObj.utilize_amount);
               if (parseFloat(InputObj.balance_amount) <= 0) {
-                $this.setState({ loading_UtilizeService: false }, () => {
-                  swalMessage({
-                    title:
-                      "Advance not sufficient to utilize these services.Please collect the advance",
-                    type: "warning"
-                  });
-                  if ($this.props.from_billing === true) {
-                    return;
-                  }
+                swalMessage({
+                  title:
+                    "Advance not sufficient to utilize these services.Please collect the advance",
+                  type: "warning"
                 });
+                $this.setState({ loading_UtilizeService: false });
+                if ($this.props.from_billing === true) {
+                  return;
+                }
+
               }
             }
 
@@ -265,7 +264,7 @@ export default function PackageSetupEvent() {
                 uri: "/billing/updatePatientPackage",
                 module: "billing",
                 method: "PUT",
-                data: $this.state,
+                data: InputObj,
                 onSuccess: response => {
                   if (response.data.success) {
                     if (InputObj.consumtion_items.length > 0) {

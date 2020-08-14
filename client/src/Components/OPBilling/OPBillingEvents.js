@@ -13,7 +13,6 @@ import AlgaehLoader from "../Wrapper/fullPageLoader";
 const ClearData = ($this, e) => {
   let _screenName = getCookie("ScreenName").replace("/", "");
 
-  let counter_id = 0;
   $this.props.getPatientPackage({
     redux: {
       type: "Package_GET_DATA",
@@ -35,11 +34,12 @@ const ClearData = ($this, e) => {
     BillingIOputs.inputParam()
   );
   IOputs.patient_payable_h = 0;
-  IOputs.counter_id = counter_id;
   IOputs.s_service_type = null;
   IOputs.s_service = null;
   IOputs.pageDisplay = "BillingDetails";
   IOputs.selectedLang = getCookie("Language");
+  IOputs.shift_assinged = $this.state.shift_assinged
+  IOputs.shift_id = $this.state.shift_id
 
   algaehApiCall({
     uri: "/userPreferences/get",
@@ -49,21 +49,19 @@ const ClearData = ($this, e) => {
     },
     method: "GET",
     onSuccess: (response) => {
-      counter_id = response.data.records.selectedValue;
+      // counter_id = response.data.records.selectedValue;
 
       // let IOputs = extend(
       //   PatRegIOputs.inputParam(),
       //   BillingIOputs.inputParam()
       // );
       // IOputs.patient_payable_h = 0;
-      IOputs.counter_id = counter_id;
+      // IOputs.counter_id = counter_id;
       // IOputs.s_service_type = null;
       // IOputs.s_service = null;
       // IOputs.pageDisplay = "BillingDetails";
       // IOputs.selectedLang = getCookie("Language");
-      $this.setState({ ...$this.state, ...IOputs }, () => {
-        getCashiersAndShiftMAP($this);
-      });
+      $this.setState({ ...$this.state, ...IOputs });
     },
   });
 };
@@ -81,7 +79,7 @@ const Validations = ($this) => {
 
   //   document.querySelector("[name='bank_card_id']").focus();
   //   return isError;
-  // }
+  // }  
 
   if ($this.state.Cardchecked === true) {
     if (

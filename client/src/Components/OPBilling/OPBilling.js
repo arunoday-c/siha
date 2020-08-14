@@ -89,6 +89,15 @@ class OPBilling extends Component {
         data: [],
       },
     });
+
+    this.props.getPatientInsurance({
+      redux: {
+        type: "EXIT_INSURANCE_GET_DATA",
+        mappingName: "existinsurance",
+        data: []
+      },
+    });
+
     if (
       this.props.patienttype === undefined ||
       this.props.patienttype.length === 0
@@ -114,20 +123,20 @@ class OPBilling extends Component {
     //   },
     // });
 
-    let _screenName = getCookie("ScreenName").replace("/", "");
-    algaehApiCall({
-      uri: "/userPreferences/get",
-      data: {
-        screenName: _screenName,
-        identifier: "Counter",
-      },
-      method: "GET",
-      onSuccess: (response) => {
-        this.setState({
-          counter_id: response.data.records.selectedValue,
-        });
-      },
-    });
+    // let _screenName = getCookie("ScreenName").replace("/", "");
+    // algaehApiCall({
+    //   uri: "/userPreferences/get",
+    //   data: {
+    //     screenName: _screenName,
+    //     identifier: "Counter",
+    //   },
+    //   method: "GET",
+    //   onSuccess: (response) => {
+    //     this.setState({
+    //       counter_id: response.data.records.selectedValue,
+    //     });
+    //   },
+    // });
     getCashiersAndShiftMAP(this, this);
     const queryParams = new URLSearchParams(this.props.location.search);
     if (queryParams.get("bill_code")) {
@@ -467,17 +476,17 @@ class OPBilling extends Component {
           printArea={
             this.state.bill_number !== null
               ? {
-                  menuitems: [
-                    {
-                      label: "Print Receipt",
-                      events: {
-                        onClick: () => {
-                          generateReceipt(this, this);
-                        },
+                menuitems: [
+                  {
+                    label: "Print Receipt",
+                    events: {
+                      onClick: () => {
+                        generateReceipt(this, this);
                       },
                     },
-                  ],
-                }
+                  },
+                ],
+              }
               : ""
           }
           selectedLang={this.state.selectedLang}
@@ -539,8 +548,8 @@ class OPBilling extends Component {
                     this.state.patient_id === null
                       ? true
                       : this.state.Billexists === true
-                      ? true
-                      : false
+                        ? true
+                        : false
                   }
                 >
                   <AlgaehLabel

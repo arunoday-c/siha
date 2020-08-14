@@ -838,13 +838,13 @@ class Appointment extends PureComponent {
       // return this.props.routeComponents(patient, this.state.checkInId);
 
       return this.props.history?.push(
-        `/PatientRegistration?appointment_id=${patient?.hims_f_patient_appointment_id}`
+        `/PatientRegistration?appointment_id=${patient?.hims_f_patient_appointment_id}&status_id=${this.state.checkInId}`
       );
     }
-    debugger;
+
     // return this.props.routeComponents(patient, this.state.checkInId);
     return this.props.history?.push(
-      `/PatientRegistration?appointment_id=${patient?.hims_f_patient_appointment_id}&patient_code=${patient?.patient_code}`
+      `/PatientRegistration?appointment_id=${patient?.hims_f_patient_appointment_id}&patient_code=${patient?.patient_code}&status_id=${this.state.checkInId}`
     );
   }
 

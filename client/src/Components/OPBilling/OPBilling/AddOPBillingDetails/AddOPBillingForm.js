@@ -521,13 +521,6 @@ class AddOPBillingForm extends Component {
                                 row.trans_package_detail_id > 0
                                   ? "(Package Service)"
                                   : "";
-                              // let display =
-                              //   this.props.serviceslist === undefined
-                              //     ? []
-                              //     : this.props.serviceslist.filter(
-                              //         (f) =>
-                              //           f.hims_d_services_id === row.services_id
-                              //       );
 
                               return (
                                 <span>
@@ -1078,7 +1071,6 @@ class AddOPBillingForm extends Component {
 
 function mapStateToProps(state) {
   return {
-    serviceslist: state.serviceslist,
     PatientPackageList: state.PatientPackageList,
   };
 }
