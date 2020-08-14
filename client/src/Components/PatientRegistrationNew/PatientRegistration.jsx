@@ -305,7 +305,7 @@ export function PatientRegistration() {
       cash_amount: "",
       consultation: "",
       contact_number: "",
-      date_of_birth: undefined,
+      date_of_birth: null,
       department_type: "",
       doctor: "",
       doctor_id: "",
@@ -462,21 +462,23 @@ export function PatientRegistration() {
                       e.persist();
                       e.preventDefault();
                       debugger;
-                      if (errors?.unbalanced) {
-                        AlgaehMessagePop({
-                          type: "Warning",
-                          display: errors?.unbalanced?.message,
-                        });
-                        return null;
-                      } else if (Object.keys(errors).length) {
-                        AlgaehMessagePop({
-                          type: "Warning",
-                          display:
-                            "Please fix all the errors before submitting again",
-                        });
-                        return null;
-                      }
-                      handleSubmit(onSubmit)(e);
+                      trigger().then(() => {
+                        if (errors?.unbalanced) {
+                          AlgaehMessagePop({
+                            type: "Warning",
+                            display: errors?.unbalanced?.message,
+                          });
+                          return null;
+                        } else if (Object.keys(errors).length) {
+                          AlgaehMessagePop({
+                            type: "Warning",
+                            display:
+                              "Please fix all the errors before submitting again",
+                          });
+                          return null;
+                        }
+                        handleSubmit(onSubmit)(e);
+                      });
                     }}
                     disabled={disabled}
                   >
