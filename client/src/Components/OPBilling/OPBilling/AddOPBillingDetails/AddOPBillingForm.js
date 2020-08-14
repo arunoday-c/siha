@@ -95,6 +95,7 @@ class AddOPBillingForm extends Component {
               secondary_network_id: this.state.secondary_network_id,
               secondary_network_office_id: this.state
                 .secondary_network_office_id,
+              test_id: this.state.test_id
             },
           ];
 
