@@ -1,7 +1,4 @@
 import React, { Component } from "react";
-import { withRouter } from "react-router-dom";
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
 import moment from "moment";
 import {
   texthandle,
@@ -22,11 +19,9 @@ import {
 import MyContext from "../../../../utils/MyContext";
 import "./AddReciptForm.scss";
 import "./../../../../styles/site.scss";
-
-import { AlgaehActions } from "../../../../actions/algaehActions";
 import { GetAmountFormart } from "../../../../utils/GlobalFunctions";
 
-class AddReciptForm extends Component {
+export default class AddReciptForm extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -43,29 +38,6 @@ class AddReciptForm extends Component {
 
   UNSAFE_componentWillReceiveProps(nextProps) {
     this.setState(nextProps.BillingIOputs);
-  }
-
-  componentDidMount() {
-    if (this.props.counters === undefined || this.props.counters.length === 0) {
-      this.props.getCounters({
-        uri: "/shiftAndCounter/getCounterMaster",
-        module: "masterSettings",
-        method: "GET",
-        redux: {
-          type: "CTRY_GET_DATA",
-          mappingName: "counters"
-        }
-      });
-    }
-    this.props.getBankCards({
-      uri: "/bankmaster/getBankCards",
-      module: "masterSettings",
-      method: "GET",
-      redux: {
-        type: "BANK_CARD_GET_DATA",
-        mappingName: "bankscards"
-      }
-    });
   }
 
   render() {
@@ -437,23 +409,3 @@ class AddReciptForm extends Component {
   }
 }
 
-function mapStateToProps(state) {
-  return {
-    counters: state.counters,
-    bankscards: state.bankscards
-  };
-}
-
-function mapDispatchToProps(dispatch) {
-  return bindActionCreators(
-    {
-      getCounters: AlgaehActions,
-      getBankCards: AlgaehActions
-    },
-    dispatch
-  );
-}
-
-export default withRouter(
-  connect(mapStateToProps, mapDispatchToProps)(AddReciptForm)
-);
