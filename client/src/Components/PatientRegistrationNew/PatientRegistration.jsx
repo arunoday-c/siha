@@ -1,8 +1,9 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { useQuery, useMutation } from "react-query";
 import { useForm } from "react-hook-form";
 import moment from "moment";
 import { useLocation, useHistory } from "react-router-dom";
+import { CSSTransition } from "react-transition-group";
 import { FrontdeskContext } from "./FrontdeskContext";
 import {
   MainContext,
@@ -86,10 +87,12 @@ const updateAppointmentStatus = async (data) => {
 
 export function PatientRegistration() {
   const { userLanguage, userToken } = useContext(MainContext);
+  const [openPopup, setOpenPopup] = useState(false);
   const [save, { isLoading: saveLoading }] = useMutation(savePatient, {
     onSuccess: (data) => {
       setSavedPatient(data);
       setDisable(true);
+      setOpenPopup(true);
       AlgaehMessagePop({
         display: "Patient Saved Successfully",
         type: "success",
@@ -100,7 +103,7 @@ export function PatientRegistration() {
     onSuccess: (data) => {
       setSavedPatient(data);
       setDisable(true);
-
+      setOpenPopup(true);
       if (!!appointment_id && !!status_id) {
         updateAppointmentStatus({
           application_id: appointment_id,
@@ -152,6 +155,7 @@ export function PatientRegistration() {
     consultationInfo,
     setDisable,
     setSavedPatient,
+    savedPatient,
     clearState,
     setServiceInfo,
   } = useContext(FrontdeskContext);
@@ -491,6 +495,87 @@ export function PatientRegistration() {
                     />
                   </button>
                 </div>
+                {consultationInfo?.consultation === "Y" ? (
+                  <CSSTransition
+                    in={openPopup}
+                    classNames={{
+                      enterActive: "editFloatCntr animated slideInUp faster",
+                      enterDone: "editFloatCntr",
+                      exitActive: "editFloatCntr animated slideOutDown faster",
+                      exitDone: "editFloatCntr",
+                    }}
+                    unmountOnExit
+                    appear={false}
+                    timeout={500}
+                    mountOnEnter
+                  >
+                    <div className={"col-12"}>
+                      {/* <h5>Edit Basic Details</h5> */}
+                      <div className="row">
+                        <div className="col-3">
+                          <AlgaehLabel
+                            label={{
+                              forceLabel: "Patient Code",
+                            }}
+                          />
+                          <h6>{savedPatient?.patient_code}</h6>
+                        </div>
+
+                        <div className="col-3">
+                          <AlgaehLabel
+                            label={{
+                              forceLabel: "Bill Number",
+                            }}
+                          />
+                          <h6>{savedPatient?.bill_number}</h6>
+                        </div>
+
+                        <div className="col-3">
+                          <AlgaehLabel
+                            label={{
+                              forceLabel: "Receipt Number",
+                            }}
+                          />
+                          <h6>{savedPatient?.receipt_number}</h6>
+                        </div>
+                      </div>
+                      <div className="row">
+                        <div className="col">
+                          <button type="button" className="btn btn-primary">
+                            Print Receipt
+                          </button>
+                          <button
+                            type="button"
+                            className="btn btn-default"
+                            onClick={() => setOpenPopup(false)}
+                          >
+                            Close
+                          </button>
+                          <button className="btn btn-default">
+                            Print Card
+                          </button>
+                          {consultationInfo.consultation == "Y" && ( // eslint-disable-line
+                            <button
+                              type="button"
+                              className="btn btn-other"
+                              onClick={() =>
+                                this.props.history.push(
+                                  `/OPBilling?bill_code=${savedPatient?.bill_number}`
+                                )
+                              }
+                            >
+                              <AlgaehLabel
+                                label={{
+                                  forceLabel: "Go to Billing",
+                                }}
+                              />
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </CSSTransition>
+                ) : null}
               </div>
             </div>
           </form>
