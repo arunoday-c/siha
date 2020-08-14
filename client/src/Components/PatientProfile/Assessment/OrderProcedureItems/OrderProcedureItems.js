@@ -47,21 +47,21 @@ class OrderProcedureItems extends Component {
     };
   }
   getDepartments() {
-    if (
-      this.props.inventoryitemlist === undefined ||
-      this.props.inventoryitemlist.length === 0
-    ) {
-      this.props.getItems({
-        uri: "/inventory/getItemMaster",
-        data: { item_status: "A" },
-        module: "inventory",
-        method: "GET",
-        redux: {
-          type: "ITEM_GET_DATA",
-          mappingName: "inventoryitemlist",
-        },
-      });
-    }
+    // if (
+    //   this.props.inventoryitemlist === undefined ||
+    //   this.props.inventoryitemlist.length === 0
+    // ) {
+    //   this.props.getItems({
+    //     uri: "/inventory/getItemMaster",
+    //     data: { item_status: "A" },
+    //     module: "inventory",
+    //     method: "GET",
+    //     redux: {
+    //       type: "ITEM_GET_DATA",
+    //       mappingName: "inventoryitemlist",
+    //     },
+    //   });
+    // }
   }
 
   onClose = (e) => {
@@ -103,13 +103,13 @@ class OrderProcedureItems extends Component {
   UNSAFE_componentWillReceiveProps(newProps) {
     let Location_name =
       this.props.inventorylocations !== undefined &&
-      this.props.inventorylocations.length > 0
+        this.props.inventorylocations.length > 0
         ? _.filter(this.props.inventorylocations, (f) => {
-            return (
-              f.hims_d_inventory_location_id ===
-              newProps.inputsparameters.inventory_location_id
-            );
-          })
+          return (
+            f.hims_d_inventory_location_id ===
+            newProps.inputsparameters.inventory_location_id
+          );
+        })
         : [];
 
     if (Location_name.length > 0) {
@@ -308,30 +308,30 @@ class OrderProcedureItems extends Component {
                             others: { maxWidth: 80, align: "center" },
                           },
                           {
-                            fieldName: "item_id",
+                            fieldName: "item_description",
                             label: (
                               <AlgaehLabel
                                 label={{ forceLabel: "Item Name" }}
                               />
                             ),
-                            displayTemplate: (row) => {
-                              let display =
-                                this.props.inventoryitemlist === undefined
-                                  ? []
-                                  : this.props.inventoryitemlist.filter(
-                                      (f) =>
-                                        f.hims_d_inventory_item_master_id ===
-                                        row.item_id
-                                    );
+                            // displayTemplate: (row) => {
+                            //   let display =
+                            //     this.props.inventoryitemlist === undefined
+                            //       ? []
+                            //       : this.props.inventoryitemlist.filter(
+                            //           (f) =>
+                            //             f.hims_d_inventory_item_master_id ===
+                            //             row.item_id
+                            //         );
 
-                              return (
-                                <span>
-                                  {display !== undefined && display.length !== 0
-                                    ? display[0].item_description
-                                    : ""}
-                                </span>
-                              );
-                            },
+                            //   return (
+                            //     <span>
+                            //       {display !== undefined && display.length !== 0
+                            //         ? display[0].item_description
+                            //         : ""}
+                            //     </span>
+                            //   );
+                            // },
                             disabled: true,
                           },
                           {
@@ -420,7 +420,7 @@ function mapStateToProps(state) {
   return {
     patient_profile: state.patient_profile,
     inventorylocations: state.inventorylocations,
-    inventoryitemlist: state.inventoryitemlist,
+    // inventoryitemlist: state.inventoryitemlist,
   };
 }
 
@@ -428,7 +428,7 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
       getLocation: AlgaehActions,
-      getItems: AlgaehActions,
+      // getItems: AlgaehActions,
     },
     dispatch
   );

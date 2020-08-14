@@ -68,42 +68,11 @@ class BasicSubjective extends Component {
     this.chiefComplaintMaxLength = 200;
     this.significantSignsLength = 250;
     this.otherConditionMaxLength = 250;
-    this.getMasters();
     this.getPatientEncounterDetails();
     this.complaintType = [];
     SubjectiveHandler().getPatientChiefComplaints(this);
   }
 
-  getMasters() {
-    // if (
-    //   this.props.assdeptanddoctors === undefined ||
-    //   this.props.assdeptanddoctors.length === 0
-    // ) {
-    //   this.props.getDepartmentsandDoctors({
-    //     uri: "/department/get/get_All_Doctors_DepartmentWise",
-    //     module: "masterSettings",
-    //     method: "GET",
-    //     redux: {
-    //       type: "LAB_DEPT_DOCTOR_GET_DATA",
-    //       mappingName: "assdeptanddoctors"
-    //     }
-    //   });
-    // }
-    // if (
-    //   this.props.assservices === undefined ||
-    //   this.props.assservices.length === 0
-    // ) {
-    //   this.props.getServices({
-    //     uri: "/serviceType/getService",
-    //     module: "masterSettings",
-    //     method: "GET",
-    //     redux: {
-    //       type: "SERVICES_GET_DATA",
-    //       mappingName: "assservices"
-    //     }
-    //   });
-    // }
-  }
   dropDownHandler(value) {
     this.setState({
       [value.name]: value.value
@@ -1033,8 +1002,6 @@ class BasicSubjective extends Component {
 
 function mapStateToProps(state) {
   return {
-    //  assdeptanddoctors: state.assdeptanddoctors,
-    //  assservices: state.assservices,
     patient_diagnosis: state.patient_diagnosis,
     patient_diet: state.patient_diet
   };
@@ -1043,8 +1010,6 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      //  getDepartmentsandDoctors: AlgaehActions,
-      //getServices: AlgaehActions,
       getPatientDiagnosis: AlgaehActions,
       getPatientDiet: AlgaehActions
     },

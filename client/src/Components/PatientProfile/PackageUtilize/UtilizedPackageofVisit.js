@@ -10,7 +10,7 @@ import {
 } from "../../Wrapper/algaehWrapper";
 import "../../../styles/site.scss";
 import { AlgaehActions } from "../../../actions/algaehActions";
-import {  
+import {
   algaehApiCall,
   swalMessage
 } from "../../../utils/algaehApiCall";
@@ -31,38 +31,6 @@ class UtilizedPackageofVisit extends PureComponent {
       isPackUtOpen: false,
       package_detail: null
     };
-  }
-
-  componentDidMount() {
-    if (
-      this.props.servicetype === undefined ||
-      this.props.servicetype.length === 0
-    ) {
-      this.props.getServiceTypes({
-        uri: "/serviceType",
-        module: "masterSettings",
-        method: "GET",
-        redux: {
-          type: "SERVIES_TYPES_GET_DATA",
-          mappingName: "servicetype"
-        }
-      });
-    }
-
-    if (
-      this.props.serviceslist === undefined ||
-      this.props.serviceslist.length === 0
-    ) {
-      this.props.getServices({
-        uri: "/serviceType/getService",
-        module: "masterSettings",
-        method: "GET",
-        redux: {
-          type: "SERVICES_GET_DATA",
-          mappingName: "serviceslist"
-        }
-      });
-    }
   }
 
   dateFormater(value) {
@@ -86,10 +54,10 @@ class UtilizedPackageofVisit extends PureComponent {
           row.service_type_id === 5
             ? "LAB"
             : row.service_type_id === 11
-            ? "RAD"
-            : row.service_type_id === 2
-            ? "PRO"
-            : null;
+              ? "RAD"
+              : row.service_type_id === 2
+                ? "PRO"
+                : null;
         algaehApiCall({
           uri: "/orderAndPreApproval/deleteOrderService",
           method: "delete",
@@ -193,7 +161,7 @@ class UtilizedPackageofVisit extends PureComponent {
                         },
 
                         {
-                          fieldName: "service_type_id",
+                          fieldName: "service_type",
                           label: (
                             <AlgaehLabel
                               label={{ fieldName: "service_type_id" }}
@@ -204,10 +172,10 @@ class UtilizedPackageofVisit extends PureComponent {
                               this.props.servicetype === undefined
                                 ? []
                                 : this.props.servicetype.filter(
-                                    f =>
-                                      f.hims_d_service_type_id ===
-                                      row.service_type_id
-                                  );
+                                  f =>
+                                    f.hims_d_service_type_id ===
+                                    row.service_type_id
+                                );
 
                             return (
                               <span>
@@ -225,7 +193,7 @@ class UtilizedPackageofVisit extends PureComponent {
                           disabled: true
                         },
                         {
-                          fieldName: "services_id",
+                          fieldName: "service_name",
                           label: (
                             <AlgaehLabel label={{ fieldName: "services_id" }} />
                           ),
@@ -234,20 +202,9 @@ class UtilizedPackageofVisit extends PureComponent {
                               row.trans_package_detail_id > 0
                                 ? "(Package Service)"
                                 : "";
-                            let display =
-                              this.props.serviceslist === undefined
-                                ? []
-                                : this.props.serviceslist.filter(
-                                    f =>
-                                      f.hims_d_services_id === row.services_id
-                                  );
-
                             return (
                               <span>
-                                {display !== null && display.length !== 0
-                                  ? display[0].service_name
-                                  : ""}
-
+                                {row.service_name}
                                 <span className="packageAvail">
                                   {package_service}
                                 </span>
@@ -333,8 +290,6 @@ class UtilizedPackageofVisit extends PureComponent {
 
 function mapStateToProps(state) {
   return {
-    servicetype: state.servicetype,
-    serviceslist: state.serviceslist,
     orderedList: state.orderedList,
     pakageList: state.pakageList
   };
@@ -343,8 +298,6 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getServiceTypes: AlgaehActions,
-      getServices: AlgaehActions,
       getOrderList: AlgaehActions,
       getPakageList: AlgaehActions
     },

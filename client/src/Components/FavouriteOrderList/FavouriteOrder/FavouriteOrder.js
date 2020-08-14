@@ -34,32 +34,6 @@ class FavouriteOrder extends PureComponent {
     };
   }
 
-  componentDidMount() {
-    if (
-      this.props.servicetype === undefined ||
-      this.props.servicetype.length === 0
-    ) {
-      this.props.getServiceTypes({
-        uri: "/serviceType",
-        module: "masterSettings",
-        method: "GET",
-        redux: {
-          type: "SERVIES_TYPES_GET_DATA",
-          mappingName: "servicetype",
-        },
-      });
-    }
-
-    this.props.getServices({
-      uri: "/serviceType/getService",
-      module: "masterSettings",
-      method: "GET",
-      redux: {
-        type: "SERVICES_GET_DATA",
-        mappingName: "serviceslist",
-      },
-    });
-  }
 
   UNSAFE_componentWillReceiveProps(newProps) {
     if (
@@ -207,61 +181,6 @@ class FavouriteOrder extends PureComponent {
                       this.attReg = attReg;
                     }}
                   />
-                  {/*  <AlagehAutoComplete
-                    div={{ className: "col-lg-3" }}
-                    label={{
-                      forceLabel: "Select Service Type"
-                    }}
-                    selector={{
-                      name: "s_service_type",
-                      className: "select-fld",
-                      value: this.state.s_service_type,
-                      dataSource: {
-                        textField: "service_type",
-                        valueField: "hims_d_service_type_id",
-                        data: this.props.servicetype
-                      },
-                      onChange: this.serviceTypeHandeler.bind(this),
-                      onClear: () => {
-                        this.setState(
-                          {
-                            s_service_type: null
-                          },
-                          () => {
-                            this.props.getServices({
-                              redux: {
-                                type: "SERVICES_GET_DATA",
-                                mappingName: "opbilservices",
-                                data: []
-                              }
-                            });
-                          }
-                        );
-                      }
-                    }}
-                  />
-                  <AlagehAutoComplete
-                    div={{ className: "col-lg-3" }}
-                    label={{
-                      forceLabel: "Select Service"
-                    }}
-                    selector={{
-                      name: "s_service",
-                      className: "select-fld",
-                      value: this.state.s_service,
-                      dataSource: {
-                        textField: "service_name",
-                        valueField: "hims_d_services_id",
-                        data: this.props.opbilservices
-                      },
-                      onChange: this.eventHandaler.bind(this),
-                      onClear: () => {
-                        this.setState({
-                          s_service: null
-                        });
-                      }
-                    }}
-                  />*/}
                   <div className="col-2 form-group">
                     <button
                       className="btn btn-primary"
@@ -301,59 +220,24 @@ class FavouriteOrder extends PureComponent {
                             },
                           },
                           {
-                            fieldName: "service_type_id",
+                            fieldName: "service_type",
                             label: (
                               <AlgaehLabel
                                 label={{ forceLabel: "Service Type" }}
                               />
                             ),
-                            displayTemplate: (row) => {
-                              let display =
-                                this.props.servicetype === undefined
-                                  ? []
-                                  : this.props.servicetype.filter(
-                                      (f) =>
-                                        f.hims_d_service_type_id ===
-                                        row.service_type_id
-                                    );
-
-                              return (
-                                <span>
-                                  {display !== undefined && display.length !== 0
-                                    ? display[0].service_type
-                                    : ""}
-                                </span>
-                              );
-                            },
                             others: {
                               maxWidth: 180,
                             },
                           },
 
                           {
-                            fieldName: "services_id",
+                            fieldName: "service_name",
                             label: (
                               <AlgaehLabel
                                 label={{ forceLabel: "Service Name" }}
                               />
-                            ),
-                            displayTemplate: (row) => {
-                              let display =
-                                this.props.serviceslist === undefined
-                                  ? []
-                                  : this.props.serviceslist.filter(
-                                      (f) =>
-                                        f.hims_d_services_id === row.services_id
-                                    );
-
-                              return (
-                                <span>
-                                  {display !== null && display.length !== 0
-                                    ? display[0].service_name
-                                    : ""}
-                                </span>
-                              );
-                            },
+                            )
                           },
                         ]}
                         keyId="favourite_detail_grid"
@@ -384,8 +268,8 @@ class FavouriteOrder extends PureComponent {
                       {this.state.hims_d_favourite_orders_header_id === null ? (
                         <AlgaehLabel label={{ forceLabel: "Save" }} />
                       ) : (
-                        <AlgaehLabel label={{ forceLabel: "Update" }} />
-                      )}
+                          <AlgaehLabel label={{ forceLabel: "Update" }} />
+                        )}
                     </button>
                     <button
                       onClick={(e) => {
@@ -409,9 +293,6 @@ class FavouriteOrder extends PureComponent {
 
 function mapStateToProps(state) {
   return {
-    servicetype: state.servicetype,
-    serviceslist: state.serviceslist,
-    opbilservices: state.opbilservices,
     frontproviders: state.frontproviders,
   };
 }

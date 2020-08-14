@@ -131,12 +131,12 @@ class OrderConsumables extends Component {
   UNSAFE_componentWillReceiveProps(nextProps) {
     let Location_name =
       this.props.inventorylocations !== undefined &&
-      this.props.inventorylocations.length > 0
+        this.props.inventorylocations.length > 0
         ? _.filter(this.props.inventorylocations, (f) => {
-            return (
-              f.hims_d_inventory_location_id === nextProps.inventory_location_id
-            );
-          })
+          return (
+            f.hims_d_inventory_location_id === nextProps.inventory_location_id
+          );
+        })
         : [];
 
     if (
@@ -384,97 +384,19 @@ class OrderConsumables extends Component {
                         },
                       },
                       {
-                        fieldName: "service_type_id",
+                        fieldName: "service_type",
                         label: (
                           <AlgaehLabel
                             label={{ fieldName: "service_type_id" }}
                           />
-                        ),
-                        displayTemplate: (row) => {
-                          let display =
-                            this.props.servicetype === undefined
-                              ? []
-                              : this.props.servicetype.filter(
-                                  (f) =>
-                                    f.hims_d_service_type_id ===
-                                    row.service_type_id
-                                );
-
-                          return (
-                            <span>
-                              {display !== undefined && display.length !== 0
-                                ? this.state.selectedLang === "en"
-                                  ? display[0].service_type
-                                  : display[0].arabic_service_type
-                                : ""}
-                            </span>
-                          );
-                        },
-                        editorTemplate: (row) => {
-                          let display =
-                            this.props.servicetype === undefined
-                              ? []
-                              : this.props.servicetype.filter(
-                                  (f) =>
-                                    f.hims_d_service_type_id ===
-                                    row.service_type_id
-                                );
-
-                          return (
-                            <span>
-                              {display !== undefined && display.length !== 0
-                                ? this.state.selectedLang === "en"
-                                  ? display[0].service_type
-                                  : display[0].arabic_service_type
-                                : ""}
-                            </span>
-                          );
-                        },
+                        )
                       },
 
                       {
-                        fieldName: "services_id",
+                        fieldName: "services_name",
                         label: (
                           <AlgaehLabel label={{ fieldName: "services_id" }} />
                         ),
-                        displayTemplate: (row) => {
-                          let display =
-                            this.props.serviceslist === undefined
-                              ? []
-                              : this.props.serviceslist.filter(
-                                  (f) =>
-                                    f.hims_d_services_id === row.services_id
-                                );
-
-                          return (
-                            <span>
-                              {display !== null && display.length !== 0
-                                ? this.state.selectedLang === "en"
-                                  ? display[0].service_name
-                                  : display[0].arabic_service_name
-                                : ""}
-                            </span>
-                          );
-                        },
-                        editorTemplate: (row) => {
-                          let display =
-                            this.props.serviceslist === undefined
-                              ? []
-                              : this.props.serviceslist.filter(
-                                  (f) =>
-                                    f.hims_d_services_id === row.services_id
-                                );
-
-                          return (
-                            <span>
-                              {display !== null && display.length !== 0
-                                ? this.state.selectedLang === "en"
-                                  ? display[0].service_name
-                                  : display[0].arabic_service_name
-                                : ""}
-                            </span>
-                          );
-                        },
                         others: {
                           minWidth: 250,
                         },
@@ -758,8 +680,6 @@ class OrderConsumables extends Component {
 
 function mapStateToProps(state) {
   return {
-    servicetype: state.servicetype,
-    services: state.services,
     orderservices: state.orderservices,
     existinginsurance: state.existinginsurance,
     serviceslist: state.serviceslist,
@@ -771,8 +691,6 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getServiceTypes: AlgaehActions,
-      getServices: AlgaehActions,
       generateBill: AlgaehActions,
       getPatientInsurance: AlgaehActions,
       billingCalculations: AlgaehActions,

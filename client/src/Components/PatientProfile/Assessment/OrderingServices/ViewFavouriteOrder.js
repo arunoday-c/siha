@@ -1,7 +1,4 @@
 import React, { PureComponent } from "react";
-import { withRouter } from "react-router-dom";
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
 
 import "./ViewFavouriteOrder.scss";
 
@@ -13,43 +10,15 @@ import {
   AlgaehModalPopUp
 } from "../../../Wrapper/algaehWrapper";
 
-import { AlgaehActions } from "../../../../actions/algaehActions";
 import Enumerable from "linq";
 
-class ViewFavouriteOrder extends PureComponent {
+export default class ViewFavouriteOrder extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
       all_favourites: [],
       favourite_details: []
     };
-  }
-
-  componentDidMount() {
-    if (
-      this.props.servicetype === undefined ||
-      this.props.servicetype.length === 0
-    ) {
-      this.props.getServiceTypes({
-        uri: "/serviceType",
-        module: "masterSettings",
-        method: "GET",
-        redux: {
-          type: "SERVIES_TYPES_GET_DATA",
-          mappingName: "servicetype"
-        }
-      });
-    }
-
-    this.props.getServices({
-      uri: "/serviceType/getService",
-      module: "masterSettings",
-      method: "GET",
-      redux: {
-        type: "SERVICES_GET_DATA",
-        mappingName: "serviceslist"
-      }
-    });
   }
 
   AddFavouriteOrder() {
@@ -203,58 +172,21 @@ class ViewFavouriteOrder extends PureComponent {
                             id="favourite_detail_grid"
                             columns={[
                               {
-                                fieldName: "service_type_id",
+                                fieldName: "service_type",
                                 label: (
                                   <AlgaehLabel
                                     label={{ forceLabel: "Service Type" }}
                                   />
-                                ),
-                                displayTemplate: row => {
-                                  let display =
-                                    this.props.servicetype === undefined
-                                      ? []
-                                      : this.props.servicetype.filter(
-                                          f =>
-                                            f.hims_d_service_type_id ===
-                                            row.service_type_id
-                                        );
-
-                                  return (
-                                    <span>
-                                      {display !== undefined &&
-                                      display.length !== 0
-                                        ? display[0].service_type
-                                        : ""}
-                                    </span>
-                                  );
-                                }
+                                )
                               },
 
                               {
-                                fieldName: "services_id",
+                                fieldName: "service_name",
                                 label: (
                                   <AlgaehLabel
                                     label={{ forceLabel: "Service Name" }}
                                   />
-                                ),
-                                displayTemplate: row => {
-                                  let display =
-                                    this.props.serviceslist === undefined
-                                      ? []
-                                      : this.props.serviceslist.filter(
-                                          f =>
-                                            f.hims_d_services_id ===
-                                            row.services_id
-                                        );
-
-                                  return (
-                                    <span>
-                                      {display !== null && display.length !== 0
-                                        ? display[0].service_name
-                                        : ""}
-                                    </span>
-                                  );
-                                }
+                                )
                               }
                             ]}
                             keyId="favourite_detail_grid"
@@ -306,28 +238,3 @@ class ViewFavouriteOrder extends PureComponent {
   }
 }
 
-function mapStateToProps(state) {
-  return {
-    servicetype: state.servicetype,
-    serviceslist: state.serviceslist,
-    opbilservices: state.opbilservices,
-    frontproviders: state.frontproviders
-  };
-}
-
-function mapDispatchToProps(dispatch) {
-  return bindActionCreators(
-    {
-      getServiceTypes: AlgaehActions,
-      getServices: AlgaehActions
-    },
-    dispatch
-  );
-}
-
-export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(ViewFavouriteOrder)
-);

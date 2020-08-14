@@ -374,10 +374,11 @@ export default {
     _mysql
       .executeQueryWithTransaction({
         query:
-          "INSERT INTO `hims_d_services` (service_code,cpt_code,service_name,arabic_service_name,service_desc,sub_department_id,\
-        hospital_id,service_type_id,procedure_type,standard_fee,followup_free_fee,followup_paid_fee,\
-        discount,vat_applicable,vat_percent,service_status,effective_start_date,effectice_end_date,\
-        created_by,created_date,updated_by,updated_date) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+          "INSERT INTO `hims_d_services` (service_code,cpt_code,service_name,arabic_service_name,service_desc,\
+            sub_department_id, hospital_id,service_type_id,procedure_type,standard_fee,followup_free_fee,\
+            followup_paid_fee, discount,vat_applicable,vat_percent,service_status,effective_start_date, \
+            effectice_end_date,created_by,created_date,updated_by,updated_date) \
+            values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
         values: [
           input.service_code,
           input.cpt_code,
@@ -412,7 +413,7 @@ export default {
             .executeQuery({
               query:
                 "INSERT INTO `hims_d_procedure` (procedure_code,procedure_desc,procedure_desc_arabic,service_id,procedure_type,\
-                    created_by,created_date,updated_by,updated_date) values (?,?,?,?,?,?,?,?)",
+                    created_by,created_date,updated_by,updated_date) values (?,?,?,?,?,?,?,?,?)",
               values: [
                 input.procedure_code,
                 input.procedure_desc,

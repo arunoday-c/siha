@@ -43,31 +43,6 @@ class OrderedList extends PureComponent {
     this.setState({
       selectedLang: prevLang
     });
-
-    if (
-      this.props.servicetype === undefined ||
-      this.props.servicetype.length === 0
-    ) {
-      this.props.getServiceTypes({
-        uri: "/serviceType",
-        module: "masterSettings",
-        method: "GET",
-        redux: {
-          type: "SERVIES_TYPES_GET_DATA",
-          mappingName: "servicetype"
-        }
-      });
-    }
-
-    this.props.getServices({
-      uri: "/serviceType/getService",
-      module: "masterSettings",
-      method: "GET",
-      redux: {
-        type: "SERVICES_GET_DATA",
-        mappingName: "serviceslist"
-      }
-    });
     const { visit_id, current_patient } = Window.global;
     this.props.getOrderList({
       uri: "/orderAndPreApproval/selectOrderServicesbyDoctor",
@@ -103,6 +78,9 @@ class OrderedList extends PureComponent {
       redux: {
         type: "PAIENT_PACKAGE_GET_DATA",
         mappingName: "pakageList"
+      },
+      afterSuccess: data => {
+        debugger
       }
     });
   }
@@ -318,6 +296,7 @@ class OrderedList extends PureComponent {
               this.props.patient_profile[0].sub_department_id
             );
           });
+          debugger
           this.setState({
             isPackUtOpen: !this.state.isPackUtOpen,
             package_detail: row,
@@ -737,30 +716,12 @@ class OrderedList extends PureComponent {
                       },
 
                       {
-                        fieldName: "service_type_id",
+                        fieldName: "service_type",
                         label: (
                           <AlgaehLabel
                             label={{ fieldName: "service_type_id" }}
                           />
                         ),
-                        displayTemplate: row => {
-                          let display =
-                            this.props.servicetype === undefined
-                              ? []
-                              : this.props.servicetype.filter(
-                                f =>
-                                  f.hims_d_service_type_id ===
-                                  row.service_type_id
-                              );
-
-                          return (
-                            <span>
-                              {display !== undefined && display.length !== 0
-                                ? display[0].service_type
-                                : ""}
-                            </span>
-                          );
-                        },
                         others: {
                           minWidth: 100,
                           maxWidth: 500
@@ -769,7 +730,7 @@ class OrderedList extends PureComponent {
                         disabled: true
                       },
                       {
-                        fieldName: "services_id",
+                        fieldName: "service_name",
                         label: (
                           <AlgaehLabel label={{ fieldName: "services_id" }} />
                         ),
@@ -778,19 +739,10 @@ class OrderedList extends PureComponent {
                             row.trans_package_detail_id > 0
                               ? "(Package Service)"
                               : "";
-                          let display =
-                            this.props.serviceslist === undefined
-                              ? []
-                              : this.props.serviceslist.filter(
-                                f => f.hims_d_services_id === row.services_id
-                              );
 
                           return (
                             <span>
-                              {display !== null && display.length !== 0
-                                ? display[0].service_name
-                                : ""}
-
+                              {row.service_name}
                               <span className="packageAvail">
                                 {package_service}
                               </span>
@@ -934,30 +886,12 @@ class OrderedList extends PureComponent {
                       },
 
                       {
-                        fieldName: "service_type_id",
+                        fieldName: "service_type",
                         label: (
                           <AlgaehLabel
                             label={{ fieldName: "service_type_id" }}
                           />
                         ),
-                        displayTemplate: row => {
-                          let display =
-                            this.props.servicetype === undefined
-                              ? []
-                              : this.props.servicetype.filter(
-                                f =>
-                                  f.hims_d_service_type_id ===
-                                  row.service_type_id
-                              );
-
-                          return (
-                            <span>
-                              {display !== undefined && display.length !== 0
-                                ? display[0].service_type
-                                : ""}
-                            </span>
-                          );
-                        },
                         others: {
                           minWidth: 100,
                           maxWidth: 500
@@ -966,26 +900,10 @@ class OrderedList extends PureComponent {
                         disabled: true
                       },
                       {
-                        fieldName: "services_id",
+                        fieldName: "service_name",
                         label: (
                           <AlgaehLabel label={{ fieldName: "services_id" }} />
                         ),
-                        displayTemplate: row => {
-                          let display =
-                            this.props.serviceslist === undefined
-                              ? []
-                              : this.props.serviceslist.filter(
-                                f => f.hims_d_services_id === row.services_id
-                              );
-
-                          return (
-                            <span>
-                              {display !== null && display.length !== 0
-                                ? display[0].service_name
-                                : ""}
-                            </span>
-                          );
-                        },
                         others: {
                           minWidth: 200,
                           maxWidth: 400
@@ -1143,30 +1061,12 @@ class OrderedList extends PureComponent {
                           },
 
                           {
-                            fieldName: "service_type_id",
+                            fieldName: "service_type",
                             label: (
                               <AlgaehLabel
                                 label={{ fieldName: "service_type_id" }}
                               />
                             ),
-                            displayTemplate: row => {
-                              let display =
-                                this.props.servicetype === undefined
-                                  ? []
-                                  : this.props.servicetype.filter(
-                                    f =>
-                                      f.hims_d_service_type_id ===
-                                      row.service_type_id
-                                  );
-
-                              return (
-                                <span>
-                                  {display !== undefined && display.length !== 0
-                                    ? display[0].service_type
-                                    : ""}
-                                </span>
-                              );
-                            },
                             others: {
                               minWidth: 100,
                               maxWidth: 500
@@ -1175,26 +1075,10 @@ class OrderedList extends PureComponent {
                             disabled: true
                           },
                           {
-                            fieldName: "services_id",
+                            fieldName: "service_name",
                             label: (
                               <AlgaehLabel label={{ fieldName: "services_id" }} />
                             ),
-                            displayTemplate: row => {
-                              let display =
-                                this.props.serviceslist === undefined
-                                  ? []
-                                  : this.props.serviceslist.filter(
-                                    f => f.hims_d_services_id === row.services_id
-                                  );
-
-                              return (
-                                <span>
-                                  {display !== null && display.length !== 0
-                                    ? display[0].service_name
-                                    : ""}
-                                </span>
-                              );
-                            },
                             others: {
                               minWidth: 200,
                               maxWidth: 400
@@ -1326,8 +1210,6 @@ class OrderedList extends PureComponent {
 
 function mapStateToProps(state) {
   return {
-    servicetype: state.servicetype,
-    serviceslist: state.serviceslist,
     orderedList: state.orderedList,
     patient_profile: state.patient_profile,
     consumableorderedList: state.consumableorderedList,
@@ -1338,8 +1220,6 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getServiceTypes: AlgaehActions,
-      getServices: AlgaehActions,
       getOrderList: AlgaehActions,
       getConsumableOrderList: AlgaehActions,
       getPakageList: AlgaehActions

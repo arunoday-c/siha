@@ -90,20 +90,6 @@ class Assessment extends Component {
   }
 
   componentDidMount() {
-    if (
-      this.props.assservices === undefined ||
-      this.props.assservices.length === 0
-    ) {
-      this.props.getServices({
-        uri: "/serviceType/getService",
-        module: "masterSettings",
-        method: "GET",
-        redux: {
-          type: "SERVICES_GET_DATA",
-          mappingName: "assservices"
-        }
-      });
-    }
 
     if (
       this.props.assdeptanddoctors === undefined ||
@@ -492,7 +478,6 @@ class Assessment extends Component {
 function mapStateToProps(state) {
   return {
     patient_diagnosis: state.patient_diagnosis,
-    assservices: state.assservices,
     assdeptanddoctors: state.assdeptanddoctors
   };
 }
@@ -501,7 +486,6 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
       getPatientDiagnosis: AlgaehActions,
-      getServices: AlgaehActions,
       getDepartmentsandDoctors: AlgaehActions
     },
     dispatch

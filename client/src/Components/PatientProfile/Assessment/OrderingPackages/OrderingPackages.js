@@ -90,35 +90,7 @@ class OrderingPackages extends Component {
       selectedLang: prevLang,
     });
 
-    if (
-      this.props.servicetype === undefined ||
-      this.props.servicetype.length === 0
-    ) {
-      this.props.getServiceTypes({
-        uri: "/serviceType",
-        module: "masterSettings",
-        method: "GET",
-        redux: {
-          type: "SERVIES_TYPES_GET_DATA",
-          mappingName: "servicetype",
-        },
-      });
-    }
 
-    if (
-      this.props.serviceslist === undefined ||
-      this.props.serviceslist.length === 0
-    ) {
-      this.props.getServices({
-        uri: "/serviceType/getService",
-        module: "masterSettings",
-        method: "GET",
-        redux: {
-          type: "SERVICES_GET_DATA",
-          mappingName: "serviceslist",
-        },
-      });
-    }
     this.getPatientInsurance();
   }
 
@@ -150,16 +122,6 @@ class OrderingPackages extends Component {
             secondary_network_office_id: data[0].secondary_network_office_id,
           });
 
-          this.props.getServices({
-            uri: "/serviceType/getServiceInsured",
-            module: "masterSettings",
-            method: "GET",
-            data: { insurance_id: data[0].insurance_provider_id },
-            redux: {
-              type: "SERVICES_INS_GET_DATA",
-              mappingName: "services",
-            },
-          });
         } else {
           this.setState({
             insured: "N",
@@ -170,15 +132,6 @@ class OrderingPackages extends Component {
             secondary_insurance_provider_id: null,
             secondary_network_id: null,
             secondary_network_office_id: null,
-          });
-          this.props.getServices({
-            uri: "/serviceType/getService",
-            module: "masterSettings",
-            method: "GET",
-            redux: {
-              type: "SERVICES_GET_DATA",
-              mappingName: "services",
-            },
           });
         }
       },
@@ -447,52 +400,12 @@ class OrderingPackages extends Component {
                         },
                       },
                       {
-                        fieldName: "service_type_id",
+                        fieldName: "service_type",
                         label: (
                           <AlgaehLabel
                             label={{ fieldName: "service_type_id" }}
                           />
-                        ),
-                        displayTemplate: (row) => {
-                          let display =
-                            this.props.servicetype === undefined
-                              ? []
-                              : this.props.servicetype.filter(
-                                  (f) =>
-                                    f.hims_d_service_type_id ===
-                                    row.service_type_id
-                                );
-
-                          return (
-                            <span>
-                              {display !== undefined && display.length !== 0
-                                ? this.state.selectedLang === "en"
-                                  ? display[0].service_type
-                                  : display[0].arabic_service_type
-                                : ""}
-                            </span>
-                          );
-                        },
-                        editorTemplate: (row) => {
-                          let display =
-                            this.props.servicetype === undefined
-                              ? []
-                              : this.props.servicetype.filter(
-                                  (f) =>
-                                    f.hims_d_service_type_id ===
-                                    row.service_type_id
-                                );
-
-                          return (
-                            <span>
-                              {display !== undefined && display.length !== 0
-                                ? this.state.selectedLang === "en"
-                                  ? display[0].service_type
-                                  : display[0].arabic_service_type
-                                : ""}
-                            </span>
-                          );
-                        },
+                        )
                       },
                       {
                         fieldName: "package_code",
@@ -505,48 +418,10 @@ class OrderingPackages extends Component {
                         },
                       },
                       {
-                        fieldName: "services_id",
+                        fieldName: "services_name",
                         label: (
                           <AlgaehLabel label={{ fieldName: "services_id" }} />
                         ),
-                        displayTemplate: (row) => {
-                          let display =
-                            this.props.serviceslist === undefined
-                              ? []
-                              : this.props.serviceslist.filter(
-                                  (f) =>
-                                    f.hims_d_services_id === row.services_id
-                                );
-
-                          return (
-                            <span>
-                              {display !== null && display.length !== 0
-                                ? this.state.selectedLang === "en"
-                                  ? display[0].service_name
-                                  : display[0].arabic_service_name
-                                : ""}
-                            </span>
-                          );
-                        },
-                        editorTemplate: (row) => {
-                          let display =
-                            this.props.serviceslist === undefined
-                              ? []
-                              : this.props.serviceslist.filter(
-                                  (f) =>
-                                    f.hims_d_services_id === row.services_id
-                                );
-
-                          return (
-                            <span>
-                              {display !== null && display.length !== 0
-                                ? this.state.selectedLang === "en"
-                                  ? display[0].service_name
-                                  : display[0].arabic_service_name
-                                : ""}
-                            </span>
-                          );
-                        },
                         others: {
                           minWidth: 400,
                         },
@@ -724,11 +599,8 @@ class OrderingPackages extends Component {
 
 function mapStateToProps(state) {
   return {
-    servicetype: state.servicetype,
-    services: state.services,
     orderservices: state.orderservices,
     existinginsurance: state.existinginsurance,
-    serviceslist: state.serviceslist,
     pakageList: state.pakageList,
   };
 }
@@ -736,8 +608,6 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getServiceTypes: AlgaehActions,
-      getServices: AlgaehActions,
       generateBill: AlgaehActions,
       getPatientInsurance: AlgaehActions,
       billingCalculations: AlgaehActions,
