@@ -306,8 +306,8 @@ export default function BalanceSheet({
       income,
       Direct_expense,
       Indirect_expense,
-      gross_profit,
-      net_profit,
+      // gross_profit,
+      // net_profit,
     } = records;
     let cols = [];
     cols = columns.map((item) => {
@@ -400,6 +400,11 @@ export default function BalanceSheet({
         columns={preview === undefined ? [] : columns}
         data={preview === undefined ? [] : data}
         layout={layout}
+        // excelBodyRender={(row, callBack) => {
+        //   if (row.leafnode === "Y") {
+        //     callBack(row);
+        //   }
+        // }}
       />
     </>
   );

@@ -9,7 +9,7 @@ import Details from "./detailreport";
 // import ReactToPrint from "react-to-print";
 export function Cashflow({ dates, layout }) {
   // const [organisation, setOrganisation] = useState({});
-  const [displayColumn, setDisplayColumn] = useState("T");
+  const [displayColumn] = useState("T");
   const from_date = dates.length > 0 ? dates[0] : undefined;
   const to_date =
     dates.length > 0 ? moment(dates[1]).format("YYYY-MM-DD") : undefined;

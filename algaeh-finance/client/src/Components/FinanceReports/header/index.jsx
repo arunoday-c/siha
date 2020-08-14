@@ -7,7 +7,7 @@ export default memo(function ({ title }) {
     organization_name,
     address1,
     address2,
-    full_name,
+    // full_name,
   } = organizationDetail;
   return (
     <div className="col financeReportHeader">

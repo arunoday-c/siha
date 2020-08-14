@@ -3,7 +3,7 @@ import Balance from "./FinanceStandardReports/balancesheet";
 // import TrailBalance from "./FinanceStandardReports/trailbalance";
 import TrailBalance from "./TrailBalance";
 import AgingReport from "./FinanceStandardReports/AgingReport";
-import PnLReport from "./PnLReport";
+// import PnLReport from "./PnLReport";
 import { Cashflow } from "./Cashflow";
 
 export default function ReportMain({

@@ -68,17 +68,24 @@ export default memo(function (props) {
   };
 
   function onChangeCheck(checked, row) {
-    debugger
     row["checked"] = checked;
     const filterCheck = data.filter((f) => f.checked === true);
     if (data.length === filterCheck.length) {
       setCheckAll(true);
       setIndeterminate(false);
-      setSelectedAmount(checked === true ? parseFloat(selectAmount) + parseFloat(row.balance_amount) : parseFloat(selectAmount) - parseFloat(row.balance_amount))
+      setSelectedAmount(
+        checked === true
+          ? parseFloat(selectAmount) + parseFloat(row.balance_amount)
+          : parseFloat(selectAmount) - parseFloat(row.balance_amount)
+      );
     } else {
       setCheckAll(false);
       setIndeterminate(true);
-      setSelectedAmount(checked === true ? parseFloat(selectAmount) + parseFloat(row.balance_amount) : parseFloat(selectAmount) - parseFloat(row.balance_amount))
+      setSelectedAmount(
+        checked === true
+          ? parseFloat(selectAmount) + parseFloat(row.balance_amount)
+          : parseFloat(selectAmount) - parseFloat(row.balance_amount)
+      );
     }
   }
   function onClickSendSelected() {
@@ -134,26 +141,26 @@ export default memo(function (props) {
       });
     }
   }
-  function onChangeCheckAll(e) {
-    const { checked } = e.target;
-    if (checked) {
-      setCheckAll(true);
-      setIndeterminate(false);
-      marking(true);
-    } else {
-      setCheckAll(false);
-      setIndeterminate(true);
-      marking(false);
-    }
-  }
-  function marking(state) {
-    setData((prevState) => {
-      const list = prevState.map((item) => {
-        return { ...item, checked: state };
-      });
-      return [...list];
-    });
-  }
+  // function onChangeCheckAll(e) {
+  //   const { checked } = e.target;
+  //   if (checked) {
+  //     setCheckAll(true);
+  //     setIndeterminate(false);
+  //     marking(true);
+  //   } else {
+  //     setCheckAll(false);
+  //     setIndeterminate(true);
+  //     marking(false);
+  //   }
+  // }
+  // function marking(state) {
+  //   setData((prevState) => {
+  //     const list = prevState.map((item) => {
+  //       return { ...item, checked: state };
+  //     });
+  //     return [...list];
+  //   });
+  // }
 
   return (
     <Spin spinning={loading} delay={500}>
@@ -193,10 +200,8 @@ export default memo(function (props) {
                 <div className="portlet-body">
                   <div className="row">
                     <div className="col">
-                      <span>
-                        <h3>
-                          Selected Invoice Amount :{selectAmount}
-                        </h3>
+                      <span checkAll={checkAll.toString()}>
+                        <h3>Selected Invoice Amount :{selectAmount}</h3>
                       </span>
                     </div>
                     <div
@@ -207,6 +212,7 @@ export default memo(function (props) {
                         columns={[
                           {
                             fieldName: "checked",
+                            indeterminate: indeterminate.toString(),
                             // label: (
                             //   <Checkbox
                             //     indeterminate={indeterminate}
