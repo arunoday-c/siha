@@ -8,7 +8,7 @@ import TrailTable from "./TrailbalanceTable";
 // import TrailTree from "./TrailBalanceTree";
 
 export default function TrailBalance({ layout, dates, finOptions }) {
-  const [type, setType] = useState("table");
+  const [type] = useState("table");
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(false);
   // const createPrintObject = useRef(undefined);

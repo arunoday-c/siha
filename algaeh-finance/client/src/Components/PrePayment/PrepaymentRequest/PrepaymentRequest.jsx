@@ -13,7 +13,7 @@ import { Controller, useForm } from "react-hook-form";
 import { PrePaymentContext } from "../Prepayment";
 import { newAlgaehApi } from "../../../hooks";
 import { Upload, Modal } from "antd";
-import _ from "lodash";
+// import _ from "lodash";
 
 // import { uspdatePrepaymentRequest } from "../../../../../src/models/prepayment";
 const { Dragger } = Upload;
@@ -37,6 +37,7 @@ export function PrepaymentRequest() {
     getRequest().then(() => {
       setLoading(false);
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const { control, errors, handleSubmit, setValue, reset, watch } = useForm({
@@ -123,11 +124,12 @@ export function PrepaymentRequest() {
       module: "documentManagement",
     })
       .then((value) => {
-        return getRequest();
+        // return getRequest();
         AlgaehMessagePop({
           type: "success",
           display: "Request Added successfully",
         });
+        getRequest();
       })
       .catch((e) => console.log(e));
   };
@@ -144,7 +146,9 @@ export function PrepaymentRequest() {
         if (res.data.success) {
           let { data } = res.data;
 
-          return setPrePayment_docs(data), setPayment_reqDoc([]);
+          setPrePayment_docs(data);
+          setPayment_reqDoc([]);
+          // return setPrePayment_docs(data), setPayment_reqDoc([]);
         }
       })
       .catch((e) => {
@@ -284,27 +288,28 @@ export function PrepaymentRequest() {
     }
   };
 
-  const changeGridEditors = (row, e) => {
-    let name = e.name || e.target.name;
-    let value = e.value || e.target.value;
-    row[name] = value;
-    // row.update();
-  };
-  const changeGridDates = (row, e) => {
-    // let name = e.name || e.target.name;
+  // const changeGridEditors = (row, e) => {
+  //   let name = e.name || e.target.name;
+  //   let value = e.value || e.target.value;
+  //   row[name] = value;
+  //   // row.update();
+  // };
+  // const changeGridDates = (row, e) => {
+  //   // let name = e.name || e.target.name;
 
-    row.start_date = e._d;
-    // row.end_date = moment(e).add(row.prepayment_duration - 1, "months")._d;
+  //   row.start_date = e._d;
+  //   // row.end_date = moment(e).add(row.prepayment_duration - 1, "months")._d;
 
-    // row.update();
-  };
+  //   // row.update();
+  // };
 
   const { hospital_id: ihospital, prepayment_type_id, employee_id } = watch([
     "hospital_id",
     "prepayment_type_id",
     "employee_id",
   ]);
-  let employeeDetails = employees.filter((item) => {
+  // let employeeDetails =
+  employees.filter((item) => {
     return item.employee_id == employee_id;
   });
   // console.log("identity_no", identity_no);
@@ -928,7 +933,7 @@ export function PrepaymentRequest() {
                           <div>
                             <Modal
                               title="Notify Users List"
-                              title="Request Details"
+                              // title="Request Details"
                               visible={visible}
                               footer={null}
                               onCancel={() => setVisible(false)}

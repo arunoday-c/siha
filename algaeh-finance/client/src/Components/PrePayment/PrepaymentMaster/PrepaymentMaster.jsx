@@ -8,7 +8,7 @@ import {
   AlgaehMessagePop,
   AlgaehTreeSearch,
   Spin,
-  Button,
+  // Button,
   Modal,
 } from "algaeh-react-components";
 import { PrePaymentContext } from "../Prepayment";
@@ -39,6 +39,7 @@ export function PrepaymentMaster() {
         setLoading(false);
       })
       .catch((e) => AlgaehMessagePop({ type: "Error", display: e.message }));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const getPreType = () => {

@@ -13,7 +13,10 @@ import { Controller, useForm } from "react-hook-form";
 import { PrePaymentContext } from "../Prepayment";
 import { newAlgaehApi } from "../../../hooks/";
 import { PaymentStatus } from "../../../utils/GlobalVariables";
-import { Button, Tooltip } from "antd";
+import {
+  //Button,
+  Tooltip,
+} from "antd";
 
 const { confirm } = Modal;
 
@@ -23,15 +26,23 @@ export function PrepaymentAuthList() {
   const [visible, setVisible] = useState(false);
   const [revertData, setrevertData] = useState({});
   const [revert_reason, setRevertReson] = useState(null);
-  const { branchAndCenters, prePaymentTypes } = useContext(PrePaymentContext);
-  const { control, errors, handleSubmit, setValue, watch, getValues } = useForm(
-    {
-      shouldFocusError: true,
-    }
-  );
+  const {
+    //branchAndCenters,
+    prePaymentTypes,
+  } = useContext(PrePaymentContext);
+  const {
+    control,
+    errors,
+    handleSubmit,
+    setValue, //watch,
+    getValues,
+  } = useForm({
+    shouldFocusError: true,
+  });
 
   useEffect(() => {
     getRequestForAuth({}).then(() => setLoading(false));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const getRequestForAuth = async (data) => {
@@ -176,28 +187,28 @@ export function PrepaymentAuthList() {
     }
   };
 
-  const onClickReject = (row) => {
-    confirm({
-      okText: "Reject",
-      okType: "danger",
-      icons: "",
-      title: "Prepayment Request Authorization",
-      content: `This request is made for 
-Prepayment Type: ${row.prepayment_desc}`,
+  //   const onClickReject = (row) => {
+  //     confirm({
+  //       okText: "Reject",
+  //       okType: "danger",
+  //       icons: "",
+  //       title: "Prepayment Request Authorization",
+  //       content: `This request is made for
+  // Prepayment Type: ${row.prepayment_desc}`,
 
-      maskClosable: true,
-      onOk: async () => {
-        try {
-          await authorizeOrRejectReq("R", row.finance_f_prepayment_request_id);
-        } catch (e) {
-          AlgaehMessagePop({
-            type: "error",
-            display: e.message,
-          });
-        }
-      },
-    });
-  };
+  //       maskClosable: true,
+  //       onOk: async () => {
+  //         try {
+  //           await authorizeOrRejectReq("R", row.finance_f_prepayment_request_id);
+  //         } catch (e) {
+  //           AlgaehMessagePop({
+  //             type: "error",
+  //             display: e.message,
+  //           });
+  //         }
+  //       },
+  //     });
+  //   };
 
   // const { hospital_id: ihospital, prepayment_type_id } = watch([
   //   "hospital_id",

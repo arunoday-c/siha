@@ -15,7 +15,7 @@ import {
 } from "algaeh-react-components";
 import { newAlgaehApi } from "../../../hooks/";
 import moment from "moment";
-import swal from "sweetalert2";
+// import swal from "sweetalert2";
 import { Controller, useForm } from "react-hook-form";
 import { PrePaymentContext } from "../Prepayment";
 import { swalMessage } from "../../../utils/algaehApiCall";
@@ -87,7 +87,7 @@ export function PrepaymentProcess() {
       .filter((item) => {
         return item.processed === "N";
       })
-      .map((item) => {
+      .forEach((item) => {
         pending_payments.push(item.finance_f_prepayment_detail_id);
       });
     setProcessList(pending_payments);
@@ -259,7 +259,8 @@ export function PrepaymentProcess() {
   const getBalAmt = () => {
     let balanceAmt = 0;
     if (current) {
-      const notProcessed = current
+      // const notProcessed =
+      current
         .filter((element) => {
           return element.processed === "N";
         })
@@ -272,7 +273,8 @@ export function PrepaymentProcess() {
   const balCurrentMonth = () => {
     let balCurrMonth = 0;
     if (list) {
-      const notProcessed = list
+      // const notProcessed =
+      list
         .filter((element) => {
           return element.processed === "N";
         })
@@ -285,7 +287,8 @@ export function PrepaymentProcess() {
   const netCurrMnthExp = () => {
     let netCurrExp = 0;
     if (list) {
-      const processed = list
+      // const processed =
+      list
         .filter((element) => {
           return element.processed === "Y";
         })
@@ -298,7 +301,8 @@ export function PrepaymentProcess() {
   const netTotal = () => {
     let netTotal = 0;
     if (list) {
-      const processed = list.forEach((item) => {
+      // const processed =
+      list.forEach((item) => {
         return (netTotal += parseFloat(item.amount));
       });
     }
