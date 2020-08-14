@@ -70,6 +70,20 @@ const updatePatient = async (data) => {
   return result.data?.records;
 };
 
+const updateAppointmentStatus = async (data) => {
+  try {
+    const result = await newAlgaehApi({
+      uri: "/appointment​/updateCheckIn",
+      method: "PUT",
+      module: "frontDesk",
+      data,
+    });
+    return result?.data?.records;
+  } catch (error) {
+    console.error(error?.message);
+  }
+};
+
 export function PatientRegistration() {
   const { userLanguage, userToken } = useContext(MainContext);
   const [save, { isLoading: saveLoading }] = useMutation(savePatient, {
@@ -86,10 +100,25 @@ export function PatientRegistration() {
     onSuccess: (data) => {
       setSavedPatient(data);
       setDisable(true);
-      AlgaehMessagePop({
-        display: "Patient Updated Successfully",
-        type: "success",
-      });
+
+      if (!!appointment_id && !!status_id) {
+        updateAppointmentStatus({
+          application_id: appointment_id,
+          appointment_status_id: status_id,
+          patient_id: data?.hims_d_patient_id,
+          patient_code: data?.patient_code,
+        }).then(() => {
+          AlgaehMessagePop({
+            display: "Patient Updated Successfully",
+            type: "success",
+          });
+        });
+      } else {
+        AlgaehMessagePop({
+          display: "Patient Updated Successfully",
+          type: "success",
+        });
+      }
     },
   });
   const location = useLocation();
@@ -129,6 +158,7 @@ export function PatientRegistration() {
   const queryParams = useQueryParams();
   const patient_code = queryParams.get("patient_code");
   const appointment_id = queryParams.get("appointment_id");
+  const status_id = queryParams.get("status_id");
 
   const { isLoading, data: patientData } = useQuery(
     ["patient", { patient_code }],

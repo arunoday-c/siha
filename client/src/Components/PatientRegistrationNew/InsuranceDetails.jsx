@@ -96,7 +96,7 @@ export function InsuranceDetails({
         setValue("primary_insurance_provider_id", row?.insurance_provider_id);
         setValue("primary_sub_id", row?.sub_insurance_provider_id);
         setValue("primary_network_id", row?.network_id);
-        setInsuranceInfo(row?.network_office_id);
+        setInsuranceInfo(row?.hims_d_insurance_network_office_id);
         // setValue("primary_network_office_id", row?.network_office_id);
         setValue("primary_policy_num", row?.policy_number);
         setValue("primary_effective_start_date", row?.effective_start_date);
