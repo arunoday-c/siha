@@ -130,6 +130,7 @@ export function PatientRegistration() {
     trigger,
     errors,
     reset,
+    setError,
     clearErrors,
   } = useForm({
     reValidateMode: "onSubmit",
@@ -438,8 +439,11 @@ export function PatientRegistration() {
               <div className="algaeh-md-12 algaeh-lg-12 algaeh-xl-4">
                 <BillDetails
                   control={control}
+                  setError={setError}
                   trigger={trigger}
                   setValue={setValue}
+                  clearErrors={clearErrors}
+                  errors={errors}
                   patient={patientData?.patientRegistration}
                 />
               </div>
@@ -448,9 +452,28 @@ export function PatientRegistration() {
               <div className="row">
                 <div className="col-lg-12">
                   <button
-                    type="submit"
+                    type="button"
                     className="btn btn-primary"
-                    onClick={handleSubmit(onSubmit)}
+                    onClick={(e) => {
+                      e.persist();
+                      e.preventDefault();
+                      debugger;
+                      if (errors?.unbalanced) {
+                        AlgaehMessagePop({
+                          type: "Warning",
+                          display: errors?.unbalanced?.message,
+                        });
+                        return null;
+                      } else if (Object.keys(errors).length) {
+                        AlgaehMessagePop({
+                          type: "Warning",
+                          display:
+                            "Please fix all the errors before submitting again",
+                        });
+                        return null;
+                      }
+                      handleSubmit(onSubmit)(e);
+                    }}
                     disabled={disabled}
                   >
                     <AlgaehLabel

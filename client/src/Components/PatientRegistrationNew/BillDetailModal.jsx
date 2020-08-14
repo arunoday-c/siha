@@ -1,8 +1,10 @@
 import React, { useContext } from "react";
 import { AlgaehModal, MainContext, AlgaehLabel } from "algaeh-react-components";
+import { useCurrency } from "./patientHooks";
 
 export function BillDetailModal({ visible, data, onClose, title, billData }) {
   const { userLanguage } = useContext(MainContext);
+  const { amountWithCur } = useCurrency();
   return (
     <div className="hptl-phase1-op-display-billing-form">
       <AlgaehModal
@@ -55,7 +57,7 @@ export function BillDetailModal({ visible, data, onClose, title, billData }) {
                   fieldName: "quantity",
                 }}
               />
-              <h6>{billData?.quantity || 0.0}</h6>
+              <h6>{amountWithCur(billData?.quantity)}</h6>
             </div>
 
             <div className="col-lg-2">
@@ -64,7 +66,7 @@ export function BillDetailModal({ visible, data, onClose, title, billData }) {
                   fieldName: "unit_cost",
                 }}
               />
-              <h6>{billData?.unit_cost || 0.0}</h6>
+              <h6>{amountWithCur(billData?.unit_cost) || 0.0}</h6>
             </div>
 
             <div className="col-lg-2">
@@ -73,7 +75,7 @@ export function BillDetailModal({ visible, data, onClose, title, billData }) {
                   fieldName: "gross_amount",
                 }}
               />
-              <h6>{billData?.gross_amount || 0.0}</h6>
+              <h6>{amountWithCur(billData?.gross_amount) || 0.0}</h6>
             </div>
 
             <div className="col-lg-2">
@@ -91,7 +93,7 @@ export function BillDetailModal({ visible, data, onClose, title, billData }) {
                   fieldName: "discount_amout",
                 }}
               />
-              <h6>{billData?.discount_amout || 0.0}</h6>
+              <h6>{amountWithCur(billData?.discount_amout) || 0.0}</h6>
             </div>
 
             <div className="col-lg-2">
@@ -100,7 +102,7 @@ export function BillDetailModal({ visible, data, onClose, title, billData }) {
                   fieldName: "net_amout",
                 }}
               />
-              <h6>{billData?.net_amout || 0.0}</h6>
+              <h6>{amountWithCur(billData?.net_amout) || 0.0}</h6>
             </div>
           </div>
           <hr />
@@ -135,7 +137,7 @@ export function BillDetailModal({ visible, data, onClose, title, billData }) {
                         fieldName: "copay_amount",
                       }}
                     />
-                    <h6>{billData?.copay_amount || 0.0}</h6>
+                    <h6>{amountWithCur(billData?.copay_amount) || 0.0}</h6>
                   </div>
 
                   {billData?.deductable_amount === 0 ? null : (
@@ -158,7 +160,9 @@ export function BillDetailModal({ visible, data, onClose, title, billData }) {
                               fieldName: "deductable_amount",
                             }}
                           />
-                          <h6>{billData?.deductable_amount || 0.0}</h6>
+                          <h6>
+                            {amountWithCur(billData?.deductable_amount) || 0.0}
+                          </h6>
                         </div>
                       </div>
                     </div>
@@ -190,7 +194,7 @@ export function BillDetailModal({ visible, data, onClose, title, billData }) {
                         fieldName: "gross_amount",
                       }}
                     />
-                    <h6>{billData?.patient_resp || 0.0}</h6>
+                    <h6>{amountWithCur(billData?.patient_resp) || 0.0}</h6>
                   </div>
 
                   <div className="col-5">
@@ -199,7 +203,7 @@ export function BillDetailModal({ visible, data, onClose, title, billData }) {
                         fieldName: "tax_lbl",
                       }}
                     />
-                    <h6>{billData?.patient_tax || 0.0}</h6>
+                    <h6>{amountWithCur(billData?.patient_tax) || 0.0}</h6>
                   </div>
 
                   <div className="col-12">
@@ -208,7 +212,7 @@ export function BillDetailModal({ visible, data, onClose, title, billData }) {
                         fieldName: "payable_lbl",
                       }}
                     />
-                    <h6>{billData?.patient_payable || 0.0}</h6>
+                    <h6>{amountWithCur(billData?.patient_payable) || 0.0}</h6>
                   </div>
                 </div>
               </div>
@@ -231,7 +235,7 @@ export function BillDetailModal({ visible, data, onClose, title, billData }) {
                         fieldName: "gross_amount",
                       }}
                     />
-                    <h6>{billData?.comapany_resp || 0.0}</h6>
+                    <h6>{amountWithCur(billData?.comapany_resp) || 0.0}</h6>
                   </div>
 
                   <div className="col-5">
@@ -240,7 +244,7 @@ export function BillDetailModal({ visible, data, onClose, title, billData }) {
                         fieldName: "tax_lbl",
                       }}
                     />
-                    <h6>{billData?.company_tax || 0.0}</h6>
+                    <h6>{amountWithCur(billData?.company_tax) || 0.0}</h6>
                   </div>
 
                   <div className="col-12">
@@ -249,7 +253,7 @@ export function BillDetailModal({ visible, data, onClose, title, billData }) {
                         fieldName: "payable_lbl",
                       }}
                     />
-                    <h6>{billData?.company_payble || 0.0}</h6>
+                    <h6>{amountWithCur(billData?.company_payble) || 0.0}</h6>
                   </div>
                 </div>
               </div>
