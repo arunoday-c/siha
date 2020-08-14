@@ -42,7 +42,13 @@ class PackageUtilize extends Component {
       visitPackageser: false,
       hims_f_package_header_id: null,
       package_utilize: false,
-      loading_UtilizeService: false
+      loading_UtilizeService: false,
+      unit_cost: 0,
+      actual_amount: 0,
+      advance_amount: 0,
+      utilize_amount: 0,
+      balance_amount: 0,
+      package_code: null
     };
     this.baseState = this.state;
   }

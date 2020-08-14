@@ -2035,7 +2035,8 @@ let getPatientPackage = (req, res, next) => {
               copay_amount, deductable_amount, deductable_percentage, tax_inclusive, patient_tax, company_tax,\
               total_tax, patient_resp,patient_payable,comapany_resp, company_payble, sec_company,\
               sec_deductable_percentage, sec_deductable_amount, sec_company_res,sec_company_tax, \
-              sec_company_paybale, sec_copay_percntage, sec_copay_amount, H.advance_amount, balance_amount,\ actual_utilize_amount, actual_amount, utilize_amount, closed,closed_type,closed_remarks,\
+              sec_company_paybale, sec_copay_percntage, sec_copay_amount, H.advance_amount, balance_amount,\ 
+              actual_utilize_amount, actual_amount, utilize_amount, closed,closed_type,closed_remarks,\
               H.package_type,H.package_visit_type,PM.advance_amount as collect_advance, H.hospital_id,\
               PM.package_name,P.full_name,P.patient_code, PM.cancellation_policy, \
               PM.cancellation_amount as can_amt, PM.package_code from hims_f_package_header H, \

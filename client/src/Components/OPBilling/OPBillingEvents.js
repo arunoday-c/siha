@@ -81,7 +81,7 @@ const Validations = ($this) => {
 
   //   document.querySelector("[name='bank_card_id']").focus();
   //   return isError;
-  // }
+  // }  
 
   if ($this.state.Cardchecked === true) {
     if (
@@ -150,7 +150,7 @@ const Validations = ($this) => {
     });
 
     return isError;
-  } else if (parseFloat($this.state.pack_balance_amount) < 0) {
+  } else if (parseFloat($this.state.pack_balance_amount) <= 0) {
     isError = true;
     swalMessage({
       type: "warning",
