@@ -261,7 +261,7 @@ export function PatientRegistration() {
     }
   };
 
-  const onClear = () => {
+  const onClear = (withoutNav) => {
     reset({
       advance_adjust: 0,
       approval_amt: 0,
@@ -270,8 +270,7 @@ export function PatientRegistration() {
       cash_amount: "",
       consultation: "",
       contact_number: "",
-      country_id: "",
-      date_of_birth: "",
+      date_of_birth: undefined,
       department_type: "",
       doctor: "",
       doctor_id: "",
@@ -280,8 +279,6 @@ export function PatientRegistration() {
       gender: "",
       is_mlc: "",
       maternity_patient: "",
-      nationality_id: "",
-      patient_type: "",
       primary_card_number: "",
       primary_effective_end_date: "",
       primary_effective_start_date: "",
@@ -298,9 +295,14 @@ export function PatientRegistration() {
       sub_department_id: "",
       title_id: "",
       visit_type: "",
+      nationality_id: userToken?.default_nationality,
+      country_id: userToken?.default_country,
+      patient_type: userToken?.default_patient_type,
     });
     clearState();
-    history.push(location.pathname);
+    if (!withoutNav) {
+      history.push("/PatientRegistration");
+    }
   };
 
   return (
@@ -326,7 +328,7 @@ export function PatientRegistration() {
             selectValue: "patient_code",
             events: {
               onChange: (code) => {
-                debugger;
+                onClear(true);
                 history.push(`${location.pathname}?patient_code=${code}`);
               },
             },
@@ -428,7 +430,7 @@ export function PatientRegistration() {
                   <button
                     type="submit"
                     className="btn btn-primary"
-                    onClick={onClear}
+                    onClick={() => onClear(false)}
                     disabled={!disabled && !appointment_id && !patient_code}
                   >
                     <AlgaehLabel

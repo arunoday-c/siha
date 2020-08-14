@@ -46,7 +46,7 @@ export function InsuranceDetails({
   const { fieldNameFn } = useLangFieldName();
   const [isInsurance, setIsInsurance] = useState(false);
   const [insuranceList, setInsuranceList] = useState([]);
-  const disabled = !isInsurance;
+  const disabled = !isInsurance || saveDisable;
   const hims_d_patient_id = useWatch({ control, name: "hims_d_patient_id" });
   const { isLoading, data: patientInsurance } = useQuery(
     ["patient-insurance", { patient_id: hims_d_patient_id }],

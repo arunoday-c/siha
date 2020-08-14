@@ -551,8 +551,9 @@ export function BillDetails({ control, trigger, setValue, patient = null }) {
                         placeholder: "0.00",
                         value: billData?.credit_amount,
                         onChange: (e) => {
-                          const credit = parseFloat(e.target.value);
-
+                          const credit = e.target.value
+                            ? parseFloat(e.target.value)
+                            : 0;
                           setBillData((sendingObject) => {
                             sendingObject.credit_amount = credit;
                             sendingObject.receiveable_amount =
