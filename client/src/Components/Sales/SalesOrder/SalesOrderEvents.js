@@ -530,7 +530,6 @@ const getCtrlCode = ($this, docNumber) => {
             data.grid_edit = false;
           }
         }
-        debugger
         if (data.sales_order_mode === "I") {
           data.sales_order_items = data.order_detail;
         } else {
@@ -542,11 +541,13 @@ const getCtrlCode = ($this, docNumber) => {
         if (data.is_posted === "Y") {
           data.saveEnable = true;
           data.addedItem = true;
-          data.dataPosted = true
+          data.dataPosted = true;
+          data.itemAdd = true;
         } else {
           data.saveEnable = false;
           data.addedItem = false;
-          data.dataPosted = false
+          data.dataPosted = false;
+          data.itemAdd = true;
         }
         // let project_details = $this.state.cost_projects.find(
         //   f => f.cost_center_id === data.project_id

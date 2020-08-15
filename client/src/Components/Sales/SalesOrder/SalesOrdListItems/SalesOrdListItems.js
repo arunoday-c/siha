@@ -141,7 +141,7 @@ class SalesOrdListItems extends Component {
                                                 this.attReg = attReg;
                                             }}
                                             others={{
-                                                disabled: this.state.addedItem
+                                                disabled: this.state.itemAdd
                                             }}
                                         />
 
@@ -224,7 +224,28 @@ class SalesOrdListItems extends Component {
                                             }}
                                         />
 
-                                        <div className="col-6 form-group mandatory">
+                                        <AlagehFormGroup
+                                            div={{ className: "col-6", }}
+                                            label={{
+                                                fieldName: "tax_percentage",
+                                                isImp: this.state.Applicable,
+                                            }}
+                                            textBox={{
+                                                decimal: { allowNegative: false },
+                                                className: "txt-fld",
+                                                name: "tax_percentage",
+                                                value: this.state.tax_percentage,
+                                                events: {
+                                                    onChange: numberchangeTexts.bind(
+                                                        this,
+                                                        this,
+                                                        context
+                                                    )
+                                                }
+                                            }}
+                                        />
+
+                                        {/* <div className="col-6 form-group mandatory">
                                             <AlgaehLabel
                                                 label={{
                                                     forceLabel: "Tax %"
@@ -235,7 +256,7 @@ class SalesOrdListItems extends Component {
                                                     ? this.state.tax_percentage
                                                     : "-----------"}
                                             </h6>
-                                        </div>
+                                        </div> */}
                                         <AlagehFormGroup
                                             div={{ className: "col-6 mandatory" }}
                                             label={{
