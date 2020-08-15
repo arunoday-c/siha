@@ -95,7 +95,7 @@ export default function Vat({
             },
           },
           {
-            className: "col-3 form-group",
+            className: "col-3 form-group mandatory",
             type: "dropdown",
             name: "year",
             isImp: true,

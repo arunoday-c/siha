@@ -208,7 +208,7 @@ export default function Income({ hospital_id, RECEIPT_TYPE, cashier_id }) {
         ],
       },
       {
-        subitem: "Income by Service",
+        subitem: "Income by Service Type",
         reportName: "opBillSummary",
         //reportQuery: "OPBillSummary",
         requireIframe: true,
@@ -253,7 +253,7 @@ export default function Income({ hospital_id, RECEIPT_TYPE, cashier_id }) {
         ],
       },
       {
-        subitem: "Income by Service - Details",
+        subitem: "Income by Services",
         reportName: "opBillDetails",
         requireIframe: true,
         reportParameters: [
