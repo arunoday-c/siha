@@ -23,7 +23,7 @@ import {
   getCookie,
 } from "../../utils/algaehApiCall.js";
 import AddAdvanceModal from "../Advance/AdvanceModal";
-import AdvanceRefundListModal from "../AdvanceRefundList/AdvanceRefundListModal";
+// import AdvanceRefundListModal from "../AdvanceRefundList/AdvanceRefundListModal";
 import {
   imageToByteArray,
   AlgaehValidation,
@@ -1009,7 +1009,7 @@ class RegistrationPatient extends Component {
                     }}
                   />
 
-                  <AdvanceRefundListModal
+                  {/* <AdvanceRefundListModal
                     show={this.state.AdvanceRefundOpen}
                     onClose={this.CloseAdvanceRefundList.bind(this)}
                     selectedLang={this.state.selectedLang}
@@ -1030,7 +1030,7 @@ class RegistrationPatient extends Component {
                       full_name: this.state.full_name,
                       hims_f_patient_id: this.state.hims_d_patient_id,
                     }}
-                  />
+                  /> */}
 
                   <UpdatePatientPopup
                     show={this.state.UpdatepatientDetail}

@@ -10,6 +10,7 @@ import {
   AlgaehFormGroup,
   AlgaehDateHandler,
   Spin,
+  AlgaehMessagePop,
 } from "algaeh-react-components";
 import { useLangFieldName, useCurrency } from "./patientHooks";
 import { newAlgaehApi } from "../../hooks/";
@@ -203,10 +204,6 @@ export function BillDetails({
         billData?.sheet_discount_percentage
       );
       setValue("sheet_discount_amount", billData?.sheet_discount_amount);
-      setValue(
-        "sheet_discount_percentage",
-        billData?.sheet_discount_percentage
-      );
       setValue("credit_amount", billData?.credit_amount);
       setValue("cash_amount", billData?.cash_amount);
       setValue("card_amount", billData?.card_amount);
@@ -410,11 +407,32 @@ export function BillDetails({
                         fieldName: "advance_adjust",
                       }}
                       textBox={{
-                        disabled,
+                        disabled: disabled || !patient?.advance_amount,
                         className: "txt-fld",
                         name: "advance_adjust",
                         type: "number",
                         ...props,
+                        onChange: (e) => {
+                          const amount =
+                            parseFloat(e.target.value) || e.target.value;
+                          if (amount > parseFloat(patient?.advance_amount)) {
+                            AlgaehMessagePop({
+                              display:
+                                "Adjust must be less than Advance amount",
+                              type: "warning",
+                            });
+                            return null;
+                          }
+                          setBillData((state) => {
+                            state.advance_adjust = amount;
+                            state.receiveable_amount =
+                              state.net_amount - amount;
+                            state.cash_amount = 0;
+                            state.card_amount = 0;
+                            state.unbalanced_amount = state.receiveable_amount;
+                            return { ...state };
+                          });
+                        },
                         placeholder: "0.00",
                       }}
                     />
@@ -530,7 +548,7 @@ export function BillDetails({
                     }}
                   />
                   {/* <h6>{GetAmountFormart(this.state.advance_amount)}</h6> */}
-                  <h6>{0.0}</h6>
+                  <h6>{amountWithCur(patient?.advance_amount)}</h6>
                 </div>
 
                 <div className="col">

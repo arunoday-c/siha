@@ -17,6 +17,7 @@ import { Demographics } from "./Demographics";
 import { InsuranceDetails } from "./InsuranceDetails";
 import { VisitDetails } from "./VisitDetail";
 import { BillDetails } from "./BillDetails";
+import { AdvanceModal } from "./AdvanceRefundModal";
 
 const getPatient = async (key, { patient_code }) => {
   const result = await newAlgaehApi({
@@ -238,6 +239,29 @@ export function PatientRegistration() {
 
   const onSubmit = (input) => {
     let inputData;
+    const receiptdetails = [];
+
+    receiptdetails.push({
+      amount: input.cash_amount,
+      card_check_number: null,
+      card_type: null,
+      expiry_date: null,
+      hims_f_receipt_header_id: null,
+      pay_type: "CA",
+      updated_date: null,
+    });
+
+    if (input?.card_amount > 0) {
+      receiptdetails.push({
+        amount: input.card_amount,
+        card_check_number: input.card_number || null,
+        card_type: null,
+        expiry_date: input.card_date || null,
+        hims_f_receipt_header_id: null,
+        pay_type: "CD",
+        updated_date: null,
+      });
+    }
     if (!patient_code) {
       inputData = { ...input };
       save({
@@ -252,19 +276,25 @@ export function PatientRegistration() {
         maternity_patient: "N",
         is_mlc: "N",
         existing_plan: "N",
-        receiptdetails: [
-          {
-            amount: billInfo?.net_amount,
-          },
-        ],
+        receiptdetails,
       });
     } else {
-      const {} = input;
+      const {
+        advance_adjust,
+        sheet_discount_percentage,
+        sheet_discount_amount,
+        credit_amount,
+        cash_amount,
+        card_amount,
+        card_number,
+        card_date,
+      } = input;
       inputData = {
         patient_code,
         visit_type: input?.visit_type,
         shift_id: input?.shift_id,
         hims_d_patient_id: patientData?.patientRegistration?.hims_d_patient_id,
+        hims_f_patient_id: patientData?.patientRegistration?.hims_d_patient_id,
         patient_id: patientData?.patientRegistration?.hims_d_patient_id,
         primary_insurance_provider_id: input?.primary_insurance_provider_id,
         primary_sub_id: input?.primary_sub_id,
@@ -274,10 +304,19 @@ export function PatientRegistration() {
         primary_card_number: input?.primary_card_number,
         primary_effective_start_date: input?.primary_effective_start_date,
         primary_effective_end_date: input?.primary_effective_end_date,
+        advance_adjust,
+        sheet_discount_percentage,
+        sheet_discount_amount,
+        credit_amount,
+        cash_amount,
+        card_amount,
+        card_number,
+        card_date,
       };
       update({
         ...inputData,
         ...billInfo,
+        advance_amount: patientData?.patientRegistration?.advance_amount,
         sub_department_id: parseInt(sub_department_id, 10),
         services_id: parseInt(services_id, 10),
         service_type_id: parseInt(services_id, 10),
@@ -287,11 +326,7 @@ export function PatientRegistration() {
         maternity_patient: "N",
         is_mlc: "N",
         existing_plan: "N",
-        receiptdetails: [
-          {
-            amount: billInfo?.net_amount,
-          },
-        ],
+        receiptdetails,
       });
     }
   };
@@ -461,7 +496,6 @@ export function PatientRegistration() {
                     onClick={(e) => {
                       e.persist();
                       e.preventDefault();
-                      debugger;
                       trigger().then(() => {
                         if (errors?.unbalanced) {
                           AlgaehMessagePop({
@@ -496,6 +530,7 @@ export function PatientRegistration() {
                       label={{ fieldName: "btn_clear", returnText: true }}
                     />
                   </button>
+                  <AdvanceModal patient={patientData?.patientRegistration} />
                 </div>
                 {consultationInfo?.consultation === "Y" ? (
                   <CSSTransition
