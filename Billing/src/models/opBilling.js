@@ -212,9 +212,6 @@ export default {
     const _options = req.connection == null ? {} : req.connection;
     const _mysql = new algaehMysql(_options);
     try {
-      const utilities = new algaehUtilities();
-      utilities.logger().log("updateOrderedPackageBilled: ");
-
       let OrderServices = new LINQ(req.body.billdetails)
         .Where((w) => w.ordered_package_id != null)
         .Select((s) => {
@@ -288,7 +285,6 @@ export default {
             });
           });
       } else {
-        utilities.logger().log("Else: ");
         next();
       }
     } catch (e) {

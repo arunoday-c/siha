@@ -61,7 +61,7 @@ export default function OrderProcedureItemsEvent() {
         quantity: $this.state.quantity,
         expiry_date: $this.state.expirydt,
         sales_uom: $this.state.uom_id,
-
+        item_description: $this.state.item_description,
         operation: "-"
       };
       Procedure_items.push(inputObj);

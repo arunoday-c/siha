@@ -326,25 +326,20 @@ export function VisitDetails({
                                 label={{ fieldName: "visit_type" }}
                               />
                             ),
-                            // displayTemplate: row => {
-                            //   let display =
-                            //     this.props.visittypes === undefined
-                            //       ? []
-                            //       : this.props.visittypes.filter(
-                            //         f => f.hims_d_visit_type_id === row.visit_type
-                            //       );
+                            displayTemplate: (row) => {
+                              let display = data?.visitTypes?.filter(
+                                (f) => f.hims_d_visit_type_id == row.visit_type
+                              );
 
-                            //   return (
-                            //     <span>
-                            //       {display !== null && display.length !== 0
-                            //         ? this.state.selectedLang === "en"
-                            //           ? display[0].visit_type_desc
-                            //           : display[0].arabic_visit_type_desc
-                            //         : ""}
-                            //     </span>
-                            //   );
-                            // },
-                            disabled: true,
+                              return (
+                                <span>
+                                  {fieldNameFn(
+                                    display[0]?.visit_type_desc,
+                                    display[0]?.arabic_visit_type_desc
+                                  )}
+                                </span>
+                              );
+                            },
                           },
                           {
                             fieldName: "sub_department_id",

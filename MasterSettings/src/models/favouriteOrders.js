@@ -74,7 +74,7 @@ export default {
       if (input.hims_d_favourite_orders_header_id > 0) {
         strQry += ` and  hims_d_favourite_orders_header_id=${
           input.hims_d_favourite_orders_header_id
-        }`;
+          }`;
       }
 
       if (input.doctor_id > 0) {
@@ -84,8 +84,11 @@ export default {
         .executeQuery({
           query:
             "select hims_d_favourite_orders_header_id, favourite_description, favourite_status, doctor_id, \
-            hims_d_favourite_orders_detail_id, service_type_id, services_id from hims_d_favourite_orders_header FH \
+            hims_d_favourite_orders_detail_id, FD.service_type_id, services_id, ST.service_type, S.service_name \
+            from hims_d_favourite_orders_header FH \
             inner join hims_d_favourite_orders_detail FD on FH.hims_d_favourite_orders_header_id = FD.favourite_orders_header_id \
+            inner join  `hims_d_services` S on FD.services_id = S.hims_d_services_id \
+            inner join  `hims_d_service_type` ST on FD.service_type_id = ST.hims_d_service_type_id \
             where 1=1 " +
             strQry +
             " order by hims_d_favourite_orders_header_id desc;",
@@ -276,7 +279,7 @@ export default {
       if (input.hims_d_favourite_services_id > 0) {
         strQry += ` and  hims_d_favourite_services_id=${
           input.hims_d_favourite_services_id
-        }`;
+          }`;
       }
 
       if (input.doctor_id > 0) {
@@ -285,7 +288,9 @@ export default {
       _mysql
         .executeQuery({
           query:
-            "select * from hims_d_favourite_services where 1=1 " +
+            "select FS.*, ST.service_type, S.service_name from hims_d_favourite_services FS \
+            inner join  `hims_d_services` S on FS.services_id = S.hims_d_services_id \
+            inner join  `hims_d_service_type` ST on FS.service_type_id = ST.hims_d_service_type_id where 1=1 " +
             strQry +
             " order by hims_d_favourite_services_id desc;",
           printQuery: true

@@ -321,7 +321,7 @@ let algaehSearchConfig = (searchName, req) => {
             inner join hims_d_vendor V on PO.vendor_id = V.hims_d_vendor_id \
             left join hims_d_pharmacy_location PL on PO.pharmcy_location_id = PL.hims_d_pharmacy_location_id\
             left join hims_d_inventory_location IL on PO.inventory_location_id = IL.hims_d_inventory_location_id \
-            where authorize1 = 'Y' and cancelled='N' ",
+            where cancelled='N' and authorize1='Y' and authorize2='Y' ",
         //   and  PO.hospital_id=" +
         // hospitalId,
         orderBy: "hims_f_procurement_po_header_id desc",

@@ -2,6 +2,7 @@ import { Router } from "express";
 import utlities from "algaeh-utilities";
 import appointmentModels, {
   getPatientDetailsWithAppNo,
+  updateAppointmentToCheckedIn,
 } from "../models/appointment";
 
 const {
@@ -324,5 +325,14 @@ export default () => {
       delete req.records;
     }
   );
+  api.put("/updateCheckIn", updateAppointmentToCheckedIn, (req, res) => {
+    res
+      .status(utlities.AlgaehUtilities().httpStatus().ok)
+      .json({
+        success: true,
+        message: "Updated successfully",
+      })
+      .end();
+  });
   return api;
 };

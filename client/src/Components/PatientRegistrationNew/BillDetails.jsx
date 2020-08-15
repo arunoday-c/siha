@@ -1,3 +1,4 @@
+//eslint-disable
 import React, { useContext, useState, useEffect } from "react";
 import { useQuery } from "react-query";
 import { useWatch, Controller } from "react-hook-form";
@@ -8,15 +9,12 @@ import {
   AlgaehAutoComplete,
   AlgaehFormGroup,
   AlgaehDateHandler,
-  //   AlgaehDataGrid,
-  //   AlgaehHijriDatePicker,
   Spin,
 } from "algaeh-react-components";
-import { useLangFieldName } from "./patientHooks";
+import { useLangFieldName, useCurrency } from "./patientHooks";
 import { newAlgaehApi } from "../../hooks/";
 import { FrontdeskContext } from "./FrontdeskContext";
 import { BillDetailModal } from "./BillDetailModal";
-// import GenericData from "../../utils/GlobalVariables.json";
 
 const getBillDetails = async (
   key,
@@ -38,8 +36,8 @@ const getBillDetails = async (
     data: [
       {
         hims_d_services_id: parseInt(services_id, 10),
-        zeroBill: !!prevVisits.length,
-        FollowUp: !!prevVisits.length,
+        zeroBill: prevVisits ? !!prevVisits.length : false,
+        FollowUp: prevVisits ? !!prevVisits.length : false,
         insured: primary_insurance_provider_id ? "Y" : "N",
         primary_insurance_provider_id,
         primary_network_id,
@@ -52,16 +50,6 @@ const getBillDetails = async (
 
   return details?.data?.records;
 };
-
-// const getBillCalculations = async (key, { billInfo }) => {
-//   const res = await newAlgaehApi({
-//     uri: "/billing/billingCalculations",
-//     data: { ...billInfo, existing_treat: false, follow_up: false },
-//     method: "POST",
-//     module: "billing",
-//   });
-//   return res?.data?.records;
-// };
 
 const getShiftMappings = async () => {
   const res = await newAlgaehApi({
@@ -86,7 +74,18 @@ const checkVisits = async (
   return res.data?.records;
 };
 
-export function BillDetails({ control, trigger, setValue, patient = null }) {
+export function BillDetails({
+  control,
+  trigger,
+  setValue,
+  patient = null,
+  setError,
+  clearErrors,
+  errors,
+}) {
+  const { amountWithCur } = useCurrency();
+  const [enableCash, setEnableCash] = useState(true);
+  const [enableCard, setEnableCard] = useState(false);
   const [visible, setVisible] = useState(false);
   const {
     default_nationality_id,
@@ -99,7 +98,7 @@ export function BillDetails({ control, trigger, setValue, patient = null }) {
     doctor_id,
     primary_network_office_id,
     setBillInfo,
-    disabled,
+    disabled: globalDisable,
     savedPatient,
   } = useContext(FrontdeskContext);
   // const disabled = !!bill_number && !!receipt_number;
@@ -108,25 +107,12 @@ export function BillDetails({ control, trigger, setValue, patient = null }) {
     nationality_id,
     primary_insurance_provider_id,
     primary_network_id,
-    cash_amount,
-    credit_amount,
-    card_amount,
-    advance_adjust,
-    sheet_discount_amount,
-    sheet_discount_percentage,
   } = useWatch({
     control,
     name: [
       "nationality_id",
       "primary_insurance_provider_id",
       "primary_network_id",
-      "primary_network_office_id",
-      "cash_amount",
-      "credit_amount",
-      "card_amount",
-      "advance_adjust",
-      "sheet_discount_amount",
-      "sheet_discount_percentage",
     ],
   });
 
@@ -161,7 +147,7 @@ export function BillDetails({ control, trigger, setValue, patient = null }) {
     ],
     getBillDetails,
     {
-      enabled: !!services_id && !!prevVisits,
+      enabled: !!services_id,
       retry: 3,
       refetchOnWindowFocus: false,
 
@@ -173,6 +159,8 @@ export function BillDetails({ control, trigger, setValue, patient = null }) {
   );
 
   const [billData, setBillData] = useState(null);
+
+  const disabled = globalDisable || !billData;
 
   useEffect(() => {
     if (billData) {
@@ -205,151 +193,35 @@ export function BillDetails({ control, trigger, setValue, patient = null }) {
     sendingObject.sec_company_tax = sendingObject.sec_company_tax.toFixed(2);
 
     setBillData(sendingObject);
-    setValue("advance_adjust", sendingObject?.advance_adjust);
-    setValue(
-      "sheet_discount_percentage",
-      sendingObject?.sheet_discount_percentage
-    );
-    setValue("sheet_discount_amount", sendingObject?.sheet_discount_amount);
-    setValue(
-      "sheet_discount_percentage",
-      sendingObject?.sheet_discount_percentage
-    );
-    setValue("credit_amount", sendingObject?.credit_amount);
-    setValue("cash_amount", sendingObject?.cash_amount);
-    setValue("card_amount", sendingObject?.card_amount);
-    setValue("card_number", sendingObject?.card_number);
-    setValue("card_date", sendingObject?.card_date);
   }
 
   useEffect(() => {
-    const sendingObject = { ...billData };
-    console.log(sendingObject);
-  }, [
-    cash_amount,
-    card_amount,
-    credit_amount,
-    sheet_discount_percentage,
-    sheet_discount_amount,
-    advance_adjust,
-  ]);
-  // else {
-  //   //Reciept
-
-  //   if (inputParam.isReceipt == false) {
-  //     // Sheet Level Discount Nullify
-  //     sendingObject.sheet_discount_percentage = 0;
-  //     sendingObject.sheet_discount_amount = 0;
-
-  //     if (inputParam.sheet_discount_amount > 0) {
-  //       sendingObject.sheet_discount_percentage =
-  //         (inputParam.sheet_discount_amount / inputParam.gross_total) * 100;
-
-  //       sendingObject.sheet_discount_amount =
-  //         inputParam.sheet_discount_amount;
-  //     } else if (inputParam.sheet_discount_percentage > 0) {
-  //       sendingObject.sheet_discount_percentage =
-  //         inputParam.sheet_discount_percentage;
-  //       sendingObject.sheet_discount_amount =
-  //         (inputParam.gross_total * inputParam.sheet_discount_percentage) /
-  //         100;
-  //     }
-
-  //     sendingObject.sheet_discount_amount = sendingObject.sheet_discount_amount.toFixed(
-  //       2
-  //     );
-  //     sendingObject.sheet_discount_percentage = sendingObject.sheet_discount_percentage.toFixed(
-  //       2
-  //     );
-
-  //     sendingObject.net_amount =
-  //       inputParam.gross_total - sendingObject.sheet_discount_amount;
-
-  //     if (inputParam.credit_amount > 0) {
-  //       sendingObject.receiveable_amount =
-  //         sendingObject.net_amount -
-  //         inputParam.advance_adjust -
-  //         inputParam.credit_amount;
-  //     } else {
-  //       sendingObject.receiveable_amount =
-  //         sendingObject.net_amount - inputParam.advance_adjust;
-  //     }
-
-  //     sendingObject.cash_amount = sendingObject.receiveable_amount;
-  //     sendingObject.card_amount = 0;
-  //     sendingObject.cheque_amount = 0;
-  //   } else {
-  //     sendingObject.card_amount = inputParam.card_amount;
-  //     sendingObject.cheque_amount = inputParam.cheque_amount;
-  //     sendingObject.cash_amount = inputParam.cash_amount;
-  //     sendingObject.receiveable_amount = inputParam.receiveable_amount;
-  //   }
-
-  //   sendingObject.total_amount =
-  //     sendingObject.cash_amount +
-  //     sendingObject.card_amount +
-  //     sendingObject.cheque_amount;
-
-  //   sendingObject.unbalanced_amount =
-  //     sendingObject.receiveable_amount - sendingObject.total_amount;
-  // }
-
-  // const { isLoading: calcLoading, data: billData } = useQuery(
-  //   ["billCalculations", { billInfo }],
-  //   getBillCalculations,
-  //   {
-  //     refetchOnWindowFocus: false,
-  //     enabled: !!billInfo,
-  //     retry: 3,
-  //     onSuccess: (data) => {
-  //       setValue("advance_adjust", data?.advance_adjust);
-  //       setValue("sheet_discount_percentage", data?.sheet_discount_percentage);
-  //       setValue("sheet_discount_amount", data?.sheet_discount_amount);
-  //       setValue("credit_amount", data?.credit_amount);
-  //       setValue("cash_amount", data?.receiveable_amount);
-  //       setValue("card_amount", data?.card_amount);
-  //       setValue("card_number", data?.card_number);
-  //       setValue("card_date", data?.card_date);
-  //     },
-  //     onError: (err) => {
-  //       console.log(err);
-  //     },
-  //     initialData: {
-  //       advance_adjust: 0,
-  //       card_amount: 0,
-  //       cash_amount: 0,
-  //       cheque_amount: 0,
-  //       company_payble: 0,
-  //       company_res: 0,
-  //       company_tax: 0,
-  //       copay_amount: 0,
-  //       deductable_amount: 0,
-  //       discount_amount: 0,
-  //       gross_total: 0,
-  //       net_amount: 0,
-  //       net_total: 0,
-  //       patient_payable: 0,
-  //       patient_res: 0,
-  //       patient_tax: 0,
-  //       receiveable_amount: 0,
-  //       s_patient_tax: 0,
-  //       sec_company_paybale: 0,
-  //       sec_company_res: 0,
-  //       sec_company_tax: 0,
-  //       sec_copay_amount: 0,
-  //       sec_deductable_amount: 0,
-  //       sheet_discount_amount: 0,
-  //       sheet_discount_percentage: 0,
-  //       sub_total_amount: 0,
-  //       total_amount: 0,
-  //       total_tax: 0,
-  //       unbalanced_amount: 0,
-  //     },
-  //     initialStale: true,
-  //   }
-  // );
-
-  // const unbalanced_amount = billData?re
+    if (billData) {
+      setValue("advance_adjust", billData?.advance_adjust);
+      setValue(
+        "sheet_discount_percentage",
+        billData?.sheet_discount_percentage
+      );
+      setValue("sheet_discount_amount", billData?.sheet_discount_amount);
+      setValue(
+        "sheet_discount_percentage",
+        billData?.sheet_discount_percentage
+      );
+      setValue("credit_amount", billData?.credit_amount);
+      setValue("cash_amount", billData?.cash_amount);
+      setValue("card_amount", billData?.card_amount);
+      setValue("card_number", billData?.card_number);
+      setValue("card_date", billData?.card_date);
+      if (billData?.unbalanced_amount !== 0) {
+        setError("unbalanced", {
+          type: "manual",
+          message: "Unbalanced Amount should be zero",
+        });
+      } else {
+        clearErrors("unbalanced");
+      }
+    }
+  }, [billData]);
 
   const { isLoading: shiftLoading, data: shiftMappings } = useQuery(
     "userMappings",
@@ -369,7 +241,33 @@ export function BillDetails({ control, trigger, setValue, patient = null }) {
     if (shiftMappings?.length) {
       setValue("shift_id", shiftMappings[0]?.shift_id);
     }
-  }, [shiftMappings, patient]);
+  }, [shiftMappings, billInfo]);
+
+  useEffect(() => {
+    if (billData) {
+      if (!enableCash) {
+        setBillData((state) => {
+          state.cash_amount = 0;
+          state.unbalanced_amount =
+            state?.receiveable_amount - state?.cash_amount - state?.card_amount;
+          return { ...state };
+        });
+      }
+    }
+  }, [enableCash]);
+
+  useEffect(() => {
+    if (billData) {
+      if (!enableCard) {
+        setBillData((state) => {
+          state.card_amount = 0;
+          state.unbalanced_amount =
+            state.receiveable_amount - state.cash_amount - state.card_amount;
+          return { ...state };
+        });
+      }
+    }
+  }, [enableCard]);
 
   const follow_up = !!prevVisits?.length;
 
@@ -378,7 +276,7 @@ export function BillDetails({ control, trigger, setValue, patient = null }) {
       <BillDetailModal
         visible={visible}
         onClose={() => setVisible(false)}
-        billData={billInfo}
+        billData={billData}
         title={
           <AlgaehLabel
             label={{
@@ -454,7 +352,7 @@ export function BillDetails({ control, trigger, setValue, patient = null }) {
                       fieldName: "gross_total",
                     }}
                   />
-                  <h6>{billData?.gross_total}</h6>
+                  <h6>{amountWithCur(billData?.gross_total)}</h6>
                 </div>
 
                 <div className="col">
@@ -463,7 +361,7 @@ export function BillDetails({ control, trigger, setValue, patient = null }) {
                       fieldName: "patient_payable",
                     }}
                   />
-                  <h6>{billData?.patient_payable}</h6>
+                  <h6>{amountWithCur(billData?.patient_payable)}</h6>
                 </div>
               </div>
               <hr style={{ margin: "0.3rem 0rem" }} />
@@ -515,6 +413,7 @@ export function BillDetails({ control, trigger, setValue, patient = null }) {
                         disabled,
                         className: "txt-fld",
                         name: "advance_adjust",
+                        type: "number",
                         ...props,
                         placeholder: "0.00",
                       }}
@@ -525,7 +424,7 @@ export function BillDetails({ control, trigger, setValue, patient = null }) {
                 <Controller
                   control={control}
                   name="sheet_discount_percentage"
-                  render={(props) => (
+                  render={({ onChange, ...props }) => (
                     <AlgaehFormGroup
                       div={{ className: "col-6" }}
                       label={{
@@ -537,7 +436,34 @@ export function BillDetails({ control, trigger, setValue, patient = null }) {
                         disabled:
                           !parseInt(service_dis_percentage, 10) || disabled,
                         name: "sheet_discount_percentage",
+                        type: "number",
                         ...props,
+                        value: billData?.sheet_discount_percentage,
+                        onChange: (e) => {
+                          let perc = parseFloat(e.target.value);
+                          if (perc > 100) {
+                            perc = 99;
+                          }
+                          if (perc > 0) {
+                            setBillData((sendingObject) => {
+                              sendingObject.sheet_discount_percentage = perc;
+                              sendingObject.sheet_discount_amount =
+                                (sendingObject.gross_total * perc) / 100;
+                              sendingObject.net_amount =
+                                sendingObject.gross_total -
+                                sendingObject.sheet_discount_amount;
+                              return { ...sendingObject };
+                            });
+                          } else {
+                            setBillData((state) => {
+                              state.sheet_discount_percentage = 0;
+                              state.sheet_discount_amount = 0;
+                              state.net_amount =
+                                state.gross_total - state.sheet_discount_amount;
+                              return { ...state };
+                            });
+                          }
+                        },
                         placeholder: "0.00",
                       }}
                     />
@@ -558,7 +484,31 @@ export function BillDetails({ control, trigger, setValue, patient = null }) {
                         disabled:
                           !parseInt(service_dis_percentage, 10) || disabled,
                         name: "sheet_discount_amount",
+                        type: "number",
                         ...props,
+                        onChange: (e) => {
+                          const amount = parseFloat(e.target.value);
+                          if (amount > 0) {
+                            setBillData((sendingObject) => {
+                              sendingObject.sheet_discount_percentage =
+                                (amount / sendingObject.gross_total) * 100;
+
+                              sendingObject.sheet_discount_amount = amount;
+                              sendingObject.net_amount =
+                                sendingObject.gross_total -
+                                sendingObject.sheet_discount_amount;
+                              return { ...sendingObject };
+                            });
+                          } else {
+                            setBillData((state) => {
+                              state.sheet_discount_percentage = 0;
+                              state.sheet_discount_amount = 0;
+                              state.net_amount =
+                                state.gross_total - state.sheet_discount_amount;
+                              return { ...state };
+                            });
+                          }
+                        },
                         placeholder: "0.00",
                       }}
                     />
@@ -589,13 +539,13 @@ export function BillDetails({ control, trigger, setValue, patient = null }) {
                       fieldName: "net_amount",
                     }}
                   />
-                  {/* <h6>{GetAmountFormart(this.state.net_amount)}</h6> */}
-                  <h6>{billData?.net_amount}</h6>
+
+                  <h6>{amountWithCur(billData?.net_amount)}</h6>
                 </div>
                 <Controller
                   control={control}
                   name="credit_amount"
-                  render={(props) => (
+                  render={() => (
                     <AlgaehFormGroup
                       div={{ className: "col" }}
                       label={{
@@ -605,8 +555,26 @@ export function BillDetails({ control, trigger, setValue, patient = null }) {
                         className: "txt-fld",
                         disabled,
                         name: "credit_amount",
+                        type: "number",
                         placeholder: "0.00",
-                        ...props,
+                        value: billData?.credit_amount,
+                        onChange: (e) => {
+                          const credit = e.target.value
+                            ? parseFloat(e.target.value)
+                            : 0;
+                          setBillData((sendingObject) => {
+                            sendingObject.credit_amount = credit;
+                            sendingObject.receiveable_amount =
+                              sendingObject.net_amount -
+                              sendingObject?.advance_adjust -
+                              credit;
+                            sendingObject.cash_amount = 0;
+                            sendingObject.card_amount = 0;
+                            sendingObject.unbalanced_amount =
+                              sendingObject.receiveable_amount;
+                            return { ...sendingObject };
+                          });
+                        },
                       }}
                     />
                   )}
@@ -618,10 +586,7 @@ export function BillDetails({ control, trigger, setValue, patient = null }) {
                       fieldName: "receiveable_amount",
                     }}
                   />
-                  <h4>
-                    {/* {GetAmountFormart(this.state.receiveable_amount)} */}
-                    {billData?.receiveable_amount}
-                  </h4>
+                  <h4>{amountWithCur(billData?.receiveable_amount)}</h4>
                 </div>
                 <div className="col highlightGrey">
                   <AlgaehLabel
@@ -712,7 +677,9 @@ export function BillDetails({ control, trigger, setValue, patient = null }) {
                       <input
                         type="checkbox"
                         name="Pay by Cash"
-                        checked={true}
+                        checked={enableCash}
+                        disabled={disabled}
+                        onChange={() => setEnableCash((state) => !state)}
                       />
 
                       <span style={{ fontSize: "0.8rem" }}>Pay by Cash</span>
@@ -721,6 +688,7 @@ export function BillDetails({ control, trigger, setValue, patient = null }) {
                   <Controller
                     control={control}
                     name="cash_amount"
+                    rules={{ required: "Please Enter Cash" }}
                     render={(props) => (
                       <AlgaehFormGroup
                         div={{ className: "col-2 mandatory" }}
@@ -728,11 +696,26 @@ export function BillDetails({ control, trigger, setValue, patient = null }) {
                           fieldName: "amount",
                           isImp: true,
                         }}
+                        error={errors}
                         textBox={{
                           ...props,
-                          disabled,
+                          disabled: disabled || !enableCash,
+                          onChange: (e) => {
+                            const amount = e.target.value
+                              ? parseFloat(e.target.value)
+                              : 0;
+                            setBillData((state) => {
+                              state.cash_amount = amount;
+                              state.unbalanced_amount =
+                                state?.receiveable_amount -
+                                amount -
+                                state?.card_amount;
+                              return { ...state };
+                            });
+                          },
                           className: "txt-fld",
                           name: "cash_amount",
+                          type: "number",
                           placeholder: "0.00",
                         }}
                       />
@@ -749,14 +732,9 @@ export function BillDetails({ control, trigger, setValue, patient = null }) {
                       <input
                         type="checkbox"
                         name="Pay by Card"
+                        checked={enableCard}
+                        onChange={() => setEnableCard((state) => !state)}
                         disabled={disabled}
-                        //   checked={this.state.Cardchecked}
-                        //   onChange={checkcardhandler.bind(
-                        //     this,
-                        //     this,
-                        //     context
-                        //   )}
-                        //   disabled={this.state.savedData}
                       />
                       <span style={{ fontSize: "0.8rem" }}>Pay by Card</span>
                     </label>
@@ -775,8 +753,22 @@ export function BillDetails({ control, trigger, setValue, patient = null }) {
                         textBox={{
                           className: "txt-fld",
                           name: "card_amount",
-                          disabled: true,
+                          disabled: disabled || !enableCard,
+                          type: "number",
                           ...props,
+                          onChange: (e) => {
+                            const amount = e.target.value
+                              ? parseFloat(e.target.value)
+                              : 0;
+                            setBillData((state) => {
+                              state.card_amount = amount;
+                              state.unbalanced_amount =
+                                state?.receiveable_amount -
+                                amount -
+                                state?.cash_amount;
+                              return { ...state };
+                            });
+                          },
                           placeholder: "0.00",
                         }}
                       />
@@ -838,10 +830,7 @@ export function BillDetails({ control, trigger, setValue, patient = null }) {
                         fieldName: "unbalanced_amount",
                       }}
                     />
-                    <h6>
-                      {billData?.unbalanced_amount}
-                      {/* {GetAmountFormart(this.state.unbalanced_amount)} */}
-                    </h6>
+                    <h6>{amountWithCur(billData?.unbalanced_amount)}</h6>
                   </div>
                 </div>
               </div>

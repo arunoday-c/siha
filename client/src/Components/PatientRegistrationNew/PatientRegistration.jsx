@@ -1,8 +1,9 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { useQuery, useMutation } from "react-query";
 import { useForm } from "react-hook-form";
 import moment from "moment";
 import { useLocation, useHistory } from "react-router-dom";
+import { CSSTransition } from "react-transition-group";
 import { FrontdeskContext } from "./FrontdeskContext";
 import {
   MainContext,
@@ -70,12 +71,28 @@ const updatePatient = async (data) => {
   return result.data?.records;
 };
 
+const updateAppointmentStatus = async (data) => {
+  try {
+    const result = await newAlgaehApi({
+      uri: "/appointment​/updateCheckIn",
+      method: "PUT",
+      module: "frontDesk",
+      data,
+    });
+    return result?.data?.records;
+  } catch (error) {
+    console.error(error?.message);
+  }
+};
+
 export function PatientRegistration() {
   const { userLanguage, userToken } = useContext(MainContext);
+  const [openPopup, setOpenPopup] = useState(false);
   const [save, { isLoading: saveLoading }] = useMutation(savePatient, {
     onSuccess: (data) => {
       setSavedPatient(data);
       setDisable(true);
+      setOpenPopup(true);
       AlgaehMessagePop({
         display: "Patient Saved Successfully",
         type: "success",
@@ -86,10 +103,25 @@ export function PatientRegistration() {
     onSuccess: (data) => {
       setSavedPatient(data);
       setDisable(true);
-      AlgaehMessagePop({
-        display: "Patient Updated Successfully",
-        type: "success",
-      });
+      setOpenPopup(true);
+      if (!!appointment_id && !!status_id) {
+        updateAppointmentStatus({
+          application_id: appointment_id,
+          appointment_status_id: status_id,
+          patient_id: data?.hims_d_patient_id,
+          patient_code: data?.patient_code,
+        }).then(() => {
+          AlgaehMessagePop({
+            display: "Patient Updated Successfully",
+            type: "success",
+          });
+        });
+      } else {
+        AlgaehMessagePop({
+          display: "Patient Updated Successfully",
+          type: "success",
+        });
+      }
     },
   });
   const location = useLocation();
@@ -101,6 +133,7 @@ export function PatientRegistration() {
     trigger,
     errors,
     reset,
+    setError,
     clearErrors,
   } = useForm({
     reValidateMode: "onSubmit",
@@ -122,6 +155,7 @@ export function PatientRegistration() {
     consultationInfo,
     setDisable,
     setSavedPatient,
+    savedPatient,
     clearState,
     setServiceInfo,
   } = useContext(FrontdeskContext);
@@ -129,6 +163,7 @@ export function PatientRegistration() {
   const queryParams = useQueryParams();
   const patient_code = queryParams.get("patient_code");
   const appointment_id = queryParams.get("appointment_id");
+  const status_id = queryParams.get("status_id");
 
   const { isLoading, data: patientData } = useQuery(
     ["patient", { patient_code }],
@@ -181,6 +216,7 @@ export function PatientRegistration() {
           setValue("doctor", doctor);
           setValue("doctor_id", data?.provider_id);
           setValue("visit_type", 10);
+          setServiceInfo(doctor);
         }
       },
     }
@@ -260,7 +296,7 @@ export function PatientRegistration() {
     }
   };
 
-  const onClear = () => {
+  const onClear = (withoutNav) => {
     reset({
       advance_adjust: 0,
       approval_amt: 0,
@@ -269,8 +305,7 @@ export function PatientRegistration() {
       cash_amount: "",
       consultation: "",
       contact_number: "",
-      country_id: "",
-      date_of_birth: "",
+      date_of_birth: null,
       department_type: "",
       doctor: "",
       doctor_id: "",
@@ -279,8 +314,6 @@ export function PatientRegistration() {
       gender: "",
       is_mlc: "",
       maternity_patient: "",
-      nationality_id: "",
-      patient_type: "",
       primary_card_number: "",
       primary_effective_end_date: "",
       primary_effective_start_date: "",
@@ -297,9 +330,14 @@ export function PatientRegistration() {
       sub_department_id: "",
       title_id: "",
       visit_type: "",
+      nationality_id: userToken?.default_nationality,
+      country_id: userToken?.default_country,
+      patient_type: userToken?.default_patient_type,
     });
     clearState();
-    history.push(location.pathname);
+    if (!withoutNav) {
+      history.push("/PatientRegistration");
+    }
   };
 
   return (
@@ -325,7 +363,7 @@ export function PatientRegistration() {
             selectValue: "patient_code",
             events: {
               onChange: (code) => {
-                debugger;
+                onClear(true);
                 history.push(`${location.pathname}?patient_code=${code}`);
               },
             },
@@ -376,7 +414,7 @@ export function PatientRegistration() {
           }
           selectedLang={userLanguage}
         />
-        <div className="spacing-push">
+        <div className="spacing-push" style={{ marginBottom: "3rem" }}>
           <form>
             <div className="row">
               <div className="algaeh-md-12 algaeh-lg-12 algaeh-xl-8">
@@ -405,8 +443,11 @@ export function PatientRegistration() {
               <div className="algaeh-md-12 algaeh-lg-12 algaeh-xl-4">
                 <BillDetails
                   control={control}
+                  setError={setError}
                   trigger={trigger}
                   setValue={setValue}
+                  clearErrors={clearErrors}
+                  errors={errors}
                   patient={patientData?.patientRegistration}
                 />
               </div>
@@ -415,9 +456,30 @@ export function PatientRegistration() {
               <div className="row">
                 <div className="col-lg-12">
                   <button
-                    type="submit"
+                    type="button"
                     className="btn btn-primary"
-                    onClick={handleSubmit(onSubmit)}
+                    onClick={(e) => {
+                      e.persist();
+                      e.preventDefault();
+                      debugger;
+                      trigger().then(() => {
+                        if (errors?.unbalanced) {
+                          AlgaehMessagePop({
+                            type: "Warning",
+                            display: errors?.unbalanced?.message,
+                          });
+                          return null;
+                        } else if (Object.keys(errors).length) {
+                          AlgaehMessagePop({
+                            type: "Warning",
+                            display:
+                              "Please fix all the errors before submitting again",
+                          });
+                          return null;
+                        }
+                        handleSubmit(onSubmit)(e);
+                      });
+                    }}
                     disabled={disabled}
                   >
                     <AlgaehLabel
@@ -427,7 +489,7 @@ export function PatientRegistration() {
                   <button
                     type="submit"
                     className="btn btn-primary"
-                    onClick={onClear}
+                    onClick={() => onClear(false)}
                     disabled={!disabled && !appointment_id && !patient_code}
                   >
                     <AlgaehLabel
@@ -435,6 +497,87 @@ export function PatientRegistration() {
                     />
                   </button>
                 </div>
+                {consultationInfo?.consultation === "Y" ? (
+                  <CSSTransition
+                    in={openPopup}
+                    classNames={{
+                      enterActive: "editFloatCntr animated slideInUp faster",
+                      enterDone: "editFloatCntr",
+                      exitActive: "editFloatCntr animated slideOutDown faster",
+                      exitDone: "editFloatCntr",
+                    }}
+                    unmountOnExit
+                    appear={false}
+                    timeout={500}
+                    mountOnEnter
+                  >
+                    <div className={"col-12"}>
+                      {/* <h5>Edit Basic Details</h5> */}
+                      <div className="row">
+                        <div className="col-3">
+                          <AlgaehLabel
+                            label={{
+                              forceLabel: "Patient Code",
+                            }}
+                          />
+                          <h6>{savedPatient?.patient_code}</h6>
+                        </div>
+
+                        <div className="col-3">
+                          <AlgaehLabel
+                            label={{
+                              forceLabel: "Bill Number",
+                            }}
+                          />
+                          <h6>{savedPatient?.bill_number}</h6>
+                        </div>
+
+                        <div className="col-3">
+                          <AlgaehLabel
+                            label={{
+                              forceLabel: "Receipt Number",
+                            }}
+                          />
+                          <h6>{savedPatient?.receipt_number}</h6>
+                        </div>
+                      </div>
+                      <div className="row">
+                        <div className="col">
+                          <button type="button" className="btn btn-primary">
+                            Print Receipt
+                          </button>
+                          <button
+                            type="button"
+                            className="btn btn-default"
+                            onClick={() => setOpenPopup(false)}
+                          >
+                            Close
+                          </button>
+                          <button className="btn btn-default">
+                            Print Card
+                          </button>
+                          {consultationInfo.consultation == "Y" && ( // eslint-disable-line
+                            <button
+                              type="button"
+                              className="btn btn-other"
+                              onClick={() =>
+                                this.props.history.push(
+                                  `/OPBilling?bill_code=${savedPatient?.bill_number}`
+                                )
+                              }
+                            >
+                              <AlgaehLabel
+                                label={{
+                                  forceLabel: "Go to Billing",
+                                }}
+                              />
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </CSSTransition>
+                ) : null}
               </div>
             </div>
           </form>

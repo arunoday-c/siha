@@ -95,6 +95,7 @@ class AddOPBillingForm extends Component {
               secondary_network_id: this.state.secondary_network_id,
               secondary_network_office_id: this.state
                 .secondary_network_office_id,
+              test_id: this.state.test_id
             },
           ];
 
@@ -521,13 +522,6 @@ class AddOPBillingForm extends Component {
                                 row.trans_package_detail_id > 0
                                   ? "(Package Service)"
                                   : "";
-                              // let display =
-                              //   this.props.serviceslist === undefined
-                              //     ? []
-                              //     : this.props.serviceslist.filter(
-                              //         (f) =>
-                              //           f.hims_d_services_id === row.services_id
-                              //       );
 
                               return (
                                 <span>
@@ -1078,7 +1072,6 @@ class AddOPBillingForm extends Component {
 
 function mapStateToProps(state) {
   return {
-    serviceslist: state.serviceslist,
     PatientPackageList: state.PatientPackageList,
   };
 }

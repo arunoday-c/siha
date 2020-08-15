@@ -46,7 +46,7 @@ export function InsuranceDetails({
   const { fieldNameFn } = useLangFieldName();
   const [isInsurance, setIsInsurance] = useState(false);
   const [insuranceList, setInsuranceList] = useState([]);
-  const disabled = !isInsurance;
+  const disabled = !isInsurance || saveDisable;
   const hims_d_patient_id = useWatch({ control, name: "hims_d_patient_id" });
   const { isLoading, data: patientInsurance } = useQuery(
     ["patient-insurance", { patient_id: hims_d_patient_id }],
@@ -96,7 +96,7 @@ export function InsuranceDetails({
         setValue("primary_insurance_provider_id", row?.insurance_provider_id);
         setValue("primary_sub_id", row?.sub_insurance_provider_id);
         setValue("primary_network_id", row?.network_id);
-        setInsuranceInfo(row?.network_office_id);
+        setInsuranceInfo(row?.hims_d_insurance_network_office_id);
         // setValue("primary_network_office_id", row?.network_office_id);
         setValue("primary_policy_num", row?.policy_number);
         setValue("primary_effective_start_date", row?.effective_start_date);

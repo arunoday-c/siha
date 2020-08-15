@@ -15,43 +15,6 @@ const texthandle = ($this, ctrl, e) => {
   });
 };
 
-// When Service Type selects respective Service Type theService to be filter
-const serviceTypeHandeler = ($this, e) => {
-  $this.setState(
-    {
-      [e.name]: e.value,
-      s_service: null
-    },
-    () => {
-      if ($this.state.insured === "N") {
-        $this.props.getServices({
-          uri: "/serviceType/getService",
-          module: "masterSettings",
-          method: "GET",
-          data: { service_type_id: $this.state.s_service_type },
-          redux: {
-            type: "SERVICES_GET_DATA",
-            mappingName: "services"
-          }
-        });
-      } else {
-        $this.props.getServices({
-          uri: "/serviceType/getServiceInsured",
-          module: "masterSettings",
-          method: "GET",
-          data: {
-            insurance_id: $this.state.insurance_provider_id,
-            service_type_id: $this.state.s_service_type
-          },
-          redux: {
-            type: "SERVICES_INS_GET_DATA",
-            mappingName: "services"
-          }
-        });
-      }
-    }
-  );
-};
 
 const serviceHandeler = ($this, e) => {
   // let date = new Date().setDate(
@@ -808,16 +771,6 @@ const ClosePackageMaster = ($this, e) => {
       isOpen: !$this.state.isOpen
     });
   } else {
-    $this.props.getServices({
-      uri: "/serviceType/getService",
-      module: "masterSettings",
-      method: "GET",
-      redux: {
-        type: "SERVICES_GET_DATA",
-        mappingName: "serviceslist"
-      }
-    });
-
     $this.setState(
       {
         isOpen: !$this.state.isOpen,
@@ -838,7 +791,6 @@ const ShowPackageMaster = ($this, e) => {
   });
 };
 export {
-  serviceTypeHandeler,
   serviceHandeler,
   texthandle,
   ProcessService,

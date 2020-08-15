@@ -28,7 +28,8 @@ export default function FavouriteOrderEvent() {
         s_service: e.hims_d_services_id,
         s_service_type: e.service_type_id,
         insurance_service_name: e.service_name,
-        service_name: e.service_name
+        service_name: e.service_name,
+        service_type: e.service_type
       });
     },
 
@@ -68,7 +69,10 @@ export default function FavouriteOrderEvent() {
 
       let InputObj = {
         service_type_id: $this.state.s_service_type,
-        services_id: $this.state.s_service
+        services_id: $this.state.s_service,
+        service_name: $this.state.service_name,
+        service_type: $this.state.service_type
+
       };
 
       if ($this.state.hims_d_favourite_orders_header_id !== null) {

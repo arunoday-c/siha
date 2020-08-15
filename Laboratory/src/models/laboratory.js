@@ -119,7 +119,6 @@ export default {
       const utilities = new algaehUtilities();
 
       let input = req.body;
-      utilities.logger().log("Services Bill: ");
       // let Services =
       //   req.records.ResultOfFetchOrderIds == null
       //     ? req.body.billdetails
@@ -159,7 +158,6 @@ export default {
         "test_type",
       ];
 
-      utilities.logger().log("labServices: ", labServices.length);
       if (labServices.length > 0) {
         _mysql
           .executeQuery({
@@ -314,9 +312,6 @@ export default {
                           "normal_low",
                           "normal_high",
                         ];
-                        utilities
-                          .logger()
-                          .log("specimentRecords: ", specimentRecords[2]);
 
                         const labAnalytes = new LINQ(specimentRecords[2])
                           .Select((s) => {
@@ -335,7 +330,6 @@ export default {
                           })
                           .ToArray();
 
-                        utilities.logger().log("labAnalytes: ", labAnalytes);
                         if (labAnalytes.length > 0) {
                           _mysql
                             .executeQuery({
@@ -437,6 +431,7 @@ export default {
           billed: req.body.billed,
           ordered_date: s.created_date,
           test_type: s.test_type,
+          test_id: s.test_id
         };
       });
 
@@ -450,6 +445,7 @@ export default {
           "billed",
           "ordered_date",
           "test_type",
+          "test_id",
         ];
 
         _mysql
@@ -475,26 +471,17 @@ export default {
                   "SELECT T.hims_d_investigation_test_id,T.description ,C.test_section ,A.analyte_id\
                   FROM hims_d_investigation_test T inner join  hims_d_test_category C on \
                   T.category_id=C.hims_d_test_category_id and T.services_id in (?) \
-                  left join hims_m_lab_analyte A on T.hims_d_investigation_test_id=A.test_id group by T.hims_d_investigation_test_id; \
-                    select case when days<31 then 'D' when days<365 then 'M' else 'Y' end as age_type,\
-                  TIMESTAMPDIFF(day, ?, curdate()) as days,\
-                  TIMESTAMPDIFF(month, ?, curdate()) as months,\
-                  TIMESTAMPDIFF(year, ?, curdate()) as years from \
-                  (select  TIMESTAMPDIFF(day, ?, curdate()) as days) as a;  ",
+                  left join hims_m_lab_analyte A on T.hims_d_investigation_test_id=A.test_id \
+                  group by T.hims_d_investigation_test_id;",
                 values: [
-                  get_services_id,
-
-                  req.body.date_of_birth,
-                  req.body.date_of_birth,
-                  req.body.date_of_birth,
-                  req.body.date_of_birth,
+                  get_services_id
                 ],
                 printQuery: true,
               })
               .then((investigation_test) => {
                 let invst_test = [];
                 if (investigation_test.length > 0) {
-                  invst_test = investigation_test[0];
+                  invst_test = investigation_test;
                 }
                 const no_analyte = invst_test.find((f) => {
                   return f.test_section != "M" && f.analyte_id == null;
@@ -505,7 +492,7 @@ export default {
                       httpStatus.generateError(
                         httpStatus.forbidden,
                         "Analytes not deifined for the test :" +
-                          no_analyte["description"]
+                        no_analyte["description"]
                       )
                     );
                   });
@@ -514,26 +501,6 @@ export default {
                     return s.hims_d_investigation_test_id;
                   });
 
-                  // const category_type = investigation_test[0].find(f => {
-                  //   return f.test_section == "M";
-                  // });
-
-                  const age_data = investigation_test[1][0];
-                  const age_type = age_data["age_type"];
-                  let age = "";
-                  switch (age_type) {
-                    case "D":
-                      age = age_data["days"];
-
-                      break;
-                    case "M":
-                      age = age_data["months"];
-                      break;
-                    case "Y":
-                      age = age_data["years"];
-                      break;
-                  }
-
                   _mysql
                     .executeQuery({
                       query:
@@ -541,23 +508,11 @@ export default {
                     where hims_d_investigation_test_id=hims_m_lab_specimen.test_id and \
                     hims_m_lab_specimen.record_status='A' and test_id in (?); \
                     select hims_f_lab_order_id,service_id from hims_f_lab_order where record_status='A' \
-                    and visit_id =? and service_id in (?);\
-                    select hims_m_lab_analyte_id,test_id,M.analyte_id, R.gender, R.age_type, R.from_age,\
-                    R.to_age, R.critical_low,  R.critical_high, R.normal_low, R.normal_high ,\
-                    R.normal_qualitative_value,R.text_value ,A.analyte_type,A.result_unit from hims_m_lab_analyte  M \
-                    left join hims_d_lab_analytes A on M.analyte_id=A.hims_d_lab_analytes_id\
-                    left join  hims_d_lab_analytes_range R on  M.analyte_id=R.analyte_id\
-                    and (R.gender=? or R.gender='BOTH') and R.age_type=? and ? between R.from_age and R.to_age\
-                    where M.test_id in(?);",
+                    and visit_id =? and service_id in (?);",
                       values: [
                         test_id,
                         req.body.visit_id,
-                        get_services_id,
-
-                        req.body.gender,
-                        age_type,
-                        age,
-                        test_id,
+                        get_services_id
                       ],
                       printQuery: true,
                     })
@@ -565,7 +520,6 @@ export default {
                       if (specimentRecords[0].length > 0) {
                         const specimen_list = specimentRecords[0];
                         const lab_orders = specimentRecords[1];
-                        const all_analytes = specimentRecords[2];
                         const inserteLabSample = [];
 
                         lab_orders.forEach((ord) => {
@@ -599,64 +553,11 @@ export default {
                             printQuery: true,
                           })
                           .then((insert_lab_sample) => {
-                            if (all_analytes.length > 0) {
-                              all_analytes.map((item) => {
-                                const order_dtails = inserteLabSample.find(
-                                  (f) => {
-                                    return item.test_id == f.test_id;
-                                  }
-                                );
-
-                                item["order_id"] = order_dtails.order_id;
-                              });
-
-                              const analyts = [
-                                "order_id",
-                                "analyte_id",
-                                "analyte_type",
-                                "result_unit",
-                                "critical_low",
-                                "critical_high",
-                                "normal_low",
-                                "normal_high",
-                                "text_value",
-                                "normal_qualitative_value",
-                              ];
-                              _mysql
-                                .executeQuery({
-                                  query:
-                                    "INSERT IGNORE INTO hims_f_ord_analytes(??) VALUES ?",
-                                  values: all_analytes,
-                                  includeValues: analyts,
-                                  extraValues: {
-                                    created_by:
-                                      req.userIdentity.algaeh_d_app_user_id,
-                                    updated_by:
-                                      req.userIdentity.algaeh_d_app_user_id,
-                                  },
-                                  bulkInsertOrUpdate: true,
-                                  printQuery: true,
-                                })
-                                .then((ord_analytes) => {
-                                  if (req.connection == null) {
-                                    req.records = insert_lab_sample;
-                                    next();
-                                  } else {
-                                    next();
-                                  }
-                                })
-                                .catch((e) => {
-                                  _mysql.rollBackTransaction(() => {
-                                    next(e);
-                                  });
-                                });
+                            if (req.connection == null) {
+                              req.records = insert_lab_sample;
+                              next();
                             } else {
-                              if (req.connection == null) {
-                                req.records = insert_lab_sample;
-                                next();
-                              } else {
-                                next();
-                              }
+                              next();
                             }
                           })
                           .catch((e) => {
@@ -706,8 +607,6 @@ export default {
   updateLabOrderServices: (req, res, next) => {
     const _mysql = new algaehMysql();
     try {
-      const utilities = new algaehUtilities();
-      utilities.logger().log("updateLabOrderServices: ");
       let inputParam = { ...req.body };
 
       return new Promise((resolve, reject) => {
@@ -732,7 +631,6 @@ export default {
             printQuery: true,
           })
           .then((update_lab_sample) => {
-            utilities.logger().log("update_lab_sample: ", update_lab_sample);
             inputParam.container_id = update_lab_sample[1][0].container_id;
             inputParam.container_code = update_lab_sample[1][0].container_code;
             inputParam.lab_location_code =
@@ -747,7 +645,6 @@ export default {
           });
       })
         .then((result) => {
-          utilities.logger().log("result: ", result);
           if (result != null) {
             let _date = new Date();
             _date = moment(_date).format("YYYY-MM-DD");
@@ -765,9 +662,6 @@ export default {
                   printQuery: true,
                 })
                 .then((container_mapping) => {
-                  utilities
-                    .logger()
-                    .log("container_mapping: ", container_mapping);
                   resolve(container_mapping);
                 })
                 .catch((e) => {
@@ -781,7 +675,6 @@ export default {
               let condition = [];
               let padNum = "";
               let _newNumber = 1;
-              utilities.logger().log("record: ", record);
               if (record != null && record.length > 0) {
                 _newNumber = parseInt(record[0].number, 10);
                 _newNumber = _newNumber + 1;
@@ -809,8 +702,6 @@ export default {
                   "insert into hims_m_hospital_container_mapping (`hospital_id`,`container_id`,`date`,`number`,`created_by`,`updated_by`) values (?,?,?,?,?,?)";
               }
 
-              utilities.logger().log("query: ", query);
-
               padNum = pad(String(_newNumber), 3, "LEFT", "0");
               const dayOfYear = moment().dayOfYear();
               const labIdNumber =
@@ -832,7 +723,6 @@ export default {
                   printQuery: true,
                 })
                 .then((result) => {
-                  utilities.logger().log("result: ", result);
                   _mysql.commitTransaction(() => {
                     _mysql.releaseConnection();
                     req.records = {
@@ -930,6 +820,21 @@ export default {
         collected +
         "remarks=?,updated_date=?,updated_by=? where hims_d_lab_sample_id=?;";
 
+
+
+      queryBuilder += mysql.format("select case when days<31 then 'D' when days<365 then 'M' else 'Y' end as age_type,\
+                  TIMESTAMPDIFF(day, ?, curdate()) as days,\
+                  TIMESTAMPDIFF(month, ?, curdate()) as months,\
+                  TIMESTAMPDIFF(year, ?, curdate()) as years from \
+                  (select  TIMESTAMPDIFF(day, ?, curdate()) as days) as a;",
+        [
+          req.body.date_of_birth,
+          req.body.date_of_birth,
+          req.body.date_of_birth,
+          req.body.date_of_birth,
+        ]
+      );
+
       let inputs = [
         input.status,
         input.remarks,
@@ -944,12 +849,31 @@ export default {
           printQuery: true,
         })
         .then((results) => {
+          const age_data = results[1][0];
+          const age_type = age_data["age_type"];
+          let age = "";
+          switch (age_type) {
+            case "D":
+              age = age_data["days"];
+
+              break;
+            case "M":
+              age = age_data["months"];
+              break;
+            case "Y":
+              age = age_data["years"];
+              break;
+          }
           if (input.status == "R") {
             _mysql
               .executeQuery({
                 query:
                   "UPDATE `hims_f_lab_order` SET `status`='O',updated_date=?,updated_by=?  WHERE `hims_f_lab_order_id`=?;",
-                values: [new Date(), input.updated_by, input.order_id],
+                values: [
+                  new Date(),
+                  req.userIdentity.algaeh_d_app_user_id,
+                  input.order_id
+                ],
                 printQuery: true,
               })
               .then((lab_order) => {
@@ -958,6 +882,7 @@ export default {
                   req.records = lab_order;
                   next();
                 });
+
               })
               .catch((error) => {
                 _mysql.rollBackTransaction(() => {
@@ -965,11 +890,81 @@ export default {
                 });
               });
           } else {
-            _mysql.commitTransaction(() => {
-              _mysql.releaseConnection();
-              req.records = results;
-              next();
-            });
+            _mysql
+              .executeQuery({
+                query:
+                  "select hims_m_lab_analyte_id,test_id,M.analyte_id, R.gender, R.age_type, R.from_age,\
+                    R.to_age, R.critical_low,  R.critical_high, R.normal_low, R.normal_high ,\
+                    R.normal_qualitative_value,R.text_value ,A.analyte_type,A.result_unit from hims_m_lab_analyte  M \
+                    left join hims_d_lab_analytes A on M.analyte_id=A.hims_d_lab_analytes_id\
+                    left join  hims_d_lab_analytes_range R on  M.analyte_id=R.analyte_id\
+                    and (R.gender=? or R.gender='BOTH') and R.age_type=? and ? between R.from_age and R.to_age\
+                    where M.test_id in(?);",
+                values: [
+                  req.body.gender,
+                  age_type,
+                  age,
+                  input.test_id
+                ],
+                printQuery: true,
+              })
+              .then((all_analytes) => {
+                if (all_analytes.length > 0) {
+                  const analyts = [
+                    "order_id",
+                    "analyte_id",
+                    "analyte_type",
+                    "result_unit",
+                    "critical_low",
+                    "critical_high",
+                    "normal_low",
+                    "normal_high",
+                    "text_value",
+                    "normal_qualitative_value",
+                  ];
+                  _mysql
+                    .executeQuery({
+                      query:
+                        "INSERT IGNORE INTO hims_f_ord_analytes(??) VALUES ? \
+                        ON DUPLICATE KEY UPDATE normal_low=values(normal_low),normal_high=values(normal_high)",
+                      values: all_analytes,
+                      includeValues: analyts,
+                      extraValues: {
+                        created_by:
+                          req.userIdentity.algaeh_d_app_user_id,
+                        updated_by:
+                          req.userIdentity.algaeh_d_app_user_id,
+                        order_id: input.order_id
+                      },
+                      bulkInsertOrUpdate: true,
+                      printQuery: true,
+                    })
+                    .then((ord_analytes) => {
+                      _mysql.commitTransaction(() => {
+                        _mysql.releaseConnection();
+                        req.records = ord_analytes;
+                        next();
+                      });
+                    })
+                    .catch((e) => {
+                      _mysql.rollBackTransaction(() => {
+                        next(e);
+                      });
+                    });
+                } else {
+                  _mysql.commitTransaction(() => {
+                    _mysql.releaseConnection();
+                    req.records = results[0];
+                    next();
+                  });
+                }
+
+              })
+              .catch((error) => {
+                _mysql.rollBackTransaction(() => {
+                  next(e);
+                });
+              });
           }
         })
         .catch((e) => {
@@ -1369,7 +1364,7 @@ export default {
           (w) =>
             w.hims_f_ordered_services_id > 0 &&
             w.service_type_id ==
-              appsettings.hims_d_service_type.service_type_id.Lab
+            appsettings.hims_d_service_type.service_type_id.Lab
         )
         .Select((s) => {
           return {

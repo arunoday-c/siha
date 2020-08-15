@@ -128,9 +128,13 @@ const AcceptandRejectSample = ($this, row, AccRej) => {
           return;
         }
       }
+      debugger
       let inputobj = {
+        test_id: row.hims_d_investigation_test_id,
         hims_d_lab_sample_id: row.hims_d_lab_sample_id,
         order_id: row.hims_f_lab_order_id,
+        date_of_birth: row.date_of_birth,
+        gender: row.gender,
         remarks: $this.state.remarks,
         status: AccRej
       };

@@ -1038,8 +1038,10 @@ let selectOrderServicesbyDoctor = (req, res, next) => {
            S.`service_name`, S.`arabic_service_name`, S.`service_desc`, S.`sub_department_id`, S.`hospital_id`,\
            S.`service_type_id`, S.`procedure_type`, S.`standard_fee`, S.`followup_free_fee`, \
            S.`followup_paid_fee`, S.`discount`, S.`vat_applicable`, S.`vat_percent`, S.`service_status`,\
-           OS.`trans_package_detail_id` FROM `hims_f_ordered_services` OS,  `hims_d_services` S WHERE \
-           OS.services_id = S.hims_d_services_id and OS.`record_status`='A'  " +
+           OS.`trans_package_detail_id`, ST.service_type FROM `hims_f_ordered_services` OS \
+           inner join  `hims_d_services` S on OS.services_id = S.hims_d_services_id \
+           inner join  `hims_d_service_type` ST on OS.service_type_id = ST.hims_d_service_type_id \
+           WHERE OS.`record_status`='A'  " +
           _stringData,
         values: inputValues,
         printQuery: true,
@@ -1084,9 +1086,10 @@ let getVisitConsumable = (req, res, next) => {
         S.`hims_d_services_id`, S.`service_code`, S.`cpt_code`, S.`service_name`, S.`arabic_service_name`, \
         S.`service_desc`, S.`sub_department_id`, S.`hospital_id`, S.`service_type_id`, S.`procedure_type`, \
         S.`standard_fee`, S.`followup_free_fee`, S.`followup_paid_fee`, S.`discount`, S.`vat_applicable`, \
-        S.`vat_percent`, S.`service_status` FROM `hims_f_ordered_inventory` OS,  `hims_d_services` S WHERE \
-        OS.services_id = S.hims_d_services_id and \
-        OS.`record_status`='A'  " +
+        S.`vat_percent`, S.`service_status`, ST.service_type FROM `hims_f_ordered_inventory` OS \
+        inner join  `hims_d_services` S on OS.services_id = S.hims_d_services_id \
+        inner join  `hims_d_service_type` ST on OS.service_type_id = ST.hims_d_service_type_id \
+        WHERE OS.`record_status`='A'  " +
           _stringData,
         values: inputValues,
         printQuery: true,
@@ -2028,23 +2031,31 @@ let getPatientPackage = (req, res, next) => {
     }
     _mysql
       .executeQuery({
-        query: `select hims_f_package_header_id, package_id, patient_id, visit_id, doctor_id, service_type_id,\
+        query: `select hims_f_package_header_id, package_id, patient_id, visit_id, doctor_id, H.service_type_id,\
               services_id, insurance_yesno, insurance_provider_id, insurance_sub_id, network_id,\
               insurance_network_office_id, policy_number, pre_approval, apprv_status, billed, quantity, \
               unit_cost, gross_amount, discount_amout, discount_percentage, net_amout, copay_percentage, \
               copay_amount, deductable_amount, deductable_percentage, tax_inclusive, patient_tax, company_tax,\
               total_tax, patient_resp,patient_payable,comapany_resp, company_payble, sec_company,\
               sec_deductable_percentage, sec_deductable_amount, sec_company_res,sec_company_tax, \
-              sec_company_paybale, sec_copay_percntage, sec_copay_amount, H.advance_amount, balance_amount,\ actual_utilize_amount, actual_amount, utilize_amount, closed,closed_type,closed_remarks,\
+              sec_company_paybale, sec_copay_percntage, sec_copay_amount, H.advance_amount, balance_amount,\ 
+              actual_utilize_amount, actual_amount, utilize_amount, closed,closed_type,closed_remarks,\
               H.package_type,H.package_visit_type,PM.advance_amount as collect_advance, H.hospital_id,\
               PM.package_name,P.full_name,P.patient_code, PM.cancellation_policy, \
-              PM.cancellation_amount as can_amt, PM.package_code from hims_f_package_header H, \
-              hims_d_package_header PM, hims_f_patient P where H.patient_id = P.hims_d_patient_id \
-              and PM.hims_d_package_header_id = H.package_id and  H.record_status='A' \
+              PM.cancellation_amount as can_amt, PM.package_code, ST.service_type, S.service_name \
+              from hims_f_package_header H \
+              inner join hims_d_package_header PM on PM.hims_d_package_header_id = H.package_id \
+              inner join hims_f_patient P on H.patient_id = P.hims_d_patient_id \
+              inner join  hims_d_services S on H.services_id = S.hims_d_services_id \
+              inner join  hims_d_service_type ST on H.service_type_id = ST.hims_d_service_type_id \
+              where H.record_status='A' \
               and H.hospital_id=?  ${str};
-              select D.*,0 as quantity, D.service_id as services_id from hims_f_package_header H  \
-              inner join hims_f_package_detail D\
-              on H.hims_f_package_header_id=D.package_header_id where H.record_status='A' \
+              select D.*,0 as quantity, D.service_id as services_id, ST.service_type, S.service_name \
+              from hims_f_package_header H  \
+              inner join hims_f_package_detail D on H.hims_f_package_header_id=D.package_header_id \
+              inner join  hims_d_services S on D.service_id = S.hims_d_services_id \
+              inner join  hims_d_service_type ST on D.service_type_id = ST.hims_d_service_type_id \
+              where H.record_status='A' \
               and H.hospital_id=?  ${str};  `,
         values: [req.userIdentity.hospital_id, req.userIdentity.hospital_id],
         printQuery: true,

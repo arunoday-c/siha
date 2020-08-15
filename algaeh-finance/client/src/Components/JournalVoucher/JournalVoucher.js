@@ -21,7 +21,7 @@ import {
   getInvoiceDetail,
   getCostCentersForVoucher,
 } from "./JournalVoucher.events";
-import PaymentComponent from "./PaymentComponent";
+// import PaymentComponent from "./PaymentComponent";
 import AccountsDrawer from "./AccountDrawer";
 import { getCookie, algaehApiCall } from "../../utils/algaehApiCall";
 import { newAlgaehApi } from "../../hooks";
@@ -111,9 +111,9 @@ export default function JournalVoucher() {
                 displayTemplate: (row) => {
                   const valueRow =
                     row["hims_d_hospital_id"] !== undefined &&
-                      row["hims_d_hospital_id"] !== "" &&
-                      row["cost_center_id"] !== undefined &&
-                      row["cost_center_id"] !== ""
+                    row["hims_d_hospital_id"] !== "" &&
+                    row["cost_center_id"] !== undefined &&
+                    row["cost_center_id"] !== ""
                       ? `${row["hims_d_hospital_id"]}-${row["cost_center_id"]}`
                       : "";
                   return (
@@ -242,8 +242,8 @@ export default function JournalVoucher() {
           voucher_type === "sales"
             ? "receipt"
             : voucher_type === "purchase"
-              ? "payment"
-              : voucher_type;
+            ? "payment"
+            : voucher_type;
         setVoucherType(currentVoucher);
         const records = Details.map((single, index) => ({
           slno: index + 1,
@@ -270,8 +270,8 @@ export default function JournalVoucher() {
           voucher_type === "sales"
             ? "receipt"
             : voucher_type === "purchase"
-              ? "payment"
-              : null;
+            ? "payment"
+            : null;
         if (merdge !== undefined) {
           setDisableAmount(true);
           setMerdgeRecords(merdge);
@@ -310,7 +310,7 @@ export default function JournalVoucher() {
     }
   }, [location.state]);
 
-  const show = voucherType === "receipt" || voucherType === "payment";
+  // const show = voucherType === "receipt" || voucherType === "payment";
 
   function HandleHospital(details, value) {
     setHospitalID(value);
@@ -321,12 +321,12 @@ export default function JournalVoucher() {
   //   setCostCenter(value);
   // }
 
-  function handlePaymentDrop(...args) {
-    const value = args[1];
-    setPayment((state) => {
-      return { ...state, payment_mode: value };
-    });
-  }
+  // function handlePaymentDrop(...args) {
+  //   const value = args[1];
+  //   setPayment((state) => {
+  //     return { ...state, payment_mode: value };
+  //   });
+  // }
 
   const saveJournal = () => {
     setLoading(true);
@@ -422,7 +422,7 @@ export default function JournalVoucher() {
           type: "info",
           display: `Please select proper amount / account ${
             finOptions.cost_center_required === "Y" ? "/ cost center" : ""
-            }`, //"Please select an Account and enter proper amount",
+          }`, //"Please select an Account and enter proper amount",
         });
         setLoading(false);
         return;
@@ -441,13 +441,13 @@ export default function JournalVoucher() {
       voucher_type: voucherType,
       invoice_no:
         voucherType === "payment" ||
-          voucherType === "receipt" ||
-          voucherType === "credit_note" ||
-          voucherType === "debit_note"
+        voucherType === "receipt" ||
+        voucherType === "credit_note" ||
+        voucherType === "debit_note"
           ? selInvoice
           : voucherType === "purchase" || voucherType === "sales"
-            ? invoiceNo
-            : null,
+          ? invoiceNo
+          : null,
       // voucher_no: `${voucher_no}`,
       hospital_id: hospital_id,
       cost_center_id: cost_center_id,
@@ -679,28 +679,28 @@ export default function JournalVoucher() {
             voucherType === "receipt" ||
             voucherType === "credit_note" ||
             voucherType === "debit_note" ? (
-                <AlgaehAutoComplete
-                  div={{ className: "col-2" }}
-                  label={{
-                    forceLabel: "Select Invoice No.",
-                    isImp: true,
-                  }}
-                  selector={{
-                    value: selInvoice,
-                    dataSource: {
-                      data: invoiceData,
-                      valueField: "invoice_no",
-                      textField: "invoice_no",
-                    },
-                    onChange: (selected) => {
-                      setSelInvoice(selected.invoice_no);
-                    },
-                    onClear: () => {
-                      setSelInvoice("");
-                    },
-                  }}
-                />
-              ) : null}
+            <AlgaehAutoComplete
+              div={{ className: "col-2" }}
+              label={{
+                forceLabel: "Select Invoice No.",
+                isImp: true,
+              }}
+              selector={{
+                value: selInvoice,
+                dataSource: {
+                  data: invoiceData,
+                  valueField: "invoice_no",
+                  textField: "invoice_no",
+                },
+                onChange: (selected) => {
+                  setSelInvoice(selected.invoice_no);
+                },
+                onClear: () => {
+                  setSelInvoice("");
+                },
+              }}
+            />
+          ) : null}
 
           {/* <PaymentComponent
             show={show}

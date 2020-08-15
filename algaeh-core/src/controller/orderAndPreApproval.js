@@ -3,8 +3,10 @@ import utils from "../utils";
 import httpStatus from "../utils/httpStatus";
 
 import onpModels from "../model/orderAndPreApproval";
-import radModels from "../model/radiology";
-import labModels from "../model/laboratory";
+// import radModels from "../model/radiology";
+// import labModels from "../model/laboratory";
+import labModels from "algaeh-laboratory/src/models/laboratory";
+import radModels from "algaeh-radiology/src/models/radiology";
 
 const { releaseConnection } = utils;
 const { insertLadOrderedServices } = labModels;

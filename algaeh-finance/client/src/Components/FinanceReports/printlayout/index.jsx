@@ -1,7 +1,9 @@
-import React from "react";
-// import ReactToPrint from "react-to-print";
+import React, { useRef, useState } from "react";
+import ReactToPrint from "react-to-print";
 import { AlgaehTable } from "algaeh-react-components";
 import ReportHeader from "../header";
+
+import { GenerateExcel } from "./workers/worker";
 export default function ({
   title,
   columns,
@@ -10,14 +12,47 @@ export default function ({
   tableprops,
   renderBeforeTable,
   renderAfterTable,
+  excelBodyRender,
 }) {
-  // const createPrintObject = useRef(undefined);
   const isExpand = layout === undefined ? true : layout.expand;
+  const createPrintObject = useRef(undefined);
+  const [loadingExcel, setExcelLoading] = useState(false);
+  function downloadExcel() {
+    setExcelLoading(true);
+    GenerateExcel({ columns, data, excelBodyRender })
+      .then((result) => {
+        setExcelLoading(false);
+        if (typeof result !== "boolean") {
+          const a: HTMLAnchorElement = document.createElement("a");
+          a.style.display = "none";
+          document.body.appendChild(a);
+
+          const url: string = window.URL.createObjectURL(result);
+
+          a.href = url;
+          a.download = `${title}.xlsx`;
+
+          a.click();
+
+          window.URL.revokeObjectURL(url);
+
+          if (a && a.parentElement) {
+            a.parentElement.removeChild(a);
+          }
+        }
+      })
+      .catch((error) => {
+        setExcelLoading(false);
+        console.error("error", error);
+      });
+  }
+
   return (
     <>
       <div className="row">
         <div className="col-12 reportHeaderAction">
-          {/* <span>
+          <span>
+            {/* <i className="fas fa-print" /> */}
             <ReactToPrint
               trigger={() => <i className="fas fa-print" />}
               content={() => createPrintObject.current}
@@ -36,12 +71,15 @@ export default function ({
           margin: 20mm;
         }"
             />
-          </span> */}
-          <span>
-            <i className="fas fa-print" />
           </span>
           <span>
-            <i className="fas fa-file-excel" />
+            <i
+              className={`fas ${
+                loadingExcel ? "fa-spinner fa-spin" : "fa-file-excel"
+              }`}
+              style={{ pointerEvents: !data || loadingExcel ? "none" : "" }}
+              onClick={downloadExcel}
+            />
           </span>{" "}
           <span>
             <i className="fas fa-file-pdf" />
@@ -49,9 +87,8 @@ export default function ({
         </div>
       </div>
 
-      <div className="row">
+      <div className="row" ref={createPrintObject}>
         <div className="col-12">
-          {" "}
           <ReportHeader title={title} />
         </div>
         <div className="col-12">

@@ -2598,3 +2598,37 @@ export function getPatientDetailsWithAppNo(req, res, next) {
     next(error);
   }
 }
+
+export function updateAppointmentToCheckedIn(req, res, next) {
+  const _mysql = new algaehMysql();
+  const {
+    application_id,
+    appointment_status_id,
+    patient_id,
+    patient_code,
+  } = req.body;
+  try {
+    _mysql
+      .executeQuery({
+        query: `update hims_f_patient_appointment set appointment_status_id=?,
+    patient_id=?,patient_code=?
+    where hims_f_patient_appointment_id =?`,
+        values: [
+          appointment_status_id,
+          patient_id,
+          patient_code,
+          application_id,
+        ],
+      })
+      .then((result) => {
+        _mysql.releaseConnection();
+        next();
+      })
+      .catch((error) => {
+        _mysql.releaseConnection();
+        next(error);
+      });
+  } catch (error) {
+    _mysql.releaseConnection();
+  }
+}

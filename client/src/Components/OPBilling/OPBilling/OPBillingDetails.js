@@ -26,13 +26,13 @@ export default class OPBillingDetails extends Component {
     });
   }
 
-  UNSAFE_componentWillReceiveProps(newProps) {
-    if (newProps.BillingIOputs.insured === "N") {
-      this.setState({
-        pageDisplay: "BillingDetails"
-      });
-    }
-  }
+  // UNSAFE_componentWillReceiveProps(newProps) {
+  //   if (newProps.BillingIOputs.insured === "N") {
+  //     this.setState({
+  //       pageDisplay: "BillingDetails"
+  //     });
+  //   }
+  // }
 
   render() {
     return (

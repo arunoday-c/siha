@@ -83,6 +83,7 @@ const ProcessService = ($this, favouriteOrder, e) => {
           approval_amt: $this.state.approval_amt,
           approval_limit_yesno: $this.state.approval_limit_yesno,
           preapp_limit_amount: $this.state.preapp_limit_amount,
+          test_id: $this.state.test_id
         },
       ];
 

@@ -1,7 +1,4 @@
 import React, { Component } from "react";
-import { withRouter } from "react-router-dom";
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
 
 import {
   AlagehFormGroup,
@@ -14,7 +11,6 @@ import ButtonType from "../../Wrapper/algaehButton";
 
 import "./PackageUtilize.scss";
 import "../../../styles/site.scss";
-import { AlgaehActions } from "../../../actions/algaehActions";
 
 import { GetAmountFormart } from "../../../utils/GlobalFunctions";
 import _ from "lodash";
@@ -25,7 +21,7 @@ import ConsumtionItemBatches from "./ConsumtionItemBatches";
 import ClosePackage from "./ClosePackage";
 import UtilizedPackageofVisit from "./UtilizedPackageofVisit";
 
-class PackageUtilize extends Component {
+export default class PackageUtilize extends Component {
   constructor(props) {
     super(props);
 
@@ -42,7 +38,13 @@ class PackageUtilize extends Component {
       visitPackageser: false,
       hims_f_package_header_id: null,
       package_utilize: false,
-      loading_UtilizeService: false
+      loading_UtilizeService: false,
+      unit_cost: 0,
+      actual_amount: 0,
+      advance_amount: 0,
+      utilize_amount: 0,
+      balance_amount: 0,
+      package_code: null
     };
     this.baseState = this.state;
   }
@@ -273,54 +275,19 @@ class PackageUtilize extends Component {
                         }
                       },
                       {
-                        fieldName: "service_type_id",
+                        fieldName: "service_type",
                         label: (
                           <AlgaehLabel
                             label={{ fieldName: "service_type_id" }}
                           />
-                        ),
-                        displayTemplate: row => {
-                          let display =
-                            this.props.servicetype === undefined
-                              ? []
-                              : this.props.servicetype.filter(
-                                f =>
-                                  f.hims_d_service_type_id ===
-                                  row.service_type_id
-                              );
-
-                          return (
-                            <span>
-                              {display !== undefined && display.length !== 0
-                                ? display[0].service_type
-                                : ""}
-                            </span>
-                          );
-                        }
+                        )
                       },
 
                       {
-                        fieldName: "services_id",
+                        fieldName: "service_name",
                         label: (
                           <AlgaehLabel label={{ fieldName: "services_id" }} />
                         ),
-                        displayTemplate: row => {
-                          let display =
-                            this.props.serviceslist === undefined
-                              ? []
-                              : this.props.serviceslist.filter(
-                                f => f.hims_d_services_id === row.service_id
-                              );
-
-                          return (
-                            <span>
-                              {display !== null && display.length !== 0
-                                ? display[0].service_name
-                                : ""}
-                            </span>
-                          );
-                        },
-
                         others: {
                           minWidth: 300
                         }
@@ -568,24 +535,3 @@ class PackageUtilize extends Component {
     );
   }
 }
-
-function mapStateToProps(state) {
-  return {
-    servicetype: state.servicetype,
-    serviceslist: state.serviceslist
-  };
-}
-
-function mapDispatchToProps(dispatch) {
-  return bindActionCreators(
-    {
-      getServiceTypes: AlgaehActions,
-      getServices: AlgaehActions
-    },
-    dispatch
-  );
-}
-
-export default withRouter(
-  connect(mapStateToProps, mapDispatchToProps)(PackageUtilize)
-);

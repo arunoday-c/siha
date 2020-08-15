@@ -836,7 +836,7 @@ export default {
           internal_error: true,
           message: "No receipt details",
         };
-        _mysql.rollBackTransaction(() => {});
+        _mysql.rollBackTransaction(() => { });
         next();
         return;
       } else if (
@@ -2378,7 +2378,7 @@ export default {
                     prices = allCompany_price.find((item) => {
                       return (
                         item.insurance_id ==
-                          input[i]["primary_insurance_provider_id"] &&
+                        input[i]["primary_insurance_provider_id"] &&
                         item.services_id == input[i]["hims_d_services_id"]
                       );
                     });
@@ -2570,8 +2570,8 @@ export default {
                     deductable_amount =
                       deductable_percentage !== null
                         ? (parseFloat(net_amout) *
-                            parseFloat(deductable_percentage)) /
-                          100
+                          parseFloat(deductable_percentage)) /
+                        100
                         : 0;
 
                     deductable_amount = utilities.decimalPoints(
@@ -2738,8 +2738,8 @@ export default {
                         from_pos == "Y"
                           ? parseFloat(unit_cost)
                           : unit_cost != 0
-                          ? parseFloat(unit_cost)
-                          : parseFloat(records.standard_fee);
+                            ? parseFloat(unit_cost)
+                            : parseFloat(records.standard_fee);
                     }
                   }
                   // if (FollowUp === true) {
@@ -2846,6 +2846,7 @@ export default {
                     sec_company_paybale: 0,
                     sec_copay_percntage: 0,
                     sec_copay_amount: 0,
+                    test_id: null
                   },
                   {
                     service_type_id: records.service_type_id,
@@ -2907,6 +2908,7 @@ export default {
                     hims_f_ordered_services_id:
                       servicesDetails.hims_f_ordered_services_id,
                     billed: billed,
+                    test_id: servicesDetails.test_id
                   }
                 );
 
@@ -4243,8 +4245,8 @@ function getBillDetailsFunctionality(req, res, next, resolve) {
                       from_pos == "Y"
                         ? unit_cost
                         : unit_cost != 0
-                        ? unit_cost
-                        : records.standard_fee;
+                          ? unit_cost
+                          : records.standard_fee;
                   }
                 }
 
