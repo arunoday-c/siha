@@ -9,17 +9,19 @@ export default {
       _mysql
         .executeQuery({
           query:
-            "SELECT GH.`hims_f_procurement_grn_header_id`, GH.`grn_number`, GH.`grn_for`, GH.`vendor_id`,\
+            "SELECT GH.`hims_f_procurement_grn_header_id`, GH.`grn_number`, GH.receipt_mode, GH.`grn_for`, GH.`vendor_id`,\
              GH.`grn_date`, GH.`year`, GH.`period`, GH.`pharmcy_location_id`, GH.`inventory_location_id`,\
               GH.`location_type`, GH.`po_id`, GH.`payment_terms`, GH.`comment`, GH.`description`, GH.`sub_total`,\
               GH.`detail_discount`, GH.`extended_total`, GH.`sheet_level_discount_percent`,\
               GH.`sheet_level_discount_amount`, GH.`net_total`, GH.`total_tax`, GH.`net_payable`,\
               GH.`additional_cost`, GH.`reciept_total`, GH.`created_by`, GH.`created_date`, \
               GH.`updated_by`, GH.`updated_date`, GH.`posted`, GH.`posted_by`, GH.`posted_date`, \
-              GH.`inovice_number`, GH.`invoice_date`, GH.`invoice_posted`,PH.purchase_number, V.vendor_name from  \
-              hims_f_procurement_grn_header GH \
+              GH.`inovice_number`, GH.`invoice_date`, GH.`invoice_posted`,PH.purchase_number, V.vendor_name, \
+              H.hospital_name, P.project_desc from hims_f_procurement_grn_header GH \
               inner join hims_f_procurement_po_header PH on GH.po_id=PH.hims_f_procurement_po_header_id \
               inner join hims_d_vendor V on V.hims_d_vendor_id = GH.vendor_id \
+              left join hims_d_hospital H on H.hims_d_hospital_id = PH.hospital_id \
+              left join hims_d_project P on P.hims_d_project_id = PH.project_id \
               where  GH.grn_number=?",
           values: [req.query.grn_number],
           printQuery: true
@@ -27,44 +29,56 @@ export default {
         .then(headerResult => {
           if (headerResult.length != 0) {
             let strQuery = "";
-            if (headerResult[0].grn_for == "INV") {
+            if (headerResult[0].receipt_mode == "S") {
+
               strQuery = mysql.format(
-                "select GD.`hims_f_procurement_grn_detail_id`, GD.`grn_header_id`, GD.`phar_item_category`, \
-                GD.`phar_item_group`, GD.`phar_item_id`, GD.`inv_item_category_id`, GD.`inv_item_group_id`, \
-                GD.`inv_item_id`, GD.`barcode`, GD.`recieved_quantity`, GD.`po_quantity`, GD.`dn_quantity`, \
-                GD.`pharmacy_uom_id`, GD.`inventory_uom_id`, GD.`unit_cost`, GD.`extended_cost`, GD.`discount_percentage`, \
-                GD.`discount_amount`, GD.`net_extended_cost`, GD.`batchno_expiry_required`, GD.`batchno`, GD.`expiry_date`, \
-                GD.`rejected_quantity`, GD.`outstanding_quantity`, GD.`tax_inclusive`, GD.`tax_percentage`, GD.`tax_amount`, \
-                GD.`total_amount`, GD.`mrp_price`, GD.`sales_price`, GD.`landed_cost`, GD.`dn_header_id`, GD.`dn_detail_id`, \
-                GD.`quantity_recieved_todate`,IM.item_code, IM.item_description, IU.uom_description \
-                from hims_f_procurement_grn_detail GD, hims_d_inventory_item_master IM, hims_d_inventory_uom IU \
-                where GD.inv_item_id = IM.hims_d_inventory_item_master_id and GD.inventory_uom_id = IU.hims_d_inventory_uom_id  \
-                and GD.grn_header_id=?",
+                "select SIS.*, S.service_name from hims_f_procurement_grn_service SIS \
+                  inner join hims_d_services S on S.hims_d_services_id = SIS.services_id \
+                  where SIS.grn_header_id=?",
                 [headerResult[0].hims_f_procurement_grn_header_id]
               );
-            } else if (headerResult[0].grn_for == "PHR") {
+            } else {
               strQuery = mysql.format(
-                "select GD.`hims_f_procurement_grn_detail_id`, GD.`grn_header_id`, GD.`phar_item_category`, \
-                GD.`phar_item_group`, GD.`phar_item_id`, GD.`inv_item_category_id`, GD.`inv_item_group_id`, \
-                GD.`inv_item_id`, GD.`barcode`, GD.`recieved_quantity`, GD.`po_quantity`, GD.`dn_quantity`, \
-                GD.`pharmacy_uom_id`, GD.`inventory_uom_id`, GD.`unit_cost`, GD.`extended_cost`, GD.`discount_percentage`, \
-                GD.`discount_amount`, GD.`net_extended_cost`, GD.`batchno_expiry_required`, GD.`batchno`, GD.`expiry_date`, \
-                GD.`rejected_quantity`, GD.`outstanding_quantity`, GD.`tax_inclusive`, GD.`tax_percentage`, GD.`tax_amount`, \
-                GD.`total_amount`, GD.`mrp_price`, GD.`sales_price`, GD.`landed_cost`, GD.`dn_header_id`, GD.`dn_detail_id`, \
-                GD.`quantity_recieved_todate`,IM.item_code, IM.item_description, PU.uom_description \
-                from hims_f_procurement_grn_detail GD, hims_d_item_master IM ,hims_d_pharmacy_uom PU \
-                where GD.phar_item_id = IM.hims_d_item_master_id and GD.pharmacy_uom_id = PU.hims_d_pharmacy_uom_id\
-                and GD.grn_header_id=?",
+                "select GD.*, DN.delivery_note_number from hims_f_procurement_grn_detail GD,\
+                  hims_f_procurement_dn_header DN where \
+               GD.dn_header_id = DN.hims_f_procurement_dn_header_id and GD.grn_header_id=?",
                 [headerResult[0].hims_f_procurement_grn_header_id]
               );
             }
+            // if (headerResult[0].grn_for == "INV") {
+            //   strQuery = mysql.format(
+            //     "select GD.`hims_f_procurement_grn_detail_id`, GD.`grn_header_id`, GD.`phar_item_category`, \
+            //     GD.`phar_item_group`, GD.`phar_item_id`, GD.`inv_item_category_id`, GD.`inv_item_group_id`, \
+            //     GD.`inv_item_id`, GD.`barcode`, GD.`recieved_quantity`, GD.`po_quantity`, GD.`dn_quantity`, \
+            //     GD.`pharmacy_uom_id`, GD.`inventory_uom_id`, GD.`unit_cost`, GD.`extended_cost`, GD.`discount_percentage`, \
+            //     GD.`discount_amount`, GD.`net_extended_cost`, GD.`batchno_expiry_required`, GD.`batchno`, GD.`expiry_date`, \
+            //     GD.`rejected_quantity`, GD.`outstanding_quantity`, GD.`tax_inclusive`, GD.`tax_percentage`, GD.`tax_amount`, \
+            //     GD.`total_amount`, GD.`mrp_price`, GD.`sales_price`, GD.`landed_cost`, GD.`dn_header_id`, GD.`dn_detail_id`, \
+            //     GD.`quantity_recieved_todate`,IM.item_code, IM.item_description, IU.uom_description \
+            //     from hims_f_procurement_grn_detail GD, hims_d_inventory_item_master IM, hims_d_inventory_uom IU \
+            //     where GD.inv_item_id = IM.hims_d_inventory_item_master_id and GD.inventory_uom_id = IU.hims_d_inventory_uom_id  \
+            //     and GD.grn_header_id=?",
+            //     [headerResult[0].hims_f_procurement_grn_header_id]
+            //   );
+            // } else if (headerResult[0].grn_for == "PHR") {
+            //   strQuery = mysql.format(
+            //     "select GD.`hims_f_procurement_grn_detail_id`, GD.`grn_header_id`, GD.`phar_item_category`, \
+            //     GD.`phar_item_group`, GD.`phar_item_id`, GD.`inv_item_category_id`, GD.`inv_item_group_id`, \
+            //     GD.`inv_item_id`, GD.`barcode`, GD.`recieved_quantity`, GD.`po_quantity`, GD.`dn_quantity`, \
+            //     GD.`pharmacy_uom_id`, GD.`inventory_uom_id`, GD.`unit_cost`, GD.`extended_cost`, GD.`discount_percentage`, \
+            //     GD.`discount_amount`, GD.`net_extended_cost`, GD.`batchno_expiry_required`, GD.`batchno`, GD.`expiry_date`, \
+            //     GD.`rejected_quantity`, GD.`outstanding_quantity`, GD.`tax_inclusive`, GD.`tax_percentage`, GD.`tax_amount`, \
+            //     GD.`total_amount`, GD.`mrp_price`, GD.`sales_price`, GD.`landed_cost`, GD.`dn_header_id`, GD.`dn_detail_id`, \
+            //     GD.`quantity_recieved_todate`,IM.item_code, IM.item_description, PU.uom_description \
+            //     from hims_f_procurement_grn_detail GD, hims_d_item_master IM ,hims_d_pharmacy_uom PU \
+            //     where GD.phar_item_id = IM.hims_d_item_master_id and GD.pharmacy_uom_id = PU.hims_d_pharmacy_uom_id\
+            //     and GD.grn_header_id=?",
+            //     [headerResult[0].hims_f_procurement_grn_header_id]
+            //   );
+            // }
             _mysql
               .executeQuery({
-                query:
-                  "select GD.*, DN.delivery_note_number from hims_f_procurement_grn_detail GD,\
-                   hims_f_procurement_dn_header DN where \
-                GD.dn_header_id = DN.hims_f_procurement_dn_header_id and GD.grn_header_id=?",
-                values: [headerResult[0].hims_f_procurement_grn_header_id],
+                query: strQuery,
                 printQuery: true
               })
               .then(receipt_entry_detail => {
@@ -121,15 +135,16 @@ export default {
           _mysql
             .executeQuery({
               query:
-                "INSERT INTO `hims_f_procurement_grn_header` (grn_number,grn_date, grn_for, `year`, period,\
+                "INSERT INTO `hims_f_procurement_grn_header` (grn_number,grn_date, receipt_mode,grn_for, `year`, period,\
                   pharmcy_location_id,inventory_location_id,location_type,vendor_id, po_id, payment_terms, \
                   comment, description, sub_total, detail_discount, extended_total,sheet_level_discount_percent,\
                   sheet_level_discount_amount,net_total,total_tax, net_payable, additional_cost,reciept_total,\
                   inovice_number,invoice_date,created_by,created_date, updated_by,updated_date,hospital_id) \
-            VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+            VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
               values: [
                 grn_number,
                 today,
+                input.receipt_mode,
                 input.grn_for,
                 year,
                 period,
@@ -170,52 +185,98 @@ export default {
                 isTransactionConnection: _mysql.isTransactionConnection,
                 pool: _mysql.pool
               };
+              let IncludeValues = []
+              if (input.receipt_mode === "I") {
+                IncludeValues = [
+                  "dn_header_id",
+                  "extended_cost",
+                  "discount_amount",
+                  "net_extended_cost",
+                  "tax_percentage",
+                  "tax_amount",
+                  "total_amount"
+                ];
 
-              let IncludeValues = [
-                "dn_header_id",
-                "extended_cost",
-                "discount_amount",
-                "net_extended_cost",
-                "tax_percentage",
-                "tax_amount",
-                "total_amount"
-              ];
-
-              _mysql
-                .executeQuery({
-                  query:
-                    "INSERT INTO hims_f_procurement_grn_detail(??) VALUES ?",
-                  values: input.receipt_entry_detail,
-                  includeValues: IncludeValues,
-                  extraValues: {
-                    grn_header_id: headerResult.insertId
-                  },
-                  bulkInsertOrUpdate: true,
-                  printQuery: true
-                })
-                .then(detailResult => {
-                  // _mysql.commitTransaction(() => {
-                  //   _mysql.releaseConnection();
-                  req.records = {
-                    grn_number: grn_number,
-                    hims_f_procurement_grn_header_id: headerResult.insertId,
-                    year: year,
-                    period: period
-                  };
-                  next();
-                  // });
-                })
-                .catch(error => {
-                  _mysql.rollBackTransaction(() => {
-                    next(error);
+                _mysql
+                  .executeQuery({
+                    query:
+                      "INSERT INTO hims_f_procurement_grn_detail(??) VALUES ?",
+                    values: input.receipt_entry_detail,
+                    includeValues: IncludeValues,
+                    extraValues: {
+                      grn_header_id: headerResult.insertId
+                    },
+                    bulkInsertOrUpdate: true,
+                    printQuery: true
+                  })
+                  .then(detailResult => {
+                    // _mysql.commitTransaction(() => {
+                    //   _mysql.releaseConnection();
+                    req.records = {
+                      grn_number: grn_number,
+                      hims_f_procurement_grn_header_id: headerResult.insertId,
+                      year: year,
+                      period: period
+                    };
+                    next();
+                    // });
+                  })
+                  .catch(error => {
+                    _mysql.rollBackTransaction(() => {
+                      next(error);
+                    });
                   });
-                });
+              } else {
+                IncludeValues = [
+                  "services_id",
+                  "unit_cost",
+                  "quantity",
+                  "extended_cost",
+                  "discount_percentage",
+                  "discount_amount",
+                  "net_extended_cost",
+                  "tax_percentage",
+                  "tax_amount",
+                  "total_amount"
+                ];
+
+                _mysql
+                  .executeQuery({
+                    query:
+                      "INSERT INTO hims_f_procurement_grn_service(??) VALUES ?",
+                    values: input.receipt_entry_detail_services,
+                    includeValues: IncludeValues,
+                    extraValues: {
+                      grn_header_id: headerResult.insertId
+                    },
+                    bulkInsertOrUpdate: true,
+                    printQuery: true
+                  })
+                  .then(detailResult => {
+                    // _mysql.commitTransaction(() => {
+                    //   _mysql.releaseConnection();
+                    req.records = {
+                      grn_number: grn_number,
+                      hims_f_procurement_grn_header_id: headerResult.insertId,
+                      year: year,
+                      period: period
+                    };
+                    next();
+                    // });
+                  })
+                  .catch(error => {
+                    _mysql.rollBackTransaction(() => {
+                      next(error);
+                    });
+                  });
+              }
             })
             .catch(e => {
               _mysql.rollBackTransaction(() => {
                 next(e);
               });
             });
+
         })
         .catch(e => {
           _mysql.rollBackTransaction(() => {
@@ -308,51 +369,98 @@ export default {
       });
     }
   },
-
-  updateDNEntry: (req, res, next) => {
+  updatePurchaseOrder: (req, res, next) => {
     const _options = req.connection == null ? {} : req.connection;
     const _mysql = new algaehMysql(_options);
     try {
-
-      let inputParam = { ...req.body };
-
-      let complete = "Y";
-
-
-      let details = inputParam.receipt_entry_detail;
-
-      let qry = "";
-
-      for (let i = 0; i < details.length; i++) {
-        qry += mysql.format(
-          "UPDATE `hims_f_procurement_dn_header` SET `is_completed`=?, `completed_date`=?, \
-          `updated_by` = ?,`updated_date` = ? WHERE `hims_f_procurement_dn_header_id`=?;",
-          [
-            complete,
-            new Date(),
-            req.userIdentity.algaeh_d_app_user_id,
-            new Date(),
-            details[i].dn_header_id
-          ]
-        );
-      }
       _mysql
         .executeQuery({
-          query: qry,
+          query: "select is_completed from hims_f_procurement_po_header where hims_f_procurement_po_header_id=?",
+          values: [req.body.po_id],
           printQuery: true
         })
-        .then(detailResult => {
-          _mysql.commitTransaction(() => {
-            _mysql.releaseConnection();
-            req.dnrecords = detailResult;
-            next();
-          });
+        .then(po_data => {
+          if (po_data[0].is_completed === "Y") {
+            _mysql
+              .executeQuery({
+                query: "update hims_f_procurement_po_header set receipt_generated='Y' where hims_f_procurement_po_header_id=?",
+                values: [req.body.po_id],
+                printQuery: true
+              })
+              .then(po_data => {
+                next()
+              })
+              .catch(e => {
+                _mysql.rollBackTransaction(() => {
+                  next(e);
+                });
+              });
+          } else {
+            next()
+          }
         })
         .catch(e => {
           _mysql.rollBackTransaction(() => {
             next(e);
           });
         });
+    } catch (e) {
+      _mysql.rollBackTransaction(() => {
+        next(e);
+      });
+    }
+  },
+
+  updateDNEntry: (req, res, next) => {
+    const _options = req.connection == null ? {} : req.connection;
+    const _mysql = new algaehMysql(_options);
+    try {
+      if (req.body.receipt_mode === "I") {
+        let inputParam = { ...req.body };
+
+        let complete = "Y";
+
+
+        let details = inputParam.receipt_entry_detail;
+
+        let qry = "";
+
+        for (let i = 0; i < details.length; i++) {
+          qry += mysql.format(
+            "UPDATE `hims_f_procurement_dn_header` SET `is_completed`=?, `completed_date`=?, \
+          `updated_by` = ?,`updated_date` = ? WHERE `hims_f_procurement_dn_header_id`=?;",
+            [
+              complete,
+              new Date(),
+              req.userIdentity.algaeh_d_app_user_id,
+              new Date(),
+              details[i].dn_header_id
+            ]
+          );
+        }
+        _mysql
+          .executeQuery({
+            query: qry,
+            printQuery: true
+          })
+          .then(detailResult => {
+            _mysql.commitTransaction(() => {
+              _mysql.releaseConnection();
+              req.dnrecords = detailResult;
+              next();
+            });
+          })
+          .catch(e => {
+            _mysql.rollBackTransaction(() => {
+              next(e);
+            });
+          });
+      } else {
+        _mysql.commitTransaction(() => {
+          _mysql.releaseConnection();
+          next();
+        });
+      }
     } catch (e) {
       _mysql.rollBackTransaction(() => {
         next(e);
@@ -449,6 +557,58 @@ export default {
       _mysql.rollBackTransaction(() => {
         next(e);
       });
+    }
+  },
+
+  getPOServiceReceipt: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    try {
+      console.log("getPOServiceReceipt: ")
+
+      _mysql
+        .executeQuery({
+          query: "SELECT PH.*, V.vendor_name, H.hospital_name, P.project_desc as project_name \
+                from hims_f_procurement_po_header PH inner join  hims_d_vendor V on  PH.vendor_id = V.hims_d_vendor_id \
+                inner join hims_d_hospital H  on PH.hospital_id = H.hims_d_hospital_id \
+                inner join hims_d_project P  on PH.project_id = P.hims_d_project_id \
+                where PH.hims_f_procurement_po_header_id =? ",
+          values: [req.query.purchase_order_id],
+          printQuery: true
+        })
+        .then(headerResult => {
+          if (headerResult.length != 0) {
+            _mysql
+              .executeQuery({
+                query: "select OS.*, S.service_name from hims_f_procurement_po_services OS \
+                          inner join hims_d_services S on S.hims_d_services_id = OS.services_id where procurement_header_id=?;",
+                values: [req.query.purchase_order_id],
+                printQuery: true
+              })
+              .then(receipt_entry_detail_services => {
+                _mysql.releaseConnection();
+                req.records = {
+                  ...headerResult[0],
+                  ...{ receipt_entry_detail_services }
+                };
+                next();
+              })
+              .catch(error => {
+                _mysql.releaseConnection();
+                next(error);
+              });
+          } else {
+            _mysql.releaseConnection();
+            req.records = headerResult;
+            next();
+          }
+        })
+        .catch(error => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
     }
   },
 

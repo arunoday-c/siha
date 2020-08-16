@@ -31,11 +31,12 @@ export default {
             _mysql
                 .executeQuery({
                     query:
-                        "INSERT INTO `hims_d_procurement_options` (`po_auth_level`, \
+                        "INSERT INTO `hims_d_procurement_options` (`po_auth_level`, `po_services`,\
                         `created_date`, `created_by`, `updated_date`, `updated_by`)\
-                        VALUE(?, ?, ?, ?, ?)",
+                        VALUE(?, ?, ?, ?, ?, ?)",
                     values: [
                         input.po_auth_level,
+                        input.po_services,
                         new Date(),
                         req.userIdentity.algaeh_d_app_user_id,
                         new Date(),
@@ -64,10 +65,11 @@ export default {
             _mysql
                 .executeQuery({
                     query:
-                        "UPDATE `hims_d_procurement_options` SET `po_auth_level` = ?, `updated_date`=?, `updated_by`=? \
+                        "UPDATE `hims_d_procurement_options` SET `po_auth_level` = ?, `po_services` = ?, `updated_date`=?, `updated_by`=? \
                 WHERE `hims_d_procurement_options_id`=? ;",
                     values: [
                         input.po_auth_level,
+                        input.po_services,
                         new Date(),
                         req.userIdentity.algaeh_d_app_user_id,
                         input.hims_d_procurement_options_id

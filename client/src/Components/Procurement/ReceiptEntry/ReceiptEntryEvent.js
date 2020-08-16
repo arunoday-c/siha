@@ -13,16 +13,24 @@ import _ from "lodash";
 
 let texthandlerInterval = null;
 
-const texthandle = ($this, e) => {
-  if (e.value === undefined) {
-    $this.setState({ [e]: null });
-  } else {
-    let name = e.name || e.target.name;
-    let value = e.value || e.target.value;
+const texthandle = ($this, ctrl, e) => {
+  e = ctrl || e;
+  let name = e.name || e.target.name;
+  let value = e.value || e.target.value;
+  switch (name) {
+    case "receipt_mode":
+      let IOputs = ReceiptEntryInv.inputParam();
 
-    $this.setState({
-      [name]: value
-    });
+      IOputs.dataExitst = false;
+      IOputs.receipt_mode = value
+      $this.setState(IOputs);
+
+      break;
+    default:
+      $this.setState({
+        [name]: value,
+      });
+      break;
   }
 };
 
@@ -334,6 +342,10 @@ const getCtrlCode = ($this, docNumber, row) => {
           data.saveEnable = true;
           data.dataExitst = true;
 
+          if (data.receipt_mode === "S") {
+            data.receipt_entry_detail_services = data.receipt_entry_detail
+          }
+
           data.addedItem = true;
           if (data.posted === "Y") {
             data.postEnable = true;
@@ -544,16 +556,54 @@ const PostReceiptEntry = $this => {
 const PurchaseOrderSearch = ($this, e) => {
   AlgaehSearch({
     searchGrid: {
-      columns: spotlightSearch.Purchase.POEntry
+      columns: $this.state.receipt_mode === "I" ? spotlightSearch.Purchase.POEntry : spotlightSearch.Purchase.POServiceEntry
     },
     searchName: "POEntryGetReceipt",
     uri: "/gloabelSearch/get",
+    inputs:
+      " po_mode = '" +
+      $this.state.receipt_mode + "'",
 
     onContainsChange: (text, serchBy, callBack) => {
       callBack(text);
     },
     onRowSelect: row => {
-      getDeliveryForReceipt($this, row);
+      if ($this.state.receipt_mode === "I") {
+        getDeliveryForReceipt($this, row);
+      } else {
+        getPOServices($this, row);
+      }
+    }
+  });
+};
+
+const getPOServices = ($this, row) => {
+
+  AlgaehLoader({ show: true });
+
+  algaehApiCall({
+    uri: "/ReceiptEntry/getPOServiceReceipt",
+    module: "procurement",
+    method: "GET",
+    data: {
+      purchase_order_id: row.hims_f_procurement_po_header_id
+    },
+    onSuccess: response => {
+      if (response.data.success) {
+        let data = response.data.records;
+        data.saveEnable = false
+        data.po_id = data.hims_f_procurement_po_header_id
+        $this.setState(data);
+        debugger
+      }
+      AlgaehLoader({ show: false });
+    },
+    onFailure: error => {
+      AlgaehLoader({ show: false });
+      swalMessage({
+        title: error.message,
+        type: "error"
+      });
     }
   });
 };

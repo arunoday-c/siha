@@ -11,14 +11,58 @@ import swal from "sweetalert2";
 
 let texthandlerInterval = null;
 
-const texthandle = ($this, e) => {
+
+const texthandle = ($this, ctrl, e) => {
+  e = ctrl || e;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
+  switch (name) {
+    case "po_mode":
+      let IOputs = POEntry.inputParam();
+      IOputs.dataExitst = false;
+      delete IOputs.po_from;
+      IOputs.po_mode = value;
+      IOputs.cost_projects = $this.state.cost_projects
 
-  $this.setState({
-    [name]: value,
-  });
+      clearItemDetails($this);
+      getPOOptions($this);
+      let bothExisits = true;
+
+      RawSecurityComponent({ componentCode: "PUR_ORD_INVENTORY" }).then(
+        (result) => {
+          if (result === "show") {
+            getData($this, "INV");
+            bothExisits = false;
+            IOputs.po_from = "INV";
+          }
+        }
+      );
+
+      RawSecurityComponent({ componentCode: "PUR_ORD_PHARMACY" }).then((result) => {
+        if (result === "show") {
+          getData($this, "PHR");
+          IOputs.bothExisits = bothExisits === false ? false : true;
+          IOputs.po_from = "PHR";
+        } else {
+          IOputs.bothExisits = true;
+        }
+        $this.setState(IOputs);
+      });
+      break;
+    case "project_id":
+      $this.setState({
+        [name]: value,
+        organizations: e.selected.branches,
+      });
+      break;
+    default:
+      $this.setState({
+        [name]: value,
+      });
+      break;
+  }
 };
+
 // const textComment = (e) => {
 //   debugger;
 //   let name = e.name || e.target.name;
@@ -299,6 +343,7 @@ const ClearData = ($this, e) => {
   clearItemDetails($this);
   getPOOptions($this);
   let bothExisits = true;
+  IOputs.cost_projects = $this.state.cost_projects
 
   RawSecurityComponent({ componentCode: "PUR_ORD_INVENTORY" }).then(
     (result) => {
@@ -372,6 +417,11 @@ const SavePOEnrty = ($this, from) => {
     "po_entry_detail",
     "delete_stock_detail",
     "is_posted",
+    "po_mode",
+    "project_id",
+    "hospital_id",
+    "po_services",
+    "delete_po_services"
   ];
   let sendJsonBody = {};
   procumentInputs.forEach((item) => {
@@ -415,7 +465,7 @@ const SavePOEnrty = ($this, from) => {
 const getCtrlCode = ($this, docNumber) => {
   AlgaehLoader({ show: true });
   let IOputs = POEntry.inputParam();
-
+  IOputs.cost_projects = $this.state.cost_projects
   IOputs.dataExitst = false;
   $this.setState(IOputs, () => {
     algaehApiCall({
@@ -450,7 +500,12 @@ const getCtrlCode = ($this, docNumber) => {
             }
           }
 
+          if (data.po_mode === "S") {
+            data.po_services = data.po_entry_detail
+          }
+
           data.dataFinder = true;
+          data.dataExists = true;
 
           if (data.is_posted === "Y") {
             data.dataPosted = true;
@@ -467,6 +522,7 @@ const getCtrlCode = ($this, docNumber) => {
           } else {
             $this.state.inventory_stock_detail = data.po_entry_detail;
           }
+          data.organizations = $this.props.hospitaldetails;
 
           data.addedItem = true;
           $this.setState(data);
@@ -484,134 +540,135 @@ const getCtrlCode = ($this, docNumber) => {
         });
       },
     });
-    // $this.props.getPurchaseOrderEntry({
-    //   uri: "/PurchaseOrderEntry/getPurchaseOrderEntry",
-    //   module: "procurement",
-    //   method: "GET",
-    //   printInput: true,
-    //   data: { purchase_number: docNumber },
-    //   redux: {
-    //     type: "PO_ENTRY_GET_DATA",
-    //     mappingName: "purchaseorderentry"
-    //   },
-    //   afterSuccess: data => {
-    //
-    //   }
-    // });
   });
 };
 
 const getData = ($this, po_from) => {
-  if (po_from === "PHR") {
-    $this.props.getItems({
-      uri: "/pharmacy/getItemMaster",
-      data: { item_status: "A" },
-      module: "pharmacy",
-      method: "GET",
-      redux: {
-        type: "ITEM_GET_DATA",
-        mappingName: "poitemlist",
-      },
-    });
 
-    $this.props.getLocation({
-      uri: "/pharmacy/getPharmacyLocation",
-      module: "pharmacy",
-      method: "GET",
-      data: {
-        location_status: "A",
-      },
-      redux: {
-        type: "LOCATIONS_GET_DATA",
-        mappingName: "polocations",
-      },
-    });
+  // if (po_from === "PHR") {
+  //   $this.props.getItems({
+  //     uri: "/pharmacy/getItemMaster",
+  //     data: { item_status: "A" },
+  //     module: "pharmacy",
+  //     method: "GET",
+  //     redux: {
+  //       type: "ITEM_GET_DATA",
+  //       mappingName: "poitemlist",
+  //     },
+  //   });
 
-    $this.props.getItemCategory({
-      uri: "/pharmacy/getItemCategory",
-      module: "pharmacy",
-      method: "GET",
-      redux: {
-        type: "ITEM_CATEGORY_GET_DATA",
-        mappingName: "poitemcategory",
-      },
-    });
+  //   $this.props.getLocation({
+  //     uri: "/pharmacy/getPharmacyLocation",
+  //     module: "pharmacy",
+  //     method: "GET",
+  //     data: {
+  //       location_status: "A",
+  //     },
+  //     redux: {
+  //       type: "LOCATIONS_GET_DATA",
+  //       mappingName: "polocations",
+  //     },
+  //   });
 
-    $this.props.getItemGroup({
-      uri: "/pharmacy/getItemGroup",
-      module: "pharmacy",
-      method: "GET",
-      redux: {
-        type: "ITEM_GROUP_GET_DATA",
-        mappingName: "poitemgroup",
-      },
-    });
+  //   $this.props.getItemCategory({
+  //     uri: "/pharmacy/getItemCategory",
+  //     module: "pharmacy",
+  //     method: "GET",
+  //     redux: {
+  //       type: "ITEM_CATEGORY_GET_DATA",
+  //       mappingName: "poitemcategory",
+  //     },
+  //   });
 
-    $this.props.getItemUOM({
-      uri: "/pharmacy/getPharmacyUom",
-      module: "pharmacy",
-      method: "GET",
-      redux: {
-        type: "ITEM_UOM_GET_DATA",
-        mappingName: "poitemuom",
-      },
-    });
-  } else if (po_from === "INV") {
-    $this.props.getItems({
-      uri: "/inventory/getItemMaster",
-      data: { item_status: "A" },
-      module: "inventory",
-      method: "GET",
-      redux: {
-        type: "ITEM_GET_DATA",
-        mappingName: "poitemlist",
-      },
-    });
+  //   $this.props.getItemGroup({
+  //     uri: "/pharmacy/getItemGroup",
+  //     module: "pharmacy",
+  //     method: "GET",
+  //     redux: {
+  //       type: "ITEM_GROUP_GET_DATA",
+  //       mappingName: "poitemgroup",
+  //     },
+  //   });
 
-    $this.props.getLocation({
-      uri: "/inventory/getInventoryLocation",
-      module: "inventory",
-      method: "GET",
-      data: {
-        location_status: "A",
-      },
-      redux: {
-        type: "LOCATIONS_GET_DATA",
-        mappingName: "polocations",
-      },
-    });
+  //   $this.props.getItemUOM({
+  //     uri: "/pharmacy/getPharmacyUom",
+  //     module: "pharmacy",
+  //     method: "GET",
+  //     redux: {
+  //       type: "ITEM_UOM_GET_DATA",
+  //       mappingName: "poitemuom",
+  //     },
+  //   });
+  // } else if (po_from === "INV") {
+  //   $this.props.getItems({
+  //     uri: "/inventory/getItemMaster",
+  //     data: { item_status: "A" },
+  //     module: "inventory",
+  //     method: "GET",
+  //     redux: {
+  //       type: "ITEM_GET_DATA",
+  //       mappingName: "poitemlist",
+  //     },
+  //   });
 
-    $this.props.getItemCategory({
-      uri: "/inventory/getItemCategory",
-      module: "inventory",
-      method: "GET",
-      redux: {
-        type: "ITEM_CATEGORY_GET_DATA",
-        mappingName: "poitemcategory",
-      },
-      afterSuccess: (data) => {},
-    });
+  //   $this.props.getLocation({
+  //     uri: "/inventory/getInventoryLocation",
+  //     module: "inventory",
+  //     method: "GET",
+  //     data: {
+  //       location_status: "A",
+  //     },
+  //     redux: {
+  //       type: "LOCATIONS_GET_DATA",
+  //       mappingName: "polocations",
+  //     },
+  //   });
 
-    $this.props.getItemGroup({
-      uri: "/inventory/getItemGroup",
-      module: "inventory",
-      method: "GET",
-      redux: {
-        type: "ITEM_GROUP_GET_DATA",
-        mappingName: "poitemgroup",
-      },
-    });
+  //   $this.props.getItemCategory({
+  //     uri: "/inventory/getItemCategory",
+  //     module: "inventory",
+  //     method: "GET",
+  //     redux: {
+  //       type: "ITEM_CATEGORY_GET_DATA",
+  //       mappingName: "poitemcategory",
+  //     },
+  //     afterSuccess: (data) => { },
+  //   });
 
-    $this.props.getItemUOM({
-      uri: "/inventory/getInventoryUom",
-      module: "inventory",
-      method: "GET",
-      redux: {
-        type: "ITEM_UOM_GET_DATA",
-        mappingName: "poitemuom",
-      },
-    });
-  }
+  //   $this.props.getItemGroup({
+  //     uri: "/inventory/getItemGroup",
+  //     module: "inventory",
+  //     method: "GET",
+  //     redux: {
+  //       type: "ITEM_GROUP_GET_DATA",
+  //       mappingName: "poitemgroup",
+  //     },
+  //   });
+
+  //   $this.props.getItemUOM({
+  //     uri: "/inventory/getInventoryUom",
+  //     module: "inventory",
+  //     method: "GET",
+  //     redux: {
+  //       type: "ITEM_UOM_GET_DATA",
+  //       mappingName: "poitemuom",
+  //     },
+  //   });
+  // }
+  let strUri = po_from === "PHR" ? "/pharmacy/getPharmacyLocation" : "/inventory/getInventoryLocation"
+  let strModule = po_from === "PHR" ? "pharmacy" : "inventory"
+  $this.props.getLocation({
+    uri: strUri,
+    module: strModule,
+    method: "GET",
+    data: {
+      location_status: "A",
+    },
+    redux: {
+      type: "LOCATIONS_GET_DATA",
+      mappingName: "polocations",
+    },
+  });
 };
 
 const generatePOReceipt = (data) => {
@@ -719,6 +776,7 @@ const AuthorizePOEntry = ($this, authorize) => {
     if ($this.state.po_auth_level === "1") {
       $this.state.authorize1 = "Y";
       $this.state.authorize2 = "Y";
+      $this.state.is_completed = $this.state.po_mode === "S" ? "Y" : "N";
       authorize1 = "Y";
       authorize2 = "Y";
     } else {
@@ -729,8 +787,10 @@ const AuthorizePOEntry = ($this, authorize) => {
       } else if (authorize === "authorize2") {
         $this.state.authorize1 = "Y";
         $this.state.authorize2 = "Y";
+        $this.state.is_completed = $this.state.po_mode === "S" ? "Y" : "N";
         authorize1 = "Y";
         authorize2 = "Y";
+
       }
     }
 
@@ -764,6 +824,8 @@ const AuthorizePOEntry = ($this, authorize) => {
       "po_entry_detail",
       "authorize1",
       "authorize2",
+      "delete_po_services",
+      "is_completed"
     ];
     let sendJsonBody = {};
     procumentInputs.forEach((item) => {
@@ -839,13 +901,13 @@ const getVendorMaster = ($this) => {
 };
 
 const clearItemDetails = ($this) => {
-  $this.props.getItems({
-    redux: {
-      type: "ITEM_GET_DATA",
-      mappingName: "poitemlist",
-      data: [],
-    },
-  });
+  // $this.props.getItems({
+  //   redux: {
+  //     type: "ITEM_GET_DATA",
+  //     mappingName: "poitemlist",
+  //     data: [],
+  //   },
+  // });
 
   $this.props.getLocation({
     redux: {
@@ -855,29 +917,29 @@ const clearItemDetails = ($this) => {
     },
   });
 
-  $this.props.getItemCategory({
-    redux: {
-      type: "ITEM_CATEGORY_GET_DATA",
-      mappingName: "poitemcategory",
-      data: [],
-    },
-  });
+  // $this.props.getItemCategory({
+  //   redux: {
+  //     type: "ITEM_CATEGORY_GET_DATA",
+  //     mappingName: "poitemcategory",
+  //     data: [],
+  //   },
+  // });
 
-  $this.props.getItemGroup({
-    redux: {
-      type: "ITEM_GROUP_GET_DATA",
-      mappingName: "poitemgroup",
-      data: [],
-    },
-  });
+  // $this.props.getItemGroup({
+  //   redux: {
+  //     type: "ITEM_GROUP_GET_DATA",
+  //     mappingName: "poitemgroup",
+  //     data: [],
+  //   },
+  // });
 
-  $this.props.getItemUOM({
-    redux: {
-      type: "ITEM_UOM_GET_DATA",
-      mappingName: "poitemuom",
-      data: [],
-    },
-  });
+  // $this.props.getItemUOM({
+  //   redux: {
+  //     type: "ITEM_UOM_GET_DATA",
+  //     mappingName: "poitemuom",
+  //     data: [],
+  //   },
+  // });
 };
 
 const VendorQuotationSearch = ($this) => {
@@ -1090,6 +1152,21 @@ const CancelPOEntry = ($this) => {
   });
 };
 
+
+const getCostCenters = ($this) => {
+  algaehApiCall({
+    uri: "/finance_masters/getCostCenters",
+    method: "GET",
+    module: "finance",
+
+    onSuccess: (response) => {
+      if (response.data.success === true) {
+        $this.setState({ cost_projects: response.data.result });
+      }
+    },
+  });
+};
+
 export {
   texthandle,
   poforhandle,
@@ -1111,4 +1188,5 @@ export {
   getPOOptions,
   getData,
   CancelPOEntry,
+  getCostCenters
 };

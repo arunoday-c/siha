@@ -9,7 +9,9 @@ const {
   getDeliveryForReceipt,
   getDeliveryItemDetails,
   postReceiptEntry,
-  generateAccountingEntry
+  generateAccountingEntry,
+  updatePurchaseOrder,
+  getPOServiceReceipt
 } = receiptModels;
 
 export default () => {
@@ -42,6 +44,7 @@ export default () => {
   api.post(
     "/addReceiptEntry",
     addReceiptEntry,
+    updatePurchaseOrder,
     updateDNEntry,
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
@@ -61,6 +64,15 @@ export default () => {
   api.put("/postReceiptEntry",
     postReceiptEntry,
     generateAccountingEntry,
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records
+      });
+    });
+
+  api.get("/getPOServiceReceipt",
+    getPOServiceReceipt,
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,

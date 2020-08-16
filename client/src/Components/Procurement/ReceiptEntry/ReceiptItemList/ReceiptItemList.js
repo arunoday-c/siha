@@ -223,52 +223,6 @@ class ReceiptItemList extends Component {
                     </div>
                   </div>
                 </div>
-                <div className="col-lg-12">
-                  <div className="row">
-                    <div className="col" />
-
-                    <div className="col-lg-5" style={{ textAlign: "right" }}>
-                      <div className="row">
-                        <div className="col-lg-3">
-                          <AlgaehLabel
-                            label={{
-                              forceLabel: "Sub Total"
-                            }}
-                          />
-                          <h6>{GetAmountFormart(this.state.sub_total)}</h6>
-                        </div>
-                        <div className="col-lg-3">
-                          <AlgaehLabel
-                            label={{
-                              forceLabel: "Discount Amount"
-                            }}
-                          />
-                          <h6>
-                            {GetAmountFormart(this.state.detail_discount)}
-                          </h6>
-                        </div>
-
-                        <div className="col-lg-3">
-                          <AlgaehLabel
-                            label={{
-                              forceLabel: "Tax"
-                            }}
-                          />
-                          <h6>{GetAmountFormart(this.state.total_tax)}</h6>
-                        </div>
-
-                        <div className="col-lg-3">
-                          <AlgaehLabel
-                            label={{
-                              forceLabel: "Net Payable"
-                            }}
-                          />
-                          <h6>{GetAmountFormart(this.state.net_payable)}</h6>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
                 <DNItemList
                   show={this.state.dn_item_enable}
                   onClose={CloseItemDetail.bind(this, this)}

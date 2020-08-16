@@ -311,6 +311,9 @@ const itemchangeText = ($this, context, e) => {
           // [name]: value,
 
           item_description: e.item_description,
+          group_description: e.group_description,
+          category_desc: e.category_desc,
+          purchase_uom_desc: e.purchase_uom_desc,
           phar_item_category: e.category_id,
           pharmacy_uom_id: e.purchase_uom_id,
           phar_item_group: e.group_id,
@@ -328,6 +331,10 @@ const itemchangeText = ($this, context, e) => {
             // [name]: value,
 
             item_description: e.item_description,
+            group_description: e.group_description,
+            category_desc: e.category_desc,
+            purchase_uom_desc: e.purchase_uom_desc,
+
             phar_item_id: e.hims_d_item_master_id,
             phar_item_category: e.category_id,
             pharmacy_uom_id: e.purchase_uom_id,
@@ -353,6 +360,9 @@ const itemchangeText = ($this, context, e) => {
           // [name]: value,
 
           item_description: e.item_description,
+          group_description: e.group_description,
+          category_desc: e.category_desc,
+          purchase_uom_desc: e.purchase_uom_desc,
           inv_item_id: e.hims_d_inventory_item_master_id,
           inv_item_category_id: e.category_id,
           inventory_uom_id: e.purchase_uom_id,
@@ -370,6 +380,9 @@ const itemchangeText = ($this, context, e) => {
           context.updateState({
             // [name]: value,
             item_description: e.item_description,
+            group_description: e.group_description,
+            category_desc: e.category_desc,
+            purchase_uom_desc: e.purchase_uom_desc,
             inv_item_category_id: e.category_id,
             inv_item_id: e.hims_d_inventory_item_master_id,
             inventory_uom_id: e.purchase_uom_id,
@@ -440,6 +453,10 @@ const AddItems = ($this, context) => {
       inv_item_group_id: $this.state.inv_item_group_id,
       inv_item_id: $this.state.inv_item_id,
 
+      group_description: $this.state.group_description,
+      category_desc: $this.state.category_desc,
+      purchase_uom_desc: $this.state.purchase_uom_desc,
+
       pharmacy_uom_id: $this.state.pharmacy_uom_id,
       inventory_uom_id: $this.state.inventory_uom_id,
 
@@ -468,12 +485,12 @@ const AddItems = ($this, context) => {
     };
 
     if ($this.state.po_from === "PHR") {
-      ItemInput["category_desc"] = document.getElementsByName(
-        "phar_item_category"
-      )[0].nextElementSibling.innerText;
-      ItemInput["group_description"] = document.getElementsByName(
-        "phar_item_group"
-      )[0].nextElementSibling.innerText;
+      // ItemInput["category_desc"] = document.getElementsByName(
+      //   "phar_item_category"
+      // )[0].nextElementSibling.innerText;
+      // ItemInput["group_description"] = document.getElementsByName(
+      //   "phar_item_group"
+      // )[0].nextElementSibling.innerText;
       let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
       const hasPharItemExists = pharmacy_stock_detail.find(
         (f) => f.phar_item_id === $this.state.phar_item_id
@@ -519,12 +536,12 @@ const AddItems = ($this, context) => {
         "pharmacy_stock_detail"
       );
     } else {
-      ItemInput["category_desc"] = document.getElementsByName(
-        "inv_item_category_id"
-      )[0].nextElementSibling.innerText;
-      ItemInput["group_description"] = document.getElementsByName(
-        "inv_item_group_id"
-      )[0].nextElementSibling.innerText;
+      // ItemInput["category_desc"] = document.getElementsByName(
+      //   "inv_item_category_id"
+      // )[0].nextElementSibling.innerText;
+      // ItemInput["group_description"] = document.getElementsByName(
+      //   "inv_item_group_id"
+      // )[0].nextElementSibling.innerText;
       let inventory_stock_detail = $this.state.inventory_stock_detail;
       const hasInvItemExists = inventory_stock_detail.find(
         (f) => f.inv_item_id === $this.state.inv_item_id
@@ -639,6 +656,9 @@ const assignDataandclear = ($this, context, stock_detail, assignData) => {
     addItemButton: true,
     authorizeBtn: true,
     item_description: "",
+    group_description: null,
+    category_desc: null,
+    purchase_uom_desc: null
   });
 
   if (context !== undefined) {
@@ -689,6 +709,9 @@ const assignDataandclear = ($this, context, stock_detail, assignData) => {
       addItemButton: true,
       authorizeBtn: true,
       item_description: "",
+      group_description: null,
+      category_desc: null,
+      purchase_uom_desc: null
     });
   }
 };

@@ -321,7 +321,7 @@ let algaehSearchConfig = (searchName, req) => {
             inner join hims_d_vendor V on PO.vendor_id = V.hims_d_vendor_id \
             left join hims_d_pharmacy_location PL on PO.pharmcy_location_id = PL.hims_d_pharmacy_location_id\
             left join hims_d_inventory_location IL on PO.inventory_location_id = IL.hims_d_inventory_location_id \
-            where cancelled='N' and authorize1='Y' and authorize2='Y' ",
+            where cancelled='N' and authorize1='Y' and authorize2='Y' and receipt_generated='N'",
         //   and  PO.hospital_id=" +
         // hospitalId,
         orderBy: "hims_f_procurement_po_header_id desc",
@@ -607,13 +607,14 @@ let algaehSearchConfig = (searchName, req) => {
         searchName: "PurchaseOrderForPharmacy",
         searchQuery:
           "select SQL_CALC_FOUND_ROWS PM.hims_d_item_master_id, PM.item_description, PM.category_id, \
-          PM.stocking_uom_id,PM.item_uom_id,PM.purchase_uom_id,PM.purchase_cost,PM.service_id, PM.group_id, PC.category_desc,SR.vat_percent,\
-          PG.group_description, PU.uom_description,SR.standard_fee from hims_d_item_master PM, \
-          hims_d_item_category PC, hims_d_item_group PG, hims_d_pharmacy_uom PU, \
-           hims_d_services SR where PM.category_id = PC.hims_d_item_category_id and \
-          PM.group_id = PG.hims_d_item_group_id and PM.stocking_uom_id=PU.hims_d_pharmacy_uom_id and \
-          PM.service_id= SR.hims_d_services_id and PM.item_status='A' and \
-          PM.record_status='A' and PC.record_status='A' and PG.record_status='A'",
+          PM.stocking_uom_id,PM.item_uom_id,PM.purchase_uom_id,PM.purchase_cost, PU.uom_description as purchase_uom_desc, \
+          PM.service_id, PM.group_id, PC.category_desc,SR.vat_percent,\
+          PG.group_description, SU.uom_description,SR.standard_fee from hims_d_item_master PM, \
+          hims_d_item_category PC, hims_d_item_group PG, hims_d_pharmacy_uom SU, hims_d_pharmacy_uom PU, \
+          hims_d_services SR where PM.category_id = PC.hims_d_item_category_id and \
+          PM.group_id = PG.hims_d_item_group_id and PM.stocking_uom_id=SU.hims_d_pharmacy_uom_id and \
+          PM.purchase_uom_id=PU.hims_d_pharmacy_uom_id and PM.service_id= SR.hims_d_services_id and \
+          PM.item_status='A' and PM.record_status='A' and PC.record_status='A' and PG.record_status='A'",
         orderBy: "PU.hims_d_pharmacy_uom_id desc ",
         inputSequence: [
           "pharmacy_location_id",
@@ -648,12 +649,12 @@ let algaehSearchConfig = (searchName, req) => {
         searchQuery:
           "select SQL_CALC_FOUND_ROWS IM.hims_d_inventory_item_master_id, IM.item_description, IM.category_id, \
           IM.stocking_uom_id,IM.item_uom_id,IM.purchase_uom_id,IM.purchase_cost,IM.service_id, IM.group_id, IC.category_desc,SR.vat_percent,\
-          IG.group_description, PU.uom_description,SR.standard_fee from hims_d_inventory_item_master IM, \
-          hims_d_inventory_tem_category IC, hims_d_inventory_item_group IG, hims_d_inventory_uom PU, \
+          IG.group_description, SU.uom_description, PU.uom_description as purchase_uom_desc,SR.standard_fee from hims_d_inventory_item_master IM, \
+          hims_d_inventory_tem_category IC, hims_d_inventory_item_group IG, hims_d_inventory_uom SU, hims_d_inventory_uom PU, \
            hims_d_services SR where IM.category_id = IC.hims_d_inventory_tem_category_id and \
-          IM.group_id = IG.hims_d_inventory_item_group_id and IM.stocking_uom_id=PU.hims_d_inventory_uom_id and \
-          IM.service_id= SR.hims_d_services_id and IM.item_status='A' and \
-          IM.record_status='A' and IC.record_status='A' and IG.record_status='A'",
+          IM.group_id = IG.hims_d_inventory_item_group_id and IM.stocking_uom_id=SU.hims_d_inventory_uom_id and \
+          IM.purchase_uom_id=PU.hims_d_inventory_uom_id and IM.service_id= SR.hims_d_services_id and \
+          IM.item_status='A' and IM.record_status='A' and IC.record_status='A' and IG.record_status='A'",
         orderBy: "IM.hims_d_inventory_item_master_id desc",
         inputSequence: [
           "inventory_location_id",
@@ -668,11 +669,12 @@ let algaehSearchConfig = (searchName, req) => {
         searchQuery:
           "select SQL_CALC_FOUND_ROWS IM.hims_d_inventory_item_master_id, IM.item_description, IM.category_id, \
           IM.stocking_uom_id,IM.sales_uom_id,IM.item_uom_id,IM.purchase_uom_id,IM.purchase_cost, IM.group_id, IC.category_desc,\
-          IG.group_description, PU.uom_description from hims_d_inventory_item_master IM, \
-          hims_d_inventory_tem_category IC, hims_d_inventory_item_group IG, hims_d_inventory_uom PU \
+          IG.group_description, SU.uom_description, PU.uom_description as purchase_uom_des from hims_d_inventory_item_master IM, \
+          hims_d_inventory_tem_category IC, hims_d_inventory_item_group IG, hims_d_inventory_uom SU,  hims_d_inventory_uom PU \
           where IM.category_id = IC.hims_d_inventory_tem_category_id and \
-          IM.group_id = IG.hims_d_inventory_item_group_id and IM.stocking_uom_id=PU.hims_d_inventory_uom_id and \
-           IM.item_status='A' and IM.record_status='A' and IC.record_status='A' and IG.record_status='A'",
+          IM.group_id = IG.hims_d_inventory_item_group_id and IM.stocking_uom_id=SU.hims_d_inventory_uom_id \
+          and IM.purchase_uom_id=PU.hims_d_inventory_uom_id and IM.item_status='A' and IM.record_status='A' and \
+          IC.record_status='A' and IG.record_status='A'",
         orderBy: "IM.hims_d_inventory_item_master_id desc",
         inputSequence: [
           "inventory_location_id",

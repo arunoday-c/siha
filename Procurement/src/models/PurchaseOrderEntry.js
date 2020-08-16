@@ -29,13 +29,20 @@ export default {
           if (headerResult.length != 0) {
             let strQuery = "";
 
-            let strCondition = "";
-            if (req.query.from === "DN") {
-              strCondition = " and quantity_outstanding > 0";
-            }
-            if (headerResult[0].po_from == "INV") {
+            if (headerResult[0].po_mode == "S") {
               strQuery = mysql.format(
-                "select PD.`hims_f_procurement_po_detail_id`, PD.`procurement_header_id`, PD.`phar_item_category`,\
+                "select PS.*, S.service_name from hims_f_procurement_po_services PS \
+                inner join hims_d_services S on S.hims_d_services_id = PS.services_id where procurement_header_id=?;",
+                [headerResult[0].hims_f_procurement_po_header_id]
+              );
+            } else {
+              let strCondition = "";
+              if (req.query.from === "DN") {
+                strCondition = " and quantity_outstanding > 0";
+              }
+              if (headerResult[0].po_from == "INV") {
+                strQuery = mysql.format(
+                  "select PD.`hims_f_procurement_po_detail_id`, PD.`procurement_header_id`, PD.`phar_item_category`,\
                    PD.`phar_item_group`, PD.`phar_item_id`, PD.`inv_item_category_id`, PD.`inv_item_group_id`,\
                    PD.`inv_item_id`, PD.`barcode`, PD.`order_quantity`, PD.`foc_quantity`, PD.`total_quantity`,\
                    PD.`pharmacy_uom_id`, PD.`inventory_uom_id`, PD.`unit_price`, PD.`extended_price`,\
@@ -55,12 +62,12 @@ export default {
                    and IC.hims_d_inventory_tem_category_id = PD.inv_item_category_id and \
                    IG.hims_d_inventory_item_group_id =PD.inv_item_group_id \
                    and procurement_header_id=?" +
-                strCondition,
-                [headerResult[0].hims_f_procurement_po_header_id]
-              );
-            } else if (headerResult[0].po_from == "PHR") {
-              strQuery = mysql.format(
-                "select PD.`hims_f_procurement_po_detail_id`, PD.`procurement_header_id`, PD.`phar_item_category`, PD.`phar_item_group`, PD.`phar_item_id`, \
+                  strCondition,
+                  [headerResult[0].hims_f_procurement_po_header_id]
+                );
+              } else if (headerResult[0].po_from == "PHR") {
+                strQuery = mysql.format(
+                  "select PD.`hims_f_procurement_po_detail_id`, PD.`procurement_header_id`, PD.`phar_item_category`, PD.`phar_item_group`, PD.`phar_item_id`, \
                 PD.`inv_item_category_id`, PD.`inv_item_group_id`, PD.`inv_item_id`, PD.`barcode`, PD.`order_quantity`, PD.`foc_quantity`, \
                 PD.`total_quantity`, PD.`pharmacy_uom_id`, PD.`inventory_uom_id`, PD.`unit_price`, PD.`extended_price`, PD.`sub_discount_percentage`, \
                 PD.`sub_discount_amount`, PD.`extended_cost`, PD.`unit_cost`, PD.`discount_percentage`, PD.`discount_amount`, PD.`net_extended_cost`, \
@@ -75,9 +82,10 @@ export default {
                 where PD.phar_item_id = IM.hims_d_item_master_id and PD.pharmacy_uom_id = PU.hims_d_pharmacy_uom_id \
                 and IM.stocking_uom_id = STOCK_UOM.hims_d_pharmacy_uom_id and IM.service_id = S.hims_d_services_id and \
                 IC.hims_d_item_category_id = PD.phar_item_category and IG.hims_d_item_group_id = PD.phar_item_group and procurement_header_id=?" +
-                strCondition,
-                [headerResult[0].hims_f_procurement_po_header_id]
-              );
+                  strCondition,
+                  [headerResult[0].hims_f_procurement_po_header_id]
+                );
+              }
             }
             _mysql
               .executeQuery({
@@ -138,16 +146,17 @@ export default {
             _mysql
               .executeQuery({
                 query:
-                  "INSERT INTO `hims_f_procurement_po_header` (purchase_number,po_date,po_type,po_from, pharmcy_location_id,\
-                inventory_location_id,location_type,vendor_id,on_hold, phar_requisition_id,\
+                  "INSERT INTO `hims_f_procurement_po_header` (purchase_number,po_date,po_mode,po_type,po_from, \
+                    pharmcy_location_id,inventory_location_id,location_type,vendor_id,on_hold, phar_requisition_id,\
                 inv_requisition_id, vendor_quotation_header_id,\
                 from_multiple_requisition, payment_terms, comment, sub_total, detail_discount, extended_total,sheet_level_discount_percent, \
                 sheet_level_discount_amount,description,net_total,total_tax, net_payable,created_by,created_date, \
-                updated_by,updated_date,hospital_id) \
-              VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                updated_by,updated_date,project_id,hospital_id) \
+              VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
                 values: [
                   purchase_number,
                   new Date(),
+                  input.po_mode,
                   input.po_type,
                   input.po_from,
                   input.pharmcy_location_id,
@@ -176,7 +185,8 @@ export default {
                   new Date(),
                   req.userIdentity.algaeh_d_app_user_id,
                   new Date(),
-                  req.userIdentity.hospital_id,
+                  input.project_id,
+                  input.po_mode === "I" ? req.userIdentity.hospital_id : input.hospital_id,
                 ],
                 printQuery: true,
               })
@@ -186,62 +196,106 @@ export default {
                   isTransactionConnection: _mysql.isTransactionConnection,
                   pool: _mysql.pool,
                 };
-                let IncludeValues = [
-                  "phar_item_category",
-                  "phar_item_group",
-                  "phar_item_id",
-                  "inv_item_category_id",
-                  "inv_item_group_id",
-                  "inv_item_id",
-                  "order_quantity",
-                  "total_quantity",
-                  "pharmacy_uom_id",
-                  "inventory_uom_id",
-                  "unit_price",
-                  "extended_price",
-                  "sub_discount_percentage",
-                  "sub_discount_amount",
-                  "extended_cost",
-                  "net_extended_cost",
-                  "unit_cost",
-                  "pharmacy_requisition_id",
-                  "inventory_requisition_id",
-                  "authorize_quantity",
-                  "tax_percentage",
-                  "tax_amount",
-                  "total_amount",
-                  "item_type",
-                  "quantity_outstanding",
-                  "rejected_quantity",
-                ];
+                let IncludeValues = []
+                if (input.po_mode === "I") {
+                  IncludeValues = [
+                    "phar_item_category",
+                    "phar_item_group",
+                    "phar_item_id",
+                    "inv_item_category_id",
+                    "inv_item_group_id",
+                    "inv_item_id",
+                    "order_quantity",
+                    "total_quantity",
+                    "pharmacy_uom_id",
+                    "inventory_uom_id",
+                    "unit_price",
+                    "extended_price",
+                    "sub_discount_percentage",
+                    "sub_discount_amount",
+                    "extended_cost",
+                    "net_extended_cost",
+                    "unit_cost",
+                    "pharmacy_requisition_id",
+                    "inventory_requisition_id",
+                    "authorize_quantity",
+                    "tax_percentage",
+                    "tax_amount",
+                    "total_amount",
+                    "item_type",
+                    "quantity_outstanding",
+                    "rejected_quantity",
+                  ];
 
-                _mysql
-                  .executeQuery({
-                    query:
-                      "INSERT INTO hims_f_procurement_po_detail(??) VALUES ?",
-                    values: input.po_entry_detail,
-                    includeValues: IncludeValues,
-                    extraValues: {
-                      procurement_header_id: headerResult.insertId,
-                    },
-                    bulkInsertOrUpdate: true,
-                    printQuery: true,
-                  })
-                  .then((detailResult) => {
-                    // _mysql.commitTransaction(() => {
-                    //   _mysql.releaseConnection();
-                    req.records = {
-                      purchase_number: purchase_number,
-                      hims_f_procurement_po_header_id: headerResult.insertId,
-                    };
-                    next();
-                    // });
-                  })
-                  .catch((error) => {
-                    _mysql.rollBackTransaction(() => {
-                      next(error);
+                  _mysql
+                    .executeQuery({
+                      query:
+                        "INSERT INTO hims_f_procurement_po_detail(??) VALUES ?",
+                      values: input.po_entry_detail,
+                      includeValues: IncludeValues,
+                      extraValues: {
+                        procurement_header_id: headerResult.insertId,
+                      },
+                      bulkInsertOrUpdate: true,
+                      printQuery: true,
+                    })
+                    .then((detailResult) => {
+                      // _mysql.commitTransaction(() => {
+                      //   _mysql.releaseConnection();
+                      req.records = {
+                        purchase_number: purchase_number,
+                        hims_f_procurement_po_header_id: headerResult.insertId,
+                      };
+                      next();
+                      // });
+                    })
+                    .catch((error) => {
+                      _mysql.rollBackTransaction(() => {
+                        next(error);
+                      });
                     });
-                  });
+                } else {
+                  IncludeValues = [
+                    "services_id",
+                    "unit_cost",
+                    "quantity",
+                    "extended_cost",
+                    "discount_percentage",
+                    "discount_amount",
+                    "net_extended_cost",
+                    "tax_percentage",
+                    "tax_amount",
+                    "total_amount"
+                  ];
+
+                  _mysql
+                    .executeQuery({
+                      query:
+                        "INSERT INTO hims_f_procurement_po_services(??) VALUES ?",
+                      values: input.po_services,
+                      includeValues: IncludeValues,
+                      extraValues: {
+                        procurement_header_id: headerResult.insertId,
+                      },
+                      bulkInsertOrUpdate: true,
+                      printQuery: true,
+                    })
+                    .then((detailResult) => {
+                      // _mysql.commitTransaction(() => {
+                      //   _mysql.releaseConnection();
+                      req.records = {
+                        purchase_number: purchase_number,
+                        hims_f_procurement_po_header_id: headerResult.insertId,
+                      };
+                      next();
+                      // });
+                    })
+                    .catch((error) => {
+                      _mysql.rollBackTransaction(() => {
+                        next(error);
+                      });
+                    });
+                }
               })
               .catch((e) => {
                 _mysql.rollBackTransaction(() => {
@@ -301,130 +355,218 @@ export default {
           })
           .then((headerResult) => {
             let strQuery = "";
-
-            if (input.delete_stock_detail.length > 0) {
-              strQuery += mysql.format(
-                "DELETE FROM hims_f_procurement_po_detail where hims_f_procurement_po_detail_id in (?);",
-                [input.delete_stock_detail]
-              );
-            }
-            const update_po_detail = _.filter(input.po_entry_detail, (f) => {
-              return (
-                f.hims_f_procurement_po_detail_id !== null &&
-                f.hims_f_procurement_po_detail_id !== undefined
-              );
-            });
-
-            if (update_po_detail.length > 0) {
-              for (let i = 0; i < update_po_detail.length; i++) {
+            let IncludeValues = []
+            if (input.po_mode === "I") {
+              if (input.delete_stock_detail.length > 0) {
                 strQuery += mysql.format(
-                  "UPDATE hims_f_procurement_po_detail set extended_price=?,sub_discount_percentage=?, \
-                sub_discount_amount=?,extended_cost=?,net_extended_cost=?,unit_cost=?,\
-                tax_amount=?,total_amount=? where hims_f_procurement_po_detail_id=?;",
-                  [
-                    update_po_detail[i].extended_price,
-                    update_po_detail[i].sub_discount_percentage,
-                    update_po_detail[i].sub_discount_amount,
-                    update_po_detail[i].extended_cost,
-                    update_po_detail[i].net_extended_cost,
-                    update_po_detail[i].unit_cost,
-                    update_po_detail[i].tax_amount,
-                    update_po_detail[i].total_amount,
-                    update_po_detail[i].hims_f_procurement_po_detail_id,
-                  ]
+                  "DELETE FROM hims_f_procurement_po_detail where hims_f_procurement_po_detail_id in (?);",
+                  [input.delete_stock_detail]
                 );
               }
-            }
+              const update_po_detail = _.filter(input.po_entry_detail, (f) => {
+                return (
+                  f.hims_f_procurement_po_detail_id !== null &&
+                  f.hims_f_procurement_po_detail_id !== undefined
+                );
+              });
 
-            const insert_po_detail = _.filter(input.po_entry_detail, (f) => {
-              return (
-                f.hims_f_procurement_po_detail_id === null ||
-                f.hims_f_procurement_po_detail_id === undefined
-              );
-            });
+              if (update_po_detail.length > 0) {
+                for (let i = 0; i < update_po_detail.length; i++) {
+                  strQuery += mysql.format(
+                    "UPDATE hims_f_procurement_po_detail set extended_price=?,sub_discount_percentage=?, \
+                sub_discount_amount=?,extended_cost=?,net_extended_cost=?,unit_cost=?,\
+                tax_amount=?,total_amount=? where hims_f_procurement_po_detail_id=?;",
+                    [
+                      update_po_detail[i].extended_price,
+                      update_po_detail[i].sub_discount_percentage,
+                      update_po_detail[i].sub_discount_amount,
+                      update_po_detail[i].extended_cost,
+                      update_po_detail[i].net_extended_cost,
+                      update_po_detail[i].unit_cost,
+                      update_po_detail[i].tax_amount,
+                      update_po_detail[i].total_amount,
+                      update_po_detail[i].hims_f_procurement_po_detail_id,
+                    ]
+                  );
+                }
+              }
 
-            if (insert_po_detail.length > 0) {
-              let IncludeValues = [
-                "phar_item_category",
-                "phar_item_group",
-                "phar_item_id",
-                "inv_item_category_id",
-                "inv_item_group_id",
-                "inv_item_id",
-                "order_quantity",
-                "total_quantity",
-                "pharmacy_uom_id",
-                "inventory_uom_id",
-                "unit_price",
-                "extended_price",
-                "sub_discount_percentage",
-                "sub_discount_amount",
-                "extended_cost",
-                "net_extended_cost",
-                "unit_cost",
-                "pharmacy_requisition_id",
-                "inventory_requisition_id",
-                "authorize_quantity",
-                "tax_percentage",
-                "tax_amount",
-                "total_amount",
-                "item_type",
-                "quantity_outstanding",
-                "rejected_quantity",
-              ];
+              const insert_po_detail = _.filter(input.po_entry_detail, (f) => {
+                return (
+                  f.hims_f_procurement_po_detail_id === null ||
+                  f.hims_f_procurement_po_detail_id === undefined
+                );
+              });
 
-              _mysql
-                .executeQuery({
-                  query:
-                    "INSERT INTO hims_f_procurement_po_detail(??) VALUES ?; " +
-                    strQuery,
-                  values: insert_po_detail,
-                  includeValues: IncludeValues,
-                  extraValues: {
-                    procurement_header_id:
-                      input.hims_f_procurement_po_header_id,
-                  },
-                  bulkInsertOrUpdate: true,
-                  printQuery: true,
-                })
-                .then((detailResult) => {
-                  _mysql.commitTransaction(() => {
-                    _mysql.releaseConnection();
-                    req.records = {
-                      purchase_number: input.purchase_number,
-                      hims_f_procurement_po_header_id:
+              if (insert_po_detail.length > 0) {
+                IncludeValues = [
+                  "phar_item_category",
+                  "phar_item_group",
+                  "phar_item_id",
+                  "inv_item_category_id",
+                  "inv_item_group_id",
+                  "inv_item_id",
+                  "order_quantity",
+                  "total_quantity",
+                  "pharmacy_uom_id",
+                  "inventory_uom_id",
+                  "unit_price",
+                  "extended_price",
+                  "sub_discount_percentage",
+                  "sub_discount_amount",
+                  "extended_cost",
+                  "net_extended_cost",
+                  "unit_cost",
+                  "pharmacy_requisition_id",
+                  "inventory_requisition_id",
+                  "authorize_quantity",
+                  "tax_percentage",
+                  "tax_amount",
+                  "total_amount",
+                  "item_type",
+                  "quantity_outstanding",
+                  "rejected_quantity",
+                ];
+
+                _mysql
+                  .executeQuery({
+                    query:
+                      "INSERT INTO hims_f_procurement_po_detail(??) VALUES ?; " +
+                      strQuery,
+                    values: insert_po_detail,
+                    includeValues: IncludeValues,
+                    extraValues: {
+                      procurement_header_id:
                         input.hims_f_procurement_po_header_id,
-                    };
-                    next();
+                    },
+                    bulkInsertOrUpdate: true,
+                    printQuery: true,
+                  })
+                  .then((detailResult) => {
+                    _mysql.commitTransaction(() => {
+                      _mysql.releaseConnection();
+                      req.records = {
+                        purchase_number: input.purchase_number,
+                        hims_f_procurement_po_header_id:
+                          input.hims_f_procurement_po_header_id,
+                      };
+                      next();
+                    });
+                  })
+                  .catch((error) => {
+                    _mysql.rollBackTransaction(() => {
+                      next(error);
+                    });
                   });
-                })
-                .catch((error) => {
-                  _mysql.rollBackTransaction(() => {
-                    next(error);
+              } else {
+                _mysql
+                  .executeQuery({
+                    query: strQuery,
+                    printQuery: true,
+                  })
+                  .then((result) => {
+                    _mysql.commitTransaction(() => {
+                      _mysql.releaseConnection();
+                      req.records = {
+                        purchase_number: input.purchase_number,
+                        hims_f_procurement_po_header_id:
+                          input.hims_f_procurement_po_header_id,
+                      };
+                      next();
+                    });
+                  })
+                  .catch((error) => {
+                    _mysql.rollBackTransaction(() => {
+                      next(error);
+                    });
                   });
-                });
+              }
             } else {
-              _mysql
-                .executeQuery({
-                  query: strQuery,
-                  printQuery: true,
-                })
-                .then((result) => {
-                  _mysql.commitTransaction(() => {
-                    _mysql.releaseConnection();
-                    req.records = {
-                      purchase_number: input.purchase_number,
-                      hims_f_procurement_po_header_id:
+              console.log("input.delete_po_services", input.delete_po_services)
+              console.log("input.po_services", input.po_services)
+              if (input.delete_po_services.length > 0) {
+                strQuery += mysql.format(
+                  "DELETE FROM hims_f_procurement_po_services where hims_f_procurement_po_services_id in (?);",
+                  [input.delete_po_services]
+                );
+              } else {
+                strQuery += "select 1=1"
+              }
+
+              const insert_po_detail = _.filter(input.po_services, (f) => {
+                return (
+                  f.hims_f_procurement_po_services_id === null ||
+                  f.hims_f_procurement_po_services_id === undefined
+                );
+              });
+
+              if (insert_po_detail.length > 0) {
+                IncludeValues = [
+                  "services_id",
+                  "unit_cost",
+                  "quantity",
+                  "extended_cost",
+                  "discount_percentage",
+                  "discount_amount",
+                  "net_extended_cost",
+                  "tax_percentage",
+                  "tax_amount",
+                  "total_amount"
+                ];
+
+                _mysql
+                  .executeQuery({
+                    query:
+                      "INSERT INTO hims_f_procurement_po_services(??) VALUES ?; " +
+                      strQuery,
+                    values: insert_po_detail,
+                    includeValues: IncludeValues,
+                    extraValues: {
+                      procurement_header_id:
                         input.hims_f_procurement_po_header_id,
-                    };
-                    next();
+                    },
+                    bulkInsertOrUpdate: true,
+                    printQuery: true,
+                  })
+                  .then((detailResult) => {
+                    _mysql.commitTransaction(() => {
+                      _mysql.releaseConnection();
+                      req.records = {
+                        purchase_number: input.purchase_number,
+                        hims_f_procurement_po_header_id:
+                          input.hims_f_procurement_po_header_id,
+                      };
+                      next();
+                    });
+                  })
+                  .catch((error) => {
+                    _mysql.rollBackTransaction(() => {
+                      next(error);
+                    });
                   });
-                })
-                .catch((error) => {
-                  _mysql.rollBackTransaction(() => {
-                    next(error);
+              } else {
+                _mysql
+                  .executeQuery({
+                    query: strQuery,
+                    printQuery: true,
+                  })
+                  .then((result) => {
+                    _mysql.commitTransaction(() => {
+                      _mysql.releaseConnection();
+                      req.records = {
+                        purchase_number: input.purchase_number,
+                        hims_f_procurement_po_header_id:
+                          input.hims_f_procurement_po_header_id,
+                      };
+                      next();
+                    });
+                  })
+                  .catch((error) => {
+                    _mysql.rollBackTransaction(() => {
+                      next(error);
+                    });
                   });
-                });
+              }
             }
           })
           .catch((e) => {
@@ -443,8 +585,7 @@ export default {
   updatePurchaseOrderEntry: (req, res, next) => {
     const _mysql = new algaehMysql();
     let qryExecute = false;
-    const utilities = new algaehUtilities();
-    utilities.logger().log("updatePurchaseOrderEntry: ");
+
     try {
       let buffer = "";
       req.on("data", (chunk) => {
@@ -455,14 +596,14 @@ export default {
         let inputParam = JSON.parse(buffer);
         req.body = inputParam;
         req.mySQl = _mysql;
-        // let inputParam = { ...req.body };
-        utilities.logger().log("inputParam: ", inputParam);
+
         _mysql
           .executeQueryWithTransaction({
             query:
-              "UPDATE `hims_f_procurement_po_header` SET `authorize1`=?, `authorize_by_date`=?, `authorize_by_1`=?, \
+              "UPDATE `hims_f_procurement_po_header` SET is_completed = ?, `authorize1`=?, `authorize_by_date`=?, `authorize_by_1`=?, \
             `authorize2`=?, `authorize2_date`=?, `authorize2_by`=? WHERE `hims_f_procurement_po_header_id`=?",
             values: [
+              inputParam.is_completed,
               inputParam.authorize1,
               new Date(),
               req.userIdentity.algaeh_d_app_user_id,
@@ -479,51 +620,56 @@ export default {
               isTransactionConnection: _mysql.isTransactionConnection,
               pool: _mysql.pool,
             };
-            utilities.logger().log("headerResult: ");
             if (headerResult != null) {
+              console.log("inputParam.po_entry_detail", inputParam.po_entry_detail)
               let details = inputParam.po_entry_detail;
 
-              let qry = "";
+              if (details.length > 0) {
+                let qry = "";
 
-              for (let i = 0; i < details.length; i++) {
-                utilities.logger().log("details: ");
-                qry += mysql.format(
-                  "UPDATE hims_f_procurement_po_detail SET `authorize_quantity`=?, rejected_quantity=?,\
-                quantity_recieved=?, quantity_outstanding=?\
-              where `hims_f_procurement_po_detail_id`=?;",
-                  [
-                    details[i].authorize_quantity,
-                    details[i].rejected_quantity,
-                    details[i].quantity_recieved,
-                    details[i].quantity_outstanding,
-                    details[i].hims_f_procurement_po_detail_id,
-                  ]
-                );
+                for (let i = 0; i < details.length; i++) {
+                  qry += mysql.format(
+                    "UPDATE hims_f_procurement_po_detail SET `authorize_quantity`=?, rejected_quantity=?,\
+                      quantity_recieved=?, quantity_outstanding=?\
+                      where `hims_f_procurement_po_detail_id`=?;",
+                    [
+                      details[i].authorize_quantity,
+                      details[i].rejected_quantity,
+                      details[i].quantity_recieved,
+                      details[i].quantity_outstanding,
+                      details[i].hims_f_procurement_po_detail_id,
+                    ]
+                  );
 
-                if (i == details.length - 1) {
-                  utilities.logger().log("if Data: ");
-                  qryExecute = true;
+                  if (i == details.length - 1) {
+                    qryExecute = true;
+                  }
                 }
-              }
-              utilities.logger().log("qryExecute: ", qryExecute);
-              if (qryExecute == true) {
-                _mysql
-                  .executeQuery({
-                    query: qry,
-                    printQuery: true,
-                  })
-                  .then((detailResult) => {
-                    _mysql.commitTransaction(() => {
-                      _mysql.releaseConnection();
-                      req.records = detailResult;
-                      next();
+                if (qryExecute == true) {
+                  _mysql
+                    .executeQuery({
+                      query: qry,
+                      printQuery: true,
+                    })
+                    .then((detailResult) => {
+                      _mysql.commitTransaction(() => {
+                        _mysql.releaseConnection();
+                        req.records = detailResult;
+                        next();
+                      });
+                    })
+                    .catch((e) => {
+                      _mysql.rollBackTransaction(() => {
+                        next(e);
+                      });
                     });
-                  })
-                  .catch((e) => {
-                    _mysql.rollBackTransaction(() => {
-                      next(e);
-                    });
-                  });
+                }
+              } else {
+                _mysql.commitTransaction(() => {
+                  _mysql.releaseConnection();
+                  req.records = headerResult;
+                  next();
+                });
               }
             } else {
               _mysql.rollBackTransaction(() => {
@@ -569,7 +715,8 @@ export default {
           when  is_posted = 'Y' and authorize1 = 'N' then 'Autorization 1 Pending'\
           when authorize1 = 'Y' and authorize2 = 'N'  then 'Final Autorization Pending'\
           when authorize1 = 'Y' and authorize2 = 'Y' and is_completed='N'  then 'Delivery Pending'\
-          when is_completed='Y'  then 'Delivery Completed' end status \
+          when is_completed='Y'  and receipt_generated ='N' then 'Delivery Completed' \
+          when is_completed='Y'  and receipt_generated ='Y' then 'PO Closed' end status \
           from  hims_f_procurement_po_header PO \
           inner join hims_d_vendor V on PO.vendor_id = V.hims_d_vendor_id \
           inner join algaeh_d_app_user US on PO.created_by = US.algaeh_d_app_user_id \
