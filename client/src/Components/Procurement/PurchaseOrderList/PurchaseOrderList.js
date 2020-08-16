@@ -41,12 +41,13 @@ class PurchaseOrderList extends Component {
       po_from: null,
       to_location_id: null,
       purchase_list: [],
-      inv_access: false,
-      phr_access: false,
+      bothExisits: false,
       authorize1: "Y",
       poSelected: true,
       status: "1",
     };
+
+    let bothExisits = false, poSelected = false;
 
     RawSecurityComponent({ componentCode: "PUR_AUT_AUTH2" }).then((result) => {
       if (result === "show") {
@@ -57,12 +58,13 @@ class PurchaseOrderList extends Component {
     RawSecurityComponent({ componentCode: "PUR_AUTH_INVENTORY" }).then(
       (result) => {
         if (result === "show") {
+          bothExisits = false;
+          poSelected = false
           this.setState(
             {
               po_from: "INV",
-              inv_access: true,
-              poSelected: false,
               status: status,
+              bothExisits: false
             },
             () => {
               getData(this);
@@ -76,16 +78,25 @@ class PurchaseOrderList extends Component {
     RawSecurityComponent({ componentCode: "PUR_AUTH_PHARMACY" }).then(
       (result) => {
         if (result === "show") {
+          debugger
           this.setState(
             {
               po_from: "PHR",
-              poSelected: false,
-              phr_access: true,
-              status: status,
+              bothExisits: bothExisits === false ? false : true,
+              poSelected: poSelected === false ? false : true,
+              status: bothExisits === false ? status : "0",
             },
             () => {
               getData(this);
               getPurchaseOrderList(this);
+            }
+          );
+        } else {
+          this.setState(
+            {
+              bothExisits: true,
+              poSelected: poSelected === false ? false : true,
+              status: bothExisits === false ? status : "0",
             }
           );
         }
@@ -165,8 +176,7 @@ class PurchaseOrderList extends Component {
                       data: GlobalVariables.PO_FROM,
                     },
                     others: {
-                      disabled:
-                        !this.state.inv_access && !this.state.phr_access,
+                      disabled: this.state.bothExisits,
                     },
                     onChange: poforhandle.bind(this, this),
                     onClear: poforhandle.bind(this, this),

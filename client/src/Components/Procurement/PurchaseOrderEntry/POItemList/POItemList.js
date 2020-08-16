@@ -130,7 +130,7 @@ export default class POItemList extends Component {
                           onChange: itemchangeText.bind(this, this, context),
                         }}
                       /> */}
-                      <div className="col">
+                      {/* <div className="col">
                         <AlgaehLabel
                           label={{
                             forceLabel: "Item Category",
@@ -153,7 +153,7 @@ export default class POItemList extends Component {
                             ? this.state.group_description
                             : "-----------"}
                         </h6>
-                      </div>
+                      </div> */}
                       <div className="col">
                         <AlgaehLabel
                           label={{
@@ -418,30 +418,45 @@ export default class POItemList extends Component {
                                 minWidth: 200,
                               },
                             },
+                            // {
+                            //   fieldName: "category_desc",
+
+                            //   label: (
+                            //     <AlgaehLabel
+                            //       label={{ forceLabel: "Item Category" }}
+                            //     />
+                            //   ),
+                            //   others: {
+                            //     minWidth: 150,
+                            //   },
+                            // },
+                            // {
+                            //   fieldName: "group_description",
+
+                            //   label: (
+                            //     <AlgaehLabel
+                            //       label={{ forceLabel: "Item Group" }}
+                            //     />
+                            //   ),
+                            //   others: {
+                            //     minWidth: 150,
+                            //   }
+                            // },
+
                             {
-                              fieldName: "category_desc",
+                              fieldName: "purchase_uom_desc",
 
                               label: (
                                 <AlgaehLabel
-                                  label={{ forceLabel: "Item Category" }}
+                                  label={{ forceLabel: "UOM" }}
                                 />
                               ),
                               others: {
                                 minWidth: 150,
-                              },
-                            },
-                            {
-                              fieldName: "group_description",
-
-                              label: (
-                                <AlgaehLabel
-                                  label={{ forceLabel: "Item Group" }}
-                                />
-                              ),
-                              others: {
-                                minWidth: 150,
+                                filterable: false
                               }
                             },
+
 
                             {
                               fieldName: "unit_price",

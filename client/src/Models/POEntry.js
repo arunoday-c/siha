@@ -85,7 +85,6 @@ export default {
       delete_po_services: [],
       bothExisits: true,
       po_mode: "I",
-      cost_projects: [],
       organizations: [],
       hospital_id: null,
       project_id: null,
