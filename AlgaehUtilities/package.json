@@ -10,6 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "axios": "^0.19.2",
     "cryptr": "^4.0.0",
     "exceljs": "^1.7.0",
     "fs-extra": "^9.0.0",

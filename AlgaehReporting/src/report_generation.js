@@ -627,25 +627,34 @@ export default {
                           }
                         });
                       } else {
-                        fs.exists(_reportOutput[0], (exists) => {
+                        if (_inputParam["sendPath"] === true) {
                           _mysql.releaseConnection();
-                          if (exists) {
-                            res.writeHead(200, {
-                              "content-type": "application/pdf",
-                              "content-disposition":
-                                "attachment;filename=" + _outfileName,
-                            });
-                            const _fs = fs.createReadStream(_reportOutput[0]);
-                            _fs.on("end", () => {
-                              fs.unlink(_reportOutput[0]);
-                            });
-                            _fs.pipe(res);
-                          } else {
-                            res
-                              .status(400)
-                              .send({ error: "ERROR File does not exist" });
-                          }
-                        });
+                          res
+                            .status(200)
+                            .json({ path: _reportOutput[0] })
+                            .end();
+                        } else {
+                          fs.exists(_reportOutput[0], (exists) => {
+                            _mysql.releaseConnection();
+                            if (exists) {
+                              res.writeHead(200, {
+                                "content-type": "application/pdf",
+                                "content-disposition":
+                                  "attachment;filename=" + _outfileName,
+                              });
+                              const _fs = fs.createReadStream(_reportOutput[0]);
+                              _fs.on("end", () => {
+                                fs.unlink(_reportOutput[0]);
+                              });
+                              _fs.pipe(res);
+                            } else {
+                              _mysql.releaseConnection();
+                              res
+                                .status(400)
+                                .send({ error: "ERROR File does not exist" });
+                            }
+                          });
+                        }
                       }
                     }
                   };
