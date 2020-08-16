@@ -38,7 +38,7 @@ export default class SalesOrdListService extends Component {
       quantity: 0,
       discount_percentage: 0,
       unit_cost: 0,
-      tax_percent: 0,
+      tax_percentage: 0,
       service_frequency: null,
       comments: "",
     };
@@ -187,7 +187,7 @@ export default class SalesOrdListService extends Component {
                     <AlagehFormGroup
                       div={{ className: "col-6", }}
                       label={{
-                        fieldName: "tax_percentage",
+                        fieldName: "tax percentage",
                         isImp: this.state.Applicable,
                       }}
                       textBox={{

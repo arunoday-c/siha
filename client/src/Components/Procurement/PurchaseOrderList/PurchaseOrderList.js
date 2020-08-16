@@ -107,25 +107,25 @@ class PurchaseOrderList extends Component {
               />
             }
             breadStyle={this.props.breadStyle}
-            // pageNavPath={[
-            //   {
-            //     pageName: (
-            //       <AlgaehLabel
-            //         label={{
-            //           forceLabel: "Home",
-            //           align: "ltr",
-            //         }}
-            //       />
-            //     ),
-            //   },
-            //   {
-            //     pageName: (
-            //       <AlgaehLabel
-            //         label={{ forceLabel: "Purchase Auth List", align: "ltr" }}
-            //       />
-            //     ),
-            //   },
-            // ]}
+          // pageNavPath={[
+          //   {
+          //     pageName: (
+          //       <AlgaehLabel
+          //         label={{
+          //           forceLabel: "Home",
+          //           align: "ltr",
+          //         }}
+          //       />
+          //     ),
+          //   },
+          //   {
+          //     pageName: (
+          //       <AlgaehLabel
+          //         label={{ forceLabel: "Purchase Auth List", align: "ltr" }}
+          //       />
+          //     ),
+          //   },
+          // ]}
           />
           <div
             className="row inner-top-search"
@@ -277,9 +277,17 @@ class PurchaseOrderList extends Component {
                         fieldName: "status",
                         label: <AlgaehLabel label={{ forceLabel: "Status" }} />,
                         displayTemplate: (row) => {
-                          return row.status === "Delivery Completed" ? (
+                          return row.status === "Delivery Completed" && row.po_mode === "I" ? (
                             <span className="badge badge-success">
-                              Delivery Completed
+                              Delivery Completed / Receipt Pending
+                            </span>
+                          ) : row.status === "Delivery Completed" && row.po_mode === "S" ? (
+                            <span className="badge badge-success">
+                              Receipt Pending
+                            </span>
+                          ) : row.status === "PO Closed" ? (
+                            <span className="badge badge-success">
+                              PO Closed
                             </span>
                           ) : row.status === "Delivery Pending" ? (
                             <span className="badge badge-warning">
@@ -361,21 +369,21 @@ class PurchaseOrderList extends Component {
 
                           this.state.po_from === "PHR"
                             ? (display =
-                                this.props.polocations === undefined
-                                  ? []
-                                  : this.props.polocations.filter(
-                                      (f) =>
-                                        f.hims_d_pharmacy_location_id ===
-                                        row.pharmcy_location_id
-                                    ))
+                              this.props.polocations === undefined
+                                ? []
+                                : this.props.polocations.filter(
+                                  (f) =>
+                                    f.hims_d_pharmacy_location_id ===
+                                    row.pharmcy_location_id
+                                ))
                             : (display =
-                                this.props.polocations === undefined
-                                  ? []
-                                  : this.props.polocations.filter(
-                                      (f) =>
-                                        f.hims_d_inventory_location_id ===
-                                        row.inventory_location_id
-                                    ));
+                              this.props.polocations === undefined
+                                ? []
+                                : this.props.polocations.filter(
+                                  (f) =>
+                                    f.hims_d_inventory_location_id ===
+                                    row.inventory_location_id
+                                ));
 
                           return (
                             <span>

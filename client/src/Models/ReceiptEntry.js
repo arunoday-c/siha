@@ -1,5 +1,5 @@
 export default {
-  inputParam: function(param) {
+  inputParam: function (param) {
     var output;
 
     output = {
@@ -51,7 +51,11 @@ export default {
       postEnable: true,
       poSelected: false,
       location_name: null,
-      vendor_name: null
+      vendor_name: null,
+      receipt_mode: "I",
+      receipt_entry_detail_services: [],
+      hospital_name: null,
+      project_desc: null
     };
     return output;
   }

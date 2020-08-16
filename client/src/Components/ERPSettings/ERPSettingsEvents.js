@@ -96,6 +96,7 @@ const savePOOptions = ($this) => {
     let inputObj = {
         hims_d_procurement_options_id: $this.state.hims_d_procurement_options_id,
         po_auth_level: $this.state.po_auth_level,
+        po_services: $this.state.po_services
     }
     if (inputObj.hims_d_procurement_options_id !== null) {
         algaehApiCall({

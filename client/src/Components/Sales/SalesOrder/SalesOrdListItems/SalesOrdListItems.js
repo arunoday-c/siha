@@ -42,7 +42,7 @@ class SalesOrdListItems extends Component {
             uom_description: null,
             discount_percentage: 0,
             unit_cost: 0,
-            tax_percent: 0
+            tax_percentage: 0
         };
     }
 
@@ -227,7 +227,7 @@ class SalesOrdListItems extends Component {
                                         <AlagehFormGroup
                                             div={{ className: "col-6", }}
                                             label={{
-                                                fieldName: "tax_percentage",
+                                                fieldName: "tax percentage",
                                                 isImp: this.state.Applicable,
                                             }}
                                             textBox={{

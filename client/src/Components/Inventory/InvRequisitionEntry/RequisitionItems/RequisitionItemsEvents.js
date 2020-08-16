@@ -82,19 +82,21 @@ const itemchangeText = ($this, context, e) => {
             set: "From",
           });
 
+          debugger;
+
           $this.setState({
             [name]: value,
             item_description: e.item_description,
             item_code: e.item_code,
             item_category_id: e.category_id,
-            item_uom: e.sales_uom_id,
+            item_uom: e.purchase_uom_id,
             item_id: e.hims_d_inventory_item_master_id,
             item_group_id: e.group_id,
             quantity: 1,
             barcode: e.barcode,
             addItemButton: false,
             group_description: e.group_description,
-            uom_description: e.uom_description,
+            uom_description: e.purchase_uom_des,
             category_desc: e.category_desc,
 
             ItemUOM: data,
@@ -107,7 +109,7 @@ const itemchangeText = ($this, context, e) => {
               item_description: e.item_description,
               item_code: e.item_code,
               item_category_id: e.category_id,
-              item_uom: e.sales_uom_id,
+              item_uom: e.purchase_uom_id,
               item_id: e.hims_d_inventory_item_master_id,
 
               item_group_id: e.group_id,
@@ -116,7 +118,7 @@ const itemchangeText = ($this, context, e) => {
               addItemButton: false,
 
               group_description: e.group_description,
-              uom_description: e.uom_description,
+              uom_description: e.purchase_uom_des,
               category_desc: e.category_desc,
 
               ItemUOM: data,
@@ -329,8 +331,8 @@ const deleteRequisitionDetail = ($this, context, row) => {
     $this.props.requisition_auth === true
       ? true
       : inventory_stock_detail.length > 0
-      ? false
-      : true;
+        ? false
+        : true;
   let authBtnEnable = inventory_stock_detail.length > 0 ? false : true;
 
   $this.setState({ inventory_stock_detail: inventory_stock_detail });
