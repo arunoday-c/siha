@@ -341,7 +341,7 @@ const ClearData = ($this, e) => {
     narration: null,
     project_id: null,
     customer_po_no: null,
-    tax_percentage: null,
+    // tax_percentage: null,
     invoice_files: [],
     invoice_docs: [],
     docChanged: false,
