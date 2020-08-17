@@ -200,7 +200,7 @@ export function AdvanceModal({
         onCancel={onClose}
         footer={null}
         width={1080}
-        className={`advanceRefundModal`}
+        className={`algaehNewModal advanceRefundModal`}
       >
         <div className="col-12 popupInner margin-top-15">
           <div className="row">
@@ -422,7 +422,7 @@ export function AdvanceModal({
             </div>
           </div>
         </div>
-        <div className=" popupFooter">
+        <div className="popupFooter">
           <div className="col-lg-12">
             <div className="row">
               <div className="col-lg-12">

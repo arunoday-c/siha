@@ -131,7 +131,7 @@ export default class ProjectPayrollSalaryBreakup extends PureComponent {
                       <div className="row">
                         <div className="col-lg-12" id="Salary_Earning_Cntr">
                           <AlgaehDataGrid
-                            id="Salary_Earning_Cntr_grid"
+                            id="ProjectSalary_Earning_Cntr_grid"
                             columns={[
                               {
                                 fieldName: "earning_deduction_description",
