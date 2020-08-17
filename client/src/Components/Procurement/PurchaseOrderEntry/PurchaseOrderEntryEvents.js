@@ -948,39 +948,66 @@ const getPOOptions = ($this) => {
   });
 };
 const getReportForMail = (data, vedorData) => {
-  let vendorEmail = vedorData.filter(
-    (item) => item.hims_d_vendor_id === data.vendor_id
-  )[0].email_id_1;
-
-  algaehApiCall({
-    uri: "/PurchaseOrderEntry/getReportForMail",
-    module: "procurement",
-    method: "GET",
-    // data: {
-    //   report: {
-    //     reportName:
-    //       data.po_from === "PHR"
-    //         ? "poPharmacyProcurement"
-    //         : "poInventoryProcurement",
-    //     reportParams: [
-    //       {
-    //         name: "purchase_number",
-    //         value: data.purchase_number,
-    //       },
-    //     ],
-    //     outputFileType: "PDF",
-    //   },
-    //   vendor_email: vendorEmail,
-    //   subject: "test",
-    // },
-    data: {
-      purchase_number: data.purchase_number,
-      vendor_email: vendorEmail,
-      po_from: data.po_from,
-    },
-    onSuccess: (res) => {
-      console.log("data:", res.data);
-    },
+  return new Promise((resolve, reject) => {
+    try {
+      const {
+        net_total,
+        po_from,
+        purchase_number,
+        vendor_id,
+        location_name,
+        po_date,
+        vendor_name,
+      } = data;
+      let vendorEmail = vedorData.find(
+        (item) => item.hims_d_vendor_id === vendor_id
+      );
+      const { email_id_1, email_id_2 } = vendorEmail;
+      if (
+        (email_id_1 === undefined || email_id_1 === "") &&
+        (email_id_2 === undefined || email_id_2 === "")
+      ) {
+        swal({
+          title: "There is no email configured for this vendor.",
+          type: "error",
+        });
+        return;
+      }
+      algaehApiCall({
+        uri: "/PurchaseOrderEntry/getReportForMail",
+        module: "procurement",
+        method: "GET",
+        data: {
+          purchase_number: purchase_number,
+          vendor_email: email_id_1
+            ? email_id_1
+            : email_id_2
+            ? email_id_2
+            : email_id_1,
+          po_from: po_from,
+          net_total,
+          location_name,
+          po_date,
+          vendor_name,
+        },
+        onSuccess: (res) => {
+          swal({
+            title: "Successfully Sent",
+            type: "success",
+          });
+          resolve();
+        },
+        onCatch: (error) => {
+          swal({
+            title: error.message,
+            type: "error",
+          });
+          reject();
+        },
+      });
+    } catch (e) {
+      reject(e);
+    }
   });
 };
 

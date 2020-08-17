@@ -135,11 +135,10 @@ export default () => {
       });
     }
   );
-  api.get("/getReportForMail", getReportForMail, (req, res, next) => {
-    console.log("req", req);
+  api.get("/getReportForMail", getReportForMail, (req, res) => {
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
       success: true,
-      records: req.records,
+      records: "Message Sent Successfully",
     });
   });
 

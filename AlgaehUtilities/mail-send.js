@@ -97,11 +97,10 @@ algaehMail.prototype.attachReportsAndSend = function (
   //const result = await
   reportEngine(req, inputArray)
     .then((result) => {
-      this.deletePath = true;
-
-      this.mailOptions["attachments"] = result.map((item) => {
+      this.deletePath = result.map((item) => {
         return { path: item.data.path, filename: item.data.filename };
       });
+      this.mailOptions["attachments"] = this.deletePath;
       this.send()
         .then((result) => {
           if (typeof callBack === "function") callBack(null, result);
@@ -200,7 +199,8 @@ algaehMail.prototype.send = function (printInput) {
       (async () => {
         if (this.hbsFilePath !== undefined && this.hbsFilePath !== "") {
           const htmlFile = await fs.readFile(this.hbsFilePath, "utf-8");
-          this.mailOptions["html"] = await hbs.compile(htmlFile)(this.hbsData);
+          const validHtml = await hbs.compile(htmlFile)(this.hbsData);
+          this.mailOptions["html"] = validHtml;
         }
 
         this.transporter
@@ -209,9 +209,8 @@ algaehMail.prototype.send = function (printInput) {
             this.transporter.close();
             this.hbsFilePath = undefined;
             this.hbsData = undefined;
-
-            if (this.deletePath === true) {
-              this.attachments.map((item) => {
+            if (this.deletePath) {
+              this.deletePath.map((item) => {
                 fs.exists(item.path, (exists) => {
                   if (exists) fs.unlink(item.path);
                 });
@@ -223,8 +222,8 @@ algaehMail.prototype.send = function (printInput) {
             this.transporter.close();
             this.hbsFilePath = undefined;
             this.hbsData = undefined;
-            if (this.deletePath === true) {
-              this.attachments.map((item) => {
+            if (this.deletePath) {
+              this.deletePath.map((item) => {
                 fs.exists(item.path, (exists) => {
                   if (exists) fs.unlink(item.path);
                 });
@@ -234,8 +233,8 @@ algaehMail.prototype.send = function (printInput) {
           });
       })();
     } catch (error) {
-      if (this.deletePath === true) {
-        this.attachments.map((item) => {
+      if (this.deletePath) {
+        this.deletePath.map((item) => {
           fs.exists(item.path, (exists) => {
             if (exists) fs.unlink(item.path);
           });

@@ -39,6 +39,7 @@ import { MainContext } from "algaeh-react-components";
 import {
   AlgaehSecurityComponent,
   RawSecurityComponent,
+  AlgaehButton,
 } from "algaeh-react-components";
 import { GetAmountFormart } from "../../../utils/GlobalFunctions";
 
@@ -50,7 +51,7 @@ class PurchaseOrderEntry extends Component {
       decimal_places: null,
       po_services_req: "N",
       cost_projects: [],
-
+      mailSend: false,
       // po_auth_level: "1"
     };
     getVendorMaster(this, this);
@@ -680,19 +681,18 @@ class PurchaseOrderEntry extends Component {
                     />
                   </button>
                 ) : null}
-                <button
-                  type="button"
-                  className="btn btn-other"
-                  // disabled={
-                  //   this.state.authBtnEnable === true
-                  //     ? true
-                  //     : this.state.authorize2 === "Y" ||
-                  //       this.state.cancelled === "Y"
-                  //       ? true
-                  //       : false
-                  // }
+                <AlgaehButton
+                  loading={this.state.mailSend}
                   onClick={() => {
-                    getReportForMail(this.state, this.props.povendors);
+                    this.setState({ mailSend: true }, () => {
+                      getReportForMail(this.state, this.props.povendors)
+                        .then(() => {
+                          this.setState({ mailSend: false });
+                        })
+                        .catch(() => {
+                          this.setState({ mailSend: false });
+                        });
+                    });
                   }}
                 >
                   <AlgaehLabel
@@ -701,7 +701,7 @@ class PurchaseOrderEntry extends Component {
                       returnText: true,
                     }}
                   />
-                </button>
+                </AlgaehButton>
               </div>
               <div className="col-8">
                 <button

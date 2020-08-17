@@ -1153,7 +1153,20 @@ export default {
     }
   },
   getReportForMail: (req, res, next) => {
-    const { vendor_email, po_from, purchase_number } = req.query;
+    const {
+      hospital_address,
+      hospital_name,
+      currency_symbol,
+    } = req.userIdentity;
+    const {
+      vendor_email,
+      po_from,
+      purchase_number,
+      location_name,
+      po_date,
+      net_total,
+      vendor_name,
+    } = req.query;
 
     // const _mysql = new algaehMysql();
     try {
@@ -1174,9 +1187,20 @@ export default {
           },
         },
       ];
+
       new algaehMail()
         .to(vendor_email)
         .subject("Purchase Order Report")
+        .templateHbs("purchaseOrder.hbs", {
+          hospital_address,
+          hospital_name,
+          purchase_number,
+          location_name,
+          po_date,
+          net_total,
+          vendor_name,
+          currency_symbol,
+        })
         .attachReportsAndSend(req, reportInput, (error, records) => {
           if (error) {
             next(error);

@@ -633,7 +633,7 @@ export default {
                             .status(200)
                             .json({
                               path: _reportOutput[0],
-                              filename: _inputParam.reportName + ".pdf",
+                              filename: _data.report_name_for_header + ".pdf",
                             })
                             .end();
                         } else {
