@@ -431,7 +431,7 @@ export default {
           billed: req.body.billed,
           ordered_date: s.created_date,
           test_type: s.test_type,
-          // test_id: s.test_id
+          test_id: s.test_id
         };
       });
 
@@ -445,7 +445,7 @@ export default {
           "billed",
           "ordered_date",
           "test_type",
-          // "test_id",
+          "test_id",
         ];
 
         _mysql
@@ -468,10 +468,9 @@ export default {
             _mysql
               .executeQuery({
                 query:
-                  "SELECT T.hims_d_investigation_test_id,T.description ,C.test_section ,A.analyte_id\
+                  "SELECT T.hims_d_investigation_test_id,T.description ,C.test_section \
                   FROM hims_d_investigation_test T inner join  hims_d_test_category C on \
                   T.category_id=C.hims_d_test_category_id and T.services_id in (?) \
-                  left join hims_m_lab_analyte A on T.hims_d_investigation_test_id=A.test_id \
                   group by T.hims_d_investigation_test_id;",
                 values: [
                   get_services_id
@@ -483,105 +482,105 @@ export default {
                 if (investigation_test.length > 0) {
                   invst_test = investigation_test;
                 }
-                const no_analyte = invst_test.find((f) => {
-                  return f.test_section != "M" && f.analyte_id == null;
+                // const no_analyte = invst_test.find((f) => {
+                //   return f.test_section != "M" && f.analyte_id == null;
+                // });
+                // if (no_analyte) {
+                //   _mysql.rollBackTransaction(() => {
+                //     next(
+                //       httpStatus.generateError(
+                //         httpStatus.forbidden,
+                //         "Analytes not deifined for the test :" +
+                //         no_analyte["description"]
+                //       )
+                //     );
+                //   });
+                // } else {
+                const test_id = invst_test.map((s) => {
+                  return s.hims_d_investigation_test_id;
                 });
-                if (no_analyte) {
-                  _mysql.rollBackTransaction(() => {
-                    next(
-                      httpStatus.generateError(
-                        httpStatus.forbidden,
-                        "Analytes not deifined for the test :" +
-                        no_analyte["description"]
-                      )
-                    );
-                  });
-                } else {
-                  const test_id = invst_test.map((s) => {
-                    return s.hims_d_investigation_test_id;
-                  });
 
-                  _mysql
-                    .executeQuery({
-                      query:
-                        "select services_id,specimen_id,test_id FROM  hims_m_lab_specimen,hims_d_investigation_test \
+                _mysql
+                  .executeQuery({
+                    query:
+                      "select services_id,specimen_id,test_id FROM  hims_m_lab_specimen,hims_d_investigation_test \
                     where hims_d_investigation_test_id=hims_m_lab_specimen.test_id and \
                     hims_m_lab_specimen.record_status='A' and test_id in (?); \
                     select hims_f_lab_order_id,service_id from hims_f_lab_order where record_status='A' \
                     and visit_id =? and service_id in (?);",
-                      values: [
-                        test_id,
-                        req.body.visit_id,
-                        get_services_id
-                      ],
-                      printQuery: true,
-                    })
-                    .then((specimentRecords) => {
-                      if (specimentRecords[0].length > 0) {
-                        const specimen_list = specimentRecords[0];
-                        const lab_orders = specimentRecords[1];
-                        const inserteLabSample = [];
+                    values: [
+                      test_id,
+                      req.body.visit_id,
+                      get_services_id
+                    ],
+                    printQuery: true,
+                  })
+                  .then((specimentRecords) => {
+                    if (specimentRecords[0].length > 0) {
+                      const specimen_list = specimentRecords[0];
+                      const lab_orders = specimentRecords[1];
+                      const inserteLabSample = [];
 
-                        lab_orders.forEach((ord) => {
-                          let temp = specimen_list
-                            .filter((f) => {
-                              return f.services_id == ord.service_id;
-                            })
-                            .map((m) => {
-                              return {
-                                sample_id: m.specimen_id,
-                                test_id: m.test_id,
-                                order_id: ord.hims_f_lab_order_id,
-                              };
-                            });
-                          inserteLabSample.push(...temp);
-                        });
-
-                        const sample = ["order_id", "sample_id"];
-
-                        _mysql
-                          .executeQuery({
-                            query:
-                              "INSERT IGNORE INTO hims_f_lab_sample(??) VALUES ?",
-                            values: inserteLabSample,
-                            includeValues: sample,
-                            extraValues: {
-                              created_by: req.userIdentity.algaeh_d_app_user_id,
-                              updated_by: req.userIdentity.algaeh_d_app_user_id,
-                            },
-                            bulkInsertOrUpdate: true,
-                            printQuery: true,
+                      lab_orders.forEach((ord) => {
+                        let temp = specimen_list
+                          .filter((f) => {
+                            return f.services_id == ord.service_id;
                           })
-                          .then((insert_lab_sample) => {
-                            if (req.connection == null) {
-                              req.records = insert_lab_sample;
-                              next();
-                            } else {
-                              next();
-                            }
-                          })
-                          .catch((e) => {
-                            _mysql.rollBackTransaction(() => {
-                              next(e);
-                            });
+                          .map((m) => {
+                            return {
+                              sample_id: m.specimen_id,
+                              test_id: m.test_id,
+                              order_id: ord.hims_f_lab_order_id,
+                            };
                           });
-                      } else {
-                        _mysql.rollBackTransaction(() => {
-                          next(
-                            httpStatus.generateError(
-                              httpStatus.forbidden,
-                              "No Specimen Avilable"
-                            )
-                          );
-                        });
-                      }
-                    })
-                    .catch((e) => {
-                      _mysql.rollBackTransaction(() => {
-                        next(e);
+                        inserteLabSample.push(...temp);
                       });
+
+                      const sample = ["order_id", "sample_id"];
+
+                      _mysql
+                        .executeQuery({
+                          query:
+                            "INSERT IGNORE INTO hims_f_lab_sample(??) VALUES ?",
+                          values: inserteLabSample,
+                          includeValues: sample,
+                          extraValues: {
+                            created_by: req.userIdentity.algaeh_d_app_user_id,
+                            updated_by: req.userIdentity.algaeh_d_app_user_id,
+                          },
+                          bulkInsertOrUpdate: true,
+                          printQuery: true,
+                        })
+                        .then((insert_lab_sample) => {
+                          if (req.connection == null) {
+                            req.records = insert_lab_sample;
+                            next();
+                          } else {
+                            next();
+                          }
+                        })
+                        .catch((e) => {
+                          _mysql.rollBackTransaction(() => {
+                            next(e);
+                          });
+                        });
+                    } else {
+                      _mysql.rollBackTransaction(() => {
+                        next(
+                          httpStatus.generateError(
+                            httpStatus.forbidden,
+                            "No Specimen Avilable"
+                          )
+                        );
+                      });
+                    }
+                  })
+                  .catch((e) => {
+                    _mysql.rollBackTransaction(() => {
+                      next(e);
                     });
-                }
+                  });
+                // }
               })
               .catch((e) => {
                 _mysql.rollBackTransaction(() => {
