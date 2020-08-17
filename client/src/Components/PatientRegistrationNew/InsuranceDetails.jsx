@@ -38,6 +38,8 @@ export function InsuranceDetails({
   clearErrors,
   setValue,
   trigger,
+  insuranceImgFront,
+  insuranceImgBack,
 }) {
   const { userToken } = useContext(MainContext);
   const { setInsuranceInfo, disabled: saveDisable } = useContext(
@@ -47,7 +49,10 @@ export function InsuranceDetails({
   const [isInsurance, setIsInsurance] = useState(false);
   const [insuranceList, setInsuranceList] = useState([]);
   const disabled = !isInsurance || saveDisable;
-  const hims_d_patient_id = useWatch({ control, name: "hims_d_patient_id" });
+  const { hims_d_patient_id, primary_card_number } = useWatch({
+    control,
+    name: ["hims_d_patient_id", "primary_card_number"],
+  });
   const { isLoading, data: patientInsurance } = useQuery(
     ["patient-insurance", { patient_id: hims_d_patient_id }],
     getPatientInsurance,
@@ -472,22 +477,19 @@ export function InsuranceDetails({
                       <div className="row secondary-box-container">
                         <div className="col-lg-6 insurCrdImg">
                           <AlgaehFileUploader
-                            // ref={(patInsuranceFrontImg) => {
-                            //   this.patInsuranceFrontImg = patInsuranceFrontImg;
-                            // }}
+                            ref={insuranceImgFront}
                             noImage="insurance-card-front"
                             name="patInsuranceFrontImg"
                             accept="image/*"
                             showActions={isInsurance}
                             textAltMessage="Insurance Card Front Side"
                             serviceParameters={{
-                              uniqueID: null + "_front",
+                              uniqueID:
+                                (primary_card_number || null) + "_front",
                               fileType: "Patients",
-                              //   processDelay: this.imageDetails.bind(
-                              //     this,
-                              //     context,
-                              //     "patInsuranceFrontImg"
-                              //   ),
+                              processDelay: (...val) => {
+                                console.log(val, "val");
+                              },
                             }}
                             // renderPrevState={this.state.patInsuranceFrontImg}
                             // forceRefresh={this.state.forceRefresh}
@@ -496,22 +498,18 @@ export function InsuranceDetails({
 
                         <div className="col-lg-6 insurCrdImg">
                           <AlgaehFileUploader
-                            // ref={(patInsuranceBackImg) => {
-                            //   this.patInsuranceBackImg = patInsuranceBackImg;
-                            // }}
+                            ref={insuranceImgBack}
                             noImage="insurance-card-back"
                             name="patInsuranceBackImg"
                             accept="image/*"
                             showActions={isInsurance}
                             textAltMessage="Insurance Card Back Side"
                             serviceParameters={{
-                              uniqueID: null + "_back",
+                              uniqueID: (primary_card_number || null) + "_back",
                               fileType: "Patients",
-                              //   processDelay: this.imageDetails.bind(
-                              //     this,
-                              //     context,
-                              //     "patInsuranceBackImg"
-                              //   ),
+                              processDelay: (...val) => {
+                                console.log(val, "val");
+                              },
                             }}
                             // renderPrevState={this.state.patInsuranceBackImg}
                             // forceRefresh={this.state.forceRefresh}

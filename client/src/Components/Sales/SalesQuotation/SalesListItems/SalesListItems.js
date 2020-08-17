@@ -273,7 +273,7 @@ class SalesListItems extends Component {
                         </h6>
                       </div> */}
 
-                      <div className="col-3 mandatory">
+                      {/* <div className="col-3 mandatory">
                         <AlgaehLabel
                           label={{
                             forceLabel: "Qty In Hand (Ware House)",
@@ -284,7 +284,7 @@ class SalesListItems extends Component {
                             ? this.state.qtyhand + "(" + this.state.stock_uom + ")"
                             : "-----------"}
                         </h6>
-                      </div>
+                      </div> */}
                       <div className="col-3">
                         <button
                           className="btn btn-primary"

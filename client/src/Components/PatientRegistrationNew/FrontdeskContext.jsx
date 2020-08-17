@@ -68,19 +68,28 @@ const TYPES = {
 function reducer(state, { type, payload }) {
   switch (type) {
     case TYPES.setServiceInfo:
-      const [
-        sub_department_id,
-        services_id,
-        doctor_id,
-        department_type,
-      ] = payload?.split("-");
-      return {
-        ...state,
-        sub_department_id,
-        services_id,
-        doctor_id,
-        department_type,
-      };
+      if (payload === null) {
+        return {
+          sub_department_id: null,
+          services_id: null,
+          doctor_id: null,
+          department_type: null,
+        };
+      } else {
+        const [
+          sub_department_id,
+          services_id,
+          doctor_id,
+          department_type,
+        ] = payload?.split("-");
+        return {
+          ...state,
+          sub_department_id,
+          services_id,
+          doctor_id,
+          department_type,
+        };
+      }
     case TYPES.setInsuranceInfo:
       return { ...state, primary_network_office_id: payload };
     case TYPES.setBillInfo:

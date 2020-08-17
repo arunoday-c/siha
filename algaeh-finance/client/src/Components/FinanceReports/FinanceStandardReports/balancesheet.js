@@ -28,6 +28,7 @@ export default function BalanceSheet({
   const [changeInPercentage, setChangeInPercentage] = useState("N");
   const [reportType, setReportType] = useState("balancesheet");
   const [BasedOn, setBasedOn] = useState("by_year");
+  const [tableProps, setTableProps] = useState({});
   useEffect(() => {
     const { filterKey } = selectedFilter;
     if (filterKey !== undefined) {
@@ -209,6 +210,7 @@ export default function BalanceSheet({
     details.push(liabilities);
     setColumns(cols);
     setData(details);
+    setTableProps({});
   }
   function forPandLComparision(records) {
     const { columns, income, Direct_expense, Indirect_expense } = records;
@@ -242,7 +244,7 @@ export default function BalanceSheet({
       createBox.push(Indirect_expense);
     }
     setData(createBox);
-    console.log("Here done");
+    setTableProps({});
   }
 
   function loadBalanceSheet(excel) {
@@ -306,11 +308,12 @@ export default function BalanceSheet({
       income,
       Direct_expense,
       Indirect_expense,
-      // gross_profit,
+      gross_profit,
       // net_profit,
     } = records;
     let cols = [];
     cols = columns.map((item) => {
+      // const freezable = item.column_id === "total" ? { freezable: true } : {};
       return { fieldName: item.column_id, label: item.label };
     });
     cols.unshift({
@@ -344,6 +347,17 @@ export default function BalanceSheet({
     } else {
       details.push(Indirect_expense);
     }
+    const generateFooter = {
+      aggregate: (fieldName) => {
+        console.log("fieldName", fieldName);
+        // console.log("row", row);
+        if (fieldName && fieldName !== "label") {
+          return gross_profit[fieldName];
+        }
+      },
+      footer: true,
+    };
+    setTableProps(generateFooter);
     setData(details);
   }
   function forBalanceSheet(records) {
@@ -364,6 +378,7 @@ export default function BalanceSheet({
     //For liabilities
     details.push(liabilities);
     setData(details);
+    setTableProps({});
   }
 
   function filterBuilder(existing, updated) {
@@ -399,7 +414,8 @@ export default function BalanceSheet({
         }`}
         columns={preview === undefined ? [] : columns}
         data={preview === undefined ? [] : data}
-        layout={layout}
+        tableprops={tableProps}
+        // layout={layout}
         // excelBodyRender={(row, callBack) => {
         //   if (row.leafnode === "Y") {
         //     callBack(row);

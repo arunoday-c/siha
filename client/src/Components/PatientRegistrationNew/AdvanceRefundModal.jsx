@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import moment from "moment";
 import { queryCache } from "react-query";
 import {
@@ -8,7 +8,7 @@ import {
   AlgaehDateHandler,
   AlgaehModal,
   AlgaehMessagePop,
-  // MainContext,
+  MainContext,
 } from "algaeh-react-components";
 import { newAlgaehApi } from "../../hooks";
 import { useCurrency } from "./patientHooks";
@@ -18,6 +18,7 @@ export function AdvanceModal({
   // title,
   patient,
 }) {
+  const { userLanguage } = useContext(MainContext);
   // const { fieldNameFn } = useLangFieldName();
   const { amountWithCur } = useCurrency();
   const [enableCash, setEnableCash] = useState(true);
@@ -44,6 +45,7 @@ export function AdvanceModal({
     setData(null);
     setEnableCard(false);
     setEnableCash(true);
+    // eslint-disable-next-line
   }, [title]);
 
   useEffect(() => {
@@ -51,6 +53,7 @@ export function AdvanceModal({
       setInputs(baseInput);
       setData(null);
     }
+    // eslint-disable-next-line
   }, [patient]);
 
   useEffect(() => {
@@ -199,8 +202,7 @@ export function AdvanceModal({
         maskClosable={true}
         onCancel={onClose}
         footer={null}
-        width={1080}
-        className={`algaehNewModal advanceRefundModal`}
+        className={`${userLanguage}_comp row algaehNewModal advanceRefundModal`}
       >
         <div className="col-12 popupInner margin-top-15">
           <div className="row">

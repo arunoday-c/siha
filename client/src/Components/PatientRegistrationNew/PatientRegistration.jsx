@@ -1,10 +1,12 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useRef } from "react";
 import { useQuery, useMutation } from "react-query";
 import { useForm } from "react-hook-form";
 import moment from "moment";
 import { useLocation, useHistory } from "react-router-dom";
 import { CSSTransition } from "react-transition-group";
 import { FrontdeskContext } from "./FrontdeskContext";
+import PackageUtilize from "../PatientProfile/PackageUtilize/PackageUtilize";
+
 import {
   MainContext,
   AlgaehLabel,
@@ -89,44 +91,36 @@ const updateAppointmentStatus = async (data) => {
 export function PatientRegistration() {
   const { userLanguage, userToken } = useContext(MainContext);
   const [openPopup, setOpenPopup] = useState(false);
-  const [save, { isLoading: saveLoading }] = useMutation(savePatient, {
-    onSuccess: (data) => {
-      setSavedPatient(data);
-      setDisable(true);
-      setOpenPopup(true);
-      AlgaehMessagePop({
-        display: "Patient Saved Successfully",
-        type: "success",
-      });
-    },
-  });
-  const [update, { isLoading: updateLoading }] = useMutation(updatePatient, {
-    onSuccess: (data) => {
-      setSavedPatient(data);
-      setDisable(true);
-      setOpenPopup(true);
-      if (!!appointment_id && !!status_id) {
-        updateAppointmentStatus({
-          application_id: appointment_id,
-          appointment_status_id: status_id,
-          patient_id: data?.hims_d_patient_id,
-          patient_code: data?.patient_code,
-        }).then(() => {
-          AlgaehMessagePop({
-            display: "Patient Updated Successfully",
-            type: "success",
-          });
-        });
-      } else {
-        AlgaehMessagePop({
-          display: "Patient Updated Successfully",
-          type: "success",
-        });
-      }
-    },
-  });
+  const [showPackage, setShowPackage] = useState(false);
   const location = useLocation();
   const history = useHistory();
+
+  const patientImage = useRef(null);
+  const patientIdCard = useRef(null);
+  const insuranceImgFront = useRef(null);
+  const insuranceImgBack = useRef(null);
+
+  const isEmpIdRequired = userToken?.requied_emp_id === "Y";
+  const queryParams = useQueryParams();
+  const patient_code = queryParams.get("patient_code");
+  const appointment_id = queryParams.get("appointment_id");
+  const status_id = queryParams.get("status_id");
+
+  const {
+    sub_department_id,
+    services_id,
+    doctor_id,
+    department_type,
+    billInfo,
+    disabled,
+    consultationInfo,
+    setDisable,
+    setSavedPatient,
+    savedPatient,
+    clearState,
+    setServiceInfo,
+  } = useContext(FrontdeskContext);
+
   const {
     control,
     handleSubmit,
@@ -145,26 +139,6 @@ export function PatientRegistration() {
       patient_type: userToken?.default_patient_type,
     },
   });
-
-  const {
-    sub_department_id,
-    services_id,
-    doctor_id,
-    department_type,
-    billInfo,
-    disabled,
-    consultationInfo,
-    setDisable,
-    setSavedPatient,
-    savedPatient,
-    clearState,
-    setServiceInfo,
-  } = useContext(FrontdeskContext);
-  const isEmpIdRequired = userToken?.requied_emp_id === "Y";
-  const queryParams = useQueryParams();
-  const patient_code = queryParams.get("patient_code");
-  const appointment_id = queryParams.get("appointment_id");
-  const status_id = queryParams.get("status_id");
 
   const { isLoading, data: patientData } = useQuery(
     ["patient", { patient_code }],
@@ -193,6 +167,44 @@ export function PatientRegistration() {
       },
     }
   );
+
+  const [save, { isLoading: saveLoading }] = useMutation(savePatient, {
+    onSuccess: (data) => {
+      setSavedPatient(data);
+      setDisable(true);
+      setOpenPopup(true);
+      AlgaehMessagePop({
+        display: "Patient Saved Successfully",
+        type: "success",
+      });
+    },
+  });
+
+  const [update, { isLoading: updateLoading }] = useMutation(updatePatient, {
+    onSuccess: (data) => {
+      setSavedPatient(data);
+      setDisable(true);
+      setOpenPopup(true);
+      if (!!appointment_id && !!status_id) {
+        updateAppointmentStatus({
+          application_id: appointment_id,
+          appointment_status_id: status_id,
+          patient_id: data?.hims_d_patient_id,
+          patient_code: data?.patient_code,
+        }).then(() => {
+          AlgaehMessagePop({
+            display: "Patient Updated Successfully",
+            type: "success",
+          });
+        });
+      } else {
+        AlgaehMessagePop({
+          display: "Patient Updated Successfully",
+          type: "success",
+        });
+      }
+    },
+  });
 
   const { isLoading: appLoading } = useQuery(
     ["appointment-patient", { appointment_id }],
@@ -223,7 +235,11 @@ export function PatientRegistration() {
     }
   );
 
-  const { data: packages, isLoading: packLoading } = useQuery(
+  const {
+    data: packages,
+    isLoading: packLoading,
+    refetch: packRefetch,
+  } = useQuery(
     [
       "patient-package",
       { patient_id: patientData?.patientRegistration?.hims_d_patient_id },
@@ -236,6 +252,42 @@ export function PatientRegistration() {
       initialStale: true,
     }
   );
+
+  const uploadAfterSubmit = async (data) => {
+    const images = [];
+    if (patientImage !== null) {
+      images.push(
+        new Promise((resolve, reject) => {
+          patientImage.SavingImageOnServer(
+            undefined,
+            undefined,
+            undefined,
+            data?.patient_code,
+            () => {
+              resolve();
+            }
+          );
+        })
+      );
+    }
+    if (patientIdCard !== null) {
+      images.push(
+        new Promise((resolve, reject) => {
+          patientIdCard.SavingImageOnServer(
+            undefined,
+            undefined,
+            undefined,
+            data?.primary_id_no,
+            () => {
+              resolve();
+            }
+          );
+        })
+      );
+    }
+    const result = await Promise.all(images);
+    return result;
+  };
 
   const onSubmit = (input) => {
     let inputData;
@@ -277,7 +329,7 @@ export function PatientRegistration() {
         is_mlc: "N",
         existing_plan: "N",
         receiptdetails,
-      });
+      }).then(async (data) => await uploadAfterSubmit({ ...data, ...input }));
     } else {
       const {
         advance_adjust,
@@ -327,7 +379,7 @@ export function PatientRegistration() {
         is_mlc: "N",
         existing_plan: "N",
         receiptdetails,
-      });
+      }).then(async (data) => await uploadAfterSubmit({ ...data, ...input }));
     }
   };
 
@@ -458,6 +510,8 @@ export function PatientRegistration() {
                   setValue={setValue}
                   errors={errors}
                   clearErrors={clearErrors}
+                  patientImage={patientImage}
+                  patientIdCard={patientIdCard}
                 />
                 <InsuranceDetails
                   control={control}
@@ -465,6 +519,8 @@ export function PatientRegistration() {
                   errors={errors}
                   clearErrors={clearErrors}
                   setValue={setValue}
+                  insuranceImgFront={insuranceImgFront}
+                  insuranceImgBack={insuranceImgBack}
                 />
                 <VisitDetails
                   control={control}
@@ -521,7 +577,7 @@ export function PatientRegistration() {
                     />
                   </button>
                   <button
-                    type="submit"
+                    type="button"
                     className="btn btn-primary"
                     onClick={() => onClear(false)}
                     disabled={!disabled && !appointment_id && !patient_code}
@@ -531,6 +587,30 @@ export function PatientRegistration() {
                     />
                   </button>
                   <AdvanceModal patient={patientData?.patientRegistration} />
+                  )}
+                  {!!patientData && packages?.length > 0 ? (
+                    <div className="col">
+                      <button
+                        type="button"
+                        className="btn btn-primary"
+                        onClick={() => setShowPackage(true)}
+                      >
+                        View Package
+                      </button>
+                      <PackageUtilize
+                        open={showPackage}
+                        onClose={() => {
+                          packRefetch().then(() => setShowPackage(false));
+                        }}
+                        package_detail={packages}
+                        from="frontDesk"
+                        from_billing={true}
+                        patient_id={
+                          patientData?.patientRegistration?.hims_d_patient_id
+                        }
+                      />
+                    </div>
+                  ) : null}
                 </div>
                 {consultationInfo?.consultation === "Y" ? (
                   <CSSTransition

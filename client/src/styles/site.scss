@@ -2534,7 +2534,10 @@ input.autoselect-input:disabled {
   min-height: 22vh !important;
 }
 .algaehNewModal {
+  min-width: 70vw !important ;
+  max-width: 96vw !important ;
   .ant-modal-content {
+    min-width: 100% !important ;
     border-radius: $borderRadius;
     overflow: hidden;
     .ant-modal-close-x {
