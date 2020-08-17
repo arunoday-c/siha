@@ -80,10 +80,10 @@ export default function ({
               style={{ pointerEvents: !data || loadingExcel ? "none" : "" }}
               onClick={downloadExcel}
             />
-          </span>{" "}
-          <span>
+          </span>
+          {/* <span>
             <i className="fas fa-file-pdf" />
-          </span>{" "}
+          </span> */}
         </div>
       </div>
 
