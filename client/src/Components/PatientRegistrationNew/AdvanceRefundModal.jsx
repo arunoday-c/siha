@@ -44,6 +44,7 @@ export function AdvanceModal({
     setData(null);
     setEnableCard(false);
     setEnableCash(true);
+    // eslint-disable-next-line
   }, [title]);
 
   useEffect(() => {
@@ -51,6 +52,7 @@ export function AdvanceModal({
       setInputs(baseInput);
       setData(null);
     }
+    // eslint-disable-next-line
   }, [patient]);
 
   useEffect(() => {

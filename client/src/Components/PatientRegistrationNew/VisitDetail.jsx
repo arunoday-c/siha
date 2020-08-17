@@ -145,7 +145,11 @@ export function VisitDetails({
                                 disableHeader: true,
                                 treeDefaultExpandAll: true,
                                 onChange: (selected) => {
-                                  setServiceInfo(selected);
+                                  if (selected) {
+                                    setServiceInfo(selected);
+                                  } else {
+                                    setServiceInfo(null);
+                                  }
                                   onChange(selected);
                                 },
                                 disabled,
@@ -307,11 +311,6 @@ export function VisitDetails({
                           },
                           {
                             fieldName: "visit_date",
-                            // displayTemplate: row => {
-                            //   return (
-                            //     <span>{this.changeDateFormat(row.visit_date)}</span>
-                            //   );
-                            // },
                             label: (
                               <AlgaehLabel
                                 label={{ fieldName: "visit_date" }}
@@ -348,27 +347,7 @@ export function VisitDetails({
                                 label={{ fieldName: "department_id" }}
                               />
                             ),
-                            // displayTemplate: row => {
-                            //   let display;
-                            //   display =
-                            //     this.props.viewsubdept === undefined
-                            //       ? []
-                            //       : (display = this.props.viewsubdept.filter(
-                            //         f =>
-                            //           f.hims_d_sub_department_id ===
-                            //           row.sub_department_id
-                            //       ));
 
-                            //   return (
-                            //     <span>
-                            //       {display !== null && display.length !== 0
-                            //         ? this.state.selectedLang === "en"
-                            //           ? display[0].sub_department_name
-                            //           : display[0].arabic_sub_department_name
-                            //         : ""}
-                            //     </span>
-                            //   );
-                            // },
                             disabled: true,
                           },
                           {
@@ -376,25 +355,7 @@ export function VisitDetails({
                             label: (
                               <AlgaehLabel label={{ fieldName: "doctor_id" }} />
                             ),
-                            // displayTemplate: row => {
-                            //   let display;
-                            //   display =
-                            //     this.props.frontproviders === undefined
-                            //       ? []
-                            //       : (display = this.props.frontproviders.filter(
-                            //         f => f.hims_d_employee_id === row.doctor_id
-                            //       ));
 
-                            //   return (
-                            //     <span>
-                            //       {display !== null && display.length !== 0
-                            //         ? this.state.selectedLang === "en"
-                            //           ? display[0].full_name
-                            //           : display[0].arabic_name
-                            //         : ""}
-                            //     </span>
-                            //   );
-                            // },
                             disabled: true,
                           },
                         ]}
