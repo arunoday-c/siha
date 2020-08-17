@@ -431,7 +431,7 @@ export default {
           billed: req.body.billed,
           ordered_date: s.created_date,
           test_type: s.test_type,
-          test_id: s.test_id
+          // test_id: s.test_id
         };
       });
 
@@ -445,7 +445,7 @@ export default {
           "billed",
           "ordered_date",
           "test_type",
-          "test_id",
+          // "test_id",
         ];
 
         _mysql
