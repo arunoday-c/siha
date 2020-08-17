@@ -2071,9 +2071,6 @@ input.autoselect-input:disabled {
   }
 }
 .globalSearchCntr {
-  .mandatory {
-    border: 1px solid #d9ae58 !important;
-  }
   h6 {
     width: 100%;
     overflow: hidden;
@@ -2100,6 +2097,11 @@ input.autoselect-input:disabled {
     &:hover {
       background-color: lighten($primary-color, 60%);
       cursor: pointer;
+    }
+  }
+  &.mandatory {
+    h6 {
+      border: 1px solid #d9ae58 !important;
     }
   }
 }
@@ -2525,6 +2527,48 @@ input.autoselect-input:disabled {
     max-width: 55vw;
     .popupInner {
       min-height: 50vh !important;
+    }
+  }
+}
+.pastVisitGrid {
+  min-height: 22vh !important;
+}
+.algaehNewModal {
+  .ant-modal-content {
+    border-radius: $borderRadius;
+    overflow: hidden;
+    .ant-modal-close-x {
+      height: 40px !important;
+      width: 40px !important;
+      line-height: 40px !important;
+      background: darken($gold-color, 10%);
+      svg {
+        fill: $color-white;
+      }
+    }
+    .ant-modal-header {
+      padding: 9px 15px;
+      background: $gold-color;
+      .ant-modal-title {
+        color: $color-white !important;
+      }
+    }
+    .ant-modal-body {
+      padding: 0;
+      .popupInner {
+        width: 100%;
+      }
+      .popupFooter {
+        width: 100%;
+        border-top: 1px dashed lighten($color-black, 80%);
+        padding: 8px 0;
+        margin-top: 15px;
+        text-align: right;
+        .btn {
+          margin-left: 10px;
+          float: right;
+        }
+      }
     }
   }
 }

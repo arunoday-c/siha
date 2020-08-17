@@ -1,15 +1,10 @@
 import React, { Component } from "react";
-import { withRouter } from "react-router-dom";
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
 
 import {
   AlgaehDataGrid,
   AlgaehLabel,
-  AlagehFormGroup,
-  AlagehAutoComplete,
+  AlagehFormGroup
 } from "../../../Wrapper/algaehWrapper";
-import { AlgaehActions } from "../../../../actions/algaehActions";
 import MyContext from "../../../../utils/MyContext";
 import AlgaehAutoSearch from "../../../Wrapper/autoSearch";
 import spotlightSearch from "../../../../Search/spotlightSearch.json";
@@ -28,11 +23,11 @@ import {
   GridAssignData,
   EditGrid,
   CancelGrid,
-  extendCostHandle,
+  extendCostHandle
 } from "./POItemListEvents";
 import { GetAmountFormart } from "../../../../utils/GlobalFunctions";
 
-class POItemList extends Component {
+export default class POItemList extends Component {
   constructor(props) {
     super(props);
     this.state = {};
@@ -135,7 +130,43 @@ class POItemList extends Component {
                           onChange: itemchangeText.bind(this, this, context),
                         }}
                       /> */}
-                      <AlagehAutoComplete
+                      {/* <div className="col">
+                        <AlgaehLabel
+                          label={{
+                            forceLabel: "Item Category",
+                          }}
+                        />
+                        <h6>
+                          {this.state.category_desc
+                            ? this.state.category_desc
+                            : "-----------"}
+                        </h6>
+                      </div>
+                      <div className="col">
+                        <AlgaehLabel
+                          label={{
+                            forceLabel: "Item Group",
+                          }}
+                        />
+                        <h6>
+                          {this.state.group_description
+                            ? this.state.group_description
+                            : "-----------"}
+                        </h6>
+                      </div> */}
+                      <div className="col">
+                        <AlgaehLabel
+                          label={{
+                            forceLabel: "UOM",
+                          }}
+                        />
+                        <h6>
+                          {this.state.purchase_uom_desc
+                            ? this.state.purchase_uom_desc
+                            : "-----------"}
+                        </h6>
+                      </div>
+                      {/* <AlagehAutoComplete
                         div={{ className: "col" }}
                         label={{ forceLabel: "Item Category" }}
                         selector={{
@@ -213,7 +244,7 @@ class POItemList extends Component {
                             disabled: true,
                           },
                         }}
-                      />
+                      /> */}
                     </div>
                     <div className="row">
                       <AlagehFormGroup
@@ -383,232 +414,49 @@ class POItemList extends Component {
                                   label={{ forceLabel: "Item Name" }}
                                 />
                               ),
-                              displayTemplate: (row) => {
-                                let display;
-
-                                this.state.po_from === "PHR"
-                                  ? (display =
-                                    this.props.poitemlist === undefined
-                                      ? []
-                                      : this.props.poitemlist.filter(
-                                        (f) =>
-                                          f.hims_d_item_master_id ===
-                                          row.phar_item_id
-                                      ))
-                                  : (display =
-                                    this.props.poitemlist === undefined
-                                      ? []
-                                      : this.props.poitemlist.filter(
-                                        (f) =>
-                                          f.hims_d_inventory_item_master_id ===
-                                          row.inv_item_id
-                                      ));
-                                return (
-                                  row.item_description || (
-                                    <span>
-                                      {display !== undefined &&
-                                        display.length !== 0
-                                        ? display[0].item_description
-                                        : ""}
-                                    </span>
-                                  )
-                                );
+                              others: {
+                                minWidth: 200,
                               },
-                              editorTemplate: (row) => {
-                                let display;
+                            },
+                            // {
+                            //   fieldName: "category_desc",
 
-                                this.state.po_from === "PHR"
-                                  ? (display =
-                                    this.props.poitemlist === undefined
-                                      ? []
-                                      : this.props.poitemlist.filter(
-                                        (f) =>
-                                          f.hims_d_item_master_id ===
-                                          row.phar_item_id
-                                      ))
-                                  : (display =
-                                    this.props.poitemlist === undefined
-                                      ? []
-                                      : this.props.poitemlist.filter(
-                                        (f) =>
-                                          f.hims_d_inventory_item_master_id ===
-                                          row.inv_item_id
-                                      ));
+                            //   label: (
+                            //     <AlgaehLabel
+                            //       label={{ forceLabel: "Item Category" }}
+                            //     />
+                            //   ),
+                            //   others: {
+                            //     minWidth: 150,
+                            //   },
+                            // },
+                            // {
+                            //   fieldName: "group_description",
 
-                                return (
-                                  row.item_description || (
-                                    <span>
-                                      {display !== undefined &&
-                                        display.length !== 0
-                                        ? display[0].item_description
-                                        : ""}
-                                    </span>
-                                  )
-                                );
-                              },
+                            //   label: (
+                            //     <AlgaehLabel
+                            //       label={{ forceLabel: "Item Group" }}
+                            //     />
+                            //   ),
+                            //   others: {
+                            //     minWidth: 150,
+                            //   }
+                            // },
+
+                            {
+                              fieldName: "purchase_uom_desc",
+
+                              label: (
+                                <AlgaehLabel
+                                  label={{ forceLabel: "UOM" }}
+                                />
+                              ),
                               others: {
                                 minWidth: 150,
-                              },
+                                filterable: false
+                              }
                             },
-                            {
-                              fieldName: "category_desc",
 
-                              label: (
-                                <AlgaehLabel
-                                  label={{ forceLabel: "Item Category" }}
-                                />
-                              ),
-
-                              displayTemplate: (row) => {
-                                if (row.category_desc) {
-                                  return row.category_desc;
-                                } else {
-                                  let display;
-
-                                  this.state.po_from === "PHR"
-                                    ? (display =
-                                      this.props.poitemcategory === undefined
-                                        ? []
-                                        : this.props.poitemcategory.filter(
-                                          (f) =>
-                                            f.hims_d_item_category_id ===
-                                            row.phar_item_category
-                                        ))
-                                    : (display =
-                                      this.props.poitemcategory === undefined
-                                        ? []
-                                        : this.props.poitemcategory.filter(
-                                          (f) =>
-                                            f.hims_d_inventory_tem_category_id ===
-                                            row.inv_item_category_id
-                                        ));
-
-                                  return (
-                                    <span>
-                                      {display !== undefined &&
-                                        display.length !== 0
-                                        ? display[0].category_desc
-                                        : ""}
-                                    </span>
-                                  );
-                                }
-                              },
-                              editorTemplate: (row) => {
-                                if (row.category_desc) {
-                                  return row.category_desc;
-                                } else {
-                                  let display;
-
-                                  this.state.po_from === "PHR"
-                                    ? (display =
-                                      this.props.poitemcategory === undefined
-                                        ? []
-                                        : this.props.poitemcategory.filter(
-                                          (f) =>
-                                            f.hims_d_item_category_id ===
-                                            row.phar_item_category
-                                        ))
-                                    : (display =
-                                      this.props.poitemcategory === undefined
-                                        ? []
-                                        : this.props.poitemcategory.filter(
-                                          (f) =>
-                                            f.hims_d_inventory_tem_category_id ===
-                                            row.inv_item_category_id
-                                        ));
-
-                                  return (
-                                    <span>
-                                      {display !== undefined &&
-                                        display.length !== 0
-                                        ? display[0].category_desc
-                                        : ""}
-                                    </span>
-                                  );
-                                }
-                              },
-                              others: {
-                                minWidth: 250,
-                              },
-                            },
-                            {
-                              fieldName: "group_description",
-
-                              label: (
-                                <AlgaehLabel
-                                  label={{ forceLabel: "Item Group" }}
-                                />
-                              ),
-
-                              displayTemplate: (row) => {
-                                if (row.group_description) {
-                                  return row.group_description;
-                                } else {
-                                  let display;
-
-                                  this.state.po_from === "PHR"
-                                    ? (display =
-                                      this.props.poitemgroup === undefined
-                                        ? []
-                                        : this.props.poitemgroup.filter(
-                                          (f) =>
-                                            f.hims_d_item_group_id ===
-                                            row.phar_item_group
-                                        ))
-                                    : (display =
-                                      this.props.poitemgroup === undefined
-                                        ? []
-                                        : this.props.poitemgroup.filter(
-                                          (f) =>
-                                            f.hims_d_inventory_item_group_id ===
-                                            row.inv_item_group_id
-                                        ));
-
-                                  return (
-                                    <span>
-                                      {display !== undefined &&
-                                        display.length !== 0
-                                        ? display[0].group_description
-                                        : ""}
-                                    </span>
-                                  );
-                                }
-                              },
-                              editorTemplate: (row) => {
-                                if (row.group_description) {
-                                  return row.group_description;
-                                } else {
-                                  let display;
-
-                                  this.state.po_from === "PHR"
-                                    ? (display =
-                                      this.props.poitemgroup === undefined
-                                        ? []
-                                        : this.props.poitemgroup.filter(
-                                          (f) =>
-                                            f.hims_d_item_group_id ===
-                                            row.phar_item_group
-                                        ))
-                                    : (display =
-                                      this.props.poitemgroup === undefined
-                                        ? []
-                                        : this.props.poitemgroup.filter(
-                                          (f) =>
-                                            f.hims_d_inventory_item_group_id ===
-                                            row.inv_item_group_id
-                                        ));
-
-                                  return (
-                                    <span>
-                                      {display !== undefined &&
-                                        display.length !== 0
-                                        ? display[0].group_description
-                                        : ""}
-                                    </span>
-                                  );
-                                }
-                              },
-                            },
 
                             {
                               fieldName: "unit_price",
@@ -1023,54 +871,6 @@ class POItemList extends Component {
                     </div>
                   </div>
                 </div>
-                <div className="col-lg-12">
-                  <div style={{ marginBottom: 73 }}>
-                    <div className="row">
-                      <div className="col" />
-
-                      <div className="col-lg-6" style={{ textAlign: "right" }}>
-                        <div className="row">
-                          <div className="col-lg-3">
-                            <AlgaehLabel
-                              label={{
-                                forceLabel: "Sub Total",
-                              }}
-                            />
-                            <h6>{GetAmountFormart(this.state.sub_total)}</h6>
-                          </div>
-                          <div className="col-lg-3">
-                            <AlgaehLabel
-                              label={{
-                                forceLabel: "Discount Amount",
-                              }}
-                            />
-                            <h6>
-                              {GetAmountFormart(this.state.detail_discount)}
-                            </h6>
-                          </div>
-
-                          <div className="col-lg-3">
-                            <AlgaehLabel
-                              label={{
-                                forceLabel: "Tax Amount",
-                              }}
-                            />
-                            <h6>{GetAmountFormart(this.state.total_tax)}</h6>
-                          </div>
-
-                          <div className="col-lg-3">
-                            <AlgaehLabel
-                              label={{
-                                forceLabel: "Net Payable",
-                              }}
-                            />
-                            <h6>{GetAmountFormart(this.state.net_payable)}</h6>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
               </div>
             </div>
           )}
@@ -1079,30 +879,3 @@ class POItemList extends Component {
     );
   }
 }
-
-function mapStateToProps(state) {
-  return {
-    poitemlist: state.poitemlist,
-    polocations: state.polocations,
-    poitemcategory: state.poitemcategory,
-    poitemgroup: state.poitemgroup,
-    poitemuom: state.poitemuom,
-  };
-}
-
-function mapDispatchToProps(dispatch) {
-  return bindActionCreators(
-    {
-      getItems: AlgaehActions,
-      getLocation: AlgaehActions,
-      getItemCategory: AlgaehActions,
-      getItemGroup: AlgaehActions,
-      getItemUOM: AlgaehActions,
-    },
-    dispatch
-  );
-}
-
-export default withRouter(
-  connect(mapStateToProps, mapDispatchToProps)(POItemList)
-);

@@ -100,7 +100,7 @@ export function VisitDetails({
                           rules={{ required: "Please select Visit Type" }}
                           render={({ onChange, value }) => (
                             <AlgaehAutoComplete
-                              div={{ className: "col-lg-6 mandatory" }}
+                              div={{ className: "col-6 mandatory" }}
                               label={{
                                 fieldName: "visit_type",
                                 isImp: true,
@@ -134,7 +134,7 @@ export function VisitDetails({
                           rules={{ required: "Please Select a doctor" }}
                           render={({ onChange, value }) => (
                             <AlgaehTreeSearch
-                              div={{ className: "col form-group" }}
+                              div={{ className: "col-6 form-group" }}
                               label={{
                                 fieldName: "doctor_id",
                                 isImp: true,
@@ -299,6 +299,7 @@ export function VisitDetails({
                       </h6>
 
                       <AlgaehDataGrid
+                        className="pastVisitGrid"
                         columns={[
                           {
                             fieldName: "visit_code",

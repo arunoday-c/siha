@@ -1,7 +1,4 @@
 import React, { Component } from "react";
-import { withRouter } from "react-router-dom";
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
 import MyContext from "../../../../utils/MyContext";
 import "./../../../../styles/site.scss";
 import {
@@ -22,12 +19,11 @@ import {
   qtyonchangegridcol,
   changeTexts,
 } from "./SalesOrdListServiceEvents";
-import { AlgaehActions } from "../../../../actions/algaehActions";
 import spotlightSearch from "../../../../Search/spotlightSearch.json";
 import _ from "lodash";
 import GlobalVariables from "../../../../utils/GlobalVariables.json";
 
-class SalesOrdListService extends Component {
+export default class SalesOrdListService extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -42,7 +38,7 @@ class SalesOrdListService extends Component {
       quantity: 0,
       discount_percentage: 0,
       unit_cost: 0,
-      tax_percent: 0,
+      tax_percentage: 0,
       service_frequency: null,
       comments: "",
     };
@@ -51,53 +47,6 @@ class SalesOrdListService extends Component {
   UNSAFE_componentWillMount() {
     let InputOutput = this.props.SALESIOputs;
     this.setState({ ...this.state, ...InputOutput });
-  }
-
-  componentDidMount() {
-    if (
-      this.props.inventoryitemcategory === undefined ||
-      this.props.inventoryitemcategory.length === 0
-    ) {
-      this.props.getItemCategory({
-        uri: "/inventory/getItemCategory",
-        module: "inventory",
-        method: "GET",
-        redux: {
-          type: "ITEM_CATEGORY_GET_DATA",
-          mappingName: "inventoryitemcategory",
-        },
-      });
-    }
-
-    if (
-      this.props.inventoryitemgroup === undefined ||
-      this.props.inventoryitemgroup.length === 0
-    ) {
-      this.props.getItemGroup({
-        uri: "/inventory/getItemGroup",
-        module: "inventory",
-        method: "GET",
-        redux: {
-          type: "ITEM_GROUOP_GET_DATA",
-          mappingName: "inventoryitemgroup",
-        },
-      });
-    }
-
-    if (
-      this.props.inventoryitemuom === undefined ||
-      this.props.inventoryitemuom.length === 0
-    ) {
-      this.props.getItemUOM({
-        uri: "/inventory/getInventoryUom",
-        module: "inventory",
-        method: "GET",
-        redux: {
-          type: "ITEM_UOM_GET_DATA",
-          mappingName: "inventoryitemuom",
-        },
-      });
-    }
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
@@ -161,7 +110,7 @@ class SalesOrdListService extends Component {
                         this.attReg = attReg;
                       }}
                       others={{
-                        disabled: this.state.addedItem,
+                        disabled: this.state.itemAdd,
                       }}
                     />
 
@@ -178,7 +127,7 @@ class SalesOrdListService extends Component {
                         className: "txt-fld",
                         name: "quantity",
                         value: this.state.quantity,
-                        dontAllowKeys: ["-", "e", "."],
+                        dontAllowKeys: ["-", "e"],
                         events: {
                           onChange: numberchangeTexts.bind(this, this, context),
                         },
@@ -235,7 +184,23 @@ class SalesOrdListService extends Component {
                       }}
                     />
 
-                    <div className="col-6 form-group mandatory">
+                    <AlagehFormGroup
+                      div={{ className: "col-6", }}
+                      label={{
+                        fieldName: "tax percentage",
+                        isImp: this.state.Applicable,
+                      }}
+                      textBox={{
+                        decimal: { allowNegative: false },
+                        className: "txt-fld",
+                        name: "tax_percentage",
+                        value: this.state.tax_percentage,
+                        events: {
+                          onChange: numberchangeTexts.bind(this, this, context),
+                        }
+                      }}
+                    />
+                    {/* <div className="col-6 form-group mandatory">
                       <AlgaehLabel
                         label={{
                           forceLabel: "Tax %",
@@ -246,7 +211,7 @@ class SalesOrdListService extends Component {
                           ? this.state.tax_percentage
                           : "-----------"}
                       </h6>
-                    </div>
+                    </div> */}
 
                     <AlagehFormGroup
                       div={{ className: "col-6 mandatory  form-group" }}
@@ -547,27 +512,3 @@ class SalesOrdListService extends Component {
     );
   }
 }
-
-function mapStateToProps(state) {
-  return {
-    opitemlist: state.opitemlist,
-    inventoryitemcategory: state.inventoryitemcategory,
-    inventoryitemuom: state.inventoryitemuom,
-    inventoryitemgroup: state.inventoryitemgroup,
-  };
-}
-
-function mapDispatchToProps(dispatch) {
-  return bindActionCreators(
-    {
-      getItemCategory: AlgaehActions,
-      getItemUOM: AlgaehActions,
-      getItemGroup: AlgaehActions,
-    },
-    dispatch
-  );
-}
-
-export default withRouter(
-  connect(mapStateToProps, mapDispatchToProps)(SalesOrdListService)
-);

@@ -82,7 +82,23 @@ export default {
       is_posted: "N",
       dataPosted: true,
       delete_stock_detail: [],
-      bothExisits: true
+      delete_po_services: [],
+      bothExisits: true,
+      po_mode: "I",
+      organizations: [],
+      hospital_id: null,
+      project_id: null,
+      po_services: [],
+      service_name: "",
+      addedItem: true,
+      services_id: null,
+      quantity: 0,
+      dataExists: false,
+      is_completed: "N",
+
+      group_description: null,
+      category_desc: null,
+      purchase_uom_desc: null
     };
     return output;
   },

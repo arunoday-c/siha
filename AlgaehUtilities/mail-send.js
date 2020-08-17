@@ -6,6 +6,7 @@ const fs = require("fs-extra");
 const path = require("path");
 const os = require("os");
 require("regenerator-runtime/runtime");
+const reportEngine = require("./reportEngine");
 /*
    smtp / user / password / service : typeof string
    port : typeof int
@@ -82,6 +83,18 @@ algaehMail.prototype.to = function (to, cc, bcc) {
 */
 algaehMail.prototype.attachments = function (attachments) {
   this.mailOptions["attachments"] = attachments;
+  return this;
+};
+
+/*
+  Attachments to reports
+ */
+algaehMail.prototype.attachReports = async function (req, inputArray) {
+  const result = await reportEngine(req, inputArray);
+  this.deletePath = true;
+  this.mailOptions["attachments"] = result.map((item) => {
+    return item.path;
+  });
   return this;
 };
 /*
@@ -178,13 +191,37 @@ algaehMail.prototype.send = function (printInput) {
             this.transporter.close();
             this.hbsFilePath = undefined;
             this.hbsData = undefined;
+            if (this.deletePath === true) {
+              this.attachments.map((item) => {
+                fs.exists(item, (exists) => {
+                  if (exists) fs.unlink(item);
+                });
+              });
+            }
             resolve(result);
           })
           .catch((error) => {
+            this.transporter.close();
+            this.hbsFilePath = undefined;
+            this.hbsData = undefined;
+            if (this.deletePath === true) {
+              this.attachments.map((item) => {
+                fs.exists(item, (exists) => {
+                  if (exists) fs.unlink(item);
+                });
+              });
+            }
             reject(error);
           });
       })();
     } catch (error) {
+      if (this.deletePath === true) {
+        this.attachments.map((item) => {
+          fs.exists(item, (exists) => {
+            if (exists) fs.unlink(item);
+          });
+        });
+      }
       reject(error);
     }
   });

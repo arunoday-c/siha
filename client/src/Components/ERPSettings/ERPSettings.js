@@ -34,6 +34,7 @@ export default class ERPSettings extends Component {
       notification_before: 0,
       notification_type: "D",
       requisition_auth_level: "1",
+      po_services: "N",
 
       hims_d_inventory_options_id: null,
       inv_requisition_auth_level: "1",
@@ -53,33 +54,33 @@ export default class ERPSettings extends Component {
 
     this.PHCY_Active =
       userToken.product_type === "HIMS_ERP" ||
-      userToken.product_type === "FINANCE_ERP" ||
-      userToken.product_type === "ONLY_PHARMACY" ||
-      userToken.product_type === "HIMS_CLINICAL" ||
-      userToken.product_type === "NO_FINANCE"
+        userToken.product_type === "FINANCE_ERP" ||
+        userToken.product_type === "ONLY_PHARMACY" ||
+        userToken.product_type === "HIMS_CLINICAL" ||
+        userToken.product_type === "NO_FINANCE"
         ? true
         : false;
     this.PROC_Active =
       userToken.product_type === "HIMS_ERP" ||
-      userToken.product_type === "FINANCE_ERP" ||
-      userToken.product_type === "ONLY_PHARMACY" ||
-      userToken.product_type === "HIMS_CLINICAL" ||
-      userToken.product_type === "NO_FINANCE"
+        userToken.product_type === "FINANCE_ERP" ||
+        userToken.product_type === "ONLY_PHARMACY" ||
+        userToken.product_type === "HIMS_CLINICAL" ||
+        userToken.product_type === "NO_FINANCE"
         ? true
         : false;
     this.INVTRY_Active =
       userToken.product_type === "HIMS_ERP" ||
-      userToken.product_type === "FINANCE_ERP" ||
-      userToken.product_type === "ONLY_PHARMACY" ||
-      userToken.product_type === "HIMS_CLINICAL" ||
-      userToken.product_type === "NO_FINANCE"
+        userToken.product_type === "FINANCE_ERP" ||
+        userToken.product_type === "ONLY_PHARMACY" ||
+        userToken.product_type === "HIMS_CLINICAL" ||
+        userToken.product_type === "NO_FINANCE"
         ? true
         : false;
     this.SALES_Active =
       userToken.product_type === "HIMS_ERP" ||
-      userToken.product_type === "FINANCE_ERP" ||
-      userToken.product_type === "ONLY_PHARMACY" ||
-      userToken.product_type === "NO_FINANCE"
+        userToken.product_type === "FINANCE_ERP" ||
+        userToken.product_type === "ONLY_PHARMACY" ||
+        userToken.product_type === "NO_FINANCE"
         ? true
         : false;
 
@@ -300,6 +301,29 @@ export default class ERPSettings extends Component {
                       },
                     }}
                   />
+                  <div
+                    className="col-12 customCheckbox"
+                    style={{ marginTop: 23, border: "none" }}
+                  >
+                    <label className="checkbox inline">
+                      <input
+                        type="checkbox"
+                        name="po_services"
+                        value={this.state.po_services}
+                        checked={
+                          this.state.po_services === "Y" ? true : false
+                        }
+                        onChange={checkBoxEvent.bind(this, this)}
+                      />
+                      <span>
+                        <AlgaehLabel
+                          label={{
+                            forceLabel: "PO Services Required",
+                          }}
+                        />
+                      </span>
+                    </label>
+                  </div>
                   <div className="col-lg-12">
                     <button
                       type="button"

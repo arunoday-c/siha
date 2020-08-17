@@ -10,6 +10,7 @@ import Options from "../../../Options.json";
 import moment from "moment";
 import GlobalVariables from "../../../utils/GlobalVariables.json";
 import POItemList from "./POItemList/POItemList";
+import POServiceList from "./POServiceList/POServiceList";
 import {
   vendortexthandle,
   loctexthandle,
@@ -22,12 +23,13 @@ import {
   AuthorizePOEntry,
   getVendorMaster,
   generatePOReceipt,
-  generatePOReceiptNoPrice,
+  // generatePOReceiptNoPrice,
   clearItemDetails,
   VendorQuotationSearch,
   getPOOptions,
   getData,
   CancelPOEntry,
+  getCostCenters
 } from "./PurchaseOrderEntryEvents";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import POEntry from "../../../Models/POEntry";
@@ -37,12 +39,16 @@ import {
   AlgaehSecurityComponent,
   RawSecurityComponent,
 } from "algaeh-react-components";
+import { GetAmountFormart } from "../../../utils/GlobalFunctions";
 
 class PurchaseOrderEntry extends Component {
   constructor(props) {
     super(props);
+    this.FIN_Active = false
     this.state = {
       decimal_places: null,
+      po_services_req: "N",
+      cost_projects: []
       // po_auth_level: "1"
     };
     getVendorMaster(this, this);
@@ -94,6 +100,25 @@ class PurchaseOrderEntry extends Component {
         }
       );
     }
+    this.FIN_Active =
+      userToken.product_type === "HIMS_ERP" ||
+        userToken.product_type === "FINANCE_ERP" ||
+        userToken.product_type === "HRMS_ERP"
+        ? true
+        : false;
+
+    if (this.FIN_Active === true) {
+      getCostCenters(this);
+    }
+    this.props.getHospitalDetails({
+      uri: "/organization/getOrganization",
+      method: "GET",
+      redux: {
+        type: "HOSPITAL_DETAILS_GET_DATA",
+        mappingName: "hospitaldetails",
+      },
+    });
+
   }
 
   render() {
@@ -101,15 +126,15 @@ class PurchaseOrderEntry extends Component {
       this.state.po_from === null
         ? []
         : Enumerable.from(this.props.polocations)
-            .where((w) => w.location_type === "WH")
-            .toArray();
+          .where((w) => w.location_type === "WH")
+          .toArray();
 
     const class_finder =
       this.state.dataFinder === true
         ? " disableFinder"
         : this.state.ReqData === true
-        ? " disableFinder"
-        : "";
+          ? " disableFinder"
+          : "";
     return (
       <div>
         <BreadCrumb
@@ -119,25 +144,6 @@ class PurchaseOrderEntry extends Component {
             />
           }
           breadStyle={this.props.breadStyle}
-          // pageNavPath={[
-          //   {
-          //     pageName: (
-          //       <AlgaehLabel
-          //         label={{
-          //           forceLabel: "Home",
-          //           align: "ltr",
-          //         }}
-          //       />
-          //     ),
-          //   },
-          //   {
-          //     pageName: (
-          //       <AlgaehLabel
-          //         label={{ forceLabel: "Purchase Order Entry", align: "ltr" }}
-          //       />
-          //     ),
-          //   },
-          // ]}
           soptlightSearch={{
             label: (
               <AlgaehLabel
@@ -183,66 +189,68 @@ class PurchaseOrderEntry extends Component {
                       <span className="badge badge-danger">Not Posted</span>
                     ) : this.state.cancelled === "Y" ? (
                       <span className="badge badge-danger">Rejected</span>
+                    ) : this.state.receipt_generated === "Y" ? (
+                      <span className="badge badge-success">PO Closed</span>
                     ) : this.state.authorize1 === "Y" &&
                       this.state.authorize2 === "Y" ? (
-                      <span className="badge badge-success">Authorized</span>
-                    ) : this.state.authorize1 === "Y" &&
-                      this.state.authorize2 === "N" ? (
-                      <span className="badge badge-danger">
-                        Posted/Pending For Authorize
+                              <span className="badge badge-success">Authorized</span>
+                            ) : this.state.authorize1 === "Y" &&
+                              this.state.authorize2 === "N" ? (
+                                <span className="badge badge-danger">
+                                  Posted/Pending For Authorize
                       </span>
-                    ) : this.state.authorize1 === "N" &&
-                      this.state.authorize2 === "N" ? (
-                      <span className="badge badge-danger">
-                        Posted/Pending For Authorize
+                              ) : this.state.authorize1 === "N" &&
+                                this.state.authorize2 === "N" ? (
+                                  <span className="badge badge-danger">
+                                    Posted/Pending For Authorize
                       </span>
-                    ) : (
-                      <span className="badge badge-danger">
-                        Posted/Pending For Authorize
+                                ) : (
+                                  <span className="badge badge-danger">
+                                    Posted/Pending For Authorize
                       </span>
-                    )}
+                                )}
                   </h6>
                 </div>
               ) : this.state.dataExitst === false &&
                 this.state.purchase_number !== null ? (
-                <div className="col">
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "PO Status",
-                    }}
-                  />
+                    <div className="col">
+                      <AlgaehLabel
+                        label={{
+                          forceLabel: "PO Status",
+                        }}
+                      />
 
-                  <h6>
-                    <span className="badge badge-danger">
-                      Send for Authorization pending
+                      <h6>
+                        <span className="badge badge-danger">
+                          Send for Authorization pending
                     </span>
-                  </h6>
-                </div>
-              ) : null}
+                      </h6>
+                    </div>
+                  ) : null}
             </div>
           }
           printArea={
             this.state.purchase_number !== null
               ? {
-                  menuitems: [
-                    {
-                      label: "Receipt for Internal",
-                      events: {
-                        onClick: () => {
-                          generatePOReceipt(this.state);
-                        },
+                menuitems: [
+                  {
+                    label: "Print PO",
+                    events: {
+                      onClick: () => {
+                        generatePOReceipt(this.state);
                       },
                     },
-                    {
-                      label: "Receipt for Vendor",
-                      events: {
-                        onClick: () => {
-                          generatePOReceiptNoPrice(this.state);
-                        },
-                      },
-                    },
-                  ],
-                }
+                  },
+                  // {
+                  //   label: "Receipt for Vendor",
+                  //   events: {
+                  //     onClick: () => {
+                  //       generatePOReceiptNoPrice(this.state);
+                  //     },
+                  //   },
+                  // },
+                ],
+              }
               : ""
           }
           selectedLang={this.state.selectedLang}
@@ -254,93 +262,191 @@ class PurchaseOrderEntry extends Component {
           >
             <div className="col-lg-12">
               <div className="row">
-                <AlagehAutoComplete
-                  div={{ className: "col-2" }}
-                  label={{ forceLabel: "PO Type" }}
-                  selector={{
-                    name: "po_type",
-                    className: "select-fld",
-                    value: this.state.po_type,
-                    dataSource: {
-                      textField: "name",
-                      valueField: "value",
-                      data: GlobalVariables.PO_TYPE,
-                    },
-                    others: {
-                      disabled:
-                        this.state.po_entry_detail.length > 0 ? true : false,
-                    },
-                    onChange: texthandle.bind(this, this),
-                    onClear: () => {
-                      this.setState({
-                        po_type: "D",
-                      });
-                    },
-                  }}
-                />
+                {this.state.po_services_req === "Y" ? (
+                  <div className="col-2 ">
+                    <label>PO Mode</label>
+                    <div className="customRadio">
+                      <label className="radio inline">
+                        <input
+                          type="radio"
+                          value="I"
+                          name="po_mode"
+                          checked={
+                            this.state.po_mode === "I" ? true : false
+                          }
+                          onChange={texthandle.bind(this, this)}
+                          disabled={this.state.dataExists}
+                        />
+                        <span>Item</span>
+                      </label>
+                      <label className="radio inline">
+                        <input
+                          type="radio"
+                          value="S"
+                          name="po_mode"
+                          checked={
+                            this.state.po_mode === "S" ? true : false
+                          }
+                          onChange={texthandle.bind(this, this)}
+                          disabled={this.state.dataExists}
+                        />
+                        <span>Service</span>
+                      </label>
+                    </div>
+                  </div>) : null}
 
-                <AlagehAutoComplete
-                  div={{ className: "col-2" }}
-                  label={{ forceLabel: "PO For" }}
-                  selector={{
-                    name: "po_from",
-                    className: "select-fld",
-                    value: this.state.po_from,
-                    dataSource: {
-                      textField: "name",
-                      valueField: "value",
-                      data: GlobalVariables.PO_FROM,
-                    },
-                    others: {
-                      disabled: this.state.bothExisits,
-                    },
-                    onChange: poforhandle.bind(this, this),
-                    onClear: () => {
-                      clearItemDetails(this, this);
-                      this.setState({
-                        po_from: null,
-                        ReqData: true,
-                        pharmcy_location_id: null,
-                        inventory_location_id: null,
-                      });
-                    },
-                  }}
-                />
+                {this.state.po_mode === "I" ? (
+                  <div className="col">
+                    <div className="row">
+                      <AlagehAutoComplete
+                        div={{ className: "col mandatory" }}
+                        label={{ forceLabel: "PO Type" }}
+                        selector={{
+                          name: "po_type",
+                          className: "select-fld",
+                          value: this.state.po_type,
+                          dataSource: {
+                            textField: "name",
+                            valueField: "value",
+                            data: GlobalVariables.PO_TYPE,
+                          },
+                          others: {
+                            disabled:
+                              this.state.po_entry_detail.length > 0 ? true : false,
+                          },
+                          onChange: texthandle.bind(this, this),
+                          onClear: () => {
+                            this.setState({
+                              po_type: "D",
+                            });
+                          },
+                        }}
+                      />
 
-                <AlagehAutoComplete
-                  div={{ className: "col-2" }}
-                  label={{ forceLabel: "Location Code" }}
-                  selector={{
-                    name:
-                      this.state.po_from === "PHR"
-                        ? "pharmcy_location_id"
-                        : "inventory_location_id",
-                    className: "select-fld",
-                    value:
-                      this.state.po_from === "PHR"
-                        ? this.state.pharmcy_location_id
-                        : this.state.inventory_location_id,
-                    dataSource: {
-                      textField: "location_description",
-                      valueField:
-                        this.state.po_from === "PHR"
-                          ? "hims_d_pharmacy_location_id"
-                          : "hims_d_inventory_location_id",
-                      data: _mainStore,
-                    },
-                    others: {
-                      disabled:
-                        this.state.po_entry_detail.length > 0 ? true : false,
-                    },
-                    onChange: loctexthandle.bind(this, this),
-                    onClear: () => {
-                      this.setState({
-                        location_description: null,
-                      });
-                    },
-                  }}
-                />
+                      <AlagehAutoComplete
+                        div={{ className: "col mandatory" }}
+                        label={{ forceLabel: "PO For" }}
+                        selector={{
+                          name: "po_from",
+                          className: "select-fld",
+                          value: this.state.po_from,
+                          dataSource: {
+                            textField: "name",
+                            valueField: "value",
+                            data: GlobalVariables.PO_FROM,
+                          },
+                          others: {
+                            disabled: this.state.bothExisits,
+                          },
+                          onChange: poforhandle.bind(this, this),
+                          onClear: () => {
+                            clearItemDetails(this, this);
+                            this.setState({
+                              po_from: null,
+                              ReqData: true,
+                              pharmcy_location_id: null,
+                              inventory_location_id: null,
+                            });
+                          },
+                        }}
+                      />
 
+                      <AlagehAutoComplete
+                        div={{ className: "col mandatory" }}
+                        label={{ forceLabel: "Location Code" }}
+                        selector={{
+                          name:
+                            this.state.po_from === "PHR"
+                              ? "pharmcy_location_id"
+                              : "inventory_location_id",
+                          className: "select-fld",
+                          value:
+                            this.state.po_from === "PHR"
+                              ? this.state.pharmcy_location_id
+                              : this.state.inventory_location_id,
+                          dataSource: {
+                            textField: "location_description",
+                            valueField:
+                              this.state.po_from === "PHR"
+                                ? "hims_d_pharmacy_location_id"
+                                : "hims_d_inventory_location_id",
+                            data: _mainStore,
+                          },
+                          others: {
+                            disabled:
+                              this.state.po_entry_detail.length > 0 ? true : false,
+                          },
+                          onChange: loctexthandle.bind(this, this),
+                          onClear: () => {
+                            this.setState({
+                              location_description: null,
+                            });
+                          },
+                        }}
+                      />
+                    </div>
+                  </div>
+                ) :
+                  <div className="col">
+                    <div className="row">
+                      <AlagehAutoComplete
+                        div={{ className: "col form-group mandatory" }}
+                        label={{
+                          forceLabel: "Select Project",
+                          isImp: true,
+                        }}
+                        selector={{
+                          name: "project_id",
+                          className: "select-fld",
+                          value: this.state.project_id,
+                          dataSource: {
+                            textField: "cost_center",
+                            valueField: "cost_center_id",
+                            data: this.state.cost_projects,
+                          },
+                          onChange: texthandle.bind(this, this),
+                          others: {
+                            disabled: this.state.dataExists,
+                          },
+                          onClear: () => {
+                            this.setState({
+                              project_id: null,
+                              hospital_id: null,
+                              organizations: [],
+                            });
+                          },
+                        }}
+                      />
+
+                      <AlagehAutoComplete
+                        div={{ className: "col mandatory" }}
+                        label={{
+                          forceLabel: "Select Branch",
+                          isImp: true,
+                        }}
+                        selector={{
+                          name: "hospital_id",
+                          className: "select-fld",
+                          value: this.state.hospital_id,
+                          dataSource: {
+                            textField: "hospital_name",
+                            valueField: "hims_d_hospital_id",
+                            data: this.state.organizations,
+                          },
+                          onChange: texthandle.bind(this, this),
+                          others: {
+                            disabled: this.state.dataExists,
+                          },
+                          onClear: () => {
+                            this.setState({
+                              hospital_id: null,
+                            });
+                          },
+                        }}
+                      />
+                    </div>
+                  </div>
+                }
                 <AlagehAutoComplete
                   div={{ className: "col" }}
                   label={{ forceLabel: "Vendor Name" }}
@@ -417,37 +523,6 @@ class PurchaseOrderEntry extends Component {
                     autoComplete: "off",
                   }}
                 />
-
-                {/*
-                  <AlgaehDateHandler
-                    div={{ className: "col" }}
-                    label={{ forceLabel: "Expected Arrival" }}
-                    textBox={{
-                      className: "txt-fld",
-                      name: "expected_date"
-                    }}
-                    minDate={new Date()}
-                    events={{
-                      onChange: datehandle.bind(this, this)
-                    }}
-                    disabled={this.state.dataExitst}
-                    value={this.state.expected_date}
-                  />
-                  <div
-                  className="customCheckbox col-lg-3"
-                  style={{ border: "none", marginTop: "28px" }}
-                >
-                  <label className="checkbox" style={{ color: "#212529" }}>
-                    <input
-                      type="checkbox"
-                      name="Pay by Cash"
-                      checked={this.state.Cashchecked}
-                      onChange={null}
-                    />
-
-                    <span style={{ fontSize: "0.8rem" }}>From Multiple Requisitions</span>
-                  </label>
-                </div> */}
               </div>
             </div>
           </div>
@@ -460,28 +535,64 @@ class PurchaseOrderEntry extends Component {
               },
             }}
           >
-            <POItemList POEntry={this.state} />
+            {this.state.po_mode === "S" ? (
+              <POServiceList POEntry={this.state} />
+            ) : (
+                <POItemList POEntry={this.state} />
+              )}
+
           </MyContext.Provider>
-        </div>
-        {/* {this.props.purchase_auth === true ?
-          <div>
+          <div className="row">
+            <div className="col-lg-12">
+              <div style={{ marginBottom: 73 }}>
+                <div className="row">
+                  <div className="col" />
 
-            <AlgaehLabel
-              label={{
-                forceLabel: "Comments",
-              }}
-            />
+                  <div className="col-lg-6" style={{ textAlign: "right" }}>
+                    <div className="row">
+                      <div className="col-lg-3">
+                        <AlgaehLabel
+                          label={{
+                            forceLabel: "Sub Total",
+                          }}
+                        />
+                        <h6>{GetAmountFormart(this.state.sub_total)}</h6>
+                      </div>
+                      <div className="col-lg-3">
+                        <AlgaehLabel
+                          label={{
+                            forceLabel: "Discount Amount",
+                          }}
+                        />
+                        <h6>
+                          {GetAmountFormart(this.state.detail_discount)}
+                        </h6>
+                      </div>
 
-            <textarea
-              value={this.state.comment}
-              name="comment"
-              onChange={texthandle.bind(this, this)}
-            >
-              {this.state.comment}
-            </textarea>
+                      <div className="col-lg-3">
+                        <AlgaehLabel
+                          label={{
+                            forceLabel: "Tax Amount",
+                          }}
+                        />
+                        <h6>{GetAmountFormart(this.state.total_tax)}</h6>
+                      </div>
 
+                      <div className="col-lg-3">
+                        <AlgaehLabel
+                          label={{
+                            forceLabel: "Net Payable",
+                          }}
+                        />
+                        <h6>{GetAmountFormart(this.state.net_payable)}</h6>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
-          : null} */}
+        </div>
 
         <AlgaehSecurityComponent componentCode="PUR_ORD_MAINT">
           <div className="hptl-phase1-footer">
@@ -497,8 +608,8 @@ class PurchaseOrderEntry extends Component {
                           ? true
                           : this.state.authorize1 === "Y" ||
                             this.state.cancelled === "Y"
-                          ? true
-                          : false
+                            ? true
+                            : false
                       }
                       onClick={AuthorizePOEntry.bind(
                         this,
@@ -527,8 +638,8 @@ class PurchaseOrderEntry extends Component {
                           ? true
                           : this.state.authorize2 === "Y" ||
                             this.state.cancelled === "Y"
-                          ? true
-                          : false
+                            ? true
+                            : false
                       }
                       onClick={AuthorizePOEntry.bind(
                         this,
@@ -555,7 +666,7 @@ class PurchaseOrderEntry extends Component {
                     disabled={
                       (this.state.authorize2 === "Y" &&
                         this.state.authorize2 === "Y") ||
-                      this.state.cancelled === "Y"
+                        this.state.cancelled === "Y"
                         ? true
                         : false
                     }
@@ -620,26 +731,18 @@ class PurchaseOrderEntry extends Component {
 
 function mapStateToProps(state) {
   return {
-    poitemlist: state.poitemlist,
     polocations: state.polocations,
-    poitemcategory: state.poitemcategory,
-    poitemgroup: state.poitemgroup,
-    poitemuom: state.poitemuom,
     povendors: state.povendors,
-    purchaseorderentry: state.purchaseorderentry,
+    hospitaldetails: state.hospitaldetails
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getItems: AlgaehActions,
       getLocation: AlgaehActions,
-      getItemCategory: AlgaehActions,
-      getItemGroup: AlgaehActions,
-      getItemUOM: AlgaehActions,
       getVendorMaster: AlgaehActions,
-      getPurchaseOrderEntry: AlgaehActions,
+      getHospitalDetails: AlgaehActions
     },
     dispatch
   );

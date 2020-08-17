@@ -18,24 +18,20 @@ const executePDF = function executePDFMethod(options) {
 
       options.mysql
         .executeQuery({
-          query: `select BH.hims_f_billing_header_id, BH.patient_id, BH.visit_id, P.full_name, P.patient_code,  N.nationality, BH.bill_number, date(BH.bill_date) as bill_date,  BH.patient_res, BH.company_res, BH.cancelled,
-(coalesce(BC.total_tax, 0)) as cancelled_tax,
-(BH.net_total - (coalesce(BC.net_total, 0))) as actual_total_before_vat,
-(BH.net_amount - (coalesce(BC.net_amount, 0))) as actual_total_after_vat,
-(BH.patient_tax - (coalesce(BC.patient_tax , 0))) as actual_pat_tax,
-(BH.company_tax - (coalesce(BC.company_tax , 0))) as actual_com_tax,
-(BH.total_tax - (coalesce(BC.total_tax, 0))) as actual_tax
-from hims_f_billing_header as BH
-  inner join hims_f_patient P on P.hims_d_patient_id = BH.patient_id
+          query: `
+select V.visit_date, P.full_name, P.patient_code, N.nationality, CASE WHEN PD.insurance_yesno='Y' THEN 'Insurance' else 'Cash' END as insurance_yesno, PD.net_extended_cost as total_before_vat, (coalesce(PD.patient_payable,0)+coalesce(PD.company_payable,0)) as total_after_vat, PD.patient_tax,PD.company_tax,  "Pharmacy" as data_from
+from hims_f_pharmacy_pos_header PH
+inner join hims_f_pharmacy_pos_detail PD on PH.hims_f_pharmacy_pos_header_id = PD.pharmacy_pos_header_id
+left join hims_f_patient P on P.hims_d_patient_id = PH.patient_id
+left join  hims_f_patient_visit V on PH.visit_id = hims_f_patient_visit_id
 inner join hims_d_nationality N on N.hims_d_nationality_id = P.nationality_id
-left outer join hims_f_bill_cancel_header BC on BH.hims_f_billing_header_id = BC.from_bill_id
-where BH.cancelled <> 'Y' and BH.total_tax > 0  and date(BH.bill_date) between date(?) and date(?) and BH.hospital_id=? ${strData};`,
+where PH.cancelled='N' and PH.posted='Y' and date(pos_date) between date(?) and date(?) and PH.hospital_id=? ${strData};`,
           values: [input.from_date, input.to_date, input.hospital_id],
           printQuery: true,
         })
         .then((ress) => {
           let final_result = ress;
-          // final_result = final_result.concat(ress[1]);
+          final_result = final_result.concat(ress[1]);
           const result = {
             details: final_result,
           };
