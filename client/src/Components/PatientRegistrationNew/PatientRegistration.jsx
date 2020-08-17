@@ -254,7 +254,6 @@ export function PatientRegistration() {
   );
 
   const uploadAfterSubmit = async (data) => {
-    debugger;
     const images = [];
     if (patientImage !== null) {
       images.push(

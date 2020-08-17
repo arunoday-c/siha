@@ -488,7 +488,6 @@ export function InsuranceDetails({
                                 (primary_card_number || null) + "_front",
                               fileType: "Patients",
                               processDelay: (...val) => {
-                                debugger;
                                 console.log(val, "val");
                               },
                             }}
@@ -509,7 +508,6 @@ export function InsuranceDetails({
                               uniqueID: (primary_card_number || null) + "_back",
                               fileType: "Patients",
                               processDelay: (...val) => {
-                                debugger;
                                 console.log(val, "val");
                               },
                             }}

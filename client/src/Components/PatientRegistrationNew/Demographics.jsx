@@ -759,7 +759,6 @@ export function Demographics({
                               uniqueID: patient_code || null,
                               fileType: "Patients",
                               processDelay: (...val) => {
-                                debugger;
                                 console.log(val, "val");
                               },
                             }}
@@ -776,7 +775,6 @@ export function Demographics({
                               uniqueID: patient_code ? primary_id_no : null,
                               fileType: "Patients",
                               processDelay: (...val) => {
-                                debugger;
                                 console.log(val, "val");
                               },
                             }}
