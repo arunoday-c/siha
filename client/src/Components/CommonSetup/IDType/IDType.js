@@ -166,7 +166,7 @@ class IDType extends Component {
       currentRowID: "",
       nationality_id: null,
       nationality: "",
-      countries: [],
+      // countries: [],
       masked_identity: "",
       notify_expiry: "N",
       notify_before: 0,
@@ -530,7 +530,7 @@ class IDType extends Component {
                       onChange: this.texthandle.bind(this),
                       onClear: () => {
                         this.setState({
-                          nationality: null,
+                          nationality_id: null,
                         });
                       },
                     }}
