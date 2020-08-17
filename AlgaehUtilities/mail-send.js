@@ -89,13 +89,30 @@ algaehMail.prototype.attachments = function (attachments) {
 /*
   Attachments to reports
  */
-algaehMail.prototype.attachReports = async function (req, inputArray) {
-  const result = await reportEngine(req, inputArray);
-  this.deletePath = true;
-  this.mailOptions["attachments"] = result.map((item) => {
-    return item.path;
-  });
-  return this;
+algaehMail.prototype.attachReportsAndSend = function (
+  req,
+  inputArray,
+  callBack
+) {
+  //const result = await
+  reportEngine(req, inputArray)
+    .then((result) => {
+      this.deletePath = true;
+
+      this.mailOptions["attachments"] = result.map((item) => {
+        return { path: item.data.path, filename: item.data.filename };
+      });
+      this.send()
+        .then((result) => {
+          if (typeof callBack === "function") callBack(null, result);
+        })
+        .catch((error) => {
+          if (typeof callBack === "function") callBack(error, null);
+        });
+    })
+    .catch((error) => {
+      if (typeof callBack === "function") callBack(error, null);
+    });
 };
 /*
   options : { start, end, summary, organizer, description, attendee}
@@ -185,16 +202,18 @@ algaehMail.prototype.send = function (printInput) {
           const htmlFile = await fs.readFile(this.hbsFilePath, "utf-8");
           this.mailOptions["html"] = await hbs.compile(htmlFile)(this.hbsData);
         }
+
         this.transporter
           .sendMail(this.mailOptions)
           .then((result) => {
             this.transporter.close();
             this.hbsFilePath = undefined;
             this.hbsData = undefined;
+
             if (this.deletePath === true) {
               this.attachments.map((item) => {
-                fs.exists(item, (exists) => {
-                  if (exists) fs.unlink(item);
+                fs.exists(item.path, (exists) => {
+                  if (exists) fs.unlink(item.path);
                 });
               });
             }
@@ -206,8 +225,8 @@ algaehMail.prototype.send = function (printInput) {
             this.hbsData = undefined;
             if (this.deletePath === true) {
               this.attachments.map((item) => {
-                fs.exists(item, (exists) => {
-                  if (exists) fs.unlink(item);
+                fs.exists(item.path, (exists) => {
+                  if (exists) fs.unlink(item.path);
                 });
               });
             }
@@ -217,8 +236,8 @@ algaehMail.prototype.send = function (printInput) {
     } catch (error) {
       if (this.deletePath === true) {
         this.attachments.map((item) => {
-          fs.exists(item, (exists) => {
-            if (exists) fs.unlink(item);
+          fs.exists(item.path, (exists) => {
+            if (exists) fs.unlink(item.path);
           });
         });
       }

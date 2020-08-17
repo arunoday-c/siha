@@ -29,7 +29,8 @@ import {
   getPOOptions,
   getData,
   CancelPOEntry,
-  getCostCenters
+  getCostCenters,
+  getReportForMail,
 } from "./PurchaseOrderEntryEvents";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import POEntry from "../../../Models/POEntry";
@@ -44,11 +45,12 @@ import { GetAmountFormart } from "../../../utils/GlobalFunctions";
 class PurchaseOrderEntry extends Component {
   constructor(props) {
     super(props);
-    this.FIN_Active = false
+    this.FIN_Active = false;
     this.state = {
       decimal_places: null,
       po_services_req: "N",
-      cost_projects: []
+      cost_projects: [],
+
       // po_auth_level: "1"
     };
     getVendorMaster(this, this);
@@ -62,6 +64,7 @@ class PurchaseOrderEntry extends Component {
 
   static contextType = MainContext;
   componentDidMount() {
+    console.log("data:", this.props.povendors);
     const userToken = this.context.userToken;
     this.setState({
       decimal_places: userToken.decimal_places,
@@ -102,8 +105,8 @@ class PurchaseOrderEntry extends Component {
     }
     this.FIN_Active =
       userToken.product_type === "HIMS_ERP" ||
-        userToken.product_type === "FINANCE_ERP" ||
-        userToken.product_type === "HRMS_ERP"
+      userToken.product_type === "FINANCE_ERP" ||
+      userToken.product_type === "HRMS_ERP"
         ? true
         : false;
 
@@ -118,7 +121,6 @@ class PurchaseOrderEntry extends Component {
         mappingName: "hospitaldetails",
       },
     });
-
   }
 
   render() {
@@ -126,15 +128,15 @@ class PurchaseOrderEntry extends Component {
       this.state.po_from === null
         ? []
         : Enumerable.from(this.props.polocations)
-          .where((w) => w.location_type === "WH")
-          .toArray();
+            .where((w) => w.location_type === "WH")
+            .toArray();
 
     const class_finder =
       this.state.dataFinder === true
         ? " disableFinder"
         : this.state.ReqData === true
-          ? " disableFinder"
-          : "";
+        ? " disableFinder"
+        : "";
     return (
       <div>
         <BreadCrumb
@@ -193,64 +195,64 @@ class PurchaseOrderEntry extends Component {
                       <span className="badge badge-success">PO Closed</span>
                     ) : this.state.authorize1 === "Y" &&
                       this.state.authorize2 === "Y" ? (
-                              <span className="badge badge-success">Authorized</span>
-                            ) : this.state.authorize1 === "Y" &&
-                              this.state.authorize2 === "N" ? (
-                                <span className="badge badge-danger">
-                                  Posted/Pending For Authorize
+                      <span className="badge badge-success">Authorized</span>
+                    ) : this.state.authorize1 === "Y" &&
+                      this.state.authorize2 === "N" ? (
+                      <span className="badge badge-danger">
+                        Posted/Pending For Authorize
                       </span>
-                              ) : this.state.authorize1 === "N" &&
-                                this.state.authorize2 === "N" ? (
-                                  <span className="badge badge-danger">
-                                    Posted/Pending For Authorize
+                    ) : this.state.authorize1 === "N" &&
+                      this.state.authorize2 === "N" ? (
+                      <span className="badge badge-danger">
+                        Posted/Pending For Authorize
                       </span>
-                                ) : (
-                                  <span className="badge badge-danger">
-                                    Posted/Pending For Authorize
+                    ) : (
+                      <span className="badge badge-danger">
+                        Posted/Pending For Authorize
                       </span>
-                                )}
+                    )}
                   </h6>
                 </div>
               ) : this.state.dataExitst === false &&
                 this.state.purchase_number !== null ? (
-                    <div className="col">
-                      <AlgaehLabel
-                        label={{
-                          forceLabel: "PO Status",
-                        }}
-                      />
+                <div className="col">
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "PO Status",
+                    }}
+                  />
 
-                      <h6>
-                        <span className="badge badge-danger">
-                          Send for Authorization pending
+                  <h6>
+                    <span className="badge badge-danger">
+                      Send for Authorization pending
                     </span>
-                      </h6>
-                    </div>
-                  ) : null}
+                  </h6>
+                </div>
+              ) : null}
             </div>
           }
           printArea={
             this.state.purchase_number !== null
               ? {
-                menuitems: [
-                  {
-                    label: "Print PO",
-                    events: {
-                      onClick: () => {
-                        generatePOReceipt(this.state);
+                  menuitems: [
+                    {
+                      label: "Print PO",
+                      events: {
+                        onClick: () => {
+                          generatePOReceipt(this.state);
+                        },
                       },
                     },
-                  },
-                  // {
-                  //   label: "Receipt for Vendor",
-                  //   events: {
-                  //     onClick: () => {
-                  //       generatePOReceiptNoPrice(this.state);
-                  //     },
-                  //   },
-                  // },
-                ],
-              }
+                    // {
+                    //   label: "Receipt for Vendor",
+                    //   events: {
+                    //     onClick: () => {
+                    //       generatePOReceiptNoPrice(this.state);
+                    //     },
+                    //   },
+                    // },
+                  ],
+                }
               : ""
           }
           selectedLang={this.state.selectedLang}
@@ -271,9 +273,7 @@ class PurchaseOrderEntry extends Component {
                           type="radio"
                           value="I"
                           name="po_mode"
-                          checked={
-                            this.state.po_mode === "I" ? true : false
-                          }
+                          checked={this.state.po_mode === "I" ? true : false}
                           onChange={texthandle.bind(this, this)}
                           disabled={this.state.dataExists}
                         />
@@ -284,16 +284,15 @@ class PurchaseOrderEntry extends Component {
                           type="radio"
                           value="S"
                           name="po_mode"
-                          checked={
-                            this.state.po_mode === "S" ? true : false
-                          }
+                          checked={this.state.po_mode === "S" ? true : false}
                           onChange={texthandle.bind(this, this)}
                           disabled={this.state.dataExists}
                         />
                         <span>Service</span>
                       </label>
                     </div>
-                  </div>) : null}
+                  </div>
+                ) : null}
 
                 {this.state.po_mode === "I" ? (
                   <div className="col">
@@ -312,7 +311,9 @@ class PurchaseOrderEntry extends Component {
                           },
                           others: {
                             disabled:
-                              this.state.po_entry_detail.length > 0 ? true : false,
+                              this.state.po_entry_detail.length > 0
+                                ? true
+                                : false,
                           },
                           onChange: texthandle.bind(this, this),
                           onClear: () => {
@@ -374,7 +375,9 @@ class PurchaseOrderEntry extends Component {
                           },
                           others: {
                             disabled:
-                              this.state.po_entry_detail.length > 0 ? true : false,
+                              this.state.po_entry_detail.length > 0
+                                ? true
+                                : false,
                           },
                           onChange: loctexthandle.bind(this, this),
                           onClear: () => {
@@ -386,7 +389,7 @@ class PurchaseOrderEntry extends Component {
                       />
                     </div>
                   </div>
-                ) :
+                ) : (
                   <div className="col">
                     <div className="row">
                       <AlagehAutoComplete
@@ -446,7 +449,7 @@ class PurchaseOrderEntry extends Component {
                       />
                     </div>
                   </div>
-                }
+                )}
                 <AlagehAutoComplete
                   div={{ className: "col" }}
                   label={{ forceLabel: "Vendor Name" }}
@@ -538,9 +541,8 @@ class PurchaseOrderEntry extends Component {
             {this.state.po_mode === "S" ? (
               <POServiceList POEntry={this.state} />
             ) : (
-                <POItemList POEntry={this.state} />
-              )}
-
+              <POItemList POEntry={this.state} />
+            )}
           </MyContext.Provider>
           <div className="row">
             <div className="col-lg-12">
@@ -564,9 +566,7 @@ class PurchaseOrderEntry extends Component {
                             forceLabel: "Discount Amount",
                           }}
                         />
-                        <h6>
-                          {GetAmountFormart(this.state.detail_discount)}
-                        </h6>
+                        <h6>{GetAmountFormart(this.state.detail_discount)}</h6>
                       </div>
 
                       <div className="col-lg-3">
@@ -608,8 +608,8 @@ class PurchaseOrderEntry extends Component {
                           ? true
                           : this.state.authorize1 === "Y" ||
                             this.state.cancelled === "Y"
-                            ? true
-                            : false
+                          ? true
+                          : false
                       }
                       onClick={AuthorizePOEntry.bind(
                         this,
@@ -638,8 +638,8 @@ class PurchaseOrderEntry extends Component {
                           ? true
                           : this.state.authorize2 === "Y" ||
                             this.state.cancelled === "Y"
-                            ? true
-                            : false
+                          ? true
+                          : false
                       }
                       onClick={AuthorizePOEntry.bind(
                         this,
@@ -666,7 +666,7 @@ class PurchaseOrderEntry extends Component {
                     disabled={
                       (this.state.authorize2 === "Y" &&
                         this.state.authorize2 === "Y") ||
-                        this.state.cancelled === "Y"
+                      this.state.cancelled === "Y"
                         ? true
                         : false
                     }
@@ -680,6 +680,28 @@ class PurchaseOrderEntry extends Component {
                     />
                   </button>
                 ) : null}
+                <button
+                  type="button"
+                  className="btn btn-other"
+                  // disabled={
+                  //   this.state.authBtnEnable === true
+                  //     ? true
+                  //     : this.state.authorize2 === "Y" ||
+                  //       this.state.cancelled === "Y"
+                  //       ? true
+                  //       : false
+                  // }
+                  onClick={() => {
+                    getReportForMail(this.state, this.props.povendors);
+                  }}
+                >
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Send Email With report",
+                      returnText: true,
+                    }}
+                  />
+                </button>
               </div>
               <div className="col-8">
                 <button
@@ -733,7 +755,7 @@ function mapStateToProps(state) {
   return {
     polocations: state.polocations,
     povendors: state.povendors,
-    hospitaldetails: state.hospitaldetails
+    hospitaldetails: state.hospitaldetails,
   };
 }
 
@@ -742,7 +764,7 @@ function mapDispatchToProps(dispatch) {
     {
       getLocation: AlgaehActions,
       getVendorMaster: AlgaehActions,
-      getHospitalDetails: AlgaehActions
+      getHospitalDetails: AlgaehActions,
     },
     dispatch
   );

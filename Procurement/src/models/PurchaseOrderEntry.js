@@ -2,6 +2,7 @@ import algaehMysql from "algaeh-mysql";
 import algaehUtilities from "algaeh-utilities/utilities";
 import mysql from "mysql";
 import _ from "lodash";
+import algaehMail from "algaeh-utilities/mail-send";
 
 export default {
   getPurchaseOrderEntry: (req, res, next) => {
@@ -63,7 +64,7 @@ export default {
                    and IC.hims_d_inventory_tem_category_id = PD.inv_item_category_id and \
                    IG.hims_d_inventory_item_group_id =PD.inv_item_group_id \
                    and procurement_header_id=?" +
-                  strCondition,
+                    strCondition,
                   [headerResult[0].hims_f_procurement_po_header_id]
                 );
               } else if (headerResult[0].po_from == "PHR") {
@@ -83,7 +84,7 @@ export default {
                 where PD.phar_item_id = IM.hims_d_item_master_id and PD.pharmacy_uom_id = PU.hims_d_pharmacy_uom_id \
                 and IM.stocking_uom_id = STOCK_UOM.hims_d_pharmacy_uom_id and IM.service_id = S.hims_d_services_id and \
                 IC.hims_d_item_category_id = PD.phar_item_category and IG.hims_d_item_group_id = PD.phar_item_group and procurement_header_id=?" +
-                  strCondition,
+                    strCondition,
                   [headerResult[0].hims_f_procurement_po_header_id]
                 );
               }
@@ -187,7 +188,9 @@ export default {
                   req.userIdentity.algaeh_d_app_user_id,
                   new Date(),
                   input.project_id,
-                  input.po_mode === "I" ? req.userIdentity.hospital_id : input.hospital_id,
+                  input.po_mode === "I"
+                    ? req.userIdentity.hospital_id
+                    : input.hospital_id,
                 ],
                 printQuery: true,
               })
@@ -197,7 +200,7 @@ export default {
                   isTransactionConnection: _mysql.isTransactionConnection,
                   pool: _mysql.pool,
                 };
-                let IncludeValues = []
+                let IncludeValues = [];
                 if (input.po_mode === "I") {
                   IncludeValues = [
                     "phar_item_category",
@@ -266,7 +269,7 @@ export default {
                     "net_extended_cost",
                     "tax_percentage",
                     "tax_amount",
-                    "total_amount"
+                    "total_amount",
                   ];
 
                   _mysql
@@ -356,7 +359,7 @@ export default {
           })
           .then((headerResult) => {
             let strQuery = "";
-            let IncludeValues = []
+            let IncludeValues = [];
             if (input.po_mode === "I") {
               if (input.delete_stock_detail.length > 0) {
                 strQuery += mysql.format(
@@ -483,15 +486,15 @@ export default {
                   });
               }
             } else {
-              console.log("input.delete_po_services", input.delete_po_services)
-              console.log("input.po_services", input.po_services)
+              console.log("input.delete_po_services", input.delete_po_services);
+              console.log("input.po_services", input.po_services);
               if (input.delete_po_services.length > 0) {
                 strQuery += mysql.format(
                   "DELETE FROM hims_f_procurement_po_services where hims_f_procurement_po_services_id in (?);",
                   [input.delete_po_services]
                 );
               } else {
-                strQuery += "select 1=1"
+                strQuery += "select 1=1";
               }
 
               const insert_po_detail = _.filter(input.po_services, (f) => {
@@ -512,7 +515,7 @@ export default {
                   "net_extended_cost",
                   "tax_percentage",
                   "tax_amount",
-                  "total_amount"
+                  "total_amount",
                 ];
 
                 _mysql
@@ -622,7 +625,10 @@ export default {
               pool: _mysql.pool,
             };
             if (headerResult != null) {
-              console.log("inputParam.po_entry_detail", inputParam.po_entry_detail)
+              console.log(
+                "inputParam.po_entry_detail",
+                inputParam.po_entry_detail
+              );
               let details = inputParam.po_entry_detail;
 
               if (details.length > 0) {
@@ -754,10 +760,12 @@ export default {
         strQuery += "";
       } else if (inputParam.status == "1") {
         //Pending To Authorize 1
-        strQuery += " and is_posted = 'Y' and authorize1 = 'N' and cancelled = 'N'";
+        strQuery +=
+          " and is_posted = 'Y' and authorize1 = 'N' and cancelled = 'N'";
       } else if (inputParam.status == "2") {
         //Pending To Authorize 2
-        strQuery += " and authorize1 = 'Y' and authorize2 = 'N' and cancelled = 'N'";
+        strQuery +=
+          " and authorize1 = 'Y' and authorize2 = 'N' and cancelled = 'N'";
       } else if (inputParam.status == "3") {
         strQuery +=
           " and authorize1 = 'Y' and authorize2 = 'Y' and is_completed='N' and cancelled = 'N'";
@@ -959,16 +967,13 @@ export default {
     const _options = req.connection == null ? {} : req.connection;
     const _mysql = new algaehMysql(_options);
     try {
-      console.log("updateInvReqEntry")
+      console.log("updateInvReqEntry");
       let qry = "";
       if (req.body.po_type === "PR") {
         qry += mysql.format(
           "UPDATE hims_f_inventory_material_header SET is_completed='Y' ,`completed_date`=? \
           where `hims_f_inventory_material_header_id`=? ;",
-          [
-            new Date(),
-            req.body.inv_requisition_id
-          ]
+          [new Date(), req.body.inv_requisition_id]
         );
       } else {
         const details = req.body.po_entry_detail;
@@ -1146,5 +1151,43 @@ export default {
       _mysql.releaseConnection();
       next(e);
     }
-  }
+  },
+  getReportForMail: (req, res, next) => {
+    const { vendor_email, po_from, purchase_number } = req.query;
+
+    // const _mysql = new algaehMysql();
+    try {
+      const reportInput = [
+        {
+          report: {
+            reportName:
+              po_from === "PHR"
+                ? "poPharmacyProcurement"
+                : "poInventoryProcurement",
+            reportParams: [
+              {
+                name: "purchase_number",
+                value: purchase_number,
+              },
+            ],
+            outputFileType: "PDF",
+          },
+        },
+      ];
+      new algaehMail()
+        .to(vendor_email)
+        .subject("Purchase Order Report")
+        .attachReportsAndSend(req, reportInput, (error, records) => {
+          if (error) {
+            next(error);
+            return;
+          }
+
+          next();
+        });
+    } catch (e) {
+      //_mysql.releaseConnection();
+      next(e);
+    }
+  },
 };

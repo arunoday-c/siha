@@ -429,7 +429,7 @@ export default {
                     const styleObj = _data.report_props
                       ? JSON.parse(_data.report_props)
                       : baseObj;
-                    console.log("styleObj.header.bottom", styleObj);
+
                     const _outPath = _path + ".pdf";
                     _reportOutput.push(_outPath);
                     const browser = await puppeteer.launch({
@@ -627,11 +627,14 @@ export default {
                           }
                         });
                       } else {
-                        if (_inputParam["sendPath"] === true) {
+                        if (input["sendPath"]) {
                           _mysql.releaseConnection();
                           res
                             .status(200)
-                            .json({ path: _reportOutput[0] })
+                            .json({
+                              path: _reportOutput[0],
+                              filename: _inputParam.reportName + ".pdf",
+                            })
                             .end();
                         } else {
                           fs.exists(_reportOutput[0], (exists) => {

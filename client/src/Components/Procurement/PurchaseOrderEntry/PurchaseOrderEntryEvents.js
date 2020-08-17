@@ -10,7 +10,6 @@ import swal from "sweetalert2";
 
 let texthandlerInterval = null;
 
-
 const texthandle = ($this, ctrl, e) => {
   e = ctrl || e;
   let name = e.name || e.target.name;
@@ -34,16 +33,18 @@ const texthandle = ($this, ctrl, e) => {
         }
       );
 
-      RawSecurityComponent({ componentCode: "PUR_ORD_PHARMACY" }).then((result) => {
-        if (result === "show") {
-          getData($this, "PHR");
-          IOputs.bothExisits = bothExisits === false ? false : true;
-          IOputs.po_from = "PHR";
-        } else {
-          IOputs.bothExisits = true;
+      RawSecurityComponent({ componentCode: "PUR_ORD_PHARMACY" }).then(
+        (result) => {
+          if (result === "show") {
+            getData($this, "PHR");
+            IOputs.bothExisits = bothExisits === false ? false : true;
+            IOputs.po_from = "PHR";
+          } else {
+            IOputs.bothExisits = true;
+          }
+          $this.setState(IOputs);
         }
-        $this.setState(IOputs);
-      });
+      );
       break;
     case "project_id":
       $this.setState({
@@ -83,6 +84,7 @@ const loctexthandle = ($this, e) => {
 };
 
 const vendortexthandle = ($this, e) => {
+  // debugger;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
   let ReqData = true;
@@ -97,6 +99,7 @@ const vendortexthandle = ($this, e) => {
     [name]: value,
     vendor_name: e.selected.vendor_name,
     payment_terms: e.selected.payment_terms,
+
     ReqData: ReqData,
   });
 };
@@ -399,6 +402,7 @@ const SavePOEnrty = ($this, from) => {
     "vendor_quotation_header_id",
     "from_multiple_requisition",
     "payment_terms",
+
     "comment",
     "sub_total",
     "detail_discount",
@@ -416,7 +420,7 @@ const SavePOEnrty = ($this, from) => {
     "project_id",
     "hospital_id",
     "po_services",
-    "delete_po_services"
+    "delete_po_services",
   ];
   let sendJsonBody = {};
   procumentInputs.forEach((item) => {
@@ -495,7 +499,7 @@ const getCtrlCode = ($this, docNumber) => {
           }
 
           if (data.po_mode === "S") {
-            data.po_services = data.po_entry_detail
+            data.po_services = data.po_entry_detail;
           }
 
           data.dataFinder = true;
@@ -538,8 +542,11 @@ const getCtrlCode = ($this, docNumber) => {
 };
 
 const getData = ($this, po_from) => {
-  let strUri = po_from === "PHR" ? "/pharmacy/getPharmacyLocation" : "/inventory/getInventoryLocation"
-  let strModule = po_from === "PHR" ? "pharmacy" : "inventory"
+  let strUri =
+    po_from === "PHR"
+      ? "/pharmacy/getPharmacyLocation"
+      : "/inventory/getInventoryLocation";
+  let strModule = po_from === "PHR" ? "pharmacy" : "inventory";
   $this.props.getLocation({
     uri: strUri,
     module: strModule,
@@ -673,7 +680,6 @@ const AuthorizePOEntry = ($this, authorize) => {
         $this.state.is_completed = $this.state.po_mode === "S" ? "Y" : "N";
         authorize1 = "Y";
         authorize2 = "Y";
-
       }
     }
 
@@ -694,6 +700,7 @@ const AuthorizePOEntry = ($this, authorize) => {
       "vendor_quotation_header_id",
       "from_multiple_requisition",
       "payment_terms",
+
       "comment",
       "sub_total",
       "detail_discount",
@@ -708,7 +715,7 @@ const AuthorizePOEntry = ($this, authorize) => {
       "authorize1",
       "authorize2",
       "delete_po_services",
-      "is_completed"
+      "is_completed",
     ];
     let sendJsonBody = {};
     procumentInputs.forEach((item) => {
@@ -934,9 +941,45 @@ const getPOOptions = ($this) => {
       if (res.data.success) {
         $this.setState({
           po_auth_level: res.data.records[0].po_auth_level,
-          po_services_req: res.data.records[0].po_services
+          po_services_req: res.data.records[0].po_services,
         });
       }
+    },
+  });
+};
+const getReportForMail = (data, vedorData) => {
+  let vendorEmail = vedorData.filter(
+    (item) => item.hims_d_vendor_id === data.vendor_id
+  )[0].email_id_1;
+
+  algaehApiCall({
+    uri: "/PurchaseOrderEntry/getReportForMail",
+    module: "procurement",
+    method: "GET",
+    // data: {
+    //   report: {
+    //     reportName:
+    //       data.po_from === "PHR"
+    //         ? "poPharmacyProcurement"
+    //         : "poInventoryProcurement",
+    //     reportParams: [
+    //       {
+    //         name: "purchase_number",
+    //         value: data.purchase_number,
+    //       },
+    //     ],
+    //     outputFileType: "PDF",
+    //   },
+    //   vendor_email: vendorEmail,
+    //   subject: "test",
+    // },
+    data: {
+      purchase_number: data.purchase_number,
+      vendor_email: vendorEmail,
+      po_from: data.po_from,
+    },
+    onSuccess: (res) => {
+      console.log("data:", res.data);
     },
   });
 };
@@ -1006,7 +1049,6 @@ const CancelPOEntry = ($this) => {
   });
 };
 
-
 const getCostCenters = ($this) => {
   algaehApiCall({
     uri: "/finance_masters/getCostCenters",
@@ -1042,5 +1084,6 @@ export {
   getPOOptions,
   getData,
   CancelPOEntry,
-  getCostCenters
+  getCostCenters,
+  getReportForMail,
 };

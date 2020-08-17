@@ -17,24 +17,24 @@ const {
   getraiseRequestForPO,
   postPurchaseOrderEntry,
   cancelPurchaseOrderEntry,
-  releaseDB
+  getReportForMail,
+  releaseDB,
 } = purchaseModels;
 
 export default () => {
   const api = Router();
 
-
   api.get("/getPurchaseOrderEntry", getPurchaseOrderEntry, (req, res, next) => {
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
       success: true,
-      records: req.records
+      records: req.records,
     });
   });
 
   api.get("/getAuthPurchaseList", getAuthPurchaseList, (req, res, next) => {
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
       success: true,
-      records: req.records
+      records: req.records,
     });
   });
 
@@ -44,7 +44,7 @@ export default () => {
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
-        records: req.records
+        records: req.records,
       });
     }
   );
@@ -55,21 +55,17 @@ export default () => {
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
-        records: req.records
+        records: req.records,
       });
     }
   );
 
-  api.get(
-    "/getVendorQuotation",
-    getVendorQuotation,
-    (req, res, next) => {
-      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
-        success: true,
-        records: req.records
-      });
-    }
-  );
+  api.get("/getVendorQuotation", getVendorQuotation, (req, res, next) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: req.records,
+    });
+  });
 
   api.post(
     "/addPurchaseOrderEntry",
@@ -92,7 +88,7 @@ export default () => {
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
-        records: req.records
+        records: req.records,
       });
     }
   );
@@ -103,7 +99,7 @@ export default () => {
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
-        records: req.records
+        records: req.records,
       });
     }
   );
@@ -113,41 +109,39 @@ export default () => {
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
-        records: req.records
+        records: req.records,
       });
     }
   );
-  api.post(
-    "/raiseRequestForPO",
-    raiseRequestForPO,
-    (req, res, next) => {
-      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
-        success: true,
-        records: req.records
-      });
-    }
-  );
-  api.get(
-    "/getraiseRequestForPO",
-    getraiseRequestForPO,
-    (req, res, next) => {
-      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
-        success: true,
-        records: req.records
-      });
-    }
-  );
+  api.post("/raiseRequestForPO", raiseRequestForPO, (req, res, next) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: req.records,
+    });
+  });
+  api.get("/getraiseRequestForPO", getraiseRequestForPO, (req, res, next) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: req.records,
+    });
+  });
   api.put(
     "/cancelPurchaseOrderEntry",
     cancelPurchaseOrderEntry,
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
-        records: req.records
+        records: req.records,
       });
     }
   );
-
+  api.get("/getReportForMail", getReportForMail, (req, res, next) => {
+    console.log("req", req);
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: req.records,
+    });
+  });
 
   return api;
 };
