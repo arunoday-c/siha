@@ -45,7 +45,10 @@ export default {
   updateIdentity: (req, res, next) => {
     let inputParam = req.body;
 
-    const employeeIds = inputParam.employeeIDs.join(",");
+    const employeeIds =
+      inputParam.employeeIDs.length === 0
+        ? null
+        : inputParam.employeeIDs.join(",");
     const _mysql = new algaehMysql();
     try {
       _mysql
