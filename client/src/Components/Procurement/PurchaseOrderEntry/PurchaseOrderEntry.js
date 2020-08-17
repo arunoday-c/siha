@@ -23,7 +23,7 @@ import {
   AuthorizePOEntry,
   getVendorMaster,
   generatePOReceipt,
-  generatePOReceiptNoPrice,
+  // generatePOReceiptNoPrice,
   clearItemDetails,
   VendorQuotationSearch,
   getPOOptions,
@@ -46,7 +46,9 @@ class PurchaseOrderEntry extends Component {
     super(props);
     this.FIN_Active = false
     this.state = {
-      decimal_places: null
+      decimal_places: null,
+      po_services_req: "N",
+      cost_projects: []
       // po_auth_level: "1"
     };
     getVendorMaster(this, this);
@@ -232,21 +234,21 @@ class PurchaseOrderEntry extends Component {
               ? {
                 menuitems: [
                   {
-                    label: "Receipt for Internal",
+                    label: "Print PO",
                     events: {
                       onClick: () => {
                         generatePOReceipt(this.state);
                       },
                     },
                   },
-                  {
-                    label: "Receipt for Vendor",
-                    events: {
-                      onClick: () => {
-                        generatePOReceiptNoPrice(this.state);
-                      },
-                    },
-                  },
+                  // {
+                  //   label: "Receipt for Vendor",
+                  //   events: {
+                  //     onClick: () => {
+                  //       generatePOReceiptNoPrice(this.state);
+                  //     },
+                  //   },
+                  // },
                 ],
               }
               : ""
@@ -259,39 +261,40 @@ class PurchaseOrderEntry extends Component {
             style={{ marginTop: "75px", paddingBottom: "10px" }}
           >
             <div className="col-lg-12">
-
               <div className="row">
-                <div className="col-2 ">
-                  <label>PO Mode</label>
-                  <div className="customRadio">
-                    <label className="radio inline">
-                      <input
-                        type="radio"
-                        value="I"
-                        name="po_mode"
-                        checked={
-                          this.state.po_mode === "I" ? true : false
-                        }
-                        onChange={texthandle.bind(this, this)}
-                        disabled={this.state.dataExists}
-                      />
-                      <span>Item</span>
-                    </label>
-                    <label className="radio inline">
-                      <input
-                        type="radio"
-                        value="S"
-                        name="po_mode"
-                        checked={
-                          this.state.po_mode === "S" ? true : false
-                        }
-                        onChange={texthandle.bind(this, this)}
-                        disabled={this.state.dataExists}
-                      />
-                      <span>Service</span>
-                    </label>
-                  </div>
-                </div>
+                {this.state.po_services_req === "Y" ? (
+                  <div className="col-2 ">
+                    <label>PO Mode</label>
+                    <div className="customRadio">
+                      <label className="radio inline">
+                        <input
+                          type="radio"
+                          value="I"
+                          name="po_mode"
+                          checked={
+                            this.state.po_mode === "I" ? true : false
+                          }
+                          onChange={texthandle.bind(this, this)}
+                          disabled={this.state.dataExists}
+                        />
+                        <span>Item</span>
+                      </label>
+                      <label className="radio inline">
+                        <input
+                          type="radio"
+                          value="S"
+                          name="po_mode"
+                          checked={
+                            this.state.po_mode === "S" ? true : false
+                          }
+                          onChange={texthandle.bind(this, this)}
+                          disabled={this.state.dataExists}
+                        />
+                        <span>Service</span>
+                      </label>
+                    </div>
+                  </div>) : null}
+
                 {this.state.po_mode === "I" ? (
                   <div className="col">
                     <div className="row">

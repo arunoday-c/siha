@@ -707,6 +707,21 @@ const dateValidate = ($this, value, event) => {
   }
 };
 
+const getPOOptions = ($this) => {
+  algaehApiCall({
+    uri: "/POSettings/getPOOptions",
+    method: "GET",
+    module: "procurement",
+    onSuccess: (res) => {
+      if (res.data.success) {
+        $this.setState({
+          po_services_req: res.data.records[0].po_services
+        });
+      }
+    },
+  });
+};
+
 export {
   texthandle,
   poforhandle,
@@ -723,5 +738,6 @@ export {
   PostReceiptEntry,
   PurchaseOrderSearch,
   textEventhandle,
-  generateReceiptEntryReport
+  generateReceiptEntryReport,
+  getPOOptions
 };

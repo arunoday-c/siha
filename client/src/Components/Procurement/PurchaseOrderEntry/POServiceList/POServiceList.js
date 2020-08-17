@@ -33,6 +33,7 @@ export default class POServiceList extends Component {
     }
 
     UNSAFE_componentWillReceiveProps(nextProps) {
+        debugger
         this.setState(nextProps.POEntry);
     }
 

@@ -24,6 +24,7 @@ import {
   datehandle,
   textEventhandle,
   generateReceiptEntryReport,
+  getPOOptions
 } from "./ReceiptEntryEvent";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import ReceiptEntryInp from "../../../Models/ReceiptEntry";
@@ -33,7 +34,10 @@ import { GetAmountFormart } from "../../../utils/GlobalFunctions";
 class ReceiptEntry extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      po_services_req: "N"
+    };
+    getPOOptions(this, this);
   }
 
   UNSAFE_componentWillMount() {
@@ -42,17 +46,6 @@ class ReceiptEntry extends Component {
   }
 
   componentDidMount() {
-    this.props.getVendorMaster({
-      uri: "/vendor/getVendorMaster",
-      module: "masterSettings",
-      method: "GET",
-      data: { vendor_status: "A" },
-      redux: {
-        type: "VENDORS_GET_DATA",
-        mappingName: "receiptvendors",
-      },
-    });
-
     // if (
     //   this.props.delivery_note_number !== undefined &&
     //   this.props.delivery_note_number.length !== 0
@@ -133,17 +126,17 @@ class ReceiptEntry extends Component {
           printArea={
             this.state.hims_f_procurement_po_header_id !== null
               ? {
-                  menuitems: [
-                    {
-                      label: "Receipt Entry Report",
-                      events: {
-                        onClick: () => {
-                          generateReceiptEntryReport(this.state);
-                        },
+                menuitems: [
+                  {
+                    label: "Receipt Entry Report",
+                    events: {
+                      onClick: () => {
+                        generateReceiptEntryReport(this.state);
                       },
                     },
-                  ],
-                }
+                  },
+                ],
+              }
               : ""
           }
           selectedLang={this.state.selectedLang}
@@ -155,33 +148,35 @@ class ReceiptEntry extends Component {
           >
             <div className="col-lg-12">
               <div className="row">
-                <div className="col-2 form-group">
-                  <label>Receipt Mode</label>
-                  <div className="customRadio">
-                    <label className="radio inline">
-                      <input
-                        type="radio"
-                        value="I"
-                        name="receipt_mode"
-                        checked={this.state.receipt_mode === "I" ? true : false}
-                        onChange={texthandle.bind(this, this)}
-                        disabled={this.state.dataExitst}
-                      />
-                      <span>Item</span>
-                    </label>
-                    <label className="radio inline">
-                      <input
-                        type="radio"
-                        value="S"
-                        name="receipt_mode"
-                        checked={this.state.receipt_mode === "S" ? true : false}
-                        onChange={texthandle.bind(this, this)}
-                        disabled={this.state.dataExitst}
-                      />
-                      <span>Service</span>
-                    </label>
+                {this.state.po_services_req === "Y" ? (
+                  <div className="col-2 form-group">
+                    <label>Receipt Mode</label>
+                    <div className="customRadio">
+                      <label className="radio inline">
+                        <input
+                          type="radio"
+                          value="I"
+                          name="receipt_mode"
+                          checked={this.state.receipt_mode === "I" ? true : false}
+                          onChange={texthandle.bind(this, this)}
+                          disabled={this.state.dataExitst}
+                        />
+                        <span>Item</span>
+                      </label>
+                      <label className="radio inline">
+                        <input
+                          type="radio"
+                          value="S"
+                          name="receipt_mode"
+                          checked={this.state.receipt_mode === "S" ? true : false}
+                          onChange={texthandle.bind(this, this)}
+                          disabled={this.state.dataExitst}
+                        />
+                        <span>Service</span>
+                      </label>
+                    </div>
                   </div>
-                </div>
+                ) : null}
                 <div
                   className={"col-2 globalSearchCntr mandatory" + class_finder}
                 >
@@ -220,28 +215,28 @@ class ReceiptEntry extends Component {
                     </div>
                   </div>
                 ) : (
-                  <div className="col-6">
-                    <div className="row">
-                      <div className="col">
-                        <AlgaehLabel label={{ forceLabel: "Branch" }} />
-                        <h6>
-                          {this.state.hospital_name
-                            ? this.state.hospital_name
-                            : "------"}
-                        </h6>
-                      </div>
+                    <div className="col-6">
+                      <div className="row">
+                        <div className="col">
+                          <AlgaehLabel label={{ forceLabel: "Branch" }} />
+                          <h6>
+                            {this.state.hospital_name
+                              ? this.state.hospital_name
+                              : "------"}
+                          </h6>
+                        </div>
 
-                      <div className="col">
-                        <AlgaehLabel label={{ forceLabel: "Project" }} />
-                        <h6>
-                          {this.state.project_desc
-                            ? this.state.project_desc
-                            : "------"}
-                        </h6>
+                        <div className="col">
+                          <AlgaehLabel label={{ forceLabel: "Project" }} />
+                          <h6>
+                            {this.state.project_desc
+                              ? this.state.project_desc
+                              : "------"}
+                          </h6>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                )}
+                  )}
 
                 <div className="col">
                   <AlgaehLabel label={{ forceLabel: "Vendor" }} />
@@ -414,8 +409,8 @@ class ReceiptEntry extends Component {
                 <ReceiptServiceList ReceiptEntryInp={this.state} />
               </div>
             ) : (
-              <ReceiptItemList ReceiptEntryInp={this.state} />
-            )}
+                <ReceiptItemList ReceiptEntryInp={this.state} />
+              )}
           </MyContext.Provider>
 
           <div className="col-12">
@@ -519,7 +514,6 @@ function mapStateToProps(state) {
     receiptitemcategory: state.receiptitemcategory,
     receiptitemgroup: state.receiptitemgroup,
     receiptitemuom: state.receiptitemuom,
-    receiptvendors: state.receiptvendors,
     receiptrequisitionentry: state.receiptrequisitionentry,
     // receiptentry: state.receiptentry
   };

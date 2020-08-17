@@ -2533,3 +2533,42 @@ input.autoselect-input:disabled {
 .pastVisitGrid {
   min-height: 22vh !important;
 }
+.algaehNewModal {
+  .ant-modal-content {
+    border-radius: $borderRadius;
+    overflow: hidden;
+    .ant-modal-close-x {
+      height: 40px !important;
+      width: 40px !important;
+      line-height: 40px !important;
+      background: darken($gold-color, 10%);
+      svg {
+        fill: $color-white;
+      }
+    }
+    .ant-modal-header {
+      padding: 9px 15px;
+      background: $gold-color;
+      .ant-modal-title {
+        color: $color-white !important;
+      }
+    }
+    .ant-modal-body {
+      padding: 0;
+      .popupInner {
+        width: 100%;
+      }
+      .popupFooter {
+        width: 100%;
+        border-top: 1px dashed lighten($color-black, 80%);
+        padding: 8px 0;
+        margin-top: 15px;
+        text-align: right;
+        .btn {
+          margin-left: 10px;
+          float: right;
+        }
+      }
+    }
+  }
+}

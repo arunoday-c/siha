@@ -15,7 +15,7 @@ export function BillDetailModal({ visible, data, onClose, title, billData }) {
         onCancel={onClose}
         footer={null}
         width={1080}
-        className={`${userLanguage}_comp row`}
+        className={`${userLanguage}_comp row algaehNewModal`}
         // class={this.state.lang_sets}
       >
         <div className="col-lg-12">
