@@ -64,15 +64,17 @@ const numberchangeTexts = ($this, context, e) => {
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
 
+  // else if (parseFloat(value) > parseFloat($this.state.qtyhand)) {
+  //   swalMessage({
+  //     title: "Quantity cannot be greater than Quantity in hand",
+  //     type: "warning",
+  //   });
+  // }
+
   if (name === "quantity") {
     if (parseFloat(value) < 0) {
       swalMessage({
         title: "Quantity cannot be less than or equal to Zero",
-        type: "warning",
-      });
-    } else if (parseFloat(value) > parseFloat($this.state.qtyhand)) {
-      swalMessage({
-        title: "Quantity cannot be greater than Quantity in hand",
         type: "warning",
       });
     } else {
@@ -529,15 +531,18 @@ const qtyonchangegridcol = ($this, context, row, e) => {
       title: "Quantity cannot be less than or equal to Zero",
       type: "warning",
     });
-  } else if (parseFloat(value) > row.qtyhand) {
-    swalMessage({
-      title: "Quantity cannot be greater than Quantity in hand",
-      type: "warning",
-    });
   } else {
     row[name] = value;
     calculateAmount($this, context, row, _index);
   }
+
+
+  // else if (parseFloat(value) > row.qtyhand) {
+  //   swalMessage({
+  //     title: "Quantity cannot be greater than Quantity in hand",
+  //     type: "warning",
+  //   });
+  // }
 };
 
 export {

@@ -652,12 +652,12 @@ export default function NewPackageEvent() {
       });
     },
     VatAppilicable: ($this, e) => {
+      debugger
       let name = e.target.name;
 
       $this.state.vat_percent = 0;
       $this.setState({
-        [name]: e.target.checked ? "Y" : "N",
-        ...$this.state
+        [name]: e.target.checked ? "Y" : "N"
       });
     },
     numberEventHandaler: ($this, e) => {
