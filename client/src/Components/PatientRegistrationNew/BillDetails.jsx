@@ -167,6 +167,7 @@ export function BillDetails({
     if (billData) {
       setBillData(null);
     }
+    //eslint-disable-next-line
   }, [services_id]);
 
   function calculateBillDetails(billData = {}) {
@@ -218,6 +219,7 @@ export function BillDetails({
         clearErrors("unbalanced");
       }
     }
+    //eslint-disable-next-line
   }, [billData]);
 
   const { isLoading: shiftLoading, data: shiftMappings } = useQuery(
@@ -238,6 +240,7 @@ export function BillDetails({
     if (shiftMappings?.length) {
       setValue("shift_id", shiftMappings[0]?.shift_id);
     }
+    //eslint-disable-next-line
   }, [shiftMappings, billInfo]);
 
   useEffect(() => {
@@ -251,6 +254,7 @@ export function BillDetails({
         });
       }
     }
+    //eslint-disable-next-line
   }, [enableCash]);
 
   useEffect(() => {
@@ -264,6 +268,7 @@ export function BillDetails({
         });
       }
     }
+    //eslint-disable-next-line
   }, [enableCard]);
 
   const follow_up = !!prevVisits?.length;

@@ -1,4 +1,4 @@
-import React, { useContext, useRef } from "react";
+import React, { useContext } from "react";
 import { useQuery } from "react-query";
 import { Controller, useWatch } from "react-hook-form";
 import moment from "moment";
@@ -48,14 +48,25 @@ async function getDemoData() {
   };
 }
 
-export function Demographics({ control, setValue, errors }) {
+export function Demographics({
+  control,
+  setValue,
+  errors,
+  patientIdCard,
+  patientImage,
+}) {
   const queryParams = useQueryParams();
   const patient_code = queryParams.get("patient_code");
   const { savedPatient } = useContext(FrontdeskContext);
   const disabled = !!patient_code || !!savedPatient?.patient_code;
-  const { country_id: country, state_id, date_of_birth } = useWatch({
+  const {
+    country_id: country,
+    state_id,
+    date_of_birth,
+    primary_id_no,
+  } = useWatch({
     control,
-    name: ["country_id", "state_id", "date_of_birth"],
+    name: ["country_id", "state_id", "date_of_birth", "primary_id_no"],
   });
   const { fieldNameFn } = useLangFieldName();
   const { titles, nationalities, countries, religions } = useContext(
@@ -78,8 +89,6 @@ export function Demographics({ control, setValue, errors }) {
   );
   const { visaTypes, patientTypes, identities } = dropdownData;
   const requied_emp_id = "N";
-  const patientImage = useRef(null);
-  const patientIdCard = useRef(null);
 
   const states = country
     ? countries?.filter((i) => i.hims_d_country_id == country)[0]?.states
@@ -151,6 +160,11 @@ export function Demographics({ control, setValue, errors }) {
                                 value,
                                 onChange: (_, selected) => {
                                   onChange(selected);
+                                  if (selected == 1 || selected == 6) {
+                                    setValue("gender", "Male");
+                                  } else {
+                                    setValue("gender", "Female");
+                                  }
                                 },
                                 onClear: () => {
                                   onChange("");
@@ -742,17 +756,13 @@ export function Demographics({ control, setValue, errors }) {
                             accept="image/*"
                             textAltMessage="Patient Image"
                             serviceParameters={{
-                              uniqueID: null,
-                              //   destinationName: this.state.patient_code,
+                              uniqueID: patient_code || null,
                               fileType: "Patients",
-                              // processDelay: this.imageDetails.bind(
-                              //   this,
-                              //   context,
-                              //   "patientImage"
-                              // ),
+                              processDelay: (...val) => {
+                                debugger;
+                                console.log(val, "val");
+                              },
                             }}
-                            // renderPrevState={this.state.patientImage}
-                            // forceRefresh={this.state.forceRefresh}
                           />
                         </div>
                         <div className="col-lg-7 patientRegId">
@@ -763,17 +773,13 @@ export function Demographics({ control, setValue, errors }) {
                             accept="image/*"
                             textAltMessage="ID Card"
                             serviceParameters={{
-                              uniqueID: null,
-                              //   destinationName: this.state.patient_code,
+                              uniqueID: patient_code ? primary_id_no : null,
                               fileType: "Patients",
-                              // processDelay: this.imageDetails.bind(
-                              //   this,
-                              //   context,
-                              //   "patientIdCard"
-                              // ),
+                              processDelay: (...val) => {
+                                debugger;
+                                console.log(val, "val");
+                              },
                             }}
-                            // renderPrevState={this.state.patientIdCard}
-                            // forceRefresh={this.state.forceRefresh}
                           />
 
                           <div />
@@ -1004,7 +1010,6 @@ export function Demographics({ control, setValue, errors }) {
                   </div>
                 </div>
               </div>
-              )}
             </TabPane>
           </Tabs>
         </div>
