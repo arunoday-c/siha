@@ -52,7 +52,7 @@ export default memo(function (props) {
 
   return (
     <>
-      <div className="col-12">
+      <div className="col-12 financeGroupFilter">
         {filters.map((records, idx) => (
           <div className="row" key={idx}>
             {records.map((filter, index) => {
@@ -217,7 +217,7 @@ export default memo(function (props) {
           </div>
         ))}
       </div>
-      <div className="col">
+      <div className="col" style={{ marginBottom: 10 }}>
         <AlgaehButton
           className="btn btn-primary"
           onClick={onPreviewClick}
