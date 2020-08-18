@@ -452,11 +452,10 @@ let getDentalTreatment = (req, res, next) => {
 
   const _mysql = new algaehMysql({ path: keyPath });
   try {
-    let input = extend({}, req.body);
 
     let strQuery = ""
-    if (req.body.treatment_plan_id) {
-      strQuery += " and treatment_plan_id=" + input.treatment_plan_id;
+    if (req.query.treatment_plan_id) {
+      strQuery += " and treatment_plan_id=" + req.query.treatment_plan_id;
     }
 
     _mysql
