@@ -1684,3 +1684,62 @@ export function getInsuranceStatement(req, res, next) {
     _mysql.releaseConnection();
   }
 }
+
+export function updateInsuranceStatement(req, res, next) {
+  const _mysql = new algaehMysql();
+  const input = req.body;
+  try {
+    // updating invoice header
+    _mysql
+      .executeQuery({
+        query: `update hims_f_invoice_header set remittance_ammount=?, denial_ammount=? where hims_f_invoice_header_id=?;`,
+        values: [
+          input.remittance_ammount,
+          input.denial_ammount,
+          input.hims_f_invoice_header_id,
+        ],
+      })
+      .then(() => {
+        // getting sum of all invoice headers belong to a statement
+        _mysql
+          .executeQuery({
+            query: `select sum(remittance_ammount) as total_remittance_amount, sum(denial_ammount) as total_denial_amount from hims_f_invoice_header where insurance_statement_id=?;`,
+            values: [input.insurance_statement_id],
+          })
+          .then((result) => {
+            // updating the total amount in statement
+            _mysql
+              .executeQuery({
+                query: `update hims_f_insurance_statement set total_remittance_amount=?, total_denial_amount=? where hims_f_insurance_statement_id=?`,
+                values: [
+                  result[0].total_remittance_amount,
+                  result[0].total_denial_amount,
+                  input.insurance_statement_id,
+                ],
+              })
+              .then((result) => {
+                _mysql.releaseConnection();
+                req.records = result;
+                next();
+              })
+              .catch((error) => {
+                _mysql.closeConnection(() => {
+                  next(error);
+                });
+              });
+          })
+          .catch((error) => {
+            _mysql.closeConnection(() => {
+              next(error);
+            });
+          });
+      })
+      .catch((error) => {
+        _mysql.closeConnection(() => {
+          next(error);
+        });
+      });
+  } catch (error) {
+    _mysql.releaseConnection();
+  }
+}

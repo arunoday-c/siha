@@ -1,6 +1,12 @@
-import React from "react";
+import React, { useState } from "react";
 import { useQuery } from "react-query";
-import { AlgaehDataGrid, Spin, AlgaehLabel } from "algaeh-react-components";
+import {
+  AlgaehDataGrid,
+  Spin,
+  AlgaehLabel,
+  Tooltip,
+} from "algaeh-react-components";
+import { UpdateStatement } from "./UpdateStatment";
 import { newAlgaehApi, useQueryParams } from "../../../hooks";
 
 const getStatements = async (key, { hims_f_insurance_statement_id }) => {
@@ -14,12 +20,14 @@ const getStatements = async (key, { hims_f_insurance_statement_id }) => {
 };
 
 export function StatementTable() {
+  const [show, setShow] = useState(false);
+  const [current, setCurrent] = useState(null);
   const params = useQueryParams();
   const hims_f_insurance_statement_id = params.get(
     "hims_f_insurance_statement_id"
   );
 
-  const { data, isLoading } = useQuery(
+  const { data, isLoading, isFetching, refetch } = useQuery(
     ["insurance", { hims_f_insurance_statement_id }],
     getStatements,
     {
@@ -27,8 +35,31 @@ export function StatementTable() {
       refetchOnWindowFocus: false,
     }
   );
+
+  const onClickRow = (row) => {
+    setShow(true);
+    setCurrent(row);
+  };
+
+  const onClose = (row) => {
+    setShow(false);
+    setCurrent(null);
+    refetch();
+  };
+
+  const RemittanceButton = (row) => {
+    return (
+      <Tooltip title="Pay">
+        <span onClick={() => onClickRow(row)}>
+          <i className="fas fa-check"></i>
+        </span>
+      </Tooltip>
+    );
+  };
+
   return (
-    <Spin spinning={isLoading}>
+    <Spin spinning={isLoading || isFetching}>
+      <UpdateStatement data={current} show={show} onClose={onClose} />
       <div className="portlet portlet-bordered margin-bottom-15">
         <div className="portlet-title">
           <div className="caption">
@@ -39,6 +70,11 @@ export function StatementTable() {
           <AlgaehDataGrid
             id="InsuranceStatementGrid"
             columns={[
+              {
+                fieldName: "hims_f_insurance_statement_id",
+                label: "Action",
+                displayTemplate: RemittanceButton,
+              },
               {
                 fieldName: "patient_code",
                 label: <AlgaehLabel label={{ forceLabel: "Patient Code" }} />,
@@ -146,7 +182,7 @@ export function StatementTable() {
                 </div>
                 <div className="col">
                   <label className="style_Label ">Total Denial Amount</label>
-                  <h6>0.00</h6>
+                  <h6>{data?.total_denial_amount || "0.00"}</h6>
                 </div>{" "}
                 <div className="col">
                   <label className="style_Label ">
