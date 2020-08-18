@@ -751,6 +751,7 @@ export function Demographics({
                       >
                         <div className="col-lg-5 patientRegImg">
                           <AlgaehFileUploader
+                            key={patient_code || "image"}
                             ref={patientImage}
                             name="patientImage"
                             accept="image/*"
@@ -762,10 +763,13 @@ export function Demographics({
                                 console.log(val, "val");
                               },
                             }}
+                            // renderPrevState={patientImage.current}
+                            forceRefresh={!patient_code}
                           />
                         </div>
                         <div className="col-lg-7 patientRegId">
                           <AlgaehFileUploader
+                            key={patient_code || "idcard"}
                             ref={patientIdCard}
                             noImage="ID-card"
                             name="patientIdCard"
@@ -778,6 +782,8 @@ export function Demographics({
                                 console.log(val, "val");
                               },
                             }}
+                            // renderPrevState={patientIdCard.current}
+                            forceRefresh={!savedPatient}
                           />
 
                           <div />

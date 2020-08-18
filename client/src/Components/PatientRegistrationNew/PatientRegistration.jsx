@@ -258,7 +258,7 @@ export function PatientRegistration() {
     if (patientImage !== null) {
       images.push(
         new Promise((resolve, reject) => {
-          patientImage.SavingImageOnServer(
+          patientImage.current.SavingImageOnServer(
             undefined,
             undefined,
             undefined,
@@ -273,7 +273,7 @@ export function PatientRegistration() {
     if (patientIdCard !== null) {
       images.push(
         new Promise((resolve, reject) => {
-          patientIdCard.SavingImageOnServer(
+          patientIdCard.current.SavingImageOnServer(
             undefined,
             undefined,
             undefined,
@@ -284,6 +284,38 @@ export function PatientRegistration() {
           );
         })
       );
+    }
+    if (data?.primary_insurance_provider_id) {
+      if (insuranceImgBack !== null) {
+        images.push(
+          new Promise((resolve, reject) => {
+            insuranceImgBack.current.SavingImageOnServer(
+              undefined,
+              undefined,
+              undefined,
+              data?.primary_id_no,
+              () => {
+                resolve();
+              }
+            );
+          })
+        );
+      }
+      if (insuranceImgFront !== null) {
+        images.push(
+          new Promise((resolve, reject) => {
+            insuranceImgFront.current.SavingImageOnServer(
+              undefined,
+              undefined,
+              undefined,
+              data?.primary_id_no,
+              () => {
+                resolve();
+              }
+            );
+          })
+        );
+      }
     }
     const result = await Promise.all(images);
     return result;
@@ -421,6 +453,10 @@ export function PatientRegistration() {
       country_id: userToken?.default_country,
       patient_type: userToken?.default_patient_type,
     });
+    patientIdCard.current = null;
+    patientImage.current = null;
+    insuranceImgBack.current = null;
+    insuranceImgFront.current = null;
     clearState();
     if (!withoutNav) {
       history.push("/PatientRegistration");
