@@ -1554,15 +1554,17 @@ export function saveMultiStatement(req, res, next) {
             insurance_provider_id,
             sub_insurance_id,
           } = result[0];
-          const total_gross_amount = _.sumBy(result, (s) => parseFloat(s.gross_amount));
-          const total_company_responsibility = _.sumBy(
-            result,
-            (s) => parseFloat(s.company_resp)
+          const total_gross_amount = _.sumBy(result, (s) =>
+            parseFloat(s.gross_amount)
           );
-          const total_company_vat = _.sumBy(result, (s) => parseFloat(s.company_tax));
-          const total_company_payable = _.sumBy(
-            result,
-            (s) => parseFloat(s.company_payable)
+          const total_company_responsibility = _.sumBy(result, (s) =>
+            parseFloat(s.company_resp)
+          );
+          const total_company_vat = _.sumBy(result, (s) =>
+            parseFloat(s.company_tax)
+          );
+          const total_company_payable = _.sumBy(result, (s) =>
+            parseFloat(s.company_payable)
           );
           const total_remittance_amount = 0;
           const total_balance_amount =
@@ -1596,15 +1598,20 @@ export function saveMultiStatement(req, res, next) {
                 new Date(),
                 "P",
               ],
-              printQuery: true
+              printQuery: true,
             })
             .then((result) => {
               _mysql
                 .executeQuery({
                   query: `update hims_d_insurance_provider set insurance_statement_count=? 
                   where hims_d_insurance_provider_id=?; update hims_f_invoice_header set insurance_statement_id=? where hims_f_invoice_header_id in (?);`,
-                  values: [update_ins_count, insurance_provider_id, result.insertId, invoiceList],
-                  printQuery: true
+                  values: [
+                    update_ins_count,
+                    insurance_provider_id,
+                    result.insertId,
+                    invoiceList,
+                  ],
+                  printQuery: true,
                 })
                 .then((updated) => {
                   _mysql.commitTransaction(() => {
@@ -1636,7 +1643,7 @@ export function saveMultiStatement(req, res, next) {
   } catch (error) {
     _mysql.releaseConnection();
   }
-};
+}
 export function getInsuranceStatement(req, res, next) {
   const _mysql = new algaehMysql();
   try {
@@ -1644,14 +1651,76 @@ export function getInsuranceStatement(req, res, next) {
       .executeQueryWithTransaction({
         query: `select * from hims_f_insurance_statement where hims_f_insurance_statement_id = ?;
         select * from hims_f_invoice_header where insurance_statement_id=?;`,
-        values: [req.query.hims_f_insurance_statement_id, req.query.hims_f_insurance_statement_id],
+        values: [
+          req.query.hims_f_insurance_statement_id,
+          req.query.hims_f_insurance_statement_id,
+        ],
         printQuery: true,
       })
       .then((result) => {
-        let final_result = { ...result[0][0], ...{ claims: result[1] } }
+        let final_result = { ...result[0][0], ...{ claims: result[1] } };
         _mysql.releaseConnection();
         req.records = final_result;
         next();
+      })
+      .catch((error) => {
+        _mysql.closeConnection(() => {
+          next(error);
+        });
+      });
+  } catch (error) {
+    _mysql.releaseConnection();
+  }
+}
+
+export function updateInsuranceStatement(req, res, next) {
+  const _mysql = new algaehMysql();
+  const input = req.body;
+  try {
+    // updating invoice header
+    _mysql
+      .executeQuery({
+        query: `update hims_f_invoice_header set remittance_ammount=?, denial_ammount=? where hims_f_invoice_header_id=?;`,
+        values: [
+          input.remittance_ammount,
+          input.denial_ammount,
+          input.hims_f_invoice_header_id,
+        ],
+      })
+      .then(() => {
+        // getting sum of all invoice headers belong to a statement
+        _mysql
+          .executeQuery({
+            query: `select sum(remittance_ammount) as total_remittance_amount, sum(denial_ammount) as total_denial_amount from hims_f_invoice_header where insurance_statement_id=?;`,
+            values: [input.insurance_statement_id],
+          })
+          .then((result) => {
+            // updating the total amount in statement
+            _mysql
+              .executeQuery({
+                query: `update hims_f_insurance_statement set total_remittance_amount=?, total_denial_amount=? where hims_f_insurance_statement_id=?`,
+                values: [
+                  result[0].total_remittance_amount,
+                  result[0].total_denial_amount,
+                  input.insurance_statement_id,
+                ],
+              })
+              .then((result) => {
+                _mysql.releaseConnection();
+                req.records = result;
+                next();
+              })
+              .catch((error) => {
+                _mysql.closeConnection(() => {
+                  next(error);
+                });
+              });
+          })
+          .catch((error) => {
+            _mysql.closeConnection(() => {
+              next(error);
+            });
+          });
       })
       .catch((error) => {
         _mysql.closeConnection(() => {
