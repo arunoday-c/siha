@@ -432,7 +432,7 @@ class ResultEntry extends Component {
                                   {row.validate === "N" ? (
                                     row.analyte_type === "QU" ? (
                                       <AlagehAutoComplete
-                                        div={{}}
+                                        div={{ className: "noLabel" }}
                                         selector={{
                                           name: "result",
                                           className: "select-fld",
@@ -634,6 +634,7 @@ class ResultEntry extends Component {
                                 <span>
                                   {row.validate === "N" ? (
                                     <AlagehAutoComplete
+                                      div={{ className: "noLabel" }}
                                       selector={{
                                         name: "confirm",
                                         className: "select-fld",
@@ -675,6 +676,7 @@ class ResultEntry extends Component {
                                 <span>
                                   {row.validate === "N" ? (
                                     <AlagehAutoComplete
+                                      div={{ className: "noLabel" }}
                                       selector={{
                                         name: "validate",
                                         className: "select-fld",
@@ -717,6 +719,7 @@ class ResultEntry extends Component {
                                 <span>
                                   {row.amended === "N" ? (
                                     <AlagehAutoComplete
+                                      div={{ className: "noLabel" }}
                                       selector={{
                                         name: "amended",
                                         className: "select-fld",
@@ -762,6 +765,7 @@ class ResultEntry extends Component {
                                 <span>
                                   {row.validate === "N" ? (
                                     <AlagehFormGroup
+                                      div={{ className: "noLabel" }}
                                       textBox={{
                                         value: row.remarks,
                                         className: "txt-fld",
