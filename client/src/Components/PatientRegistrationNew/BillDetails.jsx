@@ -693,7 +693,7 @@ export function BillDetails({
                 {/* Cash */}
                 <div className="row secondary-box-container">
                   <div
-                    className="customCheckbox col-lg-2"
+                    className="customCheckbox col"
                     style={{ border: "none", marginTop: "28px" }}
                   >
                     <label className="checkbox" style={{ color: "#212529" }}>
@@ -714,7 +714,7 @@ export function BillDetails({
                     rules={{ required: "Please Enter Cash" }}
                     render={(props) => (
                       <AlgaehFormGroup
-                        div={{ className: "col-2 mandatory form-group" }}
+                        div={{ className: "col-3 mandatory form-group" }}
                         label={{
                           fieldName: "amount",
                           isImp: true,
@@ -748,7 +748,7 @@ export function BillDetails({
                 {/* Card */}
                 <div className="row secondary-box-container">
                   <div
-                    className="customCheckbox col-lg-2"
+                    className="customCheckbox col"
                     style={{ border: "none", marginTop: "28px" }}
                   >
                     <label className="checkbox" style={{ color: "#212529" }}>
@@ -762,48 +762,6 @@ export function BillDetails({
                       <span style={{ fontSize: "0.8rem" }}>Pay by Card</span>
                     </label>
                   </div>
-
-                  <Controller
-                    control={control}
-                    name="card_amount"
-                    rules={{
-                      required: {
-                        value: enableCard,
-                        message: "Required",
-                      },
-                    }}
-                    render={(props) => (
-                      <AlgaehFormGroup
-                        div={{ className: "col-2  mandatory" }}
-                        label={{
-                          fieldName: "amount",
-                          isImp: enableCard,
-                        }}
-                        textBox={{
-                          className: "txt-fld",
-                          name: "card_amount",
-                          disabled: disabled || !enableCard,
-                          type: "number",
-                          ...props,
-                          onChange: (e) => {
-                            const amount = e.target.value
-                              ? parseFloat(e.target.value)
-                              : 0;
-                            setBillData((state) => {
-                              state.card_amount = amount;
-                              state.unbalanced_amount =
-                                state?.receiveable_amount -
-                                amount -
-                                state?.cash_amount;
-                              return { ...state };
-                            });
-                          },
-                          placeholder: "0.00",
-                        }}
-                      />
-                    )}
-                  />
-
                   <Controller
                     control={control}
                     name="card_number"
@@ -831,7 +789,6 @@ export function BillDetails({
                       />
                     )}
                   />
-
                   <Controller
                     control={control}
                     name="card_date"
@@ -863,13 +820,55 @@ export function BillDetails({
                         value={value}
                       />
                     )}
+                  />{" "}
+                  <Controller
+                    control={control}
+                    name="card_amount"
+                    rules={{
+                      required: {
+                        value: enableCard,
+                        message: "Required",
+                      },
+                    }}
+                    render={(props) => (
+                      <AlgaehFormGroup
+                        div={{ className: "col-3  mandatory" }}
+                        label={{
+                          fieldName: "amount",
+                          isImp: enableCard,
+                        }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "card_amount",
+                          disabled: disabled || !enableCard,
+                          type: "number",
+                          ...props,
+                          onChange: (e) => {
+                            const amount = e.target.value
+                              ? parseFloat(e.target.value)
+                              : 0;
+                            setBillData((state) => {
+                              state.card_amount = amount;
+                              state.unbalanced_amount =
+                                state?.receiveable_amount -
+                                amount -
+                                state?.cash_amount;
+                              return { ...state };
+                            });
+                          },
+                          placeholder: "0.00",
+                        }}
+                      />
+                    )}
                   />
                 </div>
 
                 <hr style={{ margin: "0.3rem 0rem" }} />
-                <div className="row secondary-box-container">
-                  <div className="col-lg-3" />
-                  <div className="col-lg-5">
+                <div
+                  className="row secondary-box-container"
+                  style={{ textAlign: "right" }}
+                >
+                  <div className="col">
                     <AlgaehLabel
                       label={{
                         fieldName: "unbalanced_amount",
