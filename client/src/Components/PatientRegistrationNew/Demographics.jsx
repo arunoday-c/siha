@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { useQuery } from "react-query";
 import { Controller, useWatch } from "react-hook-form";
 import moment from "moment";
@@ -65,14 +65,24 @@ export function Demographics({
     state_id,
     date_of_birth,
     primary_id_no,
+    nationality_id,
   } = useWatch({
     control,
-    name: ["country_id", "state_id", "date_of_birth", "primary_id_no"],
+    name: [
+      "country_id",
+      "state_id",
+      "date_of_birth",
+      "primary_id_no",
+      "nationality_id",
+    ],
   });
   const { fieldNameFn } = useLangFieldName();
-  const { titles, nationalities, countries, religions } = useContext(
-    MainContext
-  );
+  const {
+    titles = [],
+    nationalities = [],
+    countries = [],
+    religions = [],
+  } = useContext(MainContext);
   const { isLoading, data: dropdownData } = useQuery(
     "dropdown-data",
     getDemoData,
@@ -98,6 +108,19 @@ export function Demographics({
   const cities = state_id
     ? states?.filter((c) => c.hims_d_state_id === state_id)[0]?.cities
     : [];
+
+  useEffect(() => {
+    if (!!nationality_id && nationalities?.length) {
+      const res = nationalities?.filter(
+        (n) => n.hims_d_nationality_id == nationality_id
+      );
+      if (res[0]?.identity_document_id) {
+        setValue("primary_identity_id", res[0]?.identity_document_id);
+      } else {
+        setValue("primary_identity_id", "");
+      }
+    }
+  }, [nationality_id, nationalities]);
 
   const calculateAge = (date) => {
     if (date) {
