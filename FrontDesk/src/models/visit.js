@@ -145,16 +145,16 @@ export default {
                 `visit_date`, `department_id`, `sub_department_id`, `doctor_id`, `maternity_patient`,\
                 `is_mlc`, `mlc_accident_reg_no`, `mlc_police_station`, `mlc_wound_certified_date`, `existing_plan`,\
                 `treatment_plan_id`,`created_by`, `created_date`,`visit_code`,`visit_expiery_date`,`episode_id`,\
-                `appointment_id`, `appointment_patient`, `new_visit_patient`,hospital_id, eligible, eligible_reference_number)\
-                VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?,?, ?, ?, ?,?,?,?);",
+                `appointment_id`, `appointment_patient`, `new_visit_patient`,hospital_id, eligible, eligible_reference_number,updated_by,updated_date)\
+                VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?,?, ?, ?, ?,?,?,?,?,?);",
             values: [
               inputParam.patient_id,
               inputParam.visit_type,
               inputParam.age_in_years,
               inputParam.age_in_months,
               inputParam.age_in_days,
-              inputParam.insured,
-              inputParam.sec_insured,
+              inputParam.insured ? inputParam.insured : "N",
+              inputParam.sec_insured ? inputParam.sec_insured : "N",
               new Date(),
               inputParam.department_id,
               inputParam.sub_department_id,
@@ -183,6 +183,8 @@ export default {
               // inputParam.eligible,
               inputParam.eligible_reference_number ? "Y" : "N",
               inputParam.eligible_reference_number,
+              req.userIdentity.algaeh_d_app_user_id,
+              new Date(),
             ],
             printQuery: true,
           })
@@ -398,12 +400,16 @@ export default {
                  ?,?,?,?,?,?,?,?,?,?,?,?) ",
             values: [
               input.patient_id,
-              input.provider_id,
+              input.doctor_id ? input.doctor_id : input.provider_id,
               input.visit_id,
-              input.source,
+              input.source ? input.source : "0",
               input.episode_id,
-              input.age,
-              input.payment_type,
+              input.age ? input.age : input.age_in_years,
+              input.payment_type
+                ? input.payment_type
+                : input.insured === "Y"
+                ? "I"
+                : "S",
               new Date(),
               req.userIdentity.algaeh_d_app_user_id,
               new Date(),
