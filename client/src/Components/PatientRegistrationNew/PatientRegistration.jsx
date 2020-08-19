@@ -6,6 +6,8 @@ import { useLocation, useHistory } from "react-router-dom";
 import { CSSTransition } from "react-transition-group";
 import { FrontdeskContext } from "./FrontdeskContext";
 import PackageUtilize from "../PatientProfile/PackageUtilize/PackageUtilize";
+import AdvanceRefundListModal from "../AdvanceRefundList/AdvanceRefundListModal";
+
 import { UpdatePatient } from "./UpdatePatient";
 import {
   MainContext,
@@ -120,7 +122,6 @@ const generateIdCard = (data) => {
 };
 
 const generateReceipt = (data) => {
-  debugger;
   algaehApiCall({
     uri: "/report",
     method: "GET",
@@ -154,6 +155,7 @@ export function PatientRegistration() {
   const [openPopup, setOpenPopup] = useState(false);
   const [showPackage, setShowPackage] = useState(false);
   const [showUpdateModal, setUpdateModal] = useState(false);
+  const [showAdvModal, setShowAdvModal] = useState(false);
   const location = useLocation();
   const history = useHistory();
 
@@ -415,7 +417,8 @@ export function PatientRegistration() {
         amount: input.card_amount,
         card_check_number: input.card_number || null,
         card_type: null,
-        expiry_date: input.card_date || null,
+        expiry_date:
+          moment(input.card_date).format("YYYY-MM-DD hh:mm:ss") || null,
         hims_f_receipt_header_id: null,
         pay_type: "CD",
         updated_date: null,
@@ -612,7 +615,7 @@ export function PatientRegistration() {
                       label: "Advance/Refund Receipt",
                       events: {
                         onClick: () => {
-                          // showAdvanceRefundList(this, this);
+                          setShowAdvModal(true);
                         },
                       },
                     },
@@ -707,25 +710,35 @@ export function PatientRegistration() {
                     />
                   </button>
                   <AdvanceModal patient={patientData?.patientRegistration} />
-                  {(patient_code || !!savedPatient) && ( // eslint-disable-line
-                    <button
-                      type="button"
-                      className="btn btn-other"
-                      onClick={() =>
-                        history.push(
-                          `/OPBilling?patient_code=${
-                            patient_code || savedPatient?.patient_code
-                          }`
-                        )
-                      }
-                    >
-                      <AlgaehLabel
-                        label={{
-                          forceLabel: "Go to Billing",
-                        }}
-                      />
-                    </button>
+                  {!!savedPatient && ( // eslint-disable-line
+                    <>
+                      <button
+                        type="button"
+                        className="btn btn-other"
+                        onClick={() =>
+                          history.push(
+                            `/OPBilling?patient_code=${
+                              patient_code || savedPatient?.patient_code
+                            }`
+                          )
+                        }
+                      >
+                        <AlgaehLabel
+                          label={{
+                            forceLabel: "Go to Billing",
+                          }}
+                        />
+                      </button>
+                      <button
+                        type="button"
+                        className="btn btn-primary"
+                        onClick={() => generateReceipt(savedPatient)}
+                      >
+                        Print Receipt
+                      </button>
+                    </>
                   )}
+
                   {!!patientData && packages?.length > 0 ? (
                     <div className="col">
                       <button
@@ -828,14 +841,49 @@ export function PatientRegistration() {
         </div>
       </div>
       {(!!patient_code || !!savedPatient?.patient_code) && (
-        <UpdatePatient
-          onClose={() => {
-            refetch();
-            setUpdateModal(false);
-          }}
-          patient_code={patient_code || savedPatient?.patient_code}
-          show={showUpdateModal}
-        />
+        <>
+          <UpdatePatient
+            onClose={() => {
+              refetch();
+              setUpdateModal(false);
+            }}
+            patient_code={patient_code || savedPatient?.patient_code}
+            show={showUpdateModal}
+          />
+          <AdvanceRefundListModal
+            show={showAdvModal}
+            onClose={() => setShowAdvModal(false)}
+            selectedLang={userLanguage}
+            HeaderCaption={
+              <AlgaehLabel
+                label={{
+                  // fieldName: "advance_caption",
+                  forceLabel: "Advance/Refund List",
+                  align: "ltr",
+                }}
+              />
+            }
+            Advance={true}
+            NumberLabel="receipt_number"
+            DateLabel="receipt_date"
+            inputsparameters={
+              patient_code
+                ? {
+                    patient_code: patient_code,
+                    full_name: patientData?.patientRegistration?.full_name,
+                    hims_f_patient_id:
+                      patientData?.patientRegistration?.hims_d_patient_id,
+                  }
+                : !!savedPatient
+                ? {
+                    patient_code: savedPatient?.patient_code,
+                    full_name: savedPatient?.full_name,
+                    hims_f_patient_id: savedPatient?.hims_d_patient_id,
+                  }
+                : {}
+            }
+          />
+        </>
       )}
     </Spin>
   );
