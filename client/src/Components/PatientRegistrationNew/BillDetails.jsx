@@ -810,7 +810,7 @@ export function BillDetails({
                           fieldName: "card_check_number",
                         }}
                         textBox={{
-                          disabled: true,
+                          disabled: disabled || !enableCard,
                           className: "txt-fld",
                           name: "card_number",
                           ...props,
