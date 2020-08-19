@@ -389,7 +389,7 @@ export default {
       const input = { ...req.body };
       const utilities = new algaehUtilities();
       if (input.consultation == "Y") {
-        utilities.logger().log("consultation: ", input);
+        //utilities.logger().log("consultation: ", input);
         _mysql
           .executeQuery({
             query:
@@ -442,6 +442,8 @@ export default {
                   patient_visit_id: input.visit_id,
                   hims_d_patient_id: input.patient_id,
                   hims_f_billing_header_id: input.hims_f_billing_header_id,
+                  full_name: req.full_name,
+                  arabic_name: req.pat_arabic_name,
                 };
                 _mysql.commitTransaction(() => {
                   _mysql.releaseConnection();
@@ -461,7 +463,7 @@ export default {
             });
           });
       } else {
-        utilities.logger().log("Non consultation: ", input);
+        // utilities.logger().log("Non consultation: ", input);
         let result = {
           patient_code: input.patient_code,
           receipt_number: input.receipt_number,
@@ -469,6 +471,8 @@ export default {
           patient_visit_id: input.visit_id,
           hims_d_patient_id: input.patient_id,
           hims_f_billing_header_id: input.hims_f_billing_header_id,
+          full_name: req.full_name,
+          arabic_name: req.pat_arabic_name,
         };
         _mysql.commitTransaction(() => {
           _mysql.releaseConnection();
@@ -599,3 +603,35 @@ export default {
     }
   },
 };
+export function getPatientDetails(req, res, next) {
+  const _options = req.connection == null ? {} : req.connection;
+  const _mysql = new algaehMysql(_options);
+  try {
+    const { patient_id } = req.body;
+    _mysql
+      .executeQuery({
+        query: `select full_name,arabic_name from hims_f_patient where hims_d_patient_id=?`,
+        values: [patient_id],
+      })
+      .then((result) => {
+        if (result.length > 0) {
+          const { full_name, arabic_name } = result[0];
+          req.pat_name = full_name;
+          req.pat_arabic_name = arabic_name;
+        } else {
+          req.pat_name = "";
+          req.pat_arabic_name = "";
+        }
+        next();
+      })
+      .catch((error) => {
+        _mysql.rollBackTransaction(() => {
+          next(e);
+        });
+      });
+  } catch (e) {
+    _mysql.rollBackTransaction(() => {
+      next(e);
+    });
+  }
+}
