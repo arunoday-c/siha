@@ -33,6 +33,7 @@ export function UpdateStatement({
     if (!show) {
       reset();
     }
+    // eslint-disable-next-line
   }, [show]);
 
   const onSubmit = (e) => {

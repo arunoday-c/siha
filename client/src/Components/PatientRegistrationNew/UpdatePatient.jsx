@@ -51,12 +51,12 @@ export function UpdatePatient({ show, onClose, patient_code }) {
       patientIdCard.current = null;
       patientImage.current = null;
     }
+    // eslint-disable-next-line
   }, [patientData, show]);
 
   const [update, { isLoading }] = useMutation(updatePatient);
 
   const onSubmit = (e) => {
-    debugger;
     update({
       ...e,
       hims_d_patient_id: patientData?.patientRegistration?.hims_d_patient_id,
