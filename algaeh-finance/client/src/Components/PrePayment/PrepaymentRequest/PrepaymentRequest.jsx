@@ -45,6 +45,7 @@ export function PrepaymentRequest() {
   });
 
   const getRequest = async () => {
+    debugger
     try {
       const res = await newAlgaehApi({
         uri: "/prepayment/getPrepaymentRequests",
@@ -233,8 +234,8 @@ export function PrepaymentRequest() {
         ) : row.request_status === "PR" ? (
           <span className="badge badge-danger">Processed</span>
         ) : (
-          "------"
-        )}
+                      "------"
+                    )}
       </span>
     );
   };
@@ -243,7 +244,7 @@ export function PrepaymentRequest() {
       hospital_id: "",
       cost_center_id: "",
       prepayment_type_id: "",
-      employee_id: null,
+      // employee_id: null,
       prepayment_amount: null,
       start_date: "",
       end_date: "",
@@ -432,9 +433,9 @@ export function PrepaymentRequest() {
                             dataSource: {
                               data: ihospital
                                 ? branchAndCenters.filter(
-                                    (item) =>
-                                      item.hims_d_hospital_id == ihospital
-                                  )[0].cost_centers
+                                  (item) =>
+                                    item.hims_d_hospital_id == ihospital
+                                )[0].cost_centers
                                 : [],
                               valueField: "cost_center_id",
                               textField: "cost_center",
@@ -514,8 +515,8 @@ export function PrepaymentRequest() {
                               dataSource: {
                                 data: ihospital
                                   ? employees.filter(
-                                      (item) => item.hospital_id == ihospital
-                                    )
+                                    (item) => item.hospital_id == ihospital
+                                  )
                                   : employees,
                                 textField: "full_name",
                                 valueField: "hims_d_employee_id",
@@ -623,7 +624,7 @@ export function PrepaymentRequest() {
                             },
                           }}
                           others={{ disabled: !prepayment_type_id }}
-                          // maxDate={moment().add(1, "days")}
+                        // maxDate={moment().add(1, "days")}
                         />
                       )}
                     />
@@ -647,7 +648,7 @@ export function PrepaymentRequest() {
                             className: "form-control",
                           }}
                           others={{ disabled: !prepayment_type_id }}
-                          // maxDate={moment().add(1, "days")}
+                        // maxDate={moment().add(1, "days")}
                         />
                       )}
                     />
@@ -706,10 +707,10 @@ export function PrepaymentRequest() {
                                     </li>
                                   ))
                                 ) : (
-                                  <div className="col-12 noAttachment" key={1}>
-                                    <p>No Attachments Available</p>
-                                  </div>
-                                )}
+                                    <div className="col-12 noAttachment" key={1}>
+                                      <p>No Attachments Available</p>
+                                    </div>
+                                  )}
                               </ul>
                             </div>
                           </div>
@@ -756,15 +757,15 @@ export function PrepaymentRequest() {
                       displayTemplate: (row) => {
                         return row.request_status === "P" ||
                           row.request_status === "R" ? (
-                          <div>
-                            <i
-                              className="fas fa-pen"
-                              onClick={() => {
-                                editRow(row);
-                              }}
-                            ></i>
-                          </div>
-                        ) : null;
+                            <div>
+                              <i
+                                className="fas fa-pen"
+                                onClick={() => {
+                                  editRow(row);
+                                }}
+                              ></i>
+                            </div>
+                          ) : null;
                       },
                     },
                     // {
@@ -952,10 +953,10 @@ export function PrepaymentRequest() {
                                     </li>
                                   ))
                                 ) : (
-                                  <div className="col-12 noAttachment" key={1}>
-                                    <p>No Attachments Available</p>
-                                  </div>
-                                )}
+                                    <div className="col-12 noAttachment" key={1}>
+                                      <p>No Attachments Available</p>
+                                    </div>
+                                  )}
                               </ul>
                             </Modal>
                             <span
