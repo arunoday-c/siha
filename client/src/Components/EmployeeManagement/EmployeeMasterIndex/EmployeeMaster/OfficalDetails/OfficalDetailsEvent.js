@@ -5,6 +5,7 @@ import { swalMessage } from "../../../../../utils/algaehApiCall";
 const texthandle = ($this, e) => {
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
+  let _notice = {};
 
   switch (name) {
     case "notice_period":
@@ -19,15 +20,15 @@ const texthandle = ($this, e) => {
         return;
       }
       const res_date = moment($this.state.date_of_resignation).add(
-          value,
-          "days"
-        )._d,
-        _notice = {
-          reliving_date: res_date,
-          exit_date: res_date,
+        value,
+        "days"
+      )._d;
+      _notice = {
+        reliving_date: res_date,
+        exit_date: res_date,
 
-          [name]: value,
-        };
+        [name]: value,
+      };
       $this.setState(_notice);
       break;
     case "sub_department_id":
