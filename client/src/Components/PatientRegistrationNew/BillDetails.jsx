@@ -714,7 +714,7 @@ export function BillDetails({
                     rules={{ required: "Please Enter Cash" }}
                     render={(props) => (
                       <AlgaehFormGroup
-                        div={{ className: "col-2 mandatory" }}
+                        div={{ className: "col-2 mandatory form-group" }}
                         label={{
                           fieldName: "amount",
                           isImp: true,

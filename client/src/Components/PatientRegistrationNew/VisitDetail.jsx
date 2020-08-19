@@ -105,7 +105,7 @@ export function VisitDetails({
                           rules={{ required: "Please select Visit Type" }}
                           render={({ onChange, value }) => (
                             <AlgaehAutoComplete
-                              div={{ className: "col-6 mandatory" }}
+                              div={{ className: "col-8 mandatory" }}
                               label={{
                                 fieldName: "visit_type",
                                 isImp: true,
@@ -133,13 +133,24 @@ export function VisitDetails({
                           )}
                         />
 
+                        <div className="col-4">
+                          <AlgaehLabel
+                            label={{
+                              fieldName: "visit_date",
+                            }}
+                          />
+                          <h6>{moment().format("DD/MM/YYYY")}</h6>
+                        </div>
+                      </div>
+                      <div className="row primary-box-container">
+                        {" "}
                         <Controller
                           control={control}
                           name="doctor"
                           rules={{ required: "Please Select a doctor" }}
                           render={({ onChange, value }) => (
                             <AlgaehTreeSearch
-                              div={{ className: "col-6 form-group" }}
+                              div={{ className: "col mandatory" }}
                               label={{
                                 fieldName: "doctor_id",
                                 isImp: true,
@@ -172,17 +183,7 @@ export function VisitDetails({
                               }}
                             />
                           )}
-                        />
-                      </div>
-                      <div className="row primary-box-container">
-                        <div className="col-lg-6">
-                          <AlgaehLabel
-                            label={{
-                              fieldName: "visit_date",
-                            }}
-                          />
-                          <h6>{moment().format("DD/MM/YYYY")}</h6>
-                        </div>
+                        />{" "}
                       </div>
                       <div className="row">
                         <div className="col-lg-12">

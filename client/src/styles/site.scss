@@ -328,7 +328,7 @@ body {
 }
 
 .paddin-bottom-5 {
-  padding-bottom: 4px;
+  padding-bottom: 10px;
 }
 .htpl1-phase1-btn-secondary {
   text-transform: uppercase;
@@ -1021,8 +1021,8 @@ textarea {
   .algaeh-datePicker input[type="year"],
   .ant-select-selection,
   .ant-select-selector {
-    background-color: none;
-    border: 1px solid #d9ae58;
+    background-color: none !important;
+    border: 1px solid $gold-color !important;
   }
 }
 .ant-switch-block {
@@ -2151,7 +2151,7 @@ input.autoselect-input:disabled {
     font-size: 0.9rem;
     background: #fff;
     table {
-      width: 100%;
+      width: 100% !important;
       margin: auto;
       border-collapse: separate;
       border-spacing: 0;
@@ -2603,4 +2603,9 @@ input.autoselect-input:disabled {
 .ant-calendar-picker-container,
 .ant-select-dropdown {
   z-index: 99999 !important;
+}
+.patientUpdateModal {
+  .ant-modal-body {
+    padding: 0 15px;
+  }
 }

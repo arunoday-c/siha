@@ -33,6 +33,7 @@ class EOSGratuity extends Component {
       gratuity_encash: 0,
       actual_maount: 0,
       forfeitChecked: false,
+      paybale_amout: null,
     };
   }
   static contextType = MainContext;
@@ -68,6 +69,7 @@ class EOSGratuity extends Component {
   }
 
   textHandler(e) {
+    debugger;
     this.setState({
       [e.target.name]: e.target.value,
     });
@@ -86,7 +88,7 @@ class EOSGratuity extends Component {
       employee_name: null,
       hims_d_employee_id: null,
       calculated_gratutity_amount: null,
-      payable_amount: null,
+      paybale_amout: null,
       remarks: "",
       saveDisabled: true,
       sendPaymentButton: true,
@@ -118,7 +120,7 @@ class EOSGratuity extends Component {
           },
           previous_gratuity_amount: 0,
           calculated_gratutity_amount: null,
-          payable_amount: null,
+          paybale_amout: null,
           remarks: "",
           saveDisabled: true,
           sendPaymentButton: true,
@@ -196,7 +198,7 @@ class EOSGratuity extends Component {
       service_years: _sub_data.endOfServiceYears,
       payable_days: _sub_data.eligible_day,
       computed_amount: _sub_data.computed_amount,
-      paybale_amout: _sub_data.paybale_amout,
+      paybale_amout: this.state.paybale_amout,
       gratuity_status: this.state.forfeitChecked ? "PEF" : "PEN",
       remarks: this.state.remarks,
       total_gratutity_amount: _sub_data.total_gratutity_amount,
@@ -259,7 +261,7 @@ class EOSGratuity extends Component {
                 data: res.data.result,
                 calculated_gratutity_amount: res.data.result.gratuity_amount,
                 computed_amount: res.data.result.computed_amount,
-                payable_amount: res.data.result.paybale_amout,
+                paybale_amout: res.data.result.paybale_amout,
                 entitled_amount: res.data.result.entitled_amount,
                 saveDisabled: false,
                 // sendPaymentButton: false,
@@ -278,7 +280,7 @@ class EOSGratuity extends Component {
                 calculated_gratutity_amount:
                   res.data.result.calculated_gratutity_amount,
                 computed_amount: res.data.result.calculated_gratutity_amount,
-                payable_amount: res.data.result.payable_amount,
+                paybale_amout: res.data.result.payable_amount,
                 entitled_amount: res.data.result.entitled_amount,
                 gratuity_done: true,
                 // saveDisabled: true,
@@ -700,8 +702,8 @@ class EOSGratuity extends Component {
                                 allowNegative: false,
                               },
                               className: "txt-fld",
-                              name: "payable_amount",
-                              value: this.state.payable_amount,
+                              name: "paybale_amout",
+                              value: this.state.paybale_amout,
                               events: {
                                 onChange: this.textHandler.bind(this),
                               },
