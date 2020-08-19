@@ -30,7 +30,6 @@ const getBillDetails = async (
     prevVisits,
   }
 ) => {
-  debugger;
   const details = await newAlgaehApi({
     uri: "/billing/getBillDetails",
     module: "billing",
@@ -818,10 +817,10 @@ export function BillDetails({
                       <AlgaehFormGroup
                         div={{
                           className: "col no-padding-left-right  mandatory",
-                          isImp: enableCard,
                         }}
                         label={{
                           fieldName: "card_check_number",
+                          isImp: enableCard,
                         }}
                         textBox={{
                           disabled: disabled || !enableCard,
@@ -841,6 +840,7 @@ export function BillDetails({
                         div={{ className: "col" }}
                         label={{
                           fieldName: "expiry_date",
+                          isImp: enableCard,
                         }}
                         textBox={{
                           className: "txt-fld",

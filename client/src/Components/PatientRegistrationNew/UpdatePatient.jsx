@@ -114,11 +114,12 @@ export function UpdatePatient({ show, onClose, patient_code }) {
       visible={show}
       okButtonProps={{
         loading: isLoading,
+        className: "btn btn-primary",
       }}
       okText={"Update"}
       maskClosable={false}
-      cancelButtonProps={{ disabled: isLoading }}
-      closable={false}
+      cancelButtonProps={{ disabled: isLoading, className: "btn btn-default" }}
+      closable={true}
       onCancel={onClose}
       onOk={handleSubmit(onSubmit)}
       width={1080}
