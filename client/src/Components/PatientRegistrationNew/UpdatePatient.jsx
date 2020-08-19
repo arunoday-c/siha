@@ -121,6 +121,8 @@ export function UpdatePatient({ show, onClose, patient_code }) {
       closable={false}
       onCancel={onClose}
       onOk={handleSubmit(onSubmit)}
+      //btn btn-primary
+      // btn btn-default
       width={1080}
       className={`${userLanguage}_comp row algaehNewModal patientUpdateModal`}
     >

@@ -616,8 +616,7 @@ export function PatientRegistration() {
                         } else if (Object.keys(errors).length) {
                           AlgaehMessagePop({
                             type: "Warning",
-                            display:
-                              "Please fix all the errors before submitting again",
+                            display: "Please fill all the mandatory field.",
                           });
                           return null;
                         }
