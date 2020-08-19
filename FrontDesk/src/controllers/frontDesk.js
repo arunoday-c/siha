@@ -2,7 +2,7 @@ import { Router } from "express";
 import utlities from "algaeh-utilities";
 import frontModels, { getDoctorAndDepartment } from "../models/frontDesk";
 import regModels from "../models/patientRegistration";
-import visitModels from "../models/visit";
+import visitModels, { getPatientDetails } from "../models/visit";
 import billModels from "algaeh-billing/src/models/billing";
 import labModels from "algaeh-laboratory/src/models/laboratory";
 import radModels from "algaeh-radiology/src/models/radiology";
@@ -143,6 +143,7 @@ export default () => {
         next();
       }
     },
+    getPatientDetails,
     addEpisodeEncounterData,
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
