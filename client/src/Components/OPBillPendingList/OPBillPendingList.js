@@ -56,9 +56,9 @@ class OPBillPendingList extends Component {
   //   }
 
   ourOwnMiniNavigator = (obj) => {
-    const { requisition_list, radioYes, authorize1, ...rest } = this.state;
-    let sendObj = Object.assign(rest, obj);
-    this.props.new_routeComponents(sendObj);
+    this.props.history.push(
+      `/OPBilling?patient_code=${obj.patient_code}`
+    )
   };
 
   render() {
@@ -72,25 +72,25 @@ class OPBillPendingList extends Component {
               />
             }
             breadStyle={this.props.breadStyle}
-            // pageNavPath={[
-            //   {
-            //     pageName: (
-            //       <AlgaehLabel
-            //         label={{
-            //           forceLabel: "Home",
-            //           align: "ltr"
-            //         }}
-            //       />
-            //     )
-            //   },
-            //   {
-            //     pageName: (
-            //       <AlgaehLabel
-            //         label={{ forceLabel: "OP-Bill Pending List", align: "ltr" }}
-            //       />
-            //     )
-            //   }
-            // ]}
+          // pageNavPath={[
+          //   {
+          //     pageName: (
+          //       <AlgaehLabel
+          //         label={{
+          //           forceLabel: "Home",
+          //           align: "ltr"
+          //         }}
+          //       />
+          //     )
+          //   },
+          //   {
+          //     pageName: (
+          //       <AlgaehLabel
+          //         label={{ forceLabel: "OP-Bill Pending List", align: "ltr" }}
+          //       />
+          //     )
+          //   }
+          // ]}
           />
 
           <div className="row inner-top-search" style={{ marginTop: 78 }}>
