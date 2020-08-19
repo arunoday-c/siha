@@ -2600,3 +2600,7 @@ input.autoselect-input:disabled {
     }
   }
 }
+.ant-calendar-picker-container,
+.ant-select-dropdown {
+  z-index: 99999 !important;
+}

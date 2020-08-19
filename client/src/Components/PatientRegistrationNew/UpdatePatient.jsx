@@ -21,7 +21,7 @@ const updatePatient = async (data) => {
 };
 
 export function UpdatePatient({ show, onClose, patient_code }) {
-  const { userToken } = useContext(MainContext);
+  const { userToken, userLanguage } = useContext(MainContext);
   const patientData = queryCache.getQueryData(["patient", { patient_code }]);
   const {
     control,
@@ -122,6 +122,7 @@ export function UpdatePatient({ show, onClose, patient_code }) {
       onCancel={onClose}
       onOk={handleSubmit(onSubmit)}
       width={1080}
+      className={`${userLanguage}_comp row algaehNewModal patientUpdateModal`}
     >
       <Spin spinning={isLoading}>
         <Demographics
