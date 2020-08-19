@@ -2151,7 +2151,7 @@ input.autoselect-input:disabled {
     font-size: 0.9rem;
     background: #fff;
     table {
-      width: 100%;
+      width: 100% !important;
       margin: auto;
       border-collapse: separate;
       border-spacing: 0;
