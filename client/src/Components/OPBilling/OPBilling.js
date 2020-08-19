@@ -142,6 +142,9 @@ class OPBilling extends Component {
     if (queryParams.get("bill_code")) {
       this.getCtrlCode(queryParams.get("bill_code"));
     }
+    if (queryParams.get("patient_code")) {
+      getPatientDetails(this, this.props.patient_code);
+    }
 
     if (
       this.props.patient_code !== undefined &&
