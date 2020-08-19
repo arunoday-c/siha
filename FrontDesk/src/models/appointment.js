@@ -1175,7 +1175,7 @@ export default {
         selectDoctor = ` and ASD.provider_id=${input.provider_id}  `;
         //provider_id = req.query.provider_id;
       }
-
+      debugger;
       _mysql
         .executeQuery({
           query: `select  hims_d_appointment_schedule_header_id, sub_dept_id,SD.sub_department_name, SH.schedule_status as schedule_status, schedule_description, month, year,
@@ -1192,7 +1192,7 @@ export default {
           left join hims_d_sub_department SD on SH.sub_dept_id= SD.hims_d_sub_department_id  where
           SH.hospital_id=?  ${selectDoctor} ${qry} `,
           values: [req.userIdentity.hospital_id],
-          printQuery: true,
+          printQuery: false,
         })
         .then((result) => {
           if (result.length > 0) {
@@ -1202,20 +1202,15 @@ export default {
                   if (result[j]["modified"] == "M") {
                     _mysql
                       .executeQuery({
-                        query:
-                          "select hims_d_appointment_schedule_modify_id, appointment_schedule_detail_id, ASM.to_date as schedule_date, ASM.slot, ASM.from_work_hr,\
-                              ASM.to_work_hr, ASM.work_break1, ASM.from_break_hr1,ASM.to_break_hr1, ASM.work_break2, ASM.from_break_hr2, ASM.to_break_hr2  \
-                              hims_d_appointment_schedule_header_id, sub_dept_id,SD.sub_department_name, SH.schedule_status, schedule_description, month, year,  \
-                             monday, tuesday, wednesday, thursday, friday, saturday, sunday, ASD.provider_id,E.full_name as doctor_name,clinic_id,C.description as clinic_name,R.description as  room_name,\
-                              ASD.schedule_status as todays_schedule_status, modified\
-                             from hims_d_appointment_schedule_header SH,hims_d_appointment_schedule_modify ASM , hims_d_appointment_schedule_detail ASD,hims_d_employee E, hims_d_appointment_clinic C,hims_d_appointment_room R,\
-                             hims_d_sub_department SD  where SH.record_status='A' and E.record_status='A' \
-                             and ASD.record_status='A' and C.record_status='A' and SD.record_status='A' and R.record_status='A'and ASD.provider_id=E.hims_d_employee_id and  SH.hims_d_appointment_schedule_header_id=ASD.appointment_schedule_header_id  \
-                             and ASM.appointment_schedule_detail_id=ASD.hims_d_appointment_schedule_detail_id and ASM.record_status='A'\
-                             and ASD.clinic_id=C.hims_d_appointment_clinic_id and C.room_id=R.hims_d_appointment_room_id and C.sub_department_id=SD.hims_d_sub_department_id and appointment_schedule_detail_id=?",
+                        query: `select hims_d_appointment_schedule_modify_id, appointment_schedule_detail_id, ASM.to_date as schedule_date, ASM.slot, ASM.from_work_hr, ASM.to_work_hr, ASM.work_break1, ASM.from_break_hr1,ASM.to_break_hr1, ASM.work_break2, ASM.from_break_hr2, ASM.to_break_hr2,hims_d_appointment_schedule_header_id, sub_dept_id,SD.sub_department_name, SH.schedule_status, schedule_description, month, year, monday, tuesday, wednesday, thursday, friday, saturday, sunday, ASD.provider_id,E.full_name as doctor_name,clinic_id,C.description as clinic_name,R.description as  room_name, ASD.schedule_status as todays_schedule_status, modified from hims_d_appointment_schedule_header SH inner join hims_d_appointment_schedule_detail ASD
+                          on SH.hims_d_appointment_schedule_header_id=ASD.appointment_schedule_header_id 
+                          inner join hims_d_appointment_schedule_modify as ASM on ASM.appointment_schedule_detail_id=ASD.hims_d_appointment_schedule_detail_id inner join hims_d_employee E on ASD.provider_id=E.hims_d_employee_id and E.record_status='A' left join hims_d_appointment_clinic C on ASD.clinic_id=C.hims_d_appointment_clinic_id left join hims_d_appointment_room R on C.room_id=R.hims_d_appointment_room_id inner join hims_d_sub_department SD 
+                          on SH.sub_dept_id = SD.hims_d_sub_department_id and SD.record_status='A'
+                          where SD.record_status='A' and appointment_schedule_detail_id=?`,
                         values: [
                           result[j]["hims_d_appointment_schedule_detail_id"],
                         ],
+                        printQuery: true,
                       })
                       .then((modifyResult) => {
                         result[j] = modifyResult[0];
@@ -1249,6 +1244,7 @@ export default {
                         result[i].schedule_date,
                         result[i].provider_id,
                       ],
+                      printQuery: true,
                     })
                     .then((appResult) => {
                       const obj = {
