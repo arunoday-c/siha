@@ -328,7 +328,7 @@ body {
 }
 
 .paddin-bottom-5 {
-  padding-bottom: 4px;
+  padding-bottom: 10px;
 }
 .htpl1-phase1-btn-secondary {
   text-transform: uppercase;
@@ -1021,8 +1021,8 @@ textarea {
   .algaeh-datePicker input[type="year"],
   .ant-select-selection,
   .ant-select-selector {
-    background-color: none;
-    border: 1px solid #d9ae58;
+    background-color: none !important;
+    border: 1px solid $gold-color !important;
   }
 }
 .ant-switch-block {
@@ -2151,7 +2151,7 @@ input.autoselect-input:disabled {
     font-size: 0.9rem;
     background: #fff;
     table {
-      width: 100%;
+      width: 100% !important;
       margin: auto;
       border-collapse: separate;
       border-spacing: 0;
@@ -2562,16 +2562,50 @@ input.autoselect-input:disabled {
         width: 100%;
       }
       .popupFooter {
+        box-shadow: 0 -1px 10px rgba(0, 0, 0, 0.1);
+        background: lighten($color-black, 95%);
+        border-top: 1px dashed #e9e9e9;
         width: 100%;
-        border-top: 1px dashed lighten($color-black, 80%);
-        padding: 8px 0;
-        margin-top: 15px;
-        text-align: right;
-        .btn {
-          margin-left: 10px;
+        padding: 5px 0;
+        margin-top: 10px;
+        button {
+          font-size: 0.9em;
           float: right;
+          margin-left: 10px;
+          padding: 5px 10px;
+          text-transform: uppercase;
+          min-width: 70px;
+        }
+        .btn-other {
+          background: none;
+          color: lighten($color-black, 90%);
+          border: 1px solid lighten($color-black, 90%);
+          &:hover,
+          &:focus {
+            background-color: darken($primary-color, 10%);
+            color: $color-white;
+            border-color: lighten($primary-color, 10%);
+          }
+        }
+        .btn:disabled {
+          cursor: not-allowed !important;
+          opacity: 0.4;
+        }
+        .leftBtnGroup {
+          .btn {
+            float: left !important;
+          }
         }
       }
     }
+  }
+}
+.ant-calendar-picker-container,
+.ant-select-dropdown {
+  z-index: 99999 !important;
+}
+.patientUpdateModal {
+  .ant-modal-body {
+    padding: 0 15px;
   }
 }

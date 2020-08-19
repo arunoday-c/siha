@@ -58,7 +58,7 @@ export default {
             _string_Data += " and patient_id=?";
             input_Values.push(hims_d_patient_id);
 
-            console.log("expiry_visit: ", input.expiry_visit);
+            // console.log("expiry_visit: ", input.expiry_visit);
 
             if (input.expiry_visit != null) {
               var expiry_date = moment(new Date()).format("YYYY-MM-DD");

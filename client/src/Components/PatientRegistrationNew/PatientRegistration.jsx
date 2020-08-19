@@ -6,7 +6,7 @@ import { useLocation, useHistory } from "react-router-dom";
 import { CSSTransition } from "react-transition-group";
 import { FrontdeskContext } from "./FrontdeskContext";
 import PackageUtilize from "../PatientProfile/PackageUtilize/PackageUtilize";
-
+import { UpdatePatient } from "./UpdatePatient";
 import {
   MainContext,
   AlgaehLabel,
@@ -20,6 +20,7 @@ import { InsuranceDetails } from "./InsuranceDetails";
 import { VisitDetails } from "./VisitDetail";
 import { BillDetails } from "./BillDetails";
 import { AdvanceModal } from "./AdvanceRefundModal";
+import { algaehApiCall } from "../../utils/algaehApiCall";
 
 const getPatient = async (key, { patient_code }) => {
   const result = await newAlgaehApi({
@@ -77,7 +78,7 @@ const updatePatient = async (data) => {
 const updateAppointmentStatus = async (data) => {
   try {
     const result = await newAlgaehApi({
-      uri: "/appointment​/updateCheckIn",
+      uri: "/appointment/updateCheckIn",
       method: "PUT",
       module: "frontDesk",
       data,
@@ -88,10 +89,71 @@ const updateAppointmentStatus = async (data) => {
   }
 };
 
+const generateIdCard = (data) => {
+  algaehApiCall({
+    uri: "/report",
+    method: "GET",
+    module: "reports",
+    headers: {
+      Accept: "blob",
+    },
+    others: { responseType: "blob" },
+    data: {
+      report: {
+        reportName: "patientIDCard",
+        reportParams: [
+          {
+            name: "hims_d_patient_id",
+            value: data?.hims_d_patient_id,
+          },
+        ],
+        outputFileType: "PDF",
+      },
+    },
+    onSuccess: (res) => {
+      const urlBlob = URL.createObjectURL(res.data);
+      const reportName = `${data?.patient_code}-ID Card`;
+      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=${reportName}`;
+      window.open(origin);
+    },
+  });
+};
+
+const generateReceipt = (data) => {
+  debugger;
+  algaehApiCall({
+    uri: "/report",
+    method: "GET",
+    module: "reports",
+    headers: {
+      Accept: "blob",
+    },
+    others: { responseType: "blob" },
+    data: {
+      report: {
+        reportName: "cashReceipt",
+        reportParams: [
+          {
+            name: "hims_f_billing_header_id",
+            value: data?.hims_f_billing_header_id,
+          },
+        ],
+        outputFileType: "PDF",
+      },
+    },
+    onSuccess: (res) => {
+      const urlBlob = URL.createObjectURL(res.data);
+      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}`;
+      window.open(origin);
+    },
+  });
+};
+
 export function PatientRegistration() {
   const { userLanguage, userToken } = useContext(MainContext);
   const [openPopup, setOpenPopup] = useState(false);
   const [showPackage, setShowPackage] = useState(false);
+  const [showUpdateModal, setUpdateModal] = useState(false);
   const location = useLocation();
   const history = useHistory();
 
@@ -140,7 +202,7 @@ export function PatientRegistration() {
     },
   });
 
-  const { isLoading, data: patientData } = useQuery(
+  const { isLoading, data: patientData, refetch } = useQuery(
     ["patient", { patient_code }],
     getPatient,
     {
@@ -255,10 +317,14 @@ export function PatientRegistration() {
 
   const uploadAfterSubmit = async (data) => {
     const images = [];
-    if (patientImage !== null) {
+
+    if (
+      patientImage?.current !== null &&
+      patientImage.current?.state?.fileExtention
+    ) {
       images.push(
         new Promise((resolve, reject) => {
-          patientImage.SavingImageOnServer(
+          patientImage.current.SavingImageOnServer(
             undefined,
             undefined,
             undefined,
@@ -270,10 +336,13 @@ export function PatientRegistration() {
         })
       );
     }
-    if (patientIdCard !== null) {
+    if (
+      patientIdCard.current !== null &&
+      patientImage.current?.state?.fileExtention
+    ) {
       images.push(
         new Promise((resolve, reject) => {
-          patientIdCard.SavingImageOnServer(
+          patientIdCard.current.SavingImageOnServer(
             undefined,
             undefined,
             undefined,
@@ -284,6 +353,44 @@ export function PatientRegistration() {
           );
         })
       );
+    }
+    if (data?.primary_insurance_provider_id) {
+      if (
+        insuranceImgBack.current !== null &&
+        patientImage.current?.state?.fileExtention
+      ) {
+        images.push(
+          new Promise((resolve, reject) => {
+            insuranceImgBack.current.SavingImageOnServer(
+              undefined,
+              undefined,
+              undefined,
+              data?.primary_id_no,
+              () => {
+                resolve();
+              }
+            );
+          })
+        );
+      }
+      if (
+        insuranceImgFront.current !== null &&
+        patientImage.current?.state?.fileExtention
+      ) {
+        images.push(
+          new Promise((resolve, reject) => {
+            insuranceImgFront.current.SavingImageOnServer(
+              undefined,
+              undefined,
+              undefined,
+              data?.primary_id_no,
+              () => {
+                resolve();
+              }
+            );
+          })
+        );
+      }
     }
     const result = await Promise.all(images);
     return result;
@@ -421,6 +528,10 @@ export function PatientRegistration() {
       country_id: userToken?.default_country,
       patient_type: userToken?.default_patient_type,
     });
+    patientIdCard.current = null;
+    patientImage.current = null;
+    insuranceImgBack.current = null;
+    insuranceImgFront.current = null;
     clearState();
     if (!withoutNav) {
       history.push("/PatientRegistration");
@@ -446,7 +557,7 @@ export function PatientRegistration() {
                 label={{ fieldName: "patient_code", returnText: true }}
               />
             ),
-            value: patient_code,
+            value: patient_code || savedPatient?.patient_code,
             selectValue: "patient_code",
             events: {
               onChange: (code) => {
@@ -476,23 +587,33 @@ export function PatientRegistration() {
           }
           editData={{
             events: {
-              onClick: () => {},
+              onClick: () => {
+                if (!!patient_code || !!savedPatient?.patient_code) {
+                  setUpdateModal(true);
+                }
+              },
             },
           }}
           printArea={
-            patient_code
+            !!patient_code || !!savedPatient
               ? {
                   menuitems: [
                     {
                       label: "ID Card",
                       events: {
-                        onClick: () => {},
+                        onClick: () => {
+                          generateIdCard(
+                            patientData?.patientRegistration || savedPatient
+                          );
+                        },
                       },
                     },
                     {
                       label: "Advance/Refund Receipt",
                       events: {
-                        onClick: () => {},
+                        onClick: () => {
+                          // showAdvanceRefundList(this, this);
+                        },
                       },
                     },
                   ],
@@ -562,8 +683,7 @@ export function PatientRegistration() {
                         } else if (Object.keys(errors).length) {
                           AlgaehMessagePop({
                             type: "Warning",
-                            display:
-                              "Please fix all the errors before submitting again",
+                            display: "Please fill all the mandatory field.",
                           });
                           return null;
                         }
@@ -587,6 +707,24 @@ export function PatientRegistration() {
                     />
                   </button>
                   <AdvanceModal patient={patientData?.patientRegistration} />
+                  {(patient_code || !!savedPatient) && ( // eslint-disable-line
+                    <button
+                      type="button"
+                      className="btn btn-other"
+                      onClick={() =>
+                        history.push(
+                          `/OPBilling?patient_code=${
+                            patient_code || savedPatient?.patient_code
+                          }`
+                        )
+                      }
+                    >
+                      <AlgaehLabel
+                        label={{
+                          forceLabel: "Go to Billing",
+                        }}
+                      />
+                    </button>
                   )}
                   {!!patientData && packages?.length > 0 ? (
                     <div className="col">
@@ -612,7 +750,7 @@ export function PatientRegistration() {
                     </div>
                   ) : null}
                 </div>
-                {consultationInfo?.consultation === "Y" ? (
+                {!!savedPatient && consultationInfo?.consultation === "Y" ? (
                   <CSSTransition
                     in={openPopup}
                     classNames={{
@@ -658,7 +796,11 @@ export function PatientRegistration() {
                       </div>
                       <div className="row">
                         <div className="col">
-                          <button type="button" className="btn btn-primary">
+                          <button
+                            type="button"
+                            className="btn btn-primary"
+                            onClick={() => generateReceipt(savedPatient)}
+                          >
                             Print Receipt
                           </button>
                           <button
@@ -668,26 +810,13 @@ export function PatientRegistration() {
                           >
                             Close
                           </button>
-                          <button className="btn btn-default">
+                          <button
+                            type="button"
+                            className="btn btn-default"
+                            onClick={() => generateIdCard(savedPatient)}
+                          >
                             Print Card
                           </button>
-                          {consultationInfo.consultation == "Y" && ( // eslint-disable-line
-                            <button
-                              type="button"
-                              className="btn btn-other"
-                              onClick={() =>
-                                this.props.history.push(
-                                  `/OPBilling?bill_code=${savedPatient?.bill_number}`
-                                )
-                              }
-                            >
-                              <AlgaehLabel
-                                label={{
-                                  forceLabel: "Go to Billing",
-                                }}
-                              />
-                            </button>
-                          )}
                         </div>
                       </div>
                     </div>
@@ -698,6 +827,16 @@ export function PatientRegistration() {
           </form>
         </div>
       </div>
+      {(!!patient_code || !!savedPatient?.patient_code) && (
+        <UpdatePatient
+          onClose={() => {
+            refetch();
+            setUpdateModal(false);
+          }}
+          patient_code={patient_code || savedPatient?.patient_code}
+          show={showUpdateModal}
+        />
+      )}
     </Spin>
   );
 }

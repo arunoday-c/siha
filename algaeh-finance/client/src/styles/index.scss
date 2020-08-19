@@ -1550,20 +1550,20 @@ td {
 //Semantic UI CSS Owerwrite Start Here //
 
 .ui.fluid.dropdown {
-  min-height:$formMinHt !important;
-  max-height:$formMaxHt !important;
+  min-height: $formMinHt !important;
+  max-height: $formMaxHt !important;
   padding: 0;
   border-radius: $borderRadius !important;
 }
 .mandatory {
   .ui.selection.dropdown {
-    border: 1px solid rgb(225, 173, 70);
+    border: 1px solid $gold-color !important;
   }
   .ant-select-selection {
-    border: 1px solid rgb(225, 173, 70);
+    border: 1px solid $gold-color !important;
   }
   .ant-select-selector {
-    border: 1px solid rgb(225, 173, 70);
+    border: 1px solid $gold-color !important;
   }
 }
 
@@ -1599,8 +1599,8 @@ td {
 .ui.input > input {
   font-weight: 700;
   font-size: 0.9em;
-  min-height:$formMinHt !important;
-  max-height:$formMaxHt !important;
+  min-height: $formMinHt !important;
+  max-height: $formMaxHt !important;
   padding: 0.3em 0.5em;
 }
 
@@ -1722,11 +1722,6 @@ td {
       }
     }
   }
-}
-
-.ant-calendar-picker-container,
-.ant-select-dropdown {
-  z-index: 99999 !important;
 }
 
 //App Arabic Version End Here //

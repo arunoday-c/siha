@@ -7,7 +7,7 @@
     "internal_server": "run-p run-webpack run-dev",
     "debug": "cross-env PORT=3000 NODE_ENV=development nodemon -w src src/internal_server.js --exec \"babel-node --inspect  src/internal_server.js  \"",
     "build": "webpack --config webpack.prod.js",
-    "run-dev": "cross-env PORT=3000 NODE_ENV=development nodemon --exec 'node build/app.js'",
+    "run-dev": "cross-env PORT=3000 NODE_ENV=development nodemon --exec 'node --inspect=localhost:2000 build/app.js'",
     "run-webpack": "webpack --watch --config webpack.dev.js",
     "build_document_management": "babel DocumentManagement/src -s -D -d DocumentManagement/dist ",
     "hr_server": "npm run dev --prefix HrManagement",
@@ -28,7 +28,7 @@
   "license": "ISC",
   "dependencies": {
     "@babel/runtime": "^7.6.2",
-    "algaeh-mysql": "^1.5.0",
+    "algaeh-mysql": "^1.5.1",
     "aws-sdk": "^2.247.1",
     "bluebird": "^3.5.1",
     "body-parser": "^1.18.2",

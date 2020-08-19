@@ -58,6 +58,11 @@ export function VisitDetails({
       visitTypes: [],
     },
     initialStale: true,
+    onSuccess: (data) => {
+      const res = data?.visitTypes?.filter((item) => item.consultation === "Y");
+      setConsultationInfo(res[0]);
+      setValue("visit_type", res[0]?.hims_d_visit_type_id);
+    },
   });
   const {
     hims_d_patient_id,
@@ -100,7 +105,7 @@ export function VisitDetails({
                           rules={{ required: "Please select Visit Type" }}
                           render={({ onChange, value }) => (
                             <AlgaehAutoComplete
-                              div={{ className: "col-6 mandatory" }}
+                              div={{ className: "col-8 mandatory" }}
                               label={{
                                 fieldName: "visit_type",
                                 isImp: true,
@@ -128,13 +133,24 @@ export function VisitDetails({
                           )}
                         />
 
+                        <div className="col-4">
+                          <AlgaehLabel
+                            label={{
+                              fieldName: "visit_date",
+                            }}
+                          />
+                          <h6>{moment().format("DD/MM/YYYY")}</h6>
+                        </div>
+                      </div>
+                      <div className="row primary-box-container">
+                        {" "}
                         <Controller
                           control={control}
                           name="doctor"
                           rules={{ required: "Please Select a doctor" }}
                           render={({ onChange, value }) => (
                             <AlgaehTreeSearch
-                              div={{ className: "col-6 form-group" }}
+                              div={{ className: "col mandatory" }}
                               label={{
                                 fieldName: "doctor_id",
                                 isImp: true,
@@ -167,17 +183,7 @@ export function VisitDetails({
                               }}
                             />
                           )}
-                        />
-                      </div>
-                      <div className="row primary-box-container">
-                        <div className="col-lg-6">
-                          <AlgaehLabel
-                            label={{
-                              fieldName: "visit_date",
-                            }}
-                          />
-                          <h6>{moment().format("DD/MM/YYYY")}</h6>
-                        </div>
+                        />{" "}
                       </div>
                       <div className="row">
                         <div className="col-lg-12">
@@ -342,7 +348,7 @@ export function VisitDetails({
                             },
                           },
                           {
-                            fieldName: "sub_department_id",
+                            fieldName: "sub_department_name",
                             label: (
                               <AlgaehLabel
                                 label={{ fieldName: "department_id" }}
@@ -352,7 +358,7 @@ export function VisitDetails({
                             disabled: true,
                           },
                           {
-                            fieldName: "doctor_id",
+                            fieldName: "full_name",
                             label: (
                               <AlgaehLabel label={{ fieldName: "doctor_id" }} />
                             ),

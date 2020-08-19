@@ -298,7 +298,7 @@ body {
 }
 
 .paddin-bottom-5 {
-  padding-bottom: 4px;
+  padding-bottom: 10px;
 }
 .htpl1-phase1-btn-secondary {
   text-transform: uppercase;
@@ -913,8 +913,8 @@ textarea {
   .algaeh-datePicker input[type="year"],
   .ant-select-selection,
   .ant-select-selector {
-    background-color: none;
-    border: 1px solid #d9ae58;
+    background-color: none !important;
+    border: 1px solid $gold-color !important;
   }
 }
 
@@ -2054,8 +2054,14 @@ th {
   .algaeh-datePicker input[type="month"],
   .algaeh-datePicker input[type="year"],
   .ant-select-selection,
-  .ant-select-selector {
+  .ant-select-selector,
+  .ant-calendar-picker-container,
+  .ant-select-dropdown {
     background-color: #fdeef0 !important;
     border: 1px solid #ff3855 !important;
   }
+}
+.ant-calendar-picker-container,
+.ant-select-dropdown {
+  z-index: 99999 !important;
 }

@@ -300,7 +300,7 @@ class SampleCollectionPatient extends PureComponent {
                                     </span>
                                   ) : (
                                     <AlagehAutoComplete
-                                      div={{}}
+                                      div={{ className: "noLabel" }}
                                       selector={{
                                         name: "sample_id",
                                         className: "select-fld",

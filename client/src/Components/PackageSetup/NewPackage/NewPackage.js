@@ -112,8 +112,8 @@ class NewPackage extends PureComponent {
           IOputs.approved === "Y"
             ? true
             : IOputs.package_status === "I"
-              ? true
-              : false;
+            ? true
+            : false;
         IOputs.approveEnable = false;
         IOputs.radioActive = IOputs.package_status === "A" ? true : false;
         IOputs.radioInactive = IOputs.package_status === "I" ? true : false;
@@ -338,11 +338,11 @@ class NewPackage extends PureComponent {
                               {GetAmountFormart(this.state.pl_amount)} (Profit)
                             </span>
                           ) : (
-                                <span className="badge badge-danger">
-                                  {" "}
-                                  {GetAmountFormart(this.state.pl_amount)} (Loss)
+                            <span className="badge badge-danger">
+                              {" "}
+                              {GetAmountFormart(this.state.pl_amount)} (Loss)
                             </span>
-                              )}
+                          )}
                         </h6>
                       </div>
                     </div>
@@ -524,10 +524,10 @@ class NewPackage extends PureComponent {
                       {/* </AlgaehSecurityElement> */}
 
                       {this.state.package_visit_type === "M" ? (
-                        <div className="col">
+                        <div className="col-5">
                           <div className="row">
                             <AlagehAutoComplete
-                              div={{ className: "col form-group  mandatory" }}
+                              div={{ className: "col-4 form-group  mandatory" }}
                               label={{
                                 forceLabel: "Cancel Policy",
                                 isImp:
@@ -556,7 +556,7 @@ class NewPackage extends PureComponent {
                               }}
                             />
                             <AlagehFormGroup
-                              div={{ className: "col form-group  mandatory" }}
+                              div={{ className: "col-4 form-group  mandatory" }}
                               label={{
                                 fieldName: "expiry_days",
                                 isImp:
@@ -578,7 +578,7 @@ class NewPackage extends PureComponent {
                               }}
                             />
                             <AlagehAutoComplete
-                              div={{ className: "col form-group  mandatory" }}
+                              div={{ className: "col-4 form-group  mandatory" }}
                               label={{
                                 forceLabel: "Adv. Type",
                                 isImp:
@@ -608,7 +608,9 @@ class NewPackage extends PureComponent {
                             />
                             {this.state.advance_type === "P" ? (
                               <AlagehFormGroup
-                                div={{ className: "col form-group  mandatory" }}
+                                div={{
+                                  className: "col-4 form-group  mandatory",
+                                }}
                                 label={{
                                   forceLabel: "Adv. Percent",
                                   isImp:
@@ -632,34 +634,36 @@ class NewPackage extends PureComponent {
                                 }}
                               />
                             ) : (
-                                <AlagehFormGroup
-                                  div={{ className: "col form-group  mandatory" }}
-                                  label={{
-                                    forceLabel: "Adv. Amount",
-                                    isImp:
-                                      this.state.package_visit_type === "M"
-                                        ? true
-                                        : false,
-                                  }}
-                                  textBox={{
-                                    decimal: { allowNegative: false },
-                                    value: this.state.advance_amount,
-                                    className: "txt-fld",
-                                    name: "advance_amount",
-                                    events: {
-                                      onChange: this.texthandle.bind(this),
-                                    },
-                                    others: {
-                                      min: 0,
-                                      max: 100,
-                                      // disabled: this.state.approvedPack
-                                    },
-                                  }}
-                                />
-                              )}
+                              <AlagehFormGroup
+                                div={{
+                                  className: "col-4 form-group  mandatory",
+                                }}
+                                label={{
+                                  forceLabel: "Adv. Amount",
+                                  isImp:
+                                    this.state.package_visit_type === "M"
+                                      ? true
+                                      : false,
+                                }}
+                                textBox={{
+                                  decimal: { allowNegative: false },
+                                  value: this.state.advance_amount,
+                                  className: "txt-fld",
+                                  name: "advance_amount",
+                                  events: {
+                                    onChange: this.texthandle.bind(this),
+                                  },
+                                  others: {
+                                    min: 0,
+                                    max: 100,
+                                    // disabled: this.state.approvedPack
+                                  },
+                                }}
+                              />
+                            )}
 
                             <AlagehAutoComplete
-                              div={{ className: "col form-group" }}
+                              div={{ className: "col-4 form-group" }}
                               label={{
                                 forceLabel: "Cancel Type",
                               }}
@@ -685,7 +689,7 @@ class NewPackage extends PureComponent {
                             />
                             {this.state.cancellation_type === "P" ? (
                               <AlagehFormGroup
-                                div={{ className: "col form-group" }}
+                                div={{ className: "col-4 form-group" }}
                                 label={{
                                   forceLabel: "Cancel Percent",
                                 }}
@@ -705,27 +709,27 @@ class NewPackage extends PureComponent {
                                 }}
                               />
                             ) : (
-                                <AlagehFormGroup
-                                  div={{ className: "col form-group" }}
-                                  label={{
-                                    forceLabel: "Cancel Amount",
-                                  }}
-                                  textBox={{
-                                    decimal: { allowNegative: false },
-                                    value: this.state.cancellation_amount,
-                                    className: "txt-fld",
-                                    name: "cancellation_amount",
-                                    events: {
-                                      onChange: this.texthandle.bind(this),
-                                    },
-                                    others: {
-                                      min: 0,
-                                      max: 100,
-                                      // disabled: this.state.approvedPack
-                                    },
-                                  }}
-                                />
-                              )}
+                              <AlagehFormGroup
+                                div={{ className: "col form-group" }}
+                                label={{
+                                  forceLabel: "Cancel Amount",
+                                }}
+                                textBox={{
+                                  decimal: { allowNegative: false },
+                                  value: this.state.cancellation_amount,
+                                  className: "txt-fld",
+                                  name: "cancellation_amount",
+                                  events: {
+                                    onChange: this.texthandle.bind(this),
+                                  },
+                                  others: {
+                                    min: 0,
+                                    max: 100,
+                                    // disabled: this.state.approvedPack
+                                  },
+                                }}
+                              />
+                            )}
                           </div>
                         </div>
                       ) : null}
@@ -818,7 +822,7 @@ class NewPackage extends PureComponent {
                         className="btn btn-primary"
                         style={{ marginTop: 20 }}
                         onClick={this.AddToList.bind(this)}
-                      // disabled={this.state.approvedPack}
+                        // disabled={this.state.approvedPack}
                       >
                         Add
                       </button>
@@ -868,15 +872,15 @@ class NewPackage extends PureComponent {
                                   this.props.servicetype === undefined
                                     ? []
                                     : this.props.servicetype.filter(
-                                      (f) =>
-                                        f.hims_d_service_type_id ===
-                                        row.service_type_id
-                                    );
+                                        (f) =>
+                                          f.hims_d_service_type_id ===
+                                          row.service_type_id
+                                      );
 
                                 return (
                                   <span>
                                     {display !== undefined &&
-                                      display.length !== 0
+                                    display.length !== 0
                                       ? display[0].service_type
                                       : ""}
                                   </span>
@@ -895,10 +899,10 @@ class NewPackage extends PureComponent {
                                   this.props.displayservices === undefined
                                     ? []
                                     : this.props.displayservices.filter(
-                                      (f) =>
-                                        f.hims_d_services_id ===
-                                        row.service_id
-                                    );
+                                        (f) =>
+                                          f.hims_d_services_id ===
+                                          row.service_id
+                                      );
 
                                 return (
                                   <span>
@@ -1033,8 +1037,8 @@ class NewPackage extends PureComponent {
                         {this.state.hims_d_package_header_id === null ? (
                           <AlgaehLabel label={{ fieldName: "btnSave" }} />
                         ) : (
-                            <AlgaehLabel label={{ fieldName: "btnUpdate" }} />
-                          )}
+                          <AlgaehLabel label={{ fieldName: "btnUpdate" }} />
+                        )}
                       </button>
 
                       {this.state.package_type === "S" ? (

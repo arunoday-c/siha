@@ -22,7 +22,7 @@ const getBillDetails = async (
   {
     services_id,
     nationality_id,
-    default_nationality_id,
+    default_nationality,
     local_vat_applicable,
     primary_insurance_provider_id,
     primary_network_id,
@@ -30,6 +30,7 @@ const getBillDetails = async (
     prevVisits,
   }
 ) => {
+  debugger;
   const details = await newAlgaehApi({
     uri: "/billing/getBillDetails",
     module: "billing",
@@ -44,7 +45,7 @@ const getBillDetails = async (
         primary_network_id,
         primary_network_office_id,
         vat_applicable:
-          default_nationality_id == nationality_id ? local_vat_applicable : "Y",
+          default_nationality == nationality_id ? local_vat_applicable : "Y",
       },
     ],
   });
@@ -88,11 +89,12 @@ export function BillDetails({
   const [enableCash, setEnableCash] = useState(true);
   const [enableCard, setEnableCard] = useState(false);
   const [visible, setVisible] = useState(false);
+  const { userToken } = useContext(MainContext);
   const {
-    default_nationality_id,
+    default_nationality,
     local_vat_applicable,
     service_dis_percentage,
-  } = useContext(MainContext);
+  } = userToken;
   const {
     services_id,
     sub_department_id,
@@ -141,7 +143,7 @@ export function BillDetails({
         primary_insurance_provider_id,
         primary_network_id,
         primary_network_office_id,
-        default_nationality_id,
+        default_nationality,
         local_vat_applicable,
         prevVisits,
       },
@@ -375,10 +377,9 @@ export function BillDetails({
                     }}
                   />
                   <h6>
-                    {fieldNameFn("Not Generated", "غير مولدة")}
-                    {/* {this.state.bill_number
-                            ? this.state.bill_number
-                            : fieldNameFn("Not Generated", "غير مولدة") */}
+                    {/* {fieldNameFn("Not Generated", "غير مولدة")} */}
+                    {savedPatient?.bill_number ??
+                      fieldNameFn("Not Generated", "غير مولدة")}
                   </h6>
                 </div>
 
@@ -714,7 +715,7 @@ export function BillDetails({
                     rules={{ required: "Please Enter Cash" }}
                     render={(props) => (
                       <AlgaehFormGroup
-                        div={{ className: "col-2 mandatory" }}
+                        div={{ className: "col-2 mandatory form-group" }}
                         label={{
                           fieldName: "amount",
                           isImp: true,
@@ -766,12 +767,18 @@ export function BillDetails({
                   <Controller
                     control={control}
                     name="card_amount"
+                    rules={{
+                      required: {
+                        value: enableCard,
+                        message: "Required",
+                      },
+                    }}
                     render={(props) => (
                       <AlgaehFormGroup
                         div={{ className: "col-2  mandatory" }}
                         label={{
                           fieldName: "amount",
-                          isImp: true,
+                          isImp: enableCard,
                         }}
                         textBox={{
                           className: "txt-fld",
@@ -801,16 +808,23 @@ export function BillDetails({
                   <Controller
                     control={control}
                     name="card_number"
+                    rules={{
+                      required: {
+                        value: enableCard,
+                        message: "Required",
+                      },
+                    }}
                     render={(props) => (
                       <AlgaehFormGroup
                         div={{
                           className: "col no-padding-left-right  mandatory",
+                          isImp: enableCard,
                         }}
                         label={{
                           fieldName: "card_check_number",
                         }}
                         textBox={{
-                          disabled: true,
+                          disabled: disabled || !enableCard,
                           className: "txt-fld",
                           name: "card_number",
                           ...props,
@@ -831,11 +845,19 @@ export function BillDetails({
                         textBox={{
                           className: "txt-fld",
                           name: "card_date",
-                          disabled: true,
+                        }}
+                        others={{
+                          disabled: disabled || !enableCard,
                         }}
                         minDate={new Date()}
                         events={{
-                          onChange: (mdate) => onChange(mdate._d),
+                          onChange: (mdate) => {
+                            if (mdate) {
+                              onChange(mdate._d);
+                            } else {
+                              onChange(undefined);
+                            }
+                          },
                           onClear: () => onChange(undefined),
                         }}
                         value={value}

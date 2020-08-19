@@ -54,11 +54,12 @@ export function Demographics({
   errors,
   patientIdCard,
   patientImage,
+  inModal = false,
 }) {
   const queryParams = useQueryParams();
   const patient_code = queryParams.get("patient_code");
   const { savedPatient } = useContext(FrontdeskContext);
-  const disabled = !!patient_code || !!savedPatient?.patient_code;
+  const disabled = !inModal && (!!patient_code || !!savedPatient?.patient_code);
   const {
     country_id: country,
     state_id,
@@ -751,6 +752,7 @@ export function Demographics({
                       >
                         <div className="col-lg-5 patientRegImg">
                           <AlgaehFileUploader
+                            key={patient_code || "image"}
                             ref={patientImage}
                             name="patientImage"
                             accept="image/*"
@@ -762,10 +764,13 @@ export function Demographics({
                                 console.log(val, "val");
                               },
                             }}
+                            // renderPrevState={patientImage.current}
+                            forceRefresh={!patient_code}
                           />
                         </div>
                         <div className="col-lg-7 patientRegId">
                           <AlgaehFileUploader
+                            key={patient_code || "idcard"}
                             ref={patientIdCard}
                             noImage="ID-card"
                             name="patientIdCard"
@@ -778,6 +783,8 @@ export function Demographics({
                                 console.log(val, "val");
                               },
                             }}
+                            // renderPrevState={patientIdCard.current}
+                            forceRefresh={!savedPatient}
                           />
 
                           <div />
@@ -791,6 +798,12 @@ export function Demographics({
                         <Controller
                           control={control}
                           name="primary_identity_id"
+                          rules={{
+                            required: {
+                              value: true,
+                              message: "Please Enter Nationality ID",
+                            },
+                          }}
                           render={({ onBlur, onChange, value }) => (
                             <AlgaehAutoComplete
                               div={{ className: "col-lg-5 mandatory" }}
@@ -904,6 +917,7 @@ export function Demographics({
                             name: "emergency_contact_number",
                             placeholder: "(+01)123-456-7890",
                             type: "number",
+                            disabled,
                           }}
                         />
                       )}
@@ -981,6 +995,7 @@ export function Demographics({
                             className: "txt-fld",
                             name: "postal_code",
                             ...props,
+                            disabled,
                           }}
                         />
                       )}
