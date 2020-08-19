@@ -20,6 +20,7 @@ import { InsuranceDetails } from "./InsuranceDetails";
 import { VisitDetails } from "./VisitDetail";
 import { BillDetails } from "./BillDetails";
 import { AdvanceModal } from "./AdvanceRefundModal";
+import { algaehApiCall } from "../../utils/algaehApiCall";
 
 const getPatient = async (key, { patient_code }) => {
   const result = await newAlgaehApi({
@@ -86,6 +87,66 @@ const updateAppointmentStatus = async (data) => {
   } catch (error) {
     console.error(error?.message);
   }
+};
+
+const generateIdCard = (data) => {
+  algaehApiCall({
+    uri: "/report",
+    method: "GET",
+    module: "reports",
+    headers: {
+      Accept: "blob",
+    },
+    others: { responseType: "blob" },
+    data: {
+      report: {
+        reportName: "patientIDCard",
+        reportParams: [
+          {
+            name: "hims_d_patient_id",
+            value: data?.hims_d_patient_id,
+          },
+        ],
+        outputFileType: "PDF",
+      },
+    },
+    onSuccess: (res) => {
+      const urlBlob = URL.createObjectURL(res.data);
+      const reportName = `${data?.patient_code}-ID Card`;
+      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=${reportName}`;
+      window.open(origin);
+    },
+  });
+};
+
+const generateReceipt = (data) => {
+  debugger;
+  algaehApiCall({
+    uri: "/report",
+    method: "GET",
+    module: "reports",
+    headers: {
+      Accept: "blob",
+    },
+    others: { responseType: "blob" },
+    data: {
+      report: {
+        reportName: "cashReceipt",
+        reportParams: [
+          {
+            name: "hims_f_billing_header_id",
+            value: data?.hims_f_billing_header_id,
+          },
+        ],
+        outputFileType: "PDF",
+      },
+    },
+    onSuccess: (res) => {
+      const urlBlob = URL.createObjectURL(res.data);
+      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}`;
+      window.open(origin);
+    },
+  });
 };
 
 export function PatientRegistration() {
@@ -496,7 +557,7 @@ export function PatientRegistration() {
                 label={{ fieldName: "patient_code", returnText: true }}
               />
             ),
-            value: patient_code,
+            value: patient_code || savedPatient?.patient_code,
             selectValue: "patient_code",
             events: {
               onChange: (code) => {
@@ -534,19 +595,25 @@ export function PatientRegistration() {
             },
           }}
           printArea={
-            patient_code
+            !!patient_code || !!savedPatient
               ? {
                   menuitems: [
                     {
                       label: "ID Card",
                       events: {
-                        onClick: () => {},
+                        onClick: () => {
+                          generateIdCard(
+                            patientData?.patientRegistration || savedPatient
+                          );
+                        },
                       },
                     },
                     {
                       label: "Advance/Refund Receipt",
                       events: {
-                        onClick: () => {},
+                        onClick: () => {
+                          // showAdvanceRefundList(this, this);
+                        },
                       },
                     },
                   ],
@@ -641,6 +708,24 @@ export function PatientRegistration() {
                     />
                   </button>
                   <AdvanceModal patient={patientData?.patientRegistration} />
+                  {(patient_code || !!savedPatient) && ( // eslint-disable-line
+                    <button
+                      type="button"
+                      className="btn btn-other"
+                      onClick={() =>
+                        history.push(
+                          `/OPBilling?patient_code=${
+                            patient_code || savedPatient?.patient_code
+                          }`
+                        )
+                      }
+                    >
+                      <AlgaehLabel
+                        label={{
+                          forceLabel: "Go to Billing",
+                        }}
+                      />
+                    </button>
                   )}
                   {!!patientData && packages?.length > 0 ? (
                     <div className="col">
@@ -666,7 +751,7 @@ export function PatientRegistration() {
                     </div>
                   ) : null}
                 </div>
-                {consultationInfo?.consultation === "Y" ? (
+                {!!savedPatient && consultationInfo?.consultation === "Y" ? (
                   <CSSTransition
                     in={openPopup}
                     classNames={{
@@ -712,7 +797,11 @@ export function PatientRegistration() {
                       </div>
                       <div className="row">
                         <div className="col">
-                          <button type="button" className="btn btn-primary">
+                          <button
+                            type="button"
+                            className="btn btn-primary"
+                            onClick={() => generateReceipt(savedPatient)}
+                          >
                             Print Receipt
                           </button>
                           <button
@@ -722,26 +811,13 @@ export function PatientRegistration() {
                           >
                             Close
                           </button>
-                          <button className="btn btn-default">
+                          <button
+                            type="button"
+                            className="btn btn-default"
+                            onClick={() => generateIdCard(savedPatient)}
+                          >
                             Print Card
                           </button>
-                          {consultationInfo.consultation == "Y" && ( // eslint-disable-line
-                            <button
-                              type="button"
-                              className="btn btn-other"
-                              onClick={() =>
-                                this.props.history.push(
-                                  `/OPBilling?bill_code=${savedPatient?.bill_number}`
-                                )
-                              }
-                            >
-                              <AlgaehLabel
-                                label={{
-                                  forceLabel: "Go to Billing",
-                                }}
-                              />
-                            </button>
-                          )}
                         </div>
                       </div>
                     </div>
