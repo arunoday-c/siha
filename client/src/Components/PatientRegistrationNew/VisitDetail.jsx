@@ -58,6 +58,11 @@ export function VisitDetails({
       visitTypes: [],
     },
     initialStale: true,
+    onSuccess: (data) => {
+      const res = data?.visitTypes?.filter((item) => item.consultation === "Y");
+      setConsultationInfo(res[0]);
+      setValue("visit_type", res[0]?.hims_d_visit_type_id);
+    },
   });
   const {
     hims_d_patient_id,
@@ -342,7 +347,7 @@ export function VisitDetails({
                             },
                           },
                           {
-                            fieldName: "sub_department_id",
+                            fieldName: "sub_department_name",
                             label: (
                               <AlgaehLabel
                                 label={{ fieldName: "department_id" }}
@@ -352,7 +357,7 @@ export function VisitDetails({
                             disabled: true,
                           },
                           {
-                            fieldName: "doctor_id",
+                            fieldName: "full_name",
                             label: (
                               <AlgaehLabel label={{ fieldName: "doctor_id" }} />
                             ),
