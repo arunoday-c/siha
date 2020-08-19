@@ -151,7 +151,7 @@ class PatientAttendance extends Component {
             events={{
               onClose: this.onClose.bind(this),
             }}
-            title="Sick Leave"
+            title="Patient Attendance"
             openPopup={this.props.openPatientAttendance}
           >
             <div className="popupInner">
