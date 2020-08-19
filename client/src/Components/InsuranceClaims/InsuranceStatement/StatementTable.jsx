@@ -66,7 +66,7 @@ export function StatementTable() {
             <h3 className="caption-subject">Insurance Statement List</h3>
           </div>
         </div>
-        <div className="portlet-body" id="InsuranceStatementGrid_Cntr">
+        <div className="portlet-body" id="PreRequestGrid">
           <AlgaehDataGrid
             id="InsuranceStatementGrid"
             columns={[

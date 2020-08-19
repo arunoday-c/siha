@@ -6,7 +6,7 @@ import { useLocation, useHistory } from "react-router-dom";
 import { CSSTransition } from "react-transition-group";
 import { FrontdeskContext } from "./FrontdeskContext";
 import PackageUtilize from "../PatientProfile/PackageUtilize/PackageUtilize";
-
+import { UpdatePatient } from "./UpdatePatient";
 import {
   MainContext,
   AlgaehLabel,
@@ -77,7 +77,7 @@ const updatePatient = async (data) => {
 const updateAppointmentStatus = async (data) => {
   try {
     const result = await newAlgaehApi({
-      uri: "/appointment​/updateCheckIn",
+      uri: "/appointment/updateCheckIn",
       method: "PUT",
       module: "frontDesk",
       data,
@@ -92,6 +92,7 @@ export function PatientRegistration() {
   const { userLanguage, userToken } = useContext(MainContext);
   const [openPopup, setOpenPopup] = useState(false);
   const [showPackage, setShowPackage] = useState(false);
+  const [showUpdateModal, setUpdateModal] = useState(false);
   const location = useLocation();
   const history = useHistory();
 
@@ -140,7 +141,7 @@ export function PatientRegistration() {
     },
   });
 
-  const { isLoading, data: patientData } = useQuery(
+  const { isLoading, data: patientData, refetch } = useQuery(
     ["patient", { patient_code }],
     getPatient,
     {
@@ -255,7 +256,11 @@ export function PatientRegistration() {
 
   const uploadAfterSubmit = async (data) => {
     const images = [];
-    if (patientImage !== null) {
+
+    if (
+      patientImage?.current !== null &&
+      patientImage.current?.state?.fileExtention
+    ) {
       images.push(
         new Promise((resolve, reject) => {
           patientImage.current.SavingImageOnServer(
@@ -270,7 +275,10 @@ export function PatientRegistration() {
         })
       );
     }
-    if (patientIdCard !== null) {
+    if (
+      patientIdCard.current !== null &&
+      patientImage.current?.state?.fileExtention
+    ) {
       images.push(
         new Promise((resolve, reject) => {
           patientIdCard.current.SavingImageOnServer(
@@ -286,7 +294,10 @@ export function PatientRegistration() {
       );
     }
     if (data?.primary_insurance_provider_id) {
-      if (insuranceImgBack !== null) {
+      if (
+        insuranceImgBack.current !== null &&
+        patientImage.current?.state?.fileExtention
+      ) {
         images.push(
           new Promise((resolve, reject) => {
             insuranceImgBack.current.SavingImageOnServer(
@@ -301,7 +312,10 @@ export function PatientRegistration() {
           })
         );
       }
-      if (insuranceImgFront !== null) {
+      if (
+        insuranceImgFront.current !== null &&
+        patientImage.current?.state?.fileExtention
+      ) {
         images.push(
           new Promise((resolve, reject) => {
             insuranceImgFront.current.SavingImageOnServer(
@@ -512,7 +526,11 @@ export function PatientRegistration() {
           }
           editData={{
             events: {
-              onClick: () => {},
+              onClick: () => {
+                if (!!patient_code || !!savedPatient?.patient_code) {
+                  setUpdateModal(true);
+                }
+              },
             },
           }}
           printArea={
@@ -734,6 +752,16 @@ export function PatientRegistration() {
           </form>
         </div>
       </div>
+      {(!!patient_code || !!savedPatient?.patient_code) && (
+        <UpdatePatient
+          onClose={() => {
+            refetch();
+            setUpdateModal(false);
+          }}
+          patient_code={patient_code || savedPatient?.patient_code}
+          show={showUpdateModal}
+        />
+      )}
     </Spin>
   );
 }

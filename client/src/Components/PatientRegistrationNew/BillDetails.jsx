@@ -831,11 +831,19 @@ export function BillDetails({
                         textBox={{
                           className: "txt-fld",
                           name: "card_date",
-                          disabled: true,
+                        }}
+                        others={{
+                          disabled: disabled || !enableCard,
                         }}
                         minDate={new Date()}
                         events={{
-                          onChange: (mdate) => onChange(mdate._d),
+                          onChange: (mdate) => {
+                            if (mdate) {
+                              onChange(mdate._d);
+                            } else {
+                              onChange(undefined);
+                            }
+                          },
                           onClear: () => onChange(undefined),
                         }}
                         value={value}
