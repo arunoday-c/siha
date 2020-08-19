@@ -568,3 +568,6 @@ INSERT INTO `hims_d_designation` (`hims_d_designation_id`, `designation_code`, `
 INSERT INTO `hims_d_designation` (`hims_d_designation_id`, `designation_code`, `designation`, `created_date`, `updated_date`, `record_status`) VALUES ('245', 'DES245', 'Mechanical Engineer Snr', now(), now(), 'A');
 INSERT INTO `hims_d_designation` (`hims_d_designation_id`, `designation_code`, `designation`, `created_date`, `updated_date`, `record_status`) VALUES ('246', 'DES246', 'IT Helpdesk technician', now(), now(), 'A');
 
+-- for hims_d_nationality update identity
+alter table hims_d_nationality add column identity_document_id int after arabic_nationality;
+

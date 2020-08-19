@@ -1,5 +1,5 @@
 import algaehMysql from "algaeh-mysql";
-
+import { deleteCacheMaster } from "algaeh-utilities/checksecurity";
 export default {
   addIdentity: (req, res, next) => {
     let inputParam = req.body;
@@ -53,10 +53,11 @@ export default {
     try {
       _mysql
         .executeQuery({
-          query:
-            "UPDATE `hims_d_identity_document` SET  `identity_document_name`=?, `arabic_identity_document_name` = ?,`nationality_id` = ?,`masked_identity` = ?,`notify_expiry` = ?,`notify_before` = ?,`employees_id` = ?,\
-          `updated_by`=?, `updated_date`=? ,`identity_status` = ? \
-          WHERE `record_status`='A' AND `hims_d_identity_document_id`=?;",
+          query: `UPDATE hims_d_identity_document SET  identity_document_name =?, arabic_identity_document_name = ?,
+             nationality_id = ?,masked_identity = ?,notify_expiry = ?,notify_before = ?,employees_id = ?,
+             updated_by=?, updated_date=? ,identity_status = ? 
+             WHERE record_status='A' AND hims_d_identity_document_id=?;
+             update hims_d_nationality set identity_document_id=? where hims_d_nationality_id=?`,
           values: [
             inputParam.identity_document_name,
             inputParam.arabic_identity_document_name,
@@ -69,11 +70,14 @@ export default {
             new Date(),
             inputParam.identity_status,
             inputParam.hims_d_identity_document_id,
+            inputParam.hims_d_identity_document_id,
+            inputParam.nationality_id,
           ],
           printQuery: true,
         })
         .then((result) => {
           _mysql.releaseConnection();
+          deleteCacheMaster("nationality");
           req.records = result;
           next();
         })

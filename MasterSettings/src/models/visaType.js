@@ -1,4 +1,5 @@
 import algaehMysql from "algaeh-mysql";
+import { deleteCacheMaster } from "algaeh-utilities/checksecurity";
 export default {
   addVisa: (req, res, next) => {
     let inputParam = req.body;
@@ -16,16 +17,17 @@ export default {
             inputParam.visa_desc,
             req.userIdentity.algaeh_d_app_user_id,
             new Date(),
-            inputParam.visa_status
+            inputParam.visa_status,
           ],
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
+          deleteCacheMaster("visa");
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -52,16 +54,17 @@ export default {
             req.userIdentity.algaeh_d_app_user_id,
             new Date(),
             inputParam.visa_status,
-            inputParam.hims_d_visa_type_id
+            inputParam.hims_d_visa_type_id,
           ],
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
+          deleteCacheMaster("visa");
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -97,14 +100,14 @@ export default {
             _strAppend +
             " order by hims_d_visa_type_id desc",
           values: inputValues,
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -125,16 +128,17 @@ export default {
           values: [
             req.userIdentity.algaeh_d_app_user_id,
             new Date(),
-            inputParam.hims_d_visa_type_id
+            inputParam.hims_d_visa_type_id,
           ],
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
+          deleteCacheMaster("visa");
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -142,5 +146,5 @@ export default {
       _mysql.releaseConnection();
       next(e);
     }
-  }
+  },
 };

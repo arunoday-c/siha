@@ -21,14 +21,14 @@ let titleMaster = (req, res, next) => {
         query:
           "SELECT `his_d_title_id`, `title`, `arabic_title` FROM `hims_d_title` WHERE `record_status`='A' " +
           _stringData,
-        values: inputValues
+        values: inputValues,
       })
-      .then(result => {
+      .then((result) => {
         _mysql.releaseConnection();
         req.records = result;
         next();
       })
-      .catch(error => {
+      .catch((error) => {
         _mysql.releaseConnection();
         next(error);
       });
@@ -64,14 +64,14 @@ let countryMaster = (req, res, next) => {
         query:
           "SELECT `hims_d_country_id`, `country_code`, `country_name`, `status` FROM `hims_d_country` WHERE `record_status`='A' " +
           _stringData,
-        values: inputValues
+        values: inputValues,
       })
-      .then(result => {
+      .then((result) => {
         _mysql.releaseConnection();
         req.records = result;
         next();
       })
-      .catch(error => {
+      .catch((error) => {
         _mysql.releaseConnection();
         next(error);
       });
@@ -107,14 +107,14 @@ let stateMaster = (req, res, next) => {
         query:
           "SELECT `hims_d_state_id`, `state_code`, `state_name`, `country_id` FROM `hims_d_state` WHERE `record_status`='A' " +
           _stringData,
-        values: inputValues
+        values: inputValues,
       })
-      .then(result => {
+      .then((result) => {
         _mysql.releaseConnection();
         req.records = result;
         next();
       })
-      .catch(error => {
+      .catch((error) => {
         _mysql.releaseConnection();
         next(error);
       });
@@ -150,14 +150,14 @@ let cityMaster = (req, res, next) => {
         query:
           "SELECT `hims_d_city_id`, `city_code`, `city_name`, `state_id` FROM `hims_d_city` WHERE `record_status`='A' " +
           _stringData,
-        values: inputValues
+        values: inputValues,
       })
-      .then(result => {
+      .then((result) => {
         _mysql.releaseConnection();
         req.records = result;
         next();
       })
-      .catch(error => {
+      .catch((error) => {
         _mysql.releaseConnection();
         next(error);
       });
@@ -188,16 +188,16 @@ let nationalityMaster = (req, res, next) => {
     _mysql
       .executeQuery({
         query:
-          "SELECT `hims_d_nationality_id`, `nationality_code`, `nationality`,`arabic_nationality` FROM `hims_d_nationality` WHERE `record_status`='A' " +
+          "SELECT `hims_d_nationality_id`, `identity_document_id`, TRIM(nationality) as nationality ,`arabic_nationality` FROM `hims_d_nationality` WHERE `record_status`='A' " +
           _stringData,
-        values: inputValues
+        values: inputValues,
       })
-      .then(result => {
+      .then((result) => {
         _mysql.releaseConnection();
         req.records = result;
         next();
       })
-      .catch(error => {
+      .catch((error) => {
         _mysql.releaseConnection();
         next(error);
       });
@@ -230,14 +230,14 @@ let relegionMaster = (req, res, next) => {
         query:
           "SELECT `hims_d_religion_id`, `religion_code`, `religion_name`,`arabic_religion_name` FROM `hims_d_religion` WHERE `record_status`='A' " +
           _stringData,
-        values: inputValues
+        values: inputValues,
       })
-      .then(result => {
+      .then((result) => {
         _mysql.releaseConnection();
         req.records = result;
         next();
       })
-      .catch(error => {
+      .catch((error) => {
         _mysql.releaseConnection();
         next(error);
       });
@@ -270,14 +270,14 @@ let autoGenMaster = (req, res, next) => {
         query:
           "SELECT `hims_f_app_numgen_id`, `numgen_code`, `module_desc`, `prefix`, `intermediate_series`, `postfix`, `length`, `increment_by`, `numgen_seperator`, `postfix_start`, `postfix_end`, `current_num`, `pervious_num` FROM `hims_f_app_numgen` WHERE `record_status`='A' " +
           _stringData,
-        values: inputValues
+        values: inputValues,
       })
-      .then(result => {
+      .then((result) => {
         _mysql.releaseConnection();
         req.records = result;
         next();
       })
-      .catch(error => {
+      .catch((error) => {
         _mysql.releaseConnection();
         next(error);
       });
@@ -313,14 +313,14 @@ let visaMaster = (req, res, next) => {
              `hims_d_visa_type` WHERE `record_status`='A' AND " +
           _stringData +
           " order by hims_d_visa_type_id desc",
-        values: inputValues
+        values: inputValues,
       })
-      .then(result => {
+      .then((result) => {
         _mysql.releaseConnection();
         req.records = result;
         next();
       })
-      .catch(error => {
+      .catch((error) => {
         _mysql.releaseConnection();
         next(error);
       });
@@ -350,14 +350,14 @@ let clinicalNonClinicalAll = (req, res, next) => {
         hims_d_sub_department.department_id=hims_d_department.hims_d_department_id \
         and hims_d_department.record_status='A' and sub_department_status='A' \
         " +
-          connectionString
+          connectionString,
       })
-      .then(result => {
+      .then((result) => {
         _mysql.releaseConnection();
         req.records = result;
         next();
       })
-      .catch(error => {
+      .catch((error) => {
         _mysql.releaseConnection();
         next(error);
       });
@@ -375,14 +375,14 @@ let countryStateCity = (req, res, next) => {
         query:
           "select  hims_d_country_id,country_name,arabic_country_name  from hims_d_country where status='A';\
         select hims_d_state_id,state_name,arabic_state_name,country_id  from hims_d_state where record_status='A';\
-        select  hims_d_city_id,city_name,city_arabic_name,state_id  from hims_d_city where record_status='A';"
+        select  hims_d_city_id,city_name,city_arabic_name,state_id  from hims_d_city where record_status='A';",
       })
-      .then(result => {
+      .then((result) => {
         _mysql.releaseConnection();
         req.records = result;
         next();
       })
-      .catch(error => {
+      .catch((error) => {
         _mysql.releaseConnection();
         next(error);
       });
@@ -398,12 +398,12 @@ let killDbConnections = (req, res, next) => {
   try {
     _mysql
       .executeQuery({
-        query: "SELECT * FROM INFORMATION_SCHEMA.PROCESSLIST  "
+        query: "SELECT * FROM INFORMATION_SCHEMA.PROCESSLIST  ",
       })
-      .then(result => {
+      .then((result) => {
         let idList = new LINQ(result)
-          .Where(w => w.COMMAND == "Sleep")
-          .Select(s => s.ID)
+          .Where((w) => w.COMMAND == "Sleep")
+          .Select((s) => s.ID)
           .ToArray();
 
         let qry = "";
@@ -414,14 +414,14 @@ let killDbConnections = (req, res, next) => {
         if (idList.length > 0) {
           _mysql
             .executeQuery({
-              query: qry
+              query: qry,
             })
-            .then(data => {
+            .then((data) => {
               _mysql.releaseConnection();
               req.records = "all process deleted";
               next();
             })
-            .catch(error => {
+            .catch((error) => {
               _mysql.releaseConnection();
               next(error);
             });
@@ -431,7 +431,7 @@ let killDbConnections = (req, res, next) => {
           next();
         }
       })
-      .catch(error => {
+      .catch((error) => {
         _mysql.releaseConnection();
         next(error);
       });
@@ -452,5 +452,5 @@ export default {
   visaMaster,
   clinicalNonClinicalAll,
   countryStateCity,
-  killDbConnections
+  killDbConnections,
 };

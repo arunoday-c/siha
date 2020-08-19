@@ -100,7 +100,7 @@ let authUser = (req, res, next) => {
     username: "",
     password: "",
   };
-
+  debugger;
   const _mysql = new algaehMysql({ path: keyPath });
   try {
     let inputData = extend(authModel, req.body);

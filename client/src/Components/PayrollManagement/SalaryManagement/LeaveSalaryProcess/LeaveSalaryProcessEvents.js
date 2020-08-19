@@ -403,12 +403,14 @@ const openSalaryComponents = ($this, row) => {
     employee_id: $this.state.employee_id,
     salary_type: "LS",
   };
+  debugger
   algaehApiCall({
     uri: "/salary/getSalaryProcess",
     module: "hrManagement",
     data: inputObj,
     method: "GET",
     onSuccess: (response) => {
+      debugger
       if (response.data.success) {
         let data = response.data.result;
         if (data.length === 0) {
