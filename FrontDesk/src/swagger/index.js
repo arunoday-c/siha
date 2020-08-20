@@ -537,6 +537,8 @@
  *     nullable: false
  *    sub_department_id:
  *     type: number
+ *    department_id:
+ *     type: number
  *    title_id:
  *     type: number
  *     nullable: false

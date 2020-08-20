@@ -120,6 +120,7 @@ export function Demographics({
         setValue("primary_identity_id", "");
       }
     }
+    // eslint-disable-next-line
   }, [nationality_id, nationalities]);
 
   const calculateAge = (date) => {

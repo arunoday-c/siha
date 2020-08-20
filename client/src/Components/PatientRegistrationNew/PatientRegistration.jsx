@@ -171,6 +171,7 @@ export function PatientRegistration() {
   const status_id = queryParams.get("status_id");
 
   const {
+    department_id,
     sub_department_id,
     services_id,
     doctor_id,
@@ -277,7 +278,8 @@ export function PatientRegistration() {
       enabled: !!appointment_id,
       refetchOnWindowFocus: false,
       onSuccess: (data) => {
-        const doctor = `${data?.sub_department_id}-${data?.services_id}-${data?.provider_id}-${data?.department_type}`;
+        debugger;
+        const doctor = `${data?.sub_department_id}-${data?.services_id}-${data?.provider_id}-${data?.department_type}-${data?.department_id}`;
         if (!patient_code) {
           reset({
             ...data,
@@ -429,6 +431,7 @@ export function PatientRegistration() {
       save({
         ...inputData,
         ...billInfo,
+        department_id: parseInt(department_id, 10),
         sub_department_id: parseInt(sub_department_id, 10),
         services_id: parseInt(services_id, 10),
         service_type_id: parseInt(services_id, 10),
@@ -479,6 +482,7 @@ export function PatientRegistration() {
         ...inputData,
         ...billInfo,
         advance_amount: patientData?.patientRegistration?.advance_amount,
+        department_id: parseInt(department_id, 10),
         sub_department_id: parseInt(sub_department_id, 10),
         services_id: parseInt(services_id, 10),
         service_type_id: parseInt(services_id, 10),
