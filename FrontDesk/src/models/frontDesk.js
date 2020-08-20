@@ -509,6 +509,7 @@ export function getDoctorAndDepartment(req, res, next) {
               value: sub_department_id,
               children: detail.map((item) => {
                 return {
+                  department_id: key,
                   label: item.full_name,
                   arlabel: item.arabic_name,
                   value: item.employee_id,
