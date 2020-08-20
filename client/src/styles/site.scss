@@ -1047,7 +1047,7 @@ input[type="time"]:disabled,
 input[type="password"]:disabled,
 input[type="type"]:disabled {
   background: #fffdfa;
-  border: 1px dashed #d3d3d3;
+  border: 1px dashed #d3d3d3 !important;
   color: #000;
   font-weight: bold;
 }
