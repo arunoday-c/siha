@@ -394,7 +394,7 @@ export function Demographics({
                             required: "Please Enter Contact Number",
                             minLength: {
                               message: "Please Enter Valid Number",
-                              value: 9,
+                              value: 10,
                             },
                           }}
                           render={(props) => (
