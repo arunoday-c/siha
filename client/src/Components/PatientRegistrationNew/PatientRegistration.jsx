@@ -24,7 +24,7 @@ import { BillDetails } from "./BillDetails";
 import { AdvanceModal } from "./AdvanceRefundModal";
 import { algaehApiCall } from "../../utils/algaehApiCall";
 
-const getPatient = async (key, { patient_code }) => {
+export const getPatient = async (key, { patient_code }) => {
   const result = await newAlgaehApi({
     uri: "/frontDesk/get",
     module: "frontDesk",
@@ -58,6 +58,7 @@ const getPatientPackage = async (key, { patient_id }) => {
 };
 
 const savePatient = async (data) => {
+  data.ScreenCode = "BL0002";
   const result = await newAlgaehApi({
     uri: "/frontDesk/add",
     module: "frontDesk",
@@ -195,6 +196,7 @@ export function PatientRegistration() {
     reset,
     setError,
     clearErrors,
+    formState,
   } = useForm({
     reValidateMode: "onSubmit",
     shouldFocusError: true,
@@ -210,7 +212,6 @@ export function PatientRegistration() {
     getPatient,
     {
       enabled: !!patient_code,
-      refetchOnWindowFocus: false,
       initialData: {
         bill_criedt: [],
         patientRegistration: null,
@@ -276,7 +277,6 @@ export function PatientRegistration() {
     getPatientFromAppointment,
     {
       enabled: !!appointment_id,
-      refetchOnWindowFocus: false,
       onSuccess: (data) => {
         debugger;
         const doctor = `${data?.sub_department_id}-${data?.services_id}-${data?.provider_id}-${data?.department_type}-${data?.department_id}`;
@@ -313,7 +313,6 @@ export function PatientRegistration() {
     getPatientPackage,
     {
       enabled: !!patientData?.patientRegistration,
-      refetchOnWindowFocus: false,
       initialData: [],
       initialStale: true,
     }
@@ -506,7 +505,7 @@ export function PatientRegistration() {
       cash_amount: "",
       consultation: "",
       contact_number: "",
-      date_of_birth: null,
+      date_of_birth: undefined,
       department_type: "",
       doctor: "",
       doctor_id: "",
@@ -707,7 +706,12 @@ export function PatientRegistration() {
                     type="button"
                     className="btn btn-primary"
                     onClick={() => onClear(false)}
-                    disabled={!disabled && !appointment_id && !patient_code}
+                    disabled={
+                      !disabled &&
+                      !appointment_id &&
+                      !patient_code &&
+                      !formState.isDirty
+                    }
                   >
                     <AlgaehLabel
                       label={{ fieldName: "btn_clear", returnText: true }}
@@ -847,8 +851,10 @@ export function PatientRegistration() {
       {(!!patient_code || !!savedPatient?.patient_code) && (
         <>
           <UpdatePatient
-            onClose={() => {
-              refetch();
+            onClose={(isUpdated) => {
+              if (isUpdated) {
+                refetch();
+              }
               setUpdateModal(false);
             }}
             patient_code={patient_code || savedPatient?.patient_code}

@@ -498,6 +498,7 @@ export function getDoctorAndDepartment(req, res, next) {
           .groupBy((g) => g.sub_department_id)
           .map((detail, key) => {
             const {
+              department_id,
               sub_department_name,
               arabic_sub_department_name,
               sub_department_id,
@@ -509,7 +510,7 @@ export function getDoctorAndDepartment(req, res, next) {
               value: sub_department_id,
               children: detail.map((item) => {
                 return {
-                  department_id: key,
+                  department_id: department_id,
                   label: item.full_name,
                   arlabel: item.arabic_name,
                   value: item.employee_id,

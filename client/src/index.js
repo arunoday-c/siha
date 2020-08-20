@@ -4,6 +4,7 @@ import { Provider } from "react-redux";
 import { i18next } from "algaeh-react-components"; //eslint-disable-line
 import { AlagehReducers } from "./reducers/algaehReducers";
 import { ReactQueryDevtools } from "react-query-devtools";
+import { ReactQueryConfigProvider } from "react-query";
 import logger from "redux-logger";
 // import ContextBinding from "./contextCheck";
 import Routes from "./routes.js";
@@ -25,16 +26,20 @@ const middleware =
 
 const store = createStore(AlagehReducers, middleware);
 
+const queryConfig = { queries: { refetchOnWindowFocus: false } };
+
 const App = () => (
   <>
-    <MainProvider>
-      <Provider store={store}>
-        {/* <ContextBinding> */}
-        <Routes />
+    <ReactQueryConfigProvider config={queryConfig}>
+      <MainProvider>
+        <Provider store={store}>
+          {/* <ContextBinding> */}
+          <Routes />
 
-        {/* </ContextBinding> */}
-      </Provider>
-    </MainProvider>
+          {/* </ContextBinding> */}
+        </Provider>
+      </MainProvider>
+    </ReactQueryConfigProvider>
     <ReactQueryDevtools initialIsOpen={false} />
   </>
 );

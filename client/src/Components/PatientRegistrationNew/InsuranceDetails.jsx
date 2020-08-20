@@ -58,7 +58,7 @@ export function InsuranceDetails({
     getPatientInsurance,
     {
       enabled: !!hims_d_patient_id && isInsurance,
-      refetchOnWindowFocus: false,
+
       initialData: [],
       initialStale: true,
     }
