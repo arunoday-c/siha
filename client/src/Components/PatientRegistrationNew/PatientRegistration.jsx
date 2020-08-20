@@ -152,7 +152,9 @@ const generateReceipt = (data) => {
 };
 
 export function PatientRegistration() {
-  const { userLanguage, userToken } = useContext(MainContext);
+  const { userLanguage, userToken, default_visit_type } = useContext(
+    MainContext
+  );
   const [openPopup, setOpenPopup] = useState(false);
   const [showPackage, setShowPackage] = useState(false);
   const [showUpdateModal, setUpdateModal] = useState(false);
@@ -204,6 +206,7 @@ export function PatientRegistration() {
       nationality_id: userToken?.default_nationality,
       country_id: userToken?.default_country,
       patient_type: userToken?.default_patient_type,
+      visit_type: default_visit_type,
     },
   });
 
@@ -239,10 +242,25 @@ export function PatientRegistration() {
       setSavedPatient(data);
       setDisable(true);
       setOpenPopup(true);
-      AlgaehMessagePop({
-        display: "Patient Saved Successfully",
-        type: "success",
-      });
+
+      if (!!appointment_id && !!status_id) {
+        updateAppointmentStatus({
+          application_id: appointment_id,
+          appointment_status_id: status_id,
+          patient_id: data?.hims_d_patient_id,
+          patient_code: data?.patient_code,
+        }).then(() => {
+          AlgaehMessagePop({
+            display: "Patient Updated Successfully",
+            type: "success",
+          });
+        });
+      } else {
+        AlgaehMessagePop({
+          display: "Patient Updated Successfully",
+          type: "success",
+        });
+      }
     },
   });
 
@@ -278,13 +296,12 @@ export function PatientRegistration() {
     {
       enabled: !!appointment_id,
       onSuccess: (data) => {
-        debugger;
         const doctor = `${data?.sub_department_id}-${data?.services_id}-${data?.provider_id}-${data?.department_type}-${data?.department_id}`;
         if (!patient_code) {
           reset({
             ...data,
             consultation: "Y",
-            visit_type: 10,
+            visit_type: default_visit_type,
             full_name: data?.patient_name,
             doctor_id: data?.provider_id,
             doctor,
@@ -505,7 +522,7 @@ export function PatientRegistration() {
       cash_amount: "",
       consultation: "",
       contact_number: "",
-      date_of_birth: undefined,
+      date_of_birth: "",
       department_type: "",
       doctor: "",
       doctor_id: "",
@@ -529,10 +546,10 @@ export function PatientRegistration() {
       sheet_discount_percentage: 0,
       sub_department_id: "",
       title_id: "",
-      visit_type: "",
       nationality_id: userToken?.default_nationality,
       country_id: userToken?.default_country,
       patient_type: userToken?.default_patient_type,
+      visit_type: default_visit_type,
     });
     patientIdCard.current = null;
     patientImage.current = null;
@@ -723,13 +740,14 @@ export function PatientRegistration() {
                       <button
                         type="button"
                         className="btn btn-other"
-                        onClick={() =>
-                          history.push(
+                        onClick={() => {
+                          onClear(true);
+                          history.replace(
                             `/OPBilling?patient_code=${
                               patient_code || savedPatient?.patient_code
                             }`
-                          )
-                        }
+                          );
+                        }}
                       >
                         <AlgaehLabel
                           label={{

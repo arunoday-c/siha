@@ -3,7 +3,7 @@ import { useQuery } from "react-query";
 import { Controller, useWatch } from "react-hook-form";
 import moment from "moment";
 import {
-  //   MainContext,
+  MainContext,
   Tabs,
   AlgaehLabel,
   AlgaehAutoComplete,
@@ -13,7 +13,7 @@ import {
   Spin,
 } from "algaeh-react-components";
 import { useLangFieldName } from "./patientHooks";
-import { newAlgaehApi } from "../../hooks/";
+import { newAlgaehApi, useQueryParams } from "../../hooks/";
 import { FrontdeskContext } from "./FrontdeskContext";
 // import GenericData from "../../utils/GlobalVariables.json";
 const { TabPane } = Tabs;
@@ -45,8 +45,10 @@ export function VisitDetails({
   visits = [],
   packages = [],
 }) {
-  // const queryParams = useQueryParams();
+  const queryParams = useQueryParams();
+  const appointment_id = queryParams.get("appointment_id");
   const { fieldNameFn } = useLangFieldName();
+  const { setVisitType } = useContext(MainContext);
   const { setServiceInfo, setConsultationInfo, disabled } = useContext(
     FrontdeskContext
   );
@@ -61,6 +63,7 @@ export function VisitDetails({
       const res = data?.visitTypes?.filter((item) => item.consultation === "Y");
       setConsultationInfo(res[0]);
       setValue("visit_type", res[0]?.hims_d_visit_type_id);
+      setVisitType(res[0]?.hims_d_visit_type_id);
     },
   });
   const {
@@ -125,7 +128,7 @@ export function VisitDetails({
                                   data: data?.visitTypes,
                                 },
                                 others: {
-                                  disabled,
+                                  disabled: disabled || !!appointment_id,
                                 },
                               }}
                             />
@@ -167,7 +170,7 @@ export function VisitDetails({
                                   }
                                   onChange(selected);
                                 },
-                                disabled,
+                                disabled: !!appointment_id || disabled,
                                 value,
                                 name: "doctor",
                                 data: data?.doctors,

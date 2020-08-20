@@ -866,6 +866,12 @@ export function Demographics({
                         <Controller
                           control={control}
                           name="primary_id_no"
+                          rules={{
+                            required: {
+                              value: true,
+                              message: "Please enter primary id no",
+                            },
+                          }}
                           render={(props) => (
                             <AlgaehFormGroup
                               div={{ className: "col-lg-7 mandatory" }}
