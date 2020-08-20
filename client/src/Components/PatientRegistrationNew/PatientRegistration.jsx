@@ -742,7 +742,8 @@ export function PatientRegistration() {
                         className="btn btn-other"
                         onClick={() => {
                           onClear(true);
-                          history.replace(
+                          history.replace(location.pathname);
+                          history.push(
                             `/OPBilling?patient_code=${
                               patient_code || savedPatient?.patient_code
                             }`
