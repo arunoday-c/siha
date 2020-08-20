@@ -58,6 +58,7 @@ const getPatientPackage = async (key, { patient_id }) => {
 };
 
 const savePatient = async (data) => {
+  data.ScreenCode = "BL0002";
   const result = await newAlgaehApi({
     uri: "/frontDesk/add",
     module: "frontDesk",

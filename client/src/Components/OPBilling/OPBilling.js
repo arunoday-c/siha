@@ -141,8 +141,7 @@ class OPBilling extends Component {
     const queryParams = new URLSearchParams(this.props.location.search);
     if (queryParams.get("bill_code")) {
       this.getCtrlCode(queryParams.get("bill_code"));
-    }
-    if (queryParams.get("patient_code")) {
+    } else if (queryParams.get("patient_code")) {
       getPatientDetails(this, this.props.patient_code);
     }
 
