@@ -486,6 +486,18 @@ class DoctorsWorkbench extends Component {
                         >
                           <span className="app-sec-1">
                             <i className="appointment-icon" />
+                            <small
+                              className="opTime"
+                              style={{
+                                borderTop: "1px dashed #e6e6e6",
+                                width: "100%",
+                                paddingTop: 0,
+                                display: "inline-block",
+                                marginTop: 5,
+                              }}
+                            >
+                              {data.is_stand_by === "Y" ? "Stand By" : ""}
+                            </small>
                           </span>
                           <span className="app-sec-2">
                             <span className="appPatientName">
@@ -508,7 +520,7 @@ class DoctorsWorkbench extends Component {
                               {/* {this.statusCheck(data.appointment_status_id)} */}
                             </span>{" "}
                             {/* <span>Color:{data.color_code}</span> */}
-                            <span>Stand By: {data.is_stand_by}</span>
+                            {/* <span>Stand By: {data.is_stand_by}</span> */}
                           </span>
                         </li>
                       ))
