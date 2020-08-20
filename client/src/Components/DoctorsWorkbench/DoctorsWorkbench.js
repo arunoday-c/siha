@@ -457,7 +457,7 @@ class DoctorsWorkbench extends Component {
             <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-title">
                 <div className="caption">
-                  <h3 className="caption-subject">List of Appointment</h3>
+                  <h3 className="caption-subject">Appointment Patients</h3>
                 </div>
               </div>
 
@@ -477,36 +477,38 @@ class DoctorsWorkbench extends Component {
                   <ul className="appList">
                     {this.state.appointments.length !== 0 ? (
                       this.state.appointments.map((data, index) => (
-                        <li key={index}>
+                        <li
+                          key={index}
+                          //className="abcd"   {data.color_code}
+                          style={{
+                            border: "2px solid" + `${data.color_code}`,
+                          }}
+                        >
                           <span className="app-sec-1">
-                            {/* <i className="appointment-icon" /> */}
-                            <i className={"appointment-icon"} />
-                            <span className="appTime">
-                              {moment(
-                                data.appointment_from_time,
-                                "HH:mm:ss"
-                              ).format("hh:mm A")}
-                            </span>
+                            <i className="appointment-icon" />
                           </span>
                           <span className="app-sec-2">
                             <span className="appPatientName">
                               {data.pat_name}
                             </span>
-                            <span className="appStatus nursing" />{" "}
-                            <span className="appoPatientStatus newVisit">
-                              {data.app_status}
-                              {/* {this.statusCheck(data.appointment_status_id)} */}
-                            </span>
                             <span className="appStatus nursing">
+                              {data.age} - {data.gender}
+                            </span>
+                            <span className="appStatus newVisit">
+                              {data.app_status} /{" "}
+                              {moment(
+                                data.appointment_from_time,
+                                "HH:mm:ss"
+                              ).format("hh:mm A")}{" "}
+                              -
                               {moment(
                                 data.appointment_to_time,
                                 "HH:mm:ss"
                               ).format("hh:mm A")}
-                            </span>
-                            <span>Age:{data.age}</span>
+                              {/* {this.statusCheck(data.appointment_status_id)} */}
+                            </span>{" "}
+                            {/* <span>Color:{data.color_code}</span> */}
                             <span>Stand By: {data.is_stand_by}</span>
-                            <span>Color:{data.color_code}</span>
-                            <span>Gender:{data.gender}</span>
                           </span>
                         </li>
                       ))
@@ -528,9 +530,7 @@ class DoctorsWorkbench extends Component {
             <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-title">
                 <div className="caption">
-                  <h3 className="caption-subject">
-                    List of Checked In Patients
-                  </h3>
+                  <h3 className="caption-subject">Checked-In Patients</h3>
                 </div>
                 {/* <div className="actions">
                   <a
