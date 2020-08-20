@@ -51,7 +51,6 @@ export function VisitDetails({
     FrontdeskContext
   );
   const { data, isLoading } = useQuery("doctors-data", getDoctorData, {
-    refetchOnWindowFocus: false,
     cacheTime: Infinity,
     initialData: {
       doctors: [],

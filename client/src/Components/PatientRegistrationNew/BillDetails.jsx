@@ -28,8 +28,21 @@ const getBillDetails = async (
     primary_network_id,
     primary_network_office_id,
     prevVisits,
+    consultation,
   }
 ) => {
+  let zeroBill = false,
+    FollowUp = false;
+
+  if (consultation !== "Y") {
+    zeroBill = true;
+  }
+
+  if (!!prevVisits && prevVisits.length) {
+    zeroBill = true;
+    FollowUp = false;
+  }
+
   const details = await newAlgaehApi({
     uri: "/billing/getBillDetails",
     module: "billing",
@@ -37,8 +50,8 @@ const getBillDetails = async (
     data: [
       {
         hims_d_services_id: parseInt(services_id, 10),
-        zeroBill: prevVisits ? !!prevVisits.length : false,
-        FollowUp: prevVisits ? !!prevVisits.length : false,
+        zeroBill,
+        FollowUp,
         insured: primary_insurance_provider_id ? "Y" : "N",
         primary_insurance_provider_id,
         primary_network_id,
@@ -102,6 +115,7 @@ export function BillDetails({
     setBillInfo,
     disabled: globalDisable,
     savedPatient,
+    consultationInfo,
   } = useContext(FrontdeskContext);
   // const disabled = !!bill_number && !!receipt_number;
   const { fieldNameFn } = useLangFieldName();
@@ -125,7 +139,6 @@ export function BillDetails({
     ],
     checkVisits,
     {
-      refetchOnWindowFocus: false,
       enabled: !!patient && !!doctor_id,
       onSuccess: (data) => {
         console.log(data, "visit");
@@ -145,14 +158,13 @@ export function BillDetails({
         default_nationality,
         local_vat_applicable,
         prevVisits,
+        consultation: consultationInfo?.consultation,
       },
     ],
     getBillDetails,
     {
       enabled: !!services_id,
       retry: 3,
-      refetchOnWindowFocus: false,
-
       onSuccess: (data) => {
         setBillInfo(data);
         calculateBillDetails(data?.billdetails[0]);
@@ -227,7 +239,6 @@ export function BillDetails({
     "userMappings",
     getShiftMappings,
     {
-      refetchOnWindowFocus: false,
       staleTime: Infinity,
       cacheTime: Infinity,
       retry: 3,
@@ -658,6 +669,12 @@ export function BillDetails({
                   <Controller
                     control={control}
                     name="shift_id"
+                    rules={{
+                      required: {
+                        value: true,
+                        message: "Please Select Shift",
+                      },
+                    }}
                     render={({ onBlur, onChange, value }) => (
                       <AlgaehAutoComplete
                         div={{ className: "col-3  mandatory" }}
@@ -665,6 +682,7 @@ export function BillDetails({
                           fieldName: "shift_id",
                           isImp: true,
                         }}
+                        error={errors}
                         selector={{
                           name: "shift_id",
                           className: "select-fld",
