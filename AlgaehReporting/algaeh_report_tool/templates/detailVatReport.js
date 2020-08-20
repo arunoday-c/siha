@@ -1,8 +1,10 @@
 // const algaehUtilities = require("algaeh-utilities/utilities");
 const executePDF = function executePDFMethod(options) {
-  const _ = options.loadash;
   return new Promise(function (resolve, reject) {
     try {
+      const _ = options.loadash;
+      const moment = options.moment;
+
       let input = {};
       let params = options.args.reportParams;
       // const utilities = new algaehUtilities();
@@ -49,9 +51,26 @@ const executePDF = function executePDFMethod(options) {
         .then((ress) => {
           let final_result = ress[0];
           final_result = final_result.concat(ress[1]);
+          console.log("final_result", final_result);
 
           const result = {
             details: final_result,
+            total_before_vat: options.currencyFormat(
+              _.sumBy(final_result, (s) => parseFloat(s.total_before_vat)),
+              options.args.crypto
+            ),
+            total_after_vat: options.currencyFormat(
+              _.sumBy(final_result, (s) => parseFloat(s.total_after_vat)),
+              options.args.crypto
+            ),
+            patient_tax: options.currencyFormat(
+              _.sumBy(final_result, (s) => parseFloat(s.patient_tax)),
+              options.args.crypto
+            ),
+            company_tax: options.currencyFormat(
+              _.sumBy(final_result, (s) => parseFloat(s.company_tax)),
+              options.args.crypto
+            ),
           };
 
           resolve(result);

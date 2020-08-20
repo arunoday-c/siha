@@ -709,3 +709,16 @@
  *     schema:
  *      $ref: "#/definitions/Error"
  */
+/**
+ * @swagger
+ * /appointment/getPatientAppointmentClinicalDesk:
+ *  get:
+ *   tags:
+ *    - Appointment
+ *   produces:
+ *    -application/json
+ *   parameters:
+ *    provider_id:
+ *     type: number
+ *     required: true
+ */

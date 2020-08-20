@@ -22,6 +22,7 @@
                     </tr>
                 </thead>
                 <tbody>
+
                     {{#each details}}
                     <tr>
                         <td>{{inc @index}}</td>
@@ -31,14 +32,21 @@
                         <td>{{full_name}}</td>
                         <td>{{nationality}}</td>
                         <td>{{insurance_yesno}}</td>
-                        <td>{{total_before_vat}}</td>
-                        <td>{{total_after_vat}}</td>
-                        <td>{{patient_tax}}</td>
-                        <td>{{company_tax}}</td>
+                        <td class="numberFld">{{total_before_vat}}</td>
+                        <td class="numberFld">{{total_after_vat}}</td>
+                        <td class="numberFld">{{patient_tax}}</td>
+                        <td class="numberFld">{{company_tax}}</td>
 
                     </tr>
                     {{/each }}
+                    <tr class="numberFldTotalBottom">
+                        <td colspan="7"></td>
+                        <td class="numberFld">{{total_before_vat}}</td>
+                        <td class="numberFld">{{total_after_vat}}</td>
+                        <td class="numberFld">{{patient_tax}}</td>
+                        <td class="numberFld">{{company_tax}}</td>
 
+                    </tr>
                 </tbody>
             </table>
         </section>

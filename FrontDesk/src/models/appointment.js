@@ -1192,7 +1192,7 @@ export default {
           left join hims_d_sub_department SD on SH.sub_dept_id= SD.hims_d_sub_department_id  where
           SH.hospital_id=?  ${selectDoctor} ${qry} `,
           values: [req.userIdentity.hospital_id],
-          printQuery: false,
+          printQuery: true,
         })
         .then((result) => {
           if (result.length > 0) {
@@ -2626,5 +2626,34 @@ export function updateAppointmentToCheckedIn(req, res, next) {
       });
   } catch (error) {
     _mysql.releaseConnection();
+  }
+}
+export function getPatientAppointmentClinicalDesk(req, res, next) {
+  const _mysql = new algaehMysql();
+  try {
+    const { provider_id, sub_dept_id, schedule_date } = req.query;
+    const { hospital_id } = req.userIdentity;
+    _mysql
+      .executeQuery({
+        query: `select concat(T.title," ",PA.patient_name) as pat_name, concat(T.arabic_title,". ",PA.arabic_name)as pat_name_arabic,
+      PA.appointment_from_time,PA.appointment_to_time,PA.age,PA.is_stand_by,SA.color_code,SA.description as app_status,PA.gender
+       from hims_f_patient_appointment as PA inner join hims_d_appointment_status as SA
+      on SA.hims_d_appointment_status_id=PA.appointment_status_id inner join hims_d_title as T
+      on T.his_d_title_id = PA.title_id
+       where provider_id=? and PA.hospital_id=? and PA.sub_department_id=?
+      and Date(appointment_date) =Date(?) and PA.visit_created ='N' and PA.cancelled='N' ;`,
+        values: [provider_id, hospital_id, sub_dept_id, schedule_date],
+      })
+      .then((result) => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch((error) => {
+        next(error);
+      });
+  } catch (e) {
+    _mysql.releaseConnection();
+    next(e);
   }
 }
