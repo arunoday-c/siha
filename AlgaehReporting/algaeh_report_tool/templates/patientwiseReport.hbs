@@ -8,24 +8,44 @@
                 <thead>
                     <tr>
                         <th>Sl No.<small>م</small></th>
+                        <th>Data From<small>التاريخ</small></th>
                         <th>Date<small>التاريخ</small></th>
-                        <th>MRN No.<small>اسم المريض</small></th>
+                        <th>MRN No.<small>رقم المريض</small></th>
+                        <th>Patient Name<small>الجنسية</small></th>
+                        <th>Nationality<small>رقم الفاتورة / او الزيارة</small></th>
+                        <th>Cash/Insurance<small>نقدي / تامين</small></th>
                         <th>Total Before VAT<small>الايراد قبل الضريبة</small></th>
                         <th>Total After VAT<small>الايراد بعد الضريبة</small></th>
                         <th>Patient VAT Amount<small>ضريبة القيمة المضافة علي المريض</small></th>
+                        <th>Insurance VAT Amount<small>ضريبة القيمة المضافة علي التامين</small></th>
                     </tr>
                 </thead>
                 <tbody>
+
                     {{#each details}}
                     <tr>
                         <td>{{inc @index}}</td>
-                        <td>{{invoice_date}}</td>
-                        <td>{{before_vat}}</td>
-                        <td>{{after_vat}}</td>
-                        <td>{{patient_vat}}</td>
+                        <td>{{data_from}}</td>
+                        <td>{{visit_date}}</td>
+                        <td>{{patient_code}}</td>
+                        <td>{{full_name}}</td>
+                        <td>{{nationality}}</td>
+                        <td>{{insurance_yesno}}</td>
+                        <td class="numberFld">{{total_before_vat}}</td>
+                        <td class="numberFld">{{total_after_vat}}</td>
+                        <td class="numberFld">{{patient_tax}}</td>
+                        {{!-- <td class="numberFld">{{company_tax}}</td> --}}
+
                     </tr>
                     {{/each }}
+                    <tr class="numberFldTotalBottom">
+                        <td colspan="6"></td>
+                        <td class="numberFld">{{total_before_vat}}</td>
+                        <td class="numberFld">{{total_after_vat}}</td>
+                        <td class="numberFld">{{patient_tax}}</td>
+                        {{!-- <td class="numberFld">{{company_tax}}</td> --}}
 
+                    </tr>
                 </tbody>
             </table>
         </section>

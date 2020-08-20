@@ -1,6 +1,7 @@
 import React, { createContext, useReducer } from "react";
 
 const baseState = {
+  department_id: null,
   sub_department_id: null,
   services_id: null,
   doctor_id: null,
@@ -74,6 +75,7 @@ function reducer(state, { type, payload }) {
           services_id: null,
           doctor_id: null,
           department_type: null,
+          department_id: null,
         };
       } else {
         const [
@@ -81,6 +83,7 @@ function reducer(state, { type, payload }) {
           services_id,
           doctor_id,
           department_type,
+          department_id,
         ] = payload?.split("-");
         return {
           ...state,
@@ -88,6 +91,7 @@ function reducer(state, { type, payload }) {
           services_id,
           doctor_id,
           department_type,
+          department_id,
         };
       }
     case TYPES.setInsuranceInfo:

@@ -780,13 +780,23 @@ input[type="tel"],
 input[type="email"],
 input[type="password"],
 input[type="time"],
-input[type="type"] {
-  font-size: $textFontSize;
+input[type="type"],
+input.autoselect-input,
+.algaeh-datePicker input[type="date"],
+.algaeh-datePicker input[type="time"],
+.algaeh-datePicker input[type="datetime-local"],
+.algaeh-datePicker input[type="month"],
+.algaeh-datePicker input[type="year"],
+.ant-select-selection,
+.ant-select-selector,
+.ant-picker {
+  font-size: $textFontSize !important;
   padding: 4px 6px 4px;
   border: 1px solid #d3d3d3;
   border-radius: $borderRadius !important;
   background: $color-white;
   width: 100%;
+  font-weight: bold;
 }
 
 input:disabled::-webkit-input-placeholder {

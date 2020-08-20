@@ -175,7 +175,7 @@ export function VisitDetails({
                                 textField: fieldNameFn("label", "arlabel"),
                                 valueField: (node) => {
                                   if (node?.sub_department_id) {
-                                    return `${node?.sub_department_id}-${node?.services_id}-${node?.value}-${node?.department_type}`;
+                                    return `${node?.sub_department_id}-${node?.services_id}-${node?.value}-${node?.department_type}-${node?.department_id}`;
                                   } else {
                                     return node?.value;
                                   }
