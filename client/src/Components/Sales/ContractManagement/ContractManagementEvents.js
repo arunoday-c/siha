@@ -127,6 +127,15 @@ export const SaveContract = ($this) => {
           data: $this.state,
           onSuccess: (response) => {
             if (response.data.success) {
+              debugger
+              if ($this.state.contract_files.length) {
+                saveDocument(
+                  $this.state.contract_files,
+                  $this.state.contract_number,
+                  $this.state.hims_f_contract_management_id,
+                  $this
+                );
+              }
               $this.setState(
                 {
                   saveEnable: true,
@@ -136,12 +145,6 @@ export const SaveContract = ($this) => {
                 () => {
                   getCtrlCode($this, $this.state.contract_number);
                 }
-              );
-              saveDocument(
-                $this.state.contract_files,
-                $this.state.contract_number,
-                $this.state.hims_f_contract_management_id,
-                $this
               );
               swalMessage({
                 type: "success",
@@ -172,6 +175,15 @@ export const SaveContract = ($this) => {
           data: $this.state,
           onSuccess: (response) => {
             if (response.data.success) {
+              if ($this.state.contract_files.length) {
+                saveDocument(
+                  $this.state.contract_files,
+                  response.data.records.contract_number,
+                  response.data.records.hims_f_contract_management_id,
+                  $this
+                );
+              }
+
               $this.setState({
                 contract_number: response.data.records.contract_number,
                 hims_f_contract_management_id:
@@ -179,12 +191,7 @@ export const SaveContract = ($this) => {
                 saveEnable: true,
                 dataExists: true,
               });
-              saveDocument(
-                $this.state.contract_files,
-                response.data.records.contract_number,
-                response.data.records.hims_f_contract_management_id,
-                $this
-              );
+
               swalMessage({
                 type: "success",
                 title: "Saved successfully ...",
