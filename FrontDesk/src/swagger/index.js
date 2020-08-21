@@ -586,6 +586,41 @@
  *    patient_code:
  *     type: string
  *     required: true
+ *  patientAppointmentClinicalDesk:
+ *   type: object
+ *   properties:
+ *    pat_name:
+ *     type: string
+ *     nullable: false
+ *    pat_name_arabic:
+ *     type: string
+ *     nullable: false
+ *    appointment_from_time:
+ *     type: string
+ *     format: "HH:mm:ss"
+ *     nullable: false
+ *    appointment_to_time:
+ *     type: string
+ *     format: "HH:mm:ss"
+ *     nullable: false
+ *    age:
+ *     type: number
+ *     nullable: false
+ *    is_stand_by:
+ *     type: string
+ *     enum: ["N","Y"]
+ *     default: "N"
+ *     nullable: false
+ *    color_code:
+ *     type: string
+ *     format: "#FFFFFF"
+ *     nullable: false
+ *    app_status:
+ *     type: string
+ *     nullable: false
+ *   gender:
+ *    type: string
+ *    nullable: false
  *
  */
 
@@ -708,4 +743,47 @@
  *     decription: Return error message
  *     schema:
  *      $ref: "#/definitions/Error"
+ */
+/**
+ * @swagger
+ * /appointment/getPatientAppointmentClinicalDesk:
+ *  get:
+ *   tags:
+ *    - Appointment
+ *   produces:
+ *    -application/json
+ *   parameters:
+ *    - name: provider_id
+ *      description: Dcotor ID
+ *      type: number
+ *      in: query
+ *      required: true
+ *    - name: sub_dept_id
+ *      description: Sub department ID
+ *      type: number
+ *      in: query
+ *      required: true
+ *    - name: schedule_date
+ *      description: Schedule Date
+ *      type: string
+ *      in: query
+ *      format: "YYYY-MM-DD"
+ *      required: true
+ *   responses:
+ *    200:
+ *     description: Return
+ *     schema:
+ *      properties:
+ *       success:
+ *        type: boolean
+ *       records:
+ *        type: array
+ *        items:
+ *          $ref: "#/definitions/patientAppointmentClinicalDesk"
+ *
+ *    400:
+ *     description: Return failure
+ *     schema:
+ *      $ref: "#/definitions/Error"
+ *
  */

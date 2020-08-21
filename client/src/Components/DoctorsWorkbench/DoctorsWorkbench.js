@@ -6,7 +6,7 @@ import {
   algaehApiCall,
   cancelRequest,
   swalMessage,
-  setCookie
+  setCookie,
 } from "../../utils/algaehApiCall";
 import { setGlobal } from "../../utils/GlobalFunctions";
 import Enumerable from "linq";
@@ -26,7 +26,7 @@ class DoctorsWorkbench extends Component {
       selectedHDate: moment(dateToday, "YYYYMMDD")._d,
       fromDate: moment()._d,
       toDate: moment()._d,
-      activeDateHeader: moment()._d
+      activeDateHeader: moment()._d,
     };
 
     // this.moveToEncounterList = this.moveToEncounterList.bind(this);
@@ -46,60 +46,81 @@ class DoctorsWorkbench extends Component {
     this.setState({ age: age });
   }
 
-  getAppointmentStatus() {
-    algaehApiCall({
-      uri: "/appointment/getAppointmentStatus",
-      module: "frontDesk",
-      method: "GET",
-      onSuccess: res => {
-        if (res.data.success) {
-          this.setState({
-            status: res.data.records
-          });
-        }
-      },
-      onFailure: err => {
-        swalMessage({
-          title: "Failed to get appointment status"
-        });
-        this.setState({ status: [] });
-      }
-    });
-  }
+  // getAppointmentStatus() {
+  //   algaehApiCall({
+  //     uri: "/appointment/getAppointmentStatus",
+  //     module: "frontDesk",
+  //     method: "GET",
+  //     onSuccess: (res) => {
+  //       if (res.data.success) {
+  //         this.setState({
+  //           status: res.data.records,
+  //         });
+  //       }
+  //     },
+  //     onFailure: (err) => {
+  //       swalMessage({
+  //         title: "Failed to get appointment status",
+  //       });
+  //       this.setState({ status: [] });
+  //     },
+  //   });
+  // }
 
-  statusCheck = id => {
-    const { status } = this.state;
-    const [reqStatus] = status.filter(
-      stat => stat.hims_d_appointment_status_id === id
-    );
-    return reqStatus.statusDesc;
-  };
+  // statusCheck = (id) => {
+  //   const { status } = this.state;
+  //   const [reqStatus] = status.filter(
+  //     (stat) => stat.hims_d_appointment_status_id === id
+  //   );
+  //   return reqStatus.statusDesc;
+  // };
 
   getAppointments(e) {
     let send_data = {
       sub_dept_id: this.state.sub_department_id,
       schedule_date: moment(this.state.activeDateHeader).format("YYYY-MM-DD"),
-      provider_id: this.state.provider_id
+      provider_id: this.state.provider_id,
     };
+    // algaehApiCall({
+    //   uri: "/appointment/getDoctorScheduleDateWise",
+    //   module: "frontDesk",
+    //   method: "GET",
+    //   data: send_data,
+    //   onSuccess: response => {
+    //     const { success, records } = response.data;
+    //     if (success && records.length > 0) {
+    //       this.setState({
+    //         appointments: records[0].patientList
+    //       });
+    //     }
+    //   },
+    //   onFailure: error => {
+    //     swalMessage({
+    //       title: error.message,
+    //       type: "error"
+    //     });
+    //   }
+    // });
     algaehApiCall({
-      uri: "/appointment/getDoctorScheduleDateWise",
+      uri: "/appointment/getPatientAppointmentClinicalDesk",
       module: "frontDesk",
       method: "GET",
       data: send_data,
-      onSuccess: response => {
+      onSuccess: (response) => {
+        // console.log("response.data", response.data.records);
         const { success, records } = response.data;
         if (success && records.length > 0) {
           this.setState({
-            appointments: records[0].patientList
+            appointments: records,
           });
         }
       },
-      onFailure: error => {
+      onCatch: (error) => {
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -112,10 +133,10 @@ class DoctorsWorkbench extends Component {
     algaehApiCall({
       uri: "/doctorsWorkBench/updatdePatEncntrStatus",
       data: {
-        patient_encounter_id: patient_encounter_id
+        patient_encounter_id: patient_encounter_id,
       },
       method: "PUT",
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           this.loadListofData();
 
@@ -129,7 +150,7 @@ class DoctorsWorkbench extends Component {
             provider_id: data.provider_id,
             department_type: data.department_type,
             gender: data.gender,
-            sub_department_id: data.sub_department_id
+            sub_department_id: data.sub_department_id,
           });
           setCookie("ScreenName", "PatientProfile");
           history.push({
@@ -144,8 +165,8 @@ class DoctorsWorkbench extends Component {
               provider_id: data.provider_id,
               department_type: data.department_type,
               gender: data.gender,
-              sub_department_id: data.sub_department_id
-            }
+              sub_department_id: data.sub_department_id,
+            },
           });
           // document.getElementById("ehr-router").click();
           // setGlobal(
@@ -160,7 +181,7 @@ class DoctorsWorkbench extends Component {
           //   }
           // );
         }
-      }
+      },
     });
   }
 
@@ -171,20 +192,20 @@ class DoctorsWorkbench extends Component {
       localStorage.getItem("workbenchDateRange") !== null
         ? JSON.parse(localStorage.getItem("workbenchDateRange"))
         : {
-          fromDate: this.state.fromDate,
-          toDate: this.state.toDate,
-          activeDateHeader: this.state.fromDate
-        };
+            fromDate: this.state.fromDate,
+            toDate: this.state.toDate,
+            activeDateHeader: this.state.fromDate,
+          };
 
     algaehApiCall({
       uri: "/doctorsWorkBench/getMyDay",
       data: {
         fromDate: dateRange.fromDate,
-        toDate: dateRange.toDate
+        toDate: dateRange.toDate,
       },
       method: "GET",
       cancelRequestId: "getMyDay",
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           const _selecDate = new Date(dateRange.activeDateHeader).setDate(1);
           if (Array.isArray(response.data.records)) {
@@ -194,7 +215,7 @@ class DoctorsWorkbench extends Component {
                 data: response.data.records,
                 activeDateHeader: dateRange.activeDateHeader,
                 provider_id: response.data.records[0].provider_id,
-                sub_department_id: response.data.records[0].sub_department_id
+                sub_department_id: response.data.records[0].sub_department_id,
               },
               () => {
                 this.getAppointments();
@@ -207,7 +228,7 @@ class DoctorsWorkbench extends Component {
                 provider_id: response.data.records.provider_id,
                 sub_department_id: response.data.records.sub_department_id,
                 activeDateHeader: dateRange.activeDateHeader,
-                data: []
+                data: [],
               },
               () => {
                 this.getAppointments();
@@ -217,13 +238,13 @@ class DoctorsWorkbench extends Component {
           }
         }
       },
-      onFailure: error => {
+      onFailure: (error) => {
         algaehLoader({ show: false });
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -233,18 +254,18 @@ class DoctorsWorkbench extends Component {
 
   componentDidMount() {
     this.loadListofData();
-    this.socket.on("patient_added", patient => {
+    this.socket.on("patient_added", (patient) => {
       const { appointment_date } = patient;
       const dateCheck = moment(appointment_date).isSame(
         moment(this.state.activeDateHeader),
         "days"
       );
-      console.log(dateCheck, "date check mwb");
+      // console.log(dateCheck, "date check mwb");
       if (dateCheck) {
         this.loadListofData();
       }
     });
-    this.getAppointmentStatus();
+    // this.getAppointmentStatus();
   }
 
   liGenerate() {
@@ -267,7 +288,7 @@ class DoctorsWorkbench extends Component {
       generatedLi.push({
         day: dt.format("DD"),
         currentdate: dt._d,
-        dayName: dt.format("ddd")
+        dayName: dt.format("ddd"),
       });
 
       initialDate.setDate(initialDate.getDate() + 1);
@@ -280,7 +301,7 @@ class DoctorsWorkbench extends Component {
       {
         activeDateHeader: e.currentTarget.getAttribute("date"),
         fromDate: e.currentTarget.getAttribute("date"),
-        toDate: e.currentTarget.getAttribute("date")
+        toDate: e.currentTarget.getAttribute("date"),
       },
       () => {
         localStorage.setItem(
@@ -288,7 +309,7 @@ class DoctorsWorkbench extends Component {
           JSON.stringify({
             fromDate: fromDate,
             toDate: fromDate,
-            activeDateHeader: fromDate
+            activeDateHeader: fromDate,
           })
         );
         this.loadListofData();
@@ -317,8 +338,8 @@ class DoctorsWorkbench extends Component {
                           ? " activeDate CurrentDate"
                           : " activeDate"
                         : _currDate === moment().format("YYYYMMDD")
-                          ? " CurrentDate"
-                          : ""
+                        ? " CurrentDate"
+                        : ""
                     }
                     onClick={this.onSelectedDateHandler.bind(this)}
                   >
@@ -348,7 +369,7 @@ class DoctorsWorkbench extends Component {
     if (data.visit_status === "C") {
       swalMessage({
         title: "Visit is closed, Cannot proceed further",
-        type: "error"
+        type: "error",
       });
       return;
     }
@@ -359,7 +380,7 @@ class DoctorsWorkbench extends Component {
     if (inRange) {
       swalMessage({
         title: "Visit is Expired, Cannot proceed further",
-        type: "error"
+        type: "error",
       });
       return;
     }
@@ -374,7 +395,7 @@ class DoctorsWorkbench extends Component {
       provider_id: data.provider_id,
       department_type: data.department_type,
       gender: data.gender,
-      sub_department_id: data.sub_department_id
+      sub_department_id: data.sub_department_id,
     });
     const history = this.props.history;
     setCookie("ScreenName", "PatientProfile");
@@ -391,9 +412,9 @@ class DoctorsWorkbench extends Component {
           provider_id: data.provider_id,
           department_type: data.department_type,
           gender: data.gender,
-          sub_department_id: data.sub_department_id
-        }
-      }
+          sub_department_id: data.sub_department_id,
+        },
+      },
     });
     // document.getElementById("ehr-router").click();
   }
@@ -436,7 +457,7 @@ class DoctorsWorkbench extends Component {
             <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-title">
                 <div className="caption">
-                  <h3 className="caption-subject">List of Appointment</h3>
+                  <h3 className="caption-subject">Appointment Patients</h3>
                 </div>
               </div>
 
@@ -456,35 +477,60 @@ class DoctorsWorkbench extends Component {
                   <ul className="appList">
                     {this.state.appointments.length !== 0 ? (
                       this.state.appointments.map((data, index) => (
-                        <li key={index}>
+                        <li
+                          key={index}
+                          //className="abcd"   {data.color_code}
+                          style={{
+                            border: "2px solid" + `${data.color_code}`,
+                          }}
+                        >
                           <span className="app-sec-1">
-                            {/* <i className="appointment-icon" /> */}
-                            <i className={"appointment-icon"} />
-                            <span className="appTime">
-                              {moment(
-                                data.appointment_from_time,
-                                "HH:mm:ss"
-                              ).format("hh:mm A")}
-                            </span>
+                            <i className="appointment-icon" />
+                            <small
+                              className="opTime"
+                              style={{
+                                borderTop: "1px dashed #e6e6e6",
+                                width: "100%",
+                                paddingTop: 0,
+                                display: "inline-block",
+                                marginTop: 5,
+                              }}
+                            >
+                              {data.is_stand_by === "Y" ? "Stand By" : ""}
+                            </small>
                           </span>
                           <span className="app-sec-2">
                             <span className="appPatientName">
-                              {data.patient_name}
+                              {data.pat_name}
                             </span>
-                            <span className="appStatus nursing" />{" "}
-                            <span className="appoPatientStatus newVisit">
-                              {this.statusCheck(data.appointment_status_id)}
+                            <span className="appStatus nursing">
+                              {data.age} - {data.gender}
                             </span>
+                            <span className="appStatus newVisit">
+                              {data.app_status} /{" "}
+                              {moment(
+                                data.appointment_from_time,
+                                "HH:mm:ss"
+                              ).format("hh:mm A")}{" "}
+                              -
+                              {moment(
+                                data.appointment_to_time,
+                                "HH:mm:ss"
+                              ).format("hh:mm A")}
+                              {/* {this.statusCheck(data.appointment_status_id)} */}
+                            </span>{" "}
+                            {/* <span>Color:{data.color_code}</span> */}
+                            {/* <span>Stand By: {data.is_stand_by}</span> */}
                           </span>
                         </li>
                       ))
                     ) : (
-                        <li className="col noPatientDiv">
-                          {/* <h4>Relax</h4> */}
-                          <i className="fas fa-calendar-alt" />
-                          <p>No Appointment Available</p>
-                        </li>
-                      )}
+                      <li className="col noPatientDiv">
+                        {/* <h4>Relax</h4> */}
+                        <i className="fas fa-calendar-alt" />
+                        <p>No Appointment Available</p>
+                      </li>
+                    )}
                   </ul>
                 </div>
               </div>
@@ -496,9 +542,7 @@ class DoctorsWorkbench extends Component {
             <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-title">
                 <div className="caption">
-                  <h3 className="caption-subject">
-                    List of Checked In Patients
-                  </h3>
+                  <h3 className="caption-subject">Checked-In Patients</h3>
                 </div>
                 {/* <div className="actions">
                   <a
@@ -526,72 +570,72 @@ class DoctorsWorkbench extends Component {
                   </div> */}
                   <ul className="opList">
                     {Enumerable.from(this.state.data)
-                      .where(w => w.status === "V")
+                      .where((w) => w.status === "V")
                       .toArray().length !== 0 ? (
-                        Enumerable.from(this.state.data)
-                          .where(w => w.status === "V")
-                          .toArray()
-                          .map((data, index) => (
-                            <li
-                              key={index}
-                              data-encounterid={String(
-                                data.hims_f_patient_encounter_id
+                      Enumerable.from(this.state.data)
+                        .where((w) => w.status === "V")
+                        .toArray()
+                        .map((data, index) => (
+                          <li
+                            key={index}
+                            data-encounterid={String(
+                              data.hims_f_patient_encounter_id
+                            )}
+                            data-patientid={String(data.patient_id)}
+                            onClick={this.moveToEncounterList.bind(this, data)}
+                          >
+                            <span className="op-sec-1">
+                              {/* <i className="appointment-icon" /> */}
+                              <i
+                                className={
+                                  data.appointment_patient === "Y"
+                                    ? "appointment-icon"
+                                    : "walking-icon"
+                                }
+                              />
+                              <span className="opTime">
+                                {moment(data.encountered_date).format(
+                                  "HH:mm A"
+                                )}
+                              </span>
+                            </span>
+                            <span className="op-sec-2">
+                              <span className="opPatientName">
+                                {data.full_name}
+                              </span>
+
+                              {data.nurse_examine === "Y" ? (
+                                <span className="opStatus nursing">
+                                  Nursing Done
+                                </span>
+                              ) : (
+                                <span className="opStatus nursing">
+                                  Nursing Pending
+                                </span>
                               )}
-                              data-patientid={String(data.patient_id)}
-                              onClick={this.moveToEncounterList.bind(this, data)}
-                            >
-                              <span className="op-sec-1">
-                                {/* <i className="appointment-icon" /> */}
-                                <i
-                                  className={
-                                    data.appointment_patient === "Y"
-                                      ? "appointment-icon"
-                                      : "walking-icon"
-                                  }
-                                />
-                                <span className="opTime">
-                                  {moment(data.encountered_date).format(
-                                    "HH:mm A"
-                                  )}
-                                </span>
-                              </span>
-                              <span className="op-sec-2">
-                                <span className="opPatientName">
-                                  {data.full_name}
-                                </span>
 
-                                {data.nurse_examine === "Y" ? (
-                                  <span className="opStatus nursing">
-                                    Nursing Done
+                              {data.new_visit_patient === "Y" ? (
+                                <span className="opPatientStatus newVisit">
+                                  New Visit
                                 </span>
-                                ) : (
-                                    <span className="opStatus nursing">
-                                      Nursing Pending
+                              ) : data.new_visit_patient === "P" ? (
+                                <span className="opPatientStatus packageVisit">
+                                  Package Utilize Visit
                                 </span>
-                                  )}
-
-                                {data.new_visit_patient === "Y" ? (
-                                  <span className="opPatientStatus newVisit">
-                                    New Visit
+                              ) : (
+                                <span className="opPatientStatus followUp">
+                                  Follow Up Visit
                                 </span>
-                                ) : data.new_visit_patient === "P" ? (
-                                  <span className="opPatientStatus packageVisit">
-                                    Package Utilize Visit
-                                </span>
-                                ) : (
-                                      <span className="opPatientStatus followUp">
-                                        Follow Up Visit
-                                </span>
-                                    )}
-                              </span>
-                            </li>
-                          ))
-                      ) : (
-                        <li className="col noPatientDiv">
-                          <i className="fas fa-user-injured" />
-                          <p>No Patients Available</p>
-                        </li>
-                      )}
+                              )}
+                            </span>
+                          </li>
+                        ))
+                    ) : (
+                      <li className="col noPatientDiv">
+                        <i className="fas fa-user-injured" />
+                        <p>No Patients Available</p>
+                      </li>
+                    )}
                   </ul>
                 </div>
               </div>
@@ -609,7 +653,7 @@ class DoctorsWorkbench extends Component {
                     <AlgaehLabel
                       label={{
                         fieldName: "encounter_list",
-                        returnText: "true"
+                        returnText: "true",
                       }}
                     />
                   </h3>
@@ -619,7 +663,7 @@ class DoctorsWorkbench extends Component {
                   <span className="countNo">
                     {
                       Enumerable.from(this.state.data)
-                        .where(w => w.status !== "V")
+                        .where((w) => w.status !== "V")
                         .toArray().length
                     }
                   </span>
@@ -637,7 +681,7 @@ class DoctorsWorkbench extends Component {
                             <AlgaehLabel label={{ fieldName: "status" }} />
                           ),
                           disabled: true,
-                          displayTemplate: data => {
+                          displayTemplate: (data) => {
                             return (
                               <span>
                                 {data.status === "W" ? <span>WIP </span> : ""}
@@ -646,8 +690,8 @@ class DoctorsWorkbench extends Component {
                           },
                           others: {
                             width: 70,
-                            style: { textAlign: "center" }
-                          }
+                            style: { textAlign: "center" },
+                          },
                         },
                         {
                           fieldName: "patient_code",
@@ -656,7 +700,7 @@ class DoctorsWorkbench extends Component {
                               label={{ fieldName: "patient_code" }}
                             />
                           ),
-                          displayTemplate: data => {
+                          displayTemplate: (data) => {
                             return (
                               <span
                                 className="pat-code"
@@ -669,13 +713,13 @@ class DoctorsWorkbench extends Component {
                               </span>
                             );
                           },
-                          className: row => {
+                          className: (row) => {
                             return "greenCell";
                           },
                           others: {
                             width: 130,
-                            style: { textAlign: "center" }
-                          }
+                            style: { textAlign: "center" },
+                          },
                         },
                         {
                           fieldName: "full_name",
@@ -683,12 +727,12 @@ class DoctorsWorkbench extends Component {
                             <AlgaehLabel
                               label={{ fieldName: "patient_name" }}
                             />
-                          )
+                          ),
                         },
                         {
                           fieldName: "encountered_date",
                           label: <AlgaehLabel label={{ fieldName: "date" }} />,
-                          displayTemplate: data => {
+                          displayTemplate: (data) => {
                             return (
                               <span>
                                 {moment(data.encountered_date).format(
@@ -699,13 +743,13 @@ class DoctorsWorkbench extends Component {
                           },
                           others: {
                             width: 90,
-                            style: { textAlign: "center" }
-                          }
+                            style: { textAlign: "center" },
+                          },
                         },
                         {
                           fieldName: "encountered_date",
                           label: <AlgaehLabel label={{ fieldName: "time" }} />,
-                          displayTemplate: data => {
+                          displayTemplate: (data) => {
                             return (
                               <span>
                                 {moment(data.encountered_date).format(
@@ -716,15 +760,15 @@ class DoctorsWorkbench extends Component {
                           },
                           others: {
                             width: 70,
-                            style: { textAlign: "center" }
-                          }
+                            style: { textAlign: "center" },
+                          },
                         },
                         {
                           fieldName: "patient_type",
                           label: (
                             <AlgaehLabel label={{ fieldName: "pay_type" }} />
                           ),
-                          displayTemplate: data => {
+                          displayTemplate: (data) => {
                             return (
                               <span>
                                 {data.payment_type === "I"
@@ -735,9 +779,9 @@ class DoctorsWorkbench extends Component {
                           },
                           others: {
                             width: 80,
-                            style: { textAlign: "center" }
-                          }
-                        }
+                            style: { textAlign: "center" },
+                          },
+                        },
                         // ,
                         // {
                         //   fieldName: "transfer_status",
@@ -748,21 +792,21 @@ class DoctorsWorkbench extends Component {
                         //   )
                         // }
                       ]}
-                      rowClassName={row => {
+                      rowClassName={(row) => {
                         //return "greenCell";
                       }}
                       keyId="encounter_code"
                       dataSource={{
                         data: Enumerable.from(this.state.data)
-                          .where(w => w.status !== "V")
-                          .toArray()
+                          .where((w) => w.status !== "V")
+                          .toArray(),
                       }}
                       isEditable={false}
                       paging={{ page: 0, rowsPerPage: 20 }}
                       events={{
-                        onDelete: row => { },
-                        onEdit: row => { },
-                        onDone: row => { }
+                        onDelete: (row) => {},
+                        onEdit: (row) => {},
+                        onDone: (row) => {},
                       }}
                     />
                   </div>

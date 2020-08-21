@@ -1393,7 +1393,6 @@ function Routes() {
     },
     {
       enabled: is_authenticated,
-      refetchOnWindowFocus: false,
       staleTime: Infinity,
       onSuccess: (data) => {
         setTitles(data[0]?.data.records);

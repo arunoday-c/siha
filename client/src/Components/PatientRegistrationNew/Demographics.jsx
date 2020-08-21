@@ -87,7 +87,6 @@ export function Demographics({
     "dropdown-data",
     getDemoData,
     {
-      refetchOnWindowFocus: false,
       initialData: {
         visaTypes: [],
         patientTypes: [],
@@ -114,14 +113,16 @@ export function Demographics({
       const res = nationalities?.filter(
         (n) => n.hims_d_nationality_id == nationality_id
       );
-      if (res[0]?.identity_document_id) {
-        setValue("primary_identity_id", res[0]?.identity_document_id);
-      } else {
-        setValue("primary_identity_id", "");
+      if (!patient_code) {
+        if (res[0]?.identity_document_id) {
+          setValue("primary_identity_id", res[0]?.identity_document_id);
+        } else {
+          setValue("primary_identity_id", "");
+        }
       }
     }
     // eslint-disable-next-line
-  }, [nationality_id, nationalities]);
+  }, [nationality_id, nationalities, patient_code]);
 
   const calculateAge = (date) => {
     if (date) {
@@ -393,7 +394,7 @@ export function Demographics({
                             required: "Please Enter Contact Number",
                             minLength: {
                               message: "Please Enter Valid Number",
-                              value: 9,
+                              value: 10,
                             },
                           }}
                           render={(props) => (
@@ -865,6 +866,12 @@ export function Demographics({
                         <Controller
                           control={control}
                           name="primary_id_no"
+                          rules={{
+                            required: {
+                              value: true,
+                              message: "Please enter primary id no",
+                            },
+                          }}
                           render={(props) => (
                             <AlgaehFormGroup
                               div={{ className: "col-lg-7 mandatory" }}

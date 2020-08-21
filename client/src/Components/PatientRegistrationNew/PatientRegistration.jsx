@@ -24,7 +24,7 @@ import { BillDetails } from "./BillDetails";
 import { AdvanceModal } from "./AdvanceRefundModal";
 import { algaehApiCall } from "../../utils/algaehApiCall";
 
-const getPatient = async (key, { patient_code }) => {
+export const getPatient = async (key, { patient_code }) => {
   const result = await newAlgaehApi({
     uri: "/frontDesk/get",
     module: "frontDesk",
@@ -58,6 +58,7 @@ const getPatientPackage = async (key, { patient_id }) => {
 };
 
 const savePatient = async (data) => {
+  data.ScreenCode = "BL0002";
   const result = await newAlgaehApi({
     uri: "/frontDesk/add",
     module: "frontDesk",
@@ -151,7 +152,9 @@ const generateReceipt = (data) => {
 };
 
 export function PatientRegistration() {
-  const { userLanguage, userToken } = useContext(MainContext);
+  const { userLanguage, userToken, default_visit_type } = useContext(
+    MainContext
+  );
   const [openPopup, setOpenPopup] = useState(false);
   const [showPackage, setShowPackage] = useState(false);
   const [showUpdateModal, setUpdateModal] = useState(false);
@@ -195,6 +198,7 @@ export function PatientRegistration() {
     reset,
     setError,
     clearErrors,
+    formState,
   } = useForm({
     reValidateMode: "onSubmit",
     shouldFocusError: true,
@@ -202,6 +206,7 @@ export function PatientRegistration() {
       nationality_id: userToken?.default_nationality,
       country_id: userToken?.default_country,
       patient_type: userToken?.default_patient_type,
+      visit_type: default_visit_type,
     },
   });
 
@@ -210,7 +215,6 @@ export function PatientRegistration() {
     getPatient,
     {
       enabled: !!patient_code,
-      refetchOnWindowFocus: false,
       initialData: {
         bill_criedt: [],
         patientRegistration: null,
@@ -238,10 +242,25 @@ export function PatientRegistration() {
       setSavedPatient(data);
       setDisable(true);
       setOpenPopup(true);
-      AlgaehMessagePop({
-        display: "Patient Saved Successfully",
-        type: "success",
-      });
+
+      if (!!appointment_id && !!status_id) {
+        updateAppointmentStatus({
+          application_id: appointment_id,
+          appointment_status_id: status_id,
+          patient_id: data?.hims_d_patient_id,
+          patient_code: data?.patient_code,
+        }).then(() => {
+          AlgaehMessagePop({
+            display: "Patient Updated Successfully",
+            type: "success",
+          });
+        });
+      } else {
+        AlgaehMessagePop({
+          display: "Patient Updated Successfully",
+          type: "success",
+        });
+      }
     },
   });
 
@@ -276,15 +295,13 @@ export function PatientRegistration() {
     getPatientFromAppointment,
     {
       enabled: !!appointment_id,
-      refetchOnWindowFocus: false,
       onSuccess: (data) => {
-        debugger;
         const doctor = `${data?.sub_department_id}-${data?.services_id}-${data?.provider_id}-${data?.department_type}-${data?.department_id}`;
         if (!patient_code) {
           reset({
             ...data,
             consultation: "Y",
-            visit_type: 10,
+            visit_type: default_visit_type,
             full_name: data?.patient_name,
             doctor_id: data?.provider_id,
             doctor,
@@ -313,7 +330,6 @@ export function PatientRegistration() {
     getPatientPackage,
     {
       enabled: !!patientData?.patientRegistration,
-      refetchOnWindowFocus: false,
       initialData: [],
       initialStale: true,
     }
@@ -506,7 +522,7 @@ export function PatientRegistration() {
       cash_amount: "",
       consultation: "",
       contact_number: "",
-      date_of_birth: null,
+      date_of_birth: "",
       department_type: "",
       doctor: "",
       doctor_id: "",
@@ -530,10 +546,10 @@ export function PatientRegistration() {
       sheet_discount_percentage: 0,
       sub_department_id: "",
       title_id: "",
-      visit_type: "",
       nationality_id: userToken?.default_nationality,
       country_id: userToken?.default_country,
       patient_type: userToken?.default_patient_type,
+      visit_type: default_visit_type,
     });
     patientIdCard.current = null;
     patientImage.current = null;
@@ -707,7 +723,12 @@ export function PatientRegistration() {
                     type="button"
                     className="btn btn-primary"
                     onClick={() => onClear(false)}
-                    disabled={!disabled && !appointment_id && !patient_code}
+                    disabled={
+                      !disabled &&
+                      !appointment_id &&
+                      !patient_code &&
+                      !formState.isDirty
+                    }
                   >
                     <AlgaehLabel
                       label={{ fieldName: "btn_clear", returnText: true }}
@@ -719,13 +740,15 @@ export function PatientRegistration() {
                       <button
                         type="button"
                         className="btn btn-other"
-                        onClick={() =>
+                        onClick={() => {
+                          onClear(true);
+                          history.replace(location.pathname);
                           history.push(
                             `/OPBilling?patient_code=${
                               patient_code || savedPatient?.patient_code
                             }`
-                          )
-                        }
+                          );
+                        }}
                       >
                         <AlgaehLabel
                           label={{
@@ -847,8 +870,10 @@ export function PatientRegistration() {
       {(!!patient_code || !!savedPatient?.patient_code) && (
         <>
           <UpdatePatient
-            onClose={() => {
-              refetch();
+            onClose={(isUpdated) => {
+              if (isUpdated) {
+                refetch();
+              }
               setUpdateModal(false);
             }}
             patient_code={patient_code || savedPatient?.patient_code}

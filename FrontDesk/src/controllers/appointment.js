@@ -3,6 +3,7 @@ import utlities from "algaeh-utilities";
 import appointmentModels, {
   getPatientDetailsWithAppNo,
   updateAppointmentToCheckedIn,
+  getPatientAppointmentClinicalDesk,
 } from "../models/appointment";
 
 const {
@@ -334,5 +335,20 @@ export default () => {
       })
       .end();
   });
+  api.get(
+    "/getPatientAppointmentClinicalDesk",
+    getPatientAppointmentClinicalDesk,
+    (req, res) => {
+      res
+        .status(utlities.AlgaehUtilities().httpStatus().ok)
+        .json({
+          success: true,
+          records: req.records,
+        })
+        .end();
+      delete req.records;
+    }
+  );
+
   return api;
 };

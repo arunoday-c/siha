@@ -25,6 +25,7 @@ const mainActionTypes = {
   SET_RELIGION: "SET_RELIGION",
   SET_COUNTRY: "SET_COUNTRY",
   CLEAR_STATE: "CLEAR_ALL",
+  SET_DEFAULT_VISIT: "SET_DEFAULT_VISIT",
 };
 
 const mainReducer = (state, { type = "", payload = {} }) => {
@@ -49,6 +50,8 @@ const mainReducer = (state, { type = "", payload = {} }) => {
       return { ...state, religions: payload };
     case mainActionTypes.SET_TITLE:
       return { ...state, titles: payload };
+    case mainActionTypes.SET_DEFAULT_VISIT:
+      return { ...state, default_visit_type: payload };
     case mainActionTypes.CLEAR_STATE:
       return { ...intialState };
 
@@ -90,6 +93,9 @@ export default function MainProvider({ children }) {
     },
     setNationality(data) {
       dispatch({ type: mainActionTypes.SET_NATIONALITY, payload: data });
+    },
+    setVisitType(data) {
+      dispatch({ type: mainActionTypes.SET_DEFAULT_VISIT, payload: data });
     },
     clearAll() {
       dispatch({ type: mainActionTypes.CLEAR_STATE });

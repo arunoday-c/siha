@@ -547,7 +547,7 @@ const getCtrlCode = ($this, docNumber) => {
           data.saveEnable = false;
           data.addedItem = false;
           data.dataPosted = false;
-          data.itemAdd = true;
+          data.itemAdd = false;
         }
         // let project_details = $this.state.cost_projects.find(
         //   f => f.cost_center_id === data.project_id

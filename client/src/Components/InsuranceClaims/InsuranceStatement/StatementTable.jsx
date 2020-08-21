@@ -80,7 +80,7 @@ export function StatementTable() {
                 label: <AlgaehLabel label={{ forceLabel: "Patient Code" }} />,
               },
               {
-                fieldName: "patient_name",
+                fieldName: "pat_name",
                 label: <AlgaehLabel label={{ forceLabel: "Patient Name" }} />,
                 disabled: true,
                 others: {
@@ -89,7 +89,7 @@ export function StatementTable() {
                 },
               },
               {
-                fieldName: "doctor_name",
+                fieldName: "doc_name",
                 label: <AlgaehLabel label={{ forceLabel: "Doctor Name" }} />,
                 disabled: true,
                 others: {
