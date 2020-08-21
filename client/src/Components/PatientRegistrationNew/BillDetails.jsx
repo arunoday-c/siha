@@ -82,7 +82,7 @@ const checkVisits = async (
   const res = await newAlgaehApi({
     uri: "/visit/checkVisitExists",
     module: "frontDesk",
-    method: "get",
+    method: "GET",
     data: { sub_department_id, doctor_id, patient_id },
   });
   return res.data?.records;
