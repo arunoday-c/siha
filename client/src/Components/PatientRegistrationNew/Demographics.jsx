@@ -785,10 +785,12 @@ export function Demographics({
                             serviceParameters={{
                               uniqueID: patient_code || null,
                               fileType: "Patients",
-                              processDelay: (...val) => {
-                                console.log(val, "val");
-                              },
+                              // processDelay: (...val) => {
+                              //   console.log(val, "val");
+                              // },
                             }}
+                            //Need to add undefined. if no record exists
+                            renderPrevState={true}
                             // renderPrevState={patientImage.current}
                             forceRefresh={!patient_code}
                           />
@@ -804,11 +806,12 @@ export function Demographics({
                             serviceParameters={{
                               uniqueID: patient_code ? primary_id_no : null,
                               fileType: "Patients",
-                              processDelay: (...val) => {
-                                console.log(val, "val");
-                              },
+                              // processDelay: (...val) => {
+                              //   console.log(val, "val");
+                              // },
                             }}
-                            // renderPrevState={patientIdCard.current}
+                            //Need to add undefined. if no record exists
+                            renderPrevState={true}
                             forceRefresh={!savedPatient}
                           />
 

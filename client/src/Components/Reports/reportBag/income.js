@@ -461,6 +461,51 @@ export default function Income({ hospital_id, RECEIPT_TYPE, cashier_id }) {
           },
         ],
       },
+      {
+        subitem: "Income by Sales",
+        reportName: "salesWiseIncome",
+        // reportQuery: "subDepartmentIncome",
+        requireIframe: true,
+        reportParameters: [
+          {
+            className: "col-3 form-group mandatory",
+            type: "dropdown",
+            name: "hospital_id",
+            initialLoad: true,
+            isImp: true,
+            label: "Branch",
+            link: {
+              uri: "/organization/getOrganizationByUser",
+            },
+            value: hospital_id,
+            dataSource: {
+              textField: "hospital_name",
+              valueField: "hims_d_hospital_id",
+              data: undefined,
+            },
+          },
+          {
+            className: "col-3 form-group mandatory",
+            type: "date",
+            name: "from_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null,
+            },
+          },
+          {
+            className: "col-3 form-group mandatory",
+            type: "date",
+            name: "to_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null,
+            },
+          },
+        ],
+      },
     ],
   };
 }

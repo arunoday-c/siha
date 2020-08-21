@@ -53,7 +53,9 @@ export default class AlgaehFileUploader extends Component {
     // }
 
     if (nextProps.renderPrevState !== undefined) {
-      this.setState({ ...nextProps.renderPrevState.state });
+      if (typeof nextProps.renderPrevState !== "boolean") {
+        this.setState({ ...nextProps.renderPrevState.state });
+      }
       return;
     } else if (
       nextProps.forceRefresh !== undefined &&
@@ -406,7 +408,6 @@ export default class AlgaehFileUploader extends Component {
       that.props.needConvertion === undefined
         ? {}
         : { needConvertion: that.props.needConvertion };
-
     const _splitter = dataToSave.split(",");
     if (uniqueID) {
       algaehApiCall({
@@ -492,10 +493,12 @@ export default class AlgaehFileUploader extends Component {
         },
       });
     } else {
-      swalMessage({
-        title: "Enter Mandatory Fields Before Uploading the image",
-        type: "failure",
-      });
+      if (this.props.forceRefresh === undefined) {
+        swalMessage({
+          title: "Enter Mandatory Fields Before Uploading the image",
+          type: "error",
+        });
+      }
     }
     //};
   }
