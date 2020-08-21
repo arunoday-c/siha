@@ -591,3 +591,5 @@ ALTER TABLE hims_f_insurance_statement  ADD COLUMN total_denial_amount DECIMAL(2
 
 -- ==================
 alter table hims_d_nationality add column identity_document_id int after arabic_nationality;
+
+-- Query End  19/08/2020
