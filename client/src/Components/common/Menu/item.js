@@ -37,8 +37,8 @@ function MenuItems({ showMenu, onVisibityChange, openModule, openScreen }) {
     setCookie("ScreenCode", item.screen_code);
     const extraParam =
       item.redirect_url !== undefined &&
-        item.redirect_url !== "" &&
-        item.redirect_url !== null
+      item.redirect_url !== "" &&
+      item.redirect_url !== null
         ? `/${item.redirect_url}`
         : "";
     history.push(`/${screenName}${extraParam}`);
@@ -116,7 +116,7 @@ function MenuItems({ showMenu, onVisibityChange, openModule, openScreen }) {
                     activateModule(item.module_name);
                   }}
                 >
-                  <div className="col-2" style={{ marginTop: "2px" }}>
+                  <div className="col iconSec">
                     <i className={item.icons} />
                   </div>
                   <div className="col-8 moduleNameText">
@@ -124,12 +124,12 @@ function MenuItems({ showMenu, onVisibityChange, openModule, openScreen }) {
                       ? item.module_name
                       : item.other_language}
                   </div>
-                  <div className="col-2" style={{ marginTop: "2px" }}>
+                  <div className="col arrwSec">
                     {moduleSelect === item.module_name || searchText !== "" ? (
                       <i className="fas fa-angle-up" />
                     ) : (
-                        <i className="fas fa-angle-down" />
-                      )}
+                      <i className="fas fa-angle-down" />
+                    )}
                   </div>
                 </div>
                 {moduleSelect === item.module_name || searchText !== "" ? (

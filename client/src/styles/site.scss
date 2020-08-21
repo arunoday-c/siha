@@ -2564,6 +2564,7 @@ input.autoselect-input:disabled {
       background: $gold-color;
       .ant-modal-title {
         color: $color-white !important;
+        text-shadow: 0 1px 2px lighten($color-black, 50%) !important;
       }
     }
     .ant-modal-body {

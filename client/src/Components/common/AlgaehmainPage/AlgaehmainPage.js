@@ -534,13 +534,13 @@ createSideMenuItemList() {
           className="row clearfix side-menu-title"
           onClick={this.openSubMenuSelection.bind(this, menu)}
         >
-          <div className="col-2" style={{ marginTop: "2px" }}>
+          <div className="col iconSec">
             <i className={menu.icons} />
           </div>
           <div className="col-8 ">
             {_isEnglish ? menu.module_name : menu.other_language}
           </div>
-          <div className="col-2" style={{ marginTop: "2px" }}>
+          <div className="col arrwSec">
             {_menuSelected === menu.module_code || _toggle ? (
               <i className="fas fa-angle-up" />
             ) : (
