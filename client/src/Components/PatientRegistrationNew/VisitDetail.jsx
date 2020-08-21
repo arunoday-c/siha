@@ -81,14 +81,17 @@ export function VisitDetails({
     ],
   });
 
+  const { visitTypes } = data;
+
   useEffect(() => {
-    if (visit_type && data?.visitTypes?.length) {
-      const res = data?.visitTypes?.filter(
+    if (visit_type && visitTypes?.length) {
+      const res = visitTypes?.filter(
         (item) => item?.hims_d_visit_type_id == visit_type
       );
       setConsultationInfo(res[0]);
     }
-  }, [visit_type, data?.visitTypes]);
+    // eslint-disable-next-line
+  }, [visit_type, visitTypes]);
 
   const insured = !!primary_insurance_provider_id;
 
