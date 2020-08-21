@@ -76,7 +76,7 @@ class EOSGratuity extends Component {
   }
 
   changeChecks(e) {
-    this.setState({ forfeitChecked: e.target.checked });
+    this.setState({ forfeitChecked: e.target.checked, paybale_amout: 0.0 });
   }
 
   clearState() {
