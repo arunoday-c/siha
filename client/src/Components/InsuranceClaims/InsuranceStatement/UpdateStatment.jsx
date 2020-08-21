@@ -1,7 +1,13 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useContext } from "react";
+import "./InsuranceStatement.scss";
 import { useForm, Controller } from "react-hook-form";
 import { useMutation } from "react-query";
-import { AlgaehModal, AlgaehFormGroup } from "algaeh-react-components";
+import {
+  AlgaehLabel,
+  AlgaehModal,
+  AlgaehFormGroup,
+  MainContext,
+} from "algaeh-react-components";
 import { newAlgaehApi } from "../../../hooks";
 
 const updateStatement = async (data) => {
@@ -20,6 +26,7 @@ export function UpdateStatement({
   onClose = () => {},
 }) {
   const { control, handleSubmit, reset, errors } = useForm();
+  const { userLanguage } = useContext(MainContext);
 
   const [update, { isLoading }] = useMutation(updateStatement, {
     onSuccess: (data) => {
@@ -57,14 +64,56 @@ export function UpdateStatement({
       closable={false}
       onCancel={onClose}
       onOk={handleSubmit(onSubmit)}
+      className={`${userLanguage}_comp row algaehNewModal UpdateStatementModal`}
     >
-      <div>
+      <div className="col-12 popupInner margin-top-15">
         <div className="row">
           <div className="col-6">
-            <h5>Invoice Number</h5>
-            <p>{data?.invoice_number}</p>
+            <AlgaehLabel
+              label={{
+                forceLabel: "Patient Code",
+              }}
+            />
+            <h6>{data?.patient_code}</h6>
+          </div>
+
+          <div className="col-6">
+            <AlgaehLabel
+              label={{
+                forceLabel: "Patient Name",
+              }}
+            />
+            <h6>{data?.pat_name}</h6>
+          </div>
+
+          <div className="col-6">
+            <AlgaehLabel
+              label={{
+                forceLabel: "Invoice Number",
+              }}
+            />
+            <h6>{data?.invoice_number}</h6>
+          </div>
+
+          <div className="col-6">
+            <AlgaehLabel
+              label={{
+                forceLabel: "Invoice Date",
+              }}
+            />
+            <h6>{data?.invoice_date}</h6>
+          </div>
+
+          <div className="col-6">
+            <AlgaehLabel
+              label={{
+                forceLabel: "Net Company Payable",
+              }}
+            />
+            <h6>{data?.company_payable}</h6>
           </div>
         </div>
+        <hr></hr>
         <div className="row">
           <Controller
             control={control}

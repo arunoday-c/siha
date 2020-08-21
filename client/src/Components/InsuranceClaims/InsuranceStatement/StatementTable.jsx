@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useQuery } from "react-query";
+import "./InsuranceStatement.scss";
 import {
   AlgaehDataGrid,
   Spin,
@@ -50,7 +51,7 @@ export function StatementTable() {
     return (
       <Tooltip title="Pay">
         <span onClick={() => onClickRow(row)}>
-          <i className="fas fa-check"></i>
+          <i className="fas fa-pen"></i>
         </span>
       </Tooltip>
     );
@@ -144,24 +145,24 @@ export function StatementTable() {
                 label: <AlgaehLabel label={{ forceLabel: "Co. Net Payble" }} />,
               },
               {
-                fieldName: "denial_ammount",
-                label: <AlgaehLabel label={{ forceLabel: "Denial Amt. 1" }} />,
-              },
-              {
-                fieldName: "denial_amount_2",
-                label: <AlgaehLabel label={{ forceLabel: "Denial Amt. 2" }} />,
-              },
-              {
                 fieldName: "remittance_ammount",
                 label: (
                   <AlgaehLabel label={{ forceLabel: "Remittance Amt. 1" }} />
                 ),
               },
               {
+                fieldName: "denial_ammount",
+                label: <AlgaehLabel label={{ forceLabel: "Denial Amt. 1" }} />,
+              },
+              {
                 fieldName: "remittance_2",
                 label: (
                   <AlgaehLabel label={{ forceLabel: "Remittance Amt. 2" }} />
                 ),
+              },
+              {
+                fieldName: "denial_amount_2",
+                label: <AlgaehLabel label={{ forceLabel: "Denial Amt. 2" }} />,
               },
             ]}
             data={data?.claims ?? []}
