@@ -483,13 +483,13 @@ export function getDoctorAndDepartment(req, res, next) {
       .executeQuery({
         query: `
         select distinct UE.employee_id, E.sub_department_id, E.full_name, E.arabic_name, E.services_id,
-        SD.department_id, SD.sub_department_name, SD.arabic_sub_department_name, SD.department_type 
+        SD.department_id, SD.sub_department_name, SD.arabic_sub_department_name, SD.department_type , S.service_type_id
         from hims_d_employee E inner join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id 
         and  E.isdoctor='Y' inner join hims_d_department D on SD.department_id=D.hims_d_department_id 
-        inner join hims_m_user_employee as UE on UE.employee_id = E.hims_d_employee_id
-        and  D.department_type='CLINICAL' where E.employee_status='A'  and SD.sub_department_status='A'
-        and SD.record_status='A' and E.record_status ='A' and UE.hospital_id=? and services_id is not null;
-     `,
+        inner join hims_m_user_employee as UE on UE.employee_id = E.hims_d_employee_id and  D.department_type='CLINICAL' 
+        inner join hims_d_services as S on S.hims_d_services_id = E.services_id 
+        where E.employee_status='A'  and SD.sub_department_status='A' and SD.record_status='A' and E.record_status ='A' 
+        and UE.hospital_id=? and services_id is not null;`,
         values: [hims_d_hospital_id],
         printQuery: true,
       })
@@ -515,6 +515,7 @@ export function getDoctorAndDepartment(req, res, next) {
                   arlabel: item.arabic_name,
                   value: item.employee_id,
                   services_id: item.services_id,
+                  service_type_id: item.service_type_id,
                   sub_department_id,
                   department_type,
                 };

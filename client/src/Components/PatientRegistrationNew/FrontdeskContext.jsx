@@ -76,6 +76,7 @@ function reducer(state, { type, payload }) {
           doctor_id: null,
           department_type: null,
           department_id: null,
+          service_type_id: null,
         };
       } else {
         const [
@@ -84,7 +85,8 @@ function reducer(state, { type, payload }) {
           doctor_id,
           department_type,
           department_id,
-        ] = payload?.split("-");
+          service_type_id,
+        ] = payload ?.split("-");
         return {
           ...state,
           sub_department_id,
@@ -92,6 +94,7 @@ function reducer(state, { type, payload }) {
           doctor_id,
           department_type,
           department_id,
+          service_type_id,
         };
       }
     case TYPES.setInsuranceInfo:

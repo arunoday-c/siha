@@ -21,6 +21,7 @@ const getBillDetails = async (
   key,
   {
     services_id,
+    service_type_id,
     nationality_id,
     default_nationality,
     local_vat_applicable,
@@ -50,6 +51,7 @@ const getBillDetails = async (
     data: [
       {
         hims_d_services_id: parseInt(services_id, 10),
+        service_type_id: parseInt(service_type_id, 10),
         zeroBill,
         FollowUp,
         insured: primary_insurance_provider_id ? "Y" : "N",
@@ -61,8 +63,7 @@ const getBillDetails = async (
       },
     ],
   });
-
-  return details?.data?.records;
+  return details ?.data ?.records;
 };
 
 const getShiftMappings = async () => {
@@ -72,7 +73,7 @@ const getShiftMappings = async () => {
     method: "GET",
     data: { for: "T" },
   });
-  return res.data?.records;
+  return res.data ?.records;
 };
 
 const checkVisits = async (
@@ -85,7 +86,7 @@ const checkVisits = async (
     method: "GET",
     data: { sub_department_id, doctor_id, patient_id },
   });
-  return res.data?.records;
+  return res.data ?.records;
 };
 
 export function BillDetails({
@@ -109,6 +110,7 @@ export function BillDetails({
   } = userToken;
   const {
     services_id,
+    service_type_id,
     sub_department_id,
     doctor_id,
     primary_network_office_id,
@@ -135,7 +137,7 @@ export function BillDetails({
   const { isLoading: visitLoading, data: prevVisits } = useQuery(
     [
       "checkVisits",
-      { sub_department_id, doctor_id, patient_id: patient?.hims_d_patient_id },
+      { sub_department_id, doctor_id, patient_id: patient ?.hims_d_patient_id },
     ],
     checkVisits,
     {
@@ -151,6 +153,7 @@ export function BillDetails({
       "billdetails",
       {
         services_id,
+        service_type_id,
         nationality_id,
         primary_insurance_provider_id,
         primary_network_id,
@@ -158,7 +161,7 @@ export function BillDetails({
         default_nationality,
         local_vat_applicable,
         prevVisits,
-        consultation: consultationInfo?.consultation,
+        consultation: consultationInfo ?.consultation,
       },
     ],
     getBillDetails,
@@ -167,7 +170,7 @@ export function BillDetails({
       retry: 3,
       onSuccess: (data) => {
         setBillInfo(data);
-        calculateBillDetails(data?.billdetails[0]);
+        calculateBillDetails(data ?.billdetails[0]);
       },
     }
   );
@@ -190,8 +193,8 @@ export function BillDetails({
     sendingObject.sheet_discount_amount = 0;
     sendingObject.sheet_discount_percentage = 0;
     sendingObject.advance_adjust = 0;
-    sendingObject.net_amount = billData?.patient_payable;
-    sendingObject.receiveable_amount = billData?.patient_payable;
+    sendingObject.net_amount = billData ?.patient_payable;
+    sendingObject.receiveable_amount = billData ?.patient_payable;
 
     //Reciept
     sendingObject.cash_amount = sendingObject.net_amount;
@@ -212,18 +215,18 @@ export function BillDetails({
 
   useEffect(() => {
     if (billData) {
-      setValue("advance_adjust", billData?.advance_adjust);
+      setValue("advance_adjust", billData ?.advance_adjust);
       setValue(
         "sheet_discount_percentage",
-        billData?.sheet_discount_percentage
+        billData ?.sheet_discount_percentage
       );
-      setValue("sheet_discount_amount", billData?.sheet_discount_amount);
-      setValue("credit_amount", billData?.credit_amount);
-      setValue("cash_amount", billData?.cash_amount);
-      setValue("card_amount", billData?.card_amount);
-      setValue("card_number", billData?.card_number);
-      setValue("card_date", billData?.card_date);
-      if (billData?.unbalanced_amount !== 0) {
+      setValue("sheet_discount_amount", billData ?.sheet_discount_amount);
+      setValue("credit_amount", billData ?.credit_amount);
+      setValue("cash_amount", billData ?.cash_amount);
+      setValue("card_amount", billData ?.card_amount);
+      setValue("card_number", billData ?.card_number);
+      setValue("card_date", billData ?.card_date);
+      if (billData ?.unbalanced_amount !== 0) {
         setError("unbalanced", {
           type: "manual",
           message: "Unbalanced Amount should be zero",
@@ -249,8 +252,8 @@ export function BillDetails({
   );
 
   useEffect(() => {
-    if (shiftMappings?.length) {
-      setValue("shift_id", shiftMappings[0]?.shift_id);
+    if (shiftMappings ?.length) {
+      setValue("shift_id", shiftMappings[0] ?.shift_id);
     }
     //eslint-disable-next-line
   }, [shiftMappings, billInfo]);
@@ -261,7 +264,7 @@ export function BillDetails({
         setBillData((state) => {
           state.cash_amount = 0;
           state.unbalanced_amount =
-            state?.receiveable_amount - state?.cash_amount - state?.card_amount;
+            state ?.receiveable_amount - state ?.cash_amount - state ?.card_amount;
           return { ...state };
         });
       }
@@ -283,7 +286,7 @@ export function BillDetails({
     //eslint-disable-next-line
   }, [enableCard]);
 
-  const follow_up = !!prevVisits?.length;
+  const follow_up = !!prevVisits ?.length;
 
   return (
     <Spin spinning={infoLoading || shiftLoading || visitLoading}>
@@ -366,7 +369,7 @@ export function BillDetails({
                       fieldName: "gross_total",
                     }}
                   />
-                  <h6>{amountWithCur(billData?.gross_total)}</h6>
+                  <h6>{amountWithCur(billData ?.gross_total)}</h6>
                 </div>
 
                 <div className="col">
@@ -375,7 +378,7 @@ export function BillDetails({
                       fieldName: "patient_payable",
                     }}
                   />
-                  <h6>{amountWithCur(billData?.patient_payable)}</h6>
+                  <h6>{amountWithCur(billData ?.patient_payable)}</h6>
                 </div>
               </div>
               <hr style={{ margin: "0.3rem 0rem" }} />
@@ -388,7 +391,7 @@ export function BillDetails({
                   />
                   <h6>
                     {/* {fieldNameFn("Not Generated", "غير مولدة")} */}
-                    {savedPatient?.bill_number ??
+                    {savedPatient ?.bill_number ??
                       fieldNameFn("Not Generated", "غير مولدة")}
                   </h6>
                 </div>
@@ -423,7 +426,7 @@ export function BillDetails({
                         fieldName: "advance_adjust",
                       }}
                       textBox={{
-                        disabled: disabled || !patient?.advance_amount,
+                        disabled: disabled || !patient ?.advance_amount,
                         className: "txt-fld",
                         name: "advance_adjust",
                         type: "number",
@@ -431,7 +434,7 @@ export function BillDetails({
                         onChange: (e) => {
                           const amount =
                             parseFloat(e.target.value) || e.target.value;
-                          if (amount > parseFloat(patient?.advance_amount)) {
+                          if (amount > parseFloat(patient ?.advance_amount)) {
                             AlgaehMessagePop({
                               display:
                                 "Adjust must be less than Advance amount",
@@ -472,7 +475,7 @@ export function BillDetails({
                         name: "sheet_discount_percentage",
                         type: "number",
                         ...props,
-                        value: billData?.sheet_discount_percentage,
+                        value: billData ?.sheet_discount_percentage,
                         onChange: (e) => {
                           let perc = parseFloat(e.target.value);
                           if (perc > 100) {
@@ -564,7 +567,7 @@ export function BillDetails({
                     }}
                   />
                   {/* <h6>{GetAmountFormart(this.state.advance_amount)}</h6> */}
-                  <h6>{amountWithCur(patient?.advance_amount)}</h6>
+                  <h6>{amountWithCur(patient ?.advance_amount)}</h6>
                 </div>
 
                 <div className="col">
@@ -574,7 +577,7 @@ export function BillDetails({
                     }}
                   />
 
-                  <h6>{amountWithCur(billData?.net_amount)}</h6>
+                  <h6>{amountWithCur(billData ?.net_amount)}</h6>
                 </div>
                 <Controller
                   control={control}
@@ -591,7 +594,7 @@ export function BillDetails({
                         name: "credit_amount",
                         type: "number",
                         placeholder: "0.00",
-                        value: billData?.credit_amount,
+                        value: billData ?.credit_amount,
                         onChange: (e) => {
                           const credit = e.target.value
                             ? parseFloat(e.target.value)
@@ -600,8 +603,8 @@ export function BillDetails({
                             sendingObject.credit_amount = credit;
                             sendingObject.receiveable_amount =
                               sendingObject.net_amount -
-                              sendingObject?.advance_adjust -
-                              credit;
+                                sendingObject ?.advance_adjust -
+                                credit;
                             sendingObject.cash_amount = 0;
                             sendingObject.card_amount = 0;
                             sendingObject.unbalanced_amount =
@@ -620,7 +623,7 @@ export function BillDetails({
                       fieldName: "receiveable_amount",
                     }}
                   />
-                  <h4>{amountWithCur(billData?.receiveable_amount)}</h4>
+                  <h4>{amountWithCur(billData ?.receiveable_amount)}</h4>
                 </div>
                 <div className="col highlightGrey">
                   <AlgaehLabel
@@ -649,7 +652,7 @@ export function BillDetails({
                       }}
                     />
                     <h6>
-                      {savedPatient?.receipt_number ??
+                      {savedPatient ?.receipt_number ??
                         fieldNameFn("Not Generated", "غير مولدة")}
                     </h6>
                   </div>
@@ -660,7 +663,7 @@ export function BillDetails({
                       }}
                     />
                     <h6>
-                      {savedPatient?.receipt_number
+                      {savedPatient ?.receipt_number
                         ? moment().format("DD-MM-YYYY")
                         : "DD/MM/YYYY"}
                     </h6>
@@ -748,9 +751,9 @@ export function BillDetails({
                             setBillData((state) => {
                               state.cash_amount = amount;
                               state.unbalanced_amount =
-                                state?.receiveable_amount -
-                                amount -
-                                state?.card_amount;
+                                state ?.receiveable_amount -
+                                  amount -
+                                  state ?.card_amount;
                               return { ...state };
                             });
                           },
@@ -868,9 +871,9 @@ export function BillDetails({
                             setBillData((state) => {
                               state.card_amount = amount;
                               state.unbalanced_amount =
-                                state?.receiveable_amount -
-                                amount -
-                                state?.cash_amount;
+                                state ?.receiveable_amount -
+                                  amount -
+                                  state ?.cash_amount;
                               return { ...state };
                             });
                           },
@@ -892,7 +895,7 @@ export function BillDetails({
                         fieldName: "unbalanced_amount",
                       }}
                     />
-                    <h6>{amountWithCur(billData?.unbalanced_amount)}</h6>
+                    <h6>{amountWithCur(billData ?.unbalanced_amount)}</h6>
                   </div>
                 </div>
               </div>

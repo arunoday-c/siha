@@ -39,9 +39,9 @@ const FinDashboard = React.lazy(() =>
 // const CommonDashboard = React.lazy(() =>
 //   retry(() => import("./Components/Dashboard/Dashboard"))
 // );
-const PatientRegistration = React.lazy(() =>
-  retry(() => import("./Components/RegistrationPatient/RegistrationPatient"))
-);
+// const PatientRegistration = React.lazy(() =>
+//   retry(() => import("./Components/RegistrationPatient/RegistrationPatient"))
+// );
 
 const PatientRegistrationNew = React.lazy(() =>
   retry(() => import("./Components/PatientRegistrationNew"))
@@ -1395,10 +1395,10 @@ function Routes() {
       enabled: is_authenticated,
       staleTime: Infinity,
       onSuccess: (data) => {
-        setTitles(data[0]?.data.records);
-        setNationality(data[1]?.data.records);
-        setReligions(data[2]?.data.records);
-        setCountries(data[3]?.data.records);
+        setTitles(data[0] ?.data.records);
+        setNationality(data[1] ?.data.records);
+        setReligions(data[2] ?.data.records);
+        setCountries(data[3] ?.data.records);
       },
     }
   );
