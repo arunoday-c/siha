@@ -563,7 +563,7 @@ export function PatientRegistration() {
     insuranceImgFront.current = null;
 
     if (!withoutNav) {
-      history.replace("/PatientRegistration");
+      history.replace("/Frontdesk");
     }
   };
 

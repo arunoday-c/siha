@@ -690,13 +690,13 @@ const privateRoutes = [
     isExactPath: true,
     component: <ItemMomentEnquiry />,
   },
+  // {
+  //   path: "/FrontDesk",
+  //   isExactPath: true,
+  //   component: <PatientRegistration />,
+  // },
   {
     path: "/FrontDesk",
-    isExactPath: true,
-    component: <PatientRegistration />,
-  },
-  {
-    path: "/PatientRegistration",
     isExactPath: true,
     component: <PatientRegistrationNew />,
   },
