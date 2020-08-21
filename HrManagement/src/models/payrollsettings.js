@@ -24,7 +24,7 @@ export default {
       .executeQuery({
         query:
           "select hims_d_earning_deduction_id,earning_deduction_code,earning_deduction_description,\
-          short_desc,component_category,calculation_method,component_frequency,calculation_type,pasi_calc_type,\
+          short_desc,component_category,calculation_method,component_frequency,calculation_type,\
           component_type,shortage_deduction_applicable,overtime_applicable,min_limit_applicable,min_limit_amount,limit_applicable,limit_amount,\
           process_limit_required,process_limit_days,general_ledger,allow_round_off,round_off_type,\
           round_off_amount,head_id,child_id from hims_d_earning_deduction\
@@ -505,7 +505,7 @@ export default {
       .executeQuery({
         query:
           "select hims_d_earning_deduction_id,earning_deduction_code,earning_deduction_description,\
-          short_desc,component_category,calculation_method,component_frequency,calculation_type,pasi_calc_type, specific_nationality, nationality_id,\
+          short_desc,component_category,calculation_method,component_frequency,calculation_type, specific_nationality, nationality_id,\
           component_type,shortage_deduction_applicable, miscellaneous_component, overtime_applicable,min_limit_applicable,min_limit_amount,limit_applicable,limit_amount,\
           process_limit_required,process_limit_days,general_ledger,allow_round_off,round_off_type,\
           round_off_amount,formula, print_report, print_order_by, annual_salary_comp,head_id,child_id,li_head_id,li_child_id, \
@@ -532,7 +532,7 @@ export default {
       .executeQuery({
         query:
           "INSERT  INTO hims_d_earning_deduction (earning_deduction_code,earning_deduction_description,short_desc,\
-            component_category,calculation_method, miscellaneous_component, formula,component_frequency,calculation_type,pasi_calc_type,component_type,\
+            component_category,calculation_method, miscellaneous_component, formula,component_frequency,calculation_type,component_type,\
             shortage_deduction_applicable,overtime_applicable,min_limit_applicable,min_limit_amount,limit_applicable,limit_amount,\
             process_limit_required,process_limit_days,general_ledger,allow_round_off,round_off_type,\
             round_off_amount, specific_nationality, nationality_id, print_report, print_order_by, \
@@ -549,7 +549,6 @@ export default {
           input.formula,
           input.component_frequency,
           input.calculation_type,
-          input.pasi_calc_type,
           input.component_type,
           input.shortage_deduction_applicable,
           input.overtime_applicable,
@@ -614,7 +613,6 @@ export default {
           input.miscellaneous_component,
           input.component_frequency,
           input.calculation_type,
-          input.pasi_calc_type,
           input.component_type,
           input.shortage_deduction_applicable,
           input.overtime_applicable,

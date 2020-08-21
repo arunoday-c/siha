@@ -112,12 +112,6 @@ const changeChecks = ($this, e) => {
       });
       break;
 
-    case "pasi_calc_type":
-      $this.setState({
-        pasi_calc_type: e.target.value,
-      });
-      break;
-
     case "calculation_method":
       $this.setState({
         calculation_method: e.target.value,
@@ -223,7 +217,6 @@ const clearState = ($this) => {
     calculation_method: "FI",
     component_frequency: null,
     calculation_type: "F",
-    pasi_calc_type: "G",
     component_type: null,
     shortage_deduction_applicable: false,
     overtime_applicable: false,
@@ -366,7 +359,6 @@ const addEarningsDeductions = ($this) => {
         calculation_method: $this.state.calculation_method,
         component_frequency: $this.state.component_frequency,
         calculation_type: $this.state.calculation_type,
-        pasi_calc_type: $this.state.pasi_calc_type,
         component_type: $this.state.component_type,
         shortage_deduction_applicable:
           $this.state.shortage_deduction_applicable === true ? "Y" : "N",

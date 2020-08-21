@@ -52,7 +52,6 @@ class EarningsDeductions extends Component {
       limit_applicable: false,
       process_limit_required: false,
       calculation_type: "F",
-      pasi_calc_type: "G",
       calculation_method: "FI",
       allow_round_off: false,
       overtime_applicable: false,
@@ -515,31 +514,7 @@ class EarningsDeductions extends Component {
                       }}
                     />
                   </div>
-                  <div className="col-4">
-                    <label>PASI Calc. on Employee</label>
-                    <div className="customRadio">
-                      <label className="radio inline">
-                        <input
-                          type="radio"
-                          value="N"
-                          name="pasi_calc_type"
-                          onChange={changeChecks.bind(this, this)}
-                          checked={this.state.pasi_calc_type === "N"}
-                        />
-                        <span>Net</span>
-                      </label>
-                      <label className="radio inline">
-                        <input
-                          type="radio"
-                          value="G"
-                          name="pasi_calc_type"
-                          onChange={changeChecks.bind(this, this)}
-                          checked={this.state.pasi_calc_type === "G"}
-                        />
-                        <span>Gross</span>
-                      </label>
-                    </div>
-                  </div>
+
                   <div className="col-4">
                     <label>Min Limit Applicable</label>
                     <div className="customCheckbox">
@@ -1168,52 +1143,6 @@ class EarningsDeductions extends Component {
                                 others: {
                                   errormessage:
                                     "Calculation Method cannot be blank",
-                                  required: true,
-                                },
-                                onChange: changeGridEditors.bind(
-                                  this,
-                                  this,
-                                  row
-                                ),
-                              }}
-                            />
-                          );
-                        },
-                      },
-                      {
-                        fieldName: "pasi_calc_type",
-                        label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "PASI Calc. Type" }}
-                          />
-                        ),
-                        displayTemplate: (row) => {
-                          return (
-                            <span>
-                              {row.pasi_calc_type === "N"
-                                ? "Net Salary"
-                                : row.pasi_calc_type === "G"
-                                ? "Gross Salary"
-                                : "------"}
-                            </span>
-                          );
-                        },
-                        editorTemplate: (row) => {
-                          return (
-                            <AlagehAutoComplete
-                              div={{ className: "col" }}
-                              selector={{
-                                name: "pasi_calc_type",
-                                className: "select-fld",
-                                value: row.pasi_calc_type,
-                                dataSource: {
-                                  textField: "name",
-                                  valueField: "value",
-                                  data: GlobalVariables.PASI_CALC_TYPE,
-                                },
-                                others: {
-                                  errormessage:
-                                    "PASI Calculation Type cannot be blank",
                                   required: true,
                                 },
                                 onChange: changeGridEditors.bind(

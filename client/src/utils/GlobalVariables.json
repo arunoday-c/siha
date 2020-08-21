@@ -1588,16 +1588,6 @@
       "value": "V"
     }
   ],
-  "PASI_CALC_TYPE": [
-    {
-      "name": "Net Salary",
-      "value": "N"
-    },
-    {
-      "name": "Gross Salary",
-      "value": "G"
-    }
-  ],
   "COMP_TYPE": [
     {
       "name": "None",
