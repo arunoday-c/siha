@@ -1,0 +1,44 @@
+{{{importStyle 'css/algaehReportStyles.css'}}}
+
+<body>
+    <div class="print-body">
+
+        <section>
+            <table class="tableForData" cell-padding="0">
+                <thead>
+                    <tr>
+                        <th>Sl No.</th>
+                        <th>Invoice No.</th>
+                        <th>Invoice Date</th>
+                        <th>Customer Name</th>
+                        <th>Sales Persona Name</th>
+                        <th>Total Amount</th>
+                    </tr>
+                </thead>
+                <tbody>{{#hasElement details}}
+                    {{#each details}}
+                    <tr>
+                        <td>{{inc @index}}</td>
+                        <td>{{invoice_number}}</td>
+                        <td>{{invoice_date}}</td>
+                        <td>{{customer_name}}</td>
+                        <td>{{sales_per_name}}</td>
+                        <td class="numberFld">{{net_payable}}</td>
+                    </tr>
+                    {{/each }}
+                    <tr class="numberFldTotalBottom">
+
+                        <td colspan="5" class="numberFld">Total</td>
+                        <td class="numberFld">{{net_payable}}</td>
+                    </tr>
+                    {{else}}
+                    <tr>
+                        <td colspan="6" class="noResultTextReport">No Records Found</td>
+                    </tr>
+                    {{/hasElement }}
+                </tbody>
+            </table>
+        </section>
+        {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
+    </div>
+</body>
