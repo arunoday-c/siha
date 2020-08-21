@@ -7,12 +7,13 @@ import {
   AlgaehDateHandler,
   AlgaehModalPopUp,
 } from "../Wrapper/algaehWrapper";
+
 import AlgaehAutoSearch from "../Wrapper/autoSearch";
 import { getLabelFromLanguage } from "../../utils/GlobalFunctions";
 import GlobalVariables from "../../utils/GlobalVariables";
 import "./appointment.scss";
 import spotlightSearch from "../../Search/spotlightSearch.json";
-
+import { AlgaehAutoComplete } from "algaeh-react-components";
 function AppointmentComponent(props) {
   useLayoutEffect(() => {
     const getAllTables = document.getElementsByTagName("table");
@@ -573,7 +574,7 @@ function AppointmentComponent(props) {
             {/* <form onSubmit={props.getAppointmentSchedule.bind(props)}> */}
 
             <div className="row inner-top-search">
-              <AlagehAutoComplete
+              <AlgaehAutoComplete
                 div={{ className: "col-3  mandatory" }}
                 label={{
                   fieldName: "department_name",
@@ -584,8 +585,8 @@ function AppointmentComponent(props) {
                   className: "select-fld",
                   value: props.state.sub_department_id,
                   dataSource: {
-                    textField: "sub_department_name",
-                    valueField: "sub_dept_id",
+                    textField: "label", //"sub_department_name",
+                    valueField: "value", //"sub_dept_id",
                     data: props.state.departments,
                   },
                   onChange: props.deptDropDownHandler,
@@ -594,7 +595,7 @@ function AppointmentComponent(props) {
                 }}
               />
 
-              <AlagehAutoComplete
+              <AlgaehAutoComplete
                 div={{ className: "col-3 " }}
                 label={{
                   fieldName: "filterbyDoctor",
@@ -604,11 +605,11 @@ function AppointmentComponent(props) {
                   className: "select-fld",
                   value: props.state.provider_id,
                   dataSource: {
-                    textField: "full_name",
-                    valueField: "provider_id",
+                    textField: "label", //"full_name",
+                    valueField: "value", //"provider_id",
                     data: props.state.doctors,
                   },
-                  onChange: props.dropDownHandle,
+                  onChange: props.dropdownDoctorHandler,
                   onClear: () => props.nullifyState("provider_id"),
                   autoComplete: "off",
                 }}

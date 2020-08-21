@@ -61,22 +61,21 @@ export default {
       const utilities = new algaehUtilities();
       /* Select statemwnt  */
 
-      utilities.logger().log("inputParam: ", inputParam);
+      //utilities.logger().log("inputParam: ", inputParam);
 
       _mysql
         .executeQuery({
-          query:
-            "select visit_code from hims_d_sub_department SD,hims_f_patient_visit V where \
-          V.sub_department_id=SD.hims_d_sub_department_id and SD.record_status='A' and V.record_status='A' \
-          and V.visit_date =DATE(now()) and SD.hims_d_sub_department_id=?\
-          and V.doctor_id=? and patient_id =? and V.hospital_id=? and V.visit_status!='CN'",
+          query: `select visit_code from hims_d_sub_department SD,hims_f_patient_visit V where 
+          V.sub_department_id=SD.hims_d_sub_department_id and SD.record_status='A' and V.record_status='A' 
+          and date(V.visit_expiery_date) between date(now()) and DATE(V.visit_expiery_date) and SD.hims_d_sub_department_id=?
+          and V.doctor_id=? and patient_id =? and V.hospital_id=? and V.visit_status!='CN'`,
           values: [
             inputParam.sub_department_id,
             inputParam.doctor_id,
             inputParam.patient_id,
             req.userIdentity.hospital_id,
           ],
-          printQuery: true,
+          printQuery: false,
         })
         .then((result) => {
           _mysql.releaseConnection();

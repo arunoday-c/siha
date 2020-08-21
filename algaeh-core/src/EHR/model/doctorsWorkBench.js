@@ -624,7 +624,6 @@ let addAllergy = (req, res, next) => {
   const _mysql = new algaehMysql({ path: keyPath });
   let input = req.body;
   try {
-
     _mysql
       .executeQuery({
         query:
@@ -657,7 +656,6 @@ let updateAllergy = (req, res, next) => {
   const _mysql = new algaehMysql({ path: keyPath });
   let input = req.body;
   try {
-
     _mysql
       .executeQuery({
         query:
@@ -670,7 +668,7 @@ let updateAllergy = (req, res, next) => {
           new Date(),
           input.hims_d_allergy_id,
         ],
-        printQuery: true
+        printQuery: true,
       })
       .then((result) => {
         _mysql.releaseConnection();
@@ -691,10 +689,10 @@ let updateAllergy = (req, res, next) => {
 let getAllergyDetails = (req, res, next) => {
   const _mysql = new algaehMysql({ path: keyPath });
   try {
-
     _mysql
       .executeQuery({
-        query: "SELECT * FROM hims_d_allergy where record_status='A' order by hims_d_allergy_id desc",
+        query:
+          "SELECT * FROM hims_d_allergy where record_status='A' order by hims_d_allergy_id desc",
       })
       .then((result) => {
         _mysql.releaseConnection();
@@ -714,12 +712,11 @@ let getAllergyDetails = (req, res, next) => {
 let deleteAllergy = (req, res, next) => {
   const _mysql = new algaehMysql({ path: keyPath });
   try {
-
     _mysql
       .executeQuery({
         query: "DELETE from hims_d_allergy where hims_d_allergy_id=?",
         values: [req.body.hims_d_allergy_id],
-        printQuery: true
+        printQuery: true,
       })
       .then((result) => {
         _mysql.releaseConnection();
@@ -742,7 +739,6 @@ let addChronicalConditions = (req, res, next) => {
   let input = req.body;
 
   try {
-
     _mysql
       .executeQuery({
         query:
@@ -795,7 +791,6 @@ let getChronicalConditions = (req, res, next) => {
 
 //created by irfan:  to add encounter review
 let addEncounterReview = (req, res, next) => {
-
   const _mysql = new algaehMysql({ path: keyPath });
 
   try {
@@ -813,7 +808,7 @@ let addEncounterReview = (req, res, next) => {
           req.userIdentity.algaeh_d_app_user_id,
           req.userIdentity.algaeh_d_app_user_id,
           req.userIdentity.hospital_id,
-        ]
+        ],
       })
       .then((result) => {
         _mysql.releaseConnection();
@@ -896,7 +891,7 @@ let getMyDay = (req, res, next) => {
   try {
     let _query = "";
     _query += _mysql.mysqlQueryFormat(
-      " provider_id=? and sub_department_id=? and ",
+      " E.provider_id=? and V.sub_department_id=? and ",
       requestValues
     );
     if (
@@ -938,18 +933,31 @@ let getMyDay = (req, res, next) => {
     _mysql
       .executeQuery({
         query:
-          "select  E.hims_f_patient_encounter_id, P.patient_code, P.full_name, P.gender, P.age, E.patient_id,\
-            V.appointment_patient, V.new_visit_patient, E.provider_id, E.`status`, E.nurse_examine, E.checked_in,\
-            E.payment_type, E.episode_id, E.encounter_id, E.`source`, E.updated_date as encountered_date, \
-            E.visit_id, sub_department_id, SD.department_type, SD.vitals_mandatory,	P.primary_id_no, \
-	          ID.identity_document_name, V.visit_expiery_date, V.visit_status from hims_f_patient_encounter E\
-            INNER JOIN hims_f_patient P ON E.patient_id=P.hims_d_patient_id \
-            inner join hims_f_patient_visit V on E.visit_id=V.hims_f_patient_visit_id  \
-            inner join hims_d_sub_department SD on sub_department_id=SD.hims_d_sub_department_id  \
-            left join hims_d_identity_document ID on  \
-            ID.hims_d_identity_document_id = P.primary_identity_id \
-            where E.cancelled='N' and E.record_status='A' AND  V.record_status='A' and V.hospital_id=? AND " +
-          _query,
+          // "select  E.hims_f_patient_encounter_id, P.patient_code, P.full_name, P.gender, P.age, E.patient_id,\
+          //   V.appointment_patient, V.new_visit_patient, E.provider_id, E.`status`, E.nurse_examine, E.checked_in,\
+          //   E.payment_type, E.episode_id, E.encounter_id, E.`source`, E.updated_date as encountered_date, \
+          //   E.visit_id, sub_department_id, SD.department_type, SD.vitals_mandatory,	P.primary_id_no, \
+          //   ID.identity_document_name, V.visit_expiery_date, V.visit_status from hims_f_patient_encounter E\
+          //   INNER JOIN hims_f_patient P ON E.patient_id=P.hims_d_patient_id \
+          //   inner join hims_f_patient_visit V on E.visit_id=V.hims_f_patient_visit_id  \
+          //   inner join hims_d_sub_department SD on sub_department_id=SD.hims_d_sub_department_id  \
+          //   left join hims_d_identity_document ID on  \
+          //   ID.hims_d_identity_document_id = P.primary_identity_id \
+          //   where E.cancelled='N' and E.record_status='A' AND  V.record_status='A' and V.hospital_id=? AND " +
+          // _query,
+          `select  E.hims_f_patient_encounter_id, P.patient_code, concat(T.title,". ", P.full_name) as full_name,
+          concat(T.arabic_title,". ",P.arabic_name) as pat_arabic_name, P.gender, P.age, E.patient_id, 
+          V.appointment_patient, V.new_visit_patient, E.provider_id, E.status, E.nurse_examine, E.checked_in, 
+          E.payment_type, E.episode_id, E.encounter_id, E.source, E.updated_date as encountered_date,E.visit_id, 
+          V.sub_department_id, SD.department_type, SD.vitals_mandatory,	P.primary_id_no,ID.identity_document_name, 
+          V.visit_expiery_date, V.visit_status,PA.appointment_date,PA.appointment_from_time,PA.appointment_to_time 
+          from hims_f_patient_encounter as E  INNER JOIN hims_f_patient P ON E.patient_id=P.hims_d_patient_id   
+          inner join hims_f_patient_visit V on E.visit_id=V.hims_f_patient_visit_id inner join hims_d_sub_department SD 
+          on sub_department_id=SD.hims_d_sub_department_id left join hims_d_identity_document ID on 
+          ID.hims_d_identity_document_id = P.primary_identity_id left join hims_f_patient_appointment as PA 
+          on V.appointment_id = PA.hims_f_patient_appointment_id inner join hims_d_title as T 
+          on P.title_id = T.his_d_title_id
+          where E.cancelled='N' and E.record_status='A' AND  V.record_status='A' and V.hospital_id=? AND ${_query}`,
         values: [req.userIdentity.hospital_id],
         printQuery: true,
       })
@@ -2656,14 +2664,14 @@ let getPatientHistory = (req, res, next) => {
                 key == "SOH"
                   ? "Social History"
                   : key === "MEH"
-                    ? "Medical History"
-                    : key === "SGH"
-                      ? "Surgical History"
-                      : key === "FMH"
-                        ? "Family History"
-                        : key === "BRH"
-                          ? "Birth History"
-                          : "",
+                  ? "Medical History"
+                  : key === "SGH"
+                  ? "Surgical History"
+                  : key === "FMH"
+                  ? "Family History"
+                  : key === "BRH"
+                  ? "Birth History"
+                  : "",
               groupDetail: detail,
             };
           })
@@ -2831,8 +2839,8 @@ let updatePatientEncounter = (req, res, next) => {
         inputData.examination_notes != null
           ? ","
           : inputData.assesment_notes != null
-            ? ","
-            : "";
+          ? ","
+          : "";
       strQuery += _mysql.mysqlQueryFormat(putComma + "significant_signs = ?", [
         inputData.significant_signs,
       ]);
@@ -2843,10 +2851,10 @@ let updatePatientEncounter = (req, res, next) => {
         inputData.examination_notes != null
           ? ","
           : inputData.assesment_notes != null
-            ? ","
-            : inputData.significant_signs != null
-              ? ","
-              : "";
+          ? ","
+          : inputData.significant_signs != null
+          ? ","
+          : "";
       strQuery += _mysql.mysqlQueryFormat(putComma + "other_signs = ?", [
         inputData.other_signs,
       ]);
@@ -3180,5 +3188,5 @@ export default {
   addSickLeave,
   getSickLeave,
   updateAllergy,
-  deleteAllergy
+  deleteAllergy,
 };

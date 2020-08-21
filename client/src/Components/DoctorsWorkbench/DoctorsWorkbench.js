@@ -457,7 +457,10 @@ class DoctorsWorkbench extends Component {
             <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-title">
                 <div className="caption">
-                  <h3 className="caption-subject">Appointment Patients</h3>
+                  <h3 className="caption-subject">
+                    Appointment Patient
+                    <small> - {this.state.appointments.length}</small>
+                  </h3>
                 </div>
               </div>
 
@@ -496,7 +499,7 @@ class DoctorsWorkbench extends Component {
                                 marginTop: 5,
                               }}
                             >
-                              {data.is_stand_by === "Y" ? "Stand By" : ""}
+                              {data.is_stand_by === "Y" ? "Stand By" : "Appt."}
                             </small>
                           </span>
                           <span className="app-sec-2">
@@ -504,7 +507,7 @@ class DoctorsWorkbench extends Component {
                               {data.pat_name}
                             </span>
                             <span className="appStatus nursing">
-                              {data.age} - {data.gender}
+                              {data.age} Yrs - {data.gender}
                             </span>
                             <span className="appStatus newVisit">
                               {data.app_status} /{" "}
@@ -517,10 +520,7 @@ class DoctorsWorkbench extends Component {
                                 data.appointment_to_time,
                                 "HH:mm:ss"
                               ).format("hh:mm A")}
-                              {/* {this.statusCheck(data.appointment_status_id)} */}
-                            </span>{" "}
-                            {/* <span>Color:{data.color_code}</span> */}
-                            {/* <span>Stand By: {data.is_stand_by}</span> */}
+                            </span>
                           </span>
                         </li>
                       ))
@@ -556,18 +556,6 @@ class DoctorsWorkbench extends Component {
 
               <div className="portlet-body">
                 <div className="opPatientList">
-                  {" "}
-                  {/* <div className="opStatusLegend">
-                    <span>
-                      <small>Follow Up</small>10
-                    </span>
-                    <span>
-                      <small>New Visit</small>10
-                    </span>
-                    <span>
-                      <small>Package Visit</small>10
-                    </span>
-                  </div> */}
                   <ul className="opList">
                     {Enumerable.from(this.state.data)
                       .where((w) => w.status === "V")

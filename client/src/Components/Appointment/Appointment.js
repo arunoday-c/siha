@@ -373,14 +373,15 @@ class Appointment extends PureComponent {
 
   getDoctorsAndDepts() {
     algaehApiCall({
-      uri: "/department/selectDoctorsAndClinic",
-      module: "masterSettings",
+      uri: "/frontdesk/getDoctorAndDepartment", //"/department/selectDoctorsAndClinic",
+      module: "frontDesk", //"masterSettings",
       method: "GET",
       onSuccess: (response) => {
         if (response.data.success) {
           this.setState(
             {
-              departments: response.data.records.departmets,
+              departments: response.data.records,
+              // departments: response.data.records.departmets,
             },
             () => this.restoreOldState()
           );
@@ -583,15 +584,32 @@ class Appointment extends PureComponent {
     this.setState({ selectedHDate: dt, activeDateHeader: dt });
   }
 
-  deptDropDownHandler(value) {
-    this.setState({ [value.name]: value.value }, () => {
-      let dept = Enumerable.from(this.state.departments)
-        .where((w) => w.sub_dept_id === this.state.sub_department_id)
-        .firstOrDefault();
-      this.setState({
-        doctors: dept.doctors,
-        department_id: value.selected.department_id,
-      });
+  deptDropDownHandler(selector) {
+    const dept = selector["children"];
+    let _department = {};
+    if (dept.length > 0) {
+      _department = { department_id: dept[0]["department_id"] };
+    }
+    this.setState({
+      sub_department_id: selector.value,
+      doctors: dept,
+      ..._department,
+      provider_id: undefined,
+    });
+    // this.setState({ [value.name]: value.value }, () => {
+    // let dept = Enumerable.from(this.state.departments)
+    //   .where((w) => w.sub_dept_id === this.state.sub_department_id)
+    //   .firstOrDefault();
+    // this.setState({
+    //   doctors: dept.doctors,
+    //   department_id: value.selected.department_id,
+    // });
+
+    //});
+  }
+  dropdownDoctorHandler(selector) {
+    this.setState({
+      provider_id: selector.value,
     });
   }
 
@@ -1771,8 +1789,13 @@ class Appointment extends PureComponent {
     }
   }
   nullifyState(name) {
+    let clearOther = {};
+    if (name === "sub_department_id") {
+      clearOther = { provider_id: undefined };
+    }
     this.setState({
       [name]: null,
+      ...clearOther,
     });
   }
 
@@ -1927,6 +1950,9 @@ class Appointment extends PureComponent {
           this.AppointmentSearch(result, name)
         }
         requied_emp_id={this.state.requied_emp_id} //requied_emp_id}
+        dropdownDoctorHandler={(selector) => {
+          this.dropdownDoctorHandler(selector);
+        }}
       />
     );
   }
