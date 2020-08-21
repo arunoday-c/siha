@@ -31,7 +31,7 @@ export const getPatient = async (key, { patient_code }) => {
     method: "GET",
     data: { patient_code },
   });
-  return result?.data?.records;
+  return result ?.data ?.records;
 };
 
 const getPatientFromAppointment = async (key, { appointment_id }) => {
@@ -41,7 +41,7 @@ const getPatientFromAppointment = async (key, { appointment_id }) => {
     method: "GET",
     data: { application_id: appointment_id },
   });
-  return result?.data?.records;
+  return result ?.data ?.records;
 };
 
 const getPatientPackage = async (key, { patient_id }) => {
@@ -54,7 +54,7 @@ const getPatientPackage = async (key, { patient_id }) => {
       closed: "N",
     },
   });
-  return res?.data.records;
+  return res ?.data.records;
 };
 
 const savePatient = async (data) => {
@@ -65,17 +65,18 @@ const savePatient = async (data) => {
     data,
     method: "POST",
   });
-  return result.data?.records;
+  return result.data ?.records;
 };
 
 const updatePatient = async (data) => {
+  data.ScreenCode = "BL0002";
   const result = await newAlgaehApi({
     uri: "/frontDesk/update",
     module: "frontDesk",
     data,
     method: "POST",
   });
-  return result.data?.records;
+  return result.data ?.records;
 };
 
 const updateAppointmentStatus = async (data) => {
@@ -86,9 +87,9 @@ const updateAppointmentStatus = async (data) => {
       module: "frontDesk",
       data,
     });
-    return result?.data?.records;
+    return result ?.data ?.records;
   } catch (error) {
-    console.error(error?.message);
+    console.error(error ?.message);
   }
 };
 
@@ -107,7 +108,7 @@ const generateIdCard = (data) => {
         reportParams: [
           {
             name: "hims_d_patient_id",
-            value: data?.hims_d_patient_id,
+            value: data ?.hims_d_patient_id,
           },
         ],
         outputFileType: "PDF",
@@ -115,7 +116,7 @@ const generateIdCard = (data) => {
     },
     onSuccess: (res) => {
       const urlBlob = URL.createObjectURL(res.data);
-      const reportName = `${data?.patient_code}-ID Card`;
+      const reportName = `${data ?.patient_code}-ID Card`;
       const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=${reportName}`;
       window.open(origin);
     },
@@ -137,7 +138,7 @@ const generateReceipt = (data) => {
         reportParams: [
           {
             name: "hims_f_billing_header_id",
-            value: data?.hims_f_billing_header_id,
+            value: data ?.hims_f_billing_header_id,
           },
         ],
         outputFileType: "PDF",
@@ -167,7 +168,7 @@ export function PatientRegistration() {
   const insuranceImgFront = useRef(null);
   const insuranceImgBack = useRef(null);
 
-  const isEmpIdRequired = userToken?.requied_emp_id === "Y";
+  const isEmpIdRequired = userToken ?.requied_emp_id === "Y";
   const queryParams = useQueryParams();
   const patient_code = queryParams.get("patient_code");
   const appointment_id = queryParams.get("appointment_id");
@@ -204,10 +205,10 @@ export function PatientRegistration() {
     reValidateMode: "onSubmit",
     shouldFocusError: true,
     defaultValues: {
-      nationality_id: userToken?.default_nationality,
-      country_id: userToken?.default_country,
-      patient_type: userToken?.default_patient_type,
-      visit_type: default_visit_type?.hims_d_visit_type_id,
+      nationality_id: userToken ?.default_nationality,
+      country_id: userToken ?.default_country,
+      patient_type: userToken ?.default_patient_type,
+      visit_type: default_visit_type ?.hims_d_visit_type_id,
     },
   });
 
@@ -224,13 +225,13 @@ export function PatientRegistration() {
       retry: 0,
       initialStale: true,
       onSuccess: (data) => {
-        if (data?.patientRegistration) {
-          reset(data?.patientRegistration);
+        if (data ?.patientRegistration) {
+          reset(data ?.patientRegistration);
         }
       },
       onError: (err) => {
         AlgaehMessagePop({
-          display: err?.message,
+          display: err ?.message,
           type: "error",
         });
         history.push(location.pathname);
@@ -248,8 +249,8 @@ export function PatientRegistration() {
         updateAppointmentStatus({
           application_id: appointment_id,
           appointment_status_id: status_id,
-          patient_id: data?.hims_d_patient_id,
-          patient_code: data?.patient_code,
+          patient_id: data ?.hims_d_patient_id,
+          patient_code: data ?.patient_code,
         }).then(() => {
           AlgaehMessagePop({
             display: "Patient Updated Successfully",
@@ -274,8 +275,8 @@ export function PatientRegistration() {
         updateAppointmentStatus({
           application_id: appointment_id,
           appointment_status_id: status_id,
-          patient_id: data?.hims_d_patient_id,
-          patient_code: data?.patient_code,
+          patient_id: data ?.hims_d_patient_id,
+          patient_code: data ?.patient_code,
         }).then(() => {
           AlgaehMessagePop({
             display: "Patient Updated Successfully",
@@ -297,21 +298,21 @@ export function PatientRegistration() {
     {
       enabled: !!appointment_id,
       onSuccess: (data) => {
-        const doctor = `${data?.sub_department_id}-${data?.services_id}-${data?.provider_id}-${data?.department_type}-${data?.department_id}`;
+        const doctor = `${data ?.sub_department_id}-${data ?.services_id}-${data ?.provider_id}-${data ?.department_type}-${data ?.department_id}`;
         if (!patient_code) {
           reset({
             ...data,
             consultation: "Y",
             visit_type: default_visit_type,
-            full_name: data?.patient_name,
-            doctor_id: data?.provider_id,
+            full_name: data ?.patient_name,
+            doctor_id: data ?.provider_id,
             doctor,
           });
           setServiceInfo(doctor);
         } else {
           setValue("consultation", "Y");
           setValue("doctor", doctor);
-          setValue("doctor_id", data?.provider_id);
+          setValue("doctor_id", data ?.provider_id);
           setValue("visit_type", 10);
           setServiceInfo(doctor);
         }
@@ -326,11 +327,11 @@ export function PatientRegistration() {
   } = useQuery(
     [
       "patient-package",
-      { patient_id: patientData?.patientRegistration?.hims_d_patient_id },
+      { patient_id: patientData ?.patientRegistration ?.hims_d_patient_id },
     ],
     getPatientPackage,
     {
-      enabled: !!patientData?.patientRegistration,
+      enabled: !!patientData ?.patientRegistration,
       initialData: [],
       initialStale: true,
     }
@@ -340,8 +341,8 @@ export function PatientRegistration() {
     const images = [];
 
     if (
-      patientImage?.current !== null &&
-      patientImage.current?.state?.fileExtention
+      patientImage ?.current !== null &&
+        patientImage.current ?.state ?.fileExtention
     ) {
       images.push(
         new Promise((resolve, reject) => {
@@ -349,7 +350,7 @@ export function PatientRegistration() {
             undefined,
             undefined,
             undefined,
-            data?.patient_code,
+            data ?.patient_code,
             () => {
               resolve();
             }
@@ -359,7 +360,7 @@ export function PatientRegistration() {
     }
     if (
       patientIdCard.current !== null &&
-      patientImage.current?.state?.fileExtention
+        patientImage.current ?.state ?.fileExtention
     ) {
       images.push(
         new Promise((resolve, reject) => {
@@ -367,7 +368,7 @@ export function PatientRegistration() {
             undefined,
             undefined,
             undefined,
-            data?.primary_id_no,
+            data ?.primary_id_no,
             () => {
               resolve();
             }
@@ -375,10 +376,10 @@ export function PatientRegistration() {
         })
       );
     }
-    if (data?.primary_insurance_provider_id) {
+    if (data ?.primary_insurance_provider_id) {
       if (
         insuranceImgBack.current !== null &&
-        patientImage.current?.state?.fileExtention
+          patientImage.current ?.state ?.fileExtention
       ) {
         images.push(
           new Promise((resolve, reject) => {
@@ -386,7 +387,7 @@ export function PatientRegistration() {
               undefined,
               undefined,
               undefined,
-              data?.primary_id_no,
+              data ?.primary_id_no,
               () => {
                 resolve();
               }
@@ -396,7 +397,7 @@ export function PatientRegistration() {
       }
       if (
         insuranceImgFront.current !== null &&
-        patientImage.current?.state?.fileExtention
+          patientImage.current ?.state ?.fileExtention
       ) {
         images.push(
           new Promise((resolve, reject) => {
@@ -404,7 +405,7 @@ export function PatientRegistration() {
               undefined,
               undefined,
               undefined,
-              data?.primary_id_no,
+              data ?.primary_id_no,
               () => {
                 resolve();
               }
@@ -431,7 +432,7 @@ export function PatientRegistration() {
       updated_date: null,
     });
 
-    if (input?.card_amount > 0) {
+    if (input ?.card_amount > 0) {
       receiptdetails.push({
         amount: input.card_amount,
         card_check_number: input.card_number || null,
@@ -454,8 +455,8 @@ export function PatientRegistration() {
         service_type_id: parseInt(services_id, 10),
         doctor_id: parseInt(doctor_id, 10),
         department_type: parseInt(department_type, 10),
-        consultation: consultationInfo?.consultation,
-        insured: input?.primary_insurance_provider_id ? "Y" : "N",
+        consultation: consultationInfo ?.consultation,
+        insured: input ?.primary_insurance_provider_id ? "Y" : "N",
         maternity_patient: "N",
         is_mlc: "N",
         existing_plan: "N",
@@ -474,20 +475,20 @@ export function PatientRegistration() {
       } = input;
       inputData = {
         patient_code,
-        visit_type: input?.visit_type,
-        shift_id: input?.shift_id,
-        hims_d_patient_id: patientData?.patientRegistration?.hims_d_patient_id,
-        hims_f_patient_id: patientData?.patientRegistration?.hims_d_patient_id,
-        patient_id: patientData?.patientRegistration?.hims_d_patient_id,
-        primary_insurance_provider_id: input?.primary_insurance_provider_id,
-        primary_sub_id: input?.primary_sub_id,
-        primary_network_id: input?.primary_network_id,
-        primary_network_office_id: input?.primary_network_office_id,
-        primary_policy_num: input?.primary_policy_num,
-        primary_card_number: input?.primary_card_number,
-        primary_effective_start_date: input?.primary_effective_start_date,
-        primary_effective_end_date: input?.primary_effective_end_date,
-        insured: input?.primary_insurance_provider_id ? "Y" : "N",
+        visit_type: input ?.visit_type,
+        shift_id: input ?.shift_id,
+        hims_d_patient_id: patientData ?.patientRegistration ?.hims_d_patient_id,
+        hims_f_patient_id: patientData ?.patientRegistration ?.hims_d_patient_id,
+        patient_id: patientData ?.patientRegistration ?.hims_d_patient_id,
+        primary_insurance_provider_id: input ?.primary_insurance_provider_id,
+        primary_sub_id: input ?.primary_sub_id,
+        primary_network_id: input ?.primary_network_id,
+        primary_network_office_id: input ?.primary_network_office_id,
+        primary_policy_num: input ?.primary_policy_num,
+        primary_card_number: input ?.primary_card_number,
+        primary_effective_start_date: input ?.primary_effective_start_date,
+        primary_effective_end_date: input ?.primary_effective_end_date,
+        insured: input ?.primary_insurance_provider_id ? "Y" : "N",
         advance_adjust,
         sheet_discount_percentage,
         sheet_discount_amount,
@@ -500,14 +501,14 @@ export function PatientRegistration() {
       update({
         ...inputData,
         ...billInfo,
-        advance_amount: patientData?.patientRegistration?.advance_amount,
+        advance_amount: patientData ?.patientRegistration ?.advance_amount,
         department_id: parseInt(department_id, 10),
         sub_department_id: parseInt(sub_department_id, 10),
         services_id: parseInt(services_id, 10),
         service_type_id: parseInt(services_id, 10),
         doctor_id: parseInt(doctor_id, 10),
         department_type: parseInt(department_type, 10),
-        consultation: consultationInfo?.consultation,
+        consultation: consultationInfo ?.consultation,
         maternity_patient: "N",
         is_mlc: "N",
         existing_plan: "N",
@@ -550,10 +551,10 @@ export function PatientRegistration() {
       sheet_discount_percentage: 0,
       sub_department_id: "",
       title_id: "",
-      nationality_id: userToken?.default_nationality,
-      country_id: userToken?.default_country,
-      patient_type: userToken?.default_patient_type,
-      visit_type: default_visit_type?.hims_d_visit_type_id,
+      nationality_id: userToken ?.default_nationality,
+      country_id: userToken ?.default_country,
+      patient_type: userToken ?.default_patient_type,
+      visit_type: default_visit_type ?.hims_d_visit_type_id,
     });
     clearState();
     setConsultationInfo(default_visit_type);
@@ -586,7 +587,7 @@ export function PatientRegistration() {
                 label={{ fieldName: "patient_code", returnText: true }}
               />
             ),
-            value: patient_code || savedPatient?.patient_code,
+            value: patient_code || savedPatient ?.patient_code,
             selectValue: "patient_code",
             events: {
               onChange: (code) => {
@@ -617,7 +618,7 @@ export function PatientRegistration() {
           editData={{
             events: {
               onClick: () => {
-                if (!!patient_code || !!savedPatient?.patient_code) {
+                if (!!patient_code || !!savedPatient ?.patient_code) {
                   setUpdateModal(true);
                 }
               },
@@ -626,27 +627,27 @@ export function PatientRegistration() {
           printArea={
             !!patient_code || !!savedPatient
               ? {
-                  menuitems: [
-                    {
-                      label: "ID Card",
-                      events: {
-                        onClick: () => {
-                          generateIdCard(
-                            patientData?.patientRegistration || savedPatient
+                menuitems: [
+                  {
+                    label: "ID Card",
+                    events: {
+                      onClick: () => {
+                        generateIdCard(
+                          patientData ?.patientRegistration || savedPatient
                           );
-                        },
                       },
                     },
-                    {
-                      label: "Advance/Refund Receipt",
-                      events: {
-                        onClick: () => {
-                          setShowAdvModal(true);
-                        },
+                  },
+                  {
+                    label: "Advance/Refund Receipt",
+                    events: {
+                      onClick: () => {
+                        setShowAdvModal(true);
                       },
                     },
-                  ],
-                }
+                  },
+                ],
+              }
               : ""
           }
           selectedLang={userLanguage}
@@ -676,7 +677,7 @@ export function PatientRegistration() {
                   control={control}
                   trigger={trigger}
                   setValue={setValue}
-                  visits={patientData?.visitDetails}
+                  visits={patientData ?.visitDetails}
                   packages={packages}
                   errors={errors}
                 />
@@ -689,7 +690,7 @@ export function PatientRegistration() {
                   setValue={setValue}
                   clearErrors={clearErrors}
                   errors={errors}
-                  patient={patientData?.patientRegistration}
+                  patient={patientData ?.patientRegistration}
                 />
               </div>
             </div>
@@ -703,10 +704,10 @@ export function PatientRegistration() {
                       e.persist();
                       e.preventDefault();
                       trigger().then(() => {
-                        if (errors?.unbalanced) {
+                        if (errors ?.unbalanced) {
                           AlgaehMessagePop({
                             type: "Warning",
-                            display: errors?.unbalanced?.message,
+                            display: errors ?.unbalanced ?.message,
                           });
                           return null;
                         } else if (Object.keys(errors).length) {
@@ -740,7 +741,7 @@ export function PatientRegistration() {
                       label={{ fieldName: "btn_clear", returnText: true }}
                     />
                   </button>
-                  <AdvanceModal patient={patientData?.patientRegistration} />
+                  <AdvanceModal patient={patientData ?.patientRegistration} />
                   {!!savedPatient && ( // eslint-disable-line
                     <>
                       <button
@@ -751,7 +752,7 @@ export function PatientRegistration() {
                           history.replace(location.pathname);
                           history.push(
                             `/OPBilling?patient_code=${
-                              patient_code || savedPatient?.patient_code
+                            patient_code || savedPatient ?.patient_code
                             }`
                           );
                         }}
@@ -772,7 +773,7 @@ export function PatientRegistration() {
                     </>
                   )}
 
-                  {!!patientData && packages?.length > 0 ? (
+                  {!!patientData && packages ?.length > 0 ? (
                     <div className="col">
                       <button
                         type="button"
@@ -790,13 +791,13 @@ export function PatientRegistration() {
                         from="frontDesk"
                         from_billing={true}
                         patient_id={
-                          patientData?.patientRegistration?.hims_d_patient_id
+                          patientData ?.patientRegistration ?.hims_d_patient_id
                         }
                       />
                     </div>
                   ) : null}
                 </div>
-                {!!savedPatient && consultationInfo?.consultation === "Y" ? (
+                {!!savedPatient && consultationInfo ?.consultation === "Y" ? (
                   <CSSTransition
                     in={openPopup}
                     classNames={{
@@ -819,7 +820,7 @@ export function PatientRegistration() {
                               forceLabel: "Patient Code",
                             }}
                           />
-                          <h6>{savedPatient?.patient_code}</h6>
+                          <h6>{savedPatient ?.patient_code}</h6>
                         </div>
 
                         <div className="col-3">
@@ -828,7 +829,7 @@ export function PatientRegistration() {
                               forceLabel: "Bill Number",
                             }}
                           />
-                          <h6>{savedPatient?.bill_number}</h6>
+                          <h6>{savedPatient ?.bill_number}</h6>
                         </div>
 
                         <div className="col-3">
@@ -837,7 +838,7 @@ export function PatientRegistration() {
                               forceLabel: "Receipt Number",
                             }}
                           />
-                          <h6>{savedPatient?.receipt_number}</h6>
+                          <h6>{savedPatient ?.receipt_number}</h6>
                         </div>
                       </div>
                       <div className="row">
@@ -873,7 +874,7 @@ export function PatientRegistration() {
           </form>
         </div>
       </div>
-      {(!!patient_code || !!savedPatient?.patient_code) && (
+      {(!!patient_code || !!savedPatient ?.patient_code) && (
         <>
           <UpdatePatient
             onClose={(isUpdated) => {
@@ -882,7 +883,7 @@ export function PatientRegistration() {
               }
               setUpdateModal(false);
             }}
-            patient_code={patient_code || savedPatient?.patient_code}
+            patient_code={patient_code || savedPatient ?.patient_code}
             show={showUpdateModal}
           />
           <AdvanceRefundListModal
@@ -904,18 +905,18 @@ export function PatientRegistration() {
             inputsparameters={
               patient_code
                 ? {
-                    patient_code: patient_code,
-                    full_name: patientData?.patientRegistration?.full_name,
-                    hims_f_patient_id:
-                      patientData?.patientRegistration?.hims_d_patient_id,
-                  }
+                  patient_code: patient_code,
+                  full_name: patientData ?.patientRegistration ?.full_name,
+                  hims_f_patient_id:
+                    patientData ?.patientRegistration ?.hims_d_patient_id,
+                }
                 : !!savedPatient
-                ? {
-                    patient_code: savedPatient?.patient_code,
-                    full_name: savedPatient?.full_name,
-                    hims_f_patient_id: savedPatient?.hims_d_patient_id,
+                  ? {
+                    patient_code: savedPatient ?.patient_code,
+                    full_name: savedPatient ?.full_name,
+                    hims_f_patient_id: savedPatient ?.hims_d_patient_id,
                   }
-                : {}
+                  : {}
             }
           />
         </>
