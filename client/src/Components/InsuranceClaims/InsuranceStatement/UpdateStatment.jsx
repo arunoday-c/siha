@@ -25,30 +25,57 @@ export function UpdateStatement({
   data = {},
   onClose = () => {},
 }) {
-  const { control, handleSubmit, reset, errors } = useForm();
+  const { control, handleSubmit, reset, errors, setError } = useForm();
   const { userLanguage } = useContext(MainContext);
 
   const [update, { isLoading }] = useMutation(updateStatement, {
     onSuccess: (data) => {
       if (data?.success) {
-        onClose();
+        onClose(true);
       }
     },
   });
 
   useEffect(() => {
     if (!show) {
-      reset();
+      reset({
+        remittance_ammount: "",
+        denial_ammount: "",
+      });
+    }
+
+    if (show && !!data) {
+      reset({
+        remittance_ammount: data?.remittance_ammount,
+        denial_ammount: data?.denial_ammount,
+      });
     }
     // eslint-disable-next-line
-  }, [show]);
+  }, [show, data]);
 
   const onSubmit = (e) => {
-    update({
-      ...e,
-      hims_f_invoice_header_id: data?.hims_f_invoice_header_id,
-      insurance_statement_id: data?.insurance_statement_id,
-    });
+    const total =
+      parseFloat(e.remittance_ammount) + parseFloat(e.denial_ammount);
+    if (total <= parseFloat(data?.company_payable)) {
+      update({
+        ...e,
+        hims_f_invoice_header_id: data?.hims_f_invoice_header_id,
+        insurance_statement_id: data?.insurance_statement_id,
+      });
+    } else {
+      setError("remittance_ammount", {
+        type: "manual",
+        message: "Entered amounts should be less than net payable",
+      });
+      setError("denial_ammount", {
+        type: "manual",
+        message: "Entered amounts should be less than net payable",
+      });
+      // AlgaehMessagePop({
+      //   display: "Entered amounts should be less than net payable",
+      //   type: "success",
+      // });
+    }
   };
 
   return (
@@ -57,12 +84,13 @@ export function UpdateStatement({
       visible={show}
       okButtonProps={{
         loading: isLoading,
+        className: "btn btn-primary",
       }}
       okText={"Update"}
       maskClosable={false}
-      cancelButtonProps={{ disabled: isLoading }}
+      cancelButtonProps={{ disabled: isLoading, className: "btn btn-default" }}
       closable={false}
-      onCancel={onClose}
+      onCancel={() => onClose(false)}
       onOk={handleSubmit(onSubmit)}
       className={`${userLanguage}_comp row algaehNewModal UpdateStatementModal`}
     >
@@ -134,7 +162,7 @@ export function UpdateStatement({
                 }}
                 textBox={{
                   name: "remittance_ammount",
-                  type: "text",
+                  type: "number",
                   className: "form-control",
                   ...props,
                 }}
@@ -163,7 +191,7 @@ export function UpdateStatement({
                 error={errors}
                 textBox={{
                   name: "denial_ammount",
-                  type: "text",
+                  type: "number",
                   className: "form-control",
                   ...props,
                 }}

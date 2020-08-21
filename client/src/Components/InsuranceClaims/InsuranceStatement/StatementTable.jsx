@@ -41,10 +41,12 @@ export function StatementTable() {
     setCurrent(row);
   };
 
-  const onClose = (row) => {
+  const onClose = (shouldRefetch) => {
     setShow(false);
     setCurrent(null);
-    refetch();
+    if (shouldRefetch) {
+      refetch();
+    }
   };
 
   const RemittanceButton = (row) => {
@@ -142,7 +144,7 @@ export function StatementTable() {
               },
               {
                 fieldName: "company_payable",
-                label: <AlgaehLabel label={{ forceLabel: "Co. Net Payble" }} />,
+                label: <AlgaehLabel label={{ forceLabel: "Claim Amount" }} />,
               },
               {
                 fieldName: "remittance_ammount",
@@ -163,6 +165,20 @@ export function StatementTable() {
               {
                 fieldName: "denial_amount_2",
                 label: <AlgaehLabel label={{ forceLabel: "Denial Amt. 2" }} />,
+              },
+              {
+                fieldName: "remittance_ammount",
+                label: (
+                  <AlgaehLabel
+                    label={{ forceLabel: "Total Remittance Amount" }}
+                  />
+                ),
+              },
+              {
+                fieldName: "denial_ammount",
+                label: (
+                  <AlgaehLabel label={{ forceLabel: "Total Denial Amount" }} />
+                ),
               },
             ]}
             data={data?.claims ?? []}
