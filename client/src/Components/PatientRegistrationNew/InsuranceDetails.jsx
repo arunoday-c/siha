@@ -485,12 +485,20 @@ export function InsuranceDetails({
                             textAltMessage="Insurance Card Front Side"
                             serviceParameters={{
                               uniqueID:
-                                (primary_card_number || null) + "_front",
+                                primary_card_number === undefined ||
+                                primary_card_number === null ||
+                                primary_card_number === ""
+                                  ? null
+                                  : primary_card_number + "_front",
+                              // (primary_card_number ||  null) + "_front",
                               fileType: "Patients",
-                              processDelay: (...val) => {
-                                console.log(val, "val");
-                              },
+                              // processDelay: (...val) => {
+                              //   console.log(val, "val");
+                              // },
                             }}
+                            renderPrevState={
+                              primary_card_number ? undefined : true
+                            }
                             // renderPrevState={this.state.patInsuranceFrontImg}
                             // forceRefresh={this.state.forceRefresh}
                           />
@@ -505,12 +513,21 @@ export function InsuranceDetails({
                             showActions={isInsurance}
                             textAltMessage="Insurance Card Back Side"
                             serviceParameters={{
-                              uniqueID: (primary_card_number || null) + "_back",
+                              uniqueID:
+                                primary_card_number === undefined ||
+                                primary_card_number === null ||
+                                primary_card_number === ""
+                                  ? null
+                                  : primary_card_number + "_back",
+                              //(primary_card_number || null) + "_back",
                               fileType: "Patients",
-                              processDelay: (...val) => {
-                                console.log(val, "val");
-                              },
+                              // processDelay: (...val) => {
+                              //   console.log(val, "val");
+                              // },
                             }}
+                            renderPrevState={
+                              primary_card_number ? undefined : true
+                            }
                             // renderPrevState={this.state.patInsuranceBackImg}
                             // forceRefresh={this.state.forceRefresh}
                           />

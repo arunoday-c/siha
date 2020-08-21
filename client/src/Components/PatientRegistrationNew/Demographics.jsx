@@ -804,15 +804,15 @@ export function Demographics({
                             accept="image/*"
                             textAltMessage="ID Card"
                             serviceParameters={{
-                              uniqueID: patient_code ? primary_id_no : null,
+                              uniqueID: primary_id_no || null,
                               fileType: "Patients",
                               // processDelay: (...val) => {
-                              //   console.log(val, "val");
+                              //   console.log(val, "val")
                               // },
                             }}
                             //Need to add undefined. if no record exists
-                            renderPrevState={true}
-                            forceRefresh={!savedPatient}
+                            renderPrevState={patient_code ? undefined : true}
+                            forceRefresh={!patient_code}
                           />
 
                           <div />
