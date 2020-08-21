@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { useQuery } from "react-query";
 import { Controller, useWatch } from "react-hook-form";
 import moment from "moment";
@@ -63,21 +63,32 @@ export function VisitDetails({
       const res = data?.visitTypes?.filter((item) => item.consultation === "Y");
       setConsultationInfo(res[0]);
       setValue("visit_type", res[0]?.hims_d_visit_type_id);
-      setVisitType(res[0]?.hims_d_visit_type_id);
+      setVisitType(res[0]);
     },
   });
   const {
     hims_d_patient_id,
     primary_insurance_provider_id,
     department_type,
+    visit_type,
   } = useWatch({
     control,
     name: [
       "hims_d_patient_id",
       "primary_insurance_provider_id",
       "department_type",
+      "visit_type",
     ],
   });
+
+  useEffect(() => {
+    if (visit_type && data?.visitTypes?.length) {
+      const res = data?.visitTypes?.filter(
+        (item) => item?.hims_d_visit_type_id == visit_type
+      );
+      setConsultationInfo(res[0]);
+    }
+  }, [visit_type, data?.visitTypes]);
 
   const insured = !!primary_insurance_provider_id;
 
@@ -117,8 +128,7 @@ export function VisitDetails({
                                 name: "visit_type",
                                 className: "select-fld",
                                 value,
-                                onChange: (data, selected) => {
-                                  setConsultationInfo(data);
+                                onChange: (_, selected) => {
                                   onChange(selected);
                                 },
                                 onClear: () => onChange(""),

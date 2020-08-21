@@ -182,6 +182,7 @@ export function PatientRegistration() {
     billInfo,
     disabled,
     consultationInfo,
+    setConsultationInfo,
     setDisable,
     setSavedPatient,
     savedPatient,
@@ -206,7 +207,7 @@ export function PatientRegistration() {
       nationality_id: userToken?.default_nationality,
       country_id: userToken?.default_country,
       patient_type: userToken?.default_patient_type,
-      visit_type: default_visit_type,
+      visit_type: default_visit_type?.hims_d_visit_type_id,
     },
   });
 
@@ -541,6 +542,7 @@ export function PatientRegistration() {
       primary_policy_num: "",
       primary_sub_id: "",
       service_type_id: "",
+      address1: "",
       services_id: "",
       sheet_discount_amount: 0,
       sheet_discount_percentage: 0,
@@ -549,15 +551,17 @@ export function PatientRegistration() {
       nationality_id: userToken?.default_nationality,
       country_id: userToken?.default_country,
       patient_type: userToken?.default_patient_type,
-      visit_type: default_visit_type,
+      visit_type: default_visit_type?.hims_d_visit_type_id,
     });
+    clearState();
+    setConsultationInfo(default_visit_type);
     patientIdCard.current = null;
     patientImage.current = null;
     insuranceImgBack.current = null;
     insuranceImgFront.current = null;
-    clearState();
+
     if (!withoutNav) {
-      history.push("/PatientRegistration");
+      history.replace("/PatientRegistration");
     }
   };
 
