@@ -68,6 +68,14 @@ export function UpdateStatement({
     >
       <div className="col-12 popupInner margin-top-15">
         <div className="row">
+          <div className="col-12">
+            <AlgaehLabel
+              label={{
+                forceLabel: "Patient Name",
+              }}
+            />
+            <h6>{data?.pat_name}</h6>
+          </div>
           <div className="col-6">
             <AlgaehLabel
               label={{
@@ -76,16 +84,6 @@ export function UpdateStatement({
             />
             <h6>{data?.patient_code}</h6>
           </div>
-
-          <div className="col-6">
-            <AlgaehLabel
-              label={{
-                forceLabel: "Patient Name",
-              }}
-            />
-            <h6>{data?.pat_name}</h6>
-          </div>
-
           <div className="col-6">
             <AlgaehLabel
               label={{
