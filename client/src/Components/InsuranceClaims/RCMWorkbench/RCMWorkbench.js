@@ -487,7 +487,14 @@ class RCMWorkbench extends Component {
                     value="C"
                     name="rcmMode"
                     checked={this.state.rcmMode === "C" ? true : false}
-                    onChange={texthandle.bind(this)}
+                    onChange={() => {
+                      if (this.props.location.search) {
+                        this.props.history.replace(
+                          this.props.location.pathname
+                        );
+                      }
+                      this.setState({ rcmMode: "C" });
+                    }}
                   />
                   <span>Claim</span>
                 </label>

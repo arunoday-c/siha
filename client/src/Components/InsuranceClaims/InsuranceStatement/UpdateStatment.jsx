@@ -31,7 +31,7 @@ export function UpdateStatement({
   const [update, { isLoading }] = useMutation(updateStatement, {
     onSuccess: (data) => {
       if (data?.success) {
-        onClose();
+        onClose(true);
       }
     },
   });
@@ -43,8 +43,15 @@ export function UpdateStatement({
         denial_ammount: "",
       });
     }
+
+    if (show && !!data) {
+      reset({
+        remittance_ammount: data?.remittance_ammount,
+        denial_ammount: data?.denial_ammount,
+      });
+    }
     // eslint-disable-next-line
-  }, [show]);
+  }, [show, data]);
 
   const onSubmit = (e) => {
     const total =
@@ -77,12 +84,13 @@ export function UpdateStatement({
       visible={show}
       okButtonProps={{
         loading: isLoading,
+        className: "btn btn-primary",
       }}
       okText={"Update"}
       maskClosable={false}
-      cancelButtonProps={{ disabled: isLoading }}
+      cancelButtonProps={{ disabled: isLoading, className: "btn btn-default" }}
       closable={false}
-      onCancel={onClose}
+      onCancel={() => onClose(false)}
       onOk={handleSubmit(onSubmit)}
       className={`${userLanguage}_comp row algaehNewModal UpdateStatementModal`}
     >
