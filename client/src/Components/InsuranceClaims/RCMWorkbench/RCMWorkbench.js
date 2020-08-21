@@ -616,7 +616,7 @@ class RCMWorkbench extends Component {
               </>
             ) : (
               <>
-                <div className="col-2 globalSearchCntr form-group">
+                <div className="col-3 globalSearchCntr form-group">
                   <AlgaehLabel label={{ forceLabel: "Search Statement No." }} />
                   <h6 onClick={ClaimSearch.bind(this)}>
                     {new URLSearchParams(this.props.location?.search).get(
@@ -647,13 +647,15 @@ class RCMWorkbench extends Component {
           </div>
         </div>
 
-        <div className="col-12">
-          <div className="portlet portlet-bordered margin-bottom-15">
-            <div className="row">
-              <div className="col-12" id="rcmDesktopGrid_Cntr">
-                {this.state.rcmMode !== "C" ? (
-                  <StatementTable />
-                ) : (
+        {this.state.rcmMode !== "C" ? (
+          <div className="col-12">
+            <StatementTable />
+          </div>
+        ) : (
+          <div className="col-12">
+            <div className="portlet portlet-bordered margin-bottom-15">
+              <div className="row">
+                <div className="col-12" id="rcmDesktopGrid_Cntr">
                   <AlgaehDataGrid
                     id="rcmDesktopGrid"
                     columns={[
@@ -940,11 +942,11 @@ class RCMWorkbench extends Component {
                     //   getItemLocationStock(this, row);
                     // }}
                   />
-                )}
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        )}
         {this.state.rcmMode === "C" && (
           <div className="hptl-phase1-footer">
             <div className="row">

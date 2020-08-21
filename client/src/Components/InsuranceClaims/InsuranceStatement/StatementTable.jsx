@@ -67,6 +67,7 @@ export function StatementTable() {
         </div>
         <div className="portlet-body" id="PreRequestGrid">
           <AlgaehDataGrid
+            className="InsuranceStatementGrid"
             id="InsuranceStatementGrid"
             columns={[
               {
