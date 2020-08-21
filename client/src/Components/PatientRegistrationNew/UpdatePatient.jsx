@@ -1,14 +1,19 @@
-import React, { useContext, useEffect, useRef } from "react";
-import { queryCache, useMutation } from "react-query";
+import React, { useContext, useEffect, useRef, useState } from "react";
+import { useMutation, useQuery } from "react-query";
 import { Demographics } from "./Demographics";
 import { useForm } from "react-hook-form";
+import BreadCrumb from "../common/BreadCrumb/BreadCrumb";
+
+// import { useHistory, useLocation } from "react-router-dom";
 import {
   AlgaehModal,
   AlgaehMessagePop,
   MainContext,
+  AlgaehLabel,
   Spin,
 } from "algaeh-react-components";
 import { newAlgaehApi } from "../../hooks";
+import { getPatient } from "./PatientRegistration";
 
 const updatePatient = async (data) => {
   const res = await newAlgaehApi({
@@ -20,9 +25,33 @@ const updatePatient = async (data) => {
   return res.data?.records;
 };
 
-export function UpdatePatient({ show, onClose, patient_code }) {
+export function UpdatePatient({
+  show,
+  onClose,
+  patient_code,
+  component = false,
+}) {
   const { userToken, userLanguage } = useContext(MainContext);
-  const patientData = queryCache.getQueryData(["patient", { patient_code }]);
+  const [patientCode, setPatientCode] = useState(null);
+
+  // const patientData = queryCache.getQueryData(["patient", { patient_code }]);
+  const { isLoading, data: patientData } = useQuery(
+    ["patient", { patient_code: patientCode }],
+    getPatient,
+    {
+      enabled: !!patientCode,
+      initialStale: true,
+      initialData: {
+        bill_criedt: [],
+        patientRegistration: null,
+        identities: [],
+      },
+      onSuccess: (data) => {
+        reset(data?.patientRegistration);
+      },
+    }
+  );
+
   const {
     control,
     handleSubmit,
@@ -43,18 +72,36 @@ export function UpdatePatient({ show, onClose, patient_code }) {
   const patientIdCard = useRef(null);
 
   useEffect(() => {
-    if (show && !!patientData) {
-      reset(patientData?.patientRegistration);
+    if (show) {
+      setPatientCode(patient_code);
     }
     if (!show) {
       reset();
       patientIdCard.current = null;
       patientImage.current = null;
     }
-    // eslint-disable-next-line
-  }, [patientData, show]);
+    //eslint-disable-next-line
+  }, [patient_code, show]);
 
-  const [update, { isLoading }] = useMutation(updatePatient);
+  // useEffect(() => {
+  //   if ((component || show) && !!patientData) {
+  //     reset(patientData?.patientRegistration);
+  //   }
+  //   if (!show && !component) {
+  //     reset();
+  //     patientIdCard.current = null;
+  //     patientImage.current = null;
+  //   }
+  //   // eslint-disable-next-line
+  // }, [patientData, show, component]);
+
+  const [update, { isLoading: mutationLoading }] = useMutation(updatePatient, {
+    onSuccess: (data) => {
+      if (!component) {
+        onClose(true);
+      }
+    },
+  });
 
   const onSubmit = (e) => {
     update({
@@ -108,36 +155,155 @@ export function UpdatePatient({ show, onClose, patient_code }) {
     });
   };
 
-  return (
-    <AlgaehModal
-      title="Update Patient"
-      visible={show}
-      okButtonProps={{
-        loading: isLoading,
-        className: "btn btn-primary",
-      }}
-      okText={"Update"}
-      maskClosable={false}
-      cancelButtonProps={{ disabled: isLoading, className: "btn btn-default" }}
-      closable={true}
-      onCancel={onClose}
-      onOk={handleSubmit(onSubmit)}
-      //btn btn-primary
-      // btn btn-default
-      width={1080}
-      className={`${userLanguage}_comp row algaehNewModal patientUpdateModal`}
-    >
-      <Spin spinning={isLoading}>
-        <Demographics
-          control={control}
-          setValue={setValue}
-          errors={errors}
-          clearErrors={clearErrors}
-          patientImage={patientImage}
-          patientIdCard={patientIdCard}
-          inModal={true}
-        />
-      </Spin>
-    </AlgaehModal>
+  const InputForm = (
+    <Demographics
+      control={control}
+      setValue={setValue}
+      errors={errors}
+      clearErrors={clearErrors}
+      patientImage={patientImage}
+      patientIdCard={patientIdCard}
+      inModal={true}
+    />
   );
+
+  if (!component) {
+    return (
+      <AlgaehModal
+        title="Update Patient"
+        visible={show}
+        okButtonProps={{
+          loading: isLoading,
+          className: "btn btn-primary",
+        }}
+        okText={"Update"}
+        maskClosable={false}
+        cancelButtonProps={{
+          disabled: isLoading,
+          className: "btn btn-default",
+        }}
+        closable={true}
+        onCancel={() => onClose(false)}
+        onOk={handleSubmit(onSubmit)}
+        //btn btn-primary
+        // btn btn-default
+        width={1080}
+        className={`${userLanguage}_comp row algaehNewModal patientUpdateModal`}
+      >
+        <Spin spinning={isLoading || mutationLoading}>{InputForm}</Spin>
+      </AlgaehModal>
+    );
+  } else {
+    return (
+      <>
+        <BreadCrumb
+          title={
+            <AlgaehLabel
+              label={{ forceLabel: "Update Patient Details", align: "ltr" }}
+            />
+          }
+          soptlightSearch={{
+            label: (
+              <AlgaehLabel
+                label={{ fieldName: "patient_code", returnText: true }}
+              />
+            ),
+            value: patientCode,
+            selectValue: "patient_code",
+            events: {
+              onChange: (code) => setPatientCode(code),
+            },
+            jsonFile: {
+              fileName: "spotlightSearch",
+              fieldName: "frontDesk.patients",
+            },
+            searchName: "patients",
+          }}
+          printArea={{
+            menuitems: [
+              {
+                label: "ID Card",
+                events: {
+                  onClick: () => {},
+                },
+              },
+            ],
+          }}
+          selectedLang={userToken?.userLanguage}
+        />
+        <div style={{ marginTop: "6rem" }}>{InputForm}</div>
+        <div className="hptl-phase1-footer">
+          <div className="row">
+            <div className="col-lg-12">
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={handleSubmit(onSubmit)}
+                disabled={isLoading || mutationLoading || !patientCode}
+              >
+                <AlgaehLabel
+                  label={{ fieldName: "btn_save", returnText: true }}
+                />
+              </button>
+
+              <button
+                type="button"
+                className="btn btn-default"
+                disabled={isLoading || mutationLoading}
+                onClick={() => {
+                  reset({
+                    address1: "",
+                    address2: null,
+                    advance_amount: null,
+                    age: null,
+                    arabic_name: "",
+                    city_id: null,
+                    contact_number: "",
+                    country_id: "",
+                    date_of_birth: "",
+                    email: null,
+                    emergency_contact_name: null,
+                    emergency_contact_number: null,
+                    employee_id: null,
+                    first_name: "",
+                    full_name: "",
+                    gender: "",
+                    hims_d_patient_id: null,
+                    last_name: "",
+                    marital_status: "",
+                    middle_name: "",
+                    nationality_id: "",
+                    patient_code: "",
+                    patient_type: "",
+                    photo_file: null,
+                    postal_code: null,
+                    primary_id_file: null,
+                    primary_id_no: "",
+                    primary_identity_id: "",
+                    registration_date: "",
+                    relationship_with_patient: "",
+                    religion_id: "",
+                    secondary_contact_number: "",
+                    secondary_id_file: "",
+                    secondary_id_no: "",
+                    secondary_identity_id: "",
+                    state_id: null,
+                    title_id: "",
+                    visa_type_id: "",
+                  });
+                  setPatientCode(null);
+                  patientIdCard.current = null;
+                  patientImage.current = null;
+                }}
+              >
+                <AlgaehLabel
+                  label={{ fieldName: "btn_clear", returnText: true }}
+                />
+              </button>
+            </div>
+          </div>
+        </div>
+      </>
+    );
+  }
 }
