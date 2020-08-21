@@ -32,7 +32,6 @@ export function StatementTable() {
     getStatements,
     {
       enabled: !!hims_f_insurance_statement_id,
-      refetchOnWindowFocus: false,
     }
   );
 
