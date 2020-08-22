@@ -181,6 +181,7 @@ export function PatientRegistration() {
     services_id,
     doctor_id,
     department_type,
+    service_type_id,
     billInfo,
     disabled,
     consultationInfo,
@@ -308,7 +309,7 @@ export function PatientRegistration() {
     {
       enabled: !!appointment_id,
       onSuccess: (data) => {
-        const doctor = `${data?.sub_department_id}-${data?.services_id}-${data?.provider_id}-${data?.department_type}-${data?.department_id}`;
+        const doctor = `${data?.sub_department_id}-${data?.services_id}-${data?.provider_id}-${data?.department_type}-${data?.department_id}-${data?.service_type_id}`;
         if (!patient_code) {
           reset({
             ...data,
@@ -462,7 +463,7 @@ export function PatientRegistration() {
         department_id: parseInt(department_id, 10),
         sub_department_id: parseInt(sub_department_id, 10),
         services_id: parseInt(services_id, 10),
-        service_type_id: parseInt(services_id, 10),
+        service_type_id: parseInt(service_type_id, 10),
         doctor_id: parseInt(doctor_id, 10),
         department_type: parseInt(department_type, 10),
         consultation: consultationInfo?.consultation,
@@ -515,7 +516,7 @@ export function PatientRegistration() {
         department_id: parseInt(department_id, 10),
         sub_department_id: parseInt(sub_department_id, 10),
         services_id: parseInt(services_id, 10),
-        service_type_id: parseInt(services_id, 10),
+        service_type_id: parseInt(service_type_id, 10),
         doctor_id: parseInt(doctor_id, 10),
         department_type: parseInt(department_type, 10),
         consultation: consultationInfo?.consultation,
@@ -561,7 +562,7 @@ export function PatientRegistration() {
       sheet_discount_percentage: 0,
       sub_department_id: "",
       title_id: "",
-      state_id: "",
+      state_id: null,
       martial_status: null,
       city_id: null,
       religion_id: null,

@@ -6,6 +6,7 @@ const baseState = {
   services_id: null,
   doctor_id: null,
   department_type: null,
+  service_type_id: null,
   primary_network_office_id: null,
   billInfo: {
     advance_adjust: 0,
