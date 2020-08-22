@@ -265,6 +265,15 @@ export function PatientRegistration() {
         });
       }
     },
+    onError: (err) => {
+      if (err.message?.includes("hims_f_patient.primary_id_no_UNIQUE")) {
+        AlgaehMessagePop({
+          display:
+            "Duplicate primary id number, Please provide a new ID number",
+          type: "error",
+        });
+      }
+    },
   });
 
   const [update, { isLoading: updateLoading }] = useMutation(updatePatient, {
@@ -304,7 +313,7 @@ export function PatientRegistration() {
           reset({
             ...data,
             consultation: "Y",
-            visit_type: default_visit_type,
+            visit_type: default_visit_type?.hims_d_visit_type_id,
             full_name: data?.patient_name,
             doctor_id: data?.provider_id,
             doctor,
@@ -552,6 +561,11 @@ export function PatientRegistration() {
       sheet_discount_percentage: 0,
       sub_department_id: "",
       title_id: "",
+      state_id: "",
+      martial_status: null,
+      city_id: null,
+      religion_id: null,
+      visa_type_id: null,
       nationality_id: userToken?.default_nationality,
       country_id: userToken?.default_country,
       patient_type: userToken?.default_patient_type,
