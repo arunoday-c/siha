@@ -8,19 +8,22 @@ import routes from "./routes";
 import compression from "compression";
 import { userSecurity } from "algaeh-utilities/checksecurity";
 import { authentication } from "algaeh-utilities/authentication";
+import SwaggerConfiguration from "algaeh-utilities/swagger";
 const app = express();
 app.server = http.createServer(app);
 app.use(cors());
 const _port = process.env.PORT;
 app.use(
   bodyParser.json({
-    limit: keys.bodyLimit
+    limit: keys.bodyLimit,
   })
 );
 app.use(compression());
 
 process.env.MYSQL_KEYS = JSON.stringify(keys.default);
-
+if (process.env.NODE_ENV === "development") {
+  new SwaggerConfiguration("Insurance Api's").Geteate(app);
+}
 app.use((req, res, next) => {
   authentication(req, res, next);
 });
@@ -89,13 +92,10 @@ app.use((req, res, next) => {
 
 app.use("/api/v1", routes);
 
-process.on("warning", warning => {
-  utliites
-    .AlgaehUtilities()
-    .logger()
-    .log("warn", warning, "warn");
+process.on("warning", (warning) => {
+  utliites.AlgaehUtilities().logger().log("warn", warning, "warn");
 });
-process.on("uncaughtException", error => {
+process.on("uncaughtException", (error) => {
   utliites
     .AlgaehUtilities()
     .logger()
@@ -128,17 +128,17 @@ app.use((error, req, res, next) => {
             host: reqH.host,
             "user-agent": reqH["user-agent"],
             "cache-control": reqH["cache-control"],
-            origin: reqH.origin
-          }
+            origin: reqH.origin,
+          },
         },
-        message: errorMessage
+        message: errorMessage,
       },
       "error"
     );
   res.status(error.status).json({
     success: false,
     isSql: error.sqlMessage != null ? true : false,
-    message: errorMessage
+    message: errorMessage,
   });
 });
 app.server.listen(_port);
