@@ -696,7 +696,7 @@ const privateRoutes = [
   //   component: <PatientRegistration />,
   // },
   {
-    path: "/FrontDesk",
+    path: "/PatientRegistration",
     isExactPath: true,
     component: <PatientRegistrationNew />,
   },
@@ -1395,10 +1395,10 @@ function Routes() {
       enabled: is_authenticated,
       staleTime: Infinity,
       onSuccess: (data) => {
-        setTitles(data[0] ?.data.records);
-        setNationality(data[1] ?.data.records);
-        setReligions(data[2] ?.data.records);
-        setCountries(data[3] ?.data.records);
+        setTitles(data[0]?.data.records);
+        setNationality(data[1]?.data.records);
+        setReligions(data[2]?.data.records);
+        setCountries(data[3]?.data.records);
       },
     }
   );

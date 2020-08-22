@@ -1741,5 +1741,32 @@ export function updateInsuranceStatement(req, res, next) {
       });
   } catch (error) {
     _mysql.releaseConnection();
+    next(error);
+  }
+}
+
+export function getInvoiceDetails(req, res, next) {
+  const _mysql = new algaehMysql();
+  const input = req.query;
+  try {
+    _mysql
+      .executeQuery({
+        query: `SELECT hims_f_invoice_details_id,invoice_header_id,company_payable,company_resp,company_tax,SE.service_name 
+          FROM hims_d_services SE, awd_alwaseet_test_db.hims_f_invoice_details IVD 
+          where IVD.service_id = SE.hims_d_services_id and invoice_header_id=?;`,
+        values: [input.invoice_header_id],
+      })
+      .then((result) => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch((e) => {
+        _mysql.releaseConnection();
+        next(e);
+      });
+  } catch (e) {
+    _mysql.releaseConnection();
+    next(e);
   }
 }

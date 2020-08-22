@@ -30,10 +30,10 @@ const getDoctorData = async () => {
       module: "masterSettings",
       method: "GET",
     }),
-  ])
+  ]);
   return {
-    doctors: result[0] ?.data ?.records,
-    visitTypes: result[1] ?.data ?.records,
+    doctors: result[0]?.data?.records,
+    visitTypes: result[1]?.data?.records,
   };
 };
 
@@ -60,9 +60,9 @@ export function VisitDetails({
     },
     initialStale: true,
     onSuccess: (data) => {
-      const res = data ?.visitTypes ?.filter((item) => item.consultation === "Y");
+      const res = data?.visitTypes?.filter((item) => item.consultation === "Y");
       setConsultationInfo(res[0]);
-      setValue("visit_type", res[0] ?.hims_d_visit_type_id);
+      setValue("visit_type", res[0]?.hims_d_visit_type_id);
       setVisitType(res[0]);
     },
   });
@@ -84,9 +84,9 @@ export function VisitDetails({
   const { visitTypes } = data;
 
   useEffect(() => {
-    if (visit_type && visitTypes ?.length) {
-      const res = visitTypes ?.filter(
-        (item) => item ?.hims_d_visit_type_id == visit_type
+    if (visit_type && visitTypes?.length) {
+      const res = visitTypes?.filter(
+        (item) => item?.hims_d_visit_type_id == visit_type
       );
       setConsultationInfo(res[0]);
     }
@@ -138,7 +138,7 @@ export function VisitDetails({
                                 dataSource: {
                                   textField: fieldNameFn("visit_type_desc"),
                                   valueField: "hims_d_visit_type_id",
-                                  data: data ?.visitTypes,
+                                  data: data?.visitTypes,
                                 },
                                 others: {
                                   disabled: disabled || !!appointment_id,
@@ -186,13 +186,13 @@ export function VisitDetails({
                                 disabled: !!appointment_id || disabled,
                                 value,
                                 name: "doctor",
-                                data: data ?.doctors,
+                                data: data?.doctors,
                                 textField: fieldNameFn("label", "arlabel"),
                                 valueField: (node) => {
-                                  if (node ?.sub_department_id) {
-                                    return `${node ?.sub_department_id}-${node ?.services_id}-${node ?.value}-${node ?.department_type}-${node ?.department_id}-${node ?.service_type_id}`;
+                                  if (node?.sub_department_id) {
+                                    return `${node?.sub_department_id}-${node?.services_id}-${node?.value}-${node?.department_type}-${node?.department_id}-${node?.service_type_id}`;
                                   } else {
-                                    return node ?.value;
+                                    return node?.value;
                                   }
                                 },
                               }}
@@ -217,12 +217,12 @@ export function VisitDetails({
                                       type="checkbox"
                                       name="existing_plan"
                                       value="Y"
-                                    // checked={this.state.checked_existing_plan}
-                                    // onChange={radioChange.bind(
-                                    //   this,
-                                    //   this,
-                                    //   context
-                                    // )}
+                                      // checked={this.state.checked_existing_plan}
+                                      // onChange={radioChange.bind(
+                                      //   this,
+                                      //   this,
+                                      //   context
+                                      // )}
                                     />
                                     <span>{fieldNameFn("Yes", "نعم")}</span>
                                   </label>
@@ -275,12 +275,12 @@ export function VisitDetails({
                                       type="checkbox"
                                       name="eligible"
                                       value="Y"
-                                    //   checked={this.state.checked_eligible}
-                                    //   onChange={radioChange.bind(
-                                    //     this,
-                                    //     this,
-                                    //     context
-                                    //   )}
+                                      //   checked={this.state.checked_eligible}
+                                      //   onChange={radioChange.bind(
+                                      //     this,
+                                      //     this,
+                                      //     context
+                                      //   )}
                                     />
                                     <span>{fieldNameFn("Yes", "نعم")}</span>
                                   </label>
@@ -311,7 +311,7 @@ export function VisitDetails({
                     <div className="col-lg-8 secondary-details">
                       <h6>
                         <AlgaehLabel label={{ fieldName: "PastVisit" }} />
-                        {packages ?.length ? (
+                        {packages?.length ? (
                           <span className="packageStatus">
                             {" "}
                             Package Exists{" "}
@@ -348,15 +348,15 @@ export function VisitDetails({
                               />
                             ),
                             displayTemplate: (row) => {
-                              let display = data ?.visitTypes ?.filter(
+                              let display = data?.visitTypes?.filter(
                                 (f) => f.hims_d_visit_type_id == row.visit_type
                               );
 
                               return (
                                 <span>
                                   {fieldNameFn(
-                                    display[0] ?.visit_type_desc,
-                                    display[0] ?.arabic_visit_type_desc
+                                    display[0]?.visit_type_desc,
+                                    display[0]?.arabic_visit_type_desc
                                   )}
                                 </span>
                               );
