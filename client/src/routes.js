@@ -696,7 +696,7 @@ const privateRoutes = [
   //   component: <PatientRegistration />,
   // },
   {
-    path: "/FrontDesk",
+    path: "/PatientRegistration",
     isExactPath: true,
     component: <PatientRegistrationNew />,
   },
