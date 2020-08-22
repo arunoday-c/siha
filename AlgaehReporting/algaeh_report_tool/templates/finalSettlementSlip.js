@@ -23,10 +23,11 @@ else 'Settled' end as final_settlement_status,FL.settled_date,FL.total_amount,
 FL.total_earnings,FL.total_deductions,FL.total_loans,FL.total_salary,
 FL.total_eos,FL.total_leave_encash,FL.forfiet,FL.remarks,FL.posted,
 FL.posted_date,FL.posted_by,FL.cancelled,FL.cancelled_by,FL.cancelled_date,
-S.month,S.year,FL.remarks
+S.month,S.year,FL.remarks, CN.country_name,CN.arabic_country_name
 FROM hims_f_final_settlement_header as FL
 inner join hims_d_employee E on E.hims_d_employee_id = FL.employee_id
 inner join hims_d_hospital H on H.hims_d_hospital_id = E.hospital_id
+inner join hims_d_country CN on H.default_country = CN.hims_d_country_id
 inner join hims_d_designation DE on DE.hims_d_designation_id = E.employee_designation_id
 left join hims_f_salary as S  on S.hims_f_salary_id = FL.salary_id
  inner join hims_d_sub_department as SD on SD.hims_d_sub_department_id=E.sub_department_id
