@@ -4,6 +4,7 @@ import insuranceModels, {
   saveMultiStatement,
   getInsuranceStatement,
   updateInsuranceStatement,
+  getInvoiceDetails,
 } from "../models/insurance";
 
 const {
@@ -230,6 +231,14 @@ export default () => {
     }
   );
   api.get("/getInsuranceStatement", getInsuranceStatement, (req, res, next) => {
+    let result = req.records;
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: result,
+    });
+    next();
+  });
+  api.get("/getInvoiceDetails", getInvoiceDetails, (req, res, next) => {
     let result = req.records;
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
       success: true,
