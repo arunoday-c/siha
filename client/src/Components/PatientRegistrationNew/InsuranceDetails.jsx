@@ -40,13 +40,15 @@ export function InsuranceDetails({
   trigger,
   insuranceImgFront,
   insuranceImgBack,
+  isInsurance,
+  setIsInsurance,
 }) {
   const { userToken } = useContext(MainContext);
   const { setInsuranceInfo, disabled: saveDisable } = useContext(
     FrontdeskContext
   );
   const { fieldNameFn } = useLangFieldName();
-  const [isInsurance, setIsInsurance] = useState(false);
+  // const [isInsurance, setIsInsurance] = useState(false);
   const [insuranceList, setInsuranceList] = useState([]);
   const disabled = !isInsurance || saveDisable;
   const { hims_d_patient_id, primary_card_number } = useWatch({

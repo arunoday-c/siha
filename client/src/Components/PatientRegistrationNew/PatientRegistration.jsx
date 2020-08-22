@@ -160,6 +160,7 @@ export function PatientRegistration() {
   const [showPackage, setShowPackage] = useState(false);
   const [showUpdateModal, setUpdateModal] = useState(false);
   const [showAdvModal, setShowAdvModal] = useState(false);
+  const [isInsurance, setIsInsurance] = useState(false);
   const location = useLocation();
   const history = useHistory();
 
@@ -558,6 +559,7 @@ export function PatientRegistration() {
     });
     clearState();
     setConsultationInfo(default_visit_type);
+    setIsInsurance(false);
     patientIdCard.current = null;
     patientImage.current = null;
     insuranceImgBack.current = null;
@@ -665,6 +667,8 @@ export function PatientRegistration() {
                   patientIdCard={patientIdCard}
                 />
                 <InsuranceDetails
+                  isInsurance={isInsurance}
+                  setIsInsurance={setIsInsurance}
                   control={control}
                   trigger={trigger}
                   errors={errors}
