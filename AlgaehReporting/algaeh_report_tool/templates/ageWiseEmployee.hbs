@@ -38,6 +38,10 @@
                 </thead>
                 <tbody>
                     {{#hasElement result}}
+                    <tr class="numberFldTotalBottom">
+                        <td class="txtFld" colspan="10">Total Employee: {{no_employees}}</td>
+                        <td class="numberFld" colspan="5">Age: {{return_age}}</td>
+                    </tr>
                     {{#each result}}
                     <tr>
                         <td>{{inc @index}}</td>

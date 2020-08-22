@@ -51,7 +51,6 @@ const executePDF = function executePDFMethod(options) {
         .then((ress) => {
           let final_result = ress[0];
           final_result = final_result.concat(ress[1]);
-          console.log("final_result", final_result);
 
           const result = {
             details: final_result,

@@ -22,7 +22,7 @@ export default function Payroll({
         pageOrentation: "landscape",
         reportParameters: [
           {
-            className: "col-1 mandatory form-group",
+            className: "col-3 mandatory form-group",
             type: "dropdown",
             name: "year",
             sort: "off",

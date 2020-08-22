@@ -1,4 +1,4 @@
-export default function Insurance({ algaehApiCall }) {
+export default function Insurance({ algaehApiCall, hospital_id }) {
   return {
     name: "Insurance",
     submenu: [
@@ -6,6 +6,23 @@ export default function Insurance({ algaehApiCall }) {
         subitem: "All Claim Statement",
         template_name: "allClaimStatementInsurance",
         reportParameters: [
+          {
+            className: "col-3 form-group mandatory",
+            type: "dropdown",
+            name: "hospital_id",
+            initialLoad: true,
+            isImp: true,
+            label: "Branch",
+            link: {
+              uri: "/organization/getOrganizationByUser",
+            },
+            value: hospital_id,
+            dataSource: {
+              textField: "hospital_name",
+              valueField: "hims_d_hospital_id",
+              data: undefined,
+            },
+          },
           {
             className: "col-3 form-group mandatory",
             type: "date",
@@ -29,7 +46,7 @@ export default function Insurance({ algaehApiCall }) {
           {
             className: "col-3 form-group mandatory",
             type: "dropdown",
-            name: "",
+            name: "insurance_provider_id",
             initialLoad: true,
             isImp: true,
             label: "Company",
@@ -38,30 +55,24 @@ export default function Insurance({ algaehApiCall }) {
             },
             events: {
               onChange: (reportState, currentEvent) => {
-                //provider_id_list CONTROL NAME AND APPEND BY _LIST
-                algaehApiCall({
-                  uri: "/pharmacy/getPharmacyLocation",
-                  module: "pharmacy",
-                  method: "GET",
-                  data: { hospital_id: currentEvent.value },
-
-                  onSuccess: (result) => {
-                    reportState.setState({
-                      location_id_list: result.data.records,
-                    });
-                  },
+                reportState.setState({
+                  insurance_provider_id: null,
+                  sub_insurance_id: null,
+                  claims: [],
                 });
               },
               onClear: (reportState, currentName) => {
                 reportState.setState({
-                  [currentName]: undefined,
-                  location_id_list: [],
+                  insurance_provider_id: null,
+                  sub_insurance_id: null,
+                  claims: [],
                 });
               },
             },
             dataSource: {
               textField: "insurance_provider_name",
               valueField: "hims_d_insurance_provider_id",
+              data: undefined,
             },
           },
           {
@@ -72,9 +83,9 @@ export default function Insurance({ algaehApiCall }) {
             isImp: false,
             label: "Sub Company",
             dataSource: {
-              // textField: "full_name",
-              // valueField: "employee_id",
-              // data: undefined
+              textField: "insurance_sub_name",
+              valueField: "hims_d_insurance_sub_id",
+              data: undefined,
             },
           },
         ],

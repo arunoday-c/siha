@@ -32,14 +32,11 @@
 
                 </thead>
                 <tbody>
-                    <tr>
-                        <td colspan="10"></td>
-                        <td colspan="1"><span class="textFloatRight">Total No.
-                                Employees: <b>{{no_employees}}</b></span></td>
 
-                    </tr>
                     {{#hasElement result}}
-
+                    <tr class="numberFldTotalBottom">
+                        <td class="txtFld" colspan="11">Total Employee: {{no_employees}}</td>
+                    </tr>
                     {{#each result}}
                     <tr>
                         <td colspan="10" class="tableSubHdg">Dept. Name: {{department_name}}

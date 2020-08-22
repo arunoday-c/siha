@@ -1,4 +1,4 @@
-export default function Appointment() {
+export default function Appointment({ hospital_id }) {
   return {
     name: "Appointment",
     submenu: [
@@ -9,6 +9,23 @@ export default function Appointment() {
         pageSize: "A4",
         pageOrentation: "landscape", //"portrait",
         reportParameters: [
+          {
+            className: "col-3 form-group mandatory",
+            type: "dropdown",
+            name: "hospital_id",
+            initialLoad: true,
+            isImp: true,
+            label: "Branch",
+            link: {
+              uri: "/organization/getOrganizationByUser",
+            },
+            value: hospital_id,
+            dataSource: {
+              textField: "hospital_name",
+              valueField: "hims_d_hospital_id",
+              data: undefined,
+            },
+          },
           {
             className: "col-3 form-group mandatory",
             type: "date",
@@ -70,7 +87,7 @@ export default function Appointment() {
             },
           },
           {
-            className: "col-3 form-group mandatory",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "provider_id",
             initialLoad: true,
