@@ -86,7 +86,7 @@ function reducer(state, { type, payload }) {
           department_type,
           department_id,
           service_type_id,
-        ] = payload ?.split("-");
+        ] = payload?.split("-");
         return {
           ...state,
           sub_department_id,
