@@ -45,7 +45,6 @@ class LeaveSalaryProcess extends Component {
       hrms_options: {},
       decimal_place: null,
       hims_f_salary_id: null,
-      isOpen: false,
     };
 
     getHrmsOptions(this);

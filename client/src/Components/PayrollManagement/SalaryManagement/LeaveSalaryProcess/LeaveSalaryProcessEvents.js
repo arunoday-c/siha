@@ -413,7 +413,6 @@ const openSalaryComponents = ($this, row) => {
       if (response.data.success) {
         let data = response.data.result;
         if (data.length === 0) {
-          $this.setState({ isOpen: true });
           return;
         }
         let header = data[0]["salaryprocess_header"][0];
@@ -436,7 +435,7 @@ const openSalaryComponents = ($this, row) => {
           .toArray();
 
         $this.setState({
-          isOpen: true,
+          isOpen: !$this.state.isOpen,
           salaryprocess_Earning: salaryprocess_Earning,
           salaryprocess_Deduction: salaryprocess_Deduction,
           salaryprocess_Contribute: salaryprocess_Contribute,
