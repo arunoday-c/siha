@@ -442,10 +442,11 @@ const SaveDNEnrty = ($this) => {
       .value();
 
     for (var k = 0; k < item_grp.length; k++) {
+      const item_id = parseInt(item_grp[k])
       const pharmacy_stock_detail = _.filter(
         InputObj.pharmacy_stock_detail,
         (f) => {
-          return f.item_id === parseInt(item_grp[k]);
+          return f.item_id === item_id;
         }
       );
       let total_recived_qty = _.sumBy(pharmacy_stock_detail, (s) =>
@@ -474,10 +475,11 @@ const SaveDNEnrty = ($this) => {
       .value();
 
     for (var l = 0; l < item_grp.length; l++) {
+      const item_id = parseInt(item_grp[l])
       const inventory_stock_detail = _.filter(
         InputObj.inventory_stock_detail,
         (f) => {
-          return f.item_id === parseInt(item_grp[l]);
+          return f.item_id === item_id;
         }
       );
 
@@ -733,7 +735,7 @@ const getData = ($this) => {
         type: "ITEM_CATEGORY_GET_DATA",
         mappingName: "dnitemcategory",
       },
-      afterSuccess: (data) => {},
+      afterSuccess: (data) => { },
     });
 
     $this.props.getItemGroup({
