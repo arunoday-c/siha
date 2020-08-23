@@ -195,30 +195,31 @@ export default function Vat({
             label: "Company",
             link: {
               uri: "/insurance/getInsuranceProviders",
+              module: "insurance",
             },
-            events: {
-              onChange: (reportState, currentEvent) => {
-                //provider_id_list CONTROL NAME AND APPEND BY _LIST
-                algaehApiCall({
-                  uri: "/pharmacy/getPharmacyLocation",
-                  module: "pharmacy",
-                  method: "GET",
-                  data: { hospital_id: currentEvent.value },
+            // events: {
+            //   onChange: (reportState, currentEvent) => {
+            //     //provider_id_list CONTROL NAME AND APPEND BY _LIST
+            //     algaehApiCall({
+            //       uri: "/pharmacy/getPharmacyLocation",
+            //       module: "pharmacy",
+            //       method: "GET",
+            //       data: { hospital_id: currentEvent.value },
 
-                  onSuccess: (result) => {
-                    reportState.setState({
-                      location_id_list: result.data.records,
-                    });
-                  },
-                });
-              },
-              onClear: (reportState, currentName) => {
-                reportState.setState({
-                  [currentName]: undefined,
-                  location_id_list: [],
-                });
-              },
-            },
+            //       onSuccess: (result) => {
+            //         reportState.setState({
+            //           location_id_list: result.data.records,
+            //         });
+            //       },
+            //     });
+            //   },
+            //   onClear: (reportState, currentName) => {
+            //     reportState.setState({
+            //       [currentName]: undefined,
+            //       location_id_list: [],
+            //     });
+            //   },
+            // },
             dataSource: {
               textField: "insurance_provider_name",
               valueField: "hims_d_insurance_provider_id",

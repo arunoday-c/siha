@@ -8,15 +8,15 @@
                 <thead>
                     <tr>
                         <th>Sl No.<small>م</small></th>
-                        <th>Data From<small>التاريخ</small></th>
+                        <th>Data From<small>معلومات من</small></th>
                         <th>Date<small>التاريخ</small></th>
-                        <th>MRN No.<small>رقم المريض</small></th>
-                        <th>Patient Name<small>الجنسية</small></th>
-                        <th>Nationality<small>رقم الفاتورة / او الزيارة</small></th>
-                        <th>Cash/Insurance<small>نقدي / تامين</small></th>
-                        <th>Total Before VAT<small>الايراد قبل الضريبة</small></th>
-                        <th>Total After VAT<small>الايراد بعد الضريبة</small></th>
-                        <th>Company VAT Amount<small>ضريبة القيمة المضافة علي التامين</small></th>
+                        <th>MRN No.<small>كود المريض</small></th>
+                        <th>Patient Name<small>اسم المريض</small></th>
+                        <th>Nationality<small>الجنسية</small></th>
+                        <th>Company Name<small>اسم الشركة</small></th>
+                        <th>Total Before VAT<small>الإجمالي قبل ضريبة القيمة المضافة</small></th>
+                        <th>Total After VAT<small>الإجمالي بعد ضريبة القيمة المضافة</small></th>
+                        <th>Company VAT Amount<small>مبلغ ضريبة القيمة المضافة للشركة</small></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -29,7 +29,7 @@
                         <td>{{patient_code}}</td>
                         <td>{{full_name}}</td>
                         <td>{{nationality}}</td>
-                        <td>{{insurance_yesno}}</td>
+                        <td>{{insurance_sub_name}}</td>
                         <td class="numberFld">{{total_before_vat}}</td>
                         <td class="numberFld">{{total_after_vat}}</td>
                         {{!-- <td class="numberFld">{{patient_tax}}</td> --}}
