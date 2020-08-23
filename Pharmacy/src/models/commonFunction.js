@@ -106,7 +106,7 @@ let updateIntoItemLocation = (req, res, next) => {
         // utilities.logger().log("result: ", result);
         // utilities.logger().log("req.flag: ", req.flag);
         if (Array.isArray(result)) {
-          if (result[0][0].Error != null) {
+          if (result[0].length !== undefined && result[0][0].Error != null) {
             const error = new Error();
             error.message = result[0][0].Error;
             _mysql.rollBackTransaction(() => {

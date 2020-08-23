@@ -103,10 +103,8 @@ let updateIntoInvItemLocation = (req, res, next) => {
       })
       .then((detailSql) => {
         const result = detailSql[1];
-        // utilities.logger().log("result: ", result);
-        // utilities.logger().log("req.flag: ", req.flag);
         if (Array.isArray(result)) {
-          if (result[0][0].Error != null) {
+          if (result[0].length !== undefined && result[0][0].Error != null) {
             const error = new Error();
             error.message = result[0][0].Error;
             _mysql.rollBackTransaction(() => {
@@ -163,7 +161,7 @@ let updateIntoInvItemLocation = (req, res, next) => {
         }
       })
       .catch((e) => {
-        utilities.logger().log("error: ", e);
+        // console.log("error data: ", e);
         _mysql.rollBackTransaction(() => {
           next(e);
         });
