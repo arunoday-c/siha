@@ -45,6 +45,7 @@ class HospitalServices extends PureComponent {
       service_code: null,
       cpt_code: null,
       service_name: null,
+      arabic_service_name: null,
       hospital_id: null,
       service_type_id: null,
 
@@ -101,8 +102,8 @@ class HospitalServices extends PureComponent {
 
     this.FIN_Active =
       userToken.product_type === "HIMS_ERP" ||
-      userToken.product_type === "FINANCE_ERP" ||
-      userToken.product_type === "HRMS_ERP"
+        userToken.product_type === "FINANCE_ERP" ||
+        userToken.product_type === "HRMS_ERP"
         ? true
         : false;
 
@@ -250,6 +251,7 @@ class HospitalServices extends PureComponent {
                     },
                   }}
                 />
+
                 <AlagehAutoComplete
                   div={{ className: "col-3 form-group mandatory" }}
                   label={{
@@ -286,7 +288,7 @@ class HospitalServices extends PureComponent {
                       onChange: texthandle.bind(this, this),
                     },
                   }}
-                />{" "}
+                />
                 <div className="col-3">
                   <label>Is Physiotherapy Service</label>
                   <div className="customCheckbox">
@@ -364,6 +366,20 @@ class HospitalServices extends PureComponent {
                     },
                     others: {
                       disabled: !this.state.Applicable,
+                    },
+                  }}
+                />
+                <AlagehFormGroup
+                  div={{ className: "col-12 form-group arabic-txt-fld" }}
+                  label={{
+                    fieldName: "Arabic Service Name",
+                  }}
+                  textBox={{
+                    className: "txt-fld",
+                    name: "arabic_service_name",
+                    value: this.state.arabic_service_name,
+                    events: {
+                      onChange: texthandle.bind(this, this),
                     },
                   }}
                 />
@@ -477,8 +493,8 @@ class HospitalServices extends PureComponent {
                       {this.state.hims_d_services_id === null ? (
                         <AlgaehLabel label={{ fieldName: "btnSave" }} />
                       ) : (
-                        <AlgaehLabel label={{ fieldName: "btnUpdate" }} />
-                      )}
+                          <AlgaehLabel label={{ fieldName: "btnUpdate" }} />
+                        )}
                     </button>
                     <button
                       onClick={(e) => {
@@ -499,8 +515,8 @@ class HospitalServices extends PureComponent {
                         <AlgaehLabel label={{ fieldName: "btn_clear" }} />
                       </button>
                     ) : (
-                      ""
-                    )}
+                        ""
+                      )}
                   </div>
                 </div>
               </div>
