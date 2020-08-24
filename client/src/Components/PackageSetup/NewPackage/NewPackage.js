@@ -1,7 +1,4 @@
 import React, { PureComponent } from "react";
-import { withRouter } from "react-router-dom";
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
 
 import "./NewPackage.scss";
 import "./../../../styles/site.scss";
@@ -13,7 +10,6 @@ import {
   AlgaehModalPopUp,
 } from "../../Wrapper/algaehWrapper";
 import NewPackageEvent from "./NewPackageEvent";
-import { AlgaehActions } from "../../../actions/algaehActions";
 
 import { GetAmountFormart } from "../../../utils/GlobalFunctions";
 import {
@@ -22,8 +18,11 @@ import {
   RawSecurityElement,
 } from "algaeh-react-components";
 import GlobalVariables from "../../../utils/GlobalVariables";
+import spotlightSearch from "../../../Search/spotlightSearch.json";
+import AlgaehAutoSearch from "../../Wrapper/autoSearch";
+import _ from "lodash";
 
-class NewPackage extends PureComponent {
+export default class NewPackage extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
@@ -70,26 +69,6 @@ class NewPackage extends PureComponent {
 
     this.setState({
       hospital_id: userToken.hims_d_hospital_id,
-    });
-
-    this.props.getServiceTypes({
-      uri: "/serviceType",
-      module: "masterSettings",
-      method: "GET",
-      redux: {
-        type: "SERVIES_TYPES_GET_DATA",
-        mappingName: "servicetype",
-      },
-    });
-
-    this.props.getServices({
-      uri: "/serviceType/getService",
-      module: "masterSettings",
-      method: "GET",
-      redux: {
-        type: "SERVICES_GET_DATA",
-        mappingName: "displayservices",
-      },
     });
 
     RawSecurityElement({ elementCode: "Enable_Multi_Package" }).then(
@@ -736,7 +715,39 @@ class NewPackage extends PureComponent {
                     </div>
                   </div>
                   <div className="row">
-                    <AlagehAutoComplete
+                    <AlgaehAutoSearch
+                      div={{ className: "col customServiceSearch" }}
+                      label={{ forceLabel: "Search Services" }}
+                      title="Search Services"
+                      id="service_id_search"
+                      template={({ service_name, service_type }) => {
+                        return (
+                          <div className={`row resultSecStyles`}>
+                            <div className="col-12 padd-10">
+                              <h4 className="title">
+                                {_.startCase(_.toLower(service_name))}
+                              </h4>
+                              <p className="searchMoreDetails">
+                                <span>
+                                  Service Type:
+                                <b>{_.startCase(_.toLower(service_type))}</b>
+                                </span>
+                              </p>
+                            </div>
+                          </div>
+                        );
+                      }}
+                      name="s_service"
+                      columns={spotlightSearch.Services.servicemaster}
+                      displayField="service_name"
+                      value={this.state.service_name}
+                      searchName="servicemaster"
+                      onClick={this.serviceHandeler.bind(this)}
+                      ref={(attReg) => {
+                        this.attReg = attReg;
+                      }}
+                    />
+                    {/* <AlagehAutoComplete
                       div={{ className: "col-3 form-group  mandatory" }}
                       label={{
                         fieldName: "select_service_type",
@@ -791,9 +802,9 @@ class NewPackage extends PureComponent {
                           // disabled: this.state.approvedPack
                         },
                       }}
-                    />
+                    /> */}
 
-                    <AlagehFormGroup
+                    {this.state.package_visit_type === "M" ? <AlagehFormGroup
                       div={{ className: "col-2  mandatory" }}
                       label={{
                         forceLabel: "Quantity",
@@ -816,7 +827,7 @@ class NewPackage extends PureComponent {
                           // disabled: this.state.approvedPack
                         }
                       }}
-                    />
+                    /> : null}
                     <div className="col-2 form-group">
                       <button
                         className="btn btn-primary"
@@ -861,101 +872,64 @@ class NewPackage extends PureComponent {
                               },
                             },
                             {
-                              fieldName: "service_type_id",
+                              fieldName: "service_type",
                               label: (
                                 <AlgaehLabel
                                   label={{ fieldName: "service_type_id" }}
                                 />
-                              ),
-                              displayTemplate: (row) => {
-                                let display =
-                                  this.props.servicetype === undefined
-                                    ? []
-                                    : this.props.servicetype.filter(
-                                      (f) =>
-                                        f.hims_d_service_type_id ===
-                                        row.service_type_id
-                                    );
-
-                                return (
-                                  <span>
-                                    {display !== undefined &&
-                                      display.length !== 0
-                                      ? display[0].service_type
-                                      : ""}
-                                  </span>
-                                );
-                              },
+                              )
                             },
                             {
-                              fieldName: "service_id",
+                              fieldName: "service_name",
                               label: (
                                 <AlgaehLabel
                                   label={{ fieldName: "service_id" }}
                                 />
-                              ),
-                              displayTemplate: (row) => {
-                                let display =
-                                  this.props.displayservices === undefined
-                                    ? []
-                                    : this.props.displayservices.filter(
-                                      (f) =>
-                                        f.hims_d_services_id ===
-                                        row.service_id
-                                    );
-
-                                return (
-                                  <span>
-                                    {display !== null && display.length !== 0
-                                      ? display[0].service_name
-                                      : ""}
-                                  </span>
-                                );
-                              },
+                              )
                             },
-                            // {
-                            //   fieldName: "qty",
-                            //   label: (
-                            //     <AlgaehLabel
-                            //       label={{ forceLabel: "Quantity" }}
-                            //     />
-                            //   ),
-                            //   displayTemplate: row => {
-                            //     return this.state.approvedPack === true ? (
-                            //       row.qty
-                            //     ) : (
-                            //         <AlagehFormGroup
-                            //           div={{}}
-                            //           textBox={{
-                            //             number: {
-                            //               allowNegative: false,
-                            //               thousandSeparator: ","
-                            //             },
-                            //             dontAllowKeys: ["-", "e", "."],
-                            //             value: row.qty,
-                            //             className: "txt-fld",
-                            //             name: "qty",
-                            //             events: {
-                            //               onChange: this.gridtexthandel.bind(
-                            //                 this,
-                            //                 row
-                            //               )
-                            //             },
-                            //             others: {
-                            //               disabled: this.state.approvedPack,
-                            //               onBlur: this.makeZeroIngrid.bind(
-                            //                 this,
-                            //                 row
-                            //               )
-                            //             }
-                            //           }}
-                            //         />
-                            //       );
-                            //   },
-                            //   others: {
-                            //     style: { textAlign: "center" }
-                            //   }
-                            // },
+                            {
+                              fieldName: "qty",
+                              label: (
+                                <AlgaehLabel
+                                  label={{ forceLabel: "Quantity" }}
+                                />
+                              ),
+                              displayTemplate: row => {
+                                return this.state.approvedPack === true || this.state.package_visit_type === "S" ? (
+                                  row.qty
+                                ) : (
+                                    <AlagehFormGroup
+                                      div={{}}
+                                      textBox={{
+                                        number: {
+                                          allowNegative: false,
+                                          thousandSeparator: ","
+                                        },
+                                        dontAllowKeys: ["-", "e", "."],
+                                        value: row.qty,
+                                        className: "txt-fld",
+                                        name: "qty",
+                                        events: {
+                                          onChange: this.gridtexthandel.bind(
+                                            this,
+                                            row
+                                          )
+                                        },
+                                        others: {
+                                          disabled: this.state.approvedPack,
+                                          onBlur: this.makeZeroIngrid.bind(
+                                            this,
+                                            row
+                                          )
+                                        }
+                                      }}
+                                    />
+                                  );
+                              },
+                              others: {
+                                style: { textAlign: "center" }
+                              }
+                            },
                             {
                               fieldName: "service_amount",
                               label: (
@@ -1088,25 +1062,3 @@ class NewPackage extends PureComponent {
     );
   }
 }
-
-function mapStateToProps(state) {
-  return {
-    servicetype: state.servicetype,
-    services: state.services,
-    displayservices: state.displayservices,
-  };
-}
-
-function mapDispatchToProps(dispatch) {
-  return bindActionCreators(
-    {
-      getServiceTypes: AlgaehActions,
-      getServices: AlgaehActions,
-    },
-    dispatch
-  );
-}
-
-export default withRouter(
-  connect(mapStateToProps, mapDispatchToProps)(NewPackage)
-);

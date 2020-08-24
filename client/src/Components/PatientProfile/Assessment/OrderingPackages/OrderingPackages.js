@@ -418,7 +418,7 @@ class OrderingPackages extends Component {
                         },
                       },
                       {
-                        fieldName: "services_name",
+                        fieldName: "service_name",
                         label: (
                           <AlgaehLabel label={{ fieldName: "services_id" }} />
                         ),

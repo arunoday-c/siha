@@ -311,57 +311,21 @@ class PackageDetail extends Component {
                             },
                           },
                           {
-                            fieldName: "service_type_id",
+                            fieldName: "service_type",
                             label: (
                               <AlgaehLabel
                                 label={{ fieldName: "service_type_id" }}
                               />
-                            ),
-                            displayTemplate: (row) => {
-                              let display =
-                                this.props.servicetype === undefined
-                                  ? []
-                                  : this.props.servicetype.filter(
-                                      (f) =>
-                                        f.hims_d_service_type_id ===
-                                        row.service_type_id
-                                    );
-
-                              return (
-                                <span>
-                                  {display !== undefined && display.length !== 0
-                                    ? display[0].service_type
-                                    : ""}
-                                </span>
-                              );
-                            },
+                            )
                           },
 
                           {
-                            fieldName: "services_id",
+                            fieldName: "service_name",
                             label: (
                               <AlgaehLabel
                                 label={{ fieldName: "services_id" }}
                               />
                             ),
-                            displayTemplate: (row) => {
-                              let display =
-                                this.props.serviceslist === undefined
-                                  ? []
-                                  : this.props.serviceslist.filter(
-                                      (f) =>
-                                        f.hims_d_services_id === row.service_id
-                                    );
-
-                              return (
-                                <span>
-                                  {display !== null && display.length !== 0
-                                    ? display[0].service_name
-                                    : ""}
-                                </span>
-                              );
-                            },
-
                             others: {
                               minWidth: 400,
                             },
@@ -419,8 +383,6 @@ class PackageDetail extends Component {
 
 function mapStateToProps(state) {
   return {
-    servicetype: state.servicetype,
-    serviceslist: state.serviceslist,
     patient_profile: state.patient_profile,
     inventorylocations: state.inventorylocations,
     inventoryitemlist: state.inventoryitemlist,
