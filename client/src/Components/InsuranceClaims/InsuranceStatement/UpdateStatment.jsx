@@ -269,7 +269,7 @@ export function UpdateStatement({
                       ),
                     },
                     {
-                      fieldName: "remittance_ammount",
+                      fieldName: "remittance_amount",
                       label: (
                         <AlgaehLabel
                           label={{ forceLabel: "Remittance Amount" }}
@@ -277,23 +277,23 @@ export function UpdateStatement({
                       ),
                       editorTemplate: (row) => (
                         <input
-                          value={row?.remittance_ammount}
+                          value={row?.remittance_amount}
                           onChange={(e) => {
-                            row.remittance_ammount = e.target.value;
+                            row.remittance_amount = e.target.value;
                           }}
                         />
                       ),
                     },
                     {
-                      fieldName: "denial_ammount",
+                      fieldName: "denial_amount",
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Denial Amount" }} />
                       ),
                       editorTemplate: (row) => (
                         <input
-                          value={row?.denial_ammount}
+                          value={row?.denial_amount}
                           onChange={(e) => {
-                            row.denial_ammount = e.target.value;
+                            row.denial_amount = e.target.value;
                           }}
                         />
                       ),

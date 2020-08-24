@@ -12,7 +12,7 @@ const {
   releaseDBConnection,
   jsonArrayToObject,
   runningNumberGen,
-  whereCondition
+  whereCondition,
 } = utils;
 
 //created by irfan: to
@@ -35,7 +35,7 @@ let getVisitWiseBillDetailSBACKUP = (req, res, next) => {
 
           if (result.length > 0) {
             let bill_header_ids = new LINQ(result)
-              .Select(s => s.hims_f_billing_header_id)
+              .Select((s) => s.hims_f_billing_header_id)
               .ToArray();
 
             // select hims_f_billing_details_id, hims_f_billing_header_id, service_type_id, services_id, quantity,\
@@ -100,7 +100,7 @@ let getVisitWiseBillDetailS = (req, res, next) => {
 
           if (result.length > 0) {
             let bill_header_ids = new LINQ(result)
-              .Select(s => s.hims_f_billing_header_id)
+              .Select((s) => s.hims_f_billing_header_id)
               .ToArray();
 
             // select hims_f_billing_details_id, hims_f_billing_header_id, service_type_id, services_id, quantity,\
@@ -174,7 +174,7 @@ let addInvoiceGeneration = (req, res, next) => {
       if (error) {
         next(error);
       }
-      connection.beginTransaction(error => {
+      connection.beginTransaction((error) => {
         if (error) {
           connection.rollback(() => {
             releaseDBConnection(db, connection);
@@ -189,14 +189,14 @@ let addInvoiceGeneration = (req, res, next) => {
             db: connection,
             counter: requestCounter,
             module_desc: ["INV_NUM"],
-            onFailure: error => {
+            onFailure: (error) => {
               reject(error);
             },
-            onSuccess: result => {
+            onSuccess: (result) => {
               resolve(result);
-            }
+            },
           });
-        }).then(result => {
+        }).then((result) => {
           let documentCode = result[0].completeNumber;
 
           // let today = moment().format("YYYY-MM-DD");
@@ -240,7 +240,7 @@ let addInvoiceGeneration = (req, res, next) => {
               new Date(),
               req.userIdentity.algaeh_d_app_user_id,
               new Date(),
-              req.userIdentity.algaeh_d_app_user_id
+              req.userIdentity.algaeh_d_app_user_id,
             ],
             (error, headerResult) => {
               if (error) {
@@ -270,20 +270,20 @@ let addInvoiceGeneration = (req, res, next) => {
                   "company_payable",
                   "sec_company_resp",
                   "sec_company_tax",
-                  "sec_company_payable"
+                  "sec_company_payable",
                 ];
 
                 connection.query(
                   "INSERT INTO hims_f_invoice_details(" +
-                  insurtColumns.join(",") +
-                  ",invoice_header_id) VALUES ?",
+                    insurtColumns.join(",") +
+                    ",invoice_header_id) VALUES ?",
                   [
                     jsonArrayToObject({
                       sampleInputObject: insurtColumns,
                       arrayObj: req.body.Invoice_Detail,
                       newFieldToInsert: [headerResult.insertId],
-                      req: req
-                    })
+                      req: req,
+                    }),
                   ],
                   (error, detailResult) => {
                     if (error) {
@@ -294,7 +294,7 @@ let addInvoiceGeneration = (req, res, next) => {
                     }
 
                     let _tempBillHeaderIds = new LINQ(req.body.Invoice_Detail)
-                      .Select(s => s.hims_f_billing_header_id)
+                      .Select((s) => s.hims_f_billing_header_id)
                       .ToArray();
 
                     let billHeaderIds = _tempBillHeaderIds.filter(
@@ -314,7 +314,7 @@ let addInvoiceGeneration = (req, res, next) => {
                           billHeaderIds,
                           new Date(),
                           input.updated_by,
-                          input.visit_id
+                          input.visit_id,
                         ],
                         (error, invoiceFlagResult) => {
                           if (error) {
@@ -324,7 +324,7 @@ let addInvoiceGeneration = (req, res, next) => {
                             });
                           }
 
-                          connection.commit(error => {
+                          connection.commit((error) => {
                             if (error) {
                               connection.rollback(() => {
                                 releaseDBConnection(db, connection);
@@ -334,7 +334,7 @@ let addInvoiceGeneration = (req, res, next) => {
                             releaseDBConnection(db, connection);
                             req.records = {
                               invoice_number: documentCode,
-                              hims_f_invoice_header_id: headerResult.insertId
+                              hims_f_invoice_header_id: headerResult.insertId,
                             };
                             next();
                           });
@@ -383,7 +383,7 @@ let addInvoiceGeneration = (req, res, next) => {
 //created by Nowshad: to get Pharmacy Requisition Entry
 let getInvoiceGeneration = (req, res, next) => {
   let selectWhere = {
-    invoice_number: "ALL"
+    invoice_number: "ALL",
   };
   try {
     if (req.db == null) {
@@ -401,13 +401,13 @@ let getInvoiceGeneration = (req, res, next) => {
         IH.`sub_insurance_id`, IH.`network_id`, IH.`network_office_id`, IH.`card_number`, IH.`gross_amount`,\
         IH.`discount_amount`, IH.`net_amount`, IH.`patient_resp`, IH.`patient_tax`, IH.`patient_payable`,\
         IH.`company_resp`, IH.`company_tax`, IH.`company_payable`, IH.`sec_company_resp`, IH.`sec_company_tax`,\
-        IH.`sec_company_payable`, IH.`submission_date`, IH.`submission_ammount`, IH.`remittance_date`,\
-        IH.`remittance_ammount`, IH.`denial_ammount`, IH.`claim_validated`, IH.`card_holder_name`,\
+        IH.`sec_company_payable`, IH.`submission_date`, IH.`submission_amount`, IH.`remittance_date`,\
+        IH.`remittance_amount`, IH.`denial_amount`, IH.`claim_validated`, IH.`card_holder_name`,\
         IH.`card_holder_age`, IH.`card_holder_gender`, IH.`card_class`, IH.`created_by`, IH.`created_date`,\
         IH.`updated_by`, IH.`updated_date`, IH.`hospital_id`, PV.visit_code, P.patient_code, P.full_name\
         from  hims_f_invoice_header IH, hims_f_patient_visit PV, hims_f_patient P\
         where IH.visit_id = PV.hims_f_patient_visit_id and IH.patient_id = P.hims_d_patient_id and " +
-        where.condition,
+          where.condition,
         where.values,
         (error, headerResult) => {
           if (error) {
@@ -431,7 +431,7 @@ let getInvoiceGeneration = (req, res, next) => {
                 }
                 req.records = {
                   ...headerResult[0],
-                  ...{ Invoice_Detail }
+                  ...{ Invoice_Detail },
                 };
                 releaseDBConnection(db, connection);
                 next();
@@ -453,7 +453,7 @@ let getInvoiceGeneration = (req, res, next) => {
 //created by irfan: to backup on 15/dec/2018
 let getInvoicesForClaimsBACKUP = (req, res, next) => {
   let selectWhere = {
-    sub_insurance_id: "ALL"
+    sub_insurance_id: "ALL",
   };
 
   if (
@@ -502,7 +502,7 @@ let getInvoicesForClaimsBACKUP = (req, res, next) => {
          IH.insurance_provider_id, IH.sub_insurance_id, IH.network_id, IH.network_office_id, gross_amount,\
          discount_amount, patient_resp, patient_tax, patient_payable, company_resp, company_tax, \
          company_payable, sec_company_resp, sec_company_tax, sec_company_payable, submission_date,\
-         submission_ammount, remittance_date, remittance_ammount, denial_ammount,\
+         submission_amount, remittance_date, remittance_amount, denial_amount,\
          P.patient_code,P.full_name as patient_name,P.arabic_name as arabic_patient_name,P.contact_number ,\
          V.visit_code,insurance_provider_name,arabic_provider_name as arabic_insurance_provider_name ,\
          insurance_sub_code as sub_insurance_provider_code,insurance_sub_name as sub_insurance_provider,\
@@ -517,8 +517,8 @@ let getInvoicesForClaimsBACKUP = (req, res, next) => {
         and SI.record_status='A' left join hims_d_insurance_network NET on IH.network_id=NET.hims_d_insurance_network_id\
         and NET.record_status='A' left join hims_d_insurance_network_office NET_OF on IH.network_office_id=NET_OF.hims_d_insurance_network_office_id\
         and NET_OF.record_status='A' where " +
-          invoice_date +
-          where.condition,
+            invoice_date +
+            where.condition,
           where.values,
 
           (error, result) => {
@@ -577,7 +577,7 @@ let getInvoicesForClaimsBACKUP = (req, res, next) => {
 //created by irfan:
 let getInvoicesForClaims = (req, res, next) => {
   let selectWhere = {
-    sub_insurance_id: "ALL"
+    sub_insurance_id: "ALL",
   };
 
   if (
@@ -621,7 +621,7 @@ let getInvoicesForClaims = (req, res, next) => {
       let where = whereCondition(extend(selectWhere, req.query));
 
       db.getConnection((error, connection) => {
-        connection.beginTransaction(error => {
+        connection.beginTransaction((error) => {
           if (error) {
             connection.rollback(() => {
               releaseDBConnection(db, connection);
@@ -633,7 +633,7 @@ let getInvoicesForClaims = (req, res, next) => {
             IH.insurance_provider_id, IH.sub_insurance_id, IH.network_id, IH.network_office_id, IH.card_number, gross_amount,\
             discount_amount, patient_resp, patient_tax, patient_payable, company_resp, company_tax, \
             company_payable, sec_company_resp, sec_company_tax, sec_company_payable, submission_date,\
-            submission_ammount, remittance_date, remittance_ammount, denial_ammount,claim_validated,\
+            submission_amount, remittance_date, remittance_amount, denial_amount,claim_validated,\
             P.patient_code,P.full_name as patient_name,P.arabic_name as arabic_patient_name,P.contact_number ,\
             V.visit_code,V.episode_id,V.doctor_id,E.full_name as doctor_name,E.employee_code,insurance_provider_name,\
             arabic_provider_name as arabic_insurance_provider_name ,\
@@ -650,8 +650,8 @@ let getInvoicesForClaims = (req, res, next) => {
            and SI.record_status='A' left join hims_d_insurance_network NET on IH.network_id=NET.hims_d_insurance_network_id\
            and NET.record_status='A' left join hims_d_insurance_network_office NET_OF on IH.network_office_id=NET_OF.hims_d_insurance_network_office_id\
            and NET_OF.record_status='A' where " +
-            invoice_date +
-            where.condition,
+              invoice_date +
+              where.condition,
             where.values,
 
             (error, result) => {
@@ -704,7 +704,7 @@ let getInvoicesForClaims = (req, res, next) => {
                             outputArray.push({ ...result[i], invoiceDetails });
 
                             if (i == result.length - 1) {
-                              connection.commit(error => {
+                              connection.commit((error) => {
                                 if (error) {
                                   connection.rollback(() => {
                                     releaseDBConnection(db, connection);
@@ -741,13 +741,13 @@ let getInvoicesForClaims = (req, res, next) => {
                                     "diagnosis_type",
                                     "final_daignosis",
                                     "created_by",
-                                    "updated_by"
+                                    "updated_by",
                                   ];
 
                                   connection.query(
                                     "INSERT INTO hims_f_invoice_icd(" +
-                                    insurtColumns.join(",") +
-                                    ",invoice_header_id,created_date,updated_date) VALUES ?",
+                                      insurtColumns.join(",") +
+                                      ",invoice_header_id,created_date,updated_date) VALUES ?",
                                     [
                                       jsonArrayToObject({
                                         sampleInputObject: insurtColumns,
@@ -755,10 +755,10 @@ let getInvoicesForClaims = (req, res, next) => {
                                         newFieldToInsert: [
                                           result[i].hims_f_invoice_header_id,
                                           new Date(),
-                                          new Date()
+                                          new Date(),
                                         ],
-                                        req: req
-                                      })
+                                        req: req,
+                                      }),
                                     ],
                                     (error, addDiagnosys) => {
                                       if (error) {
@@ -771,11 +771,11 @@ let getInvoicesForClaims = (req, res, next) => {
                                       debugLog("addDiagnosys:", addDiagnosys);
                                       outputArray.push({
                                         ...result[i],
-                                        invoiceDetails
+                                        invoiceDetails,
                                       });
 
                                       if (i == result.length - 1) {
-                                        connection.commit(error => {
+                                        connection.commit((error) => {
                                           if (error) {
                                             connection.rollback(() => {
                                               releaseDBConnection(
@@ -796,11 +796,11 @@ let getInvoicesForClaims = (req, res, next) => {
                                 } else {
                                   outputArray.push({
                                     ...result[i],
-                                    invoiceDetails
+                                    invoiceDetails,
                                   });
 
                                   if (i == result.length - 1) {
-                                    connection.commit(error => {
+                                    connection.commit((error) => {
                                       if (error) {
                                         connection.rollback(() => {
                                           releaseDBConnection(db, connection);
@@ -955,7 +955,7 @@ let addInvoiceIcd = (req, res, next) => {
             new Date(),
             input.created_by,
             new Date(),
-            input.updated_by
+            input.updated_by,
           ],
           (error, result) => {
             releaseDBConnection(db, connection);
@@ -1008,7 +1008,7 @@ let updateClaimValidatedStatus = (req, res, next) => {
             input.claim_validated,
             new Date(),
             input.updated_by,
-            input.hims_f_invoice_header_id
+            input.hims_f_invoice_header_id,
           ],
           (error, result) => {
             releaseDBConnection(db, connection);
@@ -1059,7 +1059,7 @@ let updateInvoiceDetails = (req, res, next) => {
             input.cpt_code,
             new Date(),
             input.updated_by,
-            input.hims_f_invoice_details_id
+            input.hims_f_invoice_details_id,
           ],
           (error, result) => {
             releaseDBConnection(db, connection);
@@ -1095,5 +1095,5 @@ export default {
   deleteInvoiceIcd,
   addInvoiceIcd,
   updateClaimValidatedStatus,
-  updateInvoiceDetails
+  updateInvoiceDetails,
 };

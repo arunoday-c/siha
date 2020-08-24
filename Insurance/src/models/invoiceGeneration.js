@@ -14,12 +14,12 @@ export default {
            where record_status='A' and invoice_generated='N' and visit_id=?",
           values: [req.query.visit_id],
 
-          printQuery: false
+          printQuery: false,
         })
-        .then(result => {
+        .then((result) => {
           if (result.length > 0) {
             let bill_header_ids = new LINQ(result)
-              .Select(s => s.hims_f_billing_header_id)
+              .Select((s) => s.hims_f_billing_header_id)
               .ToArray();
 
             _mysql
@@ -51,9 +51,9 @@ export default {
             PH.visit_id=? and PH.record_status='A' and PH.record_status='A';",
                 values: [bill_header_ids, req.query.visit_id],
 
-                printQuery: false
+                printQuery: false,
               })
-              .then(detailResult => {
+              .then((detailResult) => {
                 _mysql.releaseConnection();
 
                 let outputArray = [];
@@ -62,7 +62,7 @@ export default {
                 req.records = outputArray;
                 next();
               })
-              .catch(error => {
+              .catch((error) => {
                 _mysql.releaseConnection();
                 next(error);
               });
@@ -72,7 +72,7 @@ export default {
             next();
           }
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -91,9 +91,9 @@ export default {
         .generateRunningNumber({
           user_id: req.userIdentity.algaeh_d_app_user_id,
           numgen_codes: ["INV_NUM"],
-          table_name: "hims_f_app_numgen"
+          table_name: "hims_f_app_numgen",
         })
-        .then(generatedNumbers => {
+        .then((generatedNumbers) => {
           _mysql
             .executeQuery({
               query:
@@ -136,12 +136,12 @@ export default {
                 req.userIdentity.algaeh_d_app_user_id,
                 new Date(),
                 req.userIdentity.algaeh_d_app_user_id,
-                req.userIdentity.hospital_id
+                req.userIdentity.hospital_id,
               ],
 
-              printQuery: true
+              printQuery: true,
             })
-            .then(headerResult => {
+            .then((headerResult) => {
               //   _mysql.releaseConnection();
               //   req.records = result;
 
@@ -167,7 +167,7 @@ export default {
                   "company_payable",
                   "sec_company_resp",
                   "sec_company_tax",
-                  "sec_company_payable"
+                  "sec_company_payable",
                 ];
                 _mysql
                   .executeQueryWithTransaction({
@@ -180,14 +180,14 @@ export default {
                       created_date: new Date(),
                       updated_date: new Date(),
                       created_by: req.userIdentity.algaeh_d_app_user_id,
-                      updated_by: req.userIdentity.algaeh_d_app_user_id
+                      updated_by: req.userIdentity.algaeh_d_app_user_id,
                     },
                     bulkInsertOrUpdate: true,
-                    printQuery: true
+                    printQuery: true,
                   })
-                  .then(detailResult => {
+                  .then((detailResult) => {
                     let _tempBillHeaderIds = new LINQ(req.body.Invoice_Detail)
-                      .Select(s => s.hims_f_billing_header_id)
+                      .Select((s) => s.hims_f_billing_header_id)
                       .ToArray();
 
                     let billHeaderIds = _tempBillHeaderIds.filter(
@@ -210,21 +210,21 @@ export default {
                             billHeaderIds,
                             new Date(),
                             req.userIdentity.algaeh_d_app_user_id,
-                            input.visit_id
+                            input.visit_id,
                           ],
-                          printQuery: false
+                          printQuery: false,
                         })
-                        .then(result => {
+                        .then((result) => {
                           _mysql.commitTransaction(() => {
                             _mysql.releaseConnection();
                             req.records = {
                               invoice_number: generatedNumbers.INV_NUM,
-                              hims_f_invoice_header_id: headerResult.insertId
+                              hims_f_invoice_header_id: headerResult.insertId,
                             };
                             next();
                           });
                         })
-                        .catch(e => {
+                        .catch((e) => {
                           mysql.rollBackTransaction(() => {
                             next(e);
                           });
@@ -233,14 +233,14 @@ export default {
                       _mysql.rollBackTransaction(() => {
                         req.records = {
                           invalid_data: true,
-                          message: "please send proper  input"
+                          message: "please send proper  input",
                         };
                         next();
                         return;
                       });
                     }
                   })
-                  .catch(e => {
+                  .catch((e) => {
                     mysql.rollBackTransaction(() => {
                       next(e);
                     });
@@ -249,20 +249,20 @@ export default {
                 _mysql.rollBackTransaction(() => {
                   req.records = {
                     invalid_data: true,
-                    message: "please send correct  data"
+                    message: "please send correct  data",
                   };
                   next();
                   return;
                 });
               }
             })
-            .catch(e => {
+            .catch((e) => {
               mysql.rollBackTransaction(() => {
                 next(e);
               });
             });
         })
-        .catch(e => {
+        .catch((e) => {
           _mysql.rollBackTransaction(() => {
             next(e);
           });
@@ -286,17 +286,17 @@ export default {
           IH.`sub_insurance_id`, IH.`network_id`, IH.`network_office_id`, IH.`card_number`, IH.`gross_amount`,\
           IH.`discount_amount`, IH.`net_amount`, IH.`patient_resp`, IH.`patient_tax`, IH.`patient_payable`,\
           IH.`company_resp`, IH.`company_tax`, IH.`company_payable`, IH.`sec_company_resp`, IH.`sec_company_tax`,\
-          IH.`sec_company_payable`, IH.`submission_date`, IH.`submission_ammount`, IH.`remittance_date`,\
-          IH.`remittance_ammount`, IH.`denial_ammount`, IH.`claim_validated`, IH.`card_holder_name`,\
+          IH.`sec_company_payable`, IH.`submission_date`, IH.`submission_amount`, IH.`remittance_date`,\
+          IH.`remittance_amount`, IH.`denial_amount`, IH.`claim_validated`, IH.`card_holder_name`,\
           IH.`card_holder_age`, IH.`card_holder_gender`, IH.`card_class`, IH.`created_by`, IH.`created_date`,\
           IH.`updated_by`, IH.`updated_date`, IH.`hospital_id`, PV.visit_code, P.patient_code, P.full_name\
           from  hims_f_invoice_header IH, hims_f_patient_visit PV, hims_f_patient P\
           where IH.visit_id = PV.hims_f_patient_visit_id and IH.patient_id = P.hims_d_patient_id and invoice_number=?",
           values: [req.query.invoice_number],
 
-          printQuery: false
+          printQuery: false,
         })
-        .then(headerResult => {
+        .then((headerResult) => {
           if (headerResult.length > 0) {
             _mysql
               .executeQuery({
@@ -304,18 +304,18 @@ export default {
                   "select * from hims_f_invoice_details where invoice_header_id=?",
                 values: [headerResult[0].hims_f_invoice_header_id],
 
-                printQuery: false
+                printQuery: false,
               })
-              .then(Invoice_Detail => {
+              .then((Invoice_Detail) => {
                 _mysql.releaseConnection();
 
                 req.records = {
                   ...headerResult[0],
-                  ...{ Invoice_Detail }
+                  ...{ Invoice_Detail },
                 };
                 next();
               })
-              .catch(error => {
+              .catch((error) => {
                 _mysql.releaseConnection();
                 next(error);
               });
@@ -325,7 +325,7 @@ export default {
             next();
           }
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -379,7 +379,7 @@ export default {
           IH.insurance_provider_id, IH.sub_insurance_id, IH.network_id, IH.network_office_id, IH.card_number, gross_amount,\
           discount_amount, patient_resp, patient_tax, patient_payable, company_resp, company_tax, \
           company_payable, sec_company_resp, sec_company_tax, sec_company_payable, submission_date,\
-          submission_ammount, remittance_date, remittance_ammount, denial_ammount,claim_validated,\
+          submission_amount, remittance_date, remittance_amount, denial_amount,claim_validated,\
           P.patient_code,P.full_name as patient_name,P.arabic_name as arabic_patient_name,P.contact_number ,\
           V.visit_code,V.episode_id,V.doctor_id,E.full_name as doctor_name,E.employee_code,insurance_provider_name,\
           arabic_provider_name as arabic_insurance_provider_name ,\
@@ -415,16 +415,16 @@ export default {
              where ICD.record_status='A' and IH.insurance_statement_id IS NULL " +
               _qryStr,
             values: [..._values, ..._values, ..._values],
-            printQuery: true
+            printQuery: true,
           })
-          .then(result => {
+          .then((result) => {
             let header_arr = result[0];
             let detail_arr = result[1];
             let invoce_icd_arr = result[2];
 
             if (header_arr.length > 0) {
               let all_episode_id = new LINQ(header_arr)
-                .Select(s => s.episode_id)
+                .Select((s) => s.episode_id)
                 .ToArray();
 
               _mysql
@@ -434,21 +434,21 @@ export default {
               from hims_f_patient_diagnosis where record_status='A' and  episode_id in (?)",
                   values: [all_episode_id],
 
-                  printQuery: true
+                  printQuery: true,
                 })
-                .then(diagnosis_result => {
+                .then((diagnosis_result) => {
                   let outputArray = [];
                   let insertArray = [];
 
                   for (let i = 0; i < header_arr.length; i++) {
-                    let invoiceDetails = detail_arr.filter(detail => {
+                    let invoiceDetails = detail_arr.filter((detail) => {
                       return (
                         detail.invoice_header_id ==
                         header_arr[i]["hims_f_invoice_header_id"]
                       );
                     });
 
-                    let icd_present = invoce_icd_arr.filter(item => {
+                    let icd_present = invoce_icd_arr.filter((item) => {
                       return (
                         item.invoice_header_id ==
                         header_arr[i]["hims_f_invoice_header_id"]
@@ -458,16 +458,16 @@ export default {
                     if (icd_present.length > 0) {
                       outputArray.push({
                         ...header_arr[i],
-                        invoiceDetails
+                        invoiceDetails,
                       });
                     } else {
                       let patientDiagnosys = [];
-                      diagnosis_result.forEach(item => {
+                      diagnosis_result.forEach((item) => {
                         if (item["episode_id"] == header_arr[i]["episode_id"]) {
                           patientDiagnosys.push({
                             ...item,
                             invoice_header_id:
-                              header_arr[i]["hims_f_invoice_header_id"]
+                              header_arr[i]["hims_f_invoice_header_id"],
                           });
                         }
                       });
@@ -476,7 +476,7 @@ export default {
 
                       outputArray.push({
                         ...header_arr[i],
-                        invoiceDetails
+                        invoiceDetails,
                       });
                     }
                   }
@@ -488,7 +488,7 @@ export default {
                       "daignosis_id",
                       "diagnosis_type",
                       "final_daignosis",
-                      "invoice_header_id"
+                      "invoice_header_id",
                     ];
                     _mysql
                       .executeQuery({
@@ -500,18 +500,18 @@ export default {
                           created_date: new Date(),
                           updated_date: new Date(),
                           created_by: req.userIdentity.algaeh_d_app_user_id,
-                          updated_by: req.userIdentity.algaeh_d_app_user_id
+                          updated_by: req.userIdentity.algaeh_d_app_user_id,
                         },
                         bulkInsertOrUpdate: true,
-                        printQuery: true
+                        printQuery: true,
                       })
-                      .then(finalResult => {
+                      .then((finalResult) => {
                         _mysql.releaseConnection();
 
                         req.records = outputArray;
                         next();
                       })
-                      .catch(e => {
+                      .catch((e) => {
                         _mysql.releaseConnection();
                         next(e);
                       });
@@ -521,7 +521,7 @@ export default {
                     next();
                   }
                 })
-                .catch(error => {
+                .catch((error) => {
                   _mysql.releaseConnection();
                   next(error);
                 });
@@ -531,14 +531,14 @@ export default {
               next();
             }
           })
-          .catch(error => {
+          .catch((error) => {
             _mysql.releaseConnection();
             next(error);
           });
       } else {
         req.records = {
           invalid_data: true,
-          message: "Please provide valid input"
+          message: "Please provide valid input",
         };
         next();
         return;
@@ -564,21 +564,21 @@ export default {
           invoice_header_id=?",
             values: [req.query.invoice_header_id],
 
-            printQuery: false
+            printQuery: false,
           })
-          .then(result => {
+          .then((result) => {
             _mysql.releaseConnection();
             req.records = result;
             next();
           })
-          .catch(error => {
+          .catch((error) => {
             _mysql.releaseConnection();
             next(error);
           });
       } else {
         req.records = {
           invalid_input: true,
-          message: "please provie valid input"
+          message: "please provie valid input",
         };
         next();
       }
@@ -598,21 +598,21 @@ export default {
               " DELETE FROM hims_f_invoice_icd WHERE hims_f_invoice_icd_id = ?; ",
             values: [req.body.hims_f_invoice_icd_id],
 
-            printQuery: false
+            printQuery: false,
           })
-          .then(result => {
+          .then((result) => {
             _mysql.releaseConnection();
             req.records = result;
             next();
           })
-          .catch(error => {
+          .catch((error) => {
             _mysql.releaseConnection();
             next(error);
           });
       } else {
         req.records = {
           invalid_input: true,
-          message: "please provie valid input"
+          message: "please provie valid input",
         };
         next();
       }
@@ -644,24 +644,24 @@ export default {
               req.userIdentity.algaeh_d_app_user_id,
               new Date(),
               req.userIdentity.algaeh_d_app_user_id,
-              req.userIdentity.hospital_id
+              req.userIdentity.hospital_id,
             ],
 
-            printQuery: false
+            printQuery: false,
           })
-          .then(result => {
+          .then((result) => {
             _mysql.releaseConnection();
             req.records = result;
             next();
           })
-          .catch(error => {
+          .catch((error) => {
             _mysql.releaseConnection();
             next(error);
           });
       } else {
         req.records = {
           invalid_input: true,
-          message: "please provie valid input"
+          message: "please provie valid input",
         };
         next();
       }
@@ -691,12 +691,12 @@ export default {
               input.claim_validated,
               new Date(),
               req.userIdentity.algaeh_d_app_user_id,
-              input.hims_f_invoice_header_id
+              input.hims_f_invoice_header_id,
             ],
 
-            printQuery: false
+            printQuery: false,
           })
-          .then(result => {
+          .then((result) => {
             _mysql.releaseConnection();
 
             if (result.affectedRows > 0) {
@@ -707,14 +707,14 @@ export default {
               next();
             }
           })
-          .catch(error => {
+          .catch((error) => {
             _mysql.releaseConnection();
             next(error);
           });
       } else {
         req.records = {
           invalid_input: true,
-          message: "please provie valid input"
+          message: "please provie valid input",
         };
         next();
       }
@@ -742,12 +742,12 @@ export default {
               input.cpt_code,
               new Date(),
               req.userIdentity.algaeh_d_app_user_id,
-              input.hims_f_invoice_details_id
+              input.hims_f_invoice_details_id,
             ],
 
-            printQuery: false
+            printQuery: false,
           })
-          .then(result => {
+          .then((result) => {
             _mysql.releaseConnection();
 
             if (result.affectedRows > 0) {
@@ -756,24 +756,24 @@ export default {
             } else {
               req.records = {
                 invalid_input: true,
-                message: "please provie valid input"
+                message: "please provie valid input",
               };
               next();
             }
           })
-          .catch(error => {
+          .catch((error) => {
             _mysql.releaseConnection();
             next(error);
           });
       } else {
         req.records = {
           invalid_input: true,
-          message: "please provie valid input"
+          message: "please provie valid input",
         };
         next();
       }
     } catch (e) {
       next(e);
     }
-  }
+  },
 };

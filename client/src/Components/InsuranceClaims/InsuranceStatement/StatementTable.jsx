@@ -147,13 +147,13 @@ export function StatementTable() {
                 label: <AlgaehLabel label={{ forceLabel: "Claim Amount" }} />,
               },
               {
-                fieldName: "remittance_ammount",
+                fieldName: "remittance_amount",
                 label: (
                   <AlgaehLabel label={{ forceLabel: "Remittance Amt. 1" }} />
                 ),
               },
               {
-                fieldName: "denial_ammount",
+                fieldName: "denial_amount",
                 label: <AlgaehLabel label={{ forceLabel: "Denial Amt. 1" }} />,
               },
               {
@@ -167,7 +167,7 @@ export function StatementTable() {
                 label: <AlgaehLabel label={{ forceLabel: "Denial Amt. 2" }} />,
               },
               {
-                fieldName: "remittance_ammount",
+                fieldName: "remittance_amount",
                 label: (
                   <AlgaehLabel
                     label={{ forceLabel: "Total Remittance Amount" }}
@@ -175,7 +175,7 @@ export function StatementTable() {
                 ),
               },
               {
-                fieldName: "denial_ammount",
+                fieldName: "denial_amount",
                 label: (
                   <AlgaehLabel label={{ forceLabel: "Total Denial Amount" }} />
                 ),

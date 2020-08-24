@@ -1539,8 +1539,8 @@ export function saveMultiStatement(req, res, next) {
       .executeQueryWithTransaction({
         query: `select hims_f_invoice_header_id,insurance_provider_id,sub_insurance_id,gross_amount, discount_amount, 
         net_amount, patient_resp, patient_tax, patient_payable, company_resp, company_tax, company_payable, 
-        sec_company_resp, sec_company_tax, sec_company_payable, submission_date, submission_ammount, 
-        remittance_date, remittance_ammount, denial_ammount,P.prefix,P.insurance_statement_count from hims_f_invoice_header as H 
+        sec_company_resp, sec_company_tax, sec_company_payable, submission_date, submission_amount, 
+        remittance_date, remittance_amount, denial_amount,P.prefix,P.insurance_statement_count from hims_f_invoice_header as H 
         inner join hims_d_insurance_provider as P on H.insurance_provider_id = P.hims_d_insurance_provider_id 
         where hims_f_invoice_header_id in (?) FOR UPDATE;`,
         values: [invoiceList],
@@ -1656,8 +1656,8 @@ export function getInsuranceStatement(req, res, next) {
  policy_number, insurance_provider_id, sub_insurance_id, network_id, network_office_id, card_number, 
  gross_amount, discount_amount, net_amount, patient_resp, patient_tax, 
  patient_payable, company_resp, company_tax, company_payable, sec_company_resp, 
- sec_company_tax, sec_company_payable, submission_date, submission_ammount, 
- remittance_date, remittance_ammount, denial_ammount, claim_validated, card_holder_name, 
+ sec_company_tax, sec_company_payable, submission_date, submission_amount, 
+ remittance_date, remittance_amount, denial_amount, claim_validated, card_holder_name, 
  card_holder_age, card_holder_gender, card_class, insurance_statement_id,P.patient_code,P.full_name as pat_name,
  E.employee_code,E.full_name as doc_name
  from hims_f_invoice_header as IH
@@ -1693,10 +1693,10 @@ export function updateInsuranceStatement(req, res, next) {
     // updating invoice header
     _mysql
       .executeQuery({
-        query: `update hims_f_invoice_header set remittance_ammount=?, denial_ammount=? where hims_f_invoice_header_id=?;`,
+        query: `update hims_f_invoice_header set remittance_amount=?, denial_amount=? where hims_f_invoice_header_id=?;`,
         values: [
-          input.remittance_ammount,
-          input.denial_ammount,
+          input.remittance_amount,
+          input.denial_amount,
           input.hims_f_invoice_header_id,
         ],
       })
@@ -1704,7 +1704,7 @@ export function updateInsuranceStatement(req, res, next) {
         // getting sum of all invoice headers belong to a statement
         _mysql
           .executeQuery({
-            query: `select sum(remittance_ammount) as total_remittance_amount, sum(denial_ammount) as total_denial_amount from hims_f_invoice_header where insurance_statement_id=?;`,
+            query: `select sum(remittance_amount) as total_remittance_amount, sum(denial_amount) as total_denial_amount from hims_f_invoice_header where insurance_statement_id=?;`,
             values: [input.insurance_statement_id],
           })
           .then((result) => {
