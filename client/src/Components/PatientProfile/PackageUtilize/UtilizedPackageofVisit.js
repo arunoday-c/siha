@@ -262,7 +262,6 @@ class UtilizedPackageofVisit extends PureComponent {
                 </div>
               </div>
             </div>
-            }
           </div>
         </AlgaehModalPopUp>
       </React.Fragment>

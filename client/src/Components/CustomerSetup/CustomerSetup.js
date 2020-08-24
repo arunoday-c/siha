@@ -66,6 +66,7 @@ class CustomerSetup extends Component {
       city_id: null,
       postal_code: null,
       bank_name: null,
+      bank_account_no: null,
       address: "",
       hims_d_customer_id: null,
       openModal: false,
@@ -170,7 +171,8 @@ class CustomerSetup extends Component {
 
           finance_inch_name: this.state.finance_inch_name,
           finance_inch_number: this.state.finance_inch_number,
-          finance_inch_emailid: this.state.finance_inch_emailid
+          finance_inch_emailid: this.state.finance_inch_emailid,
+          bank_account_no: this.state.bank_account_no
         };
 
         algaehApiCall({
@@ -575,7 +577,7 @@ class CustomerSetup extends Component {
                         </div>
                       </div>
                     ) : null}
-                  </div>{" "}
+                  </div>
                   <h6>Payment Details</h6>
                   <hr style={{ margin: 0 }} />
                   <div className="row">
@@ -633,8 +635,22 @@ class CustomerSetup extends Component {
                         }
                       }}
                     />
-                  </div>{" "}
-                </div>{" "}
+                    <AlagehFormGroup
+                      div={{ className: "col-2" }}
+                      label={{
+                        fieldName: "bank_account_no",
+                      }}
+                      textBox={{
+                        className: "txt-fld",
+                        name: "bank_account_no",
+                        value: this.state.bank_account_no,
+                        events: {
+                          onChange: this.changeTexts.bind(this)
+                        }
+                      }}
+                    />
+                  </div>
+                </div>
                 <div className="col-4 popRightDiv">
                   <h6>Finance Incharge Details</h6>
 

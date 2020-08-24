@@ -32,7 +32,7 @@ const executePDF = function executePDFMethod(options) {
 
       options.mysql
         .executeQuery({
-          query: `select  H.*, C.customer_name, C.arabic_customer_name,C.vat_number,C.address, 
+          query: `select  H.*, C.customer_name, C.bank_account_no, C.bank_name, C.arabic_customer_name,C.vat_number,C.address, 
           SO.sales_order_number, SO.customer_po_no, SO.sales_order_date
           from  hims_f_sales_invoice_header H 
           inner join hims_d_customer C on H.customer_id = C.hims_d_customer_id
@@ -45,7 +45,8 @@ const executePDF = function executePDFMethod(options) {
           inner join hims_f_sales_dispatch_note_detail D on H.hims_f_dispatch_note_header_id= D. dispatch_note_header_id
           inner join hims_f_sales_dispatch_note_batches B on D.hims_f_sales_dispatch_note_detail_id=B.sales_dispatch_note_detail_id
           inner  join hims_d_inventory_item_master IM on B.item_id=IM.hims_d_inventory_item_master_id
-          where IH.invoice_number=?  group by item_id order by IM.item_description asc;`,
+          where IH.invoice_number=?  group by item_id order by IM.item_description asc;
+          select organization_name from hims_d_organization`,
           values: [
             input.invoice_number,
             input.invoice_number,
@@ -60,6 +61,7 @@ const executePDF = function executePDFMethod(options) {
           // const delv_headers = result[1];
           // const delv_details = result[2];
           const delv_subDetails = result[1];
+          const organization_name = result[2][0].organization_name;
 
           // const outputArray = [];
 
@@ -110,6 +112,7 @@ const executePDF = function executePDFMethod(options) {
 
           resolve({
             ...grn_details[0],
+            organization_name: organization_name,
             invoice_date: moment(grn_details[0].invoice_date).format(
               "YYYY-MM-DD"
             ),

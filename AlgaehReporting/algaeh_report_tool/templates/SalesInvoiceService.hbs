@@ -111,7 +111,7 @@
                 </tr>
                 <tr class="footerTotalDown">
                     <td class="textEngLft" style="width:10%">Discount</td>
-                    <td colspan="7" class="textArbRht" style="width:50%">{{discount_amount}}</td>
+                    <td colspan="7" class="textArbRht" style="width:50%">{{netdiscount_amount}}</td>
                     <td class="textArbRht" style="width:10%">خصم</td>
                 </tr>
                 <tr class="footerTotalDown">
@@ -144,12 +144,12 @@
         {{!-- <section>
             <p>Finance Manager</p>
             <div style="width: 30%; height:50px; border-bottom:1px solid #000"></div>
-        </section>
+        </section> --}}
         <section class="footerInfoSection">
             <p><b>Bank Information</b></p>
             <p>{{organization_name}}</p>
-            <p>Bank Name: AlFransi Bank</p>
-            <p>IBAN: SA56-5500-0000-0982-7860-0165</p>
-        </section> --}}
+            <p>Bank Name: {{bank_name}}</p>
+            <p>IBAN: {{bank_account_no}}</p>
+        </section>
     </div>
 </body>

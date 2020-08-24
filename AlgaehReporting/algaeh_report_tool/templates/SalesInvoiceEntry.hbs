@@ -64,12 +64,6 @@
 
                         <td>{{unit_cost}}</td>
                         <td>{{tax_percentage}}%</td>
-                        {{!-- <td>{{extended_cost}}</td>
-                        <td>{{discount_percentage}}</td>
-                        <td>{{discount_amount}}</td>
-
-                        <td>{{net_extended_cost}}</td>
-                        <td>{{tax_amount}}</td> --}}
                         <td>{{total_amount}}</td>
                     </tr>
                     {{/each }}
@@ -107,6 +101,12 @@
                 </tr>
                 </tbody>
             </table>
+        </section>
+        <section class="footerInfoSection">
+            <p><b>Bank Information</b></p>
+            <p>{{organization_name}}</p>
+            <p>Bank Name: {{bank_name}}</p>
+            <p>IBAN: {{bank_account_no}}</p>
         </section>
         {{!-- {{#each details}}<section class="groupTable">
             <section>
