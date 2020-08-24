@@ -118,9 +118,13 @@ export default {
             PH.expiry_days, PH.advance_type, PH.advance_amount, PH.advance_percentage,PH.package_status,\
             PH.validated_date,PH.cancellation_policy,PH.`cancellation_per`, PH.`cancellation_amount`,\
             PH.`cancellation_type`, S.vat_applicable, S.vat_percent, PH.package_visit_type, PH.approved, \
-            PD.hims_d_package_detail_id, PD.service_type_id, PD.service_id, PD.service_amount, PD.qty,  PD.tot_service_amount, PD.appropriate_amount, PD.qty as available_qty from hims_d_package_header PH \
+            PD.hims_d_package_detail_id, PD.service_type_id, PD.service_id, PD.service_amount, PD.qty,  \
+            PD.tot_service_amount, PD.appropriate_amount, PD.qty as available_qty, PDS.service_name, ST.service_type \
+            from hims_d_package_header PH \
             left join hims_d_package_detail PD on PH.hims_d_package_header_id=PD.package_header_id \
-            left join hims_d_services S on PH.package_service_id = S.hims_d_services_id " +
+            left join hims_d_services S on PH.package_service_id = S.hims_d_services_id \
+            left join hims_d_services PDS on PD.service_id = PDS.hims_d_services_id \
+            left join hims_d_service_type ST on PD.service_type_id = ST.hims_d_service_type_id " +
             _strQry +
             " order by hims_d_package_header_id desc;",
           values: intValues,

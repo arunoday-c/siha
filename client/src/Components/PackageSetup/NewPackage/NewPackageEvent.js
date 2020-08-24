@@ -14,12 +14,13 @@ export default function NewPackageEvent() {
       });
     },
     serviceHandeler: ($this, e) => {
-      let name = e.name || e.target.name;
-      let value = e.value || e.target.value;
 
       $this.setState({
-        [name]: value,
-        s_service_amount: e.selected.standard_fee,
+        s_service: e.hims_d_services_id,
+        s_service_type: e.service_type_id,
+        service_name: e.service_name,
+        service_type: e.service_type,
+        s_service_amount: e.standard_fee,
         qty: 1
       });
     },
@@ -98,7 +99,9 @@ export default function NewPackageEvent() {
           qty: $this.state.qty,
           tot_service_amount:
             parseFloat($this.state.qty) *
-            parseFloat($this.state.s_service_amount)
+            parseFloat($this.state.s_service_amount),
+          service_name: $this.state.service_name,
+          service_type: $this.state.service_type
         };
 
         if ($this.state.hims_d_package_header_id !== null) {
