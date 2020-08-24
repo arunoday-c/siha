@@ -31,6 +31,7 @@ body {
 
 .print-body .tableForLabel,
 .tableTotal,
+.tableTotalSmall,
 .tableForLabelSignature,
 .tableNoBorder,
 .tableNoBorder2,
@@ -348,6 +349,34 @@ body {
 }
 
 .tableTotal .bold {
+  font-weight: bold;
+  background: #f2f2f2;
+}
+
+.tableTotalSmall {
+  width: 100%;
+  border-top: 1px solid #ccc;
+  margin-top: 20px;
+  float: right;
+}
+.tableTotalSmall td {
+  border-bottom: 1px solid #ccc;
+  padding: 3px;
+  margin: 0;
+  font-size: 11px;
+  text-align: center;
+}
+.tableTotalSmall td:first-child {
+  text-align: left;
+  font-family: "Segoe UI", sans-serif;
+}
+
+.tableTotalSmall td:last-child {
+  text-align: right;
+  font-family: "Calibri", sans-serif;
+}
+
+.tableTotalSmall .bold {
   font-weight: bold;
   background: #f2f2f2;
 }

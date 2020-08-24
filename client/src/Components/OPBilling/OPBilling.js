@@ -18,6 +18,7 @@ import {
   Validations,
   getCashiersAndShiftMAP,
   generateReceipt,
+  generateReceiptSmall,
   // selectVisit,
   ShowOrderPackage,
   ClosePackage,
@@ -94,7 +95,7 @@ class OPBilling extends Component {
       redux: {
         type: "EXIT_INSURANCE_GET_DATA",
         mappingName: "existinsurance",
-        data: []
+        data: [],
       },
     });
 
@@ -478,17 +479,25 @@ class OPBilling extends Component {
           printArea={
             this.state.bill_number !== null
               ? {
-                menuitems: [
-                  {
-                    label: "Print Receipt",
-                    events: {
-                      onClick: () => {
-                        generateReceipt(this, this);
+                  menuitems: [
+                    {
+                      label: "Print Receipt",
+                      events: {
+                        onClick: () => {
+                          generateReceipt(this, this);
+                        },
                       },
                     },
-                  },
-                ],
-              }
+                    {
+                      label: "Print Receipt Small",
+                      events: {
+                        onClick: () => {
+                          generateReceiptSmall(this, this);
+                        },
+                      },
+                    },
+                  ],
+                }
               : ""
           }
           selectedLang={this.state.selectedLang}
@@ -550,8 +559,8 @@ class OPBilling extends Component {
                     this.state.patient_id === null
                       ? true
                       : this.state.Billexists === true
-                        ? true
-                        : false
+                      ? true
+                      : false
                   }
                 >
                   <AlgaehLabel

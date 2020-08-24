@@ -25,21 +25,18 @@ const ClearData = ($this, e) => {
     redux: {
       type: "EXIT_INSURANCE_GET_DATA",
       mappingName: "existinsurance",
-      data: []
+      data: [],
     },
   });
 
-  let IOputs = extend(
-    PatRegIOputs.inputParam(),
-    BillingIOputs.inputParam()
-  );
+  let IOputs = extend(PatRegIOputs.inputParam(), BillingIOputs.inputParam());
   IOputs.patient_payable_h = 0;
   IOputs.s_service_type = null;
   IOputs.s_service = null;
   IOputs.pageDisplay = "BillingDetails";
   IOputs.selectedLang = getCookie("Language");
-  IOputs.shift_assinged = $this.state.shift_assinged
-  IOputs.shift_id = $this.state.shift_id
+  IOputs.shift_assinged = $this.state.shift_assinged;
+  IOputs.shift_id = $this.state.shift_id;
 
   algaehApiCall({
     uri: "/userPreferences/get",
@@ -79,7 +76,7 @@ const Validations = ($this) => {
 
   //   document.querySelector("[name='bank_card_id']").focus();
   //   return isError;
-  // }  
+  // }
 
   if ($this.state.Cardchecked === true) {
     if (
@@ -229,6 +226,40 @@ const generateReceipt = ($this) => {
   });
 };
 
+const generateReceiptSmall = ($this) => {
+  algaehApiCall({
+    uri: "/report",
+    method: "GET",
+    module: "reports",
+    headers: {
+      Accept: "blob",
+    },
+    others: { responseType: "blob" },
+    data: {
+      report: {
+        others: {
+          width: "80mm",
+          showHeaderFooter: true,
+        },
+        reportName: "cashReceiptSmall",
+        pageOrentation: "portrait",
+        reportParams: [
+          {
+            name: "hims_f_billing_header_id",
+            value: $this.state.hims_f_billing_header_id,
+          },
+        ],
+        outputFileType: "PDF",
+      },
+    },
+    onSuccess: (res) => {
+      const urlBlob = URL.createObjectURL(res.data);
+      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}`;
+      window.open(origin);
+    },
+  });
+};
+
 const selectVisit = ($this) => {
   algaehApiCall({
     uri: "/orderAndPreApproval/load_orders_for_bill",
@@ -238,8 +269,6 @@ const selectVisit = ($this) => {
     },
     onSuccess: (response) => {
       if (response.data.success) {
-
-
         let data = response.data.records;
 
         if (data.length > 0) {
@@ -391,7 +420,7 @@ const ClosePackage = ($this) => {
 const getPatientDetails = ($this, patient_code) => {
   AlgaehLoader({ show: true });
 
-  debugger
+  debugger;
   algaehApiCall({
     uri: "/frontDesk/get",
     module: "frontDesk",
@@ -407,7 +436,7 @@ const getPatientDetails = ($this, patient_code) => {
         if (
           $this.context.userToken.local_vat_applicable === "N" &&
           $this.context.userToken.default_nationality ===
-          data.patientRegistration.nationality_id
+            data.patientRegistration.nationality_id
         ) {
           data.patientRegistration.vat_applicable = "N";
         } else {
@@ -489,7 +518,7 @@ const getPatientDetails = ($this, patient_code) => {
           afterSuccess: (data) => {
             if (data.length !== 0 || data.length === undefined) {
               $this.setState({
-                pack_balance_amount: data[0].balance_amount
+                pack_balance_amount: data[0].balance_amount,
               });
             }
           },
@@ -506,7 +535,7 @@ const getPatientDetails = ($this, patient_code) => {
             redux: {
               type: "EXIT_INSURANCE_GET_DATA",
               mappingName: "existinsurance",
-            }
+            },
           });
         }
 
@@ -589,6 +618,7 @@ export {
   Validations,
   getCashiersAndShiftMAP,
   generateReceipt,
+  generateReceiptSmall,
   selectVisit,
   ShowOrderPackage,
   ClosePackage,
