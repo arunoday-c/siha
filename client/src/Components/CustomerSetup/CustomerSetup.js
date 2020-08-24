@@ -624,7 +624,7 @@ class CustomerSetup extends Component {
                       div={{ className: "col-3 form-group" }}
                       label={{
                         fieldName: "bank_name",
-                        isImp: this.state.payment_mode === "BT" ? true : false
+                        // isImp: this.state.payment_mode === "BT" ? true : false
                       }}
                       textBox={{
                         className: "txt-fld",
@@ -636,7 +636,7 @@ class CustomerSetup extends Component {
                       }}
                     />
                     <AlagehFormGroup
-                      div={{ className: "col-2" }}
+                      div={{ className: "col-3 form-group" }}
                       label={{
                         fieldName: "bank_account_no",
                       }}
