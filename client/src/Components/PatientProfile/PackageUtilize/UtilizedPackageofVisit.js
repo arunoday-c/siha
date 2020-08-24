@@ -167,24 +167,6 @@ class UtilizedPackageofVisit extends PureComponent {
                               label={{ fieldName: "service_type_id" }}
                             />
                           ),
-                          displayTemplate: row => {
-                            let display =
-                              this.props.servicetype === undefined
-                                ? []
-                                : this.props.servicetype.filter(
-                                  f =>
-                                    f.hims_d_service_type_id ===
-                                    row.service_type_id
-                                );
-
-                            return (
-                              <span>
-                                {display !== undefined && display.length !== 0
-                                  ? display[0].service_type
-                                  : ""}
-                              </span>
-                            );
-                          },
                           others: {
                             minWidth: 100,
                             maxWidth: 500
