@@ -117,7 +117,9 @@ algaehUtilities.prototype.logger = function (reqTracker) {
       //   metadata: obj,
       // });
       //}
-
+      if (logtype === "error" || logtype === "warn") {
+        console.log(new Date(), " - ", logtype, message, " ---- ", obj);
+      }
       // logger.close();
       return this;
     },
