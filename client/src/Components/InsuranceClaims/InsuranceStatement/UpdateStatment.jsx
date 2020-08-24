@@ -1,7 +1,6 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import "./InsuranceStatement.scss";
-// import { useForm } from "react-hook-form";
-import { useQuery } from "react-query";
+import { useQuery, useMutation } from "react-query";
 import {
   AlgaehLabel,
   AlgaehModal,
@@ -23,6 +22,23 @@ import spotlightSearch from "../../../Search/spotlightSearch.json";
 //   });
 //   return res.data;
 // };
+
+const addICD = async (data) => {
+  const res = await newAlgaehApi({
+    uri: "/invoiceGeneration/addInvoiceIcd",
+    data: {
+      invoice_header_id: data?.hims_f_invoice_header_id,
+      patient_id: data?.patient_id,
+      episode_id: data?.episode_id,
+      daignosis_id: data?.hims_d_icd_id,
+      diagnosis_type: "P",
+      final_daignosis: "Y",
+    },
+    method: "POST",
+    module: "insurance",
+  });
+  return res.data?.records;
+};
 
 const getStatementServices = async (key, { invoice_header_id }) => {
   const res = await newAlgaehApi({
@@ -49,9 +65,8 @@ export function UpdateStatement({
   data = {},
   onClose = () => {},
 }) {
-  // const { control, handleSubmit, reset, errors, setError } = useForm();
   const { userLanguage } = useContext(MainContext);
-
+  const [icd, setIcd] = useState(null);
   const { data: invoiceDetails, isLoading: queryLoading } = useQuery(
     ["invoice-details", { invoice_header_id: data?.hims_f_invoice_header_id }],
     getStatementServices,
@@ -61,7 +76,7 @@ export function UpdateStatement({
       initialStale: true,
     }
   );
-  const { data: icdCodes, isLoading: icdLoading } = useQuery(
+  const { data: icdCodes, isLoading: icdLoading, refetch } = useQuery(
     ["icd-codes", { invoice_header_id: data?.hims_f_invoice_header_id }],
     getICDcodes,
     {
@@ -71,6 +86,13 @@ export function UpdateStatement({
     }
   );
 
+  const [addICDtoInvoice, { isLoading: mutLoading }] = useMutation(addICD, {
+    onSuccess: () => {
+      refetch();
+      setIcd(null);
+    },
+  });
+
   // const [update, { isLoading }] = useMutation(updateStatement, {
   //   onSuccess: (data) => {
   //     if (data?.success) {
@@ -78,23 +100,6 @@ export function UpdateStatement({
   //     }
   //   },
   // });
-
-  // useEffect(() => {
-  //   if (!show) {
-  //     reset({
-  //       remittance_ammount: "",
-  //       denial_ammount: "",
-  //     });
-  //   }
-
-  //   if (show && !!data) {
-  //     reset({
-  //       remittance_ammount: data?.remittance_ammount,
-  //       denial_ammount: data?.denial_ammount,
-  //     });
-  //   }
-  //   // eslint-disable-next-line
-  // }, [show, data]);
 
   function cptSearch(row, e) {
     AlgaehSearch({
@@ -107,41 +112,30 @@ export function UpdateStatement({
         callBack(text);
       },
       onRowSelect: (data) => {
-        // this.setState({
-        //   cpt_code: row.hims_d_cpt_code_id,
-        //   cpt_code_data: row.cpt_code
-        // });
-
         row["cpt_code"] = data.cpt_code;
         // row.update();
       },
     });
   }
 
-  // const onSubmit = (e) => {
-  //   const total =
-  //     parseFloat(e.remittance_ammount) + parseFloat(e.denial_ammount);
-  //   if (total <= parseFloat(data?.company_payable)) {
-  //     update({
-  //       ...e,
-  //       hims_f_invoice_header_id: data?.hims_f_invoice_header_id,
-  //       insurance_statement_id: data?.insurance_statement_id,
-  //     });
-  //   } else {
-  //     setError("remittance_ammount", {
-  //       type: "manual",
-  //       message: "Entered amounts should be less than net payable",
-  //     });
-  //     setError("denial_ammount", {
-  //       type: "manual",
-  //       message: "Entered amounts should be less than net payable",
-  //     });
-  //     // AlgaehMessagePop({
-  //     //   display: "Entered amounts should be less than net payable",
-  //     //   type: "success",
-  //     // });
-  //   }
-  // };
+  function icdSearch() {
+    AlgaehSearch({
+      searchGrid: {
+        columns: spotlightSearch.Diagnosis.IcdCodes,
+      },
+      searchName: "IcdCodes",
+      uri: "/gloabelSearch/get",
+      onContainsChange: (text, serchBy, callBack) => {
+        callBack(text);
+      },
+      onRowSelect: (row) => {
+        setIcd({
+          icd_code: row.icd_code,
+          hims_d_icd_id: row.hims_d_icd_id,
+        });
+      },
+    });
+  }
 
   return (
     <AlgaehModal
@@ -163,7 +157,7 @@ export function UpdateStatement({
       // onOk={handleSubmit(onSubmit)}
       className={`${userLanguage}_comp row algaehNewModal UpdateStatementModal`}
     >
-      <Spin spinning={queryLoading || icdLoading}>
+      <Spin spinning={queryLoading || icdLoading || mutLoading}>
         <div className="col-12 popupInner margin-top-15">
           <div className="row">
             <div className="col-12">
@@ -209,90 +203,7 @@ export function UpdateStatement({
               <h6>{data?.company_payable}</h6>
             </div>
           </div>
-          {/* <hr></hr>
-          <div className="row">
-            <Controller
-              control={control}
-              name="remittance_ammount"
-              rules={{
-                required: {
-                  message: "Field is Required",
-                  value: true,
-                },
-              }}
-              render={(props) => (
-                <AlgaehFormGroup
-                  div={{
-                    className: "col-6 form-group  mandatory",
-                  }}
-                  error={errors}
-                  label={{
-                    forceLabel: "Remittance Amount",
-                    isImp: true,
-                  }}
-                  textBox={{
-                    name: "remittance_ammount",
-                    type: "number",
-                    className: "form-control",
-                    ...props,
-                  }}
-                />
-              )}
-            />
 
-            <Controller
-              control={control}
-              name="denial_ammount"
-              rules={{
-                required: {
-                  message: "Field is Required",
-                  value: true,
-                },
-              }}
-              render={(props) => (
-                <AlgaehFormGroup
-                  div={{
-                    className: "col-6 form-group  mandatory",
-                  }}
-                  label={{
-                    forceLabel: "Denial Amount",
-                    isImp: true,
-                  }}
-                  error={errors}
-                  textBox={{
-                    name: "denial_ammount",
-                    type: "number",
-                    className: "form-control",
-                    ...props,
-                  }}
-                />
-              )}
-            />
-            <div className="col-1" style={{ paddingRight: 0, marginTop: 20 }}>
-              <button
-                type="button"
-                className="btn btn-primary btn-rounded"
-                onClick={cptSearch}
-                disabled={false}
-              >
-                <i className="fas fa-plus" />
-              </button>
-            </div>
-            <AlgaehFormGroup
-              div={{
-                className: "col-5 form-group  mandatory",
-              }}
-              label={{
-                forceLabel: "CPT code",
-                isImp: false,
-              }}
-              textBox={{
-                name: "cpt_code",
-                className: "form-control",
-                value: "",
-              }}
-            />
-          </div> */}
           <div className="row">
             <div className="col-8">
               <div className="portlet-body" id="PreRequestGrid">
@@ -361,7 +272,7 @@ export function UpdateStatement({
                       fieldName: "remittance_ammount",
                       label: (
                         <AlgaehLabel
-                          label={{ forceLabel: "Remittance Amt. 1" }}
+                          label={{ forceLabel: "Remittance Amount" }}
                         />
                       ),
                       editorTemplate: (row) => (
@@ -376,7 +287,7 @@ export function UpdateStatement({
                     {
                       fieldName: "denial_ammount",
                       label: (
-                        <AlgaehLabel label={{ forceLabel: "Denial Amt. 1" }} />
+                        <AlgaehLabel label={{ forceLabel: "Denial Amount" }} />
                       ),
                       editorTemplate: (row) => (
                         <input
@@ -387,30 +298,6 @@ export function UpdateStatement({
                         />
                       ),
                     },
-                    // {
-                    //   fieldName: "remittance_2",
-                    //   label: (
-                    //     <AlgaehLabel label={{ forceLabel: "Remittance Amt. 2" }} />
-                    //   ),
-                    // },
-                    // {
-                    //   fieldName: "denial_amount_2",
-                    //   label: <AlgaehLabel label={{ forceLabel: "Denial Amt. 2" }} />,
-                    // },
-                    // {
-                    //   fieldName: "remittance_ammount",
-                    //   label: (
-                    //     <AlgaehLabel
-                    //       label={{ forceLabel: "Total Remittance Amount" }}
-                    //     />
-                    //   ),
-                    // },
-                    // {
-                    //   fieldName: "denial_ammount",
-                    //   label: (
-                    //     <AlgaehLabel label={{ forceLabel: "Total Denial Amount" }} />
-                    //   ),
-                    // },
                   ]}
                   data={invoiceDetails ?? []}
                   // filter={true}
@@ -426,6 +313,25 @@ export function UpdateStatement({
               </div>
             </div>
             <div className="col-4">
+              <div className="row">
+                <div className="col globalSearchCntr">
+                  <AlgaehLabel label={{ forceLabel: "Search ICD Code" }} />
+                  <h6 onClick={icdSearch}>
+                    {icd?.icd_code ?? "Search ICD Code"}
+                    <i className="fas fa-search fa-lg"></i>
+                  </h6>
+                </div>
+                <div className="col-3">
+                  <button
+                    onClick={() => addICDtoInvoice({ ...data, ...icd })}
+                    disabled={mutLoading || !icd}
+                    className="btn btn-primary margin-top-15"
+                    style={{ marginTop: 21 }}
+                  >
+                    Add
+                  </button>
+                </div>
+              </div>
               <AlgaehDataGrid
                 className="InsuranceStatementGrid"
                 id="InsuranceStatementGrid"
