@@ -955,7 +955,7 @@ function updateItemMaster(options) {
         // console.log(
         //   "length: ",
         //   po_entry_detail[stock_insert_detail].dn_entry_detail.length
-        );
+        // );
 
         let strQuery = "";
         if (dn_from == "PHR") {
