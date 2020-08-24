@@ -28,7 +28,7 @@ export function StatementTable() {
     "hims_f_insurance_statement_id"
   );
 
-  const { data, isLoading, isFetching, refetch } = useQuery(
+  const { data, isLoading, refetch } = useQuery(
     ["insurance", { hims_f_insurance_statement_id }],
     getStatements,
     {
@@ -60,7 +60,7 @@ export function StatementTable() {
   };
 
   return (
-    <Spin spinning={isLoading || isFetching}>
+    <Spin spinning={isLoading}>
       <UpdateStatement data={current} show={show} onClose={onClose} />
       <div className="portlet portlet-bordered margin-bottom-15">
         <div className="portlet-title">

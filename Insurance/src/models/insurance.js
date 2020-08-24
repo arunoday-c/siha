@@ -1682,6 +1682,7 @@ export function getInsuranceStatement(req, res, next) {
       });
   } catch (error) {
     _mysql.releaseConnection();
+    next(error);
   }
 }
 
@@ -1751,8 +1752,8 @@ export function getInvoiceDetails(req, res, next) {
   try {
     _mysql
       .executeQuery({
-        query: `SELECT hims_f_invoice_details_id,invoice_header_id,company_payable,company_resp,company_tax,SE.service_name 
-          FROM hims_d_services SE, awd_alwaseet_test_db.hims_f_invoice_details IVD 
+        query: `SELECT hims_f_invoice_details_id,IVD.cpt_code,invoice_header_id,company_payable,company_resp,company_tax,SE.service_name 
+          FROM hims_d_services SE, hims_f_invoice_details IVD 
           where IVD.service_id = SE.hims_d_services_id and invoice_header_id=?;`,
         values: [input.invoice_header_id],
       })
