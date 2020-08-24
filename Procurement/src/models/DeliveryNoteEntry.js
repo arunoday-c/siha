@@ -356,7 +356,7 @@ export default {
       let input = req.body;
 
       const utilities = new algaehUtilities();
-      utilities.logger().log("addDeliveryNoteEntry: ");
+      // utilities.logger().log("addDeliveryNoteEntry: ");
 
       let today = moment().format("YYYY-MM-DD");
 
@@ -409,7 +409,7 @@ export default {
             dn_entry_detail = input.inventory_stock_detail;
           }
 
-          utilities.logger().log("headerResult: ", headerResult.insertId);
+          // utilities.logger().log("headerResult: ", headerResult.insertId);
           let IncludeValues = [
             "phar_item_category",
             "phar_item_group",
@@ -454,7 +454,7 @@ export default {
               printQuery: true,
             })
             .then((detailResult) => {
-              utilities.logger().log("detailResult: ", detailResult);
+              // utilities.logger().log("detailResult: ", detailResult);
               // _mysql.commitTransaction(() => {
               //   _mysql.releaseConnection();
               req.records = {
@@ -465,7 +465,7 @@ export default {
               // });
             })
             .catch((error) => {
-              utilities.logger().log("erroe: ", error);
+              // utilities.logger().log("erroe: ", error);
               _mysql.rollBackTransaction(() => {
                 next(error);
               });
@@ -568,7 +568,7 @@ export default {
       const utilities = new algaehUtilities();
       // utilities.logger().log("updatePOEntry: ");
       let inputParam = { ...req.body };
-      console.log("inputParam", inputParam);
+      // console.log("inputParam", inputParam);
       let complete = "Y";
 
       let dn_entry_detail = [];
@@ -628,7 +628,7 @@ export default {
                   printQuery: true,
                 })
                 .then((headerResult) => {
-                  utilities.logger().log("headerResult: ");
+                  // utilities.logger().log("headerResult: ");
                   req.porecords = headerResult;
                   next();
                 })
@@ -929,7 +929,7 @@ export default {
 function updateItemMaster(options) {
   return new Promise((resolve, reject) => {
     try {
-      console.log("updateItemMaster: ");
+      // console.log("updateItemMaster: ");
       let dn_from = options.dn_from;
       let _mysql = options._mysql;
       let req = options.req;
@@ -940,21 +940,21 @@ function updateItemMaster(options) {
       const utilities = new algaehUtilities();
 
       // console.log("updateItemMaster: ", stock_detail);
-      console.log("stock_insert_detail: ", stock_insert_detail);
+      // console.log("stock_insert_detail: ", stock_insert_detail);
       // console.log("po_entry_detail: ", po_entry_detail);
 
       for (let i = 0; i < stock_detail.length; i++) {
-        console.log("i: ", i);
+        // console.log("i: ", i);
 
         let prev_length =
           stock_insert_detail > 0
             ? po_entry_detail[stock_insert_detail].dn_entry_detail.length + i
             : i;
 
-        console.log("prev_length: ", prev_length);
-        console.log(
-          "length: ",
-          po_entry_detail[stock_insert_detail].dn_entry_detail.length
+        // console.log("prev_length: ", prev_length);
+        // console.log(
+        //   "length: ",
+        //   po_entry_detail[stock_insert_detail].dn_entry_detail.length
         );
 
         let strQuery = "";
@@ -994,10 +994,10 @@ function updateItemMaster(options) {
             // let batch_no = parseInt(result[0].batch_no) + 1;
             // let barcode = result[0].item_code + "B" + resultString;
 
-            console.log("batch_no", "B" + resultString);
+            // console.log("batch_no", "B" + resultString);
             // console.log("barcode", barcode);
 
-            console.log("dn_index", stock_detail[i].dn_index);
+            // console.log("dn_index", stock_detail[i].dn_index);
             if (dn_from == "PHR") {
               const phar_stock_data = _.find(
                 req.body.pharmacy_stock_detail,
@@ -1008,7 +1008,7 @@ function updateItemMaster(options) {
                 phar_stock_data
               );
 
-              console.log("_phar_index", _phar_index);
+              // console.log("_phar_index", _phar_index);
 
               req.body.pharmacy_stock_detail[_phar_index].batchno =
                 "B" + resultString;
@@ -1034,7 +1034,7 @@ function updateItemMaster(options) {
             stock_detail[i].barcode = "B" + resultString;
 
             if (i == stock_detail.length - 1) {
-              console.log("resolve: ");
+              // console.log("resolve: ");
               resolve();
             }
           })
@@ -1060,7 +1060,7 @@ function updateItemMasterBackup(options) {
       if (dn_from == "PHR") {
         const utilities = new algaehUtilities();
 
-        utilities.logger().log("updateItemMaster: ", stock_detail);
+        // utilities.logger().log("updateItemMaster: ", stock_detail);
 
         for (let i = 0; i < stock_detail.length; i++) {
           _mysql
@@ -1091,17 +1091,17 @@ function updateItemMasterBackup(options) {
               let batch_no = parseInt(result[0].batch_no) + 1;
               let barcode = result[0].item_code + "B" + resultString;
 
-              console.log("batch_no", "B" + resultString);
-              console.log("barcode", barcode);
+              // console.log("batch_no", "B" + resultString);
+              // console.log("barcode", barcode);
 
               req.body.pharmacy_stock_detail[i].batchno = "B" + resultString;
               req.body.pharmacy_stock_detail[i].barcode = barcode;
               stock_detail[i].batchno = "B" + resultString;
               stock_detail[i].barcode = barcode;
 
-              utilities
-                .logger()
-                .log("batch_no: ", req.body.pharmacy_stock_detail[i].batch_no);
+              // utilities
+              //   .logger()
+              //   .log("batch_no: ", req.body.pharmacy_stock_detail[i].batch_no);
               if (i == stock_detail.length - 1) {
                 resolve();
               }
@@ -1113,7 +1113,7 @@ function updateItemMasterBackup(options) {
       } else if (dn_from == "INV") {
         const utilities = new algaehUtilities();
 
-        utilities.logger().log("updateItemMaster: ", stock_detail);
+        // utilities.logger().log("updateItemMaster: ", stock_detail);
 
         for (let i = 0; i < stock_detail.length; i++) {
           _mysql
@@ -1144,17 +1144,17 @@ function updateItemMasterBackup(options) {
               let batch_no = parseInt(result[0].batch_no) + 1;
               let barcode = result[0].item_code + "B" + resultString;
 
-              console.log("batch_no", "B" + resultString);
-              console.log("barcode", barcode);
+              // console.log("batch_no", "B" + resultString);
+              // console.log("barcode", barcode);
 
               req.body.inventory_stock_detail[i].batchno = "B" + resultString;
               req.body.inventory_stock_detail[i].barcode = barcode;
 
               stock_detail[i].batchno = "B" + resultString;
               stock_detail[i].barcode = barcode;
-              utilities
-                .logger()
-                .log("batch_no: ", req.body.inventory_stock_detail[i].batch_no);
+              // utilities
+              //   .logger()
+              //   .log("batch_no: ", req.body.inventory_stock_detail[i].batch_no);
               if (i == stock_detail.length - 1) {
                 resolve();
               }
@@ -1183,7 +1183,7 @@ function updateInventoryItemMaster(options) {
 
       let execute_query = "";
 
-      utilities.logger().log("updateItemMaster: ", inventory_stock_detail);
+      // utilities.logger().log("updateItemMaster: ", inventory_stock_detail);
 
       for (let i = 0; i < inventory_stock_detail.length; i++) {
         _mysql
@@ -1214,17 +1214,17 @@ function updateInventoryItemMaster(options) {
             let batch_no = parseInt(result[0].batch_no) + 1;
             let barcode = result[0].item_code + "B" + resultString;
 
-            console.log("batch_no", "B" + resultString);
-            console.log("barcode", barcode);
+            // console.log("batch_no", "B" + resultString);
+            // console.log("barcode", barcode);
 
             req.body.inventory_stock_detail[i].batchno = "B" + resultString;
             req.body.inventory_stock_detail[i].barcode = barcode;
 
             inventory_stock_detail[i].batchno = "B" + resultString;
             inventory_stock_detail[i].barcode = barcode;
-            utilities
-              .logger()
-              .log("batch_no: ", req.body.inventory_stock_detail[i].batch_no);
+            // utilities
+            //   .logger()
+            //   .log("batch_no: ", req.body.inventory_stock_detail[i].batch_no);
             if (i == inventory_stock_detail.length - 1) {
               resolve();
             }

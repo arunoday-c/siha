@@ -5,7 +5,7 @@ import invModels from "algaeh-inventory/src/models/inventory";
 import {
   getCacheMasters,
   setCacheMasters,
-  deleteCacheMaster
+  deleteCacheMaster,
 } from "algaeh-utilities/checksecurity";
 const { addInventoryLocation } = invModels;
 
@@ -21,14 +21,13 @@ const {
   selectDoctorsAndClinic,
   deleteSubDepartment,
   makeSubDepartmentInActive,
-  makeDepartmentInActive
+  makeDepartmentInActive,
 } = deptModels;
 
 import { LINQ } from "node-linq";
-
+const utlities = new algaehUtlities();
 export default () => {
   let api = Router();
-  const utlities = new algaehUtlities();
 
   api.post(
     "/addDepartment",
@@ -43,7 +42,7 @@ export default () => {
         .status(utlities.httpStatus().ok)
         .json({
           success: true,
-          records: result
+          records: result,
         })
         .end();
       // next();
@@ -63,7 +62,7 @@ export default () => {
         .status(utlities.httpStatus().ok)
         .json({
           success: true,
-          records: result
+          records: result,
         })
         .end();
       next();
@@ -74,20 +73,20 @@ export default () => {
     "/get",
     (req, res, next) => {
       getCacheMasters("departments")
-        .then(result => {
+        .then((result) => {
           if (result === null) {
             next();
           } else {
             res
-              .status(utlities.AlgaehUtilities().httpStatus().ok)
+              .status(utlities.httpStatus().ok)
               .json({
                 success: true,
-                records: result
+                records: result,
               })
               .end();
           }
         })
-        .catch(error => {
+        .catch((error) => {
           console.log("error", error);
           next();
         });
@@ -100,7 +99,7 @@ export default () => {
         .status(utlities.httpStatus().ok)
         .json({
           success: true,
-          records: result
+          records: result,
         })
         .end();
     }
@@ -112,7 +111,7 @@ export default () => {
       .status(utlities.httpStatus().ok)
       .json({
         success: true,
-        records: result
+        records: result,
       })
       .end();
     // next();
@@ -132,7 +131,7 @@ export default () => {
       let result = req.records;
       res.status(utlities.httpStatus().ok).json({
         success: true,
-        records: result
+        records: result,
       });
       next();
     }
@@ -141,7 +140,7 @@ export default () => {
     let result = req.records;
     res.status(utlities.httpStatus().ok).json({
       success: true,
-      records: result
+      records: result,
     });
     next();
   });
@@ -156,7 +155,7 @@ export default () => {
       let result = req.records;
       res.status(utlities.httpStatus().ok).json({
         success: true,
-        records: result
+        records: result,
       });
       next();
     }
@@ -166,20 +165,20 @@ export default () => {
     "/get/get_All_Doctors_DepartmentWise",
     (req, res, next) => {
       getCacheMasters("get_All_Doctors_DepartmentWise")
-        .then(result => {
+        .then((result) => {
           if (result === null) {
             next();
           } else {
             res
-              .status(utlities.AlgaehUtilities().httpStatus().ok)
+              .status(utlities.httpStatus().ok)
               .json({
                 success: true,
-                records: result
+                records: result,
               })
               .end();
           }
         })
-        .catch(error => {
+        .catch((error) => {
           console.log("error", error);
           next();
         });
@@ -219,12 +218,12 @@ export default () => {
 
       let recor = {
         departmets: dept_Obj,
-        doctors: doc_Obj
+        doctors: doc_Obj,
       };
       setCacheMasters("get_All_Doctors_DepartmentWise", recor);
       res.status(utlities.httpStatus().ok).json({
         success: true,
-        records: recor
+        records: recor,
       });
       next();
     }
@@ -234,20 +233,20 @@ export default () => {
     "/selectDoctorsAndClinic",
     (req, res, next) => {
       getCacheMasters("selectDoctorsAndClinic")
-        .then(result => {
+        .then((result) => {
           if (result === null) {
             next();
           } else {
             res
-              .status(utlities.AlgaehUtilities().httpStatus().ok)
+              .status(utlities.httpStatus().ok)
               .json({
                 success: true,
-                records: result
+                records: result,
               })
               .end();
           }
         })
-        .catch(error => {
+        .catch((error) => {
           console.log("error", error);
           next();
         });
@@ -285,7 +284,7 @@ export default () => {
       });
       const recor = {
         departmets: dept_Obj,
-        doctors: doc_Obj
+        doctors: doc_Obj,
       };
       setCacheMasters("selectDoctorsAndClinic", recor);
       // let result = req.records;
@@ -293,7 +292,7 @@ export default () => {
         .status(utlities.httpStatus().ok)
         .json({
           success: true,
-          records: recor
+          records: recor,
         })
         .end();
       next();
@@ -311,7 +310,7 @@ export default () => {
       let result = req.records;
       res.status(utlities.httpStatus().ok).json({
         success: true,
-        records: result
+        records: result,
       });
       next();
     }
@@ -327,7 +326,7 @@ export default () => {
       let result = req.records;
       res.status(utlities.httpStatus().ok).json({
         success: true,
-        records: result
+        records: result,
       });
       next();
     }
@@ -343,7 +342,7 @@ export default () => {
       let result = req.records;
       res.status(utlities.httpStatus().ok).json({
         success: true,
-        records: result
+        records: result,
       });
       next();
     }

@@ -1,7 +1,7 @@
 const cryptr = require("cryptr");
 const jwt = require("jsonwebtoken");
-let winston = require("winston");
-require("winston-mongodb");
+//let winston = require("winston");
+//require("winston-mongodb");
 const keys = require("algaeh-keys");
 
 function algaehUtilities(options) {
@@ -80,49 +80,45 @@ algaehUtilities.prototype.decimalPoints = function (value, decimal_point) {
 algaehUtilities.prototype.logger = function (reqTracker) {
   reqTracker = reqTracker || "";
 
-  var _levels = process.env.NODE_ENV == "production" ? "info" : "debug";
-  //Create transports;
-  let transport = undefined;
-  const { mongoDb } = keys.default;
+  //var _levels = process.env.NODE_ENV === "production" ? "info" : "debug";
 
-  // transport = new winston.transports.MongoDB({
-  //   db: mongoDb.connectionURI,
-  //   options: { useUnifiedTopology: true, poolSize: 10 },
-  //   collection: "audit_logs",
-  //   tryReconnect: true
+  // let transport = undefined;
+  // const { mongoDb } = keys.default;
+  // if (process.env.NODE_ENV === "development") {
+  //   transport = new winston.transports.Console({
+  //     colorize: true,
+  //     format: winston.format.simple(),
+  //   });
+  // } else {
+  //   transport = new winston.transports.MongoDB({
+  //     db: mongoDb.connectionURI,
+  //     options: {
+  //       useUnifiedTopology: true,
+  //       poolSize: 10,
+  //       useNewUrlParser: true,
+  //     },
+  //     collection: "audit_logs",
+  //     tryReconnect: true,
+  //   });
+  // }
+
+  // var logger = winston.createLogger({
+  //   transports: [transport],
+  //   format: winston.format.json(),
   // });
-  if (process.env.NODE_ENV === "development") {
-    transport = new winston.transports.Console({
-      colorize: true,
-      format: winston.format.simple(),
-    });
-  } else {
-    transport = new winston.transports.MongoDB({
-      db: mongoDb.connectionURI,
-      options: {
-        useUnifiedTopology: true,
-        poolSize: 10,
-        // autoReconnect: true,
-        // useNewUrlParser: true,
-      },
-      collection: "audit_logs",
-      tryReconnect: true,
-    });
-  }
-
-  var logger = winston.createLogger({
-    transports: [transport],
-    format: winston.format.json(),
-  });
   return {
     log: (message, obj, logtype) => {
       logtype = logtype || "debug";
-      logger.log({
-        level: logtype,
-        message,
-        metadata: obj,
-      });
-      logger.close();
+      // if (message !== undefined && message !== "") {
+      // Here -- to remove logging
+      // logger.log({
+      //   level: logtype,
+      //   message,
+      //   metadata: obj,
+      // });
+      //}
+
+      // logger.close();
       return this;
     },
   };

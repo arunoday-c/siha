@@ -9,22 +9,22 @@ export default {
 
     try {
       const inputParam = req.body;
-      const utilities = new algaehUtilities();
+      // const utilities = new algaehUtilities();
       /* Select statemwnt  */
 
-      utilities.logger().log("inputParam: ", inputParam);
+      // utilities.logger().log("inputParam: ", inputParam);
 
       let qry = "";
       for (let i = 0; i < inputParam.length; i++) {
-        utilities
-          .logger()
-          .log("inputParam: ", inputParam[i].hims_f_patient_visit_id);
+        // utilities
+        //   .logger()
+        //   .log("inputParam: ", inputParam[i].hims_f_patient_visit_id);
         qry += mysql.format(
           "UPDATE `hims_f_patient_visit` SET visit_status='C' WHERE hims_f_patient_visit_id=?;",
           [inputParam[i].hims_f_patient_visit_id]
         );
       }
-      utilities.logger().log("qry: ", qry);
+      // utilities.logger().log("qry: ", qry);
       if (qry != "") {
         _mysql
           .executeQuery({
@@ -58,7 +58,7 @@ export default {
     try {
       let inputParam = req.query;
 
-      const utilities = new algaehUtilities();
+      // const utilities = new algaehUtilities();
       /* Select statemwnt  */
 
       //utilities.logger().log("inputParam: ", inputParam);
@@ -97,7 +97,7 @@ export default {
     const _mysql = new algaehMysql(_options);
     try {
       const inputParam = { ...req.body };
-      const utilities = new algaehUtilities();
+      // const utilities = new algaehUtilities();
       // utilities.logger().log("insertPatientVisitData: ");
 
       let existingExparyDate = null;
@@ -388,7 +388,7 @@ export default {
     const _mysql = new algaehMysql(_options);
     try {
       const input = { ...req.body };
-      const utilities = new algaehUtilities();
+      // const utilities = new algaehUtilities();
       if (input.consultation == "Y") {
         //utilities.logger().log("consultation: ", input);
         _mysql
@@ -498,7 +498,7 @@ export default {
     try {
       let input = { ...req.body };
 
-      const utilities = new algaehUtilities();
+      // const utilities = new algaehUtilities();
       /* Select statemwnt  */
       //utilities.logger().log("addPatientInsuranceData: ");
       //utilities.logger().log("insured: ", input.insured);

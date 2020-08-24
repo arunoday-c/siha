@@ -1,7 +1,7 @@
 import algaehMysql from "algaeh-mysql";
 import _ from "lodash";
 import moment from "moment";
-import algaehUtilities from "algaeh-utilities/utilities";
+// import algaehUtilities from "algaeh-utilities/utilities";
 
 export default {
   //created by irfan:
@@ -1135,7 +1135,7 @@ function getAccountHeadsForTrialBalance(
   decimal_places,
   finance_account_head_id
 ) {
-  const utilities = new algaehUtilities();
+  // const utilities = new algaehUtilities();
   const _mysql = new algaehMysql();
 
   return new Promise((resolve, reject) => {
@@ -1234,7 +1234,7 @@ function getAccountHeadsForReport(
   finance_account_head_id,
   str
 ) {
-  const utilities = new algaehUtilities();
+  // const utilities = new algaehUtilities();
   const _mysql = new algaehMysql();
 
   return new Promise((resolve, reject) => {
@@ -1407,7 +1407,7 @@ function calcAmountForTrialBalance(
   child_data
 ) {
   try {
-    const utilities = new algaehUtilities();
+    // const utilities = new algaehUtilities();
     return new Promise((resolve, reject) => {
       const max_account_level = parseInt(levels[0]["account_level"]);
 
@@ -1504,7 +1504,7 @@ function createHierarchy(
 ) {
   try {
     // const onlyChilds = [];
-    const utilities = new algaehUtilities();
+    // const utilities = new algaehUtilities();
     let roots = [],
       children = {};
 
@@ -1668,7 +1668,7 @@ function createHierarchyForTB_BAKUP_JAN_16_2020(
 ) {
   try {
     // const onlyChilds = [];
-    const utilities = new algaehUtilities();
+    // const utilities = new algaehUtilities();
     let roots = [],
       children = {};
 
@@ -2048,7 +2048,7 @@ function getAccountHeadsForProfitAndLoss(
   whrStr,
   costCenterQuery
 ) {
-  const utilities = new algaehUtilities();
+  // const utilities = new algaehUtilities();
   const _mysql = new algaehMysql();
 
   return new Promise((resolve, reject) => {
@@ -2242,7 +2242,7 @@ function buildHierarchyForProfitAndLoss(
 ) {
   try {
     // const onlyChilds = [];
-    const utilities = new algaehUtilities();
+    // const utilities = new algaehUtilities();
 
     let roots = [],
       children = {};
@@ -2414,7 +2414,7 @@ function getLedgersForProfitAndLossMonthWise(
   whrStr,
   months
 ) {
-  const utilities = new algaehUtilities();
+  // const utilities = new algaehUtilities();
 
   return new Promise((resolve, reject) => {
     if (finance_account_head_id == 4 || finance_account_head_id == 5) {
@@ -2691,7 +2691,7 @@ function createHierarchyTransactionTB(
 ) {
   try {
     // const onlyChilds = [];
-    const utilities = new algaehUtilities();
+    //const utilities = new algaehUtilities();
     let roots = [],
       children = {};
 

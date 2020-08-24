@@ -50,8 +50,8 @@ export default {
             let hims_d_patient_id = patient_details[1][0]["hims_d_patient_id"];
             let param_value = -patient_details[0][0]["param_value"];
 
-            utilities.logger().log("hims_d_patient_id: ", hims_d_patient_id);
-            utilities.logger().log("param_value: ", param_value);
+            // utilities.logger().log("hims_d_patient_id: ", hims_d_patient_id);
+            // utilities.logger().log("param_value: ", param_value);
 
             let input_Values = [];
             let _string_Data = "";

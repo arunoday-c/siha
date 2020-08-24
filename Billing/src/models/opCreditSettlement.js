@@ -13,23 +13,23 @@ export default {
       let credit_number = "";
 
       const utilities = new algaehUtilities();
-      utilities.logger().log("addCreidtSettlement: ");
+      // utilities.logger().log("addCreidtSettlement: ");
 
       inputParam.reciept_header_id =
         req.records === undefined
           ? input.receipt_header_id
           : req.records.receipt_header_id;
-      utilities
-        .logger()
-        .log("receipt_header_id: ", inputParam.reciept_header_id);
+      // utilities
+      //   .logger()
+      //   .log("receipt_header_id: ", inputParam.reciept_header_id);
 
       _mysql
         .generateRunningNumber({
           user_id: req.userIdentity.algaeh_d_app_user_id,
           numgen_codes: ["OP_CRD"],
-          table_name: "hims_f_app_numgen"
+          table_name: "hims_f_app_numgen",
         })
-        .then(generatedNumbers => {
+        .then((generatedNumbers) => {
           credit_number = generatedNumbers.OP_CRD;
 
           _mysql
@@ -54,11 +54,11 @@ export default {
                 inputParam.transaction_type,
                 inputParam.write_off_account,
                 req.userIdentity.algaeh_d_app_user_id,
-                new Date()
+                new Date(),
               ],
-              printQuery: true
+              printQuery: true,
             })
-            .then(headerResult => {
+            .then((headerResult) => {
               let IncludeValues = [
                 "bill_header_id",
                 "include",
@@ -67,7 +67,7 @@ export default {
                 "receipt_amount",
                 "balance_amount",
                 "previous_balance",
-                "bill_amount"
+                "bill_amount",
               ];
 
               _mysql
@@ -76,35 +76,35 @@ export default {
                   values: inputParam.criedtdetails,
                   includeValues: IncludeValues,
                   extraValues: {
-                    credit_header_id: headerResult.insertId
+                    credit_header_id: headerResult.insertId,
                   },
                   bulkInsertOrUpdate: true,
-                  printQuery: true
+                  printQuery: true,
                 })
-                .then(leave_detail => {
+                .then((leave_detail) => {
                   //   _mysql.commitTransaction(() => {
                   //     _mysql.releaseConnection();
                   req.records = {
                     credit_number: credit_number,
                     hims_f_credit_header_id: headerResult.insertId,
-                    receipt_number: req.records.receipt_number
+                    receipt_number: req.records.receipt_number,
                   };
                   next();
                   //   });
                 })
-                .catch(error => {
+                .catch((error) => {
                   _mysql.rollBackTransaction(() => {
                     next(error);
                   });
                 });
             })
-            .catch(e => {
+            .catch((e) => {
               _mysql.rollBackTransaction(() => {
                 next(e);
               });
             });
         })
-        .catch(e => {
+        .catch((e) => {
           _mysql.rollBackTransaction(() => {
             next(e);
           });
@@ -128,13 +128,13 @@ export default {
             req.query.credit_number +
             "'",
 
-          printQuery: true
+          printQuery: true,
         })
-        .then(headerResult => {
+        .then((headerResult) => {
           req.connection = {
             connection: _mysql.connection,
             isTransactionConnection: _mysql.isTransactionConnection,
-            pool: _mysql.pool
+            pool: _mysql.pool,
           };
           if (headerResult.length > 0) {
             _mysql
@@ -143,9 +143,9 @@ export default {
                   "select * from hims_f_credit_detail bh inner join hims_f_billing_header as bill on \
                 bh.bill_header_id = bill.hims_f_billing_header_id where credit_header_id=?",
                 values: [headerResult[0].hims_f_credit_header_id],
-                printQuery: true
+                printQuery: true,
               })
-              .then(criedtdetails => {
+              .then((criedtdetails) => {
                 // _mysql.releaseConnection();
 
                 req.records = {
@@ -153,12 +153,12 @@ export default {
                   ...{ criedtdetails },
                   ...{
                     hims_f_receipt_header_id:
-                      headerResult[0].cal_receipt_header_id
-                  }
+                      headerResult[0].cal_receipt_header_id,
+                  },
                 };
                 next();
               })
-              .catch(error => {
+              .catch((error) => {
                 console.log("error:", error);
                 _mysql.releaseConnection();
                 next(error);
@@ -169,7 +169,7 @@ export default {
             next();
           }
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -184,14 +184,14 @@ export default {
     const _mysql = new algaehMysql(_options);
     try {
       const utilities = new algaehUtilities();
-      utilities.logger().log("updateOPBilling: ");
+      // utilities.logger().log("updateOPBilling: ");
       let inputParam = { ...req.body };
 
-      utilities.logger().log("inputParam: ", inputParam.criedtdetails);
+      // utilities.logger().log("inputParam: ", inputParam.criedtdetails);
 
       let details = inputParam.criedtdetails;
       let qry = "";
-      utilities.logger().log("updateOPBilling: ");
+      // utilities.logger().log("updateOPBilling: ");
       for (let i = 0; i < details.length; i++) {
         let balance_credit =
           details[i].previous_balance - details[i].receipt_amount;
@@ -201,23 +201,23 @@ export default {
         );
       }
 
-      utilities.logger().log("qry: ", qry);
+      // utilities.logger().log("qry: ", qry);
 
       _mysql
         .executeQuery({
           query: qry,
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
-          utilities.logger().log("result: ", result);
+        .then((result) => {
+          // utilities.logger().log("result: ", result);
           _mysql.commitTransaction(() => {
             _mysql.releaseConnection();
             req.data = result;
             next();
           });
         })
-        .catch(e => {
-          utilities.logger().log("error: ", e);
+        .catch((e) => {
+          // utilities.logger().log("error: ", e);
           _mysql.rollBackTransaction(() => {
             next(e);
           });
@@ -238,10 +238,10 @@ export default {
       if (req.connection == null) {
         patient_id = req.query.patient_id;
       } else {
-        console.log(
-          "req.records.patientRegistration: ",
-          req.records.patientRegistration.hims_d_patient_id
-        );
+        // console.log(
+        //   "req.records.patientRegistration: ",
+        //   req.records.patientRegistration.hims_d_patient_id
+        // );
         patient_id = req.records.patientRegistration.hims_d_patient_id;
       }
       _mysql
@@ -251,9 +251,9 @@ export default {
           WHERE record_status='A' AND balance_credit>0 AND patient_id=? \
              order by hims_f_billing_header_id desc",
           values: [patient_id],
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           if (req.connection == null) {
             req.records = result;
@@ -263,7 +263,7 @@ export default {
 
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -286,9 +286,9 @@ export default {
           query:
             "select product_type from  hims_d_organization where hims_d_organization_id=1\
           and (product_type='HIMS_ERP' or product_type='FINANCE_ERP') limit 1; ",
-          printQuery: true
+          printQuery: true,
         })
-        .then(product_type => {
+        .then((product_type) => {
           if (product_type.length == 1) {
             const inputParam = req.body;
 
@@ -298,21 +298,21 @@ export default {
                   "select finance_accounts_maping_id,account,head_id,child_id from finance_accounts_maping  where \
             account in ( 'CIH_OP', 'OP_REC','CARD_SETTL','OP_WF');",
 
-                printQuery: true
+                printQuery: true,
               })
-              .then(controls => {
-                const OP_WF = controls.find(f => {
+              .then((controls) => {
+                const OP_WF = controls.find((f) => {
                   return f.account == "OP_WF";
                 });
 
-                const CIH_OP = controls.find(f => {
+                const CIH_OP = controls.find((f) => {
                   return f.account == "CIH_OP";
                 });
 
-                const OP_REC = controls.find(f => {
+                const OP_REC = controls.find((f) => {
                   return f.account == "OP_REC";
                 });
-                const CARD_SETTL = controls.find(f => {
+                const CARD_SETTL = controls.find((f) => {
                   return f.account == "CARD_SETTL";
                 });
 
@@ -330,7 +330,7 @@ export default {
                   debit_amount: 0,
                   payment_type: "CR",
                   credit_amount: inputParam.receipt_amount,
-                  hospital_id: req.userIdentity.hospital_id
+                  hospital_id: req.userIdentity.hospital_id,
                 });
 
                 if (inputParam.write_off_amount > 0) {
@@ -341,10 +341,10 @@ export default {
                     debit_amount: inputParam.write_off_amount,
                     payment_type: "DR",
                     credit_amount: 0,
-                    hospital_id: req.userIdentity.hospital_id
+                    hospital_id: req.userIdentity.hospital_id,
                   });
                 }
-                inputParam.receiptdetails.forEach(m => {
+                inputParam.receiptdetails.forEach((m) => {
                   if (m.pay_type == "CD") {
                     narration = narration + ",Received By CARD:" + m.amount;
 
@@ -355,7 +355,7 @@ export default {
                       debit_amount: m.amount,
                       payment_type: "DR",
                       credit_amount: 0,
-                      hospital_id: req.userIdentity.hospital_id
+                      hospital_id: req.userIdentity.hospital_id,
                     });
                   } else {
                     narration = narration + ",Received By CASH:" + m.amount;
@@ -366,7 +366,7 @@ export default {
                       debit_amount: m.amount,
                       payment_type: "DR",
                       credit_amount: 0,
-                      hospital_id: req.userIdentity.hospital_id
+                      hospital_id: req.userIdentity.hospital_id,
                     });
                   }
                 });
@@ -386,11 +386,11 @@ export default {
                       inputParam.ScreenCode,
                       narration,
                       req.userIdentity.algaeh_d_app_user_id,
-                      new Date()
+                      new Date(),
                     ],
-                    printQuery: true
+                    printQuery: true,
                   })
-                  .then(headerDayEnd => {
+                  .then((headerDayEnd) => {
                     const month = moment().format("M");
                     const year = moment().format("YYYY");
                     const IncludeValuess = [
@@ -400,7 +400,7 @@ export default {
                       "debit_amount",
                       "payment_type",
                       "credit_amount",
-                      "hospital_id"
+                      "hospital_id",
                     ];
 
                     _mysql
@@ -413,27 +413,27 @@ export default {
                         extraValues: {
                           year: year,
                           month: month,
-                          day_end_header_id: headerDayEnd.insertId
+                          day_end_header_id: headerDayEnd.insertId,
                         },
-                        printQuery: true
+                        printQuery: true,
                       })
-                      .then(subResult => {
+                      .then((subResult) => {
                         console.log("FOUR");
                         next();
                       })
-                      .catch(error => {
+                      .catch((error) => {
                         _mysql.rollBackTransaction(() => {
                           next(error);
                         });
                       });
                   })
-                  .catch(error => {
+                  .catch((error) => {
                     _mysql.rollBackTransaction(() => {
                       next(error);
                     });
                   });
               })
-              .catch(error => {
+              .catch((error) => {
                 _mysql.rollBackTransaction(() => {
                   next(error);
                 });
@@ -442,7 +442,7 @@ export default {
             next();
           }
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.rollBackTransaction(() => {
             next(error);
           });
@@ -452,5 +452,5 @@ export default {
         next(e);
       });
     }
-  }
+  },
 };

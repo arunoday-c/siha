@@ -23,7 +23,7 @@ export default {
         .then((generatedNumbers) => {
           bill_cancel_number = generatedNumbers.OP_CBIL;
 
-          req.body.bill_cancel_number = generatedNumbers.OP_CBIL
+          req.body.bill_cancel_number = generatedNumbers.OP_CBIL;
 
           // let criedt_qry = "";
           // if (parseFloat(inputParam.credit_amount) > 0) {
@@ -92,7 +92,7 @@ export default {
               printQuery: true,
             })
             .then((headerResult) => {
-              req.body.hims_f_bill_cancel_header_id = headerResult.insertId
+              req.body.hims_f_bill_cancel_header_id = headerResult.insertId;
               let IncludeValues = [
                 "service_type_id",
                 "services_id",
@@ -198,7 +198,7 @@ export default {
             isTransactionConnection: _mysql.isTransactionConnection,
             pool: _mysql.pool,
           };
-          console.log("Test");
+          // console.log("Test");
           if (headerResult.length != 0) {
             _mysql
               .executeQuery({
@@ -367,9 +367,9 @@ export default {
     try {
       let inputParam = { ...req.body };
       const utilities = new algaehUtilities();
-      utilities
-        .logger()
-        .log("updateEncounterDetails: ", inputParam.billdetails);
+      // utilities
+      //   .logger()
+      //   .log("updateEncounterDetails: ", inputParam.billdetails);
 
       const bill_consultation = _.filter(
         inputParam.billdetails,
@@ -377,7 +377,7 @@ export default {
           f.service_type_id ==
           appsettings.hims_d_service_type.service_type_id.Consultation
       );
-      utilities.logger().log("bill_consultation: ", bill_consultation.length);
+      // utilities.logger().log("bill_consultation: ", bill_consultation.length);
       if (bill_consultation.length > 0) {
         _mysql
           .executeQuery({
@@ -408,7 +408,7 @@ export default {
                     req.userIdentity.algaeh_d_app_user_id,
                     new Date(),
                     inputParam.visit_id,
-                    inputParam.visit_id
+                    inputParam.visit_id,
                   ],
                   printQuery: true,
                 })
@@ -451,9 +451,9 @@ export default {
     try {
       let inputParam = { ...req.body };
       const utilities = new algaehUtilities();
-      utilities
-        .logger()
-        .log("checkLabSampleCollected: ", inputParam.billdetails);
+      // utilities
+      //   .logger()
+      //   .log("checkLabSampleCollected: ", inputParam.billdetails);
 
       const Lab_Services = _.filter(
         inputParam.billdetails,
@@ -461,12 +461,12 @@ export default {
           f.service_type_id ==
           appsettings.hims_d_service_type.service_type_id.Lab
       );
-      utilities.logger().log("Lab_Services: ", Lab_Services.length);
+      // utilities.logger().log("Lab_Services: ", Lab_Services.length);
       if (Lab_Services.length > 0) {
         let _service_id = _.map(Lab_Services, (o) => {
           return o.services_id;
         });
-        utilities.logger().log("_service_id: ", _service_id.length);
+        // utilities.logger().log("_service_id: ", _service_id.length);
         _mysql
           .executeQuery({
             query:
@@ -476,7 +476,7 @@ export default {
           })
           .then((lab_data_result) => {
             if (lab_data_result.length > 0) {
-              utilities.logger().log("checked_in: ", lab_data_result);
+              // utilities.logger().log("checked_in: ", lab_data_result);
               const Lab_Services_Collected = _.filter(
                 lab_data_result,
                 (f) => f.status != "O"
@@ -562,7 +562,7 @@ export default {
     try {
       let inputParam = { ...req.body };
       const utilities = new algaehUtilities();
-      utilities.logger().log("checkRadSheduled: ", inputParam.billdetails);
+      // utilities.logger().log("checkRadSheduled: ", inputParam.billdetails);
 
       const Rad_Services = _.filter(
         inputParam.billdetails,
@@ -570,12 +570,12 @@ export default {
           f.service_type_id ==
           appsettings.hims_d_service_type.service_type_id.Radiology
       );
-      utilities.logger().log("Rad_Services: ", Rad_Services.length);
+      // utilities.logger().log("Rad_Services: ", Rad_Services.length);
       if (Rad_Services.length > 0) {
         let _service_id = _.map(Rad_Services, (o) => {
           return o.services_id;
         });
-        utilities.logger().log("Rad_service_id: ", _service_id.length);
+        // utilities.logger().log("Rad_service_id: ", _service_id.length);
         _mysql
           .executeQuery({
             query:
@@ -585,7 +585,7 @@ export default {
           })
           .then((rad_data_result) => {
             if (rad_data_result.length > 0) {
-              utilities.logger().log("rad_date: ", rad_data_result);
+              // utilities.logger().log("rad_date: ", rad_data_result);
               const Rad_Services_Sheduled = _.filter(
                 rad_data_result,
                 (f) => f.status != "O"
@@ -664,21 +664,21 @@ export default {
     const _mysql = new algaehMysql(_options);
     try {
       let inputParam = { ...req.body };
-      console.log("checkDentalProcedure: ", inputParam.billdetails);
+      // console.log("checkDentalProcedure: ", inputParam.billdetails);
 
       const dental_Services = _.filter(
         inputParam.billdetails,
         (f) =>
           f.service_type_id ==
-          appsettings.hims_d_service_type.service_type_id.Procedure &&
+            appsettings.hims_d_service_type.service_type_id.Procedure &&
           f.ordered_services_id != null
       );
-      console.log("dental_Services: ", dental_Services.length);
+      // console.log("dental_Services: ", dental_Services.length);
       if (dental_Services.length > 0) {
         let ordered_services_id = _.map(dental_Services, (o) => {
           return o.ordered_services_id;
         });
-        console.log("ordered_services_id: ", ordered_services_id.length);
+        // console.log("ordered_services_id: ", ordered_services_id.length);
         _mysql
           .executeQuery({
             query:
@@ -699,7 +699,7 @@ export default {
               })
               .then((dental_data_result) => {
                 if (dental_data_result.length > 0) {
-                  console.log("dental_data_result: ", dental_data_result);
+                  // console.log("dental_data_result: ", dental_data_result);
                   const den_Services_Proce = _.filter(
                     dental_data_result,
                     (f) => f.treatment_status != "PL"
@@ -964,10 +964,10 @@ export default {
 
                     let headerDayEnd = [];
                     if (header_result.length > 1) {
-                      headerDayEnd = header_result[0]
-                      project_id = header_result[1][0].project_id
+                      headerDayEnd = header_result[0];
+                      project_id = header_result[1][0].project_id;
                     } else {
-                      headerDayEnd = header_result
+                      headerDayEnd = header_result;
                     }
 
                     const month = moment().format("M");
@@ -999,7 +999,7 @@ export default {
                         printQuery: true,
                       })
                       .then((subResult) => {
-                        console.log("FOUR");
+                        // console.log("FOUR");
                         next();
                       })
                       .catch((error) => {

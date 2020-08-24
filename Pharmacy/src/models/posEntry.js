@@ -45,9 +45,9 @@ export default {
             where PH.record_status='A' and L.record_status='A' " +
             _strAppend,
           values: intValue,
-          printQuery: true
+          printQuery: true,
         })
-        .then(headerResult => {
+        .then((headerResult) => {
           if (headerResult.length != 0) {
             let strQuery = "";
             if (req.query.from_screen == "Sales_Return") {
@@ -61,7 +61,7 @@ export default {
                   as A where re_quantity>0;",
                 [
                   headerResult[0].location_id,
-                  headerResult[0].hims_f_pharmacy_pos_header_id
+                  headerResult[0].hims_f_pharmacy_pos_header_id,
                 ]
               );
             } else {
@@ -77,23 +77,23 @@ export default {
             _mysql
               .executeQuery({
                 query: strQuery,
-                printQuery: true
+                printQuery: true,
               })
-              .then(pharmacy_stock_detail => {
-                const utilities = new algaehUtilities();
-                utilities.logger().log("headerResult[0]", headerResult[0]);
+              .then((pharmacy_stock_detail) => {
+                // const utilities = new algaehUtilities();
+                // utilities.logger().log("headerResult[0]", headerResult[0]);
                 _mysql.releaseConnection();
                 req.records = {
                   ...headerResult[0],
                   ...{ pharmacy_stock_detail },
                   ...{
-                    hims_f_receipt_header_id: headerResult[0].receipt_header_id
-                  }
+                    hims_f_receipt_header_id: headerResult[0].receipt_header_id,
+                  },
                 };
                 // utilities.logger().log("req.records: ", req.records);
                 next();
               })
-              .catch(error => {
+              .catch((error) => {
                 _mysql.releaseConnection();
                 next(error);
               });
@@ -103,7 +103,7 @@ export default {
             next();
           }
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -128,9 +128,9 @@ export default {
         .generateRunningNumber({
           user_id: req.userIdentity.algaeh_d_app_user_id,
           numgen_codes: ["POS_NUM"],
-          table_name: "hims_f_pharmacy_numgen"
+          table_name: "hims_f_pharmacy_numgen",
         })
-        .then(generatedNumbers => {
+        .then((generatedNumbers) => {
           pos_number = generatedNumbers.POS_NUM;
 
           let year = moment().format("YYYY");
@@ -227,14 +227,14 @@ export default {
                 req.userIdentity.algaeh_d_app_user_id,
                 new Date(),
                 req.userIdentity.algaeh_d_app_user_id,
-                req.userIdentity.hospital_id
+                req.userIdentity.hospital_id,
               ],
-              printQuery: true
+              printQuery: true,
             })
-            .then(headerResult => {
+            .then((headerResult) => {
               req.body.transaction_id = headerResult.insertId;
               req.body.hims_f_pharmacy_pos_header_id = headerResult.insertId;
-              req.body.pos_number = pos_number
+              req.body.pos_number = pos_number;
 
               req.body.year = year;
               req.body.period = period;
@@ -275,7 +275,7 @@ export default {
                 "prescribed_qty",
                 "prescription_detail_id",
                 "pre_approval",
-                "average_cost"
+                "average_cost",
               ];
 
               // utilities
@@ -288,12 +288,12 @@ export default {
                   values: input.pharmacy_stock_detail,
                   includeValues: IncludeValues,
                   extraValues: {
-                    pharmacy_pos_header_id: headerResult.insertId
+                    pharmacy_pos_header_id: headerResult.insertId,
                   },
                   bulkInsertOrUpdate: true,
-                  printQuery: true
+                  printQuery: true,
                 })
-                .then(detailResult => {
+                .then((detailResult) => {
                   // utilities.logger().log("detailResult: ", detailResult);
                   if (req.connection == null) {
                     _mysql.commitTransaction(() => {
@@ -303,7 +303,7 @@ export default {
                         hims_f_pharmacy_pos_header_id: headerResult.insertId,
                         // receipt_number: req.records.receipt_number,
                         year: year,
-                        period: period
+                        period: period,
                       };
                       next();
                     });
@@ -312,24 +312,24 @@ export default {
                       pos_number: pos_number,
                       hims_f_pharmacy_pos_header_id: headerResult.insertId,
                       year: year,
-                      period: period
+                      period: period,
                     };
                     next();
                   }
                 })
-                .catch(error => {
+                .catch((error) => {
                   _mysql.rollBackTransaction(() => {
                     next(error);
                   });
                 });
             })
-            .catch(e => {
+            .catch((e) => {
               _mysql.rollBackTransaction(() => {
                 next(e);
               });
             });
         })
-        .catch(e => {
+        .catch((e) => {
           _mysql.rollBackTransaction(() => {
             next(e);
           });
@@ -346,7 +346,7 @@ export default {
     const _mysql = new algaehMysql(_options);
 
     try {
-      const utilities = new algaehUtilities();
+      // const utilities = new algaehUtilities();
       // console.log("req.connection: ", req.connection);
 
       let inputParam = { ...req.body };
@@ -391,40 +391,40 @@ export default {
             receipt_header_id,
             req.userIdentity.algaeh_d_app_user_id,
             new Date(),
-            inputParam.hims_f_pharmacy_pos_header_id
+            inputParam.hims_f_pharmacy_pos_header_id,
           ],
-          printQuery: true
+          printQuery: true,
         })
-        .then(headerResult => {
+        .then((headerResult) => {
           let DeleteQry = "";
 
-          utilities
-            .logger()
-            .log(
-              "delete_pharmacy_stock: ",
-              inputParam.delete_pharmacy_stock.length
-            );
+          // utilities
+          //   .logger()
+          //   .log(
+          //     "delete_pharmacy_stock: ",
+          //     inputParam.delete_pharmacy_stock.length
+          //   );
           if (inputParam.delete_pharmacy_stock.length > 0) {
             for (let i = 0; i < inputParam.delete_pharmacy_stock.length; i++) {
               DeleteQry += mysql.format(
                 "DELETE from `hims_f_pharmacy_pos_detail`  where hims_f_pharmacy_pos_detail_id=?;",
                 [
                   inputParam.delete_pharmacy_stock[i]
-                    .hims_f_pharmacy_pos_detail_id
+                    .hims_f_pharmacy_pos_detail_id,
                 ]
               );
             }
           } else {
             DeleteQry = "select 1";
           }
-          utilities.logger().log("DeleteQry: ", DeleteQry);
+          // utilities.logger().log("DeleteQry: ", DeleteQry);
 
           _mysql
             .executeQuery({
               query: DeleteQry,
-              printQuery: true
+              printQuery: true,
             })
-            .then(deleteResult => {
+            .then((deleteResult) => {
               let UpdateQry = "";
 
               for (
@@ -457,21 +457,20 @@ export default {
                       inputParam.pharmacy_stock_detail[j].company_tax,
                       inputParam.pharmacy_stock_detail[j].company_payable,
                       inputParam.pharmacy_stock_detail[j]
-                        .hims_f_pharmacy_pos_detail_id
+                        .hims_f_pharmacy_pos_detail_id,
                     ]
                   );
                 }
               }
 
-              utilities.logger().log("UpdateQry: ", UpdateQry);
+              // utilities.logger().log("UpdateQry: ", UpdateQry);
 
               _mysql
                 .executeQuery({
                   query: UpdateQry,
-                  printQuery: true
+                  printQuery: true,
                 })
-                .then(result => {
-
+                .then((result) => {
                   if (inputParam.insert_pharmacy_stock.length > 0) {
                     let IncludeValues = [
                       "item_id",
@@ -504,7 +503,7 @@ export default {
                       "sec_copay_amount",
                       "sec_company_responsibility",
                       "sec_company_tax",
-                      "sec_company_payable"
+                      "sec_company_payable",
                     ];
 
                     _mysql
@@ -515,13 +514,12 @@ export default {
                         includeValues: IncludeValues,
                         extraValues: {
                           pharmacy_pos_header_id:
-                            inputParam.hims_f_pharmacy_pos_header_id
+                            inputParam.hims_f_pharmacy_pos_header_id,
                         },
                         bulkInsertOrUpdate: true,
-                        printQuery: true
+                        printQuery: true,
                       })
-                      .then(detailResult => {
-
+                      .then((detailResult) => {
                         if (req.connection == null) {
                           _mysql.commitTransaction(() => {
                             _mysql.releaseConnection();
@@ -532,7 +530,7 @@ export default {
                           next();
                         }
                       })
-                      .catch(error => {
+                      .catch((error) => {
                         _mysql.rollBackTransaction(() => {
                           next(error);
                         });
@@ -549,19 +547,19 @@ export default {
                     }
                   }
                 })
-                .catch(e => {
+                .catch((e) => {
                   _mysql.rollBackTransaction(() => {
                     next(e);
                   });
                 });
             })
-            .catch(e => {
+            .catch((e) => {
               _mysql.rollBackTransaction(() => {
                 next(e);
               });
             });
         })
-        .catch(e => {
+        .catch((e) => {
           _mysql.rollBackTransaction(() => {
             next(e);
           });
@@ -575,17 +573,17 @@ export default {
   getPrescriptionPOSBackUp: (req, res, next) => {
     const _mysql = new algaehMysql();
     try {
-      const utilities = new algaehUtilities();
-      utilities.logger().log("getPrescriptionPOS: ");
+      // const utilities = new algaehUtilities();
+      // utilities.logger().log("getPrescriptionPOS: ");
 
       const _reqBody = req.body;
       const item_ids = new LINQ(_reqBody)
-        .Select(s => {
+        .Select((s) => {
           return s.item_id;
         })
         .ToArray();
       const location_ids = new LINQ(_reqBody)
-        .Select(s => {
+        .Select((s) => {
           return s.pharmacy_location_id;
         })
         .ToArray();
@@ -599,14 +597,14 @@ export default {
                 itmloc.avgcost from hims_m_item_location as itmloc inner join hims_d_item_master as item on itmloc.item_id = item.hims_d_item_master_id  \
                 where item_id in (?) and pharmacy_location_id in (?) and qtyhand > 0 and (expirydt > CURDATE()|| exp_date_required='N')  order by expirydt",
             values: [item_ids, location_ids],
-            printQuery: true
+            printQuery: true,
           })
-          .then(result => {
+          .then((result) => {
             let _req = new LINQ(result)
-              .Select(s => {
+              .Select((s) => {
                 const ItemcatrgoryGroup = new LINQ(_reqBody)
                   .Where(
-                    w =>
+                    (w) =>
                       w.item_id == s.item_id &&
                       w.pharmacy_location_id == s.pharmacy_location_id
                   )
@@ -615,7 +613,7 @@ export default {
                 return {
                   ...new LINQ(_reqBody)
                     .Where(
-                      w =>
+                      (w) =>
                         w.item_id == s.item_id &&
                         w.pharmacy_location_id == s.pharmacy_location_id
                     )
@@ -630,8 +628,8 @@ export default {
 
                     item_category_id: ItemcatrgoryGroup.item_category_id,
                     item_group_id: ItemcatrgoryGroup.item_group_id,
-                    prescribed_qty: ItemcatrgoryGroup.dispense
-                  }
+                    prescribed_qty: ItemcatrgoryGroup.dispense,
+                  },
                 };
               })
               .ToArray();
@@ -640,10 +638,10 @@ export default {
 
             for (let i = 0; i < _reqBody.length; i++) {
               const _mess = new LINQ(result)
-                .Where(w => w.item_id !== _reqBody[i].item_id)
+                .Where((w) => w.item_id !== _reqBody[i].item_id)
                 .FirstOrDefault();
 
-              utilities.logger().log("_mess: ", _mess);
+              // utilities.logger().log("_mess: ", _mess);
               if (_mess == undefined || _mess.item_id == undefined) {
                 _message =
                   "Some Items not avilable in selected location, Please check Prescription and stock enquiry for more details.";
@@ -651,13 +649,13 @@ export default {
             }
             resolve(result);
           })
-          .catch(error => {
+          .catch((error) => {
             _mysql.releaseConnection();
             next(error);
             reject(error);
           });
       })
-        .then(result => {
+        .then((result) => {
           if (result.length > 0) {
             return new Promise((resolve, reject) => {
               try {
@@ -665,25 +663,25 @@ export default {
               } catch (e) {
                 reject(e);
               }
-            }).then(resultbilling => {
+            }).then((resultbilling) => {
               const _result =
                 result != null && result.length > 0 ? result[0] : {};
 
               _result.message = _message;
 
-              utilities.logger().log("resultbilling: ", resultbilling);
-              utilities.logger().log("result: ", result);
+              // utilities.logger().log("resultbilling: ", resultbilling);
+              // utilities.logger().log("result: ", result);
 
               let obj = {
                 result: [
                   {
                     ...resultbilling,
-                    ..._result
-                  }
-                ]
+                    ..._result,
+                  },
+                ],
               };
 
-              utilities.logger().log("obj: ", obj);
+              // utilities.logger().log("obj: ", obj);
               req.records = obj;
               _mysql.releaseConnection();
               next();
@@ -693,7 +691,7 @@ export default {
               "Items not avilable in selected location, for this Prescription Please check Prescription List or stock enquiry for more details.";
             let obj = {
               result: result,
-              message: message
+              message: message,
             };
 
             req.records = obj;
@@ -701,7 +699,7 @@ export default {
             next();
           }
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -714,24 +712,23 @@ export default {
   getPrescriptionPOS: (req, res, next) => {
     const _mysql = new algaehMysql();
     try {
-      const utilities = new algaehUtilities();
+      // const utilities = new algaehUtilities();
 
       const _reqBody = req.body;
       const item_ids = new LINQ(_reqBody)
-        .Select(s => {
+        .Select((s) => {
           return s.item_id;
         })
         .ToArray();
       const location_ids = new LINQ(_reqBody)
-        .Select(s => {
+        .Select((s) => {
           return s.pharmacy_location_id;
         })
         .ToArray();
 
       _mysql
         .executeQuery({
-          query:
-            `SELECT IM.hims_d_item_master_id, COALESCE(LOC.item_id, LOCAD.item_id) as item_id,
+          query: `SELECT IM.hims_d_item_master_id, COALESCE(LOC.item_id, LOCAD.item_id) as item_id,
             COALESCE(LOC.pharmacy_location_id, LOCAD.pharmacy_location_id) as pharmacy_location_id,
             COALESCE(LOC.batchno, LOCAD.batchno) as batchno, COALESCE(LOC.expirydt, LOCAD.expirydt) as expirydt,
             COALESCE(LOC.qtyhand, LOCAD.qtyhand) as qtyhand, COALESCE(LOC.sales_uom, LOCAD.sales_uom) as sales_uom,
@@ -747,12 +744,12 @@ export default {
             AND (IMU.uom_id = LOC.sales_uom OR IMU.uom_id = LOCAD.sales_uom) AND IMU.record_status = 'A' 
             WHERE hims_d_item_master_id IN (?) ORDER BY DATE(LOC.expirydt)`,
           values: [item_ids],
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
 
-          console.log("result", result)
+          // console.log("result", result)
 
           var item_grp = _(result)
             .groupBy("hims_d_item_master_id")
@@ -763,10 +760,10 @@ export default {
 
           for (let i = 0; i < item_grp.length; i++) {
             let item = new LINQ(result)
-              .Where(w => w.hims_d_item_master_id == item_grp[i])
-              .Select(s => {
+              .Where((w) => w.hims_d_item_master_id == item_grp[i])
+              .Select((s) => {
                 let item_details = new LINQ(_reqBody)
-                  .Where(w => w.item_id == s.hims_d_item_master_id)
+                  .Where((w) => w.item_id == s.hims_d_item_master_id)
                   .FirstOrDefault();
                 return {
                   select_item: "N",
@@ -784,16 +781,21 @@ export default {
                   pre_approval: item_details.pre_approval,
                   prescribed_qty: item_details.dispense,
                   item_description: s.item_description,
-                  prescription_detail_id: item_details.prescription_detail_id
+                  prescription_detail_id: item_details.prescription_detail_id,
                 };
               })
               .FirstOrDefault();
 
             let batches = new LINQ(result)
-              .Where(w => w.item_id == item_grp[i] && w.qtyhand > 0 && w.pharmacy_location_id == location_ids[0])
-              .Select(s => {
+              .Where(
+                (w) =>
+                  w.item_id == item_grp[i] &&
+                  w.qtyhand > 0 &&
+                  w.pharmacy_location_id == location_ids[0]
+              )
+              .Select((s) => {
                 let item_details = new LINQ(_reqBody)
-                  .Where(w => w.item_id == s.hims_d_item_master_id)
+                  .Where((w) => w.item_id == s.hims_d_item_master_id)
                   .FirstOrDefault();
                 return {
                   item_description: s.item_description,
@@ -818,19 +820,19 @@ export default {
                   insurance_yesno: item_details.insured,
                   pre_approval: item_details.pre_approval,
                   prescribed_qty: item_details.dispense,
-                  prescription_detail_id: item_details.prescription_detail_id
+                  prescription_detail_id: item_details.prescription_detail_id,
                 };
               })
               .ToArray();
 
-            console.log("batches", batches)
+            // console.log("batches", batches)
             outputArray.push({ ...item, batches });
           }
 
           req.records = outputArray;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -844,8 +846,8 @@ export default {
     const _mysql = new algaehMysql();
 
     try {
-      const utilities = new algaehUtilities();
-      utilities.logger().log("updatePosEntry: ");
+      // const utilities = new algaehUtilities();
+      // utilities.logger().log("updatePosEntry: ");
 
       _mysql
         .executeQuery({
@@ -856,16 +858,16 @@ export default {
             "Y",
             req.userIdentity.algaeh_d_app_user_id,
             new Date(),
-            req.body.hims_f_pharmacy_pos_header_id
+            req.body.hims_f_pharmacy_pos_header_id,
           ],
-          printQuery: true
+          printQuery: true,
         })
-        .then(headerResult => {
+        .then((headerResult) => {
           _mysql.releaseConnection();
           req.records = headerResult;
           next();
         })
-        .catch(e => {
+        .catch((e) => {
           _mysql.releaseConnection();
           next(e);
         });
@@ -879,8 +881,8 @@ export default {
     const _mysql = new algaehMysql();
 
     try {
-      const utilities = new algaehUtilities();
-      utilities.logger().log("updatePosEntry: ");
+      // const utilities = new algaehUtilities();
+      // utilities.logger().log("updatePosEntry: ");
 
       _mysql
         .executeQuery({
@@ -890,16 +892,16 @@ export default {
           values: [
             req.body.pre_approval,
             req.body.insurance_yesno,
-            req.body.hims_f_pharmacy_pos_detail_id
+            req.body.hims_f_pharmacy_pos_detail_id,
           ],
-          printQuery: true
+          printQuery: true,
         })
-        .then(headerResult => {
+        .then((headerResult) => {
           _mysql.releaseConnection();
           req.records = headerResult;
           next();
         })
-        .catch(e => {
+        .catch((e) => {
           _mysql.releaseConnection();
           next(e);
         });
@@ -913,8 +915,8 @@ export default {
     const _mysql = new algaehMysql();
 
     try {
-      const utilities = new algaehUtilities();
-      utilities.logger().log("insertPreApprovalOutsideCustomer: ");
+      // const utilities = new algaehUtilities();
+      // utilities.logger().log("insertPreApprovalOutsideCustomer: ");
       let pos_number = req.records.pos_number;
       _mysql
         .executeQuery({
@@ -927,9 +929,9 @@ export default {
              H.hims_f_pharmacy_pos_header_id=D.pharmacy_pos_header_id and\
              D.item_id=IM.hims_d_item_master_id and H.pos_number=? and D.pre_approval='Y' and D.prescription_detail_id is null ",
           values: [pos_number],
-          printQuery: true
+          printQuery: true,
         })
-        .then(headerResult => {
+        .then((headerResult) => {
           if (headerResult.length != 0) {
             let IncludeValues = [
               "pharmacy_pos_detail_id",
@@ -945,7 +947,7 @@ export default {
               "sub_insurance_id",
               "network_id",
               "insurance_network_office_id",
-              "visit_id"
+              "visit_id",
             ];
             _mysql
               .executeQuery({
@@ -957,19 +959,19 @@ export default {
                   updated_by: req.userIdentity.algaeh_d_app_user_id,
                   created_date: new Date(),
                   updated_date: new Date(),
-                  hospital_id: req.userIdentity.hospital_id
+                  hospital_id: req.userIdentity.hospital_id,
                 },
                 bulkInsertOrUpdate: true,
-                printQuery: true
+                printQuery: true,
               })
-              .then(detailResult => {
-                utilities.logger().log("detailResult: ", detailResult);
+              .then((detailResult) => {
+                // utilities.logger().log("detailResult: ", detailResult);
 
                 _mysql.releaseConnection();
                 req.preapproval = detailResult;
                 next();
               })
-              .catch(error => {
+              .catch((error) => {
                 _mysql.rollBackTransaction(() => {
                   next(error);
                 });
@@ -980,7 +982,7 @@ export default {
             next();
           }
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -990,7 +992,6 @@ export default {
     }
   },
 
-
   generateAccountingEntry: (req, res, next) => {
     const _options = req.connection == null ? {} : req.connection;
     const _mysql = new algaehMysql(_options);
@@ -998,11 +999,11 @@ export default {
       let inputParam = req.body;
       const decimal_places = req.userIdentity.decimal_places;
       const utilities = new algaehUtilities();
-      const _all_service_id = _.map(inputParam.pharmacy_stock_detail, o => {
+      const _all_service_id = _.map(inputParam.pharmacy_stock_detail, (o) => {
         return o.service_id;
       });
 
-      const _all_item_id = _.map(inputParam.pharmacy_stock_detail, o => {
+      const _all_item_id = _.map(inputParam.pharmacy_stock_detail, (o) => {
         return o.item_id;
       });
 
@@ -1011,10 +1012,11 @@ export default {
 
       _mysql
         .executeQuery({
-          query: "select product_type from hims_d_organization where hims_d_organization_id=1 limit 1;",
-          printQuery: true
+          query:
+            "select product_type from hims_d_organization where hims_d_organization_id=1 limit 1;",
+          printQuery: true,
         })
-        .then(org_data => {
+        .then((org_data) => {
           if (
             org_data[0]["product_type"] == "HIMS_ERP" ||
             org_data[0]["product_type"] == "FINANCE_ERP"
@@ -1030,40 +1032,60 @@ export default {
                   SELECT hims_d_sub_department_id from hims_d_sub_department where department_type='PH';\
                   SELECT cost_center_type, cost_center_required from finance_options limit 1;",
                 values: [_all_service_id, _all_item_id, inputParam.location_id],
-                printQuery: true
+                printQuery: true,
               })
-              .then(result => {
-                const output_tax_acc = result[0].find(f => f.account === "OUTPUT_TAX")
-                const cogs_acc_data = result[0].find(f => f.account === "PHAR_COGS")
-                const cash_in_acc = result[0].find(f => f.account === "CIH_PH")
-                const sales_discount_acc = result[0].find(f => f.account === "SALES_DISCOUNT")
-                const card_settlement_acc = result[0].find(f => f.account === "CARD_SETTL")
-                const pos_criedt_settl_acc = result[0].find(f => f.account === "PHAR_REC")
+              .then((result) => {
+                const output_tax_acc = result[0].find(
+                  (f) => f.account === "OUTPUT_TAX"
+                );
+                const cogs_acc_data = result[0].find(
+                  (f) => f.account === "PHAR_COGS"
+                );
+                const cash_in_acc = result[0].find(
+                  (f) => f.account === "CIH_PH"
+                );
+                const sales_discount_acc = result[0].find(
+                  (f) => f.account === "SALES_DISCOUNT"
+                );
+                const card_settlement_acc = result[0].find(
+                  (f) => f.account === "CARD_SETTL"
+                );
+                const pos_criedt_settl_acc = result[0].find(
+                  (f) => f.account === "PHAR_REC"
+                );
 
                 const income_acc = result[1];
                 const item_waited_avg_cost = result[2];
                 const location_acc = result[3];
 
-                let sub_department_id = null
+                let sub_department_id = null;
                 if (inputParam.pos_customer_type === "OP") {
-                  sub_department_id = inputParam.sub_department_id
+                  sub_department_id = inputParam.sub_department_id;
                 } else if (inputParam.pos_customer_type === "OT") {
-                  sub_department_id = result[4].length > 0 ? result[4][0].hims_d_sub_department_id : null
+                  sub_department_id =
+                    result[4].length > 0
+                      ? result[4][0].hims_d_sub_department_id
+                      : null;
                 }
 
                 let strQuery = "";
 
-                if (result[5][0].cost_center_required === "Y" && result[5][0].cost_center_type === "P") {
+                if (
+                  result[5][0].cost_center_required === "Y" &&
+                  result[5][0].cost_center_type === "P"
+                ) {
                   strQuery = `select  hims_m_division_project_id, project_id from hims_m_division_project D \
                     inner join hims_d_project P on D.project_id=P.hims_d_project_id \
                     inner join hims_d_hospital H on D.division_id=H.hims_d_hospital_id where \
-                    division_id= ${req.userIdentity.hospital_id} limit 1;`
+                    division_id= ${req.userIdentity.hospital_id} limit 1;`;
                 }
                 _mysql
                   .executeQuery({
-                    query: "INSERT INTO finance_day_end_header (transaction_date, amount, \
+                    query:
+                      "INSERT INTO finance_day_end_header (transaction_date, amount, \
                           voucher_type, document_id, document_number, from_screen, \
-                          narration, entered_date, entered_by) VALUES (?,?,?,?,?,?,?,?,?);" + strQuery,
+                          narration, entered_date, entered_by) VALUES (?,?,?,?,?,?,?,?,?);" +
+                      strQuery,
                     values: [
                       new Date(),
                       inputParam.net_amount,
@@ -1071,23 +1093,26 @@ export default {
                       inputParam.hims_f_pharmacy_pos_header_id,
                       inputParam.pos_number,
                       inputParam.ScreenCode,
-                      "Pharmacy Sales for " + location_acc[0].location_description + "/" + inputParam.net_amount,
+                      "Pharmacy Sales for " +
+                        location_acc[0].location_description +
+                        "/" +
+                        inputParam.net_amount,
                       new Date(),
-                      req.userIdentity.algaeh_d_app_user_id
+                      req.userIdentity.algaeh_d_app_user_id,
                     ],
-                    printQuery: true
+                    printQuery: true,
                   })
-                  .then(header_result => {
+                  .then((header_result) => {
                     let project_id = null;
-                    let day_end_header = []
+                    let day_end_header = [];
                     if (header_result.length > 1) {
-                      day_end_header = header_result[0]
-                      project_id = header_result[1][0].project_id
+                      day_end_header = header_result[0];
+                      project_id = header_result[1][0].project_id;
                     } else {
-                      day_end_header = header_result
+                      day_end_header = header_result;
                     }
 
-                    let insertSubDetail = []
+                    let insertSubDetail = [];
                     const month = moment().format("M");
                     const year = moment().format("YYYY");
                     const IncludeValuess = [
@@ -1097,7 +1122,7 @@ export default {
                       "debit_amount",
                       "payment_type",
                       "credit_amount",
-                      "hospital_id"
+                      "hospital_id",
                     ];
 
                     // Sheet Level Discount
@@ -1109,7 +1134,7 @@ export default {
                         debit_amount: inputParam.sheet_discount_amount,
                         payment_type: "DR",
                         credit_amount: 0,
-                        hospital_id: req.userIdentity.hospital_id
+                        hospital_id: req.userIdentity.hospital_id,
                       });
                     }
 
@@ -1122,23 +1147,27 @@ export default {
                         debit_amount: inputParam.credit_amount,
                         payment_type: "DR",
                         credit_amount: 0,
-                        hospital_id: req.userIdentity.hospital_id
+                        hospital_id: req.userIdentity.hospital_id,
                       });
                     }
 
                     //OUT PUT Tax Entry
-                    if (parseFloat(inputParam.patient_tax) > 0 || parseFloat(inputParam.company_tax) > 0) {
+                    if (
+                      parseFloat(inputParam.patient_tax) > 0 ||
+                      parseFloat(inputParam.company_tax) > 0
+                    ) {
                       insertSubDetail.push({
                         payment_date: new Date(),
                         head_id: output_tax_acc.head_id,
                         child_id: output_tax_acc.child_id,
                         debit_amount: 0,
                         payment_type: "CR",
-                        credit_amount: parseFloat(inputParam.patient_tax) + parseFloat(inputParam.company_tax),
-                        hospital_id: req.userIdentity.hospital_id
+                        credit_amount:
+                          parseFloat(inputParam.patient_tax) +
+                          parseFloat(inputParam.company_tax),
+                        hospital_id: req.userIdentity.hospital_id,
                       });
                     }
-
 
                     for (let i = 0; i < inputParam.receiptdetails.length; i++) {
                       if (inputParam.receiptdetails[i].pay_type === "CA") {
@@ -1150,7 +1179,7 @@ export default {
                           debit_amount: inputParam.receiptdetails[i].amount,
                           payment_type: "DR",
                           credit_amount: 0,
-                          hospital_id: req.userIdentity.hospital_id
+                          hospital_id: req.userIdentity.hospital_id,
                         });
                       }
                       if (inputParam.receiptdetails[i].pay_type === "CD") {
@@ -1162,7 +1191,7 @@ export default {
                           debit_amount: inputParam.receiptdetails[i].amount,
                           payment_type: "DR",
                           credit_amount: 0,
-                          hospital_id: req.userIdentity.hospital_id
+                          hospital_id: req.userIdentity.hospital_id,
                         });
                       }
                       if (inputParam.receiptdetails[i].pay_type === "CH") {
@@ -1174,21 +1203,37 @@ export default {
                           debit_amount: inputParam.receiptdetails[i].amount,
                           payment_type: "DR",
                           credit_amount: 0,
-                          hospital_id: req.userIdentity.hospital_id
+                          hospital_id: req.userIdentity.hospital_id,
                         });
                       }
                     }
 
-                    for (let i = 0; i < inputParam.pharmacy_stock_detail.length; i++) {
-
+                    for (
+                      let i = 0;
+                      i < inputParam.pharmacy_stock_detail.length;
+                      i++
+                    ) {
                       // console.log("conversion_factor", inputParam.pharmacy_stock_detail[i].conversion_factor)
-                      const income_head_id = income_acc.find(f =>
-                        parseInt(f.hims_d_services_id) === parseInt(inputParam.pharmacy_stock_detail[i].service_id))
-                      const income_child_id = income_acc.find(f =>
-                        parseInt(f.hims_d_services_id) === parseInt(inputParam.pharmacy_stock_detail[i].service_id))
+                      const income_head_id = income_acc.find(
+                        (f) =>
+                          parseInt(f.hims_d_services_id) ===
+                          parseInt(
+                            inputParam.pharmacy_stock_detail[i].service_id
+                          )
+                      );
+                      const income_child_id = income_acc.find(
+                        (f) =>
+                          parseInt(f.hims_d_services_id) ===
+                          parseInt(
+                            inputParam.pharmacy_stock_detail[i].service_id
+                          )
+                      );
 
-                      const item_avg_cost = item_waited_avg_cost.find(f =>
-                        parseInt(f.hims_d_item_master_id) === parseInt(inputParam.pharmacy_stock_detail[i].item_id))
+                      const item_avg_cost = item_waited_avg_cost.find(
+                        (f) =>
+                          parseInt(f.hims_d_item_master_id) ===
+                          parseInt(inputParam.pharmacy_stock_detail[i].item_id)
+                      );
 
                       //Income Entry
                       insertSubDetail.push({
@@ -1197,17 +1242,22 @@ export default {
                         child_id: income_child_id.child_id,
                         debit_amount: 0,
                         payment_type: "CR",
-                        credit_amount: inputParam.pharmacy_stock_detail[i].net_extended_cost,
-                        hospital_id: req.userIdentity.hospital_id
+                        credit_amount:
+                          inputParam.pharmacy_stock_detail[i].net_extended_cost,
+                        hospital_id: req.userIdentity.hospital_id,
                       });
 
-                      const waited_avg_cost =
-                        utilities.decimalPoints(
-                          (parseFloat(inputParam.pharmacy_stock_detail[i].quantity) *
-                            parseFloat(inputParam.pharmacy_stock_detail[i].conversion_factor) *
-                            parseFloat(item_avg_cost.waited_avg_cost)),
-                          decimal_places
-                        )
+                      const waited_avg_cost = utilities.decimalPoints(
+                        parseFloat(
+                          inputParam.pharmacy_stock_detail[i].quantity
+                        ) *
+                          parseFloat(
+                            inputParam.pharmacy_stock_detail[i]
+                              .conversion_factor
+                          ) *
+                          parseFloat(item_avg_cost.waited_avg_cost),
+                        decimal_places
+                      );
 
                       //COGS Entry
                       insertSubDetail.push({
@@ -1217,7 +1267,7 @@ export default {
                         debit_amount: waited_avg_cost,
                         payment_type: "DR",
                         credit_amount: 0,
-                        hospital_id: req.userIdentity.hospital_id
+                        hospital_id: req.userIdentity.hospital_id,
                       });
 
                       //Location Wise
@@ -1228,7 +1278,7 @@ export default {
                         debit_amount: 0,
                         payment_type: "CR",
                         credit_amount: waited_avg_cost,
-                        hospital_id: location_acc[0].hospital_id
+                        hospital_id: location_acc[0].hospital_id,
                       });
                     }
 
@@ -1245,26 +1295,26 @@ export default {
                           year: year,
                           month: month,
                           project_id: project_id,
-                          sub_department_id: sub_department_id
+                          sub_department_id: sub_department_id,
                         },
-                        printQuery: true
+                        printQuery: true,
                       })
-                      .then(subResult => {
+                      .then((subResult) => {
                         next();
                       })
-                      .catch(error => {
+                      .catch((error) => {
                         _mysql.rollBackTransaction(() => {
                           next(error);
                         });
                       });
                   })
-                  .catch(error => {
+                  .catch((error) => {
                     _mysql.rollBackTransaction(() => {
                       next(error);
                     });
                   });
               })
-              .catch(error => {
+              .catch((error) => {
                 _mysql.rollBackTransaction(() => {
                   next(error);
                 });
@@ -1273,12 +1323,11 @@ export default {
             next();
           }
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.rollBackTransaction(() => {
             next(error);
           });
         });
-
     } catch (e) {
       _mysql.rollBackTransaction(() => {
         next(e);
@@ -1297,13 +1346,14 @@ export default {
             query:
               "SELECT advance_amount FROM hims_f_patient WHERE hims_d_patient_id=?",
             values: [inputParam.patient_id],
-            printQuery: true
+            printQuery: true,
           })
-          .then(result => {
+          .then((result) => {
             let existingAdvance = result[0].advance_amount;
             if (result.length != 0) {
               inputParam.advance_amount =
-                parseFloat(existingAdvance) - parseFloat(inputParam.advance_adjust);
+                parseFloat(existingAdvance) -
+                parseFloat(inputParam.advance_adjust);
 
               _mysql
                 .executeQuery({
@@ -1314,31 +1364,32 @@ export default {
                     inputParam.advance_amount,
                     req.userIdentity.algaeh_d_app_user_id,
                     new Date(),
-                    inputParam.patient_id
+                    inputParam.patient_id,
                   ],
-                  printQuery: true
-                }).then(patient_advance => {
+                  printQuery: true,
+                })
+                .then((patient_advance) => {
                   next();
                 })
-                .catch(error => {
+                .catch((error) => {
                   _mysql.rollBackTransaction(() => {
                     next(error);
                   });
                 });
             }
           })
-          .catch(error => {
+          .catch((error) => {
             _mysql.rollBackTransaction(() => {
               next(error);
             });
           });
       } else {
-        next()
+        next();
       }
     } catch (e) {
       _mysql.rollBackTransaction(() => {
         next(e);
       });
     }
-  }
+  },
 };

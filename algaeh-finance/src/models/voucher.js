@@ -490,7 +490,7 @@ export default {
 
   //created by irfan:
   authorizeVoucherBKP_JAN_28_2020: (req, res, next) => {
-    const utilities = new algaehUtilities();
+    //const utilities = new algaehUtilities();
     let input = req.body;
 
     if (req.userIdentity.finance_authorize_privilege != "N") {
@@ -1010,7 +1010,7 @@ export default {
 
   //created by irfan:
   authorizeVoucher: (req, res, next) => {
-    const utilities = new algaehUtilities();
+    // const utilities = new algaehUtilities();
     let input = req.body;
 
     if (

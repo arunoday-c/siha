@@ -45,7 +45,7 @@ export default {
     const _mysql = new algaehMysql(_options);
     try {
       const utilities = new algaehUtilities();
-      utilities.logger().log("updateOrderedServicesBilled: ");
+      // utilities.logger().log("updateOrderedServicesBilled: ");
 
       let OrderServices = new LINQ(req.body.billdetails)
         .Where((w) => w.ordered_inventory_id != null)
@@ -62,11 +62,11 @@ export default {
       let qry = "";
       if (OrderServices.length > 0) {
         for (let i = 0; i < OrderServices.length; i++) {
-          utilities.logger().log("billed: ", OrderServices[i].billed);
-          utilities.logger().log("updated_by: ", OrderServices[i].updated_by);
-          utilities
-            .logger()
-            .log("billed: ", OrderServices[i].hims_f_ordered_inventory_id);
+          // utilities.logger().log("billed: ", OrderServices[i].billed);
+          // utilities.logger().log("updated_by: ", OrderServices[i].updated_by);
+          // utilities
+          //   .logger()
+          //   .log("billed: ", OrderServices[i].hims_f_ordered_inventory_id);
 
           qry += mysql.format(
             "UPDATE `hims_f_ordered_inventory` SET billed=?,\
@@ -99,7 +99,7 @@ export default {
             });
           });
       } else {
-        utilities.logger().log("Else: ");
+        // utilities.logger().log("Else: ");
         next();
       }
     } catch (e) {
@@ -114,9 +114,9 @@ export default {
     const _mysql = new algaehMysql(_options);
     try {
       const utilities = new algaehUtilities();
-      utilities.logger().log("updateOrderedServicesBilled: ");
+      // utilities.logger().log("updateOrderedServicesBilled: ");
 
-      utilities.logger().log("OrderServices: ", req.body.billdetails);
+      // utilities.logger().log("OrderServices: ", req.body.billdetails);
 
       let OrderServices = new LINQ(req.body.billdetails)
         .Where((w) => w.hims_f_ordered_services_id != null)
@@ -141,15 +141,15 @@ export default {
           };
         })
         .ToArray();
-      utilities.logger().log("OrderServices 1: ", OrderServices);
+      // utilities.logger().log("OrderServices 1: ", OrderServices);
       let qry = "";
       if (OrderServices.length > 0) {
         for (let i = 0; i < OrderServices.length; i++) {
-          utilities.logger().log("billed: ", OrderServices[i].billed);
-          utilities.logger().log("updated_by: ", OrderServices[i].updated_by);
-          utilities
-            .logger()
-            .log("billed: ", OrderServices[i].hims_f_ordered_services_id);
+          // utilities.logger().log("billed: ", OrderServices[i].billed);
+          // utilities.logger().log("updated_by: ", OrderServices[i].updated_by);
+          // utilities
+          //   .logger()
+          //   .log("billed: ", OrderServices[i].hims_f_ordered_services_id);
 
           qry += mysql.format(
             "UPDATE `hims_f_ordered_services` SET billed=?,\
@@ -177,7 +177,7 @@ export default {
           }
         }
 
-        utilities.logger().log("qry: ", qry);
+        // utilities.logger().log("qry: ", qry);
 
         _mysql
           .executeQuery({
@@ -198,7 +198,7 @@ export default {
             });
           });
       } else {
-        utilities.logger().log("Else: ");
+        // utilities.logger().log("Else: ");
         next();
       }
     } catch (e) {
@@ -236,7 +236,6 @@ export default {
               moment().format("YYYY-MM-DD HH:mm"),
               OrderServices[i].updated_by,
               OrderServices[i].hims_f_package_header_id,
-
             ]
           );
         }
@@ -252,7 +251,7 @@ export default {
             // } else {
             //   next();
             // }
-            let package_header_id = _.map(OrderServices, o => {
+            let package_header_id = _.map(OrderServices, (o) => {
               return o.hims_f_package_header_id;
             });
             _mysql
@@ -260,9 +259,9 @@ export default {
                 query:
                   "select *,service_id as services_id, now() as created_date  from hims_f_package_detail where package_header_id in (?)",
                 values: [package_header_id],
-                printQuery: true
+                printQuery: true,
               })
-              .then(package_details => {
+              .then((package_details) => {
                 req.body.billdetails = req.body.billdetails.concat(
                   package_details
                 );
@@ -274,7 +273,7 @@ export default {
                   next();
                 }
               })
-              .catch(error => {
+              .catch((error) => {
                 _mysql.releaseConnection();
                 next(error);
               });
@@ -318,9 +317,9 @@ export default {
             pool: _mysql.pool,
           };
           if (headerResult.length != 0) {
-            let strQuery = ""
+            let strQuery = "";
             if (req.query.from_cancellation == "Y") {
-              strQuery = "and D.cancel_yes_no='N'"
+              strQuery = "and D.cancel_yes_no='N'";
             }
 
             _mysql
@@ -329,7 +328,8 @@ export default {
                   "select D.*, S.service_name, ST.service_type from hims_f_billing_details D \
                   inner join hims_d_services S on D.services_id = S.hims_d_services_id  \
                   inner join hims_d_service_type ST on D.service_type_id = ST.hims_d_service_type_id \
-                  where hims_f_billing_header_id=? and D.record_status='A'" + strQuery,
+                  where hims_f_billing_header_id=? and D.record_status='A'" +
+                  strQuery,
                 values: [headerResult[0].hims_f_billing_header_id],
                 printQuery: true,
               })
@@ -478,7 +478,7 @@ export default {
     const _options = req.connection == null ? {} : req.connection;
     const _mysql = new algaehMysql(_options);
     const utilities = new algaehUtilities();
-    utilities.logger().log("updatePhysiotherapyServices: ");
+    // utilities.logger().log("updatePhysiotherapyServices: ");
     try {
       let OrderServices = new LINQ(req.body.billdetails)
         .Where(
@@ -506,7 +506,7 @@ export default {
           );
         }
 
-        utilities.logger().log("qry: ", qry);
+        // utilities.logger().log("qry: ", qry);
 
         _mysql
           .executeQuery({

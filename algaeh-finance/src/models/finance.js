@@ -1,12 +1,12 @@
 import algaehMysql from "algaeh-mysql";
 import _ from "lodash";
 import moment from "moment";
-import algaehUtilities from "algaeh-utilities/utilities";
+// import algaehUtilities from "algaeh-utilities/utilities";
 
 export default {
   //created by irfan:
   getAccountHeads_BKP_24_dec: (req, res, next) => {
-    const utilities = new algaehUtilities();
+    //const utilities = new algaehUtilities();
     const _mysql = new algaehMysql();
     let input = req.query;
 
@@ -133,7 +133,7 @@ export default {
 
   //created by irfan:
   getAccountHeads_JAN_9_2020: (req, res, next) => {
-    const utilities = new algaehUtilities();
+    //const utilities = new algaehUtilities();
     const _mysql = new algaehMysql();
     let input = req.query;
 
@@ -229,7 +229,7 @@ export default {
   },
   //created by irfan:
   getAccountHeads: (req, res, next) => {
-    const utilities = new algaehUtilities();
+    // const utilities = new algaehUtilities();
     const _mysql = new algaehMysql();
     let input = req.query;
     const decimal_places = req.userIdentity.decimal_places;
@@ -1292,13 +1292,13 @@ export default {
                               headRes[0]["amount"]
                             )} where finance_voucher_header_id=${
                               BalanceInvoice[0]["finance_voucher_header_id"]
-                              };`;
+                            };`;
                           } else {
                             updateQry = `update finance_voucher_header set settled_amount=settled_amount+${parseFloat(
                               headRes[0]["amount"]
                             )} where finance_voucher_header_id=${
                               BalanceInvoice[0]["finance_voucher_header_id"]
-                              };`;
+                            };`;
                           }
                         }
 
@@ -1599,7 +1599,7 @@ export default {
 
   //created by irfan:
   getAccountHeadsForDropdown: (req, res, next) => {
-    const utilities = new algaehUtilities();
+    //  const utilities = new algaehUtilities();
     const _mysql = new algaehMysql();
     let input = req.query;
 
@@ -1738,7 +1738,7 @@ export default {
 
   //created by irfan:
   getLedgerDataForChart: (req, res, next) => {
-    const utilities = new algaehUtilities();
+    // const utilities = new algaehUtilities();
     const _mysql = new algaehMysql();
     let input = req.query;
 
@@ -2029,7 +2029,7 @@ export default {
   //created by irfan: to
   getOpeningBalance: (req, res, next) => {
     const _mysql = new algaehMysql();
-    const utilities = new algaehUtilities();
+    // const utilities = new algaehUtilities();
     const decimal_places = req.userIdentity.decimal_places;
     _mysql
       .executeQuery({
@@ -2129,7 +2129,7 @@ function createHierarchy(
 ) {
   try {
     // const onlyChilds = [];
-    const utilities = new algaehUtilities();
+    //const utilities = new algaehUtilities();
     let roots = [],
       children = {};
 
@@ -2339,11 +2339,11 @@ function calcAmount(account_heads, levels, decimal_places) {
 
           item["cred_minus_deb"] = parseFloat(
             parseFloat(item["total_credit_amount"]) -
-            parseFloat(item["total_debit_amount"])
+              parseFloat(item["total_debit_amount"])
           ).toFixed(decimal_places);
           item["deb_minus_cred"] = parseFloat(
             parseFloat(item["total_debit_amount"]) -
-            parseFloat(item["total_credit_amount"])
+              parseFloat(item["total_credit_amount"])
           ).toFixed(decimal_places);
 
           return item;
@@ -2369,7 +2369,7 @@ function calcAmount(account_heads, levels, decimal_places) {
 function createHierarchyForDropdown(arry) {
   try {
     // const onlyChilds = [];
-    const utilities = new algaehUtilities();
+    // const utilities = new algaehUtilities();
     let roots = [],
       children = {};
 
@@ -2451,7 +2451,7 @@ function createHierarchyForDropdown(arry) {
 
 //created by irfan:
 function getAccountHeadsFunc(decimal_places, finance_account_head_id) {
-  const utilities = new algaehUtilities();
+  // const utilities = new algaehUtilities();
   const _mysql = new algaehMysql();
 
   return new Promise((resolve, reject) => {

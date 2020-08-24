@@ -7,9 +7,9 @@ export default {
     const _mysql = new algaehMysql(_options);
     try {
       const utilities = new algaehUtilities();
-      utilities
-        .logger()
-        .log("getReceiptEntry: ", req.records.hims_f_receipt_header_id);
+      // utilities
+      //   .logger()
+      //   .log("getReceiptEntry: ", req.records.hims_f_receipt_header_id);
       let hims_f_receipt_header_id =
         req.records.hims_f_receipt_header_id ||
         req.records[0].receipt_header_id;
@@ -18,26 +18,26 @@ export default {
           query:
             "select * from hims_f_receipt_header where hims_f_receipt_header_id=? and record_status='A'",
           values: [hims_f_receipt_header_id],
-          printQuery: true
+          printQuery: true,
         })
-        .then(headerResult => {
+        .then((headerResult) => {
           if (headerResult.length != 0) {
             _mysql
               .executeQuery({
                 query:
                   "select * from hims_f_receipt_details where hims_f_receipt_header_id=? and record_status='A'",
                 values: [hims_f_receipt_header_id],
-                printQuery: true
+                printQuery: true,
               })
-              .then(receiptdetails => {
+              .then((receiptdetails) => {
                 _mysql.releaseConnection();
                 req.receptEntry = {
                   ...headerResult[0],
-                  ...{ receiptdetails }
+                  ...{ receiptdetails },
                 };
                 next();
               })
-              .catch(error => {
+              .catch((error) => {
                 _mysql.releaseConnection();
                 next(error);
               });
@@ -47,7 +47,7 @@ export default {
             next();
           }
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -63,7 +63,7 @@ export default {
       let inputParam = { ...req.body };
 
       const utilities = new algaehUtilities();
-      utilities.logger().log("inputParam Receipt: ", inputParam);
+      // utilities.logger().log("inputParam Receipt: ", inputParam);
 
       let Module_Name = "";
       //Advance
@@ -72,22 +72,22 @@ export default {
       } else if (inputParam.pay_type == "P") {
         Module_Name = "REFUND";
       }
-      utilities.logger().log("inputParam pay_type: ", inputParam.pay_type);
+      // utilities.logger().log("inputParam pay_type: ", inputParam.pay_type);
       _mysql
         .generateRunningNumber({
           user_id: req.userIdentity.algaeh_d_app_user_id,
           numgen_codes: [Module_Name],
-          table_name: "hims_f_app_numgen"
+          table_name: "hims_f_app_numgen",
         })
-        .then(generatedNumbers => {
-          console.log(
-            "isTransactionConnection: ",
-            _mysql.isTransactionConnection
-          );
+        .then((generatedNumbers) => {
+          // console.log(
+          //   "isTransactionConnection: ",
+          //   _mysql.isTransactionConnection
+          // );
           req.connection = {
             connection: _mysql.connection,
             isTransactionConnection: _mysql.isTransactionConnection,
-            pool: _mysql.pool
+            pool: _mysql.pool,
           };
 
           req.query.receipt_number = generatedNumbers[Module_Name];
@@ -111,12 +111,12 @@ export default {
                 inputParam.counter_id,
                 inputParam.shift_id,
                 inputParam.pay_type,
-                req.userIdentity.hospital_id
+                req.userIdentity.hospital_id,
               ],
-              printQuery: true
+              printQuery: true,
             })
-            .then(headerRcptResult => {
-              utilities.logger().log("headerRcptResult: ", headerRcptResult);
+            .then((headerRcptResult) => {
+              // utilities.logger().log("headerRcptResult: ", headerRcptResult);
               if (
                 headerRcptResult.insertId != null &&
                 headerRcptResult.insertId != ""
@@ -126,7 +126,7 @@ export default {
                   "card_check_number",
                   "expiry_date",
                   "pay_type",
-                  "amount"
+                  "amount",
                 ];
 
                 _mysql
@@ -139,35 +139,35 @@ export default {
                       created_by: req.userIdentity.algaeh_d_app_user_id,
                       created_date: new Date(),
                       updated_by: req.userIdentity.algaeh_d_app_user_id,
-                      updated_date: new Date()
+                      updated_date: new Date(),
                     },
                     bulkInsertOrUpdate: true,
-                    printQuery: true
+                    printQuery: true,
                   })
-                  .then(RcptDetailsRecords => {
+                  .then((RcptDetailsRecords) => {
                     // _mysql.commitTransaction(() => {
                     // _mysql.releaseConnection();
                     req.records = {
                       receipt_header_id: headerRcptResult.insertId,
-                      receipt_number: inputParam.receipt_number
+                      receipt_number: inputParam.receipt_number,
                     };
                     next();
                     // });
                   })
-                  .catch(error => {
+                  .catch((error) => {
                     _mysql.rollBackTransaction(() => {
                       next(error);
                     });
                   });
               }
             })
-            .catch(error => {
+            .catch((error) => {
               _mysql.rollBackTransaction(() => {
                 next(error);
               });
             });
         })
-        .catch(e => {
+        .catch((e) => {
           _mysql.rollBackTransaction(() => {
             next(e);
           });
@@ -177,5 +177,5 @@ export default {
         next(e);
       });
     }
-  }
+  },
 };
