@@ -11,14 +11,16 @@ export default {
       _mysql
         .executeQueryWithTransaction({
           query:
-            "INSERT INTO `hims_d_services` (`service_code`, `cpt_code`,`service_name`, `hospital_id`,`service_type_id`, \
-                `physiotherapy_service`,`sub_department_id`,`standard_fee`, `discount`, `vat_applicable`, \
-              `vat_percent`, `effective_start_date` , `created_by` ,`created_date`, head_id, child_id ) \
-                VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? , ?, ?)",
+            "INSERT INTO `hims_d_services` (`service_code`, `cpt_code`,`service_name`, `arabic_service_name`, \
+              `hospital_id`,`service_type_id`, `physiotherapy_service`,`sub_department_id`, \
+              `standard_fee`, `discount`, `vat_applicable`, `vat_percent`, `effective_start_date` , \
+              `created_by` ,`created_date`, head_id, child_id ) \
+              VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? , ?, ?, ?)",
           values: [
             inputParam.service_code,
             inputParam.cpt_code,
             inputParam.service_name,
+            inputParam.arabic_service_name,
             inputParam.hospital_id,
             inputParam.service_type_id,
             inputParam.physiotherapy_service,
@@ -161,7 +163,7 @@ export default {
             .executeQuery({
               query:
                 "UPDATE `hims_d_services` \
-          SET `service_code`=?,  `cpt_code`=?,`service_name`=?, `hospital_id`=?,  `service_type_id`=?,`sub_department_id` = ?, \
+          SET `service_code`=?,  `cpt_code`=?,`service_name`=?, `arabic_service_name`=?, `hospital_id`=?,  `service_type_id`=?,`sub_department_id` = ?, \
           `standard_fee`=?, `discount`=?,  `vat_applicable`=?,`vat_percent`=?, `physiotherapy_service`=?, \
           `updated_by`=?, `updated_date`=?,  `record_status`=? " +
                 str +
@@ -171,6 +173,7 @@ export default {
                 inputParam.service_code,
                 inputParam.cpt_code,
                 inputParam.service_name,
+                inputParam.arabic_service_name,
                 inputParam.hospital_id,
                 inputParam.service_type_id,
                 inputParam.sub_department_id,
@@ -279,7 +282,7 @@ export default {
       _mysql
         .executeQuery({
           query:
-            "select hims_d_services_id, service_code, S.cpt_code, CPT.cpt_code as cpt_p_code, service_name, service_desc, \
+            "select hims_d_services_id, service_code, arabic_service_name, S.cpt_code, CPT.cpt_code as cpt_p_code, service_name, service_desc, \
                 sub_department_id, hospital_id, service_type_id, standard_fee , discount, vat_applicable, vat_percent, \
                 effective_start_date, effectice_end_date, procedure_type, physiotherapy_service, head_id, child_id from \
                 hims_d_services S left join hims_d_cpt_code CPT on CPT.hims_d_cpt_code_id = S.cpt_code \
