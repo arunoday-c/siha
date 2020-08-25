@@ -1,6 +1,7 @@
 export default function Patient() {
   return {
     name: "Patient Reports",
+    excel: "true",
     submenu: [
       {
         subitem: "Patient Outstanding",

@@ -7,6 +7,7 @@ export default function Pharmacy({
 }) {
   return {
     name: "Pharmacy",
+    excel: "true",
     submenu: [
       {
         subitem: "List of Receipts",
