@@ -9,6 +9,7 @@ import {
   AlgaehMessagePop,
   // AlgaehFormGroup,
   MainContext,
+  AlgaehAutoComplete,
 } from "algaeh-react-components";
 import { newAlgaehApi } from "../../../hooks";
 import AlgaehSearch from "../../Wrapper/globalSearch";
@@ -161,18 +162,19 @@ export function UpdateStatement({
     <AlgaehModal
       title="Update Statment"
       visible={show}
-      okButtonProps={{
-        // loading: isLoading,
-        className: "btn btn-primary",
-      }}
-      okText={"Update"}
+      // okButtonProps={{
+      //   // loading: isLoading,
+      //   className: "btn btn-primary",
+      // }}
+      // okText={"Update"}
       maskClosable={false}
-      cancelButtonProps={{
-        // disabled: isLoading,
-        className: "btn btn-default",
-      }}
+      // cancelButtonProps={{
+      //   // disabled: isLoading,
+      //   className: "btn btn-default",
+      // }}
       width={1200}
-      closable={false}
+      closable={true}
+      footer={null}
       onCancel={() => onClose(false)}
       // onOk={handleSubmit(onSubmit)}
       className={`${userLanguage}_comp row algaehNewModal UpdateStatementModal`}
@@ -327,6 +329,39 @@ export function UpdateStatement({
                       ),
                       editorTemplate: (row) => row.denial_amount,
                     },
+                    {
+                      fieldName: "denial_reason",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Denial Reason" }} />
+                      ),
+                      editorTemplate: (row) => (
+                        <AlgaehAutoComplete
+                          div={{ className: " mandatory" }}
+                          selector={{
+                            name: "title_id",
+                            className: "select-fld",
+                            placeholder: "Select Reason",
+                            dataSource: {
+                              textField: "name",
+                              valueField: "his_d_title_id",
+                              data: [],
+                            },
+                            // value: ,
+                            // onChange: (_, selected) => {
+                            //   onChange(selected);
+                            //   if (selected == 1 || selected == 6) {
+                            //     setValue("gender", "Male");
+                            //   } else {
+                            //     setValue("gender", "Female");
+                            //   }
+                            // },
+                            // onClear: () => {
+                            //   onChange("");
+                            // },
+                          }}
+                        />
+                      ),
+                    },
                   ]}
                   data={invoiceDetails ?? []}
                   // filter={true}
@@ -390,7 +425,6 @@ export function UpdateStatement({
                 paging={{ page: 0, rowsPerPage: 20 }}
                 events={{
                   onDelete: (row) => {
-                    debugger;
                     console.log(row);
                     deleteICDtoInvoice(row);
                   },
