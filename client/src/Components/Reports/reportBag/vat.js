@@ -7,13 +7,14 @@ export default function Vat({
 }) {
   return {
     name: "VAT Reports",
+    excel: "true",
     submenu: [
       {
         subitem: "Detail VAT Report",
         reportName: "detailVatReport",
         requireIframe: true,
-        pageSize: "A4",
-        pageOrentation: "landscape", //"portrait",
+        // pageSize: "A4",
+        // pageOrentation: "landscape", //"portrait",
         reportParameters: [
           {
             className: "col-3 form-group mandatory",
