@@ -6,6 +6,7 @@ import {
   AlgaehModal,
   AlgaehDataGrid,
   Spin,
+  AlgaehMessagePop,
   // AlgaehFormGroup,
   MainContext,
 } from "algaeh-react-components";
@@ -119,7 +120,7 @@ export function UpdateStatement({
   //   },
   // });
 
-  function cptSearch(row, e) {
+  function cptSearch(row, update) {
     AlgaehSearch({
       searchGrid: {
         columns: spotlightSearch.Services.CptCodes,
@@ -131,6 +132,7 @@ export function UpdateStatement({
       },
       onRowSelect: (data) => {
         row["cpt_code"] = data.cpt_code;
+        update(row);
         // row.update();
       },
     });
@@ -244,12 +246,12 @@ export function UpdateStatement({
                     {
                       fieldName: "cpt_code",
                       label: <AlgaehLabel label={{ forceLabel: "CPT code" }} />,
-                      editorTemplate: (row) => {
+                      editorTemplate: (field, row, update) => {
                         return (
                           <div className="row">
                             <div className="col globalSearchCntr noLabel">
-                              <h6 onClick={() => cptSearch(row)}>
-                                {row.cpt_code ? row.cpt_code : "CPT Code"}
+                              <h6 onClick={() => cptSearch(row, update)}>
+                                {field ?? "CPT Code"}
                                 <i className="fas fa-search fa-lg"></i>
                               </h6>
                             </div>
@@ -293,11 +295,27 @@ export function UpdateStatement({
                           label={{ forceLabel: "Remittance Amount" }}
                         />
                       ),
-                      editorTemplate: (row) => (
+                      editorTemplate: (field, row, update) => (
                         <input
                           value={row?.remittance_amount}
                           onChange={(e) => {
-                            row.remittance_amount = e.target.value;
+                            let { value } = e.target;
+                            if (
+                              parseFloat(value) <=
+                              parseFloat(row?.company_payable)
+                            ) {
+                              row.remittance_amount = value;
+                              row.denial_amount =
+                                parseFloat(row.company_payable) -
+                                parseFloat(value);
+                              update(row);
+                            } else {
+                              AlgaehMessagePop({
+                                type: "Warning",
+                                display:
+                                  "Amount should be less than or equal to claim amount",
+                              });
+                            }
                           }}
                         />
                       ),
@@ -307,14 +325,7 @@ export function UpdateStatement({
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Denial Amount" }} />
                       ),
-                      editorTemplate: (row) => (
-                        <input
-                          value={row?.denial_amount}
-                          onChange={(e) => {
-                            row.denial_amount = e.target.value;
-                          }}
-                        />
-                      ),
+                      editorTemplate: (row) => row.denial_amount,
                     },
                   ]}
                   data={invoiceDetails ?? []}
@@ -327,6 +338,7 @@ export function UpdateStatement({
                       console.log(data, "data");
                     },
                   }}
+                  rowUniqueId={"hims_f_invoice_details_id"}
                 />
               </div>
             </div>

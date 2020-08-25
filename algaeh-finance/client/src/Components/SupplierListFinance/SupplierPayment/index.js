@@ -175,7 +175,7 @@ export default memo(function (props) {
                         height="80vh"
                         // rowUnique="finance_voucher_header_id"
                         isFilterable={true}
-                        row_unique_id="finance_voucher_header_id"
+                        rowUniqueId="finance_voucher_header_id"
                         // dataSource={{ data: data }}
                         data={data}
                       />
