@@ -40,6 +40,18 @@ const addICD = async (data) => {
   return res.data?.records;
 };
 
+const deleteICD = async (data) => {
+  const res = await newAlgaehApi({
+    uri: "/invoiceGeneration/deleteInvoiceIcd",
+    data: {
+      hims_f_invoice_icd_id: data?.hims_f_invoice_icd_id,
+    },
+    module: "insurance",
+    method: "DELETE",
+  });
+  return res.data?.records;
+};
+
 const getStatementServices = async (key, { invoice_header_id }) => {
   const res = await newAlgaehApi({
     uri: "/insurance/getInvoiceDetails",
@@ -90,6 +102,12 @@ export function UpdateStatement({
     onSuccess: () => {
       refetch();
       setIcd(null);
+    },
+  });
+
+  const [deleteICDtoInvoice] = useMutation(deleteICD, {
+    onSuccess: () => {
+      refetch();
     },
   });
 
@@ -356,8 +374,15 @@ export function UpdateStatement({
                 ]}
                 data={icdCodes ?? []}
                 // filter={true}
-
+                isEditable="deleteOnly"
                 paging={{ page: 0, rowsPerPage: 20 }}
+                events={{
+                  onDelete: (row) => {
+                    debugger;
+                    console.log(row);
+                    deleteICDtoInvoice(row);
+                  },
+                }}
               />
             </div>
           </div>
