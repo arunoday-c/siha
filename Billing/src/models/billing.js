@@ -404,9 +404,9 @@ export default {
         return;
       }
       let sendingObject = {};
-      utilities.logger().log("inputParam: ", inputParam);
+      // utilities.logger().log("inputParam: ", inputParam);
 
-      utilities.logger().log("hasCalculateall: ", hasCalculateall);
+      // utilities.logger().log("hasCalculateall: ", hasCalculateall);
       if (hasCalculateall == true) {
         sendingObject.sub_total_amount = new LINQ(inputParam).Sum((d) =>
           parseFloat(d.gross_amount)
@@ -415,7 +415,7 @@ export default {
         sendingObject.net_total = new LINQ(inputParam).Sum((d) =>
           parseFloat(d.net_amout)
         );
-        utilities.logger().log("net_total: ", sendingObject.net_total);
+        // utilities.logger().log("net_total: ", sendingObject.net_total);
         sendingObject.discount_amount = new LINQ(inputParam).Sum((d) =>
           parseFloat(d.discount_amout)
         );
@@ -821,12 +821,12 @@ export default {
   addCashHandover_backup: (req, res, next) => {
     const _options = req.connection == null ? {} : req.connection;
     const _mysql = new algaehMysql(_options);
-    const utilities = new algaehUtilities();
+    // const utilities = new algaehUtilities();
 
     try {
       let inputParam = { ...req.body };
       // req.body.receipt_header_id
-      utilities.logger().log("inputParam Cash: ", inputParam);
+      //  utilities.logger().log("inputParam Cash: ", inputParam);
 
       if (
         inputParam.receiptdetails == null ||
@@ -836,7 +836,7 @@ export default {
           internal_error: true,
           message: "No receipt details",
         };
-        _mysql.rollBackTransaction(() => { });
+        _mysql.rollBackTransaction(() => {});
         next();
         return;
       } else if (
@@ -1086,7 +1086,7 @@ export default {
 
     const _mysql = new algaehMysql(_options);
 
-    const utilities = new algaehUtilities();
+    // const utilities = new algaehUtilities();
 
     const inputParam = req.body;
 
@@ -1140,7 +1140,7 @@ export default {
               collected_cash = new LINQ(inputParam.receiptdetails)
                 .Where((w) => w.pay_type == "CA")
                 .Sum((s) => parseFloat(s.amount));
-              console.log("collected_cash:", collected_cash);
+              //console.log("collected_cash:", collected_cash);
               if (inputParam.pay_type == "P") {
                 switch (whichQuery) {
                   case "IHD":
@@ -1395,7 +1395,7 @@ export default {
                     break;
                 }
               } else {
-                console.log("one :");
+                //   console.log("one :");
                 expected_card = new LINQ(inputParam.receiptdetails)
                   .Where((w) => w.pay_type == "CD")
                   .Sum((s) => parseFloat(s.amount));
@@ -1408,7 +1408,7 @@ export default {
                   .Where((w) => w.pay_type == "CH")
                   .ToArray().length;
 
-                console.log("whichQuery:", whichQuery);
+                //  console.log("whichQuery:", whichQuery);
                 switch (whichQuery) {
                   case "IHD":
                     _mysql
@@ -1429,7 +1429,7 @@ export default {
                         printQuery: true,
                       })
                       .then((headerRes) => {
-                        console.log("two :");
+                        //  console.log("two :");
                         if (headerRes.insertId > 0) {
                           _mysql
                             .executeQuery({
@@ -1457,7 +1457,7 @@ export default {
                               printQuery: true,
                             })
                             .then((handoverDetails) => {
-                              console.log("three :");
+                              // console.log("three :");
                               if (handoverDetails.insertId > 0) {
                                 _mysql
                                   .executeQuery({
@@ -1474,12 +1474,12 @@ export default {
                                     printQuery: true,
                                   })
                                   .then((updateRecept) => {
-                                    console.log("here :", "catt");
+                                    // console.log("here :", "catt");
                                     if (
                                       req.connection == null ||
                                       req.adv_refnd == "Y"
                                     ) {
-                                      console.log("four here :");
+                                      // console.log("four here :");
                                       _mysql.commitTransaction(() => {
                                         _mysql.releaseConnection();
                                         if (req.adv_refnd !== "Y") {
@@ -1488,7 +1488,7 @@ export default {
                                         next();
                                       });
                                     } else {
-                                      console.log("here :", "dog");
+                                      // console.log("here :", "dog");
                                       if (req.records) {
                                         req.records["internal_error"] = false;
                                       } else {
@@ -1501,7 +1501,7 @@ export default {
                                     }
                                   })
                                   .catch((error) => {
-                                    console.log("error1 :", error);
+                                    // console.log("error1 :", error);
                                     _mysql.rollBackTransaction(() => {
                                       next(error);
                                     });
@@ -1564,7 +1564,7 @@ export default {
                         ],
                       })
                       .then((handoverDetails) => {
-                        console.log("apple :");
+                        //console.log("apple :");
                         if (handoverDetails.insertId > 0) {
                           _mysql
                             .executeQuery({
@@ -1581,7 +1581,7 @@ export default {
                               printQuery: true,
                             })
                             .then((updateRecept) => {
-                              console.log("ball :");
+                              // console.log("ball :");
                               if (
                                 req.connection == null ||
                                 req.adv_refnd == "Y"
@@ -1657,9 +1657,9 @@ export default {
                         printQuery: true,
                       })
                       .then((updateResult) => {
-                        console.log("last :");
+                        //console.log("last :");
                         if (req.connection == null || req.adv_refnd == "Y") {
-                          console.log("BOOSSS :");
+                          // console.log("BOOSSS :");
                           _mysql.commitTransaction(() => {
                             _mysql.releaseConnection();
                             if (req.adv_refnd !== "Y") {
@@ -1684,7 +1684,7 @@ export default {
                           next(error);
                         });
 
-                        console.log("er3 :", error);
+                        //  console.log("er3 :", error);
                       });
                     break;
                 }
@@ -1714,7 +1714,7 @@ export default {
         });
       }
     } catch (e) {
-      console.log("error:", e);
+      // console.log("error:", e);
       _mysql.rollBackTransaction(() => {
         next(error);
       });
@@ -1732,12 +1732,12 @@ export default {
   getPakageDetails: (req, res, next) => {
     const _mysql = new algaehMysql();
     const utilities = new algaehUtilities();
-    utilities.logger().log("getPakageDetails ");
+    // utilities.logger().log("getPakageDetails ");
 
     try {
       let inputParam = req.query;
 
-      utilities.logger().log("inputParam: ", inputParam);
+      // utilities.logger().log("inputParam: ", inputParam);
 
       _mysql
         .executeQuery({
@@ -2378,7 +2378,7 @@ export default {
                     prices = allCompany_price.find((item) => {
                       return (
                         item.insurance_id ==
-                        input[i]["primary_insurance_provider_id"] &&
+                          input[i]["primary_insurance_provider_id"] &&
                         item.services_id == input[i]["hims_d_services_id"]
                       );
                     });
@@ -2471,7 +2471,7 @@ export default {
                     net_amout,
                     decimal_places
                   );
-                  console.log("copay_status", policydtls.copay_status);
+                  // console.log("copay_status", policydtls.copay_status);
                   //Patient And Company
                   if (policydtls.copay_status == "Y") {
                     copay_amount = policydtls.copay_amt;
@@ -2566,12 +2566,12 @@ export default {
                       copay_percentage = policydtls.copay_percent;
                     }
 
-                    console.log("deductable_percentage", deductable_percentage);
+                    // console.log("deductable_percentage", deductable_percentage);
                     deductable_amount =
                       deductable_percentage !== null
                         ? (parseFloat(net_amout) *
-                          parseFloat(deductable_percentage)) /
-                        100
+                            parseFloat(deductable_percentage)) /
+                          100
                         : 0;
 
                     deductable_amount = utilities.decimalPoints(
@@ -2738,8 +2738,8 @@ export default {
                         from_pos == "Y"
                           ? parseFloat(unit_cost)
                           : unit_cost != 0
-                            ? parseFloat(unit_cost)
-                            : parseFloat(records.standard_fee);
+                          ? parseFloat(unit_cost)
+                          : parseFloat(records.standard_fee);
                     }
                   }
                   // if (FollowUp === true) {
@@ -2846,7 +2846,7 @@ export default {
                     sec_company_paybale: 0,
                     sec_copay_percntage: 0,
                     sec_copay_amount: 0,
-                    test_id: null
+                    test_id: null,
                   },
                   {
                     service_type_id: records.service_type_id,
@@ -2908,7 +2908,7 @@ export default {
                     hims_f_ordered_services_id:
                       servicesDetails.hims_f_ordered_services_id,
                     billed: billed,
-                    test_id: servicesDetails.test_id
+                    test_id: servicesDetails.test_id,
                   }
                 );
 
@@ -3731,7 +3731,7 @@ export default {
                         printQuery: true,
                       })
                       .then((subResult) => {
-                        console.log("FOUR");
+                        // console.log("FOUR");
                         next();
                       })
                       .catch((error) => {
@@ -3810,20 +3810,20 @@ function getBillDetailsFunctionality(req, res, next, resolve) {
             (f) => f.hims_d_services_id === servicesDetails.hims_d_services_id
           );
           const utilities = new algaehUtilities();
-          utilities.logger().log("result: ", records.hims_d_services_id);
-          utilities.logger().log("body: ", servicesDetails.hims_d_services_id);
+          // utilities.logger().log("result: ", records.hims_d_services_id);
+          // utilities.logger().log("body: ", servicesDetails.hims_d_services_id);
 
-          utilities.logger().log("service_type_id: ", records.service_type_id);
-          utilities
-            .logger()
-            .log("hims_d_services_id: ", servicesDetails.service_type_id);
+          // utilities.logger().log("service_type_id: ", records.service_type_id);
+          // utilities
+          //   .logger()
+          //   .log("hims_d_services_id: ", servicesDetails.service_type_id);
 
           req.body[m].service_type_id = records.service_type_id;
           req.body[m].services_id = records.hims_d_services_id;
 
           //Calculation Declarations
 
-          utilities.logger().log("unit_cost: ", servicesDetails.unit_cost);
+          // utilities.logger().log("unit_cost: ", servicesDetails.unit_cost);
           let unit_cost =
             servicesDetails.unit_cost == undefined
               ? 0
@@ -3872,7 +3872,7 @@ function getBillDetailsFunctionality(req, res, next, resolve) {
             servicesDetails.conversion_factor == undefined
               ? 0
               : servicesDetails.conversion_factor;
-          utilities.logger().log("conversion_factor: ", conversion_factor);
+          // utilities.logger().log("conversion_factor: ", conversion_factor);
           let quantity =
             servicesDetails.quantity == undefined
               ? 1
@@ -3893,7 +3893,7 @@ function getBillDetailsFunctionality(req, res, next, resolve) {
               ? "N"
               : servicesDetails.insured;
 
-          utilities.logger().log("insured: ", insured);
+          // utilities.logger().log("insured: ", insured);
 
           let sec_insured =
             servicesDetails.sec_insured == undefined
@@ -4008,18 +4008,18 @@ function getBillDetailsFunctionality(req, res, next, resolve) {
             }
           })
             .then((policydtls) => {
-              utilities.logger().log("policydtls: ", policydtls);
+              //utilities.logger().log("policydtls: ", policydtls);
 
-              utilities.logger().log("covered: ", policydtls.covered);
+              //utilities.logger().log("covered: ", policydtls.covered);
               covered =
                 policydtls != null
                   ? policydtls.covered != null
                     ? policydtls.covered
                     : "N"
                   : "N";
-              utilities.logger().log("covered: ", covered);
-              utilities.logger().log("pre_approval: ", pre_approval);
-              utilities.logger().log("apprv_status: ", apprv_status);
+              // utilities.logger().log("covered: ", covered);
+              // utilities.logger().log("pre_approval: ", pre_approval);
+              // utilities.logger().log("apprv_status: ", apprv_status);
               if (
                 covered == "N" ||
                 (pre_approval == "Y" && apprv_status == "RJ")
@@ -4027,9 +4027,9 @@ function getBillDetailsFunctionality(req, res, next, resolve) {
                 insured = "N";
               }
 
-              utilities
-                .logger()
-                .log("approval_limit_yesno: ", approval_limit_yesno);
+              // utilities
+              //   .logger()
+              //   .log("approval_limit_yesno: ", approval_limit_yesno);
               if (approval_limit_yesno == "Y") {
                 pre_approval = "Y";
               }
@@ -4187,8 +4187,8 @@ function getBillDetailsFunctionality(req, res, next, resolve) {
 
                 patient_payable = (patient_resp + patient_tax).toFixed(2);
 
-                console.log("approved_amount: ", approved_amount);
-                console.log("unit_cost: ", unit_cost);
+                // console.log("approved_amount: ", approved_amount);
+                // console.log("unit_cost: ", unit_cost);
 
                 if (approved_amount !== 0 && approved_amount < unit_cost) {
                   let diff_val = approved_amount - comapany_resp;
@@ -4245,8 +4245,8 @@ function getBillDetailsFunctionality(req, res, next, resolve) {
                       from_pos == "Y"
                         ? unit_cost
                         : unit_cost != 0
-                          ? unit_cost
-                          : records.standard_fee;
+                        ? unit_cost
+                        : records.standard_fee;
                   }
                 }
 
@@ -4278,18 +4278,18 @@ function getBillDetailsFunctionality(req, res, next, resolve) {
             })
             .then((secpolicydtls) => {
               if (secpolicydtls != null) {
-                debugFunction("secpolicydtls");
+                // debugFunction("secpolicydtls");
                 //secondary Insurance
                 sec_unit_cost = patient_resp;
 
                 //Patient And Company
                 if (secpolicydtls.copay_status == "Y") {
-                  debugFunction("secpolicydtls Y");
+                  // debugFunction("secpolicydtls Y");
                   sec_copay_amount = secpolicydtls.copay_amt;
                   sec_copay_percntage =
                     (sec_copay_amount / sec_unit_cost) * 100;
                 } else {
-                  debugFunction("secpolicydtls N");
+                  // debugFunction("secpolicydtls N");
                   if (
                     appsettings.hims_d_service_type.service_type_id
                       .Consultation == records.service_type_id
@@ -4408,19 +4408,19 @@ function getBillDetailsFunctionality(req, res, next, resolve) {
                 sec_company_paybale =
                   sec_unit_cost - patient_resp + sec_company_tax;
               }
-              utilities
-                .logger()
-                .log(
-                  "hims_d_services_id: ",
-                  servicesDetails.hims_d_services_id
-                );
-              utilities
-                .logger()
-                .log("service_type_id: ", records.service_type_id);
+              // utilities
+              //   .logger()
+              //   .log(
+              //     "hims_d_services_id: ",
+              //     servicesDetails.hims_d_services_id
+              //   );
+              // utilities
+              //   .logger()
+              //   .log("service_type_id: ", records.service_type_id);
 
-              utilities
-                .logger()
-                .log("hims_d_services_id: ", records.hims_d_services_id);
+              // utilities
+              //   .logger()
+              //   .log("hims_d_services_id: ", records.hims_d_services_id);
 
               discount_percentage = discount_percentage.toFixed(3);
               let out = extend(
@@ -4570,8 +4570,8 @@ function insuranceServiceDetails(body, next, _mysql, resolve) {
               printQuery: true,
             })
             .then((result_s) => {
-              utilities.logger().log("result_s: ", result_s);
-              utilities.logger().log("resultOffic: ", resultOffic);
+              // utilities.logger().log("result_s: ", result_s);
+              // utilities.logger().log("resultOffic: ", resultOffic);
               let result = { ...result_s[0], ...resultOffic[0] };
               return resolve(result);
             })

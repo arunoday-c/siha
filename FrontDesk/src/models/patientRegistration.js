@@ -180,7 +180,7 @@ export default {
       const utilities = new algaehUtilities();
       /* Select statemwnt  */
 
-      utilities.logger().log("inputParam: ", inputParam);
+      // utilities.logger().log("inputParam: ", inputParam);
 
       if (req.query.patient_visit_id != null) {
         _mysql

@@ -153,6 +153,7 @@ const clearData = $this => {
     service_code: null,
     cpt_code: null,
     service_name: null,
+    arabic_service_name: null,
     hospital_id: null,
     service_type_id: null,
 

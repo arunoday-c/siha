@@ -10,7 +10,7 @@ export default {
     const _mysql = new algaehMysql();
     try {
       const utilities = new algaehUtilities();
-      utilities.logger().log("getRadOrderedServices: ");
+      // utilities.logger().log("getRadOrderedServices: ");
       let inputValues = [];
       let _stringData = "";
 
@@ -45,7 +45,7 @@ export default {
         inputValues.push(req.query.hims_f_rad_order_id);
       }
 
-      utilities.logger().log("_stringData: ", _stringData);
+      // utilities.logger().log("_stringData: ", _stringData);
       _mysql
         .executeQuery({
           query:
@@ -64,7 +64,7 @@ export default {
           printQuery: true,
         })
         .then((result) => {
-          utilities.logger().log("result: ", result);
+          // utilities.logger().log("result: ", result);
           _mysql.releaseConnection();
           req.records = result;
           next();
@@ -114,7 +114,7 @@ export default {
     const _mysql = new algaehMysql(_options);
     try {
       const utilities = new algaehUtilities();
-      utilities.logger().log("Rad Bill: ", req.body.incharge_or_provider);
+      // utilities.logger().log("Rad Bill: ", req.body.incharge_or_provider);
       let inputParam = { ...req.body };
       const IncludeValues = [
         "ordered_services_id",
@@ -164,13 +164,13 @@ export default {
             printQuery: true,
           })
           .then((insert_rad_order) => {
-            utilities.logger().log("insert_rad_order: ");
-            utilities
-              .logger()
-              .log(
-                "insert hims_f_billing_header_id: ",
-                inputParam.hims_f_billing_header_id
-              );
+            // utilities.logger().log("insert_rad_order: ");
+            // utilities
+            //   .logger()
+            //   .log(
+            //     "insert hims_f_billing_header_id: ",
+            //     inputParam.hims_f_billing_header_id
+            //   );
             if (inputParam.consultation == "Y") {
               req.records = insert_rad_order;
               next();
@@ -332,7 +332,7 @@ export default {
     const _options = req.connection == null ? {} : req.connection;
     const _mysql = new algaehMysql(_options);
     const utilities = new algaehUtilities();
-    utilities.logger().log("updateRadOrderedBilled: ");
+    // utilities.logger().log("updateRadOrderedBilled: ");
     try {
       let OrderServices = new LINQ(req.body.billdetails)
         .Where(
@@ -367,7 +367,7 @@ export default {
           );
         }
 
-        utilities.logger().log("qry: ", qry);
+        // utilities.logger().log("qry: ", qry);
 
         _mysql
           .executeQuery({
@@ -375,12 +375,12 @@ export default {
             printQuery: true,
           })
           .then((rad_result) => {
-            utilities
-              .logger()
-              .log(
-                "update hims_f_billing_header_id: ",
-                req.body.hims_f_billing_header_id
-              );
+            // utilities
+            //   .logger()
+            //   .log(
+            //     "update hims_f_billing_header_id: ",
+            //     req.body.hims_f_billing_header_id
+            //   );
             let result = {
               receipt_number: req.body.receipt_number,
               bill_number: req.body.bill_number,

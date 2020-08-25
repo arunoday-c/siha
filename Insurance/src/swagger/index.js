@@ -65,10 +65,10 @@
  *      company_payable:
  *       type: number
  *       format: decimal
- *      denial_ammount:
+ *      denial_amount:
  *       type: number
  *       format: decimal
- *      remittance_ammount:
+ *      remittance_amount:
  *       type: number
  *       format: decimal
  *      claim_validated:
@@ -113,14 +113,14 @@
  *       type: number
  *       format: decimal
  *  UpdateInsuranceStatement:
- *      denial_ammount:
+ *      denial_amount:
  *       type: number
  *       format: decimal
  *      hims_f_invoice_header_id:
  *       type: number
  *      insurance_statement_id:
  *       type: number
- *      remittance_ammount:
+ *      remittance_amount:
  *       type: number
  *       format: decimal
  */

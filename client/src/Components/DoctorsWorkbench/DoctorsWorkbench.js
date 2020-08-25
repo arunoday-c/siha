@@ -484,7 +484,7 @@ class DoctorsWorkbench extends Component {
                           key={index}
                           //className="abcd"   {data.color_code}
                           style={{
-                            border: "2px solid" + `${data.color_code}`,
+                            border: `2px solid ${data.color_code}`,
                           }}
                         >
                           <span className="app-sec-1">

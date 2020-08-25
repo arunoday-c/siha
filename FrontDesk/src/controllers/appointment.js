@@ -158,7 +158,7 @@ export default () => {
           records: req.records,
         });
       } else {
-        console.log("is res");
+        // console.log("is res");
         res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
           success: true,
           records: req.records,

@@ -1,7 +1,7 @@
 import algaehMysql from "algaeh-mysql";
 import _ from "lodash";
 
-import algaehUtilities from "algaeh-utilities/utilities";
+// import algaehUtilities from "algaeh-utilities/utilities";
 
 export default {
   //created by irfan:
@@ -93,15 +93,15 @@ export default {
         H.updated_date ,H.narration from finance_voucher_header H  inner join 
         finance_voucher_details VD on H.finance_voucher_header_id=VD.voucher_header_id 
         and VD.auth_status='A'  ${joinStr} where ${whereStr};`,
-        printQuery: false
+        printQuery: false,
       })
-      .then(result => {
+      .then((result) => {
         _mysql.releaseConnection();
 
         req.records = result;
         next();
       })
-      .catch(e => {
+      .catch((e) => {
         _mysql.releaseConnection();
         next(e);
       });
@@ -121,16 +121,16 @@ export default {
             left join finance_account_head H on VD.head_id=H.finance_account_head_id
             left join finance_account_child C on VD.child_id=C.finance_account_child_id
             where VD.voucher_header_id=?; `,
-        values: [input.finance_voucher_header_id]
+        values: [input.finance_voucher_header_id],
       })
-      .then(result => {
+      .then((result) => {
         _mysql.releaseConnection();
         req.records = result;
         next();
       })
-      .catch(e => {
+      .catch((e) => {
         _mysql.releaseConnection();
         next(e);
       });
-  }
+  },
 };

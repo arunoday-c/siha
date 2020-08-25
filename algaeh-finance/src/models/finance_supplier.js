@@ -1,7 +1,7 @@
 import algaehMysql from "algaeh-mysql";
 import _ from "lodash";
 
-import algaehUtilities from "algaeh-utilities/utilities";
+// import algaehUtilities from "algaeh-utilities/utilities";
 
 export default {
   //created by irfan:
@@ -34,20 +34,20 @@ export default {
         select count(finance_day_end_header_id) as day_end_pending from finance_day_end_header H 
         inner join finance_day_end_sub_detail SD on H.finance_day_end_header_id= SD.day_end_header_id 
         where SD.child_id in(select child_id from hims_d_vendor)  and  H.posted='N';    `,
-        printQuery: true
+        printQuery: true,
       })
-      .then(result => {
+      .then((result) => {
         _mysql.releaseConnection();
 
         req.records = {
           result: result[0],
           over_due: result[1][0]["over_due"],
           total_receivable: result[2][0]["open"],
-          day_end_pending: result[3][0]["day_end_pending"]
+          day_end_pending: result[3][0]["day_end_pending"],
         };
         next();
       })
-      .catch(e => {
+      .catch((e) => {
         _mysql.releaseConnection();
         next(e);
       });
@@ -102,9 +102,9 @@ export default {
         inner join finance_day_end_sub_detail SD on H.finance_day_end_header_id= SD.day_end_header_id 
         where SD.child_id in(?)  and  H.posted='N';`,
         values: [child_id, child_id, child_id, child_id, child_id],
-        printQuery: true
+        printQuery: true,
       })
-      .then(result => {
+      .then((result) => {
         _mysql.releaseConnection();
 
         req.records = {
@@ -112,13 +112,13 @@ export default {
           over_due: result[1][0]["over_due"],
           total_receivable: result[2][0]["open"],
           past_payments: result[3][0]["past_payments"],
-          day_end_pending: result[4][0]["day_end_pending"]
+          day_end_pending: result[4][0]["day_end_pending"],
         };
         next();
       })
-      .catch(e => {
+      .catch((e) => {
         _mysql.releaseConnection();
         next(e);
       });
-  }
+  },
 };

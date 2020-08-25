@@ -8,7 +8,7 @@ export default {
     const _mysql = new algaehMysql();
 
     try {
-      const utilities = new algaehUtilities();
+      // const utilities = new algaehUtilities();
 
       _mysql
         .executeQuery({
@@ -18,14 +18,14 @@ export default {
             inner join hims_f_patient P on P.hims_d_patient_id=H.patient_id \
             inner join hims_d_employee E on E.hims_d_employee_id=H.referred_doctor_id where H.hospital_id=?",
           values: [req.userIdentity.hospital_id],
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(e => {
+        .catch((e) => {
           _mysql.releaseConnection();
           next(e);
         });
@@ -61,7 +61,7 @@ export default {
               inputparam.physiotherapy_treatment_detail[k].session_time,
               inputparam.physiotherapy_treatment_detail[k].physiotherapy_type,
               inputparam.physiotherapy_treatment_detail[k].others_specify,
-              inputparam.physiotherapy_treatment_detail[k].treatment_remarks
+              inputparam.physiotherapy_treatment_detail[k].treatment_remarks,
             ]
           );
         } else {
@@ -75,7 +75,7 @@ export default {
               inputparam.physiotherapy_treatment_detail[k].others_specify,
               inputparam.physiotherapy_treatment_detail[k].treatment_remarks,
               inputparam.physiotherapy_treatment_detail[k]
-                .hims_f_physiotherapy_detail_id
+                .hims_f_physiotherapy_detail_id,
             ]
           );
         }
@@ -91,16 +91,16 @@ export default {
             inputparam.physioth_diagnosis,
             inputparam.no_of_session,
             inputparam.physioth_doctor_id,
-            inputparam.hims_f_physiotherapy_header_id
+            inputparam.hims_f_physiotherapy_header_id,
           ],
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -108,5 +108,5 @@ export default {
       _mysql.releaseConnection();
       next(e);
     }
-  }
+  },
 };

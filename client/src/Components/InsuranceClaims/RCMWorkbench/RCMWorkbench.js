@@ -840,7 +840,7 @@ class RCMWorkbench extends Component {
                         },
                       },
                       {
-                        fieldName: "submission_ammount",
+                        fieldName: "submission_amount",
                         label: (
                           <AlgaehLabel
                             label={{
@@ -851,8 +851,8 @@ class RCMWorkbench extends Component {
                         displayTemplate: (row) => {
                           return (
                             <span>
-                              {row.submission_ammount
-                                ? row.submission_ammount
+                              {row.submission_amount
+                                ? row.submission_amount
                                 : 0}
                             </span>
                           );
@@ -880,15 +880,15 @@ class RCMWorkbench extends Component {
                         },
                       },
                       {
-                        fieldName: "remittance_ammount.",
+                        fieldName: "remittance_amount.",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Remit Amt." }} />
                         ),
                         displayTemplate: (row) => {
                           return (
                             <span>
-                              {row.remittance_ammount
-                                ? row.remittance_ammount
+                              {row.remittance_amount
+                                ? row.remittance_amount
                                 : 0}
                             </span>
                           );
@@ -916,14 +916,14 @@ class RCMWorkbench extends Component {
                         },
                       },
                       {
-                        fieldName: "denial_ammount.",
+                        fieldName: "denial_amount.",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Denial Amt." }} />
                         ),
                         displayTemplate: (row) => {
                           return (
                             <span>
-                              {row.denial_ammount ? row.denial_ammount : 0}
+                              {row.denial_amount ? row.denial_amount : 0}
                             </span>
                           );
                         },

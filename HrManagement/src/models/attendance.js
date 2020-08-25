@@ -273,7 +273,7 @@ export default {
   //created by irfan:
   regularizeAttendance: (req, res, next) => {
     let input = req.body;
-    const utilities = new algaehUtilities();
+    // const utilities = new algaehUtilities();
 
     if (
       input.regularize_status == "REJ" ||

@@ -3,12 +3,12 @@ import algaehMysql from "algaeh-mysql";
 import moment from "moment";
 import _ from "lodash";
 
-import algaehUtilities from "algaeh-utilities/utilities";
+//import algaehUtilities from "algaeh-utilities/utilities";
 
 export default {
   //created by irfan:
   getFinanceOption: (req, res, next) => {
-    const utilities = new algaehUtilities();
+    // const utilities = new algaehUtilities();
     const _mysql = new algaehMysql();
 
     _mysql
@@ -418,7 +418,7 @@ export default {
   },
   //created by irfan:
   updateCostCenters: (req, res, next) => {
-    const utilities = new algaehUtilities();
+    //const utilities = new algaehUtilities();
     const _mysql = new algaehMysql();
     let input = req.body;
 
@@ -456,7 +456,7 @@ export default {
   },
   //created by irfan:
   updateFinanceOption: (req, res, next) => {
-    const utilities = new algaehUtilities();
+    // const utilities = new algaehUtilities();
     const _mysql = new algaehMysql();
     let input = req.body;
 
@@ -722,7 +722,7 @@ export default {
   },
   //created by irfan:
   generateCodes: (req, res, next) => {
-    const utilities = new algaehUtilities();
+    // const utilities = new algaehUtilities();
     const _mysql = new algaehMysql();
     let input = req.query;
 

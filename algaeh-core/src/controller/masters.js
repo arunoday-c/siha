@@ -12,7 +12,7 @@ const { getFormula } = formulas;
 const { getCacheData, setCacheData } = caching;
 import {
   getCacheMasters,
-  setCacheMasters
+  setCacheMasters,
 } from "algaeh-utilities/checksecurity";
 // const { bulkMasters } = utils;
 const {
@@ -26,7 +26,7 @@ const {
   autoGenMaster,
   visaMaster,
   clinicalNonClinicalAll,
-  killDbConnections
+  killDbConnections,
 } = masterModels;
 
 export default () => {
@@ -38,7 +38,7 @@ export default () => {
       .status(utlities.AlgaehUtilities().httpStatus().ok)
       .json({
         success: true,
-        records: _recordds.length > 0 ? _recordds[0] : {}
+        records: _recordds.length > 0 ? _recordds[0] : {},
       })
       .end();
   });
@@ -81,7 +81,7 @@ export default () => {
     "/title",
     (req, res, next) => {
       getCacheMasters("title")
-        .then(result => {
+        .then((result) => {
           if (result === null) {
             next();
           } else {
@@ -89,12 +89,12 @@ export default () => {
               .status(utlities.AlgaehUtilities().httpStatus().ok)
               .json({
                 success: true,
-                records: result
+                records: result,
               })
               .end();
           }
         })
-        .catch(error => {
+        .catch((error) => {
           console.log("error", error);
           next();
         });
@@ -107,7 +107,7 @@ export default () => {
         .status(utlities.AlgaehUtilities().httpStatus().ok)
         .json({
           success: true,
-          records: result
+          records: result,
         })
         .end();
 
@@ -119,7 +119,7 @@ export default () => {
     "/country",
     (req, res, next) => {
       getCacheMasters("country")
-        .then(result => {
+        .then((result) => {
           if (result === null) {
             next();
           } else {
@@ -127,12 +127,12 @@ export default () => {
               .status(utlities.AlgaehUtilities().httpStatus().ok)
               .json({
                 success: true,
-                records: result
+                records: result,
               })
               .end();
           }
         })
-        .catch(error => {
+        .catch((error) => {
           console.log("error", error);
           next();
         });
@@ -146,7 +146,7 @@ export default () => {
         .status(utlities.AlgaehUtilities().httpStatus().ok)
         .json({
           success: true,
-          records: result
+          records: result,
         })
         .end();
 
@@ -158,7 +158,7 @@ export default () => {
     "/state",
     (req, res, next) => {
       getCacheMasters("state")
-        .then(result => {
+        .then((result) => {
           if (result === null) {
             next();
           } else {
@@ -166,12 +166,12 @@ export default () => {
               .status(utlities.AlgaehUtilities().httpStatus().ok)
               .json({
                 success: true,
-                records: result
+                records: result,
               })
               .end();
           }
         })
-        .catch(error => {
+        .catch((error) => {
           console.log("error", error);
           next();
         });
@@ -184,7 +184,7 @@ export default () => {
         .status(utlities.AlgaehUtilities().httpStatus().ok)
         .json({
           success: true,
-          records: result
+          records: result,
         })
         .end();
       // next();
@@ -195,7 +195,7 @@ export default () => {
     "/city",
     (req, res, next) => {
       getCacheMasters("city")
-        .then(result => {
+        .then((result) => {
           if (result === null) {
             next();
           } else {
@@ -203,12 +203,12 @@ export default () => {
               .status(utlities.AlgaehUtilities().httpStatus().ok)
               .json({
                 success: true,
-                records: result
+                records: result,
               })
               .end();
           }
         })
-        .catch(error => {
+        .catch((error) => {
           console.log("error", error);
           next();
         });
@@ -221,7 +221,7 @@ export default () => {
         .status(utlities.AlgaehUtilities().httpStatus().ok)
         .json({
           success: true,
-          records: result
+          records: result,
         })
         .end();
       // next();
@@ -232,7 +232,7 @@ export default () => {
     "/relegion",
     (req, res, next) => {
       getCacheMasters("relegion")
-        .then(result => {
+        .then((result) => {
           if (result === null) {
             next();
           } else {
@@ -240,12 +240,12 @@ export default () => {
               .status(utlities.AlgaehUtilities().httpStatus().ok)
               .json({
                 success: true,
-                records: result
+                records: result,
               })
               .end();
           }
         })
-        .catch(error => {
+        .catch((error) => {
           console.log("error", error);
           next();
         });
@@ -253,16 +253,16 @@ export default () => {
     relegionMaster,
     (req, res, next) => {
       setCacheMasters("relegion", req.records)
-        .then(result => {
+        .then((result) => {
           res
             .status(utlities.AlgaehUtilities().httpStatus().ok)
             .json({
               success: true,
-              records: result
+              records: result,
             })
             .end();
         })
-        .catch(error => {
+        .catch((error) => {
           next(error);
         });
     }
@@ -342,7 +342,7 @@ export default () => {
     "/countryStateCity",
     (req, res, next) => {
       getCacheMasters("countryStateCity")
-        .then(result => {
+        .then((result) => {
           if (result === null) {
             next();
           } else {
@@ -350,12 +350,12 @@ export default () => {
               .status(utlities.AlgaehUtilities().httpStatus().ok)
               .json({
                 success: true,
-                records: result
+                records: result,
               })
               .end();
           }
         })
-        .catch(error => {
+        .catch((error) => {
           console.log("error", error);
           next();
         });
@@ -366,24 +366,24 @@ export default () => {
       if (req.records != null) {
         if (req.records.length != 0) {
           result = new LINQ(req.records[0])
-            .SelectMany(items => {
+            .SelectMany((items) => {
               return {
                 hims_d_country_id: items.hims_d_country_id,
                 country_name: items.country_name,
                 arabic_country_name: items.arabic_country_name,
                 states: new LINQ(req.records[1])
-                  .Where(state => state.country_id == items.hims_d_country_id)
-                  .Select(s => {
+                  .Where((state) => state.country_id == items.hims_d_country_id)
+                  .Select((s) => {
                     return {
                       hims_d_state_id: s.hims_d_state_id,
                       state_name: s.state_name,
                       country_id: s.country_id,
                       cities: new LINQ(req.records[2])
-                        .Where(c => c.state_id == s.hims_d_state_id)
-                        .ToArray()
+                        .Where((c) => c.state_id == s.hims_d_state_id)
+                        .ToArray(),
                     };
                   })
-                  .ToArray()
+                  .ToArray(),
               };
             })
             .ToArray();
@@ -394,7 +394,7 @@ export default () => {
           .status(utlities.AlgaehUtilities().httpStatus().ok)
           .json({
             records: result,
-            success: true
+            success: true,
           })
           .end();
         // next();
@@ -419,7 +419,7 @@ export default () => {
     // },
     (req, res, next) => {
       getCacheMasters("nationality")
-        .then(result => {
+        .then((result) => {
           if (result === null) {
             next();
           } else {
@@ -427,12 +427,12 @@ export default () => {
               .status(utlities.AlgaehUtilities().httpStatus().ok)
               .json({
                 success: true,
-                records: result
+                records: result,
               })
               .end();
           }
         })
-        .catch(error => {
+        .catch((error) => {
           console.log("error", error);
           next();
         });
@@ -443,7 +443,7 @@ export default () => {
       setCacheMasters("nationality", result);
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
-        records: result
+        records: result,
       });
       // setCacheData(
       //   {
@@ -467,7 +467,7 @@ export default () => {
       .status(utlities.AlgaehUtilities().httpStatus().ok)
       .json({
         success: true,
-        records: result
+        records: result,
       })
       .end();
     // next();
@@ -477,7 +477,7 @@ export default () => {
     "/visa",
     (req, res, next) => {
       getCacheMasters("visa")
-        .then(result => {
+        .then((result) => {
           if (result === null) {
             next();
           } else {
@@ -485,12 +485,12 @@ export default () => {
               .status(utlities.AlgaehUtilities().httpStatus().ok)
               .json({
                 success: true,
-                records: result
+                records: result,
               })
               .end();
           }
         })
-        .catch(error => {
+        .catch((error) => {
           console.log("error", error);
           next();
         });
@@ -515,7 +515,7 @@ export default () => {
         .status(utlities.AlgaehUtilities().httpStatus().ok)
         .json({
           success: true,
-          records: result
+          records: result,
         })
         .end();
       // setCacheData(
@@ -538,7 +538,7 @@ export default () => {
     "/subDeptClinicalNonClinicalAll",
     (req, res, next) => {
       getCacheMasters("subDeptClinicalNonClinicalAll")
-        .then(result => {
+        .then((result) => {
           if (result === null) {
             next();
           } else {
@@ -546,12 +546,12 @@ export default () => {
               .status(utlities.AlgaehUtilities().httpStatus().ok)
               .json({
                 success: true,
-                records: result
+                records: result,
               })
               .end();
           }
         })
-        .catch(error => {
+        .catch((error) => {
           console.log("error", error);
           next();
         });
@@ -577,7 +577,7 @@ export default () => {
         .status(utlities.AlgaehUtilities().httpStatus().ok)
         .json({
           success: true,
-          records: result
+          records: result,
         })
         .end();
       // setCacheData(
@@ -600,7 +600,7 @@ export default () => {
     let result = req.records;
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
       success: true,
-      records: result
+      records: result,
     });
     next();
   });
