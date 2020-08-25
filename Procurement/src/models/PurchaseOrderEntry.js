@@ -3,6 +3,7 @@ import algaehUtilities from "algaeh-utilities/utilities";
 import mysql from "mysql";
 import _ from "lodash";
 import algaehMail from "algaeh-utilities/mail-send";
+import newAxios from "algaeh-utilities/axios";
 
 export default {
   getPurchaseOrderEntry: (req, res, next) => {
@@ -1187,28 +1188,32 @@ export default {
           },
         },
       ];
+      newAxios(req, {
+        url: "http://localhost:3006/api/v1//Document/getEmailConfig",
+      }).then((res) => {
+        const options = res.data;
+        new algaehMail(options)
+          .to(vendor_email)
+          .subject("Purchase Order Report")
+          .templateHbs("purchaseOrder.hbs", {
+            hospital_address,
+            hospital_name,
+            purchase_number,
+            location_name,
+            po_date,
+            net_total,
+            vendor_name,
+            currency_symbol,
+          })
+          .attachReportsAndSend(req, reportInput, (error, records) => {
+            if (error) {
+              next(error);
+              return;
+            }
 
-      new algaehMail()
-        .to(vendor_email)
-        .subject("Purchase Order Report")
-        .templateHbs("purchaseOrder.hbs", {
-          hospital_address,
-          hospital_name,
-          purchase_number,
-          location_name,
-          po_date,
-          net_total,
-          vendor_name,
-          currency_symbol,
-        })
-        .attachReportsAndSend(req, reportInput, (error, records) => {
-          if (error) {
-            next(error);
-            return;
-          }
-
-          next();
-        });
+            next();
+          });
+      });
     } catch (e) {
       //_mysql.releaseConnection();
       next(e);

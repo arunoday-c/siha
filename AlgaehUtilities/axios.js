@@ -1,4 +1,4 @@
-const axios = required("axios");
+const axios = require("axios");
 function newAxios(req, options = { method: "GET", params: {}, url: "" }) {
   const headers = req.headers;
   options["headers"] = {
