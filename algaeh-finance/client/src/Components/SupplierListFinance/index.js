@@ -114,7 +114,7 @@ function CustomerList(props) {
                       ]}
                       height="80vh"
                       isFilterable={true}
-                      row_unique_id="finance_voucher_header_id"
+                      rowUniqueId="finance_voucher_header_id"
                       // dataSource={{ data: supplier_payable }}
                       data={supplier_payable}
                     />

@@ -1648,7 +1648,7 @@ export function getInsuranceStatement(req, res, next) {
   const _mysql = new algaehMysql();
   try {
     _mysql
-      .executeQueryWithTransaction({
+      .executeQuery({
         query: `select hims_f_insurance_statement_id, insurance_statement_number, total_gross_amount, total_company_responsibility, total_company_vat, total_company_payable,
         total_remittance_amount, total_denial_amount, total_balance_amount, 
         insurance_provider_id, sub_insurance_id,insurance_status  from hims_f_insurance_statement where hims_f_insurance_statement_id = ?;
@@ -1676,13 +1676,12 @@ export function getInsuranceStatement(req, res, next) {
         next();
       })
       .catch((error) => {
-        _mysql.closeConnection(() => {
-          next(error);
-        });
+        _mysql.closeConnection();
+        next(error);
       });
   } catch (error) {
     _mysql.releaseConnection();
-    next(error);
+    next();
   }
 }
 

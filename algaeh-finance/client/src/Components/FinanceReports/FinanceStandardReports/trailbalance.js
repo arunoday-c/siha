@@ -103,7 +103,7 @@ export default function TrailBalaceReport({
       //         },
       //       ]}
       //       isFilterable={true}
-      //       row_unique_id="label"
+      //       rowUniqueId="label"
       //       expandAll={layout.expand}
       //     />
       //   </div>
