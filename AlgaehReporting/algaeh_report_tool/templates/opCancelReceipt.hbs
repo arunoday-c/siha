@@ -105,6 +105,44 @@
             </table>
             </table>
             <table class="tableTotal">
+                <tr class="bold">
+                    <td>Total Amount before VAT</td>
+                    <td class="numberFld">{{total_gross_amount}}</td class="numberFld">
+                    <td>الإجمالي قبل الضريبة المضافة</td>
+                </tr>
+                <tr>
+                    <td>Discount</td>
+                    <td class="numberFld">{{total_discount_amount}}</td class="numberFld">
+                    <td>الخصم</td>
+                </tr>
+                {{!-- <tr>
+                    <td>Net After Discount</td>
+                    <td class="numberFld">{{total_net_amount}}</td class="numberFld">
+                    <td>الصافي بعد الخصم</td>
+                </tr> --}}
+                <tr>
+                    <td>Client VAT Amount 15%</td>
+                    <td class="numberFld">{{total_patient_tax}}</td class="numberFld">
+                    <td>15% الضريبة المضافة على العميل</td>
+                </tr>
+                <tr>
+                    <td>Due Amount + VAT</td>
+                    <td class="numberFld">{{total_net_claim}}</td class="numberFld">
+                    <td>المبلغ المستحق + الضريبة المضافة</td>
+                </tr>
+                <tr class="bold">
+                    <td>Paid Amount + VAT</td>
+                    <td class="numberFld">{{total_patient_share}}</td class="numberFld">
+                    <td>المبلغ المدفوع + الضريبة المضافة</td>
+                </tr>
+                <tr>
+                    <td>Remaining Amount</td>
+                    <td class="numberFld">{{total_net_claim}}</td class="numberFld">
+                    <td>المبلغ المتبقي</td>
+                </tr>
+            </table>
+
+            {{!-- <table class="tableTotal">
                 <tr>
                     <td>Total Amount before VAT</td>
                     <td>{{total_gross_amount}}</td>
@@ -116,9 +154,9 @@
                     <td>الخصم</td>
                 </tr>
                 <tr>
-                    <td>VAT Amount 15%</td>
+                    <td>VAT Amount</td>
                     <td>{{total_company_tax}}</td>
-                    <td>قيمة الضريبة المضافة %5</td>
+                    <td>قيمة الضريبة المضافة</td>
                 </tr>
                 <tr>
                     <td>Client VAT Amount</td>
@@ -146,7 +184,7 @@
                     <td>{{total_net_claim}}</td>
                     <td>المبلغ المدفوع</td>
                 </tr>
-            </table>
+            </table> --}}
         </section>
         {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
     </div>
