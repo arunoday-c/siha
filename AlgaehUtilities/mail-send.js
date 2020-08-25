@@ -16,8 +16,9 @@ function algaehMail(options) {
     options = {};
   }
 
-  const { smtp, port, useSSL, user, password, service } = options;
+  const { smtp, port, useSSL, user, pass, service } = options.data[0];
   const { EMAIL_USER, EMAIL_PASSWORD } = process.env;
+
   const host = smtp === undefined ? "smtp.gmail.com" : smtp;
   const _service =
     service === undefined && host.includes("gmail")
@@ -47,15 +48,15 @@ function algaehMail(options) {
             : EMAIL_USER
           : user,
       pass:
-        password === undefined
+        pass === undefined
           ? EMAIL_PASSWORD === undefined
             ? "heagla100%"
             : EMAIL_PASSWORD
-          : password,
+          : pass,
     },
   });
   this.mailOptions = {
-    from: "Algaeh Technologies <we@algaeh.com>",
+    from: user ? user : "Algaeh Technologies <we@algaeh.com>",
   };
   this.hbsFilePath = undefined;
   this.hbsData = undefined;

@@ -6,8 +6,10 @@ import {
   AlgaehModal,
   AlgaehDataGrid,
   Spin,
+  AlgaehMessagePop,
   // AlgaehFormGroup,
   MainContext,
+  AlgaehAutoComplete,
 } from "algaeh-react-components";
 import { newAlgaehApi } from "../../../hooks";
 import AlgaehSearch from "../../Wrapper/globalSearch";
@@ -36,6 +38,18 @@ const addICD = async (data) => {
     },
     method: "POST",
     module: "insurance",
+  });
+  return res.data?.records;
+};
+
+const deleteICD = async (data) => {
+  const res = await newAlgaehApi({
+    uri: "/invoiceGeneration/deleteInvoiceIcd",
+    data: {
+      hims_f_invoice_icd_id: data?.hims_f_invoice_icd_id,
+    },
+    module: "insurance",
+    method: "DELETE",
   });
   return res.data?.records;
 };
@@ -93,6 +107,12 @@ export function UpdateStatement({
     },
   });
 
+  const [deleteICDtoInvoice] = useMutation(deleteICD, {
+    onSuccess: () => {
+      refetch();
+    },
+  });
+
   // const [update, { isLoading }] = useMutation(updateStatement, {
   //   onSuccess: (data) => {
   //     if (data?.success) {
@@ -101,7 +121,7 @@ export function UpdateStatement({
   //   },
   // });
 
-  function cptSearch(row, e) {
+  function cptSearch(row, update) {
     AlgaehSearch({
       searchGrid: {
         columns: spotlightSearch.Services.CptCodes,
@@ -113,6 +133,7 @@ export function UpdateStatement({
       },
       onRowSelect: (data) => {
         row["cpt_code"] = data.cpt_code;
+        update(row);
         // row.update();
       },
     });
@@ -141,18 +162,19 @@ export function UpdateStatement({
     <AlgaehModal
       title="Update Statment"
       visible={show}
-      okButtonProps={{
-        // loading: isLoading,
-        className: "btn btn-primary",
-      }}
-      okText={"Update"}
+      // okButtonProps={{
+      //   // loading: isLoading,
+      //   className: "btn btn-primary",
+      // }}
+      // okText={"Update"}
       maskClosable={false}
-      cancelButtonProps={{
-        // disabled: isLoading,
-        className: "btn btn-default",
-      }}
+      // cancelButtonProps={{
+      //   // disabled: isLoading,
+      //   className: "btn btn-default",
+      // }}
       width={1200}
-      closable={false}
+      closable={true}
+      footer={null}
       onCancel={() => onClose(false)}
       // onOk={handleSubmit(onSubmit)}
       className={`${userLanguage}_comp row algaehNewModal UpdateStatementModal`}
@@ -226,12 +248,12 @@ export function UpdateStatement({
                     {
                       fieldName: "cpt_code",
                       label: <AlgaehLabel label={{ forceLabel: "CPT code" }} />,
-                      editorTemplate: (row) => {
+                      editorTemplate: (field, row, update) => {
                         return (
                           <div className="row">
                             <div className="col globalSearchCntr noLabel">
-                              <h6 onClick={() => cptSearch(row)}>
-                                {row.cpt_code ? row.cpt_code : "CPT Code"}
+                              <h6 onClick={() => cptSearch(row, update)}>
+                                {field ?? "CPT Code"}
                                 <i className="fas fa-search fa-lg"></i>
                               </h6>
                             </div>
@@ -275,11 +297,27 @@ export function UpdateStatement({
                           label={{ forceLabel: "Remittance Amount" }}
                         />
                       ),
-                      editorTemplate: (row) => (
+                      editorTemplate: (field, row, update) => (
                         <input
                           value={row?.remittance_amount}
                           onChange={(e) => {
-                            row.remittance_amount = e.target.value;
+                            let { value } = e.target;
+                            if (
+                              parseFloat(value) <=
+                              parseFloat(row?.company_payable)
+                            ) {
+                              row.remittance_amount = value;
+                              row.denial_amount =
+                                parseFloat(row.company_payable) -
+                                parseFloat(value);
+                              update(row);
+                            } else {
+                              AlgaehMessagePop({
+                                type: "Warning",
+                                display:
+                                  "Amount should be less than or equal to claim amount",
+                              });
+                            }
                           }}
                         />
                       ),
@@ -289,11 +327,37 @@ export function UpdateStatement({
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Denial Amount" }} />
                       ),
+                      editorTemplate: (row) => row.denial_amount,
+                    },
+                    {
+                      fieldName: "denial_reason",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Denial Reason" }} />
+                      ),
                       editorTemplate: (row) => (
-                        <input
-                          value={row?.denial_amount}
-                          onChange={(e) => {
-                            row.denial_amount = e.target.value;
+                        <AlgaehAutoComplete
+                          div={{ className: " mandatory" }}
+                          selector={{
+                            name: "title_id",
+                            className: "select-fld",
+                            placeholder: "Select Reason",
+                            dataSource: {
+                              textField: "name",
+                              valueField: "his_d_title_id",
+                              data: [],
+                            },
+                            // value: ,
+                            // onChange: (_, selected) => {
+                            //   onChange(selected);
+                            //   if (selected == 1 || selected == 6) {
+                            //     setValue("gender", "Male");
+                            //   } else {
+                            //     setValue("gender", "Female");
+                            //   }
+                            // },
+                            // onClear: () => {
+                            //   onChange("");
+                            // },
                           }}
                         />
                       ),
@@ -309,6 +373,7 @@ export function UpdateStatement({
                       console.log(data, "data");
                     },
                   }}
+                  rowUniqueId={"hims_f_invoice_details_id"}
                 />
               </div>
             </div>
@@ -356,8 +421,14 @@ export function UpdateStatement({
                 ]}
                 data={icdCodes ?? []}
                 // filter={true}
-
+                isEditable="deleteOnly"
                 paging={{ page: 0, rowsPerPage: 20 }}
+                events={{
+                  onDelete: (row) => {
+                    console.log(row);
+                    deleteICDtoInvoice(row);
+                  },
+                }}
               />
             </div>
           </div>
