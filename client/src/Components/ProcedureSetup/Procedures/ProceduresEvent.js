@@ -131,7 +131,7 @@ export default function ProceduresEvent() {
           $this.state.service_code = $this.state.procedure_code;
           $this.state.service_type_id = "2";
           $this.state.service_name = $this.state.procedure_desc;
-          $this.state.service_name = $this.state.procedure_desc_arabic;
+          $this.state.arabic_service_name = $this.state.procedure_desc_arabic;
           $this.state.service_status = "A";
           $this.state.standard_fee = $this.state.procedure_amount;
           if ($this.state.hims_d_procedure_id === null) {
