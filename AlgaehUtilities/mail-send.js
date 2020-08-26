@@ -16,7 +16,7 @@ function algaehMail(options) {
     options = {};
   }
 
-  const { smtp, port, useSSL, user, pass, service } = options.data[0];
+  const { smtp, port, useSSL, user, pass, service } = options; //.data[0];
   const { EMAIL_USER, EMAIL_PASSWORD } = process.env;
 
   const host = smtp === undefined ? "smtp.gmail.com" : smtp;

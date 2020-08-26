@@ -921,6 +921,55 @@ export default class AttendanceSettings extends Component {
                       Standard Time off
                     </label>
                     <div className="row">
+                      <div className="col-12">
+                        <label>Consider working Hour from</label>
+                        <div className="customRadio">
+                          <label className="radio inline">
+                            <input
+                              type="radio"
+                              value="O"
+                              name="working_hour_from"
+                              checked={
+                                this.state.working_hour_from === "O"
+                                  ? true
+                                  : false
+                              }
+                              onChange={this.textHandler.bind(this)}
+                            />
+                            <span>Organisation</span>
+                          </label>
+
+                          <label className="radio inline">
+                            <input
+                              type="radio"
+                              value="G"
+                              name="working_hour_from"
+                              checked={
+                                this.state.working_hour_from === "G"
+                                  ? true
+                                  : false
+                              }
+                              onChange={this.textHandler.bind(this)}
+                            />
+                            <span>Group</span>
+                          </label>
+
+                          <label className="radio inline">
+                            <input
+                              type="radio"
+                              value="E"
+                              name="working_hour_from"
+                              checked={
+                                this.state.working_hour_from === "E"
+                                  ? true
+                                  : false
+                              }
+                              onChange={this.textHandler.bind(this)}
+                            />
+                            <span>Employee</span>
+                          </label>
+                        </div>
+                      </div>
                       <AlagehFormGroup
                         div={{ className: "col-3 form-group" }}
                         label={{

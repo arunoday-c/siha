@@ -40,7 +40,7 @@ export default {
             biometric_port_no=?, biometric_database_name=?, biometric_database_login=?, biometric_database_password=?, \
             biometric_swipe_id=?, manual_timesheet_entry=?, authorization_plan=?, ot_calculation = ?, external_finance=?, \
             updated_date=?, updated_by=?,ramzan_timing_req=?,ramzan_start_date=?,ramzan_end_date=?, \
-            ramzan_working_hr_per_day=?,ramzan_eligible_category=? where hims_d_hrms_options_id=?",
+            ramzan_working_hr_per_day=?,ramzan_eligible_category=?, working_hour_from=? where hims_d_hrms_options_id=?",
         values: [
           input.salary_process_date,
           input.salary_pay_before_end_date,
@@ -81,6 +81,7 @@ export default {
           input.ramzan_end_date,
           input.ramzan_working_hr_per_day,
           input.ramzan_eligible_category,
+          input.working_hour_from,
           input.hims_d_hrms_options_id,
         ],
 
@@ -479,8 +480,8 @@ export default {
       review_auth_level, yearly_working_days, advance_deduction, overtime_type, overtime_payment, \
       overtime_calculation, overtime_hourly_calculation, standard_intime, standard_outime,  standard_working_hours, standard_break_hours, biometric_database, biometric_server_name, biometric_port_no, biometric_database_name, \
       biometric_database_login, biometric_database_password, biometric_swipe_id, manual_timesheet_entry, \
-      authorization_plan, ot_calculation, external_finance, created_date, created_by,ramzan_timing_req,ramzan_start_date,ramzan_end_date,ramzan_working_hr_per_day,ramzan_eligible_category) \
-      values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+      authorization_plan, ot_calculation, external_finance, created_date, created_by,ramzan_timing_req,ramzan_start_date,ramzan_end_date,ramzan_working_hr_per_day,ramzan_eligible_category,working_hour_from) \
+      values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
         values: [
           input.salary_process_date,
           input.salary_pay_before_end_date,
@@ -521,6 +522,7 @@ export default {
           input.ramzan_end_date,
           input.ramzan_working_hr_per_day,
           input.ramzan_eligible_category,
+          input.working_hour_from,
         ],
 
         printQuery: true,
