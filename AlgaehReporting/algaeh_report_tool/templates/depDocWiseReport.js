@@ -46,42 +46,54 @@ where date(PV.visit_date) between date(?) and date(?) and PV.hospital_id=? ${str
             .groupBy((g) => g.sub_department_id)
             .map((subDept) => {
               const { sub_department_name } = subDept[0];
+              const doctors = _.chain(subDept)
+                .groupBy((g) => g.hims_d_employee_id)
+                .map((docs) => {
+                  const { employee_code, doctor_name } = docs[0];
+                  return {
+                    employee_code,
+                    doctor_name,
+                    totalPatient: docs.length,
+                    totalAmt: options.currencyFormat(
+                      _.sumBy(docs, (s) => parseFloat(s.net_amout)),
+                      options.args.crypto
+                    ),
+                    total_Amt: _.sumBy(docs, (s) => parseFloat(s.net_amout)),
+                    docs: docs.map((n) => {
+                      return {
+                        ...n,
+                        net_amout: options.currencyFormat(
+                          n.net_amout,
+                          options.args.crypto
+                        ),
+                      };
+                    }),
+                  };
+                })
+                .sortBy((s) => s.visit_date)
+                .value();
               return {
                 sub_department_name,
-                doctors: _.chain(subDept)
-                  .groupBy((g) => g.hims_d_employee_id)
-                  .map((docs) => {
-                    const { employee_code, doctor_name } = docs[0];
-                    return {
-                      employee_code,
-                      doctor_name,
-                      totalPatient: docs.length,
-                      totalAmt: options.currencyFormat(
-                        _.sumBy(docs, (s) => parseFloat(s.net_amout)),
-                        options.args.crypto
-                      ),
-
-                      docs: docs.map((n) => {
-                        return {
-                          ...n,
-                          net_amout: options.currencyFormat(
-                            n.net_amout,
-                            options.args.crypto
-                          ),
-                        };
-                      }),
-                    };
-                  })
-                  .sortBy((s) => s.visit_date)
-                  .value(),
+                doctors: doctors,
+                dep_total: options.currencyFormat(
+                  _.sumBy(doctors, (s) => parseFloat(s.total_Amt)),
+                  options.args.crypto
+                ),
+                depTotal: _.sumBy(doctors, (s) => parseFloat(s.total_Amt))
               };
             })
             .value();
-          console.log(JSON.stringify(subDepartmentWise));
-          resolve({ result: subDepartmentWise });
+          // console.log(JSON.stringify(subDepartmentWise));
+          const net_total = options.currencyFormat(
+            _.sumBy(subDepartmentWise, (s) => parseFloat(s.depTotal)),
+            options.args.crypto
+          )
+
+          resolve({ result: subDepartmentWise, net_total: net_total });
         })
         .catch((e) => {
-          console.log("e:", e);
+          // console.log("e:", e);
+
           options.mysql.releaseConnection();
           reject(e);
         });

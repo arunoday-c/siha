@@ -23,7 +23,7 @@
                     {{#each details}}
                     <tr>
                         <td>{{inc @index}}</td>
-                        <td>{{data_from}}</td>
+                        <td>{{data_from}} / {{doc_number}}</td>
                         <td>{{visit_date}}</td>
                         <td>{{patient_code}}</td>
                         <td>{{full_name}}</td>
@@ -36,7 +36,7 @@
                     </tr>
                     {{/each }}
                     <tr class="numberFldTotalBottom">
-                        <td colspan="7"></td>
+                        <td colspan="6"></td>
                         <td class="numberFld">{{total_before_vat}}</td>
                         <td class="numberFld">{{total_after_vat}}</td>
                         <td class="numberFld">{{patient_tax}}</td>

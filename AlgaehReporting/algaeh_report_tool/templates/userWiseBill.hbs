@@ -40,7 +40,8 @@
 
                     {{#each result}}
                     <tr>
-                        <td colspan="8" class="tableSubHdg">{{cashier_name}}</td>
+                        <td colspan="7" class="tableSubHdg">{{cashier_name}}</td>
+                        <td class="tableSubHdg2 numberFld"><b>{{cashier_total}}</b></td>
 
                     </tr>
                     {{#each doctors}}
@@ -62,10 +63,15 @@
                         <td class="numberFld">{{net_amout}}</td>
                     </tr>
                     {{/each }}{{/each }}{{/each }}
+                    <tr class="numberFldTotalBottom">
+                        <td colspan="7"></td>
+                        <td class="numberFld">{{net_total}}</td>
+                    </tr>
                     {{else}}
                     <tr>
                         <td colspan="8  " class="noResultTextReport">No Records Found</td>
                     </tr>{{/hasElement }}
+
                 </tbody>
 
             </table>
