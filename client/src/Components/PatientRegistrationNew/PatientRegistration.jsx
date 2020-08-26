@@ -183,6 +183,7 @@ export function PatientRegistration() {
     department_type,
     service_type_id,
     billInfo,
+    billData,
     disabled,
     consultationInfo,
     setConsultationInfo,
@@ -460,6 +461,7 @@ export function PatientRegistration() {
       save({
         ...inputData,
         ...billInfo,
+        ...billData,
         department_id: parseInt(department_id, 10),
         sub_department_id: parseInt(sub_department_id, 10),
         services_id: parseInt(services_id, 10),
@@ -512,6 +514,7 @@ export function PatientRegistration() {
       update({
         ...inputData,
         ...billInfo,
+        ...billData,
         advance_amount: patientData?.patientRegistration?.advance_amount,
         department_id: parseInt(department_id, 10),
         sub_department_id: parseInt(sub_department_id, 10),
