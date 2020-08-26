@@ -115,6 +115,7 @@ export function BillDetails({
     doctor_id,
     primary_network_office_id,
     setBillInfo,
+    setBillData: setGlobalBillData,
     disabled: globalDisable,
     savedPatient,
     consultationInfo,
@@ -169,7 +170,7 @@ export function BillDetails({
       enabled: !!services_id,
       retry: 3,
       onSuccess: (data) => {
-        setBillInfo(data);
+        setGlobalBillData(data);
         calculateBillDetails(data?.billdetails[0]);
       },
     }
@@ -226,6 +227,7 @@ export function BillDetails({
       setValue("card_amount", billData?.card_amount);
       setValue("card_number", billData?.card_number);
       setValue("card_date", billData?.card_date);
+      setBillInfo(billData);
       if (billData?.unbalanced_amount !== 0) {
         setError("unbalanced", {
           type: "manual",
