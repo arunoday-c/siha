@@ -7,7 +7,7 @@ const {
   finalizedSalaryProcess,
   newProcessSalary,
   detailSalaryStatement,
-  generateAccountingEntry
+  generateAccountingEntry,
 } = salaryModels;
 
 export default () => {
@@ -16,6 +16,8 @@ export default () => {
     "/processSalary",
     // processSalary,
     (req, res, next) => {
+      // debugger;
+      req.connection = null;
       delete req.connection;
       next();
     },
@@ -25,12 +27,12 @@ export default () => {
       if (req.records.invalid_input == true) {
         res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
           success: false,
-          result: req.records
+          result: req.records,
         });
       } else {
         res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
           success: true,
-          result: req.records
+          result: req.records,
         });
       }
     }
@@ -39,7 +41,7 @@ export default () => {
   api.get("/getSalaryProcess", getSalaryProcess, (req, res, next) => {
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
       success: true,
-      result: req.records
+      result: req.records,
     });
   });
 
@@ -57,7 +59,7 @@ export default () => {
 
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: req.flag == 1 ? false : true,
-        result: result
+        result: result,
       });
     }
   );
@@ -65,7 +67,7 @@ export default () => {
   api.get("/detailSalaryStatement", detailSalaryStatement, (req, res, next) => {
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
       success: true,
-      records: req.records
+      records: req.records,
     });
   });
 

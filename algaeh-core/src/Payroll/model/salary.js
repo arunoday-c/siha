@@ -91,7 +91,7 @@ let processSalary = (req, res, next) => {
                       current_earning_amt_array.push({
                         earnings_id: earningResult[j]["earnings_id"],
                         amount: current_earning_amt,
-                        per_day_salary: current_earning_per_day_salary
+                        per_day_salary: current_earning_per_day_salary,
                       });
                       final_earning_amount += parseFloat(current_earning_amt);
 
@@ -109,7 +109,7 @@ let processSalary = (req, res, next) => {
               } catch (e) {
                 reject(e);
               }
-            }).then(EarningCalResult => {
+            }).then((EarningCalResult) => {
               debugLog("first then:", "EarningCalResult");
 
               new Promise((resolve, reject) => {
@@ -161,7 +161,7 @@ let processSalary = (req, res, next) => {
                         current_deduction_amt_array.push({
                           deductions_id: deductionResult[k]["deductions_id"],
                           amount: current_deduction_amt,
-                          per_day_salary: current_deduction_per_day_salary
+                          per_day_salary: current_deduction_per_day_salary,
                         });
                         final_deduction_amount += parseFloat(
                           current_deduction_amt
@@ -184,7 +184,7 @@ let processSalary = (req, res, next) => {
                 } catch (e) {
                   reject(e);
                 }
-              }).then(deductionCalcResult => {
+              }).then((deductionCalcResult) => {
                 //pppppppppppp
                 debugLog("second then", "  deductionCalcResult ");
 
@@ -242,7 +242,7 @@ let processSalary = (req, res, next) => {
                             contributions_id:
                               contributionResult[m]["contributions_id"],
                             amount: current_contribution_amt,
-                            per_day_salary: current_contribution_per_day_salary
+                            per_day_salary: current_contribution_per_day_salary,
                           });
                           final_contribution_amount += parseFloat(
                             current_contribution_amt
@@ -265,7 +265,7 @@ let processSalary = (req, res, next) => {
                   } catch (e) {
                     reject(e);
                   }
-                }).then(contributionCalcResult => {
+                }).then((contributionCalcResult) => {
                   //for  each employee this is loan calculation
 
                   debugLog("third then ", "contribution result");
@@ -286,23 +286,23 @@ let processSalary = (req, res, next) => {
                           }
 
                           let current_loan_array = new LINQ(loanResult)
-                            .Select(s => {
+                            .Select((s) => {
                               return {
                                 loan_application_id:
                                   s.hims_f_loan_application_id,
                                 loan_due_amount: s.installment_amount,
-                                balance_amount: s.pending_loan
+                                balance_amount: s.pending_loan,
                               };
                             })
                             .ToArray();
 
                           let total_loan_due_amount = new LINQ(
                             current_loan_array
-                          ).Sum(s => s.loan_due_amount);
+                          ).Sum((s) => s.loan_due_amount);
 
                           let total_loan_payable_amount = new LINQ(
                             current_loan_array
-                          ).Sum(s => s.balance_amount);
+                          ).Sum((s) => s.balance_amount);
 
                           debugLog(
                             "total_loan_due_amount ",
@@ -321,13 +321,13 @@ let processSalary = (req, res, next) => {
                     } catch (e) {
                       reject(e);
                     }
-                  }).then(loanCalcResult => {
+                  }).then((loanCalcResult) => {
                     debugLog("salary header ");
                     let db = loanCalcResult.db;
                     let connection = loanCalcResult.connection;
                     new Promise((resolve, reject) => {
                       try {
-                        connection.beginTransaction(error => {
+                        connection.beginTransaction((error) => {
                           if (error) {
                             connection.rollback(() => {
                               releaseDBConnection(db, connection);
@@ -528,12 +528,12 @@ let processSalary = (req, res, next) => {
                         reject(e);
                       }
                     })
-                      .then(modifyRes => {
+                      .then((modifyRes) => {
                         //pppppppppppp
                         req.records = "Hello";
                         next();
                       })
-                      .catch(error => {
+                      .catch((error) => {
                         next(error);
                       });
                   });
