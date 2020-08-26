@@ -200,17 +200,25 @@ export function BillDetails({
     //Reciept
     sendingObject.cash_amount = sendingObject.net_amount;
     sendingObject.total_amount = sendingObject.net_amount;
+    sendingObject.sub_total_amount = sendingObject.net_amount;
     sendingObject.gross_total = sendingObject.net_amount;
 
     sendingObject.unbalanced_amount = 0;
     sendingObject.card_amount = 0;
 
+    sendingObject.balance_credit = 0;
     sendingObject.patient_payable = sendingObject.patient_payable.toFixed(2);
     sendingObject.total_tax = sendingObject.total_tax.toFixed(2);
     sendingObject.patient_tax = sendingObject.patient_tax.toFixed(2);
     sendingObject.company_tax = sendingObject.company_tax.toFixed(2);
+    sendingObject.net_tax =
+      parseFloat(sendingObject.patient_tax) +
+      parseFloat(sendingObject.company_tax);
+    sendingObject.company_payable = sendingObject.company_payble;
     sendingObject.sec_company_tax = sendingObject.sec_company_tax.toFixed(2);
-
+    sendingObject.patient_res = sendingObject.patient_resp;
+    sendingObject.company_res = sendingObject.company_resp;
+    setBillInfo(billData);
     setBillData(sendingObject);
   }
 
@@ -491,12 +499,16 @@ export function BillDetails({
                               sendingObject.net_amount =
                                 sendingObject.gross_total -
                                 sendingObject.sheet_discount_amount;
+                              sendingObject.discount_amount =
+                                sendingObject.sheet_discount_amount;
                               return { ...sendingObject };
                             });
                           } else {
                             setBillData((state) => {
                               state.sheet_discount_percentage = 0;
                               state.sheet_discount_amount = 0;
+                              state.discount_amount =
+                                state.sheet_discount_amount;
                               state.net_amount =
                                 state.gross_total - state.sheet_discount_amount;
                               return { ...state };
@@ -533,6 +545,8 @@ export function BillDetails({
                                 (amount / sendingObject.gross_total) * 100;
 
                               sendingObject.sheet_discount_amount = amount;
+                              sendingObject.discount_amount =
+                                sendingObject.sheet_discount_amount;
                               sendingObject.net_amount =
                                 sendingObject.gross_total -
                                 sendingObject.sheet_discount_amount;
@@ -544,6 +558,8 @@ export function BillDetails({
                               state.sheet_discount_amount = 0;
                               state.net_amount =
                                 state.gross_total - state.sheet_discount_amount;
+                              state.discount_amount =
+                                state.sheet_discount_amount;
                               return { ...state };
                             });
                           }
@@ -603,6 +619,7 @@ export function BillDetails({
                             : 0;
                           setBillData((sendingObject) => {
                             sendingObject.credit_amount = credit;
+                            sendingObject.balance_credit = credit;
                             sendingObject.receiveable_amount =
                               sendingObject.net_amount -
                               sendingObject?.advance_adjust -
@@ -633,8 +650,7 @@ export function BillDetails({
                       fieldName: "balance_due",
                     }}
                   />
-                  {/* <h6>{GetAmountFormart(this.state.balance_credit)}</h6> */}
-                  <h6>{0.0}</h6>
+                  <h6>{amountWithCur(billData?.balance_credit)}</h6>
                 </div>
               </div>
               {/* <div className="container-fluid"> */}
