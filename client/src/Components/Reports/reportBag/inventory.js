@@ -6,6 +6,7 @@ export default function Inventory({
 }) {
   return {
     name: "Inventory",
+    excel: "true",
     submenu: [
       {
         subitem: "Consumption List",

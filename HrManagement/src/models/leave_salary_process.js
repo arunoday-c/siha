@@ -149,19 +149,19 @@ export default {
                       if (intValue > 0) {
                         fromDate_firstDate = moment(
                           selected_year +
-                          "-" +
-                          selected_month +
-                          "-" +
-                          hrms_options.at_st_date,
+                            "-" +
+                            selected_month +
+                            "-" +
+                            hrms_options.at_st_date,
                           "YYYY-MM-DD"
                         ).format("YYYY-MM-DD");
 
                         fromDate_lastDate = moment(
                           selected_year +
-                          "-" +
-                          selected_month +
-                          "-" +
-                          hrms_options.at_end_date,
+                            "-" +
+                            selected_month +
+                            "-" +
+                            hrms_options.at_end_date,
                           "YYYY-MM-DD"
                         )
                           .add(1, "M")
@@ -169,10 +169,10 @@ export default {
                       } else {
                         fromDate_firstDate = moment(
                           selected_year +
-                          "-" +
-                          selected_month +
-                          "-" +
-                          hrms_options.at_st_date,
+                            "-" +
+                            selected_month +
+                            "-" +
+                            hrms_options.at_st_date,
                           "YYYY-MM-DD"
                         )
                           .add(-1, "M")
@@ -180,10 +180,10 @@ export default {
 
                         fromDate_lastDate = moment(
                           selected_year +
-                          "-" +
-                          selected_month +
-                          "-" +
-                          hrms_options.at_end_date,
+                            "-" +
+                            selected_month +
+                            "-" +
+                            hrms_options.at_end_date,
                           "YYYY-MM-DD"
                         ).format("YYYY-MM-DD");
                       }
@@ -199,19 +199,19 @@ export default {
 
                         fromDate_firstDate = moment(
                           selected_year +
-                          "-" +
-                          selected_month +
-                          "-" +
-                          hrms_options.at_st_date,
+                            "-" +
+                            selected_month +
+                            "-" +
+                            hrms_options.at_st_date,
                           "YYYY-MM-DD"
                         ).format("YYYY-MM-DD");
 
                         fromDate_lastDate = moment(
                           selected_year +
-                          "-" +
-                          selected_month +
-                          "-" +
-                          hrms_options.at_end_date,
+                            "-" +
+                            selected_month +
+                            "-" +
+                            hrms_options.at_end_date,
                           "YYYY-MM-DD"
                         )
                           .add(1, "M")
@@ -219,10 +219,10 @@ export default {
                       } else {
                         fromDate_firstDate = moment(
                           selected_year +
-                          "-" +
-                          selected_month +
-                          "-" +
-                          hrms_options.at_st_date,
+                            "-" +
+                            selected_month +
+                            "-" +
+                            hrms_options.at_st_date,
                           "YYYY-MM-DD"
                         )
                           .add(-1, "M")
@@ -230,10 +230,10 @@ export default {
 
                         fromDate_lastDate = moment(
                           selected_year +
-                          "-" +
-                          selected_month +
-                          "-" +
-                          hrms_options.at_end_date,
+                            "-" +
+                            selected_month +
+                            "-" +
+                            hrms_options.at_end_date,
                           "YYYY-MM-DD"
                         ).format("YYYY-MM-DD");
                       }
@@ -330,7 +330,7 @@ export default {
     try {
       const utilities = new algaehUtilities();
 
-      utilities.logger().log("processLeaveSalary: ");
+      // utilities.logger().log("processLeaveSalary: ");
       const _mysql = new algaehMysql();
       const _leaveSalary = req.query;
       //const leaveDate = moment(_leaveSalary.leave_start_date);
@@ -461,9 +461,9 @@ export default {
                   date_month = selected_month;
                   req.query.yearAndMonth = moment(
                     selected_year +
-                    "-" +
-                    selected_month +
-                    hrms_options[0].at_st_date,
+                      "-" +
+                      selected_month +
+                      hrms_options[0].at_st_date,
                     "YYYY-MM-DD"
                   )._d;
                 } else {
@@ -497,7 +497,7 @@ export default {
                   pool: _mysql.pool,
                 };
                 if (hrms_options[0].attendance_type === "M") {
-                  // _attandance = await processAttendance(req, res, next);                  
+                  // _attandance = await processAttendance(req, res, next);
                   _sarary = await newProcessSalary(req, res, next);
                   // _attandance = Promise.resolve();
                 } else {
@@ -555,10 +555,10 @@ export default {
 
                   fromDate_lastDate = moment(
                     _selected_year +
-                    "-" +
-                    _selected_month +
-                    "-" +
-                    hrms_options[0].at_end_date
+                      "-" +
+                      _selected_month +
+                      "-" +
+                      hrms_options[0].at_end_date
                   ).format("YYYY-MM-DD");
                 } else {
                   fromDate_lastDate = moment(start_date)
@@ -963,7 +963,7 @@ export default {
                                                 i ==
                                                 inputParam.leave_salary_detail
                                                   .length -
-                                                1
+                                                  1
                                               ) {
                                                 // console.log("bulk_year", bulk_year)
 
@@ -1306,11 +1306,11 @@ export default {
                           inputParam.leave_salary_number,
                           inputParam.ScreenCode,
                           "Salary for Employee " +
-                          inputParam.employee_code +
-                          "/" +
-                          inputParam.employee_name +
-                          " Amount " +
-                          inputParam.salary_amount,
+                            inputParam.employee_code +
+                            "/" +
+                            inputParam.employee_name +
+                            " Amount " +
+                            inputParam.salary_amount,
                           new Date(),
                           req.userIdentity.algaeh_d_app_user_id,
                         ],
@@ -1879,43 +1879,43 @@ function InsertGratuityProvision(options) {
                     if (
                       _employee[k].endOfServiceYears >= 0 &&
                       _employee[k].endOfServiceYears <=
-                      _optionsDetals.from_service_range1
+                        _optionsDetals.from_service_range1
                     ) {
                       _eligibleDays =
                         _employee[k].endOfServiceYears *
                         _optionsDetals.eligible_days1;
                     } else if (
                       _employee[k].endOfServiceYears >=
-                      _optionsDetals.from_service_range1 &&
+                        _optionsDetals.from_service_range1 &&
                       _employee[k].endOfServiceYears <=
-                      _optionsDetals.from_service_range2
+                        _optionsDetals.from_service_range2
                     ) {
                       _eligibleDays =
                         _employee[k].endOfServiceYears *
                         _optionsDetals.eligible_days2;
                     } else if (
                       _employee[k].endOfServiceYears >=
-                      _optionsDetals.from_service_range2 &&
+                        _optionsDetals.from_service_range2 &&
                       _employee[k].endOfServiceYears <=
-                      _optionsDetals.from_service_range3
+                        _optionsDetals.from_service_range3
                     ) {
                       _eligibleDays =
                         _employee[k].endOfServiceYears *
                         _optionsDetals.eligible_days3;
                     } else if (
                       _employee[k].endOfServiceYears >=
-                      _optionsDetals.from_service_range3 &&
+                        _optionsDetals.from_service_range3 &&
                       _employee[k].endOfServiceYears <=
-                      _optionsDetals.from_service_range4
+                        _optionsDetals.from_service_range4
                     ) {
                       _eligibleDays =
                         _employee[k].endOfServiceYears *
                         _optionsDetals.eligible_days4;
                     } else if (
                       _employee[k].endOfServiceYears >=
-                      _optionsDetals.from_service_range4 &&
+                        _optionsDetals.from_service_range4 &&
                       _employee[k].endOfServiceYears <=
-                      _optionsDetals.from_service_range5
+                        _optionsDetals.from_service_range5
                     ) {
                       _eligibleDays =
                         _employee[k].endOfServiceYears *

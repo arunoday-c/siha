@@ -335,10 +335,21 @@ export default {
     const _mysql = new algaehMysql();
     try {
       const _inputParam = JSON.parse(input.report);
+      const { others } = _inputParam;
+      let usehbs = "";
+      debugger;
+      let singleHeaderFooter = false;
+      if (others) {
+        usehbs = others.usehbs;
+        singleHeaderFooter =
+          others.singleHeaderFooter === undefined
+            ? false
+            : others.singleHeaderFooter;
+      }
       _mysql
         .executeQuery({
           query:
-            "SELECT report_name_for_header,report_name,report_query,report_input_series,data_manupulation,\
+            "SELECT report_type,report_name_for_header,report_name,report_query,report_input_series,data_manupulation,\
             report_header_file_name,report_footer_file_name,report_props from algaeh_d_reports where status='A' and report_name in (?);\
             select H.hospital_name,H.hospital_address,H.arabic_hospital_name, \
             O.organization_name,O.business_registration_number,O.legal_name,O.tax_number,O.address1,O.address2 ,\
@@ -400,12 +411,12 @@ export default {
                     "algaeh_report_tool/templates/Output",
                     _data.report_name + moment().format("YYYYMMDDHHmmss")
                   );
-
+                  const singleHeader = _data.report_type ? true : false;
                   // const _reportType = "PDF";
                   const _supportingJS = path.join(
                     process.cwd(),
                     "algaeh_report_tool/templates",
-                    `${_data.report_name}.js`
+                    `${_data.report_name}${usehbs}.js`
                   );
 
                   const _header = req.headers;
@@ -446,11 +457,13 @@ export default {
                     });
                     const page = await browser.newPage();
                     let _pdfTemplating = {};
+                    let header_format = "";
                     if (
                       _data.report_header_file_name != null &&
                       _data.report_header_file_name != ""
                     ) {
-                      const _header = await compile(
+                      //const _header
+                      header_format = await compile(
                         _data.report_header_file_name,
                         {
                           reqHeader: _header,
@@ -466,19 +479,22 @@ export default {
                       );
 
                       // const styleObj = String(_data.report_props);
+                      if (singleHeaderFooter === false) {
+                        _pdfTemplating["headerTemplate"] = header_format;
+                      }
 
-                      _pdfTemplating["headerTemplate"] = _header;
                       _pdfTemplating["margin"] = {
                         top: styleObj.header.top,
                         // bottom: styleObj.header.bottom?styleObj.header.bottom:""
                         ..._inputParam.headerProps,
                       };
                     }
+                    let footerFormat = "";
                     if (
                       _data.report_footer_file_name != null &&
                       _data.report_footer_file_name != ""
                     ) {
-                      _pdfTemplating["footerTemplate"] = await compile(
+                      footerFormat = await compile(
                         _data.report_footer_file_name,
                         {
                           reqHeader: _header,
@@ -487,15 +503,17 @@ export default {
                           report_name_for_header: _data.report_name_for_header,
                         }
                       );
+                      if (singleHeaderFooter === false) {
+                        _pdfTemplating["footerTemplate"] = footerFormat;
+                      }
+
                       _pdfTemplating["margin"] = {
                         ..._pdfTemplating["margin"],
                         bottom: styleObj.footer.bottom,
                         ..._inputParam.footerProps,
                       };
                     } else {
-                      _pdfTemplating[
-                        "footerTemplate"
-                      ] = `<style> .pdffooter { font-size: 8px;
+                      footerFormat = `<style> .pdffooter { font-size: 8px;
                         font-family: Arial, Helvetica, sans-serif; font-weight: bold; width:96%; text-align: center; color: grey; padding-left: 10px; }
                       .showreportname{float:left;padding-left:5px;font-size: 08px;}
                       .showcompay{float:right;padding-right:5px;font-size: 08px;}
@@ -510,6 +528,9 @@ export default {
                       <span class="pageNumber"></span> / <span class="totalPages"></span>
                       <span class="showcompay">Powered by Algaeh Techonologies</span>
                     </div>`;
+                      if (singleHeaderFooter === false) {
+                        _pdfTemplating["footerTemplate"] = footerFormat;
+                      }
 
                       _pdfTemplating["margin"] = {
                         ..._pdfTemplating["margin"],
@@ -518,12 +539,19 @@ export default {
                       };
                     }
 
-                    await page.setContent(
-                      await compile(_data.report_name, {
+                    let pageContent = await compile(
+                      `${_data.report_name}${usehbs}`,
+                      {
                         ...result,
                         reqHeader: _header,
-                      })
+                      }
                     );
+                    if (singleHeaderFooter === true) {
+                      pageContent = header_format + pageContent + footerFormat;
+                    }
+
+                    await page.setContent(pageContent);
+
                     // await page.emulateMedia("screen");
                     let pageOrentation = {
                       landscape:
@@ -531,13 +559,6 @@ export default {
                         (_inputParam.pageOrentation !== null &&
                           _inputParam.pageOrentation == "landscape"),
                     };
-                    // styleObj.pageOrientation === "landscape"
-                    //   ? { landscape: true }
-                    //   : _inputParam.pageOrentation == null
-                    //   ? { landscape: false }
-                    //   : _inputParam.pageOrentation == "landscape"
-                    //   ? { landscape: true }
-                    //   : { landscape: false };
 
                     let pageSize =
                       _inputParam.pageSize == null

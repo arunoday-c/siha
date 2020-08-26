@@ -1,6 +1,7 @@
 export default function Insurance({ algaehApiCall, hospital_id }) {
   return {
     name: "Insurance",
+    excel: "true",
     submenu: [
       {
         subitem: "All Claim Statement",

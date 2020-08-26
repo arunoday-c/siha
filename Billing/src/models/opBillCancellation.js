@@ -670,7 +670,7 @@ export default {
         inputParam.billdetails,
         (f) =>
           f.service_type_id ==
-            appsettings.hims_d_service_type.service_type_id.Procedure &&
+          appsettings.hims_d_service_type.service_type_id.Procedure &&
           f.ordered_services_id != null
       );
       // console.log("dental_Services: ", dental_Services.length);
@@ -851,16 +851,18 @@ export default {
                     ", Reverting Income for " +
                     curService.service_name;
 
-                  const bill = inputParam.billdetails.find((f) => {
+                  const bill = inputParam.billdetails.filter((f) => {
                     if (f.services_id == curService.hims_d_services_id)
                       return f;
                   });
+
+                  const debit_amount = _.sumBy(bill, (s) => parseFloat(s.patient_resp))
 
                   EntriesArray.push({
                     payment_date: new Date(),
                     head_id: curService.head_id,
                     child_id: curService.child_id,
-                    debit_amount: bill.patient_resp,
+                    debit_amount: debit_amount,
                     payment_type: "DR",
                     credit_amount: 0,
                     hospital_id: req.userIdentity.hospital_id,

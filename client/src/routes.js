@@ -168,6 +168,9 @@ const InsuranceStatement = React.lazy(() =>
     import("./Components/InsuranceClaims/InsuranceStatement/InsuranceStatement")
   )
 );
+const DenialReasonMaster = React.lazy(() =>
+  retry(() => import("./Components/InsuranceClaims/DenialReasonMaster/DenialReasonMaster"))
+);
 const VisitClose = React.lazy(() =>
   retry(() => import("./Components/VisitClose/VisitClose"))
 );
@@ -1165,6 +1168,12 @@ const privateRoutes = [
     path: "/RCMWorkbench",
     isExactPath: true,
     component: <RCMWorkbench />,
+  },
+
+  {
+    path: "/DenialReasonMaster",
+    isExactPath: true,
+    component: <DenialReasonMaster />,
   },
 
   {

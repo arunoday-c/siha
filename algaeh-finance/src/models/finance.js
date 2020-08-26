@@ -486,7 +486,7 @@ export default {
       _mysql
         .executeQuery({
           query:
-            "select   root_id from finance_account_head where finance_account_head_id=?; ",
+            "select root_id from finance_account_head where finance_account_head_id=?; ",
           values: [input.finance_account_head_id],
         })
         .then((result) => {
@@ -592,12 +592,14 @@ export default {
             });
         });
     } else {
+      // OLD QUERY // = SUBSTRING_INDEX(max(account_code), '.', -1)+1
+      // NEW QUERY // = max(convert((SUBSTRING_INDEX(account_code, '.', -1)), UNSIGNED))+1
       _mysql
         .executeQuery({
           query:
             "select finance_account_head_id,account_code,account_name,\
         account_level,hierarchy_path, concat(account_code,'.',(\
-        select SUBSTRING_INDEX(max(account_code), '.', -1)+1\
+        select max(convert((SUBSTRING_INDEX(account_code, '.', -1)), UNSIGNED))+1\
         FROM finance_account_head where parent_acc_id=?)) as new_code\
         FROM finance_account_head where finance_account_head_id=?;\
         select coalesce(max(sort_order),0)as sort_order FROM finance_account_head where parent_acc_id=?;\

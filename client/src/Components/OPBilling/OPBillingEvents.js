@@ -240,8 +240,10 @@ const generateReceiptSmall = ($this) => {
         others: {
           width: "80mm",
           showHeaderFooter: true,
+          usehbs: "Small",
+          singleHeaderFooter: true,
         },
-        reportName: "cashReceiptSmall",
+        reportName: "cashReceipt",
         pageOrentation: "portrait",
         reportParams: [
           {
