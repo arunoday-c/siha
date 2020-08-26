@@ -1192,7 +1192,7 @@ export default {
         url: "http://localhost:3006/api/v1//Document/getEmailConfig",
       }).then((res) => {
         const options = res.data;
-        new algaehMail(options)
+        new algaehMail(options.data[0])
           .to(vendor_email)
           .subject("Purchase Order Report")
           .templateHbs("purchaseOrder.hbs", {
