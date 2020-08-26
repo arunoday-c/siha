@@ -815,6 +815,18 @@ function getLeaveMasterData($this) {
                 fixed: "left",
               },
             },
+            {
+              fieldName: "identity_no",
+              label: <AlgaehLabel label={{ forceLabel: "Identity Num" }} />,
+              editorTemplate: (row) => {
+                return row.identity_no;
+              },
+              disabled: true,
+              others: {
+                minWidth: 100,
+                fixed: "left",
+              },
+            },
           ];
           let leave_dynamic_date = res.data.records.map((item, index) => {
             return {
@@ -831,29 +843,29 @@ function getLeaveMasterData($this) {
                 return row[item.hims_d_leave_id] === "N" ? (
                   "Not Applicable"
                 ) : (
-                  <Input
-                    value={row[item.hims_d_leave_id]}
-                    name={item.hims_d_leave_id}
-                    row={row}
-                  />
+                    <Input
+                      value={row[item.hims_d_leave_id]}
+                      name={item.hims_d_leave_id}
+                      row={row}
+                    />
 
-                  // <AlagehFormGroup
-                  //   div={{ className: "col" }}
-                  //   textBox={{
-                  //     number: {
-                  //       allowNegative: false,
-                  //       thousandSeparator: ","
-                  //     },
-                  //     dontAllowKeys: ["-", "e"],
-                  //     className: "txt-fld",
-                  //     name: item.hims_d_leave_id,
-                  //     value: row[item.hims_d_leave_id],
-                  //     events: {
-                  //       onChange: changeGridEditors.bind($this, $this, row)
-                  //     }
-                  //   }}
-                  // />
-                );
+                    // <AlagehFormGroup
+                    //   div={{ className: "col" }}
+                    //   textBox={{
+                    //     number: {
+                    //       allowNegative: false,
+                    //       thousandSeparator: ","
+                    //     },
+                    //     dontAllowKeys: ["-", "e"],
+                    //     className: "txt-fld",
+                    //     name: item.hims_d_leave_id,
+                    //     value: row[item.hims_d_leave_id],
+                    //     events: {
+                    //       onChange: changeGridEditors.bind($this, $this, row)
+                    //     }
+                    //   }}
+                    // />
+                  );
               },
               others: {
                 filterable: false,

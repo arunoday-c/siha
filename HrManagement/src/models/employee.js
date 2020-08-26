@@ -35,7 +35,7 @@ export default {
           ],
           query:
             "insert into  hims_f_miscellaneous_earning_deduction (??) values ? ON DUPLICATE KEY UPDATE ?",
-          printQuery: (query) => {},
+          printQuery: (query) => { },
           bulkInsertOrUpdate: true,
         })
         .then((result) => {
@@ -1378,7 +1378,7 @@ export default {
     try {
       const input = req.query;
 
-      if (input.hospital_id > 0 && input.year > 0) {
+      if (input.year > 0) {
         let strQry = "";
         if (input.employee_group_id > 0) {
           strQry += " and E.employee_group_id=" + input.employee_group_id;
@@ -1386,17 +1386,20 @@ export default {
         if (input.hims_d_employee_id > 0) {
           strQry += " and E.hims_d_employee_id=" + input.hims_d_employee_id;
         }
+        if (input.hospital_id > 0) {
+          strQry += " and  E.hospital_id =" + input.hospital_id;
+        }
 
         //-------------------start
         _mysql
           .executeQuery({
             query: `select E.hims_d_employee_id,E.employee_code,E.full_name,ML.leave_id ,ML.total_eligible,\
-                ML.availed_till_date,ML.close_balance, ML.year from hims_d_employee E \
+                ML.availed_till_date,ML.close_balance, ML.year, E.identity_no from hims_d_employee E \
                 inner join  hims_f_employee_monthly_leave ML on ML.employee_id=E.hims_d_employee_id and ML.year=?\
-                where  E.hospital_id=? and  E.record_status='A' ${strQry} order by cast(E.employee_code as unsigned);\
+                where  E.record_status='A' ${strQry} order by cast(E.employee_code as unsigned);\
                 select hims_d_leave_id, leave_code, leave_description from hims_d_leave \
                 where record_status='A';`,
-            values: [input.year, input.hospital_id],
+            values: [input.year],
             printQuery: true,
           })
           .then((result) => {
@@ -1411,6 +1414,7 @@ export default {
                 .forEach((emp) => {
                   let data = {
                     employee_code: emp[0]["employee_code"],
+                    identity_no: emp[0]["identity_no"],
                     full_name: emp[0]["full_name"],
                     employee_id: emp[0]["hims_d_employee_id"],
                     year: emp[0]["year"],
