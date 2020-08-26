@@ -610,6 +610,7 @@ export default {
                   });
                   _mysql.releaseConnection();
                   final_result.push(result_data, amount_data);
+                  req.connection = null;
                   delete req.connection;
                   req.records = final_result;
 

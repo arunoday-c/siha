@@ -33,7 +33,7 @@ const {
   uploadBulkManualTimeSheet,
   previewBulkTimeSheet,
   postBulkTimeSheetMonthWise,
-  SaveAttendanceAndProject
+  SaveAttendanceAndProject,
 } = attendence;
 
 export default () => {
@@ -43,12 +43,12 @@ export default () => {
     if (req.records.no_data == true) {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: false,
-        result: req.records
+        result: req.records,
       });
     } else {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
-        result: req.records
+        result: req.records,
       });
     }
   });
@@ -57,12 +57,12 @@ export default () => {
     if (req.records.invalid_input == true) {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: false,
-        result: req.records
+        result: req.records,
       });
     } else {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
-        result: req.records
+        result: req.records,
       });
     }
   });
@@ -71,12 +71,12 @@ export default () => {
     if (req.records.invalid_input == true) {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: false,
-        result: req.records
+        result: req.records,
       });
     } else {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
-        result: req.records
+        result: req.records,
       });
     }
   });
@@ -88,12 +88,12 @@ export default () => {
       if (req.records.invalid_input == true) {
         res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
           success: false,
-          result: req.records
+          result: req.records,
         });
       } else {
         res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
           success: true,
-          result: req.records
+          result: req.records,
         });
       }
     }
@@ -103,12 +103,12 @@ export default () => {
     if (req.records.invalid_input == true) {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: false,
-        result: req.records
+        result: req.records,
       });
     } else {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
-        result: req.records
+        result: req.records,
       });
     }
   });
@@ -117,18 +117,19 @@ export default () => {
     if (req.records.invalid_input == true) {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: false,
-        result: req.records
+        result: req.records,
       });
     } else {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
-        result: req.records
+        result: req.records,
       });
     }
   });
   api.get(
     "/processAttendance",
     (req, res, next) => {
+      req.connection = null;
       delete req.connection;
       next();
     },
@@ -137,12 +138,12 @@ export default () => {
       if (req.records.invalid_input == true) {
         res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
           success: false,
-          result: req.records
+          result: req.records,
         });
       } else {
         res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
           success: true,
-          result: req.records
+          result: req.records,
         });
       }
     }
@@ -154,7 +155,7 @@ export default () => {
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
-        records: req.records
+        records: req.records,
       });
     }
   );
@@ -162,7 +163,7 @@ export default () => {
   api.post("/addToDailyTimeSheet", addToDailyTimeSheet, (req, res, next) => {
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
       success: true,
-      records: req.records
+      records: req.records,
     });
   });
 
@@ -172,7 +173,7 @@ export default () => {
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
-        records: req.records
+        records: req.records,
       });
     }
   );
@@ -181,12 +182,12 @@ export default () => {
     if (req.records.invalid_input == true) {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: false,
-        result: req.records
+        result: req.records,
       });
     } else {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
-        result: req.records
+        result: req.records,
       });
     }
   });
@@ -197,12 +198,12 @@ export default () => {
       if (req.records.invalid_input == true) {
         res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
           success: false,
-          result: req.records
+          result: req.records,
         });
       } else {
         res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
           success: true,
-          result: req.records
+          result: req.records,
         });
       }
     }
@@ -211,12 +212,12 @@ export default () => {
     if (req.records.invalid_input == true) {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: false,
-        records: req.records
+        records: req.records,
       });
     } else {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
-        records: req.records
+        records: req.records,
       });
     }
   });
@@ -225,12 +226,12 @@ export default () => {
     if (req.records.no_exception == true) {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: false,
-        records: req.records
+        records: req.records,
       });
     } else {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
-        message: req.records
+        message: req.records,
       });
     }
   });
@@ -239,12 +240,12 @@ export default () => {
     if (req.records.invalid_input == true) {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: false,
-        result: req.records
+        result: req.records,
       });
     } else {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
-        result: req.records
+        result: req.records,
       });
     }
   });
@@ -255,12 +256,12 @@ export default () => {
       if (req.records.invalid_input == true) {
         res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
           success: false,
-          result: req.records
+          result: req.records,
         });
       } else {
         res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
           success: true,
-          result: req.records
+          result: req.records,
         });
       }
     }
@@ -269,12 +270,12 @@ export default () => {
     if (req.records.invalid_input == true) {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: false,
-        result: req.records
+        result: req.records,
       });
     } else {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
-        result: req.records
+        result: req.records,
       });
     }
   });
@@ -286,12 +287,12 @@ export default () => {
       if (req.records.invalid_input == true) {
         res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
           success: false,
-          result: req.records
+          result: req.records,
         });
       } else {
         res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
           success: true,
-          result: req.records
+          result: req.records,
         });
       }
     }
@@ -304,12 +305,12 @@ export default () => {
       if (req.records.invalid_input == true) {
         res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
           success: false,
-          result: req.records
+          result: req.records,
         });
       } else {
         res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
           success: true,
-          result: req.records
+          result: req.records,
         });
       }
     }
@@ -319,12 +320,12 @@ export default () => {
     if (req.records.invalid_input == true) {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: false,
-        result: req.records
+        result: req.records,
       });
     } else {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
-        result: req.records
+        result: req.records,
       });
     }
   });
@@ -336,12 +337,12 @@ export default () => {
       if (req.records.invalid_input == true) {
         res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
           success: false,
-          result: req.records
+          result: req.records,
         });
       } else {
         res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
           success: true,
-          result: req.records
+          result: req.records,
         });
       }
     }
@@ -354,12 +355,12 @@ export default () => {
       if (req.records.invalid_input == true) {
         res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
           success: false,
-          result: req.records
+          result: req.records,
         });
       } else {
         res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
           success: true,
-          result: req.records
+          result: req.records,
         });
       }
     }
@@ -368,12 +369,12 @@ export default () => {
     if (req.records.invalid_input == true) {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: false,
-        result: req.records
+        result: req.records,
       });
     } else {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
-        result: req.records
+        result: req.records,
       });
     }
   });
@@ -381,12 +382,12 @@ export default () => {
     if (req.records.invalid_input == true) {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: false,
-        result: req.records
+        result: req.records,
       });
     } else {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
-        result: req.records
+        result: req.records,
       });
     }
   });
@@ -401,7 +402,7 @@ export default () => {
           .status(utlities.AlgaehUtilities().httpStatus().internalServer)
           .json({
             success: false,
-            result: req.records
+            result: req.records,
           });
       } else {
         next();
@@ -415,12 +416,12 @@ export default () => {
     if (req.records.invalid_input == true) {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: false,
-        result: req.records
+        result: req.records,
       });
     } else {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
-        result: req.records
+        result: req.records,
       });
     }
   });
@@ -432,12 +433,12 @@ export default () => {
       if (req.records.invalid_input == true) {
         res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
           success: false,
-          result: req.records
+          result: req.records,
         });
       } else {
         res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
           success: true,
-          result: req.records
+          result: req.records,
         });
       }
     }
@@ -450,12 +451,12 @@ export default () => {
       if (req.records.invalid_input == true) {
         res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
           success: false,
-          message: req.records.message
+          message: req.records.message,
         });
       } else {
         res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
           success: true,
-          result: req.records
+          result: req.records,
         });
       }
     }
@@ -467,7 +468,7 @@ export default () => {
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
-        result: req.records
+        result: req.records,
       });
     }
   );
