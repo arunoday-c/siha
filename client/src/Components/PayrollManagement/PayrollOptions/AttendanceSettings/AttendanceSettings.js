@@ -951,7 +951,7 @@ export default class AttendanceSettings extends Component {
                               }
                               onChange={this.textHandler.bind(this)}
                             />
-                            <span>Group</span>
+                            <span>Employee Group</span>
                           </label>
 
                           <label className="radio inline">
