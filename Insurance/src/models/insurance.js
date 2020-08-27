@@ -1764,8 +1764,12 @@ export function updateInsuranceStatement(req, res, next) {
     );
     const denial_amount_sum = _.sumBy(invoiceDetails, (s) => s.denial_amount);
 
-    updateInvoiceHeader += `update hims_f_invoice_header set remittance_amount='${remittance_amount_sum}',
-    denial_amount='${denial_amount_sum}' where hims_f_invoice_header_id =${invoice_header_id};`;
+    updateInvoiceHeader += `update hims_f_invoice_header set remittance_amount=if(remittance_amount =0 or remittance_amount is null,${remittance_amount_sum},remittance_amount),
+    remittance_amount2=if(remittance_amount2 =0 or remittance_amount2 is null,${remittance_amount_sum},remittance_amount2),
+    remittance_amount3=if(remittance_amount3 =0 or remittance_amount3 is null,${remittance_amount_sum},remittance_amount3),
+    denial_amount=if(denial_amount =0 or denial_amount is null, ${denial_amount_sum},denial_amount),
+    denial_amount2=if(denial_amount2 =0 or denial_amount2 is null, ${denial_amount_sum},denial_amount2),
+    denial_amount3=if(denial_amount3 =0 or denial_amount3 is null, ${denial_amount_sum},denial_amount3) where hims_f_invoice_header_id =${invoice_header_id};`;
 
     invoiceDetails.forEach((inv) => {
       const {
