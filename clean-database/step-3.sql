@@ -597,3 +597,7 @@ alter table hims_d_nationality add column identity_document_id int after arabic_
 -- Query on Aug-22-2020 
 update algaeh_d_app_screens set page_to_redirect='PatientRegistration' where screen_code='FD0002';
 -- Query End Aug-22-2020 
+
+-- Query on Aug-26-08-2020
+ update algaeh_d_reports set report_type='Thermal' where report_name='cashReceipt';
+ -- Query End Aug-26-08-2020
