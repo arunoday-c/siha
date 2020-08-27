@@ -1685,7 +1685,7 @@ export function getInsuranceStatement(req, res, next) {
   }
 }
 
-export function updateInsuranceStatement(req, res, next) {
+export function updateInsuranceStatement_backup(req, res, next) {
   const _mysql = new algaehMysql();
   const input = req.body;
   try {
@@ -1744,7 +1744,94 @@ export function updateInsuranceStatement(req, res, next) {
     next(error);
   }
 }
+export function updateInsuranceStatement(req, res, next) {
+  const _mysql = new algaehMysql();
+  const input = req.body;
+  const { invoices, insurance_statement_id } = inputs;
+  if (invoices.length === 0) {
+    next(new Error("There is no invoice details to update"));
+    return;
+  }
+  let updateInvoiceDetails = "";
+  let updateInvoiceHeader = "";
 
+  invoices.forEach((item) => {
+    const { invoice_header_id, invoiceDetails } = item;
+
+    const remittance_amount_sum = _.sumBy(
+      invoiceDetails,
+      (s) => s.remittance_amount
+    );
+    const denial_amount_sum = _.sumBy(invoiceDetails, (s) => s.denial_amount);
+
+    updateInvoiceHeader += `update hims_f_invoice_header set remittance_amount='${remittance_amount_sum}',
+    denial_amount='${denial_amount_sum}' where hims_f_invoice_header_id =${invoice_header_id};`;
+
+    invoiceDetails.forEach((inv) => {
+      const {
+        hims_f_invoice_details_id,
+        denial_reason_id,
+        remittance_amount,
+        denial_amount,
+        statement_amount,
+      } = inv;
+      updateInvoiceDetails += `update hims_f_invoice_details set r1_amt= if(r1_amt = 0 or r1_amt is null ,${remittance_amount},r1_amt),
+      r2_amt= if(r2_amt = 0 or r2_amt is null ,${remittance_amount},r2_amt),r3_amt= if(r3_amt = 0 or r3_amt is null ,${remittance_amount},r3_amt),
+      s1_amt= if(s1_amt = 0 or s1_amt is null ,${statement_amount},s1_amt),s2_amt= if(s2_amt = 0 or s2_amt is null ,${statement_amount},s2_amt),
+      s3_amt= if(s3_amt = 0 or s3_amt is null ,${statement_amount},s3_amt),d1_amt= if(d1_amt = 0 or d1_amt is null ,${denial_reason_id},d1_amt),
+      d2_amt= if(d2_amt = 0 or d2_amt is null ,${denial_reason_id},d2_amt),d3_amt= if(d3_amt = 0 or d3_amt is null ,${denial_reason_id},d3_amt),
+      where hims_f_invoice_details_id =${hims_f_invoice_details_id}; `;
+    });
+  });
+  try {
+    _mysql
+      .executeQueryWithTransaction({
+        query: updateInvoiceHeader,
+      })
+      .then((records) => {
+        _mysql
+          .executeQuery({
+            query: updateInvoiceDetails,
+          })
+          .then((receipts) => {
+            const remittance_amount_sum = _.sumBy(
+              invoices,
+              (s) => s.remittance_amount
+            );
+            const denial_amount_sum = _.sumBy(invoices, (s) => s.denial_amount);
+            _mysql
+              .executeQuery({
+                query: `update hims_f_insurance_statement set total_remittance_amount='${remittance_amount_sum}',
+             total_denial_amount='${denial_amount_sum}' where hims_f_insurance_statement_id=${insurance_statement_id}`,
+              })
+              .then((result) => {
+                _mysql.commitTransaction(() => {
+                  next();
+                });
+              })
+              .catch((error) => {
+                _mysql.rollBackTransaction(() => {
+                  next(error);
+                });
+              });
+          })
+          .catch((error) => {
+            _mysql.rollBackTransaction(() => {
+              next(error);
+            });
+          });
+      })
+      .catch((error) => {
+        _mysql.rollBackTransaction(() => {
+          next(error);
+        });
+      });
+  } catch (e) {
+    _mysql.rollBackTransaction(() => {
+      next(e);
+    });
+  }
+}
 export function getInvoiceDetails(req, res, next) {
   const _mysql = new algaehMysql();
   const input = req.query;

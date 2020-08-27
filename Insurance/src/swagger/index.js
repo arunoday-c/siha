@@ -113,16 +113,51 @@
  *       type: number
  *       format: decimal
  *  UpdateInsuranceStatement:
- *      denial_amount:
- *       type: number
- *       format: decimal
- *      hims_f_invoice_header_id:
- *       type: number
- *      insurance_statement_id:
- *       type: number
- *      remittance_amount:
- *       type: number
- *       format: decimal
+ *   type: object
+ *   properties:
+ *    insurance_statement_id:
+ *     type: number
+ *     required: true
+ *    invoices:
+ *     type: array
+ *     items:
+ *      type: object
+ *      properties:
+ *       invoice_header_id:
+ *        type: number
+ *        required: true
+ *       remittance_amount:
+ *        type: number
+ *        format: decimal
+ *        required: true
+ *       denial_amount:
+ *        type: number
+ *        format: decimal
+ *        required: true
+ *       invoiceDetails:
+ *        type: array
+ *        items:
+ *         type: object
+ *         properties:
+ *          hims_f_invoice_details_id:
+ *           type: number
+ *           required: true
+ *          denial_reason_id:
+ *           type: number
+ *           required: true
+ *          remittance_amount:
+ *           type: number
+ *           format: decimal
+ *           required: true
+ *          denial_amount:
+ *           type: number
+ *           format: decimal
+ *           required: true
+ *          statement_amount:
+ *           type: number
+ *           format: decimal
+ *           required: true
+ *
  */
 
 /**
@@ -165,12 +200,12 @@
  *   produces:
  *    -application/json
  *   parameters:
- *    - name: query
+ *    - name: body
  *      discription: Update Insurance Statement
- *      in: query
+ *      in: body
  *      required: true
  *      schema:
- *       $ref: "#/definitions/UpdateInsuranceStatement"
+ *        $ref: "#/definitions/UpdateInsuranceStatement"
  *   responses:
  *    200:
  *     description: Return success with messag
