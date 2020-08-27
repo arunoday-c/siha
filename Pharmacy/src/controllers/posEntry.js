@@ -18,7 +18,7 @@ const {
   insertPreApprovalOutsideCustomer,
   updatePOSDetailForPreApproval,
   generateAccountingEntry,
-  updatePatientAdvance
+  updatePatientAdvance,
 } = posEntryModels;
 
 const { updateIntoItemLocation } = comModels;
@@ -47,7 +47,7 @@ export default () => {
       delete req.pos;
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
-        records: result
+        records: result,
       });
     }
   );
@@ -55,6 +55,7 @@ export default () => {
   api.post(
     "/addPosEntry",
     (req, res, next) => {
+      req.connection = null;
       delete req.connection;
       next();
     },
@@ -64,7 +65,8 @@ export default () => {
       console.log("visit_preapproval: ", req.body.visit_preapproval);
       if (
         (req.body.pos_customer_type == "OT" &&
-          req.body.pre_approval_req == "Y") || (req.body.visit_preapproval === "Y")
+          req.body.pre_approval_req == "Y") ||
+        req.body.visit_preapproval === "Y"
       ) {
         console.log("if data: ");
         insertPreApprovalOutsideCustomer(req, res, next);
@@ -75,7 +77,7 @@ export default () => {
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
-        records: req.records
+        records: req.records,
       });
     }
   );
@@ -83,7 +85,7 @@ export default () => {
   api.post("/getPrescriptionPOS", getPrescriptionPOS, (req, res, next) => {
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
       success: true,
-      records: req.records
+      records: req.records,
     });
   });
 
@@ -103,8 +105,8 @@ export default () => {
 
           records: {
             internal_error: req.records.internal_error,
-            message: req.records.message
-          }
+            message: req.records.message,
+          },
         });
       } else {
         next();
@@ -115,7 +117,7 @@ export default () => {
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
-        records: req.records
+        records: req.records,
       });
     }
   );
@@ -123,6 +125,7 @@ export default () => {
   api.put(
     "/updatePosEntry",
     (req, res, next) => {
+      req.connection = null;
       delete req.connection;
       next();
     },
@@ -130,7 +133,7 @@ export default () => {
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
-        records: req.records
+        records: req.records,
       });
     }
   );
@@ -152,8 +155,8 @@ export default () => {
 
           records: {
             internal_error: req.records.internal_error,
-            message: req.records.message
-          }
+            message: req.records.message,
+          },
         });
       } else {
         next();
@@ -163,14 +166,14 @@ export default () => {
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
-        records: req.records
+        records: req.records,
       });
     }
   );
   api.put("/cancelPosEntry", cancelPosEntry, (req, res, next) => {
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
       success: true,
-      records: req.records
+      records: req.records,
     });
   });
 
@@ -180,7 +183,7 @@ export default () => {
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
-        records: req.records
+        records: req.records,
       });
     }
   );

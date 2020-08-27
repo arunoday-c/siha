@@ -24,7 +24,7 @@ const {
   getEmployeeAndDepartments,
   closePackage,
   addCashHandover,
-  addtoDayEnd
+  addtoDayEnd,
 } = models;
 
 const { insertLadOrderedServices } = labModels;
@@ -40,7 +40,7 @@ export default () => {
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
-        records: req.records
+        records: req.records,
       });
     }
   );
@@ -57,12 +57,12 @@ export default () => {
       ) {
         res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
           success: false,
-          records: req.records
+          records: req.records,
         });
       } else {
         res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
           success: true,
-          records: req.records
+          records: req.records,
         });
       }
     }
@@ -74,7 +74,7 @@ export default () => {
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
-        records: req.records
+        records: req.records,
       });
     }
   );
@@ -86,7 +86,7 @@ export default () => {
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
-        records: req.records
+        records: req.records,
       });
     }
   );
@@ -110,7 +110,7 @@ export default () => {
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
-        records: req.records
+        records: req.records,
       });
     }
   );
@@ -119,12 +119,12 @@ export default () => {
     if (req.records.invalid_input == true) {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: false,
-        records: req.records
+        records: req.records,
       });
     } else {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
-        records: req.records
+        records: req.records,
       });
     }
   });
@@ -132,6 +132,7 @@ export default () => {
   api.put(
     "/updatePatientPackage",
     (req, res, next) => {
+      req.connection = null;
       delete req.connection;
       next();
     },
@@ -142,7 +143,7 @@ export default () => {
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
-        records: req.records
+        records: req.records,
       });
     }
   );
@@ -153,7 +154,7 @@ export default () => {
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
-        records: req.records
+        records: req.records,
       });
     }
   );
@@ -161,7 +162,7 @@ export default () => {
   api.put("/closePackage", closePackage, (req, res, next) => {
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
       success: true,
-      records: req.records
+      records: req.records,
     });
   });
 

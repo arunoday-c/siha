@@ -48,36 +48,48 @@ where date(PV.visit_date) between date(?) and date(?) and PV.hospital_id=? ${str
             .groupBy((g) => g.created_by)
             .map((subDept) => {
               const { cashier_name } = subDept[0];
+              const doctors = _.chain(subDept)
+                .groupBy((g) => g.services_id)
+                .map((docs) => {
+                  const { service_name } = docs[0];
+                  return {
+                    service_name,
+                    totalAmt: options.currencyFormat(
+                      _.sumBy(docs, (s) => parseFloat(s.net_amout)),
+                      options.args.crypto
+                    ),
+                    total_Amt: _.sumBy(docs, (s) => parseFloat(s.net_amout)),
+                    docs: docs.map((n) => {
+                      return {
+                        ...n,
+                        net_amout: options.currencyFormat(
+                          n.net_amout,
+                          options.args.crypto
+                        ),
+                      };
+                    }),
+                  };
+                })
+                .sortBy((s) => s.visit_date)
+                .value();
+              console.log("doctors", doctors)
               return {
                 cashier_name,
-                doctors: _.chain(subDept)
-                  .groupBy((g) => g.services_id)
-                  .map((docs) => {
-                    const { service_name } = docs[0];
-                    return {
-                      service_name,
-                      totalAmt: options.currencyFormat(
-                        _.sumBy(docs, (s) => parseFloat(s.net_amout)),
-                        options.args.crypto
-                      ),
-
-                      docs: docs.map((n) => {
-                        return {
-                          ...n,
-                          net_amout: options.currencyFormat(
-                            n.net_amout,
-                            options.args.crypto
-                          ),
-                        };
-                      }),
-                    };
-                  })
-                  .sortBy((s) => s.visit_date)
-                  .value(),
+                doctors: doctors,
+                cashierTotal: _.sumBy(doctors, (s) => parseFloat(s.total_Amt)),
+                cashier_total: options.currencyFormat(
+                  _.sumBy(doctors, (s) => parseFloat(s.total_Amt)),
+                  options.args.crypto
+                )
               };
             })
             .value();
-          resolve({ result: cashierWise });
+
+          const net_total = options.currencyFormat(
+            _.sumBy(cashierWise, (s) => parseFloat(s.cashierTotal)),
+            options.args.crypto
+          )
+          resolve({ result: cashierWise, net_total: net_total });
         })
         .catch((e) => {
           console.log("e:", e);

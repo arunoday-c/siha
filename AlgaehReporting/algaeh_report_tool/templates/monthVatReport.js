@@ -35,7 +35,7 @@ const executePDF = function executePDFMethod(options) {
       // console.log("hospital", input.hospital_id);
       options.mysql
         .executeQuery({
-          query: `select sum(net_total) as total_before_vat, sum(net_amount) as total_after_vat,  \
+          query: `select sum(net_total) as total_before_vat, sum(patient_payable+company_payable) as total_after_vat,  \
 					sum(patient_tax) as patient_tax, sum(company_tax) as company_tax,bill_date,date_format(bill_date,'%m') as month_name, \
 					"OP Billing" as data_from from hims_f_billing_header  where cancelled='N'  and hospital_id=? and \
 					bill_date between date(?) and date(?) group by date_format(bill_date,'%m'); \

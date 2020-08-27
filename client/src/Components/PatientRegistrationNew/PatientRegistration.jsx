@@ -473,6 +473,7 @@ export function PatientRegistration() {
         maternity_patient: "N",
         is_mlc: "N",
         existing_plan: "N",
+        incharge_or_provider: parseInt(doctor_id, 10),
         receiptdetails,
       }).then(async (data) => await uploadAfterSubmit({ ...data, ...input }));
     } else {
@@ -526,6 +527,7 @@ export function PatientRegistration() {
         maternity_patient: "N",
         is_mlc: "N",
         existing_plan: "N",
+        incharge_or_provider: parseInt(doctor_id, 10),
         receiptdetails,
       }).then(async (data) => await uploadAfterSubmit({ ...data, ...input }));
     }

@@ -20,7 +20,7 @@ const executePDF = function executePDFMethod(options) {
 
       options.mysql
         .executeQuery({
-          query: `select V.visit_date, P.full_name, P.patient_code,  N.nationality, \
+          query: `select bill_number as doc_number, V.visit_date, P.full_name, P.patient_code,  N.nationality, \
 					CASE WHEN BD.insurance_yesno='Y' THEN 'Insurance' else 'Cash' END as insurance_yesno, \
 					BD.net_amout as total_before_vat, (coalesce(BD.patient_payable,0)+coalesce(BD.company_payble,0)) as total_after_vat, \
 					BD.patient_tax,BD.company_tax, "Billing" as data_from, IP.insurance_sub_name from hims_f_billing_header BH \
@@ -31,7 +31,7 @@ const executePDF = function executePDFMethod(options) {
           inner join  hims_d_insurance_sub IP on PI.primary_sub_id = IP.hims_d_insurance_sub_id \
 					inner join hims_d_nationality N on N.hims_d_nationality_id = P.nationality_id \
 					where cancelled='N' and BD.insurance_yesno='Y' and date(bill_date) between date(?) and date(?) and BH.hospital_id=? ${strData} ;\
-					select V.visit_date, P.full_name, P.patient_code, N.nationality,\
+					select pos_number as doc_number, V.visit_date, P.full_name, P.patient_code, N.nationality,\
 					CASE WHEN PD.insurance_yesno='Y' THEN 'Insurance' else 'Cash' END as insurance_yesno, \
 					PD.net_extended_cost as total_before_vat, (coalesce(PD.patient_payable,0)+coalesce(PD.company_payable,0)) as total_after_vat, \
 					PD.patient_tax,PD.company_tax,  "Pharmacy" as data_from, IP.insurance_sub_name from hims_f_pharmacy_pos_header PH \

@@ -23,6 +23,12 @@ async function generateColumns(leaveData) {
       horizontal: "center"
     },
     {
+      header: "Identity",
+      key: "identity_no",
+      width: 40,
+      horizontal: "center"
+    },
+    {
       header: "Year",
       key: "year",
       width: 40,
@@ -446,6 +452,7 @@ function excelEmployeeLeaveOpenBalance(req, res, next) {
           let employee = {
             full_name: rest.full_name,
             employee_code: rest.employee_code,
+            identity_no: rest.identity_no,
             employee_id: rest.employee_id,
             year: rest.year
           };
