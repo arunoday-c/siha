@@ -197,7 +197,7 @@ function TreeComponent({ assetCode, title, inDrawer }) {
               },
               arrayMerge: combineMerge,
             });
-            debugger;
+
             return result;
           });
           setAmount(firstData["subtitle"]);
