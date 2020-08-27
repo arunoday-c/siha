@@ -2744,7 +2744,7 @@ export default {
   //created by irfan:
   getLeaveBalances: (req, res, next) => {
     let input = req.query;
-    if (input.hospital_id > 0 && input.year > 0) {
+    if (input.year > 0) {
       const _mysql = new algaehMysql();
 
       let strQry = "";

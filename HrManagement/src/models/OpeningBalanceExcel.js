@@ -89,6 +89,12 @@ function excelEmployeeLeaveSalaryOpenBalance(req, res, next) {
             horizontal: "center"
           },
           {
+            header: "Identity Number",
+            key: "identity_no",
+            width: 40,
+            horizontal: "center"
+          },
+          {
             header: "Leave Days",
             key: "balance_leave_days",
             width: 20,
@@ -164,6 +170,7 @@ function excelEmployeeLeaveSalaryOpenBalance(req, res, next) {
             employee_id: rest.employee_id,
             full_name: rest.full_name,
             employee_code: rest.employee_code,
+            identity_no: rest.identity_no,
             balance_leave_days: rest.balance_leave_days || 0,
             balance_leave_salary_amount: rest.balance_leave_salary_amount || 0,
             balance_airticket_amount: rest.balance_airticket_amount || 0,
