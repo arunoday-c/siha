@@ -12,7 +12,7 @@ import {
   AlgaehDateHandler,
   // AlagehFormGroup,
 } from "../../Wrapper/algaehWrapper";
-import { texthandle, ClaimSearch } from "./RCMWorkbenchEvent";
+import { ClaimSearch } from "./RCMWorkbenchEvent";
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
 import AlgaehSearch from "../../Wrapper/globalSearch";
 import ValidateBills from "./ValidateBills/ValidateBills";
@@ -38,12 +38,13 @@ class RCMWorkbench extends Component {
     this.clearSearch = this.clearSearch.bind(this);
     this.getInvoicesForClaims = this.getInvoicesForClaims.bind(this);
     this.openReviewSubmit = this.openReviewSubmit.bind(this);
-    this.getInsuranceProviders();
+
     this.preValidateReport = this.preValidateReport.bind(this);
     this.claimsReport = this.claimsReport.bind(this);
   }
 
   componentDidMount() {
+    this.getInsuranceProviders();
     const params = new URLSearchParams(this.props.location?.search);
     if (params?.get("hims_f_insurance_statement_id")) {
       this.setState({
@@ -410,6 +411,13 @@ class RCMWorkbench extends Component {
       },
     });
   }
+
+  replacePath = () => {
+    if (this.props.location.search) {
+      this.props.history.replace(this.props.location.pathname);
+    }
+  };
+
   preValidateReport(e) {
     if (this.state.claims.length === 0) {
       swalMessage({
@@ -488,15 +496,11 @@ class RCMWorkbench extends Component {
                     name="rcmMode"
                     checked={this.state.rcmMode === "C" ? true : false}
                     onChange={() => {
-                      if (this.props.location.search) {
-                        this.props.history.replace(
-                          this.props.location.pathname
-                        );
-                      }
-                      this.setState({ rcmMode: "C" });
+                      this.replacePath();
+                      this.setState({ rcmMode: "C", claims: [] });
                     }}
                   />
-                  <span>Claim</span>
+                  <span>Claim Generation</span>
                 </label>
 
                 <label className="radio inline">
@@ -505,9 +509,22 @@ class RCMWorkbench extends Component {
                     value="S"
                     name="rcmMode"
                     checked={this.state.rcmMode === "S" ? true : false}
-                    onChange={texthandle.bind(this)}
+                    onChange={() => this.setState({ rcmMode: "S", claims: [] })}
                   />
-                  <span>Statement</span>
+                  <span>Remittance Advice</span>
+                </label>
+                <label className="radio inline">
+                  <input
+                    type="radio"
+                    value="S"
+                    name="rcmMode"
+                    checked={this.state.rcmMode === "R" ? true : false}
+                    onChange={() => {
+                      this.replacePath();
+                      this.setState({ rcmMode: "R", claims: [] });
+                    }}
+                  />
+                  <span>Re submission</span>
                 </label>
               </div>
             </div>
@@ -654,7 +671,7 @@ class RCMWorkbench extends Component {
           </div>
         </div>
 
-        {this.state.rcmMode !== "C" ? (
+        {this.state.rcmMode === "S" ? (
           <div className="col-12">
             <StatementTable />
           </div>
@@ -1017,6 +1034,27 @@ class RCMWorkbench extends Component {
                   <AlgaehLabel
                     label={{
                       forceLabel: "Pre Validate Report",
+                      returnText: true,
+                    }}
+                  />
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+        {this.state.rcmMode === "R" && (
+          <div className="hptl-phase1-footer">
+            <div className="row">
+              <div className="col-12">
+                <button
+                  // onClick={this.openReviewSubmit}
+                  disabled={true}
+                  type="button"
+                  className="btn btn-primary"
+                >
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Re-Submit Claims",
                       returnText: true,
                     }}
                   />
