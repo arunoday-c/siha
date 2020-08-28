@@ -25,35 +25,19 @@ export function ClaimSearch(history, location) {
     },
     onRowSelect: (row) => {
       if (this) {
-        return this.props.history?.push(
-          `${this.props.location?.pathname}?hims_f_insurance_statement_id=${row?.hims_f_insurance_statement_id}&insurance_statement_number=${row?.insurance_statement_number}`
-        );
+        if (this.state.rcmMode === "S") {
+          return this.props.history?.push(
+            `${this.props.location?.pathname}?hims_f_insurance_statement_id=${row?.hims_f_insurance_statement_id}&insurance_statement_number=${row?.insurance_statement_number}`
+          );
+        } else {
+          debugger;
+          console.log(row);
+        }
       } else {
         return history?.push(
           `${location}?hims_f_insurance_statement_id=${row?.hims_f_insurance_statement_id}&insurance_statement_number=${row?.insurance_statement_number}`
         );
       }
-      // algaehApiCall({
-      //   uri: "/insurance/getInsuranceStatement",
-      //   module: "insurance",
-      //   data: {
-      //     hims_f_insurance_statement_id: row.hims_f_insurance_statement_id,
-      //   },
-      //   method: "GET",
-      //   onSuccess: (response) => {
-      //     if (response.data.success) {
-      //       this.setState({
-      //         ...response.data.records,
-      //       });
-      //     }
-      //   },
-      //   onFailure: (error) => {
-      //     swalMessage({
-      //       title: error.message,
-      //       type: "error",
-      //     });
-      //   },
-      // });
     },
   });
 }
