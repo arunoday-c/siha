@@ -1744,6 +1744,7 @@ export function updateInsuranceStatement_backup(req, res, next) {
     next(error);
   }
 }
+
 export function updateInsuranceStatement(req, res, next) {
   const _mysql = new algaehMysql();
   try {
@@ -1754,12 +1755,14 @@ export function updateInsuranceStatement(req, res, next) {
       remittance_amount,
       denial_amount,
       denial_reason_id,
+      cpt_code,
     } = req.body;
     _mysql
       .executeQueryWithTransaction({
         query: `update hims_f_invoice_details set r1_amt= ${remittance_amount},
       d1_amt= ${denial_amount},
-      d1_reason_id=${denial_reason_id}
+      d1_reason_id=${denial_reason_id},
+      cpt_code="${cpt_code}"
       where hims_f_invoice_details_id =${invoice_detail_id};`,
       })
       .then((result) => {
@@ -1831,8 +1834,8 @@ export function getInvoiceDetails(req, res, next) {
   try {
     _mysql
       .executeQuery({
-        query: `SELECT hims_f_invoice_details_id,IVD.cpt_code,invoice_header_id,company_payable,company_resp,company_tax,SE.service_name 
-          FROM hims_d_services SE, hims_f_invoice_details IVD 
+        query: `SELECT hims_f_invoice_details_id,IVD.cpt_code,invoice_header_id,company_payable,company_resp,company_tax,SE.service_name, r1_amt, d1_amt, d1_reason_id
+          FROM hims_d_services SE, hims_f_invoice_details IVD
           where IVD.service_id = SE.hims_d_services_id and invoice_header_id=?;`,
         values: [input.invoice_header_id],
       })

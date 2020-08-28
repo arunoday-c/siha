@@ -5,7 +5,7 @@ export const getDenialReasons = (req, res, next) => {
   try {
     _mysql
       .executeQuery({
-        query: `select * from hims_d_denial_code`,
+        query: `select hims_d_denial_id, denial_code, denial_desc from hims_d_denial_code`,
         printQuery: true,
       })
       .then((result) => {

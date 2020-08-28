@@ -6,12 +6,13 @@ import {
   Button,
   AlgaehLabel,
   Spin,
+  AlgaehMessagePop,
 } from "algaeh-react-components";
 import { useQuery, useMutation } from "react-query";
 import { useForm, Controller } from "react-hook-form";
 import { newAlgaehApi } from "../../../hooks";
 
-const getDenialReasons = async () => {
+export const getDenialReasons = async () => {
   const res = await newAlgaehApi({
     uri: "/denialMaster/getDenialReasons",
     module: "insurance",
@@ -62,7 +63,7 @@ export default function DenialReasonMaster() {
     "denial-reasons",
     getDenialReasons
   );
-  const { control, handleSubmit, reset } = useForm();
+  const { control, handleSubmit, reset, errors } = useForm();
   const [add, { isLoading: addLoading }] = useMutation(addDenialReason, {
     onSuccess: () => {
       refetch();
@@ -97,6 +98,12 @@ export default function DenialReasonMaster() {
             <Controller
               name="denial_code"
               control={control}
+              rules={{
+                required: {
+                  value: true,
+                  message: "Please Enter a Value",
+                },
+              }}
               render={(props) => (
                 <AlgaehFormGroup
                   div={{ className: "col-3 mandatory form-group" }}
@@ -104,6 +111,7 @@ export default function DenialReasonMaster() {
                     forceLabel: "Denial Reason Code",
                     isImp: true,
                   }}
+                  error={errors}
                   textBox={{
                     ...props,
                     className: "txt-fld",
@@ -117,6 +125,12 @@ export default function DenialReasonMaster() {
             <Controller
               name="denial_desc"
               control={control}
+              rules={{
+                required: {
+                  value: true,
+                  message: "Please Enter a Value",
+                },
+              }}
               render={(props) => (
                 <AlgaehFormGroup
                   div={{ className: "col-7 mandatory form-group" }}
@@ -124,6 +138,7 @@ export default function DenialReasonMaster() {
                     forceLabel: "Denial Reason",
                     isImp: true,
                   }}
+                  error={errors}
                   textBox={{
                     ...props,
                     className: "txt-fld",
@@ -163,17 +178,6 @@ export default function DenialReasonMaster() {
                       <AlgaehDataGrid
                         className="DenialFormGrid"
                         columns={[
-                          // {
-                          //   fieldName: "action",
-                          //   label: "Actions",
-
-                          //   others: {
-                          //     maxWidth: 80,
-                          //     resizable: false,
-                          //     filterable: false,
-                          //     style: { textAlign: "center" },
-                          //   },
-                          // },
                           {
                             fieldName: "denial_code",
                             label: "DENIAL REASON CODE",
@@ -195,10 +199,17 @@ export default function DenialReasonMaster() {
                         rowUniqueId="hims_d_denial_id"
                         isEditable={true}
                         events={{
-                          onSave: (row) => updateReason(row),
+                          onSave: (row) => {
+                            if (row?.denial_code && row?.denial_desc) {
+                              updateReason(row);
+                            } else {
+                              AlgaehMessagePop({
+                                display: "Please enter all the fields",
+                                type: "error",
+                              });
+                            }
+                          },
                           onDelete: (row) => deleteReason(row),
-                          // onEdit:
-                          // onEditShow:
                         }}
                         others={{}}
                       />

@@ -135,6 +135,9 @@
  *    denial_reason_id:
  *     type: number
  *     require: true
+ *    cpt_code:
+ *     type: string
+ *     require: true
  *
  */
 
