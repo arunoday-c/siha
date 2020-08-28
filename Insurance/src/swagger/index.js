@@ -115,48 +115,26 @@
  *  UpdateInsuranceStatement:
  *   type: object
  *   properties:
+ *    invoice_header_id:
+ *     type: number
+ *     required: true
+ *    invoice_detail_id:
+ *     type: number
+ *     required: true
  *    insurance_statement_id:
  *     type: number
  *     required: true
- *    invoices:
- *     type: array
- *     items:
- *      type: object
- *      properties:
- *       invoice_header_id:
- *        type: number
- *        required: true
- *       remittance_amount:
- *        type: number
- *        format: decimal
- *        required: true
- *       denial_amount:
- *        type: number
- *        format: decimal
- *        required: true
- *       invoiceDetails:
- *        type: array
- *        items:
- *         type: object
- *         properties:
- *          hims_f_invoice_details_id:
- *           type: number
- *           required: true
- *          denial_reason_id:
- *           type: number
- *           required: true
- *          remittance_amount:
- *           type: number
- *           format: decimal
- *           required: true
- *          denial_amount:
- *           type: number
- *           format: decimal
- *           required: true
- *          statement_amount:
- *           type: number
- *           format: decimal
- *           required: true
+ *    remittance_amount:
+ *     type: number
+ *     format: decimal
+ *     required: true
+ *    denial_amount:
+ *     type: number
+ *     format: decimal
+ *     required: true
+ *    denial_reason_id:
+ *     type: number
+ *     require: true
  *
  */
 
