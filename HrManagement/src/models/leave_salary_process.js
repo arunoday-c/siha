@@ -27,6 +27,7 @@ export default {
         .then((annul_leave) => {
           let leave_id = annul_leave[0].hims_d_leave_id;
           let leave_category = annul_leave[0].leave_category;
+
           _mysql
             .executeQuery({
               query:
@@ -39,6 +40,7 @@ export default {
               printQuery: true,
             })
             .then((annul_leave) => {
+              debugger;
               let annul_leave_app = annul_leave[0];
               let hrms_options = annul_leave[1][0];
               let total_applied_days = annul_leave_app[0].total_applied_days;
@@ -876,13 +878,13 @@ export default {
                               //   }
                               // );
                               // console.log("Before");
+
                               _mysql
                                 .executeQuery({
-                                  query:
-                                    "INSERT INTO `hims_f_leave_salary_accrual_header` (leave_salary_number,year, month,  \
-                                    total_leave_salary, total_airfare_amount, hospital_id, leave_salary_date , \
-                                    created_date, created_by)\
-                                  VALUE(?,?,?,?,?,?,?,?,?);",
+                                  query: `INSERT INTO hims_f_leave_salary_accrual_header (leave_salary_number,year, month,
+                                    total_leave_salary, total_airfare_amount, hospital_id, leave_salary_date ,
+                                    created_date, created_by)
+                                  VALUE(?,?,?,?,?,?,?,?,?);`,
                                   values: [
                                     leave_salary_acc_number,
                                     inputParam.leave_salary_detail[i].year,
@@ -2157,3 +2159,29 @@ function InsertGratuityProvision(options) {
     options.next(e);
   });
 }
+/** Update employee suspend if he is in anual leave   */
+export function updateSuspend(req, res, next) {
+  const _options = req.connection == null ? {} : req.connection;
+  const _mysql = new algaehMysql(_options);
+  try {
+    const { employee_id } = req.body;
+    _mysql
+      .executeQuery({
+        query: `update hims_d_employee set suspend_salary='Y' 
+        where hims_d_employee_id=${employee_id};`,
+      })
+      .then(() => {
+        next();
+      })
+      .catch((error) => {
+        next(error);
+      });
+  } catch (e) {
+    _mysql.rollBackTransaction(() => {
+      next(e);
+    });
+  }
+}
+
+// const updateEmployee = ;
+//${updateEmployee}export
