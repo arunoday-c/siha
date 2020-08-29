@@ -149,17 +149,17 @@ class SalesInvoice extends Component {
           printArea={
             this.state.hims_f_sales_invoice_header_id !== null
               ? {
-                  menuitems: [
-                    {
-                      label: "Print Invoice",
-                      events: {
-                        onClick: () => {
-                          generateSalesInvoiceReport(this.state);
-                        },
+                menuitems: [
+                  {
+                    label: "Print Invoice",
+                    events: {
+                      onClick: () => {
+                        generateSalesInvoiceReport(this.state);
                       },
                     },
-                  ],
-                }
+                  },
+                ],
+              }
               : ""
           }
           selectedLang={this.state.selectedLang}
@@ -246,8 +246,8 @@ class SalesInvoice extends Component {
                       <AlgaehLabel label={{ forceLabel: "Payment Terms" }} />
                       <h6>
                         {this.state.payment_terms
-                          ? this.state.payment_terms + " days"
-                          : "0 days"}
+                          ? this.state.payment_terms + " Days"
+                          : "0 Days"}
                       </h6>
                     </div>
                   </div>
@@ -269,8 +269,8 @@ class SalesInvoice extends Component {
                 <InvoiceListService SALESInvoiceIOputs={this.state} />
               </div>
             ) : (
-              <InvoiceItemList SALESInvoiceIOputs={this.state} />
-            )}
+                <InvoiceItemList SALESInvoiceIOputs={this.state} />
+              )}
           </MyContext.Provider>
 
           <div className="row">

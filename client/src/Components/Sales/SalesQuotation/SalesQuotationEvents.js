@@ -260,10 +260,10 @@ const SaveSalesQuotation = $this => {
           "YYYY-MM-DD"
         ).format("YYYY-MM-DD")
 
-        $this.state.delivery_date = moment(
+        $this.state.delivery_date = $this.state.delivery_date !== null ? moment(
           $this.state.delivery_date,
           "YYYY-MM-DD"
-        ).format("YYYY-MM-DD")
+        ).format("YYYY-MM-DD") : null
         AlgaehLoader({ show: true });
 
         algaehApiCall({
