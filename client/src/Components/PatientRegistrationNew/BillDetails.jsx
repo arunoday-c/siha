@@ -170,6 +170,7 @@ export function BillDetails({
       enabled: !!services_id,
       retry: 3,
       onSuccess: (data) => {
+
         setGlobalBillData(data);
         calculateBillDetails(data?.billdetails[0]);
       },
@@ -188,20 +189,24 @@ export function BillDetails({
   }, [services_id]);
 
   function calculateBillDetails(billData = {}) {
+
     const sendingObject = { ...billData };
 
     // Sheet Level Discount Nullify
     sendingObject.sheet_discount_amount = 0;
     sendingObject.sheet_discount_percentage = 0;
     sendingObject.advance_adjust = 0;
+    sendingObject.discount_amount = 0;
     sendingObject.net_amount = billData?.patient_payable;
     sendingObject.receiveable_amount = billData?.patient_payable;
 
     //Reciept
     sendingObject.cash_amount = sendingObject.net_amount;
     sendingObject.total_amount = sendingObject.net_amount;
-    sendingObject.sub_total_amount = sendingObject.net_amount;
-    sendingObject.gross_total = sendingObject.net_amount;
+    sendingObject.sub_total_amount = sendingObject.gross_amount;
+    sendingObject.gross_total = sendingObject.patient_payable;
+    sendingObject.copay_amount = sendingObject.copay_amount;
+    sendingObject.net_total = sendingObject.net_amout;
 
     sendingObject.unbalanced_amount = 0;
     sendingObject.card_amount = 0;
@@ -217,7 +222,7 @@ export function BillDetails({
     sendingObject.company_payable = sendingObject.company_payble;
     sendingObject.sec_company_tax = sendingObject.sec_company_tax.toFixed(2);
     sendingObject.patient_res = sendingObject.patient_resp;
-    sendingObject.company_res = sendingObject.company_resp;
+    sendingObject.company_res = sendingObject.comapany_resp;
     setBillInfo(billData);
     setBillData(sendingObject);
   }
