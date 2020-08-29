@@ -25,7 +25,7 @@ class VendorSetup extends Component {
       states: [],
       cities: [],
       vat_applicable: false,
-      btn_txt: "ADD",      
+      btn_txt: "ADD",
       vendor_status: "A"
     };
     this.getAllVendors();
@@ -51,7 +51,7 @@ class VendorSetup extends Component {
       city_id: null,
       postal_code: null,
       bank_name: null,
-      address: "",      
+      address: "",
       openModal: false,
       bank_account_no: null,
       vat_number: null
@@ -540,7 +540,29 @@ class VendorSetup extends Component {
                 <h6 style={{ marginTop: 30 }}>Payment Details</h6>
                 <hr style={{ margin: 0 }} />
                 <div className="row">
-                  <AlagehAutoComplete
+                  <AlagehFormGroup
+                    div={{ className: "col-2  form-group mandatory" }}
+                    label={{
+                      forceLabel: "Payment Terms in Days"
+                    }}
+                    textBox={{
+                      number: {
+                        allowNegative: false,
+                        thousandSeparator: ","
+                      },
+                      dontAllowKeys: ["-", "e", "."],
+                      value: this.state.payment_terms,
+                      className: "txt-fld",
+                      name: "payment_terms",
+                      events: {
+                        onChange: this.changeTexts.bind(this)
+                      },
+                      others: {
+                        placeholder: "0"
+                      }
+                    }}
+                  />
+                  {/* <AlagehAutoComplete
                     div={{ className: "col-2 mandatory" }}
                     label={{
                       fieldName: "payment_terms",
@@ -558,7 +580,7 @@ class VendorSetup extends Component {
                       },
                       onChange: this.dropDownHandle.bind(this)
                     }}
-                  />
+                  /> */}
 
                   <AlagehAutoComplete
                     div={{ className: "col-3 mandatory" }}
