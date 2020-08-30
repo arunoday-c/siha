@@ -102,14 +102,15 @@ export function AddPatientDentalForm({
         full_name: "",
         patient_code: "",
         gender: "",
-        date_of_birth: "",
+        date_of_birth: undefined,
         requesting_date: new Date(),
         select_procedure: "",
         select_vendor: "",
         request_status: "PEN",
         work_status: "PEN",
         provider_id: "",
-        due_date: "",
+        due_date: undefined,
+        service_amount: "",
       });
       setSub_department_id("");
       setDoctor_id("");
@@ -149,7 +150,7 @@ export function AddPatientDentalForm({
         },
       });
       if (res.data.success) {
-        clearState();
+        // clearState();
         getRequest();
         AlgaehMessagePop({
           type: "success",
@@ -192,8 +193,9 @@ export function AddPatientDentalForm({
         },
       });
       if (res.data.success) {
-        clearState();
-        // getRequest();
+        // clearState
+        getRequest();
+
         AlgaehMessagePop({
           type: "success",
           display: "Dental Form Updated Successfully",
@@ -206,23 +208,24 @@ export function AddPatientDentalForm({
       });
     }
   };
-  const clearState = () => {
-    reset({
-      full_name: "",
-      patient_code: "",
-      gender: "",
-      date_of_birth: undefined,
-      requesting_date: new Date(),
-      select_procedure: "",
-      select_vendor: "",
-      request_status: "PEN",
-      work_status: "PEN",
-      provider_id: "",
-      due_date: undefined,
-    });
-    setSub_department_id("");
-    setDoctor_id("");
-  };
+  // const clearState = () => {
+  //   reset({
+  //     full_name: "",
+  //     patient_code: "",
+  //     gender: "",
+  //     date_of_birth: undefined,
+  //     requesting_date: new Date(),
+  //     select_procedure: "",
+  //     select_vendor: "",
+  //     request_status: "PEN",
+  //     work_status: "PEN",
+  //     provider_id: "",
+  //     due_date: undefined,
+  //   });
+  //   setSub_department_id("");
+  //   setDoctor_id("");
+  //   onClose
+  // };
   const onChangeDoctor = (e) => {
     setDoctor_id(e.employee_id);
   };
@@ -237,6 +240,7 @@ export function AddPatientDentalForm({
   const onSubmit = (e) => {
     console.error(errors);
     onClose();
+
     if (current.length !== 0) {
       updateDentalForm(e);
     } else {

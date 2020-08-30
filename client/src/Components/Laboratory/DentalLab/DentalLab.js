@@ -278,15 +278,13 @@ export default function DentalLab() {
     setOpenDentalModal(false);
     loadRequestList(getValues());
     setDisabled(false);
+    setCurrent([]);
   };
   const openDentalModalHandler = (row) => {
     setOpenDentalModal(true);
   };
   const getFormRequest = (e) => {
-    loadRequestList({
-      from_due_date: e.from_due_date._d,
-      to_due_date: e.to_due_date,
-    });
+    loadRequestList(getValues());
   };
 
   return (
