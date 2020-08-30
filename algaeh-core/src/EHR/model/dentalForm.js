@@ -115,7 +115,7 @@ export default {
         .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
-          console.log("resultttt", req.records);
+
           next();
         })
         .catch((error) => {

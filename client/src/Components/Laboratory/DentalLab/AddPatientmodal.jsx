@@ -49,7 +49,7 @@ export function AddPatientDentalForm({
     // titles = [],
     userLanguage,
   } = useContext(MainContext);
-  console.log("result", current);
+
   //   const { userLanguage, titles = [] } = useContext(MainContext);
   const { FORMAT_GENDER, REQUEST_STATUS, WORK_STATUS } = GenericData;
   //   const [openDentalModal, setOpenDentalModal] = useState(false);
@@ -73,7 +73,7 @@ export function AddPatientDentalForm({
     },
   });
   useEffect(() => {
-    if (visible && current) {
+    if (visible && current.length !== 0) {
       reset({
         full_name: current.full_name,
         patient_code: current.patient_code,
@@ -93,7 +93,7 @@ export function AddPatientDentalForm({
       })[0].doctors;
 
       // .map((item) => item.doctors);
-      console.log("doctors", doctors);
+
       setSub_department_id(current.department_id);
       setDoctor_id(current.provider_id);
       setDoctors(doctors);
@@ -164,7 +164,6 @@ export function AddPatientDentalForm({
     }
   };
   const updateDentalForm = async (data) => {
-    debugger;
     const requestDate = moment(data.requesting_date).format("YYYY-MM-DD");
     const due_date = moment(new Date()).format("YYYY-MM-DD");
     const years = moment().diff(data.date_of_birth, "year");
@@ -239,7 +238,6 @@ export function AddPatientDentalForm({
     console.error(errors);
     onClose();
     if (current.length !== 0) {
-      debugger;
       updateDentalForm(e);
     } else {
       addDentalForm(e);
