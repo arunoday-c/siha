@@ -581,23 +581,26 @@ class CustomerSetup extends Component {
                   <h6>Payment Details</h6>
                   <hr style={{ margin: 0 }} />
                   <div className="row">
-                    <AlagehAutoComplete
-                      div={{ className: "col-2 form-group mandatory" }}
+                    <AlagehFormGroup
+                      div={{ className: "col-2  form-group mandatory" }}
                       label={{
-                        fieldName: "payment_terms",
-                        isImp: true
+                        forceLabel: "Payment Terms in Days"
                       }}
-                      selector={{
-                        sort: "off",
-                        name: "payment_terms",
-                        className: "select-fld",
-                        value: this.state.payment_terms,
-                        dataSource: {
-                          textField: "name",
-                          valueField: "value",
-                          data: GlobalVariables.PAYMENT_TERMS
+                      textBox={{
+                        number: {
+                          allowNegative: false,
+                          thousandSeparator: ","
                         },
-                        onChange: this.dropDownHandle.bind(this)
+                        dontAllowKeys: ["-", "e", "."],
+                        value: this.state.payment_terms,
+                        className: "txt-fld",
+                        name: "payment_terms",
+                        events: {
+                          onChange: this.changeTexts.bind(this)
+                        },
+                        others: {
+                          placeholder: "0"
+                        }
                       }}
                     />
 

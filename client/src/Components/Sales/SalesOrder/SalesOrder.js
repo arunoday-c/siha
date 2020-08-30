@@ -16,7 +16,7 @@ import AlgaehLoader from "../../Wrapper/fullPageLoader";
 
 import Options from "../../../Options.json";
 import moment from "moment";
-import GlobalVariables from "../../../utils/GlobalVariables.json";
+// import GlobalVariables from "../../../utils/GlobalVariables.json";
 import { newAlgaehApi } from "../../../hooks";
 import {
   customerTexthandle,
@@ -369,27 +369,27 @@ class SalesOrder extends Component {
                             ) : (
                                 <span className="badge badge-success">
                                   Authorized / Dispatch Pending
-                        </span>
+                                </span>
                               )
                           ) : this.state.authorize1 === "Y" &&
                             this.state.authorize2 === "N" ? (
                               <span className="badge badge-danger">
                                 Authorized 2 Pending
-                      </span>
+                              </span>
                             ) : this.state.authorize1 === "N" &&
                               this.state.authorize2 === "N" ? (
                                 <span className="badge badge-danger">
                                   Posted/Pending For Authorize
-                      </span>
+                                </span>
                               ) : this.state.is_completed === "Y" &&
                                 this.state.invoice_generated === "N" ? (
                                   <span className="badge badge-danger">
                                     Invoice Generation Pending
-                      </span>
+                                  </span>
                                 ) : this.state.invoice_generated === "Y" ? (
                                   <span className="badge badge-success">
                                     Invoice Generated
-                      </span>
+                                  </span>
                                 ) : (
                                     <span className="badge badge-danger">Pending</span>
                                   )}
@@ -507,28 +507,27 @@ class SalesOrder extends Component {
                     },
                   }}
                 />
-                <AlagehAutoComplete
-                  div={{ className: "col mandatory  form-group " }}
-                  label={{ forceLabel: "Payment Terms", isImp: true }}
-                  selector={{
-                    sort: "off",
-                    name: "payment_terms",
-                    className: "select-fld",
+                <AlagehFormGroup
+                  div={{ className: "col-2  form-group mandatory" }}
+                  label={{
+                    forceLabel: "Payment Terms in Days",
+                    isImp: true
+                  }}
+                  textBox={{
+                    number: {
+                      allowNegative: false,
+                      thousandSeparator: ","
+                    },
+                    dontAllowKeys: ["-", "e", "."],
                     value: this.state.payment_terms,
-                    dataSource: {
-                      textField: "name",
-                      valueField: "value",
-                      data: GlobalVariables.PAYMENT_TERMS,
+                    className: "txt-fld",
+                    name: "payment_terms",
+                    events: {
+                      onChange: texthandle.bind(this, this)
                     },
                     others: {
-                      disabled: this.state.dataExists,
-                    },
-                    onChange: texthandle.bind(this, this),
-                    onClear: () => {
-                      this.setState({
-                        payment_terms: null,
-                      });
-                    },
+                      placeholder: "0"
+                    }
                   }}
                 />
 

@@ -98,7 +98,6 @@ export function InsuranceDetails({
         callback(text);
       },
       onRowSelect: (row) => {
-        console.log(row, "selected");
         setInsuranceList([row]);
         setValue("primary_insurance_provider_id", row?.insurance_provider_id);
         setValue("primary_sub_id", row?.sub_insurance_provider_id);
