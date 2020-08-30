@@ -335,47 +335,67 @@ export default {
   },
 
   //created by:irfan
+  /** Same service can use for get insurance by resubmission  */
   getInvoicesForClaims: (req, res, next) => {
     const _mysql = new algaehMysql();
     try {
       let input = req.query;
-
-      if (
-        input.patient_id > 0 ||
-        (input.from_date != "null" && input.to_date != "null") ||
-        input.sub_insurance_id > 0 ||
-        input.insurance_provider_id > 0
-      ) {
-        let _qryStr = "";
-        const _values = [];
-
-        if (input.patient_id > 0) {
-          _qryStr += " and IH.patient_id=?";
-          _values.push(input.patient_id);
-        }
-        if (input.insurance_provider_id > 0) {
-          _qryStr += " and IH.insurance_provider_id=?";
-          _values.push(input.insurance_provider_id);
-        }
-        if (input.sub_insurance_id > 0) {
-          _qryStr += " and IH.sub_insurance_id=?";
-          _values.push(input.sub_insurance_id);
-        }
-
+      const { insurance_statement_id } = input;
+      let _qryStr = "";
+      const _values = [];
+      let queryValue = [];
+      let differenceStatement = " IH.insurance_statement_id IS NULL ";
+      if (insurance_statement_id === undefined) {
         if (
-          input.from_date != "null" &&
-          input.to_date != "null" &&
-          input.from_date != undefined &&
-          input.to_date != undefined
+          input.patient_id > 0 ||
+          (input.from_date != "null" && input.to_date != "null") ||
+          input.sub_insurance_id > 0 ||
+          input.insurance_provider_id > 0
         ) {
-          _qryStr += "and  date(invoice_date) between date(?) and date(?) ";
-          _values.push(input.from_date, input.to_date);
-        }
+          if (input.patient_id > 0) {
+            _qryStr += " and IH.patient_id=?";
+            _values.push(input.patient_id);
+          }
+          if (input.insurance_provider_id > 0) {
+            _qryStr += " and IH.insurance_provider_id=?";
+            _values.push(input.insurance_provider_id);
+          }
+          if (input.sub_insurance_id > 0) {
+            _qryStr += " and IH.sub_insurance_id=?";
+            _values.push(input.sub_insurance_id);
+          }
 
-        _mysql
-          .executeQuery({
-            query:
-              "SELECT 0 chkselect, hims_f_invoice_header_id, invoice_number, invoice_date, IH.patient_id, visit_id,\
+          if (
+            input.from_date != "null" &&
+            input.to_date != "null" &&
+            input.from_date != undefined &&
+            input.to_date != undefined
+          ) {
+            _qryStr += "and  date(invoice_date) between date(?) and date(?) ";
+            _values.push(input.from_date, input.to_date);
+          }
+          queryValue = [..._values, ..._values, ..._values];
+        } else {
+          req.records = {
+            invalid_data: true,
+            message: "Please provide valid input",
+          };
+          next();
+          return;
+        }
+      } else {
+        differenceStatement = "IH.insurance_statement_id=?";
+        queryValue = [
+          insurance_statement_id,
+          insurance_statement_id,
+          insurance_statement_id,
+        ];
+      }
+
+      _mysql
+        .executeQuery({
+          query:
+            "SELECT 0 chkselect, hims_f_invoice_header_id, invoice_number, invoice_date, IH.patient_id, visit_id,\
           IH.insurance_provider_id, IH.sub_insurance_id, IH.network_id, IH.network_office_id, IH.card_number, gross_amount,\
           discount_amount, patient_resp, patient_tax, patient_payable, company_resp, company_tax, \
           company_payable, sec_company_resp, sec_company_tax, sec_company_payable, submission_date,\
@@ -396,9 +416,10 @@ export default {
           left join hims_d_insurance_network_office NET_OF on IH.network_office_id=NET_OF.hims_d_insurance_network_office_id\
           where P.record_status='A' and  V.record_status='A' and V.record_status='A' and E.record_status='A'\
           and IP.record_status='A' and SI.record_status='A' and  NET.record_status='A' and NET_OF.record_status='A' \
-          and IH.insurance_statement_id IS NULL " +
-              _qryStr +
-              "; \
+          and " +
+            differenceStatement +
+            _qryStr +
+            "; \
           	SELECT hims_f_invoice_details_id, invoice_header_id, bill_header_id, bill_detail_id,\
               service_id, quantity, ID.gross_amount, ID.discount_amount, ID.patient_resp, ID.patient_tax,ID.patient_payable,\
              ID.company_resp, ID.company_tax, ID.company_payable, ID.sec_company_resp, ID.sec_company_tax, ID.sec_company_payable,\
@@ -408,141 +429,135 @@ export default {
               on IH.hims_f_invoice_header_id =ID.invoice_header_id inner join hims_d_service_type ST on \
                ID.service_type_id=ST.hims_d_service_type_id inner join hims_d_services S on \
                ID.service_id=S.hims_d_services_id left join hims_d_cpt_code C on ID.cpt_code=C.cpt_code where \
-               ST.record_status='A'  and S.record_status='A' and IH.insurance_statement_id IS NULL " +
-              _qryStr +
-              "; select hims_f_invoice_icd_id, invoice_header_id from  hims_f_invoice_header IH\
+               ST.record_status='A'  and S.record_status='A' and  " +
+            differenceStatement +
+            _qryStr +
+            "; select hims_f_invoice_icd_id, invoice_header_id from  hims_f_invoice_header IH\
               INNER JOIN hims_f_invoice_icd  ICD on IH.hims_f_invoice_header_id=ICD.invoice_header_id \
-             where ICD.record_status='A' and IH.insurance_statement_id IS NULL " +
-              _qryStr,
-            values: [..._values, ..._values, ..._values],
-            printQuery: true,
-          })
-          .then((result) => {
-            let header_arr = result[0];
-            let detail_arr = result[1];
-            let invoce_icd_arr = result[2];
+             where ICD.record_status='A' and  " +
+            differenceStatement +
+            _qryStr,
+          values: queryValue,
+          printQuery: true,
+        })
+        .then((result) => {
+          let header_arr = result[0];
+          let detail_arr = result[1];
+          let invoce_icd_arr = result[2];
 
-            if (header_arr.length > 0) {
-              let all_episode_id = new LINQ(header_arr)
-                .Select((s) => s.episode_id)
-                .ToArray();
+          if (header_arr.length > 0) {
+            let all_episode_id = new LINQ(header_arr)
+              .Select((s) => s.episode_id)
+              .ToArray();
 
-              _mysql
-                .executeQuery({
-                  query:
-                    "select hims_f_patient_diagnosis_id, patient_id, episode_id, daignosis_id, diagnosis_type, final_daignosis\
+            _mysql
+              .executeQuery({
+                query:
+                  "select hims_f_patient_diagnosis_id, patient_id, episode_id, daignosis_id, diagnosis_type, final_daignosis\
               from hims_f_patient_diagnosis where record_status='A' and  episode_id in (?)",
-                  values: [all_episode_id],
+                values: [all_episode_id],
 
-                  printQuery: true,
-                })
-                .then((diagnosis_result) => {
-                  let outputArray = [];
-                  let insertArray = [];
+                printQuery: true,
+              })
+              .then((diagnosis_result) => {
+                let outputArray = [];
+                let insertArray = [];
+                debugger;
+                for (let i = 0; i < header_arr.length; i++) {
+                  let invoiceDetails = detail_arr.filter((detail) => {
+                    return (
+                      detail.invoice_header_id ==
+                      header_arr[i]["hims_f_invoice_header_id"]
+                    );
+                  });
 
-                  for (let i = 0; i < header_arr.length; i++) {
-                    let invoiceDetails = detail_arr.filter((detail) => {
-                      return (
-                        detail.invoice_header_id ==
-                        header_arr[i]["hims_f_invoice_header_id"]
-                      );
+                  let icd_present = invoce_icd_arr.filter((item) => {
+                    return (
+                      item.invoice_header_id ==
+                      header_arr[i]["hims_f_invoice_header_id"]
+                    );
+                  });
+
+                  if (icd_present.length > 0) {
+                    outputArray.push({
+                      ...header_arr[i],
+                      invoiceDetails,
                     });
-
-                    let icd_present = invoce_icd_arr.filter((item) => {
-                      return (
-                        item.invoice_header_id ==
-                        header_arr[i]["hims_f_invoice_header_id"]
-                      );
-                    });
-
-                    if (icd_present.length > 0) {
-                      outputArray.push({
-                        ...header_arr[i],
-                        invoiceDetails,
-                      });
-                    } else {
-                      let patientDiagnosys = [];
-                      diagnosis_result.forEach((item) => {
-                        if (item["episode_id"] == header_arr[i]["episode_id"]) {
-                          patientDiagnosys.push({
-                            ...item,
-                            invoice_header_id:
-                              header_arr[i]["hims_f_invoice_header_id"],
-                          });
-                        }
-                      });
-
-                      insertArray.push(...patientDiagnosys);
-
-                      outputArray.push({
-                        ...header_arr[i],
-                        invoiceDetails,
-                      });
-                    }
-                  }
-
-                  if (insertArray.length > 0) {
-                    const insertColumns = [
-                      "patient_id",
-                      "episode_id",
-                      "daignosis_id",
-                      "diagnosis_type",
-                      "final_daignosis",
-                      "invoice_header_id",
-                    ];
-                    _mysql
-                      .executeQuery({
-                        query: "insert into hims_f_invoice_icd (??) values ?",
-
-                        values: insertArray,
-                        includeValues: insertColumns,
-                        extraValues: {
-                          created_date: new Date(),
-                          updated_date: new Date(),
-                          created_by: req.userIdentity.algaeh_d_app_user_id,
-                          updated_by: req.userIdentity.algaeh_d_app_user_id,
-                        },
-                        bulkInsertOrUpdate: true,
-                        printQuery: true,
-                      })
-                      .then((finalResult) => {
-                        _mysql.releaseConnection();
-
-                        req.records = outputArray;
-                        next();
-                      })
-                      .catch((e) => {
-                        _mysql.releaseConnection();
-                        next(e);
-                      });
                   } else {
-                    _mysql.releaseConnection();
-                    req.records = outputArray;
-                    next();
+                    let patientDiagnosys = [];
+                    diagnosis_result.forEach((item) => {
+                      if (item["episode_id"] == header_arr[i]["episode_id"]) {
+                        patientDiagnosys.push({
+                          ...item,
+                          invoice_header_id:
+                            header_arr[i]["hims_f_invoice_header_id"],
+                        });
+                      }
+                    });
+
+                    insertArray.push(...patientDiagnosys);
+
+                    outputArray.push({
+                      ...header_arr[i],
+                      invoiceDetails,
+                    });
                   }
-                })
-                .catch((error) => {
+                }
+
+                if (insertArray.length > 0) {
+                  const insertColumns = [
+                    "patient_id",
+                    "episode_id",
+                    "daignosis_id",
+                    "diagnosis_type",
+                    "final_daignosis",
+                    "invoice_header_id",
+                  ];
+                  _mysql
+                    .executeQuery({
+                      query: "insert into hims_f_invoice_icd (??) values ?",
+
+                      values: insertArray,
+                      includeValues: insertColumns,
+                      extraValues: {
+                        created_date: new Date(),
+                        updated_date: new Date(),
+                        created_by: req.userIdentity.algaeh_d_app_user_id,
+                        updated_by: req.userIdentity.algaeh_d_app_user_id,
+                      },
+                      bulkInsertOrUpdate: true,
+                      printQuery: true,
+                    })
+                    .then((finalResult) => {
+                      _mysql.releaseConnection();
+
+                      req.records = outputArray;
+                      next();
+                    })
+                    .catch((e) => {
+                      _mysql.releaseConnection();
+                      next(e);
+                    });
+                } else {
                   _mysql.releaseConnection();
-                  next(error);
-                });
-            } else {
-              _mysql.releaseConnection();
-              req.records = header_arr;
-              next();
-            }
-          })
-          .catch((error) => {
+                  req.records = outputArray;
+                  next();
+                }
+              })
+              .catch((error) => {
+                _mysql.releaseConnection();
+                next(error);
+              });
+          } else {
             _mysql.releaseConnection();
-            next(error);
-          });
-      } else {
-        req.records = {
-          invalid_data: true,
-          message: "Please provide valid input",
-        };
-        next();
-        return;
-      }
+            req.records = header_arr;
+            next();
+          }
+        })
+        .catch((error) => {
+          _mysql.releaseConnection();
+          next(error);
+        });
     } catch (e) {
       next(e);
     }
