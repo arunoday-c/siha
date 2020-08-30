@@ -16,6 +16,48 @@
       "value": "Others"
     }
   ],
+  "WORK_STATUS": [
+    {
+      "name": "Pending",
+      "value": "PEN",
+      "color": "#f2f2f2"
+    },
+    {
+      "name": "Work In Progress",
+      "value": "WIP",
+      "color": "#f2f2f2"
+    },
+
+    {
+      "name": "Completed",
+      "value": "COM",
+      "color": "#ff99ff80"
+    }
+  ],
+  "REQUEST_STATUS": [
+    {
+      "name": "Pending",
+      "value": "PEN",
+      "color": "#f2f2f2"
+    },
+    {
+      "name": "Approved",
+      "value": "APR",
+      "color": "#097bd880"
+    },
+    {
+      "name": "Rejected",
+      "value": "REJ",
+      "color": "#ff400080"
+    },
+
+    {
+      "name": "Resend",
+      "value": "RES",
+      "color": "#2ccdd680"
+    }
+  ],
+
   "LEAVE_GENDER": [
     {
       "name": "Male",

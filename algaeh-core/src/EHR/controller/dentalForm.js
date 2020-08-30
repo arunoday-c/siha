@@ -2,7 +2,7 @@ import { Router } from "express";
 import algaehUtilities from "algaeh-utilities/utilities";
 import dentalModels from "../model/dentalForm";
 
-const { addDentalForm, getDentalLab } = dentalModels;
+const { addDentalForm, getDentalLab, updateDentalForm } = dentalModels;
 
 export default () => {
   const api = Router();
@@ -12,7 +12,15 @@ export default () => {
     let result = req.records;
     res.status(utilities.httpStatus().ok).json({
       success: true,
-      records: result
+      records: result,
+    });
+    next();
+  });
+  api.put("/updateDentalForm", updateDentalForm, (req, res, next) => {
+    let result = req.records;
+    res.status(utilities.httpStatus().ok).json({
+      success: true,
+      records: result,
     });
     next();
   });
@@ -20,7 +28,7 @@ export default () => {
     let result = req.records;
     res.status(utilities.httpStatus().ok).json({
       success: true,
-      records: result
+      records: result,
     });
     next();
   });
