@@ -60,8 +60,8 @@
                     {{!-- <th>Sl No.</th> --}}
                     <th class="txtFld">Analyte</th>
                     <th>Result</th>
-                    <th>Normal Range</th>
                     <th>Unit</th>
+                    <th>Normal Range</th>
                     {{!-- <th>Critical Range</th> --}}
                 </tr>
             </thead>
@@ -77,8 +77,9 @@
                     {{!-- <td>{{inc @index}}</td> --}}
                     <td class="txtFld" style="width: 55%">{{analyte_name}}</td>
                     <td data-value="{{critical_type}}">{{result}} <sup>{{critical_type}}</sup></td>
-                    <td>{{normal_low }} - {{normal_high}}</td>
-                    <td>{{result_unit}}</td>
+                    <td style="width: 10%">{{result_unit}}</td>
+                    <td> {{#if analyte_type "T"}} {{text_value}} {{else}} {{normal_low }} -
+                        {{normal_high}}{{/if}}</td>
                     {{!-- <td class="numberFld">{{critical_low}} - {{critical_high}}</td> --}}
                 </tr>
                 {{/each}}

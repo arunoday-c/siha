@@ -929,7 +929,8 @@ export default {
                     .executeQuery({
                       query:
                         "INSERT IGNORE INTO hims_f_ord_analytes(??) VALUES ? \
-                        ON DUPLICATE KEY UPDATE normal_low=values(normal_low),normal_high=values(normal_high)",
+                        ON DUPLICATE KEY UPDATE normal_low=values(normal_low),normal_high=values(normal_high), \
+                        text_value=values(text_value)",
                       values: all_analytes,
                       includeValues: analyts,
                       extraValues: {

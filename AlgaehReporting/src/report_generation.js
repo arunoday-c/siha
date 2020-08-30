@@ -340,7 +340,7 @@ export default {
 
       let singleHeaderFooter = false;
       if (others) {
-        usehbs = others.usehbs;
+        usehbs = others.usehbs ? others.usehbs : "";
         singleHeaderFooter =
           others.singleHeaderFooter === undefined
             ? false

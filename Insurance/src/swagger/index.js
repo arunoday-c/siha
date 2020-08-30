@@ -177,7 +177,7 @@
  * /insurance/updateInsuranceStatement:
  *  put:
  *   tags:
- *    - Insurance Statement
+ *    - Insuarance Statement
  *   produces:
  *    -application/json
  *   parameters:
