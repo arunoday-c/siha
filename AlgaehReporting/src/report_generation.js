@@ -337,7 +337,7 @@ export default {
       const _inputParam = JSON.parse(input.report);
       const { others } = _inputParam;
       let usehbs = "";
-      debugger;
+
       let singleHeaderFooter = false;
       if (others) {
         usehbs = others.usehbs;
@@ -458,62 +458,78 @@ export default {
                     const page = await browser.newPage();
                     let _pdfTemplating = {};
                     let header_format = "";
-                    if (
-                      _data.report_header_file_name != null &&
-                      _data.report_header_file_name != ""
-                    ) {
-                      //const _header
-                      header_format = await compile(
-                        _data.report_header_file_name,
-                        {
-                          reqHeader: _header,
-                          ...data[1][0],
-                          identity: req.userIdentity,
-                          user_name: req.userIdentity["username"],
-                          report_name_for_header: _data.report_name_for_header,
-                          filter:
-                            _inputParam.reportParams == null
-                              ? []
-                              : _inputParam.reportParams,
-                        }
-                      );
 
-                      // const styleObj = String(_data.report_props);
-                      if (singleHeaderFooter === false) {
+                    if (singleHeaderFooter === false) {
+                      if (
+                        _data.report_header_file_name != null &&
+                        _data.report_header_file_name != ""
+                      ) {
+                        //const _header
+
+                        header_format = await compile(
+                          _data.report_header_file_name,
+                          {
+                            reqHeader: _header,
+                            ...data[1][0],
+                            identity: req.userIdentity,
+                            user_name: req.userIdentity["username"],
+                            report_name_for_header:
+                              _data.report_name_for_header,
+                            filter:
+                              _inputParam.reportParams == null
+                                ? []
+                                : _inputParam.reportParams,
+                          }
+                        );
+
+                        // const styleObj = String(_data.report_props);
                         _pdfTemplating["headerTemplate"] = header_format;
-                      }
 
-                      _pdfTemplating["margin"] = {
-                        top: styleObj.header.top,
-                        // bottom: styleObj.header.bottom?styleObj.header.bottom:""
-                        ..._inputParam.headerProps,
-                      };
+                        _pdfTemplating["margin"] = {
+                          top: styleObj.header.top,
+                          // bottom: styleObj.header.bottom?styleObj.header.bottom:""
+                          ..._inputParam.headerProps,
+                        };
+                      }
+                    } else {
+                      if (_data.report_type) {
+                        header_format = await compile(
+                          "Header" + _data.report_type,
+                          {
+                            reqHeader: _header,
+                            ...data[1][0],
+                            identity: req.userIdentity,
+                            report_name_for_header:
+                              _data.report_name_for_header,
+                          }
+                        );
+                      }
                     }
                     let footerFormat = "";
-                    if (
-                      _data.report_footer_file_name != null &&
-                      _data.report_footer_file_name != ""
-                    ) {
-                      footerFormat = await compile(
-                        _data.report_footer_file_name,
-                        {
-                          reqHeader: _header,
-                          ...data[1][0],
-                          identity: req.userIdentity,
-                          report_name_for_header: _data.report_name_for_header,
-                        }
-                      );
-                      if (singleHeaderFooter === false) {
-                        _pdfTemplating["footerTemplate"] = footerFormat;
-                      }
+                    if (singleHeaderFooter === false) {
+                      if (
+                        _data.report_footer_file_name != null &&
+                        _data.report_footer_file_name != ""
+                      ) {
+                        footerFormat = await compile(
+                          _data.report_footer_file_name,
+                          {
+                            reqHeader: _header,
+                            ...data[1][0],
+                            identity: req.userIdentity,
+                            report_name_for_header:
+                              _data.report_name_for_header,
+                          }
+                        );
 
-                      _pdfTemplating["margin"] = {
-                        ..._pdfTemplating["margin"],
-                        bottom: styleObj.footer.bottom,
-                        ..._inputParam.footerProps,
-                      };
-                    } else {
-                      footerFormat = `<style> .pdffooter { font-size: 8px;
+                        _pdfTemplating["footerTemplate"] = footerFormat;
+                        _pdfTemplating["margin"] = {
+                          ..._pdfTemplating["margin"],
+                          bottom: styleObj.footer.bottom,
+                          ..._inputParam.footerProps,
+                        };
+                      } else {
+                        footerFormat = `<style> .pdffooter { font-size: 8px;
                         font-family: Arial, Helvetica, sans-serif; font-weight: bold; width:96%; text-align: center; color: grey; padding-left: 10px; }
                       .showreportname{float:left;padding-left:5px;font-size: 08px;}
                       .showcompay{float:right;padding-right:5px;font-size: 08px;}
@@ -522,23 +538,60 @@ export default {
                       <span class="showreportname">System Generated Report (Generated By: ${
                         req.userIdentity["employee_code"]
                       }/${
-                        req.userIdentity["user_display_name"]
-                      } on ${moment().format("DD-MM-YYYY")})</span>
+                          req.userIdentity["user_display_name"]
+                        } on ${moment().format("DD-MM-YYYY")})</span>
                       <span>Page </span>
                       <span class="pageNumber"></span> / <span class="totalPages"></span>
                       <span class="showcompay">Powered by Algaeh Techonologies</span>
                     </div>`;
-                      if (singleHeaderFooter === false) {
-                        _pdfTemplating["footerTemplate"] = footerFormat;
+                        if (singleHeaderFooter === false) {
+                          _pdfTemplating["footerTemplate"] = footerFormat;
+                        }
+
+                        _pdfTemplating["margin"] = {
+                          ..._pdfTemplating["margin"],
+                          bottom: styleObj.footer.bottom,
+                          ..._inputParam.footerProps,
+                        };
+                      }
+                    } else {
+                      if (_data.report_type) {
+                        const filePath = path.join(
+                          process.cwd(),
+                          "algaeh_report_tool/templates",
+                          `Footer${_data.report_type}.hbs`
+                        );
+                        if (fs.existsSync(filePath)) {
+                          footerFormat = await compile(
+                            "Footer" + _data.report_type,
+                            {
+                              reqHeader: _header,
+                              ...data[1][0],
+                              identity: req.userIdentity,
+                              report_name_for_header:
+                                _data.report_name_for_header,
+                            }
+                          );
+                        } else {
+                          generalFooter();
+                        }
+                      } else {
+                        generalFooter();
                       }
 
-                      _pdfTemplating["margin"] = {
-                        ..._pdfTemplating["margin"],
-                        bottom: styleObj.footer.bottom,
-                        ..._inputParam.footerProps,
-                      };
+                      function generalFooter() {
+                        footerFormat = `<style> .pdffooter { font-size: 8px;
+                          font-family: Arial, Helvetica, sans-serif; font-weight: bold; width:96%; text-align: center; color: grey; padding-left: 10px; }
+                        .showreportname{float:left;padding-left:5px;font-size: 07px;}
+                        .showcompay{float:right;padding-right:5px;font-size: 07px;}
+                        </style><div class="pdffooter">
+                        <span class="showreportname">Generated By: ${
+                          req.userIdentity["employee_code"]
+                        } on ${moment().format("DD-MM-YYYY")}</span>
+                        <span class="showcompay">Powered by Algaeh Techonologies</span>
+                        </div>`;
+                      }
                     }
-
                     let pageContent = await compile(
                       `${_data.report_name}${usehbs}`,
                       {

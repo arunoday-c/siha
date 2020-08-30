@@ -1,6 +1,8 @@
 import { Router } from "express";
 import utlities from "algaeh-utilities";
-import leave_salary_process from "../models/leave_salary_process";
+import leave_salary_process, {
+  updateSuspend,
+} from "../models/leave_salary_process";
 
 const {
   getLeaveSalaryProcess,
@@ -34,6 +36,7 @@ export default () => {
   api.post(
     "/InsertLeaveSalary",
     InsertLeaveSalary,
+    updateSuspend,
     generateAccountingEntry,
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({

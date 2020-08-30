@@ -12,7 +12,7 @@ import GlobalVariables from "../../../utils/GlobalVariables.json";
 import {
   vendortexthandle,
   loctexthandle,
-  texthandle,
+  // texthandle,
   poforhandle,
   ReceiptSearch,
   ClearData,
@@ -90,15 +90,15 @@ class PurchaseReturnEntry extends Component {
       this.state.po_return_from === null
         ? []
         : Enumerable.from(this.props.polocations)
-            .where((w) => w.location_type === "WH")
-            .toArray();
+          .where((w) => w.location_type === "WH")
+          .toArray();
 
     const class_finder =
       this.state.dataFinder === true
         ? " disableFinder"
         : this.state.ReqData === false
-        ? ""
-        : " disableFinder";
+          ? ""
+          : " disableFinder";
 
     return (
       <div>
@@ -164,25 +164,25 @@ class PurchaseReturnEntry extends Component {
           printArea={
             this.state.purchase_return_number !== null
               ? {
-                  menuitems: [
-                    {
-                      label: "Receipt for Internal",
-                      events: {
-                        onClick: () => {
-                          generatePOReceipt(this.state);
-                        },
+                menuitems: [
+                  {
+                    label: "Receipt for Internal",
+                    events: {
+                      onClick: () => {
+                        generatePOReceipt(this.state);
                       },
                     },
-                    {
-                      label: "Receipt for Vendor",
-                      events: {
-                        onClick: () => {
-                          generatePOReceiptNoPrice(this.state);
-                        },
+                  },
+                  {
+                    label: "Receipt for Vendor",
+                    events: {
+                      onClick: () => {
+                        generatePOReceiptNoPrice(this.state);
                       },
                     },
-                  ],
-                }
+                  },
+                ],
+              }
               : ""
           }
           selectedLang={this.state.selectedLang}
@@ -330,7 +330,7 @@ class PurchaseReturnEntry extends Component {
                                         onClick={ReceiptSearch.bind(this, this)}
                                     />
                                 </div> */}
-                <AlagehAutoComplete
+                {/* <AlagehAutoComplete
                   div={{ className: "col" }}
                   label={{ forceLabel: "Payment Terms" }}
                   selector={{
@@ -352,7 +352,7 @@ class PurchaseReturnEntry extends Component {
                       });
                     },
                   }}
-                />
+                /> */}
               </div>
             </div>
           </div>

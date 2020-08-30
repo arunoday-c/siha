@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext } from "react";
 import "./InsuranceStatement.scss";
 import { useQuery, useMutation } from "react-query";
 import {
@@ -14,45 +14,46 @@ import {
 import { newAlgaehApi } from "../../../hooks";
 import AlgaehSearch from "../../Wrapper/globalSearch";
 import spotlightSearch from "../../../Search/spotlightSearch.json";
+import { getDenialReasons } from "../DenialReasonMaster/DenialReasonMaster";
 
-// const updateStatement = async (input) => {
+const updateStatement = async (input) => {
+  const res = await newAlgaehApi({
+    uri: "/insurance/updateInsuranceStatement",
+    module: "insurance",
+    data: input,
+    method: "PUT",
+  });
+  return res.data;
+};
+
+// const addICD = async (data) => {
 //   const res = await newAlgaehApi({
-//     uri: "/insurance/updateInsuranceStatement",
+//     uri: "/invoiceGeneration/addInvoiceIcd",
+//     data: {
+//       invoice_header_id: data?.hims_f_invoice_header_id,
+//       patient_id: data?.patient_id,
+//       episode_id: data?.episode_id,
+//       daignosis_id: data?.hims_d_icd_id,
+//       diagnosis_type: "P",
+//       final_daignosis: "Y",
+//     },
+//     method: "POST",
 //     module: "insurance",
-//     data: input,
-//     method: "PUT",
 //   });
-//   return res.data;
+//   return res.data?.records;
 // };
 
-const addICD = async (data) => {
-  const res = await newAlgaehApi({
-    uri: "/invoiceGeneration/addInvoiceIcd",
-    data: {
-      invoice_header_id: data?.hims_f_invoice_header_id,
-      patient_id: data?.patient_id,
-      episode_id: data?.episode_id,
-      daignosis_id: data?.hims_d_icd_id,
-      diagnosis_type: "P",
-      final_daignosis: "Y",
-    },
-    method: "POST",
-    module: "insurance",
-  });
-  return res.data?.records;
-};
-
-const deleteICD = async (data) => {
-  const res = await newAlgaehApi({
-    uri: "/invoiceGeneration/deleteInvoiceIcd",
-    data: {
-      hims_f_invoice_icd_id: data?.hims_f_invoice_icd_id,
-    },
-    module: "insurance",
-    method: "DELETE",
-  });
-  return res.data?.records;
-};
+// // const deleteICD = async (data) => {
+// //   const res = await newAlgaehApi({
+// //     uri: "/invoiceGeneration/deleteInvoiceIcd",
+// //     data: {
+// //       hims_f_invoice_icd_id: data?.hims_f_invoice_icd_id,
+// //     },
+// //     module: "insurance",
+// //     method: "DELETE",
+// //   });
+// //   return res.data?.records;
+// // };
 
 const getStatementServices = async (key, { invoice_header_id }) => {
   const res = await newAlgaehApi({
@@ -64,23 +65,26 @@ const getStatementServices = async (key, { invoice_header_id }) => {
   return res.data?.records;
 };
 
-const getICDcodes = async (key, { invoice_header_id }) => {
-  const res = await newAlgaehApi({
-    uri: "/invoiceGeneration/getPatientIcdForInvoice",
-    module: "insurance",
-    data: { invoice_header_id },
-    method: "GET",
-  });
-  return res.data?.records;
-};
+// const getICDcodes = async (key, { invoice_header_id }) => {
+//   const res = await newAlgaehApi({
+//     uri: "/invoiceGeneration/getPatientIcdForInvoice",
+//     module: "insurance",
+//     data: { invoice_header_id },
+//     method: "GET",
+//   });
+//   return res.data?.records;
+// };
 
 export function UpdateStatement({
   show = false,
   data = {},
   onClose = () => {},
 }) {
+  const { data: denialData, isLoading: denialLoading } = useQuery(
+    "denial-reasons",
+    getDenialReasons
+  );
   const { userLanguage } = useContext(MainContext);
-  const [icd, setIcd] = useState(null);
   const { data: invoiceDetails, isLoading: queryLoading } = useQuery(
     ["invoice-details", { invoice_header_id: data?.hims_f_invoice_header_id }],
     getStatementServices,
@@ -90,36 +94,14 @@ export function UpdateStatement({
       initialStale: true,
     }
   );
-  const { data: icdCodes, isLoading: icdLoading, refetch } = useQuery(
-    ["icd-codes", { invoice_header_id: data?.hims_f_invoice_header_id }],
-    getICDcodes,
-    {
-      enabled: show,
-      initialData: [],
-      initialStale: true,
-    }
-  );
 
-  const [addICDtoInvoice, { isLoading: mutLoading }] = useMutation(addICD, {
-    onSuccess: () => {
-      refetch();
-      setIcd(null);
+  const [update, { isLoading: mutLoading }] = useMutation(updateStatement, {
+    onSuccess: (data) => {
+      if (data?.success) {
+        onClose(true);
+      }
     },
   });
-
-  const [deleteICDtoInvoice] = useMutation(deleteICD, {
-    onSuccess: () => {
-      refetch();
-    },
-  });
-
-  // const [update, { isLoading }] = useMutation(updateStatement, {
-  //   onSuccess: (data) => {
-  //     if (data?.success) {
-  //       onClose(true);
-  //     }
-  //   },
-  // });
 
   function cptSearch(row, update) {
     AlgaehSearch({
@@ -132,28 +114,8 @@ export function UpdateStatement({
         callBack(text);
       },
       onRowSelect: (data) => {
-        row["cpt_code"] = data.cpt_code;
+        row.cpt_code = data.cpt_code;
         update(row);
-        // row.update();
-      },
-    });
-  }
-
-  function icdSearch() {
-    AlgaehSearch({
-      searchGrid: {
-        columns: spotlightSearch.Diagnosis.IcdCodes,
-      },
-      searchName: "IcdCodes",
-      uri: "/gloabelSearch/get",
-      onContainsChange: (text, serchBy, callBack) => {
-        callBack(text);
-      },
-      onRowSelect: (row) => {
-        setIcd({
-          icd_code: row.icd_code,
-          hims_d_icd_id: row.hims_d_icd_id,
-        });
       },
     });
   }
@@ -162,16 +124,7 @@ export function UpdateStatement({
     <AlgaehModal
       title="Update Statment"
       visible={show}
-      // okButtonProps={{
-      //   // loading: isLoading,
-      //   className: "btn btn-primary",
-      // }}
-      // okText={"Update"}
       maskClosable={false}
-      // cancelButtonProps={{
-      //   // disabled: isLoading,
-      //   className: "btn btn-default",
-      // }}
       width={1200}
       closable={true}
       footer={null}
@@ -179,7 +132,7 @@ export function UpdateStatement({
       // onOk={handleSubmit(onSubmit)}
       className={`${userLanguage}_comp row algaehNewModal UpdateStatementModal`}
     >
-      <Spin spinning={queryLoading || icdLoading || mutLoading}>
+      <Spin spinning={queryLoading || mutLoading || denialLoading}>
         <div className="col-12 popupInner margin-top-15">
           <div className="row">
             <div className="col-12">
@@ -227,17 +180,12 @@ export function UpdateStatement({
           </div>
 
           <div className="row">
-            <div className="col-8">
+            <div className="col-12">
               <div className="portlet-body" id="PreRequestGrid">
                 <AlgaehDataGrid
                   className="InsuranceStatementGrid"
                   id="InsuranceStatementGrid"
                   columns={[
-                    // {
-                    //   fieldName: "hims_f_invoice_details_id",
-                    //   label: "Action",
-                    //   displayTemplate: () => ,
-                    // },
                     {
                       fieldName: "service_name",
                       label: (
@@ -291,7 +239,7 @@ export function UpdateStatement({
                       ),
                     },
                     {
-                      fieldName: "remittance_amount",
+                      fieldName: "r1_amt",
                       label: (
                         <AlgaehLabel
                           label={{ forceLabel: "Remittance Amount" }}
@@ -302,39 +250,54 @@ export function UpdateStatement({
                           value={row?.remittance_amount}
                           onChange={(e) => {
                             let { value } = e.target;
-                            if (
-                              parseFloat(value) <=
-                              parseFloat(row?.company_payable)
-                            ) {
-                              row.remittance_amount = value;
-                              row.denial_amount =
-                                parseFloat(row.company_payable) -
-                                parseFloat(value);
-                              update(row);
+                            if (value) {
+                              if (
+                                parseFloat(value) <=
+                                parseFloat(row?.company_payable)
+                              ) {
+                                row.remittance_amount = value;
+                                row.denial_amount =
+                                  parseFloat(row.company_payable) -
+                                  parseFloat(value);
+                                update(row);
+                              } else {
+                                AlgaehMessagePop({
+                                  type: "Warning",
+                                  display:
+                                    "Amount should be less than or equal to claim amount",
+                                });
+                              }
                             } else {
-                              AlgaehMessagePop({
-                                type: "Warning",
-                                display:
-                                  "Amount should be less than or equal to claim amount",
-                              });
+                              row.remittance_amount = "";
+                              row.denial_amount = "";
                             }
                           }}
                         />
                       ),
                     },
                     {
-                      fieldName: "denial_amount",
+                      fieldName: "d1_amt",
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Denial Amount" }} />
                       ),
                       editorTemplate: (row) => row.denial_amount,
                     },
                     {
-                      fieldName: "denial_reason",
+                      fieldName: "d1_reason_id",
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Denial Reason" }} />
                       ),
-                      editorTemplate: (row) => (
+                      displayTemplate: (row) => {
+                        if (row.d1_reason_id) {
+                          const [res] = denialData?.filter(
+                            (den) => den.hims_d_denial_id == row.d1_reason_id
+                          );
+                          return res?.denial_desc;
+                        } else {
+                          return null;
+                        }
+                      },
+                      editorTemplate: (field, row, update) => (
                         <AlgaehAutoComplete
                           div={{ className: " mandatory" }}
                           selector={{
@@ -342,22 +305,17 @@ export function UpdateStatement({
                             className: "select-fld",
                             placeholder: "Select Reason",
                             dataSource: {
-                              textField: "name",
-                              valueField: "his_d_title_id",
-                              data: [],
+                              textField: "denial_desc",
+                              valueField: "hims_d_denial_id",
+                              data: denialData ?? [],
                             },
-                            // value: ,
-                            // onChange: (_, selected) => {
-                            //   onChange(selected);
-                            //   if (selected == 1 || selected == 6) {
-                            //     setValue("gender", "Male");
-                            //   } else {
-                            //     setValue("gender", "Female");
-                            //   }
-                            // },
-                            // onClear: () => {
-                            //   onChange("");
-                            // },
+                            value: row.denial_reason_id,
+                            onChange: (_, selected) => {
+                              row.denial_reason_id = selected;
+                              row.d1_reason_id = selected;
+                              row.denial_reason = _?.denial_desc;
+                              update(row);
+                            },
                           }}
                         />
                       ),
@@ -368,68 +326,21 @@ export function UpdateStatement({
                   isEditable="editOnly"
                   paging={{ page: 0, rowsPerPage: 20 }}
                   events={{
-                    onSave: (data) => {
-                      debugger;
-                      console.log(data, "data");
+                    onSave: (row) => {
+                      update({
+                        insurance_statement_id: data?.insurance_statement_id,
+                        invoice_header_id: data?.hims_f_invoice_header_id,
+                        invoice_detail_id: row?.hims_f_invoice_details_id,
+                        remittance_amount: row.remittance_amount,
+                        denial_amount: row.denial_amount,
+                        denial_reason_id: row.denial_reason_id,
+                        cpt_code: row.cpt_code,
+                      });
                     },
                   }}
                   rowUniqueId={"hims_f_invoice_details_id"}
                 />
               </div>
-            </div>
-            <div className="col-4">
-              <div className="row">
-                <div className="col globalSearchCntr">
-                  <AlgaehLabel label={{ forceLabel: "Search ICD Code" }} />
-                  <h6 onClick={icdSearch}>
-                    {icd?.icd_code ?? "Search ICD Code"}
-                    <i className="fas fa-search fa-lg"></i>
-                  </h6>
-                </div>
-                <div className="col-3">
-                  <button
-                    onClick={() => addICDtoInvoice({ ...data, ...icd })}
-                    disabled={mutLoading || !icd}
-                    className="btn btn-primary margin-top-15"
-                    style={{ marginTop: 21 }}
-                  >
-                    Add
-                  </button>
-                </div>
-              </div>
-              <AlgaehDataGrid
-                className="InsuranceStatementGrid"
-                id="InsuranceStatementGrid"
-                columns={[
-                  {
-                    fieldName: "icd_type",
-                    label: <AlgaehLabel label={{ forceLabel: "Type" }} />,
-                    others: {
-                      maxWidth: "1rem",
-                    },
-                  },
-                  {
-                    fieldName: "icd_code",
-                    label: <AlgaehLabel label={{ forceLabel: "Code" }} />,
-                  },
-                  {
-                    fieldName: "icd_description",
-                    label: (
-                      <AlgaehLabel label={{ forceLabel: "Description" }} />
-                    ),
-                  },
-                ]}
-                data={icdCodes ?? []}
-                // filter={true}
-                isEditable="deleteOnly"
-                paging={{ page: 0, rowsPerPage: 20 }}
-                events={{
-                  onDelete: (row) => {
-                    console.log(row);
-                    deleteICDtoInvoice(row);
-                  },
-                }}
-              />
             </div>
           </div>
         </div>

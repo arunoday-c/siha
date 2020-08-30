@@ -145,17 +145,17 @@ class DeliveryNoteEntry extends Component {
           printArea={
             this.state.hims_f_inventory_consumption_header_id !== null
               ? {
-                  menuitems: [
-                    {
-                      label: "Print Receipt",
-                      events: {
-                        onClick: () => {
-                          generateDeliveryNoteReceipt(this.state);
-                        },
+                menuitems: [
+                  {
+                    label: "Print Receipt",
+                    events: {
+                      onClick: () => {
+                        generateDeliveryNoteReceipt(this.state);
                       },
                     },
-                  ],
-                }
+                  },
+                ],
+              }
               : ""
           }
           selectedLang={this.state.selectedLang}
@@ -243,8 +243,8 @@ class DeliveryNoteEntry extends Component {
                   <AlgaehLabel label={{ forceLabel: "Payment Terms" }} />
                   <h6>
                     {this.state.payment_terms
-                      ? this.state.payment_terms
-                      : "0 days"}
+                      ? this.state.payment_terms + " Days"
+                      : "0 Days"}
                   </h6>
                 </div>
               </div>

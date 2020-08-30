@@ -40,7 +40,7 @@
                     {{#each result}}
                     <tr>
                         <td colspan="6" class="tableSubHdg">{{sub_department_name}}</td>
-                        <td class="tableSubHdg numberFld">{{totalPatient}}</td>
+                        <td class="tableSubHdg2 numberFld"><b>{{dep_total}}</b></td>
 
                     </tr>
                     {{#each doctors}}
@@ -61,6 +61,10 @@
                         <td class="numberFld">{{net_amout}}</td>
                     </tr>
                     {{/each }}{{/each }}{{/each }}
+                    <tr class="numberFldTotalBottom">
+                        <td colspan="6"></td>
+                        <td class="numberFld">{{net_total}}</td>
+                    </tr>
                     {{else}}
                     <tr>
                         <td colspan="6" class="noResultTextReport">No Records Found</td>

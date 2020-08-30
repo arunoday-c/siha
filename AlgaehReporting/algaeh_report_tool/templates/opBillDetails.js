@@ -1,6 +1,6 @@
 // const algaehUtilities = require("algaeh-utilities/utilities");
 const executePDF = function executePDFMethod(options) {
-  return new Promise(function(resolve, reject) {
+  return new Promise(function (resolve, reject) {
     // const utilities = new algaehUtilities();
     try {
       const _ = options.loadash;
@@ -32,7 +32,7 @@ const executePDF = function executePDFMethod(options) {
         .then(results => {
           const result = _.chain(results)
             .groupBy(g => g.service_type)
-            .map(function(dtl, key) {
+            .map(function (dtl, key) {
               const sum_amount = _.chain(dtl)
                 .sumBy(s => parseFloat(s.total_amount))
                 .value()
@@ -45,9 +45,14 @@ const executePDF = function executePDFMethod(options) {
             })
             .value();
 
-          // utilities.logger().log("result: ", result);
+          console.log("result: ", result);
 
-          resolve({ detail: result });
+          const net_total = options.currencyFormat(
+            _.sumBy(result, (s) => parseFloat(s.sum_amount)),
+            options.args.crypto
+          )
+
+          resolve({ detail: result, net_total: net_total });
         })
         .catch(error => {
           options.mysql.releaseConnection();

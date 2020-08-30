@@ -35,7 +35,7 @@ export default {
           ],
           query:
             "insert into  hims_f_miscellaneous_earning_deduction (??) values ? ON DUPLICATE KEY UPDATE ?",
-          printQuery: (query) => {},
+          printQuery: (query) => { },
           bulkInsertOrUpdate: true,
         })
         .then((result) => {
@@ -1378,7 +1378,7 @@ export default {
     try {
       const input = req.query;
 
-      if (input.hospital_id > 0 && input.year > 0) {
+      if (input.year > 0) {
         let strQry = "";
         if (input.employee_group_id > 0) {
           strQry += " and E.employee_group_id=" + input.employee_group_id;
@@ -1386,17 +1386,20 @@ export default {
         if (input.hims_d_employee_id > 0) {
           strQry += " and E.hims_d_employee_id=" + input.hims_d_employee_id;
         }
+        if (input.hospital_id > 0) {
+          strQry += " and  E.hospital_id =" + input.hospital_id;
+        }
 
         //-------------------start
         _mysql
           .executeQuery({
             query: `select E.hims_d_employee_id,E.employee_code,E.full_name,ML.leave_id ,ML.total_eligible,\
-                ML.availed_till_date,ML.close_balance, ML.year from hims_d_employee E \
+                ML.availed_till_date,ML.close_balance, ML.year, E.identity_no from hims_d_employee E \
                 inner join  hims_f_employee_monthly_leave ML on ML.employee_id=E.hims_d_employee_id and ML.year=?\
-                where  E.hospital_id=? and  E.record_status='A' ${strQry} order by cast(E.employee_code as unsigned);\
+                where  E.record_status='A' ${strQry} order by cast(E.employee_code as unsigned);\
                 select hims_d_leave_id, leave_code, leave_description from hims_d_leave \
                 where record_status='A';`,
-            values: [input.year, input.hospital_id],
+            values: [input.year],
             printQuery: true,
           })
           .then((result) => {
@@ -1411,6 +1414,7 @@ export default {
                 .forEach((emp) => {
                   let data = {
                     employee_code: emp[0]["employee_code"],
+                    identity_no: emp[0]["identity_no"],
                     full_name: emp[0]["full_name"],
                     employee_id: emp[0]["hims_d_employee_id"],
                     year: emp[0]["year"],
@@ -1504,7 +1508,7 @@ export default {
     try {
       const input = req.query;
 
-      if (input.hospital_id > 0 && input.year > 0) {
+      if (input.year > 0) {
         let strQry = "";
         if (input.employee_group_id > 0) {
           strQry += " and E.employee_group_id=" + input.employee_group_id;
@@ -1512,19 +1516,21 @@ export default {
         if (input.hims_d_employee_id > 0) {
           strQry += " and E.hims_d_employee_id=" + input.hims_d_employee_id;
         }
-
+        if (input.hospital_id > 0) {
+          strQry += " and  E.hospital_id =" + input.hospital_id;
+        }
         //-------------------start
         _mysql
           .executeQuery({
             query:
-              "select E.employee_code, E.full_name, E.hospital_id, LS.hims_f_employee_leave_salary_header_id, LS.leave_days, \
+              "select E.employee_code, E.identity_no,E.full_name, E.hospital_id, LS.hims_f_employee_leave_salary_header_id, LS.leave_days, \
               LS.leave_salary_amount, LS.airticket_amount, LS.balance_leave_days, LS.balance_leave_salary_amount, \
               LS.balance_airticket_amount, LS.airfare_months, LS.utilized_leave_days, LS.utilized_leave_salary_amount, \
               LS.utilized_airticket_amount, E.hims_d_employee_id as employee_id from hims_d_employee E \
               left join hims_f_employee_leave_salary_header LS on E.hims_d_employee_id=LS.employee_id \
-              where E.leave_salary_process = 'Y' and E.record_status = 'A' and E.hospital_id=? order by cast(E.employee_code as unsigned)" +
+              where E.leave_salary_process = 'Y' and E.record_status = 'A' \
+              order by cast(E.employee_code as unsigned)" +
               strQry,
-            values: [input.hospital_id],
             printQuery: true,
           })
           .then((result) => {
@@ -1611,6 +1617,9 @@ export default {
     if (input.hims_d_employee_id > 0) {
       strQry += " and E.hims_d_employee_id=" + input.hims_d_employee_id;
     }
+    if (input.hospital_id > 0) {
+      strQry += " and  E.hospital_id =" + input.hospital_id;
+    }
 
     _mysql
       .executeQuery({
@@ -1618,10 +1627,9 @@ export default {
           "select E.employee_code, E.full_name, E.hims_d_employee_id, GP.year, GP.month, GP.gratuity_amount, \
           GP.hims_f_gratuity_provision_id, GP.acc_gratuity, E.hims_d_employee_id as employee_id from hims_d_employee E \
           left join hims_f_gratuity_provision GP  on E.hims_d_employee_id = GP.employee_id \
-          where E.record_status = 'A' and E.hospital_id=? and E.employee_status='A' and E.gratuity_applicable='Y'\
+          where E.record_status = 'A' and E.employee_status='A' and E.gratuity_applicable='Y'\
           order by cast(E.employee_code as unsigned)" +
           strQry,
-        values: [input.hospital_id],
         printQuery: true,
       })
       .then((result) => {

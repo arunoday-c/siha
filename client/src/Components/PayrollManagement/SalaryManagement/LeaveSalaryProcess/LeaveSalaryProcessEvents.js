@@ -402,6 +402,7 @@ const openSalaryComponents = ($this, row) => {
     hospital_id: $this.state.hospital_id,
     employee_id: $this.state.employee_id,
     salary_type: "LS",
+    enableSuspendEmployee: "Y",
   };
 
   algaehApiCall({
@@ -436,6 +437,7 @@ const openSalaryComponents = ($this, row) => {
 
         $this.setState({
           isOpen: !$this.state.isOpen,
+          dis_employee_name: header.full_name,
           salaryprocess_Earning: salaryprocess_Earning,
           salaryprocess_Deduction: salaryprocess_Deduction,
           salaryprocess_Contribute: salaryprocess_Contribute,

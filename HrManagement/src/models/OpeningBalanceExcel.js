@@ -23,6 +23,12 @@ async function generateColumns(leaveData) {
       horizontal: "center"
     },
     {
+      header: "Identity",
+      key: "identity_no",
+      width: 40,
+      horizontal: "center"
+    },
+    {
       header: "Year",
       key: "year",
       width: 40,
@@ -79,6 +85,12 @@ function excelEmployeeLeaveSalaryOpenBalance(req, res, next) {
           {
             header: "Employee Name",
             key: "full_name",
+            width: 40,
+            horizontal: "center"
+          },
+          {
+            header: "Identity Number",
+            key: "identity_no",
             width: 40,
             horizontal: "center"
           },
@@ -158,6 +170,7 @@ function excelEmployeeLeaveSalaryOpenBalance(req, res, next) {
             employee_id: rest.employee_id,
             full_name: rest.full_name,
             employee_code: rest.employee_code,
+            identity_no: rest.identity_no,
             balance_leave_days: rest.balance_leave_days || 0,
             balance_leave_salary_amount: rest.balance_leave_salary_amount || 0,
             balance_airticket_amount: rest.balance_airticket_amount || 0,
@@ -446,6 +459,7 @@ function excelEmployeeLeaveOpenBalance(req, res, next) {
           let employee = {
             full_name: rest.full_name,
             employee_code: rest.employee_code,
+            identity_no: rest.identity_no,
             employee_id: rest.employee_id,
             year: rest.year
           };

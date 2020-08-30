@@ -5,7 +5,9 @@ import SortableTree, {
   addNodeUnderParent,
   removeNodeAtPath,
   toggleExpandedForAll,
+  changeNodeAtPath,
 } from "react-sortable-tree";
+
 import AddNewAccount from "../AddNewAccount/AddNewAccount";
 import {
   AlgaehConfirm,
@@ -17,6 +19,7 @@ import {
 } from "algaeh-react-components";
 import ReportLauncher from "../AccountReport";
 // import Charts from "../Charts";
+import merge from "deepmerge";
 // import moment from "moment";
 import {
   getAccounts,
@@ -26,11 +29,29 @@ import {
   // getChartData,
   getGridChildNodes,
 } from ".././FinanceAccountEvent";
-import {
-  AlgaehSecurityComponent
-} from "algaeh-react-components";
+import { AlgaehSecurityComponent } from "algaeh-react-components";
 
 import "../alice.scss";
+
+const mergeExpanded = (expandA, expandB) => expandA || expandB;
+
+const combineMerge = (target, source, options) => {
+  const destination = target.slice();
+
+  source.forEach((item, index) => {
+    if (typeof destination[index] === "undefined") {
+      destination[index] = options.cloneUnlessOtherwiseSpecified(item, options);
+    } else if (options.isMergeableObject(item)) {
+      destination[index] = merge(target[index], item, options);
+    } else if (target.indexOf(item) === -1) {
+      destination.push(item);
+    }
+  });
+  return destination;
+};
+
+// const options = ;
+
 function TreeComponent({ assetCode, title, inDrawer }) {
   const [symbol, setSymbol] = useState("");
   const [financeHeadId, setFinanceHeadId] = useState(undefined);
@@ -94,10 +115,20 @@ function TreeComponent({ assetCode, title, inDrawer }) {
   }
 
   function editChild(input, stopLoad) {
+    debugger;
     renameAccount(input)
       .then(() => {
         loadAccount();
+        // const newTree = changeNodeAtPath({
+        //   treeData,
+        //   path: editorRecord.path,
+        //   getNodeKey: ({ treeIndex }) => treeIndex,
+        //   newNode: { ...editorRecord.node, subtitle: input?.opening_balance },
+        // });
+        // debugger;
+        // setTreeData(newTree);
         setEditorRecord({});
+
         stopLoad();
         setShowPopup(false);
         setNewAccount(false);
@@ -157,13 +188,24 @@ function TreeComponent({ assetCode, title, inDrawer }) {
         if (data.length > 0) {
           const firstData = data[0];
           setFinanceHeadId(firstData.finance_account_head_id);
-          setTreeData(firstData.children);
+          setTreeData((state) => {
+            const result = merge(state, firstData.children, {
+              customMerge: (key) => {
+                if (key === "expanded") {
+                  return mergeExpanded;
+                }
+              },
+              arrayMerge: combineMerge,
+            });
+
+            return result;
+          });
           setAmount(firstData["subtitle"]);
           setSymbol(firstData["trans_symbol"]);
           setExpandAll(false);
           setLayout("tree");
           setGridData(() => {
-            return [...[]];
+            return [];
           });
           // if (isExpOrInc) {
           //   loadChartData(firstData.finance_account_head_id);
@@ -261,11 +303,10 @@ function TreeComponent({ assetCode, title, inDrawer }) {
                 {JSON.stringify(editorRecord) === JSON.stringify(rowInfo) ? (
                   <i className="fas fa-times" />
                 ) : (
-                    <i className="fas fa-pen" />
-                  )}
+                  <i className="fas fa-pen" />
+                )}
               </li>
             </AlgaehSecurityComponent>
-
 
             <li
               label="print"
@@ -347,8 +388,8 @@ function TreeComponent({ assetCode, title, inDrawer }) {
         node.created_status === "S"
           ? "systemGen"
           : node.leafnode === "Y"
-            ? ""
-            : "accGroup",
+          ? ""
+          : "accGroup",
     };
   };
 
@@ -529,8 +570,8 @@ function TreeComponent({ assetCode, title, inDrawer }) {
                   {layout === "tree" ? (
                     <i className="fas fa-th"></i>
                   ) : (
-                      <i className="fas fa-stream"></i>
-                    )}
+                    <i className="fas fa-stream"></i>
+                  )}
                 </button>
                 <button
                   className="btn btn-default btn-circle active"
@@ -573,7 +614,7 @@ function TreeComponent({ assetCode, title, inDrawer }) {
                     const values =
                       searchFocusIndex !== undefined
                         ? (searchFoundCount + searchFocusIndex - 1) %
-                        searchFoundCount
+                          searchFoundCount
                         : searchFoundCount - 1;
                     setSearchFocusIndex(values);
                   }}
@@ -626,47 +667,47 @@ function TreeComponent({ assetCode, title, inDrawer }) {
                       />
                     </div>
                   ) : (
-                      <div className="row">
-                        {loadingGridData === true ? (
-                          <p>Please wait loading</p>
-                        ) : (
-                            <div className="col-12">
-                              {" "}
-                              <AlgaehTable
-                                className="accountTable"
-                                columns={[
-                                  {
-                                    fieldName: "ledger_code",
-                                    label: "Ledger Code",
-                                    filterable: true,
-                                  },
-                                  {
-                                    fieldName: "child_name",
-                                    label: "Ledger Name",
-                                    filterable: true,
-                                  },
-                                  {
-                                    fieldName: "arabic_child_name",
-                                    label: "Ledger Arabic",
-                                    filterable: true,
-                                  },
-                                  {
-                                    fieldName: "closing_balance",
-                                    label: "Closing Balance",
-                                    filterable: true,
-                                  },
-                                ]}
-                                data={gridData}
-                                // hasFooter={true}
-                                isFilterable={true}
-                              // aggregate={field => {
-                              //   return total[field];
-                              // }}
-                              />
-                            </div>
-                          )}
-                      </div>
-                    )}
+                    <div className="row">
+                      {loadingGridData === true ? (
+                        <p>Please wait loading</p>
+                      ) : (
+                        <div className="col-12">
+                          {" "}
+                          <AlgaehTable
+                            className="accountTable"
+                            columns={[
+                              {
+                                fieldName: "ledger_code",
+                                label: "Ledger Code",
+                                filterable: true,
+                              },
+                              {
+                                fieldName: "child_name",
+                                label: "Ledger Name",
+                                filterable: true,
+                              },
+                              {
+                                fieldName: "arabic_child_name",
+                                label: "Ledger Arabic",
+                                filterable: true,
+                              },
+                              {
+                                fieldName: "closing_balance",
+                                label: "Closing Balance",
+                                filterable: true,
+                              },
+                            ]}
+                            data={gridData}
+                            // hasFooter={true}
+                            isFilterable={true}
+                            // aggregate={field => {
+                            //   return total[field];
+                            // }}
+                          />
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </div>
               </div>
             </div>

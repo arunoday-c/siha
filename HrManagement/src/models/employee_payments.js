@@ -464,7 +464,7 @@ export default {
                                   .balance_leave_salary_amount
                               ) > 0
                                 ? leave_encash_header[0]
-                                    .balance_leave_salary_amount
+                                  .balance_leave_salary_amount
                                 : 0,
                               leave_encash_header[0]
                                 .hims_f_employee_leave_salary_header_id,
@@ -1458,6 +1458,10 @@ export default {
         strQry += " and E.hims_d_employee_id=" + input.hims_d_employee_id;
       }
 
+      if (input.hospital_id > 0) {
+        strQry += " and  E.hospital_id =" + input.hospital_id;
+      }
+
       _mysql
         .executeQuery({
           query:
@@ -1465,9 +1469,8 @@ export default {
             LS.leave_salary_amount, LS.airticket_amount, LS.balance_leave_days, LS.balance_leave_salary_amount, \
             LS.balance_airticket_amount, LS.airfare_months, LS.utilized_leave_days, LS.utilized_leave_salary_amount, \
             LS.utilized_airticket_amount from hims_d_employee E inner join hims_f_employee_leave_salary_header LS \
-            on E.hims_d_employee_id=LS.employee_id where E.leave_salary_process = 'Y' and E.hospital_id=? " +
+            on E.hims_d_employee_id=LS.employee_id where E.leave_salary_process = 'Y'" +
             strQry,
-          values: [input.hospital_id],
           printQuery: true,
         })
         .then((result) => {

@@ -12,7 +12,7 @@ const {
   getProcedures,
   updateProcedures,
   updateServicesOthrs,
-  releaseDB
+  releaseDB,
 } = serviceModels;
 
 export default () => {
@@ -22,6 +22,7 @@ export default () => {
   api.post(
     "/addServices",
     (req, res, next) => {
+      req.connection = null;
       delete req.connection;
       next();
     },
@@ -30,7 +31,7 @@ export default () => {
       let result = req.records;
       res.status(utlities.httpStatus().ok).json({
         success: true,
-        records: result
+        records: result,
       });
       next();
     }
@@ -40,7 +41,7 @@ export default () => {
     let result = req.records;
     res.status(utlities.httpStatus().ok).json({
       success: true,
-      records: result
+      records: result,
     });
     next();
   });
@@ -49,7 +50,7 @@ export default () => {
     let result = req.records;
     res.status(utlities.httpStatus().ok).json({
       success: true,
-      records: result
+      records: result,
     });
     next();
   });
@@ -58,7 +59,7 @@ export default () => {
     let result = req.records;
     res.status(utlities.httpStatus().ok).json({
       success: true,
-      records: result
+      records: result,
     });
     next();
   });
@@ -66,7 +67,7 @@ export default () => {
     let result = req.records;
     res.status(utlities.httpStatus().ok).json({
       success: true,
-      records: result
+      records: result,
     });
     next();
   });
@@ -74,7 +75,7 @@ export default () => {
     let result = req.records;
     res.status(utlities.httpStatus().ok).json({
       success: true,
-      records: result
+      records: result,
     });
     next();
   });
@@ -83,19 +84,24 @@ export default () => {
     let result = req.records;
     res.status(utlities.httpStatus().ok).json({
       success: true,
-      records: result
+      records: result,
     });
     next();
   });
 
-  api.put("/updateProcedures", updateServicesOthrs, updateProcedures, (req, res, next) => {
-    let result = req.records;
-    res.status(utlities.httpStatus().ok).json({
-      success: true,
-      records: result
-    });
-    next();
-  });
+  api.put(
+    "/updateProcedures",
+    updateServicesOthrs,
+    updateProcedures,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(utlities.httpStatus().ok).json({
+        success: true,
+        records: result,
+      });
+      next();
+    }
+  );
 
   return api;
 };

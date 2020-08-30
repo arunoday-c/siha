@@ -863,6 +863,10 @@ export default {
               age = age_data["years"];
               break;
           }
+
+          console.log("age_data", age_data)
+          console.log("age_type", age_type)
+          console.log("age", age)
           if (input.status == "R") {
             _mysql
               .executeQuery({
@@ -897,7 +901,7 @@ export default {
                     R.normal_qualitative_value,R.text_value ,A.analyte_type,A.result_unit from hims_m_lab_analyte  M \
                     left join hims_d_lab_analytes A on M.analyte_id=A.hims_d_lab_analytes_id\
                     left join  hims_d_lab_analytes_range R on  M.analyte_id=R.analyte_id\
-                    and (R.gender=? or R.gender='BOTH') and R.age_type=? and ? between R.from_age and R.to_age\
+                    and (R.gender=? or R.gender='BOTH') and (R.age_type=? or R.age_type='Y') and ? between R.from_age and R.to_age\
                     where M.test_id in(?);",
                 values: [
                   req.body.gender,

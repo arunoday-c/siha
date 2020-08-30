@@ -5,7 +5,7 @@ import { bindActionCreators } from "redux";
 import "./PurchaseOrderEntry.scss";
 import BreadCrumb from "../../common/BreadCrumb/BreadCrumb";
 import MyContext from "../../../utils/MyContext";
-import { AlgaehLabel, AlagehAutoComplete } from "../../Wrapper/algaehWrapper";
+import { AlgaehLabel, AlagehFormGroup, AlagehAutoComplete } from "../../Wrapper/algaehWrapper";
 import Options from "../../../Options.json";
 import moment from "moment";
 import GlobalVariables from "../../../utils/GlobalVariables.json";
@@ -106,8 +106,8 @@ class PurchaseOrderEntry extends Component {
     }
     this.FIN_Active =
       userToken.product_type === "HIMS_ERP" ||
-      userToken.product_type === "FINANCE_ERP" ||
-      userToken.product_type === "HRMS_ERP"
+        userToken.product_type === "FINANCE_ERP" ||
+        userToken.product_type === "HRMS_ERP"
         ? true
         : false;
 
@@ -129,15 +129,15 @@ class PurchaseOrderEntry extends Component {
       this.state.po_from === null
         ? []
         : Enumerable.from(this.props.polocations)
-            .where((w) => w.location_type === "WH")
-            .toArray();
+          .where((w) => w.location_type === "WH")
+          .toArray();
 
     const class_finder =
       this.state.dataFinder === true
         ? " disableFinder"
         : this.state.ReqData === true
-        ? " disableFinder"
-        : "";
+          ? " disableFinder"
+          : "";
     return (
       <div>
         <BreadCrumb
@@ -196,64 +196,64 @@ class PurchaseOrderEntry extends Component {
                       <span className="badge badge-success">PO Closed</span>
                     ) : this.state.authorize1 === "Y" &&
                       this.state.authorize2 === "Y" ? (
-                      <span className="badge badge-success">Authorized</span>
-                    ) : this.state.authorize1 === "Y" &&
-                      this.state.authorize2 === "N" ? (
-                      <span className="badge badge-danger">
-                        Posted/Pending For Authorize
-                      </span>
-                    ) : this.state.authorize1 === "N" &&
-                      this.state.authorize2 === "N" ? (
-                      <span className="badge badge-danger">
-                        Posted/Pending For Authorize
-                      </span>
-                    ) : (
-                      <span className="badge badge-danger">
-                        Posted/Pending For Authorize
-                      </span>
-                    )}
+                              <span className="badge badge-success">Authorized</span>
+                            ) : this.state.authorize1 === "Y" &&
+                              this.state.authorize2 === "N" ? (
+                                <span className="badge badge-danger">
+                                  Posted/Pending For Authorize
+                                </span>
+                              ) : this.state.authorize1 === "N" &&
+                                this.state.authorize2 === "N" ? (
+                                  <span className="badge badge-danger">
+                                    Posted/Pending For Authorize
+                                  </span>
+                                ) : (
+                                  <span className="badge badge-danger">
+                                    Posted/Pending For Authorize
+                                  </span>
+                                )}
                   </h6>
                 </div>
               ) : this.state.dataExitst === false &&
                 this.state.purchase_number !== null ? (
-                <div className="col">
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "PO Status",
-                    }}
-                  />
+                    <div className="col">
+                      <AlgaehLabel
+                        label={{
+                          forceLabel: "PO Status",
+                        }}
+                      />
 
-                  <h6>
-                    <span className="badge badge-danger">
-                      Send for Authorization pending
+                      <h6>
+                        <span className="badge badge-danger">
+                          Send for Authorization pending
                     </span>
-                  </h6>
-                </div>
-              ) : null}
+                      </h6>
+                    </div>
+                  ) : null}
             </div>
           }
           printArea={
             this.state.purchase_number !== null
               ? {
-                  menuitems: [
-                    {
-                      label: "Print PO",
-                      events: {
-                        onClick: () => {
-                          generatePOReceipt(this.state);
-                        },
+                menuitems: [
+                  {
+                    label: "Print PO",
+                    events: {
+                      onClick: () => {
+                        generatePOReceipt(this.state);
                       },
                     },
-                    // {
-                    //   label: "Receipt for Vendor",
-                    //   events: {
-                    //     onClick: () => {
-                    //       generatePOReceiptNoPrice(this.state);
-                    //     },
-                    //   },
-                    // },
-                  ],
-                }
+                  },
+                  // {
+                  //   label: "Receipt for Vendor",
+                  //   events: {
+                  //     onClick: () => {
+                  //       generatePOReceiptNoPrice(this.state);
+                  //     },
+                  //   },
+                  // },
+                ],
+              }
               : ""
           }
           selectedLang={this.state.selectedLang}
@@ -391,66 +391,66 @@ class PurchaseOrderEntry extends Component {
                     </div>
                   </div>
                 ) : (
-                  <div className="col">
-                    <div className="row">
-                      <AlagehAutoComplete
-                        div={{ className: "col form-group mandatory" }}
-                        label={{
-                          forceLabel: "Select Project",
-                          isImp: true,
-                        }}
-                        selector={{
-                          name: "project_id",
-                          className: "select-fld",
-                          value: this.state.project_id,
-                          dataSource: {
-                            textField: "cost_center",
-                            valueField: "cost_center_id",
-                            data: this.state.cost_projects,
-                          },
-                          onChange: texthandle.bind(this, this),
-                          others: {
-                            disabled: this.state.dataExists,
-                          },
-                          onClear: () => {
-                            this.setState({
-                              project_id: null,
-                              hospital_id: null,
-                              organizations: [],
-                            });
-                          },
-                        }}
-                      />
+                    <div className="col">
+                      <div className="row">
+                        <AlagehAutoComplete
+                          div={{ className: "col form-group mandatory" }}
+                          label={{
+                            forceLabel: "Select Project",
+                            isImp: true,
+                          }}
+                          selector={{
+                            name: "project_id",
+                            className: "select-fld",
+                            value: this.state.project_id,
+                            dataSource: {
+                              textField: "cost_center",
+                              valueField: "cost_center_id",
+                              data: this.state.cost_projects,
+                            },
+                            onChange: texthandle.bind(this, this),
+                            others: {
+                              disabled: this.state.dataExists,
+                            },
+                            onClear: () => {
+                              this.setState({
+                                project_id: null,
+                                hospital_id: null,
+                                organizations: [],
+                              });
+                            },
+                          }}
+                        />
 
-                      <AlagehAutoComplete
-                        div={{ className: "col mandatory" }}
-                        label={{
-                          forceLabel: "Select Branch",
-                          isImp: true,
-                        }}
-                        selector={{
-                          name: "hospital_id",
-                          className: "select-fld",
-                          value: this.state.hospital_id,
-                          dataSource: {
-                            textField: "hospital_name",
-                            valueField: "hims_d_hospital_id",
-                            data: this.state.organizations,
-                          },
-                          onChange: texthandle.bind(this, this),
-                          others: {
-                            disabled: this.state.dataExists,
-                          },
-                          onClear: () => {
-                            this.setState({
-                              hospital_id: null,
-                            });
-                          },
-                        }}
-                      />
+                        <AlagehAutoComplete
+                          div={{ className: "col mandatory" }}
+                          label={{
+                            forceLabel: "Select Branch",
+                            isImp: true,
+                          }}
+                          selector={{
+                            name: "hospital_id",
+                            className: "select-fld",
+                            value: this.state.hospital_id,
+                            dataSource: {
+                              textField: "hospital_name",
+                              valueField: "hims_d_hospital_id",
+                              data: this.state.organizations,
+                            },
+                            onChange: texthandle.bind(this, this),
+                            others: {
+                              disabled: this.state.dataExists,
+                            },
+                            onClear: () => {
+                              this.setState({
+                                hospital_id: null,
+                              });
+                            },
+                          }}
+                        />
+                      </div>
                     </div>
-                  </div>
-                )}
+                  )}
                 <AlagehAutoComplete
                   div={{ className: "col" }}
                   label={{ forceLabel: "Vendor Name" }}
@@ -502,7 +502,31 @@ class PurchaseOrderEntry extends Component {
                   </div>
                 ) : null}
 
-                <AlagehAutoComplete
+                <AlagehFormGroup
+                  div={{ className: "col-2  form-group" }}
+                  label={{
+                    forceLabel: "Payment Terms in Days"
+                  }}
+                  textBox={{
+                    number: {
+                      allowNegative: false,
+                      thousandSeparator: ","
+                    },
+                    dontAllowKeys: ["-", "e", "."],
+                    value: this.state.payment_terms,
+                    className: "txt-fld",
+                    name: "payment_terms",
+                    events: {
+                      onChange: texthandle.bind(this, this)
+                    },
+                    others: {
+                      placeholder: "0",
+                      disabled:
+                        this.state.po_entry_detail.length > 0 ? true : false
+                    }
+                  }}
+                />
+                {/* <AlagehAutoComplete
                   div={{ className: "col-2" }}
                   label={{ forceLabel: "Payment Terms" }}
                   selector={{
@@ -526,7 +550,7 @@ class PurchaseOrderEntry extends Component {
                     },
                     autoComplete: "off",
                   }}
-                />
+                /> */}
               </div>
             </div>
           </div>
@@ -542,8 +566,8 @@ class PurchaseOrderEntry extends Component {
             {this.state.po_mode === "S" ? (
               <POServiceList POEntry={this.state} />
             ) : (
-              <POItemList POEntry={this.state} />
-            )}
+                <POItemList POEntry={this.state} />
+              )}
           </MyContext.Provider>
           <div className="row">
             <div className="col-lg-12">
@@ -609,8 +633,8 @@ class PurchaseOrderEntry extends Component {
                           ? true
                           : this.state.authorize1 === "Y" ||
                             this.state.cancelled === "Y"
-                          ? true
-                          : false
+                            ? true
+                            : false
                       }
                       onClick={AuthorizePOEntry.bind(
                         this,
@@ -639,8 +663,8 @@ class PurchaseOrderEntry extends Component {
                           ? true
                           : this.state.authorize2 === "Y" ||
                             this.state.cancelled === "Y"
-                          ? true
-                          : false
+                            ? true
+                            : false
                       }
                       onClick={AuthorizePOEntry.bind(
                         this,
@@ -667,7 +691,7 @@ class PurchaseOrderEntry extends Component {
                     disabled={
                       (this.state.authorize2 === "Y" &&
                         this.state.authorize2 === "Y") ||
-                      this.state.cancelled === "Y"
+                        this.state.cancelled === "Y"
                         ? true
                         : false
                     }

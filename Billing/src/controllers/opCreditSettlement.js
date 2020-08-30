@@ -9,7 +9,7 @@ const {
   getCreidtSettlement,
   updateOPBilling,
   getPatientwiseBill,
-  addCreditToDayEnd
+  addCreditToDayEnd,
 } = opCreditModels;
 
 const { addCashHandover } = billModels;
@@ -33,8 +33,8 @@ export default () => {
 
           records: {
             internal_error: req.records.internal_error,
-            message: req.records.message
-          }
+            message: req.records.message,
+          },
         });
       } else {
         next();
@@ -46,7 +46,7 @@ export default () => {
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
-        records: req.records
+        records: req.records,
       });
     }
   );
@@ -63,7 +63,7 @@ export default () => {
       let result = { ..._receptEntry, ..._billing };
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
-        records: result
+        records: result,
       });
     }
   );
@@ -71,6 +71,7 @@ export default () => {
   api.get(
     "/getPatientwiseBill",
     (req, res, next) => {
+      req.connection = null;
       delete req.connection;
       next();
     },
@@ -79,7 +80,7 @@ export default () => {
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
-        records: req.records
+        records: req.records,
       });
     }
   );

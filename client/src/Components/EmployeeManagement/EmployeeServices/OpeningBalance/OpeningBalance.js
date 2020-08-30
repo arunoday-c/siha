@@ -53,6 +53,7 @@ class OpeningBalance extends Component {
       gratuity_dynamic_date: [],
       leave_salary_columns: [],
       props_enable: false,
+      branches: []
     };
     all_functions.getLeaveMaster(this);
   }
@@ -74,8 +75,24 @@ class OpeningBalance extends Component {
           type: "ORGS_GET_DATA",
           mappingName: "organizations",
         },
+        afterSuccess: (result) => {
+          result.push({
+            hims_d_hospital_id: -1,
+            hospital_name: "All",
+          });
+          this.setState({ branches: result });
+        },
       });
+    } else {
+      const result = this.props.organizations;
+      result.push({
+        hims_d_hospital_id: -1,
+        hospital_name: "All",
+      });
+      this.setState({ branches: result });
+      // this.setState({ branches: result });
     }
+
     if (
       this.props.emp_groups === undefined ||
       this.props.emp_groups.length === 0
@@ -239,7 +256,7 @@ class OpeningBalance extends Component {
               dataSource: {
                 textField: "hospital_name",
                 valueField: "hims_d_hospital_id",
-                data: this.props.organizations,
+                data: this.state.branches,
               },
               onChange: this.texthandle.bind(this),
               onClear: () => {

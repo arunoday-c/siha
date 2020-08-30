@@ -1,6 +1,6 @@
 import { Router } from "express";
 import utlities from "algaeh-utilities";
-import salaryModels from "../models/salary";
+import salaryModels, { getHrmsOptions } from "../models/salary";
 
 const {
   getSalaryProcess,
@@ -47,6 +47,7 @@ export default () => {
 
   api.put(
     "/finalizedSalaryProcess",
+    getHrmsOptions,
     finalizedSalaryProcess,
     generateAccountingEntry,
     (req, res, next) => {

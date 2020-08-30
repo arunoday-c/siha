@@ -225,7 +225,7 @@ export default {
                           });
                         })
                         .catch((e) => {
-                          mysql.rollBackTransaction(() => {
+                          _mysql.rollBackTransaction(() => {
                             next(e);
                           });
                         });
@@ -241,7 +241,7 @@ export default {
                     }
                   })
                   .catch((e) => {
-                    mysql.rollBackTransaction(() => {
+                    _mysql.rollBackTransaction(() => {
                       next(e);
                     });
                   });
@@ -257,7 +257,7 @@ export default {
               }
             })
             .catch((e) => {
-              mysql.rollBackTransaction(() => {
+              _mysql.rollBackTransaction(() => {
                 next(e);
               });
             });

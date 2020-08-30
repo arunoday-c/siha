@@ -597,3 +597,17 @@ alter table hims_d_nationality add column identity_document_id int after arabic_
 -- Query on Aug-22-2020 
 update algaeh_d_app_screens set page_to_redirect='PatientRegistration' where screen_code='FD0002';
 -- Query End Aug-22-2020 
+
+-- Query on Aug-26-08-2020
+ update algaeh_d_reports set report_type='Thermal' where report_name='cashReceipt';
+ 
+
+ -- Query on Aug-26-08-2020 -- For invoice header detail and statement
+ alter table hims_f_invoice_header add column submission_amount2 decimal(10,3) 
+after submission_amount, add column submission_amount3 decimal(10,3) 
+after submission_amount,add column remittance_amount2 decimal(10,3) 
+after remittance_amount,add column remittance_amount3 decimal(10,3) 
+after remittance_amount2,add column denial_amount2 decimal(10,3) 
+after denial_amount,add column denial_amount3 decimal(10,3) 
+after denial_amount2;
+ -- Query End Aug-26-08-2020
