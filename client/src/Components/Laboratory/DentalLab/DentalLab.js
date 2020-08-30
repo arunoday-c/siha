@@ -1,10 +1,9 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState } from "react";
 import "./DentalLab.scss";
 import {
-  AlgaehLabel,
-  AlgaehFormGroup,
+  // AlgaehLabel,
   // AlgaehDateHandler,
-  AlgaehAutoComplete,
+  // AlgaehAutoComplete,
   AlgaehDataGrid,
   // Checkbox,
   // AlgaehButton,
@@ -14,41 +13,149 @@ import {
   AlgaehMessagePop,
   // DatePicker,
   Spin,
-  AlgaehModal,
-  MainContext,
+  // AlgaehModal,
+  // MainContext,
+  // AlgaehHijriDatePicker,
 
   //   AlgaehButton,
 } from "algaeh-react-components";
+import { useQuery } from "react-query";
 import ButtonType from "../../Wrapper/algaehButton";
 import { newAlgaehApi } from "../../../hooks/";
+// import GenericData from "../../../utils/GlobalVariables.json";
 import moment from "moment";
 // import swal from "sweetalert2";
 import { Controller, useForm } from "react-hook-form";
+import { AddPatientDentalForm } from "./AddPatientmodal";
+// import { useLangFieldName } from "../../PatientRegistrationNew/patientHooks";
+// import AlgaehSearch from "../../Wrapper/globalSearch";
+// import spotlightSearch from "../../../Search/spotlightSearch";
 // import DentalImage from "../../../assets/images/dcaf_Dental_chart.png";
 // import { swalMessage } from "../../../utils/algaehApiCall";
 // const { confirm } = Modal;
+async function getDentalFormData() {
+  const result = await Promise.all([
+    newAlgaehApi({
+      uri: "/vendor/getVendorMaster",
+      module: "masterSettings",
+      method: "GET",
+      data: { vendor_status: "A" },
+    }),
+    newAlgaehApi({
+      uri: "/serviceType/getService",
+      module: "masterSettings",
+      data: {
+        procedure_type: "DN",
+      },
+      method: "GET",
+    }),
+    newAlgaehApi({
+      uri: "/department/get/get_All_Doctors_DepartmentWise",
+      module: "masterSettings",
+      // data: {
+      //   procedure_type: "DN",
+      // },
+      method: "GET",
+    }),
+  ]);
+  return {
+    povendors: result[0]?.data?.records,
+    procedureList: result[1]?.data?.records,
+    subDepartment: result[2]?.data?.records,
+  };
+}
 export default function DentalLab() {
   // const [OpenForm, setOpenForm] = useState(false);
-  const { userLanguage } = useContext(MainContext);
+  // const { userLanguage, titles = [] } = useContext(MainContext);
+  // const { FORMAT_GENDER, REQUEST_STATUS, WORK_STATUS } = GenericData;
+
   const [openDentalModal, setOpenDentalModal] = useState(false);
+
   const [loading_request_list, setLoadingRequestList] = useState(false);
   const [request_list, setRequestList] = useState([]);
-  console.log("request_list", request_list);
-  const [procedureList, setProcedureList] = useState([]);
-  console.log("request_list", procedureList);
+  const [current, setCurrent] = useState([]);
+  // const [procedureList, setProcedureList] = useState([]);
+  const [disabled, setDisabled] = useState(false);
   const [loading, setLoading] = useState(true);
+  // const [patientName, setPatientName] = useState("");
+  // const [povendors, setPovendors] = useState([]);
+  // const [patientId, setPatientId] = useState("");
+  // const [sub_department_id, setSub_department_id] = useState("");
+  // const [doctor_id, setDoctor_id] = useState("");
+
+  // const [subDepartment, setSubDepartment] = useState([]);
+
+  // const [doctors, setDoctors] = useState([]);
+
   // const [viewDentalModal, setViewDentalModal] = useState(false);
 
-  const { control, getValues, setValue } = useForm({
+  const { getValues, control, setValue, handleSubmit } = useForm({
     shouldFocusError: true,
-    defaultValues: {},
+    defaultValues: {
+      // requesting_date: new Date(),
+      from_due_date: moment().startOf("month").format("YYYY-MM-DD"),
+      to_due_date: new Date(),
+    },
   });
+  // const { date_of_birth } = useWatch({
+  //   control,
+  //   name: ["date_of_birth"],
+  // });
   useEffect(() => {
-    Promise.all([loadRequestList(getValues())]).then(() => {
+    Promise.all([
+      loadRequestList(getValues()),
+      // // getDoctorData(),
+      // vendorDetails(),
+      // getProcedures(),
+      // doctorsDeptWise(),
+      getDentalFormData(),
+    ]).then(() => {
       setLoadingRequestList(false);
     });
   }, []);
+  const { data: dropdownData } = useQuery("dropdown-data", getDentalFormData, {
+    initialData: {
+      povendors: [],
+      procedureList: [],
+      subDepartment: [],
+    },
+    refetchOnMount: false,
+    initialStale: true,
+    cacheTime: Infinity,
+  });
+  const { povendors, procedureList, subDepartment } = dropdownData;
+
+  // const getDoctorData = async () => {
+  //   try {
+  //     const result = await newAlgaehApi({
+  //       uri: "/frontDesk/getDoctorAndDepartment",
+  //       module: "frontDesk",
+  //       method: "GET",
+  //     });
+  //     if (result.data.success) {
+  //       return {
+  //         doctors: result.data.records,
+  //       };
+  //     }
+  //   } catch (e) {
+  //     AlgaehMessagePop({
+  //       type: "warning",
+  //       display: e.message,
+  //     });
+  //   }
+  // };
+  // const { fieldNameFn } = useLangFieldName();
+  // const { data } = useQuery("doctors-data", getDoctorData, {
+  //   cacheTime: Infinity,
+  //   initialData: {
+  //     doctors: [],
+  //   },
+  //   initialStale: true,
+  //   onSuccess: (data) => {},
+  // });
   const loadRequestList = async (data) => {
+    // const from_due_date = moment(data.from_due_date).format("YYYY-MM-DD");
+    // const to_due_date = moment(data.from_due_date).format("YYYY-MM-DD");
     setLoadingRequestList(true);
     try {
       const res = await newAlgaehApi({
@@ -60,7 +167,8 @@ export default function DentalLab() {
         },
       });
       if (res.data.success) {
-        setRequestList(res.data.result);
+        setRequestList(res.data.records);
+        setLoadingRequestList(false);
         setLoading(false);
       }
     } catch (e) {
@@ -71,158 +179,133 @@ export default function DentalLab() {
       });
     }
   };
-  const getProcedures = async () => {
-    try {
-      const res = await newAlgaehApi({
-        uri: "/serviceType/getService",
-        module: "masterSettings",
-        data: {
-          procedure_type: "DN",
-        },
-        method: "GET",
-      });
-      if (res.data.success) {
-        setProcedureList(res.data.result);
-      }
-    } catch (e) {
-      setLoading(false);
-      AlgaehMessagePop({
-        type: "error",
-        display: e.message,
-      });
-    }
+
+  // const vendorDetails = () => {
+  //   newAlgaehApi({
+  //     uri: "/vendor/getVendorMaster",
+  //     module: "masterSettings",
+  //     method: "GET",
+  //     data: { vendor_status: "A" },
+  //   })
+  //     .then((res) => {
+  //       if (res.data.success) {
+  //         setPovendors(res.data.records);
+  //       }
+  //     })
+  //     .catch((e) => {
+  //       AlgaehMessagePop({
+  //         type: "error",
+  //         display: e.message,
+  //       });
+  //     });
+  // };
+
+  // const patientSearch = () => {
+  //   AlgaehSearch({
+  //     searchGrid: {
+  //       columns: spotlightSearch.frontDesk.patients,
+  //     },
+  //     searchName: "patients",
+  //     uri: "/gloabelSearch/get",
+  //     onContainsChange: (text, serchBy, callBack) => {
+  //       callBack(text);
+  //     },
+  //     onRowSelect: (row) => {
+  //       setPatientName(row.full_name);
+  //       setPatientId(row.hims_d_patient_id);
+  //     },
+  //   });
+  // };
+  const onEdit = (row) => {
+    setOpenDentalModal(true);
+
+    // setPatientId(row.patient_id);
+    setCurrent(row);
   };
-  const onCancel = () => {
+  const onEditStatus = (row) => {
+    setOpenDentalModal(true);
+    setCurrent(row);
+    // setPatientId(row.patient_id);
+    setDisabled(true);
+  };
+
+  // const getProcedures = async () => {
+  //   try {
+  //     const res = await newAlgaehApi({
+  //       uri: "/serviceType/getService",
+  //       module: "masterSettings",
+  //       data: {
+  //         procedure_type: "DN",
+  //       },
+  //       method: "GET",
+  //     });
+  //     if (res.data.success) {
+  //       setProcedureList(res.data.records);
+  //     }
+  //   } catch (e) {
+  //     setLoading(false);
+  //     AlgaehMessagePop({
+  //       type: "error",
+  //       display: e.message,
+  //     });
+  //   }
+  // };
+  // const doctorsDeptWise = async () => {
+  //   try {
+  //     const res = await newAlgaehApi({
+  //       uri: "/department/get/get_All_Doctors_DepartmentWise",
+  //       module: "masterSettings",
+  //       // data: {
+  //       //   procedure_type: "DN",
+  //       // },
+  //       method: "GET",
+  //     });
+  //     if (res.data.success) {
+  //       setSubDepartment(res.data.records.departmets);
+  //       // setDoctors(res.data.records.doctors);
+
+  //       // setProcedureList(res.data.records);
+  //     }
+  //   } catch (e) {
+  //     setLoading(false);
+  //     AlgaehMessagePop({
+  //       type: "error",
+  //       display: e.message,
+  //     });
+  //   }
+  // };
+  const onClose = () => {
     setOpenDentalModal(false);
+    loadRequestList(getValues());
+    setDisabled(false);
   };
   const openDentalModalHandler = (row) => {
     setOpenDentalModal(true);
-    getProcedures();
   };
+  const getFormRequest = (e) => {
+    loadRequestList({
+      from_due_date: e.from_due_date._d,
+      to_due_date: e.to_due_date,
+    });
+  };
+
   return (
     <Spin spinning={loading}>
-      <AlgaehModal
-        visible={openDentalModal}
-        title="Request Dental Service"
-        closable={false}
-        onCancel={onCancel}
-        className={`${userLanguage}_comp row algaehNewModal dentalLabRequest`}
-        // onOk={onOK}
-      >
-        <div
-          className="col-12 popupInner margin-top-15"
-          data-validate="addDentalPlanDiv"
-        >
-          <div className="row">
-            <div className="col-12 popRightDiv">
-              <div className="row">
-                {/* <div className="col-3 globalSearchCntr">
-            <AlgaehLabel label={{ forceLabel: "Search Employee" }} />
-            <h6 onClick={this.employeeSearch.bind(this)}>
-              {this.state.employee_name
-                ? this.state.employee_name
-                : "Search Employee"}
-              <i className="fas fa-search fa-lg"></i>
-            </h6>
-          </div> */}
-                <div className="col-3 globalSearchCntr">
-                  <AlgaehLabel label={{ forceLabel: "Search Patient" }} />
-                  <h6>
-                    Search Patient
-                    <i className="fas fa-search fa-lg"></i>
-                  </h6>
-                </div>
-                <AlgaehDateHandler
-                  div={{ className: "col-3 form-group mandatory" }}
-                  label={{
-                    forceLabel: "Requesting Date",
-                    isImp: true,
-                  }}
-                  textBox={{
-                    className: "txt-fld",
-                    name: "",
-                  }}
-                  minDate={new Date()}
-                  events={{}}
-                  value=""
-                />
-                <AlgaehAutoComplete
-                  div={{ className: "col-3 form-group mandatory" }}
-                  label={{
-                    forceLabel: "Select Procedure",
-                    isImp: true,
-                  }}
-                  selector={{
-                    name: "",
-                    className: "select-fld",
-                    value: "",
-                    dataSource: {
-                      textField: "",
-                      valueField: "",
-                      data: [],
-                    },
-                    // onChange:{},
-                  }}
-                />{" "}
-                <AlgaehAutoComplete
-                  div={{ className: "col-3 form-group mandatory" }}
-                  label={{
-                    forceLabel: "Select Vendor",
-                    isImp: true,
-                  }}
-                  selector={{
-                    name: "",
-                    className: "select-fld",
-                    value: "",
-                    dataSource: {
-                      textField: "",
-                      valueField: "",
-                      data: [],
-                    },
-                    // onChange:{},
-                  }}
-                />
-                <AlgaehFormGroup
-                  div={{ className: "col-3 mandatory" }}
-                  label={{
-                    forceLabel: "Service Amount",
-                    isImp: true,
-                  }}
-                  textBox={{
-                    className: "txt-fld",
-                    name: "",
-                    type: "number",
-                    value: "",
-                    // onChange: (e) => {},
-                    placeholder: "0.00",
-                  }}
-                />
-                <AlgaehAutoComplete
-                  div={{ className: "col-3 form-group mandatory" }}
-                  label={{
-                    forceLabel: "Select Doctor",
-                    isImp: true,
-                  }}
-                  selector={{
-                    name: "",
-                    className: "select-fld",
-                    value: "",
-                    dataSource: {
-                      textField: "",
-                      valueField: "",
-                      data: [],
-                    },
-                    // onChange:{},
-                  }}
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      </AlgaehModal>
       <div className="DentalLabScreen">
         <div className="row inner-top-search">
           <div className="row padding-10">
+            <AddPatientDentalForm
+              povendors={povendors}
+              procedureList={procedureList}
+              subDepartment={subDepartment}
+              current={current}
+              onClose={onClose}
+              visible={openDentalModal}
+              disabled={disabled}
+              getRequest={getFormRequest}
+              // userLanguage={userLanguage}
+              // titles={titles}
+            />
             <Controller
               name="from_due_date"
               control={control}
@@ -237,7 +320,7 @@ export default function DentalLab() {
                     className: "form-control",
                     value,
                   }}
-                  maxDate={new Date()}
+                  // maxDate={new Date()}
                   events={{
                     onChange: (selectedDate) => {
                       setValue("from_due_date", moment(selectedDate));
@@ -261,7 +344,7 @@ export default function DentalLab() {
                     className: "form-control",
                     value,
                   }}
-                  maxDate={new Date()}
+                  // maxDate={new Date()}
                   events={{
                     onChange: (selectedDate) => {
                       setValue("to_due_date", moment(selectedDate));
@@ -279,6 +362,7 @@ export default function DentalLab() {
                   forceLabel: "Load",
                   returnText: true,
                 }}
+                onClick={handleSubmit(getFormRequest)}
                 loading={loading_request_list}
               />
             </div>
@@ -307,41 +391,44 @@ export default function DentalLab() {
                       className="DentalFormGrid"
                       columns={[
                         {
-                          fieldName: "action",
+                          fieldName: "",
                           label: "Actions",
-                          displayTemplate: (row) => (
-                            <button onClick={openDentalModalHandler(row)}>
-                              Detail
-                            </button>
-                          ),
-                          others: {
-                            maxWidth: 100,
-                            resizable: false,
-                            filterable: false,
-                            style: { textAlign: "center" },
+                          displayTemplate: (row) => {
+                            return (
+                              <>
+                                <i
+                                  className="fas fa-pen"
+                                  onClick={() => onEdit(row)}
+                                ></i>
+
+                                <i
+                                  className="fas fa-pen"
+                                  onClick={() => onEditStatus(row)}
+                                ></i>
+                              </>
+                            );
                           },
                         },
                         {
-                          fieldName: "work_status",
-                          label: "Status",
+                          fieldName: "request_status",
+                          label: "Request status",
 
-                          displayTemplate: (row) => (
-                            // return (
-                            <span>
-                              {row.work_status === "PEN" ? (
-                                <span className="badge badge-warning">
-                                  Pending
-                                </span>
-                              ) : row.work_status === "COM" ? (
-                                <span className="badge badge-success">
-                                  Completed
-                                </span>
-                              ) : (
-                                "------"
-                              )}
-                            </span>
-                            // )
-
+                          displayTemplate: (row) => {
+                            return (
+                              <span>
+                                {row.request_status === "PEN" ? (
+                                  <span className="badge badge-warning">
+                                    Pending
+                                  </span>
+                                ) : row.request_status === "COM" ? (
+                                  <span className="badge badge-success">
+                                    Completed
+                                  </span>
+                                ) : (
+                                  "------"
+                                )}
+                              </span>
+                            );
                             // <label>
                             //   {row.work_status === "WIP"
                             //     ? "Work In Progress"
@@ -349,26 +436,61 @@ export default function DentalLab() {
                             //     ? "Pending"
                             //     : "Completed"}{" "}
                             // </label>
-                          ),
+                          },
                         },
+                        {
+                          fieldName: "work_status",
+                          label: "Work Sttus",
+
+                          displayTemplate: (row) => {
+                            return (
+                              <span>
+                                {row.work_status === "PEN" ? (
+                                  <span className="badge badge-warning">
+                                    Pending
+                                  </span>
+                                ) : row.work_status === "WIP" ? (
+                                  <span className="badge badge-warning">
+                                    Work In Progress
+                                  </span>
+                                ) : row.work_status === "COM" ? (
+                                  <span className="badge badge-success">
+                                    Completed
+                                  </span>
+                                ) : (
+                                  "------"
+                                )}
+                              </span>
+                            );
+                            // <label>
+                            //   {row.work_status === "WIP"
+                            //     ? "Work In Progress"
+                            //     : row.work_status === "PEN"
+                            //     ? "Pending"
+                            //     : "Completed"}{" "}
+                            // </label>
+                          },
+                        },
+
                         {
                           fieldName: "patient_code",
                           label: "MRN Number",
+                          filterable: true,
                         },
                         {
-                          fieldName: "patient_name",
+                          fieldName: "full_name",
                           label: "Patient Name",
                         },
                         {
-                          fieldName: "patient_name",
+                          fieldName: "requested_date",
                           label: "Request Date",
                         },
                         {
-                          fieldName: "plan_name",
+                          fieldName: "service_name",
                           label: "Procedure Name",
                         },
                         {
-                          fieldName: "plan_name",
+                          fieldName: "vendor_name",
                           label: "Vendor Name",
                         },
                         {
@@ -381,7 +503,8 @@ export default function DentalLab() {
                         },
                       ]}
                       loading={false}
-                      data={[]}
+                      data={request_list}
+                      filterable={true}
                       pagination={true}
                       events={
                         {
