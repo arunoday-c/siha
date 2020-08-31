@@ -418,9 +418,17 @@ export default function DentalLab() {
                                   <span className="badge badge-warning">
                                     Pending
                                   </span>
-                                ) : row.request_status === "COM" ? (
+                                ) : row.request_status === "APR" ? (
                                   <span className="badge badge-success">
-                                    Completed
+                                    Approved
+                                  </span>
+                                ) : row.request_status === "REJ" ? (
+                                  <span className="badge badge-danger">
+                                    Rejected
+                                  </span>
+                                ) : row.request_status === "RES" ? (
+                                  <span className="badge badge-danger">
+                                    Resend
                                   </span>
                                 ) : (
                                   "------"
@@ -438,7 +446,7 @@ export default function DentalLab() {
                         },
                         {
                           fieldName: "work_status",
-                          label: "Work Sttus",
+                          label: "Work Status",
 
                           displayTemplate: (row) => {
                             return (
