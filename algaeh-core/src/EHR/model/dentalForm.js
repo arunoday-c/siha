@@ -97,12 +97,12 @@ export default {
           -- P.patient_code,concat(T.title,' ',P.full_name)as  patient_name,
              concat(ET.title,' ',E.full_name)as  employee_name,
              -- PL.hims_f_treatment_plan_id, PL.plan_name
-        D.work_status,D.hims_f_dental_form_id,D.due_date ,D.department_id,D.requested_date,D.request_status,D.procedure_id, D.provider_id,D.procedure_amt,D.approved,D.date_of_birth,
+        D.work_status,E.work_email,D.hims_f_dental_form_id,D.due_date ,D.department_id,D.requested_date,D.request_status,D.procedure_id, D.provider_id,D.procedure_amt,D.approved,D.date_of_birth,
         D.full_name, D.patient_code,D.gender, D.age,V.vendor_name,V.hims_d_vendor_id,S.service_name
          from hims_f_dental_form as D 
          -- inner join hims_f_patient as P on P.hims_d_patient_id=D.patient_id 
        -- left join hims_d_title as T on T.his_d_title_id = P.title_id 
-         inner join hims_d_employee as E on  D.provider_id=E.hims_d_employee_id 
+         inner join hims_d_employee as E on  E.hims_d_employee_id =D.provider_id
          left join hims_d_title as ET on ET.his_d_title_id = E.title_id  
          left join hims_d_vendor as V on V.hims_d_vendor_id=D.vendor_id
          left join hims_d_services as S on S.hims_d_services_id =D.procedure_id

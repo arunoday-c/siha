@@ -9,6 +9,8 @@
                     <tr>
                         <th>Sl No.</th>
                         <th>Handover Date</th>
+                        <th>Total Cash</th>
+                        <th>Total Card</th>
                         <th>Total Expected</th>
                         <th>Total Collected</th>
                         <th>Difference</th>
@@ -21,6 +23,8 @@
                     <tr>
                         <td>{{inc @index}}</td>
                         <td>{{daily_handover_date}}</td>
+                        <td>{{expected_cash}}</td>
+                        <td>{{expected_card}}</td>
                         <td>{{expected_total}}</td>
                         <td class="numberFld">{{collected_total}}</td>
                         <td class="numberFld">{{total_diff}}</td>
@@ -30,6 +34,8 @@
                     <tr class="numberFldTotalBottom">
 
                         <td colspan="2" class="numberFld">Total</td>
+                        <td class="numberFld">{{expected_cash}}</td>
+                        <td class="numberFld">{{expected_card}}</td>
                         <td class="numberFld">{{expected_total}}</td>
                         <td class="numberFld">{{collected_total}}</td>
                         <td class="numberFld">{{total_diff}}</td>
