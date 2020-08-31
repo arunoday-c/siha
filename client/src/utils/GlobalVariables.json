@@ -23,13 +23,13 @@
       "color": "#f2f2f2"
     },
     {
-      "name": "Work In Progress",
+      "name": "Ordered",
       "value": "WIP",
       "color": "#f2f2f2"
     },
 
     {
-      "name": "Completed",
+      "name": "Arrived",
       "value": "COM",
       "color": "#ff99ff80"
     }

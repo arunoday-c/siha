@@ -442,7 +442,7 @@ export default function DentalLab() {
                                     Rejected
                                   </span>
                                 ) : row.request_status === "RES" ? (
-                                  <span className="badge badge-danger">
+                                  <span className="badge badge-warning">
                                     Resend
                                   </span>
                                 ) : (
@@ -471,12 +471,12 @@ export default function DentalLab() {
                                     Pending
                                   </span>
                                 ) : row.work_status === "WIP" ? (
-                                  <span className="badge badge-warning">
-                                    Work In Progress
+                                  <span className="badge badge-info">
+                                    Ordered
                                   </span>
                                 ) : row.work_status === "COM" ? (
                                   <span className="badge badge-success">
-                                    Completed
+                                    Arrived
                                   </span>
                                 ) : (
                                   "------"
