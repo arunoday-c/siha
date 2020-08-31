@@ -1,4 +1,8 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, {
+  //  useState,
+  useEffect,
+  useContext,
+} from "react";
 import "./DentalLab.scss";
 import {
   // AlgaehLabel,
@@ -11,6 +15,7 @@ import {
   AlgaehModal,
   MainContext,
   AlgaehHijriDatePicker,
+  AlgaehTreeSearch,
 
   //   AlgaehButton,
 } from "algaeh-react-components";
@@ -44,12 +49,13 @@ export function AddPatientDentalForm({
   visible,
   disabled,
   getRequest,
+  doctors,
 }) {
   const {
     // titles = [],
     userLanguage,
   } = useContext(MainContext);
-
+  console.log("doctors", doctors);
   //   const { userLanguage, titles = [] } = useContext(MainContext);
   const { FORMAT_GENDER, REQUEST_STATUS, WORK_STATUS } = GenericData;
   //   const [openDentalModal, setOpenDentalModal] = useState(false);
@@ -58,12 +64,12 @@ export function AddPatientDentalForm({
 
   //   const [loading, setLoading] = useState(true);
 
-  const [sub_department_id, setSub_department_id] = useState("");
-  const [doctor_id, setDoctor_id] = useState("");
+  // const [sub_department_id, setSub_department_id] = useState("");
+  // const [doctor_id, setDoctor_id] = useState("");
 
   //   const [subDepartment, setSubDepartment] = useState([]);
 
-  const [doctors, setDoctors] = useState([]);
+  // const [doctors, setDoctors] = useState([]);
   const { control, errors, setValue, handleSubmit, reset } = useForm({
     shouldFocusError: true,
     defaultValues: {
@@ -87,16 +93,14 @@ export function AddPatientDentalForm({
         provider_id: current.provider_id,
         due_date: current.due_date,
         service_amount: current.procedure_amt,
+        doctors: current.provider_id,
       });
-      const doctors = subDepartment.departmets.filter((item) => {
-        return item.sub_department_id === current.department_id;
-      })[0].doctors;
 
       // .map((item) => item.doctors);
 
-      setSub_department_id(current.department_id);
-      setDoctor_id(current.provider_id);
-      setDoctors(doctors);
+      // setSub_department_id(current.department_id);
+      // setDoctor_id(current.provider_id);
+      // setDoctors(doctors);
     } else {
       reset({
         full_name: "",
@@ -111,9 +115,10 @@ export function AddPatientDentalForm({
         provider_id: "",
         due_date: undefined,
         service_amount: "",
+        doctor: "",
       });
-      setSub_department_id("");
-      setDoctor_id("");
+      // setSub_department_id("");
+      // setDoctor_id("");
     }
   }, [current, visible]);
   const { date_of_birth } = useWatch({
@@ -134,8 +139,8 @@ export function AddPatientDentalForm({
         method: "POST",
         data: {
           // patient_id: patientId,
-          department_id: sub_department_id,
-          provider_id: doctor_id,
+          // department_id: sub_department_id,
+          provider_id: data.doctor,
           full_name: data.full_name,
           patient_code: data.patient_code,
           gender: data.gender,
@@ -175,8 +180,8 @@ export function AddPatientDentalForm({
         method: "PUT",
         // module: "finance",
         data: {
-          department_id: sub_department_id,
-          provider_id: doctor_id,
+          // department_id: sub_department_id,
+          provider_id: data.doctor,
           full_name: data.full_name,
           patient_code: data.patient_code,
           gender: data.gender,
@@ -226,13 +231,13 @@ export function AddPatientDentalForm({
   //   setDoctor_id("");
   //   onClose
   // };
-  const onChangeDoctor = (e) => {
-    setDoctor_id(e.employee_id);
-  };
-  const onChangeAutoComplete = (e) => {
-    setSub_department_id(e.sub_department_id);
-    setDoctors(e.doctors);
-  };
+  // const onChangeDoctor = (e) => {
+  //   setDoctor_id(e.employee_id);
+  // };
+  // const onChangeAutoComplete = (e) => {
+  //   setSub_department_id(e.sub_department_id);
+  //   setDoctors(e.doctors);
+  // };
   //   const onCancel = () => {
   //     openDentalModal = false;
   //   };
@@ -290,7 +295,7 @@ export function AddPatientDentalForm({
         <div className="row">
           <div className="col-12 popRightDiv">
             <div className="row">
-              <AlgaehAutoComplete
+              {/* <AlgaehAutoComplete
                 div={{ className: "col-lg-2 mandatory form-group" }}
                 label={{
                   fieldName: "Department",
@@ -317,33 +322,42 @@ export function AddPatientDentalForm({
                     tabIndex: "4",
                   },
                 }}
-              />
-              <AlgaehAutoComplete
-                div={{ className: "col-lg-4 mandatory form-group" }}
-                label={{
-                  fieldName: "Requesting By",
-                  isImp: true,
-                }}
-                error={errors}
-                selector={{
-                  name: "doctors",
-                  className: "select-fld",
-
-                  dataSource: {
-                    textField: "full_name",
-                    valueField: "employee_id",
-                    data: doctors,
-                  },
-                  value: doctor_id,
-                  onChange: onChangeDoctor,
-                  // onClear: () => {
-                  //   onChange("");
-                  // },
-                  others: {
-                    disabled,
-                    tabIndex: "4",
-                  },
-                }}
+              /> */}
+              <Controller
+                control={control}
+                name="doctor"
+                rules={{ required: "Please Select a doctor" }}
+                render={({ onChange, value }) => (
+                  <AlgaehTreeSearch
+                    div={{ className: "col mandatory" }}
+                    label={{
+                      fieldName: "doctor_id",
+                      isImp: true,
+                      align: "ltr",
+                    }}
+                    error={errors}
+                    tree={{
+                      disableHeader: true,
+                      treeDefaultExpandAll: true,
+                      onChange: (selected) => {
+                        onChange(selected);
+                      },
+                      disabled: disabled,
+                      value,
+                      name: "doctor",
+                      data: doctors,
+                      textField: fieldNameFn("label", "arlabel"),
+                      valueField: (node) => {
+                        return node.value;
+                        // if (node.sub_department_id) {
+                        //   return `${node.sub_department_id}-${node.services_id}-${node.value}-${node.department_type}-${node.department_id}-${node.service_type_id}`;
+                        // } else {
+                        //   return node.value;
+                        // }
+                      },
+                    }}
+                  />
+                )}
               />{" "}
               <Controller
                 name="select_procedure"
