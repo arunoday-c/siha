@@ -109,7 +109,7 @@ export default {
          -- inner join hims_f_treatment_plan as PL 
          -- on PL.patient_id = P.hims_d_patient_id and PL.visit_id = D.visit_id  and PL.episode_id = D.episode 
         where date(D.requested_date) >= date(?) and date(D.requested_date) <= date(?)`,
-          values: [input.from_due_date, input.to_due_date],
+          values: [input.from_request_date, input.to_request_date],
           printQuery: true,
         })
         .then((result) => {
