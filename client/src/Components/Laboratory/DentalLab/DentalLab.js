@@ -462,13 +462,6 @@ export default function DentalLab() {
                                 )}
                               </span>
                             );
-                            // <label>
-                            //   {row.work_status === "WIP"
-                            //     ? "Work In Progress"
-                            //     : row.work_status === "PEN"
-                            //     ? "Pending"
-                            //     : "Completed"}{" "}
-                            // </label>
                           },
                         },
                         {
@@ -495,16 +488,40 @@ export default function DentalLab() {
                                 )}
                               </span>
                             );
-                            // <label>
-                            //   {row.work_status === "WIP"
-                            //     ? "Work In Progress"
-                            //     : row.work_status === "PEN"
-                            //     ? "Pending"
-                            //     : "Completed"}{" "}
-                            // </label>
                           },
                         },
-
+                        {
+                          fieldName: "employee_name",
+                          label: "Requested By",
+                          filterable: true,
+                        },
+                        {
+                          fieldName: "vendor_name",
+                          label: "Requesting to Vendor",
+                          filterable: true,
+                        },
+                        {
+                          fieldName: "service_name",
+                          label: "For the Procedure",
+                          filterable: true,
+                        },
+                        {
+                          fieldName: "service_amount",
+                          label: "Amount",
+                          filterable: true,
+                        },
+                        {
+                          fieldName: "requested_date",
+                          label: "Request Date",
+                        },
+                        {
+                          fieldName: "due_date",
+                          label: "Due Date",
+                        },
+                        {
+                          fieldName: "arrival__date",
+                          label: "Received Date",
+                        },
                         {
                           fieldName: "patient_code",
                           label: "MRN Number",
@@ -514,29 +531,6 @@ export default function DentalLab() {
                           fieldName: "full_name",
                           label: "Patient Name",
                           filterable: true,
-                        },
-                        {
-                          fieldName: "requested_date",
-                          label: "Request Date",
-                        },
-                        {
-                          fieldName: "service_name",
-                          label: "Procedure Name",
-                          filterable: true,
-                        },
-                        {
-                          fieldName: "vendor_name",
-                          label: "Vendor Name",
-                          filterable: true,
-                        },
-                        {
-                          fieldName: "employee_name",
-                          label: "Doctor Name",
-                          filterable: true,
-                        },
-                        {
-                          fieldName: "due_date",
-                          label: "Arrival Date",
                         },
                       ]}
                       loading={false}

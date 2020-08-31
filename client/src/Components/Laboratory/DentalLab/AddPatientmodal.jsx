@@ -740,6 +740,30 @@ export function AddPatientDentalForm({
                       />
                     )}
                   />
+                  <Controller
+                    name="arrival_date"
+                    control={control}
+                    render={({ value, onChange }) => (
+                      <AlgaehDateHandler
+                        div={{ className: "col-3 form-group mandatory" }}
+                        label={{
+                          forceLabel: "Received Date",
+                          isImp: true,
+                        }}
+                        textBox={{
+                          className: "form-control",
+                          value,
+                        }}
+                        // others={{ disabled }}
+                        minDate={new Date()}
+                        events={{
+                          onChange: (reqDate) => {
+                            setValue("arrival_date", moment(reqDate));
+                          },
+                        }}
+                      />
+                    )}
+                  />
                   <AlgaehSecurityComponent componentCode="DEN_MAIL_NOTY">
                     <div className="col">
                       <label>Notify Via Email</label>
