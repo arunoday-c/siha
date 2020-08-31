@@ -31,6 +31,7 @@ class RCMWorkbench extends Component {
       openClaims: false,
       generateReport: true,
       rcmMode: "C",
+      insurance_statement_id: null,
     };
     this.validatedClaims = [];
     this.select = true;
@@ -51,7 +52,50 @@ class RCMWorkbench extends Component {
         rcmMode: "S",
       });
     }
+    if (params?.get("insurance_statement_id")) {
+      this.setState(
+        {
+          rcmMode: "R",
+          insurance_statement_id: params.get("insurance_statement_id"),
+        },
+        () => this.getInvoicesForStatementID()
+      );
+    }
   }
+
+  getInvoicesForStatementID = () => {
+    algaehApiCall({
+      uri: "/invoiceGeneration/getInvoicesForClaims",
+      module: "insurance",
+      method: "GET",
+      data: {
+        insurance_statement_id: this.state.insurance_statement_id,
+      },
+      onSuccess: (res) => {
+        if (res.data.success) {
+          this.setState({
+            claims: res.data.records,
+            resubmissionList: [],
+          });
+        }
+      },
+    });
+  };
+
+  addToResubmissionlist = (row) => {
+    const currentList = [...this.state.resubmissionList];
+    const currentIdx = currentList?.findIndex(
+      (item) => item.hims_f_invoice_header_id == row?.hims_f_invoice_header_id
+    );
+    if (currentIdx > -1) {
+      currentList.splice(currentIdx, 1);
+    } else {
+      currentList.push(row);
+    }
+    this.setState({
+      resubmissionList: currentList,
+    });
+  };
 
   dropDownHandler(value) {
     switch (value.name) {
@@ -509,7 +553,10 @@ class RCMWorkbench extends Component {
                     value="S"
                     name="rcmMode"
                     checked={this.state.rcmMode === "S" ? true : false}
-                    onChange={() => this.setState({ rcmMode: "S", claims: [] })}
+                    onChange={() => {
+                      this.replacePath();
+                      this.setState({ rcmMode: "S", claims: [] });
+                    }}
                   />
                   <span>Remittance Advice</span>
                 </label>
@@ -687,15 +734,36 @@ class RCMWorkbench extends Component {
                         fieldName: "chkselect",
                         label: <AlgaehLabel label={{ forceLabel: "Select" }} />,
                         displayTemplate: (row) => {
-                          return (
-                            <input
-                              type="checkbox"
-                              checked={
-                                parseFloat(row.chkselect) === 0 ? false : true
-                              }
-                              onChange={this.addClaimsArray.bind(this, row)}
-                            />
-                          );
+                          if (this.state.rcmMode === "S") {
+                            return (
+                              <input
+                                type="checkbox"
+                                checked={
+                                  parseFloat(row.chkselect) === 0 ? false : true
+                                }
+                                onChange={this.addClaimsArray.bind(this, row)}
+                              />
+                            );
+                          }
+                          if (this.state.rcmMode === "R") {
+                            const [
+                              current,
+                            ] = this.state.resubmissionList?.filter(
+                              (item) =>
+                                item.hims_f_invoice_header_id ==
+                                row?.hims_f_invoice_header_id
+                            );
+                            return (
+                              <input
+                                type="checkbox"
+                                checked={!!current}
+                                onChange={() => {
+                                  this.addToResubmissionlist(row);
+                                }}
+                              />
+                            );
+                          }
+                          return null;
                         },
                         editorTemplate: (row) => {
                           return (
@@ -1048,7 +1116,10 @@ class RCMWorkbench extends Component {
               <div className="col-12">
                 <button
                   // onClick={this.openReviewSubmit}
-                  disabled={true}
+                  disabled={
+                    !this.state.resubmissionList ||
+                    !this.state.resubmissionList.length
+                  }
                   type="button"
                   className="btn btn-primary"
                 >
