@@ -84,12 +84,12 @@ export default function DentalLab() {
 
   // const [viewDentalModal, setViewDentalModal] = useState(false);
 
-  const { getValues, control, setValue, handleSubmit } = useForm({
+  const { getValues, control, handleSubmit } = useForm({
     shouldFocusError: true,
     defaultValues: {
       // requesting_date: new Date(),
-      from_due_date: moment().startOf("month").format("YYYY-MM-DD"),
-      to_due_date: new Date(),
+      from_request_date: moment().startOf("month").format("YYYY-MM-DD"),
+      to_request_date: new Date(),
     },
   });
   // const { date_of_birth } = useWatch({
@@ -150,16 +150,14 @@ export default function DentalLab() {
   //   onSuccess: (data) => {},
   // });
   const loadRequestList = async (data) => {
-    // const from_due_date = moment(data.from_due_date).format("YYYY-MM-DD");
-    // const to_due_date = moment(data.from_due_date).format("YYYY-MM-DD");
     setLoadingRequestList(true);
     try {
       const res = await newAlgaehApi({
         uri: "/dentalForm/getDentalLab",
         method: "GET",
         data: {
-          from_due_date: data.from_due_date,
-          to_due_date: data.to_due_date,
+          from_request_date: data.from_request_date,
+          to_request_date: data.to_request_date,
         },
       });
       if (res.data.success) {
@@ -280,9 +278,9 @@ export default function DentalLab() {
     setOpenDentalModal(true);
   };
   const getFormRequest = (e) => {
-    // console.log( e.to_due_date._d);
+    // console.log( e.to_request_date._d);
 
-    loadRequestList(e);
+    loadRequestList(getValues());
   };
 
   // componentDidMount() {
@@ -316,7 +314,7 @@ export default function DentalLab() {
               // titles={titles}
             />
             <Controller
-              name="from_due_date"
+              name="from_request_date"
               control={control}
               render={({ value, onChange }) => (
                 // <div className="col-2 algaeh-date-fld">
@@ -331,8 +329,15 @@ export default function DentalLab() {
                   }}
                   // maxDate={new Date()}
                   events={{
-                    onChange: (selectedDate) => {
-                      setValue("from_due_date", selectedDate._d);
+                    onChange: (mdate) => {
+                      if (mdate) {
+                        onChange(mdate._d);
+                      } else {
+                        onChange(undefined);
+                      }
+                    },
+                    onClear: () => {
+                      onChange(undefined);
                     },
                   }}
                 />
@@ -340,7 +345,7 @@ export default function DentalLab() {
             />
 
             <Controller
-              name="to_due_date"
+              name="to_request_date"
               control={control}
               render={({ value, onChange }) => (
                 // <div className="col-6 algaeh-date-fld">
@@ -355,8 +360,15 @@ export default function DentalLab() {
                   }}
                   // maxDate={new Date()}
                   events={{
-                    onChange: (selectedDate) => {
-                      setValue("to_due_date", selectedDate._d);
+                    onChange: (mdate) => {
+                      if (mdate) {
+                        onChange(mdate._d);
+                      } else {
+                        onChange(undefined);
+                      }
+                    },
+                    onClear: () => {
+                      onChange(undefined);
                     },
                   }}
                 />
