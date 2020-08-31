@@ -172,6 +172,7 @@
  *     schema:
  *      $ref: "#/definitions/Error"
  */
+
 /**
  * @swagger
  * /insurance/updateInsuranceStatement:

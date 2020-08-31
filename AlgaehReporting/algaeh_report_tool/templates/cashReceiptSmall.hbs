@@ -37,6 +37,10 @@
                     <td><b>{{header.patient_full_name}}</b></td>
                 </tr>
                 <tr>
+                    <td>Doctor / طبيب<span class="numberFld">:</span></td>
+                    <td><b>{{header.full_name}}</b></td>
+                </tr>
+                <tr>
                     <td>VAT Reg No./الرقم الضريبي:</td>
                     <td>{{header.tax_number}}</td>
                 </tr>
@@ -98,7 +102,7 @@
             </table>
             <table class="tableTotalSmall">
                 <tr>
-                    <td>Gross Amount</td>
+                    <td>Sub Total</td>
                     <td>{{total_gross_amount}}</td>
                     <td class="numberFld">: القيمة قبل الخصم</td>
                 </tr>
@@ -108,19 +112,9 @@
                     <td class="numberFld">: الخصم</td>
                 </tr>
                 <tr>
-                    <td>Amount Without Vat</td>
-                    <td>{{total_patient_share}}</td>
-                    <td class="numberFld">: القيمة بدون الضريبة</td>
-                </tr>
-                <tr>
-                    <td>VAT Amount</td>
+                    <td>VAT 15%</td>
                     <td>{{total_patient_tax}}</td>
-                    <td class="numberFld">: قيمة الضريبة</td>
-                </tr>
-                <tr>
-                    <td>Amount After VAT</td>
-                    <td>{{total_patient_payable}}</td>
-                    <td class="numberFld">: القيمة بعد الضريبة</td>
+                    <td class="numberFld">:15% قيمة الضريبة</td>
                 </tr>
                 <tr>
                     <td>Receivable</td>
@@ -138,6 +132,12 @@
                     <td>المبلغ المتبقي</td>
                 </tr> --}}
             </table>
+        </section>
+        <section>
+            <span>Because Your Health Matters</span><br />
+            <span>لأن صحتك مهمة</span><br />
+            <span>excelcare1m</span><br />
+            <span>www.excelcare.com.sa</span><br />
         </section>
         {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
     </div>

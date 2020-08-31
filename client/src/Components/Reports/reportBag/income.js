@@ -7,6 +7,7 @@ export default function Income({ hospital_id, RECEIPT_TYPE, cashier_id }) {
         subitem: "Income by Department",
         reportName: "departmentWiseIncome",
         // reportQuery: "subDepartmentIncome",
+        componentCode: "RPT_INC_DEPT",
         requireIframe: true,
         reportParameters: [
           {
@@ -51,6 +52,7 @@ export default function Income({ hospital_id, RECEIPT_TYPE, cashier_id }) {
       {
         subitem: "Income by Doctor",
         reportName: "depDocWiseReport",
+        componentCode: "RPT_INC_DOC",
         requireIframe: true,
         pageSize: "A4",
         pageOrentation: "portrait", //"portrait",
@@ -146,6 +148,7 @@ export default function Income({ hospital_id, RECEIPT_TYPE, cashier_id }) {
       {
         subitem: "Income by Cashier",
         reportName: "userWiseBill",
+        componentCode: "RPT_INC_CASH",
         requireIframe: true,
         pageSize: "A4",
         pageOrentation: "portrait", //"portrait",
@@ -210,7 +213,7 @@ export default function Income({ hospital_id, RECEIPT_TYPE, cashier_id }) {
       {
         subitem: "Income by Service Type",
         reportName: "opBillSummary",
-        //reportQuery: "OPBillSummary",
+        componentCode: "RPT_INC_SVR_TYPE",
         requireIframe: true,
         reportParameters: [
           {
@@ -255,6 +258,7 @@ export default function Income({ hospital_id, RECEIPT_TYPE, cashier_id }) {
       {
         subitem: "Income by Services",
         reportName: "opBillDetails",
+        componentCode: "RPT_INC_SVRS",
         requireIframe: true,
         reportParameters: [
           {
@@ -316,6 +320,7 @@ export default function Income({ hospital_id, RECEIPT_TYPE, cashier_id }) {
         subitem: "Income by Receipt Type",
         reportName: "opBillIncomeReceipt",
         requireIframe: true,
+        componentCode: "RPT_INC_REC_TYP",
         pageSize: "A4",
         pageOrentation: "landscape", //"portrait",
         reportParameters: [
@@ -338,10 +343,10 @@ export default function Income({ hospital_id, RECEIPT_TYPE, cashier_id }) {
                   currentValue.value === "OP"
                     ? "opBillReceipt"
                     : currentValue.value === "AD"
-                    ? "advanceReceipt"
-                    : currentValue.value === "OPC"
-                    ? "opCreditReceipt"
-                    : "";
+                      ? "advanceReceipt"
+                      : currentValue.value === "OPC"
+                        ? "opCreditReceipt"
+                        : "";
                 callback({ reportQuery: reportQuery });
               },
             },
@@ -435,8 +440,8 @@ export default function Income({ hospital_id, RECEIPT_TYPE, cashier_id }) {
       {
         subitem: "Daily Cash Collection - Summary",
         //template_name: "Income/dailyCashCollection",
-        reportName: "dailyCashCollection",
-        //reportQuery: "staffCashCollection",
+        reportName: "RPT_DLY_COLL",
+        componentCode: "RPT_INC_CASH_COLL",
         requireIframe: true,
         reportParameters: [
           {
@@ -466,24 +471,25 @@ export default function Income({ hospital_id, RECEIPT_TYPE, cashier_id }) {
         reportName: "salesWiseIncome",
         // reportQuery: "subDepartmentIncome",
         requireIframe: true,
+        componentCode: "RPT_INC_SALES",
         reportParameters: [
-          {
-            className: "col-3 form-group mandatory",
-            type: "dropdown",
-            name: "hospital_id",
-            initialLoad: true,
-            isImp: true,
-            label: "Branch",
-            link: {
-              uri: "/organization/getOrganizationByUser",
-            },
-            value: hospital_id,
-            dataSource: {
-              textField: "hospital_name",
-              valueField: "hims_d_hospital_id",
-              data: undefined,
-            },
-          },
+          // {
+          //   className: "col-3 form-group mandatory",
+          //   type: "dropdown",
+          //   name: "hospital_id",
+          //   initialLoad: true,
+          //   isImp: true,
+          //   label: "Branch",
+          //   link: {
+          //     uri: "/organization/getOrganizationByUser",
+          //   },
+          //   value: hospital_id,
+          //   dataSource: {
+          //     textField: "hospital_name",
+          //     valueField: "hims_d_hospital_id",
+          //     data: undefined,
+          //   },
+          // },
           {
             className: "col-3 form-group mandatory",
             type: "date",
@@ -502,6 +508,43 @@ export default function Income({ hospital_id, RECEIPT_TYPE, cashier_id }) {
             others: {
               maxDate: new Date(),
               minDate: null,
+            },
+          },
+          {
+            type: "dropdown",
+            name: "employee_id",
+            initialLoad: true,
+            isImp: false,
+            label: "Sales Person",
+            link: {
+              uri: "/employee/get",
+              module: "hrManagement",
+              data: { department_type: "S" }
+            },
+            manupulation: (response, reportState, stateProperty) => {
+              debugger
+              reportState.setState({
+                [stateProperty]: response.records,
+              });
+            },
+            dataSource: {
+              textField: "full_name",
+              valueField: "hims_d_employee_id",
+              data: undefined,
+            },
+            events: {
+              onChange: (reportState, currentEvent) => {
+                reportState.setState({
+                  sub_department_id: currentEvent.value,
+                  provider_id_list: currentEvent.selected.doctors,
+                });
+              },
+              onClear: (reportState, currentName) => {
+                reportState.setState({
+                  [currentName]: undefined,
+                  provider_id_list: [],
+                });
+              },
             },
           },
         ],

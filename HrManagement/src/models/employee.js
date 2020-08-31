@@ -83,6 +83,11 @@ export default {
             " and E.suspend_salary='" + req.query.suspend_salary + "'";
         }
 
+        if (req.query.department_type != null) {
+          _strAppend +=
+            " and SD.department_type='" + req.query.department_type + "'";
+        }
+
         if (
           req.query.hospital_requires === undefined ||
           req.query.hospital_requires === true
