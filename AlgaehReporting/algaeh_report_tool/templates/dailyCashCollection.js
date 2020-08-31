@@ -5,6 +5,14 @@ const executePDF = function executePDFMethod(options) {
     try {
       const result = {
         details: options.result,
+        expected_cash: options.currencyFormat(
+          _.sumBy(options.result, (s) => parseFloat(s.expected_cash)),
+          options.args.crypto
+        ),
+        expected_card: options.currencyFormat(
+          _.sumBy(options.result, (s) => parseFloat(s.expected_card)),
+          options.args.crypto
+        ),
         expected_total: options.currencyFormat(
           _.sumBy(options.result, (s) => parseFloat(s.expected_total)),
           options.args.crypto
