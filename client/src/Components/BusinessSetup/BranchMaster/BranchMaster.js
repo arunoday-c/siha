@@ -314,7 +314,7 @@ export default class BranchMaster extends Component {
               if (res.data.success) {
                 let data = res.data.records;
                 const newArray = this.state.allDepartments
-                  .forEach((item) => {
+                  .map((item) => {
                     const hasDepartment = data.find(
                       (f) =>
                         f.hims_d_department_id === item.hims_d_department_id
@@ -337,8 +337,10 @@ export default class BranchMaster extends Component {
                         return {
                           ...sub,
                           checked: isChecked === undefined ? false : true,
+                          hims_m_branch_dept_map_id: hasDepartment.hims_m_branch_dept_map_id
                         };
                       });
+
                       const anyUnched = item.subDepts.find(
                         (f) => f.checked === false
                       );
@@ -346,6 +348,8 @@ export default class BranchMaster extends Component {
                         ...item,
                         indeterminate: anyUnched === undefined ? false : true,
                       };
+                    } else {
+                      return item
                     }
                   })
                   .filter((f) => f !== null);
@@ -490,8 +494,8 @@ export default class BranchMaster extends Component {
       hasUnchecked.length === 0
         ? false
         : hasUnchecked.length === data.subDepts.length
-        ? false
-        : true;
+          ? false
+          : true;
 
     allDepartments[mainStateIndex] = data;
     const hasUncheckedState = this.state.allDepartments.find(
@@ -747,16 +751,16 @@ export default class BranchMaster extends Component {
       this.state.searchText !== "" && this.state.filterArray.length === 0
         ? this.state.filterArray
         : this.state.searchText === "" && this.state.filterArray.length === 0
-        ? this.state.allBranches
-        : this.state.filterArray;
+          ? this.state.allBranches
+          : this.state.filterArray;
     let departments =
       this.state.searchSubBranchText !== "" &&
-      this.state.filterdDepartmentArray.length === 0
+        this.state.filterdDepartmentArray.length === 0
         ? this.state.filterdDepartmentArray
         : this.state.searchSubBranchText === "" &&
           this.state.filterdDepartmentArray.length === 0
-        ? this.state.allDepartments
-        : this.state.filterdDepartmentArray;
+          ? this.state.allDepartments
+          : this.state.filterdDepartmentArray;
     departments = departments.filter((f) => f !== undefined);
 
     return (
