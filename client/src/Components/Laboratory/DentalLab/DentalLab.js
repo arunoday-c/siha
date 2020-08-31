@@ -1,23 +1,12 @@
 import React, { useEffect, useState } from "react";
 import "./DentalLab.scss";
 import {
-  // AlgaehLabel,
-  // AlgaehDateHandler,
-  // AlgaehAutoComplete,
   AlgaehDataGrid,
-  // Checkbox,
-  // AlgaehButton,
-  // Modal,
-  // AlgaehTreeSearch,
   AlgaehDateHandler,
   AlgaehMessagePop,
-  // DatePicker,
   Spin,
-  // AlgaehModal,
-  // MainContext,
-  // AlgaehHijriDatePicker,
-
-  //   AlgaehButton,
+  AlgaehSecurityComponent,
+  // RawSecurityComponent,
 } from "algaeh-react-components";
 import { useQuery } from "react-query";
 import ButtonType from "../../Wrapper/algaehButton";
@@ -296,6 +285,18 @@ export default function DentalLab() {
     loadRequestList(e);
   };
 
+  // componentDidMount() {
+
+  //   RawSecurityComponent({ componentCode: "PUR_ORD_INVENTORY" }).then(
+  //     (result) => {
+  //       if (result === "show") {
+
+  //       }
+  //     }
+  //   )
+
+  // }
+
   return (
     <Spin spinning={loading}>
       <div className="DentalLabScreen">
@@ -404,15 +405,18 @@ export default function DentalLab() {
                           displayTemplate: (row) => {
                             return (
                               <>
-                                <i
-                                  className="fas fa-pen"
-                                  onClick={() => onEdit(row)}
-                                ></i>
-
-                                <i
-                                  className="fas fa-pen"
-                                  onClick={() => onEditStatus(row)}
-                                ></i>
+                                <AlgaehSecurityComponent componentCode="APP_REQ_USER">
+                                  <i
+                                    className="fas fa-pen"
+                                    onClick={() => onEdit(row)}
+                                  ></i>
+                                </AlgaehSecurityComponent>
+                                <AlgaehSecurityComponent componentCode="APP_ACC_USER">
+                                  <i
+                                    className="fas fa-eye"
+                                    onClick={() => onEditStatus(row)}
+                                  ></i>{" "}
+                                </AlgaehSecurityComponent>
                               </>
                             );
                           },

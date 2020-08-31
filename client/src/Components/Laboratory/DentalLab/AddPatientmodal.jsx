@@ -1,7 +1,6 @@
 import React, {
   //  useState,
   useEffect,
-  useContext,
 } from "react";
 import "./DentalLab.scss";
 import {
@@ -13,7 +12,6 @@ import {
   AlgaehMessagePop,
   // DatePicker,
   AlgaehModal,
-  MainContext,
   AlgaehHijriDatePicker,
   AlgaehTreeSearch,
 
@@ -51,11 +49,6 @@ export function AddPatientDentalForm({
   getRequest,
   doctors,
 }) {
-  const {
-    // titles = [],
-    userLanguage,
-  } = useContext(MainContext);
-  console.log("doctors", doctors);
   //   const { userLanguage, titles = [] } = useContext(MainContext);
   const { FORMAT_GENDER, REQUEST_STATUS, WORK_STATUS } = GenericData;
   //   const [openDentalModal, setOpenDentalModal] = useState(false);
@@ -273,7 +266,7 @@ export function AddPatientDentalForm({
       title="Request Dental Service"
       closable={true}
       onCancel={onClose}
-      className={`${userLanguage}_comp row algaehNewModal dentalLabRequest`}
+      className={`row algaehNewModal dentalLabRequest`}
       footer={[
         <div className="col-12">
           <button
