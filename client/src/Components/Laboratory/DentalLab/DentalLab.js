@@ -416,6 +416,7 @@ export default function DentalLab() {
                               </>
                             );
                           },
+                          freezable: true,
                         },
                         {
                           fieldName: "request_status",
