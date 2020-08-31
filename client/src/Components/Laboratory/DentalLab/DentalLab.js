@@ -33,7 +33,7 @@ import { AddPatientDentalForm } from "./AddPatientmodal";
 // import DentalImage from "../../../assets/images/dcaf_Dental_chart.png";
 // import { swalMessage } from "../../../utils/algaehApiCall";
 // const { confirm } = Modal;
-async function getDentalFormData() {
+const getDentalFormData = async () => {
   const result = await Promise.all([
     newAlgaehApi({
       uri: "/vendor/getVendorMaster",
@@ -49,21 +49,27 @@ async function getDentalFormData() {
       },
       method: "GET",
     }),
+    // newAlgaehApi({
+    //   uri: "/department/get/get_All_Doctors_DepartmentWise",
+    //   module: "masterSettings",
+    //   // data: {
+    //   //   procedure_type: "DN",
+    //   // },
+    //   method: "GET",
+    // }),
     newAlgaehApi({
-      uri: "/department/get/get_All_Doctors_DepartmentWise",
-      module: "masterSettings",
-      // data: {
-      //   procedure_type: "DN",
-      // },
+      uri: "/frontDesk/getDoctorAndDepartment",
+      module: "frontDesk",
       method: "GET",
     }),
   ]);
   return {
     povendors: result[0]?.data?.records,
     procedureList: result[1]?.data?.records,
-    subDepartment: result[2]?.data?.records,
+    // subDepartment: result[2]?.data?.records,
+    doctors: result[2]?.data?.records,
   };
-}
+};
 export default function DentalLab() {
   // const [OpenForm, setOpenForm] = useState(false);
   // const { userLanguage, titles = [] } = useContext(MainContext);
@@ -101,6 +107,17 @@ export default function DentalLab() {
   //   control,
   //   name: ["date_of_birth"],
   // });
+  const { data: dropdownData } = useQuery("dropdown-data", getDentalFormData, {
+    initialData: {
+      povendors: [],
+      procedureList: [],
+      // subDepartment: [],
+      doctors: [],
+    },
+    refetchOnMount: false,
+    initialStale: true,
+    cacheTime: Infinity,
+  });
   useEffect(() => {
     Promise.all([
       loadRequestList(getValues()),
@@ -108,22 +125,12 @@ export default function DentalLab() {
       // vendorDetails(),
       // getProcedures(),
       // doctorsDeptWise(),
-      getDentalFormData(),
     ]).then(() => {
       setLoadingRequestList(false);
     });
   }, []);
-  const { data: dropdownData } = useQuery("dropdown-data", getDentalFormData, {
-    initialData: {
-      povendors: [],
-      procedureList: [],
-      subDepartment: [],
-    },
-    refetchOnMount: false,
-    initialStale: true,
-    cacheTime: Infinity,
-  });
-  const { povendors, procedureList, subDepartment } = dropdownData;
+
+  const { povendors, procedureList, subDepartment, doctors } = dropdownData;
 
   // const getDoctorData = async () => {
   //   try {
@@ -284,7 +291,9 @@ export default function DentalLab() {
     setOpenDentalModal(true);
   };
   const getFormRequest = (e) => {
-    loadRequestList(getValues());
+    // console.log( e.to_due_date._d);
+
+    loadRequestList(e);
   };
 
   return (
@@ -301,6 +310,7 @@ export default function DentalLab() {
               visible={openDentalModal}
               disabled={disabled}
               getRequest={getFormRequest}
+              doctors={doctors}
               // userLanguage={userLanguage}
               // titles={titles}
             />
@@ -321,7 +331,7 @@ export default function DentalLab() {
                   // maxDate={new Date()}
                   events={{
                     onChange: (selectedDate) => {
-                      setValue("from_due_date", moment(selectedDate));
+                      setValue("from_due_date", selectedDate._d);
                     },
                   }}
                 />
@@ -345,7 +355,7 @@ export default function DentalLab() {
                   // maxDate={new Date()}
                   events={{
                     onChange: (selectedDate) => {
-                      setValue("to_due_date", moment(selectedDate));
+                      setValue("to_due_date", selectedDate._d);
                     },
                   }}
                 />
