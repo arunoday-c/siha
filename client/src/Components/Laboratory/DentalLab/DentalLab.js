@@ -161,7 +161,6 @@ export default function DentalLab() {
   //   onSuccess: (data) => {},
   // });
   const loadRequestList = async (data) => {
-    debugger;
     // const from_due_date = moment(data.from_due_date).format("YYYY-MM-DD");
     // const to_due_date = moment(data.from_due_date).format("YYYY-MM-DD");
     setLoadingRequestList(true);
