@@ -325,7 +325,7 @@ export function AddPatientDentalForm({
                   <AlgaehTreeSearch
                     div={{ className: "col mandatory" }}
                     label={{
-                      fieldName: "doctor_id",
+                      forceLabel: "Requesting By",
                       isImp: true,
                       align: "ltr",
                     }}
@@ -348,6 +348,39 @@ export function AddPatientDentalForm({
                   />
                 )}
               />{" "}
+              <Controller
+                name="select_vendor"
+                control={control}
+                rules={{ required: "Select Vendor" }}
+                render={({ value, onBlur, onChange }) => (
+                  <AlgaehAutoComplete
+                    div={{ className: "col-3 form-group mandatory" }}
+                    label={{
+                      forceLabel: "Requesting to Vendor",
+                      isImp: true,
+                    }}
+                    selector={{
+                      value,
+                      onChange: (_, selected) => {
+                        onChange(selected);
+                      },
+                      onBlur: (_, selected) => {
+                        onBlur(selected);
+                      },
+                      name: "select_vendor",
+                      dataSource: {
+                        data: povendors,
+                        textField: "vendor_name",
+                        valueField: "hims_d_vendor_id",
+                      },
+                      others: {
+                        disabled,
+                        tabIndex: "11",
+                      },
+                    }}
+                  />
+                )}
+              />
               <Controller
                 name="select_procedure"
                 control={control}
@@ -397,39 +430,6 @@ export function AddPatientDentalForm({
                       className: "form-control",
                       disabled,
                       placeholder: "0.00",
-                    }}
-                  />
-                )}
-              />
-              <Controller
-                name="select_vendor"
-                control={control}
-                rules={{ required: "Select Vendor" }}
-                render={({ value, onBlur, onChange }) => (
-                  <AlgaehAutoComplete
-                    div={{ className: "col-3 form-group mandatory" }}
-                    label={{
-                      forceLabel: "Requesting to",
-                      isImp: true,
-                    }}
-                    selector={{
-                      value,
-                      onChange: (_, selected) => {
-                        onChange(selected);
-                      },
-                      onBlur: (_, selected) => {
-                        onBlur(selected);
-                      },
-                      name: "select_vendor",
-                      dataSource: {
-                        data: povendors,
-                        textField: "vendor_name",
-                        valueField: "hims_d_vendor_id",
-                      },
-                      others: {
-                        disabled,
-                        tabIndex: "11",
-                      },
                     }}
                   />
                 )}
