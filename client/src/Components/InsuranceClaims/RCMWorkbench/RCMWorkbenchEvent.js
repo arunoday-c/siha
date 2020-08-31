@@ -30,8 +30,17 @@ export function ClaimSearch(history, location) {
             `${this.props.location?.pathname}?hims_f_insurance_statement_id=${row?.hims_f_insurance_statement_id}&insurance_statement_number=${row?.insurance_statement_number}`
           );
         } else {
-          debugger;
-          console.log(row);
+          this.setState(
+            {
+              insurance_statement_id: row?.hims_f_insurance_statement_id,
+            },
+            () => {
+              this.getInvoicesForStatementID();
+            }
+          );
+          return this.props.history?.push(
+            `${this.props.location?.pathname}?insurance_statement_id=${row?.hims_f_insurance_statement_id}&insurance_statement_number=${row?.insurance_statement_number}`
+          );
         }
       } else {
         return history?.push(

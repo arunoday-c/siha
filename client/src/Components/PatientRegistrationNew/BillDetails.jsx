@@ -170,7 +170,6 @@ export function BillDetails({
       enabled: !!services_id,
       retry: 3,
       onSuccess: (data) => {
-
         setGlobalBillData(data);
         calculateBillDetails(data?.billdetails[0]);
       },
@@ -189,7 +188,6 @@ export function BillDetails({
   }, [services_id]);
 
   function calculateBillDetails(billData = {}) {
-
     const sendingObject = { ...billData };
 
     // Sheet Level Discount Nullify
@@ -205,7 +203,7 @@ export function BillDetails({
     sendingObject.total_amount = sendingObject.net_amount;
     sendingObject.sub_total_amount = sendingObject.gross_amount;
     sendingObject.gross_total = sendingObject.patient_payable;
-    sendingObject.copay_amount = sendingObject.copay_amount;
+
     sendingObject.net_total = sendingObject.net_amout;
 
     sendingObject.unbalanced_amount = 0;
