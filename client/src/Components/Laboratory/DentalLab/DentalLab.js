@@ -161,6 +161,7 @@ export default function DentalLab() {
   //   onSuccess: (data) => {},
   // });
   const loadRequestList = async (data) => {
+    debugger;
     // const from_due_date = moment(data.from_due_date).format("YYYY-MM-DD");
     // const to_due_date = moment(data.from_due_date).format("YYYY-MM-DD");
     setLoadingRequestList(true);
@@ -496,6 +497,7 @@ export default function DentalLab() {
                         {
                           fieldName: "full_name",
                           label: "Patient Name",
+                          filterable: true,
                         },
                         {
                           fieldName: "requested_date",
@@ -504,14 +506,17 @@ export default function DentalLab() {
                         {
                           fieldName: "service_name",
                           label: "Procedure Name",
+                          filterable: true,
                         },
                         {
                           fieldName: "vendor_name",
                           label: "Vendor Name",
+                          filterable: true,
                         },
                         {
                           fieldName: "employee_name",
                           label: "Doctor Name",
+                          filterable: true,
                         },
                         {
                           fieldName: "due_date",
@@ -520,7 +525,7 @@ export default function DentalLab() {
                       ]}
                       loading={false}
                       data={request_list}
-                      filterable={true}
+                      isFilterable={true}
                       pagination={true}
                       events={
                         {
