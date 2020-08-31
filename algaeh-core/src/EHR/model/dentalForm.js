@@ -134,16 +134,17 @@ export default {
     _mysql
       .executeQuery({
         query: `update hims_f_dental_form set patient_id=?,provider_id=?,procedure_id=?,procedure_amt=?,
-        vendor_id=?,request_status=?,full_name=?,gender=?,age=?,patient_code=?,requested_date=?,
-        date_of_birth=?,department_id=?
-      where hims_f_dental_form_id=?; `,
+        vendor_id=?,request_status=?,work_status=?,full_name=?,gender=?,age=?,patient_code=?,requested_date=?,
+        date_of_birth=?,department_id=? where hims_f_dental_form_id=? `,
+
         values: [
           input.patient_id,
           input.provider_id,
           input.hims_d_services_id,
           input.standard_fee,
           input.hims_d_vendor_id,
-          input.request_status ? request_status : "PEN",
+          input.request_status ? input.request_status : "PEN",
+          input.work_status ? input.work_status : "PEN",
           input.full_name,
           input.gender,
           input.age,
