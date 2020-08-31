@@ -270,20 +270,14 @@ export function AddPatientDentalForm({
       onCancel={onClose}
       className={`${userLanguage}_comp row algaehNewModal dentalLabRequest`}
       footer={[
-        <div className="col-2">
+        <div className="col-12">
           <button
             onClick={handleSubmit(onSubmit)}
             className="btn btn-primary btn-sm"
-            style={{ marginTop: 17 }}
           >
             {current.length !== 0 ? "Update" : "Add to List"}
           </button>
-
-          <button
-            onClick={onClose}
-            className="btn btn-primary"
-            style={{ marginTop: 17 }}
-          >
+          <button onClick={onClose} className="btn btn-default btn-sm">
             Cancel
           </button>
         </div>,
@@ -296,98 +290,220 @@ export function AddPatientDentalForm({
         <div className="row">
           <div className="col-12 popRightDiv">
             <div className="row">
-              {/* <div className="col-3 globalSearchCntr">
-                  <AlgaehLabel label={{ forceLabel: "Search Patient" }} />
-                  <h6 onClick={patientSearch}>
-                    {patientName ? patientName : "Search Patient"}
-                    <i className="fas fa-search fa-lg"></i>
-                  </h6>
-                </div> */}
-              {/* <Controller
+              <AlgaehAutoComplete
+                div={{ className: "col-lg-2 mandatory form-group" }}
+                label={{
+                  fieldName: "Department",
+                  isImp: true,
+                }}
+                selector={{
+                  name: "sub_department",
+
+                  dataSource: {
+                    textField: "sub_department_name",
+                    valueField: "sub_department_id",
+                    data: subDepartment.departmets,
+                  },
+                  value: sub_department_id,
+                  onChange: onChangeAutoComplete,
+
+                  onClear: () => {
+                    setDoctors([]);
+                    setDoctor_id("");
+                    setSub_department_id("");
+                  },
+                  others: {
+                    disabled,
+                    tabIndex: "4",
+                  },
+                }}
+              />
+              <AlgaehAutoComplete
+                div={{ className: "col-lg-4 mandatory form-group" }}
+                label={{
+                  fieldName: "Requesting By",
+                  isImp: true,
+                }}
+                error={errors}
+                selector={{
+                  name: "doctors",
+                  className: "select-fld",
+
+                  dataSource: {
+                    textField: "full_name",
+                    valueField: "employee_id",
+                    data: doctors,
+                  },
+                  value: doctor_id,
+                  onChange: onChangeDoctor,
+                  // onClear: () => {
+                  //   onChange("");
+                  // },
+                  others: {
+                    disabled,
+                    tabIndex: "4",
+                  },
+                }}
+              />{" "}
+              <Controller
+                name="select_procedure"
                 control={control}
-                name="title_id"
-                // rules={{ required: "Please Select Title" }}
-                render={({ onBlur, onChange, value }) => (
+                rules={{ required: "Select Procedure" }}
+                render={({ value, onChange }) => (
                   <AlgaehAutoComplete
-                    div={{ className: "col-lg-2 mandatory" }}
+                    div={{ className: "col-3 form-group mandatory" }}
                     label={{
-                      fieldName: "title_id",
+                      forceLabel: "For the Procedure",
                       isImp: true,
                     }}
-                    error={errors}
                     selector={{
-                      name: "title_id",
-                      className: "select-fld",
-                      placeholder: "Select Title",
-                      dataSource: {
-                        textField: fieldNameFn("title"),
-                        valueField: "his_d_title_id",
-                        data: titles,
-                      },
+                      name: "select_procedure",
                       value,
                       onChange: (_, selected) => {
                         onChange(selected);
-                        if (selected == 1 || selected == 6) {
-                          setValue("gender", "Male");
-                        } else {
-                          setValue("gender", "Female");
-                        }
+
+                        setValue("service_amount", _.standard_fee);
                       },
-                      onClear: () => {
-                        onChange("");
+
+                      dataSource: {
+                        data: procedureList,
+                        valueField: "hims_d_services_id",
+                        textField: "service_name",
                       },
                       others: {
-                        // disabled,
-                        tabIndex: "1",
+                        disabled,
                       },
                     }}
                   />
                 )}
-              /> */}
+              />{" "}
               <Controller
+                name="service_amount"
                 control={control}
-                name="full_name"
-                rules={{ required: "Please Enter Name" }}
+                rules={{ required: "Add Service Amount" }}
                 render={(props) => (
                   <AlgaehFormGroup
-                    div={{ className: "col-lg-4 mandatory" }}
+                    div={{ className: "col-2 mandatory form-group" }}
                     label={{
-                      fieldName: "full_name",
+                      forceLabel: "Service Amount",
                       isImp: true,
                     }}
-                    error={errors}
                     textBox={{
                       ...props,
-                      className: "txt-fld",
-                      name: "full_name",
-                      placeholder: "Enter Full Name",
+                      type: "number",
+                      className: "form-control",
                       disabled,
-                      tabIndex: "2",
+                      placeholder: "0.00",
                     }}
-
-                    // target={{
-                    //   tElement: (arabicText) => {
-                    //     const arabic_name = this.state.arabic_name;
-                    //     this.setState({
-                    //       arabic_name:
-                    //         arabic_name !== "" || arabic_name !== undefined
-                    //           ? `${arabic_name} ${arabicText}`
-                    //           : arabicText,
-                    //     });
-                    //   },
-                    // }}
+                  />
+                )}
+              />
+              <Controller
+                name="select_vendor"
+                control={control}
+                rules={{ required: "Select Vendor" }}
+                render={({ value, onBlur, onChange }) => (
+                  <AlgaehAutoComplete
+                    div={{ className: "col-3 form-group mandatory" }}
+                    label={{
+                      forceLabel: "Requesting to",
+                      isImp: true,
+                    }}
+                    selector={{
+                      value,
+                      onChange: (_, selected) => {
+                        onChange(selected);
+                      },
+                      onBlur: (_, selected) => {
+                        onBlur(selected);
+                      },
+                      name: "select_vendor",
+                      dataSource: {
+                        data: povendors,
+                        textField: "vendor_name",
+                        valueField: "hims_d_vendor_id",
+                      },
+                      others: {
+                        disabled,
+                        tabIndex: "11",
+                      },
+                    }}
+                  />
+                )}
+              />
+              <Controller
+                name="requesting_date"
+                control={control}
+                render={({ value, onChange }) => (
+                  <AlgaehDateHandler
+                    div={{ className: "col-3 form-group mandatory" }}
+                    label={{
+                      forceLabel: "Requesting Date",
+                      isImp: true,
+                    }}
+                    textBox={{
+                      className: "form-control",
+                      value,
+                    }}
+                    others={{ disabled }}
+                    minDate={new Date()}
+                    events={{
+                      onChange: (reqDate) => {
+                        setValue("requesting_date", moment(reqDate));
+                      },
+                    }}
                   />
                 )}
               />
               <Controller
                 control={control}
+                name="due_date"
+                rules={{ required: "Please Select DOB" }}
+                render={({ onChange, value }) => (
+                  <AlgaehDateHandler
+                    div={{
+                      className: "col-lg-3 form-group",
+                      tabIndex: "5",
+                    }}
+                    error={errors}
+                    label={{
+                      forceLabel: "Due Date",
+                      isImp: true,
+                    }}
+                    textBox={{
+                      className: "txt-fld",
+                      name: "due_date",
+                      value,
+                    }}
+                    others={{ disabled }}
+                    minDate={new Date()}
+                    events={{
+                      onChange: (mdate) => {
+                        if (mdate) {
+                          onChange(mdate._d);
+                        } else {
+                          onChange(undefined);
+                        }
+                      },
+                      onClear: () => {
+                        onChange(undefined);
+                      },
+                    }}
+                  />
+                )}
+              />
+            </div>
+            <hr></hr>
+            <div className="row">
+              <Controller
+                control={control}
                 name="patient_code"
-                rules={{ required: "MRN Number" }}
+                rules={{ required: "Enter Patient Code" }}
                 render={(props) => (
                   <AlgaehFormGroup
-                    div={{ className: "col-lg-4 mandatory" }}
+                    div={{ className: "col-3 mandatory form-group" }}
                     label={{
-                      fieldName: "MRN Number",
+                      forceLabel: "Enter Patient Code",
                       isImp: true,
                     }}
                     error={errors}
@@ -404,11 +520,36 @@ export function AddPatientDentalForm({
               />
               <Controller
                 control={control}
+                name="full_name"
+                rules={{ required: "Enter Full Patient Name" }}
+                render={(props) => (
+                  <AlgaehFormGroup
+                    div={{ className: "col mandatory form-group" }}
+                    label={{
+                      forceLabel: "Enter Patient Name",
+                      isImp: true,
+                    }}
+                    error={errors}
+                    textBox={{
+                      ...props,
+                      className: "txt-fld",
+                      name: "full_name",
+                      placeholder: "Enter Full Name",
+                      disabled,
+                      tabIndex: "2",
+                    }}
+                  />
+                )}
+              />
+            </div>
+            <div className="row">
+              <Controller
+                control={control}
                 rules={{ required: "Please Select Gender" }}
                 name="gender"
                 render={({ onBlur, onChange, value }) => (
                   <AlgaehAutoComplete
-                    div={{ className: "col-lg-2 mandatory" }}
+                    div={{ className: "col mandatory" }}
                     label={{
                       fieldName: "gender",
                       isImp: true,
@@ -445,7 +586,7 @@ export function AddPatientDentalForm({
                 render={({ onChange, value }) => (
                   <AlgaehDateHandler
                     div={{
-                      className: "col-lg-3 mandatory",
+                      className: "col mandatory",
                       tabIndex: "5",
                     }}
                     error={errors}
@@ -477,7 +618,7 @@ export function AddPatientDentalForm({
               />
               <AlgaehHijriDatePicker
                 div={{
-                  className: "col-lg-3 mandatory HijriCalendar",
+                  className: "col mandatory HijriCalendar",
                   tabIndex: "6",
                 }}
                 gregorianDate={date_of_birth || null}
@@ -501,7 +642,7 @@ export function AddPatientDentalForm({
               />
               <AlgaehFormGroup
                 div={{
-                  className: "col-lg-3 mandatory",
+                  className: "col mandatory form-group",
                   others: {
                     style: { paddingRight: 0 },
                   },
@@ -519,297 +660,31 @@ export function AddPatientDentalForm({
                   placeholder: "Y",
                 }}
               />
-              <Controller
-                name="requesting_date"
-                control={control}
-                render={({ value, onChange }) => (
-                  <AlgaehDateHandler
-                    div={{ className: "col-3 form-group mandatory" }}
-                    label={{
-                      forceLabel: "Requesting Date",
-                      isImp: true,
-                    }}
-                    textBox={{
-                      className: "form-control",
-                      value,
-                    }}
-                    others={{ disabled }}
-                    minDate={new Date()}
-                    events={{
-                      onChange: (reqDate) => {
-                        setValue("requesting_date", moment(reqDate));
-                      },
-                    }}
-                  />
-                )}
-              />
-              <Controller
-                name="select_procedure"
-                control={control}
-                rules={{ required: "Please Enter" }}
-                render={({ value, onChange }) => (
-                  <AlgaehAutoComplete
-                    div={{ className: "col-3 form-group mandatory" }}
-                    label={{
-                      forceLabel: "Select Procedure",
-                      isImp: true,
-                    }}
-                    selector={{
-                      name: "select_procedure",
-                      value,
-                      onChange: (_, selected) => {
-                        onChange(selected);
-
-                        setValue("service_amount", _.standard_fee);
-                      },
-
-                      dataSource: {
-                        data: procedureList,
-                        valueField: "hims_d_services_id",
-                        textField: "service_name",
-                      },
-                      others: {
-                        disabled,
-                      },
-                    }}
-                  />
-                )}
-              />{" "}
-              <Controller
-                name="select_vendor"
-                control={control}
-                rules={{ required: "Please select" }}
-                render={({ value, onBlur, onChange }) => (
-                  <AlgaehAutoComplete
-                    div={{ className: "col-3 form-group mandatory" }}
-                    label={{
-                      forceLabel: "Select Vendor",
-                      isImp: true,
-                    }}
-                    selector={{
-                      value,
-                      onChange: (_, selected) => {
-                        onChange(selected);
-                      },
-                      onBlur: (_, selected) => {
-                        onBlur(selected);
-                      },
-                      name: "select_vendor",
-                      dataSource: {
-                        data: povendors,
-                        textField: "vendor_name",
-                        valueField: "hims_d_vendor_id",
-                      },
-                      others: {
-                        disabled,
-                        tabIndex: "11",
-                      },
-                    }}
-                  />
-                )}
-              />
-              <Controller
-                name="service_amount"
-                control={control}
-                rules={{ required: "Please Enter Name" }}
-                render={(props) => (
-                  <AlgaehFormGroup
-                    div={{ className: "col-3 mandatory" }}
-                    label={{
-                      forceLabel: "Service Amount",
-                      isImp: true,
-                    }}
-                    textBox={{
-                      ...props,
-                      type: "number",
-                      className: "form-control",
-                      disabled,
-                      placeholder: "0.00",
-                    }}
-                  />
-                )}
-              />
-              {/* <Controller
-                  control={control}
-                  name="doctor"
-                  rules={{ required: "Please Select a doctor" }}
-                  render={({ onChange, value }) => (
-                    <AlgaehTreeSearch
-                      div={{ className: "col mandatory" }}
-                      label={{
-                        fieldName: "doctor_id",
-                        isImp: true,
-                        align: "ltr",
-                      }}
-                      // error={errors}
-                      tree={{
-                        disableHeader: true,
-                        treeDefaultExpandAll: true,
-                        onChange: (selected) => {
-                          onChange(selected);
-                        },
-
-                        value,
-                        name: "doctor",
-                        data: data.doctors,
-                        textField: fieldNameFn("label", "arlabel"),
-                        valueField: (node) => {
-                          return node.value;
-                        },
-                      }}
-                    />
-                  )}
-                /> */}
-              <AlgaehAutoComplete
-                div={{ className: "col-lg-2 mandatory" }}
-                label={{
-                  fieldName: "Department",
-                  isImp: true,
-                }}
-                selector={{
-                  name: "sub_department",
-
-                  dataSource: {
-                    textField: "sub_department_name",
-                    valueField: "sub_department_id",
-                    data: subDepartment.departmets,
-                  },
-                  value: sub_department_id,
-                  onChange: onChangeAutoComplete,
-
-                  onClear: () => {
-                    setDoctors([]);
-                    setDoctor_id("");
-                    setSub_department_id("");
-                  },
-                  others: {
-                    disabled,
-                    tabIndex: "4",
-                  },
-                }}
-              />
-              <AlgaehAutoComplete
-                div={{ className: "col-lg-2 mandatory" }}
-                label={{
-                  fieldName: "Doctor",
-                  isImp: true,
-                }}
-                error={errors}
-                selector={{
-                  name: "doctors",
-                  className: "select-fld",
-
-                  dataSource: {
-                    textField: "full_name",
-                    valueField: "employee_id",
-                    data: doctors,
-                  },
-                  value: doctor_id,
-                  onChange: onChangeDoctor,
-                  // onClear: () => {
-                  //   onChange("");
-                  // },
-                  others: {
-                    disabled,
-                    tabIndex: "4",
-                  },
-                }}
-              />
-              <Controller
-                control={control}
-                name="due_date"
-                rules={{ required: "Please Select DOB" }}
-                render={({ onChange, value }) => (
-                  <AlgaehDateHandler
-                    div={{
-                      className: "col-lg-3 ",
-                      tabIndex: "5",
-                    }}
-                    error={errors}
-                    label={{
-                      fieldName: "due_date",
-                      // isImp: true,
-                    }}
-                    textBox={{
-                      className: "txt-fld",
-                      name: "due_date",
-                      value,
-                    }}
-                    others={{ disabled }}
-                    minDate={new Date()}
-                    events={{
-                      onChange: (mdate) => {
-                        if (mdate) {
-                          onChange(mdate._d);
-                        } else {
-                          onChange(undefined);
-                        }
-                      },
-                      onClear: () => {
-                        onChange(undefined);
-                      },
-                    }}
-                  />
-                )}
-              />
-              {/* <Controller
-                control={control}
-                rules={{ required: "Please Select Gender" }}
-                name="gender"
-                render={({ onBlur, onChange, value }) => (
-                  <AlgaehAutoComplete
-                    div={{ className: "col-lg-2 mandatory" }}
-                    label={{
-                      fieldName: "gender",
-                      isImp: true,
-                    }}
-                    error={errors}
-                    selector={{
-                      name: "gender",
-                      className: "select-fld",
-
-                      dataSource: {
-                        textField: fieldNameFn("name"),
-                        valueField: "value",
-                        data: FORMAT_GENDER,
-                      },
-                      value,
-                      onChange: (_, selected) => {
-                        onChange(selected);
-                      },
-                      onClear: () => {
-                        onChange("");
-                      },
-                      others: {
-                        // disabled,
-                        tabIndex: "4",
-                      },
-                    }}
-                  />
-                )}
-              /> */}
+            </div>
+            <hr></hr>
+            <div className="row">
               {disabled ? (
                 <>
                   <Controller
                     control={control}
-                    rules={{ required: "Please Select " }}
-                    name="work_status"
+                    rules={{ required: "Please Select request status " }}
+                    name="request_status"
                     render={({ onBlur, onChange, value }) => (
                       <AlgaehAutoComplete
-                        div={{ className: "col-lg-2 mandatory" }}
+                        div={{ className: "col-3 mandatory" }}
                         label={{
-                          fieldName: "work_status",
+                          forceLabel: "Change Request Status",
                           isImp: true,
                         }}
                         error={errors}
                         selector={{
-                          name: "work_status",
+                          name: "request_status",
                           className: "select-fld",
 
                           dataSource: {
                             textField: fieldNameFn("name"),
                             valueField: "value",
-                            data: WORK_STATUS,
+                            data: REQUEST_STATUS,
                           },
                           value,
                           onChange: (_, selected) => {
@@ -828,24 +703,24 @@ export function AddPatientDentalForm({
                   />
                   <Controller
                     control={control}
-                    rules={{ required: "Please Select request status " }}
-                    name="request_status"
+                    rules={{ required: "Change Work Status" }}
+                    name="work_status"
                     render={({ onBlur, onChange, value }) => (
                       <AlgaehAutoComplete
-                        div={{ className: "col-lg-2 mandatory" }}
+                        div={{ className: "col-3 mandatory" }}
                         label={{
-                          fieldName: "request_status",
+                          forceLabel: "Change Work Status",
                           isImp: true,
                         }}
                         error={errors}
                         selector={{
-                          name: "request_status",
+                          name: "work_status",
                           className: "select-fld",
 
                           dataSource: {
                             textField: fieldNameFn("name"),
                             valueField: "value",
-                            data: REQUEST_STATUS,
+                            data: WORK_STATUS,
                           },
                           value,
                           onChange: (_, selected) => {

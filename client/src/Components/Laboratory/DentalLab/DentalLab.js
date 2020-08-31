@@ -438,7 +438,7 @@ export default function DentalLab() {
                         },
                         {
                           fieldName: "work_status",
-                          label: "Work Sttus",
+                          label: "Work Status",
 
                           displayTemplate: (row) => {
                             return (
