@@ -14,6 +14,7 @@ import {
   AlgaehModal,
   AlgaehHijriDatePicker,
   AlgaehTreeSearch,
+  AlgaehSecurityComponent,
 
   //   AlgaehButton,
 } from "algaeh-react-components";
@@ -739,6 +740,17 @@ export function AddPatientDentalForm({
                       />
                     )}
                   />
+                  <AlgaehSecurityComponent componentCode="DEN_MAIL_NOTY">
+                    <div className="col">
+                      <label>Notify Via Email</label>
+                      <div className="customCheckbox">
+                        <label className="checkbox inline">
+                          <input type="checkbox" value="yes" name="" />
+                          <span>Yes</span>
+                        </label>
+                      </div>
+                    </div>
+                  </AlgaehSecurityComponent>
                 </>
               ) : null}
               {/* </div> */}
