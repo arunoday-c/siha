@@ -161,8 +161,6 @@ export default function DentalLab() {
   //   onSuccess: (data) => {},
   // });
   const loadRequestList = async (data) => {
-    console.log("dattat", data.to_due_date);
-    debugger;
     // const from_due_date = moment(data.from_due_date).format("YYYY-MM-DD");
     // const to_due_date = moment(data.from_due_date).format("YYYY-MM-DD");
     setLoadingRequestList(true);
@@ -293,7 +291,6 @@ export default function DentalLab() {
     setOpenDentalModal(true);
   };
   const getFormRequest = (e) => {
-    debugger;
     // console.log( e.to_due_date._d);
 
     loadRequestList(e);
