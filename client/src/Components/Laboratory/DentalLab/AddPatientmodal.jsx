@@ -86,7 +86,7 @@ export function AddPatientDentalForm({
         provider_id: current.provider_id,
         due_date: current.due_date,
         service_amount: current.procedure_amt,
-        doctors: current.provider_id,
+        doctor: current.provider_id,
       });
 
       // .map((item) => item.doctors);
@@ -342,11 +342,6 @@ export function AddPatientDentalForm({
                       textField: fieldNameFn("label", "arlabel"),
                       valueField: (node) => {
                         return node.value;
-                        // if (node.sub_department_id) {
-                        //   return `${node.sub_department_id}-${node.services_id}-${node.value}-${node.department_type}-${node.department_id}-${node.service_type_id}`;
-                        // } else {
-                        //   return node.value;
-                        // }
                       },
                     }}
                   />
