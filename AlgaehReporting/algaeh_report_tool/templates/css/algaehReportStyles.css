@@ -710,3 +710,13 @@ body {
   margin: 0;
   font-size: 9px;
 }
+.textWithIcon {
+  vertical-align: middle;
+  align-content: center;
+}
+.inlineIcon {
+  /* display: inline-block; */
+  background: url("../images/facebook.svg ") no-repeat top center;
+  width: 16px;
+  height: 16px;
+}

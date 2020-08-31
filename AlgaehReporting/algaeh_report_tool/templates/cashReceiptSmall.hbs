@@ -1,10 +1,16 @@
+
 {{{importStyle 'css/algaehReportStyles.css'}}}
+
 <style type="text/css">
     .print-body {
         font-size: 13px !important;
         -webkit-font-smoothing: antialiased !important;
         -moz-osx-font-smoothing: grayscale !important;
         font-family: Arial !important;
+    }
+    .footerContent{
+         font-size: 11px !important;
+         line-height: 15px  ;
     }
 </style>
 
@@ -133,10 +139,14 @@
                 </tr> --}}
             </table>
         </section>
-        <section>
+        <section class="footerContent">
             <span>Because Your Health Matters</span><br />
-            <span>لأن صحتك مهمة</span><br />
-            <span>excelcare1m</span><br />
+            <span class="textWithIcon">
+               لأن صحتك مهمة</span><br />
+            <span> <img class="inlineIcon" src="{{imageSource 'images/facebook.png'}}" />
+                <img class="inlineIcon"  src="{{imageSource 'images/instagram.png'}}" />
+                <img class="inlineIcon"  src="{{imageSource 'images/snapchat.png'}}" />
+                <img class="inlineIcon"  src="{{imageSource 'images/twitter.png'}}" /> excelcare1m</span><br />
             <span>www.excelcare.com.sa</span><br />
         </section>
         {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
