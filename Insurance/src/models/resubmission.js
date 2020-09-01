@@ -77,7 +77,7 @@ export function reSubmissionDetails(req, res, next) {
               .then((resubmitResult) => {
                 const insertId = resubmitResult.insertId;
                 const query =
-                  claim_status === "S1"
+                  claim_status === "R1"
                     ? ` insurance_statement_id_2=${insertId},claim_status='S2'`
                     : `insurance_statement_id_3=${insertId},claim_status='S3'`;
                 _mysql

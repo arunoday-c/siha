@@ -17,6 +17,7 @@ import spotlightSearch from "../../../Search/spotlightSearch.json";
 import { getDenialReasons } from "../DenialReasonMaster/DenialReasonMaster";
 
 const updateStatement = async (input) => {
+  debugger;
   const res = await newAlgaehApi({
     uri: "/insurance/updateInsuranceStatement",
     module: "insurance",
@@ -95,13 +96,7 @@ export function UpdateStatement({
     }
   );
 
-  const [update, { isLoading: mutLoading }] = useMutation(updateStatement, {
-    onSuccess: (data) => {
-      if (data?.success) {
-        onClose(true);
-      }
-    },
-  });
+  const [update, { isLoading: mutLoading }] = useMutation(updateStatement, {});
 
   function cptSearch(row, update) {
     AlgaehSearch({
@@ -128,7 +123,7 @@ export function UpdateStatement({
       width={1200}
       closable={true}
       footer={null}
-      onCancel={() => onClose(false)}
+      onCancel={() => onClose(true)}
       // onOk={handleSubmit(onSubmit)}
       className={`${userLanguage}_comp row algaehNewModal UpdateStatementModal`}
     >
@@ -335,6 +330,7 @@ export function UpdateStatement({
                         denial_amount: row.denial_amount,
                         denial_reason_id: row.denial_reason_id,
                         cpt_code: row.cpt_code,
+                        claim_status: data?.claim_status?.replace("S", "R"),
                       });
                     },
                   }}

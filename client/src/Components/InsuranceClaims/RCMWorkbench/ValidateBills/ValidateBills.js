@@ -285,41 +285,41 @@ class ValidateBills extends PureComponent {
 
     this.state.icd_code !== null
       ? algaehApiCall({
-        uri: "/invoiceGeneration/addInvoiceIcd",
-        data: {
-          invoice_header_id: invoice.hims_f_invoice_header_id,
-          patient_id: invoice.patient_id,
-          episode_id: invoice.episode_id,
-          daignosis_id: this.state.hims_d_icd_id,
-          diagnosis_type: "P",
-          final_daignosis: "Y",
-        },
-        module: "insurance",
-        method: "POST",
-        onSuccess: (res) => {
-          if (res.data.success) {
+          uri: "/invoiceGeneration/addInvoiceIcd",
+          data: {
+            invoice_header_id: invoice.hims_f_invoice_header_id,
+            patient_id: invoice.patient_id,
+            episode_id: invoice.episode_id,
+            daignosis_id: this.state.hims_d_icd_id,
+            diagnosis_type: "P",
+            final_daignosis: "Y",
+          },
+          module: "insurance",
+          method: "POST",
+          onSuccess: (res) => {
+            if (res.data.success) {
+              swalMessage({
+                title: "Record added successfully",
+                type: "success",
+              });
+              this.setState({
+                icd_code: null,
+                hims_d_icd_id: null,
+              });
+              this.getInvoiceICDs();
+            }
+          },
+          onError: (err) => {
             swalMessage({
-              title: "Record added successfully",
-              type: "success",
+              title: err.message,
+              type: "error",
             });
-            this.setState({
-              icd_code: null,
-              hims_d_icd_id: null,
-            });
-            this.getInvoiceICDs();
-          }
-        },
-        onError: (err) => {
-          swalMessage({
-            title: err.message,
-            type: "error",
-          });
-        },
-      })
+          },
+        })
       : swalMessage({
-        title: "Please select an ICD",
-        type: "warning",
-      });
+          title: "Please select an ICD",
+          type: "warning",
+        });
   }
 
   //TODO
@@ -516,6 +516,10 @@ class ValidateBills extends PureComponent {
       this.state.invoices !== undefined
         ? this.state.invoices.claim_validated
         : null;
+    let claim_status =
+      this.state.invoices !== undefined
+        ? this.state.invoices.claim_status
+        : null;
     let invoice_details =
       this.state.invoices !== undefined
         ? this.state.invoices.invoiceDetails
@@ -562,7 +566,11 @@ class ValidateBills extends PureComponent {
                       // },
                       {
                         fieldName: "claim_validated",
-                        label: <AlgaehLabel label={{ forceLabel: "Status" }} />,
+                        label: (
+                          <AlgaehLabel
+                            label={{ forceLabel: "Validation Status" }}
+                          />
+                        ),
                         displayTemplate: (row) => {
                           return (
                             <span>
@@ -583,8 +591,51 @@ class ValidateBills extends PureComponent {
                                   Pending
                                 </span>
                               ) : (
-                                        "----"
-                                      )}
+                                "----"
+                              )}
+                            </span>
+                          );
+                        },
+                      },
+                      {
+                        fieldName: "claim_status",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Claim Status" }} />
+                        ),
+                        displayTemplate: (row) => {
+                          return (
+                            <span>
+                              {row.claim_status === "S1" ? (
+                                <span className="badge badge-success">
+                                  Submitted
+                                </span>
+                              ) : row.claim_status === "S2" ? (
+                                <span className="badge badge-success">
+                                  Re Submitted 1
+                                </span>
+                              ) : row.claim_status === "S3" ? (
+                                <span className="badge badge-success">
+                                  Re Submitted 2
+                                </span>
+                              ) : row.claim_status === "R1" ? (
+                                <span className="badge badge-info">
+                                  Remitted 1
+                                </span>
+                              ) : row.claim_status === "R2" ? (
+                                <span className="badge badge-info">
+                                  Remitted 2
+                                </span>
+                              ) : row.claim_status === "R3" ? (
+                                <span className="badge badge-info">
+                                  Remitted 3
+                                </span>
+                              ) : row.claim_status === "P" ? (
+                                <span className="badge badge-warning">
+                                  Pending
+                                </span>
+                              ) : (
+                                "----"
+                              )}
                             </span>
                           );
                         },
@@ -699,9 +750,9 @@ class ValidateBills extends PureComponent {
                     isEditable={false}
                     paging={{ page: 0, rowsPerPage: 2 }}
                     events={{
-                      onDelete: (row) => { },
-                      onEdit: (row) => { },
-                      onDone: (row) => { },
+                      onDelete: (row) => {},
+                      onEdit: (row) => {},
+                      onDone: (row) => {},
                     }}
                   />
                 </div>
@@ -842,12 +893,16 @@ class ValidateBills extends PureComponent {
                       data: invoice_details,
                       // data: this.state.invoice_details
                     }}
-                    isEditable={claim_validated === "P" ? true : false}
+                    isEditable={
+                      claim_validated === "P" || claim_status !== "P"
+                        ? true
+                        : false
+                    }
                     actions={{ allowDelete: false }}
                     paging={{ page: 0, rowsPerPage: 10 }}
                     events={{
-                      onDelete: (row) => { },
-                      onEdit: (row) => { },
+                      onDelete: (row) => {},
+                      onEdit: (row) => {},
                       onDone: this.updateInvoiceDetail.bind(this),
                     }}
                   />
@@ -875,7 +930,7 @@ class ValidateBills extends PureComponent {
                             ),
                           }}
                           renderPrevState={this.state.patInsuranceFrontImg}
-                        // forceRefresh={this.state.forceRefresh}
+                          // forceRefresh={this.state.forceRefresh}
                         />
                       </div>
 
@@ -993,7 +1048,33 @@ class ValidateBills extends PureComponent {
                         </button>
                       </div>
                     </>
-                  ) : null}
+                  ) : (
+                    claim_validated === "V" &&
+                    claim_status !== "P" && (
+                      <>
+                        <div className="col globalSearchCntr">
+                          <AlgaehLabel
+                            label={{ forceLabel: "Search ICD Code" }}
+                          />
+                          <h6 onClick={this.icdSearch.bind(this)}>
+                            {this.state.icd_code
+                              ? this.state.icd_code
+                              : "Search ICD Code"}
+                            <i className="fas fa-search fa-lg"></i>
+                          </h6>
+                        </div>
+                        <div className="col-3">
+                          <button
+                            onClick={this.addICDtoInvoice.bind(this)}
+                            className="btn btn-primary margin-top-15"
+                            style={{ marginTop: 21 }}
+                          >
+                            Add
+                          </button>
+                        </div>
+                      </>
+                    )
+                  )}
 
                   <div className="col-12" id="icd_bill_cntr">
                     <AlgaehDataGrid
@@ -1060,9 +1141,9 @@ class ValidateBills extends PureComponent {
                       isEditable={false}
                       paging={{ page: 0, rowsPerPage: 10 }}
                       events={{
-                        onDelete: (row) => { },
-                        onEdit: (row) => { },
-                        onDone: (row) => { },
+                        onDelete: (row) => {},
+                        onEdit: (row) => {},
+                        onDone: (row) => {},
                       }}
                     />
                   </div>
@@ -1072,18 +1153,15 @@ class ValidateBills extends PureComponent {
           </div>
         </div>
         <div className="col-lg-12 popupFooter">
-          <button
-            onClick={this.validateInvoice.bind(this)}
-            className="btn btn-primary"
-            disabled={
-              this.state.invoices.claim_validated === "V" ||
-                this.state.invoices.claim_validated === "X"
-                ? true
-                : false
-            }
-          >
-            VALIDATE
-          </button>
+          {claim_status === "P" ? (
+            <button
+              onClick={this.validateInvoice.bind(this)}
+              className="btn btn-primary"
+              disabled={claim_validated === "V" || claim_validated === "X"}
+            >
+              VALIDATE
+            </button>
+          ) : null}
 
           <button
             onClick={this.generateReport.bind(

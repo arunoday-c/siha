@@ -97,6 +97,31 @@ class RCMWorkbench extends Component {
     });
   };
 
+  resubmitClaims = () => {
+    const { resubmissionList } = this.state;
+    const invoiceList = resubmissionList.map(
+      (item) => item.hims_f_invoice_header_id
+    );
+    algaehApiCall({
+      uri: "/resubmission/submit",
+      module: "insurance",
+      method: "POST",
+      data: {
+        invoiceList,
+      },
+      onSuccess: (res) => {
+        if (res.data.success) {
+          this.setState(
+            {
+              resubmissionList: [],
+            },
+            () => this.getInvoicesForStatementID()
+          );
+        }
+      },
+    });
+  };
+
   dropDownHandler(value) {
     switch (value.name) {
       case "insurance_provider_id":
@@ -734,7 +759,7 @@ class RCMWorkbench extends Component {
                         fieldName: "chkselect",
                         label: <AlgaehLabel label={{ forceLabel: "Select" }} />,
                         displayTemplate: (row) => {
-                          if (this.state.rcmMode === "S") {
+                          if (this.state.rcmMode === "C") {
                             return (
                               <input
                                 type="checkbox"
@@ -825,7 +850,11 @@ class RCMWorkbench extends Component {
                       },
                       {
                         fieldName: "claim_validated",
-                        label: <AlgaehLabel label={{ forceLabel: "Status" }} />,
+                        label: (
+                          <AlgaehLabel
+                            label={{ forceLabel: "Validation Status" }}
+                          />
+                        ),
                         displayTemplate: (row) => {
                           return (
                             <span>
@@ -853,6 +882,49 @@ class RCMWorkbench extends Component {
                         },
                         others: {
                           maxWidth: 100,
+                        },
+                      },
+                      {
+                        fieldName: "claim_status",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Claim Status" }} />
+                        ),
+                        displayTemplate: (row) => {
+                          return (
+                            <span>
+                              {row.claim_status === "S1" ? (
+                                <span className="badge badge-success">
+                                  Submitted
+                                </span>
+                              ) : row.claim_status === "S2" ? (
+                                <span className="badge badge-success">
+                                  Re Submitted 1
+                                </span>
+                              ) : row.claim_status === "S3" ? (
+                                <span className="badge badge-success">
+                                  Re Submitted 2
+                                </span>
+                              ) : row.claim_status === "R1" ? (
+                                <span className="badge badge-info">
+                                  Remitted 1
+                                </span>
+                              ) : row.claim_status === "R2" ? (
+                                <span className="badge badge-info">
+                                  Remitted 2
+                                </span>
+                              ) : row.claim_status === "R3" ? (
+                                <span className="badge badge-info">
+                                  Remitted 3
+                                </span>
+                              ) : row.claim_status === "P" ? (
+                                <span className="badge badge-warning">
+                                  Pending
+                                </span>
+                              ) : (
+                                "----"
+                              )}
+                            </span>
+                          );
                         },
                       },
                       // {
@@ -1055,7 +1127,7 @@ class RCMWorkbench extends Component {
                     }}
                   />
                 </button>
-
+                {/* 
                 <button
                   // onClick={this.openReviewSubmit}
                   type="button"
@@ -1067,7 +1139,7 @@ class RCMWorkbench extends Component {
                       returnText: true,
                     }}
                   />
-                </button>
+                </button> */}
 
                 {/*<button
                 onClick={this.generateReports.bind(this)}
@@ -1115,7 +1187,7 @@ class RCMWorkbench extends Component {
             <div className="row">
               <div className="col-12">
                 <button
-                  // onClick={this.openReviewSubmit}
+                  onClick={this.resubmitClaims}
                   disabled={
                     !this.state.resubmissionList ||
                     !this.state.resubmissionList.length
