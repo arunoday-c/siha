@@ -187,7 +187,7 @@ export default {
               const options = res.data;
               new algaehMail(options.data[0])
                 .to(doctor_email)
-                .subject("Purchase Order Report")
+                .subject("Dental Order Update")
                 .templateHbs("dentalFormMail.hbs", {
                   request_status,
                   work_status,
