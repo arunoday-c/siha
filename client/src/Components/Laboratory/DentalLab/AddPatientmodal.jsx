@@ -1,7 +1,4 @@
-import React, {
-  //  useState,
-  useEffect,
-} from "react";
+import React, { useState, useEffect } from "react";
 import "./DentalLab.scss";
 import {
   // AlgaehLabel,
@@ -56,7 +53,7 @@ export function AddPatientDentalForm({
   // const [loading_request_list, setLoadingRequestList] = useState(false);
   //   const [request_list, setRequestList] = useState([]);
 
-  //   const [loading, setLoading] = useState(true);
+  const [checked, setChecked] = useState(false);
 
   // const [sub_department_id, setSub_department_id] = useState("");
   // const [doctor_id, setDoctor_id] = useState("");
@@ -72,6 +69,10 @@ export function AddPatientDentalForm({
       //   to_due_date: new Date(),
     },
   });
+  // const showArrivalDate = watch({
+  //   work_status: "COM",
+  //   request_status: "APR",
+  // });
   useEffect(() => {
     if (visible && current.length !== 0) {
       reset({
@@ -110,9 +111,11 @@ export function AddPatientDentalForm({
         due_date: undefined,
         service_amount: "",
         doctor: "",
+        arrival_date: undefined,
       });
       // setSub_department_id("");
       // setDoctor_id("");
+      setChecked(false);
     }
   }, [current, visible]);
   const { date_of_birth } = useWatch({
@@ -164,15 +167,15 @@ export function AddPatientDentalForm({
     }
   };
   const updateDentalForm = async (data) => {
-    const requestDate = moment(data.requesting_date).format("YYYY-MM-DD");
-    const due_date = moment(new Date()).format("YYYY-MM-DD");
+    const arrival_date = moment(data.arrival_date).format("YYYY-MM-DD");
+    // const due_date = moment(new Date()).format("YYYY-MM-DD");
     const years = moment().diff(data.date_of_birth, "year");
-    const date_of_birth = moment(data.date_of_birth).format("YYYY-MM-DD");
+    // const date_of_birth = moment(data.date_of_birth).format("YYYY-MM-DD");
     try {
       const res = await newAlgaehApi({
         uri: "/dentalForm/updateDentalForm",
         method: "PUT",
-        // module: "finance",
+
         data: {
           // department_id: sub_department_id,
           provider_id: data.doctor,
@@ -185,14 +188,18 @@ export function AddPatientDentalForm({
           hims_d_vendor_id: data.select_vendor,
           request_status: data.request_status,
           work_status: data.work_status,
-          requested_date: requestDate,
-          due_date: due_date,
-          date_of_birth: date_of_birth,
+          requested_date: data.requesting_date,
+          due_date: data.due_date,
+          date_of_birth: data.date_of_birth,
           hims_f_dental_form_id: current.hims_f_dental_form_id,
+          arrival_date: arrival_date,
+          send_mail: checked,
+          doctor_email: current.work_email,
         },
       });
       if (res.data.success) {
         // clearState
+
         getRequest();
 
         AlgaehMessagePop({
@@ -207,6 +214,7 @@ export function AddPatientDentalForm({
       });
     }
   };
+
   // const clearState = () => {
   //   reset({
   //     full_name: "",
@@ -261,6 +269,7 @@ export function AddPatientDentalForm({
       return "";
     }
   };
+
   return (
     <AlgaehModal
       visible={visible}
@@ -740,36 +749,58 @@ export function AddPatientDentalForm({
                       />
                     )}
                   />
+
                   <Controller
                     name="arrival_date"
                     control={control}
-                    render={({ value, onChange }) => (
+                    rules={{ required: " please enter date" }}
+                    render={({ onChange, value }) => (
                       <AlgaehDateHandler
                         div={{ className: "col-3 form-group mandatory" }}
+                        error={errors}
                         label={{
                           forceLabel: "Received Date",
                           isImp: true,
                         }}
                         textBox={{
                           className: "form-control",
+                          name: "arrival_date",
                           value,
                         }}
                         // others={{ disabled }}
                         minDate={new Date()}
                         events={{
-                          onChange: (reqDate) => {
-                            setValue("arrival_date", moment(reqDate));
+                          onChange: (mdate) => {
+                            if (mdate) {
+                              onChange(mdate._d);
+                            } else {
+                              onChange(undefined);
+                            }
+                          },
+                          onClear: () => {
+                            onChange(undefined);
                           },
                         }}
                       />
                     )}
                   />
+
                   <AlgaehSecurityComponent componentCode="DEN_MAIL_NOTY">
                     <div className="col">
                       <label>Notify Via Email</label>
                       <div className="customCheckbox">
                         <label className="checkbox inline">
-                          <input type="checkbox" value="yes" name="" />
+                          <input
+                            type="checkbox"
+                            value="yes"
+                            name=""
+                            checked={checked}
+                            onChange={(e) => {
+                              e.target.checked
+                                ? setChecked(true)
+                                : setChecked(false);
+                            }}
+                          />
                           <span>Yes</span>
                         </label>
                       </div>
