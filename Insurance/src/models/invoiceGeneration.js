@@ -462,7 +462,7 @@ export default {
               .then((diagnosis_result) => {
                 let outputArray = [];
                 let insertArray = [];
-                debugger;
+
                 for (let i = 0; i < header_arr.length; i++) {
                   let invoiceDetails = detail_arr.filter((detail) => {
                     return (

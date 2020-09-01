@@ -227,6 +227,46 @@
  *     description: Return failure response
  *     schema:
  *      $ref: "#/definitions/Error"
- *
- *
+ */
+/**
+ * @swagger
+ * /resubmission/submit:
+ *  post:
+ *   tags:
+ *    - Invoice Resubmission
+ *   summary: resubmit invoice details
+ *   produces:
+ *    -application/json
+ *   parameters:
+ *    - name: body
+ *      in: body
+ *      required: true
+ *      schema:
+ *       properties:
+ *        invoiceList:
+ *         type: array
+ *         required: true
+ *         items:
+ *          type: integer
+ *   responses:
+ *    200:
+ *     description: return inurance number and id
+ *     schema:
+ *      properties:
+ *       success:
+ *        type: boolean
+ *        default: true
+ *       records:
+ *        type: object
+ *        properties:
+ *         insurance_statement_number:
+ *          type: string
+ *          nullable: false
+ *         insurance_statement_id:
+ *          type: number
+ *          nullable: false
+ *    400:
+ *     description: Return failure response
+ *     schema:
+ *      $ref: "#/definitions/Error"
  */
