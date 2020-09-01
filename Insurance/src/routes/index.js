@@ -2,10 +2,10 @@ import express from "express";
 import insurance from "../controllers/insurance";
 import invoiceGeneration from "../controllers/invoiceGeneration";
 import denialMaster from "../controllers/denialMaster";
-
+import resubmission from "../controllers/resubmission";
 const router = express();
 router.use("/insurance", insurance());
 router.use("/invoiceGeneration", invoiceGeneration());
 router.use("/denialMaster", denialMaster());
-
+router.use("/resubmission", resubmission());
 export default router;
