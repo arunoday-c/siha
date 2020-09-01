@@ -1007,6 +1007,29 @@ textarea {
       height: 16px;
     }
   }
+  .jfemdq {
+    width: 269px !important;
+    padding: 0;
+    font-family: inherit;
+  }
+  .bNhaSY {
+    margin-top: 7px;
+    border-top: 1px solid rgb(221, 221, 221);
+    background: #f2f2f2;
+    padding: 5px 0;
+    .dxSPoS {
+      width: auto;
+      background: #fff;
+    }
+    .fLqaXd {
+      width: 100px;
+      background: #fff;
+    }
+  }
+  .cpGPQD {
+    text-align: right;
+    border-top: 1px solid rgb(221, 221, 221);
+  }
 }
 .ageMonth,
 .ageDay {
@@ -2549,7 +2572,7 @@ input.autoselect-input:disabled {
   .ant-modal-content {
     min-width: 100% !important ;
     border-radius: $borderRadius;
-    overflow: hidden;
+    // overflow: hidden;
     .ant-modal-close-x {
       height: 40px !important;
       width: 40px !important;
