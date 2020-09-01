@@ -1652,7 +1652,7 @@ export function getInsuranceStatement(req, res, next) {
         query: `select hims_f_insurance_statement_id, insurance_statement_number, total_gross_amount, total_company_responsibility, total_company_vat, total_company_payable,
         total_remittance_amount, total_denial_amount, total_balance_amount, 
         insurance_provider_id, sub_insurance_id,insurance_status  from hims_f_insurance_statement where hims_f_insurance_statement_id = ?;
-        select hims_f_invoice_header_id, invoice_number, invoice_date, invoice_type, IH.patient_id, visit_id, episode_id,
+        select hims_f_invoice_header_id, invoice_number, invoice_date, invoice_type, IH.patient_id, visit_id, episode_id, IH.claim_status,
  policy_number, insurance_provider_id, sub_insurance_id, network_id, network_office_id, card_number, 
  gross_amount, discount_amount, net_amount, patient_resp, patient_tax, 
  patient_payable, company_resp, company_tax, company_payable, sec_company_resp, 
@@ -1662,8 +1662,10 @@ export function getInsuranceStatement(req, res, next) {
  E.employee_code,E.full_name as doc_name
  from hims_f_invoice_header as IH
  inner join hims_f_patient as P on P.hims_d_patient_id = IH.patient_id inner join hims_f_patient_visit as V
- on V.hims_f_patient_visit_id = IH.visit_id inner join hims_d_employee as E on E.hims_d_employee_id = V.doctor_id where IH.insurance_statement_id=?;`,
+ on V.hims_f_patient_visit_id = IH.visit_id inner join hims_d_employee as E on E.hims_d_employee_id = V.doctor_id where IH.insurance_statement_id=? or IH.insurance_statement_id_2=? or IH.insurance_statement_id_3=?;`,
         values: [
+          req.query.hims_f_insurance_statement_id,
+          req.query.hims_f_insurance_statement_id,
           req.query.hims_f_insurance_statement_id,
           req.query.hims_f_insurance_statement_id,
         ],
@@ -1756,6 +1758,7 @@ export function updateInsuranceStatement(req, res, next) {
       denial_amount,
       denial_reason_id,
       cpt_code,
+      claim_status,
     } = req.body;
     _mysql
       .executeQueryWithTransaction({
@@ -1779,9 +1782,9 @@ export function updateInsuranceStatement(req, res, next) {
             }
             _mysql
               .executeQuery({
-                query: `update hims_f_invoice_header set remittance_amount=${rest["r1amt"]}, claim_status='S1',
-         denial_amount=${rest["d1amt"]},remittance_date=?,insurance_statement_id=? where hims_f_invoice_header_id=?`,
-                values: [new Date(), insurance_statement_id, invoice_header_id],
+                query: `update hims_f_invoice_header set remittance_amount=${rest["r1amt"]}, claim_status=?,
+         denial_amount=${rest["d1amt"]},remittance_date=? where hims_f_invoice_header_id=?`,
+                values: [claim_status, new Date(), invoice_header_id],
               })
               .then((records) => {
                 _mysql
