@@ -397,12 +397,14 @@ export default function DentalLab() {
                   <h3 className="caption-subject">Dental Form Requests List</h3>
                 </div>
                 <div className="actions">
-                  <a
-                    className="btn btn-primary btn-circle active"
-                    onClick={openDentalModalHandler}
-                  >
-                    <i className="fas fa-plus" />
-                  </a>
+                  <AlgaehSecurityComponent componentCode="APP_REQ_USER">
+                    <a
+                      className="btn btn-primary btn-circle active"
+                      onClick={openDentalModalHandler}
+                    >
+                      <i className="fas fa-plus" />
+                    </a>
+                  </AlgaehSecurityComponent>
                 </div>
               </div>
               <div className="portlet-body">
