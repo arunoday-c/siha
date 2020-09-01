@@ -506,7 +506,7 @@ export default function DentalLab() {
                           filterable: true,
                         },
                         {
-                          fieldName: "service_amount",
+                          fieldName: "procedure_amt",
                           label: "Amount",
                           filterable: true,
                         },
@@ -519,7 +519,7 @@ export default function DentalLab() {
                           label: "Due Date",
                         },
                         {
-                          fieldName: "arrival__date",
+                          fieldName: "requested_date",
                           label: "Received Date",
                         },
                         {

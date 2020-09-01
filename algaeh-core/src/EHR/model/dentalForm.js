@@ -1,5 +1,7 @@
 import algaehMysql from "algaeh-mysql";
 import algaehUtilities from "algaeh-utilities/utilities";
+import algaehMail from "algaeh-utilities/mail-send";
+import newAxios from "algaeh-utilities/axios";
 const keyPath = require("algaeh-keys/keys");
 
 let addDentalForm = (req, res, next) => {
@@ -126,6 +128,7 @@ export default {
       next(error);
     }
   },
+
   updateDentalForm: (req, res, next) => {
     // const utilities = new algaehUtilities();
     const _mysql = new algaehMysql();
@@ -135,7 +138,7 @@ export default {
       .executeQuery({
         query: `update hims_f_dental_form set patient_id=?,provider_id=?,procedure_id=?,procedure_amt=?,
         vendor_id=?,request_status=?,work_status=?,full_name=?,gender=?,age=?,patient_code=?,requested_date=?,
-        date_of_birth=?,department_id=? where hims_f_dental_form_id=? `,
+        date_of_birth=?,department_id=?,arrival_date=? where hims_f_dental_form_id=? `,
 
         values: [
           input.patient_id,
@@ -152,15 +155,64 @@ export default {
           input.requested_date,
           input.date_of_birth,
           input.department_id,
+          input.arrival_date,
           input.hims_f_dental_form_id,
         ],
         printQuery: true,
       })
       .then((result) => {
-        _mysql.releaseConnection();
+        let input = req.body;
+        console.log("req", req.body);
+        let request_status =
+          input.request_status === "APR"
+            ? "Approved"
+            : input.request_status === "REJ"
+            ? "Rejected"
+            : input.request_status === "RES"
+            ? "Resend"
+            : "Pending";
+        let doctor_email = input.doctor_email;
+        let work_status =
+          input.request_status === "WIP"
+            ? "Ordered"
+            : input.request_status === "COM"
+            ? "Completed"
+            : "Pending";
+        let requested_date = input.requested_date;
+        if (input.send_mail === true) {
+          try {
+            newAxios(req, {
+              url: "http://localhost:3006/api/v1//Document/getEmailConfig",
+            }).then((res) => {
+              const options = res.data;
+              new algaehMail(options.data[0])
+                .to(doctor_email)
+                .subject("Purchase Order Report")
+                .templateHbs("dentalFormMail.hbs", {
+                  request_status,
+                  work_status,
+                  requested_date,
+                })
+                .send()
+                .then((response) => {
+                  _mysql.releaseConnection();
+                  next();
+                })
+                .catch((error) => {
+                  _mysql.releaseConnection();
+                  next(e);
+                });
+            });
+          } catch (e) {
+            _mysql.releaseConnection();
+            next(e);
+          }
+        } else {
+          _mysql.releaseConnection();
 
-        req.records = result;
-        next();
+          req.records = result;
+          next();
+        }
       })
       .catch((e) => {
         _mysql.releaseConnection();
