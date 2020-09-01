@@ -28,6 +28,8 @@ export default {
             net_total: null,
             total_tax: null,
             net_payable: null,
+            narration: null,
+            retention_amt: 0
         };
         return output;
     }

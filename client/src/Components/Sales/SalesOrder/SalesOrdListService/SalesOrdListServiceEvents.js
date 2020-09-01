@@ -1,28 +1,10 @@
 import { swalMessage } from "../../../../utils/algaehApiCall";
 import moment from "moment";
-import Enumerable from "linq";
+// import Enumerable from "linq";
 import Options from "../../../../Options.json";
 // import AlgaehLoader from "../../../Wrapper/fullPageLoader";
 import _ from "lodash";
 
-const UomchangeTexts = ($this, context, ctrl, e) => {
-    e = ctrl || e;
-    let name = e.name || e.target.name;
-    let value = e.value || e.target.value;
-    if ($this.state.uom_id !== value) {
-        let unit_cost = 0;
-        if (e.selected.conversion_factor === 1) {
-            unit_cost = $this.state.Real_unit_cost;
-        } else {
-            unit_cost = e.selected.conversion_factor * $this.state.Real_unit_cost;
-        }
-        $this.setState({
-            [name]: value,
-            conversion_factor: e.selected.conversion_factor,
-            unit_cost: unit_cost
-        });
-    }
-};
 
 const numberchangeTexts = ($this, context, e) => {
     let name = e.name || e.target.name;
@@ -91,13 +73,7 @@ const AddSerices = ($this, context) => {
         });
         return
     }
-    let serviceData = Enumerable.from($this.state.sales_order_services)
-        .where(
-            w =>
-                w.services_id === $this.state.services_id &&
-                w.service_frequency === $this.state.service_frequency
-        )
-        .toArray();
+
     if ($this.state.services_id === null) {
         swalMessage({
             title: "Please Select Service.",
@@ -126,88 +102,83 @@ const AddSerices = ($this, context) => {
         });
         return
     }
-    if (serviceData.length > 0) {
-        swalMessage({
-            title: "Selected Service with the frequency already added in the list.",
-            type: "warning"
-        });
-    } else {
-        let sales_order_services = $this.state.sales_order_services;
+    let sales_order_services = $this.state.sales_order_services;
 
-        const extended_cost = parseFloat($this.state.unit_cost) * parseFloat($this.state.quantity)
-        const discount_amount = ((parseFloat(extended_cost) * parseFloat($this.state.discount_percentage)) / 100).toFixed(
-            $this.state.decimal_place
-        );
-        const net_extended_cost = extended_cost - discount_amount
-        const tax_amount = ((parseFloat(net_extended_cost) * parseFloat($this.state.tax_percentage)) / 100).toFixed(
-            $this.state.decimal_place
-        );
+    const extended_cost = parseFloat($this.state.unit_cost) * parseFloat($this.state.quantity)
+    const discount_amount = ((parseFloat(extended_cost) * parseFloat($this.state.discount_percentage)) / 100).toFixed(
+        $this.state.decimal_place
+    );
+    const net_extended_cost = extended_cost - discount_amount
+    const tax_amount = ((parseFloat(net_extended_cost) * parseFloat($this.state.tax_percentage)) / 100).toFixed(
+        $this.state.decimal_place
+    );
 
-        const total_amount = (parseFloat(net_extended_cost) + parseFloat(tax_amount)).toFixed(
-            $this.state.decimal_place
-        );
+    const total_amount = (parseFloat(net_extended_cost) + parseFloat(tax_amount)).toFixed(
+        $this.state.decimal_place
+    );
 
-        const ItemInput = {
-            service_name: $this.state.service_name,
-            services_id: $this.state.services_id,
-            quantity: $this.state.quantity,
-            discount_percentage: $this.state.discount_percentage,
-            unit_cost: $this.state.unit_cost,
-            extended_cost: extended_cost,
-            net_extended_cost: net_extended_cost,
-            discount_amount: discount_amount,
-            tax_percentage: $this.state.tax_percentage,
-            tax_amount: tax_amount,
-            total_amount: total_amount,
-            service_frequency: $this.state.service_frequency,
-            comments: $this.state.comments
-        };
-        sales_order_services.push(ItemInput);
+    const ItemInput = {
+        service_name: $this.state.service_name,
+        services_id: $this.state.services_id,
+        quantity: $this.state.quantity,
+        discount_percentage: $this.state.discount_percentage,
+        unit_cost: $this.state.unit_cost,
+        extended_cost: extended_cost,
+        net_extended_cost: net_extended_cost,
+        discount_amount: discount_amount,
+        tax_percentage: $this.state.tax_percentage,
+        tax_amount: tax_amount,
+        total_amount: total_amount,
+        service_frequency: $this.state.service_frequency,
+        comments: $this.state.comments,
+        arabic_comments: $this.state.arabic_comments
+    };
+    sales_order_services.push(ItemInput);
 
-        const sub_total = _.sumBy(sales_order_services, s =>
-            parseFloat(s.extended_cost)
-        );
-        const h_discount_amount = _.sumBy(sales_order_services, s =>
-            parseFloat(s.discount_amount)
-        );
-        const net_total = _.sumBy(sales_order_services, s =>
-            parseFloat(s.net_extended_cost)
-        );
+    const sub_total = _.sumBy(sales_order_services, s =>
+        parseFloat(s.extended_cost)
+    );
+    const h_discount_amount = _.sumBy(sales_order_services, s =>
+        parseFloat(s.discount_amount)
+    );
+    const net_total = _.sumBy(sales_order_services, s =>
+        parseFloat(s.net_extended_cost)
+    );
 
-        const total_tax = _.sumBy(sales_order_services, s =>
-            parseFloat(s.tax_amount)
-        );
+    const total_tax = _.sumBy(sales_order_services, s =>
+        parseFloat(s.tax_amount)
+    );
 
-        const net_payable = _.sumBy(sales_order_services, s =>
-            parseFloat(s.total_amount)
-        );
+    const net_payable = _.sumBy(sales_order_services, s =>
+        parseFloat(s.total_amount)
+    );
 
-        $this.setState({
+    $this.setState({
+        sales_order_services: sales_order_services,
+
+        addItemButton: true,
+        service_name: "",
+        addedItem: true,
+        services_id: null,
+        quantity: 0,
+        discount_percentage: 0,
+        unit_cost: 0,
+        tax_percent: 0,
+        service_frequency: null,
+        comments: "",
+        arabic_comments: ""
+    });
+
+    if (context !== undefined) {
+        context.updateState({
             sales_order_services: sales_order_services,
-
-            addItemButton: true,
-            service_name: "",
-            addedItem: true,
-            services_id: null,
-            quantity: 0,
-            discount_percentage: 0,
-            unit_cost: 0,
-            tax_percent: 0,
-            service_frequency: null,
-            comments: ""
+            saveEnable: false,
+            sub_total: sub_total,
+            discount_amount: h_discount_amount,
+            net_total: net_total,
+            total_tax: total_tax,
+            net_payable: net_payable
         });
-
-        if (context !== undefined) {
-            context.updateState({
-                sales_order_services: sales_order_services,
-                saveEnable: false,
-                sub_total: sub_total,
-                discount_amount: h_discount_amount,
-                net_total: net_total,
-                total_tax: total_tax,
-                net_payable: net_payable
-            });
-        }
     }
 };
 
@@ -442,7 +413,6 @@ const changeTexts = ($this, ctrl, e) => {
 
 
 export {
-    UomchangeTexts,
     servicechangeText,
     numberchangeTexts,
     AddSerices,

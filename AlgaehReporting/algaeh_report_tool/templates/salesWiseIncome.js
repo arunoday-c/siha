@@ -22,6 +22,7 @@
 // import algaehUtilities from "algaeh-utilities/utilities";
 const executePDF = function executePDFMethod(options) {
   const _ = options.loadash;
+  console.log("Data")
   return new Promise(function (resolve, reject) {
     // const utilities = new algaehUtilities();
     try {
@@ -36,6 +37,11 @@ const executePDF = function executePDFMethod(options) {
       if (input.employee_id > 0) {
         str += ` and SO.sales_person_id= ${input.employee_id}`;
       }
+      if (input.customer_id > 0) {
+        str += ` and SI.customer_id= ${input.customer_id}`;
+      }
+
+
 
       options.mysql
         .executeQuery({

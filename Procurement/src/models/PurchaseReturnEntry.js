@@ -1,5 +1,4 @@
 import algaehMysql from "algaeh-mysql";
-import algaehUtilities from "algaeh-utilities/utilities";
 import mysql from "mysql";
 import moment from "moment";
 
@@ -165,8 +164,7 @@ export default {
     try {
       let input = { ...req.body };
       let purchase_return_number = "";
-      const utilities = new algaehUtilities();
-      utilities.logger().log("addPurchaseReturnEntry: ");
+
       _mysql
         .generateRunningNumber({
           user_id: req.userIdentity.algaeh_d_app_user_id,
@@ -292,8 +290,6 @@ export default {
 
   cancelPurchaseOrderEntry: (req, res, next) => {
     const _mysql = new algaehMysql();
-    const utilities = new algaehUtilities();
-    utilities.logger().log("cancelPurchaseOrderEntry: ");
     try {
       let inputParam = { ...req.body };
 
@@ -329,7 +325,6 @@ export default {
   },
   postPurchaseOrderEntry: (req, res, next) => {
     const _mysql = new algaehMysql();
-    const utilities = new algaehUtilities();
     try {
       let inputParam = { ...req.body };
 

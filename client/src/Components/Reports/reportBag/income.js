@@ -531,22 +531,30 @@ export default function Income({ hospital_id, RECEIPT_TYPE, cashier_id }) {
               textField: "full_name",
               valueField: "hims_d_employee_id",
               data: undefined,
-            },
-            events: {
-              onChange: (reportState, currentEvent) => {
-                reportState.setState({
-                  sub_department_id: currentEvent.value,
-                  provider_id_list: currentEvent.selected.doctors,
-                });
-              },
-              onClear: (reportState, currentName) => {
-                reportState.setState({
-                  [currentName]: undefined,
-                  provider_id_list: [],
-                });
-              },
-            },
+            }
           },
+          {
+            type: "dropdown",
+            name: "customer_id",
+            initialLoad: true,
+            isImp: false,
+            label: "Customer",
+            link: {
+              uri: "/customer/getCustomerMaster",
+              module: "masterSettings"
+            },
+            manupulation: (response, reportState, stateProperty) => {
+              debugger
+              reportState.setState({
+                [stateProperty]: response.records,
+              });
+            },
+            dataSource: {
+              textField: "customer_name",
+              valueField: "hims_d_customer_id",
+              data: undefined,
+            }
+          }
         ],
       },
     ],

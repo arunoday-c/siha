@@ -659,7 +659,7 @@ const AuthorizePOEntry = ($this, authorize) => {
     } else {
       $this.state.po_entry_detail = $this.state.inventory_stock_detail;
     }
-    // $this.state.authorize1 = "Y";
+    $this.state.authorize = authorize;
 
     let authorize1 = "";
     let authorize2 = "";
@@ -716,6 +716,8 @@ const AuthorizePOEntry = ($this, authorize) => {
       "authorize2",
       "delete_po_services",
       "is_completed",
+      "po_auth_level",
+      "authorize"
     ];
     let sendJsonBody = {};
     procumentInputs.forEach((item) => {
@@ -982,8 +984,8 @@ const getReportForMail = (data, vedorData) => {
           vendor_email: email_id_1
             ? email_id_1
             : email_id_2
-            ? email_id_2
-            : email_id_1,
+              ? email_id_2
+              : email_id_1,
           po_from: po_from,
           net_total,
           location_name,
@@ -1041,7 +1043,7 @@ const CancelPOEntry = ($this) => {
       // }
       AlgaehLoader({ show: true });
       algaehApiCall({
-        uri: "/PurchaseOrderEntry/cancelPurchaseOrderEntry",
+        uri: "/PurchaseOrderEntry/rejectPurchaseOrderEntry",
         module: "procurement",
         data: {
           comment: willReject.value,
