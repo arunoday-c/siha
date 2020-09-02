@@ -3,9 +3,10 @@ import MyContext from "../../../../utils/MyContext";
 import "./../../../../styles/site.scss";
 import {
     AlgaehDataGrid,
-    AlgaehLabel    
+    AlagehFormGroup,
+    AlgaehLabel
 } from "../../../Wrapper/algaehWrapper";
-import { deleteSalesDetail } from "./InvoiceListServiceEvents";
+import { gridTextchange, deleteSalesDetail } from "./InvoiceListServiceEvents";
 
 
 export default class InvoiceListService extends Component {
@@ -374,6 +375,66 @@ export default class InvoiceListService extends Component {
                                                             />
                                                         ),
                                                         disabled: true
+                                                    },
+                                                    {
+                                                        fieldName: "comments",
+                                                        label: (
+                                                            <AlgaehLabel
+                                                                label={{
+                                                                    forceLabel: "Description in English"
+                                                                }}
+                                                            />
+                                                        ),
+                                                        displayTemplate: row => {
+                                                            return (
+                                                                <AlagehFormGroup
+                                                                    div={{}}
+                                                                    textBox={{
+                                                                        value: row.comments,
+                                                                        className: "txt-fld",
+                                                                        name: "comments",
+                                                                        events: {
+                                                                            onChange: gridTextchange.bind(
+                                                                                this,
+                                                                                this,
+                                                                                context,
+                                                                                row
+                                                                            )
+                                                                        }
+                                                                    }}
+                                                                />
+                                                            );
+                                                        }
+                                                    },
+                                                    {
+                                                        fieldName: "arabic_comments",
+                                                        label: (
+                                                            <AlgaehLabel
+                                                                label={{
+                                                                    forceLabel: "Description in Arabic"
+                                                                }}
+                                                            />
+                                                        ),
+                                                        displayTemplate: row => {
+                                                            return (
+                                                                <AlagehFormGroup
+                                                                    div={{}}
+                                                                    textBox={{
+                                                                        value: row.arabic_comments,
+                                                                        className: "txt-fld",
+                                                                        name: "arabic_comments",
+                                                                        events: {
+                                                                            onChange: gridTextchange.bind(
+                                                                                this,
+                                                                                this,
+                                                                                context,
+                                                                                row
+                                                                            )
+                                                                        }
+                                                                    }}
+                                                                />
+                                                            );
+                                                        }
                                                     }
                                                 ]}
                                                 keyId="service_type_id"

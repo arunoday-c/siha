@@ -1,5 +1,4 @@
 import algaehMysql from "algaeh-mysql";
-import algaehUtilities from "algaeh-utilities/utilities";
 import mysql from "mysql";
 import _ from "lodash";
 import algaehMail from "algaeh-utilities/mail-send";
@@ -65,7 +64,7 @@ export default {
                    and IC.hims_d_inventory_tem_category_id = PD.inv_item_category_id and \
                    IG.hims_d_inventory_item_group_id =PD.inv_item_group_id \
                    and procurement_header_id=?" +
-                    strCondition,
+                  strCondition,
                   [headerResult[0].hims_f_procurement_po_header_id]
                 );
               } else if (headerResult[0].po_from == "PHR") {
@@ -85,7 +84,7 @@ export default {
                 where PD.phar_item_id = IM.hims_d_item_master_id and PD.pharmacy_uom_id = PU.hims_d_pharmacy_uom_id \
                 and IM.stocking_uom_id = STOCK_UOM.hims_d_pharmacy_uom_id and IM.service_id = S.hims_d_services_id and \
                 IC.hims_d_item_category_id = PD.phar_item_category and IG.hims_d_item_group_id = PD.phar_item_group and procurement_header_id=?" +
-                    strCondition,
+                  strCondition,
                   [headerResult[0].hims_f_procurement_po_header_id]
                 );
               }
@@ -602,12 +601,14 @@ export default {
         req.body = inputParam;
         req.mySQl = _mysql;
 
-        _mysql
-          .executeQueryWithTransaction({
-            query:
-              "UPDATE `hims_f_procurement_po_header` SET is_completed = ?, `authorize1`=?, `authorize_by_date`=?, `authorize_by_1`=?, \
+        let strQuery = ""
+        console.log("inputParam.authorize", inputParam.authorize)
+        console.log("inputParam.authorize", inputParam.po_auth_level)
+        if (inputParam.po_auth_level == "1") {
+          strQuery = mysql.format(
+            "UPDATE `hims_f_procurement_po_header` SET is_completed = ?, `authorize1`=?, `authorize_by_date`=?, `authorize_by_1`=?, \
             `authorize2`=?, `authorize2_date`=?, `authorize2_by`=? WHERE `hims_f_procurement_po_header_id`=?",
-            values: [
+            [
               inputParam.is_completed,
               inputParam.authorize1,
               new Date(),
@@ -615,8 +616,38 @@ export default {
               inputParam.authorize2,
               new Date(),
               req.userIdentity.algaeh_d_app_user_id,
-              inputParam.hims_f_procurement_po_header_id,
-            ],
+              inputParam.hims_f_procurement_po_header_id
+            ]
+          );
+        } else {
+          if (inputParam.authorize == "authorize1") {
+            strQuery = mysql.format(
+              "UPDATE `hims_f_procurement_po_header` SET `authorize1`=?, `authorize_by_date`=?, `authorize_by_1`=? \
+              WHERE `hims_f_procurement_po_header_id`=?",
+              [
+                inputParam.authorize1,
+                new Date(),
+                req.userIdentity.algaeh_d_app_user_id,
+                inputParam.hims_f_procurement_po_header_id
+              ]
+            );
+          } else if (inputParam.authorize == "authorize2") {
+            strQuery = mysql.format(
+              "UPDATE `hims_f_procurement_po_header` SET is_completed = ?, \
+                  `authorize2`=?, `authorize2_date`=?, `authorize2_by`=? WHERE `hims_f_procurement_po_header_id`=?",
+              [
+                inputParam.is_completed,
+                inputParam.authorize2,
+                new Date(),
+                req.userIdentity.algaeh_d_app_user_id,
+                inputParam.hims_f_procurement_po_header_id
+              ]
+            );
+          }
+        }
+        _mysql
+          .executeQueryWithTransaction({
+            query: strQuery,
             printQuery: true,
           })
           .then((headerResult) => {
@@ -718,7 +749,7 @@ export default {
       // }
 
       let strQuery =
-        "SELECT PO.*,V.vendor_name,E.full_name, case \
+        "SELECT PO.*,V.vendor_name,US.user_display_name as created_name, AE.user_display_name as auth_name, case \
           when cancelled='Y'  then 'PO Rejected'\
           when  is_posted = 'Y' and authorize1 = 'N' then 'Autorization 1 Pending'\
           when authorize1 = 'Y' and authorize2 = 'N'  then 'Final Autorization Pending'\
@@ -728,7 +759,7 @@ export default {
           from  hims_f_procurement_po_header PO \
           inner join hims_d_vendor V on PO.vendor_id = V.hims_d_vendor_id \
           inner join algaeh_d_app_user US on PO.created_by = US.algaeh_d_app_user_id \
-          inner join hims_d_employee E on US.employee_id = E.hims_d_employee_id \
+          left join algaeh_d_app_user AE on PO.authorize_by_1 = AE.algaeh_d_app_user_id \
           where 1=1 ";
 
       if (req.query.from_date != null) {
@@ -1121,6 +1152,39 @@ export default {
     } catch (e) {
       _mysql.releaseConnection();
       next(e);
+    }
+  },
+
+
+  rejectPurchaseOrderEntry: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    try {
+
+      _mysql
+        .executeQuery({
+          query:
+            "UPDATE `hims_f_procurement_po_header` SET `is_posted` = 'N', authorize1='N', comment=? \
+          WHERE `hims_f_procurement_po_header_id`=?; ",
+          values: [
+            req.body.comment,
+            req.body.hims_f_procurement_po_header_id,
+          ],
+          printQuery: true
+        })
+        .then(headerResult => {
+          _mysql.releaseConnection();
+          req.records = headerResult;
+          next();
+        })
+        .catch(e => {
+          _mysql.rollBackTransaction(() => {
+            next(e);
+          });
+        });
+    } catch (e) {
+      _mysql.rollBackTransaction(() => {
+        next(e);
+      });
     }
   },
   cancelPurchaseOrderEntry: (req, res, next) => {

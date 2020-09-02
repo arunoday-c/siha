@@ -377,6 +377,21 @@ const qtyonchangegridcol = ($this, context, row, e) => {
     }
 };
 
+const gridTextchange = ($this, context, row, e) => {
+    let name = e.name || e.target.name;
+    let value = e.value || e.target.value;
+    let _index = $this.state.invoice_entry_detail_services.indexOf(row);
+    let invoice_entry_detail_services = $this.state.invoice_entry_detail_services
+    row[name] = value;
+
+    invoice_entry_detail_services[_index] = row
+    if (context !== undefined) {
+        context.updateState({
+            invoice_entry_detail_services: invoice_entry_detail_services
+        });
+    }
+}
+
 export {
     UomchangeTexts,
     servicechangeText,
@@ -386,5 +401,6 @@ export {
     calculateAmount,
     dateFormater,
     onchangegridcol,
-    qtyonchangegridcol
+    qtyonchangegridcol,
+    gridTextchange
 };

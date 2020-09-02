@@ -37,6 +37,11 @@
                     <td colspan="2" class="textEngCtr" style="width:60%"><b>{{vat_number}}</b></td>
                     <td class="textArbRht" style="width:20%">الرقم الضريبي</td>
                 </tr>
+                <tr>
+                    <td class="textEngLft" style="width:20%">Site</td>
+                    <td colspan="2" class="textEngCtr" style="width:60%"><b>{{hospital_name}}</b></td>
+                    <td class="textArbRht" style="width:20%">الموقع</td>
+                </tr>
 
 
             </table>
@@ -76,7 +81,7 @@
                 <thead>
                     <tr>
                         <th>Sl No.</th>
-                        <th>Service Name / اسم الخدمة</th>
+                        <th>Service Name/اسم الخدمة</th>
                         <th>Quantity/ الكمية</th>
                         <th>Rate/ سعر الوحدة</th>
                         <th>Vat %/ الضريبة</th>
@@ -88,13 +93,13 @@
                     {{#each detailList}}
                     <tr>
                         <td>{{inc @index}}</td>
-                        <td>{{service_name}}</td>
+                        <td>{{service_name}}-{{comments}} <br /> {{arabic_service_name}} - {{arabic_comments}}</td>
 
                         <td>{{quantity}}</td>
                         <td class="numberFld">{{unit_cost}}</td>
                         <td>{{tax_percentage}}%</td>
                         <td class="numberFld">{{total_amount}}</td>
-
+                        {{!-- <td>{{arabic_service_name}}</td> --}}
                     </tr>
                     {{/each }}</tbody>
             </table>
@@ -125,8 +130,14 @@
                     <td class="textArbRht" style="width:20%">الإجمالي بعد ضريبة القيمة المضافة</td>
                 </tr>
                 <tr class="footerTotalDown">
+                    <td class="textEngLft" style="width:20%">Retention Amount</td>
+                    <td colspan="7" class="textArbRht" style="width:60%">{{retention_amt}}</td>
+                    <td class="textArbRht" style="width:20%">مبلغ الاحتفاظ</td>
+                </tr>
+
+                <tr class="footerTotalDown">
                     <td class="textEngLft" style="width:20%">Outstanding Balance (SAR)</td>
-                    <td colspan="7" class="textArbRht" style="width:60%">{{net_payable}}</td>
+                    <td colspan="7" class="textArbRht" style="width:60%">{{outstanding_balance}}</td>
                     <td class="textArbRht" style="width:20%">الرصيد المستحق بالريال السعودي</td>
                 </tr>
                 </tbody>

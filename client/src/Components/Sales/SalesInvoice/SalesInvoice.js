@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import "./SalesInvoice.scss";
 import BreadCrumb from "../../common/BreadCrumb/BreadCrumb";
-import { AlgaehLabel } from "../../Wrapper/algaehWrapper";
+import { AlgaehLabel, AlagehFormGroup } from "../../Wrapper/algaehWrapper";
 import Options from "../../../Options.json";
 import moment from "moment";
 // import ReceiptItemList from "./ReceiptItemList/ReceiptItemList";
@@ -274,7 +274,26 @@ class SalesInvoice extends Component {
           </MyContext.Provider>
 
           <div className="row">
-            <div className="col-3"></div>
+            <AlagehFormGroup
+              div={{ className: "col-3 textAreaLeft" }}
+              label={{
+                forceLabel: "Narration",
+                isImp: false,
+              }}
+              textBox={{
+                className: "txt-fld",
+                name: "narration",
+                value: this.state.narration,
+                events: {
+                  onChange: texthandle.bind(this, this),
+                },
+                others: {
+                  disabled: this.state.dataExitst,
+                  multiline: true,
+                  rows: "3",
+                },
+              }}
+            />
             <div className="col-9" style={{ textAlign: "right" }}>
               <div className="row">
                 <div className="col">
@@ -310,6 +329,25 @@ class SalesInvoice extends Component {
                   />
                   <h6>{GetAmountFormart(this.state.total_tax)}</h6>
                 </div>
+                <AlagehFormGroup
+                  div={{ className: "col-3 textAreaLeft" }}
+                  label={{
+                    forceLabel: "Retention amt",
+                    isImp: false,
+                  }}
+                  textBox={{
+                    decimal: { allowNegative: false },
+                    className: "txt-fld",
+                    name: "retention_amt",
+                    value: this.state.retention_amt,
+                    events: {
+                      onChange: texthandle.bind(this, this),
+                    },
+                    others: {
+                      disabled: this.state.dataExitst
+                    },
+                  }}
+                />
                 <div className="col">
                   <AlgaehLabel
                     label={{

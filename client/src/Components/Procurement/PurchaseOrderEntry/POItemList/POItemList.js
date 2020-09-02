@@ -100,7 +100,7 @@ export default class POItemList extends Component {
                         //   this.attReg = attReg;
                         // }}
                         others={{
-                          disabled: this.state.dataExists,
+                          disabled: this.state.dataExitst,
                         }}
                       />
                       {/* <AlagehAutoComplete
@@ -416,6 +416,7 @@ export default class POItemList extends Component {
                               ),
                               others: {
                                 minWidth: 200,
+                                disabled: true
                               },
                             },
                             // {
@@ -453,7 +454,8 @@ export default class POItemList extends Component {
                               ),
                               others: {
                                 minWidth: 150,
-                                filterable: false
+                                filterable: false,
+                                disabled: true
                               }
                             },
 

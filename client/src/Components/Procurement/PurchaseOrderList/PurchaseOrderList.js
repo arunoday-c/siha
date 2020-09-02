@@ -410,7 +410,7 @@ class PurchaseOrderList extends Component {
                         },
                       },
                       {
-                        fieldName: "full_name",
+                        fieldName: "created_name",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Created By" }} />
                         ),
@@ -418,6 +418,27 @@ class PurchaseOrderList extends Component {
                         others: {
                           resizable: false,
                           // style: { textAlign: "left" },
+                        },
+                      },
+                      {
+                        fieldName: "auth_name",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Auth Level 1" }} />
+                        ),
+                        disabled: true,
+                        others: {
+                          resizable: false,
+                          // style: { textAlign: "left" },
+                        },
+                      },
+                      {
+                        fieldName: "comment",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Rejection Comments" }} />
+                        ),
+                        disabled: true,
+                        others: {
+                          resizable: false
                         },
                       },
                     ]}
