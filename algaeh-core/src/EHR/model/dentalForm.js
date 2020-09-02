@@ -192,6 +192,11 @@ export default {
                   request_status,
                   work_status,
                   requested_date,
+                  employee_name,
+                  service_name,
+                  patient_code,
+                  full_name,
+                  arrival_date,
                 })
                 .send()
                 .then((response) => {

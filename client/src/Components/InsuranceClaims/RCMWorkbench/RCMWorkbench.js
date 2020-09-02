@@ -778,15 +778,19 @@ class RCMWorkbench extends Component {
                                 item.hims_f_invoice_header_id ==
                                 row?.hims_f_invoice_header_id
                             );
-                            return (
-                              <input
-                                type="checkbox"
-                                checked={!!current}
-                                onChange={() => {
-                                  this.addToResubmissionlist(row);
-                                }}
-                              />
-                            );
+                            if (row.claim_status?.startsWith("R")) {
+                              return (
+                                <input
+                                  type="checkbox"
+                                  checked={!!current}
+                                  onChange={() => {
+                                    this.addToResubmissionlist(row);
+                                  }}
+                                />
+                              );
+                            } else {
+                              return null;
+                            }
                           }
                           return null;
                         },
