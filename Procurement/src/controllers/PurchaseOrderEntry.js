@@ -18,6 +18,7 @@ const {
   postPurchaseOrderEntry,
   cancelPurchaseOrderEntry,
   getReportForMail,
+  rejectPurchaseOrderEntry,
   releaseDB,
 } = purchaseModels;
 
@@ -128,6 +129,16 @@ export default () => {
   api.put(
     "/cancelPurchaseOrderEntry",
     cancelPurchaseOrderEntry,
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records,
+      });
+    }
+  );
+  api.put(
+    "/rejectPurchaseOrderEntry",
+    rejectPurchaseOrderEntry,
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,

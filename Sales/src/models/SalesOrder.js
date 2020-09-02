@@ -224,6 +224,7 @@ export function addSalesOrder(req, res, next) {
                                     "tax_amount",
                                     "total_amount",
                                     "comments",
+                                    "arabic_comments"
                                 ];
 
                                 _mysql

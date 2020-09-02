@@ -697,23 +697,24 @@ export default {
                 printQuery: false,
               })
               .then((result) => {
-
                 const options = result[0][0];
                 const grni_required = options["grni_required"];
-                const GRNI = result[1][0];
-                const inventory = result[2][0];
-                const pharmacy = result[3][0];
-                const project_id = result[4][0]["project_id"];
-                const stock_location = result[5][0];
-
-                let sub_department_id = null;
-                if (input.dn_from == "PHR") {
-                  sub_department_id = pharmacy["hims_d_sub_department_id"];
-                } else if (input.dn_from == "INV") {
-                  sub_department_id = inventory["hims_d_sub_department_id"];
-                }
-
                 if (grni_required == "Y") {
+
+                  const GRNI = result[1][0];
+                  const inventory = result[2][0];
+                  const pharmacy = result[3][0];
+                  const project_id = result[4][0]["project_id"];
+                  const stock_location = result[5][0];
+
+                  let sub_department_id = null;
+                  if (input.dn_from == "PHR") {
+                    sub_department_id = pharmacy["hims_d_sub_department_id"];
+                  } else if (input.dn_from == "INV") {
+                    sub_department_id = inventory["hims_d_sub_department_id"];
+                  }
+
+
                   if (GRNI.head_id > 0 && GRNI.child_id > 0) {
                     _mysql
                       .executeQuery({

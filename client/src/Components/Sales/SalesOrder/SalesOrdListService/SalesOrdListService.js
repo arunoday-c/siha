@@ -41,6 +41,7 @@ export default class SalesOrdListService extends Component {
       tax_percentage: 0,
       service_frequency: null,
       comments: "",
+      arabic_comments: ""
     };
   }
 
@@ -233,21 +234,34 @@ export default class SalesOrdListService extends Component {
                       }}
                     />
 
-                    <div className="col-12">
-                      <AlgaehLabel
-                        label={{
-                          forceLabel: "Comments",
-                        }}
-                      />
-
-                      <textarea
-                        value={this.state.comments}
-                        name="comments"
-                        onChange={this.textAreaEvent.bind(this)}
-                      >
-                        {this.state.comments}
-                      </textarea>
-                    </div>
+                    <AlagehFormGroup
+                      div={{ className: "col-12", }}
+                      label={{
+                        fieldName: "Description in English"
+                      }}
+                      textBox={{
+                        className: "txt-fld",
+                        name: "comments",
+                        value: this.state.comments,
+                        events: {
+                          onChange: changeTexts.bind(this, this),
+                        }
+                      }}
+                    />
+                    <AlagehFormGroup
+                      div={{ className: "col-12", }}
+                      label={{
+                        fieldName: "Description in Arabic"
+                      }}
+                      textBox={{
+                        className: "txt-fld",
+                        name: "arabic_comments",
+                        value: this.state.arabic_comments,
+                        events: {
+                          onChange: changeTexts.bind(this, this),
+                        }
+                      }}
+                    />
 
                     <div className="col-12 subFooter-btn">
                       <button
@@ -485,7 +499,21 @@ export default class SalesOrdListService extends Component {
                             label: (
                               <AlgaehLabel
                                 label={{
-                                  forceLabel: "Comments",
+                                  forceLabel: "Description",
+                                }}
+                              />
+                            ),
+                            disabled: true,
+                            others: {
+                              minWidth: 200,
+                            },
+                          },
+                          {
+                            fieldName: "arabic_comments",
+                            label: (
+                              <AlgaehLabel
+                                label={{
+                                  forceLabel: "Description in Arabic",
                                 }}
                               />
                             ),
