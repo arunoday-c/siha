@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import "./PurchaseOrderList.scss";
 import PurchaseOrderList from "./PurchaseOrderList";
 import PurchaseOrderEntry from "../PurchaseOrderEntry/PurchaseOrderEntry";
-import { getCookie } from "../../../utils/algaehApiCall";
+// import { getCookie } from "../../../utils/algaehApiCall";
 import { removeGlobal, setGlobal } from "../../../utils/GlobalFunctions";
 import DeliveryNoteEntry from "../DeliveryNoteEntry/DeliveryNoteEntry";
 
@@ -10,7 +10,7 @@ class PurchaseSwitch extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      RQ_Screen: getCookie("ScreenName").replace("/", "")
+      RQ_Screen: "PurchaseOrderList",
     };
     this.routeComponents = this.routeComponents.bind(this);
   }
@@ -19,7 +19,7 @@ class PurchaseSwitch extends Component {
     this.setState(
       {
         RQ_Screen: Window.global["RQ-STD"],
-        purchase_number: Window.global["purchase_number"]
+        purchase_number: Window.global["purchase_number"],
       },
       () => {
         this.changeDisplays(Window.global["RQ-STD"]);
@@ -45,7 +45,7 @@ class PurchaseSwitch extends Component {
           purchase_number={this.state.purchase_number}
           purchase_auth={true}
         />
-      )
+      ),
     };
   }
 
@@ -66,12 +66,12 @@ class PurchaseSwitch extends Component {
           <button
             style={{
               display:
-                this.state.RQ_Screen === "PurchaseOrderList" ? "none" : "block"
+                this.state.RQ_Screen === "PurchaseOrderList" ? "none" : "block",
             }}
             className="btn btn-default bk-bn"
             onClick={() => {
               setGlobal({
-                "RQ-STD": "PurchaseOrderList"
+                "RQ-STD": "PurchaseOrderList",
               });
 
               this.routeComponents();
