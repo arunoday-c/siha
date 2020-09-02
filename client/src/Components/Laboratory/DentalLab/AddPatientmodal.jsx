@@ -90,6 +90,7 @@ export function AddPatientDentalForm({
         due_date: current.due_date,
         service_amount: current.procedure_amt,
         doctor: current.provider_id,
+        arrival_date: current.arrival_date,
       });
 
       // .map((item) => item.doctors);
@@ -714,6 +715,7 @@ export function AddPatientDentalForm({
                             onChange(selected);
                             if (selected !== "APR") {
                               setValue("work_status", "");
+                              setValue("arrival_date", undefined);
                             }
                           },
                           onClear: () => {
@@ -767,7 +769,10 @@ export function AddPatientDentalForm({
                   <Controller
                     name="arrival_date"
                     control={control}
-                    rules={{ required: " please enter date" }}
+                    rules={{
+                      required:
+                        work_status !== "COM" ? " please enter date" : false,
+                    }}
                     render={({ onChange, value }) => (
                       <AlgaehDateHandler
                         div={{ className: "col-3 form-group mandatory" }}

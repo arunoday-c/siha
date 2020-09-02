@@ -99,7 +99,7 @@ export default {
           -- P.patient_code,concat(T.title,' ',P.full_name)as  patient_name,
              concat(ET.title,' ',E.full_name)as  employee_name,
              -- PL.hims_f_treatment_plan_id, PL.plan_name
-        D.work_status,E.work_email,D.hims_f_dental_form_id,D.due_date ,D.department_id,D.requested_date,D.request_status,D.procedure_id, D.provider_id,D.procedure_amt,D.approved,D.date_of_birth,
+       D.arrival_date, D.work_status,E.work_email,D.hims_f_dental_form_id,D.due_date ,D.department_id,D.requested_date,D.request_status,D.procedure_id, D.provider_id,D.procedure_amt,D.approved,D.date_of_birth,
         D.full_name, D.patient_code,D.gender, D.age,V.vendor_name,V.hims_d_vendor_id,S.service_name
          from hims_f_dental_form as D 
          -- inner join hims_f_patient as P on P.hims_d_patient_id=D.patient_id 
