@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import "./InsuranceStatement.scss";
 import { useQuery, useMutation } from "react-query";
 import {
@@ -6,18 +6,19 @@ import {
   AlgaehModal,
   AlgaehDataGrid,
   Spin,
-  AlgaehMessagePop,
-  // AlgaehFormGroup,
+  Tooltip,
+  // AlgaehMessagePop,
+  AlgaehFormGroup,
   MainContext,
   AlgaehAutoComplete,
 } from "algaeh-react-components";
+import { useForm, Controller } from "react-hook-form";
 import { newAlgaehApi } from "../../../hooks";
 import AlgaehSearch from "../../Wrapper/globalSearch";
 import spotlightSearch from "../../../Search/spotlightSearch.json";
 import { getDenialReasons } from "../DenialReasonMaster/DenialReasonMaster";
 
 const updateStatement = async (input) => {
-  debugger;
   const res = await newAlgaehApi({
     uri: "/insurance/updateInsuranceStatement",
     module: "insurance",
@@ -26,35 +27,6 @@ const updateStatement = async (input) => {
   });
   return res.data;
 };
-
-// const addICD = async (data) => {
-//   const res = await newAlgaehApi({
-//     uri: "/invoiceGeneration/addInvoiceIcd",
-//     data: {
-//       invoice_header_id: data?.hims_f_invoice_header_id,
-//       patient_id: data?.patient_id,
-//       episode_id: data?.episode_id,
-//       daignosis_id: data?.hims_d_icd_id,
-//       diagnosis_type: "P",
-//       final_daignosis: "Y",
-//     },
-//     method: "POST",
-//     module: "insurance",
-//   });
-//   return res.data?.records;
-// };
-
-// // const deleteICD = async (data) => {
-// //   const res = await newAlgaehApi({
-// //     uri: "/invoiceGeneration/deleteInvoiceIcd",
-// //     data: {
-// //       hims_f_invoice_icd_id: data?.hims_f_invoice_icd_id,
-// //     },
-// //     module: "insurance",
-// //     method: "DELETE",
-// //   });
-// //   return res.data?.records;
-// // };
 
 const getStatementServices = async (key, { invoice_header_id }) => {
   const res = await newAlgaehApi({
@@ -66,21 +38,12 @@ const getStatementServices = async (key, { invoice_header_id }) => {
   return res.data?.records;
 };
 
-// const getICDcodes = async (key, { invoice_header_id }) => {
-//   const res = await newAlgaehApi({
-//     uri: "/invoiceGeneration/getPatientIcdForInvoice",
-//     module: "insurance",
-//     data: { invoice_header_id },
-//     method: "GET",
-//   });
-//   return res.data?.records;
-// };
-
 export function UpdateStatement({
   show = false,
   data = {},
   onClose = () => {},
 }) {
+  const [currentRow, setCurrentRow] = useState(null);
   const { data: denialData, isLoading: denialLoading } = useQuery(
     "denial-reasons",
     getDenialReasons
@@ -98,11 +61,53 @@ export function UpdateStatement({
 
   const [update, { isLoading: mutLoading }] = useMutation(updateStatement, {
     onSuccess: () => {
+      setCurrentRow(null);
       refetch();
     },
   });
 
-  function cptSearch(row, update) {
+  const {
+    reset,
+    handleSubmit,
+    setValue,
+    watch,
+    control,
+    errors,
+    setError,
+    register,
+    clearErrors,
+  } = useForm({
+    defaultValues: {
+      remittance_amount: "",
+      denial_amount: "",
+      denial_reason_id: "",
+      cpt_code: "",
+    },
+  });
+
+  const { cpt_code, denial_amount } = watch();
+
+  useEffect(() => {
+    if (currentRow) {
+      const step = data?.claim_status?.split("")[1];
+      reset({
+        remittance_amount: currentRow[`r${step}_amt`],
+        denial_amount: currentRow[`d${step}_amt`],
+        denial_reason_id: currentRow[`d${step}_reason_id`],
+        cpt_code: currentRow?.cpt_code,
+      });
+    } else {
+      reset({
+        remittance_amount: "",
+        denial_amount: "",
+        denial_reason_id: "",
+        cpt_code: "",
+      });
+    }
+  }, [currentRow, data]);
+
+  function cptSearch() {
+    register({ name: "cpt_code" });
     AlgaehSearch({
       searchGrid: {
         columns: spotlightSearch.Services.CptCodes,
@@ -113,13 +118,23 @@ export function UpdateStatement({
         callBack(text);
       },
       onRowSelect: (data) => {
-        row.cpt_code = data.cpt_code;
-        update(row);
+        setValue("cpt_code", data.cpt_code);
       },
     });
   }
 
   let columns = [
+    {
+      fieldName: "hims_f_invoice_details_id",
+      label: <AlgaehLabel label={{ forceLabel: "Action" }} />,
+      displayTemplate: (row) => (
+        <Tooltip title="Edit">
+          <span onClick={() => setCurrentRow(row)}>
+            <i className="fas fa-pen"></i>
+          </span>
+        </Tooltip>
+      ),
+    },
     {
       fieldName: "service_name",
       label: <AlgaehLabel label={{ forceLabel: "Service Name" }} />,
@@ -128,18 +143,7 @@ export function UpdateStatement({
     {
       fieldName: "cpt_code",
       label: <AlgaehLabel label={{ forceLabel: "CPT code" }} />,
-      editorTemplate: (field, row, update) => {
-        return (
-          <div className="row">
-            <div className="col globalSearchCntr noLabel">
-              <h6 onClick={() => cptSearch(row, update)}>
-                {field ?? "CPT Code"}
-                <i className="fas fa-search fa-lg"></i>
-              </h6>
-            </div>
-          </div>
-        );
-      },
+      displayTemplate: (row) => row?.cpt_code || "",
     },
 
     {
@@ -164,80 +168,60 @@ export function UpdateStatement({
     },
   ];
 
-  const inputColumns = (step) => [
-    {
-      fieldName: `r${step}_amt`,
-      label: <AlgaehLabel label={{ forceLabel: "Remittance Amount" }} />,
-      editorTemplate: (field, row, update) => (
-        <input
-          value={row?.remittance_amount}
-          defaultValue={row[`r${step}_amt`]}
-          onChange={(e) => {
-            let { value } = e.target;
-            if (value) {
-              if (parseFloat(value) <= parseFloat(row?.company_payable)) {
-                row.remittance_amount = value;
-                row.denial_amount =
-                  parseFloat(row.company_payable) - parseFloat(value);
-                update(row);
-              } else {
-                AlgaehMessagePop({
-                  type: "Warning",
-                  display:
-                    "Amount should be less than or equal to claim amount",
-                });
-              }
-            } else {
-              row.remittance_amount = "";
-              row.denial_amount = "";
-            }
-          }}
-        />
-      ),
-    },
-    {
-      fieldName: `d${step}_amt`,
-      label: <AlgaehLabel label={{ forceLabel: "Denial Amount" }} />,
-      editorTemplate: (row) => row.denial_amount || row[`d${step}_amt`],
-    },
-    {
-      fieldName: `d${step}_reason_id`,
-      label: <AlgaehLabel label={{ forceLabel: "Denial Reason" }} />,
-      displayTemplate: (row) => {
-        if (row[`d${step}_reason_id`]) {
-          const [res] = denialData?.filter(
-            (den) => den.hims_d_denial_id == row[`d${step}_reason_id`]
-          );
-          return res?.denial_desc;
-        } else {
-          return null;
-        }
-      },
-      editorTemplate: (field, row, update) => (
-        <AlgaehAutoComplete
-          div={{ className: " mandatory" }}
-          selector={{
-            name: "title_id",
-            className: "select-fld",
-            placeholder: "Select Reason",
-            dataSource: {
-              textField: "denial_desc",
-              valueField: "hims_d_denial_id",
-              data: denialData ?? [],
-            },
-            defaultValue: row[`d${step}_reason_id`],
-            value: row.denial_reason_id,
-            onChange: (_, selected) => {
-              row.denial_reason_id = selected;
-              row[`${step}_reason_id`] = selected;
-              row.denial_reason = _?.denial_desc;
-              update(row);
-            },
-          }}
-        />
-      ),
-    },
-  ];
+  // const inputColumns = (step) => [
+  //   {
+  //     fieldName: `r${step}_amt`,
+  //     label: <AlgaehLabel label={{ forceLabel: "Remittance Amount" }} />,
+  //     editorTemplate: (field, row, update) => (
+  //       <input
+  //         value={row?.remittance_amount}
+  //         defaultValue={row[`r${step}_amt`]}
+  //         onChange={(e) => {
+  //           let { value } = e.target;
+  //           if (value) {
+  //             if (parseFloat(value) <= parseFloat(row?.company_payable)) {
+  //               row.remittance_amount = value;
+  //               row.denial_amount =
+  //                 parseFloat(row.company_payable) - parseFloat(value);
+  //               update(row);
+  //             } else {
+  //               AlgaehMessagePop({
+  //                 type: "Warning",
+  //                 display:
+  //                   "Amount should be less than or equal to claim amount",
+  //               });
+  //             }
+  //           } else {
+  //             row.remittance_amount = "";
+  //             row.denial_amount = "";
+  //           }
+  //         }}
+  //       />
+  //     ),
+  //   },
+  //   {
+  //     fieldName: `d${step}_amt`,
+  //     label: <AlgaehLabel label={{ forceLabel: "Denial Amount" }} />,
+  //     editorTemplate: (row) => row.denial_amount || row[`d${step}_amt`],
+  //   },
+  //   {
+  //     fieldName: `d${step}_reason_id`,
+  //     label: <AlgaehLabel label={{ forceLabel: "Denial Reason" }} />,
+  //     displayTemplate: (row) => {
+  //       if (row[`d${step}_reason_id`]) {
+  //         const [res] = denialData?.filter(
+  //           (den) => den.hims_d_denial_id == row[`d${step}_reason_id`]
+  //         );
+  //         return res?.denial_desc;
+  //       } else {
+  //         return null;
+  //       }
+  //     },
+  //     editorTemplate: (field, row, update) => (
+  //
+  //     ),
+  //   },
+  // ];
 
   const displayColumns = (step) => [
     {
@@ -253,26 +237,61 @@ export function UpdateStatement({
     {
       fieldName: `d${step}_reason_id`,
       label: <AlgaehLabel label={{ forceLabel: `Reason ${step}` }} />,
-      editorTemplate: (row) => row[`d${step}_reason_id`],
+
+      displayTemplate: (row) => {
+        if (row[`d${step}_reason_id`]) {
+          const [res] = denialData?.filter(
+            (den) => den.hims_d_denial_id == row[`d${step}_reason_id`]
+          );
+          return res?.denial_desc;
+        } else {
+          return null;
+        }
+      },
+      editorTemplate: (row) => {
+        if (row[`d${step}_reason_id`]) {
+          const [res] = denialData?.filter(
+            (den) => den.hims_d_denial_id == row[`d${step}_reason_id`]
+          );
+          return res?.denial_desc;
+        } else {
+          return null;
+        }
+      },
     },
   ];
 
   const step = data?.claim_status?.split("")[1];
 
   if (step == 1) {
-    columns.push(...inputColumns(1));
+    columns.push(...displayColumns(1));
   }
 
   if (step == 2) {
     columns.push(...displayColumns(1));
-    columns.push(...inputColumns(2));
+    columns.push(...displayColumns(2));
   }
 
   if (step == 3) {
     columns.push(...displayColumns(1));
     columns.push(...displayColumns(2));
-    columns.push(...inputColumns(3));
+    columns.push(...displayColumns(3));
   }
+
+  const onUpdate = (e) => {
+    update({
+      insurance_statement_id: data?.insurance_statement_id,
+      invoice_header_id: data?.hims_f_invoice_header_id,
+      invoice_detail_id: currentRow?.hims_f_invoice_details_id,
+      remittance_amount: e.remittance_amount,
+      denial_amount: e.denial_amount,
+      denial_reason_id: e.denial_reason_id,
+      cpt_code: e.cpt_code,
+      claim_status: data?.claim_status?.replace("S", "R"),
+    });
+  };
+
+  console.log(denial_amount, cpt_code, "warch");
 
   return (
     <AlgaehModal
@@ -286,6 +305,140 @@ export function UpdateStatement({
       // onOk={handleSubmit(onSubmit)}
       className={`${userLanguage}_comp row algaehNewModal UpdateStatementModal`}
     >
+      <AlgaehModal
+        title="Update Service"
+        visible={!!currentRow}
+        maskClosable={false}
+        width={540}
+        closable={true}
+        okButtonProps={{
+          loading: mutLoading,
+          className: "btn btn-success",
+        }}
+        cancelButtonProps={{
+          loading: mutLoading,
+          className: "btn btn-default",
+        }}
+        onOk={handleSubmit(onUpdate)}
+        onCancel={() => setCurrentRow(null)}
+        // onOk={handleSubmit(onSubmit)}
+        className={`${userLanguage}_comp row algaehNewModal UpdateStatementModal`}
+      >
+        <div className="col-12 popupInner margin-top-15">
+          <div className="row">
+            <div className="col-6">
+              <div className="row">
+                <div className="col globalSearchCntr noLabel">
+                  <h6 onClick={cptSearch}>
+                    {cpt_code ?? "CPT Code"}
+                    <i className="fas fa-search fa-lg"></i>
+                  </h6>
+                </div>
+              </div>
+            </div>
+            <Controller
+              control={control}
+              name="remittance_amount"
+              rules={{ required: true }}
+              render={({ value, onChange }) => (
+                <AlgaehFormGroup
+                  div={{ className: "col-6 mandatory" }}
+                  label={{
+                    forceLabel: "Remittance Amount",
+                    isImp: true,
+                  }}
+                  error={errors}
+                  textBox={{
+                    value,
+                    onChange: (e) => {
+                      let { value } = e.target;
+
+                      if (value) {
+                        if (
+                          parseFloat(value) <=
+                          parseFloat(currentRow?.company_payable)
+                        ) {
+                          onChange(value);
+                          const denial_amount =
+                            parseFloat(currentRow?.company_payable) -
+                            parseFloat(value);
+                          setValue("denial_amount", denial_amount, {
+                            shouldValidate: true,
+                          });
+                          clearErrors();
+                        } else {
+                          setError("remittance_amount", {
+                            type: "manual",
+                            message:
+                              "Remittance Should be less than or equal to claim amount",
+                          });
+                        }
+                      } else {
+                        onChange("");
+                        setValue("denial_amount", "");
+                      }
+                    },
+                    className: "txt-fld",
+                    name: "remittance_amount",
+                    placeholder: "0.00",
+                    tabIndex: "2",
+                  }}
+                />
+              )}
+            />
+            <Controller
+              control={control}
+              rules={{ required: true }}
+              name="denial_amount"
+              render={({ value }) => (
+                <AlgaehFormGroup
+                  div={{ className: "col-6 mandatory" }}
+                  label={{
+                    forceLabel: "Denial Amount",
+                    isImp: true,
+                  }}
+                  error={errors}
+                  textBox={{
+                    value,
+                    disabled: true,
+                    className: "txt-fld",
+                    name: "remittance_amount",
+                    placeholder: "0.00",
+                    tabIndex: "2",
+                  }}
+                />
+              )}
+            />
+
+            <Controller
+              control={control}
+              rules={{ required: true }}
+              name="denial_reason_id"
+              render={({ value, onChange }) => (
+                <AlgaehAutoComplete
+                  div={{ className: "col-6 mandatory" }}
+                  label={{ forceLabel: "Denial Reason", isImp: true }}
+                  selector={{
+                    name: "denial_reason_id",
+                    className: "select-fld",
+                    placeholder: "Select Reason",
+                    dataSource: {
+                      textField: "denial_desc",
+                      valueField: "hims_d_denial_id",
+                      data: denialData ?? [],
+                    },
+                    value,
+                    onChange: (_, selected) => {
+                      onChange(selected);
+                    },
+                    onClear: () => onChange(""),
+                  }}
+                />
+              )}
+            />
+          </div>
+        </div>
+      </AlgaehModal>
       <Spin spinning={queryLoading || mutLoading || denialLoading}>
         <div className="col-12 popupInner margin-top-15">
           <div className="row">
@@ -342,22 +495,22 @@ export function UpdateStatement({
                   columns={columns}
                   data={invoiceDetails ?? []}
                   // filter={true}
-                  isEditable="editOnly"
+
                   paging={{ page: 0, rowsPerPage: 20 }}
-                  events={{
-                    onSave: (row) => {
-                      update({
-                        insurance_statement_id: data?.insurance_statement_id,
-                        invoice_header_id: data?.hims_f_invoice_header_id,
-                        invoice_detail_id: row?.hims_f_invoice_details_id,
-                        remittance_amount: row.remittance_amount,
-                        denial_amount: row.denial_amount,
-                        denial_reason_id: row.denial_reason_id,
-                        cpt_code: row.cpt_code,
-                        claim_status: data?.claim_status?.replace("S", "R"),
-                      });
-                    },
-                  }}
+                  // events={{
+                  //   onSave: (row) => {
+                  //     update({
+                  //       insurance_statement_id: data?.insurance_statement_id,
+                  //       invoice_header_id: data?.hims_f_invoice_header_id,
+                  //       invoice_detail_id: row?.hims_f_invoice_details_id,
+                  //       remittance_amount: row.remittance_amount,
+                  //       denial_amount: row.denial_amount,
+                  //       denial_reason_id: row.denial_reason_id,
+                  //       cpt_code: row.cpt_code,
+                  //       claim_status: data?.claim_status?.replace("S", "R"),
+                  //     });
+                  //   },
+                  // }}
                   rowUniqueId={"hims_f_invoice_details_id"}
                 />
               </div>
