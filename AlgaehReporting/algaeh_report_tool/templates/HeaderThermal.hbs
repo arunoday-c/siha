@@ -1,4 +1,19 @@
-<center>{{organization_name}}</center>
+<style type="text/css">
+    .hospitalLogo {
+        text-align: center;
+        width: 100%;
+    }
+
+    .hospitalLogo img {
+        margin: 0 0 5px 0;
+        padding: 0;
+        border: none;
+        width: auto;
+        height: 90px;
+    }
+</style>
+
+<center class="hospitalLogo"><img src="{{logoUrl 'ORG' identity }}" /></center>
 <center>{{report_name_for_header}}</center>
 <center>{{hospital_address}}</center>
 <center>{{phone1}}</center>
