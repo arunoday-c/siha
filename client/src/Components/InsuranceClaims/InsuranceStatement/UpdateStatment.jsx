@@ -226,7 +226,7 @@ export function UpdateStatement({
               data: denialData ?? [],
             },
             defaultValue: row[`d${step}_reason_id`],
-            value: row.denial_reason_id,
+            value: row.denial_reason_id || row[`d${step}_reason_id`],
             onChange: (_, selected) => {
               row.denial_reason_id = selected;
               row[`${step}_reason_id`] = selected;
@@ -253,7 +253,27 @@ export function UpdateStatement({
     {
       fieldName: `d${step}_reason_id`,
       label: <AlgaehLabel label={{ forceLabel: `Reason ${step}` }} />,
-      editorTemplate: (row) => row[`d${step}_reason_id`],
+
+      displayTemplate: (row) => {
+        if (row[`d${step}_reason_id`]) {
+          const [res] = denialData?.filter(
+            (den) => den.hims_d_denial_id == row[`d${step}_reason_id`]
+          );
+          return res?.denial_desc;
+        } else {
+          return null;
+        }
+      },
+      editorTemplate: (row) => {
+        if (row[`d${step}_reason_id`]) {
+          const [res] = denialData?.filter(
+            (den) => den.hims_d_denial_id == row[`d${step}_reason_id`]
+          );
+          return res?.denial_desc;
+        } else {
+          return null;
+        }
+      },
     },
   ];
 
