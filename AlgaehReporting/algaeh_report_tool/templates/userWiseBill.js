@@ -37,7 +37,7 @@ inner join hims_d_employee E on PV.doctor_id=E.hims_d_employee_id
 inner join hims_f_patient P on PV.patient_id=P.hims_d_patient_id
 inner join algaeh_d_app_user U on PV.created_by=U.algaeh_d_app_user_id
 inner join hims_d_employee EU on U.employee_id = EU.hims_d_employee_id
-where date(PV.visit_date) between date(?) and date(?) and PV.hospital_id=? ${strQuery};`,
+where BH.cancelled='N' and BD.cancel_yes_no='N' and date(PV.visit_date) between date(?) and date(?) and PV.hospital_id=? ${strQuery};`,
           values: [input.from_date, input.to_date, input.hospital_id],
           printQuery: true,
         })
