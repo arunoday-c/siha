@@ -61,7 +61,7 @@ export function AddPatientDentalForm({
   //   const [subDepartment, setSubDepartment] = useState([]);
 
   // const [doctors, setDoctors] = useState([]);
-  const { control, errors, setValue, handleSubmit, reset } = useForm({
+  const { control, errors, setValue, handleSubmit, reset, watch } = useForm({
     shouldFocusError: true,
     defaultValues: {
       requesting_date: new Date(),
@@ -69,10 +69,11 @@ export function AddPatientDentalForm({
       //   to_due_date: new Date(),
     },
   });
-  // const showArrivalDate = watch({
-  //   work_status: "COM",
-  //   request_status: "APR",
-  // });
+  const { request_status, work_status } = watch([
+    "request_status",
+    "work_status",
+  ]);
+
   useEffect(() => {
     if (visible && current.length !== 0) {
       reset({
@@ -345,7 +346,7 @@ export function AddPatientDentalForm({
                       onChange: (selected) => {
                         onChange(selected);
                       },
-                      disabled: disabled,
+                      disabled: disabled || current.request_status === "APR",
                       value,
                       name: "doctor",
                       data: doctors,
@@ -368,6 +369,7 @@ export function AddPatientDentalForm({
                       forceLabel: "Requesting to Vendor",
                       isImp: true,
                     }}
+                    error={errors}
                     selector={{
                       value,
                       onChange: (_, selected) => {
@@ -383,7 +385,7 @@ export function AddPatientDentalForm({
                         valueField: "hims_d_vendor_id",
                       },
                       others: {
-                        disabled,
+                        disabled: disabled || current.request_status === "APR",
                         tabIndex: "11",
                       },
                     }}
@@ -401,6 +403,7 @@ export function AddPatientDentalForm({
                       forceLabel: "For the Procedure",
                       isImp: true,
                     }}
+                    error={errors}
                     selector={{
                       name: "select_procedure",
                       value,
@@ -416,7 +419,7 @@ export function AddPatientDentalForm({
                         textField: "service_name",
                       },
                       others: {
-                        disabled,
+                        disabled: disabled || current.request_status === "APR",
                       },
                     }}
                   />
@@ -429,6 +432,7 @@ export function AddPatientDentalForm({
                 render={(props) => (
                   <AlgaehFormGroup
                     div={{ className: "col-2 mandatory form-group" }}
+                    error={errors}
                     label={{
                       forceLabel: "Service Amount",
                       isImp: true,
@@ -437,8 +441,9 @@ export function AddPatientDentalForm({
                       ...props,
                       type: "number",
                       className: "form-control",
-                      disabled,
+                      disabled: disabled || current.request_status === "APR",
                       placeholder: "0.00",
+                      name: "service_amount",
                     }}
                   />
                 )}
@@ -457,7 +462,9 @@ export function AddPatientDentalForm({
                       className: "form-control",
                       value,
                     }}
-                    others={{ disabled }}
+                    others={{
+                      disabled: disabled || current.request_status === "APR",
+                    }}
                     minDate={new Date()}
                     events={{
                       onChange: (reqDate) => {
@@ -487,7 +494,9 @@ export function AddPatientDentalForm({
                       name: "due_date",
                       value,
                     }}
-                    others={{ disabled }}
+                    others={{
+                      disabled: disabled || current.request_status === "APR",
+                    }}
                     minDate={new Date()}
                     events={{
                       onChange: (mdate) => {
@@ -524,7 +533,7 @@ export function AddPatientDentalForm({
                       className: "txt-fld",
                       name: "patient_code",
                       // placeholder: "MRN Number",
-                      disabled,
+                      disabled: disabled || current.request_status === "APR",
                       tabIndex: "2",
                     }}
                   />
@@ -547,7 +556,7 @@ export function AddPatientDentalForm({
                       className: "txt-fld",
                       name: "full_name",
                       placeholder: "Enter Full Name",
-                      disabled,
+                      disabled: disabled || current.request_status === "APR",
                       tabIndex: "2",
                     }}
                   />
@@ -584,7 +593,7 @@ export function AddPatientDentalForm({
                         onChange("");
                       },
                       others: {
-                        disabled,
+                        disabled: disabled || current.request_status === "APR",
                         tabIndex: "4",
                       },
                     }}
@@ -611,7 +620,9 @@ export function AddPatientDentalForm({
                       name: "date_of_birth",
                       value,
                     }}
-                    others={{ disabled }}
+                    others={{
+                      disabled: disabled || current.request_status === "APR",
+                    }}
                     maxDate={new Date()}
                     events={{
                       onChange: (mdate) => {
@@ -701,6 +712,9 @@ export function AddPatientDentalForm({
                           value,
                           onChange: (_, selected) => {
                             onChange(selected);
+                            if (selected !== "APR") {
+                              setValue("work_status", "");
+                            }
                           },
                           onClear: () => {
                             onChange("");
@@ -742,7 +756,7 @@ export function AddPatientDentalForm({
                             onChange("");
                           },
                           others: {
-                            // disabled,
+                            disabled: request_status !== "APR",
                             tabIndex: "4",
                           },
                         }}
@@ -767,7 +781,9 @@ export function AddPatientDentalForm({
                           name: "arrival_date",
                           value,
                         }}
-                        // others={{ disabled }}
+                        others={{
+                          disabled: work_status !== "COM",
+                        }}
                         minDate={new Date()}
                         events={{
                           onChange: (mdate) => {
@@ -795,6 +811,7 @@ export function AddPatientDentalForm({
                             value="yes"
                             name=""
                             checked={checked}
+                            // disabled={}
                             onChange={(e) => {
                               e.target.checked
                                 ? setChecked(true)
