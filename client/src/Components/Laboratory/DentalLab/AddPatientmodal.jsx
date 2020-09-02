@@ -387,7 +387,7 @@ export function AddPatientDentalForm({
                       },
                       others: {
                         disabled: disabled || current.request_status === "APR",
-                        tabIndex: "11",
+                        tabIndex: "23",
                       },
                     }}
                   />
@@ -421,6 +421,7 @@ export function AddPatientDentalForm({
                       },
                       others: {
                         disabled: disabled || current.request_status === "APR",
+                        tabIndex: "4",
                       },
                     }}
                   />
@@ -445,6 +446,9 @@ export function AddPatientDentalForm({
                       disabled: disabled || current.request_status === "APR",
                       placeholder: "0.00",
                       name: "service_amount",
+                      others: {
+                        tabIndex: "5",
+                      },
                     }}
                   />
                 )}
@@ -465,6 +469,7 @@ export function AddPatientDentalForm({
                     }}
                     others={{
                       disabled: disabled || current.request_status === "APR",
+                      tabIndex: "6",
                     }}
                     minDate={new Date()}
                     events={{
@@ -478,17 +483,17 @@ export function AddPatientDentalForm({
               <Controller
                 control={control}
                 name="due_date"
-                rules={{ required: "Please Select DOB" }}
+                // rules={{ required: "Please Select DOB" }}
                 render={({ onChange, value }) => (
                   <AlgaehDateHandler
                     div={{
                       className: "col-lg-3 form-group",
-                      tabIndex: "5",
+                      tabIndex: "7",
                     }}
                     error={errors}
                     label={{
                       forceLabel: "Due Date",
-                      isImp: true,
+                      isImp: false,
                     }}
                     textBox={{
                       className: "txt-fld",
@@ -523,7 +528,7 @@ export function AddPatientDentalForm({
                 rules={{ required: "Enter Patient Code" }}
                 render={(props) => (
                   <AlgaehFormGroup
-                    div={{ className: "col-3 mandatory form-group" }}
+                    div={{ className: "col-2 mandatory form-group" }}
                     label={{
                       forceLabel: "Enter Patient Code",
                       isImp: true,
@@ -535,7 +540,7 @@ export function AddPatientDentalForm({
                       name: "patient_code",
                       // placeholder: "MRN Number",
                       disabled: disabled || current.request_status === "APR",
-                      tabIndex: "2",
+                      tabIndex: "8",
                     }}
                   />
                 )}
@@ -558,23 +563,21 @@ export function AddPatientDentalForm({
                       name: "full_name",
                       placeholder: "Enter Full Name",
                       disabled: disabled || current.request_status === "APR",
-                      tabIndex: "2",
+                      tabIndex: "9",
                     }}
                   />
                 )}
               />
-            </div>
-            <div className="row">
               <Controller
                 control={control}
                 // rules={{ required: "Please Select Gender" }}
                 name="gender"
                 render={({ onBlur, onChange, value }) => (
                   <AlgaehAutoComplete
-                    div={{ className: "col mandatory" }}
+                    div={{ className: "col-2 mandatory" }}
                     label={{
-                      fieldName: "gender",
-                      isImp: true,
+                      forceLabel: "Gender",
+                      isImp: false,
                     }}
                     // error={errors}
                     selector={{
@@ -595,7 +598,7 @@ export function AddPatientDentalForm({
                       },
                       others: {
                         disabled: disabled || current.request_status === "APR",
-                        tabIndex: "4",
+                        tabIndex: "10",
                       },
                     }}
                   />
@@ -608,13 +611,13 @@ export function AddPatientDentalForm({
                 render={({ onChange, value }) => (
                   <AlgaehDateHandler
                     div={{
-                      className: "col mandatory",
-                      tabIndex: "5",
+                      className: "col-3",
+                      tabIndex: "11",
                     }}
                     // error={errors}
                     label={{
                       fieldName: "date_of_birth",
-                      isImp: true,
+                      isImp: false,
                     }}
                     textBox={{
                       className: "txt-fld",
@@ -640,10 +643,12 @@ export function AddPatientDentalForm({
                   />
                 )}
               />
+            </div>
+            <div className="row d-none">
               <AlgaehHijriDatePicker
                 div={{
-                  className: "col mandatory HijriCalendar",
-                  tabIndex: "6",
+                  className: "col HijriCalendar",
+                  tabIndex: "12",
                 }}
                 gregorianDate={date_of_birth || null}
                 label={{ forceLabel: "Hijiri Date" }}
@@ -666,7 +671,7 @@ export function AddPatientDentalForm({
               />
               <AlgaehFormGroup
                 div={{
-                  className: "col mandatory form-group",
+                  className: "col form-group",
                   others: {
                     style: { paddingRight: 0 },
                   },
@@ -680,7 +685,7 @@ export function AddPatientDentalForm({
                   name: "age",
                   value: calculateAge(date_of_birth),
                   disabled: true,
-                  tabIndex: "7",
+                  tabIndex: "13",
                   placeholder: "Y",
                 }}
               />
@@ -723,7 +728,7 @@ export function AddPatientDentalForm({
                           },
                           others: {
                             // disabled,
-                            tabIndex: "4",
+                            // tabIndex: "4",
                           },
                         }}
                       />
@@ -759,7 +764,7 @@ export function AddPatientDentalForm({
                           },
                           others: {
                             disabled: request_status !== "APR",
-                            tabIndex: "4",
+                            // tabIndex: "4",
                           },
                         }}
                       />
