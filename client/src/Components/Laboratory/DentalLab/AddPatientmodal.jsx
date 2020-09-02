@@ -567,7 +567,7 @@ export function AddPatientDentalForm({
             <div className="row">
               <Controller
                 control={control}
-                rules={{ required: "Please Select Gender" }}
+                // rules={{ required: "Please Select Gender" }}
                 name="gender"
                 render={({ onBlur, onChange, value }) => (
                   <AlgaehAutoComplete
@@ -576,7 +576,7 @@ export function AddPatientDentalForm({
                       fieldName: "gender",
                       isImp: true,
                     }}
-                    error={errors}
+                    // error={errors}
                     selector={{
                       name: "gender",
                       className: "select-fld",
@@ -604,14 +604,14 @@ export function AddPatientDentalForm({
               <Controller
                 control={control}
                 name="date_of_birth"
-                rules={{ required: "Please Select DOB" }}
+                // rules={{ required: "Please Select DOB" }}
                 render={({ onChange, value }) => (
                   <AlgaehDateHandler
                     div={{
                       className: "col mandatory",
                       tabIndex: "5",
                     }}
-                    error={errors}
+                    // error={errors}
                     label={{
                       fieldName: "date_of_birth",
                       isImp: true,
