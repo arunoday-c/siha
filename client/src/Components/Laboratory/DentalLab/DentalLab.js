@@ -84,7 +84,7 @@ export default function DentalLab() {
 
   // const [viewDentalModal, setViewDentalModal] = useState(false);
 
-  const { getValues, control, handleSubmit } = useForm({
+  const { getValues, control, handleSubmit, errors } = useForm({
     shouldFocusError: true,
     defaultValues: {
       // requesting_date: new Date(),
@@ -279,7 +279,7 @@ export default function DentalLab() {
   };
   const getFormRequest = (e) => {
     // console.log( e.to_request_date._d);
-
+    console.log(errors);
     loadRequestList(getValues());
   };
 
@@ -316,6 +316,7 @@ export default function DentalLab() {
             <Controller
               name="from_request_date"
               control={control}
+              rules={{ required: "Please select date" }}
               render={({ value, onChange }) => (
                 // <div className="col-2 algaeh-date-fld">
                 <AlgaehDateHandler
@@ -323,8 +324,10 @@ export default function DentalLab() {
                     className: "col-3 algaeh-date-fld",
                   }}
                   label={{ forceLabel: "From Requested Date", isImp: false }}
+                  error={errors}
                   textBox={{
                     className: "form-control",
+                    name: "from_request_date",
                     value,
                   }}
                   // maxDate={new Date()}
@@ -347,6 +350,7 @@ export default function DentalLab() {
             <Controller
               name="to_request_date"
               control={control}
+              rules={{ required: "Please select date" }}
               render={({ value, onChange }) => (
                 // <div className="col-6 algaeh-date-fld">
                 <AlgaehDateHandler
@@ -354,8 +358,10 @@ export default function DentalLab() {
                     className: "col-3 algaeh-date-fld",
                   }}
                   label={{ forceLabel: "From Requested Date", isImp: false }}
+                  error={errors}
                   textBox={{
                     className: "form-control",
+                    name: "to_request_date",
                     value,
                   }}
                   // maxDate={new Date()}

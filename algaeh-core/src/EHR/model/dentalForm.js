@@ -161,57 +161,97 @@ export default {
         printQuery: true,
       })
       .then((result) => {
-        let input = req.body;
-        console.log("req", req.body);
-        let request_status =
-          input.request_status === "APR"
-            ? "Approved"
-            : input.request_status === "REJ"
-            ? "Rejected"
-            : input.request_status === "RES"
-            ? "Resend"
-            : "Pending";
-        let doctor_email = input.doctor_email;
-        let work_status =
-          input.request_status === "WIP"
-            ? "Ordered"
-            : input.request_status === "COM"
-            ? "Completed"
-            : "Pending";
-        let requested_date = input.requested_date;
         if (input.send_mail === true) {
-          try {
-            newAxios(req, {
-              url: "http://localhost:3006/api/v1//Document/getEmailConfig",
-            }).then((res) => {
-              const options = res.data;
-              new algaehMail(options.data[0])
-                .to(doctor_email)
-                .subject("Dental Order Update")
-                .templateHbs("dentalFormMail.hbs", {
-                  request_status,
-                  work_status,
-                  requested_date,
-                  employee_name,
-                  service_name,
-                  patient_code,
-                  full_name,
-                  arrival_date,
-                })
-                .send()
-                .then((response) => {
-                  _mysql.releaseConnection();
-                  next();
-                })
-                .catch((error) => {
-                  _mysql.releaseConnection();
-                  next(e);
+          let input = req.body;
+
+          const _mysql = new algaehMysql();
+
+          _mysql
+            .executeQuery({
+              query: `select concat(ET.title,' ',E.full_name)as  employee_name,
+
+           D.arrival_date, D.work_status,E.work_email,D.hims_f_dental_form_id,D.due_date ,D.requested_date,D.request_status,D.procedure_id, D.provider_id,D.procedure_amt,D.approved,D.date_of_birth,
+            D.full_name, D.patient_code,S.service_name
+             from hims_f_dental_form as D
+
+             inner join hims_d_employee as E on  E.hims_d_employee_id =D.provider_id
+             left join hims_d_title as ET on ET.his_d_title_id = E.title_id
+
+             left join hims_d_services as S on S.hims_d_services_id =D.procedure_id
+             where D.hims_f_dental_form_id=?`,
+              values: [input.hims_f_dental_form_id],
+              printQuery: true,
+            })
+            .then((result) => {
+              // console.log("result.request_status", result[0].work_email);
+              let request_status =
+                result[0].request_status === "APR"
+                  ? "Approved"
+                  : result[0].request_status === "REJ"
+                  ? "Rejected"
+                  : result[0].request_status === "RES"
+                  ? "Resend"
+                  : "Pending";
+              let doctor_email = result[0].work_email;
+              let work_status =
+                result[0].request_status === "WIP"
+                  ? "Ordered"
+                  : result[0].request_status === "COM"
+                  ? "Completed"
+                  : "Pending";
+              let requested_date = result[0].requested_date;
+              let employee_name = result[0].employee_name;
+              let service_name = result[0].service_name;
+              let patient_code = result[0].patient_code;
+              let full_name = result[0].full_name;
+              let arrival_date = result[0].arrival_date;
+
+              req.records = result;
+
+              const { hospital_address, hospital_name } = req.userIdentity;
+              try {
+                newAxios(req, {
+                  url: "http://localhost:3006/api/v1//Document/getEmailConfig",
+                }).then((res) => {
+                  const options = res.data;
+
+                  new algaehMail(options.data[0])
+                    .to(doctor_email)
+                    .subject("Dental Order Update")
+                    .templateHbs("dentalFormMail.hbs", {
+                      request_status,
+                      hospital_address,
+                      hospital_name,
+                      work_status,
+                      requested_date,
+                      employee_name,
+                      service_name,
+                      patient_code,
+                      full_name,
+                      arrival_date,
+                    })
+                    .send()
+                    .then((response) => {
+                      _mysql.releaseConnection();
+                      next();
+                    })
+                    .catch((error) => {
+                      _mysql.releaseConnection();
+                      next(e);
+                    });
                 });
+              } catch (e) {
+                _mysql.releaseConnection();
+                next(e);
+              }
+              _mysql.releaseConnection();
+
+              next();
+            })
+            .catch((error) => {
+              _mysql.releaseConnection();
+              next(error);
             });
-          } catch (e) {
-            _mysql.releaseConnection();
-            next(e);
-          }
         } else {
           _mysql.releaseConnection();
 
