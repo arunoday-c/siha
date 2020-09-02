@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+	<!DOCTYPE html>
 <!-- saved from url=(0052)https://colorlib.com/etc/email-template/3/index.html -->
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml"
 	xmlns:o="urn:schemas-microsoft-com:office:office">
@@ -121,33 +121,35 @@
 							<table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
 								<tbody>
 									<tr>
-										<td class="bg_white email-section">
+										<td colspan="2" class="bg_white email-section">
 											<div class="heading-section" style="text-align: center; padding: 0 30px;">
-												<h2>Request Dental Service</h2>
+												<h2>Dental service request status</h2>
 												<p> <b style="color: #3fab97">{{hospital_name}}</b>
 												</p>
 												<p> {{hospital_address}}</p>
 
 											</div>
-											<hr style="
-    height: 1px;
-    background: #eaeaea;
-    border: 0;">
-											<div style="text-align: left;">
-												<p>REQUEST STATUS: <b style="
-    color: #000000;
-    font-weight: 900;">{{request_status}}</b><br>WORK STATUS: <b style="
-    color: #000000;
-    font-weight: 900;">{{work_status}}</b></p>
+											<hr style=" height: 1px; background: #eaeaea; border: 0;">
 
-												<p><small>Due Date {{due_date}}.</small>
-												</p>
-												<p>Received Date<b> {{requested_date}}</b><br /></p>
-											</div>
+
+									
 										</td>
 									</tr>
 								</tbody>
 							</table>
+							<table role="presentation" cellspacing="0" cellpadding="0" border="0" width="80%" style="text-align: left; padding: 0 40px;margin-bottom:20px">
+
+									<tr ><td colspan="2">
+
+<p>Hello, <b>Dr.{{employee_name}}</b></p>
+<p>Your request for the service {{service_name}} for the patient {{patient_code}}/{{full_name}} is</p></td>
+</tr>
+<tr><td width="30%">Requested Status:</td><td>{{request_status}}</td></tr>
+<tr><td  width="30%">Requested Date:</td><td>{{request_date}}</td></tr>
+<tr><td  width="30%">Work Status:</td><td>{{work_status}}</td></tr>
+<tr><td  width="30%">Arrival Date:</td><td>{{request_date}}</td></tr>
+							</table>
+
 						</td>
 					</tr>
 
@@ -156,10 +158,6 @@
 			<table align="center" role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%"
 				style="margin: auto;">
 				<tbody>
-					<tr>
-						<td align="center" valign="middle" class="bg_black footer">
-						</td>
-					</tr>
 					<tr>
 						<td valign="middle" class="bg_black footer">
 							<table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
