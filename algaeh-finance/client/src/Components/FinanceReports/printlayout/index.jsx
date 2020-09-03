@@ -1,8 +1,8 @@
 import React, { useRef, useState } from "react";
-import ReactToPrint from "react-to-print";
+// import ReactToPrint from "react-to-print";
 import { AlgaehTable } from "algaeh-react-components";
 import ReportHeader from "../header";
-
+import SmartTable from "../smartSplitPDF";
 import { GenerateExcel } from "./workers/worker";
 export default function ({
   title,
@@ -53,7 +53,7 @@ export default function ({
         <div className="col-12 reportHeaderAction">
           <span>
             {/* <i className="fas fa-print" /> */}
-            <ReactToPrint
+            {/* <ReactToPrint
               trigger={() => <i className="fas fa-print" />}
               content={() => createPrintObject.current}
               removeAfterPrint={true}
@@ -70,6 +70,11 @@ export default function ({
           size: auto;
           margin: 20mm;
         }"
+            /> */}
+            <SmartTable
+              control={() => createPrintObject.current}
+              columnsToRepeat={[0]}
+              columnPerPage={7}
             />
           </span>
           <span>
@@ -114,7 +119,7 @@ export default function ({
             <>
               {renderBeforeTable}
               <AlgaehTable
-                className="reportGridPlain"
+                className="financeReportStyle"
                 columns={columns}
                 data={columns.length === 0 ? [] : data}
                 expandAll={isExpand}

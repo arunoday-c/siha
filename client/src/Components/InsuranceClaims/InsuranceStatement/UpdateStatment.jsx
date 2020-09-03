@@ -91,8 +91,8 @@ export function UpdateStatement({
     if (currentRow) {
       const step = data?.claim_status?.split("")[1];
       reset({
-        remittance_amount: currentRow[`r${step}_amt`],
-        denial_amount: currentRow[`d${step}_amt`],
+        remittance_amount: parseFloat(currentRow[`r${step}_amt`]),
+        denial_amount: parseFloat(currentRow[`d${step}_amt`]),
         denial_reason_id: currentRow[`d${step}_reason_id`],
         cpt_code: currentRow?.cpt_code,
       });
@@ -286,7 +286,7 @@ export function UpdateStatement({
       remittance_amount: e.remittance_amount,
       denial_amount: e.denial_amount,
       denial_reason_id: e.denial_reason_id,
-      cpt_code: e.cpt_code,
+      cpt_code: e.cpt_code || "",
       claim_status: data?.claim_status?.replace("S", "R"),
     });
   };
@@ -412,16 +412,22 @@ export function UpdateStatement({
 
             <Controller
               control={control}
-              rules={{ required: true }}
+              rules={{ required: !!denial_amount }}
               name="denial_reason_id"
               render={({ value, onChange }) => (
                 <AlgaehAutoComplete
                   div={{ className: "col-6 mandatory" }}
-                  label={{ forceLabel: "Denial Reason", isImp: true }}
+                  label={{
+                    forceLabel: "Denial Reason",
+                    isImp: !!denial_amount,
+                  }}
                   selector={{
                     name: "denial_reason_id",
                     className: "select-fld",
                     placeholder: "Select Reason",
+                    others: {
+                      disabled: !denial_amount,
+                    },
                     dataSource: {
                       textField: "denial_desc",
                       valueField: "hims_d_denial_id",
