@@ -115,7 +115,7 @@ export default class MiscEarningsDeductions extends Component {
         }
       },
 
-      onFailure: (err) => {},
+      onFailure: (err) => { },
     });
   }
 
@@ -167,19 +167,19 @@ export default class MiscEarningsDeductions extends Component {
   }
 
   ApplyEarningsDeds() {
-    const canProcessForMonth = this.state.employee_miscellaneous.find(
-      (f) =>
-        f.salary_processed === "Y" &&
-        f.month === this.state.month &&
-        f.year === parseInt(this.state.year)
-    );
-    if (canProcessForMonth !== undefined) {
-      swalMessage({
-        title: `Already processed for selected month and year.`,
-        type: "warning",
-      });
-      return;
-    }
+    // const canProcessForMonth = this.state.employee_miscellaneous.find(
+    //   (f) =>
+    //     f.salary_processed === "Y" &&
+    //     f.month === this.state.month &&
+    //     f.year === parseInt(this.state.year)
+    // );
+    // if (canProcessForMonth !== undefined) {
+    //   swalMessage({
+    //     title: `Already processed for selected month and year.`,
+    //     type: "warning",
+    //   });
+    //   return;
+    // }
     if (this.state.earning_deduction_id === null) {
       swalMessage({
         title: "Select Component",
@@ -254,14 +254,14 @@ export default class MiscEarningsDeductions extends Component {
 
     type === "B"
       ? (data = {
-          component_type: type,
-          component_category: "E",
-          miscellaneous_component: "Y",
-        })
+        component_type: type,
+        component_category: "E",
+        miscellaneous_component: "Y",
+      })
       : (data = {
-          component_category: type,
-          miscellaneous_component: "Y",
-        });
+        component_category: type,
+        miscellaneous_component: "Y",
+      });
 
     algaehApiCall({
       uri: "/payrollSettings/getMiscEarningDeductions",
@@ -660,10 +660,10 @@ export default class MiscEarningsDeductions extends Component {
                                       Processed
                                     </span>
                                   ) : (
-                                    <span className="badge badge-warning">
-                                      Not Processed
-                                    </span>
-                                  )}
+                                      <span className="badge badge-warning">
+                                        Not Processed
+                                      </span>
+                                    )}
                                 </span>
                               );
                             },
@@ -675,10 +675,10 @@ export default class MiscEarningsDeductions extends Component {
                                       Processed
                                     </span>
                                   ) : (
-                                    <span className="badge badge-warning">
-                                      Not Processed
-                                    </span>
-                                  )}
+                                      <span className="badge badge-warning">
+                                        Not Processed
+                                      </span>
+                                    )}
                                 </span>
                               );
                             },
@@ -757,8 +757,8 @@ export default class MiscEarningsDeductions extends Component {
                                   {row.category === "D"
                                     ? "Deduction"
                                     : row.category === "E"
-                                    ? "Earning"
-                                    : "Bonus"}
+                                      ? "Earning"
+                                      : "Bonus"}
                                 </span>
                               );
                             },
@@ -768,8 +768,8 @@ export default class MiscEarningsDeductions extends Component {
                                   {row.category === "D"
                                     ? "Deduction"
                                     : row.category === "E"
-                                    ? "Earning"
-                                    : "Bonus"}
+                                      ? "Earning"
+                                      : "Bonus"}
                                 </span>
                               );
                             },
@@ -827,7 +827,7 @@ export default class MiscEarningsDeductions extends Component {
                                       onBlur: this.changeAmount.bind(this, row),
                                       disabled:
                                         row.salary_processed === "N" ||
-                                        row.salary_processed === null
+                                          row.salary_processed === null
                                           ? false
                                           : true,
                                     },
@@ -871,8 +871,8 @@ export default class MiscEarningsDeductions extends Component {
                         loading={this.state.loading}
                         paging={{ page: 0, rowsPerPage: 10 }}
                         events={{
-                          onEdit: () => {},
-                          onDelete: () => {},
+                          onEdit: () => { },
+                          onDelete: () => { },
                           onDone: this.addEarningsForEmployee.bind(this),
                         }}
                       />

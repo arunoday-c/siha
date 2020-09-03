@@ -1283,40 +1283,70 @@ export default {
     const _mysql = new algaehMysql();
     let input = req.body;
     if (input.employees != undefined && input.employees.length > 0) {
-      const insurtColumns = ["employee_id", "amount"];
 
+      const insurtColumns = ["employee_id", "amount"];
+      let _myemp = []
+      input.employees.map((o) => {
+        _myemp.push(o.employee_id);
+      });
+      console.log("input.employees", _myemp)
       _mysql
         .executeQuery({
-          query:
-            "INSERT INTO hims_f_miscellaneous_earning_deduction(??) VALUES ?  ON DUPLICATE KEY UPDATE\
-          employee_id=values(employee_id),amount=values(amount),earning_deductions_id=values(earning_deductions_id), \
-                    year=values(year),month=values(month),category=values(category),updated_date=values(updated_date),\
-          updated_by=values(updated_by)",
-          values: input.employees,
-          includeValues: insurtColumns,
-          extraValues: {
-            earning_deductions_id: input.earning_deduction_id,
-            year: input.year,
-            month: input.month,
-            category: input.category,
-            created_date: new Date(),
-            created_by: req.userIdentity.algaeh_d_app_user_id,
-            updated_date: new Date(),
-            updated_by: req.userIdentity.algaeh_d_app_user_id,
-            hospital_id: input.hospital_id,
-          },
+          query: "select salary_processed from hims_f_salary where employee_id in (?) and year=? and month =?;",
+          values: [_myemp, input.year, input.month],
           bulkInsertOrUpdate: true,
           printQuery: true,
         })
-        .then((result) => {
-          _mysql.releaseConnection();
-          req.records = result;
-          next();
+        .then((sal_result) => {
+          console.log("sal_result", sal_result.length)
+          if (sal_result.length > 0 && sal_result[0].salary_processed == "Y") {
+            _mysql.releaseConnection();
+            req.records = {
+              message: "Already processed for selected month and year.",
+              invalid_input: true,
+            };
+            next();
+            return;
+          }
+
+          _mysql
+            .executeQuery({
+              query:
+                "INSERT INTO hims_f_miscellaneous_earning_deduction(??) VALUES ?  ON DUPLICATE KEY UPDATE\
+          employee_id=values(employee_id),amount=values(amount),earning_deductions_id=values(earning_deductions_id), \
+                    year=values(year),month=values(month),category=values(category),updated_date=values(updated_date),\
+          updated_by=values(updated_by)",
+              values: input.employees,
+              includeValues: insurtColumns,
+              extraValues: {
+                earning_deductions_id: input.earning_deduction_id,
+                year: input.year,
+                month: input.month,
+                category: input.category,
+                created_date: new Date(),
+                created_by: req.userIdentity.algaeh_d_app_user_id,
+                updated_date: new Date(),
+                updated_by: req.userIdentity.algaeh_d_app_user_id,
+                hospital_id: input.hospital_id,
+              },
+              bulkInsertOrUpdate: true,
+              printQuery: true,
+            })
+            .then((result) => {
+              _mysql.releaseConnection();
+              req.records = result;
+              next();
+            })
+            .catch((e) => {
+              _mysql.releaseConnection();
+              next(e);
+            });
         })
         .catch((e) => {
           _mysql.releaseConnection();
           next(e);
         });
+
     } else {
       req.records = { invalid_input: true, message: "invalid input" };
       next();
@@ -1401,7 +1431,7 @@ export default {
             query: `select E.hims_d_employee_id,E.employee_code,E.full_name,ML.leave_id ,ML.total_eligible,\
                 ML.availed_till_date,ML.close_balance, ML.year, E.identity_no from hims_d_employee E \
                 inner join  hims_f_employee_monthly_leave ML on ML.employee_id=E.hims_d_employee_id and ML.year=?\
-                where  E.record_status='A' ${strQry} order by cast(E.employee_code as unsigned);\
+                where  E.record_status='A' and E.employee_status='A' ${strQry} order by cast(E.employee_code as unsigned);\
                 select hims_d_leave_id, leave_code, leave_description from hims_d_leave \
                 where record_status='A';`,
             values: [input.year],
@@ -1533,7 +1563,7 @@ export default {
               LS.balance_airticket_amount, LS.airfare_months, LS.utilized_leave_days, LS.utilized_leave_salary_amount, \
               LS.utilized_airticket_amount, E.hims_d_employee_id as employee_id from hims_d_employee E \
               left join hims_f_employee_leave_salary_header LS on E.hims_d_employee_id=LS.employee_id \
-              where E.leave_salary_process = 'Y' and E.record_status = 'A' \
+              where E.leave_salary_process = 'Y' and E.record_status = 'A' and E.employee_status='A' \
               order by cast(E.employee_code as unsigned)" +
               strQry,
             printQuery: true,
