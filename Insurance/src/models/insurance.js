@@ -1784,40 +1784,44 @@ export function updateInsuranceStatement(req, res, next) {
       cpt_code,
       claim_status,
     } = req.body;
+
+    let level = claim_status ? claim_status.match(/(\d+)/)[0] : "1";
+
     _mysql
       .executeQueryWithTransaction({
-        query: `update hims_f_invoice_details set r1_amt= ${remittance_amount},
-      d1_amt= ${denial_amount},
-      d1_reason_id=${denial_reason_id},
+        query: `update hims_f_invoice_details set r${level}_amt= ${remittance_amount},
+      d${level}_amt= ${denial_amount},
+      d${level}_reason_id=${denial_reason_id},
       cpt_code="${cpt_code}"
       where hims_f_invoice_details_id =${invoice_detail_id};`,
       })
       .then((result) => {
         _mysql
           .executeQuery({
-            query: `select sum(r1_amt) as r1amt,sum(d1_amt) as d1amt from hims_f_invoice_details 
+            query: `select sum(r${level}_amt) as ramt,sum(d${level}_amt) as damt from hims_f_invoice_details 
       where invoice_header_id=?`,
             values: [invoice_header_id],
           })
           .then((result) => {
-            let rest = { r1amt: 0, d1amt: 0 };
+            let rest = { ramt: 0, damt: 0 };
             if (result.length > 0) {
               rest = { ...result[0] };
             }
             _mysql
               .executeQuery({
-                query: `update hims_f_invoice_header set remittance_amount=${rest["r1amt"]}, claim_status=?,
-         denial_amount=${rest["d1amt"]},remittance_date=? where hims_f_invoice_header_id=?`,
+                query: `update hims_f_invoice_header set remittance_amount=${rest["ramt"]}, claim_status=?,
+         denial_amount=${rest["damt"]},remittance_date=?,s${level}_amt=${rest["damt"]} where hims_f_invoice_header_id=?`,
                 values: [claim_status, new Date(), invoice_header_id],
               })
               .then((records) => {
                 _mysql
                   .executeQuery({
-                    query: `update hims_f_insurance_statement set total_remittance_amount =?,total_denial_amount=? where 
+                    query: `update hims_f_insurance_statement set total_remittance_amount =?,total_denial_amount=?,submission_step=? where 
            hims_f_insurance_statement_id=?`,
                     values: [
-                      rest["r1amt"],
-                      rest["d1amt"],
+                      rest["ramt"],
+                      rest["damt"],
+                      level,
                       insurance_statement_id,
                     ],
                   })
