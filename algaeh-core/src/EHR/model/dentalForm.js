@@ -194,9 +194,9 @@ export default {
                   : "Pending";
               let doctor_email = result[0].work_email;
               let work_status =
-                result[0].request_status === "WIP"
+                result[0].work_status === "WIP"
                   ? "Ordered"
-                  : result[0].request_status === "COM"
+                  : result[0].work_status === "COM"
                   ? "Completed"
                   : "Pending";
               let requested_date = result[0].requested_date;
