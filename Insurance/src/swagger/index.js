@@ -156,6 +156,14 @@
  *      in: query
  *      required: true
  *      type: string
+ *    - name: claim_status
+ *      description: Get Claim Status if undefined then automatically is 1
+ *      in: query
+ *      nullable: true
+ *      type: string
+ *      enum: ['S1','S2','S3','R1','R2','R3','D1','D2','D3']
+ *
+ *
  *   responses:
  *    200:
  *     description: Return Insurance Statement Details
