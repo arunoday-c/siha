@@ -1689,11 +1689,11 @@ export function getInsuranceStatement(req, res, next) {
         const submission_amount = _.sumBy(claims, (s) =>
           parseFloat(s[`submission_amount${level === "1" ? "" : level}`])
         );
-        debugger;
+
         otherObjet = {
           total_remittance_amount,
-          total_denial_amount,
-          total_submission_amount,
+          total_denial_amount: denial_amount,
+          total_submission_amount: submission_amount,
         };
 
         let final_result = {
