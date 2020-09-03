@@ -114,7 +114,7 @@ export default function ({
             <>
               {renderBeforeTable}
               <AlgaehTable
-                className="reportGridPlain"
+                className="financeReportStyle"
                 columns={columns}
                 data={columns.length === 0 ? [] : data}
                 expandAll={isExpand}
