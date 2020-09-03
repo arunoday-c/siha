@@ -168,14 +168,14 @@ export default {
 
           _mysql
             .executeQuery({
-              query: `select concat(ET.title,' ',E.full_name)as  employee_name,
+              query: `select E.full_name as employee_name,
 
            D.arrival_date, D.work_status,E.work_email,D.hims_f_dental_form_id,D.due_date ,D.requested_date,D.request_status,D.procedure_id, D.provider_id,D.procedure_amt,D.approved,D.date_of_birth,
             D.full_name, D.patient_code,S.service_name
              from hims_f_dental_form as D
 
              inner join hims_d_employee as E on  E.hims_d_employee_id =D.provider_id
-             left join hims_d_title as ET on ET.his_d_title_id = E.title_id
+           
 
              left join hims_d_services as S on S.hims_d_services_id =D.procedure_id
              where D.hims_f_dental_form_id=?`,
