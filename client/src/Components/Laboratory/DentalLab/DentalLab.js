@@ -527,7 +527,7 @@ export default function DentalLab() {
                           label: "Due Date",
                         },
                         {
-                          fieldName: "requested_date",
+                          fieldName: "arrival_date",
                           label: "Received Date",
                         },
                         {
