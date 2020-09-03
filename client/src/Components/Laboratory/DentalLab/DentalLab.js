@@ -47,8 +47,11 @@ const getDentalFormData = async () => {
     //   method: "GET",
     // }),
     newAlgaehApi({
-      uri: "/frontDesk/getDoctorAndDepartment",
-      module: "frontDesk",
+      uri: "/department/selectDoctorByDepartment",
+      module: "masterSettings",
+      data: {
+        department_type: "D",
+      },
       method: "GET",
     }),
   ]);

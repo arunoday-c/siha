@@ -1,6 +1,7 @@
 import { Router } from "express";
 import algaehUtlities from "algaeh-utilities/utilities";
 import deptModels from "../models/department";
+// import utils from "../../../";
 import invModels from "algaeh-inventory/src/models/inventory";
 import {
   getCacheMasters,
@@ -8,6 +9,7 @@ import {
   deleteCacheMaster,
 } from "algaeh-utilities/checksecurity";
 const { addInventoryLocation } = invModels;
+// const { releaseConnection } = utils;
 
 const {
   addDepartment,
@@ -18,6 +20,7 @@ const {
   updateSubDepartment,
   deleteDepartment,
   selectdoctors,
+  selectDoctorByDepartment,
   selectDoctorsAndClinic,
   deleteSubDepartment,
   makeSubDepartmentInActive,
@@ -68,7 +71,18 @@ export default () => {
       next();
     }
   );
-
+  api.get(
+    "/selectDoctorByDepartment",
+    selectDoctorByDepartment,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(utlities.httpStatus().ok).json({
+        success: true,
+        records: result,
+      });
+      next();
+    }
+  );
   api.get(
     "/get",
     (req, res, next) => {

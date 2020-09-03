@@ -10,11 +10,14 @@ import {
 import { UpdateStatement } from "./UpdateStatment";
 import { newAlgaehApi, useQueryParams } from "../../../hooks";
 
-const getStatements = async (key, { hims_f_insurance_statement_id }) => {
+const getStatements = async (
+  key,
+  { hims_f_insurance_statement_id, submission_step }
+) => {
   const res = await newAlgaehApi({
     uri: "/insurance/getInsuranceStatement",
     module: "insurance",
-    data: { hims_f_insurance_statement_id },
+    data: { hims_f_insurance_statement_id, submission_step },
     method: "GET",
   });
   return res?.data?.records;
@@ -27,9 +30,10 @@ export function StatementTable() {
   const hims_f_insurance_statement_id = params.get(
     "hims_f_insurance_statement_id"
   );
+  const submission_step = params.get("submission_step");
 
   const { data, isLoading, refetch } = useQuery(
-    ["insurance", { hims_f_insurance_statement_id }],
+    ["insurance", { hims_f_insurance_statement_id, submission_step }],
     getStatements,
     {
       enabled: !!hims_f_insurance_statement_id,

@@ -10,7 +10,7 @@ import {
   // DatePicker,
   AlgaehModal,
   AlgaehHijriDatePicker,
-  AlgaehTreeSearch,
+  // AlgaehTreeSearch,
   AlgaehSecurityComponent,
 
   //   AlgaehButton,
@@ -90,7 +90,8 @@ export function AddPatientDentalForm({
         due_date: current.due_date,
         service_amount: current.procedure_amt,
         doctor: current.provider_id,
-        arrival_date: current.arrival_date,
+        arrival_date:
+          current.arrival_date === null ? undefined : current.arrival_date,
       });
 
       // .map((item) => item.doctors);
@@ -169,7 +170,11 @@ export function AddPatientDentalForm({
     }
   };
   const updateDentalForm = async (data) => {
-    const arrival_date = moment(data.arrival_date).format("YYYY-MM-DD");
+    debugger;
+    const arrival_date =
+      data.arrival_date === undefined
+        ? undefined
+        : moment(data.arrival_date).format("YYYY-MM-DD");
     // const due_date = moment(new Date()).format("YYYY-MM-DD");
     const years = moment().diff(data.date_of_birth, "year");
     // const date_of_birth = moment(data.date_of_birth).format("YYYY-MM-DD");
@@ -328,7 +333,7 @@ export function AddPatientDentalForm({
                   },
                 }}
               /> */}
-              <Controller
+              {/* <Controller
                 control={control}
                 name="doctor"
                 rules={{ required: "Please Select a doctor" }}
@@ -358,7 +363,41 @@ export function AddPatientDentalForm({
                     }}
                   />
                 )}
-              />{" "}
+              />{" "} */}
+              <Controller
+                name="doctor"
+                control={control}
+                rules={{ required: "Please Select a doctor" }}
+                render={({ value, onBlur, onChange }) => (
+                  <AlgaehAutoComplete
+                    div={{ className: "col-3 form-group mandatory" }}
+                    label={{
+                      forceLabel: "Requesting By",
+                      isImp: true,
+                    }}
+                    error={errors}
+                    selector={{
+                      value,
+                      onChange: (_, selected) => {
+                        onChange(selected);
+                      },
+                      onBlur: (_, selected) => {
+                        onBlur(selected);
+                      },
+                      name: "doctor",
+                      dataSource: {
+                        data: doctors,
+                        textField: "full_name",
+                        valueField: "hims_d_employee_id",
+                      },
+                      others: {
+                        disabled: disabled || current.request_status === "APR",
+                        tabIndex: "23",
+                      },
+                    }}
+                  />
+                )}
+              />
               <Controller
                 name="select_vendor"
                 control={control}
@@ -758,6 +797,10 @@ export function AddPatientDentalForm({
                           value,
                           onChange: (_, selected) => {
                             onChange(selected);
+                            if (selected !== "COM") {
+                              setValue("arrival_date", undefined);
+                              return;
+                            }
                           },
                           onClear: () => {
                             onChange("");
@@ -776,7 +819,7 @@ export function AddPatientDentalForm({
                     control={control}
                     rules={{
                       required:
-                        work_status !== "COM" ? " please enter date" : false,
+                        work_status === "COM" ? " please enter date" : false,
                     }}
                     render={({ onChange, value }) => (
                       <AlgaehDateHandler
@@ -804,7 +847,9 @@ export function AddPatientDentalForm({
                             }
                           },
                           onClear: () => {
+                            debugger;
                             onChange(undefined);
+                            // setValue("arrival_date", undefined);
                           },
                         }}
                       />

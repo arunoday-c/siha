@@ -368,6 +368,29 @@ export default {
         next(error);
       });
   },
+  selectDoctorByDepartment: (req, res, next) => {
+    debugger;
+    let input = req.body;
+    const _mysql = new algaehMysql();
+    // const { algaeh_d_app_user_id } = req.userIdentity;
+    _mysql
+      .executeQuery({
+        query: `SELECT EM.hims_d_employee_id, EM.full_name,EM.work_email FROM hims_d_employee as EM
+        left join hims_d_sub_department SD on EM.sub_department_id = hims_d_sub_department_id
+        where SD.department_type='D';`,
+        // values: [input.department_type],
+      })
+      .then((results) => {
+        req.records = results;
+        _mysql.releaseConnection();
+
+        next();
+      })
+      .catch((error) => {
+        _mysql.releaseConnection();
+        next(error);
+      });
+  },
   selectDoctorsAndClinic_backUp: (req, res, next) => {
     let input = req.query;
     const _mysql = new algaehMysql();

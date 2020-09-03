@@ -1030,7 +1030,7 @@ let algaehSearchConfig = (searchName, req) => {
       },
       {
         searchName: "InsuranceStatement",
-        searchQuery: `select hims_f_insurance_statement_id, insurance_statement_number, insurance_sub_name, insurance_provider_name
+        searchQuery: `select hims_f_insurance_statement_id, insurance_statement_number, insurance_sub_name, insurance_provider_name, submission_step
           from hims_f_insurance_statement S 
           inner join hims_d_insurance_provider P on S.insurance_provider_id = P.hims_d_insurance_provider_id
           inner join hims_d_insurance_sub SU on S.sub_insurance_id = SU.hims_d_insurance_sub_id where S.record_status='A'`,
