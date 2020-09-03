@@ -778,7 +778,10 @@ class RCMWorkbench extends Component {
                                 item.hims_f_invoice_header_id ==
                                 row?.hims_f_invoice_header_id
                             );
-                            if (row.claim_status?.startsWith("R")) {
+                            if (
+                              row.claim_status?.startsWith("R") &&
+                              !!parseFloat(row?.denial_amount)
+                            ) {
                               return (
                                 <input
                                   type="checkbox"
@@ -817,6 +820,12 @@ class RCMWorkbench extends Component {
                           <AlgaehLabel label={{ forceLabel: "Details" }} />
                         ),
                         displayTemplate: (row) => {
+                          if (
+                            row.claim_status?.startsWith("R") &&
+                            !parseFloat(row?.denial_amount)
+                          ) {
+                            return null;
+                          }
                           return (
                             <i
                               onClick={() => {

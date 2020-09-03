@@ -1816,8 +1816,12 @@ export function updateInsuranceStatement(req, res, next) {
             }
             _mysql
               .executeQuery({
-                query: `update hims_f_invoice_header set remittance_amount=${rest["ramt"]}, claim_status=?,
-         denial_amount=${rest["damt"]},remittance_date=?,s${level}_amt=${rest["damt"]} where hims_f_invoice_header_id=?`,
+                query: `update hims_f_invoice_header set remittance_amount=${
+                  rest["ramt"]
+                }, claim_status=?,
+         denial_amount=${rest["damt"]},remittance_date=?,submission_amount${
+                  level == 1 ? "" : level
+                }=${rest["damt"]} where hims_f_invoice_header_id=?`,
                 values: [claim_status, new Date(), invoice_header_id],
               })
               .then((records) => {
