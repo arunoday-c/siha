@@ -1604,11 +1604,14 @@ export function saveMultiStatement(req, res, next) {
               _mysql
                 .executeQuery({
                   query: `update hims_d_insurance_provider set insurance_statement_count=? 
-                  where hims_d_insurance_provider_id=?; update hims_f_invoice_header set insurance_statement_id=?,claim_status='S1' where hims_f_invoice_header_id in (?);`,
+                  where hims_d_insurance_provider_id=?; 
+                  update hims_f_invoice_header set insurance_statement_id=?,claim_status='S1',submission_amount=? 
+                   where hims_f_invoice_header_id in (?);`,
                   values: [
                     update_ins_count,
                     insurance_provider_id,
                     result.insertId,
+                    total_company_responsibility,
                     invoiceList,
                   ],
                   printQuery: true,
