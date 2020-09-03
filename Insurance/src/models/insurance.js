@@ -1646,6 +1646,15 @@ export function saveMultiStatement(req, res, next) {
 }
 export function getInsuranceStatement(req, res, next) {
   const _mysql = new algaehMysql();
+  const { submission_step, hims_f_insurance_statement_id } = req.query;
+
+  let condition = `IH.insurance_statement_id=${hims_f_insurance_statement_id}`;
+  if (submission_step == 2) {
+    condition = `IH.insurance_statement_id_2=${hims_f_insurance_statement_id}`;
+  }
+  if (submission_step == 3) {
+    condition = `IH.insurance_statement_id_3=${hims_f_insurance_statement_id}`;
+  }
   try {
     _mysql
       .executeQuery({
@@ -1662,13 +1671,9 @@ export function getInsuranceStatement(req, res, next) {
  E.employee_code,E.full_name as doc_name
  from hims_f_invoice_header as IH
  inner join hims_f_patient as P on P.hims_d_patient_id = IH.patient_id inner join hims_f_patient_visit as V
- on V.hims_f_patient_visit_id = IH.visit_id inner join hims_d_employee as E on E.hims_d_employee_id = V.doctor_id where IH.insurance_statement_id=? or IH.insurance_statement_id_2=? or IH.insurance_statement_id_3=?;`,
-        values: [
-          req.query.hims_f_insurance_statement_id,
-          req.query.hims_f_insurance_statement_id,
-          req.query.hims_f_insurance_statement_id,
-          req.query.hims_f_insurance_statement_id,
-        ],
+ on V.hims_f_patient_visit_id = IH.visit_id inner join hims_d_employee as E on E.hims_d_employee_id = V.doctor_id where
+  ${condition} and claim_status like '%${submission_step}';`,
+        values: [hims_f_insurance_statement_id],
         printQuery: true,
       })
       .then((result) => {

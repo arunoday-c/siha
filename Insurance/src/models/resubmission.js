@@ -38,7 +38,7 @@ export function reSubmissionDetails(req, res, next) {
         } = result[0];
         _mysql
           .executeQuery({
-            query: `select insurance_statement_number from hims_f_insurance_statement where hims_f_insurance_statement_id=? FOR UPDATE;`,
+            query: `select insurance_statement_number, submission_step from hims_f_insurance_statement where hims_f_insurance_statement_id=? FOR UPDATE;`,
             values: [insurance_statement_id],
           })
           .then((records) => {
@@ -48,15 +48,15 @@ export function reSubmissionDetails(req, res, next) {
               });
               return;
             }
-            const { insurance_statement_number } = records[0];
+            const { insurance_statement_number, submission_step } = records[0];
             const { algaeh_d_app_user_id } = req.userIdentity;
             const newNumber = "RESUB-" + insurance_statement_number;
             _mysql
               .executeQuery({
                 query: `insert into hims_f_insurance_statement (insurance_statement_number,total_gross_amount,total_company_responsibility,total_company_vat,
                 total_company_payable,total_remittance_amount,total_denial_amount,total_balance_amount,
-                insurance_provider_id,sub_insurance_id,created_by,updated_by,created_date,updated_date)
-                values(?,?,?,?,?,?,?,?,?,?,?,?,?,?);`,
+                insurance_provider_id,sub_insurance_id,created_by,updated_by,created_date,updated_date, submission_step)
+                values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);`,
                 values: [
                   newNumber,
                   total_gross_amount,
@@ -72,6 +72,7 @@ export function reSubmissionDetails(req, res, next) {
                   algaeh_d_app_user_id,
                   new Date(),
                   new Date(),
+                  submission_step + 1,
                 ],
               })
               .then((resubmitResult) => {
@@ -82,8 +83,8 @@ export function reSubmissionDetails(req, res, next) {
                     : `insurance_statement_id_3=${insertId},claim_status='S3'`;
                 _mysql
                   .executeQuery({
-                    query: `update hims_f_invoice_header set ${query} where hims_f_invoice_header_id in (?);
-                          update hims_f_insurance_statement set record_status='I' where hims_f_insurance_statement_id=${insurance_statement_id};`,
+                    query: `update hims_f_invoice_header set ${query} where hims_f_invoice_header_id in (?);`,
+                    // update hims_f_insurance_statement set record_status='I' where hims_f_insurance_statement_id=${insurance_statement_id};`,
                     values: [invoiceList],
                   })
                   .then(() => {

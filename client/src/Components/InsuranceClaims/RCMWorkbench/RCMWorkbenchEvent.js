@@ -27,7 +27,7 @@ export function ClaimSearch(history, location) {
       if (this) {
         if (this.state.rcmMode === "S") {
           return this.props.history?.push(
-            `${this.props.location?.pathname}?hims_f_insurance_statement_id=${row?.hims_f_insurance_statement_id}&insurance_statement_number=${row?.insurance_statement_number}`
+            `${this.props.location?.pathname}?hims_f_insurance_statement_id=${row?.hims_f_insurance_statement_id}&insurance_statement_number=${row?.insurance_statement_number}&submission_step=${row.submission_step}`
           );
         } else {
           this.setState(
@@ -39,12 +39,12 @@ export function ClaimSearch(history, location) {
             }
           );
           return this.props.history?.push(
-            `${this.props.location?.pathname}?insurance_statement_id=${row?.hims_f_insurance_statement_id}&insurance_statement_number=${row?.insurance_statement_number}`
+            `${this.props.location?.pathname}?insurance_statement_id=${row?.hims_f_insurance_statement_id}&insurance_statement_number=${row?.insurance_statement_number}&submission_step=${row.submission_step}`
           );
         }
       } else {
         return history?.push(
-          `${location}?hims_f_insurance_statement_id=${row?.hims_f_insurance_statement_id}&insurance_statement_number=${row?.insurance_statement_number}`
+          `${location}?hims_f_insurance_statement_id=${row?.hims_f_insurance_statement_id}&insurance_statement_number=${row?.insurance_statement_number}&submission_step=${row.submission_step}`
         );
       }
     },
