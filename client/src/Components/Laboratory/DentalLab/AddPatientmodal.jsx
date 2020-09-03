@@ -490,7 +490,7 @@ export function AddPatientDentalForm({
                       className: "col-lg-3 form-group",
                       tabIndex: "7",
                     }}
-                    error={errors}
+                    // error={errors}
                     label={{
                       forceLabel: "Due Date",
                       isImp: false,
