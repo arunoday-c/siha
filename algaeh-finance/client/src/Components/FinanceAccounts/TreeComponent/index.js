@@ -183,6 +183,7 @@ function TreeComponent({ assetCode, title, inDrawer }) {
   }
 
   function loadAccount() {
+    setTreeData([]);
     getAccounts(assetCode, (data) => {
       if (Array.isArray(data)) {
         if (data.length > 0) {
