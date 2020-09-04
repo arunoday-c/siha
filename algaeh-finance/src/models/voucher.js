@@ -1726,8 +1726,11 @@ export default {
         case "A":
           strQry += " and VD.auth_status='A' ";
           break;
-        default:
+        case "P":
           strQry += " and VD.auth_status='P' ";
+          break;
+        default:
+          strQry += "";
       }
       // if (input.hospital_id) {
       //   strQry += ` and VD.hospital_id=${input.hospital_id} `;

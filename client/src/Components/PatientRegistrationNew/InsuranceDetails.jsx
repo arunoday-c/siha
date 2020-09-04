@@ -482,7 +482,7 @@ export function InsuranceDetails({
                             noImage="insurance-card-front"
                             name="patInsuranceFrontImg"
                             accept="image/*"
-                            showActions={isInsurance}
+                            showActions={isInsurance && !!primary_card_number}
                             textAltMessage="Insurance Card Front Side"
                             serviceParameters={{
                               uniqueID:
@@ -511,7 +511,7 @@ export function InsuranceDetails({
                             noImage="insurance-card-back"
                             name="patInsuranceBackImg"
                             accept="image/*"
-                            showActions={isInsurance}
+                            showActions={isInsurance && !!primary_card_number}
                             textAltMessage="Insurance Card Back Side"
                             serviceParameters={{
                               uniqueID:

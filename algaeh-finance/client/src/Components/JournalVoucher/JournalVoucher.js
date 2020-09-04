@@ -110,11 +110,11 @@ export default function JournalVoucher() {
                 label: "Cost Center",
                 displayTemplate: (row) => {
                   const valueRow =
-                    row["hims_d_hospital_id"] !== undefined &&
-                    row["hims_d_hospital_id"] !== "" &&
-                    row["cost_center_id"] !== undefined &&
-                    row["cost_center_id"] !== ""
-                      ? `${row["hims_d_hospital_id"]}-${row["cost_center_id"]}`
+                    options["default_branch_id"] !== undefined &&
+                    options["default_branch_id"] !== "" &&
+                    options["default_cost_center_id"] !== undefined &&
+                    options["default_cost_center_id"] !== ""
+                      ? `${options["default_branch_id"]}-${options["default_cost_center_id"]}`
                       : "";
                   return (
                     <AlgaehTreeSearch
