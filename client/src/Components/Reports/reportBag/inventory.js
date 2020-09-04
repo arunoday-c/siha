@@ -79,9 +79,8 @@ export default function Inventory({
             className: "col-3 form-group mandatory",
             type: "dropdown",
             name: "stockUsed",
-
             isImp: true,
-            label: "Show for Last (month's)",
+            label: "Show for Last",
 
             dataSource: {
               textField: "stockUsed",
@@ -812,6 +811,74 @@ export default function Inventory({
               textField: "item_description",
               valueField: "hims_d_inventory_item_master_id",
               data: undefined,
+            },
+            events: {
+              onClear: (reportState, currentName) => {
+                reportState.setState({
+                  [currentName]: undefined,
+                });
+              },
+            },
+          },
+        ],
+      },
+      {
+        subitem: "Stock Cost Report",
+        reportName: "stockReport",
+        requireIframe: true,
+        reportParameters: [
+          {
+            className: "col-3 form-group mandatory",
+            type: "dropdown",
+            name: "hospital_id",
+            initialLoad: true,
+            isImp: true,
+            label: "branch",
+            link: {
+              uri: "/organization/getOrganizationByUser",
+            },
+            events: {
+              onChange: (reportState, currentEvent) => {
+                //provider_id_list CONTROL NAME AND APPEND BY _LIST
+                algaehApiCall({
+                  uri: "/inventory/getInventoryLocation",
+                  module: "inventory",
+                  method: "GET",
+                  data: { hospital_id: currentEvent.value },
+
+                  onSuccess: (result) => {
+                    reportState.setState({
+                      location_id_list: result.data.records,
+                    });
+                  },
+                });
+              },
+              onClear: (reportState, currentName) => {
+                reportState.setState({
+                  [currentName]: undefined,
+                  location_id_list: [],
+                });
+              },
+            },
+            value: hospital_id,
+            dataSource: {
+              textField: "hospital_name",
+              valueField: "hims_d_hospital_id",
+              data: undefined,
+            },
+          },
+
+          {
+            className: "col-3 form-group mandatory",
+            type: "dropdown",
+            name: "location_id",
+            initialLoad: true,
+            isImp: true,
+            label: "Location",
+            dataSource: {
+              textField: "location_description",
+              valueField: "hims_d_inventory_location_id",
+              data: [],
             },
             events: {
               onClear: (reportState, currentName) => {
