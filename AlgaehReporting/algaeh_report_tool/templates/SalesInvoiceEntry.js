@@ -11,6 +11,7 @@ const executePDF = function executePDFMethod(options) {
       params.forEach((para) => {
         input[para["name"]] = para["value"];
       });
+      const { decimal_places, symbol_position, currency_symbol } = options.args.crypto
 
       // select  IH.*, ID.*, H.*, L.location_description  ,C.customer_name, C.arabic_customer_name,
       //         C.vat_number,C.address, SO.sales_order_number,SO.customer_po_no,
@@ -33,12 +34,14 @@ const executePDF = function executePDFMethod(options) {
       options.mysql
         .executeQuery({
           query: `select  H.*, C.customer_name, C.bank_account_no, C.bank_name, C.arabic_customer_name,C.vat_number,C.address, 
-          SO.sales_order_number, SO.customer_po_no, SO.sales_order_date
+          SO.sales_order_number, SO.customer_po_no, SO.sales_order_date, HO.hospital_name
           from  hims_f_sales_invoice_header H 
           inner join hims_d_customer C on H.customer_id = C.hims_d_customer_id
           inner join hims_f_sales_order SO on H.sales_order_id = SO.hims_f_sales_order_id
+          inner join hims_d_hospital HO on H.hospital_id = HO.hims_d_hospital_id
           where H.invoice_number=?;                    
-          select B.*,SUM(dispatch_quantity) as dispatch_quantity, SUM(total_amount) as total_amount, IM.item_code,IM.item_description, ROUND(B.tax_percentage, 0) as tax_percentage from
+          select B.*,SUM(round(dispatch_quantity, 0)) as dispatch_quantity, SUM(total_amount) as total_amount, 
+          IM.item_code,IM.item_description, IM.arabic_item_description, ROUND(B.tax_percentage, 0) as tax_percentage from
           hims_f_sales_invoice_header IH 
           inner join  hims_f_sales_invoice_detail ID on IH.hims_f_sales_invoice_header_id=ID.sales_invoice_header_id  
           inner join hims_f_sales_dispatch_note_header H  on ID.dispatch_note_header_id=H.hims_f_dispatch_note_header_id 
@@ -116,6 +119,18 @@ const executePDF = function executePDFMethod(options) {
             invoice_date: moment(grn_details[0].invoice_date).format(
               "YYYY-MM-DD"
             ),
+            currency: {
+              decimal_places,
+              addSymbol: false,
+              symbol_position,
+              currency_symbol
+            },
+            currencyheader: {
+              decimal_places,
+              addSymbol: true,
+              symbol_position,
+              currency_symbol
+            },
             // invoice_number: outputArray[0].invoice_number,
             // sales_order_date: outputArray[0].sales_order_date,
             // location_description: outputArray[0].location_description,

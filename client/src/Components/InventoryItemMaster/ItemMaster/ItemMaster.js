@@ -324,6 +324,21 @@ class InvItemMaster extends Component {
                             },
                           }}
                         />
+
+                        <AlagehFormGroup
+                          div={{ className: "col-6 form-group arabic-txt-fld" }}
+                          label={{
+                            fieldName: "Arabic Name",
+                          }}
+                          textBox={{
+                            className: "txt-fld",
+                            name: "arabic_item_description",
+                            value: this.state.arabic_item_description,
+                            events: {
+                              onChange: texthandle.bind(this, this),
+                            },
+                          }}
+                        />
                       </div>
                     </div>
 
@@ -461,9 +476,9 @@ class InvItemMaster extends Component {
                                 this.props.inventoryitemuom === undefined
                                   ? []
                                   : this.props.inventoryitemuom.filter(
-                                      (f) =>
-                                        f.hims_d_inventory_uom_id === row.uom_id
-                                    );
+                                    (f) =>
+                                      f.hims_d_inventory_uom_id === row.uom_id
+                                  );
 
                               return (
                                 <span>
@@ -591,7 +606,7 @@ class InvItemMaster extends Component {
                         paging={{ page: 0, rowsPerPage: 5 }}
                         events={{
                           onDelete: deleteUOM.bind(this, this),
-                          onEdit: (row) => {},
+                          onEdit: (row) => { },
                           onDone: updateUOM.bind(this, this),
                         }}
                       />
@@ -697,7 +712,7 @@ class InvItemMaster extends Component {
                         fieldName: "price",
                         isImp:
                           this.state.item_type === "AST" ||
-                          this.state.item_type === "NSK"
+                            this.state.item_type === "NSK"
                             ? false
                             : true,
                       }}
@@ -728,8 +743,8 @@ class InvItemMaster extends Component {
                     {this.state.hims_d_inventory_item_master_id === null ? (
                       <AlgaehLabel label={{ fieldName: "btnSave" }} />
                     ) : (
-                      <AlgaehLabel label={{ fieldName: "btnUpdate" }} />
-                    )}
+                        <AlgaehLabel label={{ fieldName: "btnUpdate" }} />
+                      )}
                   </button>
                   <button
                     onClick={(e) => {

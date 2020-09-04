@@ -133,7 +133,8 @@ algaehUtilities.prototype.getCurrencyFormart = function (
   CurrencyDetail,
   addSymbol
 ) {
-  addSymbol = addSymbol || true;
+  addSymbol = addSymbol === undefined ? true : addSymbol;
+
   const settings = CurrencyDetail;
 
   const precesions =
@@ -149,7 +150,7 @@ algaehUtilities.prototype.getCurrencyFormart = function (
   }
 
   let n = !isFinite(+value) ? 0.0 : +value;
-  const prec = !isFinite(precesions) ? 0 : Math.abs(precesions);
+  // const prec = !isFinite(precesions) ? 0 : Math.abs(precesions);
   // const toFixedFix = (n, prec) => {
   //   const k = Math.pow(10, prec);
   //   return Math.round(n * k) / k;
@@ -194,7 +195,6 @@ algaehUtilities.prototype.getCurrencyFormart = function (
   //   }
   //   currency = amount;
   // }
-
   if (addSymbol === false) {
     return currency;
   }

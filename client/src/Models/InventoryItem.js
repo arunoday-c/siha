@@ -37,7 +37,8 @@ export default {
       item_type: null,
       reorder_qty: 0,
       vat_applicable: "N",
-      sfda_code: null
+      sfda_code: null,
+      arabic_item_description: null
     };
     return output;
   }
