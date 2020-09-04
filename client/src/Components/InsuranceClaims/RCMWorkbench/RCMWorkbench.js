@@ -555,7 +555,7 @@ class RCMWorkbench extends Component {
 
         <div className="col-12">
           <div className="row inner-top-search">
-            <div className="col-3">
+            <div className="col-5">
               <label>Load By</label>
               <div className="customRadio">
                 <label className="radio inline">

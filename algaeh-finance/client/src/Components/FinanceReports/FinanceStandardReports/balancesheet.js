@@ -69,12 +69,12 @@ export default function BalanceSheet({
             maxDate: moment(),
           },
           {
-            className: "col-2 formgroup finCusCheckBox",
+            className: "col formgroup finCusCheckBox",
             type: "CH",
             data: "Change in Amt.",
           },
           {
-            className: "col-2 formgroup finCusCheckBox",
+            className: "col formgroup finCusCheckBox",
             type: "CH",
             data: "Change in %",
           },

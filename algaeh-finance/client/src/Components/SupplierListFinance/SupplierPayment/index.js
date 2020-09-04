@@ -1,6 +1,10 @@
 import React, { memo, useState, useEffect } from "react";
 import { useLocation, useHistory } from "react-router-dom";
-import { AlgaehMessagePop, AlgaehTable } from "algaeh-react-components";
+import {
+  AlgaehMessagePop,
+  AlgaehTable,
+  AlgaehButton,
+} from "algaeh-react-components";
 import { InfoBar } from "../../../Wrappers";
 import { LedgerReport } from "../../InvoiceCommon";
 import { getInvoicesForSupplier } from "./SupPaymentEvents";
@@ -85,24 +89,7 @@ export default memo(function (props) {
                       Supplier Payment Details
                     </h3>
                   </div>{" "}
-                  <div className="actions">
-                    <button
-                      className="btn btn-default"
-                      onClick={() => setvisible(true)}
-                    >
-                      <i className="fas fa-print"></i>
-                    </button>
-                    <button
-                      className="btn btn-default"
-                      onClick={() =>
-                        history.push("/DayEndProcess", {
-                          data: location.state.data,
-                        })
-                      }
-                    >
-                      <i className="fas fa-share-square"></i>
-                    </button>
-                  </div>
+                  <div className="actions"></div>
                 </div>
                 <div className="portlet-body">
                   <div className="row">
@@ -184,6 +171,49 @@ export default memo(function (props) {
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+      </div>
+      {/* <div className="portlet portlet-bordered margin-bottom-15">
+        <div className="portlet-body">
+          <div className="row">
+            <div className="col-12" style={{ textAlign: "right" }}>
+              <div className="row">
+                <div className="col">
+                  <label className="style_Label ">
+                    Selected Invoice Amount
+                  </label>
+                  <h6>{selectAmount}</h6>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div> */}
+
+      <div className="hptl-phase1-footer">
+        <div className="row">
+          <div className="col-12">
+            <AlgaehButton
+              className="btn btn-primary"
+              // disabled={!processList.length}
+              loading={loading}
+              onClick={() =>
+                history.push("/DayEndProcess", {
+                  data: location.state.data,
+                })
+              }
+            >
+              Process
+            </AlgaehButton>
+            <AlgaehButton
+              className="btn btn-default"
+              // disabled={!processList.length}
+              loading={loading}
+              onClick={() => setvisible(true)}
+            >
+              Print
+            </AlgaehButton>
           </div>
         </div>
       </div>

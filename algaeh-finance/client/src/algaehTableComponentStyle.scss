@@ -4,7 +4,9 @@
 #supplierDetailGrid_Cntr {
   .newStickyGrid {
     .table-scroll {
-      min-height: 62vh;
+      min-height: 55vh;
+      max-height: 55vh;
+      overflow: auto;
     }
   }
 }
@@ -12,7 +14,9 @@
 #supplierGrid_Cntr {
   .newStickyGrid {
     .table-scroll {
-      min-height: 62vh;
+      min-height: 55vh;
+      max-height: 55vh;
+      overflow: auto;
     }
   }
 }
@@ -20,7 +24,9 @@
 #quickSearchGrid {
   .newStickyGrid {
     .table-scroll {
-      min-height: 70vh;
+      min-height: 55vh;
+      max-height: 55vh;
+      overflow: auto;
     }
   }
 }

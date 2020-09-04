@@ -49,54 +49,29 @@ export default function ({
 
   return (
     <>
-      <div className="row">
-        <div className="col-12 reportHeaderAction">
-          <span>
-            {/* <i className="fas fa-print" /> */}
-            {/* <ReactToPrint
-              trigger={() => <i className="fas fa-print" />}
-              content={() => createPrintObject.current}
-              removeAfterPrint={true}
-              bodyClass="reportPreviewSecLeft"
-              pageStyle="@media print {
-          html, body {
-            height: initial !important;
-            overflow: initial !important;
-            -webkit-print-color-adjust: exact;
-          }
-        }
-        
-        @page {
-          size: auto;
-          margin: 20mm;
-        }"
-            /> */}
-            <SmartTable
-              control={() => createPrintObject.current}
-              columnsToRepeat={[0]}
-              columnPerPage={7}
-            />
-          </span>
-          <span>
-            <i
-              className={`fas ${
-                loadingExcel ? "fa-spinner fa-spin" : "fa-file-excel"
-              }`}
-              style={{ pointerEvents: !data || loadingExcel ? "none" : "" }}
-              onClick={downloadExcel}
-            />
-          </span>
-          {/* <span>
-            <i className="fas fa-file-pdf" />
-          </span> */}
-        </div>
-      </div>
-
       <div className="row" ref={createPrintObject}>
         <div className="col-12">
           <ReportHeader title={title} />
+          <div className="reportHeaderAction">
+            <span>
+              <SmartTable
+                control={() => createPrintObject.current}
+                columnsToRepeat={[0]}
+                columnPerPage={7}
+              />
+            </span>
+            <span>
+              <i
+                className={`fas ${
+                  loadingExcel ? "fa-spinner fa-spin" : "fa-file-excel"
+                }`}
+                style={{ pointerEvents: !data || loadingExcel ? "none" : "" }}
+                onClick={downloadExcel}
+              />
+            </span>
+          </div>
         </div>
-        <div className="col-12">
+        <div className="col-12" style={{ padding: 0 }}>
           {!data ? (
             <div style={{ textAlign: "center" }}>
               <i

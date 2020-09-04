@@ -217,7 +217,7 @@ export default memo(function (props) {
           </div>
         ))}
       </div>
-      <div className="col" style={{ marginBottom: 10 }}>
+      <div className="col previewReportBtn">
         <AlgaehButton
           className="btn btn-primary"
           onClick={onPreviewClick}

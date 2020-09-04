@@ -22,11 +22,7 @@ export default memo(function CenterComponent({ data }) {
   }
 
   function EditButton(...args) {
-    return (
-      <button className="btn btn-primary" onClick={() => openEdit(args[1])}>
-        Edit
-      </button>
-    );
+    return <i className="fas fa-pen" onClick={() => openEdit(args[1])}></i>;
   }
 
   return (
@@ -78,6 +74,7 @@ export default memo(function CenterComponent({ data }) {
           </div>
           <div className="portlet-body">
             <AlgaehDataGrid
+              className="costCenterMasterGrid"
               columns={[
                 {
                   label: "Action",

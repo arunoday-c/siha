@@ -141,11 +141,12 @@ export default function FinanceReports() {
             <div className="col reportPreviewSecLeft">
               <div
                 className="row inner-top-search"
-                style={{ padding: "15px 0 0", marginBottom: 0, border: "none" }}
+                style={{ padding: "10px 0 0", marginBottom: 0, border: "none" }}
               >
                 <div className="col-12">
-                  <h3>{getReportName()}</h3>
-                  <hr style={{ margin: "0 0 10px" }} />
+                  {/* <h3>{getReportName()}</h3> */}
+                  <h5>Applied Filter</h5>
+                  <hr style={{ margin: "0 0 5px" }} />
                 </div>
               </div>
 
@@ -154,7 +155,7 @@ export default function FinanceReports() {
                   spinning={loading}
                   tip="Please wait report data is fetching.."
                   delay={500}
-                  className="abc"
+                  class="abc"
                 >
                   {/* {selected === "TB" ? (
                     <i
