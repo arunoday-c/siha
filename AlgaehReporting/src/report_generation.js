@@ -53,7 +53,31 @@ const compileExcel = async function (templateName, data) {
   const html = await fs.readFile(filePath, "utf-8");
   return hbs.compile(html)(data);
 };
-
+/**
+value = value of a number
+precesions= number of decimal places from (request identity)
+addSymbol = true | false default true
+symbol_position = request identity
+currency_symbol = request identity
+*/
+hbs.registerHelper("numberFormating", function (
+  value,
+  precesions,
+  addSymbol,
+  symbol_position,
+  currency_symbol
+) {
+  return new utilitites().getCurrencyFormart(
+    value,
+    {
+      decimal_places: precesions,
+      symbol_position,
+      symbol_position,
+      currency_symbol,
+    },
+    addSymbol
+  );
+});
 hbs.registerHelper("sumOf", function (data, sumby, callBack) {
   data = Array.isArray(data) ? data : [];
   const sumof = _.sumBy(data, function (s) {

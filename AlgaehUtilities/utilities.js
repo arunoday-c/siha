@@ -149,47 +149,67 @@ algaehUtilities.prototype.getCurrencyFormart = function (
   }
 
   let n = !isFinite(+value) ? 0.0 : +value;
-  const prec = !isFinite(+precesions) ? 0 : Math.abs(precesions);
+  const prec = !isFinite(precesions) ? 0 : Math.abs(precesions);
+  // const toFixedFix = (n, prec) => {
+  //   const k = Math.pow(10, prec);
+  //   return Math.round(n * k) / k;
+  // };
 
-  const toFixedFix = (n, prec) => {
-    const k = Math.pow(10, prec);
-    return Math.round(n * k) / k;
-  };
-  let s = prec ? toFixedFix(n, prec) : Math.round(n).toString().split(".");
-  if (s instanceof Array) {
-    if (s[0].length > 3) {
-      s[0] = s[0].replace(
-        /\B(?=(?:\d{3})+(?!\d))/g,
-        settings.thousand_separator
-      );
-    }
-    if ((s[1] || "").length < prec) {
-      s[1] = s[1] || "";
-      s[1] += new Array(prec - s[1].length + 1).join("0");
-    }
-  }
+  // let s = prec ? toFixedFix(n, prec) : Math.round(n).toString().split(".");
+  // if (s instanceof Array) {
+  //   if (s[0].length > 3) {
+  //     s[0] = s[0].replace(
+  //       /\B(?=(?:\d{3})+(?!\d))/g,
+  //       settings.thousand_separator
+  //     );
+  //   }
+  //   if ((s[1] || "").length < prec) {
+  //     s[1] = s[1] || "";
+  //     s[1] += new Array(prec - s[1].length + 1).join("0");
+  //   }
+  // }
 
-  const result =
-    s instanceof Array
-      ? s.join(settings.decimal_separator)
-      : parseFloat(s).toFixed(precesions);
-  let currency = result;
+  // const result =
+  //   s instanceof Array
+  //     ? s.join(settings.decimal_separator)
+  //     : parseFloat(s).toFixed(precesions);
+  let currency = parseFloat(n).toLocaleString(`en-US`, {
+    minimumFractionDigits: precesions,
+    maximumFractionDigits: precesions,
+    useGrouping: true,
+  });
+
+  // if (result !== ""){
+  //   const splittedResult = result.split(".");
+  //   let amount = new Number(splittedResult[0]).toLocaleString("en-IN");
+  //   console.log(
+  //     "TESTING",
+  //     new Number(100000).toLocaleString("en-IN", {
+  //       minimumFractionDigits: 2,
+  //       maximumFractionDigits: 3,
+  //     })
+  //   );
+  //   if (splittedResult.length > 1) {
+  //     amount += `.${splittedResult[1]}`;
+  //   }
+  //   currency = amount;
+  // }
 
   if (addSymbol === false) {
     return currency;
   }
   switch (settings.symbol_position) {
     case "BWS":
-      currency = settings.currency_symbol + result;
+      currency = settings.currency_symbol + currency;
       break;
     case "BS":
-      currency = settings.currency_symbol + " " + result;
+      currency = settings.currency_symbol + " " + currency;
       break;
     case "AWS":
-      currency = result + settings.currency_symbol;
+      currency = currency + settings.currency_symbol;
       break;
     case "AS":
-      currency = result + " " + settings.currency_symbol;
+      currency = currency + " " + settings.currency_symbol;
       break;
     default:
       return;
