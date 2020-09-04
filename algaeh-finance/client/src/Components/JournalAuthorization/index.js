@@ -21,10 +21,10 @@ export default memo(function (props) {
   const [visible, setVisibale] = useState(false);
   const [rowDetails, setRowDetails] = useState([]);
   const [voucherNo, setVoucherNo] = useState("");
-  const [level, setLevel] = useState(undefined);
+  const [level, setLevel] = useState("1");
   const [rejectVisible, setRejectVisible] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [status, setStatus] = useState("P");
+  const [status, setStatus] = useState("");
   const [dates, setDates] = useState(undefined);
   // const paymentTemplates = [
   //   { key: "payment_mode", title: "Payment Mode" },
@@ -162,8 +162,13 @@ export default memo(function (props) {
             <i className="fas fa-thumbs-down" onClick={reject}></i>
           </>
         ) : (
-            <span>---</span>
-          )}
+          <span>
+            <i
+              className="fas fa-print"
+              // onClick={}
+            ></i>
+          </span>
+        )}
       </>
     );
   };
@@ -302,13 +307,14 @@ export default memo(function (props) {
             selector={{
               dataSource: {
                 data: [
-                  { text: "Level1", value: "1" },
-                  { text: "Level2", value: "2" },
+                  { text: "Level 1", value: "1" },
+                  { text: "Level 2", value: "2" },
                 ],
                 valueField: "value",
                 textField: "text",
               },
               value: level,
+
               onChange: (selected) => {
                 setLevel(selected.value);
               },
@@ -327,6 +333,7 @@ export default memo(function (props) {
             selector={{
               dataSource: {
                 data: [
+                  { text: "All Records", value: "" },
                   { text: "Pending", value: "P" },
                   { text: "Rejected", value: "R" },
                   { text: "Approved", value: "A" },
@@ -392,6 +399,32 @@ export default memo(function (props) {
                           displayTemplate: actions,
                           others: {
                             width: 100,
+                          },
+                        },
+                        {
+                          fieldName: "auth_status",
+                          label: "Record Status",
+                          sortable: true,
+                          displayTemplate: (row) => {
+                            return (
+                              <span>
+                                {row.auth_status === "P" ? (
+                                  <span className="badge badge-warning">
+                                    Pending
+                                  </span>
+                                ) : row.auth_status === "A" ? (
+                                  <span className="badge badge-success">
+                                    Approved
+                                  </span>
+                                ) : row.auth_status === "R" ? (
+                                  <span className="badge badge-danger">
+                                    Rejected
+                                  </span>
+                                ) : (
+                                  "------"
+                                )}
+                              </span>
+                            );
                           },
                         },
                         {
