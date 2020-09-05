@@ -193,6 +193,7 @@ export default {
                   : result[0].request_status === "RES"
                   ? "Resend"
                   : "Pending";
+              let procedure_amt = result[0].procedure_amt;
               let doctor_email = result[0].work_email;
               let work_status =
                 result[0].work_status === "WIP"
