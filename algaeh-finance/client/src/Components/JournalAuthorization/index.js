@@ -8,6 +8,8 @@ import {
   AlgaehModal,
   AlgaehFormGroup,
   AlgaehDateHandler,
+  Tooltip,
+  Modal,
 } from "algaeh-react-components";
 import { algaehApiCall } from "../../utils/algaehApiCall";
 import Details from "./details";
@@ -16,6 +18,7 @@ import {
   ApproveReject,
   LoadVoucherDetails,
 } from "./event";
+const { confirm } = Modal;
 let rejectText = "";
 let finance_voucher_header_id = "";
 export default memo(function (props) {
@@ -93,23 +96,45 @@ export default memo(function (props) {
         });
         return;
       }
-      ApproveReject({
-        voucher_header_id: record.finance_voucher_header_id,
-        auth_status: "A",
-        auth_level: level,
-      })
-        .then((result) => {
-          let others = { auth_status: status };
-          if (dates !== undefined && dates.length > 0) {
-            others["from_date"] = dates[0];
-            others["to_date"] = dates[1];
-          }
-          LoadVouchersToAuthorize({
+      confirm({
+        okText: "Approve",
+        okType: "primary",
+        icon: "",
+        title: "Are You sure you want to confirm ?",
+        // content: `This request is made for
+        // Prepayment Type: ${row.prepayment_desc}`,
+
+        maskClosable: true,
+        onOk: async () => {
+          ApproveReject({
+            voucher_header_id: record.finance_voucher_header_id,
+            auth_status: "A",
             auth_level: level,
-            ...others,
           })
             .then((result) => {
-              setData(result);
+              let others = { auth_status: status };
+              if (dates !== undefined && dates.length > 0) {
+                others["from_date"] = dates[0];
+                others["to_date"] = dates[1];
+              }
+              LoadVouchersToAuthorize({
+                auth_level: level,
+                ...others,
+              })
+                .then((result) => {
+                  setData(result);
+                })
+                .catch((error) => {
+                  AlgaehMessagePop({
+                    type: "error",
+                    display: error,
+                  });
+                });
+
+              AlgaehMessagePop({
+                type: "success",
+                display: "Successfully approved",
+              });
             })
             .catch((error) => {
               AlgaehMessagePop({
@@ -117,18 +142,8 @@ export default memo(function (props) {
                 display: error,
               });
             });
-
-          AlgaehMessagePop({
-            type: "success",
-            display: "Successfully approved",
-          });
-        })
-        .catch((error) => {
-          AlgaehMessagePop({
-            type: "error",
-            display: error,
-          });
-        });
+        },
+      });
     }
 
     function reject(e) {
@@ -139,9 +154,21 @@ export default memo(function (props) {
         });
         return;
       }
-      finance_voucher_header_id = record.finance_voucher_header_id;
-      setVoucherNo(record.voucher_no);
-      setRejectVisible(true);
+      confirm({
+        okText: "Reject",
+        okType: "primary",
+        icon: "",
+        title: "Are You sure you want to confirm ?",
+        // content: `This request is made for
+        // Prepayment Type: ${row.prepayment_desc}`,
+
+        maskClosable: true,
+        onOk: async () => {
+          finance_voucher_header_id = record.finance_voucher_header_id;
+          setVoucherNo(record.voucher_no);
+          setRejectVisible(true);
+        },
+      });
     }
 
     function generateJVReport(e) {
@@ -179,8 +206,19 @@ export default memo(function (props) {
       <>
         {record.auth_status === "P" ? (
           <>
-            <i className="fas fa-thumbs-up" onClick={approve}></i>
-            <i className="fas fa-thumbs-down" onClick={reject}></i>
+            <Tooltip title="Approve">
+              <span onClick={approve}>
+                <i className="fas fa-thumbs-up"></i>
+              </span>
+            </Tooltip>
+            <Tooltip title="Reject">
+              <span onClick={reject}>
+                <i className="fas fa-thumbs-down"></i>
+              </span>
+            </Tooltip>
+            {/* <i className="fas fa-thumbs-up" onClick={approve}></i>
+
+            <i className="fas fa-thumbs-down" onClick={reject}></i> */}
           </>
         ) : (
           <span>
