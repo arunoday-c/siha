@@ -146,6 +146,7 @@ class InventoryItemMaster extends Component {
           standard_fee: firstRecordSet.sales_price,
           vat_applicable: firstRecordSet.vat_applicable,
           vat_percent: firstRecordSet.vat_percent,
+          arabic_item_description: firstRecordSet.arabic_item_description,
           detail_item_uom: g.getSource(),
         };
       })
@@ -273,10 +274,10 @@ class InventoryItemMaster extends Component {
                           this.props.invitemcategory === undefined
                             ? []
                             : this.props.invitemcategory.filter(
-                                (f) =>
-                                  f.hims_d_inventory_tem_category_id ===
-                                  row.category_id
-                              );
+                              (f) =>
+                                f.hims_d_inventory_tem_category_id ===
+                                row.category_id
+                            );
 
                         return (
                           <span>
@@ -295,10 +296,10 @@ class InventoryItemMaster extends Component {
                           this.props.inventoryitemgroup === undefined
                             ? []
                             : this.props.inventoryitemgroup.filter(
-                                (f) =>
-                                  f.hims_d_inventory_item_group_id ===
-                                  row.group_id
-                              );
+                              (f) =>
+                                f.hims_d_inventory_item_group_id ===
+                                row.group_id
+                            );
 
                         return (
                           <span>
@@ -320,10 +321,10 @@ class InventoryItemMaster extends Component {
                           this.props.inventoryitemuom === undefined
                             ? []
                             : this.props.inventoryitemuom.filter(
-                                (f) =>
-                                  f.hims_d_inventory_uom_id ===
-                                  row.purchase_uom_id
-                              );
+                              (f) =>
+                                f.hims_d_inventory_uom_id ===
+                                row.purchase_uom_id
+                            );
 
                         return (
                           <span>
@@ -344,9 +345,9 @@ class InventoryItemMaster extends Component {
                           this.props.inventoryitemuom === undefined
                             ? []
                             : this.props.inventoryitemuom.filter(
-                                (f) =>
-                                  f.hims_d_inventory_uom_id === row.sales_uom_id
-                              );
+                              (f) =>
+                                f.hims_d_inventory_uom_id === row.sales_uom_id
+                            );
 
                         return (
                           <span>
@@ -367,10 +368,10 @@ class InventoryItemMaster extends Component {
                           this.props.inventoryitemuom === undefined
                             ? []
                             : this.props.inventoryitemuom.filter(
-                                (f) =>
-                                  f.hims_d_inventory_uom_id ===
-                                  row.stocking_uom_id
-                              );
+                              (f) =>
+                                f.hims_d_inventory_uom_id ===
+                                row.stocking_uom_id
+                            );
 
                         return (
                           <span>

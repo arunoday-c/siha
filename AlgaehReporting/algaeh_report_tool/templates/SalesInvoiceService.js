@@ -4,11 +4,12 @@ const executePDF = function executePDFMethod(options) {
 
   return new Promise(function (resolve, reject) {
     try {
-      const decimal_places = options.args.crypto.decimal_places;
+      // const decimal_places = options.args.crypto.decimal_places;
 
 
       const result = options.result[0];
       const organization_name = options.result[1][0].organization_name;
+      const { decimal_places, symbol_position, currency_symbol } = options.args.crypto
 
       if (result.length > 0) {
         resolve({
@@ -36,19 +37,26 @@ const executePDF = function executePDFMethod(options) {
           ),
           netdiscount_amount: options.currencyFormat(parseFloat(result[0]["discount_amount"]), options.args.crypto),
           total_tax: options.currencyFormat(parseFloat(result[0]["total_tax"]), options.args.crypto),
-          // amount_before_vat: _.sumBy(result, (s) =>
-          //   parseFloat(s.net_extended_cost)
-          // ).toFixed(decimal_places),
-          // netdiscount_amount: parseFloat(
-          //   result[0]["discount_amount"]
-          // ).toFixed(decimal_places),
-          // total_tax: parseFloat(result[0]["total_tax"]).toFixed(
-          //   decimal_places
-          // ),
+
           detailList: result,
+          currency: {
+            decimal_places,
+            addSymbol: false,
+            symbol_position,
+            currency_symbol
+          }
         });
       } else {
-        resolve({ detailList: result });
+        console.log("options.args.crypto", options.args.crypto)
+        resolve({
+          detailList: result,
+          currency: {
+            decimal_places,
+            addSymbol: false,
+            symbol_position,
+            currency_symbol
+          }
+        });
       }
     } catch (e) {
       reject(e);
