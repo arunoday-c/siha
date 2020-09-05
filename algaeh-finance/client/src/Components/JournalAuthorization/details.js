@@ -34,6 +34,13 @@ export default function ({ visible, voucherNo, inVisible, data }) {
           data={data}
         />
       </div>
+      <div className="col-12 margin-top-15">
+        <label className="style_Label ">Narration</label>
+        <h6>
+          Add Narration Here | Add Narration Here | Add Narration Here | Add
+          Narration Here
+        </h6>
+      </div>
     </AlgaehModal>
   );
 }

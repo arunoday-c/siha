@@ -221,6 +221,7 @@ export default {
                     .subject("Dental Order Update")
                     .templateHbs("dentalFormMail.hbs", {
                       request_status,
+                      procedure_amt,
                       hospital_address,
                       hospital_name,
                       work_status,

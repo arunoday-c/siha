@@ -201,10 +201,12 @@ export function StatementTable() {
                   <label className="style_Label ">Total Claim Amount</label>
                   <h6>{data?.total_company_payable || "0.00"}</h6>
                 </div>
+                <i className="fas fa-minus calcSybmbol"></i>
                 <div className="col">
                   <label className="style_Label ">Total Denial Amount</label>
                   <h6>{data?.total_denial_amount || "0.00"}</h6>
                 </div>{" "}
+                <i className="fas fa-equals calcSybmbol"></i>
                 <div className="col">
                   <label className="style_Label ">
                     Total Remittance Amount
