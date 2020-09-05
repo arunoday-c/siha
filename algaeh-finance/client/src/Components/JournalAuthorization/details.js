@@ -10,26 +10,30 @@ export default function ({ visible, voucherNo, inVisible, data }) {
       onCancel={() => {
         inVisible();
       }}
+      className={`row algaehNewModal JVModalDetail`}
     >
-      <AlgaehDataGrid
-        columns={[
-          {
-            fieldName: "ledger",
-            label: "Ledger",
-          },
-          {
-            fieldName: "credit_amount",
-            label: "Credit Amount",
-          },
-          {
-            fieldName: "debit_amount",
-            label: "Debit Amount",
-          },
-        ]}
-        height="40vh"
-        rowUnique="finance_voucher_id"
-        data={data}
-      />
+      <div className="col-12">
+        <AlgaehDataGrid
+          className="JVModalDetailGrid"
+          columns={[
+            {
+              fieldName: "ledger",
+              label: "Ledger",
+            },
+            {
+              fieldName: "credit_amount",
+              label: "Credit Amount",
+            },
+            {
+              fieldName: "debit_amount",
+              label: "Debit Amount",
+            },
+          ]}
+          // height="40vh"
+          rowUnique="finance_voucher_id"
+          data={data}
+        />
+      </div>
     </AlgaehModal>
   );
 }

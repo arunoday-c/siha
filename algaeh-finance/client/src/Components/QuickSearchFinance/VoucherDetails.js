@@ -63,7 +63,7 @@ export default function VoucherDetails({ visible, data, onClose }) {
         onCancel={() => {
           onClose();
         }}
-        // style={{ width: "100vw" }}
+        className={`row algaehNewModal JVModalDetail`}
       >
         <div className="row">
           <div className="col-12">

@@ -772,6 +772,7 @@ export default function JournalVoucher() {
               </div>
               <div className="portlet-body" id="JLVoucherListGrid">
                 <AlgaehDataGrid
+                  className="JLVoucherListGrid"
                   columns={[
                     {
                       fieldName: "slno",
@@ -840,7 +841,7 @@ export default function JournalVoucher() {
               </div>
             </div>
           </div>
-          <div className="col-8">
+          <div className="col-3">
             <button
               disabled={disableAmount}
               className="btn btn-primary btn-small"
@@ -861,7 +862,7 @@ export default function JournalVoucher() {
           </div>
           <AlgaehFormGroup
             div={{
-              className: "col form-group algaeh-text-fld",
+              className: "col form-group algaeh-text-fld textArea",
             }}
             label={{
               forceLabel: "Narration",

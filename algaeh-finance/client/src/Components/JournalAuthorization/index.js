@@ -1,4 +1,5 @@
 import React, { memo, useState } from "react";
+import "./JournalAuthorization.scss";
 import {
   AlgaehDataGrid,
   AlgaehMessagePop,
@@ -8,6 +9,7 @@ import {
   AlgaehFormGroup,
   AlgaehDateHandler,
 } from "algaeh-react-components";
+import { algaehApiCall } from "../../utils/algaehApiCall";
 import Details from "./details";
 import {
   LoadVouchersToAuthorize,
@@ -142,31 +144,47 @@ export default memo(function (props) {
       setRejectVisible(true);
     }
 
+    function generateJVReport(e) {
+      algaehApiCall({
+        uri: "/report",
+        method: "GET",
+        module: "reports",
+        headers: {
+          Accept: "blob",
+        },
+        others: { responseType: "blob" },
+        data: {
+          report: {
+            reportName: "JVReport",
+            // pageOrentation: "landscape",
+            reportParams: [
+              {
+                name: "voucher_header_id",
+                value: record.finance_voucher_header_id,
+              },
+            ],
+            outputFileType: "PDF",
+          },
+        },
+        onSuccess: (res) => {
+          const urlBlob = URL.createObjectURL(res.data);
+          const documentName = "Journal Voucher Report";
+          const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Journal Voucher Report`;
+          window.open(origin);
+        },
+      });
+    }
+
     return (
       <>
         {record.auth_status === "P" ? (
           <>
-            {/* <AlgaehButton
-              type="primary"
-              icon="close"
-              with
-              icon={<i className="fas fa-times" />}
-              onClick={approve}
-            ></AlgaehButton> */}
-            {/* <AlgaehButton
-              type="danger"
-              icon="close" with icon={<i className="fas fa-times" />}
-              onClick={reject}
-            ></AlgaehButton> */}
             <i className="fas fa-thumbs-up" onClick={approve}></i>
             <i className="fas fa-thumbs-down" onClick={reject}></i>
           </>
         ) : (
           <span>
-            <i
-              className="fas fa-print"
-              // onClick={}
-            ></i>
+            <i className="fas fa-print" onClick={generateJVReport}></i>
           </span>
         )}
       </>
