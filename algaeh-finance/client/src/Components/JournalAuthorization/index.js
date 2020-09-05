@@ -220,10 +220,12 @@ export default memo(function (props) {
 
             <i className="fas fa-thumbs-down" onClick={reject}></i> */}
           </>
-        ) : (
+        ) : record.auth_status === "A" ? (
           <span>
             <i className="fas fa-print" onClick={generateJVReport}></i>
           </span>
+        ) : (
+          "----"
         )}
       </>
     );

@@ -402,8 +402,16 @@ export default function JournalVoucher() {
       //   journerList[0].sourceName &&
       //   journerList[1].amount &&
       //   journerList[1].sourceName;
-      function checkCostcenterMandatory(costCenterID) {
+      function checkCostcenterMandatory(costCenterID, callBack) {
         if (finOptions.cost_center_required === "Y") {
+          if (
+            finOptions["default_cost_center_id"] &&
+            costCenterID === undefined
+          ) {
+            if (typeof callBack === "function")
+              callBack(finOptions["default_cost_center_id"]);
+            return false;
+          }
           return costCenterID === undefined || costCenterID === "";
         } else {
           return false;
@@ -415,7 +423,9 @@ export default function JournalVoucher() {
           f.amount === "" ||
           f.sourceName === undefined ||
           f.sourceName === "" ||
-          checkCostcenterMandatory(f.cost_center_id)
+          checkCostcenterMandatory(f.cost_center_id, (result) => {
+            f.cost_center_id = result;
+          })
       );
       if (check !== undefined) {
         AlgaehMessagePop({
