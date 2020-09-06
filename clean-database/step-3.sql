@@ -1122,3 +1122,5 @@ after denial_amount2;
  alter table finance_options add column report_dill_down_level int default 1
 after allow_negative_balance;
 -- query end 04-sept-2020  for finance
+alter table finance_account_head add column is_cos_account enum ('Y','N')  default 'N' 
+after group_code;

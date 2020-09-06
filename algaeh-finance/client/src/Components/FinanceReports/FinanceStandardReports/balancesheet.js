@@ -309,7 +309,7 @@ export default function BalanceSheet({
       Direct_expense,
       Indirect_expense,
       gross_profit,
-      // net_profit,
+      net_profit,
     } = records;
     let cols = [];
     cols = columns.map((item) => {
@@ -331,14 +331,6 @@ export default function BalanceSheet({
     } else {
       details.push(income);
     }
-    //for Direct_expense
-    if (Array.isArray(Direct_expense)) {
-      Direct_expense.forEach((item) => {
-        details.push(item);
-      });
-    } else {
-      details.push(Direct_expense);
-    }
     //for Indirect_expense
     if (Array.isArray(Indirect_expense)) {
       Indirect_expense.forEach((item) => {
@@ -347,12 +339,33 @@ export default function BalanceSheet({
     } else {
       details.push(Indirect_expense);
     }
+
+    //for gross_profit
+    if (Array.isArray(gross_profit)) {
+      gross_profit.forEach((item) => {
+        details.push(item);
+      });
+    } else {
+      details.push(gross_profit);
+    }
+
+    //for Direct_expense
+    if (Array.isArray(Direct_expense)) {
+      Direct_expense.forEach((item) => {
+        details.push(item);
+      });
+    } else {
+      details.push(Direct_expense);
+    }
+
     const generateFooter = {
       aggregate: (fieldName) => {
-        console.log("fieldName", fieldName);
+        // console.log("fieldName", fieldName);
         // console.log("row", row);
         if (fieldName && fieldName !== "label") {
-          return gross_profit[fieldName];
+          return net_profit[fieldName];
+        } else {
+          return "Net Profit";
         }
       },
       footer: true,
