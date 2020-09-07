@@ -169,7 +169,16 @@ const InsuranceStatement = React.lazy(() =>
   )
 );
 const DenialReasonMaster = React.lazy(() =>
-  retry(() => import("./Components/InsuranceClaims/DenialReasonMaster/DenialReasonMaster"))
+  retry(() =>
+    import("./Components/InsuranceClaims/DenialReasonMaster/DenialReasonMaster")
+  )
+);
+const BulkClaimGeneration = React.lazy(() =>
+  retry(() =>
+    import(
+      "./Components/InsuranceClaims/BulkClaimGeneration/BulkClaimGeneration"
+    )
+  )
 );
 const VisitClose = React.lazy(() =>
   retry(() => import("./Components/VisitClose/VisitClose"))
@@ -1181,6 +1190,12 @@ const privateRoutes = [
     isExactPath: true,
     component: <InsuranceStatement />,
   },
+  {
+    path: "/BulkClaimGeneration",
+    isExactPath: true,
+    component: <BulkClaimGeneration />,
+  },
+
   {
     path: "/InitialStock",
     isExactPath: true,

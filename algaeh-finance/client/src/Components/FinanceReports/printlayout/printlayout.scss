@@ -5,3 +5,16 @@
     font-weight: bold;
   }
 }
+.financeReportStyle {
+  tfoot {
+    .fixed {
+      z-index: 999 !important;
+      border-right: 1px solid #d3d3d3 !important;
+      text-align: left !important;
+      position: sticky;
+      left: -15px;
+      right: 15px;
+      padding-left: 15px;
+    }
+  }
+}
