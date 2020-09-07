@@ -1124,3 +1124,7 @@ after allow_negative_balance;
 -- query end 04-sept-2020  for finance
 alter table finance_account_head add column is_cos_account enum ('Y','N')  default 'N' 
 after group_code;
+
+-- query for new Bulk Invoice Screen 07-09-2020
+INSERT INTO `algaeh_d_app_screens` (`screen_code`, `screen_name`, `page_to_redirect`, `module_id`, `other_language`, `created_date`, `updated_date`, `record_status`) VALUES ('INS0006', 'Bulk Claim Generation', 'BulkClaimGeneration', '9', 'بيان التأمين', '2020-09-07 14:08:51', '2020-09-07 14:08:51', 'A');
+-- query for new Bulk Invoice Screen

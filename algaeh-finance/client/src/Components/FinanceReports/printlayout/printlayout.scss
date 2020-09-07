@@ -1,6 +1,20 @@
 .bordering {
   td {
-    border-top: 2px solid #000;
+    border-bottom: 1px dashed #000;
+    border-top: 1px dashed #000;
+    font-weight: bold;
   }
-  font-weight: bold;
+}
+.financeReportStyle {
+  tfoot {
+    .fixed {
+      z-index: 999 !important;
+      border-right: 1px solid #d3d3d3 !important;
+      text-align: left !important;
+      position: sticky;
+      left: -15px;
+      right: 15px;
+      padding-left: 15px;
+    }
+  }
 }

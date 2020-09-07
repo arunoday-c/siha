@@ -326,11 +326,10 @@ function Login(props) {
             ...result,
           };
         });
-        const hostName = window.location.hostname;
-        const port = window.location.port;
+        const { hostname, port, protocol } = window.location;
 
         setUserImage(
-          `http://${hostName}${
+          `${protocol}//${hostname}${
             port ? ":3006" : "/docserver"
           }/api/v1/Document/get?destinationName=${
             result.employee_code
@@ -897,7 +896,7 @@ function Login(props) {
               <p>
                 COPYRIGHT © 2019-2020. ALL RIGHTS RESERVED.{" "}
                 <a
-                  href="http://algaeh.com/"
+                  href="https://algaeh.com/"
                   target="_blank"
                   rel="noopener noreferrer"
                 >

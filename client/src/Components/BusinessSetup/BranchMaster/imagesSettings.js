@@ -8,9 +8,8 @@ export function LoadLogo(input = { image_id: "", logo_type: "" }) {
   if (image_id === undefined) {
     return "";
   }
-  const hostName = window.location.hostname;
-  const port = window.location.port;
-  const imageUrl = `http://${hostName}${
+  const { hostname, port, protocol } = window.location;
+  const imageUrl = `${protocol}//${hostname}${
     port ? ":3006" : "/docserver"
   }/api/v1/Document/getLogo?image_id=${image_id}&logo_type=${logo_type}`;
   return imageUrl;

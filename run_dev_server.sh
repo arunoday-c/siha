@@ -45,7 +45,7 @@ startServer () {
   startServer "./client" "client"
   startServer "./MasterSettings" "master_settings_server" 
   startServer "./DocumentManagement" "document_server" 
-  # startServer "./AlgaehReporting" "report_server"
+  startServer "./AlgaehReporting" "report_server"
   startServer "./Sockets" "sockets"
 
   # # # # # HRMS Modules #
@@ -68,16 +68,16 @@ startServer () {
   #  startServer "./Pharmacy" "pharmacy_server" 
 
   # # # # Inventory Modules # 
-   startServer "./Inventory" "inventory_server" 
+  #  startServer "./Inventory" "inventory_server" 
 
   # # # # Inventory Modules # 
-   startServer "./Procurement" "procurement_server"
+  #  startServer "./Procurement" "procurement_server"
 
   # # # # Sales Modules # 
-   startServer "./Sales" "sales"  
+  #  startServer "./Sales" "sales"  
 
   # Finance Modules # 
-  #  startServer "./algaeh-finance" "finance"   
+   startServer "./algaeh-finance" "finance"   
 
 
 # installMysql "./algaeh-core" "core"
