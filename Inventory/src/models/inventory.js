@@ -1,7 +1,6 @@
 import algaehMysql from "algaeh-mysql";
 import mysql from "mysql";
 import moment from "moment";
-import algaehUtilities from "algaeh-utilities/utilities";
 
 export default {
   addItemMaster: (req, res, next) => {
@@ -12,14 +11,15 @@ export default {
       _mysql
         .executeQuery({
           query:
-            "INSERT INTO `hims_d_inventory_item_master` (`item_code`, `item_description`,item_type, `structure_id`,\
+            "INSERT INTO `hims_d_inventory_item_master` (`item_code`, `item_description`, arabic_item_description, item_type, `structure_id`,\
           `category_id`, `group_id`, `item_uom_id`, `purchase_uom_id`, `sales_uom_id`, `stocking_uom_id`,\
           `service_id`, addl_information,decimals, purchase_cost, markup_percent, sales_price,\
           exp_date_required, `sfda_code`, `reorder_qty`, `created_date`, `created_by`, `update_date`, `updated_by`)\
-        VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+        VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
           values: [
             input.item_code,
             input.item_description,
+            input.arabic_item_description,
             input.item_type,
             input.structure_id,
             input.category_id,
@@ -439,7 +439,7 @@ export default {
       let _strQry = "";
       let intValues = [];
       if (req.query.hims_d_inventory_item_master_id != null) {
-        _strQry = "where IM.hims_d_inventory_item_master_id=?";
+        _strQry = "and IM.hims_d_inventory_item_master_id=?";
         intValues.push(req.query.hims_d_inventory_item_master_id);
       }
 
@@ -448,7 +448,7 @@ export default {
           query:
             "select  MIU.hims_m_inventory_item_uom_id, MIU.item_master_id, MIU.uom_id,PH.uom_description,\
              MIU.stocking_uom, MIU.conversion_factor,IM.hims_d_inventory_item_master_id,\
-             IM.item_code, IM.item_description, IM.structure_id, IM.category_id,IM.group_id,IM.item_type, \
+             IM.item_code, IM.item_description, IM.arabic_item_description, IM.structure_id, IM.category_id,IM.group_id,IM.item_type, \
              IM.item_uom_id, IM.purchase_uom_id, IM.sales_uom_id, IM.stocking_uom_id, IM.item_status, \
              IM.service_id, IM.purchase_cost,IM.addl_information,IM.exp_date_required,\
              IM.sfda_code, IM.reorder_qty,IM.sales_price,S.vat_applicable,S.vat_percent from\
@@ -456,7 +456,7 @@ export default {
              hims_m_inventory_item_uom MIU on IM.hims_d_inventory_item_master_id=MIU.item_master_id \
              and IM.record_status='A' and MIU.record_status='A' \
              left join hims_d_inventory_uom PH  on  MIU.uom_id=PH.hims_d_inventory_uom_id\
-             left join hims_d_services S on IM.service_id = S.hims_d_services_id " +
+             left join hims_d_services S on IM.service_id = S.hims_d_services_id where IM.record_status='A' " +
             _strQry,
           values: intValues,
           printQuery: true,
@@ -856,7 +856,7 @@ export default {
       _mysql
         .executeQuery({
           query:
-            "UPDATE `hims_d_inventory_item_master` SET `item_code`=?, `item_description`=?, `structure_id`=?,\
+            "UPDATE `hims_d_inventory_item_master` SET `item_code`=?, `item_description`=?, `arabic_item_description`=?, `structure_id`=?,\
             `category_id`=?, `group_id`=?,`item_uom_id`=?,\
             `purchase_uom_id`=?, `sales_uom_id`=?, `stocking_uom_id`=?, `item_status`=?, `service_id`=?,\
             `item_type`=?, `addl_information`=?, `decimals`=?, `purchase_cost`=?, `markup_percent`=?, `sales_price`=?,\
@@ -865,6 +865,7 @@ export default {
           values: [
             input.item_code,
             input.item_description,
+            input.arabic_item_description,
             input.structure_id,
             input.category_id,
             input.group_id,

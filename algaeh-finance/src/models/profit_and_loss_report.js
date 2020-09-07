@@ -36,7 +36,7 @@ export default {
         union select H.finance_account_head_id,H.account_code,H.account_name,       
         H.parent_acc_id from finance_account_head H  
         inner join cte on H.parent_acc_id = cte.finance_account_head_id  and H.account_code<>'5.1'
-        )select * from cte ;  SELECT cost_center_type,cost_center_required  FROM finance_options limit 1; 
+        )select * from cte ;  SELECT cost_center_type,cost_center_required,report_dill_down_level  FROM finance_options limit 1; 
         
         `,
       })
@@ -61,22 +61,22 @@ export default {
         let dateStart = moment(from_date);
         let dateEnd = moment(to_date);
 
-        let income_qry = `select finance_account_head_id,account_code,account_name,account_parent,account_level,sort_order,parent_acc_id,root_id,  
+        let income_qry = `select finance_account_head_id,account_code,account_name,account_parent,account_level,sort_order,parent_acc_id,root_id,H.is_cos_account,  
         finance_account_child_id, child_name,head_id from finance_account_head H left join finance_account_child C on
         C.head_id=H.finance_account_head_id where H.finance_account_head_id in (${income_head_ids}) order by account_level,sort_order;         
         select max(account_level) as account_level from finance_account_head 
         where  finance_account_head_id in (${income_head_ids});`;
-        let direct_expense_qry = `select finance_account_head_id,account_code,account_name,account_parent,account_level,sort_order,parent_acc_id,root_id,  
+        let direct_expense_qry = `select finance_account_head_id,account_code,account_name,account_parent,account_level,sort_order,parent_acc_id,root_id,H.is_cos_account,  
         finance_account_child_id, child_name,head_id from finance_account_head H left join finance_account_child C on
         C.head_id=H.finance_account_head_id where H.finance_account_head_id in (${direct_expense_head_ids}) order by account_level,sort_order;        
         select max(account_level) as account_level from finance_account_head 
         where  finance_account_head_id in (${direct_expense_head_ids});`;
 
-        let indirect_expense_qry = `select finance_account_head_id,account_code,account_name,account_parent,account_level,sort_order,parent_acc_id,root_id,  
+        let indirect_expense_qry = `select finance_account_head_id,account_code,account_name,account_parent,account_level,sort_order,parent_acc_id,root_id,H.is_cos_account,  
         finance_account_child_id, child_name,head_id from finance_account_head H left join finance_account_child C on
         C.head_id=H.finance_account_head_id where H.finance_account_head_id in (${indirect_expense_head_ids}) order by account_level,sort_order;        
         select max(account_level) as account_level from finance_account_head 
-        where  finance_account_head_id in (${indirect_expense_head_ids});`;
+        where  finance_account_head_id in (${indirect_expense_head_ids}) ;`;
 
         if (
           display_column_by == "CC" &&
@@ -115,8 +115,8 @@ export default {
 
               let column_len = columns.length;
               for (let i = 0; i < column_len; i++) {
-                income_qry += ` select finance_account_head_id,coalesce(parent_acc_id,'root') as parent_acc_id  ,account_level
-           ,ROUND(coalesce(sum(debit_amount) ,0),${decimal_places}) as debit_amount,
+                income_qry += ` select finance_account_head_id,coalesce(parent_acc_id,'root') as parent_acc_id  ,account_level,H.is_cos_account,
+           ROUND(coalesce(sum(debit_amount) ,0),${decimal_places}) as debit_amount,
            ROUND( coalesce(sum(credit_amount) ,0),${decimal_places})  as credit_amount
            from finance_account_head H  left join finance_voucher_details VD on  VD.head_id=H.finance_account_head_id  
            and VD.auth_status='A'   and VD.payment_date between date('${from_date}') and date('${to_date}') ${costStr} ${columns[i]["column_id"]}
@@ -131,8 +131,8 @@ export default {
          and  VD.payment_date between date('${from_date}') and date('${to_date}') ${costStr} ${columns[i]["column_id"]}
          where C.head_id in(${income_head_ids}) group by C.finance_account_child_id;   `;
 
-                direct_expense_qry += ` select finance_account_head_id,coalesce(parent_acc_id,'root') as parent_acc_id  ,account_level
-         ,ROUND(coalesce(sum(debit_amount) ,0),${decimal_places}) as debit_amount,
+                direct_expense_qry += ` select finance_account_head_id,coalesce(parent_acc_id,'root') as parent_acc_id  ,account_level,H.is_cos_account,
+         ROUND(coalesce(sum(debit_amount) ,0),${decimal_places}) as debit_amount,
          ROUND( coalesce(sum(credit_amount) ,0),${decimal_places})  as credit_amount
          from finance_account_head H  left join finance_voucher_details VD on  VD.head_id=H.finance_account_head_id  
          and VD.auth_status='A'   and VD.payment_date between date('${from_date}') and date('${to_date}') ${costStr} ${columns[i]["column_id"]}
@@ -147,8 +147,8 @@ export default {
          and VD.payment_date between date('${from_date}') and date('${to_date}') ${costStr} ${columns[i]["column_id"]}
          where C.head_id in(${direct_expense_head_ids}) group by C.finance_account_child_id;   `;
 
-                indirect_expense_qry += ` select finance_account_head_id,coalesce(parent_acc_id,'root') as parent_acc_id  ,account_level
-         ,ROUND(coalesce(sum(debit_amount) ,0),${decimal_places}) as debit_amount,
+                indirect_expense_qry += ` select finance_account_head_id,coalesce(parent_acc_id,'root') as parent_acc_id  ,account_level,H.is_cos_account,
+         ROUND(coalesce(sum(debit_amount) ,0),${decimal_places}) as debit_amount,
          ROUND( coalesce(sum(credit_amount) ,0),${decimal_places})  as credit_amount
          from finance_account_head H  left join finance_voucher_details VD on  VD.head_id=H.finance_account_head_id  
          and VD.auth_status='A'   and VD.payment_date between date('${from_date}') and date('${to_date}') ${costStr} ${columns[i]["column_id"]}
@@ -169,8 +169,8 @@ export default {
                 label: "total",
               });
 
-              income_qry += ` select finance_account_head_id,coalesce(parent_acc_id,'root') as parent_acc_id  ,account_level
-              ,ROUND(coalesce(sum(debit_amount) ,0),${decimal_places}) as debit_amount,
+              income_qry += ` select finance_account_head_id,coalesce(parent_acc_id,'root') as parent_acc_id  ,account_level,H.is_cos_account,
+              ROUND(coalesce(sum(debit_amount) ,0),${decimal_places}) as debit_amount,
               ROUND( coalesce(sum(credit_amount) ,0),${decimal_places})  as credit_amount
               from finance_account_head H  left join finance_voucher_details VD on  VD.head_id=H.finance_account_head_id  
               and VD.auth_status='A'   and VD.payment_date between date('${from_date}') and date('${to_date}')  
@@ -185,8 +185,8 @@ export default {
             and  VD.payment_date between date('${from_date}') and date('${to_date}')  
             where C.head_id in(${income_head_ids}) group by C.finance_account_child_id;   `;
 
-              direct_expense_qry += ` select finance_account_head_id,coalesce(parent_acc_id,'root') as parent_acc_id  ,account_level
-            ,ROUND(coalesce(sum(debit_amount) ,0),${decimal_places}) as debit_amount,
+              direct_expense_qry += ` select finance_account_head_id,coalesce(parent_acc_id,'root') as parent_acc_id  ,account_level,H.is_cos_account,
+            ROUND(coalesce(sum(debit_amount) ,0),${decimal_places}) as debit_amount,
             ROUND( coalesce(sum(credit_amount) ,0),${decimal_places})  as credit_amount
             from finance_account_head H  left join finance_voucher_details VD on  VD.head_id=H.finance_account_head_id  
             and VD.auth_status='A'   and VD.payment_date between date('${from_date}') and date('${to_date}')  
@@ -201,8 +201,8 @@ export default {
             and VD.payment_date between date('${from_date}') and date('${to_date}') 
             where C.head_id in(${direct_expense_head_ids}) group by C.finance_account_child_id;   `;
 
-              indirect_expense_qry += ` select finance_account_head_id,coalesce(parent_acc_id,'root') as parent_acc_id  ,account_level
-            ,ROUND(coalesce(sum(debit_amount) ,0),${decimal_places}) as debit_amount,
+              indirect_expense_qry += ` select finance_account_head_id,coalesce(parent_acc_id,'root') as parent_acc_id  ,account_level,H.is_cos_account,
+            ROUND(coalesce(sum(debit_amount) ,0),${decimal_places}) as debit_amount,
             ROUND( coalesce(sum(credit_amount) ,0),${decimal_places})  as credit_amount
             from finance_account_head H  left join finance_voucher_details VD on  VD.head_id=H.finance_account_head_id  
             and VD.auth_status='A'   and VD.payment_date between date('${from_date}') and date('${to_date}')  
@@ -216,26 +216,38 @@ export default {
             from  finance_account_child C  left join finance_voucher_details VD on C.finance_account_child_id=VD.child_id and VD.auth_status='A' 
             and VD.payment_date between date('${from_date}') and date('${to_date}')  
             where C.head_id in(${indirect_expense_head_ids}) group by C.finance_account_child_id;   `;
-
+              const drillDownLevel = finance_options.report_dill_down_level;
               let data = {
                 _mysql,
                 columns,
                 decimal_places,
                 trans_symbol: "Cr",
                 qry: income_qry,
+                drillDownLevel,
               };
               generateProfitAndLoss(data)
-                .then((incomeResult) => {
+                .then((incomeOutputArray) => {
                   data["qry"] = direct_expense_qry;
                   data["trans_symbol"] = "Dr";
-
+                  const incomeResult = incomeOutputArray["outputArray"];
+                  const maxLevel =
+                    incomeOutputArray["max_level"][0]["account_level"];
                   generateProfitAndLoss(data)
-                    .then((directResult) => {
+                    .then((directArrayOutputArray) => {
                       data["qry"] = indirect_expense_qry;
+                      const directResult =
+                        directArrayOutputArray["outputArray"];
+                      const maxLevel =
+                        directArrayOutputArray["max_level"][0]["account_level"];
                       generateProfitAndLoss(data)
-                        .then((indirectResult) => {
+                        .then((inDirectArrayOutputArray) => {
                           _mysql.releaseConnection();
-
+                          const indirectResult =
+                            inDirectArrayOutputArray["outputArray"];
+                          const maxLevel =
+                            inDirectArrayOutputArray["max_level"][0][
+                              "account_level"
+                            ];
                           //-----------------------------------------------
 
                           let gross_profit = {};
@@ -270,12 +282,50 @@ export default {
                           //   ).toFixed(decimal_places);
                           //------------------------------------------------------------------------
 
+                          let cosResult = [];
+                          indirectResult.forEach((item) => {
+                            if (item.children) {
+                              const allNonCOS = item.children.filter(
+                                (f) => f.is_cos_account !== "Y"
+                              );
+                              for (let x = 0; x < allNonCOS.length; x++)
+                                directResult[0]["children"].push(allNonCOS[x]);
+                              const allCOS = item.children.filter(
+                                (f) => f.is_cos_account === "Y"
+                              );
+                              const { children, ...rest } = item;
+                              cosResult.push({
+                                ...rest,
+                                label: "Cost Of Salse",
+                                total: _.sumBy(allCOS, (s) =>
+                                  parseFloat(s.total)
+                                ),
+                                children: allCOS,
+                              });
+                            }
+                          });
+                          let g_prop = {};
+                          if (cosResult.length > 0) {
+                            Object.keys(gross_profit).forEach((item) => {
+                              g_prop[item] =
+                                parseFloat(incomeResult[0][item]) -
+                                parseFloat(cosResult[0][item]);
+                            });
+                          }
+
+                          let g_propit = [];
+                          g_propit.push({
+                            account_name: "Gross Profit",
+                            label: "Gross Profit",
+                            rowClass: "bordering",
+                            ...g_prop,
+                          });
                           req.records = {
                             columns,
                             income: incomeResult,
                             Direct_expense: directResult,
-                            Indirect_expense: indirectResult,
-                            gross_profit,
+                            Indirect_expense: cosResult,
+                            gross_profit: g_propit,
                             net_profit,
                           };
                           next();
@@ -646,30 +696,40 @@ export default {
           and VD.payment_date between date('${from_date}') and date('${to_date}')  
           where C.head_id in(${indirect_expense_head_ids}) group by C.finance_account_child_id;   `;
           }
-
+          const drillDownLevel = finance_options.report_dill_down_level;
           let data = {
             _mysql,
             columns,
             decimal_places,
             trans_symbol: "Cr",
             qry: income_qry,
+            drillDownLevel,
           };
           generateProfitAndLoss(data)
-            .then((incomeResult) => {
+            .then((incomeOutputArray) => {
               console.log("INCOME QRY FINISH SUCsESS");
               data["qry"] = direct_expense_qry;
               data["trans_symbol"] = "Dr";
-
+              const incomeResult = incomeOutputArray["outputArray"];
+              const maxLevel =
+                incomeOutputArray["max_level"][0]["account_level"];
               generateProfitAndLoss(data)
-                .then((directResult) => {
+                .then((directArrayOutputArray) => {
                   console.log("DIRECT QRY FINISH SUCsESS");
                   data["qry"] = indirect_expense_qry;
-
+                  const directResult = directArrayOutputArray["outputArray"];
+                  const maxLevel =
+                    directArrayOutputArray["max_level"][0]["account_level"];
                   generateProfitAndLoss(data)
-                    .then((indirectResult) => {
+                    .then((inDirectArrayOutputArray) => {
                       console.log("INDIRECT QRY FINISH SUCsESS");
                       _mysql.releaseConnection();
-
+                      const indirectResult =
+                        inDirectArrayOutputArray["outputArray"];
+                      const maxLevel =
+                        inDirectArrayOutputArray["max_level"][0][
+                          "account_level"
+                        ];
                       //-----------------------------------------------
 
                       let gross_profit = {};
@@ -718,13 +778,49 @@ export default {
                       //     parseFloat(IndirectRes[0]["2"])
                       //   ).toFixed(decimal_places);
                       //------------------------------------------------------------------------
+                      let cosResult = [];
+                      indirectResult.forEach((item) => {
+                        if (item.children) {
+                          const allNonCOS = item.children.filter(
+                            (f) => f.is_cos_account !== "Y"
+                          );
+                          for (let x = 0; x < allNonCOS.length; x++)
+                            directResult[0]["children"].push(allNonCOS[x]);
+                          const allCOS = item.children.filter(
+                            (f) => f.is_cos_account === "Y"
+                          );
+                          const { children, ...rest } = item;
+                          cosResult.push({
+                            ...rest,
+                            label: "Cost Of Salse",
+                            total: _.sumBy(allCOS, (s) => parseFloat(s.total)),
+                            children: allCOS,
+                          });
+                        }
+                      });
+                      let g_prop = {};
+                      if (cosResult.length > 0) {
+                        Object.keys(gross_profit).forEach((item) => {
+                          g_prop[item] =
+                            parseFloat(incomeResult[0][item]) -
+                            parseFloat(cosResult[0][item]);
+                        });
+                      }
+                      //setborder
+                      let g_propit = [];
+                      g_propit.push({
+                        account_name: "Gross Profit",
+                        label: "Gross Profit",
+                        rowClass: "bordering",
 
+                        ...g_prop,
+                      });
                       req.records = {
                         columns,
                         income: incomeResult,
                         Direct_expense: directResult,
-                        Indirect_expense: indirectResult,
-                        gross_profit,
+                        Indirect_expense: cosResult,
+                        gross_profit: g_propit,
                         net_profit,
                       };
                       next();
@@ -756,7 +852,14 @@ export default {
 function generateProfitAndLoss(options) {
   try {
     return new Promise((resolve, reject) => {
-      const { _mysql, columns, trans_symbol, decimal_places, qry } = options;
+      const {
+        _mysql,
+        columns,
+        trans_symbol,
+        decimal_places,
+        qry,
+        drillDownLevel,
+      } = options;
 
       _mysql
         .executeQuery({
@@ -788,9 +891,10 @@ function generateProfitAndLoss(options) {
             childObj,
             headObj,
             trans_symbol,
-            decimal_places
+            decimal_places,
+            drillDownLevel
           );
-          resolve(outputArray);
+          resolve({ outputArray, max_level: levels });
         })
         .catch((e) => {
           console.log("e:", e);
@@ -885,7 +989,8 @@ function buildHierarchy(
   child_data,
   head_data,
   trans_symbol,
-  decimal_places
+  decimal_places,
+  drillDownLevel
 ) {
   try {
     let roots = [],
@@ -893,6 +998,12 @@ function buildHierarchy(
 
     // find the top level nodes and hash the children based on parent_acc_id
     for (let i = 0, len = arry.length; i < len; ++i) {
+      if (drillDownLevel !== 999) {
+        if (arry[i]["account_level"] > drillDownLevel) {
+          break;
+        }
+      }
+
       let item = arry[i],
         p = item.parent_acc_id,
         //if it has no parent_acc_id
@@ -937,6 +1048,7 @@ function buildHierarchy(
         }
 
         //END---calulating Amount
+
         child.push({
           finance_account_child_id: item["finance_account_child_id"],
           trans_symbol: trans_symbol,
@@ -1029,12 +1141,16 @@ function buildHierarchy(
     // function to recursively build the tree
     let findChildren = function (parent) {
       if (children[parent.finance_account_head_id]) {
-        const tempchilds = children[parent.finance_account_head_id];
+        let tempchilds = children[parent.finance_account_head_id];
 
-        parent.children = tempchilds;
-
-        for (let i = 0, len = parent.children.length; i < len; ++i) {
-          findChildren(parent.children[i]);
+        if (drillDownLevel !== 999) {
+          tempchilds = tempchilds.filter((f) => f.leafnode !== "Y");
+        }
+        if (tempchilds.length > 0) {
+          parent.children = tempchilds;
+          for (let i = 0, len = parent.children.length; i < len; ++i) {
+            findChildren(parent.children[i]);
+          }
         }
       }
     };

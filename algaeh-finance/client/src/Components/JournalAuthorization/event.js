@@ -8,14 +8,14 @@ export function LoadVouchersToAuthorize(input) {
         method: "GET",
         module: "finance",
         data: input,
-        onSuccess: response => {
+        onSuccess: (response) => {
           if (response.data.success === true) {
             resolve(response.data.result);
           }
         },
-        onCatch: error => {
+        onCatch: (error) => {
           reject(error);
-        }
+        },
       });
     } catch (error) {
       reject(error);
@@ -31,14 +31,14 @@ export function LoadVoucherDetails(input) {
         method: "GET",
         module: "finance",
         data: input,
-        onSuccess: response => {
+        onSuccess: (response) => {
           if (response.data.success === true) {
             resolve(response.data.result);
           }
         },
-        onCatch: error => {
+        onCatch: (error) => {
           reject(error);
-        }
+        },
       });
     } catch (error) {
       reject(error);
@@ -53,14 +53,14 @@ export function ApproveReject(input) {
         method: "POST",
         data: input,
         module: "finance",
-        onSuccess: response => {
+        onSuccess: (response) => {
           if (response.data.success === true) {
             resolve(response.data.result);
           }
         },
-        onCatch: error => {
+        onCatch: (error) => {
           reject(error);
-        }
+        },
       });
     } catch (error) {
       reject(error);

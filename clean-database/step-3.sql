@@ -1118,3 +1118,9 @@ after remittance_amount2,add column denial_amount2 decimal(10,3)
 after denial_amount,add column denial_amount3 decimal(10,3) 
 after denial_amount2;
  -- Query End Aug-26-08-2020
+-- Query on 04-sept-2020  for finance
+ alter table finance_options add column report_dill_down_level int default 1
+after allow_negative_balance;
+-- query end 04-sept-2020  for finance
+alter table finance_account_head add column is_cos_account enum ('Y','N')  default 'N' 
+after group_code;

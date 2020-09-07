@@ -110,11 +110,11 @@ export default function JournalVoucher() {
                 label: "Cost Center",
                 displayTemplate: (row) => {
                   const valueRow =
-                    row["hims_d_hospital_id"] !== undefined &&
-                    row["hims_d_hospital_id"] !== "" &&
-                    row["cost_center_id"] !== undefined &&
-                    row["cost_center_id"] !== ""
-                      ? `${row["hims_d_hospital_id"]}-${row["cost_center_id"]}`
+                    options["default_branch_id"] !== undefined &&
+                    options["default_branch_id"] !== "" &&
+                    options["default_cost_center_id"] !== undefined &&
+                    options["default_cost_center_id"] !== ""
+                      ? `${options["default_branch_id"]}-${options["default_cost_center_id"]}`
                       : "";
                   return (
                     <AlgaehTreeSearch
@@ -402,8 +402,16 @@ export default function JournalVoucher() {
       //   journerList[0].sourceName &&
       //   journerList[1].amount &&
       //   journerList[1].sourceName;
-      function checkCostcenterMandatory(costCenterID) {
+      function checkCostcenterMandatory(costCenterID, callBack) {
         if (finOptions.cost_center_required === "Y") {
+          if (
+            finOptions["default_cost_center_id"] &&
+            costCenterID === undefined
+          ) {
+            if (typeof callBack === "function")
+              callBack(finOptions["default_cost_center_id"]);
+            return false;
+          }
           return costCenterID === undefined || costCenterID === "";
         } else {
           return false;
@@ -415,7 +423,9 @@ export default function JournalVoucher() {
           f.amount === "" ||
           f.sourceName === undefined ||
           f.sourceName === "" ||
-          checkCostcenterMandatory(f.cost_center_id)
+          checkCostcenterMandatory(f.cost_center_id, (result) => {
+            f.cost_center_id = result;
+          })
       );
       if (check !== undefined) {
         AlgaehMessagePop({
@@ -772,6 +782,7 @@ export default function JournalVoucher() {
               </div>
               <div className="portlet-body" id="JLVoucherListGrid">
                 <AlgaehDataGrid
+                  className="JLVoucherListGrid"
                   columns={[
                     {
                       fieldName: "slno",
@@ -840,7 +851,7 @@ export default function JournalVoucher() {
               </div>
             </div>
           </div>
-          <div className="col-8">
+          <div className="col-3">
             <button
               disabled={disableAmount}
               className="btn btn-primary btn-small"
@@ -861,7 +872,7 @@ export default function JournalVoucher() {
           </div>
           <AlgaehFormGroup
             div={{
-              className: "col form-group algaeh-text-fld",
+              className: "col form-group algaeh-text-fld textArea",
             }}
             label={{
               forceLabel: "Narration",

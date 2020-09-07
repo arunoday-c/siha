@@ -1,4 +1,5 @@
 import React, { memo, useState } from "react";
+import "./JournalAuthorization.scss";
 import {
   AlgaehDataGrid,
   AlgaehMessagePop,
@@ -7,13 +8,17 @@ import {
   AlgaehModal,
   AlgaehFormGroup,
   AlgaehDateHandler,
+  Tooltip,
+  Modal,
 } from "algaeh-react-components";
+import { algaehApiCall } from "../../utils/algaehApiCall";
 import Details from "./details";
 import {
   LoadVouchersToAuthorize,
   ApproveReject,
   LoadVoucherDetails,
 } from "./event";
+const { confirm } = Modal;
 let rejectText = "";
 let finance_voucher_header_id = "";
 export default memo(function (props) {
@@ -21,10 +26,10 @@ export default memo(function (props) {
   const [visible, setVisibale] = useState(false);
   const [rowDetails, setRowDetails] = useState([]);
   const [voucherNo, setVoucherNo] = useState("");
-  const [level, setLevel] = useState(undefined);
+  const [level, setLevel] = useState("1");
   const [rejectVisible, setRejectVisible] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [status, setStatus] = useState("P");
+  const [status, setStatus] = useState("");
   const [dates, setDates] = useState(undefined);
   // const paymentTemplates = [
   //   { key: "payment_mode", title: "Payment Mode" },
@@ -91,23 +96,45 @@ export default memo(function (props) {
         });
         return;
       }
-      ApproveReject({
-        voucher_header_id: record.finance_voucher_header_id,
-        auth_status: "A",
-        auth_level: level,
-      })
-        .then((result) => {
-          let others = { auth_status: status };
-          if (dates !== undefined && dates.length > 0) {
-            others["from_date"] = dates[0];
-            others["to_date"] = dates[1];
-          }
-          LoadVouchersToAuthorize({
+      confirm({
+        okText: "Approve",
+        okType: "primary",
+        icon: "",
+        title: "Are You sure you want to confirm ?",
+        // content: `This request is made for
+        // Prepayment Type: ${row.prepayment_desc}`,
+
+        maskClosable: true,
+        onOk: async () => {
+          ApproveReject({
+            voucher_header_id: record.finance_voucher_header_id,
+            auth_status: "A",
             auth_level: level,
-            ...others,
           })
             .then((result) => {
-              setData(result);
+              let others = { auth_status: status };
+              if (dates !== undefined && dates.length > 0) {
+                others["from_date"] = dates[0];
+                others["to_date"] = dates[1];
+              }
+              LoadVouchersToAuthorize({
+                auth_level: level,
+                ...others,
+              })
+                .then((result) => {
+                  setData(result);
+                })
+                .catch((error) => {
+                  AlgaehMessagePop({
+                    type: "error",
+                    display: error,
+                  });
+                });
+
+              AlgaehMessagePop({
+                type: "success",
+                display: "Successfully approved",
+              });
             })
             .catch((error) => {
               AlgaehMessagePop({
@@ -115,18 +142,8 @@ export default memo(function (props) {
                 display: error,
               });
             });
-
-          AlgaehMessagePop({
-            type: "success",
-            display: "Successfully approved",
-          });
-        })
-        .catch((error) => {
-          AlgaehMessagePop({
-            type: "error",
-            display: error,
-          });
-        });
+        },
+      });
     }
 
     function reject(e) {
@@ -137,33 +154,79 @@ export default memo(function (props) {
         });
         return;
       }
-      finance_voucher_header_id = record.finance_voucher_header_id;
-      setVoucherNo(record.voucher_no);
-      setRejectVisible(true);
+      confirm({
+        okText: "Reject",
+        okType: "primary",
+        icon: "",
+        title: "Are You sure you want to confirm ?",
+        // content: `This request is made for
+        // Prepayment Type: ${row.prepayment_desc}`,
+
+        maskClosable: true,
+        onOk: async () => {
+          finance_voucher_header_id = record.finance_voucher_header_id;
+          setVoucherNo(record.voucher_no);
+          setRejectVisible(true);
+        },
+      });
+    }
+
+    function generateJVReport(e) {
+      algaehApiCall({
+        uri: "/report",
+        method: "GET",
+        module: "reports",
+        headers: {
+          Accept: "blob",
+        },
+        others: { responseType: "blob" },
+        data: {
+          report: {
+            reportName: "JVReport",
+            // pageOrentation: "landscape",
+            reportParams: [
+              {
+                name: "voucher_header_id",
+                value: record.finance_voucher_header_id,
+              },
+            ],
+            outputFileType: "PDF",
+          },
+        },
+        onSuccess: (res) => {
+          const urlBlob = URL.createObjectURL(res.data);
+          const documentName = "Journal Voucher Report";
+          const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Journal Voucher Report`;
+          window.open(origin);
+        },
+      });
     }
 
     return (
       <>
         {record.auth_status === "P" ? (
           <>
-            {/* <AlgaehButton
-              type="primary"
-              icon="close"
-              with
-              icon={<i className="fas fa-times" />}
-              onClick={approve}
-            ></AlgaehButton> */}
-            {/* <AlgaehButton
-              type="danger"
-              icon="close" with icon={<i className="fas fa-times" />}
-              onClick={reject}
-            ></AlgaehButton> */}
-            <i className="fas fa-thumbs-up" onClick={approve}></i>
-            <i className="fas fa-thumbs-down" onClick={reject}></i>
+            <Tooltip title="Approve">
+              <span onClick={approve}>
+                <i className="fas fa-thumbs-up"></i>
+              </span>
+            </Tooltip>
+            <Tooltip title="Reject">
+              <span onClick={reject}>
+                <i className="fas fa-thumbs-down"></i>
+              </span>
+            </Tooltip>
+            {/* <i className="fas fa-thumbs-up" onClick={approve}></i>
+
+            <i className="fas fa-thumbs-down" onClick={reject}></i> */}
           </>
+        ) : record.auth_status === "A" ? (
+          <span>
+            <i className="fas fa-print" onClick={generateJVReport}></i>
+          </span>
         ) : (
-            <span>---</span>
-          )}
+          "----"
+        )}
       </>
     );
   };
@@ -302,13 +365,14 @@ export default memo(function (props) {
             selector={{
               dataSource: {
                 data: [
-                  { text: "Level1", value: "1" },
-                  { text: "Level2", value: "2" },
+                  { text: "Level 1", value: "1" },
+                  { text: "Level 2", value: "2" },
                 ],
                 valueField: "value",
                 textField: "text",
               },
               value: level,
+
               onChange: (selected) => {
                 setLevel(selected.value);
               },
@@ -327,6 +391,7 @@ export default memo(function (props) {
             selector={{
               dataSource: {
                 data: [
+                  { text: "All Records", value: "" },
                   { text: "Pending", value: "P" },
                   { text: "Rejected", value: "R" },
                   { text: "Approved", value: "A" },
@@ -392,6 +457,32 @@ export default memo(function (props) {
                           displayTemplate: actions,
                           others: {
                             width: 100,
+                          },
+                        },
+                        {
+                          fieldName: "auth_status",
+                          label: "Record Status",
+                          sortable: true,
+                          displayTemplate: (row) => {
+                            return (
+                              <span>
+                                {row.auth_status === "P" ? (
+                                  <span className="badge badge-warning">
+                                    Pending
+                                  </span>
+                                ) : row.auth_status === "A" ? (
+                                  <span className="badge badge-success">
+                                    Approved
+                                  </span>
+                                ) : row.auth_status === "R" ? (
+                                  <span className="badge badge-danger">
+                                    Rejected
+                                  </span>
+                                ) : (
+                                  "------"
+                                )}
+                              </span>
+                            );
                           },
                         },
                         {

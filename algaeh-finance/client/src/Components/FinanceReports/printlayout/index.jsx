@@ -4,6 +4,7 @@ import { AlgaehTable } from "algaeh-react-components";
 import ReportHeader from "../header";
 import SmartTable from "../smartSplitPDF";
 import { GenerateExcel } from "./workers/worker";
+import "./printlayout.scss";
 export default function ({
   title,
   columns,
