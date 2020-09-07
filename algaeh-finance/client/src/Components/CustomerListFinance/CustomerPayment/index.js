@@ -29,8 +29,8 @@ export default memo(function (props) {
   useEffect(() => {
     if (location.state) {
       setLoading(true);
-      const { finance_account_child_id } = location.state.data;
-      getInvoicesForCustomer(finance_account_child_id)
+      const { finance_account_child_id, is_opening_bal } = location.state.data;
+      getInvoicesForCustomer(finance_account_child_id, is_opening_bal)
         .then((res) => {
           if (res.data.success) {
             const { result } = res.data;
