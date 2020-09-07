@@ -27,7 +27,6 @@
       "value": "WIP",
       "color": "#f2f2f2"
     },
-
     {
       "name": "Arrived",
       "value": "COM",
@@ -50,14 +49,12 @@
       "value": "REJ",
       "color": "#ff400080"
     },
-
     {
       "name": "Resend",
       "value": "RES",
       "color": "#2ccdd680"
     }
   ],
-
   "LEAVE_GENDER": [
     {
       "name": "Male",
@@ -2256,6 +2253,10 @@
     }
   ],
   "AUTH_LEVEL2": [
+    {
+      "name": "None",
+      "value": "N"
+    },
     {
       "name": "Level 1",
       "value": "1"

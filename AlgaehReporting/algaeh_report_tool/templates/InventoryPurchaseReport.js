@@ -20,11 +20,12 @@ const executePDF = function executePDFMethod(options) {
 
       options.mysql
         .executeQuery({
-          query: `
-          select H.*,D.*, IM.item_code, IM.item_description, IU.uom_description  from hims_f_procurement_po_header H 
+          query: `select H.*,D.*, V.vendor_name, IM.item_code, IM.item_description, IU.uom_description  
+          from hims_f_procurement_po_header H 
           inner join hims_f_procurement_po_detail D on D.procurement_header_id= H.hims_f_procurement_po_header_id 
           inner join hims_d_inventory_item_master IM on IM.hims_d_inventory_item_master_id = D.inv_item_id 
           inner join hims_d_inventory_uom IU on IU.hims_d_inventory_uom_id = D.inventory_uom_id 
+          inner join hims_d_vendor V on V.hims_d_vendor_id = H.vendor_id 
           where po_from = 'INV' and date(po_date)  between date(?) and date(?) and hospital_id=? ${strQuery}; `,
           values: [input.from_date, input.to_date, input.hospital_id],
           printQuery: true
@@ -38,14 +39,21 @@ const executePDF = function executePDFMethod(options) {
               .map(m => {
                 return {
                   purchase_number: m[0].purchase_number,
+                  vendor_name: m[0].vendor_name,
                   net_total: m[0].net_total,
                   poitems: m
                 };
               })
               .value();
 
+            console.log("nationgWiseEmp", nationgWiseEmp)
+
             resolve({
-              result: nationgWiseEmp
+              result: nationgWiseEmp,
+              net_total: options.currencyFormat(
+                _.sumBy(nationgWiseEmp, (s) => parseFloat(s.net_total)),
+                options.args.crypto
+              ),
             });
           } else {
             resolve({

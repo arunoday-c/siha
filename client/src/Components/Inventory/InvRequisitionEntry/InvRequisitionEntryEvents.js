@@ -94,10 +94,14 @@ const ClearData = ($this, e) => {
 
 const SaveRequisitionEntry = $this => {
   AlgaehLoader({ show: true });
+  let InputObj = $this.state
+
+  InputObj.authorize1 = $this.state.requisition_auth_level === "N" ? "Y" : "N"
+  InputObj.authorie2 = $this.state.requisition_auth_level === "N" ? "Y" : "N"
   algaehApiCall({
     uri: "/inventoryrequisitionEntry/addinventoryrequisitionEntry",
     module: "inventory",
-    data: $this.state,
+    data: InputObj,
     onSuccess: response => {
       if (response.data.success === true) {
         $this.setState({
