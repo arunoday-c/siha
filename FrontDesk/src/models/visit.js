@@ -109,7 +109,7 @@ export default {
       // utilities.logger().log("inputParam: ", inputParam);
 
       const internalInsertPatientVisitData = () => {
-        if (inputParam.age_in_years == null) {
+        if (!inputParam.age_in_years) {
           let fromDate = moment(inputParam.date_of_birth);
           let toDate = new Date();
           let years = moment(toDate).diff(fromDate, "year");

@@ -462,6 +462,7 @@ export function PatientRegistration() {
         ...inputData,
         ...billInfo,
         ...billData,
+        age: moment(input?.date_of_birth).diff(moment(), "year"),
         department_id: parseInt(department_id, 10),
         sub_department_id: parseInt(sub_department_id, 10),
         services_id: parseInt(services_id, 10),
