@@ -122,7 +122,7 @@ function NavBars(props) {
         <div className="navbar-brand appLogoCntr">
           <span className="appCustomLogo">
             <img
-              src={`http://${window.location.hostname}${
+              src={`${window.location.protocol}//${window.location.hostname}${
                 window.location.port ? ":3006" : "/docServer"
               }/api/v1/Document/getLogo?image_id=${
                 userToken.organization_id
