@@ -282,34 +282,98 @@ export default {
                           //   ).toFixed(decimal_places);
                           //------------------------------------------------------------------------
 
-                          let cosResult = [];
+                          let cosResult = [
+                            { label: "Cost of Sales", total: 0, children: [] },
+                          ];
+                          console.log("indirectResult", indirectResult);
+                          let directExpeneseResult = [];
+
+                          // indirectResult.forEach((item) => {
+                          //   if (item.children) {
+                          //     const allNonCOS = item.children.filter(
+                          //       (f) => f.is_cos_account !== "Y"
+                          //     );
+                          //     for (let x = 0; x < allNonCOS.length; x++)
+                          //       directResult[0]["children"].push(allNonCOS[x]);
+                          //     const allCOS = item.children.filter(
+                          //       (f) => f.is_cos_account === "Y"
+                          //     );
+                          //     const { children, ...rest } = item;
+                          //     cosResult.push({
+                          //       ...rest,
+                          //       label: "Cost Of Salse",
+                          //       total: _.sumBy(allCOS, (s) =>
+                          //         parseFloat(s.total)
+                          //       ),
+                          //       children: allCOS,
+                          //     });
+                          //   }
+                          // });
+                          directResult.forEach((item) => {
+                            if (item.children) {
+                              const allNonCOS = item.children.filter(
+                                (f) => f.is_cos_account !== "Y"
+                              );
+                              const allCOS = item.children.filter(
+                                (f) => f.is_cos_account === "Y"
+                              );
+                              if (allCOS.length > 0) {
+                                const tot = _.sumBy(allCOS, (s) =>
+                                  parseFloat(s.total)
+                                );
+                                item["total"] = parseFloat(
+                                  parseFloat(item["total"]) - parseFloat(tot)
+                                ).toFixed(decimal_places);
+                                //const { children, ...rest } = item;
+                                cosResult[0]["total"] = parseFloat(
+                                  parseFloat(cosResult[0]["total"]) +
+                                    parseFloat(tot)
+                                ).toFixed(decimal_places);
+                                for (let i = 0; i < allCOS.length; i++)
+                                  cosResult[0]["children"].push(allCOS[i]);
+                              }
+                              if (allNonCOS.length > 0) {
+                                directExpeneseResult.push({
+                                  ...item,
+                                  children: allNonCOS,
+                                });
+                              }
+                            }
+                          });
                           indirectResult.forEach((item) => {
                             if (item.children) {
                               const allNonCOS = item.children.filter(
                                 (f) => f.is_cos_account !== "Y"
                               );
-                              for (let x = 0; x < allNonCOS.length; x++)
-                                directResult[0]["children"].push(allNonCOS[x]);
                               const allCOS = item.children.filter(
                                 (f) => f.is_cos_account === "Y"
                               );
-                              const { children, ...rest } = item;
-                              cosResult.push({
-                                ...rest,
-                                label: "Cost Of Salse",
-                                total: _.sumBy(allCOS, (s) =>
+                              if (allCOS.length > 0) {
+                                const tot = _.sumBy(allCOS, (s) =>
                                   parseFloat(s.total)
-                                ),
-                                children: allCOS,
-                              });
+                                );
+                                item["total"] = item["total"] - tot;
+                                //const { children, ...rest } = item;
+                                cosResult[0]["total"] =
+                                  cosResult[0]["total"] + tot;
+                                for (let i = 0; i < allCOS.length; i++)
+                                  cosResult[0]["children"].push(allCOS[i]);
+                              }
+                              if (allNonCOS.length > 0) {
+                                directExpeneseResult.push({
+                                  ...item,
+                                  children: allNonCOS,
+                                });
+                              }
                             }
                           });
                           let g_prop = {};
                           if (cosResult.length > 0) {
                             Object.keys(gross_profit).forEach((item) => {
-                              g_prop[item] =
+                              g_prop[item] = parseFloat(
                                 parseFloat(incomeResult[0][item]) -
-                                parseFloat(cosResult[0][item]);
+                                  parseFloat(cosResult[0][item])
+                              ).toFixed(decimal_places);
                             });
                           }
 
@@ -323,7 +387,7 @@ export default {
                           req.records = {
                             columns,
                             income: incomeResult,
-                            Direct_expense: directResult,
+                            Direct_expense: directExpeneseResult,
                             Indirect_expense: cosResult,
                             gross_profit: g_propit,
                             net_profit,
@@ -707,7 +771,7 @@ export default {
           };
           generateProfitAndLoss(data)
             .then((incomeOutputArray) => {
-              console.log("INCOME QRY FINISH SUCsESS");
+              //  console.log("INCOME QRY FINISH SUCsESS");
               data["qry"] = direct_expense_qry;
               data["trans_symbol"] = "Dr";
               const incomeResult = incomeOutputArray["outputArray"];
@@ -715,14 +779,14 @@ export default {
                 incomeOutputArray["max_level"][0]["account_level"];
               generateProfitAndLoss(data)
                 .then((directArrayOutputArray) => {
-                  console.log("DIRECT QRY FINISH SUCsESS");
+                  //console.log("DIRECT QRY FINISH SUCsESS");
                   data["qry"] = indirect_expense_qry;
                   const directResult = directArrayOutputArray["outputArray"];
                   const maxLevel =
                     directArrayOutputArray["max_level"][0]["account_level"];
                   generateProfitAndLoss(data)
                     .then((inDirectArrayOutputArray) => {
-                      console.log("INDIRECT QRY FINISH SUCsESS");
+                      //console.log("INDIRECT QRY FINISH SUCsESS");
                       _mysql.releaseConnection();
                       const indirectResult =
                         inDirectArrayOutputArray["outputArray"];
@@ -778,32 +842,77 @@ export default {
                       //     parseFloat(IndirectRes[0]["2"])
                       //   ).toFixed(decimal_places);
                       //------------------------------------------------------------------------
-                      let cosResult = [];
+                      let cosResult = [
+                        { label: "Cost of Sales", total: 0, children: [] },
+                      ];
+                      let directExpeneseResult = [];
+
+                      directResult.forEach((item) => {
+                        if (item.children) {
+                          const allNonCOS = item.children.filter(
+                            (f) => f.is_cos_account !== "Y"
+                          );
+                          const allCOS = item.children.filter(
+                            (f) => f.is_cos_account === "Y"
+                          );
+                          if (allCOS.length > 0) {
+                            const tot = _.sumBy(allCOS, (s) =>
+                              parseFloat(s.total)
+                            );
+                            item["total"] = parseFloat(
+                              parseFloat(item["total"]) - parseFloat(tot)
+                            ).toFixed(decimal_places);
+                            //const { children, ...rest } = item;
+                            cosResult[0]["total"] = parseFloat(
+                              parseFloat(cosResult[0]["total"]) +
+                                parseFloat(tot)
+                            ).toFixed(decimal_places);
+                            for (let i = 0; i < allCOS.length; i++)
+                              cosResult[0]["children"].push(allCOS[i]);
+                          }
+                          if (allNonCOS.length > 0) {
+                            directExpeneseResult.push({
+                              ...item,
+                              children: allNonCOS,
+                            });
+                          }
+                        }
+                      });
+
                       indirectResult.forEach((item) => {
                         if (item.children) {
                           const allNonCOS = item.children.filter(
                             (f) => f.is_cos_account !== "Y"
                           );
-                          for (let x = 0; x < allNonCOS.length; x++)
-                            directResult[0]["children"].push(allNonCOS[x]);
                           const allCOS = item.children.filter(
                             (f) => f.is_cos_account === "Y"
                           );
-                          const { children, ...rest } = item;
-                          cosResult.push({
-                            ...rest,
-                            label: "Cost Of Salse",
-                            total: _.sumBy(allCOS, (s) => parseFloat(s.total)),
-                            children: allCOS,
-                          });
+                          if (allCOS.length > 0) {
+                            const tot = _.sumBy(allCOS, (s) =>
+                              parseFloat(s.total)
+                            );
+                            item["total"] = item["total"] - tot;
+                            //const { children, ...rest } = item;
+                            cosResult[0]["total"] = cosResult[0]["total"] + tot;
+                            for (let i = 0; i < allCOS.length; i++)
+                              cosResult[0]["children"].push(allCOS[i]);
+                          }
+                          if (allNonCOS.length > 0) {
+                            directExpeneseResult.push({
+                              ...item,
+                              children: allNonCOS,
+                            });
+                          }
                         }
                       });
                       let g_prop = {};
+                      let cosExpenseResult = [];
                       if (cosResult.length > 0) {
                         Object.keys(gross_profit).forEach((item) => {
-                          g_prop[item] =
+                          g_prop[item] = parseFloat(
                             parseFloat(incomeResult[0][item]) -
-                            parseFloat(cosResult[0][item]);
+                              parseFloat(cosResult[0][item])
+                          ).toFixed(decimal_places);
                         });
                       }
                       //setborder
@@ -818,7 +927,7 @@ export default {
                       req.records = {
                         columns,
                         income: incomeResult,
-                        Direct_expense: directResult,
+                        Direct_expense: directExpeneseResult,
                         Indirect_expense: cosResult,
                         gross_profit: g_propit,
                         net_profit,

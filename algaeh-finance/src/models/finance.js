@@ -1857,10 +1857,11 @@ export default {
             input.finance_account_child_id,
             input.finance_account_child_id,
           ],
-          printQuery: false,
+          printQuery: true,
         })
         .then((result) => {
           let voucherStr = "";
+
           //if update if opening balance exist
           if (result[1].length > 0) {
             const data = result[1][0];
@@ -1874,112 +1875,212 @@ export default {
                 voucherStr = `update finance_voucher_details set credit_amount=${input.opening_balance} where finance_voucher_id=${data.finance_voucher_id};`;
               }
             }
+            executeFunction();
           }
           //inserting new opening balance
           else {
-            let insert_data = result[0][0];
+            const voucher_type = "sales";
+            const { algaeh_d_app_user_id } = req.userIdentity;
+            _mysql
+              .generateRunningNumber({
+                user_id: algaeh_d_app_user_id,
+                numgen_codes: [voucher_type.toUpperCase()],
+                table_name: "finance_numgen",
+              })
+              .then((numgen) => {
+                const month = moment().format("MM");
+                const year = moment().format("YYYY");
+                _mysql
+                  .executeQuery({
+                    query: ` insert into finance_voucher_header(voucher_type,voucher_no,amount,payment_date,month,year,narration,from_screen,posted_from,created_by,updated_by)
+              value(?,?,?,?,?,?,'Opening Balance Added from Accounts','ACCOUNTS OPENING BALANCE','V',?,?)`,
+                    values: [
+                      voucher_type,
+                      numgen[voucher_type.toUpperCase()],
+                      input.opening_balance,
+                      new Date(),
+                      month,
+                      year,
+                      algaeh_d_app_user_id,
+                      algaeh_d_app_user_id,
+                    ],
+                    printQuery: true,
+                  })
+                  .then((headerResult) => {
+                    const { insertId } = headerResult;
 
-            let debit_amount = 0;
-            let credit_amount = 0;
-            let payment_type = "CR";
-            if (insert_data["root_id"] == 1 && input.opening_balance > 0) {
-              debit_amount = input.opening_balance;
-              payment_type = "DR";
+                    //Added existing statements
+                    let insert_data = result[0][0];
 
-              voucherStr = _mysql.mysqlQueryFormat(
-                "INSERT INTO finance_voucher_details (payment_date,head_id,child_id,debit_amount,credit_amount,\
-                      payment_type,hospital_id,year,month,is_opening_bal,entered_by,auth_status)  VALUE(?,?,?,?,?,?,?,?,?,?,?,?)",
-                [
-                  new Date(),
-                  insert_data.head_id,
-                  insert_data.finance_account_child_id,
-                  debit_amount,
-                  credit_amount,
-                  payment_type,
-                  result[2][0]["default_branch_id"],
-                  moment().format("YYYYY"),
-                  moment().format("M"),
-                  "Y",
-                  req.userIdentity.algaeh_d_app_user_id,
-                  "A",
-                ]
-              );
-            } else if (
-              (insert_data["root_id"] == 2 || insert_data["root_id"] == 3) &&
-              input.opening_balance > 0
-            ) {
-              credit_amount = input.opening_balance;
-              voucherStr = _mysql.mysqlQueryFormat(
-                "INSERT INTO finance_voucher_details (payment_date,head_id,child_id,debit_amount,credit_amount,\
-                    payment_type,hospital_id,year,month,is_opening_bal,entered_by,auth_status)  VALUE(?,?,?,?,?,?,?,?,?,?,?,?)",
-                [
-                  new Date(),
-                  insert_data.head_id,
-                  insert_data.finance_account_child_id,
-                  debit_amount,
-                  credit_amount,
-                  payment_type,
-                  result[2][0]["default_branch_id"],
-                  moment().format("YYYYY"),
-                  moment().format("M"),
-                  "Y",
-                  req.userIdentity.algaeh_d_app_user_id,
-                  "A",
-                ]
-              );
-            }
+                    let debit_amount = 0;
+                    let credit_amount = 0;
+                    let payment_type = "CR";
+                    if (
+                      insert_data["root_id"] == 1 &&
+                      input.opening_balance > 0
+                    ) {
+                      debit_amount = input.opening_balance;
+                      payment_type = "DR";
+
+                      voucherStr = _mysql.mysqlQueryFormat(
+                        "INSERT INTO finance_voucher_details (voucher_header_id,payment_date,head_id,child_id,debit_amount,credit_amount,\
+                        payment_type,hospital_id,year,month,is_opening_bal,entered_by,auth_status)  VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                        [
+                          insertId,
+                          new Date(),
+                          insert_data.head_id,
+                          insert_data.finance_account_child_id,
+                          debit_amount,
+                          credit_amount,
+                          payment_type,
+                          result[2][0]["default_branch_id"],
+                          moment().format("YYYYY"),
+                          moment().format("M"),
+                          "Y",
+                          algaeh_d_app_user_id,
+                          "A",
+                        ]
+                      );
+                    } else if (
+                      (insert_data["root_id"] == 2 ||
+                        insert_data["root_id"] == 3) &&
+                      input.opening_balance > 0
+                    ) {
+                      credit_amount = input.opening_balance;
+                      voucherStr = _mysql.mysqlQueryFormat(
+                        "INSERT INTO finance_voucher_details (voucher_header_id,payment_date,head_id,child_id,debit_amount,credit_amount,\
+                      payment_type,hospital_id,year,month,is_opening_bal,entered_by,auth_status)  VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                        [
+                          insertId,
+                          new Date(),
+                          insert_data.head_id,
+                          insert_data.finance_account_child_id,
+                          debit_amount,
+                          credit_amount,
+                          payment_type,
+                          result[2][0]["default_branch_id"],
+                          moment().format("YYYYY"),
+                          moment().format("M"),
+                          "Y",
+                          algaeh_d_app_user_id,
+                          "A",
+                        ]
+                      );
+                    }
+                    executeFunction((rest) => {
+                      _mysql.commitTransaction((error) => {
+                        if (error) {
+                          _mysql.rollBackTransaction();
+                          next(error);
+                        } else {
+                          req.records = rest;
+                          next();
+                        }
+                      });
+                    });
+                    //End of existing statements
+                  })
+                  .catch((error) => {
+                    _mysql.rollBackTransaction((error) => {
+                      next(error);
+                    });
+                  });
+              })
+              .catch((error) => {
+                _mysql.rollBackTransaction((error) => {
+                  next(error);
+                });
+              });
           }
 
-          if (result[0][0]["created_from"] == "U") {
-            _mysql
-              .executeQuery({
-                query: `update finance_account_child set  child_name=?,arabic_child_name=?,updated_by=?,updated_date=? where\
+          function executeFunction(callBack) {
+            if (result[0][0]["created_from"] == "U") {
+              _mysql
+                .executeQuery({
+                  query: `update finance_account_child set  child_name=?,arabic_child_name=?,updated_by=?,updated_date=? where\
                   finance_account_child_id=? and created_from='U'; ${voucherStr};`,
-                values: [
-                  input.child_name,
-                  input.arabic_child_name,
-                  req.userIdentity.algaeh_d_app_user_id,
-                  new Date(),
-                  input.finance_account_child_id,
-                ],
-                printQuery: false,
-              })
-              .then((result2) => {
+                  values: [
+                    input.child_name,
+                    input.arabic_child_name,
+                    req.userIdentity.algaeh_d_app_user_id,
+                    new Date(),
+                    input.finance_account_child_id,
+                  ],
+                  printQuery: true,
+                })
+                .then((result2) => {
+                  if (typeof callBack === "function") {
+                    callBack(result2);
+                  } else {
+                    _mysql.releaseConnection();
+                    req.records = result2;
+                    next();
+                  }
+                })
+                .catch((e) => {
+                  if (typeof callBack === "function") {
+                    _mysql.rollBackTransaction(() => {
+                      next(e);
+                    });
+                  } else {
+                    _mysql.releaseConnection();
+                    next(e);
+                  }
+                });
+            } else if (
+              result[0][0]["created_from"] == "S" &&
+              voucherStr != ""
+            ) {
+              _mysql
+                .executeQuery({
+                  query: voucherStr,
+                  printQuery: true,
+                })
+                .then((result2) => {
+                  if (typeof callBack === "function") {
+                    callBack(result2);
+                  } else {
+                    _mysql.releaseConnection();
+                    req.records = result2;
+                    next();
+                  }
+                })
+                .catch((e) => {
+                  if (typeof callBack === "function") {
+                    _mysql.rollBackTransaction(() => {
+                      next(e);
+                    });
+                  } else {
+                    _mysql.releaseConnection();
+                    next(e);
+                  }
+                });
+            } else {
+              if (typeof callBack === "function") {
+                callBack({
+                  invalid_input: true,
+                  message: "Cannot Modify System defined Ledgers",
+                });
+              } else {
                 _mysql.releaseConnection();
-                req.records = result2;
+                req.records = {
+                  invalid_input: true,
+                  message: "Cannot Modify System defined Ledgers",
+                };
                 next();
-              })
-              .catch((e) => {
-                _mysql.releaseConnection();
-                next(e);
-              });
-          } else if (result[0][0]["created_from"] == "S" && voucherStr != "") {
-            _mysql
-              .executeQuery({
-                query: voucherStr,
-                printQuery: false,
-              })
-              .then((result2) => {
-                _mysql.releaseConnection();
-                req.records = result2;
-                next();
-              })
-              .catch((e) => {
-                _mysql.releaseConnection();
-                next(e);
-              });
-          } else {
-            _mysql.releaseConnection();
-            req.records = {
-              invalid_input: true,
-              message: "Cannot Modify System defined Ledgers",
-            };
-            next();
+              }
+            }
           }
         })
         .catch((e) => {
-          _mysql.releaseConnection();
-          next(e);
+          if (typeof callBack === "function") {
+            _mysql.rollBackTransaction(() => {
+              next(e);
+            });
+          } else {
+            _mysql.releaseConnection();
+            next(e);
+          }
         });
     } else {
       _mysql
