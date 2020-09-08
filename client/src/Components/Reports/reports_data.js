@@ -11,7 +11,7 @@ import {
   EMP_FORMAT_GENDER,
   DATE_OF_JOIN,
   EMPLOYEE_TYPE,
-  RECEIPT_TYPE
+  RECEIPT_TYPE,
 } from "../../utils/GlobalVariables.json";
 import { getYears } from "../../utils/GlobalFunctions";
 import { algaehApiCall } from "../../utils/algaehApiCall";
@@ -26,6 +26,7 @@ import Payroll from "./reportBag/payroll";
 import Pharmacy from "./reportBag/pharmacy";
 import Project from "./reportBag/projectpayroll";
 import Vat from "./reportBag/vat";
+import Clinical from "./reportBag/clinical";
 let allYears = getYears();
 
 export default function loadActiveReports(
@@ -47,7 +48,11 @@ export default function loadActiveReports(
           result = Insurance({ algaehApiCall });
           break;
         case "income":
-          result = Income({ hospital_id: hims_d_hospital_id, RECEIPT_TYPE, algaehApiCall });
+          result = Income({
+            hospital_id: hims_d_hospital_id,
+            RECEIPT_TYPE,
+            algaehApiCall,
+          });
           break;
         case "hr":
           result = Hr({
@@ -66,6 +71,9 @@ export default function loadActiveReports(
         case "appointment":
           result = Appointment({});
           break;
+        case "clinical":
+          result = Clinical({});
+          break;
         case "inventory":
           result = Inventory({
             hospital_id: hims_d_hospital_id,
@@ -75,7 +83,16 @@ export default function loadActiveReports(
           });
           break;
         case "patient":
-          result = Patient({});
+          result = Patient({
+            hospital_id: hims_d_hospital_id,
+            algaehApiCall,
+            MONTHS,
+            COMPARISON,
+            EMP_FORMAT_GENDER,
+            DATE_OF_JOIN,
+            moment,
+            allYears,
+          });
           break;
         case "payroll":
           result = Payroll({
