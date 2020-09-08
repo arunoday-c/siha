@@ -1,5 +1,5 @@
 import React from "react";
-import { useQuery } from "react-query";
+// import { useQuery } from "react-query";
 import "./BulkClaimGeneration.scss";
 import {
   AlgaehDataGrid,
@@ -10,12 +10,10 @@ import {
 // import { UpdateStatement } from "./UpdateStatment";
 // import { newAlgaehApi, useQueryParams } from "../../../hooks";
 
-export function VisitTable() {
+export function VisitTable({ loading = false, data = [] }) {
   // const [show, setShow] = useState(false);
   // const [current, setCurrent] = useState(null);
   // const params = useQueryParams();
-
-  const { isLoading } = useQuery();
 
   // const onClickRow = (row) => {
   //   setShow(true);
@@ -38,7 +36,7 @@ export function VisitTable() {
   // };
 
   return (
-    <Spin spinning={isLoading}>
+    <Spin spinning={loading}>
       {/* <UpdateStatement data={current} show={show} onClose={onClose} /> */}
       <div className="portlet portlet-bordered margin-bottom-15">
         <div className="portlet-title">
@@ -57,19 +55,19 @@ export function VisitTable() {
                 // displayTemplate: RemittanceButton,
               },
               {
-                fieldName: "",
+                fieldName: "visit_code",
                 label: <AlgaehLabel label={{ forceLabel: "Visit Code" }} />,
               },
               {
-                fieldName: "",
+                fieldName: "visit_date",
                 label: <AlgaehLabel label={{ forceLabel: "Visit Date" }} />,
               },
               {
-                fieldName: "",
+                fieldName: "patient_code",
                 label: <AlgaehLabel label={{ forceLabel: "Patient Code" }} />,
               },
               {
-                fieldName: "",
+                fieldName: "full_name",
                 label: <AlgaehLabel label={{ forceLabel: "Patient Name" }} />,
                 disabled: true,
                 others: {
@@ -78,7 +76,7 @@ export function VisitTable() {
                 },
               },
               {
-                fieldName: "",
+                fieldName: "doctor_name",
                 label: <AlgaehLabel label={{ forceLabel: "Doctor Name" }} />,
                 disabled: true,
                 others: {
@@ -107,7 +105,7 @@ export function VisitTable() {
                 },
               },
               {
-                fieldName: "",
+                fieldName: "patient_res",
                 label: <AlgaehLabel label={{ forceLabel: "PATIENT RESP." }} />,
                 disabled: true,
                 others: {
@@ -116,7 +114,7 @@ export function VisitTable() {
                 },
               },
               {
-                fieldName: "",
+                fieldName: "patient_tax",
                 label: <AlgaehLabel label={{ forceLabel: "PATIENT TAX" }} />,
                 disabled: true,
                 others: {
@@ -125,7 +123,7 @@ export function VisitTable() {
                 },
               },
               {
-                fieldName: "",
+                fieldName: "patient_payable",
                 label: (
                   <AlgaehLabel label={{ forceLabel: "PATIENT PAYABLE" }} />
                 ),
@@ -136,7 +134,7 @@ export function VisitTable() {
                 },
               },
               {
-                fieldName: "",
+                fieldName: "company_res",
                 label: <AlgaehLabel label={{ forceLabel: "COMPANY RESP." }} />,
                 disabled: true,
                 others: {
@@ -145,7 +143,7 @@ export function VisitTable() {
                 },
               },
               {
-                fieldName: "",
+                fieldName: "company_tax",
                 label: <AlgaehLabel label={{ forceLabel: "COMPANY TAX" }} />,
                 disabled: true,
                 others: {
@@ -154,7 +152,7 @@ export function VisitTable() {
                 },
               },
               {
-                fieldName: "",
+                fieldName: "company_payable",
                 label: (
                   <AlgaehLabel label={{ forceLabel: "COMPANY PAYABLE" }} />
                 ),
@@ -165,7 +163,7 @@ export function VisitTable() {
                 },
               },
             ]}
-            data={[]}
+            data={data}
             // filter={true}
             paging={{ page: 0, rowsPerPage: 20 }}
           />

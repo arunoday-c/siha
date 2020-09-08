@@ -434,7 +434,7 @@ export default {
             hims_m_inventory_item_location IL ON IM.hims_d_inventory_item_master_id = IL.item_id
                 LEFT JOIN
             hims_d_inv_location_reorder ILR ON ILR.item_id = IL.item_id
-                AND location_id = '16'
+                AND location_id = ?
                 LEFT JOIN
             hims_d_inventory_uom IU ON IU.hims_d_inventory_uom_id = IM.stocking_uom_id
                 LEFT JOIN

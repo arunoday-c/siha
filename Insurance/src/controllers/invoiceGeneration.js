@@ -11,7 +11,8 @@ const {
   deleteInvoiceIcd,
   addInvoiceIcd,
   updateClaimValidatedStatus,
-  updateInvoiceDetails
+  updateInvoiceDetails,
+  getVisitsForGeneration,
 } = invoiceModels;
 
 export default () => {
@@ -24,7 +25,20 @@ export default () => {
       let result = req.records;
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
-        records: result
+        records: result,
+      });
+      next();
+    }
+  );
+
+  api.get(
+    "/getVisitsForGeneration",
+    getVisitsForGeneration,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: result,
       });
       next();
     }
@@ -36,12 +50,12 @@ export default () => {
     if (result.invalid_data == true) {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: false,
-        records: result
+        records: result,
       });
     } else {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
-        records: result
+        records: result,
       });
     }
 
@@ -52,7 +66,7 @@ export default () => {
     let result = req.records;
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
       success: true,
-      records: result
+      records: result,
     });
     next();
   });
@@ -60,7 +74,7 @@ export default () => {
     let result = req.records;
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
       success: true,
-      records: result
+      records: result,
     });
     next();
   });
@@ -71,7 +85,7 @@ export default () => {
       let result = req.records;
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
-        records: result
+        records: result,
       });
       next();
     }
@@ -80,7 +94,7 @@ export default () => {
     let result = req.records;
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
       success: true,
-      records: result
+      records: result,
     });
     next();
   });
@@ -93,12 +107,12 @@ export default () => {
       if (result.invalid_input == true) {
         res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
           success: false,
-          records: result
+          records: result,
         });
       } else {
         res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
           success: true,
-          records: result
+          records: result,
         });
         next();
       }
@@ -108,7 +122,7 @@ export default () => {
     let result = req.records;
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
       success: true,
-      records: result
+      records: result,
     });
     next();
   });
@@ -119,12 +133,12 @@ export default () => {
     if (result.invalid_input == true) {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: false,
-        records: result
+        records: result,
       });
     } else {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
-        records: result
+        records: result,
       });
     }
 

@@ -791,4 +791,67 @@ export default {
       next(e);
     }
   },
+  getVisitsForGeneration: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    const input = req.query;
+    const values = [];
+    let qryStr = "";
+    try {
+      const hospitalId = req.userIdentity.hospital_id;
+      if (!!input.from_date && !!input.to_date) {
+        qryStr += "and  date(pv.visit_date) between date(?) and date(?) ";
+        values.push(input.from_date, input.to_date);
+      }
+      _mysql
+        .executeQuery({
+          query: `SELECT 
+          P.full_name,
+          patient_code,
+          contact_number,
+          pv.visit_code,
+          pv.visit_date,
+          BH.patient_payable,
+          BH.patient_res,
+          BH.patient_tax,
+          BH.company_res,
+          BH.company_payable,
+          BH.company_tax,
+          pv.patient_id,
+          pv.hims_f_patient_visit_id,
+          pv.insured,
+          pv.sec_insured,
+          pv.episode_id,
+          E.full_name as doctor_name,
+          pv.visit_date
+      FROM
+          hims_f_patient P,
+          hims_f_patient_visit pv,
+          hims_f_billing_header AS BH,
+          hims_d_employee E
+      WHERE
+          pv.patient_id = P.hims_d_patient_id
+              AND pv.hims_f_patient_visit_id = BH.visit_id
+              AND pv.record_status = 'A'
+              AND pv.doctor_id = E.hims_d_employee_id
+              AND pv.hospital_id = ${hospitalId}
+              AND pv.insured = 'Y'
+              AND BH.invoice_generated = 'N' ${qryStr}
+      ORDER BY pv.hims_f_patient_visit_id DESC`,
+          values,
+          printQuery: true,
+        })
+        .then((result) => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch((e) => {
+          _mysql.releaseConnection();
+          next(e);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
 };
