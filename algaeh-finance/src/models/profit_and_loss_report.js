@@ -285,7 +285,7 @@ export default {
                           let cosResult = [
                             { label: "Cost of Sales", total: 0, children: [] },
                           ];
-                          console.log("indirectResult", indirectResult);
+
                           let directExpeneseResult = [];
 
                           // indirectResult.forEach((item) => {
@@ -309,6 +309,7 @@ export default {
                           //     });
                           //   }
                           // });
+
                           directResult.forEach((item) => {
                             if (item.children) {
                               const allNonCOS = item.children.filter(
@@ -325,9 +326,12 @@ export default {
                                   parseFloat(item["total"]) - parseFloat(tot)
                                 ).toFixed(decimal_places);
                                 //const { children, ...rest } = item;
+                                const cosTotal = parseFloat(
+                                  cosResult[0]["total"]
+                                );
+                                cosResult[0] = { ...cosResult[0], ...item };
                                 cosResult[0]["total"] = parseFloat(
-                                  parseFloat(cosResult[0]["total"]) +
-                                    parseFloat(tot)
+                                  cosTotal + parseFloat(tot)
                                 ).toFixed(decimal_places);
                                 for (let i = 0; i < allCOS.length; i++)
                                   cosResult[0]["children"].push(allCOS[i]);
@@ -374,11 +378,14 @@ export default {
                             }
                           });
                           let g_prop = {};
+
                           if (cosResult.length > 0) {
                             Object.keys(gross_profit).forEach((item) => {
                               g_prop[item] = parseFloat(
                                 parseFloat(incomeResult[0][item]) -
-                                  parseFloat(cosResult[0][item])
+                                  parseFloat(
+                                    cosResult[0][item] ? cosResult[0][item] : 0
+                                  )
                               ).toFixed(decimal_places);
                             });
                           }
@@ -869,6 +876,7 @@ export default {
                               parseFloat(item["total"]) - parseFloat(tot)
                             ).toFixed(decimal_places);
                             //const { children, ...rest } = item;
+                            cosResult[0] = { ...cosResult[0], ...item };
                             cosResult[0]["total"] = parseFloat(
                               parseFloat(cosResult[0]["total"]) +
                                 parseFloat(tot)
@@ -917,11 +925,14 @@ export default {
                       });
                       let g_prop = {};
                       let cosExpenseResult = [];
+
                       if (cosResult.length > 0) {
                         Object.keys(gross_profit).forEach((item) => {
                           g_prop[item] = parseFloat(
                             parseFloat(incomeResult[0][item]) -
-                              parseFloat(cosResult[0][item])
+                              parseFloat(
+                                cosResult[0][item] ? cosResult[0][item] : 0
+                              )
                           ).toFixed(decimal_places);
                         });
                       }
