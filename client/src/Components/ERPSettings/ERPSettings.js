@@ -247,7 +247,7 @@ export default class ERPSettings extends Component {
                         });
                       },
                     }}
-                  />{" "}
+                  />
                   <div className="col-12">
                     <button
                       type="button"

@@ -34,7 +34,9 @@
 
                     {{#each result}}
                     <tr>
-                        <td colspan="7" class="tableSubHdg">PO No.: {{purchase_number}}
+                        <td colspan="7" class="tableSubHdg">PO No.: {{inc @index}}.
+                            {{purchase_number}} / Supplier :
+                            {{vendor_name}}
                             <span class="textFloatRight"><b>{{net_total}}</b></b></span>
                         </td>
 
@@ -54,6 +56,11 @@
                     <tr>
                         <td colspan="7" class="noResultTextReport">No Records Found</td>
                     </tr>{{/hasElement }}
+
+                    <tr class="numberFldTotalBottom">
+                        <td colspan="6"></td>
+                        <td class="numberFld">{{net_total}}</td>
+                    </tr>
                 </tbody>
 
             </table>

@@ -550,7 +550,7 @@ export default {
         .executeQuery({
           query:
             "select  MIU.hims_m_item_uom_id, MIU.item_master_id, MIU.uom_id,PH.uom_description, \
-            MIU.stocking_uom, MIU.conversion_factor,IM.hims_d_item_master_id, IM.item_code, IM.item_description,\
+            MIU.stocking_uom, ROUND(MIU.conversion_factor,0) as conversion_factor,IM.hims_d_item_master_id, IM.item_code, IM.item_description,\
              IM.structure_id, IM.generic_id, IM.category_id,IM.group_id, IM.form_id, IM.storage_id, \
              IM.item_uom_id, IM.purchase_uom_id, IM.sales_uom_id, IM.stocking_uom_id, IM.item_status, \
              IM.service_id , IM.purchase_cost,IM.addl_information, IM.exp_date_required,\

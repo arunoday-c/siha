@@ -332,10 +332,10 @@ export default function Inventory({
             type: "date",
             name: "from_date",
             isImp: true,
-            others: {
-              maxDate: new Date(),
-              minDate: null,
-            },
+            // others: {
+            //   maxDate: new Date(),
+            //   minDate: null,
+            // },
           },
 
           {
@@ -343,10 +343,10 @@ export default function Inventory({
             type: "date",
             name: "to_date",
             isImp: true,
-            others: {
-              maxDate: new Date(),
-              minDate: null,
-            },
+            // others: {
+            //   maxDate: ,
+            //   minDate: new Date(),
+            // },
           },
 
           {

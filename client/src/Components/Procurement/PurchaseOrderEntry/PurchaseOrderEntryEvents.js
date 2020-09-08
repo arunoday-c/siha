@@ -474,6 +474,7 @@ const getCtrlCode = ($this, docNumber) => {
       onSuccess: (response) => {
         if (response.data.success) {
           let data = response.data.records;
+
           getData($this, data.po_from);
           if (
             $this.props.purchase_number !== undefined &&
@@ -521,7 +522,7 @@ const getCtrlCode = ($this, docNumber) => {
             $this.state.inventory_stock_detail = data.po_entry_detail;
           }
           data.organizations = $this.props.hospitaldetails;
-
+          $this.state.email_id_1 = data.email_id_1;
           data.addedItem = true;
           $this.setState(data);
           AlgaehLoader({ show: false });
@@ -562,7 +563,6 @@ const getData = ($this, po_from) => {
 };
 
 const generatePOReceipt = (data) => {
-  console.log("data:", data);
   algaehApiCall({
     uri: "/report",
     method: "GET",
@@ -598,7 +598,6 @@ const generatePOReceipt = (data) => {
 };
 
 const generatePOReceiptNoPrice = (data) => {
-  console.log("data:", data);
   algaehApiCall({
     uri: "/report",
     method: "GET",
@@ -717,7 +716,7 @@ const AuthorizePOEntry = ($this, authorize) => {
       "delete_po_services",
       "is_completed",
       "po_auth_level",
-      "authorize"
+      "authorize",
     ];
     let sendJsonBody = {};
     procumentInputs.forEach((item) => {
@@ -944,12 +943,14 @@ const getPOOptions = ($this) => {
         $this.setState({
           po_auth_level: res.data.records[0].po_auth_level,
           po_services_req: res.data.records[0].po_services,
+          from_mail: res.data.records.user,
         });
       }
     },
   });
 };
 const getReportForMail = (data, vedorData) => {
+  // debugger;
   return new Promise((resolve, reject) => {
     try {
       const {
@@ -960,6 +961,8 @@ const getReportForMail = (data, vedorData) => {
         location_name,
         po_date,
         vendor_name,
+        body_mail,
+        send_attachment,
       } = data;
       let vendorEmail = vedorData.find(
         (item) => item.hims_d_vendor_id === vendor_id
@@ -984,13 +987,15 @@ const getReportForMail = (data, vedorData) => {
           vendor_email: email_id_1
             ? email_id_1
             : email_id_2
-              ? email_id_2
-              : email_id_1,
+            ? email_id_2
+            : email_id_1,
           po_from: po_from,
           net_total,
           location_name,
           po_date,
           vendor_name,
+          body_mail,
+          send_attachment,
         },
         onSuccess: (res) => {
           swal({

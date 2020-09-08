@@ -1,6 +1,6 @@
 // const algaehUtilities = require("algaeh-utilities/utilities");
 const executePDF = function executePDFMethod(options) {
-  return new Promise(function(resolve, reject) {
+  return new Promise(function (resolve, reject) {
     // const utilities = new algaehUtilities();
     try {
       const _ = options.loadash;
@@ -9,7 +9,7 @@ const executePDF = function executePDFMethod(options) {
       let input = {};
       let params = options.args.reportParams;
       const decimal_places = options.args.crypto.decimal_places;
-      params.forEach(para => {
+      params.forEach((para) => {
         input[para["name"]] = para["value"];
       });
 
@@ -28,23 +28,23 @@ const executePDF = function executePDFMethod(options) {
             IU.uom_description, PTH.transaction_total FROM hims_f_inventory_trans_history PTH \
             inner join hims_d_inventory_item_master IM  on IM.hims_d_inventory_item_master_id = PTH.item_code_id \
             inner join hims_d_inventory_uom IU on IU.hims_d_inventory_uom_id = PTH.transaction_uom \
-            where date(PTH.transaction_date)  between date(?) and date(?) and from_location_id=? and hospital_id=?" +
+            where  operation='-' and date(PTH.transaction_date)  between date(?) and date(?) and from_location_id=? and hospital_id=?  " +
             str +
             " group by item_code_id",
           values: [
             input.stockUsed,
             current_date,
             input.location_id,
-            input.hospital_id
+            input.hospital_id,
           ],
-          printQuery: true
+          printQuery: true,
         })
-        .then(results => {
+        .then((results) => {
           resolve({
-            details: results
+            details: results,
           });
         })
-        .catch(error => {
+        .catch((error) => {
           options.mysql.releaseConnection();
         });
     } catch (e) {

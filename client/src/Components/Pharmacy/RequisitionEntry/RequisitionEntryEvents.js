@@ -63,7 +63,7 @@ const getCtrlCode = ($this, docNumber) => {
 
         data.addedItem = true;
         data.ItemDisable = true;
-        $this.setState(data, () => {});
+        $this.setState(data, () => { });
         AlgaehLoader({ show: false });
       },
     });
@@ -77,10 +77,15 @@ const ClearData = ($this, e) => {
 
 const SaveRequisitionEntry = ($this) => {
   AlgaehLoader({ show: true });
+
+  let InputObj = $this.state
+
+  InputObj.authorize1 = $this.state.requisition_auth_level === "N" ? "Y" : "N"
+  InputObj.authorie2 = $this.state.requisition_auth_level === "N" ? "Y" : "N"
   algaehApiCall({
     uri: "/requisitionEntry/addrequisitionEntry",
     module: "pharmacy",
-    data: $this.state,
+    data: InputObj,
     onSuccess: (response) => {
       if (response.data.success === true) {
         $this.setState({
