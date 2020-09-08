@@ -20,6 +20,7 @@
                         <th>Sl No.</th>
                         <th>Visit Code</th>
                         <th>Visit Date</th>
+                        <th>Bill Number</th>
                         <th>Service Code</th>
                         <th>Amount</th>
                     </tr>
@@ -37,13 +38,13 @@
 
                     {{#each result}}
                     <tr>
-                        <td colspan="5" class="tableSubHdg">{{service_type}}</td>
+                        <td colspan="6" class="tableSubHdg">{{service_type}}</td>
                         {{!-- <td class="tableSubHdg2 numberFld"><b>{{dep_total}}</b></td> --}}
 
                     </tr>
                     {{#each patientList}}
                     <tr>
-                        <td colspan="5" class="tableSubHdg2">{{patient_code}} - {{full_name}}
+                        <td colspan="6" class="tableSubHdg2">{{patient_code}} - {{full_name}}
                         </td>
                         {{!-- <td class="tableSubHdg numberFld"><b>{{totalAmt}}</b></td> --}}
                     </tr>
@@ -52,6 +53,7 @@
                         <td>{{inc @index}}</td>
                         <td>{{visit_code}}</td>
                         <td>{{visit_date}}</td>
+                        <td>{{bill_number}}</td>
                         <td excelborder='{"top":{"style":"thin","color":{"argb":"dddddd"}},"left":{"style":"thin","color":{"argb":"dddddd"}},"bottom":{"style":"thin","color":{"argb":"dddddd"}},"right":{"style":"thin","color":{"argb":"dddddd"}}}'
                             class="txtFld">{{service_name}}</td>
                       
@@ -66,7 +68,7 @@
                   
                     {{else}}
                     <tr>
-                        <td colspan="5" class="noResultTextReport">No Records Found</td>
+                        <td colspan="6" class="noResultTextReport">No Records Found</td>
                     </tr>{{/hasElement }}
                 </tbody>
 
