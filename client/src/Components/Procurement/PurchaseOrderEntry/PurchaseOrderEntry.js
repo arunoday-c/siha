@@ -15,6 +15,7 @@ import moment from "moment";
 import GlobalVariables from "../../../utils/GlobalVariables.json";
 import POItemList from "./POItemList/POItemList";
 import POServiceList from "./POServiceList/POServiceList";
+// import newAxios from "algaeh-utilities/axios";
 import {
   vendortexthandle,
   loctexthandle,
@@ -39,7 +40,7 @@ import {
 import { AlgaehActions } from "../../../actions/algaehActions";
 import POEntry from "../../../Models/POEntry";
 import Enumerable from "linq";
-import { MainContext } from "algaeh-react-components";
+import { MainContext, AlgaehModal } from "algaeh-react-components";
 import {
   AlgaehSecurityComponent,
   RawSecurityComponent,
@@ -56,6 +57,11 @@ class PurchaseOrderEntry extends Component {
       po_services_req: "N",
       cost_projects: [],
       mailSend: false,
+      visible: false,
+      email_id_1: "",
+      from_mail: "",
+      body_mail: "",
+      send_attachment: true,
       // po_auth_level: "1"
     };
     getVendorMaster(this, this);
@@ -69,7 +75,6 @@ class PurchaseOrderEntry extends Component {
 
   static contextType = MainContext;
   componentDidMount() {
-    console.log("data:", this.props.povendors);
     const userToken = this.context.userToken;
     this.setState({
       decimal_places: userToken.decimal_places,
@@ -127,7 +132,22 @@ class PurchaseOrderEntry extends Component {
       },
     });
   }
+  // changeTexts(e) {
+  //   this.setState({ [e.target.name]: e.target.value });
+  // }
+  textAreaEvent(e) {
+    let name = e.name || e.target.name;
+    let value = e.value || e.target.value;
 
+    this.setState({
+      [name]: value,
+    });
+  }
+  changeChecks(e) {
+    this.setState({
+      [e.target.name]: e.target.checked,
+    });
+  }
   render() {
     const _mainStore =
       this.state.po_from === null
@@ -144,6 +164,170 @@ class PurchaseOrderEntry extends Component {
         : "";
     return (
       <div>
+        <AlgaehModal
+          title={`Send mail Confirmation`}
+          visible={this.state.visible}
+          destroyOnClose={true}
+          // okText="Confirm"
+          // onOk={() => {
+          footer={[
+            <AlgaehButton
+              loading={this.state.mailSend}
+              className="btn btn-other"
+              onClick={() => {
+                this.setState({ mailSend: true }, () => {
+                  getReportForMail(this.state, this.props.povendors)
+                    .then(() => {
+                      this.setState({
+                        mailSend: false,
+                        visible: false,
+
+                        body_mail: "",
+                      });
+                    })
+                    .catch(() => {
+                      this.setState({
+                        mailSend: false,
+                        visible: false,
+
+                        body_mail: "",
+                      });
+                    });
+                });
+              }}
+            >
+              <AlgaehLabel
+                label={{
+                  forceLabel: "Send PO Via Email",
+                  returnText: true,
+                }}
+              />
+            </AlgaehButton>,
+            <button
+              onClick={() => {
+                this.setState({
+                  visible: false,
+                });
+              }}
+            >
+              Cancle
+            </button>,
+          ]}
+          onCancel={() => {
+            // finance_voucher_header_id = "";
+            // rejectText = "";
+            this.setState({
+              visible: false,
+            });
+          }}
+        >
+          <AlagehAutoComplete
+            div={{ className: "col" }}
+            label={{ forceLabel: "Vendor Name" }}
+            selector={{
+              name: "vendor_id",
+              className: "select-fld",
+              value: this.state.vendor_id,
+              dataSource: {
+                textField: "vendor_name",
+                valueField: "hims_d_vendor_id",
+                data: this.props.povendors,
+              },
+              others: {
+                disabled: this.state.po_entry_detail.length > 0 ? true : false,
+              },
+              onChange: vendortexthandle.bind(this, this),
+              onClear: () => {
+                this.setState({
+                  vendor_id: null,
+                });
+              },
+            }}
+          />
+          <AlagehFormGroup
+            div={{ className: "col-10 form-group" }}
+            label={{
+              forceLabel: "To Mail Id",
+              // isImp: true,
+            }}
+            textBox={{
+              className: "txt-fld",
+              name: "app_group_code",
+              value: this.state.email_id_1,
+              // events: {
+              //   onChange: this.changeTexts.bind(this),
+              // },
+              others: {
+                tabIndex: "1",
+                placeholder: "vendor email",
+                disabled: true,
+              },
+            }}
+          />
+          <AlagehFormGroup
+            div={{ className: "col-10 form-group" }}
+            label={{
+              forceLabel: "From Mail Id",
+              // isImp: true,
+            }}
+            textBox={{
+              className: "txt-fld",
+              name: "from_mail",
+              value: this.state.from_mail,
+              // events: {
+              //   onChange: this.changeTexts.bind(this),
+              // },
+              others: {
+                tabIndex: "1",
+                placeholder: "Organisation email",
+                disabled: true,
+              },
+            }}
+          />
+          <AlagehFormGroup
+            div={{ className: "col-10 form-group" }}
+            label={{
+              forceLabel: "Vendor Quotation No.",
+              // isImp: true,
+            }}
+            textBox={{
+              className: "txt-fld",
+              name: "vendor_quotation_number",
+              value: this.state.vendor_quotation_number,
+              // events: {
+              //   onChange: this.changeTexts.bind(this),
+              // },
+              others: {
+                tabIndex: "1",
+                placeholder: " Quotation Number",
+                disabled: true,
+              },
+            }}
+          />
+          <div className="col-12">
+            <AlgaehLabel
+              label={{
+                forceLabel: "Enter Body of the mail",
+              }}
+            />
+
+            <textarea
+              value={this.state.body_mail}
+              name="body_mail"
+              onChange={this.textAreaEvent.bind(this)}
+            />
+            <label className="checkbox inline">
+              <input
+                type="checkbox"
+                name="send_attachment"
+                checked={this.state.send_attachment}
+                onChange={this.changeChecks.bind(this)}
+              />
+
+              <span>Send Email with Attachment</span>
+            </label>
+          </div>
+        </AlgaehModal>
         <BreadCrumb
           title={
             <AlgaehLabel
@@ -752,14 +936,8 @@ class PurchaseOrderEntry extends Component {
                     loading={this.state.mailSend}
                     className="btn btn-other"
                     onClick={() => {
-                      this.setState({ mailSend: true }, () => {
-                        getReportForMail(this.state, this.props.povendors)
-                          .then(() => {
-                            this.setState({ mailSend: false });
-                          })
-                          .catch(() => {
-                            this.setState({ mailSend: false });
-                          });
+                      this.setState({
+                        visible: true,
                       });
                     }}
                   >

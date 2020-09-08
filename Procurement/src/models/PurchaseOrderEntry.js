@@ -17,7 +17,7 @@ export default {
             else (select material_requisition_number from hims_f_pharamcy_material_header  \
             where hims_f_pharamcy_material_header_id=PH.phar_requisition_id) END as material_requisition_number,\
             CASE PH.po_from WHEN 'INV' then IL.location_description \
-            else PL.location_description end as location_name, V.vendor_name\
+            else PL.location_description end as location_name, V.vendor_name,V.email_id_1\
             from  hims_f_procurement_po_header PH inner join hims_d_vendor V on PH.vendor_id = V.hims_d_vendor_id \
             left join hims_d_pharmacy_location PL on PH.pharmcy_location_id = PL.hims_d_pharmacy_location_id \
             left join hims_d_inventory_location IL on PH.inventory_location_id = IL.hims_d_inventory_location_id \
@@ -64,7 +64,7 @@ export default {
                    and IC.hims_d_inventory_tem_category_id = PD.inv_item_category_id and \
                    IG.hims_d_inventory_item_group_id =PD.inv_item_group_id \
                    and procurement_header_id=?" +
-                  strCondition,
+                    strCondition,
                   [headerResult[0].hims_f_procurement_po_header_id]
                 );
               } else if (headerResult[0].po_from == "PHR") {
@@ -84,7 +84,7 @@ export default {
                 where PD.phar_item_id = IM.hims_d_item_master_id and PD.pharmacy_uom_id = PU.hims_d_pharmacy_uom_id \
                 and IM.stocking_uom_id = STOCK_UOM.hims_d_pharmacy_uom_id and IM.service_id = S.hims_d_services_id and \
                 IC.hims_d_item_category_id = PD.phar_item_category and IG.hims_d_item_group_id = PD.phar_item_group and procurement_header_id=?" +
-                  strCondition,
+                    strCondition,
                   [headerResult[0].hims_f_procurement_po_header_id]
                 );
               }
@@ -486,8 +486,8 @@ export default {
                   });
               }
             } else {
-              console.log("input.delete_po_services", input.delete_po_services);
-              console.log("input.po_services", input.po_services);
+              // console.log("input.delete_po_services", input.delete_po_services);
+              // console.log("input.po_services", input.po_services);
               if (input.delete_po_services.length > 0) {
                 strQuery += mysql.format(
                   "DELETE FROM hims_f_procurement_po_services where hims_f_procurement_po_services_id in (?);",
@@ -601,9 +601,9 @@ export default {
         req.body = inputParam;
         req.mySQl = _mysql;
 
-        let strQuery = ""
-        console.log("inputParam.authorize", inputParam.authorize)
-        console.log("inputParam.authorize", inputParam.po_auth_level)
+        let strQuery = "";
+        // console.log("inputParam.authorize", inputParam.authorize);
+        // console.log("inputParam.authorize", inputParam.po_auth_level);
         if (inputParam.po_auth_level == "1") {
           strQuery = mysql.format(
             "UPDATE `hims_f_procurement_po_header` SET is_completed = ?, `authorize1`=?, `authorize_by_date`=?, `authorize_by_1`=?, \
@@ -616,7 +616,7 @@ export default {
               inputParam.authorize2,
               new Date(),
               req.userIdentity.algaeh_d_app_user_id,
-              inputParam.hims_f_procurement_po_header_id
+              inputParam.hims_f_procurement_po_header_id,
             ]
           );
         } else {
@@ -628,7 +628,7 @@ export default {
                 inputParam.authorize1,
                 new Date(),
                 req.userIdentity.algaeh_d_app_user_id,
-                inputParam.hims_f_procurement_po_header_id
+                inputParam.hims_f_procurement_po_header_id,
               ]
             );
           } else if (inputParam.authorize == "authorize2") {
@@ -640,7 +640,7 @@ export default {
                 inputParam.authorize2,
                 new Date(),
                 req.userIdentity.algaeh_d_app_user_id,
-                inputParam.hims_f_procurement_po_header_id
+                inputParam.hims_f_procurement_po_header_id,
               ]
             );
           }
@@ -657,10 +657,10 @@ export default {
               pool: _mysql.pool,
             };
             if (headerResult != null) {
-              console.log(
-                "inputParam.po_entry_detail",
-                inputParam.po_entry_detail
-              );
+              // console.log(
+              //   "inputParam.po_entry_detail",
+              //   inputParam.po_entry_detail
+              // );
               let details = inputParam.po_entry_detail;
 
               if (details.length > 0) {
@@ -999,7 +999,7 @@ export default {
     const _options = req.connection == null ? {} : req.connection;
     const _mysql = new algaehMysql(_options);
     try {
-      console.log("updateInvReqEntry");
+      // console.log("updateInvReqEntry");
       let qry = "";
       if (req.body.po_type === "PR") {
         qry += mysql.format(
@@ -1155,28 +1155,23 @@ export default {
     }
   },
 
-
   rejectPurchaseOrderEntry: (req, res, next) => {
     const _mysql = new algaehMysql();
     try {
-
       _mysql
         .executeQuery({
           query:
             "UPDATE `hims_f_procurement_po_header` SET `is_posted` = 'N', authorize1='N', comment=? \
           WHERE `hims_f_procurement_po_header_id`=?; ",
-          values: [
-            req.body.comment,
-            req.body.hims_f_procurement_po_header_id,
-          ],
-          printQuery: true
+          values: [req.body.comment, req.body.hims_f_procurement_po_header_id],
+          printQuery: true,
         })
-        .then(headerResult => {
+        .then((headerResult) => {
           _mysql.releaseConnection();
           req.records = headerResult;
           next();
         })
-        .catch(e => {
+        .catch((e) => {
           _mysql.rollBackTransaction(() => {
             next(e);
           });
@@ -1231,9 +1226,11 @@ export default {
       po_date,
       net_total,
       vendor_name,
+      body_mail,
+      send_attachment,
     } = req.query;
 
-    // const _mysql = new algaehMysql();
+    const mail_body = body_mail ? body_mail : "";
     try {
       const reportInput = [
         {
@@ -1252,11 +1249,12 @@ export default {
           },
         },
       ];
+
       newAxios(req, {
         url: "http://localhost:3006/api/v1//Document/getEmailConfig",
       }).then((res) => {
         const options = res.data;
-        new algaehMail(options.data[0])
+        const mailSender = new algaehMail(options.data[0])
           .to(vendor_email)
           .subject("Purchase Order Report")
           .templateHbs("purchaseOrder.hbs", {
@@ -1268,15 +1266,33 @@ export default {
             net_total,
             vendor_name,
             currency_symbol,
-          })
-          .attachReportsAndSend(req, reportInput, (error, records) => {
-            if (error) {
-              next(error);
-              return;
-            }
-
-            next();
+            mail_body,
           });
+
+        if (send_attachment === "true") {
+          mailSender.attachReportsAndSend(
+            req,
+            reportInput,
+            (error, records) => {
+              if (error) {
+                next(error);
+                return;
+              }
+
+              next();
+            }
+          );
+        } else {
+          mailSender
+            .send()
+            .then(() => {
+              // console.log("Mail Sent");
+              next();
+            })
+            .catch((error) => {
+              next(error);
+            });
+        }
       });
     } catch (e) {
       //_mysql.releaseConnection();

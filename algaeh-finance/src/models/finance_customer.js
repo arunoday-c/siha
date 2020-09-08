@@ -11,7 +11,7 @@ export default {
     const decimal_places = req.userIdentity.decimal_places;
     _mysql
       .executeQuery({
-        query: `select C.finance_account_child_id ,C.child_name,
+        query: `select C.finance_account_child_id ,C.child_name,VD.is_opening_bal,
          ROUND( (coalesce(sum(debit_amount) ,0.0000)- coalesce(sum(credit_amount) ,0.0000)),${decimal_places})
         as balance_amount from finance_account_child C left join finance_voucher_details VD
         on C.finance_account_child_id=VD.child_id and VD.auth_status='A'  where  finance_account_child_id in (
@@ -30,20 +30,20 @@ export default {
         select count(finance_day_end_header_id) as day_end_pending from finance_day_end_header H 
         inner join finance_day_end_sub_detail SD on H.finance_day_end_header_id= SD.day_end_header_id 
         where SD.child_id in(select child_id from hims_d_customer)  and  H.posted='N';   `,
-        printQuery: true
+        printQuery: true,
       })
-      .then(result => {
+      .then((result) => {
         _mysql.releaseConnection();
         // req.records = result;
         req.records = {
           result: result[0],
           over_due: result[1][0]["over_due"],
           total_receivable: result[2][0]["open"],
-          day_end_pending: result[3][0]["day_end_pending"]
+          day_end_pending: result[3][0]["day_end_pending"],
         };
         next();
       })
-      .catch(e => {
+      .catch((e) => {
         _mysql.releaseConnection();
         next(e);
       });
@@ -54,6 +54,8 @@ export default {
     const _mysql = new algaehMysql();
     const decimal_places = req.userIdentity.decimal_places;
     const child_id = req.query.child_id;
+
+    //H.invoice_no is not null
     _mysql
       .executeQuery({
         query: `select finance_voucher_header_id ,round(amount ,${decimal_places})as invoice_amount,
@@ -68,7 +70,7 @@ export default {
         D.child_id,D.head_id             
         from finance_voucher_header H inner join finance_voucher_details D on 
         H.finance_voucher_header_id=D.voucher_header_id 
-        and H.voucher_type='sales' and H.invoice_no is not null   
+        and H.voucher_type='sales' and if(D.is_opening_bal = 'Y',H.invoice_no is null, H.invoice_no is not null)   
         and  D.child_id=?; 
         
         select round(coalesce(sum(amount)-sum(settled_amount),0),${decimal_places})as over_due 
@@ -92,9 +94,9 @@ export default {
         inner join finance_day_end_sub_detail SD on H.finance_day_end_header_id= SD.day_end_header_id 
         where SD.child_id in(?)  and  H.posted='N';`,
         values: [child_id, child_id, child_id, child_id, child_id],
-        printQuery: true
+        printQuery: true,
       })
-      .then(result => {
+      .then((result) => {
         _mysql.releaseConnection();
 
         // req.records = result;
@@ -104,13 +106,13 @@ export default {
           over_due: result[1][0]["over_due"],
           total_receivable: result[2][0]["open"],
           past_payments: result[3][0]["past_payments"],
-          day_end_pending: result[4][0]["day_end_pending"]
+          day_end_pending: result[4][0]["day_end_pending"],
         };
         next();
       })
-      .catch(e => {
+      .catch((e) => {
         _mysql.releaseConnection();
         next(e);
       });
-  }
+  },
 };

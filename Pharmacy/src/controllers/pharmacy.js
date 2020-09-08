@@ -4,7 +4,7 @@ import serviceModels from "algaeh-master-settings/src/models/serviceTypes";
 import pharmacyModels from "../models/pharmacy";
 import pharmaGlobal from "../models/pharmacyGlobal";
 import Excel from "exceljs";
-const { getItemandLocationStock, getItemLocationStock } = pharmaGlobal;
+const { downloadPharStockDetails, downloadPharStock } = pharmaGlobal;
 const {
   addItemMaster,
   addItemCategory,
@@ -42,7 +42,6 @@ const {
   addLocationReorder,
   getLocationReorder,
   updateLocationReorder,
-  downloadPharStock,
 } = pharmacyModels;
 const { addServices, updateServicesOthrs } = serviceModels;
 
@@ -330,7 +329,7 @@ export default () => {
   //   });
   // });
 
-  api.get("/downloadPharStock", getItemLocationStock, (req, res, next) => {
+  api.get("/downloadPharStock", downloadPharStock, (req, res, next) => {
     const columns = Object.keys(req.records[0]);
     const pharStocks = req.records;
     //location_name,
@@ -380,7 +379,7 @@ export default () => {
 
   api.get(
     "/downloadPharStockDetails",
-    getItemandLocationStock,
+    downloadPharStockDetails,
     (req, res, next) => {
       const columns = Object.keys(req.records[0]);
       const pharStocks = req.records;

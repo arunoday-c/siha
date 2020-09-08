@@ -5,7 +5,7 @@ import invModels from "../models/inventory";
 import invGlobals from "../models/inventoryGlobal";
 import Excel from "exceljs";
 
-const { getItemLocationStock, getItemandLocationStock } = invGlobals;
+const { downloadInvStock, downloadInvStockDetails } = invGlobals;
 
 const {
   addItemMaster,
@@ -281,7 +281,7 @@ export default () => {
     }
   );
 
-  api.get("/downloadInvStock", getItemLocationStock, (req, res, next) => {
+  api.get("/downloadInvStock", downloadInvStock, (req, res, next) => {
     const columns = Object.keys(req.records[0]);
     const pharStocks = req.records;
     //location_name,
@@ -331,7 +331,7 @@ export default () => {
 
   api.get(
     "/downloadInvStockDetails",
-    getItemandLocationStock,
+    downloadInvStockDetails,
     (req, res, next) => {
       const columns = Object.keys(req.records[0]);
       const pharStocks = req.records;
