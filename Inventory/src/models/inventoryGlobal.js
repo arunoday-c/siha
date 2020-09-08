@@ -20,17 +20,17 @@ export default {
               and IL.record_status='A'  and item_id=? and inventory_location_id=? and qtyhand>0 \
               and (date(expirydt) > date(CURDATE()) || exp_date_required='N') order by date(expirydt)",
           values: [req.query.item_id, req.query.item_id, req.query.location_id],
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = {
             uomResult: result[0],
-            locationResult: result[1]
+            locationResult: result[1],
           };
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -83,14 +83,14 @@ export default {
           query:
             "SELECT * from hims_f_inventory_trans_history  WHERE record_status = 'A' " +
             _strAppend,
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -111,14 +111,14 @@ export default {
           from hims_m_inventory_item_location where record_status='A'  and item_id=? and inventory_location_id=? \
           and qtyhand>0  order by date(expirydt)",
           values: [req.query.item_id, req.query.location_id],
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -139,9 +139,9 @@ export default {
           where LP.record_status='A' and\
            L.record_status='A' and LP.location_id=L.hims_d_inventory_location_id  and allow='Y' and user_id=?",
           values: [req.userIdentity.algaeh_d_app_user_id],
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           if (result.length < 1) {
             let _strQry = "";
             let intValues = [];
@@ -166,14 +166,14 @@ export default {
                  allow_pos from hims_d_inventory_location where record_status='A' " +
                   _strQry,
                 values: intValues,
-                printQuery: true
+                printQuery: true,
               })
-              .then(resultLoctaion => {
+              .then((resultLoctaion) => {
                 _mysql.releaseConnection();
                 req.records = resultLoctaion;
                 next();
               })
-              .catch(error => {
+              .catch((error) => {
                 _mysql.releaseConnection();
                 next(error);
               });
@@ -183,7 +183,7 @@ export default {
             next();
           }
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -217,14 +217,53 @@ export default {
             strAppend +
             "order by date(expirydt)",
           values: intValues,
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
+  downloadInvStockDetails: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    try {
+      let intValues = [];
+      let strAppend = "";
+      if (req.query.item_id != null) {
+        strAppend += " and item_id=?";
+        intValues.push(req.query.item_id);
+      }
+      if (req.query.inventory_location_id != null) {
+        strAppend += " and inventory_location_id=?";
+        intValues.push(req.query.inventory_location_id);
+      }
+      _mysql
+        .executeQuery({
+          query:
+            `SELECT IM.item_description as Item, ILOC.location_description as Location, batchno as 'Batch Number', expirydt as 'Expiry Date',  qtyhand as 'Quantity' from 
+            hims_m_inventory_item_location IL,hims_d_inventory_item_master IM, hims_d_inventory_location ILOC 
+            where item_id = IM.hims_d_inventory_item_master_id and inventory_location_id = ILOC.hims_d_inventory_location_id and
+            IL.record_status='A' and qtyhand>0` +
+            strAppend +
+            "order by date(expirydt)",
+          values: intValues,
+          printQuery: false,
+        })
+        .then((result) => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -246,22 +285,22 @@ export default {
       _mysql
         .executeQueryWithTransaction({
           query: "select 1=1",
-          printQuery: true
+          printQuery: true,
         })
-        .then(openconn => {
+        .then((openconn) => {
           for (let i = 0; i < inputParam.inventory_stock_detail.length; i++) {
             _mysql
               .executeQueryWithTransaction({
                 query:
                   "select item_code from `hims_d_inventory_item_master` WHERE `hims_d_inventory_item_master_id`=?",
                 values: [inputParam.inventory_stock_detail[i].item_id],
-                printQuery: true
+                printQuery: true,
               })
-              .then(result => {
+              .then((result) => {
                 req.connection = {
                   connection: _mysql.connection,
                   isTransactionConnection: _mysql.isTransactionConnection,
-                  pool: _mysql.pool
+                  pool: _mysql.pool,
                 };
                 var date = new Date();
                 var hours = date.getHours();
@@ -274,13 +313,14 @@ export default {
                   month = "0" + month;
                 }
 
-                var chars =
-                  "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+                var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
                 var length = 2;
-                var resultString = year + month + day + hours + minutes + seconds;
+                var resultString =
+                  year + month + day + hours + minutes + seconds;
                 for (var j = length; j > 0; --j)
-                  resultString += chars[Math.floor(Math.random() * chars.length)];
+                  resultString +=
+                    chars[Math.floor(Math.random() * chars.length)];
                 resultString +=
                   req.userIdentity.algaeh_d_app_user_id +
                   req.userIdentity.hospital_id;
@@ -295,18 +335,21 @@ export default {
                 req.body.inventory_stock_detail[i].barcode = "B" + resultString;
                 utilities
                   .logger()
-                  .log("batch_no: ", req.body.inventory_stock_detail[i].batch_no);
+                  .log(
+                    "batch_no: ",
+                    req.body.inventory_stock_detail[i].batch_no
+                  );
                 if (i == inputParam.inventory_stock_detail.length - 1) {
                   next();
                 }
               })
-              .catch(error => {
+              .catch((error) => {
                 _mysql.releaseConnection();
                 next(error);
               });
           }
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -344,14 +387,72 @@ export default {
             strAppend +
             "group by item_id order by date(expirydt)",
           values: intValues,
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
+  downloadInvStock: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    try {
+      let intValues = [req.query.inventory_location_id];
+      let strAppend = "";
+      if (req.query.item_id != null) {
+        strAppend += " and IL.item_id=?";
+        intValues.push(req.query.item_id);
+      }
+      if (req.query.inventory_location_id != null) {
+        strAppend += " and inventory_location_id=?";
+        intValues.push(req.query.inventory_location_id);
+      }
+      _mysql
+        .executeQuery({
+          query:
+            `SELECT 
+            IM.item_code AS 'Item Code',
+            IM.item_description AS 'Item Name',
+            ILOC.location_description as 'Location',
+            COALESCE(ILR.reorder_qty, IM.reorder_qty, 0) AS 'Reorder Quantity',
+            batchno AS 'Batch Number',
+            expirydt AS 'Expiry Date',
+            SUM(qtyhand) AS 'Quantity At Hand',
+            uom_description AS 'Stock UOM'
+        FROM
+            hims_d_inventory_item_master IM
+                LEFT JOIN
+            hims_m_inventory_item_location IL ON IM.hims_d_inventory_item_master_id = IL.item_id
+                LEFT JOIN
+            hims_d_inv_location_reorder ILR ON ILR.item_id = IL.item_id
+                AND location_id = '16'
+                LEFT JOIN
+            hims_d_inventory_uom IU ON IU.hims_d_inventory_uom_id = IM.stocking_uom_id
+                LEFT JOIN
+            hims_d_inventory_location ILOC ON ILOC.hims_d_inventory_location_id = inventory_location_id
+        WHERE
+            qtyhand > 0
+        ` +
+            strAppend +
+            "group by IL.item_id order by date(expirydt)",
+          values: intValues,
+          printQuery: false,
+        })
+        .then((result) => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -373,16 +474,16 @@ export default {
             req.query.from_date,
             req.query.to_date,
             req.query.item_code_id,
-            req.query.from_location_id
+            req.query.from_location_id,
           ],
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -403,14 +504,14 @@ export default {
               inner join hims_d_inventory_uom IU  on IIU.uom_id = IU.hims_d_inventory_uom_id \
               where IIU.record_status='A' and IIU.item_master_id=?;",
           values: [req.query.item_id],
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
