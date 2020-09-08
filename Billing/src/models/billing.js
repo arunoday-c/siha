@@ -836,7 +836,7 @@ export default {
           internal_error: true,
           message: "No receipt details",
         };
-        _mysql.rollBackTransaction(() => { });
+        _mysql.rollBackTransaction(() => {});
         next();
         return;
       } else if (
@@ -1059,14 +1059,14 @@ export default {
             _mysql.releaseConnection();
             req.records = {
               internal_error: true,
-              message: "Current user is not a Cahsier in",
+              message: "Current user is not a Cashier in",
             };
             next();
           });
         } else {
           req.records = {
             internal_error: true,
-            message: "Current user is not a Cahsier",
+            message: "Current user is not a Cashier",
           };
           _mysql.rollBackTransaction(() => {
             next();
@@ -1707,7 +1707,7 @@ export default {
       } else {
         req.records = {
           internal_error: true,
-          message: "Current user is not a Cahsier",
+          message: "Current user is not a Cashier",
         };
         _mysql.rollBackTransaction(() => {
           next();
@@ -2378,7 +2378,7 @@ export default {
                     prices = allCompany_price.find((item) => {
                       return (
                         item.insurance_id ==
-                        input[i]["primary_insurance_provider_id"] &&
+                          input[i]["primary_insurance_provider_id"] &&
                         item.services_id == input[i]["hims_d_services_id"]
                       );
                     });
@@ -2570,8 +2570,8 @@ export default {
                     deductable_amount =
                       deductable_percentage !== null
                         ? (parseFloat(net_amout) *
-                          parseFloat(deductable_percentage)) /
-                        100
+                            parseFloat(deductable_percentage)) /
+                          100
                         : 0;
 
                     deductable_amount = utilities.decimalPoints(
@@ -2738,8 +2738,8 @@ export default {
                         from_pos == "Y"
                           ? parseFloat(unit_cost)
                           : unit_cost != 0
-                            ? parseFloat(unit_cost)
-                            : parseFloat(records.standard_fee);
+                          ? parseFloat(unit_cost)
+                          : parseFloat(records.standard_fee);
                     }
                   }
                   // if (FollowUp === true) {
@@ -3543,7 +3543,9 @@ export default {
                         return f;
                     });
 
-                    const credit_amount = _.sumBy(bill, (s) => parseFloat(s.net_amout))
+                    const credit_amount = _.sumBy(bill, (s) =>
+                      parseFloat(s.net_amout)
+                    );
 
                     EntriesArray.push({
                       payment_date: new Date(),
@@ -4247,8 +4249,8 @@ function getBillDetailsFunctionality(req, res, next, resolve) {
                       from_pos == "Y"
                         ? unit_cost
                         : unit_cost != 0
-                          ? unit_cost
-                          : records.standard_fee;
+                        ? unit_cost
+                        : records.standard_fee;
                   }
                 }
 
