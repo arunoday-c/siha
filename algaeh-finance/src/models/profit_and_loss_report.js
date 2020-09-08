@@ -360,10 +360,16 @@ export default {
                                   cosResult[0]["children"].push(allCOS[i]);
                               }
                               if (allNonCOS.length > 0) {
-                                directExpeneseResult.push({
-                                  ...item,
-                                  children: allNonCOS,
-                                });
+                                directExpeneseResult[0]["total"] = parseFloat(
+                                  parseFloat(directExpeneseResult[0]["total"]) +
+                                    _.sumBy(allNonCOS, (s) =>
+                                      parseFloat(s.total)
+                                    )
+                                ).toFixed(decimal_places);
+                                for (let x = 0; x < allNonCOS.length; x++)
+                                  directExpeneseResult[0]["children"].push(
+                                    allNonCOS[x]
+                                  );
                               }
                             }
                           });
@@ -898,10 +904,14 @@ export default {
                               cosResult[0]["children"].push(allCOS[i]);
                           }
                           if (allNonCOS.length > 0) {
-                            directExpeneseResult.push({
-                              ...item,
-                              children: allNonCOS,
-                            });
+                            directExpeneseResult[0]["total"] = parseFloat(
+                              parseFloat(directExpeneseResult[0]["total"]) +
+                                _.sumBy(allNonCOS, (s) => parseFloat(s.total))
+                            ).toFixed(decimal_places);
+                            for (let x = 0; x < allNonCOS.length; x++)
+                              directExpeneseResult[0]["children"].push(
+                                allNonCOS[x]
+                              );
                           }
                         }
                       });
