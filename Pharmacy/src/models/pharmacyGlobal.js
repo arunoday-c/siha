@@ -271,6 +271,45 @@ export default {
       next(e);
     }
   },
+  downloadPharStockDetails: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    try {
+      let intValues = [];
+      let strAppend = "";
+      if (req.query.item_id != null) {
+        strAppend += " and item_id=?";
+        intValues.push(req.query.item_id);
+      }
+      if (req.query.pharmacy_location_id != null) {
+        strAppend += " and pharmacy_location_id=?";
+        intValues.push(req.query.pharmacy_location_id);
+      }
+      _mysql
+        .executeQuery({
+          query:
+            "SELECT item_description as Item, IPL.location_description, batchno as 'Batch Number', expirydt as 'Expiry Date', \
+            qtyhand as 'Quantity At Hand' from hims_m_item_location IL, \
+            hims_d_item_master IM, hims_d_pharmacy_location IPL where item_id = IM.hims_d_item_master_id and pharmacy_location_id = IPL.hims_d_pharmacy_location_id and IL.record_status='A' \
+            and IL.qtyhand>0" +
+            strAppend +
+            "order by date(expirydt)",
+          values: intValues,
+          printQuery: true,
+        })
+        .then((result) => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch((error) => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
 
   updateItemMaster: (req, res, next) => {
     const _mysql = new algaehMysql();
@@ -388,6 +427,65 @@ export default {
       next(e);
     }
   },
+  downloadPharStock: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    try {
+      let intValues = [req.query.pharmacy_location_id];
+      let strAppend = "";
+      if (req.query.item_id != null) {
+        strAppend += " and IL.item_id=?";
+        intValues.push(req.query.item_id);
+      }
+      if (req.query.pharmacy_location_id != null) {
+        strAppend += " and pharmacy_location_id=?";
+        intValues.push(req.query.pharmacy_location_id);
+      }
+
+      _mysql
+        .executeQuery({
+          query:
+            `SELECT 
+            IM.item_code AS 'Item Code',
+            IM.item_description AS 'Item Name',
+            ILOC.location_description as 'Location',
+            COALESCE(ILR.reorder_qty, IM.reorder_qty, 0) AS 'Reorder Quantity',
+            batchno AS 'Batch Number',
+            expirydt AS 'Expiry Date',
+            SUM(qtyhand) AS 'Quantity At Hand',
+            uom_description AS 'Stock UOM'
+        FROM
+        hims_d_item_master IM
+                LEFT JOIN
+                hims_m_item_location IL ON IM.hims_d_item_master_id = IL.item_id
+                LEFT JOIN
+                hims_d_phar_location_reorder ILR ON ILR.item_id = IL.item_id
+                AND location_id = ?
+                LEFT JOIN
+            hims_d_pharmacy_uom IU ON IU.hims_d_pharmacy_uom_id = IM.stocking_uom_id
+                LEFT JOIN
+                hims_d_pharmacy_location ILOC ON ILOC.hims_d_pharmacy_location_id = pharmacy_location_id
+        WHERE
+            qtyhand > 0
+        ` +
+            strAppend +
+            "group by IL.item_id order by date(expirydt)",
+          values: intValues,
+          printQuery: true,
+        })
+        .then((result) => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch((error) => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
 
   getConsumptionSelectedMonth: (req, res, next) => {
     const _mysql = new algaehMysql();
@@ -451,7 +549,7 @@ export default {
             expiry_date_filter = new Date(
               today_date.setFullYear(
                 today_date.getFullYear() +
-                parseInt(result[0].notification_before)
+                  parseInt(result[0].notification_before)
               )
             );
           }
