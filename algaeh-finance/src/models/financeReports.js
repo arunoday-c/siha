@@ -505,7 +505,7 @@ export default {
 
         _mysql
           .executeQuery({
-            query: ` select finance_account_child_id,concat(child_name,' / ',ledger_code) as child_name  from finance_account_child
+            query: ` select finance_account_child_id,concat(child_name,' / ',COALESCE(ledger_code,'')) as child_name  from finance_account_child
               where head_id in (${head_ids});
 
 
@@ -564,7 +564,7 @@ export default {
             if (Result[5].length > 1) {
               above_ninety_days_total = Result[5].pop().debit_amount;
             }
-
+            debugger;
             ledgers.forEach((ledger) => {
               let todays_amount = parseFloat(0).toFixed(decimal_places);
               let thirty_days_amount = parseFloat(0).toFixed(decimal_places);
