@@ -164,6 +164,16 @@ function NavBars(props) {
           {count ? <Badge count={count} /> : null}
           <i className="fas fa-bell fa-lg" />
         </button>
+        <button
+          style={{
+            marginRight: 0,
+          }}
+          className="dropdown navTopbar-dropdown"
+          // disabled={openNotif}
+          // onClick={showNotification}
+        >
+          <i className="fas fa-question-circle fa-lg" />
+        </button>
         <div className="dropdown navTopbar-dropdown">
           <i className="fas fa-angle-down fa-lg" />
           <div
