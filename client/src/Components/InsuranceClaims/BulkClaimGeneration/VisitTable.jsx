@@ -85,7 +85,7 @@ export function VisitTable({ loading = false, data = [] }) {
                 },
               },
               {
-                fieldName: "",
+                fieldName: "insurance_provider_name",
                 label: <AlgaehLabel label={{ forceLabel: "Company Name" }} />,
                 disabled: true,
                 others: {
@@ -94,7 +94,7 @@ export function VisitTable({ loading = false, data = [] }) {
                 },
               },
               {
-                fieldName: "",
+                fieldName: "insurance_sub_name",
                 label: (
                   <AlgaehLabel label={{ forceLabel: "Sub Company Name" }} />
                 ),

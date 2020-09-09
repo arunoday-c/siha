@@ -63,19 +63,16 @@ export function AdvanceModal({
   }, [shifts]);
 
   const onSave = async (data) => {
-    try {
-      const res = await newAlgaehApi({
-        uri: "/billing/patientAdvanceRefund",
-        module: "billing",
-        method: "POST",
-        data,
-      });
+    const res = await newAlgaehApi({
+      uri: "/billing/patientAdvanceRefund",
+      module: "billing",
+      method: "POST",
+      data,
+    });
+    if (res.data.success) {
       return res.data.records;
-    } catch (e) {
-      AlgaehMessagePop({
-        display: e.message,
-        type: "error",
-      });
+    } else {
+      throw new Error(res.data?.message);
     }
   };
 
@@ -116,21 +113,28 @@ export function AdvanceModal({
       });
     }
     inputData.receiptdetails = receiptdetails;
-    onSave(inputData).then((res) => {
-      setData(res);
-      setVisible(false);
-      queryCache.invalidateQueries([
-        "patient",
-        { patient_code: patient?.patient_code },
-      ]);
-      AlgaehMessagePop({
-        display:
-          title === "Advance"
-            ? "Advance Collected Successfully"
-            : "Refund paid Successfully",
-        type: "success",
+    onSave(inputData)
+      .then((res) => {
+        setData(res);
+        setVisible(false);
+        queryCache.invalidateQueries([
+          "patient",
+          { patient_code: patient?.patient_code },
+        ]);
+        AlgaehMessagePop({
+          display:
+            title === "Advance"
+              ? "Advance Collected Successfully"
+              : "Refund paid Successfully",
+          type: "success",
+        });
+      })
+      .catch((e) => {
+        AlgaehMessagePop({
+          display: e.message,
+          type: "error",
+        });
       });
-    });
   };
 
   // const baseState = {
@@ -170,7 +174,7 @@ export function AdvanceModal({
           setTitle("Refund");
           setVisible(true);
         }}
-        disabled={!patient || !patient?.advance_amount}
+        disabled={!patient || !patient?.advance_amount || !shifts.length}
       >
         <AlgaehLabel
           label={{
@@ -186,7 +190,7 @@ export function AdvanceModal({
           setVisible(true);
           setTitle("Advance");
         }}
-        disabled={!patient}
+        disabled={!patient || !shifts.length}
       >
         <AlgaehLabel
           label={{
@@ -225,7 +229,7 @@ export function AdvanceModal({
           </div>
           <hr style={{ margin: "0rem" }} />
           <div className="row secondary-box-container">
-            {shifts?.length && (
+            {!!shifts?.length && (
               <AlgaehAutoComplete
                 div={{ className: "col-lg-3" }}
                 label={{
@@ -291,7 +295,7 @@ export function AdvanceModal({
                   }));
                 },
 
-                placeholder: "0.00",
+                // placeholder: "0.00",
               }}
             />
           </div>
@@ -432,6 +436,7 @@ export function AdvanceModal({
                   type="button"
                   className="btn btn-primary"
                   onClick={onSubmit}
+                  disabled={!shifts?.length || !inputs?.cash_amount}
                 >
                   Save
                 </button>

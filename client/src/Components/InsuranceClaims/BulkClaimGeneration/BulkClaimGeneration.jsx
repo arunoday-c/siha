@@ -5,6 +5,7 @@ import {
   AlgaehAutoComplete,
   AlgaehDateHandler,
   Spin,
+  AlgaehMessagePop,
 } from "algaeh-react-components";
 import moment from "moment";
 import { useQuery } from "react-query";
@@ -20,15 +21,25 @@ export default function BulkClaimGeneration() {
     [
       "get-visits",
       {
-        from_date: dates[0]?.format("YYYY-MM-DD"),
-        to_date: dates[1]?.format("YYYY-MM-DD"),
+        from_date: dates?.[0]?.format("YYYY-MM-DD"),
+        to_date: dates?.[1]?.format("YYYY-MM-DD"),
+        insurance_provider_id,
+        sub_insurance_id,
       },
     ],
     getVisits,
     {
       initialData: [],
+      retry: false,
       initialStale: true,
       enabled: false,
+      onError: (e) => {
+        console.log(e);
+        AlgaehMessagePop({
+          display: e?.message,
+          type: "Error",
+        });
+      },
     }
   );
 
@@ -111,6 +122,7 @@ export default function BulkClaimGeneration() {
                 className: "select-fld",
                 value: insurance_provider_id,
                 onChange: (_, selected) => setInsurance(selected),
+                onClear: () => setInsurance(null),
                 dataSource: {
                   textField: "insurance_provider_name",
                   valueField: "hims_d_insurance_provider_id",
@@ -130,6 +142,9 @@ export default function BulkClaimGeneration() {
                   textField: "insurance_sub_name",
                   valueField: "hims_d_insurance_sub_id",
                   data: subInsurances || [],
+                },
+                others: {
+                  disabled: !insurance_provider_id,
                 },
               }}
             />

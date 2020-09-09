@@ -457,9 +457,8 @@ export function PatientRegistration() {
       });
     }
     if (!patient_code) {
-      inputData = { ...input };
       save({
-        ...inputData,
+        ...input,
         ...billInfo,
         ...billData,
         age: moment().diff(moment(input?.date_of_birth), "year"),
@@ -495,6 +494,8 @@ export function PatientRegistration() {
         hims_d_patient_id: patientData?.patientRegistration?.hims_d_patient_id,
         hims_f_patient_id: patientData?.patientRegistration?.hims_d_patient_id,
         patient_id: patientData?.patientRegistration?.hims_d_patient_id,
+        data_of_birth: patientData?.patientRegistration?.date_of_birth,
+        date_of_birth: patientData?.patientRegistration?.date_of_birth,
         primary_insurance_provider_id: input?.primary_insurance_provider_id,
         primary_sub_id: input?.primary_sub_id,
         primary_network_id: input?.primary_network_id,
@@ -650,27 +651,27 @@ export function PatientRegistration() {
           printArea={
             !!patient_code || !!savedPatient
               ? {
-                  menuitems: [
-                    {
-                      label: "ID Card",
-                      events: {
-                        onClick: () => {
-                          generateIdCard(
-                            patientData?.patientRegistration || savedPatient
-                          );
-                        },
+                menuitems: [
+                  {
+                    label: "ID Card",
+                    events: {
+                      onClick: () => {
+                        generateIdCard(
+                          patientData?.patientRegistration || savedPatient
+                        );
                       },
                     },
-                    {
-                      label: "Advance/Refund Receipt",
-                      events: {
-                        onClick: () => {
-                          setShowAdvModal(true);
-                        },
+                  },
+                  {
+                    label: "Advance/Refund Receipt",
+                    events: {
+                      onClick: () => {
+                        setShowAdvModal(true);
                       },
                     },
-                  ],
-                }
+                  },
+                ],
+              }
               : ""
           }
           selectedLang={userLanguage}
@@ -777,7 +778,7 @@ export function PatientRegistration() {
                           history.replace(location.pathname);
                           history.push(
                             `/OPBilling?patient_code=${
-                              patient_code || savedPatient?.patient_code
+                            patient_code || savedPatient?.patient_code
                             }`
                           );
                         }}
@@ -930,18 +931,18 @@ export function PatientRegistration() {
             inputsparameters={
               patient_code
                 ? {
-                    patient_code: patient_code,
-                    full_name: patientData?.patientRegistration?.full_name,
-                    hims_f_patient_id:
-                      patientData?.patientRegistration?.hims_d_patient_id,
-                  }
+                  patient_code: patient_code,
+                  full_name: patientData?.patientRegistration?.full_name,
+                  hims_f_patient_id:
+                    patientData?.patientRegistration?.hims_d_patient_id,
+                }
                 : !!savedPatient
-                ? {
+                  ? {
                     patient_code: savedPatient?.patient_code,
                     full_name: savedPatient?.full_name,
                     hims_f_patient_id: savedPatient?.hims_d_patient_id,
                   }
-                : {}
+                  : {}
             }
           />
         </>

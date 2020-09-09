@@ -109,18 +109,16 @@ export default {
       // utilities.logger().log("inputParam: ", inputParam);
 
       const internalInsertPatientVisitData = () => {
-        if (!inputParam.age_in_years) {
-          let fromDate = moment(inputParam.date_of_birth);
-          let toDate = new Date();
-          let years = moment(toDate).diff(fromDate, "year");
-          fromDate.add(years, "years");
-          let months = moment(toDate).diff(fromDate, "months");
-          fromDate.add(months, "months");
-          let days = moment(toDate).diff(fromDate, "days");
-          inputParam.age_in_years = years;
-          inputParam.age_in_months = months;
-          inputParam.age_in_days = days;
-        }
+        let fromDate = moment(inputParam.date_of_birth);
+        let toDate = new Date();
+        let years = moment(toDate).diff(fromDate, "year");
+        fromDate.add(years, "years");
+        let months = moment(toDate).diff(fromDate, "months");
+        fromDate.add(months, "months");
+        let days = moment(toDate).diff(fromDate, "days");
+        inputParam.age_in_years = years;
+        inputParam.age_in_months = months;
+        inputParam.age_in_days = days;
 
         if (inputParam.new_visit_patient === "P") {
           inputParam.new_visit_patient = "P";

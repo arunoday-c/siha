@@ -36,6 +36,7 @@
                     <tr>
                         <th>Sl No.</th>
                         <th>Vendor Batch No.</th>
+                        <th>System Batch No.</th>
                         <th>DN Quantity</th>
                         <th>Unit Cost</th>
                         {{!-- <th>Sales Price</th> --}}
@@ -49,7 +50,7 @@
                 <tbody>
                     {{#each details}}
                     <tr>
-                        <td colspan="4" class="tableSubHdg"><small>Item Name:</small><br>{{item_description}} </td>
+                        <td colspan="5" class="tableSubHdg"><small>Item Name:</small><br>{{item_description}} </td>
                         <td class="tableSubHdg"><small>Item Code:</small><br> {{item_code}}</td>
                         <td class="tableSubHdg"><small>Purchase UOM:</small><br>{{uom_description}}</td>
                         <td class="tableSubHdg"><small>Req. Qty:</small><br>{{po_quantity}}</td>
@@ -61,6 +62,7 @@
                     <tr>
                         <td>{{inc @index}}</td>
 
+                        <td>{{vendor_batchno}}</td>
                         <td>{{batchno}}</td>
                         <td>{{dn_quantity}}</td>
 
@@ -76,7 +78,7 @@
                     {{/each }}
 
                     {{/each }}<tr class="footerTotalDown">
-                        <td colspan="8">Total Net Amount</td>
+                        <td colspan="9">Total Net Amount</td>
                         <td>{{net_payable}}</td>
                     </tr>
                 </tbody>
