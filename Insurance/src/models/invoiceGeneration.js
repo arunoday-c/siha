@@ -826,6 +826,9 @@ export default {
           BH.company_res,
           BH.company_payable,
           BH.company_tax,
+          BH.sub_total_amount as gross_amount,
+          BH.discount_amount,
+          BH.net_total as net_amout,
           pv.patient_id,
           pv.hims_f_patient_visit_id,
           pv.insured,
@@ -834,7 +837,11 @@ export default {
           E.full_name as doctor_name,
           pv.visit_date,
           INS.insurance_provider_name,
-          SUB.insurance_sub_name
+          SUB.insurance_sub_name,
+          IMAP.primary_card_number as card_number,
+          IMAP.primary_policy_num as policy_number,
+          NET.network_type,
+          NET.effective_end_date
       FROM
           hims_f_patient P,
           hims_f_patient_visit pv,
@@ -842,14 +849,15 @@ export default {
           hims_d_employee E,
           hims_m_patient_insurance_mapping IMAP,
           hims_d_insurance_provider INS,
-          hims_d_insurance_sub SUB
-
+          hims_d_insurance_sub SUB,
+          hims_d_insurance_network NET
       WHERE
           pv.patient_id = P.hims_d_patient_id
               AND pv.hims_f_patient_visit_id = BH.visit_id
               AND IMAP.patient_visit_id = BH.visit_id
               AND INS.hims_d_insurance_provider_id = IMAP.primary_insurance_provider_id
               AND SUB.hims_d_insurance_sub_id = IMAP.primary_sub_id
+              AND NET.hims_d_insurance_network_id = IMAP.primary_network_id
               AND pv.record_status = 'A'
               AND pv.doctor_id = E.hims_d_employee_id
               AND pv.hospital_id = ${hospitalId}

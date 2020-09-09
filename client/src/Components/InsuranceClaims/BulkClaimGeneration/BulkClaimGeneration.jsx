@@ -14,6 +14,7 @@ import { getVisits, getInsuranceProviders, getSubInsurance } from "./apis";
 // import { AlgaehValidation } from "../../../utils/GlobalFunctions";
 import { VisitTable } from "./VisitTable";
 export default function BulkClaimGeneration() {
+  const [selectedList, setSelectedList] = useState([]);
   const [dates, setDates] = useState([moment().subtract(7, "days"), moment()]);
   const [insurance_provider_id, setInsurance] = useState(null);
   const [sub_insurance_id, setSubInsurance] = useState(null);
@@ -52,6 +53,20 @@ export default function BulkClaimGeneration() {
     getSubInsurance,
     { enabled: !!insurance_provider_id }
   );
+
+  const addToList = (row) => {
+    setSelectedList((state) => {
+      const current = state.findIndex(
+        (item) => item.hims_f_patient_visit_id === row.hims_f_patient_visit_id
+      );
+      if (current !== -1) {
+        delete state[current];
+        return [...state];
+      } else {
+        return [...state, row];
+      }
+    });
+  };
 
   return (
     <Spin spinning={insLoading || subLoading || isLoading || isFetching}>
@@ -160,7 +175,12 @@ export default function BulkClaimGeneration() {
           </div>
           <div className="row">
             <div className="col-12">
-              <VisitTable loading={isLoading} data={data} />
+              <VisitTable
+                loading={isLoading}
+                data={data}
+                addToList={addToList}
+                list={selectedList}
+              />
             </div>
           </div>
         </div>
@@ -168,7 +188,11 @@ export default function BulkClaimGeneration() {
           <div className="row">
             <div className="col-12">
               {" "}
-              <button type="button" className="btn btn-primary">
+              <button
+                type="button"
+                className="btn btn-primary"
+                disabled={!selectedList.length}
+              >
                 <AlgaehLabel
                   label={{ fieldName: "btn_final", returnText: true }}
                 />

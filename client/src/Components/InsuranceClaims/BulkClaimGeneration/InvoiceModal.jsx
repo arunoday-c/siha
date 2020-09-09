@@ -1,7 +1,7 @@
 import React from "react";
 import { AlgaehModal, Spin } from "algaeh-react-components";
 import { useQuery } from "react-query";
-import { getInvoiceForVisit, getBillDetails } from "./apis";
+import { getInvoiceForVisit } from "./apis";
 import { InvoiceDetails } from "../InvoiceGeneration/InvoiceDetails";
 
 export function InvoiceModal({ visible, onClose, visit_id, extra }) {
@@ -12,13 +12,13 @@ export function InvoiceModal({ visible, onClose, visit_id, extra }) {
       enabled: !!visit_id && visible,
     }
   );
-  const { data, isLoading: billLoading } = useQuery(
-    ["getbilling", { details }],
-    getBillDetails,
-    {
-      enabled: !!details?.length,
-    }
-  );
+  //   const { data, isLoading: billLoading } = useQuery(
+  //     ["getbilling", { details }],
+  //     getBillDetails,
+  //     {
+  //       enabled: !!details?.length,
+  //     }
+  //   );
   return (
     <AlgaehModal
       title={"Invoice Details"}
@@ -33,13 +33,14 @@ export function InvoiceModal({ visible, onClose, visit_id, extra }) {
         </button>,
       ]}
     >
-      <Spin spinning={billLoading || detailLoading}>
+      <Spin spinning={detailLoading}>
         <InvoiceDetails
           details={details}
           data={{
-            data,
             insurance_provider_name: extra?.insurance_provider_name,
             sub_insurance_provider_name: extra?.insurance_sub_name,
+            ...extra,
+            company_payble: extra?.company_payable,
           }}
         />
       </Spin>

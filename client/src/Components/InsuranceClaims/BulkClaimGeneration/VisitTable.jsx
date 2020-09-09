@@ -8,7 +8,12 @@ import {
 } from "algaeh-react-components";
 import { InvoiceModal } from "./InvoiceModal";
 
-export function VisitTable({ loading = false, data = [] }) {
+export function VisitTable({
+  loading = false,
+  data = [],
+  addToList = () => {},
+  list = [],
+}) {
   const [current, setCurrent] = useState(null);
   // const params = useQueryParams();
 
@@ -53,9 +58,19 @@ export function VisitTable({ loading = false, data = [] }) {
             id="BulkClaimGenerationGrid"
             columns={[
               {
-                fieldName: "",
+                fieldName: "hims_f_patient_visit_id",
                 label: "Action",
-                // displayTemplate: RemittanceButton,
+                displayTemplate: (row) => (
+                  <input
+                    type="checkbox"
+                    onClick={() => addToList(row)}
+                    checked={list.some(
+                      (item) =>
+                        item.hims_f_patient_visit_id ===
+                        row.hims_f_patient_visit_id
+                    )}
+                  />
+                ),
               },
               {
                 fieldName: "hims_f_patient_visit_id",
