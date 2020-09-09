@@ -290,7 +290,7 @@ export default {
           IH.`remittance_amount`, IH.`denial_amount`, IH.`claim_validated`, IH.`card_holder_name`,\
           IH.`card_holder_age`, IH.`card_holder_gender`, IH.`card_class`, IH.`created_by`, IH.`created_date`,\
           IH.`updated_by`, IH.`updated_date`, IH.`hospital_id`, PV.visit_code, P.patient_code, P.full_name\
-          from  hims_f_invoice_header IH, hims_f_patient_visit PV, hims_f_patient P\
+          from  hims_f_invoice_header IH, hims_f_patient_visit PV, hims_f_patient P \
           where IH.visit_id = PV.hims_f_patient_visit_id and IH.patient_id = P.hims_d_patient_id and invoice_number=?",
           values: [req.query.invoice_number],
 
@@ -301,7 +301,7 @@ export default {
             _mysql
               .executeQuery({
                 query:
-                  "select * from hims_f_invoice_details where invoice_header_id=?",
+                  "select ID.*,S.service_name, ST.service_type from hims_f_invoice_details ID, hims_d_services S, hims_d_service_type ST  where S.hims_d_services_id=ID.service_id and ST.hims_d_service_type_id=ID.service_type_id and invoice_header_id=?",
                 values: [headerResult[0].hims_f_invoice_header_id],
 
                 printQuery: false,
