@@ -248,6 +248,29 @@ export default class ERPSettings extends Component {
                       },
                     }}
                   />
+                  <div
+                    className="col-12 customCheckbox"
+                    style={{ marginTop: 23, border: "none" }}
+                  >
+                    <label className="checkbox inline">
+                      <input
+                        type="checkbox"
+                        name="trans_ack_required"
+                        value={this.state.trans_ack_required}
+                        checked={
+                          this.state.trans_ack_required === "Y" ? true : false
+                        }
+                        onChange={checkBoxEvent.bind(this, this)}
+                      />
+                      <span>
+                        <AlgaehLabel
+                          label={{
+                            forceLabel: "After Trans. Ack. Required",
+                          }}
+                        />
+                      </span>
+                    </label>
+                  </div>
                   <div className="col-12">
                     <button
                       type="button"

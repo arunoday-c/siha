@@ -150,16 +150,26 @@ const generateMaterialTransInv = data => {
 const SaveTransferEntry = $this => {
   let gitLoaction_Exists = {};
 
-  if ($this.props.git_locations.length === 0) {
-    swalMessage({
-      title: "Please Enter GIT Loaction to transfer item",
-      type: "warning"
-    });
-    return;
-  } else {
-    gitLoaction_Exists = $this.props.git_locations[0];
-  }
   let InputObj = $this.state;
+  if ($this.state.trans_ack_required === "Y") {
+    if ($this.props.git_locations.length === 0) {
+      swalMessage({
+        title: "Please Enter GIT Loaction to transfer item",
+        type: "warning"
+      });
+      return;
+    } else {
+      gitLoaction_Exists = $this.props.git_locations[0];
+    }
+    InputObj.ack_done = "N";
+  } else {
+    gitLoaction_Exists = {
+      hims_d_inventory_location_id: $this.state.to_location_id,
+      location_type: $this.state.to_location_type
+    }
+    InputObj.ack_done = "Y";
+  }
+
   AlgaehLoader({ show: true });
   InputObj.operation = "+";
   InputObj.completed = "Y";
@@ -631,6 +641,28 @@ const ReturnCheckboxEvent = ($this, e) => {
   });
 };
 
+
+const getInventoryOptions = ($this) => {
+  algaehApiCall({
+    uri: "/inventory/getInventoryOptions",
+    method: "GET",
+    module: "inventory",
+    onSuccess: (res) => {
+      if (res.data.success) {
+        $this.setState({
+          trans_ack_required: res.data.records[0].trans_ack_required,
+        });
+      }
+    },
+    onFailure: (err) => {
+      swalMessage({
+        title: err.message,
+        type: "error",
+      });
+    },
+  });
+}
+
 export {
   changeTexts,
   getCtrlCode,
@@ -643,5 +675,6 @@ export {
   getRequisitionDetails,
   generateMaterialTransInv,
   AcknowledgeTransferEntry,
-  ReturnCheckboxEvent
+  ReturnCheckboxEvent,
+  getInventoryOptions
 };

@@ -261,7 +261,7 @@ const AddItems = ($this, context) => {
       item_group_id: $this.state.item_group_id,
       item_id: $this.state.item_id,
       quantity_required: $this.state.quantity_required,
-      quantity_authorized: 0,
+      quantity_authorized: $this.state.requisition_auth_level === "N" ? $this.state.quantity_required : 0,
       item_uom: $this.state.item_uom,
       from_qtyhand: $this.state.from_qtyhand,
       to_qtyhand: $this.state.to_qtyhand,
@@ -269,7 +269,7 @@ const AddItems = ($this, context) => {
       item_code: $this.state.item_code,
       uom_description: $this.state.uom_description,
       barcode: $this.state.barcode,
-      quantity_outstanding: 0,
+      quantity_outstanding: $this.state.requisition_auth_level === "N" ? $this.state.quantity_required : 0
     };
     inventory_stock_detail.push(ItemInput);
     $this.setState({

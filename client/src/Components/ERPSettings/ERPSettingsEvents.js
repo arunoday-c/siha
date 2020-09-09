@@ -55,6 +55,7 @@ const saveInventoryOptions = ($this) => {
     let inputObj = {
         hims_d_inventory_options_id: $this.state.hims_d_inventory_options_id,
         requisition_auth_level: $this.state.inv_requisition_auth_level,
+        trans_ack_required: $this.state.trans_ack_required
     }
     if (inputObj.hims_d_inventory_options_id !== null) {
         algaehApiCall({

@@ -354,8 +354,8 @@ export default {
               hims_f_inventory_material_header_id,from_location_type,from_location_id, material_requisition_number, \
               to_location_id, to_location_type, description, completed, completed_date, completed_lines, \
               transfer_quantity, requested_quantity,direct_transfer, recieved_quantity, outstanding_quantity, \
-              return_type, cancelled, cancelled_by,cancelled_date,hospital_id) \
-              VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+              return_type, ack_done, hospital_id) \
+              VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
                 values: [
                   transfer_number,
                   today,
@@ -377,9 +377,7 @@ export default {
                   input.recieved_quantity,
                   input.outstanding_quantity,
                   input.return_type,
-                  input.cancelled,
-                  input.cancelled_by,
-                  input.cancelled_date,
+                  input.ack_done,
                   req.userIdentity.hospital_id,
                 ],
                 printQuery: true,

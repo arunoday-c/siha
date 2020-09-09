@@ -150,7 +150,6 @@ export default {
               printQuery: true
             })
             .then(headerResult => {
-              utilities.logger().log("headerResult: ", headerResult.insertId);
               let IncludeValues = [
                 "item_id",
                 "item_category_id",
@@ -159,6 +158,7 @@ export default {
                 "to_qtyhand",
                 "from_qtyhand",
                 "quantity_required",
+                "quantity_outstanding",
                 "quantity_authorized"
               ];
 

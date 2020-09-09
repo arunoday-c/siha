@@ -16,6 +16,7 @@ import {
   generateMaterialTransInv,
   AcknowledgeTransferEntry,
   ReturnCheckboxEvent,
+  getInventoryOptions
 } from "./InvTransferEntryEvents";
 import "./InvTransferEntry.scss";
 import "../../../styles/site.scss";
@@ -35,7 +36,9 @@ class InvTransferEntry extends Component {
     this.state = {
       from_location_id: null,
       decimal_places: null,
+      trans_ack_required: "N"
     };
+    getInventoryOptions(this)
   }
 
   UNSAFE_componentWillMount() {
