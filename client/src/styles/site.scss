@@ -2274,7 +2274,10 @@ input.autoselect-input:disabled {
   }
 }
 .pastVisitGrid {
-  min-height: 22vh !important;
+  min-height: 15vh !important;
+  max-height: 15vh !important;
+  overflow: auto;
+  margin-bottom: 10px;
 }
 .algaehNewModal {
   min-width: 70vw !important ;
