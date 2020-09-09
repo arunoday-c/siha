@@ -457,9 +457,8 @@ export function PatientRegistration() {
       });
     }
     if (!patient_code) {
-      inputData = { ...input };
       save({
-        ...inputData,
+        ...input,
         ...billInfo,
         ...billData,
         age: moment().diff(moment(input?.date_of_birth), "year"),
@@ -495,6 +494,7 @@ export function PatientRegistration() {
         hims_d_patient_id: patientData?.patientRegistration?.hims_d_patient_id,
         hims_f_patient_id: patientData?.patientRegistration?.hims_d_patient_id,
         patient_id: patientData?.patientRegistration?.hims_d_patient_id,
+        data_of_birth: patientData?.patientRegistration?.date_of_birth,
         primary_insurance_provider_id: input?.primary_insurance_provider_id,
         primary_sub_id: input?.primary_sub_id,
         primary_network_id: input?.primary_network_id,
