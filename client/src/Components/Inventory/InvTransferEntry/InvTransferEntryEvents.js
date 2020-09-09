@@ -181,6 +181,7 @@ const SaveTransferEntry = $this => {
   ).format("YYYY-MM-DD");
   InputObj.git_location_type = gitLoaction_Exists.location_type;
   InputObj.git_location_id = gitLoaction_Exists.hims_d_inventory_location_id;
+  InputObj.ScreenCode = getCookie("ScreenCode");
   for (let i = 0; i < InputObj.inventory_stock_detail.length; i++) {
     InputObj.inventory_stock_detail[i].location_id = InputObj.from_location_id;
     InputObj.inventory_stock_detail[i].location_type =

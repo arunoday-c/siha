@@ -383,6 +383,7 @@ export default {
                 printQuery: true,
               })
               .then((headerResult) => {
+                req.body.hims_f_inventory_transfer_header_id = headerResult.insertId;
                 req.body.transaction_id = headerResult.insertId;
                 req.body.year = year;
                 req.body.period = period;

@@ -35,6 +35,13 @@ export default () => {
     "/addtransferEntry",
     addtransferEntry,
     updateinvreqEntryOnceTranfer,
+    (req, res, next) => {
+      if (req.body.ack_done == "Y") {
+        generateAccountingEntry(req, res, next);
+      } else {
+        next();
+      }
+    },
     updateIntoInvItemLocation,
     updateIntoInvItemLocation,
     (req, res, next) => {
