@@ -117,6 +117,7 @@ const AddItems = ($this, context) => {
     quantity_transfer: $this.state.quantity,
     uom_transferred_id: $this.state.uom_id,
     sales_price: $this.state.sales_price,
+    vendor_batchno: $this.state.vendor_batchno,
     git_qty: $this.state.quantity,
     ack_quantity: 0,
   };
@@ -157,7 +158,7 @@ const AddItems = ($this, context) => {
     uom_id: null,
     item_group_id: null,
     quantity: 0,
-
+    vendor_batchno: null,
     expiry_date: null,
     batchno: null,
     grn_no: null,
@@ -206,8 +207,8 @@ const deleteTransEntryDetail = ($this, context, row, rowId) => {
     $this.props.inventoryitemlist === undefined
       ? []
       : $this.props.inventoryitemlist.filter(
-          (f) => f.hims_d_inventory_item_master_id === row.item_id
-        );
+        (f) => f.hims_d_inventory_item_master_id === row.item_id
+      );
 
   swal({
     title: "Are you sure want to delete ?" + display[0].item_description + "?",
@@ -594,6 +595,7 @@ const itemchangeText = ($this, context, e, ctrl) => {
               expiry_date: data.locationResult[0].expirydt,
               batchno: data.locationResult[0].batchno,
               grn_no: data.locationResult[0].grnno,
+              vendor_batchno: data.locationResult[0].vendor_batchno,
               qtyhand: qtyhand,
               barcode: data.locationResult[0].barcode,
               ItemUOM: data.uomResult,
