@@ -1,5 +1,6 @@
 import React from "react";
 import { Drawer } from "algaeh-react-components";
+import "./helpDoc.scss";
 // import emptyImage from "../Notifications/no_data.svg";
 import { getCookie } from "../../../utils/algaehApiCall";
 
@@ -16,9 +17,7 @@ export function HelpCenter({ visible, onClose }) {
     >
       <iframe
         className="helpDocIframe"
-        src={`http://localhost:8888/algaeh-docs/templates/#${getCookie(
-          "ScreenName"
-        )}`}
+        src={`https://help.algaeh.com/#${getCookie("ScreenName")}`}
       ></iframe>
       {/* <Empty image={emptyImage} description={"Page under construction"} /> */}
     </Drawer>

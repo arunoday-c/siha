@@ -1,4 +1,5 @@
 import React from "react";
+import "./helpDoc.scss";
 import { Drawer } from "antd";
 import { getCookie } from "../../../utils/algaehApiCall";
 
@@ -15,6 +16,7 @@ export default function HelpDoc({ open, handlePanel }) {
     >
       <iframe
         className="helpDocIframe"
+        style={{ height: "100%", width: "100%", border: "none" }}
         src={`http://localhost:8888/algaeh-docs/templates/#${getCookie(
           "ScreenName"
         )}`}
