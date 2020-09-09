@@ -63,6 +63,7 @@ export function AdvanceModal({
   }, [shifts]);
 
   const onSave = async (data) => {
+    data.ScreenCode === "AD0001"
     const res = await newAlgaehApi({
       uri: "/billing/patientAdvanceRefund",
       module: "billing",
