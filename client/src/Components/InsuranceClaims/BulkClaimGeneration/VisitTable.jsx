@@ -1,18 +1,15 @@
-import React from "react";
-// import { useQuery } from "react-query";
+import React, { useState } from "react";
 import "./BulkClaimGeneration.scss";
 import {
   AlgaehDataGrid,
   AlgaehLabel,
   Spin,
-  // Tooltip,
+  Tooltip,
 } from "algaeh-react-components";
-// import { UpdateStatement } from "./UpdateStatment";
-// import { newAlgaehApi, useQueryParams } from "../../../hooks";
+import { InvoiceModal } from "./InvoiceModal";
 
 export function VisitTable({ loading = false, data = [] }) {
-  // const [show, setShow] = useState(false);
-  // const [current, setCurrent] = useState(null);
+  const [current, setCurrent] = useState(null);
   // const params = useQueryParams();
 
   // const onClickRow = (row) => {
@@ -37,6 +34,12 @@ export function VisitTable({ loading = false, data = [] }) {
 
   return (
     <Spin spinning={loading}>
+      <InvoiceModal
+        visible={!!current}
+        onClose={() => setCurrent(null)}
+        visit_id={current?.hims_f_patient_visit_id}
+        extra={current}
+      />
       {/* <UpdateStatement data={current} show={show} onClose={onClose} /> */}
       <div className="portlet portlet-bordered margin-bottom-15">
         <div className="portlet-title">
@@ -53,6 +56,17 @@ export function VisitTable({ loading = false, data = [] }) {
                 fieldName: "",
                 label: "Action",
                 // displayTemplate: RemittanceButton,
+              },
+              {
+                fieldName: "hims_f_patient_visit_id",
+                label: "View Invoice",
+                displayTemplate: (row) => (
+                  <Tooltip title="Pay">
+                    <span onClick={() => setCurrent(row)}>
+                      <i className="fas fa-eye"></i>
+                    </span>
+                  </Tooltip>
+                ),
               },
               {
                 fieldName: "visit_code",
