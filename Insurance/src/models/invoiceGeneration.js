@@ -794,14 +794,24 @@ export default {
   getVisitsForGeneration: (req, res, next) => {
     const _mysql = new algaehMysql();
     const input = req.query;
-    const values = [];
     let qryStr = "";
     try {
       const hospitalId = req.userIdentity.hospital_id;
       if (!!input.from_date && !!input.to_date) {
-        qryStr += "and  date(pv.visit_date) between date(?) and date(?) ";
-        values.push(input.from_date, input.to_date);
+        qryStr += `and  date(pv.visit_date) between '${input.from_date}' and '${input.to_date}' `;
+      } else {
+        _mysql.releaseConnection();
+        next(Error("Please Select From date and To date"));
       }
+
+      if (!!input.insurance_provider_id) {
+        qryStr += `and IMAP.primary_insurance_provider_id=${input.insurance_provider_id}`;
+      }
+
+      if (!!input.sub_insurance_id) {
+        qryStr += `and IMAP.primary_sub_id=${input.sub_insurance_id}`;
+      }
+
       _mysql
         .executeQuery({
           query: `SELECT 
@@ -822,22 +832,30 @@ export default {
           pv.sec_insured,
           pv.episode_id,
           E.full_name as doctor_name,
-          pv.visit_date
+          pv.visit_date,
+          INS.insurance_provider_name,
+          SUB.insurance_sub_name
       FROM
           hims_f_patient P,
           hims_f_patient_visit pv,
           hims_f_billing_header AS BH,
-          hims_d_employee E
+          hims_d_employee E,
+          hims_m_patient_insurance_mapping IMAP,
+          hims_d_insurance_provider INS,
+          hims_d_insurance_sub SUB
+
       WHERE
           pv.patient_id = P.hims_d_patient_id
               AND pv.hims_f_patient_visit_id = BH.visit_id
+              AND IMAP.patient_visit_id = BH.visit_id
+              AND INS.hims_d_insurance_provider_id = IMAP.primary_insurance_provider_id
+              AND SUB.hims_d_insurance_sub_id = IMAP.primary_sub_id
               AND pv.record_status = 'A'
               AND pv.doctor_id = E.hims_d_employee_id
               AND pv.hospital_id = ${hospitalId}
               AND pv.insured = 'Y'
               AND BH.invoice_generated = 'N' ${qryStr}
       ORDER BY pv.hims_f_patient_visit_id DESC`,
-          values,
           printQuery: true,
         })
         .then((result) => {
