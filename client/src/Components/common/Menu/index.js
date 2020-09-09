@@ -10,6 +10,7 @@ import BreadCrum from "./breadcrum";
 import localSrc from "./algaehlogo.png";
 import { i18next } from "algaeh-react-components";
 import { Badge } from "antd";
+import { HelpCenter } from "../HelpCenter";
 
 function NavBars(props) {
   const {
@@ -27,6 +28,7 @@ function NavBars(props) {
   const [showPasswordChange, setShowPasswordChange] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
   const [openNotif, setOpenNotif] = useState(false);
+  const [openHelp, setOpenHelp] = useState(false);
   const [selectedMenu, setSelectedMenu] = useState(undefined);
   const [count, setCount] = useState(null);
 
@@ -169,8 +171,8 @@ function NavBars(props) {
             marginRight: 0,
           }}
           className="dropdown navTopbar-dropdown"
-          // disabled={openNotif}
-          // onClick={showNotification}
+          // disabled={open}
+          onClick={() => setOpenHelp(true)}
         >
           <i className="fas fa-question-circle fa-lg" />
         </button>
@@ -237,6 +239,12 @@ function NavBars(props) {
         open={openNotif}
         handlePanel={() => {
           setOpenNotif(false);
+        }}
+      />
+      <HelpCenter
+        visible={openHelp}
+        onClose={() => {
+          setOpenHelp(false);
         }}
       />
     </>
