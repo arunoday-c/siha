@@ -652,6 +652,7 @@ export default {
         })
         .then((generatedNumbers) => {
           req.body["receipt_number"] = generatedNumbers[Module_Name];
+          req.body["bill_number"] = generatedNumbers[Module_Name];
           _mysql
             .executeQuery({
               query:
@@ -3687,7 +3688,7 @@ export default {
                       amount,
                       voucher_type,
                       inputParam.hims_f_billing_header_id,
-                      inputParam.bill_number || inputParam.patient_code,
+                      inputParam.bill_number,
                       inputParam.ScreenCode,
                       narration,
                       req.userIdentity.algaeh_d_app_user_id,
