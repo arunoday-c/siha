@@ -2910,6 +2910,7 @@ export default {
                       servicesDetails.hims_f_ordered_services_id,
                     billed: billed,
                     test_id: servicesDetails.test_id,
+                    test_type: "R"
                   }
                 );
 
