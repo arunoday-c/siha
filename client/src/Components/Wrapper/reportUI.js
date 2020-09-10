@@ -129,7 +129,6 @@ export default class ReportUI extends Component {
   }
 
   componentDidMount() {
-    console.log("contextType", this.context);
     this.setState({
       openPopup: true,
     });
@@ -263,6 +262,7 @@ export default class ReportUI extends Component {
             },
             others: { responseType: "blob" },
             data: {
+              directEcel: that.props.options.directEcel,
               report: {
                 ...reportProperties,
                 reportParams: parameters,
