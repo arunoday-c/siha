@@ -189,14 +189,18 @@ export default memo(function (props) {
                 name: "voucher_header_id",
                 value: record.finance_voucher_header_id,
               },
+              {
+                name: "voucher_type",
+                value: record.voucher_type,
+              },
             ],
             outputFileType: "PDF",
           },
         },
         onSuccess: (res) => {
           const urlBlob = URL.createObjectURL(res.data);
-          const documentName = "Journal Voucher Report";
-          const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Journal Voucher Report`;
+          const documentName = `${record.voucher_type} Voucher Report`;
+          const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=${record.voucher_type} Voucher Report`;
           window.open(origin);
         },
       });
