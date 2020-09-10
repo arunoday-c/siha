@@ -297,7 +297,11 @@ export function UpdateStatement({
       maskClosable={false}
       width={1200}
       closable={true}
-      footer={null}
+      footer={[
+        <button className="btn btn-default" onClick={() => onClose(true)}>
+          Close
+        </button>,
+      ]}
       onCancel={() => onClose(true)}
       // onOk={handleSubmit(onSubmit)}
       className={`${userLanguage}_comp row algaehNewModal UpdateStatementModal`}

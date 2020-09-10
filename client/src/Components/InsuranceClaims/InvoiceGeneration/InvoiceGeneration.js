@@ -13,7 +13,6 @@ import BreadCrumb from "../../common/BreadCrumb/BreadCrumb.js";
 import {
   VisitSearch,
   FinalizedAndInvoice,
-  ClearData,
   getCtrlCode,
 } from "./InvoiceGenerationHandaler";
 import { InvoiceDetails } from "./InvoiceDetails";
@@ -97,6 +96,67 @@ class InvoiceGeneration extends Component {
       });
     }
   }
+  ClearData = () => {
+    this.setState(
+      {
+        hims_f_invoice_header_id: null,
+        invoice_number: null,
+        invoice_date: new Date(),
+        visit_code: "",
+        patient_code: "",
+        full_name: "",
+        patient_id: "",
+        visit_id: "",
+        saveEnable: true,
+        clearEnable: true,
+        generateVoice: true,
+        gross_amount: 0,
+        discount_amount: 0,
+        patient_resp: 0,
+        patient_tax: 0,
+        patient_payable: 0,
+        company_resp: 0,
+        company_tax: 0,
+        company_payble: 0,
+        sec_company_resp: 0,
+        sec_company_tax: 0,
+        sec_company_payable: 0,
+        net_amout: 0,
+        insurance_provider_name: "---",
+        sub_insurance_provider_name: "---",
+        network_type: "---",
+        policy_number: "---",
+        card_number: "---",
+        effective_end_date: "---",
+        secondary_insurance_provider_name: "---",
+        secondary_network_type: "---",
+        secondary_policy_number: "---",
+        secondary_card_number: "---",
+        secondary_effective_end_date: "---",
+        select_invoice: "CH",
+        creidt_invoice: false,
+        cash_invoice: true,
+        dataExists: false,
+        Invoice_Detail: [],
+      },
+      () => {
+        this.props.initialStateOrders({
+          redux: {
+            type: "ORDERED_SERVICES_GET_DATA",
+            mappingName: "orderedserviceslist",
+            data: [],
+          },
+        });
+        this.props.getPatientInsurance({
+          redux: {
+            type: "EXIT_INSURANCE_GET_DATA",
+            mappingName: "existinsurance",
+            data: {},
+          },
+        });
+      }
+    );
+  };
 
   generateInvoice(rpt_name, rpt_desc) {
     algaehApiCall({
@@ -167,6 +227,7 @@ class InvoiceGeneration extends Component {
       nextProps.existinsurance.length !== 0
     ) {
       let output = nextProps.existinsurance[0];
+      debugger;
       this.setState({ ...this.state, ...output });
     }
   }
@@ -356,7 +417,7 @@ class InvoiceGeneration extends Component {
               <button
                 type="button"
                 className="btn btn-default"
-                onClick={ClearData.bind(this, this)}
+                onClick={this.ClearData}
                 disabled={this.state.clearEnable}
               >
                 <AlgaehLabel

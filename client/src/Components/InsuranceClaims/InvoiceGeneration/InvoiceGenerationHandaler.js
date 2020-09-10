@@ -207,61 +207,6 @@ const FinalizedAndInvoice = ($this) => {
   }
 };
 
-const ClearData = ($this) => {
-  $this.setState(
-    {
-      hims_f_invoice_header_id: null,
-      invoice_number: null,
-      invoice_date: new Date(),
-      visit_code: "",
-      patient_code: "",
-      full_name: "",
-      patient_id: "",
-      visit_id: "",
-      saveEnable: true,
-      clearEnable: true,
-      Invoice_Detail: [],
-      generateVoice: true,
-      gross_amount: 0,
-      discount_amount: 0,
-      patient_resp: 0,
-      patient_tax: 0,
-      patient_payable: 0,
-      company_resp: 0,
-      company_tax: 0,
-      company_payble: 0,
-      sec_company_resp: 0,
-      sec_company_tax: 0,
-      sec_company_payable: 0,
-      net_amout: 0,
-      insurance_provider_name: "---",
-      sub_insurance_provider_name: "---",
-      network_type: "---",
-      policy_number: "---",
-      card_number: "---",
-      effective_end_date: "---",
-      secondary_insurance_provider_name: "---",
-      secondary_network_type: "---",
-      secondary_policy_number: "---",
-      secondary_card_number: "---",
-      secondary_effective_end_date: "---",
-      select_invoice: "CH",
-      creidt_invoice: false,
-      cash_invoice: true,
-      dataExists: false,
-    },
-    () => {
-      $this.props.initialStateOrders({
-        redux: {
-          type: "ORDERED_SERVICES_GET_DATA",
-          mappingName: "orderedserviceslist",
-          data: [],
-        },
-      });
-    }
-  );
-};
-
 const getCtrlCode = ($this, docNumber) => {
   AlgaehLoader({ show: true });
   $this.props.getInvoiceGeneration({
@@ -323,7 +268,6 @@ export {
   VisitSearch,
   getOrderServices,
   FinalizedAndInvoice,
-  ClearData,
   getVisitWiseBillDetailS,
   getCtrlCode,
   texthandle,
