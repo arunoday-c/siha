@@ -17,7 +17,7 @@ export function generateExcelDilyTrans(req, res, next) {
         E.employee_code ,BH.bill_number as bill_invoice,V.insured,BH.hims_f_billing_header_id,BD.service_type_id,ST.service_type ,ST.arabic_service_type,
         S.arabic_service_name,S.service_name,if(S.procedure_type ='GN','General','Dental') as procedure_type,
         BD.hims_f_billing_details_id ,BD.quantity,BD.net_amout ,BD.company_payble,BD.patient_payable,BD.discount_amout,IP.insurance_provider_name,
-        IP.arabic_provider_name
+        IP.arabic_provider_name,COALESCE(BH.advance_amount,0)as advance_amount,COALESCE(BH.advance_adjust,0) as advance_adjust,V.new_visit_patient
         from hims_f_patient as P inner join hims_f_patient_visit as V on P.hims_d_patient_id = V.patient_id
         inner join hims_f_billing_header as BH on V.hims_f_patient_visit_id  = BH.visit_id  and V.patient_id = BH.patient_id
         and BH.cancelled ='N'
@@ -94,6 +94,16 @@ export function generateExcelDilyTrans(req, res, next) {
             }
           );
         }
+        generalColumns.push({ header: "Advance", key: "advance_amount" });
+        generalColumns.push({
+          header: "Advance Adjust",
+          key: "advance_adjust",
+        });
+        generalColumns.push({ header: "New Visit", key: "new_visit" });
+        generalColumns.push({
+          header: "Follow Up Visit",
+          key: "followup_visit",
+        });
         worksheet.columns = generalColumns;
         let counter = 1;
         for (let e = 0; e < dailyCollect.length; e++) {
@@ -105,7 +115,9 @@ export function generateExcelDilyTrans(req, res, next) {
             _.chain(details)
               .groupBy((g) => g.hims_f_billing_header_id)
               .forEach((billGroup) => {
-                const { bill_invoice, bill_date } = _.head(billGroup);
+                const { bill_invoice, bill_date, new_visit_patient } = _.head(
+                  billGroup
+                );
                 let serviceObject = {};
                 _.chain(billGroup)
                   .groupBy((g) => g.service_type_id)
@@ -116,6 +128,12 @@ export function generateExcelDilyTrans(req, res, next) {
                       ),
                       [sKey + "_desc_amount"]: _.sumBy(services, (s) =>
                         parseFloat(s.discount_amout)
+                      ),
+                      advance_amount: _.sumBy(services, (s) =>
+                        parseFloat(s.advance_amount)
+                      ),
+                      advance_adjust: _.sumBy(services, (s) =>
+                        parseFloat(s.advance_adjust)
                       ),
                     };
                   })
@@ -135,6 +153,8 @@ export function generateExcelDilyTrans(req, res, next) {
                       : parseFloat(s.patient_payable);
                   }),
                   ...serviceObject,
+                  new_visit: new_visit_patient === "Y" ? "Y" : "N",
+                  followup_visit: new_visit_patient !== "Y" ? "Y" : "N",
                 });
                 counter++;
               })
