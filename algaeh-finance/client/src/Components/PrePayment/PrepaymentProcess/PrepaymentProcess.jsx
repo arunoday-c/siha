@@ -1,4 +1,5 @@
 import React, { useEffect, useContext, useState } from "react";
+import "./PrepaymentProcessList.scss";
 import {
   //   AlgaehFormGroup,
   // AlgaehDateHandler,
@@ -578,6 +579,7 @@ export function PrepaymentProcess() {
               </div>
               <div className="portlet-body">
                 <AlgaehDataGrid
+                  className="PrepaymentProcessListGrid"
                   columns={[
                     {
                       fieldName: "finance_f_prepayment_detail_id",

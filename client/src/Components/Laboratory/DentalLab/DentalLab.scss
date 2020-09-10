@@ -1,6 +1,8 @@
 #DentalFormGrid_Cntr {
   .DentalFormGrid {
     min-height: 50vh !important;
+    max-height: 60vh !important;
+    overflow: auto;
   }
 }
 .dentalLabRequest {

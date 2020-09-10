@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useContext } from "react";
+import "./PrepaymentMasterList.scss";
 import { getAccountHeads } from "../../../utils/accountHelpers";
 import { newAlgaehApi } from "../../../hooks/";
 import { useForm, Controller } from "react-hook-form";
@@ -324,6 +325,7 @@ export function PrepaymentMaster() {
 
               <div className="portlet-body">
                 <AlgaehTable
+                  className="PrepaymentMasterListGrid"
                   columns={[
                     {
                       fieldName: "",

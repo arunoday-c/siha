@@ -29,7 +29,7 @@ export function generateExcelDilyTrans(req, res, next) {
         left join hims_m_patient_insurance_mapping as PIM on V.patient_id  = PIM.patient_id  and V.hims_f_patient_visit_id =PIM.patient_visit_id 
         left join hims_d_insurance_provider as IP on PIM.primary_insurance_provider_id  = IP.hims_d_insurance_provider_id 
         where
-         date(BH.bill_date)=date(?);select hims_d_service_type_id,service_type from hims_d_service_type where record_status='A';`,
+         date(BH.bill_date)=date(?);select hims_d_service_type_id,service_type from hims_d_service_type where record_status='A' and hims_d_service_type_id not in(3,4,6,8,9,10,12,13);`,
         values: [date],
         printQuery: true,
       })
@@ -72,14 +72,30 @@ export function generateExcelDilyTrans(req, res, next) {
         var worksheet = workbook.addWorksheet("Daily Transaction", {
           properties: { tabColor: { argb: "FFC0000" } },
         });
+
         let generalColumns = [
-          { header: "SlNo.", key: "slno" },
-          { header: "Patient Code", key: "patient_code" },
-          { header: "Patient Name", key: "pat_name" },
-          { header: "Invoice Time", key: "bill_time" },
-          { header: "Cash Invoice No.", key: "csh_bill_invoice" },
-          { header: "Credit Invoice No.", key: "crd_bill_invoice" },
-          { header: "Amount", key: "net_amout" },
+          { header: "SlNo.", key: "slno", width: 7, bold: true },
+          {
+            header: "Patient Code",
+            key: "patient_code",
+            width: 20,
+            bold: true,
+          },
+          { header: "Patient Name", key: "pat_name", width: 30, bold: true },
+          { header: "Invoice Time", key: "bill_time", width: 10, bold: true },
+          {
+            header: "Cash Invoice No.",
+            key: "csh_bill_invoice",
+            width: 15,
+            bold: true,
+          },
+          {
+            header: "Credit Invoice No.",
+            key: "crd_bill_invoice",
+            width: 15,
+            bold: true,
+          },
+          { header: "Amount", key: "net_amout", width: 15, bold: true },
         ];
 
         for (let i = 0; i < servceTypes.length; i++) {
@@ -87,10 +103,12 @@ export function generateExcelDilyTrans(req, res, next) {
             {
               header: servceTypes[i]["service_type"],
               key: servceTypes[i]["hims_d_service_type_id"] + "_amount",
+              bold: true,
             },
             {
               header: servceTypes[i]["service_type"] + " Discount",
               key: servceTypes[i]["hims_d_service_type_id"] + "_desc_amount",
+              bold: true,
             }
           );
         }
@@ -98,31 +116,66 @@ export function generateExcelDilyTrans(req, res, next) {
         generalColumns.push({
           header: "Advance Adjust",
           key: "advance_adjust",
+          bold: true,
         });
-        generalColumns.push({ header: "New Visit", key: "new_visit" });
+        generalColumns.push({
+          header: "New Visit",
+          key: "new_visit",
+          bold: true,
+        });
         generalColumns.push({
           header: "Follow Up Visit",
           key: "followup_visit",
+          bold: true,
         });
         worksheet.columns = generalColumns;
+        let lastRow = worksheet.rowCount;
+        //console.log("lastRow", lastRow);
+
         let counter = 1;
         for (let e = 0; e < dailyCollect.length; e++) {
           const { employee_code, emp_name, patients } = dailyCollect[e];
           worksheet.addRow({ slno: `${emp_name}/${employee_code}` });
-
+          lastRow = worksheet.rowCount;
+          const DocRow = worksheet.getRow(lastRow);
+          DocRow.fill = {
+            type: "pattern",
+            pattern: "solid",
+            bgColor: { argb: "000000" },
+            fgColor: { argb: "808080" },
+          };
+          DocRow.font = {
+            name: "calibri",
+            family: 4,
+            size: 12,
+            bold: true,
+            color: { argb: "FFFFFF" },
+          };
+          //   const merge = `A${e+1}:${generalColumns.length}`;
+          //   console.log("lastRow", lastRow);
+          //   worksheet.mergeCells(merge);
           for (let p = 0; p < patients.length; p++) {
-            const { patient_code, pat_name, insured, details } = patients[p];
+            const { patient_code, pat_name, details } = patients[p];
             _.chain(details)
               .groupBy((g) => g.hims_f_billing_header_id)
               .forEach((billGroup) => {
-                const { bill_invoice, bill_date, new_visit_patient } = _.head(
-                  billGroup
-                );
-                let serviceObject = {};
+                const {
+                  bill_invoice,
+                  insured,
+                  bill_date,
+                  new_visit_patient,
+                } = _.head(billGroup);
+                // console.log("insured", insured, bill_invoice);
+                let serviceObject = {
+                  [insured === "Y"
+                    ? "crd_bill_invoice"
+                    : "csh_bill_invoice"]: bill_invoice,
+                };
                 _.chain(billGroup)
                   .groupBy((g) => g.service_type_id)
                   .forEach((services, sKey) => {
                     serviceObject = {
+                      ...serviceObject,
                       [sKey + "_amount"]: _.sumBy(services, (s) =>
                         parseFloat(s.net_amout)
                       ),
@@ -143,9 +196,6 @@ export function generateExcelDilyTrans(req, res, next) {
                   slno: counter,
                   patient_code,
                   pat_name,
-                  [insured === "Y"
-                    ? "crd_bill_invoice"
-                    : "csh_bill_invoice"]: bill_invoice,
                   bill_time: moment(bill_date).format("hh:mm:ss"),
                   net_amout: _.sumBy(billGroup, (s) => {
                     return insured === "Y"
@@ -153,8 +203,8 @@ export function generateExcelDilyTrans(req, res, next) {
                       : parseFloat(s.patient_payable);
                   }),
                   ...serviceObject,
-                  new_visit: new_visit_patient === "Y" ? "Y" : "N",
-                  followup_visit: new_visit_patient !== "Y" ? "Y" : "N",
+                  new_visit: new_visit_patient === "Y" ? 1 : undefined,
+                  followup_visit: new_visit_patient !== "Y" ? 1 : undefined,
                 });
                 counter++;
               })
@@ -162,6 +212,16 @@ export function generateExcelDilyTrans(req, res, next) {
           }
         }
 
+        worksheet.eachRow((row) => {
+          row.eachCell({ includeEmpty: true }, (cell) => {
+            cell.border = {
+              top: { style: "thin" },
+              left: { style: "thin" },
+              bottom: { style: "thin" },
+              right: { style: "thin" },
+            };
+          });
+        });
         // const excelpath = path.join(process.cwd(), "sample.xlsx");
         // console.log("excelpath", excelpath);
         // workbook.xlsx.writeFile(excelpath);
