@@ -605,12 +605,11 @@ export function PrepaymentRequest() {
                                     item.finance_d_prepayment_type_id ==
                                     prepayment_type_id
                                 );
+                                const count =
+                                  prepayItem[0]?.prepayment_duration - 1 || 1;
                                 setValue(
                                   "end_date",
-                                  moment(mdate).add(
-                                    prepayItem[0].prepayment_duration - 1,
-                                    "months"
-                                  )._d
+                                  moment(mdate).add(count, "months")._d
                                 );
                               } else {
                                 onChange(undefined);
@@ -646,7 +645,10 @@ export function PrepaymentRequest() {
                             value: props.value,
                             className: "form-control",
                           }}
-                          others={{ disabled: !prepayment_type_id }}
+                          events={{
+                            onChange: (mdate) => props.onChange(mdate?._d),
+                          }}
+                          others={{ disabled: true }}
                           // maxDate={moment().add(1, "days")}
                         />
                       )}
