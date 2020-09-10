@@ -227,7 +227,7 @@ class InvoiceGeneration extends Component {
       nextProps.existinsurance.length !== 0
     ) {
       let output = nextProps.existinsurance[0];
-      debugger;
+
       this.setState({ ...this.state, ...output });
     }
   }

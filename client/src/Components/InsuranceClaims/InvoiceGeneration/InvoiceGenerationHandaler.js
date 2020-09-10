@@ -249,7 +249,7 @@ const getCtrlCode = ($this, docNumber) => {
           },
         });
       }
-      $this.setState(data);
+      $this.setState({ ...data, company_payble: data?.company_payable });
       AlgaehLoader({ show: false });
     },
   });
