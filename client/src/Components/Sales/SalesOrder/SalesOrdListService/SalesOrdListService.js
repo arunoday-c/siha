@@ -332,7 +332,7 @@ export default class SalesOrdListService extends Component {
                                         allowNegative: false,
                                         thousandSeparator: ",",
                                       },
-                                      dontAllowKeys: ["-", "e", "."],
+                                      dontAllowKeys: ["-", "e"],
                                       value: parseFloat(row.quantity),
                                       className: "txt-fld",
                                       name: "quantity",
