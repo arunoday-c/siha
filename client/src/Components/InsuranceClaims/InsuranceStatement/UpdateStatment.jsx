@@ -44,6 +44,7 @@ export function UpdateStatement({
   onClose = () => {},
 }) {
   const [currentRow, setCurrentRow] = useState(null);
+  const [cpt_code, setCpt] = useState("");
   const { data: denialData, isLoading: denialLoading } = useQuery(
     "denial-reasons",
     getDenialReasons
@@ -74,18 +75,16 @@ export function UpdateStatement({
     control,
     errors,
     setError,
-    register,
     clearErrors,
   } = useForm({
     defaultValues: {
       remittance_amount: "",
       denial_amount: "",
       denial_reason_id: "",
-      cpt_code: "",
     },
   });
 
-  const { cpt_code, denial_amount } = watch();
+  const { denial_amount } = watch();
 
   useEffect(() => {
     if (currentRow) {
@@ -94,20 +93,19 @@ export function UpdateStatement({
         remittance_amount: parseFloat(currentRow[`r${step}_amt`]),
         denial_amount: parseFloat(currentRow[`d${step}_amt`]),
         denial_reason_id: currentRow[`d${step}_reason_id`],
-        cpt_code: currentRow?.cpt_code,
       });
+      setCpt(currentRow?.cpt_code);
     } else {
       reset({
         remittance_amount: "",
         denial_amount: "",
         denial_reason_id: "",
-        cpt_code: "",
       });
+      setCpt("");
     }
   }, [currentRow, data]);
 
   function cptSearch() {
-    register({ name: "cpt_code" });
     AlgaehSearch({
       searchGrid: {
         columns: spotlightSearch.Services.CptCodes,
@@ -118,7 +116,8 @@ export function UpdateStatement({
         callBack(text);
       },
       onRowSelect: (data) => {
-        setValue("cpt_code", data.cpt_code);
+        // setValue("cpt_code", data.cpt_code);
+        setCpt(data?.cpt_code);
       },
     });
   }
@@ -286,12 +285,10 @@ export function UpdateStatement({
       remittance_amount: e.remittance_amount,
       denial_amount: e.denial_amount,
       denial_reason_id: e.denial_reason_id,
-      cpt_code: e.cpt_code || "",
+      cpt_code: cpt_code || "",
       claim_status: data?.claim_status?.replace("S", "R"),
     });
   };
-
-  console.log(denial_amount, cpt_code, "warch");
 
   return (
     <AlgaehModal
