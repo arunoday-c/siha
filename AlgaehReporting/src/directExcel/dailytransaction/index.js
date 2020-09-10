@@ -29,7 +29,7 @@ export function generateExcelDilyTrans(req, res, next) {
         left join hims_m_patient_insurance_mapping as PIM on V.patient_id  = PIM.patient_id  and V.hims_f_patient_visit_id =PIM.patient_visit_id 
         left join hims_d_insurance_provider as IP on PIM.primary_insurance_provider_id  = IP.hims_d_insurance_provider_id 
         where
-         date(BH.bill_date)=date(?);select hims_d_service_type_id,service_type from hims_d_service_type where record_status='A';`,
+         date(BH.bill_date)=date(?);select hims_d_service_type_id,service_type from hims_d_service_type where record_status='A' and hims_d_service_type_id not in(3,4,6,8,9,10,12,13);`,
         values: [date],
         printQuery: true,
       })
