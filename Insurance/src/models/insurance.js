@@ -1876,7 +1876,7 @@ export function getInvoiceDetails(req, res, next) {
   try {
     _mysql
       .executeQuery({
-        query: `SELECT hims_f_invoice_details_id,IVD.cpt_code,invoice_header_id,company_payable,company_resp,company_tax,SE.service_name, r1_amt, d1_amt, d1_reason_id,
+        query: `SELECT hims_f_invoice_details_id,IVD.cpt_code,invoice_header_id,company_payable,company_resp,company_tax,SE.service_name, s1_amt, s2_amt, s3_amt, r1_amt, d1_amt, d1_reason_id,
         r2_amt, d2_amt, d2_reason_id, r3_amt, d3_amt, d3_reason_id FROM hims_d_services SE, hims_f_invoice_details IVD
           where IVD.service_id = SE.hims_d_services_id and invoice_header_id=?;`,
         values: [input.invoice_header_id],
