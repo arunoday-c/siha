@@ -302,100 +302,98 @@ export default function DentalLab() {
     <Spin spinning={loading}>
       <div className="DentalLabScreen">
         <div className="row inner-top-search">
-          <div className="row padding-10">
-            <AddPatientDentalForm
-              povendors={povendors}
-              procedureList={procedureList}
-              subDepartment={subDepartment}
-              current={current}
-              onClose={onClose}
-              visible={openDentalModal}
-              disabled={disabled}
-              getRequest={getFormRequest}
-              doctors={doctors}
-              // userLanguage={userLanguage}
-              // titles={titles}
-            />
-            <Controller
-              name="from_request_date"
-              control={control}
-              rules={{ required: "Please select date" }}
-              render={({ value, onChange }) => (
-                // <div className="col-2 algaeh-date-fld">
-                <AlgaehDateHandler
-                  div={{
-                    className: "col-3 algaeh-date-fld",
-                  }}
-                  label={{ forceLabel: "From Requested Date", isImp: false }}
-                  error={errors}
-                  textBox={{
-                    className: "form-control",
-                    name: "from_request_date",
-                    value,
-                  }}
-                  // maxDate={new Date()}
-                  events={{
-                    onChange: (mdate) => {
-                      if (mdate) {
-                        onChange(mdate._d);
-                      } else {
-                        onChange(undefined);
-                      }
-                    },
-                    onClear: () => {
-                      onChange(undefined);
-                    },
-                  }}
-                />
-              )}
-            />
-
-            <Controller
-              name="to_request_date"
-              control={control}
-              rules={{ required: "Please select date" }}
-              render={({ value, onChange }) => (
-                // <div className="col-6 algaeh-date-fld">
-                <AlgaehDateHandler
-                  div={{
-                    className: "col-3 algaeh-date-fld",
-                  }}
-                  label={{ forceLabel: "From Requested Date", isImp: false }}
-                  error={errors}
-                  textBox={{
-                    className: "form-control",
-                    name: "to_request_date",
-                    value,
-                  }}
-                  // maxDate={new Date()}
-                  events={{
-                    onChange: (mdate) => {
-                      if (mdate) {
-                        onChange(mdate._d);
-                      } else {
-                        onChange(undefined);
-                      }
-                    },
-                    onClear: () => {
-                      onChange(undefined);
-                    },
-                  }}
-                />
-                // </div>
-              )}
-            />
-            <div className="col-2" style={{ marginTop: 21 }}>
-              {" "}
-              <ButtonType
-                className="btn btn-default"
-                label={{
-                  forceLabel: "Load",
-                  returnText: true,
+          <AddPatientDentalForm
+            povendors={povendors}
+            procedureList={procedureList}
+            subDepartment={subDepartment}
+            current={current}
+            onClose={onClose}
+            visible={openDentalModal}
+            disabled={disabled}
+            getRequest={getFormRequest}
+            doctors={doctors}
+            // userLanguage={userLanguage}
+            // titles={titles}
+          />
+          <Controller
+            name="from_request_date"
+            control={control}
+            rules={{ required: "Please select date" }}
+            render={({ value, onChange }) => (
+              // <div className="col-2 algaeh-date-fld">
+              <AlgaehDateHandler
+                div={{
+                  className: "col-3 algaeh-date-fld",
                 }}
-                onClick={handleSubmit(getFormRequest)}
-                loading={loading_request_list}
+                label={{ forceLabel: "From Requested Date", isImp: false }}
+                error={errors}
+                textBox={{
+                  className: "form-control",
+                  name: "from_request_date",
+                  value,
+                }}
+                // maxDate={new Date()}
+                events={{
+                  onChange: (mdate) => {
+                    if (mdate) {
+                      onChange(mdate._d);
+                    } else {
+                      onChange(undefined);
+                    }
+                  },
+                  onClear: () => {
+                    onChange(undefined);
+                  },
+                }}
               />
-            </div>
+            )}
+          />
+
+          <Controller
+            name="to_request_date"
+            control={control}
+            rules={{ required: "Please select date" }}
+            render={({ value, onChange }) => (
+              // <div className="col-6 algaeh-date-fld">
+              <AlgaehDateHandler
+                div={{
+                  className: "col-3 algaeh-date-fld form-group",
+                }}
+                label={{ forceLabel: "From Requested Date", isImp: false }}
+                error={errors}
+                textBox={{
+                  className: "form-control",
+                  name: "to_request_date",
+                  value,
+                }}
+                // maxDate={new Date()}
+                events={{
+                  onChange: (mdate) => {
+                    if (mdate) {
+                      onChange(mdate._d);
+                    } else {
+                      onChange(undefined);
+                    }
+                  },
+                  onClear: () => {
+                    onChange(undefined);
+                  },
+                }}
+              />
+              // </div>
+            )}
+          />
+          <div className="col-2" style={{ marginTop: 21 }}>
+            {" "}
+            <ButtonType
+              className="btn btn-default"
+              label={{
+                forceLabel: "Load",
+                returnText: true,
+              }}
+              onClick={handleSubmit(getFormRequest)}
+              loading={loading_request_list}
+            />
           </div>
         </div>
         <div className="row">
