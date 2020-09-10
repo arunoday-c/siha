@@ -13,6 +13,7 @@ import { getKPIDetails, generateReport } from "./docsReports";
 // import algaehUtilities from "algaeh-utilities/utilities";
 // import { userSecurity } from "algaeh-utilities/checksecurity";
 import { authentication } from "algaeh-utilities/authentication";
+import excelRouting from "./directExcel";
 const bwipjs = require("bwip-js");
 const exec = require("child_process").exec;
 const app = exxpress();
@@ -74,8 +75,22 @@ app.use((req, res, next) => {
   authentication(req, res, next);
 });
 
-app.use("/api/v1/report", getReport);
-app.use("/api/v1/excelReport", getExcelReport);
+app.use("/api/v1/report", (req, res, next) => {
+  const { directEcel } = req.query;
+  if (directEcel === "true") {
+    excelRouting(req, res, next);
+  } else {
+    getReport(req, res, next);
+  }
+});
+app.use("/api/v1/excelReport", (req, res, next) => {
+  const { directEcel } = req.query;
+  if (directEcel === "true") {
+    excelRouting(req, res, next);
+  } else {
+    getExcelReport(req, res, next);
+  }
+});
 app.use("/api/v1/getRawReport", getRawReport);
 app.use(
   "/api/v1/multireports",

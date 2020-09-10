@@ -343,10 +343,10 @@ export default function Income({ hospital_id, RECEIPT_TYPE, cashier_id }) {
                   currentValue.value === "OP"
                     ? "opBillReceipt"
                     : currentValue.value === "AD"
-                      ? "advanceReceipt"
-                      : currentValue.value === "OPC"
-                        ? "opCreditReceipt"
-                        : "";
+                    ? "advanceReceipt"
+                    : currentValue.value === "OPC"
+                    ? "opCreditReceipt"
+                    : "";
                 callback({ reportQuery: reportQuery });
               },
             },
@@ -519,10 +519,9 @@ export default function Income({ hospital_id, RECEIPT_TYPE, cashier_id }) {
             link: {
               uri: "/employee/get",
               module: "hrManagement",
-              data: { department_type: "S" }
+              data: { department_type: "S" },
             },
             manupulation: (response, reportState, stateProperty) => {
-              debugger
               reportState.setState({
                 [stateProperty]: response.records,
               });
@@ -531,7 +530,7 @@ export default function Income({ hospital_id, RECEIPT_TYPE, cashier_id }) {
               textField: "full_name",
               valueField: "hims_d_employee_id",
               data: undefined,
-            }
+            },
           },
           {
             type: "dropdown",
@@ -541,10 +540,9 @@ export default function Income({ hospital_id, RECEIPT_TYPE, cashier_id }) {
             label: "Customer",
             link: {
               uri: "/customer/getCustomerMaster",
-              module: "masterSettings"
+              module: "masterSettings",
             },
             manupulation: (response, reportState, stateProperty) => {
-              debugger
               reportState.setState({
                 [stateProperty]: response.records,
               });
@@ -553,8 +551,27 @@ export default function Income({ hospital_id, RECEIPT_TYPE, cashier_id }) {
               textField: "customer_name",
               valueField: "hims_d_customer_id",
               data: undefined,
-            }
-          }
+            },
+          },
+        ],
+      },
+      {
+        subitem: "Daily Transaction",
+        reportName: "DailyTransaction",
+        directEcel: true,
+        componentCode: "RPT_DAILY_TRANSACTION",
+        hideButtons: ["preview", "downloadpdf"],
+        requireIframe: true,
+        reportParameters: [
+          {
+            className: "col-3 form-group mandatory",
+            type: "date",
+            name: "date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+            },
+          },
         ],
       },
     ],

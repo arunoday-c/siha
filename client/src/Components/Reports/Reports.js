@@ -14,6 +14,8 @@ class Reports extends Component {
       module: "",
       showSelector: false,
       excel: "false",
+      hidePreview: false,
+      hideDownloadPdf: false,
     };
   }
   static contextType = MainContext;
@@ -123,6 +125,7 @@ class Reports extends Component {
                         }
                         pageProperies["excel"] = this.state.excel;
                         AlgaehReport({
+                          directEcel: item.directEcel ? item.directEcel : false,
                           report: pageProperies,
                           plotUI: {
                             paramters: item.reportParameters,
