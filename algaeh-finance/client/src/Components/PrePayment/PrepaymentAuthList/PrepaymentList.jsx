@@ -1,5 +1,6 @@
 /* eslint-disable eqeqeq */
 import React, { useContext, useEffect, useState } from "react";
+import "./PrepaymentAuthList.scss";
 import {
   AlgaehAutoComplete,
   AlgaehDataGrid,
@@ -495,6 +496,7 @@ export function PrepaymentAuthList() {
               </div>
               <div className="portlet-body">
                 <AlgaehDataGrid
+                  className="PrepaymentAuthListGrid"
                   columns={[
                     {
                       fieldName: "request_status",

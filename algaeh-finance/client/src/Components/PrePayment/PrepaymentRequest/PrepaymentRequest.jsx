@@ -1,5 +1,6 @@
 /*  eslint-disable eqeqeq */
 import React, { useEffect, useState, useContext } from "react";
+import "./PrepaymentRequest.scss";
 import {
   AlgaehFormGroup,
   AlgaehDateHandler,
@@ -369,7 +370,10 @@ export function PrepaymentRequest() {
               </div>
               <form onSubmit={handleSubmit(onSubmit)}>
                 <div className="portlet-body">
-                  <div className="row">
+                  <div
+                    className="row"
+                    style={{ overflow: "auto", maxHeight: "66vh" }}
+                  >
                     {" "}
                     <Controller
                       control={control}
@@ -653,88 +657,90 @@ export function PrepaymentRequest() {
                         />
                       )}
                     />
-                    <div className="portlet-body">
+                    <div className="col-12">
+                      <Dragger
+                        accept=".doc,.docx,application/msword,.pdf"
+                        name="payment_reqDoc"
+                        onRemove={(file) => {
+                          setPayment_reqDoc((state) => {
+                            const index = state.indexOf(file);
+                            const newFileList = [...state];
+                            newFileList.splice(index, 1);
+                            return newFileList;
+                          });
+                        }}
+                        beforeUpload={(file) => {
+                          setPayment_reqDoc((state) => {
+                            return [...state, file];
+                          });
+                          return false;
+                        }}
+                        // disabled={this.state.dataExists && !this.state.editMode}
+                        fileList={payment_reqDoc}
+                      >
+                        <p className="upload-drag-icon">
+                          <i className="fas fa-file-upload"></i>
+                        </p>
+                        <p className="ant-upload-text">
+                          {payment_reqDoc
+                            ? `Click or Drag a file to replace the current file`
+                            : `Click or Drag a file to this area to upload`}
+                        </p>
+                      </Dragger>
+                    </div>
+                    <div className="col-12">
                       <div className="row">
                         <div className="col-12">
-                          <Dragger
-                            accept=".doc,.docx,application/msword,.pdf"
-                            name="payment_reqDoc"
-                            onRemove={(file) => {
-                              setPayment_reqDoc((state) => {
-                                const index = state.indexOf(file);
-                                const newFileList = [...state];
-                                newFileList.splice(index, 1);
-                                return newFileList;
-                              });
-                            }}
-                            beforeUpload={(file) => {
-                              setPayment_reqDoc((state) => {
-                                return [...state, file];
-                              });
-                              return false;
-                            }}
-                            // disabled={this.state.dataExists && !this.state.editMode}
-                            fileList={payment_reqDoc}
-                          >
-                            <p className="upload-drag-icon">
-                              <i className="fas fa-file-upload"></i>
-                            </p>
-                            <p className="ant-upload-text">
-                              {payment_reqDoc
-                                ? `Click or Drag a file to replace the current file`
-                                : `Click or Drag a file to this area to upload`}
-                            </p>
-                          </Dragger>
-                        </div>
-                        <div className="col-3"></div>
-                        <div className="col-6">
-                          <div className="row">
-                            <div className="col-12">
-                              <ul className="contractAttachmentList">
-                                {prepayment_docs.length && disableEdit ? (
-                                  prepayment_docs.map((doc) => (
-                                    <li>
-                                      <b> {doc.filename} </b>
-                                      <span>
-                                        <i
-                                          className="fas fa-download"
-                                          onClick={() => downloadDoc(doc)}
-                                        ></i>
-                                        <i
-                                          className="fas fa-trash"
-                                          onClick={() => deleteDoc(doc)}
-                                        ></i>
-                                      </span>
-                                    </li>
-                                  ))
-                                ) : (
-                                  <div className="col-12 noAttachment" key={1}>
-                                    <p>No Attachments Available</p>
-                                  </div>
-                                )}
-                              </ul>
-                            </div>
-                          </div>
+                          <ul className="contractAttachmentList">
+                            {prepayment_docs.length && disableEdit ? (
+                              prepayment_docs.map((doc) => (
+                                <li>
+                                  <b> {doc.filename} </b>
+                                  <span>
+                                    <i
+                                      className="fas fa-download"
+                                      onClick={() => downloadDoc(doc)}
+                                    ></i>
+                                    <i
+                                      className="fas fa-trash"
+                                      onClick={() => deleteDoc(doc)}
+                                    ></i>
+                                  </span>
+                                </li>
+                              ))
+                            ) : (
+                              <div className="col-12 noAttachment" key={1}>
+                                <p>No Attachments Available</p>
+                              </div>
+                            )}
+                          </ul>
                         </div>
                       </div>
                     </div>
-                    <button
-                      type="submit"
-                      className="btn btn-primary bttn-sm"
-                      style={{ marginTop: 20 }}
-                    >
-                      {disableEdit ? "Update" : "Add to List"}
-                    </button>
                   </div>
-                  <div>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        resetForm();
-                      }}
+                  <div className="row">
+                    <div
+                      className="col-12"
+                      style={{ textAlign: "right", marginTop: 10 }}
                     >
-                      Clear
-                    </button>
+                      {" "}
+                      <button
+                        className="btn btn-default btn-sm"
+                        type="button"
+                        onClick={() => {
+                          resetForm();
+                        }}
+                      >
+                        Clear
+                      </button>
+                      <button
+                        type="submit"
+                        className="btn btn-primary btn-sm"
+                        style={{ marginLeft: 5 }}
+                      >
+                        {disableEdit ? "Update" : "Add to List"}
+                      </button>
+                    </div>
                   </div>
                 </div>
               </form>
@@ -749,8 +755,9 @@ export function PrepaymentRequest() {
                 </div>
                 <div className="actions"></div>
               </div>
-              <div className="portlet-body" id="PreRequestGrid">
+              <div className="portlet-body" id="PreRequestGrid_Cntr">
                 <AlgaehDataGrid
+                  className="PreRequestGrid"
                   columns={[
                     {
                       fieldName: "ACTION",
