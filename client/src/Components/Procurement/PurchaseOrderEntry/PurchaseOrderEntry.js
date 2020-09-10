@@ -172,8 +172,18 @@ class PurchaseOrderEntry extends Component {
           // onOk={() => {
           footer={[
             <AlgaehButton
-              loading={this.state.mailSend}
               className="btn btn-other"
+              onClick={() => {
+                this.setState({
+                  visible: false,
+                });
+              }}
+            >
+              Cancel
+            </AlgaehButton>,
+            <AlgaehButton
+              loading={this.state.mailSend}
+              className="btn btn-primary"
               onClick={() => {
                 this.setState({ mailSend: true }, () => {
                   getReportForMail(this.state, this.props.povendors)
@@ -203,15 +213,6 @@ class PurchaseOrderEntry extends Component {
                 }}
               />
             </AlgaehButton>,
-            <button
-              onClick={() => {
-                this.setState({
-                  visible: false,
-                });
-              }}
-            >
-              Cancle
-            </button>,
           ]}
           onCancel={() => {
             // finance_voucher_header_id = "";
@@ -221,111 +222,114 @@ class PurchaseOrderEntry extends Component {
             });
           }}
         >
-          <AlagehAutoComplete
-            div={{ className: "col" }}
-            label={{ forceLabel: "Vendor Name" }}
-            selector={{
-              name: "vendor_id",
-              className: "select-fld",
-              value: this.state.vendor_id,
-              dataSource: {
-                textField: "vendor_name",
-                valueField: "hims_d_vendor_id",
-                data: this.props.povendors,
-              },
-              others: {
-                disabled: this.state.po_entry_detail.length > 0 ? true : false,
-              },
-              onChange: vendortexthandle.bind(this, this),
-              onClear: () => {
-                this.setState({
-                  vendor_id: null,
-                });
-              },
-            }}
-          />
-          <AlagehFormGroup
-            div={{ className: "col-10 form-group" }}
-            label={{
-              forceLabel: "To Mail Id",
-              // isImp: true,
-            }}
-            textBox={{
-              className: "txt-fld",
-              name: "app_group_code",
-              value: this.state.email_id_1,
-              // events: {
-              //   onChange: this.changeTexts.bind(this),
-              // },
-              others: {
-                tabIndex: "1",
-                placeholder: "vendor email",
-                disabled: true,
-              },
-            }}
-          />
-          <AlagehFormGroup
-            div={{ className: "col-10 form-group" }}
-            label={{
-              forceLabel: "From Mail Id",
-              // isImp: true,
-            }}
-            textBox={{
-              className: "txt-fld",
-              name: "from_mail",
-              value: this.state.from_mail,
-              // events: {
-              //   onChange: this.changeTexts.bind(this),
-              // },
-              others: {
-                tabIndex: "1",
-                placeholder: "Organisation email",
-                disabled: true,
-              },
-            }}
-          />
-          <AlagehFormGroup
-            div={{ className: "col-10 form-group" }}
-            label={{
-              forceLabel: "Vendor Quotation No.",
-              // isImp: true,
-            }}
-            textBox={{
-              className: "txt-fld",
-              name: "vendor_quotation_number",
-              value: this.state.vendor_quotation_number,
-              // events: {
-              //   onChange: this.changeTexts.bind(this),
-              // },
-              others: {
-                tabIndex: "1",
-                placeholder: " Quotation Number",
-                disabled: true,
-              },
-            }}
-          />
-          <div className="col-12">
-            <AlgaehLabel
-              label={{
-                forceLabel: "Enter Body of the mail",
+          <div className="row">
+            <AlagehAutoComplete
+              div={{ className: "col" }}
+              label={{ forceLabel: "Vendor Name" }}
+              selector={{
+                name: "vendor_id",
+                className: "select-fld",
+                value: this.state.vendor_id,
+                dataSource: {
+                  textField: "vendor_name",
+                  valueField: "hims_d_vendor_id",
+                  data: this.props.povendors,
+                },
+                others: {
+                  disabled:
+                    this.state.po_entry_detail.length > 0 ? true : false,
+                },
+                onChange: vendortexthandle.bind(this, this),
+                onClear: () => {
+                  this.setState({
+                    vendor_id: null,
+                  });
+                },
               }}
             />
-
-            <textarea
-              value={this.state.body_mail}
-              name="body_mail"
-              onChange={this.textAreaEvent.bind(this)}
+            <AlagehFormGroup
+              div={{ className: "col-10 form-group" }}
+              label={{
+                forceLabel: "To Mail Id",
+                // isImp: true,
+              }}
+              textBox={{
+                className: "txt-fld",
+                name: "app_group_code",
+                value: this.state.email_id_1,
+                // events: {
+                //   onChange: this.changeTexts.bind(this),
+                // },
+                others: {
+                  tabIndex: "1",
+                  placeholder: "vendor email",
+                  disabled: true,
+                },
+              }}
             />
-            <label className="checkbox inline">
-              <input
-                type="checkbox"
-                name="send_attachment"
-                checked={this.state.send_attachment}
-                onChange={this.changeChecks.bind(this)}
+            <AlagehFormGroup
+              div={{ className: "col-10 form-group" }}
+              label={{
+                forceLabel: "From Mail Id",
+                // isImp: true,
+              }}
+              textBox={{
+                className: "txt-fld",
+                name: "from_mail",
+                value: this.state.from_mail,
+                // events: {
+                //   onChange: this.changeTexts.bind(this),
+                // },
+                others: {
+                  tabIndex: "1",
+                  placeholder: "Organisation email",
+                  disabled: true,
+                },
+              }}
+            />
+            <AlagehFormGroup
+              div={{ className: "col-10 form-group" }}
+              label={{
+                forceLabel: "Vendor Quotation No.",
+                // isImp: true,
+              }}
+              textBox={{
+                className: "txt-fld",
+                name: "vendor_quotation_number",
+                value: this.state.vendor_quotation_number,
+                // events: {
+                //   onChange: this.changeTexts.bind(this),
+                // },
+                others: {
+                  tabIndex: "1",
+                  placeholder: " Quotation Number",
+                  disabled: true,
+                },
+              }}
+            />
+            <div className="col-12">
+              <AlgaehLabel
+                label={{
+                  forceLabel: "Enter Body of the mail",
+                }}
               />
 
-              <span>Send Email with Attachment</span>
-            </label>
+              <textarea
+                value={this.state.body_mail}
+                name="body_mail"
+                onChange={this.textAreaEvent.bind(this)}
+              />
+              <label className="checkbox inline">
+                <input
+                  type="checkbox"
+                  name="send_attachment"
+                  checked={this.state.send_attachment}
+                  onChange={this.changeChecks.bind(this)}
+                />
+
+                <span>Send Email with Attachment</span>
+              </label>
+            </div>
           </div>
         </AlgaehModal>
         <BreadCrumb
