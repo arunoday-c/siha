@@ -769,28 +769,7 @@ export function PrepaymentRequest() {
                         ) : null;
                       },
                     },
-                    // {
-                    //   fieldName: "",
-                    //   label: "Actions",
-                    //   displayTemplate: (row) => {
-                    //     return (
-                    //       <>
-                    //         {row.request_status === "P" ? (
-                    //           <i
-                    //             className="fas fa-pen"
-                    //             // onClick={() => onEdit(row)}
-                    //           ></i>
-                    //         ) : (
-                    //           ""
-                    //         )}
-                    //         {/* <i
-                    //           className="fas fa-save"
-                    //           // onClick={() => onDelete(row)}
-                    //         ></i> */}
-                    //       </>
-                    //     );
-                    //   },
-                    // },
+
                     {
                       fieldName: "request_status",
                       label: "Status",
@@ -854,28 +833,6 @@ export function PrepaymentRequest() {
                       fieldName: "prepayment_amount",
                       label: "Prepayment Amt.",
                       sortable: true,
-                      // editorTemplate: (row) => {
-                      //   return (
-                      //     <AlgaehFormGroup
-                      //       div={{ className: "col" }}
-                      //       textBox={{
-                      //         className: "txt-fld",
-                      //         name: "prepayment_amount",
-                      //         defaultValue: row.prepayment_amount,
-
-                      //         onChange: (e) => {
-                      //           changeGridEditors(row, e);
-                      //         },
-
-                      //         others: {
-                      //           errormessage:
-                      //             "Prepayment Amt. - cannot be blank",
-                      //           required: true,
-                      //         },
-                      //       }}
-                      //     />
-                      //   );
-                      // },
                     },
                     {
                       fieldName: "start_date",

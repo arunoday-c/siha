@@ -67,6 +67,33 @@ export function StatementTable() {
     <Spin spinning={isLoading}>
       <UpdateStatement data={current} show={show} onClose={onClose} />
       <div className="portlet portlet-bordered margin-bottom-15">
+        <div className="portlet-body">
+          <div className="row">
+            <div className="col-5"></div>
+            <div className="col-7">
+              <div className="row">
+                <div className="col">
+                  <label className="style_Label ">Total Claim Amount</label>
+                  <h6>{data?.total_company_payable || "0.00"}</h6>
+                </div>
+                <i className="fas fa-minus calcSybmbol"></i>
+                <div className="col">
+                  <label className="style_Label ">Total Denial Amount</label>
+                  <h6>{data?.total_denial_amount || "0.00"}</h6>
+                </div>{" "}
+                <i className="fas fa-equals calcSybmbol"></i>
+                <div className="col">
+                  <label className="style_Label ">
+                    Total Remittance Amount
+                  </label>
+                  <h6>{data?.total_remittance_amount || "0.00"}</h6>
+                </div>{" "}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="portlet portlet-bordered margin-bottom-15">
         <div className="portlet-title">
           <div className="caption">
             <h3 className="caption-subject">Insurance Statement List</h3>
@@ -191,33 +218,6 @@ export function StatementTable() {
           />
         </div>{" "}
       </div>{" "}
-      <div className="portlet portlet-bordered margin-bottom-15">
-        <div className="portlet-body">
-          <div className="row">
-            <div className="col-5"></div>
-            <div className="col-7">
-              <div className="row">
-                <div className="col">
-                  <label className="style_Label ">Total Claim Amount</label>
-                  <h6>{data?.total_company_payable || "0.00"}</h6>
-                </div>
-                <i className="fas fa-minus calcSybmbol"></i>
-                <div className="col">
-                  <label className="style_Label ">Total Denial Amount</label>
-                  <h6>{data?.total_denial_amount || "0.00"}</h6>
-                </div>{" "}
-                <i className="fas fa-equals calcSybmbol"></i>
-                <div className="col">
-                  <label className="style_Label ">
-                    Total Remittance Amount
-                  </label>
-                  <h6>{data?.total_remittance_amount || "0.00"}</h6>
-                </div>{" "}
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
     </Spin>
   );
 }

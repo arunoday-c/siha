@@ -313,7 +313,7 @@ export function UpdateStatement({
         closable={true}
         okButtonProps={{
           loading: mutLoading,
-          className: "btn btn-success",
+          className: "btn btn-primary",
         }}
         cancelButtonProps={{
           loading: mutLoading,
@@ -328,7 +328,9 @@ export function UpdateStatement({
           <div className="row">
             <div className="col-6">
               <div className="row">
-                <div className="col globalSearchCntr noLabel">
+                <div className="col globalSearchCntr">
+                  {" "}
+                  <AlgaehLabel label={{ forceLabel: "Enter CPT Code" }} />
                   <h6 onClick={cptSearch}>
                     {cpt_code ?? "CPT Code"}
                     <i className="fas fa-search fa-lg"></i>
@@ -416,7 +418,7 @@ export function UpdateStatement({
               name="denial_reason_id"
               render={({ value, onChange }) => (
                 <AlgaehAutoComplete
-                  div={{ className: "col-6 mandatory" }}
+                  div={{ className: "col-6" }}
                   label={{
                     forceLabel: "Denial Reason",
                     isImp: !!denial_amount,
@@ -448,7 +450,7 @@ export function UpdateStatement({
       <Spin spinning={queryLoading || mutLoading || denialLoading}>
         <div className="col-12 popupInner margin-top-15">
           <div className="row">
-            <div className="col-12">
+            <div className="col-4">
               <AlgaehLabel
                 label={{
                   forceLabel: "Patient Name",
@@ -456,7 +458,7 @@ export function UpdateStatement({
               />
               <h6>{data?.pat_name}</h6>
             </div>
-            <div className="col-6">
+            <div className="col">
               <AlgaehLabel
                 label={{
                   forceLabel: "Patient Code",
@@ -464,7 +466,7 @@ export function UpdateStatement({
               />
               <h6>{data?.patient_code}</h6>
             </div>
-            <div className="col-6">
+            <div className="col">
               <AlgaehLabel
                 label={{
                   forceLabel: "Invoice Number",
@@ -473,7 +475,7 @@ export function UpdateStatement({
               <h6>{data?.invoice_number}</h6>
             </div>
 
-            <div className="col-6">
+            <div className="col">
               <AlgaehLabel
                 label={{
                   forceLabel: "Invoice Date",
@@ -482,7 +484,7 @@ export function UpdateStatement({
               <h6>{data?.invoice_date}</h6>
             </div>
 
-            <div className="col-6">
+            <div className="col">
               <AlgaehLabel
                 label={{
                   forceLabel: "Net Company Payable",
@@ -496,7 +498,7 @@ export function UpdateStatement({
             <div className="col-12">
               <div className="portlet-body" id="PreRequestGrid">
                 <AlgaehDataGrid
-                  className="InsuranceStatementGrid"
+                  className="UpdateInsuranceStatementGrid"
                   id="InsuranceStatementGrid"
                   columns={columns}
                   data={invoiceDetails ?? []}
