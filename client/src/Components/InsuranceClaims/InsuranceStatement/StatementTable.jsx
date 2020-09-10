@@ -79,14 +79,21 @@ export function StatementTable() {
                 <i className="fas fa-minus calcSybmbol"></i>
                 <div className="col">
                   <label className="style_Label ">Total Denial Amount</label>
-                  <h6>{data?.total_denial_amount || "0.00"}</h6>
+                  <h6>
+                    {(data?.calc_denial_amount ?? data?.total_denial_amount) ||
+                      "0.00"}
+                  </h6>
                 </div>{" "}
                 <i className="fas fa-equals calcSybmbol"></i>
                 <div className="col">
                   <label className="style_Label ">
                     Total Remittance Amount
                   </label>
-                  <h6>{data?.total_remittance_amount || "0.00"}</h6>
+                  <h6>
+                    {(data?.calc_remittance_amount ??
+                      data?.total_remittance_amount) ||
+                      "0.00"}
+                  </h6>
                 </div>{" "}
               </div>
             </div>
