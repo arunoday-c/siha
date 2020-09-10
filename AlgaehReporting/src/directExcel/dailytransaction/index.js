@@ -72,14 +72,15 @@ export function generateExcelDilyTrans(req, res, next) {
         var worksheet = workbook.addWorksheet("Daily Transaction", {
           properties: { tabColor: { argb: "FFC0000" } },
         });
+
         let generalColumns = [
-          { header: "SlNo.", key: "slno" },
-          { header: "Patient Code", key: "patient_code" },
-          { header: "Patient Name", key: "pat_name" },
-          { header: "Invoice Time", key: "bill_time" },
-          { header: "Cash Invoice No.", key: "csh_bill_invoice" },
-          { header: "Credit Invoice No.", key: "crd_bill_invoice" },
-          { header: "Amount", key: "net_amout" },
+          { header: "SlNo.", key: "slno", width: 7 },
+          { header: "Patient Code", key: "patient_code", width: 20 },
+          { header: "Patient Name", key: "pat_name", width: 30 },
+          { header: "Invoice Time", key: "bill_time", width: 10 },
+          { header: "Cash Invoice No.", key: "csh_bill_invoice", width: 15 },
+          { header: "Credit Invoice No.", key: "crd_bill_invoice", width: 15 },
+          { header: "Amount", key: "net_amout", width: 15 },
         ];
 
         for (let i = 0; i < servceTypes.length; i++) {
@@ -105,11 +106,31 @@ export function generateExcelDilyTrans(req, res, next) {
           key: "followup_visit",
         });
         worksheet.columns = generalColumns;
+        let lastRow = worksheet.rowCount;
+        //console.log("lastRow", lastRow);
+
         let counter = 1;
         for (let e = 0; e < dailyCollect.length; e++) {
           const { employee_code, emp_name, patients } = dailyCollect[e];
           worksheet.addRow({ slno: `${emp_name}/${employee_code}` });
-
+          lastRow = worksheet.rowCount;
+          const DocRow = worksheet.getRow(lastRow);
+          DocRow.fill = {
+            type: "pattern",
+            pattern: "solid",
+            bgColor: { argb: "000000" },
+            fgColor: { argb: "808080" },
+          };
+          DocRow.font = {
+            name: "calibri",
+            family: 4,
+            size: 12,
+            bold: true,
+            color: { argb: "FFFFFF" },
+          };
+          //   const merge = `A${e+1}:${generalColumns.length}`;
+          //   console.log("lastRow", lastRow);
+          //   worksheet.mergeCells(merge);
           for (let p = 0; p < patients.length; p++) {
             const { patient_code, pat_name, insured, details } = patients[p];
             _.chain(details)
@@ -153,8 +174,8 @@ export function generateExcelDilyTrans(req, res, next) {
                       : parseFloat(s.patient_payable);
                   }),
                   ...serviceObject,
-                  new_visit: new_visit_patient === "Y" ? "Y" : "N",
-                  followup_visit: new_visit_patient !== "Y" ? "Y" : "N",
+                  new_visit: new_visit_patient === "Y" ? 1 : undefined,
+                  followup_visit: new_visit_patient !== "Y" ? 1 : undefined,
                 });
                 counter++;
               })
