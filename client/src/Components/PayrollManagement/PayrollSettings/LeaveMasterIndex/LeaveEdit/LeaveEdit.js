@@ -112,6 +112,7 @@ class LeaveEdit extends Component {
     algaehApiCall({
       uri: "/leave/getLeaveRulesMaster",
       method: "GET",
+      module: "hrManagement",
       data: { leave_id: this.state.hims_d_leave_id },
       onSuccess: (res) => {
         if (res.data.success) {
