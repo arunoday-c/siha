@@ -979,7 +979,7 @@ let algaehSearchConfig = (searchName, req) => {
         searchName: "DispatchNote",
         searchQuery:
           "select SQL_CALC_FOUND_ROWS H.*, L.location_description as location, SO.sales_order_number, \
-          C.customer_name, P.project_desc, B.hospital_name from hims_f_sales_dispatch_note_header H \
+          C.customer_name, P.project_desc, B.hospital_name, L.location_type from hims_f_sales_dispatch_note_header H \
           inner join hims_d_inventory_location L on L.hims_d_inventory_location_id = H.location_id \
           inner join hims_f_sales_order SO on SO.hims_f_sales_order_id = H.sales_order_id \
           inner join hims_d_customer C on C.hims_d_customer_id = H.customer_id \
