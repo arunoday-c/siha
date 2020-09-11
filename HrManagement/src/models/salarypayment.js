@@ -582,7 +582,7 @@ export default {
                   concat('Salary Payment for: ', year , '/' , monthname(concat('1999-',month,'-01'))) as narration, 
                   hospital_id FROM hims_f_salary where hims_f_salary_id in (?);
                   SELECT sum(S.net_salary) as salary_payable, E.company_bank_id, head_id, child_id, 
-                  S.hospital_id FROM hims_f_salary s 
+                  S.hospital_id FROM hims_f_salary S 
                   inner join hims_d_employee E on E.hims_d_employee_id = S.employee_id 
                   inner join hims_d_bank B on B.hims_d_bank_id = E.company_bank_id 
                   where hims_f_salary_id in (?) group by E.company_bank_id;`,
