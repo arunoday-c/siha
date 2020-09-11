@@ -124,7 +124,7 @@ export function InvoiceDetails({ details = [], data = {} }) {
             <div className="col-7 insurance-sec">
               <div className="row">
                 <div className="col-12">
-                  <h6>Primary Insurance</h6>
+                  <h6 style={{ marginTop: 10 }}>Primary Insurance</h6>
                   <div className="row">
                     <div className="col-4">
                       <AlgaehLabel
