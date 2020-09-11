@@ -420,7 +420,7 @@ class DispatchNote extends Component {
                   label={{ forceLabel: "Clear", returnText: true }}
                 />
               </button>
-              <button
+              {/* <button
                 type="button"
                 className="btn btn-primary"
                 onClick={CancelDispatchNote.bind(this, this)}
@@ -432,7 +432,7 @@ class DispatchNote extends Component {
                     returnText: true,
                   }}
                 />
-              </button>
+              </button> */}
             </div>
           </div>
         </div>
