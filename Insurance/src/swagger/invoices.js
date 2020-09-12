@@ -270,3 +270,36 @@
  *     schema:
  *      $ref: "#/definitions/Error"
  */
+/**
+ * @swagger
+ * /invoiceGeneration/bulkInvoiceGeneration:
+ *  post:
+ *   tags:
+ *    - Invoice Generation
+ *   summary: Generate invoices in bulk based on visits
+ *   produces:
+ *    -application/json
+ *   parameters:
+ *    - name: body
+ *      in: body
+ *      required: true
+ *      schema:
+ *       properties:
+ *        vist_ids:
+ *         type: array
+ *         required: true
+ *         items:
+ *          type: integer
+ *   responses:
+ *    200:
+ *     schema:
+ *      properties:
+ *       success:
+ *        type: boolean
+ *        default: true
+ *       message:
+ *        type: string
+ *    400:
+ *     schema:
+ *      $ref: "#/definitions/Error"
+ */

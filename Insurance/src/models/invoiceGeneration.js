@@ -798,18 +798,19 @@ export default {
     try {
       const hospitalId = req.userIdentity.hospital_id;
       if (!!input.from_date && !!input.to_date) {
-        qryStr += `and  date(pv.visit_date) between '${input.from_date}' and '${input.to_date}' `;
+        qryStr += ` and  date(pv.visit_date) between date('${input.from_date}')
+         and date('${input.to_date}') `;
       } else {
         _mysql.releaseConnection();
         next(Error("Please Select From date and To date"));
       }
 
       if (!!input.insurance_provider_id) {
-        qryStr += `and IMAP.primary_insurance_provider_id=${input.insurance_provider_id}`;
+        qryStr += ` and IMAP.primary_insurance_provider_id=${input.insurance_provider_id}`;
       }
 
       if (!!input.sub_insurance_id) {
-        qryStr += `and IMAP.primary_sub_id=${input.sub_insurance_id}`;
+        qryStr += ` and IMAP.primary_sub_id=${input.sub_insurance_id}`;
       }
 
       _mysql
