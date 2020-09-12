@@ -647,7 +647,10 @@ class ApplyLeave extends Component {
                 </div>
               </div>
               <div className="portlet-body">
-                <div className="row">
+                <div
+                  className="row"
+                  style={{ overflow: "auto", maxHeight: "66vh" }}
+                >
                   <AlagehAutoComplete
                     div={{ className: "col-6 form-group mandatory" }}
                     label={{
@@ -911,6 +914,9 @@ class ApplyLeave extends Component {
                       </Dragger>
                     </div>
                   ) : null}
+                </div>
+                <div className="row">
+                  {" "}
                   <div className="col-12" style={{ textAlign: "right" }}>
                     <button
                       onClick={this.clearState.bind(this)}
