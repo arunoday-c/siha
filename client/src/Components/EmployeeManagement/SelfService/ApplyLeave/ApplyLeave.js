@@ -61,9 +61,6 @@ class ApplyLeave extends Component {
       employee_branch: userToken.hims_d_hospital_id,
     });
   }
-  componentWillUnmount() {
-    this.clearState();
-  }
 
   getDateRange(startDate, endDate) {
     var dates = [];
@@ -446,6 +443,7 @@ class ApplyLeave extends Component {
       remarks: null,
       total_applied_days: 0.0,
       available_balance: 0.0,
+      contract_files: [],
     });
   }
 
@@ -879,28 +877,22 @@ class ApplyLeave extends Component {
                   {!!this.state.document_mandatory ? (
                     <div className="col-12 ">
                       <Dragger
-                        accept=".doc,.docx,application/msword,.pdf"
+                        accept=".doc,.docx,application/msword,.pdf,.jpg,.png"
                         name="contract_file"
                         onRemove={(file) => {
                           this.setState((state) => {
-                            const index = state.contract_files.indexOf(file);
-                            const newFileList = [...state.contract_files];
-                            newFileList.splice(index, 1);
                             return {
-                              contract_files: newFileList,
-                              saveEnable:
-                                state.dataExists && !newFileList.length,
+                              contract_files: [],
                             };
                           });
                         }}
                         beforeUpload={(file) => {
                           this.setState((state) => ({
-                            contract_files: [...state.contract_files, file],
+                            contract_files: [file],
                             saveEnable: false,
                           }));
                           return false;
                         }}
-                        disabled={this.state.dataExists && !this.state.editMode}
                         fileList={this.state.contract_files}
                       >
                         <p className="upload-drag-icon">

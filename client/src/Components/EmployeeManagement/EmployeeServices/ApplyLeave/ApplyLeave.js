@@ -495,6 +495,7 @@ class ApplyLeave extends Component {
       projected_applied_leaves: null,
       is_projected_leave: "N",
       loading_Process: false,
+      contract_files: [],
     });
   }
 
@@ -991,7 +992,7 @@ class ApplyLeave extends Component {
                   {!!this.state.document_mandatory ? (
                     <div className="col-12 ">
                       <Dragger
-                        accept=".doc,.docx,application/msword,.pdf"
+                        accept=".doc,.docx,application/msword,.pdf,.jpg,.png"
                         name="contract_file"
                         onRemove={(file) => {
                           this.setState((state) => {
