@@ -567,98 +567,80 @@ export default class ReportUI extends Component {
       const _param = _parameters[i];
       const _className =
         _param.className === undefined ? "col" : _param.className;
-      switch (_param.type) {
-        case "dropdown":
-          const _data =
-            this.state[_param.name + "_list"] === undefined
-              ? _param.dataSource.data === undefined
-                ? []
-                : _param.dataSource.data
-              : this.state[_param.name + "_list"];
 
-          _controls.push(
-            <AlagehAutoComplete
-              key={i}
-              compireoldprops={true}
-              div={{ className: _className }}
-              label={{
-                fieldName: _param.name,
-                forceLabel: _param.label,
-                isImp:
-                  _param.isImp === undefined || _param.isImp === false
-                    ? false
-                    : _param.isImp,
-              }}
-              selector={{
-                name: _param.name,
-                className: "select-fld",
-                value: this.state.parameterCollection[_param.name],
-                dataSource: {
-                  textField: _param.dataSource.textField,
-                  valueField: _param.dataSource.valueField,
-                  data: _data,
-                },
-                onChange: this.dropDownHandle.bind(this),
-                onClear: this.dropDownOnClear.bind(this),
-                ..._param.others,
-              }}
-            />
-          );
-          break;
-        case "date":
-          _controls.push(
-            <AlgaehDateHandler
-              key={i}
-              singleOutput={false}
-              div={{ className: _className }}
-              label={{
-                fieldName: _param.name,
-                forceLabel: _param.label,
-                isImp:
-                  _param.isImp === undefined || _param.isImp === false
-                    ? false
-                    : _param.isImp,
-              }}
-              textBox={{
-                className: "txt-fld",
-                name: _param.name,
-              }}
-              {..._param.others}
-              events={{
-                onChange: this.datePickerHandler.bind(this),
-              }}
-              value={this.state.parameterCollection[_param.name]}
-            />
-          );
-          break;
-        case "time":
-          _controls.push(
-            <AlgaehDateHandler
-              type="time"
-              key={i}
-              singleOutput={false}
-              div={{ className: _className }}
-              label={{
-                fieldName: _param.name,
-                forceLabel: _param.label,
-                isImp: _param.isImp !== undefined ? false : _param.isImp,
-              }}
-              textBox={{
-                className: "txt-fld",
-                name: _param.name,
-              }}
-              {..._param.others}
-              events={{
-                onChange: this.datePickerHandler.bind(this),
-              }}
-              value={this.state.parameterCollection[_param.name]}
-            />
-          );
-          break;
-        case "search":
-          _controls.push(
-            <React.Fragment key={i}>
-              <AlagehFormGroup
+      const hidden =
+        typeof _param?.hide === "function" && _param?.hide(this.state);
+      if (!hidden) {
+        switch (_param.type) {
+          case "dropdown":
+            const _data =
+              this.state[_param.name + "_list"] === undefined
+                ? _param.dataSource.data === undefined
+                  ? []
+                  : _param.dataSource.data
+                : this.state[_param.name + "_list"];
+
+            _controls.push(
+              <AlagehAutoComplete
+                key={i}
+                compireoldprops={true}
+                div={{ className: _className }}
+                label={{
+                  fieldName: _param.name,
+                  forceLabel: _param.label,
+                  isImp:
+                    _param.isImp === undefined || _param.isImp === false
+                      ? false
+                      : _param.isImp,
+                }}
+                selector={{
+                  name: _param.name,
+                  className: "select-fld",
+                  value: this.state.parameterCollection[_param.name],
+                  dataSource: {
+                    textField: _param.dataSource.textField,
+                    valueField: _param.dataSource.valueField,
+                    data: _data,
+                  },
+                  onChange: this.dropDownHandle.bind(this),
+                  onClear: this.dropDownOnClear.bind(this),
+                  ..._param.others,
+                }}
+              />
+            );
+            break;
+          case "date":
+            _controls.push(
+              <AlgaehDateHandler
+                key={i}
+                singleOutput={false}
+                div={{ className: _className }}
+                label={{
+                  fieldName: _param.name,
+                  forceLabel: _param.label,
+                  isImp:
+                    _param.isImp === undefined || _param.isImp === false
+                      ? false
+                      : _param.isImp,
+                }}
+                textBox={{
+                  className: "txt-fld",
+                  name: _param.name,
+                }}
+                {..._param.others}
+                events={{
+                  onChange: this.datePickerHandler.bind(this),
+                }}
+                value={this.state.parameterCollection[_param.name]}
+              />
+            );
+            break;
+          case "time":
+            _controls.push(
+              <AlgaehDateHandler
+                type="time"
+                key={i}
+                singleOutput={false}
                 div={{ className: _className }}
                 label={{
                   fieldName: _param.name,
@@ -668,98 +650,123 @@ export default class ReportUI extends Component {
                 textBox={{
                   className: "txt-fld",
                   name: _param.name,
+                }}
+                {..._param.others}
+                events={{
+                  onChange: this.datePickerHandler.bind(this),
+                }}
+                value={this.state.parameterCollection[_param.name]}
+              />
+            );
+            break;
+          case "search":
+            _controls.push(
+              <React.Fragment key={i}>
+                <AlagehFormGroup
+                  div={{ className: _className }}
+                  label={{
+                    fieldName: _param.name,
+                    forceLabel: _param.label,
+                    isImp: _param.isImp !== undefined ? false : _param.isImp,
+                  }}
+                  textBox={{
+                    className: "txt-fld",
+                    name: _param.name,
 
+                    value: this.state.parameterCollection[_param.name],
+                    ..._param.others,
+                  }}
+                />
+                <div className="col-1">
+                  <i
+                    surrounds={_param.name}
+                    onClick={this.searchButton.bind(this)}
+                    className="fas fa-search"
+                    style={{
+                      cursor: "pointer",
+                      marginTop: "28px",
+                    }}
+                  />
+                </div>
+              </React.Fragment>
+            );
+            break;
+          case "checkbox":
+            const _default =
+              this.state[_param.name + "_checked"] === undefined
+                ? _param.default === undefined
+                  ? false
+                  : _param.default
+                : this.state[_param.name + "_checked"];
+            _controls.push(
+              <div
+                key={i}
+                className="customCheckbox col-3"
+                style={{ border: "none", marginTop: "28px" }}
+              >
+                <label
+                  className="checkbox"
+                  style={{ color: "rgb(33, 37, 41)" }}
+                >
+                  <input
+                    type="checkbox"
+                    name={_param.name}
+                    checked={_default}
+                    value={_default ? "Y" : "N"}
+                    onChange={this.checkBoxRadioHandle.bind(this)}
+                  />
+                  <span style={{ fontSize: "0.8rem" }}>{_param.label}</span>
+                </label>
+              </div>
+            );
+            break;
+          case "radio":
+            const _Rdefault =
+              this.state[_param.name + "_checked"] === undefined
+                ? _param.default === undefined
+                  ? false
+                  : _param.default
+                : this.state[_param.name + "_checked"];
+            _controls.push(
+              <div key={i} className="customRadio col-3">
+                <label className="radio inline">
+                  <input
+                    type="radio"
+                    checked={_Rdefault}
+                    name={_param.name}
+                    value={_Rdefault ? "Y" : "N"}
+                    onChange={this.checkBoxRadioHandle.bind(this)}
+                  />
+                  <span>{_param.label}</span>
+                </label>
+              </div>
+            );
+            break;
+          default:
+            _controls.push(
+              <AlagehFormGroup
+                key={i}
+                div={{ className: _className }}
+                label={{
+                  fieldName: _param.name,
+                  forceLabel: _param.label,
+                  isImp: _param.isImp !== undefined ? false : _param.isImp,
+                }}
+                textBox={{
+                  className: "txt-fld",
+                  name: _param.name,
                   value: this.state.parameterCollection[_param.name],
+                  events: {
+                    onChange: this.textBoxHandle.bind(this),
+                  },
                   ..._param.others,
                 }}
               />
-              <div className="col-1">
-                <i
-                  surrounds={_param.name}
-                  onClick={this.searchButton.bind(this)}
-                  className="fas fa-search"
-                  style={{
-                    cursor: "pointer",
-                    marginTop: "28px",
-                  }}
-                />
-              </div>
-            </React.Fragment>
-          );
-          break;
-        case "checkbox":
-          const _default =
-            this.state[_param.name + "_checked"] === undefined
-              ? _param.default === undefined
-                ? false
-                : _param.default
-              : this.state[_param.name + "_checked"];
-          _controls.push(
-            <div
-              key={i}
-              className="customCheckbox col-3"
-              style={{ border: "none", marginTop: "28px" }}
-            >
-              <label className="checkbox" style={{ color: "rgb(33, 37, 41)" }}>
-                <input
-                  type="checkbox"
-                  name={_param.name}
-                  checked={_default}
-                  value={_default ? "Y" : "N"}
-                  onChange={this.checkBoxRadioHandle.bind(this)}
-                />
-                <span style={{ fontSize: "0.8rem" }}>{_param.label}</span>
-              </label>
-            </div>
-          );
-          break;
-        case "radio":
-          const _Rdefault =
-            this.state[_param.name + "_checked"] === undefined
-              ? _param.default === undefined
-                ? false
-                : _param.default
-              : this.state[_param.name + "_checked"];
-          _controls.push(
-            <div key={i} className="customRadio col-3">
-              <label className="radio inline">
-                <input
-                  type="radio"
-                  checked={_Rdefault}
-                  name={_param.name}
-                  value={_Rdefault ? "Y" : "N"}
-                  onChange={this.checkBoxRadioHandle.bind(this)}
-                />
-                <span>{_param.label}</span>
-              </label>
-            </div>
-          );
-          break;
-        default:
-          _controls.push(
-            <AlagehFormGroup
-              key={i}
-              div={{ className: _className }}
-              label={{
-                fieldName: _param.name,
-                forceLabel: _param.label,
-                isImp: _param.isImp !== undefined ? false : _param.isImp,
-              }}
-              textBox={{
-                className: "txt-fld",
-                name: _param.name,
-                value: this.state.parameterCollection[_param.name],
-                events: {
-                  onChange: this.textBoxHandle.bind(this),
-                },
-                ..._param.others,
-              }}
-            />
-          );
-          break;
+            );
+            break;
+        }
       }
     }
-
     return _controls;
   }
 

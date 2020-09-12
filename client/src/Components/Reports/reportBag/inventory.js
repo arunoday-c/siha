@@ -332,6 +332,9 @@ export default function Inventory({
             type: "date",
             name: "from_date",
             isImp: true,
+            hide: (state) => {
+              return state.parameterCollection?.expiry_status === "E";
+            },
             // others: {
             //   maxDate: new Date(),
             //   minDate: null,
@@ -343,6 +346,9 @@ export default function Inventory({
             type: "date",
             name: "to_date",
             isImp: true,
+            hide: (state) => {
+              return state.parameterCollection?.expiry_status === "E";
+            },
             // others: {
             //   maxDate: ,
             //   minDate: new Date(),
