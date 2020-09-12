@@ -22,9 +22,11 @@ import Enumerable from "linq";
 import swal from "sweetalert2";
 import AlgaehSearch from "../../../Wrapper/globalSearch";
 import AlgaehLoader from "../../../Wrapper/fullPageLoader";
-import { MainContext } from "algaeh-react-components";
+import { MainContext, Upload } from "algaeh-react-components";
 import { AlgaehSecurityElement } from "algaeh-react-components";
+import { newAlgaehApi } from "../../../../hooks";
 
+const { Dragger } = Upload;
 class ApplyLeave extends Component {
   constructor(props) {
     super(props);
@@ -116,6 +118,22 @@ class ApplyLeave extends Component {
       },
     });
   }
+
+  saveDocument = (files = [], contract_no, contract_id) => {
+    const formData = new FormData();
+    formData.append("contract_no", contract_no);
+    formData.append("contract_id", contract_id);
+    files.forEach((file, index) => {
+      formData.append(`file_${index}`, file, file.name);
+    });
+    return newAlgaehApi({
+      uri: "/saveContractDoc",
+      data: formData,
+      extraHeaders: { "Content-Type": "multipart/form-data" },
+      method: "POST",
+      module: "documentManagement",
+    });
+  };
 
   deleteLeaveApplication(data) {
     swal({
@@ -433,6 +451,7 @@ class ApplyLeave extends Component {
 
             this.setState({
               available_balance: value.selected.close_balance,
+              document_mandatory: myObj.document_mandatory === "Y",
               leave_type: myObj !== undefined ? myObj.leave_type : null,
               projected_leave_enable:
                 myObj.leave_category === "A" &&
@@ -487,6 +506,15 @@ class ApplyLeave extends Component {
       alertTypeIcon: "warning",
       querySelector: "data-validate='apply-leave-div'",
       onSuccess: () => {
+        if (this.state.document_mandatory) {
+          if (!this.state.contract_files?.length) {
+            swalMessage({
+              title: "Please upload document",
+              type: "error",
+            });
+            return;
+          }
+        }
         AlgaehLoader({ show: true });
         algaehApiCall({
           uri: "/leave/applyEmployeeLeave",
@@ -509,23 +537,29 @@ class ApplyLeave extends Component {
             ...this.state.extra,
           },
           onSuccess: (res) => {
-            AlgaehLoader({ show: false });
             if (res.data.success) {
-              swalMessage({
-                title: "Leave Applied Successfully",
-                type: "success",
-              });
-              if (this.context.socket.connected) {
-                this.context.socket.emit("/leave/applied", {
-                  full_name: this.state.employee.full_name,
-                  reporting_to_id: this.state.employee.reporting_to_id,
-                  leave_days: this.state.total_applied_days,
-                  leave_type: leave_desc[0].leave_description,
+              this.saveDocument(
+                this.state.contract_files,
+                res.data?.records[0]?.leave_application_code,
+                res.data?.records[0]?.hims_f_leave_application_id
+              ).then(() => {
+                AlgaehLoader({ show: false });
+                swalMessage({
+                  title: "Leave Applied Successfully",
+                  type: "success",
                 });
-              }
-              this.setState({ loading_Process: false });
-              this.getEmployeeLeaveHistory();
-              this.clearState();
+                if (this.context.socket.connected) {
+                  this.context.socket.emit("/leave/applied", {
+                    full_name: this.state.employee.full_name,
+                    reporting_to_id: this.state.employee.reporting_to_id,
+                    leave_days: this.state.total_applied_days,
+                    leave_type: leave_desc[0].leave_description,
+                  });
+                }
+                this.setState({ loading_Process: false });
+                this.getEmployeeLeaveHistory();
+                this.clearState();
+              });
             } else if (!res.data.success) {
               this.setState({ loading_Process: false }, () => {
                 swalMessage({
@@ -954,6 +988,38 @@ class ApplyLeave extends Component {
                       },
                     }}
                   />
+                  {!!this.state.document_mandatory ? (
+                    <div className="col-12 ">
+                      <Dragger
+                        accept=".doc,.docx,application/msword,.pdf"
+                        name="contract_file"
+                        onRemove={(file) => {
+                          this.setState((state) => {
+                            return {
+                              contract_files: [],
+                            };
+                          });
+                        }}
+                        beforeUpload={(file) => {
+                          this.setState((state) => ({
+                            contract_files: [file],
+                            saveEnable: false,
+                          }));
+                          return false;
+                        }}
+                        fileList={this.state.contract_files}
+                      >
+                        <p className="upload-drag-icon">
+                          <i className="fas fa-file-upload"></i>
+                        </p>
+                        <p className="ant-upload-text">
+                          {this.state.contract_file
+                            ? `Click or Drag a file to replace the current file`
+                            : `Click or Drag a file to this area to upload`}
+                        </p>
+                      </Dragger>
+                    </div>
+                  ) : null}
 
                   <AlgaehSecurityElement elementCode="READ_ONLY_ACCESS">
                     <div className="col-12" style={{ textAlign: "right" }}>

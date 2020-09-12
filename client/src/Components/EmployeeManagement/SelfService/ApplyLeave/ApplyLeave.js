@@ -15,8 +15,10 @@ import Enumerable from "linq";
 import swal from "sweetalert2";
 import Socket from "../../../../sockets";
 import AlgaehLoader from "../../../Wrapper/fullPageLoader";
-import { MainContext } from "algaeh-react-components";
+import { MainContext, Upload } from "algaeh-react-components";
+import { newAlgaehApi } from "../../../../hooks";
 
+const { Dragger } = Upload;
 class ApplyLeave extends Component {
   constructor(props) {
     super(props);
@@ -406,6 +408,7 @@ class ApplyLeave extends Component {
 
             this.setState({
               available_balance: value.selected.close_balance,
+              document_mandatory: myObj.document_mandatory === "Y",
               leave_type: myObj !== undefined ? myObj.leave_type : null,
               projected_leave_enable:
                 myObj.leave_category === "A" &&
@@ -446,6 +449,22 @@ class ApplyLeave extends Component {
     });
   }
 
+  saveDocument = (files = [], contract_no, contract_id) => {
+    const formData = new FormData();
+    formData.append("contract_no", contract_no);
+    formData.append("contract_id", contract_id);
+    files.forEach((file, index) => {
+      formData.append(`file_${index}`, file, file.name);
+    });
+    return newAlgaehApi({
+      uri: "/saveContractDoc",
+      data: formData,
+      extraHeaders: { "Content-Type": "multipart/form-data" },
+      method: "POST",
+      module: "documentManagement",
+    });
+  };
+
   applyLeave() {
     const { full_name, reporting_to_id } = this.props.empData;
     const leave_desc = this.state.emp_leaves_data.filter(
@@ -455,6 +474,15 @@ class ApplyLeave extends Component {
       alertTypeIcon: "warning",
       querySelector: "data-validate='apply-leave-div'",
       onSuccess: () => {
+        if (this.state.document_mandatory) {
+          if (!this.state.contract_files?.length) {
+            swalMessage({
+              title: "Please upload document",
+              type: "error",
+            });
+            return;
+          }
+        }
         AlgaehLoader({ show: true });
         algaehApiCall({
           uri: "/leave/applyEmployeeLeave",
@@ -478,23 +506,29 @@ class ApplyLeave extends Component {
             ...this.state.extra,
           },
           onSuccess: (res) => {
-            AlgaehLoader({ show: false });
             if (res.data.success) {
-              swalMessage({
-                title: "Leave Applied Successfully",
-                type: "success",
-              });
-              if (this.leaveSocket.connected) {
-                this.leaveSocket.emit("/leave/applied", {
-                  full_name,
-                  reporting_to_id,
-                  leave_days: this.state.total_applied_days,
-                  leave_type: leave_desc[0].leave_description,
+              this.saveDocument(
+                this.state.contract_files,
+                res.data?.records[0]?.leave_application_code,
+                res.data?.records[0]?.hims_f_leave_application_id
+              ).then(() => {
+                AlgaehLoader({ show: false });
+                swalMessage({
+                  title: "Leave Applied Successfully",
+                  type: "success",
                 });
-              }
-              this.getEmployeeLeaveHistory();
-              this.clearState();
-              this.setState({ loading_Process: false });
+                if (this.leaveSocket.connected) {
+                  this.leaveSocket.emit("/leave/applied", {
+                    full_name,
+                    reporting_to_id,
+                    leave_days: this.state.total_applied_days,
+                    leave_type: leave_desc[0].leave_description,
+                  });
+                }
+                this.setState({ loading_Process: false });
+                this.getEmployeeLeaveHistory();
+                this.clearState();
+              });
             } else if (!res.data.success) {
               this.setState({ loading_Process: false });
               swalMessage({
@@ -839,6 +873,44 @@ class ApplyLeave extends Component {
                       },
                     }}
                   />
+                  {!!this.state.document_mandatory ? (
+                    <div className="col-12 ">
+                      <Dragger
+                        accept=".doc,.docx,application/msword,.pdf"
+                        name="contract_file"
+                        onRemove={(file) => {
+                          this.setState((state) => {
+                            const index = state.contract_files.indexOf(file);
+                            const newFileList = [...state.contract_files];
+                            newFileList.splice(index, 1);
+                            return {
+                              contract_files: newFileList,
+                              saveEnable:
+                                state.dataExists && !newFileList.length,
+                            };
+                          });
+                        }}
+                        beforeUpload={(file) => {
+                          this.setState((state) => ({
+                            contract_files: [...state.contract_files, file],
+                            saveEnable: false,
+                          }));
+                          return false;
+                        }}
+                        disabled={this.state.dataExists && !this.state.editMode}
+                        fileList={this.state.contract_files}
+                      >
+                        <p className="upload-drag-icon">
+                          <i className="fas fa-file-upload"></i>
+                        </p>
+                        <p className="ant-upload-text">
+                          {this.state.contract_file
+                            ? `Click or Drag a file to replace the current file`
+                            : `Click or Drag a file to this area to upload`}
+                        </p>
+                      </Dragger>
+                    </div>
+                  ) : null}
                   <div className="col-12" style={{ textAlign: "right" }}>
                     <button
                       onClick={this.clearState.bind(this)}
