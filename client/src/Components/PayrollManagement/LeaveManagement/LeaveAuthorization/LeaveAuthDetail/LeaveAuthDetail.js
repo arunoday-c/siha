@@ -45,9 +45,10 @@ class LeaveAuthDetail extends Component {
       () => {
         console.log("DATA:", this.state.data.leave_category);
         if (nextProps.open) {
-          debugger;
           this.getEmployeeLeaveHistory();
-          this.getDocuments(this.state.data.leave_application_code);
+          if (this.state.data.document_mandatory === "Y") {
+            this.getDocuments(this.state.data.leave_application_code);
+          }
         }
       }
     );
@@ -434,34 +435,36 @@ class LeaveAuthDetail extends Component {
                             {/* <h6>5</h6> */}
                             <h6>{this.state.data.total_applied_days}</h6>
                           </div>
-                          <div className="col-12">
-                            {this.state.contract_docs?.length && (
-                              <AlgaehLabel
-                                label={{
-                                  forceLabel: "Attachments",
-                                }}
-                              />
-                            )}
-                            <ul className="contractAttachmentList">
-                              {this.state.contract_docs?.length ? (
-                                this.state.contract_docs?.map((doc) => (
-                                  <li>
-                                    <b> {doc.filename} </b>
-                                    <span>
-                                      <i
-                                        className="fas fa-download"
-                                        onClick={() => this.downloadDoc(doc)}
-                                      ></i>
-                                    </span>
-                                  </li>
-                                ))
-                              ) : (
-                                <div className="col-12 noAttachment" key={1}>
-                                  <p>No Attachments Available</p>
-                                </div>
+                          {this.state.data.document_mandatory === "Y" && (
+                            <div className="col-12">
+                              {this.state.contract_docs?.length && (
+                                <AlgaehLabel
+                                  label={{
+                                    forceLabel: "Attachments",
+                                  }}
+                                />
                               )}
-                            </ul>
-                          </div>
+                              <ul className="contractAttachmentList">
+                                {this.state.contract_docs?.length ? (
+                                  this.state.contract_docs?.map((doc) => (
+                                    <li>
+                                      <b> {doc.filename} </b>
+                                      <span>
+                                        <i
+                                          className="fas fa-download"
+                                          onClick={() => this.downloadDoc(doc)}
+                                        ></i>
+                                      </span>
+                                    </li>
+                                  ))
+                                ) : (
+                                  <div className="col-12 noAttachment" key={1}>
+                                    <p>No Attachments Available</p>
+                                  </div>
+                                )}
+                              </ul>
+                            </div>
+                          )}
                         </div>
                       </div>
                       <div className="col-7">

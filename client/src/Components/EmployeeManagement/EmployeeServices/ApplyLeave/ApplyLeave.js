@@ -120,19 +120,23 @@ class ApplyLeave extends Component {
   }
 
   saveDocument = (files = [], contract_no, contract_id) => {
-    const formData = new FormData();
-    formData.append("contract_no", contract_no);
-    formData.append("contract_id", contract_id);
-    files.forEach((file, index) => {
-      formData.append(`file_${index}`, file, file.name);
-    });
-    return newAlgaehApi({
-      uri: "/saveContractDoc",
-      data: formData,
-      extraHeaders: { "Content-Type": "multipart/form-data" },
-      method: "POST",
-      module: "documentManagement",
-    });
+    if (files?.length) {
+      const formData = new FormData();
+      formData.append("contract_no", contract_no);
+      formData.append("contract_id", contract_id);
+      files.forEach((file, index) => {
+        formData.append(`file_${index}`, file, file.name);
+      });
+      return newAlgaehApi({
+        uri: "/saveContractDoc",
+        data: formData,
+        extraHeaders: { "Content-Type": "multipart/form-data" },
+        method: "POST",
+        module: "documentManagement",
+      });
+    } else {
+      return new Promise((resolve, reject) => resolve(1));
+    }
   };
 
   deleteLeaveApplication(data) {

@@ -1592,7 +1592,7 @@ export default {
               .executeQuery({
                 query:
                   "SELECT hims_f_leave_application_id,LA.leave_application_code,LA.hospital_id,LA.employee_id,\
-            LA.application_date,LA.sub_department_id,LA.leave_id,LA.from_leave_session,\
+            LA.application_date,LA.sub_department_id,LA.leave_id,LA.from_leave_session,L.document_mandatory,\
             LA.from_date,LA.to_date,LA.to_leave_session,EAL.from_normal_salary,\
             LA.total_applied_days,LA.leave_from,LA.absent_id,LA.total_approved_days,LA.status,LA.is_projected_leave \
             ,L.leave_code,L.leave_description,L.leave_type,L.leave_category,E.employee_code,\
