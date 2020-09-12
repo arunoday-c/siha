@@ -495,6 +495,7 @@ class ApplyLeave extends Component {
       projected_applied_leaves: null,
       is_projected_leave: "N",
       loading_Process: false,
+      contract_files: [],
     });
   }
 

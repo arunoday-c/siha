@@ -61,9 +61,6 @@ class ApplyLeave extends Component {
       employee_branch: userToken.hims_d_hospital_id,
     });
   }
-  componentWillUnmount() {
-    this.clearState();
-  }
 
   getDateRange(startDate, endDate) {
     var dates = [];
@@ -446,6 +443,7 @@ class ApplyLeave extends Component {
       remarks: null,
       total_applied_days: 0.0,
       available_balance: 0.0,
+      contract_files: [],
     });
   }
 
