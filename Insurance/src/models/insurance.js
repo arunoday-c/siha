@@ -2,6 +2,8 @@ import algaehMysql from "algaeh-mysql";
 import moment from "moment";
 import mysql from "mysql";
 import _ from "lodash";
+import extend from "extend";
+
 export default {
   //Addded by noor code modification
   addPatientInsuranceData: (req, res, next) => {
@@ -1548,6 +1550,12 @@ export function saveMultiStatement(req, res, next) {
       })
       .then((result) => {
         if (result.length > 0) {
+          req.connection = {
+            connection: _mysql.connection,
+            isTransactionConnection: _mysql.isTransactionConnection,
+            pool: _mysql.pool,
+          };
+
           const {
             prefix,
             insurance_statement_count,
@@ -1601,6 +1609,12 @@ export function saveMultiStatement(req, res, next) {
               printQuery: true,
             })
             .then((result) => {
+
+              req.body.insurance_statement_number = invNum
+              req.body.sub_insurance_id = sub_insurance_id
+              req.body.total_company_payable = total_company_payable
+              req.body.hims_f_insurance_statement_id = result.insertId
+
               _mysql
                 .executeQuery({
                   query: `update hims_d_insurance_provider set insurance_statement_count=? 
@@ -1617,13 +1631,14 @@ export function saveMultiStatement(req, res, next) {
                   printQuery: true,
                 })
                 .then((updated) => {
-                  _mysql.commitTransaction(() => {
-                    _mysql.releaseConnection();
-                    req.records = {
-                      record_number: invNum,
-                    };
-                    next();
-                  });
+
+                  // _mysql.commitTransaction(() => {
+                  //   _mysql.releaseConnection();
+                  req.records = {
+                    record_number: invNum,
+                  };
+                  next();
+                  // });
                 })
                 .catch((error) => {
                   _mysql.closeConnection(() => {
@@ -1647,6 +1662,175 @@ export function saveMultiStatement(req, res, next) {
     _mysql.releaseConnection();
   }
 }
+
+//Generate Accounting entry once statement generates(CR -- OP ctrl DR -- Customer)
+export function generateAccountingEntry(req, res, next) {
+  try {
+    const _options = req.connection == null ? {} : req.connection;
+
+    const _mysql = new algaehMysql(_options);
+    // const utilities = new algaehUtilities();
+
+
+
+    _mysql
+      .executeQuery({
+        query:
+          "select product_type from  hims_d_organization where hims_d_organization_id=1\
+        and (product_type='HIMS_ERP' or product_type='FINANCE_ERP') limit 1; ",
+        printQuery: true,
+      })
+      .then((product_type) => {
+        const inputParam = req.body;
+
+        console.log("inputParam.sub_insurance_id", inputParam.sub_insurance_id)
+        if (product_type.length == 1 && inputParam.sub_insurance_id > 0) {
+          _mysql
+            .executeQuery({
+              query:
+                `select head_id, child_id from finance_accounts_maping where account in ('OP_CTRL');
+                  select insurance_sub_name, head_id, child_id from hims_d_insurance_sub 
+                  where hims_d_insurance_sub_id=${inputParam.sub_insurance_id} limit 1`,
+              printQuery: true,
+            })
+            .then((Result) => {
+              const OP_CTRL = Result[0][0];
+              const insurance_data = Result[1][0];
+              console.log("OP_CTRL", OP_CTRL)
+              console.log("insurance_data", insurance_data)
+
+
+              console.log("OP_CTRL", OP_CTRL)
+
+
+              let voucher_type = "";
+              let narration = "";
+              let amount = 0;
+
+              const EntriesArray = [];
+
+              voucher_type = "journal";
+              narration = `, insurance (${insurance_data.insurance_sub_name}) receivable: ${inputParam.total_company_payable}`;
+
+
+              EntriesArray.push({
+                payment_date: new Date(),
+                head_id: OP_CTRL.head_id,
+                child_id: OP_CTRL.child_id,
+                debit_amount: 0,
+                payment_type: "CR",
+                credit_amount: inputParam.total_company_payable,
+                hospital_id: req.userIdentity.hospital_id,
+              });
+
+              EntriesArray.push({
+                payment_date: new Date(),
+                head_id: insurance_data.head_id,
+                child_id: insurance_data.child_id,
+                debit_amount: inputParam.total_company_payable,
+                payment_type: "DR",
+                credit_amount: 0,
+                hospital_id: req.userIdentity.hospital_id,
+              });
+
+              console.log("EntriesArray", EntriesArray)
+              _mysql
+                .executeQueryWithTransaction({
+                  query:
+                    "INSERT INTO finance_day_end_header (transaction_date,amount,voucher_type,document_id,\
+                document_number,from_screen,narration,entered_by,entered_date) \
+                VALUES (?,?,?,?,?,?,?,?,?);" ,
+                  values: [
+                    new Date(),
+                    inputParam.total_company_payable,
+                    voucher_type,
+                    inputParam.hims_f_insurance_statement_id,
+                    inputParam.insurance_statement_number,
+                    inputParam.ScreenCode,
+                    narration,
+                    req.userIdentity.algaeh_d_app_user_id,
+                    new Date(),
+                  ],
+                  printQuery: true,
+                })
+                .then((header_result) => {
+                  let project_id = null;
+
+                  console.log("header_result", header_result)
+                  let headerDayEnd = header_result;
+                  // headerDayEnd = header_result;
+
+
+                  const month = moment().format("M");
+                  const year = moment().format("YYYY");
+                  const IncludeValuess = [
+                    "payment_date",
+                    "head_id",
+                    "child_id",
+                    "debit_amount",
+                    "payment_type",
+                    "credit_amount",
+                    "hospital_id",
+                  ];
+
+                  _mysql
+                    .executeQueryWithTransaction({
+                      query:
+                        "INSERT INTO finance_day_end_sub_detail (??) VALUES ? ;",
+                      values: EntriesArray,
+                      includeValues: IncludeValuess,
+                      bulkInsertOrUpdate: true,
+                      extraValues: {
+                        year: year,
+                        month: month,
+                        day_end_header_id: headerDayEnd.insertId,
+                        // project_id: project_id,
+                        // sub_department_id: req.body.sub_department_id
+                      },
+                      printQuery: true,
+                    })
+                    .then((subResult) => {
+                      console.log("subResult", subResult)
+                      _mysql.commitTransaction(() => {
+                        _mysql.releaseConnection();
+                        next();
+                      });
+                    })
+                    .catch((error) => {
+                      console.log("error", error)
+                      _mysql.closeConnection(() => {
+                        next(error);
+                      });
+                    });
+                })
+                .catch((error) => {
+                  console.log("error", error)
+                  _mysql.closeConnection(() => {
+                    next(error);
+                  });
+                });
+            })
+            .catch((error) => {
+              _mysql.closeConnection(() => {
+                next(error);
+              });
+            });
+        } else {
+          _mysql.commitTransaction(() => {
+            _mysql.releaseConnection();
+            next();
+          });
+        }
+      })
+      .catch((error) => {
+        _mysql.closeConnection(() => {
+          next(error);
+        });
+      });
+  } catch (e) {
+    _mysql.releaseConnection();
+  }
+};
 export function getInsuranceStatement(req, res, next) {
   const _mysql = new algaehMysql();
   const { submission_step, hims_f_insurance_statement_id } = req.query;
@@ -1818,10 +2002,10 @@ export function updateInsuranceStatement(req, res, next) {
               .executeQuery({
                 query: `update hims_f_invoice_header set remittance_amount=${
                   rest["ramt"]
-                }, claim_status=?,
+                  }, claim_status=?,
          denial_amount=${rest["damt"]},remittance_date=?,submission_amount${
                   level == 1 ? "" : level
-                }=${rest["damt"]} where hims_f_invoice_header_id=?`,
+                  }=${rest["damt"]} where hims_f_invoice_header_id=?`,
                 values: [claim_status, new Date(), invoice_header_id],
               })
               .then((records) => {

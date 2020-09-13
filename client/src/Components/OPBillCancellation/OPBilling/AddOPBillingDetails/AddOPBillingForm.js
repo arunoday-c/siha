@@ -721,7 +721,7 @@ export default class AddOPBillingForm extends Component {
                                 }}
                               />
                               <h6>
-                                {GetAmountFormart(this.state.company_payble)}
+                                {GetAmountFormart(this.state.company_payable)}
                               </h6>
                             </div>
                           </div>
