@@ -58,12 +58,12 @@ export default memo(function (props) {
       <Button
         disabled={row.invoice_status === "closed"}
         type="link"
-        onClick={() =>
+        onClick={() => {
           history.push("/JournalVoucher", {
-            data: row,
+            data: { ...row, disabled: true },
             type: "supplier",
-          })
-        }
+          });
+        }}
       >
         Send Payment
       </Button>
