@@ -14,22 +14,26 @@ export default {
     try {
       _mysql
         .executeQuery({
-          query:
-            "SELECT hims_f_final_settlement_header_id,total_amount,total_earnings,total_deductions,total_loans as total_loan_amount,\
-              total_salary, case  total_leave_encash when 0 or total_leave_encash is null then \
-              (select total_amount from hims_f_leave_encash_header where employee_id=? and authorized = 'APR' and posted = 'N') else  total_leave_encash end as total_leave_encash_amount,\
-                CASE final_settlement_status when 'PEN' then (select  COALESCE(payable_amount,0)  from hims_f_end_of_service where employee_id=?) \
-              else total_eos end  as gratuity_amount,\
-              forfiet,remarks,final_settlement_status,COALESCE(end_of_service_id,(select hims_f_end_of_service_id from hims_f_end_of_service where employee_id=?)) as end_of_service_id, \
-                COALESCE(leave_encashment_id,(select hims_f_leave_encash_header_id from hims_f_leave_encash_header where employee_id=? and authorized = 'APR' and posted = 'N')) as hims_f_leave_encash_header_id FROM hims_f_final_settlement_header where employee_id=?; \
-              select salary_type,hims_f_salary_id,COALESCE(net_salary,0)total_salary from hims_f_salary where employee_id=? and salary_type='FS'; \
-              select  E.date_of_joining,E.hims_d_employee_id,E.date_of_resignation,E.employee_status,\
-              E.employee_code,E.full_name,E.arabic_name,E.sex,E.employee_type ,E.title_id,T.title ,T.arabic_title,\
-              E.sub_department_id,E.employee_designation_id,E.date_of_birth,SD.sub_department_name,\
-              SD.arabic_sub_department_name from hims_d_employee E \
-              Left join hims_d_sub_department SD on SD.hims_d_sub_department_id = E.sub_department_id \
-              left join hims_d_title T on T.his_d_title_id = E.title_id \
-              where E.hims_d_employee_id=?",
+          query: `SELECT hims_f_final_settlement_header_id,total_amount,total_earnings,total_deductions,total_loans as total_loan_amount,
+              total_salary,
+              -- case  total_leave_encash when 0 or total_leave_encash is null then 
+             
+              (select total_amount from hims_f_leave_encash_header where employee_id=? and authorized = 'APR' and posted = 'N') 
+          -- else  total_leave_encash end
+               as total_leave_encash_amount,
+                CASE final_settlement_status when 'PEN' then (select  COALESCE(payable_amount,0)  from hims_f_end_of_service where employee_id=?) 
+              else total_eos end  as gratuity_amount,
+              forfiet,remarks,final_settlement_status,COALESCE(end_of_service_id,(select hims_f_end_of_service_id from hims_f_end_of_service where employee_id=?)) as end_of_service_id, 
+                COALESCE(leave_encashment_id,(select hims_f_leave_encash_header_id from hims_f_leave_encash_header where employee_id=? and authorized = 'APR' and posted = 'N')) as hims_f_leave_encash_header_id FROM hims_f_final_settlement_header where employee_id=?; 
+              select salary_type,hims_f_salary_id,COALESCE(net_salary,0)total_salary from hims_f_salary where employee_id=? and salary_type='FS'; 
+              select  E.date_of_joining,E.hims_d_employee_id,E.date_of_resignation,E.employee_status,
+              E.employee_code,E.full_name,E.arabic_name,E.sex,E.employee_type ,E.title_id,T.title ,T.arabic_title,
+              E.sub_department_id,E.employee_designation_id,E.date_of_birth,SD.sub_department_name,
+              SD.arabic_sub_department_name from hims_d_employee E 
+              Left join hims_d_sub_department SD on SD.hims_d_sub_department_id = E.sub_department_id 
+              left join hims_d_title T on T.his_d_title_id = E.title_id 
+              where E.hims_d_employee_id=?`,
+          printQuery: true,
           values: [
             _input.employee_id,
             _input.employee_id,
