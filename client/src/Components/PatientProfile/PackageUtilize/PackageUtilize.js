@@ -5,7 +5,7 @@ import {
   AlgaehDataGrid,
   AlgaehLabel,
   AlgaehModalPopUp,
-  AlagehAutoComplete
+  AlagehAutoComplete,
 } from "../../Wrapper/algaehWrapper";
 import ButtonType from "../../Wrapper/algaehButton";
 
@@ -44,12 +44,12 @@ export default class PackageUtilize extends Component {
       advance_amount: 0,
       utilize_amount: 0,
       balance_amount: 0,
-      package_code: null
+      package_code: null,
     };
     this.baseState = this.state;
   }
 
-  componentDidMount() { }
+  componentDidMount() {}
 
   UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps.from_billing === true) {
@@ -57,7 +57,7 @@ export default class PackageUtilize extends Component {
       this.setState({
         package_detail: nextProps.package_detail,
         consultation: consultation,
-        consumtion_items: []
+        consumtion_items: [],
       });
     } else {
       if (
@@ -71,13 +71,13 @@ export default class PackageUtilize extends Component {
         this.setState(
           {
             ...this.state,
-            ...nextProps.package_detail
+            ...nextProps.package_detail,
           },
           () => {
             let package_details = this.state.package_details;
             const utilized_services = _.filter(
               package_details,
-              f => f.utilized_qty > 0
+              (f) => f.utilized_qty > 0
             );
 
             let available_services = [];
@@ -88,7 +88,7 @@ export default class PackageUtilize extends Component {
             }
             this.setState({
               utilized_services: utilized_services,
-              available_services: available_services
+              available_services: available_services,
             });
           }
         );
@@ -96,7 +96,7 @@ export default class PackageUtilize extends Component {
     }
   }
 
-  onClose = e => {
+  onClose = (e) => {
     this.setState(this.baseState, () => {
       this.props.onClose && this.props.onClose(e);
     });
@@ -124,41 +124,41 @@ export default class PackageUtilize extends Component {
         consumtion_items: consumtion_items,
         package_details: package_details,
         location_type: e.location_type,
-        batch_wise_item: e.batch_wise_item
+        batch_wise_item: e.batch_wise_item,
       });
     } else {
       this.setState({
-        itemBatches: !this.state.itemBatches
+        itemBatches: !this.state.itemBatches,
       });
     }
   }
   CloseRefundScreen(e) {
     this.setState(
       {
-        AdvanceOpen: !this.state.AdvanceOpen
+        AdvanceOpen: !this.state.AdvanceOpen,
       },
       () => {
         algaehApiCall({
           uri: "/orderAndPreApproval/getPatientPackage",
           method: "GET",
           data: {
-            hims_f_package_header_id: this.state.hims_f_package_header_id
+            hims_f_package_header_id: this.state.hims_f_package_header_id,
           },
-          onSuccess: response => {
+          onSuccess: (response) => {
             if (response.data.success) {
               let data = response.data.records;
               this.setState({
                 ...this.state,
-                ...data[0]
+                ...data[0],
               });
             }
           },
-          onFailure: error => {
+          onFailure: (error) => {
             swalMessage({
               title: error.message,
-              type: "error"
+              type: "error",
             });
-          }
+          },
         });
       }
     );
@@ -189,7 +189,7 @@ export default class PackageUtilize extends Component {
       <div className="hptl-phase1-ordering-services-form">
         <AlgaehModalPopUp
           events={{
-            onClose: this.onClose.bind(this)
+            onClose: this.onClose.bind(this),
           }}
           title="Package Details"
           openPopup={this.props.open}
@@ -208,21 +208,21 @@ export default class PackageUtilize extends Component {
                       dataSource: {
                         textField: "package_name",
                         valueField: "hims_f_package_header_id",
-                        data: this.state.package_detail
+                        data: this.state.package_detail,
                       },
-                      onChange: this.onPackageChange.bind(this)
+                      onChange: this.onPackageChange.bind(this),
                     }}
                   />
                 ) : (
-                    <div className="col-4">
-                      <AlgaehLabel
-                        label={{
-                          forceLabel: "Package Name"
-                        }}
-                      />
-                      <h5 style={{ margin: 0 }}>{this.state.package_name}</h5>
-                    </div>
-                  )}
+                  <div className="col-4">
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Package Name",
+                      }}
+                    />
+                    <h5 style={{ margin: 0 }}>{this.state.package_name}</h5>
+                  </div>
+                )}
                 {this.state.consultation === true ? (
                   <label className="checkbox inline">
                     <input
@@ -231,13 +231,13 @@ export default class PackageUtilize extends Component {
                       checked={this.state.package_utilize}
                       onChange={this.ChangeData.bind(this)}
                     />
-                    <span>Package Utilize, Dont know what to utilize</span>
+                    <span>Unknown Package Utilization.</span>
                   </label>
                 ) : null}{" "}
                 <div className="col-3">
                   <AlgaehLabel
                     label={{
-                      forceLabel: "Package Code"
+                      forceLabel: "Package Code",
                     }}
                   />
                   <h5 style={{ margin: 0 }}>{this.state.package_code}</h5>
@@ -257,13 +257,13 @@ export default class PackageUtilize extends Component {
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Details" }} />
                         ),
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return (
                             <i
                               style={{
                                 pointerEvents:
                                   row.service_type_id === 4 ? "" : "none",
-                                opacity: row.service_type_id === 4 ? "" : "0.1"
+                                opacity: row.service_type_id === 4 ? "" : "0.1",
                               }}
                               className="fas fa-eye"
                               onClick={this.ShowBatchDetails.bind(this, row)}
@@ -271,8 +271,8 @@ export default class PackageUtilize extends Component {
                           );
                         },
                         others: {
-                          fixed: "left"
-                        }
+                          fixed: "left",
+                        },
                       },
                       {
                         fieldName: "service_type",
@@ -280,7 +280,7 @@ export default class PackageUtilize extends Component {
                           <AlgaehLabel
                             label={{ fieldName: "service_type_id" }}
                           />
-                        )
+                        ),
                       },
 
                       {
@@ -289,8 +289,8 @@ export default class PackageUtilize extends Component {
                           <AlgaehLabel label={{ fieldName: "services_id" }} />
                         ),
                         others: {
-                          minWidth: 300
-                        }
+                          minWidth: 300,
+                        },
                       },
                       {
                         fieldName: "qty",
@@ -299,8 +299,8 @@ export default class PackageUtilize extends Component {
                         ),
                         disabled: true,
                         others: {
-                          minWidth: 100
-                        }
+                          minWidth: 100,
+                        },
                       },
                       {
                         fieldName: "utilized_qty",
@@ -309,8 +309,8 @@ export default class PackageUtilize extends Component {
                         ),
                         disabled: true,
                         others: {
-                          minWidth: 110
-                        }
+                          minWidth: 110,
+                        },
                       },
                       {
                         fieldName: "available_qty",
@@ -321,50 +321,50 @@ export default class PackageUtilize extends Component {
                         ),
                         disabled: true,
                         others: {
-                          minWidth: 80
-                        }
+                          minWidth: 80,
+                        },
                       },
                       {
                         fieldName: "quantity",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Quantity" }} />
                         ),
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return row.service_type_id === 4 ? (
                             row.quantity
                           ) : (
-                              <AlagehFormGroup
-                                div={{}}
-                                textBox={{
-                                  number: {
-                                    allowNegative: false,
-                                    thousandSeparator: ","
+                            <AlagehFormGroup
+                              div={{}}
+                              textBox={{
+                                number: {
+                                  allowNegative: false,
+                                  thousandSeparator: ",",
+                                },
+                                value: row.quantity,
+                                className: "txt-fld",
+                                name: "quantity",
+                                dontAllowKeys: ["-", "e", "."],
+                                events: {
+                                  onChange: this.onquantitycol.bind(this, row),
+                                },
+                                others: {
+                                  onFocus: (e) => {
+                                    e.target.oldvalue = e.target.value;
                                   },
-                                  value: row.quantity,
-                                  className: "txt-fld",
-                                  name: "quantity",
-                                  dontAllowKeys: ["-", "e", "."],
-                                  events: {
-                                    onChange: this.onquantitycol.bind(this, row)
-                                  },
-                                  others: {
-                                    onFocus: e => {
-                                      e.target.oldvalue = e.target.value;
-                                    }
-                                  }
-                                }}
-                              />
-                            );
+                                },
+                              }}
+                            />
+                          );
                         },
                         disabled: true,
                         others: {
-                          minWidth: 100
-                        }
-                      }
+                          minWidth: 100,
+                        },
+                      },
                     ]}
                     keyId="service_type_id"
                     dataSource={{
-                      data: this.state.package_details
+                      data: this.state.package_details,
                     }}
                     // isEditable={true}
                     paging={{ page: 0, rowsPerPage: 10 }}
@@ -393,7 +393,7 @@ export default class PackageUtilize extends Component {
                   <div className="col">
                     <AlgaehLabel
                       label={{
-                        forceLabel: "Package Amount"
+                        forceLabel: "Package Amount",
                       }}
                     />
                     <h5 style={{ margin: 0 }}>
@@ -403,7 +403,7 @@ export default class PackageUtilize extends Component {
                   <div className="col">
                     <AlgaehLabel
                       label={{
-                        forceLabel: "Actual Amount"
+                        forceLabel: "Actual Amount",
                       }}
                     />
                     <h5 style={{ margin: 0 }}>
@@ -413,7 +413,7 @@ export default class PackageUtilize extends Component {
                   <div className="col">
                     <AlgaehLabel
                       label={{
-                        forceLabel: "Advance Amount"
+                        forceLabel: "Advance Amount",
                       }}
                     />
                     <h5 style={{ margin: 0 }}>
@@ -423,7 +423,7 @@ export default class PackageUtilize extends Component {
                   <div className="col">
                     <AlgaehLabel
                       label={{
-                        forceLabel: "Utilized Amount"
+                        forceLabel: "Utilized Amount",
                       }}
                     />
                     <h5 style={{ margin: 0 }}>
@@ -433,7 +433,7 @@ export default class PackageUtilize extends Component {
                   <div className="col">
                     <AlgaehLabel
                       label={{
-                        forceLabel: "Balance Amount"
+                        forceLabel: "Balance Amount",
                       }}
                     />
                     <h5 style={{ margin: 0 }}>
@@ -458,7 +458,7 @@ export default class PackageUtilize extends Component {
                 advance_amount: this.state.advance_amount,
                 patient_code: this.state.patient_code,
                 full_name: this.state.full_name,
-                collect_advance: this.state.collect_advance
+                collect_advance: this.state.collect_advance,
               }}
             />
 
@@ -487,7 +487,7 @@ export default class PackageUtilize extends Component {
                         disabled={this.state.closed === "Y" ? true : false}
                         label={{
                           forceLabel: "Utilize Services",
-                          returnText: true
+                          returnText: true,
                         }}
                       />
                       {this.props.from_billing === true ? (
@@ -500,14 +500,14 @@ export default class PackageUtilize extends Component {
                       ) : null}
 
                       {this.props.from_billing === true &&
-                        this.props.from !== "frontDesk" ? (
-                          <button
-                            className="btn btn-default"
-                            onClick={this.ShowVistUtilizedSer.bind(this)}
-                          >
-                            Utilized Services
+                      this.props.from !== "frontDesk" ? (
+                        <button
+                          className="btn btn-default"
+                          onClick={this.ShowVistUtilizedSer.bind(this)}
+                        >
+                          Utilized Services
                         </button>
-                        ) : null}
+                      ) : null}
 
                       {this.props.from_billing === true ? (
                         <button

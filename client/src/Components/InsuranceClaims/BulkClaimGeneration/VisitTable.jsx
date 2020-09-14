@@ -13,6 +13,7 @@ export function VisitTable({
   data = [],
   addToList = () => {},
   list = [],
+  submitted = false,
 }) {
   const [current, setCurrent] = useState(null);
   // const params = useQueryParams();
@@ -60,17 +61,23 @@ export function VisitTable({
               {
                 fieldName: "hims_f_patient_visit_id",
                 label: "Action",
-                displayTemplate: (row) => (
-                  <input
-                    type="checkbox"
-                    onClick={() => addToList(row)}
-                    checked={list.some(
-                      (item) =>
-                        item.hims_f_patient_visit_id ===
-                        row.hims_f_patient_visit_id
-                    )}
-                  />
-                ),
+                displayTemplate: (row) => {
+                  if (!submitted) {
+                    return (
+                      <input
+                        type="checkbox"
+                        onClick={() => addToList(row)}
+                        checked={list.some(
+                          (item) =>
+                            item.hims_f_patient_visit_id ===
+                            row.hims_f_patient_visit_id
+                        )}
+                      />
+                    );
+                  } else {
+                    return null;
+                  }
+                },
               },
               {
                 fieldName: "hims_f_patient_visit_id",

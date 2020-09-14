@@ -8,8 +8,13 @@ import {
   AlgaehMessagePop,
 } from "algaeh-react-components";
 import moment from "moment";
-import { useQuery } from "react-query";
-import { getVisits, getInsuranceProviders, getSubInsurance } from "./apis";
+import { useQuery, useMutation } from "react-query";
+import {
+  getVisits,
+  getInsuranceProviders,
+  getSubInsurance,
+  sendForGeneration,
+} from "./apis";
 // import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 // import { AlgaehValidation } from "../../../utils/GlobalFunctions";
 import { VisitTable } from "./VisitTable";
@@ -18,7 +23,8 @@ export default function BulkClaimGeneration() {
   const [dates, setDates] = useState([moment().subtract(7, "days"), moment()]);
   const [insurance_provider_id, setInsurance] = useState(null);
   const [sub_insurance_id, setSubInsurance] = useState(null);
-  const { data, isLoading, refetch, isFetching } = useQuery(
+  const [submitted, setSubmitted] = useState(false);
+  const { data, isLoading, refetch, isFetching, clear } = useQuery(
     [
       "get-visits",
       {
@@ -34,6 +40,7 @@ export default function BulkClaimGeneration() {
       retry: false,
       initialStale: true,
       enabled: false,
+
       onError: (e) => {
         console.log(e);
         AlgaehMessagePop({
@@ -54,6 +61,16 @@ export default function BulkClaimGeneration() {
     { enabled: !!insurance_provider_id }
   );
 
+  const [submit, { isLoading: mutLoading }] = useMutation(sendForGeneration, {
+    onSuccess: () => {
+      setSubmitted(true);
+      AlgaehMessagePop({
+        display: "Invoice Generated Successfully",
+        type: "success",
+      });
+    },
+  });
+
   const addToList = (row) => {
     setSelectedList((state) => {
       const current = state.findIndex(
@@ -68,8 +85,21 @@ export default function BulkClaimGeneration() {
     });
   };
 
+  const clearPage = () => {
+    setSelectedList([]);
+    setSubmitted(false);
+    setDates([moment().subtract(7, "days"), moment()]);
+    clear();
+    setInsurance(null);
+    setSubInsurance(null);
+  };
+
   return (
-    <Spin spinning={insLoading || subLoading || isLoading || isFetching}>
+    <Spin
+      spinning={
+        insLoading || subLoading || isLoading || isFetching || mutLoading
+      }
+    >
       <div className="row BulkClaimGenerationScreen">
         <div className="col-12">
           <div className="row inner-top-search">
@@ -180,6 +210,7 @@ export default function BulkClaimGeneration() {
                 data={data}
                 addToList={addToList}
                 list={selectedList}
+                submitted={submitted}
               />
             </div>
           </div>
@@ -191,13 +222,22 @@ export default function BulkClaimGeneration() {
               <button
                 type="button"
                 className="btn btn-primary"
-                disabled={!selectedList.length}
+                disabled={!selectedList.length || submitted}
+                onClick={() => {
+                  submit(
+                    selectedList.map((item) => item?.hims_f_patient_visit_id)
+                  );
+                }}
               >
                 <AlgaehLabel
                   label={{ fieldName: "btn_final", returnText: true }}
                 />
               </button>
-              <button type="button" className="btn btn-default">
+              <button
+                type="button"
+                className="btn btn-default"
+                onClick={() => clearPage()}
+              >
                 <AlgaehLabel
                   label={{ fieldName: "btn_clear", returnText: true }}
                 />
