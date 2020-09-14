@@ -354,7 +354,7 @@ export default {
                       } else {
                         arrCounter = newDetails;
                       }
-
+                      console.log("arrCounter", arrCounter);
                       _mysql
                         .executeQueryWithTransaction({
                           query:
@@ -364,8 +364,10 @@ export default {
                           // includeValues: insertColumns,
                           bulkInsertOrUpdate: true,
                           printQuery: true,
+                          excludeValues: ["disabled"],
                           extraValues: {
                             voucher_header_id: result.insertId,
+                            hospital_id: input.hospital_id,
                           },
                           // extraValues: {
                           //   payment_date: transaction_date,
