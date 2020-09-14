@@ -61,7 +61,7 @@ export default memo(function (props) {
         type="link"
         onClick={() =>
           history.push("/JournalVoucher", {
-            data: row,
+            data: { ...row, disabled: true },
             type: "customer",
           })
         }

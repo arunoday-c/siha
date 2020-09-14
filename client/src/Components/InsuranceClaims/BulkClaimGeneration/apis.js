@@ -50,3 +50,13 @@ export async function getBillDetails(key, { details = [] }) {
   });
   return res.data?.records;
 }
+
+export async function sendForGeneration(vist_ids) {
+  const res = await newAlgaehApi({
+    uri: "/invoiceGeneration/bulkInvoiceGeneration",
+    module: "insurance",
+    method: "POST",
+    data: { vist_ids },
+  });
+  return res.data?.records;
+}

@@ -265,6 +265,7 @@ export default function JournalVoucher() {
           balance_amount,
           head_id,
           child_id,
+          disabled,
         } = data;
         let currentVoucher =
           voucher_type === "sales"
@@ -296,10 +297,12 @@ export default function JournalVoucher() {
                 if (type === "customer") {
                   first.payment_type = "DR";
                   second.payment_type = "CR";
+                  second.disabled = disabled;
                 }
                 if (type === "supplier") {
                   first.payment_type = "CR";
                   second.payment_type = "DR";
+                  second.disabled = disabled;
                 }
                 return [first, second];
               });
@@ -521,11 +524,18 @@ export default function JournalVoucher() {
   const closeDrawer = () => setDrawer(false);
 
   const gridTree = (row, record) => {
+    const isDisabled = record
+      ? record.disabled
+        ? { disabled: record.disabled }
+        : {}
+      : {};
+
     return (
       <AlgaehTreeSearch
         // div={{}}
         // label={{}}
         tree={{
+          ...isDisabled,
           treeDefaultExpandAll: true,
           updateInternally: true,
           onChange: (value, label) => {
@@ -559,6 +569,11 @@ export default function JournalVoucher() {
   };
 
   const PaymentInput = (record) => {
+    const isDisabled = record
+      ? record.disabled
+        ? { disabled: record.disabled }
+        : {}
+      : {};
     return (
       <AlgaehAutoComplete
         selector={{
@@ -579,12 +594,18 @@ export default function JournalVoucher() {
           onClear: () => {
             record["payment_type"] = undefined;
           },
+          others: { ...isDisabled },
         }}
       />
     );
   };
 
   const AmountInput = (row, records) => {
+    const isDisabled = records
+      ? records.disabled
+        ? { disabled: records.disabled }
+        : {}
+      : {};
     return (
       <AlgaehFormGroup
         type="number"
@@ -598,6 +619,7 @@ export default function JournalVoucher() {
             //   records["debit_amount"] = records["amount"];
             // else records["credit_amount"] = records["amount"];
           },
+          ...isDisabled,
         }}
       />
     );

@@ -810,10 +810,10 @@ class EarningsDeductions extends Component {
                   />
 
                   {this.FIN_Active ? (
-                    <div className="col-8">
+                    <div className="col-12">
                       <div className="row">
                         <AlgaehTreeSearch
-                          div={{ className: "col-6 form-group" }}
+                          div={{ className: "col-12 form-group" }}
                           label={{
                             forceLabel: "G/L Indirect Account",
                             isImp: true,
@@ -844,7 +844,7 @@ class EarningsDeductions extends Component {
                         />
 
                         <AlgaehTreeSearch
-                          div={{ className: "col-6 form-group" }}
+                          div={{ className: "col-12 form-group" }}
                           label={{
                             forceLabel: "G/L Direct Account",
                             isImp: true,
@@ -876,7 +876,7 @@ class EarningsDeductions extends Component {
 
                         {this.state.component_category === "C" ? (
                           <AlgaehTreeSearch
-                            div={{ className: "col-6 form-group" }}
+                            div={{ className: "col-12 form-group" }}
                             label={{
                               forceLabel: "Laibility Account",
                               isImp: true,
@@ -912,7 +912,7 @@ class EarningsDeductions extends Component {
 
                   <div
                     className="col-12 form-group"
-                    style={{ paddingTop: 19, textAlign: "right" }}
+                    style={{ textAlign: "right" }}
                   >
                     <button
                       className="btn btn-default"

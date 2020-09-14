@@ -153,8 +153,6 @@ const SaveDispatchNote = $this => {
     }
   }
 
-  debugger
-
   const partial_recived = _.filter(InputObj.stock_detail, f => {
     return parseFloat(f.quantity_outstanding) != 0
   });
@@ -238,11 +236,13 @@ const getCtrlCode = ($this, docNumber, row) => {
 
           data.cannotEdit = true;
           data.dataExitst = true;
+          data.calcelEnable = data.invoice_generated === "Y" ? true : false;
 
           data.sales_order_number = row.sales_order_number;
           data.customer_name = row.customer_name;
           data.project_name = row.project_desc;
           data.hospital_name = row.hospital_name;
+          data.location_type = row.location_type;
 
           $this.setState(data);
         }
@@ -290,11 +290,82 @@ const generateDispatchReport = data => {
   });
 };
 
+const CancelDispatchNote = $this => {
+  debugger
+  let InputObj = $this.state;
+  AlgaehLoader({ show: true });
+  InputObj.transaction_type = "CDN";
+  InputObj.transaction_date = moment(
+    InputObj.dispatch_note_date,
+    "YYYY-MM-DD"
+  ).format("YYYY-MM-DD");
+
+  debugger
+  for (let i = 0; i < InputObj.inventory_stock_detail.length; i++) {
+    InputObj.inventory_stock_detail[i].location_id = InputObj.location_id;
+    InputObj.inventory_stock_detail[i].location_type = InputObj.location_type;
+    InputObj.inventory_stock_detail[i].operation = "+";
+
+    InputObj.inventory_stock_detail[i].quantity =
+      InputObj.inventory_stock_detail[i].dispatch_quantity;
+
+    InputObj.inventory_stock_detail[i].net_total =
+      InputObj.inventory_stock_detail[i].total_amount;
+
+    InputObj.inventory_stock_detail[i].expiry_date =
+      InputObj.inventory_stock_detail[i].expiry_date !== null
+        ? moment(
+          InputObj.inventory_stock_detail[i].expiry_date,
+          "YYYY-MM-DD"
+        ).format("YYYY-MM-DD")
+        : null;
+  }
+
+  const settings = { header: undefined, footer: undefined };
+
+  algaehApiCall({
+    uri: "/DispatchNote/cancelDispatchNote",
+    module: "sales",
+    skipParse: true,
+    data: Buffer.from(JSON.stringify(InputObj), "utf8"),
+    method: "POST",
+    header: {
+      "content-type": "application/octet-stream",
+      ...settings
+    },
+    onSuccess: response => {
+      if (response.data.success === true) {
+        $this.setState({
+          dispatch_note_number: response.data.records.dispatch_note_number,
+          hims_f_sales_dispatch_note_header_id:
+            response.data.records.hims_f_sales_dispatch_note_header_id,
+          saveEnable: true,
+          dataExists: true,
+          cannotEdit: true
+        });
+        swalMessage({
+          title: "Saved successfully . .",
+          type: "success"
+        });
+        AlgaehLoader({ show: false });
+      }
+    },
+    onFailure: error => {
+      AlgaehLoader({ show: false });
+      swalMessage({
+        title: error.message,
+        type: "error"
+      });
+    }
+  });
+}
+
 export {
   texthandle,
   SalesOrderSearch,
   ClearData,
   SaveDispatchNote,
   getCtrlCode,
-  generateDispatchReport
+  generateDispatchReport,
+  CancelDispatchNote
 };

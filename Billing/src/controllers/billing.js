@@ -24,7 +24,7 @@ const {
   getEmployeeAndDepartments,
   closePackage,
   addCashHandover,
-  addtoDayEnd,
+  generateAccountingEntry,
 } = models;
 
 const { insertLadOrderedServices } = labModels;
@@ -48,7 +48,7 @@ export default () => {
   api.post(
     "/patientAdvanceRefund",
     patientAdvanceRefund,
-    addtoDayEnd,
+    generateAccountingEntry,
     addCashHandover,
     (req, res, next) => {
       if (

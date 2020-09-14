@@ -3373,7 +3373,7 @@ export default {
   },
 
   //created by:IRFAN
-  addtoDayEnd: (req, res, next) => {
+  generateAccountingEntry: (req, res, next) => {
     try {
       const _options = req.connection == null ? {} : req.connection;
 
@@ -3402,35 +3402,34 @@ export default {
               });
             }
 
-            let strqry = "";
+            // let strqry = "";
 
-            let sub_insurance_id;
-            if (inputParam.primary_sub_id > 0) {
-              sub_insurance_id = inputParam.primary_sub_id;
-            } else if (inputParam.sub_insurance_provider_id > 0) {
-              sub_insurance_id = inputParam.sub_insurance_provider_id;
-            }
+            // let sub_insurance_id;
+            // if (inputParam.primary_sub_id > 0) {
+            //   sub_insurance_id = inputParam.primary_sub_id;
+            // } else if (inputParam.sub_insurance_provider_id > 0) {
+            //   sub_insurance_id = inputParam.sub_insurance_provider_id;
+            // }
 
-            if (inputParam.insured == "Y" && sub_insurance_id > 0) {
-              strqry = ` select insurance_sub_name,head_id,child_id from hims_d_insurance_sub
-               where hims_d_insurance_sub_id=${sub_insurance_id} limit 1;`;
-            }
+            // if (inputParam.insured == "Y" && sub_insurance_id > 0) {
+            //   strqry = ` select insurance_sub_name,head_id,child_id from hims_d_insurance_sub
+            //    where hims_d_insurance_sub_id=${sub_insurance_id} limit 1;`;
+            // }
 
             _mysql
               .executeQuery({
                 query:
                   "select finance_accounts_maping_id,account,head_id,child_id from finance_accounts_maping  where \
-            account in ('OP_DEP','CIH_OP','OUTPUT_TAX','OP_REC','CARD_SETTL');\
+            account in ('OP_DEP','CIH_OP','OUTPUT_TAX','OP_REC','CARD_SETTL', 'OP_CTRL');\
             SELECT hims_d_services_id,service_name,head_id,child_id FROM hims_d_services where hims_d_services_id in(?);\
-            select cost_center_type, cost_center_required from finance_options limit 1;" +
-                  strqry,
+            select cost_center_type, cost_center_required from finance_options limit 1;",
                 values: [servicesIds],
                 printQuery: true,
               })
               .then((Result) => {
                 const controls = Result[0];
                 const serviceData = Result[1];
-                const insurance_data = Result[3];
+                // const insurance_data = Result[3];
 
                 const OP_DEP = controls.find((f) => {
                   return f.account == "OP_DEP";
@@ -3447,6 +3446,9 @@ export default {
                 });
                 const CARD_SETTL = controls.find((f) => {
                   return f.account == "CARD_SETTL";
+                });
+                const OP_CTRL = controls.find((f) => {
+                  return f.account == "OP_CTRL";
                 });
 
                 let voucher_type = "";
@@ -3635,15 +3637,15 @@ export default {
                   });
 
                   //insurance company payable
-                  if (insurance_data) {
-                    narration =
-                      narration +
-                      `, insurance (${insurance_data[0]["insurance_sub_name"]}) receivable: ${inputParam.company_payble}`;
+                  if (inputParam.insured == "Y" && parseFloat(inputParam.company_payble) > 0) {
+                    // narration =
+                    //   narration +
+                    //   `, insurance (${insurance_data[0]["insurance_sub_name"]}) receivable: ${inputParam.company_payble}`;
 
                     EntriesArray.push({
                       payment_date: new Date(),
-                      head_id: insurance_data[0].head_id,
-                      child_id: insurance_data[0].child_id,
+                      head_id: OP_CTRL.head_id,
+                      child_id: OP_CTRL.child_id,
                       debit_amount: inputParam.company_payble,
                       payment_type: "DR",
                       credit_amount: 0,

@@ -107,7 +107,7 @@ export default {
 
       _stringData +=
         _encashLeaveDetails.hospital_id != null
-          ? " and emp.hospital_id=? "
+          ? " and EMP.hospital_id=? "
           : "";
       _stringData +=
         _encashLeaveDetails.encashment_number != null
@@ -464,7 +464,7 @@ export default {
                                   .balance_leave_salary_amount
                               ) > 0
                                 ? leave_encash_header[0]
-                                  .balance_leave_salary_amount
+                                    .balance_leave_salary_amount
                                 : 0,
                               leave_encash_header[0]
                                 .hims_f_employee_leave_salary_header_id,

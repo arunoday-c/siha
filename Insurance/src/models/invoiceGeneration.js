@@ -798,50 +798,50 @@ export default {
     try {
       const hospitalId = req.userIdentity.hospital_id;
       if (!!input.from_date && !!input.to_date) {
-        qryStr += `and  date(pv.visit_date) between '${input.from_date}' and '${input.to_date}' `;
+        qryStr += ` and  date(pv.visit_date) between date('${input.from_date}')
+         and date('${input.to_date}') `;
       } else {
         _mysql.releaseConnection();
         next(Error("Please Select From date and To date"));
       }
 
       if (!!input.insurance_provider_id) {
-        qryStr += `and IMAP.primary_insurance_provider_id=${input.insurance_provider_id}`;
+        qryStr += ` and IMAP.primary_insurance_provider_id=${input.insurance_provider_id}`;
       }
 
       if (!!input.sub_insurance_id) {
-        qryStr += `and IMAP.primary_sub_id=${input.sub_insurance_id}`;
+        qryStr += ` and IMAP.primary_sub_id=${input.sub_insurance_id}`;
       }
 
       _mysql
         .executeQuery({
           query: `SELECT 
-          P.full_name,
-          patient_code,
-          contact_number,
+          max(P.full_name)as full_name,
+          max(patient_code)as patient_code,
+          max(contact_number) as contact_number,
           pv.visit_code,
           pv.visit_date,
-          BH.patient_payable,
-          BH.patient_res,
-          BH.patient_tax,
-          BH.company_res,
-          BH.company_payable,
-          BH.company_tax,
-          BH.sub_total_amount as gross_amount,
-          BH.discount_amount,
-          BH.net_total as net_amout,
+          sum(BH.patient_payable) as patient_payable,
+          sum(BH.patient_res)as patient_res,
+          sum(BH.patient_tax) as patient_tax,
+          sum(BH.company_res) as company_res,
+          sum(BH.company_payable) as company_payable,
+          sum(BH.company_tax) as company_tax,
+          sum(BH.sub_total_amount) as gross_amount,
+          sum(BH.discount_amount) as discount_amount,
+          sum(BH.net_total) as net_amout,
           pv.patient_id,
           pv.hims_f_patient_visit_id,
-          pv.insured,
-          pv.sec_insured,
+          max(pv.insured),
+          max(pv.sec_insured),
           pv.episode_id,
-          E.full_name as doctor_name,
-          pv.visit_date,
-          INS.insurance_provider_name,
-          SUB.insurance_sub_name,
-          IMAP.primary_card_number as card_number,
-          IMAP.primary_policy_num as policy_number,
-          NET.network_type,
-          NET.effective_end_date
+          max(E.full_name) as doctor_name,
+          max(INS.insurance_provider_name) as insurance_provider_name,
+          max(SUB.insurance_sub_name)  as insurance_sub_name,
+          max(IMAP.primary_card_number) as card_number,
+          max(IMAP.primary_policy_num) as policy_number,
+          max(NET.network_type)as network_type,
+          max(NET.effective_end_date) as effective_end_date
       FROM
           hims_f_patient P,
           hims_f_patient_visit pv,
@@ -863,7 +863,7 @@ export default {
               AND pv.hospital_id = ${hospitalId}
               AND pv.insured = 'Y'
               AND BH.invoice_generated = 'N' ${qryStr}
-      ORDER BY pv.hims_f_patient_visit_id DESC`,
+              group BY pv.hims_f_patient_visit_id,pv.visit_code,date(pv.visit_date),patient_id,hims_f_patient_visit_id,episode_id;`,
           printQuery: true,
         })
         .then((result) => {

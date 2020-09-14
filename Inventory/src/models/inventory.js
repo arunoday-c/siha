@@ -1129,7 +1129,7 @@ export default {
           query:
             "INSERT INTO `hims_d_inventory_options` (`requisition_auth_level`, `trans_ack_required`, \
             `created_date`, `created_by`, `updated_date`, `updated_by`)\
-            VALUE(?, ?, ?, ?, ?)",
+            VALUE(?, ?, ?, ?, ?, ?)",
           values: [
             input.requisition_auth_level,
             input.trans_ack_required,

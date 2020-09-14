@@ -19,6 +19,7 @@ import {
   SaveDispatchNote,
   getCtrlCode,
   generateDispatchReport,
+  // CancelDispatchNote
 } from "./DispatchNoteEvents";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import { GetAmountFormart } from "../../../utils/GlobalFunctions";
@@ -64,6 +65,7 @@ class DispatchNote extends Component {
       batch_detail_view: false,
       dispatched_quantity: 0,
       inventory_stock_detail: [],
+      calcelEnable: true
     };
     this.baseState = this.state;
   }
@@ -135,8 +137,8 @@ class DispatchNote extends Component {
       this.state.dataFinder === true
         ? " disableFinder"
         : this.state.ReqData === true
-        ? " disableFinder"
-        : "";
+          ? " disableFinder"
+          : "";
     return (
       <div>
         <BreadCrumb
@@ -193,8 +195,8 @@ class DispatchNote extends Component {
                 <h6>
                   {this.state.dispatch_note_date
                     ? moment(this.state.dispatch_note_date).format(
-                        Options.dateFormat
-                      )
+                      Options.dateFormat
+                    )
                     : Options.dateFormat}
                 </h6>
               </div>
@@ -203,17 +205,17 @@ class DispatchNote extends Component {
           printArea={
             this.state.dispatch_note_number !== null
               ? {
-                  menuitems: [
-                    {
-                      label: "Dispatch Report",
-                      events: {
-                        onClick: () => {
-                          generateDispatchReport(this.state);
-                        },
+                menuitems: [
+                  {
+                    label: "Dispatch Report",
+                    events: {
+                      onClick: () => {
+                        generateDispatchReport(this.state);
                       },
                     },
-                  ],
-                }
+                  },
+                ],
+              }
               : ""
           }
           selectedLang={this.state.selectedLang}
@@ -254,7 +256,7 @@ class DispatchNote extends Component {
                   }}
                 />
 
-                <div className="col">
+                {/* <div className="col">
                   <AlgaehLabel
                     label={{
                       forceLabel: "Location Type",
@@ -265,11 +267,11 @@ class DispatchNote extends Component {
                       ? this.state.location_type === "WH"
                         ? "Warehouse"
                         : this.state.location_type === "MS"
-                        ? "Main Store"
-                        : "Sub Store"
+                          ? "Main Store"
+                          : "Sub Store"
                       : "Location Type"}
                   </h6>
-                </div>
+                </div> */}
 
                 <div className={"col-2 globalSearchCntr" + class_finder}>
                   <AlgaehLabel label={{ forceLabel: "Search Order No." }} />
@@ -418,6 +420,19 @@ class DispatchNote extends Component {
                   label={{ forceLabel: "Clear", returnText: true }}
                 />
               </button>
+              {/* <button
+                type="button"
+                className="btn btn-primary"
+                onClick={CancelDispatchNote.bind(this, this)}
+                disabled={this.state.calcelEnable}
+              >
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Cancel",
+                    returnText: true,
+                  }}
+                />
+              </button> */}
             </div>
           </div>
         </div>

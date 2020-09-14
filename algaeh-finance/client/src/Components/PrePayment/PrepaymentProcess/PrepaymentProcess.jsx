@@ -50,6 +50,7 @@ export function PrepaymentProcess() {
   }, []); // eslint-disable-line
 
   const addToList = (row) => {
+
     setProcessList((state) => {
       const idx = state.findIndex(
         (item) => item === row.finance_f_prepayment_detail_id
@@ -91,7 +92,8 @@ export function PrepaymentProcess() {
       .forEach((item) => {
         pending_payments.push(item.finance_f_prepayment_detail_id);
       });
-    setProcessList(pending_payments);
+
+    setProcessList(pending_payments)
 
     onProcess(pending_payments);
     return;
@@ -144,6 +146,7 @@ export function PrepaymentProcess() {
     }
   };
   const SelectAllList = () => {
+
     setProcessList(
       list
         .filter((item) => {
@@ -201,13 +204,17 @@ export function PrepaymentProcess() {
 
   const onProcess = async (data) => {
     setLoading(true);
+
+    if (data.length === undefined) {
+      data = processList
+    }
     try {
       const res = await newAlgaehApi({
         uri: "/prepayment/processPrepayments",
         module: "finance",
         method: "PUT",
         data: {
-          detail_ids: data ? data : processList,
+          detail_ids: data,
         },
       });
       if (res.data.success) {
@@ -387,51 +394,51 @@ export function PrepaymentProcess() {
               editorTemplate: (row) => {
                 const valueRow =
                   row.hospital_id !== undefined &&
-                  row.hospital_id !== "" &&
-                  row.cost_center_id !== undefined &&
-                  row.cost_center_id !== ""
+                    row.hospital_id !== "" &&
+                    row.cost_center_id !== undefined &&
+                    row.cost_center_id !== ""
                     ? `${row.hospital_id}-${row.cost_center_id}`
                     : "";
 
                 return row.processed === "Y" ? (
                   row.cost_center
                 ) : (
-                  <AlgaehTreeSearch
-                    // div={{ className: "col-10" }}
-                    tree={{
-                      treeDefaultExpandAll: true,
-                      updateInternally: true,
-                      data: costCenter,
-                      disableHeader: true,
-                      textField: "hospital_name",
-                      valueField: "hims_d_hospital_id",
-                      children: {
-                        node: "cost_centers",
-                        textField: "cost_center",
-                        valueField: (node) => {
-                          const { hims_d_hospital_id, cost_center_id } = node;
-                          if (cost_center_id === undefined) {
-                            return hims_d_hospital_id;
+                    <AlgaehTreeSearch
+                      // div={{ className: "col-10" }}
+                      tree={{
+                        treeDefaultExpandAll: true,
+                        updateInternally: true,
+                        data: costCenter,
+                        disableHeader: true,
+                        textField: "hospital_name",
+                        valueField: "hims_d_hospital_id",
+                        children: {
+                          node: "cost_centers",
+                          textField: "cost_center",
+                          valueField: (node) => {
+                            const { hims_d_hospital_id, cost_center_id } = node;
+                            if (cost_center_id === undefined) {
+                              return hims_d_hospital_id;
+                            } else {
+                              return `${hims_d_hospital_id}-${cost_center_id}`;
+                            }
+                          },
+                        },
+
+                        value: valueRow,
+                        onChange: (value) => {
+                          if (value !== undefined) {
+                            const detl = value.split("-");
+                            row.hospital_id = detl[0];
+                            row.cost_center_id = detl[1];
                           } else {
-                            return `${hims_d_hospital_id}-${cost_center_id}`;
+                            row.hospital_id = undefined;
+                            row.cost_center_id = undefined;
                           }
                         },
-                      },
-
-                      value: valueRow,
-                      onChange: (value) => {
-                        if (value !== undefined) {
-                          const detl = value.split("-");
-                          row.hospital_id = detl[0];
-                          row.cost_center_id = detl[1];
-                        } else {
-                          row.hospital_id = undefined;
-                          row.cost_center_id = undefined;
-                        }
-                      },
-                    }}
-                  />
-                );
+                      }}
+                    />
+                  );
               },
             },
             // }}
@@ -587,13 +594,13 @@ export function PrepaymentProcess() {
                       displayTemplate: (row) => {
                         return row.processed === "N" ? (
                           <Checkbox
-                            checked={processList.find(
-                              (item) =>
-                                item === row.finance_f_prepayment_detail_id
-                            )}
+                            checked={
+                              processList.find(
+                                (item) =>
+                                  item === row.finance_f_prepayment_detail_id
+                              )}
                             onChange={() => addToList(row)}
                           >
-                            {" "}
                           </Checkbox>
                         ) : null;
                       },
@@ -730,6 +737,6 @@ export function PrepaymentProcess() {
           </div>
         </div>
       </div>
-    </Spin>
+    </Spin >
   );
 }

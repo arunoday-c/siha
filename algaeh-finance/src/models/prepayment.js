@@ -785,6 +785,8 @@ export const processPrepayments = (req, res, next) => {
   const _mysql = new algaehMysql();
 
   const { detail_ids } = req.body;
+  console.log("req.body", req.body)
+  console.log("detail_ids", detail_ids)
 
   if (detail_ids.length > 0) {
     _mysql

@@ -470,6 +470,133 @@ export function addDispatchNote(req, res, next) {
   }
 }
 
+export function cancelDispatchNote(req, res, next) {
+  const _mysql = new algaehMysql();
+
+  try {
+    let buffer = "";
+    req.on("data", (chunk) => {
+      buffer += chunk.toString();
+    });
+
+    req.on("end", () => {
+      let input = JSON.parse(buffer);
+      req.body = input;
+
+      let year = moment().format("YYYY");
+      let month = moment().format("MM");
+      let period = month;
+
+      _mysql
+        .executeQuery({
+          query:
+            "UPDATE hims_f_sales_dispatch_note_header set cancelled = 'Y', cancelled_by=?, cancelled_date=? \
+            where hims_f_dispatch_note_header_id=?;",
+          values: [
+            req.userIdentity.algaeh_d_app_user_id,
+            new Date(),
+            input.hims_f_dispatch_note_header_id,
+          ],
+          printQuery: true,
+        })
+        .then((headerResult) => {
+          req.body.transaction_id = input.hims_f_dispatch_note_header_id;
+          req.body.year = year;
+          req.body.period = period;
+          req.body.complete = "N"
+
+          req.connection = {
+            connection: _mysql.connection,
+            isTransactionConnection:
+              _mysql.isTransactionConnection,
+            pool: _mysql.pool,
+          };
+          req.records = {
+            dispatch_note_number: input.dispatch_note_number,
+            hims_f_dispatch_note_header_id: input.hims_f_dispatch_note_header_id,
+            year: year,
+            period: period
+          };
+          next();
+        })
+        .catch((e) => {
+          _mysql.rollBackTransaction(() => {
+            next(e);
+          });
+        });
+
+    });
+  } catch (e) {
+    _mysql.rollBackTransaction(() => {
+      next(e);
+    });
+  }
+}
+
+export function revertSalesOrder(req, res, next) {
+  const _options = req.connection == null ? {} : req.connection;
+  const _mysql = new algaehMysql(_options);
+  try {
+    let inputParam = { ...req.body };
+    _mysql
+      .executeQuery({
+        query:
+          "UPDATE `hims_f_sales_order` SET `is_completed`='N' WHERE `hims_f_sales_order_id`=?; \
+          UPDATE hims_f_sales_quotation set qotation_status='O' where hims_f_sales_quotation_id = ?;" ,
+        values: [
+          inputParam.sales_order_id,
+          inputParam.sales_quotation_id
+        ],
+        printQuery: true,
+      })
+      .then((headerResult) => {
+
+        next();
+        // if (headerResult != null) {
+        //   let details = inputParam.inventory_stock_detail;
+
+        //   let qry = "";
+
+        //   for (let i = 0; i < details.length; i++) {
+        //     qry += mysql.format(
+        //       "UPDATE hims_f_sales_order_items SET `quantity_outstanding`=?\
+        //                     where `hims_f_sales_order_items_id`=?;",
+        //       [details[i].quantity_outstanding, details[i].sales_order_items_id]
+        //     );
+        //   }
+        //   _mysql
+        //     .executeQueryWithTransaction({
+        //       query: qry,
+        //       printQuery: true,
+        //     })
+        //     .then((detailResult) => {
+        //       next();
+
+        //     })
+        //     .catch((e) => {
+        //       _mysql.rollBackTransaction(() => {
+        //         next(e);
+        //       });
+        //     });
+        // } else {
+        //   _mysql.rollBackTransaction(() => {
+        //     // req.records = {};
+        //     next();
+        //   });
+        // }
+      })
+      .catch((e) => {
+        _mysql.rollBackTransaction(() => {
+          next(e);
+        });
+      });
+  } catch (e) {
+    _mysql.rollBackTransaction(() => {
+      next(e);
+    });
+  }
+}
+
 export function updateinvSalesOrderOnceDispatch(req, res, next) {
   const _options = req.connection == null ? {} : req.connection;
   const _mysql = new algaehMysql(_options);

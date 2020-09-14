@@ -239,8 +239,8 @@ let algaehSearchConfig = (searchName, req) => {
         searchName: "InvREQTransEntry",
         searchQuery:
           "select SQL_CALC_FOUND_ROWS RH.*, date(RH.requistion_date) as requistion_date, \
-          FPL.location_description as from_location, \
-          TPL.location_description as to_location from hims_f_inventory_material_header RH,\
+          FPL.location_description as 'FPL.location_description', \
+          TPL.location_description as 'TPL.location_description' from hims_f_inventory_material_header RH,\
           hims_d_inventory_location FPL, hims_d_inventory_location TPL \
           where FPL.hims_d_inventory_location_id = RH.from_location_id and \
           RH.to_location_id = TPL.hims_d_inventory_location_id and RH.authorize1 = 'Y' and RH.authorie2 = 'Y'\
@@ -979,7 +979,7 @@ let algaehSearchConfig = (searchName, req) => {
         searchName: "DispatchNote",
         searchQuery:
           "select SQL_CALC_FOUND_ROWS H.*, L.location_description as location, SO.sales_order_number, \
-          C.customer_name, P.project_desc, B.hospital_name from hims_f_sales_dispatch_note_header H \
+          C.customer_name, P.project_desc, B.hospital_name, L.location_type from hims_f_sales_dispatch_note_header H \
           inner join hims_d_inventory_location L on L.hims_d_inventory_location_id = H.location_id \
           inner join hims_f_sales_order SO on SO.hims_f_sales_order_id = H.sales_order_id \
           inner join hims_d_customer C on C.hims_d_customer_id = H.customer_id \
