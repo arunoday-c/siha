@@ -152,9 +152,13 @@
   "babel": {
     "presets": [
       "react-app"
+    ],
+    "plugins": [
+      "@babel/plugin-proposal-optional-chaining"
     ]
   },
   "devDependencies": {
+    "@babel/plugin-proposal-optional-chaining": "^7.11.0",
     "assets-webpack-plugin": "^3.9.10",
     "babel-preset-flow": "^6.23.0",
     "clean-webpack-plugin": "^3.0.0",
