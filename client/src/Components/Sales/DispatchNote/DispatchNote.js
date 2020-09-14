@@ -404,7 +404,7 @@ class DispatchNote extends Component {
               >
                 <AlgaehLabel
                   label={{
-                    forceLabel: "Save",
+                    forceLabel: "Dispatch",
                     returnText: true,
                   }}
                 />
@@ -428,7 +428,7 @@ class DispatchNote extends Component {
               >
                 <AlgaehLabel
                   label={{
-                    forceLabel: "Cancel",
+                    forceLabel: "Cancel Dispatch",
                     returnText: true,
                   }}
                 />

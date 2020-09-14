@@ -426,6 +426,97 @@ export function postSalesInvoice(req, res, next) {
     }
 };
 
+export function revertSalesInvoice(req, res, next) {
+    const _mysql = new algaehMysql();
+
+    try {
+        req.mySQl = _mysql;
+        let inputParam = { ...req.body };
+
+        let strQuery = "";
+
+        if (inputParam.sales_invoice_mode === "S") {
+            strQuery = mysql.format(
+                " select * from hims_f_sales_order_services where sales_order_id=?;",
+                [inputParam.sales_order_id]
+            );
+        }
+
+        _mysql
+            .executeQueryWithTransaction({
+                query: " UPDATE hims_f_sales_order SET is_posted='N', authorize1='N', authorize2='N',\
+                    is_revert='Y', reverted_date=?, reverted_by=? WHERE hims_f_sales_order_id=?; \
+                    UPDATE hims_f_sales_invoice_header SET is_revert='Y', reverted_date=?, reverted_by=? \
+                    WHERE hims_f_sales_invoice_header_id=?;"+ strQuery,
+                values: [
+                    new Date(),
+                    req.userIdentity.algaeh_d_app_user_id,
+                    inputParam.sales_order_id,
+                    new Date(),
+                    req.userIdentity.algaeh_d_app_user_id,
+                    inputParam.hims_f_sales_invoice_header_id
+                ],
+                printQuery: true
+            })
+            .then(result => {
+                const sales_order_services = result[2]
+
+                const IncludeValues = [
+                    "sales_order_id",
+                    "services_id",
+                    "service_frequency",
+                    "unit_cost",
+                    "quantity",
+                    "extended_cost",
+                    "discount_percentage",
+                    "discount_amount",
+                    "net_extended_cost",
+                    "tax_percentage",
+                    "tax_amount",
+                    "total_amount",
+                    "comments",
+                    "arabic_comments"
+                ];
+
+                _mysql
+                    .executeQuery({
+                        query:
+                            `INSERT INTO hims_f_sales_order_adj_services(??) VALUES ?;`,
+                        values: sales_order_services,
+                        includeValues: IncludeValues,
+                        extraValues: {
+                            created_by: req.userIdentity.algaeh_d_app_user_id,
+                            created_date: new Date()
+                        },
+                        bulkInsertOrUpdate: true,
+                        printQuery: true,
+                    })
+                    .then((detailResult) => {
+                        _mysql.commitTransaction(() => {
+                            _mysql.releaseConnection();
+                            req.records = detailResult;
+                            next();
+                        });
+                    })
+                    .catch((error) => {
+                        _mysql.rollBackTransaction(() => {
+                            next(error);
+                        });
+                    });
+            })
+            .catch(e => {
+                _mysql.rollBackTransaction(() => {
+                    next(e);
+                });
+            });
+
+    } catch (e) {
+        _mysql.rollBackTransaction(() => {
+            next(e);
+        });
+    }
+};
+
 export function generateAccountingEntry(req, res, next) {
     const _options = req.connection == null ? {} : req.connection;
     const _mysql = new algaehMysql(_options);

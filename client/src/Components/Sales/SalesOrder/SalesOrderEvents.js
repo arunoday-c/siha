@@ -538,6 +538,7 @@ const getCtrlCode = ($this, docNumber) => {
 
         data.dataExists = true;
         data.selectedData = true;
+
         if (data.is_posted === "Y") {
           data.saveEnable = true;
           data.addedItem = true;

@@ -4,7 +4,7 @@ import {
   algaehApiCall,
   getCookie,
 } from "../../../utils/algaehApiCall";
-
+import swal from "sweetalert2";
 import AlgaehSearch from "../../Wrapper/globalSearch";
 import spotlightSearch from "../../../Search/spotlightSearch.json";
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
@@ -103,10 +103,17 @@ const getCtrlCode = ($this, docNumber, row) => {
           data.saveEnable = true;
           data.dataExitst = true;
 
-          if (data.is_posted === "Y") {
+          debugger
+          if (data.is_posted === "Y" || data.is_revert === "Y") {
             data.postEnable = true;
           } else {
             data.postEnable = false;
+          }
+
+          if (data.is_revert === "Y") {
+            data.dataRevert = true;
+          } else {
+            data.dataRevert = false;
           }
 
           if (data.sales_invoice_mode === "I") {
@@ -297,6 +304,57 @@ const SalesOrderSearch = ($this, e) => {
   });
 };
 
+const RevertSalesInvoice = ($this) => {
+  swal({
+    title: "Are you sure you want to Revert ?",
+    type: "warning",
+    showCancelButton: true,
+    confirmButtonText: "Yes",
+    confirmButtonColor: "#44b8bd",
+    cancelButtonColor: "#d33",
+    cancelButtonText: "No",
+  }).then((willDelete) => {
+    if (willDelete.value) {
+      AlgaehLoader({ show: true });
+      algaehApiCall({
+        uri: "/SalesInvoice/revertSalesInvoice",
+        module: "sales",
+        method: "PUT",
+        data: {
+          hims_f_sales_invoice_header_id: $this.state.hims_f_sales_invoice_header_id,
+          sales_order_id: $this.state.sales_order_id,
+          sales_invoice_mode: $this.state.sales_invoice_mode
+        },
+        onSuccess: (response) => {
+          if (response.data.success) {
+            $this.setState({
+              invoice_number: response.data.records.invoice_number,
+              hims_f_sales_invoice_header_id:
+                response.data.records.hims_f_sales_invoice_header_id,
+              saveEnable: true,
+              postEnable: true,
+              dataExitst: true,
+              dataRevert: true
+            });
+            swalMessage({
+              type: "success",
+              title: "Saved successfully ...",
+            });
+            AlgaehLoader({ show: false });
+          } else {
+            AlgaehLoader({ show: false });
+            swalMessage({
+              type: "error",
+              title: response.data.records.message,
+            });
+          }
+        },
+      });
+    }
+  });
+
+}
+
 export {
   texthandle,
   ClearData,
@@ -305,4 +363,5 @@ export {
   PostSalesInvoice,
   generateSalesInvoiceReport,
   SalesOrderSearch,
+  RevertSalesInvoice
 };

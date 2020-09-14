@@ -18,6 +18,7 @@ import {
   texthandle,
   PostSalesInvoice,
   generateSalesInvoiceReport,
+  RevertSalesInvoice
 } from "./SalesInvoiceEvents";
 import { AlgaehActions } from "../../../actions/algaehActions";
 // import SalesInvoiceInp from "../../../Models/SalesInvoice";
@@ -27,6 +28,7 @@ import { MainContext } from "algaeh-react-components";
 import InvoiceListService from "./InvoiceListService/InvoiceListService";
 import InvoiceItemList from "./InvoiceItemList/InvoiceItemList";
 import SalesInvoiceIO from "../../../Models/SalesInvoice";
+import { AlgaehSecurityComponent } from "algaeh-react-components";
 
 class SalesInvoice extends Component {
   constructor(props) {
@@ -144,7 +146,26 @@ class SalesInvoice extends Component {
                     : Options.dateFormat}
                 </h6>
               </div>
+              {this.state.dataExitst === true ? (
+                <div className="col">
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Order Status",
+                    }}
+                  />
+                  <h6>
+                    {this.state.is_revert === "Y" ? (
+                      <span className="badge badge-danger">Reverted</span>
+                    ) : this.state.is_posted === "N" ? (
+                      <span className="badge badge-danger">Not Posted</span>
+                    ) : (
+                          <span className="badge badge-success">Posted</span>
+                        )}
+                  </h6>
+                </div>
+              ) : null}
             </div>
+
           }
           printArea={
             this.state.hims_f_sales_invoice_header_id !== null
@@ -363,20 +384,21 @@ class SalesInvoice extends Component {
           <div className="hptl-phase1-footer">
             <div className="row">
               <div className="col-lg-12">
-                <button
-                  type="button"
-                  className="btn btn-primary"
-                  onClick={SaveInvoiceEnrty.bind(this, this)}
-                  disabled={this.state.saveEnable}
-                >
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Save",
-                      returnText: true,
-                    }}
-                  />
-                </button>
-
+                <AlgaehSecurityComponent componentCode="SALES_INV_MAIN">
+                  <button
+                    type="button"
+                    className="btn btn-primary"
+                    onClick={SaveInvoiceEnrty.bind(this, this)}
+                    disabled={this.state.saveEnable}
+                  >
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Generate",
+                        returnText: true,
+                      }}
+                    />
+                  </button>
+                </AlgaehSecurityComponent>
                 <button
                   type="button"
                   className="btn btn-default"
@@ -387,19 +409,37 @@ class SalesInvoice extends Component {
                     label={{ forceLabel: "Clear", returnText: true }}
                   />
                 </button>
-                <button
-                  type="button"
-                  className="btn btn-other"
-                  disabled={this.state.postEnable}
-                  onClick={PostSalesInvoice.bind(this, this)}
-                >
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Post",
-                      returnText: true,
-                    }}
-                  />
-                </button>
+                <AlgaehSecurityComponent componentCode="SALE_INV_POST">
+                  <button
+                    type="button"
+                    className="btn btn-other"
+                    disabled={this.state.postEnable}
+                    onClick={PostSalesInvoice.bind(this, this)}
+                  >
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Post",
+                        returnText: true,
+                      }}
+                    />
+                  </button>
+                </AlgaehSecurityComponent>
+                <AlgaehSecurityComponent componentCode="SALES_INV_RVT">
+                  {this.state.sales_invoice_mode === "S" ?
+                    <button
+                      type="button"
+                      className="btn btn-other"
+                      disabled={this.state.dataRevert}
+                      onClick={RevertSalesInvoice.bind(this, this)}
+                    >
+                      <AlgaehLabel
+                        label={{
+                          forceLabel: "Revert",
+                          returnText: true,
+                        }}
+                      />
+                    </button> : null}
+                </AlgaehSecurityComponent>
               </div>
             </div>
           </div>
