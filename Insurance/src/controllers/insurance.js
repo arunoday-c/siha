@@ -5,6 +5,7 @@ import insuranceModels, {
   getInsuranceStatement,
   updateInsuranceStatement,
   getInvoiceDetails,
+  generateAccountingEntry
 } from "../models/insurance";
 
 const {
@@ -27,7 +28,7 @@ const {
   updatePriceListBulk,
   deleteNetworkAndNetworkOfficRecords,
   getInsuranceProviders,
-  getFinanceInsuranceProviders,
+  getFinanceInsuranceProviders
 } = insuranceModels;
 
 export default () => {
@@ -259,7 +260,7 @@ export default () => {
       next();
     }
   );
-  api.post("/saveMultiStatement", saveMultiStatement, (req, res) => {
+  api.post("/saveMultiStatement", saveMultiStatement, generateAccountingEntry, (req, res) => {
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
       success: true,
       records: req.records,

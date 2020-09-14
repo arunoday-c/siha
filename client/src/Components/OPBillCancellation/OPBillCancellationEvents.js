@@ -166,6 +166,7 @@ const getBillDetails = $this => {
     data: { bill_number: $this.state.bill_number, from_cancellation: "Y" },
     onSuccess: response => {
       if (response.data.success) {
+        debugger
 
         let data = response.data.records;
 

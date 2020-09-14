@@ -8,7 +8,7 @@ const {
   updateEncounterDetails,
   checkLabSampleCollected,
   checkRadSheduled,
-  financeOpBillCancel,
+  generateAccountingEntry,
   checkDentalProcedure
 } = opModels;
 import recModels from "../models/receiptentry";
@@ -65,7 +65,7 @@ export default () => {
         next();
       }
     },
-    financeOpBillCancel,
+    generateAccountingEntry,
     updateOPBilling,
 
     (req, res, next) => {

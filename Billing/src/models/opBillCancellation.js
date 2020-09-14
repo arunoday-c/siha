@@ -778,7 +778,7 @@ export default {
   },
 
   //created by:IRFAN
-  financeOpBillCancel: (req, res, next) => {
+  generateAccountingEntry: (req, res, next) => {
     try {
       const _options = req.connection == null ? {} : req.connection;
 
@@ -806,7 +806,7 @@ export default {
               .executeQuery({
                 query:
                   "select finance_accounts_maping_id,account,head_id,child_id from finance_accounts_maping  where \
-            account in ('OP_DEP','CIH_OP','OUTPUT_TAX','OP_REC','CARD_SETTL');\
+            account in ('OP_DEP','CIH_OP','OUTPUT_TAX','OP_REC','CARD_SETTL', 'OP_CTRL');\
             SELECT hims_d_services_id,service_name,head_id,child_id FROM hims_d_services where hims_d_services_id in(?);\
             select cost_center_type, cost_center_required from finance_options limit 1;",
                 values: [servicesIds],
@@ -829,8 +829,8 @@ export default {
                 const OP_REC = controls.find((f) => {
                   return f.account == "OP_REC";
                 });
-                const CARD_SETTL = controls.find((f) => {
-                  return f.account == "CARD_SETTL";
+                const OP_CTRL = controls.find((f) => {
+                  return f.account == "OP_CTRL";
                 });
 
                 let voucher_type = "";
@@ -856,7 +856,9 @@ export default {
                       return f;
                   });
 
-                  const debit_amount = _.sumBy(bill, (s) => parseFloat(s.patient_resp))
+                  console.log("bill", bill)
+
+                  const debit_amount = _.sumBy(bill, (s) => parseFloat(s.net_amout))
 
                   EntriesArray.push({
                     payment_date: new Date(),
@@ -868,17 +870,17 @@ export default {
                     hospital_id: req.userIdentity.hospital_id,
                   });
 
-                  if (parseFloat(bill.patient_tax) > 0) {
-                    EntriesArray.push({
-                      payment_date: new Date(),
-                      head_id: OUTPUT_TAX.head_id,
-                      child_id: OUTPUT_TAX.child_id,
-                      debit_amount: bill.patient_tax,
-                      payment_type: "DR",
-                      credit_amount: 0,
-                      hospital_id: req.userIdentity.hospital_id,
-                    });
-                  }
+                  // if (parseFloat(bill.patient_tax) > 0) {
+                  //   EntriesArray.push({
+                  //     payment_date: new Date(),
+                  //     head_id: OUTPUT_TAX.head_id,
+                  //     child_id: OUTPUT_TAX.child_id,
+                  //     debit_amount: bill.patient_tax,
+                  //     payment_type: "DR",
+                  //     credit_amount: 0,
+                  //     hospital_id: req.userIdentity.hospital_id,
+                  //   });
+                  // }
                 });
 
                 //ADJUSTING AMOUNT FROM PRVIOUS ADVANCE
@@ -929,6 +931,35 @@ export default {
                   });
                 });
 
+                //TAX part
+                if (parseFloat(inputParam.total_tax) > 0) {
+                  EntriesArray.push({
+                    payment_date: new Date(),
+                    head_id: OUTPUT_TAX.head_id,
+                    child_id: OUTPUT_TAX.child_id,
+                    debit_amount: inputParam.total_tax,
+                    payment_type: "DR",
+                    credit_amount: 0,
+                    hospital_id: req.userIdentity.hospital_id,
+                  });
+                }
+
+                //insurance company payable
+                if (inputParam.insured == "Y" && parseFloat(inputParam.company_payable) > 0) {
+                  // narration =
+                  //   narration +
+                  //   `, insurance (${insurance_data[0]["insurance_sub_name"]}) receivable: ${inputParam.company_payble}`;
+
+                  EntriesArray.push({
+                    payment_date: new Date(),
+                    head_id: OP_CTRL.head_id,
+                    child_id: OP_CTRL.child_id,
+                    debit_amount: 0,
+                    payment_type: "CR",
+                    credit_amount: inputParam.company_payable,
+                    hospital_id: req.userIdentity.hospital_id,
+                  });
+                }
                 let strQuery = "";
 
                 if (
