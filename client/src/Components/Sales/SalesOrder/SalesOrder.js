@@ -933,7 +933,7 @@ class SalesOrder extends Component {
                         onClick={CancelSalesServiceOrder.bind(this, this)}
                       >
                         <AlgaehLabel
-                          label={{ forceLabel: "Cancel", returnText: true }}
+                          label={{ forceLabel: "Reject", returnText: true }}
                         />
                       </button>
                     </AlgaehSecurityComponent>
