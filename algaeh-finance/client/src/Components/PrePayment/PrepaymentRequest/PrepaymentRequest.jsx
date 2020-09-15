@@ -14,9 +14,7 @@ import { Controller, useForm } from "react-hook-form";
 import { PrePaymentContext } from "../Prepayment";
 import { newAlgaehApi } from "../../../hooks";
 import { Upload, Modal } from "antd";
-// import _ from "lodash";
 
-// import { uspdatePrepaymentRequest } from "../../../../../src/models/prepayment";
 const { Dragger } = Upload;
 const { confirm } = Modal;
 export function PrepaymentRequest() {
@@ -117,23 +115,21 @@ export function PrepaymentRequest() {
       formData.append(`file_${index}`, file, file.name);
     });
 
-    newAlgaehApi({
-      uri: "/saveContractDoc",
-      data: formData,
-      extraHeaders: { "Content-Type": "multipart/form-data" },
-      method: "POST",
-      module: "documentManagement",
-    })
-      .then((value) => {
-        // return getRequest();
-        AlgaehMessagePop({
-          type: "success",
-          display: "Request Added successfully",
-        });
-        getRequest();
-      })
-      .catch((e) => console.log(e));
+    if (files?.length) {
+      return newAlgaehApi({
+        uri: "/saveContractDoc",
+        data: formData,
+        extraHeaders: { "Content-Type": "multipart/form-data" },
+        method: "POST",
+        module: "documentManagement",
+      });
+    } else {
+      return new Promise((resolve) => {
+        resolve(1);
+      });
+    }
   };
+
   const getDocuments = (contract_no) => {
     newAlgaehApi({
       uri: "/getContractDoc",
@@ -177,11 +173,20 @@ export function PrepaymentRequest() {
       });
       if (res.data.success) {
         const result = res.data.result;
-        AlgaehMessagePop({
-          type: "success",
-          display: "Request Added successfully",
-        });
-        saveDocument(payment_reqDoc, result.request_code, result.insertId);
+        saveDocument(payment_reqDoc, result.request_code, result.insertId)
+          .then(() => getRequest())
+          .then(() => {
+            AlgaehMessagePop({
+              type: "success",
+              display: "Request Added successfully",
+            });
+          })
+          .catch((e) => {
+            AlgaehMessagePop({
+              type: "warning",
+              display: e.message,
+            });
+          });
       }
     } catch (e) {
       AlgaehMessagePop({

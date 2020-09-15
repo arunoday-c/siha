@@ -30,6 +30,17 @@ export default function Patient({
               minDate: null,
             },
           },
+          {
+            className: "col-3 form-group mandatory",
+            type: "search",
+            name: "patient",
+            label: "Patient",
+            isImp: true,
+            search: {
+              searchName: "onlycreditpatients",
+              columns: ["full_name", "patient_code", "contact_number"],
+            },
+          },
         ],
       },
       {

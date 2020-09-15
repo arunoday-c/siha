@@ -46,7 +46,7 @@ export default function Inventory({
                 });
               },
             },
-            value: hospital_id,
+
             dataSource: {
               textField: "hospital_name",
               valueField: "hims_d_hospital_id",
@@ -158,7 +158,7 @@ export default function Inventory({
             link: {
               uri: "/organization/getOrganizationByUser",
             },
-            value: hospital_id,
+            // value: hospital_id,
             dataSource: {
               textField: "hospital_name",
               valueField: "hims_d_hospital_id",
@@ -307,7 +307,7 @@ export default function Inventory({
                 });
               },
             },
-            value: hospital_id,
+            // value: hospital_id,
             dataSource: {
               textField: "hospital_name",
               valueField: "hims_d_hospital_id",
@@ -600,7 +600,7 @@ export default function Inventory({
                 });
               },
             },
-            value: hospital_id,
+            // value: hospital_id,
             dataSource: {
               textField: "hospital_name",
               valueField: "hims_d_hospital_id",
@@ -681,7 +681,7 @@ export default function Inventory({
                 });
               },
             },
-            value: hospital_id,
+            // value: hospital_id,
             dataSource: {
               textField: "hospital_name",
               valueField: "hims_d_hospital_id",
@@ -762,7 +762,7 @@ export default function Inventory({
                 });
               },
             },
-            value: hospital_id,
+            // value: hospital_id,
             dataSource: {
               textField: "hospital_name",
               valueField: "hims_d_hospital_id",
@@ -866,7 +866,7 @@ export default function Inventory({
                 });
               },
             },
-            value: hospital_id,
+            // value: hospital_id,
             dataSource: {
               textField: "hospital_name",
               valueField: "hims_d_hospital_id",
