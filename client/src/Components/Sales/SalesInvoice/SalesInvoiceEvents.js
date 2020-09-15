@@ -61,14 +61,15 @@ const SaveInvoiceEnrty = ($this) => {
     data: $this.state,
     onSuccess: (response) => {
       if (response.data.success) {
-        $this.setState({
-          invoice_number: response.data.records.invoice_number,
-          hims_f_sales_invoice_header_id:
-            response.data.records.hims_f_sales_invoice_header_id,
-          saveEnable: true,
-          postEnable: false,
-          dataExitst: true,
-        });
+        getCtrlCode($this, response.data.records.invoice_number)
+        // $this.setState({
+        //   invoice_number: response.data.records.invoice_number,
+        //   hims_f_sales_invoice_header_id:
+        //     response.data.records.hims_f_sales_invoice_header_id,
+        //   saveEnable: true,
+        //   postEnable: false,
+        //   dataExitst: true,
+        // });
         swalMessage({
           type: "success",
           title: "Saved successfully ...",
@@ -103,18 +104,20 @@ const getCtrlCode = ($this, docNumber) => {
           data.saveEnable = true;
           data.dataExitst = true;
 
-          debugger
+
           if (data.is_posted === "Y" || data.is_revert === "Y") {
             data.postEnable = true;
-          } else {
-            data.postEnable = false;
-          }
-
-          if (data.is_revert === "Y") {
             data.dataRevert = true;
           } else {
+            data.postEnable = false;
             data.dataRevert = false;
           }
+
+          // if (data.is_revert === "Y") {
+          //   data.dataRevert = true;
+          // } else {
+          //   data.dataRevert = false;
+          // }
 
           if (data.sales_invoice_mode === "I") {
             data.invoice_entry_detail_item = data.invoice_detail;
