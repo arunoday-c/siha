@@ -33,6 +33,7 @@ function MenuItems({ showMenu, onVisibityChange, openModule, openScreen }) {
     setItem("userSelectedMenu", selMenu);
     setSelectedMenuItem(selMenu);
     setActiveScreen(item.screen_name);
+    document.cookie = "Tab=;expires=Thu, 01 Jan 1970 00:00:00 GMT";
     setCookie("ScreenName", screenName);
     setCookie("ScreenCode", item.screen_code);
     const extraParam =
