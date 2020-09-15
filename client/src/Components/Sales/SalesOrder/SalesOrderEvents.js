@@ -550,6 +550,9 @@ const getCtrlCode = ($this, docNumber) => {
           data.dataPosted = false;
           data.itemAdd = false;
         }
+        if (data.authorize1 === "Y" && data.authorize2 === "Y") {
+          data.cancelDisable = true
+        }
         // let project_details = $this.state.cost_projects.find(
         //   f => f.cost_center_id === data.project_id
         // );

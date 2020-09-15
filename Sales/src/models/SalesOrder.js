@@ -907,6 +907,43 @@ export function cancelSalesServiceOrder(req, res, next) {
     }
 }
 
+export function rejectSalesServiceOrder(req, res, next) {
+    const _mysql = new algaehMysql();
+    try {
+        req.mySQl = _mysql;
+        let inputParam = { ...req.body };
+
+        _mysql
+            .executeQueryWithTransaction({
+                query:
+                    "UPDATE `hims_f_sales_order` SET `is_posted`='N', `updated_date`=?, `updated_by`=? \
+                    WHERE `hims_f_sales_order_id`=?",
+                values: [
+                    new Date(),
+                    req.userIdentity.algaeh_d_app_user_id,
+                    inputParam.hims_f_sales_order_id,
+                ],
+                printQuery: true,
+            })
+            .then((headerResult) => {
+                _mysql.commitTransaction(() => {
+                    _mysql.releaseConnection();
+                    req.records = headerResult;
+                    next();
+                });
+            })
+            .catch((e) => {
+                _mysql.rollBackTransaction(() => {
+                    next(e);
+                });
+            });
+    } catch (e) {
+        _mysql.rollBackTransaction(() => {
+            next(e);
+        });
+    }
+}
+
 export function ValidateContract(req, res, next) {
     const _mysql = new algaehMysql();
     try {

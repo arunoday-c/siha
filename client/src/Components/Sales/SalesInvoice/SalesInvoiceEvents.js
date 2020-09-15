@@ -85,7 +85,7 @@ const SaveInvoiceEnrty = ($this) => {
   });
 };
 
-const getCtrlCode = ($this, docNumber, row) => {
+const getCtrlCode = ($this, docNumber) => {
   AlgaehLoader({ show: true });
 
   let IOputs = SalesInvoiceIO.inputParam();
@@ -327,18 +327,10 @@ const RevertSalesInvoice = ($this) => {
         },
         onSuccess: (response) => {
           if (response.data.success) {
-            $this.setState({
-              invoice_number: response.data.records.invoice_number,
-              hims_f_sales_invoice_header_id:
-                response.data.records.hims_f_sales_invoice_header_id,
-              saveEnable: true,
-              postEnable: true,
-              dataExitst: true,
-              dataRevert: true
-            });
+            getCtrlCode($this, $this.state.invoice_number)
             swalMessage({
               type: "success",
-              title: "Saved successfully ...",
+              title: "Reverted successfully ...",
             });
             AlgaehLoader({ show: false });
           } else {
