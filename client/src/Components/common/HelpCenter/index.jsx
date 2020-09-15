@@ -29,7 +29,10 @@ export function HelpCenter({ visible, onClose }) {
       visible={visible}
       className="notifyDrawer"
     >
-      <div dangerouslySetInnerHTML={{ __html: iFrame }}></div>
+      <div
+        className="helpDocCntr"
+        dangerouslySetInnerHTML={{ __html: iFrame }}
+      ></div>
     </Drawer>
   );
 }
