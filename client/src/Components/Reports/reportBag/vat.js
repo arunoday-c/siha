@@ -252,7 +252,7 @@ export default function Vat({
           {
             className: "col-3 form-group",
             type: "dropdown",
-            name: "",
+            name: "primary_sub_id",
             initialLoad: true,
             isImp: false,
             label: "Company",

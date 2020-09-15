@@ -17,6 +17,9 @@ const executePDF = function executePDFMethod(options) {
       if (input.nationality_id > 0) {
         strData += ` and P.nationality_id= ${input.nationality_id}`;
       }
+      if (input.primary_sub_id > 0) {
+        strData += ` and PI.primary_sub_id= ${input.primary_sub_id}`;
+      }
 
       options.mysql
         .executeQuery({

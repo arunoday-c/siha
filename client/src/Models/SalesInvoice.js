@@ -29,7 +29,8 @@ export default {
             total_tax: null,
             net_payable: null,
             narration: null,
-            retention_amt: 0
+            retention_amt: 0,
+            dataRevert: true
         };
         return output;
     }
