@@ -14,9 +14,9 @@ export default memo(function ({
   if (selectedMenu === undefined) return null;
   const {
     module_name,
-    // screen_name,
+    screen_name,
     other_language,
-    // s_other_language,
+    s_other_language,
   } = selectedMenu;
 
   // const menuDetails = userMenu === null ? [] : userMenu;
@@ -61,16 +61,16 @@ export default memo(function ({
         <li>
           <span> {userLanguage === "en" ? module_name : other_language}</span>
         </li>
-        {/* <li onClick={onShow} onBlur={onShow}>
+        <li>
           <span> {userLanguage === "en" ? screen_name : s_other_language}</span>
-          <i
+          {/* <i
             className="fas fa-sort-down"
             style={{
               fontSize: "1.3rem",
               marginTop: "5px",
             }}
-          ></i>
-        </li> */}
+          ></i> */}
+        </li>
       </ul>
 
       {/* {show === true && selMenuDetails !== undefined ? (
