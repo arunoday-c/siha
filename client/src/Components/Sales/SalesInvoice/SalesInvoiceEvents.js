@@ -61,14 +61,15 @@ const SaveInvoiceEnrty = ($this) => {
     data: $this.state,
     onSuccess: (response) => {
       if (response.data.success) {
-        $this.setState({
-          invoice_number: response.data.records.invoice_number,
-          hims_f_sales_invoice_header_id:
-            response.data.records.hims_f_sales_invoice_header_id,
-          saveEnable: true,
-          postEnable: false,
-          dataExitst: true,
-        });
+        getCtrlCode($this, response.data.records.invoice_number)
+        // $this.setState({
+        //   invoice_number: response.data.records.invoice_number,
+        //   hims_f_sales_invoice_header_id:
+        //     response.data.records.hims_f_sales_invoice_header_id,
+        //   saveEnable: true,
+        //   postEnable: false,
+        //   dataExitst: true,
+        // });
         swalMessage({
           type: "success",
           title: "Saved successfully ...",
