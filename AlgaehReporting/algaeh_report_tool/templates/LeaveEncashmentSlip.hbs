@@ -1,44 +1,77 @@
 {{{importStyle 'css/algaehReportStyles.css'}}}
-{{!-- {{#each result}} --}}
+{{#each result}}
 
-<body style="width: 100%; height: 100%;">
-    <div class="print-body" style="page-break-before: always; page-break-after: always;margin: 0;">
+<body>
+    <div class="print-body" style="page-break-before: always; page-break-after: always; margin-right:15px">
         <section>
             <table class="tableForLabel labelBlock" cell-padding="0">
                 <tr>
+                    <td><label class="textEnLft">Branch: </label><span class="valueText">{{hospital_name}}</span></td>
                     <td><label class="textEnLft">Employee Code:</label><span class="valueText">{{employee_code}}</span>
                     </td>
-                    <td><label class="textEnLft">Employee Name:</label><span class="valueText">{{full_name}}</span></td>
+                    <td colspan="2"><label class="textEnLft">Employee Name:</label><span
+                            class="valueText">{{full_name}}</span></td>
+                </tr>
+                <tr>
                     <td><label class="textEnLft">Designation:</label><span class="valueText">{{designation}}</span></td>
-                    <td><label class="textEnLft">Branch: </label><span class="valueText">{{hospital_name}}</span></td>
+
+                    <td><label class="textEnLft">Sub Department: </label><span class="valueText">
+                            {{sub_department_name}}</span></td>
+                    <td><label class="textEnLft">Date of Joining</label><span class="valueText">{{DOJ}}</span>
+
+
+                    <td><label class="textEnLft">Salary Month & Year:</label><span class="valueText">{{month}} -
+                            {{year}}</span></td>
                 </tr>
 
-
-
             </table>
-
         </section>
+
+        <br />
         <section>
             <table class="tableForLabel labelBlock" cell-padding="0">
                 <tr>
-                    <td><label class="textEnLft">Requested Date:</label><span
-                            class="valueText">{{encashment_date}}</span>
-                    </td>
-                    <td><label class="textEnLft">Request No:</label><span class="valueText">{{encashment_number}}</span>
-                    </td>
-                    <td><label class="textEnLft">Request Status:</label><span class="valueText">{{auth_status}}</span>
-                    </td>
 
+                    <td><label class="textEnLft">Leave Start Date: </label><span class="valueText">{{leave_start_date}}
+                        </span></td>
+                    <td><label class="textEnLft">Leave End Date:</label><span
+                            class="valueText">{{leave_end_date}}</span>
+                    <td><label class="textEnLft">Total Leave Days: </label><span class="valueText">{{leave_period}}
+                            days</span></td>
                 </tr>
-                <tr>
-                    <td><label class="textEnLft">Requested Leave Type:</label><span
-                            class="valueText">{{leave_description}}</span>
+                {{!-- <tr>
+                    <td><label class="textEnLft">Total Leave Salary:</label><span
+                            class="valueText">{{leave_amount}}</span></td>
+                    <td><label class="textEnLft">Total Normal Salary: </label><span class="valueText">{{net_salary}}
+                            days</span></td>
+                    <td><label class="textEnLft">Airfare Amt:</label><span class="valueText">{{airfare_amount}}</span>
                     </td>
-                    <td><label class="textEnLft">Requested For:</label><span class="valueText">{{leave_days}}
-                            days</span>
-                    </td>
-                    <td><label class="textEnLft">Encashment Amount</label><span
-                            class="valueText">{{total_amount}}</span>
+                </tr> --}}
+            </table>
+            <table class="tableForData">
+                <tr class="footerTotalUp">
+                    <td class="numberFld">Total Leave Salary</td>
+                    <td class="numberFld" width="29.5%" colspan="3">{{leave_amount}}</td>
+                </tr>
+                <tr class="footerTotalUp">
+                    <td class="numberFld">Total Normal Salary</td>
+                    <td class="numberFld" colspan="3">{{net_salary}}</td>
+                </tr>
+                <tr class="footerTotalUp">
+                    <td class="numberFld">Airfare Amt</td>
+                    <td class="numberFld" colspan="3">{{airfare_amount}}</td>
+                </tr>
+                <tr class="footerTotalUp">
+                    <td class="numberFld">Loan Due Amt</td>
+                    <td class="numberFld" colspan="3">(-) {{loan_due_amount}}</td>
+                </tr>
+                <tr class="footerTotalDown">
+                    <td class="numberFld">Net Pay</td>
+                    <td class="numberFld" colspan="3">{{total_amount}}</td>
+                </tr>
+                <tr class="footerTotalDown">
+                    <td class="numberFld">In Words</td>
+                    <td class="numberFld salaryWord" colspan="3">{{salary_in_words}}
                     </td>
                 </tr>
             </table>
@@ -46,31 +79,28 @@
         <section>
             <table class="tableForLabelSignature labelBlock" cell-padding="0">
                 <tr>
-                    <td>
-                        <b class="signArea"></b>
-                        <small>Requested By</small>
+                    <td width="50%">
+                        <p>I hereby confirm the above to be correct and have no claim on my availed leave salary.</p>
                         <span>{{full_name}}</span>
+                        <span>{{employee_code}}</span>
                         <small>{{designation}}</small>
+                        <br />
+                        <b class="signArea"></b>
                     </td>
-                    {{#each detail}}
-                    <td><b class="signArea"></b>
-                        <small>{{desc1}}:{{value1}}</small>
-                        <span>{{desc2}}:{{value2}}</span>
-                        <small>{{desc3}}:{{value3}}</small>
-                    </td>{{/each }}
-
-                    <td><b class="signArea"></b>
-                        <small>Paid By</small>
-                        <span>{{posted_by}}</span>
-                        <small>{{payment_date}}</small>
+                    <td width="50%" class="numberFld">
+                        <p>أؤكد بموجب ما سبق انه صحيح وليس لدي اي مطالبة على راتب اجازتي</p>
+                        <span>{{arabic_name}}</span>
+                        <span>{{employee_code}}</span>
+                        <small>{{designation}}</small>
+                        <br />
+                        <b class="signArea"></b>
                     </td>
                 </tr>
 
 
             </table>
         </section>
-
         <p style="text-align: center">This is a system generated payslip on {{currentDateTime 'date'}}. </p>
     </div>
 </body>
-{{!-- {{/each }} --}}
+{{/each }}
