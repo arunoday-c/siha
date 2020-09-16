@@ -213,7 +213,7 @@ export default function BulkClaimGeneration() {
             </div>
           </div>
           <div className="row">
-            {data?.length && (
+            {!!data?.length && (
               <div className="col">
                 <Checkbox
                   checked={data?.length === selectedList?.length}
