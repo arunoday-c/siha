@@ -506,7 +506,7 @@ class BasicSubjective extends Component {
               <li>
                 <span className="animated slideInLeft faster">Delta</span>
                 <i
-                  className="fas fa-notes-medical"
+                  className="fas fa-chart-line"
                   onClick={this.showDelta.bind(this)}
                 />
               </li>

@@ -26,7 +26,7 @@ export function InvoiceModal({ visible, onClose, visit_id, extra }) {
       mask={true}
       maskClosable={true}
       onCancel={onClose}
-      width={1200}
+      className={"row algaehNewModal bulkInvoiceModal"}
       footer={[
         <button onClick={onClose} className="btn btn-default">
           Close

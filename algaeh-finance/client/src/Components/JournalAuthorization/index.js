@@ -454,6 +454,7 @@ export default memo(function (props) {
                 <div className="row">
                   <div className="col-lg-12 customCheckboxGrid">
                     <AlgaehDataGrid
+                      className="journalAuthGrid"
                       columns={[
                         {
                           fieldName: "id",
