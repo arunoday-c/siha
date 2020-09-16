@@ -4,33 +4,58 @@
     <div class="print-body">
 
         <section>
+            {{!-- <table class="tableForLabel" cell-padding="0">
+                <tr>
+                    <td><label class="textEnLft">Total Employees</label>:<span class="valueText">{{no_employees}}</span>
+                    </td>
+                </tr>
+            </table> --}}
+
+
+        </section>
+        <section>
             <table class="tableForData" cell-padding="0">
                 <thead>
-                    <tr>
+                     <tr>
                         <th>Sl No.<small>م</small></th>
                         <th>Data From<small>معلومات من</small></th>
-                        <th>Date<small>التاريخ</small></th>
-                        <th>MRN No.<small>كود المريض</small></th>
-                        <th>Patient Name<small>اسم المريض</small></th>
-                        <th>Nationality<small>الجنسية</small></th>
+                        <th>Service Name<small>اسم المريض</small></th>
                         <th>Cash/Insurance<small>النقد / التأمين</small></th>
-
                         <th>Total Before VAT<small>الإجمالي قبل ضريبة القيمة المضافة</small></th>
                         <th>Total After VAT<small>الإجمالي بعد ضريبة القيمة المضافة</small></th>
                         <th>Patient VAT Amount<small>مبلغ ضريبة القيمة المضافة للمريض</small></th>
                         <th>Company VAT Amount<small>مبلغ ضريبة القيمة المضافة للشركة</small></th>
                     </tr>
+
                 </thead>
                 <tbody>
+                    {{!-- <tr>
+                        <td colspan="10"></td>
+                        <td colspan="1"><span class="textFloatRight">Total No.
+                                Employees: <b>{{no_employees}}</b></span></td>
 
-                    {{#each details}}
+                    </tr> --}}
+                    {{#hasElement result}}
+
+
+                    {{#each result}}
                     <tr>
+                        <td colspan="3" class="tableSubHdg">{{doc_number}} - {{visit_date}}</td>
+                         <td colspan="3" class="tableSubHdg">{{patient_code}} - {{full_name}}</td>
+                          <td colspan="2" class="tableSubHdg">{{nationality}}/{{company_name}}</td>
+                        {{!-- <td class="tableSubHdg2 numberFld"><b>{{dep_total}}</b></td> --}}
+
+                    </tr>
+                    {{#each patientList}}
+                    {{!-- <tr>
+                        <td colspan="8" class="tableSubHdg2">{{patient_code}} - {{full_name}}
+                        </td>
+                    </tr> --}}
+                    {{#each docs}}
+                     <tr>
                         <td>{{inc @index}}</td>
-                        <td>{{data_from}} / {{doc_number}}</td>
-                        <td>{{visit_date}}</td>
-                        <td>{{patient_code}}</td>
-                        <td>{{full_name}}</td>
-                        <td>{{nationality}}</td>
+                        <td>{{data_from}}</td>
+                        <td class="txtFld">{{service_name}}</td>
                         <td>{{insurance_yesno}}</td>
                         <td class="numberFld">{{total_before_vat}}</td>
                         <td class="numberFld">{{total_after_vat}}</td>
@@ -39,17 +64,34 @@
 
                     </tr>
                     {{/each }}
-                    <tr class="numberFldTotalBottom">
-                        <td colspan="7"></td>
+                    {{!-- <tr class="numberFldTotalBottom">
+                        <td colspan="8"></td>
                         <td class="numberFld">{{total_before_vat}}</td>
                         <td class="numberFld">{{total_after_vat}}</td>
                         <td class="numberFld">{{patient_tax}}</td>
                         <td class="numberFld">{{company_tax}}</td>
 
+                    </tr> --}}
+                    {{/each }}{{/each }}
+                  
+                    {{else}}
+                    <tr>
+                        <td colspan="8" class="noResultTextReport">No Records Found</td>
                     </tr>
+                    {{/hasElement }}
                 </tbody>
+
             </table>
+             {{!-- <table class="tableTotal">
+                <tr class="bold">
+                    <td>Net Stock Value</td>
+                    <td class="numberFld">{{net_stock_value}}</td>
+                   
+                </tr>
+               
+            </table> --}}
         </section>
         {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
+
     </div>
 </body>

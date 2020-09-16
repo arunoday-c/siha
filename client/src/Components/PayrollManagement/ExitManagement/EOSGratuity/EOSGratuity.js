@@ -448,36 +448,24 @@ class EOSGratuity extends Component {
             <button
               onClick={this.loadEmployeeDetails.bind(this)}
               style={{ marginTop: 20, marginLeft: 5 }}
-              className="btn btn-primary"
+              className="btn btn-default"
             >
               {!this.state.loading ? (
-                "Load"
+                "Calculate Gratuity"
               ) : (
                 <i className="fas fa-spinner fa-spin" />
               )}
             </button>
-          </div>
-
-          <div className="col">
-            <label className="style_Label ">Payment Status</label>
-            {this.state.gratuity_done === true ? (
-              <p>
-                {" "}
-                <span className="badge badge-success">
-                  Already send for payment
-                </span>
-              </p>
-            ) : EosData.gratuity_status ? (
-              <p>
-                {" "}
-                <span className="badge badge-warning">Pending</span>
-              </p>
-            ) : (
-              <p>
-                {" "}
-                <span>------</span>
-              </p>
-            )}
+            <button
+              style={{ marginTop: 20, marginLeft: 5 }}
+              className="btn btn-primary"
+            >
+              {!this.state.loading ? (
+                "Load Saved Gratuity"
+              ) : (
+                <i className="fas fa-spinner fa-spin" />
+              )}
+            </button>
           </div>
         </div>
 
@@ -532,6 +520,28 @@ class EOSGratuity extends Component {
                             ? EosData.sub_department_name
                             : "------"}
                         </h6>
+                      </div>
+
+                      <div className="col">
+                        <label className="style_Label ">Payment Status</label>
+                        {this.state.gratuity_done === true ? (
+                          <p>
+                            {" "}
+                            <span className="badge badge-success">
+                              Already send for payment
+                            </span>
+                          </p>
+                        ) : EosData.gratuity_status ? (
+                          <p>
+                            {" "}
+                            <span className="badge badge-warning">Pending</span>
+                          </p>
+                        ) : (
+                          <p>
+                            {" "}
+                            <span>------</span>
+                          </p>
+                        )}
                       </div>
                     </div>
                   </div>

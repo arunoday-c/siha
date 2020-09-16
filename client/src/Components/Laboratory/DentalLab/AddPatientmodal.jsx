@@ -120,6 +120,7 @@ export function AddPatientDentalForm({
       // setDoctor_id("");
       setChecked(false);
     }
+    //eslint-disable-next-line
   }, [current, visible]);
   const { date_of_birth } = useWatch({
     control,

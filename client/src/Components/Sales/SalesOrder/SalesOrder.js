@@ -924,20 +924,19 @@ class SalesOrder extends Component {
 
               {this.props.order_auth === true ? (
                 <div>
-                  {this.state.sales_order_mode === "S" ? (
-                    <AlgaehSecurityComponent componentCode="SALE_LST_CANCEL">
-                      <button
-                        type="button"
-                        className="btn btn-danger"
-                        disabled={this.state.cancelDisable}
-                        onClick={CancelSalesServiceOrder.bind(this, this)}
-                      >
-                        <AlgaehLabel
-                          label={{ forceLabel: "Cancel", returnText: true }}
-                        />
-                      </button>
-                    </AlgaehSecurityComponent>
-                  ) : null}
+                  <AlgaehSecurityComponent componentCode="SALE_LST_CANCEL">
+                    <button
+                      type="button"
+                      className="btn btn-danger"
+                      disabled={this.state.cancelDisable}
+                      onClick={CancelSalesServiceOrder.bind(this, this)}
+                    >
+                      <AlgaehLabel
+                        label={{ forceLabel: "Reject", returnText: true }}
+                      />
+                    </button>
+                  </AlgaehSecurityComponent>
+
                   <AlgaehSecurityComponent componentCode="SALE_LST_AUTH1">
                     {this.state.cancelled === "N" ? (
                       <button

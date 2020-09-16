@@ -2,8 +2,8 @@ import AlgaehSearch from "../../Wrapper/globalSearch";
 import spotlightSearch from "../../../Search/spotlightSearch.json";
 import { newAlgaehApi } from "../../../hooks";
 
-export const VisitSearch = (insured, setState) => {
-  let input = `pv.invoice_generated='N' and pv.insured = '${insured}'`;
+export const VisitSearch = (setState) => {
+  let input = `pv.invoice_generated='N'`;
   AlgaehSearch({
     searchGrid: {
       columns: spotlightSearch.VisitDetails.VisitList,
@@ -50,6 +50,18 @@ export const getPatientInsurance = async (key, { patient_id, visit_id }) => {
     data: {
       patient_id: patient_id,
       patient_visit_id: visit_id,
+    },
+  });
+  return res.data?.records;
+};
+
+export const getBillsForVisit = async (key, { visit_id }) => {
+  const res = await newAlgaehApi({
+    uri: "/billing/getBillsForVisit",
+    module: "billing",
+    method: "GET",
+    data: {
+      visit_id,
     },
   });
   return res.data?.records;

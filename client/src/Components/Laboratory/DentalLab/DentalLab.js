@@ -120,6 +120,7 @@ export default function DentalLab() {
     ]).then(() => {
       setLoadingRequestList(false);
     });
+    // eslint-disable-next-line
   }, []);
 
   const { povendors, procedureList, subDepartment, doctors } = dropdownData;
@@ -405,12 +406,12 @@ export default function DentalLab() {
                 </div>
                 <div className="actions">
                   <AlgaehSecurityComponent componentCode="APP_REQ_USER">
-                    <a
+                    <button
                       className="btn btn-primary btn-circle active"
                       onClick={openDentalModalHandler}
                     >
                       <i className="fas fa-plus" />
-                    </a>
+                    </button>
                   </AlgaehSecurityComponent>
                 </div>
               </div>

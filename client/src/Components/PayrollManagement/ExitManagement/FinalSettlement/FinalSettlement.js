@@ -836,42 +836,63 @@ class FinalSettlement extends Component {
               <i className="fas fa-search fa-lg" />
             </h6>
           </div>
+        </div>
 
-          <div className="col-1">
-            <label className="style_Label ">Employee Code</label>
-            <h6>{FsData.employee_code ? FsData.employee_code : "-------"}</h6>
-          </div>
+        <div className="row" style={{ marginTop: 120 }}>
+          <div className="col-12">
+            <div className="portlet portlet-bordered margin-bottom-15">
+              <div className="portlet-body">
+                <div className="row">
+                  <div className="col">
+                    <label className="style_Label ">Employee Code</label>
+                    <h6>
+                      {FsData.employee_code ? FsData.employee_code : "-------"}
+                    </h6>
+                  </div>
 
-          <div className="col">
-            <label className="style_Label ">Employee Name</label>
-            <h6>{FsData.full_name ? FsData.full_name : "-------"}</h6>
-          </div>
+                  <div className="col">
+                    <label className="style_Label ">Employee Name</label>
+                    <h6>{FsData.full_name ? FsData.full_name : "-------"}</h6>
+                  </div>
 
-          <div className="col">
-            <label className="style_Label ">Sub Department</label>
-            <h6>
-              {FsData.sub_department_name
-                ? FsData.sub_department_name
-                : "-------"}
-            </h6>
-          </div>
+                  <div className="col">
+                    <label className="style_Label ">Sub Department</label>
+                    <h6>
+                      {FsData.sub_department_name
+                        ? FsData.sub_department_name
+                        : "-------"}
+                    </h6>
+                  </div>
+                  <div className="col">
+                    <label className="style_Label ">Settlement No.</label>
+                    <h6>
+                      {FsData.final_settlement_number
+                        ? FsData.final_settlement_number
+                        : "-------"}
+                    </h6>
+                  </div>
 
-          <div className="col">
-            <label className="style_Label ">Status</label>
-            <h6>
-              {this.state.flag === "Pending" ? (
-                <span className="badge badge-warning">Pending</span>
-              ) : this.state.flag === "Authorize" ? (
-                <span className="badge badge-info">Authorize</span>
-              ) : this.state.flag === "Settled" ? (
-                <span className="badge badge-success">Settled</span>
-              ) : (
-                "--------"
-              )}
-            </h6>
+                  <div className="col">
+                    <label className="style_Label ">Status</label>
+                    <h6>
+                      {this.state.flag === "Pending" ? (
+                        <span className="badge badge-warning">Pending</span>
+                      ) : this.state.flag === "Authorize" ? (
+                        <span className="badge badge-info">Authorize</span>
+                      ) : this.state.flag === "Settled" ? (
+                        <span className="badge badge-success">Settled</span>
+                      ) : (
+                        "--------"
+                      )}
+                    </h6>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-        <div className="row" style={{ marginTop: 120 }}>
+
+        <div className="row">
           <div className="col-8">
             <div className="row">
               <div className="col-6">
@@ -1260,7 +1281,7 @@ class FinalSettlement extends Component {
             </div>
           </div>
 
-          <div className="col-12" style={{ marginBottom: 40 }}>
+          <div className="col-12" style={{ marginBottom: 60 }}>
             <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-body">
                 <div className="row">

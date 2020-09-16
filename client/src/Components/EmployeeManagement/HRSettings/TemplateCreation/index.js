@@ -36,7 +36,7 @@ export default memo(function () {
       })
       .catch((error) => {
         AlgaehMessagePop({
-          display: error,
+          display: error.message,
           type: "error",
         });
       });

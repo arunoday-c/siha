@@ -10,6 +10,68 @@ export default function Vat({
     excel: "true",
     submenu: [
       {
+        subitem: "Bill Wise VAT Report",
+        reportName: "billWiseVatReport",
+        requireIframe: true,
+        pageSize: "A4",
+        pageOrentation: "portrait", //"portrait",
+        reportParameters: [
+          {
+            className: "col-3 form-group mandatory",
+            type: "dropdown",
+            name: "hospital_id",
+            initialLoad: true,
+            isImp: true,
+            label: "branch",
+            link: {
+              uri: "/organization/getOrganizationByUser",
+            },
+            value: hospital_id,
+            dataSource: {
+              textField: "hospital_name",
+              valueField: "hims_d_hospital_id",
+              data: undefined,
+            },
+          },
+          {
+            className: "col-3 form-group mandatory",
+            type: "date",
+            name: "from_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null,
+            },
+          },
+          {
+            className: "col-3 form-group mandatory",
+            type: "date",
+            name: "to_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null,
+            },
+          },
+          {
+            className: "col-3 form-group",
+            type: "dropdown",
+            name: "nationality_id",
+            initialLoad: true,
+            isImp: false,
+            label: "nationality",
+            link: {
+              uri: "/masters/get/nationality",
+            },
+            dataSource: {
+              textField: "nationality",
+              valueField: "hims_d_nationality_id",
+              data: undefined,
+            },
+          },
+        ],
+      },
+      {
         subitem: "Detail VAT Report",
         reportName: "detailVatReport",
         requireIframe: true,
@@ -190,7 +252,7 @@ export default function Vat({
           {
             className: "col-3 form-group",
             type: "dropdown",
-            name: "",
+            name: "primary_sub_id",
             initialLoad: true,
             isImp: false,
             label: "Company",
@@ -287,7 +349,7 @@ export default function Vat({
               valueField: "hims_d_nationality_id",
               data: undefined,
             },
-          }
+          },
         ],
       },
     ],

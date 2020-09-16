@@ -11,7 +11,7 @@ class ExitManagement extends Component {
     super(props);
     this.state = {
       pageDisplay: "GratuityAccrual",
-      testHello: " Hello Functional Component"
+      testHello: " Hello Functional Component",
     };
   }
 
@@ -23,13 +23,13 @@ class ExitManagement extends Component {
     e.currentTarget.classList.add("active");
     var specified = e.currentTarget.getAttribute("algaehtabs");
     this.setState({
-      pageDisplay: specified
+      pageDisplay: specified,
     });
   }
 
   textHandle(e) {
     this.setState({
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
   }
 
@@ -43,35 +43,35 @@ class ExitManagement extends Component {
               title: (
                 <AlgaehLabel
                   label={{
-                    forceLabel: "Gratuity Accrual"
+                    forceLabel: "Gratuity Accrual",
                   }}
                 />
               ),
               children: <GratuityAccrual parent={this} />,
-              componentCode: "EXT_GRT_ACC"
+              componentCode: "EXT_GRT_ACC",
             },
             {
               title: (
                 <AlgaehLabel
                   label={{
-                    forceLabel: "EOS / Gratuity"
+                    forceLabel: "EOS or Gratuity",
                   }}
                 />
               ),
               children: <EOSGratuity parent={this} />,
-              componentCode: "EXT_EOS_GRT"
+              componentCode: "EXT_EOS_GRT",
             },
             {
               title: (
                 <AlgaehLabel
                   label={{
-                    forceLabel: "Final Settlement"
+                    forceLabel: "Final Settlement",
                   }}
                 />
               ),
               children: <FinalSettlement />,
-              componentCode: "EXT_FIN_STL"
-            }
+              componentCode: "EXT_FIN_STL",
+            },
           ]}
           renderClass="ExitMgmtSection"
         />

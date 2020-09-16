@@ -103,6 +103,7 @@ export function UpdateStatement({
       });
       setCpt("");
     }
+    //eslint-disable-next-line
   }, [currentRow, data]);
 
   function cptSearch() {

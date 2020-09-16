@@ -23,7 +23,7 @@ export default {
                as total_leave_encash_amount,
                 CASE final_settlement_status when 'PEN' then (select  COALESCE(payable_amount,0)  from hims_f_end_of_service where employee_id=?) 
               else total_eos end  as gratuity_amount,
-              forfiet,remarks,final_settlement_status,COALESCE(end_of_service_id,(select hims_f_end_of_service_id from hims_f_end_of_service where employee_id=?)) as end_of_service_id, 
+              forfiet,remarks,final_settlement_status,final_settlement_number,COALESCE(end_of_service_id,(select hims_f_end_of_service_id from hims_f_end_of_service where employee_id=?)) as end_of_service_id, 
                 COALESCE(leave_encashment_id,(select hims_f_leave_encash_header_id from hims_f_leave_encash_header where employee_id=? and authorized = 'APR' and posted = 'N')) as hims_f_leave_encash_header_id FROM hims_f_final_settlement_header where employee_id=?; 
               select salary_type,hims_f_salary_id,COALESCE(net_salary,0)total_salary from hims_f_salary where employee_id=? and salary_type='FS'; 
               select  E.date_of_joining,E.hims_d_employee_id,E.date_of_resignation,E.employee_status,

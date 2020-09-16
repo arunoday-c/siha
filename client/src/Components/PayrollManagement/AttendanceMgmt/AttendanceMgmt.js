@@ -12,7 +12,7 @@ export default class AttendanceMgmt extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      pageDisplay: "NewMonthlyAttendance"
+      pageDisplay: "NewMonthlyAttendance",
     };
   }
 
@@ -24,7 +24,7 @@ export default class AttendanceMgmt extends Component {
     e.currentTarget.classList.add("active");
     var specified = e.currentTarget.getAttribute("algaehtabs");
     this.setState({
-      pageDisplay: specified
+      pageDisplay: specified,
     });
   }
 
@@ -38,57 +38,57 @@ export default class AttendanceMgmt extends Component {
               title: (
                 <AlgaehLabel
                   label={{
-                    forceLabel: "Monthly Attendance"
+                    forceLabel: "Monthly Attendance",
                   }}
                 />
               ),
               children: <NewMonthlyAttendence />,
-              componentCode: "ATT_MON_ATT"
+              componentCode: "ATT_MON_ATT",
             },
             {
               title: (
                 <AlgaehLabel
                   label={{
-                    forceLabel: "Manual Timesheet (Single/Bulk)"
+                    forceLabel: "Bulk Manual Timesheet",
                   }}
                 />
               ),
               children: <BulkTimeSheet />,
-              componentCode: "ATT_MAN_TIM"
+              componentCode: "ATT_MAN_TIM",
             },
             {
               title: (
                 <AlgaehLabel
                   label={{
-                    forceLabel: "Biometric Timesheet"
+                    forceLabel: "Biometric Timesheet",
                   }}
                 />
               ),
               children: <WeeklyAttendance />,
-              componentCode: "ATT_BIO_TIM"
+              componentCode: "ATT_BIO_TIM",
             },
             {
               title: (
                 <AlgaehLabel
                   label={{
-                    forceLabel: "Absence Management"
+                    forceLabel: "Absence Management",
                   }}
                 />
               ),
               children: <AbsenceManagement />,
-              componentCode: "ATT_ABS_MGMT"
+              componentCode: "ATT_ABS_MGMT",
             },
             {
               title: (
                 <AlgaehLabel
                   label={{
-                    forceLabel: "Overtime Management"
+                    forceLabel: "Overtime Management",
                   }}
                 />
               ),
               children: <OverTimeMgmt />,
-              componentCode: "ATT_OVR_TIM"
-            }
+              componentCode: "ATT_OVR_TIM",
+            },
           ]}
           renderClass="AttMgmntSection"
         />
