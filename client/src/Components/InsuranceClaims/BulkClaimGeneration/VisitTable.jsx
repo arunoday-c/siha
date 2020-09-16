@@ -69,8 +69,8 @@ export function VisitTable({
                         onClick={() => addToList(row)}
                         checked={list.some(
                           (item) =>
-                            item.hims_f_patient_visit_id ===
-                            row.hims_f_patient_visit_id
+                            item?.hims_f_patient_visit_id ===
+                            row?.hims_f_patient_visit_id
                         )}
                       />
                     );
