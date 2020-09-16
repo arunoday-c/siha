@@ -132,6 +132,7 @@ export default memo(function (props) {
               balance_amount: totalAmount,
               voucher_type: voucher_type,
               invoice_no,
+              disabled: true,
             },
             merdge,
             type: "customer",

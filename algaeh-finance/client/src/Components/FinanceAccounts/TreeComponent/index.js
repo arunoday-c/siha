@@ -115,8 +115,7 @@ function TreeComponent({ assetCode, title, inDrawer }) {
   }
 
   function editChild(input, stopLoad) {
-    debugger;
-    renameAccount(input)
+    renameAccount({ ...input, assetCode })
       .then(() => {
         loadAccount();
         // const newTree = changeNodeAtPath({
