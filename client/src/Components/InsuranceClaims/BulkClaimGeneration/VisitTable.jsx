@@ -1,21 +1,23 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import "./BulkClaimGeneration.scss";
 import {
   AlgaehDataGrid,
   AlgaehLabel,
   Spin,
   Tooltip,
+  MainContext
 } from "algaeh-react-components";
 import { InvoiceModal } from "./InvoiceModal";
 
 export function VisitTable({
   loading = false,
   data = [],
-  addToList = () => {},
+  addToList = () => { },
   list = [],
   submitted = false,
 }) {
   const [current, setCurrent] = useState(null);
+  const { userToken } = useContext(MainContext);
   // const params = useQueryParams();
 
   // const onClickRow = (row) => {
@@ -218,16 +220,16 @@ export function VisitTable({
                   <label className="style_Label ">Total PATIENT PAYABLE</label>
                   <h6>
                     {list?.reduce((prev, current) => {
-                      return prev + parseFloat(current?.patient_payable);
-                    }, 0)}
+                      return (parseFloat(prev) + parseFloat(current?.patient_payable)).toFixed(userToken.decimal_places);
+                    }, (0).toFixed(userToken.decimal_places))}
                   </h6>
                 </div>{" "}
                 <div className="col">
                   <label className="style_Label ">Total COMPANY PAYABLE</label>
                   <h6>
                     {list?.reduce((prev, current) => {
-                      return prev + parseFloat(current?.company_payable);
-                    }, 0)}
+                      return (parseFloat(prev) + parseFloat(current?.company_payable)).toFixed(userToken.decimal_places);
+                    }, (0).toFixed(userToken.decimal_places))}
                   </h6>
                 </div>
               </div>
