@@ -2396,3 +2396,17 @@ input.autoselect-input:disabled {
     padding: 0 15px;
   }
 }
+.newStickyGrid {
+  tr {
+    th {
+      position: sticky;
+      top: 0;
+    }
+  }
+  .filterEnable {
+    th {
+      position: sticky;
+      top: 0;
+    }
+  }
+}
