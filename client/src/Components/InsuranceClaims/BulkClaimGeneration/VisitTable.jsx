@@ -212,15 +212,23 @@ export function VisitTable({
               <div className="row">
                 <div className="col">
                   <label className="style_Label ">Total Visit Selected</label>
-                  <h6>0.00</h6>
+                  <h6>{list?.length}</h6>
                 </div>
                 <div className="col">
                   <label className="style_Label ">Total PATIENT PAYABLE</label>
-                  <h6>0.00</h6>
+                  <h6>
+                    {list?.reduce((prev, current) => {
+                      return prev + parseFloat(current?.patient_payable);
+                    }, 0)}
+                  </h6>
                 </div>{" "}
                 <div className="col">
                   <label className="style_Label ">Total COMPANY PAYABLE</label>
-                  <h6>0.00</h6>
+                  <h6>
+                    {list?.reduce((prev, current) => {
+                      return prev + parseFloat(current?.company_payable);
+                    }, 0)}
+                  </h6>
                 </div>
               </div>
             </div>

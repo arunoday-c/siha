@@ -825,7 +825,7 @@ export default {
           sum(BH.patient_res)as patient_res,
           sum(BH.patient_tax) as patient_tax,
           sum(BH.company_res) as company_res,
-          sum(BH.company_payable) as company_payable,
+          COALESCE(sum(BH.company_payable), 0) as company_payable,
           sum(BH.company_tax) as company_tax,
           sum(BH.sub_total_amount) as gross_amount,
           sum(BH.discount_amount) as discount_amount,
