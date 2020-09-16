@@ -41,7 +41,7 @@ const getStatementServices = async (key, { invoice_header_id }) => {
 export function UpdateStatement({
   show = false,
   data = {},
-  onClose = () => {},
+  onClose = () => { },
 }) {
   const [currentRow, setCurrentRow] = useState(null);
   const [cpt_code, setCpt] = useState("");
@@ -364,7 +364,7 @@ export function UpdateStatement({
                         ) {
                           onChange(value);
                           const denial_amount =
-                            parseFloat(currentRow?.company_payable) -
+                            parseFloat(currentRow?.company_payable) - parseFloat(currentRow?.r1_amt) - parseFloat(currentRow?.r2_amt) -
                             parseFloat(value);
                           setValue("denial_amount", denial_amount, {
                             shouldValidate: true,

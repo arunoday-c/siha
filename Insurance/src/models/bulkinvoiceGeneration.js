@@ -69,16 +69,17 @@ export function bulkInvoiceGeneration(req, res, next) {
               .then((generatedNumbers) => {
                 _mysql
                   .executeQuery({
-                    query: `INSERT INTO hims_f_invoice_header(invoice_number,patient_id,
+                    query: `INSERT INTO hims_f_invoice_header(invoice_number,invoice_date,patient_id,
                      visit_id,gross_amount,discount_amount,net_amount, patient_resp,patient_tax,
                      patient_payable, company_resp, company_tax,company_payable, sec_company_resp,
                      sec_company_tax, sec_company_payable,insurance_provider_id,sub_insurance_id, 
                      network_id, network_office_id, card_number,policy_number,card_holder_name,
                      card_holder_age, card_holder_gender, card_class, created_date, created_by,
                       updated_date, updated_by,hospital_id ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,
-                          ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);`,
+                          ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);`,
                     values: [
                       generatedNumbers.INV_NUM,
+                      new Date(),
                       patient_id,
                       visit_id,
                       utilities.decimalPoints(

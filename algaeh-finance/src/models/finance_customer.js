@@ -70,7 +70,7 @@ export default {
         D.child_id,D.head_id             
         from finance_voucher_header H inner join finance_voucher_details D on 
         H.finance_voucher_header_id=D.voucher_header_id 
-        and H.voucher_type='sales' and if(D.is_opening_bal = 'Y',H.invoice_no is null, H.invoice_no is not null)   
+        and H.voucher_type='sales' and H.invoice_no is not null  
         and  D.child_id=?; 
         
         select round(coalesce(sum(amount)-sum(settled_amount),0),${decimal_places})as over_due 
