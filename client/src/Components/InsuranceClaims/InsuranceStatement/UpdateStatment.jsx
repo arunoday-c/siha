@@ -49,7 +49,7 @@ export function UpdateStatement({
     "denial-reasons",
     getDenialReasons
   );
-  const { userLanguage } = useContext(MainContext);
+  const { userLanguage, userToken } = useContext(MainContext);
   const { data: invoiceDetails, isLoading: queryLoading, refetch } = useQuery(
     ["invoice-details", { invoice_header_id: data?.hims_f_invoice_header_id }],
     getStatementServices,
@@ -364,8 +364,8 @@ export function UpdateStatement({
                         ) {
                           onChange(value);
                           const denial_amount =
-                            parseFloat(currentRow?.company_payable) - parseFloat(currentRow?.r1_amt) - parseFloat(currentRow?.r2_amt) -
-                            parseFloat(value);
+                            (parseFloat(currentRow?.company_payable) - parseFloat(currentRow?.r1_amt) - parseFloat(currentRow?.r2_amt) -
+                              parseFloat(value)).toFixed(userToken.decimal_places);
                           setValue("denial_amount", denial_amount, {
                             shouldValidate: true,
                           });

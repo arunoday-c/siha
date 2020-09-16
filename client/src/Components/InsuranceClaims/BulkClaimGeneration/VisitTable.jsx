@@ -1,21 +1,23 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import "./BulkClaimGeneration.scss";
 import {
   AlgaehDataGrid,
   AlgaehLabel,
   Spin,
   Tooltip,
+  MainContext
 } from "algaeh-react-components";
 import { InvoiceModal } from "./InvoiceModal";
 
 export function VisitTable({
   loading = false,
   data = [],
-  addToList = () => {},
+  addToList = () => { },
   list = [],
   submitted = false,
 }) {
   const [current, setCurrent] = useState(null);
+  const { userToken } = useContext(MainContext);
   // const params = useQueryParams();
 
   // const onClickRow = (row) => {
@@ -69,8 +71,8 @@ export function VisitTable({
                         onClick={() => addToList(row)}
                         checked={list.some(
                           (item) =>
-                            item.hims_f_patient_visit_id ===
-                            row.hims_f_patient_visit_id
+                            item?.hims_f_patient_visit_id ===
+                            row?.hims_f_patient_visit_id
                         )}
                       />
                     );
@@ -212,15 +214,23 @@ export function VisitTable({
               <div className="row">
                 <div className="col">
                   <label className="style_Label ">Total Visit Selected</label>
-                  <h6>0.00</h6>
+                  <h6>{list?.length}</h6>
                 </div>
                 <div className="col">
                   <label className="style_Label ">Total PATIENT PAYABLE</label>
-                  <h6>0.00</h6>
+                  <h6>
+                    {list?.reduce((prev, current) => {
+                      return (parseFloat(prev) + parseFloat(current?.patient_payable)).toFixed(userToken.decimal_places);
+                    }, (0).toFixed(userToken.decimal_places))}
+                  </h6>
                 </div>{" "}
                 <div className="col">
                   <label className="style_Label ">Total COMPANY PAYABLE</label>
-                  <h6>0.00</h6>
+                  <h6>
+                    {list?.reduce((prev, current) => {
+                      return (parseFloat(prev) + parseFloat(current?.company_payable)).toFixed(userToken.decimal_places);
+                    }, (0).toFixed(userToken.decimal_places))}
+                  </h6>
                 </div>
               </div>
             </div>

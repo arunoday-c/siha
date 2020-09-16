@@ -284,8 +284,8 @@ export default {
             "SELECT IH.`hims_f_invoice_header_id`, IH.`invoice_number`, IH.`invoice_date`, \
           IH.`invoice_type`, IH.`patient_id`, IH.`visit_id`, IH.`policy_number`, IH.`insurance_provider_id`,\
           IH.`sub_insurance_id`, IH.`network_id`, IH.`network_office_id`, IH.`card_number`, IH.`gross_amount`,\
-          IH.`discount_amount`, IH.`net_amount`, IH.`patient_resp`, IH.`patient_tax`, IH.`patient_payable`,\
-          IH.`company_resp`, IH.`company_tax`, IH.`company_payable`, IH.`sec_company_resp`, IH.`sec_company_tax`,\
+          IH.`discount_amount`, IH.`net_amount`, IH.`patient_resp` as patient_res, IH.`patient_tax`, IH.`patient_payable`,\
+          IH.`company_resp` as company_res, IH.`company_tax`, IH.`company_payable`, IH.`sec_company_resp`, IH.`sec_company_tax`,\
           IH.`sec_company_payable`, IH.`submission_date`, IH.`submission_amount`, IH.`remittance_date`,\
           IH.`remittance_amount`, IH.`denial_amount`, IH.`claim_validated`, IH.`card_holder_name`,\
           IH.`card_holder_age`, IH.`card_holder_gender`, IH.`card_class`, IH.`created_by`, IH.`created_date`,\
@@ -301,7 +301,9 @@ export default {
             _mysql
               .executeQuery({
                 query:
-                  "select ID.*,S.service_name, ST.service_type from hims_f_invoice_details ID, hims_d_services S, hims_d_service_type ST  where S.hims_d_services_id=ID.service_id and ST.hims_d_service_type_id=ID.service_type_id and invoice_header_id=?",
+                  "select ID.*,ID.`discount_amount` as discount_amout, ID.`net_amount` as net_amout,ID.`company_resp` as comapany_resp, \
+                  ID.`company_payable` as company_payble, S.service_name, ST.service_type \
+                  from hims_f_invoice_details ID, hims_d_services S, hims_d_service_type ST  where S.hims_d_services_id=ID.service_id and ST.hims_d_service_type_id=ID.service_type_id and invoice_header_id=?",
                 values: [headerResult[0].hims_f_invoice_header_id],
 
                 printQuery: false,

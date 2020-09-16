@@ -74,7 +74,7 @@ export default function BulkClaimGeneration() {
   const addToList = (row) => {
     setSelectedList((state) => {
       const current = state.findIndex(
-        (item) => item.hims_f_patient_visit_id === row.hims_f_patient_visit_id
+        (item) => item?.hims_f_patient_visit_id === row?.hims_f_patient_visit_id
       );
       if (current !== -1) {
         delete state[current];
