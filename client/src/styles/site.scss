@@ -2282,6 +2282,7 @@ input.autoselect-input:disabled {
 .algaehNewModal {
   min-width: 70vw !important ;
   max-width: 96vw !important ;
+  top: 5vh !important;
   .ant-modal-content {
     min-width: 100% !important ;
     border-radius: $borderRadius;
@@ -2305,6 +2306,8 @@ input.autoselect-input:disabled {
     }
     .ant-modal-body {
       padding: 0;
+      max-height: 75vh !important ;
+      overflow: auto;
       .popupInner {
         width: 100%;
       }
