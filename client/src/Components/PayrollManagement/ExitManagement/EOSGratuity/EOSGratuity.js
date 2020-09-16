@@ -555,25 +555,25 @@ class EOSGratuity extends Component {
                       </div>
 
                       <div className="col">
-                        <label className="style_Label ">Date of Birth</label>
+                        <label className="style_Label ">Type of Exit</label>
                         <h6>
-                          {EosData.date_of_birth
-                            ? moment(EosData.date_of_birth).format(
-                                "DD-MMM-YYYY"
-                              )
-                            : "------"}
+                          {EosData.exit_status ? EosData.exit_status : "------"}
                         </h6>
                       </div>
 
-                      <div className="col">
-                        <label className="style_Label ">Gender</label>
-                        <h6>{EosData.sex ? EosData.sex : "------"}</h6>
-                      </div>
                       <div className="col">
                         <label className="style_Label ">Sub Department</label>
                         <h6>
                           {EosData.sub_department_name
                             ? EosData.sub_department_name
+                            : "------"}
+                        </h6>
+                      </div>
+                      <div className="col">
+                        <label className="style_Label ">Gratuity No.</label>
+                        <h6>
+                          {EosData.end_of_service_number
+                            ? EosData.end_of_service_number
                             : "------"}
                         </h6>
                       </div>

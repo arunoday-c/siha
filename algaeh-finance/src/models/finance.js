@@ -1879,7 +1879,7 @@ export default {
           }
           //inserting new opening balance
           else {
-            const voucher_type = "sales";
+            const voucher_type = input.assetCode === 2 ? "purchase" : "sales";
             const { algaeh_d_app_user_id } = req.userIdentity;
             _mysql
               .generateRunningNumber({
@@ -1890,10 +1890,14 @@ export default {
               .then((numgen) => {
                 const month = moment().format("MM");
                 const year = moment().format("YYYY");
+                const oblStringNumber =
+                  "OBL" +
+                  numgen[voucher_type.toUpperCase()].replace(/[^\d.-]/g, "");
                 _mysql
                   .executeQuery({
-                    query: ` insert into finance_voucher_header(voucher_type,voucher_no,amount,payment_date,month,year,narration,from_screen,posted_from,created_by,updated_by)
-              value(?,?,?,?,?,?,'Opening Balance Added from Accounts','ACCOUNTS OPENING BALANCE','V',?,?)`,
+                    query: ` insert into finance_voucher_header(voucher_type,voucher_no,amount,payment_date,
+                      month,year,narration,from_screen,posted_from,created_by,updated_by,invoice_no)
+              value(?,?,?,?,?,?,'Opening Balance Added from Accounts','ACCOUNTS OPENING BALANCE','V',?,?,?)`,
                     values: [
                       voucher_type,
                       numgen[voucher_type.toUpperCase()],
@@ -1903,6 +1907,7 @@ export default {
                       year,
                       algaeh_d_app_user_id,
                       algaeh_d_app_user_id,
+                      oblStringNumber,
                     ],
                     printQuery: true,
                   })

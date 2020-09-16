@@ -73,7 +73,7 @@ export default {
         D.child_id,D.head_id       
         from finance_voucher_header H inner join finance_voucher_details D on 
         H.finance_voucher_header_id=D.voucher_header_id 
-        and H.voucher_type='purchase' and H.invoice_no is not null   
+        and H.voucher_type='purchase' and H.invoice_no is not null
         and  D.child_id=?;
         
         

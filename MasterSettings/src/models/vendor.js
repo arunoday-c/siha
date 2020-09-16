@@ -59,7 +59,7 @@ export default {
         .executeQuery({
           query:
             "select product_type from hims_d_organization where hims_d_organization_id=1 limit 1;\
-            select finance_account_head_id from finance_account_head where account_code='2.2.2.1';",
+            select finance_account_head_id from finance_account_head where account_code='2.2.2';", //2.2.2.1
         })
         .then((result) => {
           if (
@@ -72,7 +72,7 @@ export default {
               .executeQueryWithTransaction({
                 query:
                   "INSERT INTO `finance_account_child` (child_name,head_id,created_from\
-                    ,created_date, created_by, updated_date, updated_by)  VALUE(?,?,?,?,?,?,?)",
+                    ,created_date, created_by, updated_date, updated_by,ledger_code)  VALUE(?,?,?,?,?,?,?,?)",
                 values: [
                   inputParam.vendor_name,
                   head_id,
@@ -81,6 +81,7 @@ export default {
                   req.userIdentity.algaeh_d_app_user_id,
                   new Date(),
                   req.userIdentity.algaeh_d_app_user_id,
+                  inputParam.vendor_code,
                 ],
                 printQuery: false,
               })

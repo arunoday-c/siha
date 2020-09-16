@@ -524,7 +524,7 @@ export default function JournalVoucher() {
   const closeDrawer = () => setDrawer(false);
 
   const gridTree = (row, record) => {
-    const isDisabled = record
+    let isDisabled = record
       ? record.disabled
         ? { disabled: record.disabled }
         : {}
@@ -569,11 +569,12 @@ export default function JournalVoucher() {
   };
 
   const PaymentInput = (record) => {
-    const isDisabled = record
+    let isDisabled = record
       ? record.disabled
         ? { disabled: record.disabled }
         : {}
       : {};
+
     return (
       <AlgaehAutoComplete
         selector={{
@@ -601,11 +602,11 @@ export default function JournalVoucher() {
   };
 
   const AmountInput = (row, records) => {
-    const isDisabled = records
-      ? records.disabled
-        ? { disabled: records.disabled }
-        : {}
-      : {};
+    // const isDisabled = records
+    //   ? records.disabled
+    //     ? { disabled: records.disabled }
+    //     : {}
+    //   : {};
     return (
       <AlgaehFormGroup
         type="number"
@@ -619,7 +620,7 @@ export default function JournalVoucher() {
             //   records["debit_amount"] = records["amount"];
             // else records["credit_amount"] = records["amount"];
           },
-          ...isDisabled,
+          // ...isDisabled,
         }}
       />
     );
@@ -856,6 +857,14 @@ export default function JournalVoucher() {
                   // xaxis={1500}
                   events={{
                     onDelete: (result) => {
+                      const { disabled } = result;
+                      if (disabled) {
+                        AlgaehMessagePop({
+                          type: "error",
+                          display: "Can't delete the record",
+                        });
+                        return;
+                      }
                       setJournerList((data) => {
                         const otherDetals = data
                           .filter((f) => f.slno !== result["slno"])

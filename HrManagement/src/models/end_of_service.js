@@ -86,7 +86,7 @@ export default {
       .executeQuery({
         query: `select EOS.hims_f_end_of_service_id, EOS.employee_id,EOS.join_date,EOS.exit_date,
         EOS.payable_days,EOS.service_years,EOS.payable_days,EOS.calculated_gratutity_amount,
-        EOS.payable_amount,EOS.gratuity_status,EOS.remarks,EOS.total_gratutity_amount,EOS.transaction_date from hims_f_end_of_service EOS 
+        EOS.payable_amount,EOS.end_of_service_number,CASE WHEN EOS.exit_type ='T' THEN 'Terminated' WHEN EOS.exit_type ='R' THEN 'Resigned' else 'Retirement' END as exit_status, EOS.gratuity_status,EOS.remarks,EOS.total_gratutity_amount,EOS.transaction_date from hims_f_end_of_service EOS 
         where employee_id = ?;`,
         values: [_input.hims_d_employee_id],
       })

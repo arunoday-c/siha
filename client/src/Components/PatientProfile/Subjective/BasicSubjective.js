@@ -10,11 +10,12 @@ import {
   AlagehFormGroup,
   AlgaehDateHandler,
   AlagehAutoComplete,
-  AlgaehDataGrid
+  AlgaehDataGrid,
 } from "../../Wrapper/algaehWrapper";
 import Vitals from "../Vitals/Vitals";
 import LabResults from "../Assessment/LabResult/LabResult";
 import RadResults from "../Assessment/RadResult/RadResult";
+import Delta from "../Delta";
 import Enumerable from "linq";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import OrderedList from "../Assessment/OrderedList/OrderedList";
@@ -22,7 +23,7 @@ import Plan from "../Plan/Plan";
 import {
   algaehApiCall,
   swalMessage,
-  maxCharactersLeft
+  maxCharactersLeft,
 } from "../../../utils/algaehApiCall";
 import SubjectiveHandler from "./SubjectiveHandler";
 import PatientHistory from "../PatientHistory/PatientHistory";
@@ -62,7 +63,8 @@ class BasicSubjective extends Component {
       recent_mediction: [],
       all_mediction: [],
       active_medication: [],
-      loadingUnderMedication: true
+      loadingUnderMedication: true,
+      deltaOpen: false,
     };
     this.isMale = gender === "Male" ? true : false; // String(Window["global"]["gender"]) === "Male" ? true : false;
     this.chiefComplaintMaxLength = 200;
@@ -75,17 +77,17 @@ class BasicSubjective extends Component {
 
   dropDownHandler(value) {
     this.setState({
-      [value.name]: value.value
+      [value.name]: value.value,
     });
 
     value.value === "PREGNANCY"
       ? this.setState({
-        isPregnancy: true
-      })
+          isPregnancy: true,
+        })
       : this.setState({
-        isPregnancy: false,
-        lmp_days: ""
-      });
+          isPregnancy: false,
+          lmp_days: "",
+        });
   }
   datehandle(e) {
     SubjectiveHandler().datehandle(this, e);
@@ -125,7 +127,7 @@ class BasicSubjective extends Component {
       e.currentTarget.classList.add("active");
       var specified = e.currentTarget.getAttribute("algaehtabs");
       this.setState({
-        pageDisplay: specified
+        pageDisplay: specified,
       });
     }
   }
@@ -134,14 +136,14 @@ class BasicSubjective extends Component {
     const { current_patient } = Window.global;
     this.setState(
       {
-        loadingUnderMedication: true
+        loadingUnderMedication: true,
       },
       () => {
         algaehApiCall({
           uri: "/orderMedication/getPatientMedications",
           data: { patient_id: current_patient }, //Window.global["current_patient"] },
           method: "GET",
-          onSuccess: response => {
+          onSuccess: (response) => {
             const data = { loadingUnderMedication: false };
             if (response.data.success) {
               data["recent_mediction"] = response.data.records.latest_mediction;
@@ -150,15 +152,15 @@ class BasicSubjective extends Component {
                 response.data.records.active_medication;
             }
             this.setState({
-              ...data
+              ...data,
             });
           },
-          onFailure: error => {
+          onFailure: (error) => {
             swalMessage({
               title: error.message,
-              type: "error"
+              type: "error",
             });
-          }
+          },
         });
       }
     );
@@ -170,23 +172,19 @@ class BasicSubjective extends Component {
       uri: "/doctorsWorkBench/getPatientEncounter",
       method: "GET",
       data: {
-        encounter_id: encounter_id //Window.global.encounter_id
+        encounter_id: encounter_id, //Window.global.encounter_id
       },
-      onSuccess: response => {
+      onSuccess: (response) => {
         let data = response.data.records[0];
         if (response.data.success) {
           this.setState(
             {
               significant_signs: data.significant_signs,
-              other_signs: data.other_signs
+              other_signs: data.other_signs,
             },
             () => {
-              Window.global[
-                "significant_signs"
-              ] = this.state.significant_signs;
-              Window.global[
-                "other_signs"
-              ] = this.state.other_signs;
+              Window.global["significant_signs"] = this.state.significant_signs;
+              Window.global["other_signs"] = this.state.other_signs;
             }
           );
 
@@ -195,12 +193,12 @@ class BasicSubjective extends Component {
           // });
         }
       },
-      onFailure: error => {
+      onFailure: (error) => {
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
   componentWillUnmount() {
@@ -223,7 +221,7 @@ class BasicSubjective extends Component {
         SubjectiveHandler().updatePatientChiefComplaints(this);
       }
       this.setState({
-        openAlergy: !this.state.openAlergy
+        openAlergy: !this.state.openAlergy,
       });
     }
   }
@@ -236,7 +234,7 @@ class BasicSubjective extends Component {
         SubjectiveHandler().updatePatientChiefComplaints(this);
       }
       this.setState({
-        openMedication: !this.state.openMedication
+        openMedication: !this.state.openMedication,
       });
     }
   }
@@ -250,7 +248,21 @@ class BasicSubjective extends Component {
         SubjectiveHandler().updatePatientChiefComplaints(this);
       }
       this.setState({
-        openMedicaldata: !this.state.openMedicaldata
+        openMedicaldata: !this.state.openMedicaldata,
+      });
+    }
+  }
+
+  showDelta() {
+    const err = Validations(this);
+    if (!err) {
+      if (this.state.hims_f_episode_chief_complaint_id === null) {
+        SubjectiveHandler().addChiefComplainToPatient(this);
+      } else {
+        SubjectiveHandler().updatePatientChiefComplaints(this);
+      }
+      this.setState({
+        deltaOpen: !this.state.deltaOpen,
       });
     }
   }
@@ -264,7 +276,7 @@ class BasicSubjective extends Component {
         SubjectiveHandler().updatePatientChiefComplaints(this);
       }
       this.setState({
-        openAddModal: !this.state.openAddModal
+        openAddModal: !this.state.openAddModal,
       });
     }
   }
@@ -278,7 +290,7 @@ class BasicSubjective extends Component {
         SubjectiveHandler().updatePatientChiefComplaints(this);
       }
       this.setState({
-        openDiet: !this.state.openDiet
+        openDiet: !this.state.openDiet,
       });
     }
   }
@@ -294,7 +306,7 @@ class BasicSubjective extends Component {
       const { current_patient, episode_id } = Window.global;
       this.setState(
         {
-          openDiet: !this.state.openDiet
+          openDiet: !this.state.openDiet,
         },
         () => {
           this.props.getPatientDiet({
@@ -302,13 +314,13 @@ class BasicSubjective extends Component {
             method: "GET",
             data: {
               patient_id: current_patient, //Window.global["current_patient"],
-              episode_id: episode_id //Window.global["episode_id"]
+              episode_id: episode_id, //Window.global["episode_id"]
             },
             cancelRequestId: "getPatientDiet",
             redux: {
               type: "PATIENT_DIET",
-              mappingName: "patient_diet"
-            }
+              mappingName: "patient_diet",
+            },
           });
         }
       );
@@ -324,14 +336,14 @@ class BasicSubjective extends Component {
         SubjectiveHandler().updatePatientChiefComplaints(this);
       }
       this.setState({
-        openVital: !this.state.openVital
+        openVital: !this.state.openVital,
       });
     }
   }
 
   closeVitals() {
     this.setState({
-      openVital: !this.state.openVital
+      openVital: !this.state.openVital,
     });
   }
 
@@ -344,7 +356,7 @@ class BasicSubjective extends Component {
         SubjectiveHandler().updatePatientChiefComplaints(this);
       }
       this.setState({
-        openExamnModal: !this.state.openExamnModal
+        openExamnModal: !this.state.openExamnModal,
       });
     }
   }
@@ -354,7 +366,7 @@ class BasicSubjective extends Component {
     let value = e.value || e.target.value;
 
     this.setState({
-      [name]: value
+      [name]: value,
     });
     Window.global[name] = value;
     // if (name === "chief_complaint") {
@@ -373,7 +385,7 @@ class BasicSubjective extends Component {
     this.getPatientMedications();
     if (this.isMale) {
       this.complaintType = Enumerable.from(GlobalVariables.COMPLAINT_TYPE)
-        .where(w => w["value"] !== "PREGNANCY")
+        .where((w) => w["value"] !== "PREGNANCY")
         .toArray();
     } else {
       this.complaintType = GlobalVariables.COMPLAINT_TYPE;
@@ -385,10 +397,10 @@ class BasicSubjective extends Component {
         ? this.props.patient_diagnosis
         : [];
     const _finalDiagnosis = Enumerable.from(_diagnosis)
-      .where(w => w.final_daignosis === "Y")
+      .where((w) => w.final_daignosis === "Y")
       .toArray();
     const recentMediction = _.chain(this.state.active_medication)
-      .groupBy(g => moment(g.prescription_date).format("YYYYMMDD"))
+      .groupBy((g) => moment(g.prescription_date).format("YYYYMMDD"))
       .map((details, key) => {
         const month = moment(key, "YYYYMMDD").format("MMM");
         const day = moment(key, "YYYYMMDD").format("DD");
@@ -398,7 +410,7 @@ class BasicSubjective extends Component {
           month: month,
           day: day,
           year: year,
-          details: details
+          details: details,
         };
       })
       .value();
@@ -491,6 +503,18 @@ class BasicSubjective extends Component {
                 openMedicaldata={this.state.openMedicaldata}
                 onClose={this.showMedicalData.bind(this)}
               />
+              <li>
+                <span className="animated slideInLeft faster">Delta</span>
+                <i
+                  className="fas fa-chart-line"
+                  onClick={this.showDelta.bind(this)}
+                />
+              </li>
+              <Delta
+                state={this.state}
+                visible={this.state.deltaOpen}
+                onCancel={this.showDelta.bind(this)}
+              />
             </ul>
           </div>
           <div className="algaeh-col-3">
@@ -512,7 +536,7 @@ class BasicSubjective extends Component {
                             <textarea
                               value={
                                 this.state.chief_complaint === null ||
-                                  this.state.chief_complaint === undefined
+                                this.state.chief_complaint === undefined
                                   ? ""
                                   : this.state.chief_complaint
                               }
@@ -537,15 +561,15 @@ class BasicSubjective extends Component {
                           <AlgaehDateHandler
                             div={{ className: "col-8" }}
                             label={{
-                              forceLabel: "Onset Date"
+                              forceLabel: "Onset Date",
                             }}
                             textBox={{
                               className: "txt-fld",
-                              name: "onset_date"
+                              name: "onset_date",
                             }}
                             maxDate={new Date()}
                             events={{
-                              onChange: this.datehandle.bind(this)
+                              onChange: this.datehandle.bind(this),
                             }}
                             dontAllow={"future"}
                             value={this.state.onset_date}
@@ -561,9 +585,9 @@ class BasicSubjective extends Component {
                               dataSource: {
                                 textField: "name",
                                 valueField: "value",
-                                data: GlobalVariables.PAIN_DURATION
+                                data: GlobalVariables.PAIN_DURATION,
                               },
-                              onChange: this.dataLevelUpdate.bind(this)
+                              onChange: this.dataLevelUpdate.bind(this),
                             }}
                           />
 
@@ -571,7 +595,7 @@ class BasicSubjective extends Component {
                             div={{ className: "col-4" }}
                             label={{
                               forceLabel: "Duration",
-                              isImp: false
+                              isImp: false,
                             }}
                             textBox={{
                               className: "txt-fld",
@@ -579,20 +603,20 @@ class BasicSubjective extends Component {
                               number: true,
                               value: this.state.duration,
                               events: {
-                                onChange: this.dataLevelUpdate.bind(this)
+                                onChange: this.dataLevelUpdate.bind(this),
                               },
                               others: {
-                                min: 0
-                              }
+                                min: 0,
+                              },
                             }}
                           />
                           <AlagehAutoComplete
                             div={{
-                              className: "col-4  paddingRight-0 paddingLeft-0"
+                              className: "col-4  paddingRight-0 paddingLeft-0",
                             }}
                             label={{
                               forceLabel: "Comp. Type",
-                              isImp: false
+                              isImp: false,
                             }}
                             selector={{
                               name: "complaint_type",
@@ -601,9 +625,9 @@ class BasicSubjective extends Component {
                               dataSource: {
                                 textField: "name",
                                 valueField: "value",
-                                data: this.complaintType
+                                data: this.complaintType,
                               },
-                              onChange: this.dropDownHandler.bind(this)
+                              onChange: this.dropDownHandler.bind(this),
                             }}
                           />
 
@@ -612,7 +636,7 @@ class BasicSubjective extends Component {
                               div={{ className: "col-4" }}
                               label={{
                                 forceLabel: "LMP (Days)",
-                                isImp: false
+                                isImp: false,
                               }}
                               textBox={{
                                 className: "txt-fld",
@@ -621,8 +645,8 @@ class BasicSubjective extends Component {
                                 value: this.state.lmp_days,
                                 disabled: !this.state.isPregnancy,
                                 events: {
-                                  onChange: this.ChangeEventHandler.bind(this)
-                                }
+                                  onChange: this.ChangeEventHandler.bind(this),
+                                },
                               }}
                             />
                           )}
@@ -645,7 +669,7 @@ class BasicSubjective extends Component {
                         <textarea
                           value={
                             this.state.significant_signs === null ||
-                              this.state.significant_signs === undefined
+                            this.state.significant_signs === undefined
                               ? ""
                               : this.state.significant_signs
                           }
@@ -680,7 +704,7 @@ class BasicSubjective extends Component {
                         <textarea
                           value={
                             this.state.other_signs === null ||
-                              this.state.other_signs === undefined
+                            this.state.other_signs === undefined
                               ? ""
                               : this.state.other_signs
                           }
@@ -732,16 +756,16 @@ class BasicSubjective extends Component {
                               label: (
                                 <AlgaehLabel
                                   label={{
-                                    forceLabel: "Type"
+                                    forceLabel: "Type",
                                   }}
                                 />
                               ),
-                              displayTemplate: row => {
+                              displayTemplate: (row) => {
                                 return row.diagnosis_type === "P"
                                   ? "Primary"
                                   : "Secondary";
                               },
-                              editorTemplate: row => {
+                              editorTemplate: (row) => {
                                 return (
                                   <AlagehAutoComplete
                                     div={{}}
@@ -752,55 +776,58 @@ class BasicSubjective extends Component {
                                       dataSource: {
                                         textField: "name",
                                         valueField: "value",
-                                        data: GlobalVariables.DIAG_TYPE
+                                        data: GlobalVariables.DIAG_TYPE,
                                       },
                                       onChange: this.onchangegridcol.bind(
                                         this,
                                         row,
                                         "Final"
-                                      )
+                                      ),
                                     }}
                                   />
                                 );
                               },
-                              others: { maxWidth: 70, align: "center" }
+                              others: { maxWidth: 70, align: "center" },
                             },
                             {
                               fieldName: "icd_code",
                               label: (
                                 <AlgaehLabel
                                   label={{
-                                    forceLabel: "ICD Code"
+                                    forceLabel: "ICD Code",
                                   }}
                                 />
                               ),
-                              others: { disabled: true, maxWidth: 70, align: "center" }
+                              others: {
+                                disabled: true,
+                                maxWidth: 70,
+                                align: "center",
+                              },
                             },
                             {
                               fieldName: "icd_description",
                               label: (
                                 <AlgaehLabel
                                   label={{
-                                    forceLabel: "Description"
+                                    forceLabel: "Description",
                                   }}
                                 />
                               ),
-                              others: { disabled: true }
-                            }
-
+                              others: { disabled: true },
+                            },
                           ]}
                           keyId="code"
                           dataSource={{
                             // data: _finalDiagnosis
-                            data: _finalDiagnosis
+                            data: _finalDiagnosis,
                           }}
                           isEditable={true}
                           paging={{ page: 0, rowsPerPage: 5 }}
                           events={{
                             onDelete: this.deleteFinalDiagnosis.bind(this),
-                            onEdit: row => { },
+                            onEdit: (row) => {},
 
-                            onDone: this.updateDiagnosis.bind(this)
+                            onDone: this.updateDiagnosis.bind(this),
                           }}
                         />
                       </div>
@@ -834,49 +861,49 @@ class BasicSubjective extends Component {
                           <Loader inline="centered">Loading</Loader>
                         </Dimmer>
                       ) : (
-                          <React.Fragment>
-                            {recentMediction.map((item, index) => (
-                              <div key={index} className="activeMedDateList">
-                                <div className="medcineDate">
-                                  <span>{item.month}</span>
-                                  <h3>{item.day}</h3>
-                                  <span>{item.year}</span>
+                        <React.Fragment>
+                          {recentMediction.map((item, index) => (
+                            <div key={index} className="activeMedDateList">
+                              <div className="medcineDate">
+                                <span>{item.month}</span>
+                                <h3>{item.day}</h3>
+                                <span>{item.year}</span>
 
-                                  <div className="printOnHover">
-                                    <i className="fas fa-print" />
-                                  </div>
+                                <div className="printOnHover">
+                                  <i className="fas fa-print" />
                                 </div>
-                                <div className="medcineList">
-                                  <ul>
-                                    {item.details.map((medicine, indexD) => (
-                                      <li key={indexD}>
-                                        <b>
-                                          {medicine.item_description !== undefined
-                                            ? medicine.item_description.replace(
+                              </div>
+                              <div className="medcineList">
+                                <ul>
+                                  {item.details.map((medicine, indexD) => (
+                                    <li key={indexD}>
+                                      <b>
+                                        {medicine.item_description !== undefined
+                                          ? medicine.item_description.replace(
                                               /\w+/g,
                                               _.capitalize
                                             )
-                                            : medicine.item_description}
-                                        </b>
-                                        {/* <small><span>4 ml</span> - <span>12 hourly (1-1-1)</span> * <span>5 days</span></small>*/}
-                                        <small>{medicine.instructions}</small>
-                                        <small>
-                                          Medicine end date :{" "}
-                                          {moment(medicine.enddate).format(
-                                            "DD dddd MMMM YYYY"
-                                          )}
-                                        </small>
-                                        <div className="reOrderOnHover">
-                                          <i className="fas fa-retweet" />
-                                        </div>
-                                      </li>
-                                    ))}
-                                  </ul>
-                                </div>
+                                          : medicine.item_description}
+                                      </b>
+                                      {/* <small><span>4 ml</span> - <span>12 hourly (1-1-1)</span> * <span>5 days</span></small>*/}
+                                      <small>{medicine.instructions}</small>
+                                      <small>
+                                        Medicine end date :{" "}
+                                        {moment(medicine.enddate).format(
+                                          "DD dddd MMMM YYYY"
+                                        )}
+                                      </small>
+                                      <div className="reOrderOnHover">
+                                        <i className="fas fa-retweet" />
+                                      </div>
+                                    </li>
+                                  ))}
+                                </ul>
                               </div>
-                            ))}
-                          </React.Fragment>
-                        )}
+                            </div>
+                          ))}
+                        </React.Fragment>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -892,7 +919,7 @@ class BasicSubjective extends Component {
                       {
                         <AlgaehLabel
                           label={{
-                            forceLabel: "Order Investigation"
+                            forceLabel: "Order Investigation",
                           }}
                         />
                       }
@@ -906,7 +933,7 @@ class BasicSubjective extends Component {
                       {
                         <AlgaehLabel
                           label={{
-                            forceLabel: "Order Consumable"
+                            forceLabel: "Order Consumable",
                           }}
                         />
                       }
@@ -920,7 +947,7 @@ class BasicSubjective extends Component {
                       {
                         <AlgaehLabel
                           label={{
-                            forceLabel: "Order Package"
+                            forceLabel: "Order Package",
                           }}
                         />
                       }
@@ -934,7 +961,7 @@ class BasicSubjective extends Component {
                       {
                         <AlgaehLabel
                           label={{
-                            forceLabel: "Lab Results"
+                            forceLabel: "Lab Results",
                           }}
                         />
                       }
@@ -947,7 +974,7 @@ class BasicSubjective extends Component {
                       {
                         <AlgaehLabel
                           label={{
-                            forceLabel: "RIS Results"
+                            forceLabel: "RIS Results",
                           }}
                         />
                       }
@@ -964,13 +991,13 @@ class BasicSubjective extends Component {
                       openData="Investigation"
                       chief_complaint={
                         this.state.chief_complaint === null ||
-                          this.state.chief_complaint.length < 4
+                        this.state.chief_complaint.length < 4
                           ? true
                           : false
                       }
                       significant_signs={
                         this.state.significant_signs === null ||
-                          this.state.significant_signs.length < 4
+                        this.state.significant_signs.length < 4
                           ? true
                           : false
                       }
@@ -1003,7 +1030,7 @@ class BasicSubjective extends Component {
 function mapStateToProps(state) {
   return {
     patient_diagnosis: state.patient_diagnosis,
-    patient_diet: state.patient_diet
+    patient_diet: state.patient_diet,
   };
 }
 
@@ -1011,7 +1038,7 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
       getPatientDiagnosis: AlgaehActions,
-      getPatientDiet: AlgaehActions
+      getPatientDiet: AlgaehActions,
     },
     dispatch
   );

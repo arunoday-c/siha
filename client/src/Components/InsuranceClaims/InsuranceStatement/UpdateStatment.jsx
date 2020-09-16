@@ -41,7 +41,7 @@ const getStatementServices = async (key, { invoice_header_id }) => {
 export function UpdateStatement({
   show = false,
   data = {},
-  onClose = () => {},
+  onClose = () => { },
 }) {
   const [currentRow, setCurrentRow] = useState(null);
   const [cpt_code, setCpt] = useState("");
@@ -49,7 +49,7 @@ export function UpdateStatement({
     "denial-reasons",
     getDenialReasons
   );
-  const { userLanguage } = useContext(MainContext);
+  const { userLanguage, userToken } = useContext(MainContext);
   const { data: invoiceDetails, isLoading: queryLoading, refetch } = useQuery(
     ["invoice-details", { invoice_header_id: data?.hims_f_invoice_header_id }],
     getStatementServices,
@@ -103,6 +103,7 @@ export function UpdateStatement({
       });
       setCpt("");
     }
+    //eslint-disable-next-line
   }, [currentRow, data]);
 
   function cptSearch() {
@@ -355,16 +356,15 @@ export function UpdateStatement({
                     value,
                     onChange: (e) => {
                       let { value } = e.target;
+                      const _amount = parseFloat(currentRow?.company_payable) - parseFloat(currentRow?.r1_amt) - parseFloat(currentRow?.r2_amt)
 
                       if (value) {
                         if (
-                          parseFloat(value) <=
-                          parseFloat(currentRow?.company_payable)
+                          parseFloat(value) <= _amount
                         ) {
                           onChange(value);
                           const denial_amount =
-                            parseFloat(currentRow?.company_payable) -
-                            parseFloat(value);
+                            (_amount - parseFloat(value)).toFixed(userToken.decimal_places);
                           setValue("denial_amount", denial_amount, {
                             shouldValidate: true,
                           });

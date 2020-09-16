@@ -837,7 +837,7 @@ export default {
           internal_error: true,
           message: "No receipt details",
         };
-        _mysql.rollBackTransaction(() => { });
+        _mysql.rollBackTransaction(() => {});
         next();
         return;
       } else if (
@@ -2379,7 +2379,7 @@ export default {
                     prices = allCompany_price.find((item) => {
                       return (
                         item.insurance_id ==
-                        input[i]["primary_insurance_provider_id"] &&
+                          input[i]["primary_insurance_provider_id"] &&
                         item.services_id == input[i]["hims_d_services_id"]
                       );
                     });
@@ -2571,8 +2571,8 @@ export default {
                     deductable_amount =
                       deductable_percentage !== null
                         ? (parseFloat(net_amout) *
-                          parseFloat(deductable_percentage)) /
-                        100
+                            parseFloat(deductable_percentage)) /
+                          100
                         : 0;
 
                     deductable_amount = utilities.decimalPoints(
@@ -2739,8 +2739,8 @@ export default {
                         from_pos == "Y"
                           ? parseFloat(unit_cost)
                           : unit_cost != 0
-                            ? parseFloat(unit_cost)
-                            : parseFloat(records.standard_fee);
+                          ? parseFloat(unit_cost)
+                          : parseFloat(records.standard_fee);
                     }
                   }
                   // if (FollowUp === true) {
@@ -2910,7 +2910,7 @@ export default {
                       servicesDetails.hims_f_ordered_services_id,
                     billed: billed,
                     test_id: servicesDetails.test_id,
-                    test_type: "R"
+                    test_type: "R",
                   }
                 );
 
@@ -3372,6 +3372,29 @@ export default {
     }
   },
 
+  getBillsForVisit: (req, res, next) => {
+    try {
+      const _mysql = new algaehMysql();
+      _mysql
+        .executeQuery({
+          query: `select hims_f_billing_header_id, bill_number, bill_date, sub_total_amount from hims_f_billing_header where visit_id=?`,
+          values: [req.query.visit_id],
+        })
+        .then((result) => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch((e) => {
+          _mysql.releaseConnection();
+          next(e);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
+
   //created by:IRFAN
   generateAccountingEntry: (req, res, next) => {
     try {
@@ -3637,7 +3660,10 @@ export default {
                   });
 
                   //insurance company payable
-                  if (inputParam.insured == "Y" && parseFloat(inputParam.company_payble) > 0) {
+                  if (
+                    inputParam.insured == "Y" &&
+                    parseFloat(inputParam.company_payble) > 0
+                  ) {
                     // narration =
                     //   narration +
                     //   `, insurance (${insurance_data[0]["insurance_sub_name"]}) receivable: ${inputParam.company_payble}`;
@@ -4253,8 +4279,8 @@ function getBillDetailsFunctionality(req, res, next, resolve) {
                       from_pos == "Y"
                         ? unit_cost
                         : unit_cost != 0
-                          ? unit_cost
-                          : records.standard_fee;
+                        ? unit_cost
+                        : records.standard_fee;
                   }
                 }
 

@@ -19,6 +19,7 @@ const {
   billingCalculations,
   getBillDetails,
   getPakageDetails,
+  getBillsForVisit,
   patientPackageAdvanceRefund,
   updatePatientPackage,
   getEmployeeAndDepartments,
@@ -106,6 +107,18 @@ export default () => {
   api.get(
     "/getPakageDetails",
     getPakageDetails,
+
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records,
+      });
+    }
+  );
+
+  api.get(
+    "/getBillsForVisit",
+    getBillsForVisit,
 
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({

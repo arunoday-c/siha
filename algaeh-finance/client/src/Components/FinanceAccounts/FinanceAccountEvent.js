@@ -6,17 +6,17 @@ export function getAccounts(account_head_id, callBack) {
     data: { account_level: "0", finance_account_head_id: account_head_id },
     method: "GET",
     module: "finance",
-    onSuccess: response => {
+    onSuccess: (response) => {
       if (response.data.success === true) {
         callBack(response.data.result);
       }
     },
-    onFailure: error => {
+    onFailure: (error) => {
       swalMessage({
         type: "error",
-        title: error.response.data.message || error.message
+        title: error.response.data.message || error.message,
       });
-    }
+    },
   });
 }
 
@@ -28,16 +28,16 @@ export function removeAccount(input) {
         data: input,
         method: "DELETE",
         module: "finance",
-        onSuccess: response => {
+        onSuccess: (response) => {
           if (response.data.success === true) {
             resolve();
           } else {
             reject(response.data.message);
           }
         },
-        onCatch: error => {
+        onCatch: (error) => {
           reject(error);
-        }
+        },
       });
     } catch (e) {
       reject(e);
@@ -60,14 +60,14 @@ export function getChartData(input) {
         data: input,
         method: "GET",
         module: "finance",
-        onSuccess: response => {
+        onSuccess: (response) => {
           if (response.data.success === true) {
             resolve(response.data.result);
           }
         },
-        onCatch: error => {
+        onCatch: (error) => {
           reject(error);
-        }
+        },
       });
     } catch (e) {
       reject(e);
@@ -82,16 +82,16 @@ export function renameAccount(input) {
         data: input,
         method: "PUT",
         module: "finance",
-        onSuccess: response => {
+        onSuccess: (response) => {
           if (response.data.success === true) {
             resolve();
           } else {
             reject(response.data.message);
           }
         },
-        onCatch: error => {
+        onCatch: (error) => {
           reject(error);
-        }
+        },
       });
     } catch (e) {
       reject(e);
@@ -107,7 +107,7 @@ export function getGridChildNodes(input) {
         data: input,
         method: "GET",
         module: "finance",
-        onSuccess: response => {
+        onSuccess: (response) => {
           const { success, result, message } = response.data;
           if (success === true) {
             resolve(result);
@@ -115,9 +115,9 @@ export function getGridChildNodes(input) {
             reject(message);
           }
         },
-        onCatch: error => {
+        onCatch: (error) => {
           reject(error);
-        }
+        },
       });
     } catch (e) {
       reject(e);

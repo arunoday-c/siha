@@ -6,6 +6,7 @@ import {
   AlgaehDateHandler,
   Spin,
   AlgaehMessagePop,
+  Checkbox,
 } from "algaeh-react-components";
 import moment from "moment";
 import { useQuery, useMutation } from "react-query";
@@ -74,10 +75,10 @@ export default function BulkClaimGeneration() {
   const addToList = (row) => {
     setSelectedList((state) => {
       const current = state.findIndex(
-        (item) => item.hims_f_patient_visit_id === row.hims_f_patient_visit_id
+        (item) => item?.hims_f_patient_visit_id === row?.hims_f_patient_visit_id
       );
       if (current !== -1) {
-        delete state[current];
+        state.splice(current, 1);
         return [...state];
       } else {
         return [...state, row];
@@ -92,6 +93,14 @@ export default function BulkClaimGeneration() {
     clear();
     setInsurance(null);
     setSubInsurance(null);
+  };
+
+  const selectAll = () => {
+    if (data?.length === selectedList?.length) {
+      setSelectedList([]);
+    } else {
+      setSelectedList([...data]);
+    }
   };
 
   return (
@@ -204,6 +213,16 @@ export default function BulkClaimGeneration() {
             </div>
           </div>
           <div className="row">
+            {!!data?.length && (
+              <div className="col">
+                <Checkbox
+                  checked={data?.length === selectedList?.length}
+                  onChange={selectAll}
+                >
+                  Select All
+                </Checkbox>
+              </div>
+            )}
             <div className="col-12">
               <VisitTable
                 loading={isLoading}

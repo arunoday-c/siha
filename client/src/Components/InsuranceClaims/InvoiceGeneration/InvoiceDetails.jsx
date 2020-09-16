@@ -63,14 +63,14 @@ export function InvoiceDetails({ details = [], data = {} }) {
                 },
 
                 {
-                  fieldName: "discount_amount",
+                  fieldName: "discount_amout",
                   label: (
                     <AlgaehLabel label={{ fieldName: "discount_amount" }} />
                   ),
                 },
 
                 {
-                  fieldName: "net_amount",
+                  fieldName: "net_amout",
                   label: <AlgaehLabel label={{ fieldName: "net_amount" }} />,
                   disabled: true,
                 },
@@ -92,7 +92,7 @@ export function InvoiceDetails({ details = [], data = {} }) {
                   disabled: true,
                 },
                 {
-                  fieldName: "company_resp",
+                  fieldName: "comapany_resp",
                   label: <AlgaehLabel label={{ fieldName: "comapany_resp" }} />,
                   disabled: true,
                 },
@@ -102,7 +102,7 @@ export function InvoiceDetails({ details = [], data = {} }) {
                   disabled: true,
                 },
                 {
-                  fieldName: "company_payable",
+                  fieldName: "company_payble",
                   label: (
                     <AlgaehLabel label={{ fieldName: "company_payble" }} />
                   ),
@@ -178,8 +178,8 @@ export function InvoiceDetails({ details = [], data = {} }) {
                       <h6>
                         {data?.effective_end_date
                           ? moment(data?.effective_end_date).format(
-                              Options.dateFormat
-                            )
+                            Options.dateFormat
+                          )
                           : "---"}
                       </h6>
                     </div>

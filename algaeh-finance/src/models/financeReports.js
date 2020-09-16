@@ -854,7 +854,7 @@ export default {
 
         _mysql
           .executeQuery({
-            query: ` select finance_account_child_id,concat(child_name,' / ',ledger_code) as child_name 
+            query: ` select finance_account_child_id,concat(child_name,' / ',COALESCE(ledger_code,'')) as child_name 
             from finance_account_child              where head_id in (${head_ids});
 
 

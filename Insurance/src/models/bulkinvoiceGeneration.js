@@ -1,6 +1,38 @@
 import algaehMysql from "algaeh-mysql";
 import _ from "lodash";
 import algaehUtilities from "algaeh-utilities/utilities";
+import "regenerator-runtime/runtime";
+
+export async function bulkInvoiceNumber(req, res, next) {
+  const _mysql = new algaehMysql();
+  const { vist_ids } = req.body;
+  try {
+
+    let all_numgen_codes = []
+
+    for (let i = 0; i < vist_ids.length; i++) {
+      const results = await _mysql
+        .generateRunningNumber({
+          user_id: req.userIdentity.algaeh_d_app_user_id,
+          numgen_codes: ["INV_NUM"],
+          table_name: "hims_f_app_numgen",
+        });
+      _mysql.commitTransaction();
+      // all_numgen_codes.push({ ...results, [vist_ids[i]]: results["INV_NUM"] });
+      all_numgen_codes.push({ ...results, visit_id: vist_ids[i] });
+    }
+    req.allnumGen = all_numgen_codes
+    next()
+    // console.log("all_numgen_codes", all_numgen_codes);
+
+
+  } catch (e) {
+    _mysql.rollBackTransaction(() => {
+      next(e);
+    });
+  }
+};
+
 export function bulkInvoiceGeneration(req, res, next) {
   const _mysql = new algaehMysql();
   const utilities = new algaehUtilities();
@@ -31,7 +63,7 @@ export function bulkInvoiceGeneration(req, res, next) {
         BD.sec_company_res as dtl_sec_company_resp,BD.sec_company_tax as dtl_sec_company_tax,BD.sec_company_paybale as dtl_sec_company_payable
         from hims_f_patient_visit as V inner join hims_m_patient_insurance_mapping as PIM on
         PIM.patient_visit_id = V.hims_f_patient_visit_id  and PIM.patient_id = V.patient_id
-        inner join hims_f_billing_header as BH on BH.patient_id  = V.patient_id  and BH.visit_id = BH.visit_id
+        inner join hims_f_billing_header as BH on BH.patient_id  = V.patient_id  and BH.visit_id = V.hims_f_patient_visit_id
         inner join hims_f_patient as P on P.hims_d_patient_id = V.patient_id
         inner join hims_f_billing_details as BD on BH.hims_f_billing_header_id = BD.hims_f_billing_header_id
         where V.hims_f_patient_visit_id  in (?);`,
@@ -39,9 +71,10 @@ export function bulkInvoiceGeneration(req, res, next) {
         printQuery: true,
       })
       .then((groupped) => {
+
         _.chain(groupped)
           .groupBy((g) => g.visit_id)
-          .each((patientVist, vKey) => {
+          .forEach(async (patientVist, vKey) => {
             const {
               patient_code,
               visit_code,
@@ -56,195 +89,199 @@ export function bulkInvoiceGeneration(req, res, next) {
               card_holder_name,
               card_number,
               card_holder_age,
-              card_holder_gender,
+              card_holder_gender
             } = _.first(patientVist);
             counter++;
 
+
+            // .then((generatedNumbers) => {
+            // console.log("visit_id", visit_id)
+            // console.log("allnumGen", req.allnumGen, typeof req.allnumGen)
+            const generatedNumbers = req.allnumGen.find(f => f.visit_id === visit_id)
+            // console.log("generatedNumbers", generatedNumbers)
+
+
             _mysql
-              .generateRunningNumber({
-                user_id: algaeh_d_app_user_id,
-                numgen_codes: ["INV_NUM"],
-                table_name: "hims_f_app_numgen",
-              })
-              .then((generatedNumbers) => {
-                _mysql
-                  .executeQuery({
-                    query: `INSERT INTO hims_f_invoice_header(invoice_number,patient_id,
+              .executeQueryWithTransaction({
+                query: `INSERT INTO hims_f_invoice_header(invoice_number,invoice_date,patient_id,
                      visit_id,gross_amount,discount_amount,net_amount, patient_resp,patient_tax,
                      patient_payable, company_resp, company_tax,company_payable, sec_company_resp,
                      sec_company_tax, sec_company_payable,insurance_provider_id,sub_insurance_id, 
                      network_id, network_office_id, card_number,policy_number,card_holder_name,
                      card_holder_age, card_holder_gender, card_class, created_date, created_by,
                       updated_date, updated_by,hospital_id ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,
-                          ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);`,
-                    values: [
-                      generatedNumbers.INV_NUM,
-                      patient_id,
-                      visit_id,
-                      utilities.decimalPoints(
-                        _.sumBy(patientVist, (s) => parseFloat(s.gross_amount)),
-                        conDecimals
-                      ),
-                      utilities.decimalPoints(
-                        _.sumBy(patientVist, (s) =>
-                          parseFloat(s.discount_amount)
-                        ),
-                        conDecimals
-                      ),
-                      utilities.decimalPoints(
-                        _.sumBy(patientVist, (s) => parseFloat(s.net_amount)),
-                        conDecimals
-                      ),
-                      utilities.decimalPoints(
-                        _.sumBy(patientVist, (s) => parseFloat(s.patient_resp)),
-                        conDecimals
-                      ),
-                      utilities.decimalPoints(
-                        _.sumBy(patientVist, (s) => parseFloat(s.patient_tax)),
-                        conDecimals
-                      ),
-                      utilities.decimalPoints(
-                        _.sumBy(patientVist, (s) =>
-                          parseFloat(s.patient_payable)
-                        ),
-                        conDecimals
-                      ),
-                      utilities.decimalPoints(
-                        _.sumBy(patientVist, (s) => parseFloat(s.company_resp)),
-                        conDecimals
-                      ),
-                      utilities.decimalPoints(
-                        _.sumBy(patientVist, (s) => parseFloat(s.company_tax)),
-                        conDecimals
-                      ),
-                      utilities.decimalPoints(
-                        _.sumBy(patientVist, (s) =>
-                          parseFloat(s.company_payable)
-                        ),
-                        conDecimals
-                      ),
-                      0, //sec_company_resp,
-                      0, // sec_company_tax,
-                      0, // sec_company_payable,
-                      insurance_provider_id,
-                      sub_insurance_id,
-                      network_id,
-                      network_id,
-                      card_number,
-                      policy_number,
-                      card_holder_name,
-                      card_holder_age,
-                      card_holder_gender,
-                      null,
-                      new Date(),
-                      algaeh_d_app_user_id,
-                      new Date(),
-                      algaeh_d_app_user_id,
-                      hospital_id,
-                    ],
-                    printQuery: true,
-                  })
-                  .then((headerResult) => {
-                    if (headerResult.insertId > 0) {
-                      _.chain(patientVist)
-                        .groupBy((g) => g.hims_f_billing_header_id)
-                        .each((billHeaders, bKey) => {
-                          let detailInsert = "";
-                          for (let d = 0; d < billHeaders.length; d++) {
-                            const {
-                              hims_f_billing_details_id,
-                              hims_f_billing_header_id,
-                              service_type_id,
-                              services_id,
-                              unit_cost,
-                              quantity,
-                              dtl_gross_amount,
-                              dtl_discount_amout,
-                              dtl_net_amount,
-                              dtl_patient_resp,
-                              dtl_patient_tax,
-                              dtl_patient_payable,
-                              dtl_company_resp,
-                              dtl_company_tax,
-                              dtl_company_payable,
-                              dtl_sec_company_resp,
-                              dtl_sec_company_tax,
-                              dtl_sec_company_payable,
-                            } = billHeaders[d];
-                            detailInsert += _mysql.mysqlQueryFormat(
-                              `INSERT INTO hims_f_invoice_details(invoice_header_id,bill_header_id,
+                          ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);`,
+                values: [
+                  generatedNumbers.INV_NUM,
+                  new Date(),
+                  patient_id,
+                  visit_id,
+                  utilities.decimalPoints(
+                    _.sumBy(patientVist, (s) => parseFloat(s.dtl_gross_amount)),
+                    conDecimals
+                  ),
+                  utilities.decimalPoints(
+                    _.sumBy(patientVist, (s) =>
+                      parseFloat(s.dtl_discount_amout)
+                    ),
+                    conDecimals
+                  ),
+                  utilities.decimalPoints(
+                    _.sumBy(patientVist, (s) => parseFloat(s.dtl_net_amount)),
+                    conDecimals
+                  ),
+                  utilities.decimalPoints(
+                    _.sumBy(patientVist, (s) => parseFloat(s.dtl_patient_resp)),
+                    conDecimals
+                  ),
+                  utilities.decimalPoints(
+                    _.sumBy(patientVist, (s) => parseFloat(s.dtl_patient_tax)),
+                    conDecimals
+                  ),
+                  utilities.decimalPoints(
+                    _.sumBy(patientVist, (s) =>
+                      parseFloat(s.dtl_patient_payable)
+                    ),
+                    conDecimals
+                  ),
+                  utilities.decimalPoints(
+                    _.sumBy(patientVist, (s) => parseFloat(s.dtl_company_resp)),
+                    conDecimals
+                  ),
+                  utilities.decimalPoints(
+                    _.sumBy(patientVist, (s) => parseFloat(s.dtl_company_tax)),
+                    conDecimals
+                  ),
+                  utilities.decimalPoints(
+                    _.sumBy(patientVist, (s) =>
+                      parseFloat(s.dtl_company_payable)
+                    ),
+                    conDecimals
+                  ),
+                  0, //sec_company_resp,
+                  0, // sec_company_tax,
+                  0, // sec_company_payable,
+                  insurance_provider_id,
+                  sub_insurance_id,
+                  network_id,
+                  network_id,
+                  card_number,
+                  policy_number,
+                  card_holder_name,
+                  card_holder_age,
+                  card_holder_gender,
+                  null,
+                  new Date(),
+                  algaeh_d_app_user_id,
+                  new Date(),
+                  algaeh_d_app_user_id,
+                  hospital_id,
+                ],
+                printQuery: true,
+              })
+              .then((headerResult) => {
+                if (headerResult.insertId > 0) {
+                  _.chain(patientVist)
+                    .groupBy((g) => g.hims_f_billing_header_id)
+                    .each((billHeaders, bKey) => {
+                      let detailInsert = "";
+                      for (let d = 0; d < billHeaders.length; d++) {
+                        const {
+                          hims_f_billing_details_id,
+                          hims_f_billing_header_id,
+                          service_type_id,
+                          services_id,
+                          unit_cost,
+                          quantity,
+                          dtl_gross_amount,
+                          dtl_discount_amout,
+                          dtl_net_amount,
+                          dtl_patient_resp,
+                          dtl_patient_tax,
+                          dtl_patient_payable,
+                          dtl_company_resp,
+                          dtl_company_tax,
+                          dtl_company_payable,
+                          dtl_sec_company_resp,
+                          dtl_sec_company_tax,
+                          dtl_sec_company_payable,
+                        } = billHeaders[d];
+                        detailInsert += _mysql.mysqlQueryFormat(
+                          `INSERT INTO hims_f_invoice_details(invoice_header_id,bill_header_id,
                                     bill_detail_id,service_type_id,service_id,unit_cost,quantity,gross_amount,discount_amount,
                                     net_amount,patient_resp,patient_tax,patient_payable,company_resp,company_tax,company_payable,
                                     sec_company_resp,sec_company_tax,sec_company_payable,created_by,created_date,updated_date,updated_by)
                                     VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);`,
-                              [
-                                headerResult.insertId,
-                                hims_f_billing_header_id,
-                                hims_f_billing_details_id,
-                                service_type_id,
-                                services_id,
-                                unit_cost,
-                                quantity,
-                                dtl_gross_amount,
-                                dtl_discount_amout,
-                                dtl_net_amount,
-                                dtl_patient_resp,
-                                dtl_patient_tax,
-                                dtl_patient_payable,
-                                dtl_company_resp,
-                                dtl_company_tax,
-                                dtl_company_payable,
-                                dtl_sec_company_resp,
-                                dtl_sec_company_tax,
-                                dtl_sec_company_payable,
-                                algaeh_d_app_user_id,
-                                new Date(),
-                                new Date(),
-                                algaeh_d_app_user_id,
-                              ]
-                            );
-                          }
+                          [
+                            headerResult.insertId,
+                            hims_f_billing_header_id,
+                            hims_f_billing_details_id,
+                            service_type_id,
+                            services_id,
+                            unit_cost,
+                            quantity,
+                            dtl_gross_amount,
+                            dtl_discount_amout,
+                            dtl_net_amount,
+                            dtl_patient_resp,
+                            dtl_patient_tax,
+                            dtl_patient_payable,
+                            dtl_company_resp,
+                            dtl_company_tax,
+                            dtl_company_payable,
+                            dtl_sec_company_resp,
+                            dtl_sec_company_tax,
+                            dtl_sec_company_payable,
+                            algaeh_d_app_user_id,
+                            new Date(),
+                            new Date(),
+                            algaeh_d_app_user_id,
+                          ]
+                        );
+                      }
+                      _mysql
+                        .executeQuery({
+                          query: detailInsert,
+                          printQuery: true,
+                        })
+                        .then((billDetail) => {
                           _mysql
                             .executeQuery({
-                              query: detailInsert,
-                              printQuery: true,
-                            })
-                            .then((billDetail) => {
-                              _mysql
-                                .executeQuery({
-                                  query: `UPDATE hims_f_billing_header SET invoice_generated = 'Y' ,updated_date=?, updated_by=? 
+                              query: `UPDATE hims_f_billing_header SET invoice_generated = 'Y' ,updated_date=?, updated_by=? 
                                  WHERE record_status='A' and  hims_f_billing_header_id = ?;
                                  UPDATE hims_f_patient_visit SET invoice_generated='Y',visit_status='C',updated_date=?, updated_by=?
                                  WHERE record_status='A' and hims_f_patient_visit_id = ?;`,
-                                  values: [
-                                    new Date(),
-                                    algaeh_d_app_user_id,
-                                    bKey,
-                                    new Date(),
-                                    algaeh_d_app_user_id,
-                                    vKey,
-                                  ],
-                                  printQuery: true,
-                                })
-                                .then((updateResult) => {
-                                  if (allVisits === counter) {
-                                    _mysql.commitTransaction((error) => {
-                                      if (error) {
-                                        _mysql.rollBackTransaction(() => {
-                                          next(error);
-                                        });
-                                        return;
-                                      }
-                                      next();
+                              values: [
+                                new Date(),
+                                algaeh_d_app_user_id,
+                                bKey,
+                                new Date(),
+                                algaeh_d_app_user_id,
+                                vKey,
+                              ],
+                              printQuery: true,
+                            })
+                            .then((updateResult) => {
+                              if (allVisits === counter) {
+                                _mysql.commitTransaction((error) => {
+                                  if (error) {
+                                    _mysql.rollBackTransaction(() => {
+                                      next(error);
                                     });
+                                    return;
                                   }
-                                })
-                                .catch((error) => {
-                                  _mysql.rollBackTransaction(() => {
-                                    next(error);
-                                  });
-                                  return;
+                                  next();
                                 });
+                              } else {
+                                _mysql.commitTransaction((error) => {
+                                  if (error) {
+                                    _mysql.rollBackTransaction(() => {
+                                      next(error);
+                                    });
+                                    return;
+                                  }
+                                });
+                              }
                             })
                             .catch((error) => {
                               _mysql.rollBackTransaction(() => {
@@ -253,19 +290,19 @@ export function bulkInvoiceGeneration(req, res, next) {
                               return;
                             });
                         })
-                        .value();
-                    } else {
-                      _mysql.rollBackTransaction(() => {
-                        next(new Error("please send correct  data"));
-                      });
-                    }
-                  })
-                  .catch((error) => {
-                    _mysql.rollBackTransaction(() => {
-                      next(error);
-                    });
-                    return;
+                        .catch((error) => {
+                          _mysql.rollBackTransaction(() => {
+                            next(error);
+                          });
+                          return;
+                        });
+                    })
+                    .value();
+                } else {
+                  _mysql.rollBackTransaction(() => {
+                    next(new Error("please send correct  data"));
                   });
+                }
               })
               .catch((error) => {
                 _mysql.rollBackTransaction(() => {
@@ -273,6 +310,13 @@ export function bulkInvoiceGeneration(req, res, next) {
                 });
                 return;
               });
+            // })
+            // .catch((error) => {
+            //   _mysql.rollBackTransaction(() => {
+            //     next(error);
+            //   });
+            //   return;
+            // });
           })
           .value();
       });

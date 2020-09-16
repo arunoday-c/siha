@@ -139,6 +139,7 @@ export default memo(function (props) {
             balance_amount: totalAmount,
             voucher_type: voucher_type,
             invoice_no,
+            disabled: true,
           },
           merdge,
           type: "supplier",
@@ -297,9 +298,8 @@ export default memo(function (props) {
             >
               Bulk Receive Payment
             </AlgaehButton>
-            <AlgaehButton
+            {/* <AlgaehButton
               className="btn btn-primary"
-              // disabled={!processList.length}
               loading={loading}
               onClick={() =>
                 history.push("/DayEndProcess", {
@@ -308,7 +308,7 @@ export default memo(function (props) {
               }
             >
               Process
-            </AlgaehButton>
+            </AlgaehButton> */}
             <AlgaehButton
               className="btn btn-default"
               // disabled={!processList.length}

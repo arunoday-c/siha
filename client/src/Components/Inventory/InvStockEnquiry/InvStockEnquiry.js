@@ -7,7 +7,6 @@ import {
   AlgaehLabel,
   AlagehAutoComplete,
 } from "../../Wrapper/algaehWrapper";
-import BreadCrumb from "../../common/BreadCrumb/BreadCrumb.js";
 import {
   changeTexts,
   // dateFormater,
@@ -93,43 +92,12 @@ class InvStockEnquiry extends Component {
     return (
       <React.Fragment>
         <div className="hptl-phase1-speciman-collection-form">
-          <BreadCrumb
-            title={
-              <AlgaehLabel
-                label={{ forceLabel: "Stock Enquiry", align: "ltr" }}
-              />
-            }
-            breadStyle={this.props.breadStyle}
-            // pageNavPath={[
-            //   {
-            //     pageName: (
-            //       <AlgaehLabel
-            //         label={{
-            //           forceLabel: "Home",
-            //           align: "ltr",
-            //         }}
-            //       />
-            //     ),
-            //   },
-            //   {
-            //     pageName: (
-            //       <AlgaehLabel
-            //         label={{ forceLabel: "Stock Enquiry", align: "ltr" }}
-            //       />
-            //     ),
-            //   },
-            // ]}
-          />
-
-          <div
-            className="row inner-top-search"
-            style={{ marginTop: "75px", paddingBottom: "10px" }}
-          >
+          <div className="row inner-top-search">
             <div className="col-lg-8">
               <div className="row">
                 <AlagehAutoComplete
-                  div={{ className: "col-lg-3" }}
-                  label={{ forceLabel: "Location" }}
+                  div={{ className: "col form-group" }}
+                  label={{ forceLabel: "By Location" }}
                   selector={{
                     name: "location_id",
                     className: "select-fld",
@@ -149,10 +117,20 @@ class InvStockEnquiry extends Component {
                     autoComplete: "off",
                   }}
                 />
-
-                {/* <AlagehAutoComplete
-                  div={{ className: "col-lg-3" }}
-                  label={{ forceLabel: "Item Name" }}
+                <div className="col-1">
+                  {" "}
+                  <button
+                    className="btn btn-default"
+                    // disabled={!this.state.location_id}
+                    style={{ marginTop: 20, marginRight: 10 }}
+                    // onClick={() => downloadInvStockDetails(this)}
+                  >
+                    Load
+                  </button>
+                </div>
+                <AlagehAutoComplete
+                  div={{ className: "col" }}
+                  label={{ forceLabel: "By Item Name" }}
                   selector={{
                     name: "item_id",
                     className: "select-fld",
@@ -160,20 +138,31 @@ class InvStockEnquiry extends Component {
                     dataSource: {
                       textField: "item_description",
                       valueField: "hims_d_inventory_item_master_id",
-                      data: this.props.inventoryitemlist
+                      data: this.props.inventoryitemlist,
                     },
                     onChange: changeTexts.bind(this, this),
                     onClear: () => {
                       this.setState({
-                        item_id: null
+                        item_id: null,
                       });
-                    }
+                    },
                   }}
-                /> */}
-                {/*<div className="col-lg-3">
+                />{" "}
+                <div className="col-1">
+                  {" "}
+                  <button
+                    className="btn btn-default"
+                    // disabled={!this.state.location_id}
+                    style={{ marginTop: 20, marginRight: 10 }}
+                    // onClick={() => downloadInvStockDetails(this)}
+                  >
+                    Load
+                  </button>
+                </div>
+                {/* <div className="col-lg-3">
                   <AlgaehLabel
                     label={{
-                      forceLabel: "Total Quantity"
+                      forceLabel: "Total Quantity",
                     }}
                   />
                   <h6>
@@ -183,61 +172,8 @@ class InvStockEnquiry extends Component {
                       ? total_quantity + " nos"
                       : "0 nos"}
                   </h6>
-                </div>
-                {
-                  fieldName: "barcode",
-                  label: <AlgaehLabel label={{ forceLabel: "Barcode" }} />,
-                  disabled: true
-                },
-                {
-                  fieldName: "batchno",
-                  label: <AlgaehLabel label={{ forceLabel: "Batch No." }} />,
-                  disabled: true
-                },
-                {
-                  fieldName: "expirydt",
-                  label: (
-                    <AlgaehLabel label={{ forceLabel: "Expiry Date" }} />
-                  ),
-                  displayTemplate: row => {
-                    return <span>{dateFormater(this, row.expirydt)}</span>;
-                  },
-                  editorTemplate: row => {
-                    return (
-                      <AlgaehDateHandler
-                        div={{ className: "" }}
-                        textBox={{
-                          className: "txt-fld hidden",
-                          name: "expirydt"
-                        }}
-                        minDate={new Date()}
-                        events={{
-                          onChange: datehandle.bind(this, this, row)
-                        }}
-                        value={row.expirydt}
-                      />
-                    );
-                  }
-                },*/}
+                </div> */}
               </div>
-            </div>
-            <div className="col" style={{ textAlign: "right" }}>
-              <button
-                className="btn btn-default"
-                disabled={!this.state.location_id}
-                style={{ marginTop: 20, marginRight: 10 }}
-                onClick={() => downloadInvStockDetails(this)}
-              >
-                Download Stock Details
-              </button>
-              <button
-                className="btn btn-default"
-                disabled={!this.state.location_id}
-                style={{ marginTop: 20 }}
-                onClick={() => downloadInvStock(this)}
-              >
-                Download Stock
-              </button>
             </div>
           </div>
 
@@ -251,6 +187,7 @@ class InvStockEnquiry extends Component {
           </div> */}
             <div className="portlet-body" id="precriptionList_Cntr">
               <AlgaehDataGrid
+                className="inv_initial_stock_Grid"
                 id="inv_initial_stock"
                 columns={[
                   // {
@@ -360,7 +297,7 @@ class InvStockEnquiry extends Component {
                       );
                     },
                     disabled: true,
-                    others: { filterable: false },
+                    others: { filterable: true },
                   },
                   {
                     fieldName: "reorder_qty",
@@ -414,6 +351,27 @@ class InvStockEnquiry extends Component {
                   onDone: updateStockDetils.bind(this, this),
                 }}
               />
+            </div>
+          </div>
+
+          <div className="hptl-phase1-footer">
+            <div className="row">
+              <div className="col-lg-12">
+                <button
+                  className="btn btn-default"
+                  disabled={!this.state.location_id}
+                  onClick={() => downloadInvStockDetails(this)}
+                >
+                  Download Stock Details
+                </button>
+                <button
+                  className="btn btn-default"
+                  disabled={!this.state.location_id}
+                  onClick={() => downloadInvStock(this)}
+                >
+                  Download Stock
+                </button>
+              </div>
             </div>
           </div>
         </div>
