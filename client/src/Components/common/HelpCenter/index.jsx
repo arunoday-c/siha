@@ -13,6 +13,7 @@ export function HelpCenter({ visible, onClose }) {
       if (tabName) {
         url += `/${tabName.replaceAll(" ", "").toLowerCase()}`;
       }
+      console.log("URL=", url);
       setIframe(
         `<iframe class='helpDocIframe' src = 'https://help.algaeh.com/#${url}' />`
       );
