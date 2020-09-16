@@ -1,7 +1,7 @@
 import { Router } from "express";
 import utlities from "algaeh-utilities";
 import invoiceModels from "../models/invoiceGeneration";
-import { bulkInvoiceGeneration } from "../models/bulkinvoiceGeneration";
+import { bulkInvoiceNumber, bulkInvoiceGeneration } from "../models/bulkinvoiceGeneration";
 const {
   getVisitWiseBillDetailS,
   addInvoiceGeneration,
@@ -62,7 +62,7 @@ export default () => {
     next();
   });
 
-  api.post("/bulkInvoiceGeneration", bulkInvoiceGeneration, (req, res) => {
+  api.post("/bulkInvoiceGeneration", bulkInvoiceNumber, bulkInvoiceGeneration, (req, res) => {
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
       success: true,
       message: `Generated invoice's succesfull`,
