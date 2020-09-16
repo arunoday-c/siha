@@ -238,7 +238,7 @@ export default class SelfService extends Component {
               title: (
                 <AlgaehLabel
                   label={{
-                    forceLabel: "Loan/ Advance Request",
+                    forceLabel: "Loan & Advance Request",
                   }}
                 />
               ),

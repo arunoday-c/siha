@@ -359,40 +359,42 @@ class SalesOrder extends Component {
                   <h6>
                     {this.state.cancelled === "Y" ? (
                       <span className="badge badge-danger">Cancelled</span>
-                    ) : this.state.is_posted === "N" ? (
+                    ) : this.state.is_posted === "N" && this.state.is_revert === "N" ? (
                       <span className="badge badge-danger">Not Posted</span>
+                    ) : this.state.is_posted === "N" && this.state.is_revert === "Y" ? (
+                      <span className="badge badge-danger">Not Posted/Re-Generate</span>
                     ) : this.state.authorize1 === "Y" &&
                       this.state.authorize2 === "Y" &&
                       this.state.is_completed === "N" ? (
-                            this.state.sales_order_mode === "S" ? (
-                              <span className="badge badge-success">Authorized</span>
-                            ) : (
-                                <span className="badge badge-success">
-                                  Authorized / Dispatch Pending
-                                </span>
-                              )
-                          ) : this.state.authorize1 === "Y" &&
-                            this.state.authorize2 === "N" ? (
-                              <span className="badge badge-danger">
-                                Authorized 2 Pending
-                              </span>
-                            ) : this.state.authorize1 === "N" &&
+                              this.state.sales_order_mode === "S" ? (
+                                <span className="badge badge-success">Authorized</span>
+                              ) : (
+                                  <span className="badge badge-success">
+                                    Authorized / Dispatch Pending
+                                  </span>
+                                )
+                            ) : this.state.authorize1 === "Y" &&
                               this.state.authorize2 === "N" ? (
                                 <span className="badge badge-danger">
-                                  Posted/Pending For Authorize
+                                  Authorized 2 Pending
                                 </span>
-                              ) : this.state.is_completed === "Y" &&
-                                this.state.invoice_generated === "N" ? (
+                              ) : this.state.authorize1 === "N" &&
+                                this.state.authorize2 === "N" ? (
                                   <span className="badge badge-danger">
-                                    Invoice Generation Pending
+                                    Posted/Pending For Authorize
                                   </span>
-                                ) : this.state.invoice_generated === "Y" ? (
-                                  <span className="badge badge-success">
-                                    Invoice Generated
-                                  </span>
-                                ) : (
-                                    <span className="badge badge-danger">Pending</span>
-                                  )}
+                                ) : this.state.is_completed === "Y" &&
+                                  this.state.invoice_generated === "N" ? (
+                                    <span className="badge badge-danger">
+                                      Invoice Generation Pending
+                                    </span>
+                                  ) : this.state.invoice_generated === "Y" ? (
+                                    <span className="badge badge-success">
+                                      Invoice Generated
+                                    </span>
+                                  ) : (
+                                      <span className="badge badge-danger">Pending</span>
+                                    )}
                   </h6>
                 </div>
               ) : null}
@@ -922,20 +924,19 @@ class SalesOrder extends Component {
 
               {this.props.order_auth === true ? (
                 <div>
-                  {this.state.sales_order_mode === "S" ? (
-                    <AlgaehSecurityComponent componentCode="SALE_LST_CANCEL">
-                      <button
-                        type="button"
-                        className="btn btn-danger"
-                        disabled={this.state.cancelDisable}
-                        onClick={CancelSalesServiceOrder.bind(this, this)}
-                      >
-                        <AlgaehLabel
-                          label={{ forceLabel: "Cancel", returnText: true }}
-                        />
-                      </button>
-                    </AlgaehSecurityComponent>
-                  ) : null}
+                  <AlgaehSecurityComponent componentCode="SALE_LST_CANCEL">
+                    <button
+                      type="button"
+                      className="btn btn-danger"
+                      disabled={this.state.cancelDisable}
+                      onClick={CancelSalesServiceOrder.bind(this, this)}
+                    >
+                      <AlgaehLabel
+                        label={{ forceLabel: "Reject", returnText: true }}
+                      />
+                    </button>
+                  </AlgaehSecurityComponent>
+
                   <AlgaehSecurityComponent componentCode="SALE_LST_AUTH1">
                     {this.state.cancelled === "N" ? (
                       <button

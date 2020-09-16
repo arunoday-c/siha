@@ -197,6 +197,14 @@ const InvoiceGeneration = React.lazy(() =>
   )
 );
 
+const ChangeOfEntitlement = React.lazy(() =>
+  retry(() =>
+    import(
+      "./Components/InsuranceClaims/ChangeOfEntitlement/ChangeOfEntitlement"
+    )
+  )
+);
+
 const ItemMomentEnquiry = React.lazy(() =>
   retry(() =>
     import("./Components/Pharmacy/ItemMomentEnquiry/ItemMomentEnquiry")
@@ -696,6 +704,11 @@ const privateRoutes = [
     path: "/InvoiceGeneration",
     isExactPath: true,
     component: <InvoiceGeneration />,
+  },
+  {
+    path: "/ChangeOfEntitlement",
+    isExactPath: true,
+    component: <ChangeOfEntitlement />,
   },
   {
     path: "/ItemMomentEnquiry",

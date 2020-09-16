@@ -208,8 +208,8 @@ const AddItems = ($this, context) => {
   } else {
     let sales_order_items = $this.state.sales_order_items;
 
-    const extended_cost =
-      parseFloat($this.state.unit_cost) * parseFloat($this.state.quantity);
+    const extended_cost = (parseFloat($this.state.unit_cost) * parseFloat($this.state.quantity))
+      .toFixed($this.state.decimal_place);
     const discount_amount = (
       (parseFloat(extended_cost) *
         parseFloat($this.state.discount_percentage)) /
@@ -221,9 +221,7 @@ const AddItems = ($this, context) => {
       100
     ).toFixed($this.state.decimal_place);
 
-    const total_amount = (
-      parseFloat(net_extended_cost) + parseFloat(tax_amount)
-    ).toFixed($this.state.decimal_place);
+    const total_amount = parseFloat(net_extended_cost) + parseFloat(tax_amount);
 
     const ItemInput = {
       item_description: $this.state.item_description,

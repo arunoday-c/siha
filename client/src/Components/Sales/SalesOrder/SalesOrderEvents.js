@@ -11,7 +11,7 @@ const texthandle = ($this, ctrl, e) => {
   e = ctrl || e;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
-  debugger
+
   switch (name) {
     case "sales_order_mode":
       $this.setState({
@@ -434,7 +434,7 @@ const SaveSalesOrderEnrty = ($this, from) => {
       }
       const settings = { header: undefined, footer: undefined };
 
-      debugger
+
       AlgaehLoader({ show: true });
       algaehApiCall({
         uri: strUri,
@@ -448,7 +448,7 @@ const SaveSalesOrderEnrty = ($this, from) => {
         },
         onSuccess: (response) => {
           if (response.data.success) {
-            debugger
+
             getCtrlCode($this, response.data.records.sales_order_number);
             if ($this.state.invoice_files.length) {
               $this.saveDocument();
@@ -538,6 +538,7 @@ const getCtrlCode = ($this, docNumber) => {
 
         data.dataExists = true;
         data.selectedData = true;
+
         if (data.is_posted === "Y") {
           data.saveEnable = true;
           data.addedItem = true;
@@ -548,6 +549,9 @@ const getCtrlCode = ($this, docNumber) => {
           data.addedItem = false;
           data.dataPosted = false;
           data.itemAdd = false;
+        }
+        if (data.authorize1 === "Y" && data.authorize2 === "Y") {
+          data.cancelDisable = true
         }
         // let project_details = $this.state.cost_projects.find(
         //   f => f.cost_center_id === data.project_id
@@ -733,7 +737,7 @@ const AuthorizeOrderEntry = ($this, authorize) => {
     }
   }
 
-  debugger;
+
   const settings = { header: undefined, footer: undefined };
   algaehApiCall({
     uri: "/SalesOrder/updateSalesOrderEntry",
@@ -751,6 +755,7 @@ const AuthorizeOrderEntry = ($this, authorize) => {
           authorize1: authorize1,
           authorize2: authorize2,
         });
+        getCtrlCode($this, $this.state.sales_order_number);
         swalMessage({
           title: "Authorized successfully . .",
           type: "success",

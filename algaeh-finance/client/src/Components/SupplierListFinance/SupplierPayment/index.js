@@ -5,10 +5,11 @@ import {
   AlgaehTable,
   AlgaehButton,
 } from "algaeh-react-components";
+import _ from "lodash";
 import { InfoBar } from "../../../Wrappers";
 import { LedgerReport } from "../../InvoiceCommon";
 import { getInvoicesForSupplier } from "./SupPaymentEvents";
-import { Button, Spin } from "antd";
+import { Button, Spin, Checkbox, Modal } from "antd";
 
 export default memo(function (props) {
   const location = useLocation();
@@ -21,13 +22,16 @@ export default memo(function (props) {
     past_payments: "0.00",
     day_end_pending: "0",
   });
-
+  const [supplierName, setSupplierName] = useState("");
   const [loading, setLoading] = useState(false);
-
+  const [indeterminate, setIndeterminate] = useState(false);
+  const [checkAll, setCheckAll] = useState(false);
+  const [selectAmount, setSelectedAmount] = useState(0);
   useEffect(() => {
     if (location.state) {
       setLoading(true);
-      const { finance_account_child_id } = location.state.data;
+      const { finance_account_child_id, child_name } = location.state.data;
+      setSupplierName(child_name);
       getInvoicesForSupplier(finance_account_child_id)
         .then((res) => {
           if (res.data.success) {
@@ -69,7 +73,79 @@ export default memo(function (props) {
       </Button>
     );
   };
-
+  function onChangeCheck(checked, row) {
+    row["checked"] = checked;
+    const filterCheck = data.filter((f) => f.checked === true);
+    if (data.length === filterCheck.length) {
+      setCheckAll(true);
+      setIndeterminate(false);
+      setSelectedAmount(
+        checked === true
+          ? parseFloat(selectAmount) + parseFloat(row.balance_amount)
+          : parseFloat(selectAmount) - parseFloat(row.balance_amount)
+      );
+    } else {
+      setCheckAll(false);
+      setIndeterminate(true);
+      setSelectedAmount(
+        checked === true
+          ? parseFloat(selectAmount) + parseFloat(row.balance_amount)
+          : parseFloat(selectAmount) - parseFloat(row.balance_amount)
+      );
+    }
+  }
+  function onClickSendSelected() {
+    const filterCheck = data.filter((f) => f.checked === true);
+    if (filterCheck.length === 0) {
+      AlgaehMessagePop({
+        type: "warning",
+        display: "Please select atleast one Invoice.",
+      });
+      return;
+    }
+    const totalAmount = _.sumBy(filterCheck, (s) => {
+      return parseFloat(s.balance_amount);
+    });
+    const {
+      narration,
+      child_id,
+      head_id,
+      voucher_type,
+      invoice_no,
+    } = filterCheck[0];
+    Modal.confirm({
+      title: "Are you sure do you want to process ?",
+      content: (
+        <span>
+          Total amount<b>{totalAmount} </b>for the <b>{narration}</b>
+        </span>
+      ),
+      okText: "Proceed",
+      cancelText: "Cancel",
+      onOk: () => {
+        const merdge = filterCheck.map((item) => {
+          const {
+            invoice_no,
+            balance_amount,
+            finance_voucher_header_id,
+          } = item;
+          return { invoice_no, balance_amount, finance_voucher_header_id };
+        });
+        history.push("/JournalVoucher", {
+          data: {
+            narration,
+            child_id,
+            head_id,
+            balance_amount: totalAmount,
+            voucher_type: voucher_type,
+            invoice_no,
+          },
+          merdge,
+          type: "supplier",
+        });
+      },
+    });
+  }
   return (
     <Spin spinning={loading}>
       <LedgerReport
@@ -86,7 +162,7 @@ export default memo(function (props) {
                 <div className="portlet-title">
                   <div className="caption">
                     <h3 className="caption-subject">
-                      Supplier Payment Details
+                      Supplier '{supplierName.toUpperCase()}' Payment Details
                     </h3>
                   </div>{" "}
                   <div className="actions"></div>
@@ -99,6 +175,25 @@ export default memo(function (props) {
                     >
                       <AlgaehTable
                         columns={[
+                          {
+                            fieldName: "checked",
+                            indeterminate: indeterminate.toString(),
+                            label: "Select",
+                            sortable: false,
+                            filterable: false,
+                            displayTemplate: (row) => {
+                              return (
+                                <Checkbox
+                                  disabled={row.invoice_status === "closed"}
+                                  defaultChecked={row["checked"]}
+                                  onChange={(e) => {
+                                    const { checked } = e.target;
+                                    onChangeCheck(checked, row);
+                                  }}
+                                />
+                              );
+                            },
+                          },
                           {
                             fieldName: "invoice_date",
                             label: "Date",
@@ -174,7 +269,7 @@ export default memo(function (props) {
           </div>
         </div>
       </div>
-      {/* <div className="portlet portlet-bordered margin-bottom-15">
+      <div className="portlet portlet-bordered margin-bottom-15">
         <div className="portlet-body">
           <div className="row">
             <div className="col-12" style={{ textAlign: "right" }}>
@@ -189,11 +284,19 @@ export default memo(function (props) {
             </div>
           </div>
         </div>
-      </div> */}
+      </div>
 
       <div className="hptl-phase1-footer">
         <div className="row">
           <div className="col-12">
+            <AlgaehButton
+              className="btn btn-primary"
+              // disabled={!processList.length}
+              loading={loading}
+              onClick={onClickSendSelected}
+            >
+              Bulk Receive Payment
+            </AlgaehButton>
             <AlgaehButton
               className="btn btn-primary"
               // disabled={!processList.length}

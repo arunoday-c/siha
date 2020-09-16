@@ -273,7 +273,7 @@ class DeliveryNoteEntry extends Component {
                 >
                   <AlgaehLabel
                     label={{
-                      forceLabel: "Send for Deliviery",
+                      forceLabel: "Take Deliviery",
                       returnText: true,
                     }}
                   />

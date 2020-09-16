@@ -5,7 +5,7 @@ import "./SalaryProcessing.scss";
 import {
   AlgaehLabel,
   AlgaehDataGrid,
-  AlgaehModalPopUp
+  AlgaehModalPopUp,
 } from "../../../Wrapper/algaehWrapper";
 
 export default class SalariesComponents extends PureComponent {
@@ -14,7 +14,7 @@ export default class SalariesComponents extends PureComponent {
     this.state = {};
   }
 
-  onClose = e => {
+  onClose = (e) => {
     this.props.onClose && this.props.onClose(e);
   };
 
@@ -29,7 +29,7 @@ export default class SalariesComponents extends PureComponent {
       <div>
         <AlgaehModalPopUp
           events={{
-            onClose: this.onClose.bind(this)
+            onClose: this.onClose.bind(this),
           }}
           title="Salary Details"
           openPopup={this.props.open}
@@ -40,10 +40,22 @@ export default class SalariesComponents extends PureComponent {
               <div className="portlet portlet-bordered">
                 <div className="portlet-body">
                   <div className="row">
+                    <div className="col">
+                      <AlgaehLabel
+                        label={{
+                          forceLabel: "Employee Code",
+                        }}
+                      />
+                      <h6>
+                        {this.state.employee_code === null
+                          ? 0
+                          : this.state.employee_code}
+                      </h6>
+                    </div>
                     <div className="col-4">
                       <AlgaehLabel
                         label={{
-                          forceLabel: "Employee Name"
+                          forceLabel: "Employee Name",
                         }}
                       />
                       <h6>
@@ -52,10 +64,10 @@ export default class SalariesComponents extends PureComponent {
                           : this.state.dis_employee_name}
                       </h6>
                     </div>
-                    <div className="col-2">
+                    <div className="col">
                       <AlgaehLabel
                         label={{
-                          forceLabel: "Total Days"
+                          forceLabel: "Total Days",
                         }}
                       />
                       <h6>
@@ -64,10 +76,10 @@ export default class SalariesComponents extends PureComponent {
                           : this.state.total_days}
                       </h6>
                     </div>
-                    <div className="col-2">
+                    <div className="col">
                       <AlgaehLabel
                         label={{
-                          forceLabel: "Present Days"
+                          forceLabel: "Present Days",
                         }}
                       />
                       <h6>
@@ -76,10 +88,10 @@ export default class SalariesComponents extends PureComponent {
                           : this.state.display_present_days}
                       </h6>
                     </div>
-                    <div className="col-2">
+                    <div className="col">
                       <AlgaehLabel
                         label={{
-                          forceLabel: "Absent Days"
+                          forceLabel: "Absent Days",
                         }}
                       />
                       <h6>
@@ -88,10 +100,10 @@ export default class SalariesComponents extends PureComponent {
                           : this.state.absent_days}
                       </h6>
                     </div>
-                    <div className="col-2">
+                    <div className="col">
                       <AlgaehLabel
                         label={{
-                          forceLabel: "Paid Leave"
+                          forceLabel: "Paid Leave",
                         }}
                       />
                       <h6>
@@ -99,12 +111,13 @@ export default class SalariesComponents extends PureComponent {
                           ? 0
                           : this.state.paid_leave}
                       </h6>
-                    </div>
-
+                    </div>{" "}
+                  </div>
+                  <div className="row">
                     <div className="col-2">
                       <AlgaehLabel
                         label={{
-                          forceLabel: "Unpaid Leave"
+                          forceLabel: "Unpaid Leave",
                         }}
                       />
                       <h6>
@@ -116,7 +129,7 @@ export default class SalariesComponents extends PureComponent {
                     <div className="col-2">
                       <AlgaehLabel
                         label={{
-                          forceLabel: "Previous Unpaid Leaves"
+                          forceLabel: "Previous Unpaid Leaves",
                         }}
                       />
                       <h6>
@@ -128,7 +141,7 @@ export default class SalariesComponents extends PureComponent {
                     <div className="col-2">
                       <AlgaehLabel
                         label={{
-                          forceLabel: "Total Leaves"
+                          forceLabel: "Total Leaves",
                         }}
                       />
                       <h6>
@@ -140,7 +153,7 @@ export default class SalariesComponents extends PureComponent {
                     <div className="col-2">
                       <AlgaehLabel
                         label={{
-                          forceLabel: "Comp Off."
+                          forceLabel: "Comp Off.",
                         }}
                       />
                       <h6>
@@ -152,7 +165,7 @@ export default class SalariesComponents extends PureComponent {
                     <div className="col-2">
                       <AlgaehLabel
                         label={{
-                          forceLabel: "Holidays/ Week Off"
+                          forceLabel: "Holidays/ Week Off",
                         }}
                       />
                       <h6>
@@ -164,7 +177,7 @@ export default class SalariesComponents extends PureComponent {
                     <div className="col-2">
                       <AlgaehLabel
                         label={{
-                          forceLabel: "Paid Days"
+                          forceLabel: "Paid Days",
                         }}
                       />
                       <h6>
@@ -205,10 +218,10 @@ export default class SalariesComponents extends PureComponent {
                                 label: (
                                   <AlgaehLabel
                                     label={{
-                                      forceLabel: "Description"
+                                      forceLabel: "Description",
                                     }}
                                   />
-                                )
+                                ),
                               },
                               {
                                 fieldName: "amount",
@@ -216,31 +229,31 @@ export default class SalariesComponents extends PureComponent {
                                 label: (
                                   <AlgaehLabel
                                     label={{
-                                      forceLabel: "Amount"
+                                      forceLabel: "Amount",
                                     }}
                                   />
                                 ),
-                                displayTemplate: row => {
+                                displayTemplate: (row) => {
                                   return (
                                     <span>{GetAmountFormart(row.amount)}</span>
                                   );
                                 },
 
                                 others: {
-                                  maxWidth: 100
-                                }
-                              }
+                                  maxWidth: 100,
+                                },
+                              },
                             ]}
                             keyId="algaeh_d_module_id"
                             dataSource={{
-                              data: this.state.salaryprocess_Earning
+                              data: this.state.salaryprocess_Earning,
                             }}
                             isEditable={false}
                             paging={{ page: 0, rowsPerPage: 10 }}
                             events={{
                               onEdit: () => {},
                               onDelete: () => {},
-                              onDone: () => {}
+                              onDone: () => {},
                             }}
                           />
                         </div>
@@ -276,10 +289,10 @@ export default class SalariesComponents extends PureComponent {
                                 label: (
                                   <AlgaehLabel
                                     label={{
-                                      forceLabel: "Description"
+                                      forceLabel: "Description",
                                     }}
                                   />
-                                )
+                                ),
                                 //disabled: true
                               },
                               {
@@ -288,31 +301,31 @@ export default class SalariesComponents extends PureComponent {
                                 label: (
                                   <AlgaehLabel
                                     label={{
-                                      forceLabel: "Amount"
+                                      forceLabel: "Amount",
                                     }}
                                   />
                                 ),
-                                displayTemplate: row => {
+                                displayTemplate: (row) => {
                                   return (
                                     <span>{GetAmountFormart(row.amount)}</span>
                                   );
                                 },
 
                                 others: {
-                                  maxWidth: 100
-                                }
-                              }
+                                  maxWidth: 100,
+                                },
+                              },
                             ]}
                             keyId="algaeh_d_module_id"
                             dataSource={{
-                              data: this.state.salaryprocess_Deduction
+                              data: this.state.salaryprocess_Deduction,
                             }}
                             isEditable={false}
                             paging={{ page: 0, rowsPerPage: 10 }}
                             events={{
                               onEdit: () => {},
                               onDelete: () => {},
-                              onDone: () => {}
+                              onDone: () => {},
                             }}
                           />
                         </div>
@@ -351,10 +364,10 @@ export default class SalariesComponents extends PureComponent {
                                 label: (
                                   <AlgaehLabel
                                     label={{
-                                      forceLabel: "Description"
+                                      forceLabel: "Description",
                                     }}
                                   />
-                                )
+                                ),
                               },
                               {
                                 fieldName: "amount",
@@ -362,31 +375,31 @@ export default class SalariesComponents extends PureComponent {
                                 label: (
                                   <AlgaehLabel
                                     label={{
-                                      forceLabel: "Amount"
+                                      forceLabel: "Amount",
                                     }}
                                   />
                                 ),
-                                displayTemplate: row => {
+                                displayTemplate: (row) => {
                                   return (
                                     <span>{GetAmountFormart(row.amount)}</span>
                                   );
                                 },
 
                                 others: {
-                                  maxWidth: 100
-                                }
-                              }
+                                  maxWidth: 100,
+                                },
+                              },
                             ]}
                             keyId="algaeh_d_module_id"
                             dataSource={{
-                              data: this.state.salaryprocess_Contribute
+                              data: this.state.salaryprocess_Contribute,
                             }}
                             isEditable={false}
                             paging={{ page: 0, rowsPerPage: 10 }}
                             events={{
                               onEdit: () => {},
                               onDelete: () => {},
-                              onDone: () => {}
+                              onDone: () => {},
                             }}
                           />
                         </div>
@@ -403,7 +416,7 @@ export default class SalariesComponents extends PureComponent {
                     <div className="col-2">
                       <AlgaehLabel
                         label={{
-                          forceLabel: "Gross Earnings"
+                          forceLabel: "Gross Earnings",
                         }}
                       />
                       <h6>
@@ -415,7 +428,7 @@ export default class SalariesComponents extends PureComponent {
                     <div className="col-2">
                       <AlgaehLabel
                         label={{
-                          forceLabel: "Total Deductions"
+                          forceLabel: "Total Deductions",
                         }}
                       />
                       <h6>
@@ -428,7 +441,7 @@ export default class SalariesComponents extends PureComponent {
                     <div className="col-2">
                       <AlgaehLabel
                         label={{
-                          forceLabel: "Loan Payable"
+                          forceLabel: "Loan Payable",
                         }}
                       />
                       <h6>
@@ -440,7 +453,7 @@ export default class SalariesComponents extends PureComponent {
                     <div className="col-2">
                       <AlgaehLabel
                         label={{
-                          forceLabel: "Due Loan"
+                          forceLabel: "Due Loan",
                         }}
                       />
                       <h6>
@@ -452,7 +465,7 @@ export default class SalariesComponents extends PureComponent {
                     <div className="col-2">
                       <AlgaehLabel
                         label={{
-                          forceLabel: "Net Salary"
+                          forceLabel: "Net Salary",
                         }}
                       />
                       <h6>
@@ -472,7 +485,7 @@ export default class SalariesComponents extends PureComponent {
               <button
                 type="button"
                 className="btn btn-default"
-                onClick={e => {
+                onClick={(e) => {
                   this.onClose(e);
                 }}
               >

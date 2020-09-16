@@ -118,6 +118,7 @@ export const SaveContract = ($this) => {
 
       AlgaehLoader({ show: true });
       $this.state.terms_conditions = $this.state.comment_list.join("<br/>");
+      debugger
       if ($this.state.hims_f_contract_management_id !== null) {
 
         algaehApiCall({
@@ -136,16 +137,14 @@ export const SaveContract = ($this) => {
                   $this
                 );
               }
-              $this.setState(
-                {
-                  saveEnable: true,
-                  dataExists: true,
-                  editMode: false,
-                },
-                () => {
-                  getCtrlCode($this, $this.state.contract_number);
-                }
-              );
+              getCtrlCode($this, $this.state.contract_number);
+              // $this.setState(
+              //   {
+              //     saveEnable: true,
+              //     dataExists: true,
+              //     editMode: false,
+              //   }
+              // );
               swalMessage({
                 type: "success",
                 title: "Saved successfully ...",
@@ -183,20 +182,13 @@ export const SaveContract = ($this) => {
                   $this
                 );
               }
-
-              $this.setState({
-                contract_number: response.data.records.contract_number,
-                hims_f_contract_management_id:
-                  response.data.records.hims_f_contract_management_id,
-                saveEnable: true,
-                dataExists: true,
-              });
+              getCtrlCode($this, response.data.records.contract_number);
 
               swalMessage({
                 type: "success",
                 title: "Saved successfully ...",
               });
-              AlgaehLoader({ show: false });
+              // AlgaehLoader({ show: false });
             } else {
               AlgaehLoader({ show: false });
               swalMessage({
@@ -335,7 +327,7 @@ export function getDocuments(contract_no, $this) {
     });
 }
 
-export const getCtrlCode = ($this, docNumber, row) => {
+export const getCtrlCode = ($this, docNumber) => {
   AlgaehLoader({ show: true });
   ClearData($this)
   algaehApiCall({
