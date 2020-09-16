@@ -2,8 +2,8 @@ import AlgaehSearch from "../../Wrapper/globalSearch";
 import spotlightSearch from "../../../Search/spotlightSearch.json";
 import { newAlgaehApi } from "../../../hooks";
 
-export const VisitSearch = (insured, setState) => {
-  let input = `pv.invoice_generated='N' and pv.insured = '${insured}'`;
+export const VisitSearch = (setState) => {
+  let input = `pv.invoice_generated='N'`;
   AlgaehSearch({
     searchGrid: {
       columns: spotlightSearch.VisitDetails.VisitList,

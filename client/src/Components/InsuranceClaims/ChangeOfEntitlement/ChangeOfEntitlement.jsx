@@ -5,13 +5,13 @@ import { AlgaehLabel, Spin } from "algaeh-react-components";
 import {
   VisitSearch,
   getPatientInsurance,
-  getVisitWiseBillDetailS,
+  // getVisitWiseBillDetailS,
 } from "./ChangeEntitlementEvents";
-import { InvoiceDetails } from "./InvoiceDetails";
+import { InsuranceForm } from "./InsuranceForm";
 import "./InvoiceGeneration.scss";
 
 export default function ChangeEntitlement(props) {
-  const [insured, setInsured] = useState("N");
+  // const [insured, setInsured] = useState("N");
   const [visit, setVisit] = useState(null);
 
   const { data: insurance, isLoading: insLoading } = useQuery(
@@ -23,23 +23,14 @@ export default function ChangeEntitlement(props) {
       enabled: !!visit,
     }
   );
-  const { data: invoice, isLoading: invLoading } = useQuery(
-    ["patient-invoice", { visit_id: visit?.visit_id, isInurance: insured }],
-    getVisitWiseBillDetailS,
-    {
-      initialData: [],
-      initialStale: true,
-      enabled: !!visit,
-    }
-  );
 
   return (
-    <Spin spinning={insLoading || invLoading}>
+    <Spin spinning={insLoading}>
       <div>
         <div className="row  inner-top-search">
           {/* Visit code */}
 
-          <div className="col-2">
+          {/* <div className="col-2">
             <label>Invoice Type</label>
             <div className="customRadio">
               <label className="radio inline">
@@ -62,11 +53,11 @@ export default function ChangeEntitlement(props) {
                 <span>Insurance</span>
               </label>
             </div>
-          </div>
+          </div> */}
 
           <div className="col-2 globalSearchCntr form-group">
             <AlgaehLabel label={{ forceLabel: "Search Visit Code" }} />
-            <h6 onClick={() => VisitSearch(insured, setVisit)}>
+            <h6 onClick={() => VisitSearch(setVisit)}>
               {visit?.visit_code ?? "Search Visit"}
               <i className="fas fa-search fa-lg"></i>
             </h6>
@@ -89,7 +80,7 @@ export default function ChangeEntitlement(props) {
             <h6>{visit?.full_name ?? "Patient Name"}</h6>
           </div>
         </div>
-        <InvoiceDetails details={invoice} patientInsurance={insurance} />
+        <InsuranceForm patientInsurance={insurance} />
         <div className="hptl-phase1-footer"></div>
       </div>
     </Spin>
