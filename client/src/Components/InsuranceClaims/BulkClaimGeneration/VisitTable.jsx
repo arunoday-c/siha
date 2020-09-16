@@ -5,14 +5,14 @@ import {
   AlgaehLabel,
   Spin,
   Tooltip,
-  MainContext
+  MainContext,
 } from "algaeh-react-components";
 import { InvoiceModal } from "./InvoiceModal";
 
 export function VisitTable({
   loading = false,
   data = [],
-  addToList = () => { },
+  addToList = () => {},
   list = [],
   submitted = false,
 }) {
@@ -213,23 +213,37 @@ export function VisitTable({
             <div className="col-12">
               <div className="row">
                 <div className="col">
+                  <label className="style_Label ">Total Visit</label>
+                  <h6>{data?.length}</h6>
+                </div>
+                <div className="col">
                   <label className="style_Label ">Total Visit Selected</label>
                   <h6>{list?.length}</h6>
                 </div>
                 <div className="col">
                   <label className="style_Label ">Total PATIENT PAYABLE</label>
                   <h6>
-                    {list?.reduce((prev, current) => {
-                      return (parseFloat(prev) + parseFloat(current?.patient_payable)).toFixed(userToken.decimal_places);
-                    }, (0).toFixed(userToken.decimal_places))}
+                    {list.length
+                      ? list?.reduce((prev, current) => {
+                          return (
+                            parseFloat(prev) +
+                            parseFloat(current?.patient_payable)
+                          ).toFixed(userToken.decimal_places);
+                        }, 0)
+                      : "0.00"}
                   </h6>
                 </div>{" "}
                 <div className="col">
                   <label className="style_Label ">Total COMPANY PAYABLE</label>
                   <h6>
-                    {list?.reduce((prev, current) => {
-                      return (parseFloat(prev) + parseFloat(current?.company_payable)).toFixed(userToken.decimal_places);
-                    }, (0).toFixed(userToken.decimal_places))}
+                    {list.length
+                      ? list?.reduce((prev, current) => {
+                          return (
+                            parseFloat(prev) +
+                            parseFloat(current?.company_payable)
+                          ).toFixed(userToken.decimal_places);
+                        }, 0)
+                      : "0.00"}
                   </h6>
                 </div>
               </div>
