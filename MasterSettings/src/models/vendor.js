@@ -72,7 +72,7 @@ export default {
               .executeQueryWithTransaction({
                 query:
                   "INSERT INTO `finance_account_child` (child_name,head_id,created_from\
-                    ,created_date, created_by, updated_date, updated_by)  VALUE(?,?,?,?,?,?,?)",
+                    ,created_date, created_by, updated_date, updated_by,ledger_code)  VALUE(?,?,?,?,?,?,?,?)",
                 values: [
                   inputParam.vendor_name,
                   head_id,
@@ -81,6 +81,7 @@ export default {
                   req.userIdentity.algaeh_d_app_user_id,
                   new Date(),
                   req.userIdentity.algaeh_d_app_user_id,
+                  inputParam.vendor_code,
                 ],
                 printQuery: false,
               })
