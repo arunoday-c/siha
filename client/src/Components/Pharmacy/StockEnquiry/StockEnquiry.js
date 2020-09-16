@@ -99,11 +99,11 @@ class StockEnquiry extends Component {
             className="row inner-top-search"
             style={{ paddingBottom: "10px" }}
           >
-            <div className="col-12 mandatory">
+            <div className="col-12">
               <div className="row">
                 <AlagehAutoComplete
-                  div={{ className: "col-lg-3" }}
-                  label={{ forceLabel: "Location" }}
+                  div={{ className: "col" }}
+                  label={{ forceLabel: "By Location" }}
                   selector={{
                     name: "location_id",
                     className: "select-fld",
@@ -118,22 +118,46 @@ class StockEnquiry extends Component {
                     autoComplete: "off",
                   }}
                 />
-                <div className="col" style={{ textAlign: "right" }}>
+                <div className="col-1">
+                  {" "}
                   <button
                     className="btn btn-default"
-                    disabled={!this.state.location_id}
+                    // disabled={!this.state.location_id}
                     style={{ marginTop: 20, marginRight: 10 }}
-                    onClick={() => downloadPharStockDetails(this)}
+                    // onClick={() => downloadInvStockDetails(this)}
                   >
-                    Download Stock Details
+                    Load
                   </button>
+                </div>
+                <AlagehAutoComplete
+                  div={{ className: "col" }}
+                  label={{ forceLabel: "By Item Name" }}
+                  selector={{
+                    name: "item_id",
+                    className: "select-fld",
+                    value: this.state.item_id,
+                    dataSource: {
+                      textField: "item_description",
+                      valueField: "hims_d_inventory_item_master_id",
+                      data: this.props.inventoryitemlist,
+                    },
+                    onChange: changeTexts.bind(this, this),
+                    onClear: () => {
+                      this.setState({
+                        item_id: null,
+                      });
+                    },
+                  }}
+                />{" "}
+                <div className="col-1">
+                  {" "}
                   <button
                     className="btn btn-default"
-                    disabled={!this.state.location_id}
-                    style={{ marginTop: 20 }}
-                    onClick={() => downloadPharStock(this)}
+                    // disabled={!this.state.location_id}
+                    style={{ marginTop: 20, marginRight: 10 }}
+                    // onClick={() => downloadInvStockDetails(this)}
                   >
-                    Download Stock
+                    Load
                   </button>
                 </div>
               </div>
@@ -157,6 +181,7 @@ class StockEnquiry extends Component {
             </div> */}
             <div className="portlet-body" id="precriptionList_Cntr">
               <AlgaehDataGrid
+                className="phar_initial_stock_Grid"
                 id="initial_stock"
                 columns={[
                   {
@@ -382,6 +407,26 @@ class StockEnquiry extends Component {
                   onDone: updateStockDetils.bind(this, this),
                 }}
               />
+            </div>
+          </div>
+          <div className="hptl-phase1-footer">
+            <div className="row">
+              <div className="col-lg-12">
+                <button
+                  className="btn btn-default"
+                  disabled={!this.state.location_id}
+                  onClick={() => downloadPharStockDetails(this)}
+                >
+                  Download Stock Details
+                </button>
+                <button
+                  className="btn btn-default"
+                  disabled={!this.state.location_id}
+                  onClick={() => downloadPharStock(this)}
+                >
+                  Download Stock
+                </button>
+              </div>
             </div>
           </div>
         </div>
