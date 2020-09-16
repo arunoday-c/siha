@@ -195,9 +195,7 @@ const PostSalesInvoice = ($this) => {
     method: "PUT",
     onSuccess: (response) => {
       if (response.data.success === true) {
-        $this.setState({
-          postEnable: true,
-        });
+        getCtrlCode($this, $this.state.invoice_number)
         swalMessage({
           title: "Posted successfully . .",
           type: "success",
