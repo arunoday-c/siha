@@ -54,3 +54,15 @@ export const getPatientInsurance = async (key, { patient_id, visit_id }) => {
   });
   return res.data?.records;
 };
+
+export const getBillsForVisit = async (key, { visit_id }) => {
+  const res = await newAlgaehApi({
+    uri: "/billing/getBillsForVisit",
+    module: "billing",
+    method: "GET",
+    data: {
+      visit_id,
+    },
+  });
+  return res.data?.records;
+};
