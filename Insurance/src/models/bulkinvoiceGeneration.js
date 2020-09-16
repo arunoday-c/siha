@@ -56,10 +56,11 @@ export function bulkInvoiceGeneration(req, res, next) {
               card_holder_name,
               card_number,
               card_holder_age,
-              card_holder_gender,
+              card_holder_gender
             } = _.first(patientVist);
             counter++;
 
+            console.log("patientVist", patientVist)
             _mysql
               .generateRunningNumber({
                 user_id: algaeh_d_app_user_id,
@@ -83,44 +84,44 @@ export function bulkInvoiceGeneration(req, res, next) {
                       patient_id,
                       visit_id,
                       utilities.decimalPoints(
-                        _.sumBy(patientVist, (s) => parseFloat(s.gross_amount)),
+                        _.sumBy(patientVist, (s) => parseFloat(s.dtl_gross_amount)),
                         conDecimals
                       ),
                       utilities.decimalPoints(
                         _.sumBy(patientVist, (s) =>
-                          parseFloat(s.discount_amount)
+                          parseFloat(s.dtl_discount_amout)
                         ),
                         conDecimals
                       ),
                       utilities.decimalPoints(
-                        _.sumBy(patientVist, (s) => parseFloat(s.net_amount)),
+                        _.sumBy(patientVist, (s) => parseFloat(s.dtl_net_amount)),
                         conDecimals
                       ),
                       utilities.decimalPoints(
-                        _.sumBy(patientVist, (s) => parseFloat(s.patient_resp)),
+                        _.sumBy(patientVist, (s) => parseFloat(s.dtl_patient_resp)),
                         conDecimals
                       ),
                       utilities.decimalPoints(
-                        _.sumBy(patientVist, (s) => parseFloat(s.patient_tax)),
+                        _.sumBy(patientVist, (s) => parseFloat(s.dtl_patient_tax)),
                         conDecimals
                       ),
                       utilities.decimalPoints(
                         _.sumBy(patientVist, (s) =>
-                          parseFloat(s.patient_payable)
+                          parseFloat(s.dtl_patient_payable)
                         ),
                         conDecimals
                       ),
                       utilities.decimalPoints(
-                        _.sumBy(patientVist, (s) => parseFloat(s.company_resp)),
+                        _.sumBy(patientVist, (s) => parseFloat(s.dtl_company_resp)),
                         conDecimals
                       ),
                       utilities.decimalPoints(
-                        _.sumBy(patientVist, (s) => parseFloat(s.company_tax)),
+                        _.sumBy(patientVist, (s) => parseFloat(s.dtl_company_tax)),
                         conDecimals
                       ),
                       utilities.decimalPoints(
                         _.sumBy(patientVist, (s) =>
-                          parseFloat(s.company_payable)
+                          parseFloat(s.dtl_company_payable)
                         ),
                         conDecimals
                       ),
