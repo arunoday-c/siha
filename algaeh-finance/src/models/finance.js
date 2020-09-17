@@ -1839,7 +1839,7 @@ export default {
   //created by irfan: to
   renameAccountHeads: (req, res, next) => {
     const _mysql = new algaehMysql();
-    //. const utilities = new algaehUtilities();
+
     let input = req.body;
 
     if (input.leaf_node == "Y") {
@@ -1893,11 +1893,12 @@ export default {
                 const oblStringNumber =
                   "OBL" +
                   numgen[voucher_type.toUpperCase()].replace(/[^\d.-]/g, "");
-                _mysql
-                  .executeQuery({
+                let queryGen = { query: "select 1;" };
+                if (input.insertInVoucherHeader === true) {
+                  queryGen = {
                     query: ` insert into finance_voucher_header(voucher_type,voucher_no,amount,payment_date,
-                      month,year,narration,from_screen,posted_from,created_by,updated_by,invoice_no)
-              value(?,?,?,?,?,?,'Opening Balance Added from Accounts','ACCOUNTS OPENING BALANCE','V',?,?,?)`,
+                        month,year,narration,from_screen,posted_from,created_by,updated_by,invoice_no)
+                value(?,?,?,?,?,?,'Opening Balance Added from Accounts','ACCOUNTS OPENING BALANCE','V',?,?,?)`,
                     values: [
                       voucher_type,
                       numgen[voucher_type.toUpperCase()],
@@ -1910,7 +1911,10 @@ export default {
                       oblStringNumber,
                     ],
                     printQuery: true,
-                  })
+                  };
+                }
+                _mysql
+                  .executeQuery(queryGen)
                   .then((headerResult) => {
                     const { insertId } = headerResult;
 
