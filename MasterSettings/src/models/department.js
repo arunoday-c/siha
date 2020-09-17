@@ -2,7 +2,7 @@ import algaehMysql from "algaeh-mysql";
 import { LINQ } from "node-linq";
 import keys from "algaeh-keys";
 import AESCrypt from "aescrypt";
-console.log("keys", keys);
+
 const { SECRETKey } = keys.default;
 export default {
   addDepartment: (req, res, next) => {
@@ -201,8 +201,6 @@ export default {
     );
 
     const decrypted = AESCrypt.decryptWithSalt(SECRETKey, salt, encrypted);
-
-    console.log("encrypted", decrypted);
 
     _mysql
       .executeQuery({
