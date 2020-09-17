@@ -1980,6 +1980,7 @@ export function updateInsuranceStatement(req, res, next) {
 
     let level = claim_status ? claim_status.match(/(\d+)/)[0] : "1";
 
+    console.log("level", level)
     _mysql
       .executeQueryWithTransaction({
         query: `update hims_f_invoice_details set r${level}_amt= ${remittance_amount},
@@ -2003,7 +2004,9 @@ export function updateInsuranceStatement(req, res, next) {
             }
             _mysql
               .executeQuery({
-                query: `update hims_f_invoice_header set remittance_amount=${
+                query: `update hims_f_invoice_header set remittance_amount${
+                  level == 1 ? "" : level
+                  }=${
                   rest["ramt"]
                   }, claim_status=?,
                   denial_amount${
