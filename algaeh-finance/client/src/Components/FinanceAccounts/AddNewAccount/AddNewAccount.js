@@ -31,6 +31,7 @@ export default function AddNewAccount({
   const [account_type, setAccountType] = useState("G");
   const [opening_balance, setOpeningBalance] = useState(0);
   const [enableOP, setEnableOP] = useState(true);
+  const [insertInVoucherHeader, setinsertInvoiceHeader] = useState(false);
   // const [opening_balance_date, setOpeningBalanceDate] = useState("");
 
   useEffect(() => {
@@ -119,6 +120,7 @@ export default function AddNewAccount({
         arabic_child_name: arabic_account_name,
         finance_account_child_id: selectedNode.node.finance_account_child_id,
         leaf_node: account_type === "G" ? "N" : "Y",
+        insertInVoucherHeader,
       };
       if (enableOP) {
         input.opening_balance = opening_balance;
@@ -166,6 +168,7 @@ export default function AddNewAccount({
             head_id,
             child_id,
           } = result;
+
           onClose({
             title: account_name,
             subtitle: opening_balance ? `${opening_balance}.00` : `0.00`,
@@ -177,6 +180,7 @@ export default function AddNewAccount({
             finance_account_child_id: child_id,
           });
           setLoadingAddtoList(false);
+          setinsertInvoiceHeader(false);
           AlgaehMessagePop({
             type: "success",
             display: "Added Successfully ...",
@@ -314,15 +318,28 @@ export default function AddNewAccount({
             accountCode !== 4 && accountCode !== 5 ? (
               <div className="row">
                 {accountName ? (
-                  <div className="col-12 ">
-                    <Checkbox
-                      style={{ marginBottom: 10 }}
-                      checked={enableOP}
-                      onChange={() => setEnableOP((state) => !state)}
-                    >
-                      Edit Balance
-                    </Checkbox>
-                  </div>
+                  <>
+                    <div className="col-6">
+                      <Checkbox
+                        style={{ marginBottom: 10 }}
+                        checked={enableOP}
+                        onChange={() => setEnableOP((state) => !state)}
+                      >
+                        Edit Balance
+                      </Checkbox>
+                    </div>
+                    <div className="col-6">
+                      <Checkbox
+                        style={{ marginBottom: 10 }}
+                        checked={insertInVoucherHeader}
+                        onChange={() =>
+                          setinsertInvoiceHeader((state) => !state)
+                        }
+                      >
+                        Insert To Header
+                      </Checkbox>
+                    </div>
+                  </>
                 ) : null}
                 <AlgaehFormGroup
                   div={{
