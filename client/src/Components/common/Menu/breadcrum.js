@@ -1,83 +1,69 @@
-import React, { memo } from "react";
-//useState
-// import { useHistory } from "react-router-dom";
-// import { setItem } from "algaeh-react-components";
+import React, { memo, useState } from "react";
+import { useCurrentPath, useLangFieldName } from "../../../hooks";
+import { useHistory } from "react-router-dom";
+import { setItem } from "algaeh-react-components";
 // import { MainContext } from "algaeh-react-components";
-// import { setCookie } from "../../../utils/algaehApiCall";
+import { setCookie } from "../../../utils/algaehApiCall";
 
-export default memo(function ({
-  selectedMenu,
-  userMenu,
-  userLanguage,
-  setSelectedMenuItem,
-}) {
-  if (selectedMenu === undefined) return null;
-  const {
-    module_name,
-    screen_name,
-    other_language,
-    s_other_language,
-  } = selectedMenu;
+export default memo(function ({ userMenu, setSelectedMenuItem }) {
+  const current = useCurrentPath();
+  const { fieldNameFn } = useLangFieldName();
 
-  // const menuDetails = userMenu === null ? [] : userMenu;
+  const selMenuDetails = userMenu?.find(
+    (f) => f.module_code === current?.module_code
+  );
 
-  // const selMenuDetails = menuDetails.find(
-  //   (f) => f.module_code === selectedMenu.module_code
-  // );
+  const [show, setShow] = useState(false);
+  const [pos, setPos] = useState(0);
+  const history = useHistory();
+  function onShow(e) {
+    setShow((value) => {
+      return !value;
+    });
+    setPos(e.target.offsetLeft + 15);
+  }
+  function onClickScreen(item, display, others) {
+    const screenName = display.replace(/ /g, "");
+    const selMenu = { ...item, ...others };
+    setItem("userSelectedMenu", selMenu);
+    setSelectedMenuItem(selMenu);
+    setCookie("ScreenName", screenName);
+    const extraParam =
+      item.redirect_url !== undefined &&
+      item.redirect_url !== "" &&
+      item.redirect_url !== null
+        ? `/${item.redirect_url}`
+        : "";
+    history.push(`/${screenName}${extraParam}`);
+  }
 
-  // const {
-  //   module_name,
-  //   screen_name,
-  //   other_language,
-  //   s_other_language,
-  //   ScreenList
-  // } = userMenu.find(f => f.module_code === selectedMenu.module_code);
-  // const [setShow] = useState(false);
-  // const [setPos] = useState(0);
-  // const history = useHistory();
-  // function onShow(e) {
-  //   setShow((value) => {
-  //     return !value;
-  //   });
-  //   setPos(e.target.offsetLeft + 15);
-  // }
-  // function onClickScreen(item, display, others) {
-  //   const screenName = display.replace(/ /g, "");
-  //   const selMenu = { ...item, ...others };
-  //   setItem("userSelectedMenu", selMenu);
-  //   setSelectedMenuItem(selMenu);
-  //   setCookie("ScreenName", screenName);
-  //   const extraParam =
-  //     item.redirect_url !== undefined &&
-  //     item.redirect_url !== "" &&
-  //     item.redirect_url !== null
-  //       ? `/${item.redirect_url}`
-  //       : "";
-  //   history.push(`/${screenName}${extraParam}`);
-  // }
   return (
     <div className="breadCrumpMenu">
       <ul className="appMenuNavigation">
         <li>
-          <span> {userLanguage === "en" ? module_name : other_language}</span>
+          <span>
+            {fieldNameFn(current?.module_name, current?.other_language)}
+          </span>
         </li>
-        <li>
-          <span> {userLanguage === "en" ? screen_name : s_other_language}</span>
-          {/* <i
+        <li onClick={onShow} onBlur={onShow}>
+          <span>
+            {fieldNameFn(current?.screen_name, current?.s_other_language)}
+          </span>
+          <i
             className="fas fa-sort-down"
             style={{
               fontSize: "1.3rem",
               marginTop: "5px",
             }}
-          ></i> */}
+          ></i>
         </li>
       </ul>
 
-      {/* {show === true && selMenuDetails !== undefined ? (
+      {show === true && selMenuDetails !== undefined ? (
         <div className="dropDownList" style={{ left: `${pos}px` }}>
           <ul>
             {selMenuDetails.ScreenList.map((item, idx) => {
-              if (screen_name === item.screen_name) return null;
+              if (current?.screen_name === item?.screen_name) return null;
               return (
                 <li
                   key={idx}
@@ -89,16 +75,14 @@ export default memo(function ({
                   }}
                 >
                   <span>
-                    {userLanguage === "en"
-                      ? item.screen_name
-                      : item.s_other_language}
+                    {fieldNameFn(item?.screen_name, item?.s_other_language)}
                   </span>
                 </li>
               );
             })}
           </ul>
         </div>
-      ) : null} */}
+      ) : null}
     </div>
   );
 });

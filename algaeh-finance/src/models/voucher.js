@@ -1021,6 +1021,7 @@ export default {
     ) {
       const _mysql = new algaehMysql();
       // get highest auth level
+
       getMaxAuth({
         mysql: _mysql,
       })
@@ -1479,7 +1480,7 @@ export default {
                                 _mysql
                                   .executeQuery({
                                     query:
-                                      "select finance_voucher_header_id,voucher_no, voucher_type,amount,settlement_status,settled_amount\
+                                      "select finance_voucher_header_id,voucher_no, voucher_type,amount,settlement_status,settled_amount,invoice_no\
                                from finance_voucher_header where invoice_no in(?) and voucher_type in ('purchase' ,'sales') and settlement_status='P';",
                                     values: [ref_no_headers],
                                     printQuery: true,
@@ -1502,43 +1503,56 @@ export default {
                                           settled_amount,
                                           finance_voucher_header_id,
                                           voucher_no,
+                                          invoice_no,
                                         } = BalanceInvoice[b];
                                         let head_amount = result[0]["amount"];
                                         if (hasMultiple === "M") {
                                           const oneRecord = subHeaderResult.find(
                                             (f) =>
-                                              f.invoice_ref_no === voucher_no
+                                              f.invoice_ref_no === voucher_no ||
+                                              f.invoice_ref_no === invoice_no
                                           );
 
                                           head_amount = oneRecord.amount;
                                         }
-                                        const total_paid_amount =
-                                          parseFloat(settled_amount) +
-                                          parseFloat(head_amount);
+                                        //     const total_paid_amount =
+                                        //       parseFloat(settled_amount) +
+                                        //       parseFloat(head_amount);
 
-                                        if (
-                                          parseFloat(head_amount) ==
-                                          total_paid_amount
-                                        ) {
-                                          updateQry += `update finance_voucher_header set settlement_status='S',settled_amount=settled_amount+${parseFloat(
-                                            head_amount
-                                          )} where finance_voucher_header_id=${finance_voucher_header_id};`;
-                                        } else {
-                                          updateQry += `update finance_voucher_header set settled_amount=settled_amount+${parseFloat(
-                                            head_amount
-                                          )}, updated_date='${moment().format(
-                                            "YYYY-MM-DD"
-                                          )}',
-                                     updated_by= ${
-                                       req.userIdentity.algaeh_d_app_user_id
-                                     } where finance_voucher_header_id=${finance_voucher_header_id};`;
-                                        }
+                                        //     if (
+                                        //       parseFloat(head_amount) ==
+                                        //       total_paid_amount
+                                        //     ) {
+                                        //       updateQry += `update finance_voucher_header set settlement_status=if(settled_amount+${parseFloat(
+                                        //         head_amount
+                                        //       )}=amount,'S','P'),settled_amount=settled_amount+${parseFloat(
+                                        //         head_amount
+                                        //       )} where finance_voucher_header_id=${finance_voucher_header_id};`;
+                                        //     } else {
+                                        //       updateQry += `update finance_voucher_header set settled_amount=settled_amount+${parseFloat(
+                                        //         head_amount
+                                        //       )}, updated_date='${moment().format(
+                                        //         "YYYY-MM-DD"
+                                        //       )}',
+                                        //  updated_by= ${
+                                        //    req.userIdentity.algaeh_d_app_user_id
+                                        //  } where finance_voucher_header_id=${finance_voucher_header_id};`;
+                                        //     }
+                                        updateQry += `update finance_voucher_header set settlement_status=if(settled_amount+${parseFloat(
+                                          head_amount
+                                        )}=amount,'S','P'),settled_amount=settled_amount+${parseFloat(
+                                          head_amount
+                                        )},updated_date='${moment().format(
+                                          "YYYY-MM-DD"
+                                        )}',updated_by=${
+                                          req.userIdentity.algaeh_d_app_user_id
+                                        } where finance_voucher_header_id=${finance_voucher_header_id};`;
                                       }
 
-                                      if (hasMultiple === "M") {
-                                        updateQry += `update finance_voucher_header set settlement_status='S',settled_amount=amount
-                                        where finance_voucher_header_id=${input.voucher_header_id};`;
-                                      }
+                                      // if (hasMultiple === "M") {
+                                      //   updateQry += `update finance_voucher_header set settlement_status='S',settled_amount=amount
+                                      //   where finance_voucher_header_id=${input.voucher_header_id};`;
+                                      // }
                                     }
 
                                     resolve({});
