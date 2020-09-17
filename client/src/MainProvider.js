@@ -4,6 +4,7 @@ import socket from "./sockets";
 
 const intialState = {
   userMenu: [],
+  flattenMenu: [],
   userLanguage: "en",
   is_authenticated: false,
   userToken: {},
@@ -31,7 +32,11 @@ const mainActionTypes = {
 const mainReducer = (state, { type = "", payload = {} }) => {
   switch (type) {
     case mainActionTypes.SET_MENU:
-      return { ...state, userMenu: payload };
+      return {
+        ...state,
+        userMenu: payload,
+        flattenMenu: payload.map((item) => item?.ScreenList)?.flat(),
+      };
     case mainActionTypes.SET_LANGUAGE:
       return { ...state, userLanguage: payload };
     case mainActionTypes.SET_ELEMENTS:
