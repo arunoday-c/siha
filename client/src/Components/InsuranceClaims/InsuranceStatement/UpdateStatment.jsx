@@ -41,7 +41,7 @@ const getStatementServices = async (key, { invoice_header_id }) => {
 export function UpdateStatement({
   show = false,
   data = {},
-  onClose = () => { },
+  onClose = () => {},
 }) {
   const [currentRow, setCurrentRow] = useState(null);
   const [cpt_code, setCpt] = useState("");
@@ -329,6 +329,22 @@ export function UpdateStatement({
         <div className="col-12 popupInner margin-top-15">
           <div className="row">
             <div className="col-6">
+              <AlgaehLabel
+                label={{
+                  forceLabel: "Submitted Amount",
+                }}
+              />
+              <h6>{currentRow?.[`s${step}_amt`]}</h6>
+            </div>
+            <div className="col-6">
+              <AlgaehLabel
+                label={{
+                  forceLabel: "Service Name",
+                }}
+              />
+              <h6>{currentRow?.service_name}</h6>
+            </div>
+            <div className="col-6">
               <div className="row">
                 <div className="col globalSearchCntr">
                   {" "}
@@ -356,15 +372,18 @@ export function UpdateStatement({
                     value,
                     onChange: (e) => {
                       let { value } = e.target;
-                      const _amount = parseFloat(currentRow?.company_payable) - parseFloat(currentRow?.r1_amt) - parseFloat(currentRow?.r2_amt)
+                      const _amount =
+                        parseFloat(currentRow?.company_payable) -
+                        parseFloat(currentRow?.r1_amt) -
+                        parseFloat(currentRow?.r2_amt);
 
                       if (value) {
-                        if (
-                          parseFloat(value) <= _amount
-                        ) {
+                        if (parseFloat(value) <= _amount) {
                           onChange(value);
-                          const denial_amount =
-                            (_amount - parseFloat(value)).toFixed(userToken.decimal_places);
+                          let denial_amount = _amount - parseFloat(value);
+                          denial_amount = denial_amount
+                            ? denial_amount.toFixed(userToken.decimal_places)
+                            : 0;
                           setValue("denial_amount", denial_amount, {
                             shouldValidate: true,
                           });
