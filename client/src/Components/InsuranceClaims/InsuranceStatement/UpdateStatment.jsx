@@ -356,16 +356,15 @@ export function UpdateStatement({
                     value,
                     onChange: (e) => {
                       let { value } = e.target;
+                      const _amount = parseFloat(currentRow?.company_payable) - parseFloat(currentRow?.r1_amt) - parseFloat(currentRow?.r2_amt)
 
                       if (value) {
                         if (
-                          parseFloat(value) <=
-                          parseFloat(currentRow?.company_payable)
+                          parseFloat(value) <= _amount
                         ) {
                           onChange(value);
                           const denial_amount =
-                            (parseFloat(currentRow?.company_payable) - parseFloat(currentRow?.r1_amt) - parseFloat(currentRow?.r2_amt) -
-                              parseFloat(value)).toFixed(userToken.decimal_places);
+                            (_amount - parseFloat(value)).toFixed(userToken.decimal_places);
                           setValue("denial_amount", denial_amount, {
                             shouldValidate: true,
                           });

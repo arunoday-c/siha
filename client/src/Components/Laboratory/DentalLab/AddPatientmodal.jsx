@@ -53,7 +53,7 @@ export function AddPatientDentalForm({
   // const [loading_request_list, setLoadingRequestList] = useState(false);
   //   const [request_list, setRequestList] = useState([]);
 
-  const [checked, setChecked] = useState(false);
+  const [checked, setChecked] = useState(true);
 
   // const [sub_department_id, setSub_department_id] = useState("");
   // const [doctor_id, setDoctor_id] = useState("");
@@ -118,7 +118,7 @@ export function AddPatientDentalForm({
       });
       // setSub_department_id("");
       // setDoctor_id("");
-      setChecked(false);
+      // setChecked(false);
     }
     //eslint-disable-next-line
   }, [current, visible]);
@@ -767,7 +767,7 @@ export function AddPatientDentalForm({
                             onChange("");
                           },
                           others: {
-                            // disabled,
+                            disabled: current.request_status === "APR",
                             // tabIndex: "4",
                           },
                         }}
@@ -807,7 +807,9 @@ export function AddPatientDentalForm({
                             onChange("");
                           },
                           others: {
-                            disabled: request_status !== "APR",
+                            disabled:
+                              request_status !== "APR" ||
+                              current.work_status === "COM",
                             // tabIndex: "4",
                           },
                         }}
@@ -836,7 +838,8 @@ export function AddPatientDentalForm({
                           value,
                         }}
                         others={{
-                          disabled: work_status !== "COM",
+                          disabled:
+                            work_status !== "COM" || current.arrival_date,
                         }}
                         minDate={new Date()}
                         events={{
@@ -848,7 +851,6 @@ export function AddPatientDentalForm({
                             }
                           },
                           onClear: () => {
-                            debugger;
                             onChange(undefined);
                             // setValue("arrival_date", undefined);
                           },
@@ -867,7 +869,12 @@ export function AddPatientDentalForm({
                             value="yes"
                             name=""
                             checked={checked}
-                            // disabled={}
+                            disabled={
+                              (current.request_status === "APR" ||
+                                current.request_status === "REJ" ||
+                                current.request_status === "RES") &&
+                              current.work_status === "COM"
+                            }
                             onChange={(e) => {
                               e.target.checked
                                 ? setChecked(true)

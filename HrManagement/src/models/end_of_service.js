@@ -58,6 +58,25 @@ export default {
       next(e);
     }
   },
+  getGratuityStatus: (req, res, next) => {
+    const _input = req.query;
+    const _mysql = new algaehMysql();
+    _mysql
+      .executeQuery({
+        query: `select gratuity_status from hims_f_end_of_service 
+        where employee_id = ?;`,
+        values: [_input.hims_d_employee_id],
+      })
+      .then((result) => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch((e) => {
+        _mysql.releaseConnection();
+        next(e);
+      });
+  },
   endOfService: (req, res, next) => {
     const _input = req.query;
     const _mysql = new algaehMysql();
@@ -73,10 +92,12 @@ export default {
       })
       .then((end_of_service) => {
         let endofServexit = false;
+
         if (
-          !end_of_service.length > 0 ||
-          end_of_service[0].gratuity_status === "PEN" ||
-          end_of_service[0].gratuity_status === "PEF"
+          _input.calculateGratuity === "true"
+          // !end_of_service.length > 0 ||
+          // end_of_service[0].gratuity_status === "PEN" ||
+          // end_of_service[0].gratuity_status === "PEF"
         ) {
           endofServexit = true;
           _mysql
@@ -332,6 +353,7 @@ export default {
           left join hims_d_title T \
           on T.his_d_title_id = E.title_id \
           where hims_d_employee_id in(?) and employee_status not in('A','I'); `,
+              printQuery: true,
               values: [_input.hims_d_employee_id],
             })
             .then((result) => {

@@ -568,12 +568,26 @@ export default {
               } else if (inputParam.payment_type == "FS") {
                 _mysql
                   .executeQuery({
-                    query:
-                      "UPDATE `hims_f_final_settlement_header` SET `final_settlement_status`='SET', `updated_date`=?, `updated_by`=? \
-                    where hims_f_final_settlement_header_id=?",
+                    query: `UPDATE hims_f_final_settlement_header SET final_settlement_status='SET', updated_date=?, updated_by=? 
+                    where hims_f_final_settlement_header_id=?;
+                    UPDATE hims_f_end_of_service SET settled='Y',gratuity_status='PAI'
+                    where hims_f_end_of_service_id=?;
+                    UPDATE hims_f_leave_encash_header SET authorized='APR', posted='Y',posted_by=?
+                    where hims_f_leave_encash_header_id=?;
+                    UPDATE hims_f_salary S inner join hims_f_final_settlement_header SH on S.hims_f_salary_id=SH.salary_id SET 
+                    S.salary_paid='Y',S.salary_paid_date=?,S.salary_paid_by=?,S.final_settlement_id=?,
+                    S.salary_settled='Y'where SH.hims_f_final_settlement_header_id =?;`,
+
                     values: [
                       new Date(),
                       req.userIdentity.algaeh_d_app_user_id,
+                      inputParam.employee_final_settlement_id,
+                      inputParam.employee_end_of_service_id,
+                      req.userIdentity.algaeh_d_app_user_id,
+                      inputParam.employee_leave_encash_id,
+                      new Date(),
+                      req.userIdentity.algaeh_d_app_user_id,
+                      inputParam.employee_final_settlement_id,
                       inputParam.employee_final_settlement_id,
                     ],
                   })

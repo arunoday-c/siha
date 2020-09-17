@@ -34,6 +34,7 @@ class EOSGratuity extends Component {
       actual_maount: 0,
       forfeitChecked: false,
       paybale_amout: null,
+      calcGratuity: false,
     };
   }
   static contextType = MainContext;
@@ -69,7 +70,6 @@ class EOSGratuity extends Component {
   }
 
   textHandler(e) {
-    debugger;
     this.setState({
       [e.target.name]: e.target.value,
     });
@@ -112,24 +112,55 @@ class EOSGratuity extends Component {
         callBack(text);
       },
       onRowSelect: (row) => {
-        this.setState({
-          employee_name: row.full_name,
-          hims_d_employee_id: row.hims_d_employee_id,
-          data: {
-            componentList: [],
-          },
-          previous_gratuity_amount: 0,
-          calculated_gratutity_amount: null,
-          paybale_amout: null,
-          remarks: "",
-          saveDisabled: true,
-          sendPaymentButton: true,
+        this.setState(
+          {
+            employee_name: row.full_name,
+            hims_d_employee_id: row.hims_d_employee_id,
+            data: {
+              componentList: [],
+            },
+            previous_gratuity_amount: 0,
+            calculated_gratutity_amount: null,
+            paybale_amout: null,
+            remarks: "",
+            saveDisabled: true,
+            sendPaymentButton: true,
 
-          gratuity_done: false,
-          gratuity_encash: 0,
-          actual_maount: 0,
-          computed_amount: 0,
-        });
+            gratuity_done: false,
+            gratuity_encash: 0,
+            actual_maount: 0,
+            computed_amount: 0,
+          },
+          () => {
+            algaehApiCall({
+              uri: "/endofservice/getGratuityStatus",
+              method: "GET",
+              module: "hrManagement",
+              data: {
+                hims_d_employee_id: this.state.hims_d_employee_id,
+              },
+              onSuccess: (res) => {
+                if (res.data.success) {
+                  let data = res.data.result[0];
+                  this.setState({
+                    disableCalcGratuity:
+                      (data.gratuity_status === "PRO" ||
+                        data.gratuity_status === "PAI") &&
+                      data
+                        ? true
+                        : false,
+                  });
+                }
+              },
+              onFailure: (err) => {
+                swalMessage({
+                  title: err.message,
+                  type: "error",
+                });
+              },
+            });
+          }
+        );
       },
     });
   }
@@ -231,6 +262,16 @@ class EOSGratuity extends Component {
       },
     });
   }
+  calculateGratuity() {
+    this.setState(
+      {
+        calcGratuity: true,
+      },
+      () => {
+        this.loadEmployeeDetails();
+      }
+    );
+  }
 
   loadEmployeeDetails() {
     if (
@@ -252,6 +293,7 @@ class EOSGratuity extends Component {
         module: "hrManagement",
         data: {
           hims_d_employee_id: this.state.hims_d_employee_id,
+          calculateGratuity: this.state.calcGratuity,
         },
         onSuccess: (res) => {
           if (res.data.success) {
@@ -272,6 +314,7 @@ class EOSGratuity extends Component {
                 remarks: res.data.result.remarks,
                 gratuity_status: res.data.result.gratuity_status,
                 forfeitChecked: res.data.result.gratuity_status === "PEF",
+                calcGratuity: false,
               });
             } else {
               this.setState({
@@ -282,14 +325,32 @@ class EOSGratuity extends Component {
                 computed_amount: res.data.result.calculated_gratutity_amount,
                 paybale_amout: res.data.result.payable_amount,
                 entitled_amount: res.data.result.entitled_amount,
-                gratuity_done: true,
-                // saveDisabled: true,
+                gratuity_done:
+                  res.data.result.gratuity_status === "PEN" ||
+                  res.data.result.gratuity_status === "PEF"
+                    ? false
+                    : true,
+                saveDisabled:
+                  res.data.result.gratuity_status === "PEN" ||
+                  res.data.result.gratuity_status === "PEF"
+                    ? false
+                    : true,
                 actual_maount: res.data.result.actual_maount,
                 gratuity_encash: res.data.result.gratuity_encash,
                 remarks: res.data.result.remarks,
                 gratuity_status: res.data.result.gratuity_status,
                 forfeitChecked: res.data.result.gratuity_status === "FOR",
-                disableCheckbox: true,
+                disableCheckbox:
+                  res.data.result.gratuity_status === "PEN" ||
+                  res.data.result.gratuity_status === "PEF"
+                    ? false
+                    : true,
+                calcGratuity: false,
+                disableCalcGratuity:
+                  res.data.result.gratuity_status === "PAI" ||
+                  res.data.result.gratuity_status === "PRO"
+                    ? true
+                    : false,
               });
             }
           }
@@ -445,20 +506,24 @@ class EOSGratuity extends Component {
             >
               Clear
             </button>{" "}
-            <button
-              onClick={this.loadEmployeeDetails.bind(this)}
-              style={{ marginTop: 20, marginLeft: 5 }}
-              className="btn btn-default"
-            >
-              {!this.state.loading ? (
-                "Calculate Gratuity"
-              ) : (
-                <i className="fas fa-spinner fa-spin" />
-              )}
-            </button>
+            {this.state.disableCalcGratuity ? null : (
+              <button
+                onClick={this.calculateGratuity.bind(this)}
+                style={{ marginTop: 20, marginLeft: 5 }}
+                className="btn btn-default"
+                // disabled={this.state.disableCalcGratuity}
+              >
+                {!this.state.loading ? (
+                  "Calculate Gratuity"
+                ) : (
+                  <i className="fas fa-spinner fa-spin" />
+                )}
+              </button>
+            )}
             <button
               style={{ marginTop: 20, marginLeft: 5 }}
               className="btn btn-primary"
+              onClick={this.loadEmployeeDetails.bind(this)}
             >
               {!this.state.loading ? (
                 "Load Saved Gratuity"
