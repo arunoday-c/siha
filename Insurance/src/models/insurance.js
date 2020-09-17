@@ -1619,14 +1619,16 @@ export function saveMultiStatement(req, res, next) {
                 .executeQuery({
                   query: `update hims_d_insurance_provider set insurance_statement_count=? 
                   where hims_d_insurance_provider_id=?; 
-                  update hims_f_invoice_header set insurance_statement_id=?,claim_status='S1',submission_amount=? 
-                   where hims_f_invoice_header_id in (?);`,
+                  update hims_f_invoice_header set insurance_statement_id=?,claim_status='S1',submission_amount=company_payable,
+                  submission_date = ? where hims_f_invoice_header_id in (?);
+                  update hims_f_invoice_details set s1_amt=company_payable where invoice_header_id in (?) and hims_f_invoice_details_id>0;`,
                   values: [
                     update_ins_count,
                     insurance_provider_id,
                     result.insertId,
-                    total_company_responsibility,
+                    new Date(),
                     invoiceList,
+                    invoiceList
                   ],
                   printQuery: true,
                 })
@@ -1981,6 +1983,7 @@ export function updateInsuranceStatement(req, res, next) {
     _mysql
       .executeQueryWithTransaction({
         query: `update hims_f_invoice_details set r${level}_amt= ${remittance_amount},
+        s${level == 1 ? 2 : 3}_amt= ${denial_amount},
       d${level}_amt= ${denial_amount},
       d${level}_reason_id=${denial_reason_id},
       cpt_code="${cpt_code}"
@@ -2004,7 +2007,7 @@ export function updateInsuranceStatement(req, res, next) {
                   rest["ramt"]
                   }, claim_status=?,
          denial_amount=${rest["damt"]},remittance_date=?,submission_amount${
-                  level == 1 ? "" : level
+                  level == 1 ? 2 : 3
                   }=${rest["damt"]} where hims_f_invoice_header_id=?`,
                 values: [claim_status, new Date(), invoice_header_id],
               })
