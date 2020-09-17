@@ -32,6 +32,13 @@ export default function AddNewAccount({
   const [opening_balance, setOpeningBalance] = useState(0);
   const [enableOP, setEnableOP] = useState(true);
   const [insertInVoucherHeader, setinsertInvoiceHeader] = useState(false);
+  const [type, setType] = useState(
+    accountCode === 1
+      ? "DR"
+      : accountCode === 2 || accountCode === 3
+      ? "CR"
+      : ""
+  );
   // const [opening_balance_date, setOpeningBalanceDate] = useState("");
 
   useEffect(() => {
@@ -121,6 +128,7 @@ export default function AddNewAccount({
         finance_account_child_id: selectedNode.node.finance_account_child_id,
         leaf_node: account_type === "G" ? "N" : "Y",
         insertInVoucherHeader,
+        type,
       };
       if (enableOP) {
         input.opening_balance = opening_balance;
@@ -343,7 +351,7 @@ export default function AddNewAccount({
                 ) : null}
                 <AlgaehFormGroup
                   div={{
-                    className: "col-12 form-group  mandatory",
+                    className: "col-6 form-group  mandatory",
                   }}
                   label={{
                     forceLabel: "Opening Balance",
@@ -360,6 +368,32 @@ export default function AddNewAccount({
                     placeholder: " Enter Opening Balance",
                     autoComplete: false,
                     disabled: !enableOP && accountName,
+                  }}
+                />
+                <AlgaehDropDown
+                  div={{
+                    className: "col-6 form-group mandatory",
+                  }}
+                  label={{
+                    forceLabel: "Type",
+                    isImp: true,
+                  }}
+                  selector={{
+                    className: "form-control",
+                    value: type,
+                    name: "type",
+                    onChange: (e) => {
+                      debugger;
+                      setType(e.target.value);
+                    },
+                  }}
+                  dataSource={{
+                    textField: "name",
+                    valueField: "value",
+                    data: [
+                      { name: "CR", value: "CR" },
+                      { name: "DR", value: "DR" },
+                    ],
                   }}
                 />
               </div>
