@@ -42,6 +42,7 @@ export function UpdateStatement({
   show = false,
   data = {},
   onClose = () => {},
+  component = false,
 }) {
   const [currentRow, setCurrentRow] = useState(null);
   const [cpt_code, setCpt] = useState("");
@@ -54,7 +55,7 @@ export function UpdateStatement({
     ["invoice-details", { invoice_header_id: data?.hims_f_invoice_header_id }],
     getStatementServices,
     {
-      enabled: show,
+      enabled: show || component,
       initialData: [],
       initialStale: true,
     }
@@ -279,6 +280,7 @@ export function UpdateStatement({
   }
 
   const onUpdate = (e) => {
+    debugger;
     update({
       insurance_statement_id: data?.insurance_statement_id,
       invoice_header_id: data?.hims_f_invoice_header_id,
@@ -291,22 +293,8 @@ export function UpdateStatement({
     });
   };
 
-  return (
-    <AlgaehModal
-      title="Update Statment"
-      visible={show}
-      maskClosable={false}
-      width={1200}
-      closable={true}
-      footer={[
-        <button className="btn btn-default" onClick={() => onClose(true)}>
-          Close
-        </button>,
-      ]}
-      onCancel={() => onClose(true)}
-      // onOk={handleSubmit(onSubmit)}
-      className={`${userLanguage}_comp row algaehNewModal UpdateStatementModal`}
-    >
+  const MainChildren = (
+    <>
       <AlgaehModal
         title="Update Service"
         visible={!!currentRow}
@@ -469,50 +457,52 @@ export function UpdateStatement({
       </AlgaehModal>
       <Spin spinning={queryLoading || mutLoading || denialLoading}>
         <div className="col-12 popupInner margin-top-15">
-          <div className="row">
-            <div className="col-4">
-              <AlgaehLabel
-                label={{
-                  forceLabel: "Patient Name",
-                }}
-              />
-              <h6>{data?.pat_name}</h6>
-            </div>
-            <div className="col">
-              <AlgaehLabel
-                label={{
-                  forceLabel: "Patient Code",
-                }}
-              />
-              <h6>{data?.patient_code}</h6>
-            </div>
-            <div className="col">
-              <AlgaehLabel
-                label={{
-                  forceLabel: "Invoice Number",
-                }}
-              />
-              <h6>{data?.invoice_number}</h6>
-            </div>
+          {!component && (
+            <div className="row">
+              <div className="col-4">
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Patient Name",
+                  }}
+                />
+                <h6>{data?.pat_name}</h6>
+              </div>
+              <div className="col">
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Patient Code",
+                  }}
+                />
+                <h6>{data?.patient_code}</h6>
+              </div>
+              <div className="col">
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Invoice Number",
+                  }}
+                />
+                <h6>{data?.invoice_number}</h6>
+              </div>
 
-            <div className="col">
-              <AlgaehLabel
-                label={{
-                  forceLabel: "Invoice Date",
-                }}
-              />
-              <h6>{data?.invoice_date}</h6>
-            </div>
+              <div className="col">
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Invoice Date",
+                  }}
+                />
+                <h6>{data?.invoice_date}</h6>
+              </div>
 
-            <div className="col">
-              <AlgaehLabel
-                label={{
-                  forceLabel: "Net Company Payable",
-                }}
-              />
-              <h6>{data?.company_payable}</h6>
+              <div className="col">
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Net Company Payable",
+                  }}
+                />
+                <h6>{data?.company_payable}</h6>
+              </div>
             </div>
-          </div>
+          )}
 
           <div className="row">
             <div className="col-12">
@@ -546,6 +536,30 @@ export function UpdateStatement({
           </div>
         </div>
       </Spin>
-    </AlgaehModal>
+    </>
   );
+
+  if (component) {
+    return <>{MainChildren}</>;
+  } else {
+    return (
+      <AlgaehModal
+        title="Update Statment"
+        visible={show}
+        maskClosable={false}
+        width={1200}
+        closable={true}
+        footer={[
+          <button className="btn btn-default" onClick={() => onClose(true)}>
+            Close
+          </button>,
+        ]}
+        onCancel={() => onClose(true)}
+        // onOk={handleSubmit(onSubmit)}
+        className={`${userLanguage}_comp row algaehNewModal UpdateStatementModal`}
+      >
+        {MainChildren}
+      </AlgaehModal>
+    );
+  }
 }
