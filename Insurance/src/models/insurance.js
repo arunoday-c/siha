@@ -2007,7 +2007,7 @@ export function updateInsuranceStatement(req, res, next) {
                   rest["ramt"]
                   }, claim_status=?,
                   denial_amount${
-                  level == 1 ? 2 : 3
+                  level == 1 ? "" : level
                   }=${rest["damt"]},remittance_date=?,submission_amount${
                   level == 1 ? 2 : 3
                   }=${rest["damt"]} where hims_f_invoice_header_id=?`,
