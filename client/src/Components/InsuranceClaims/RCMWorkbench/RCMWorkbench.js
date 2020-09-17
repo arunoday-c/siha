@@ -677,6 +677,9 @@ class RCMWorkbench extends Component {
             </span>
           );
         },
+        others: {
+          show: this.state.rcmMode === "R",
+        },
       },
       // {
       //   fieldName: "insurance_provider_name",
