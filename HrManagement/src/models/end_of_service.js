@@ -374,7 +374,6 @@ export default {
                 },
                 ...result
               );
-              console.log("req.records", req.records);
 
               _mysql.releaseConnection();
               next();
