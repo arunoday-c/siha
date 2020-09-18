@@ -182,7 +182,7 @@ export function PrepaymentMaster() {
             render={(props) => (
               <AlgaehFormGroup
                 div={{
-                  className: "col-2 form-group algaeh-text-fld",
+                  className: "col form-group algaeh-text-fld",
                 }}
                 error={errors}
                 label={{
@@ -205,7 +205,7 @@ export function PrepaymentMaster() {
             rules={{ required: "Required" }}
             render={(props) => (
               <AlgaehTreeSearch
-                div={{ className: "col form-group" }}
+                div={{ className: "col-3 form-group" }}
                 label={{
                   forceLabel: "Prepayment GL",
                   isImp: true,
@@ -237,7 +237,7 @@ export function PrepaymentMaster() {
             rules={{ required: "Required" }}
             render={(props) => (
               <AlgaehTreeSearch
-                div={{ className: "col form-group" }}
+                div={{ className: "col-3 form-group" }}
                 label={{
                   forceLabel: "Expense GL",
                   isImp: true,
@@ -285,7 +285,7 @@ export function PrepaymentMaster() {
             )}
           /> */}
 
-          <div className="col-2">
+          <div className="col">
             <label>Employee Requiried</label>
             <div className="customCheckbox">
               <label className="checkbox inline">
@@ -301,7 +301,7 @@ export function PrepaymentMaster() {
             </div>
           </div>
 
-          <div className="col-2">
+          <div className="col">
             <button
               type="submit"
               className="btn btn-primary btn-sm"

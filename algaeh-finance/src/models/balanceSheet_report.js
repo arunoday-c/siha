@@ -10,7 +10,7 @@ export default {
     const decimal_places = req.userIdentity.decimal_places;
 
     const { display_column_by, from_date, to_date } = req.query;
-
+    const drillDownLevel = req.query.levels ? parseInt(req.query.levels) : 999;
     _mysql
       .executeQuery({
         query: ` with recursive cte as (
@@ -180,6 +180,7 @@ export default {
                 qry: asset_qry,
                 levels: asset_levels,
                 accounting_heads: asset_accounting_heads,
+                drillDownLevel,
               };
               generateBalanceSheet(data)
                 .then((assetResult) => {
@@ -402,6 +403,7 @@ export default {
             qry: asset_qry,
             levels: asset_levels,
             accounting_heads: asset_accounting_heads,
+            drillDownLevel,
           };
           generateBalanceSheet(data)
             .then((assetResult) => {
@@ -472,6 +474,7 @@ function generateBalanceSheet(options) {
         qry,
         levels,
         accounting_heads,
+        drillDownLevel,
       } = options;
 
       _mysql
@@ -501,7 +504,8 @@ function generateBalanceSheet(options) {
             childObj,
             headObj,
             trans_symbol,
-            decimal_places
+            decimal_places,
+            drillDownLevel
           );
           resolve(outputArray[0]);
         })
@@ -598,7 +602,8 @@ function buildHierarchy(
   child_data,
   head_data,
   trans_symbol,
-  decimal_places
+  decimal_places,
+  drillDownLevel
 ) {
   try {
     let roots = [],
@@ -606,6 +611,11 @@ function buildHierarchy(
 
     // find the top level nodes and hash the children based on parent_acc_id
     for (let i = 0, len = arry.length; i < len; ++i) {
+      if (drillDownLevel !== 999) {
+        if (arry[i]["account_level"] > drillDownLevel) {
+          break;
+        }
+      }
       let item = arry[i],
         p = item.parent_acc_id,
         //if it has no parent_acc_id
@@ -742,12 +752,16 @@ function buildHierarchy(
     // function to recursively build the tree
     let findChildren = function (parent) {
       if (children[parent.finance_account_head_id]) {
-        const tempchilds = children[parent.finance_account_head_id];
+        let tempchilds = children[parent.finance_account_head_id];
+        if (drillDownLevel !== 999) {
+          tempchilds = tempchilds.filter((f) => f.leafnode !== "Y");
+        }
+        if (tempchilds.length > 0) {
+          parent.children = tempchilds;
 
-        parent.children = tempchilds;
-
-        for (let i = 0, len = parent.children.length; i < len; ++i) {
-          findChildren(parent.children[i]);
+          for (let i = 0, len = parent.children.length; i < len; ++i) {
+            findChildren(parent.children[i]);
+          }
         }
       }
     };

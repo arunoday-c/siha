@@ -131,6 +131,7 @@ export default function NewPackageEvent() {
         $this.setState({
           PakageDetail: PakageDetail,
           // s_service_type: null,
+          service_name: "",
           s_service: null,
           s_service_amount: null,
           total_service_amount: total_service_amount,
@@ -286,7 +287,7 @@ export default function NewPackageEvent() {
               100;
           }
 
-          if ($this.state.from === "doctor") {
+          if ($this.state.from === "doctor" || $this.state.package_type === "D") {
             InputObj.approved = "Y";
           } else {
             InputObj.approved = "N";
