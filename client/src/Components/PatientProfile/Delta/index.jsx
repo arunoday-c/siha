@@ -1,5 +1,9 @@
 import React from "react";
-import { AlgaehModal, AlgaehDateHandler } from "algaeh-react-components";
+import {
+  AlgaehModal,
+  AlgaehDateHandler,
+  AlgaehAutoComplete,
+} from "algaeh-react-components";
 import "./DeltaCheckModal.scss";
 export default function Delta({ visible, onCancel }) {
   return (
@@ -16,27 +20,36 @@ export default function Delta({ visible, onCancel }) {
       // onOk={handleSubmit(onSubmit)}
       className={`algaehNewModal DeltaCheckModal`}
     >
-      <div className="col">
-        <div className="row">
-          <div className="col-5">
-            <h3>Select Filter</h3>
+      <div className="row popupInner">
+        <div className="col-5">
+          <div className="popLeftDiv">
+            {/* <h6
+                style={{
+                  borderBottom: "1px solid #ccc",
+                  paddingBottom: 5,
+                  paddingTop: 10,
+                  fontSize: "0.9rem",
+                }}
+              >
+                Select Filter
+              </h6> */}
             <div className="row">
-              <div className="col-12">
+              <div className="col-12 form-group">
                 <label>View By</label>
                 <div className="customRadio">
                   <label className="radio inline">
                     <input type="radio" value="" name="" />
-                    <span>Vitals</span>
+                    <span>Vital/Analytes</span>
                   </label>
 
                   <label className="radio inline">
-                    <input type="radio" value="" name="" />
+                    <input type="radio" value="" name="" checked />
                     <span>Investigation</span>
                   </label>
                 </div>
               </div>
               <AlgaehDateHandler
-                div={{ className: "col-6" }}
+                div={{ className: "col-6 form-group" }}
                 label={{ forceLabel: "From Date", isImp: true }}
                 textBox={{
                   className: "txt-fld",
@@ -47,7 +60,7 @@ export default function Delta({ visible, onCancel }) {
                 value=""
               />{" "}
               <AlgaehDateHandler
-                div={{ className: "col-6" }}
+                div={{ className: "col-6 form-group" }}
                 label={{ forceLabel: "To Date", isImp: true }}
                 textBox={{
                   className: "txt-fld",
@@ -57,60 +70,90 @@ export default function Delta({ visible, onCancel }) {
                 events={{}}
                 value=""
               />
-              <div className="col-12 dimensionList">
-                <ul className="">
+              <AlgaehAutoComplete
+                div={{ className: "col-12 form-group  " }}
+                label={{ forceLabel: "Select Test", isImp: true }}
+                selector={{
+                  dataSource: {
+                    data: [],
+                    valueField: "",
+                    textField: "",
+                  },
+                  value: "",
+                }}
+              />
+              <div className="col-12 ">
+                <ul className="dimensionList">
                   <li>
                     <span className="checkBoxPhy">
                       <input checked="" value="" type="checkbox" />
                       <i className="fas fa-check" />
                     </span>
-                    <span className="dimensionListName">Vital Names</span>
+                    <span className="dimensionListName">
+                      Vital/Analyte Names
+                    </span>
                   </li>
                   <li>
                     <span className="checkBoxPhy">
                       <input checked="" value="" type="checkbox" />
                       <i className="fas fa-check" />
                     </span>
-                    <span className="dimensionListName">Vital Names</span>
+                    <span className="dimensionListName">
+                      Vital/Analyte Names
+                    </span>
                   </li>
                   <li>
                     <span className="checkBoxPhy">
                       <input checked="" value="" type="checkbox" />
                       <i className="fas fa-check" />
                     </span>
-                    <span className="dimensionListName">Vital Names</span>
+                    <span className="dimensionListName">
+                      Vital/Analyte Names
+                    </span>
                   </li>
                   <li>
                     <span className="checkBoxPhy">
                       <input checked="" value="" type="checkbox" />
                       <i className="fas fa-check" />
                     </span>
-                    <span className="dimensionListName">Vital Names</span>
+                    <span className="dimensionListName">
+                      Vital/Analyte Names
+                    </span>
                   </li>
                   <li>
                     <span className="checkBoxPhy">
                       <input checked="" value="" type="checkbox" />
                       <i className="fas fa-check" />
                     </span>
-                    <span className="dimensionListName">Vital Names</span>
+                    <span className="dimensionListName">
+                      Vital/Analyte Names
+                    </span>
                   </li>
                   <li>
                     <span className="checkBoxPhy">
                       <input checked="" value="" type="checkbox" />
                       <i className="fas fa-check" />
                     </span>
-                    <span className="dimensionListName">Vital Names</span>
+                    <span className="dimensionListName">
+                      Vital/Analyte Names
+                    </span>
                   </li>
                 </ul>
               </div>
-              <div className="col-12">
-                <button className="btn btn-primary">Check</button>
+              <div className="col-12" style={{ textAlign: "right" }}>
+                <button className="btn btn-default">Clear</button>
+                <button className="btn btn-primary" style={{ marginLeft: 10 }}>
+                  Apply
+                </button>
               </div>
             </div>
           </div>
-          <div className="col-7">
-            <h3>View Chart</h3>
-            <div className="row">chart here</div>
+        </div>
+        <div className="col-7 chartCntr">
+          <div className="popRightDiv">
+            <div className="row">
+              <div className="col">Apply filter to view chart</div>
+            </div>
           </div>
         </div>
       </div>
