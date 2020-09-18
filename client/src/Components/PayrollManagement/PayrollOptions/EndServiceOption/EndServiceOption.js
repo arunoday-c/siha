@@ -213,6 +213,7 @@ export default class EndServiceOption extends Component {
           gratuity_in_final_settle: this.state.gratuity_in_final_settle,
           pending_salary_with_final: this.state.pending_salary_with_final,
           round_off_nearest_year: this.state.round_off_nearest_year,
+          gratuity_min_year: this.state.gratuity_min_year,
           earning_comp: this.state.earning_comp,
           service_days: this.state.service_days,
           gratuity_provision: this.state.gratuity_provision,
@@ -247,6 +248,7 @@ export default class EndServiceOption extends Component {
           gratuity_in_final_settle: this.state.gratuity_in_final_settle,
           pending_salary_with_final: this.state.pending_salary_with_final,
           round_off_nearest_year: this.state.round_off_nearest_year,
+          gratuity_min_year: this.state.gratuity_min_year,
           earning_comp: this.state.earning_comp,
           service_days: this.state.service_days,
           gratuity_provision: this.state.gratuity_provision,
@@ -634,6 +636,27 @@ export default class EndServiceOption extends Component {
                 <div className="row">
                   <div className="col-6">
                     <div className="row">
+                      {" "}
+                      <AlagehFormGroup
+                        div={{ className: "col-4 form-group" }}
+                        label={{
+                          forceLabel: "Gratuity Min. Eligibility",
+                          isImp: true,
+                        }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "gratuity_min_year",
+                          value: this.state.gratuity_min_year,
+                          events: {
+                            onChange: this.textHandler.bind(this),
+                          },
+                          others: {
+                            type: "number",
+                          },
+                        }}
+                      />
+                    </div>
+                    <div className="row">
                       <div className="col-12">
                         <div className="row" data-validate="addServRng">
                           <AlagehFormGroup
@@ -711,10 +734,7 @@ export default class EndServiceOption extends Component {
                               },
                             }}
                           />
-                          <div
-                            className="col-3 align-middle"
-                            style={{ paddingTop: 19 }}
-                          >
+                          <div className="col-3 align-middle">
                             <button
                               onClick={this.addServiceRange.bind(this)}
                               className="btn btn-primary"

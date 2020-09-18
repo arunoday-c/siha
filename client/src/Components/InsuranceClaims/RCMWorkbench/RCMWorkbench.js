@@ -38,6 +38,7 @@ class RCMWorkbench extends Component {
       rcmMode: "C",
       insurance_statement_id: null,
       submitted: false,
+      insurance_statement_number: null
     };
     this.select = true;
     this.dropDownHandler = this.dropDownHandler.bind(this);
@@ -113,6 +114,37 @@ class RCMWorkbench extends Component {
       method: "POST",
       data: {
         invoiceList,
+      },
+      onSuccess: (res) => {
+        if (res.data.success) {
+          this.setState(
+            {
+              resubmissionList: [],
+            },
+            () => this.getInvoicesForStatementID()
+          );
+        }
+      },
+    });
+  };
+
+  finalsubmitClaims = () => {
+    // const { resubmissionList } = this.state;
+    // const invoiceList = resubmissionList.map(
+    //   (item) => item.hims_f_invoice_header_id
+    // );
+    debugger
+    algaehApiCall({
+      uri: "/resubmission/closeClaim",
+      module: "insurance",
+      method: "POST",
+      data: {
+        insurance_statement_id: new URLSearchParams(this.props.location?.search).get(
+          "hims_f_insurance_statement_id"
+        ),
+        insurance_statement_number: new URLSearchParams(this.props.location?.search).get(
+          "insurance_statement_number"
+        )
       },
       onSuccess: (res) => {
         if (res.data.success) {
@@ -1190,6 +1222,30 @@ class RCMWorkbench extends Component {
             </div>
           </div>
         )}
+
+        <div className="hptl-phase1-footer">
+          <div className="row">
+            <div className="col-12">
+              <button
+                onClick={this.finalsubmitClaims}
+                // disabled={
+                //   !this.state.resubmissionList ||
+                //   !this.state.resubmissionList.length
+                // }
+                type="button"
+                className="btn btn-primary"
+              >
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Final Submit",
+                    returnText: true,
+                  }}
+                />
+              </button>
+            </div>
+          </div>
+        </div>
+
       </div>
     );
   }

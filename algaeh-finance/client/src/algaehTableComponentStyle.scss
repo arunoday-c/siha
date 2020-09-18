@@ -38,6 +38,10 @@
     .ant-modal-confirm-body {
       margin: 0;
       padding: 15px;
+      .ant-modal-confirm-content {
+        margin: 15px 0 0;
+        padding: 0;
+      }
     }
     .ant-modal-confirm-btns {
       width: 100%;

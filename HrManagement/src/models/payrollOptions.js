@@ -227,7 +227,7 @@ export default {
           from_service_range4=?,from_service_range5=?,eligible_days1=?,eligible_days2=?,eligible_days3=?,\
           eligible_days4=?,eligible_days5=?,end_of_service_calculation=?,end_of_service_days=?,\
           end_of_service_type=?,gratuity_in_final_settle=?,round_off_nearest_year=?, terminate_salary=?,end_of_service_payment=?,\
-          end_of_service_years=?, pending_salary_with_final=?, limited_years=?, gratuity_provision=?,updated_by=?,updated_date=?, \
+          end_of_service_years=?, pending_salary_with_final=?, limited_years=?, gratuity_provision=?,gratuity_min_year=?,updated_by=?,updated_date=?, \
           benifit_day1=?,benifit_day2=?,benifit_day3=?,benifit_day4=?,benifit_day5=? where hims_d_end_of_service_options_id=?",
         values: [
           input.end_of_service_component1,
@@ -255,6 +255,7 @@ export default {
           input.pending_salary_with_final,
           input.limited_years,
           input.gratuity_provision,
+          input.gratuity_min_year,
           req.userIdentity.algaeh_d_app_user_id,
           new Date(),
           input.benifit_day1,
@@ -304,9 +305,9 @@ export default {
           from_service_range4, from_service_range5, eligible_days1, eligible_days2, eligible_days3, eligible_days4, \
           eligible_days5, end_of_service_calculation, end_of_service_days, end_of_service_type, gratuity_in_final_settle, \
           round_off_nearest_year, terminate_salary, end_of_service_payment, end_of_service_years, pending_salary_with_final, \
-          limited_years, gratuity_provision, created_by, created_date,benifit_day1,benifit_day2,benifit_day3,\
+          limited_years, gratuity_provision, gratuity_min_year,created_by, created_date,benifit_day1,benifit_day2,benifit_day3,\
           benifit_day4,benifit_day5) \
-        values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+        values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
         values: [
           input.end_of_service_component1,
           input.end_of_service_component2,
@@ -333,6 +334,7 @@ export default {
           input.pending_salary_with_final,
           input.limited_years,
           input.gratuity_provision,
+          input.gratuity_min_year,
           req.userIdentity.algaeh_d_app_user_id,
           new Date(),
           input.benifit_day1,
