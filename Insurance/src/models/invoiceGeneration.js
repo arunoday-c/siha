@@ -386,7 +386,8 @@ export default {
           return;
         }
       } else {
-        differenceStatement = "IH.insurance_statement_id=?";
+        differenceStatement = "if(claim_status='R1', IH.insurance_statement_id,if(claim_status='R2', IH.insurance_statement_id_2, IH.insurance_statement_id_3))=?";
+        // "if(claim_status='R1',insurance_statement_id,if(claim_status='R2',insurance_statement_id_2,insurance_statement_id_3))"
         queryValue = [
           insurance_statement_id,
           insurance_statement_id,
