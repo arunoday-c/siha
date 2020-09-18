@@ -280,7 +280,6 @@ export function UpdateStatement({
   }
 
   const onUpdate = (e) => {
-    debugger;
     update({
       insurance_statement_id: data?.insurance_statement_id,
       invoice_header_id: data?.hims_f_invoice_header_id,
