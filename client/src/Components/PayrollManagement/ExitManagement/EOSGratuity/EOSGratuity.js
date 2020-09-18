@@ -339,7 +339,11 @@ class EOSGratuity extends Component {
                 gratuity_encash: res.data.result.gratuity_encash,
                 remarks: res.data.result.remarks,
                 gratuity_status: res.data.result.gratuity_status,
-                forfeitChecked: res.data.result.gratuity_status === "FOR",
+                forfeitChecked:
+                  res.data.result.gratuity_status === "FOR" ||
+                  res.data.result.gratuity_status === "PEF"
+                    ? true
+                    : false,
                 disableCheckbox:
                   res.data.result.gratuity_status === "PEN" ||
                   res.data.result.gratuity_status === "PEF"

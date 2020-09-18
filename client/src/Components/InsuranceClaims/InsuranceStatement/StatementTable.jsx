@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { useQuery } from "react-query";
 import "./InsuranceStatement.scss";
 import {
@@ -6,6 +6,7 @@ import {
   Spin,
   AlgaehLabel,
   Tooltip,
+  MainContext,
 } from "algaeh-react-components";
 import { UpdateStatement } from "./UpdateStatment";
 import { newAlgaehApi, useQueryParams } from "../../../hooks";
@@ -24,6 +25,7 @@ const getStatements = async (
 };
 
 export function StatementTable() {
+  const { userToken } = useContext(MainContext);
   const [show, setShow] = useState(false);
   const [current, setCurrent] = useState(null);
   const params = useQueryParams();
@@ -195,14 +197,24 @@ export function StatementTable() {
                 label: <AlgaehLabel label={{ forceLabel: "Denial Amt. 1" }} />,
               },
               {
-                fieldName: "remittance_2",
+                fieldName: "remittance_amount2",
                 label: (
                   <AlgaehLabel label={{ forceLabel: "Remittance Amt. 2" }} />
                 ),
               },
               {
-                fieldName: "denial_amount_2",
+                fieldName: "denial_amount2",
                 label: <AlgaehLabel label={{ forceLabel: "Denial Amt. 2" }} />,
+              },
+              {
+                fieldName: "remittance_amount3",
+                label: (
+                  <AlgaehLabel label={{ forceLabel: "Remittance Amt. 3" }} />
+                ),
+              },
+              {
+                fieldName: "denial_amount3",
+                label: <AlgaehLabel label={{ forceLabel: "Denial Amt. 3" }} />,
               },
               {
                 fieldName: "remittance_amount",
@@ -211,12 +223,26 @@ export function StatementTable() {
                     label={{ forceLabel: "Total Remittance Amount" }}
                   />
                 ),
+                displayTemplate: (row) => {
+                  return parseFloat(
+                    row?.remittance_amount +
+                      row?.remittance_amount2 +
+                      row?.remittance_amount3
+                  ).toFixed(userToken?.decimal_places);
+                },
               },
               {
                 fieldName: "denial_amount",
                 label: (
                   <AlgaehLabel label={{ forceLabel: "Total Denial Amount" }} />
                 ),
+                displayTemplate: (row) => {
+                  return parseFloat(
+                    row?.denial_amount +
+                      row?.denial_amount2 +
+                      row?.denial_amount3
+                  ).toFixed(userToken?.decimal_places);
+                },
               },
             ]}
             data={data?.claims ?? []}

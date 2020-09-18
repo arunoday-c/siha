@@ -29,6 +29,7 @@ export default function BalanceSheet({
   const [reportType, setReportType] = useState("balancesheet");
   const [BasedOn, setBasedOn] = useState("by_year");
   const [tableProps, setTableProps] = useState({});
+  const [levels, setLevels] = useState("2");
   useEffect(() => {
     const { filterKey } = selectedFilter;
     if (filterKey !== undefined) {
@@ -78,6 +79,12 @@ export default function BalanceSheet({
             type: "CH",
             data: "Change in %",
           },
+          {
+            className: "col-2 form-group",
+            type: "AC",
+            data: "LEVELS",
+            initalStates: "2",
+          },
         ];
         setFilter(newFilter);
         setFirstLevel([]);
@@ -97,6 +104,12 @@ export default function BalanceSheet({
             data: "BASEDON",
             initalStates: "by_year",
           },
+          {
+            className: "col-2 form-group",
+            type: "AC",
+            data: "LEVELS",
+            initalStates: "2",
+          },
         ]);
         setReportType("balancesheet");
       }
@@ -114,6 +127,12 @@ export default function BalanceSheet({
           type: "AC",
           data: "BASEDON",
           initalStates: "by_year",
+        },
+        {
+          className: "col-2 form-group",
+          type: "AC",
+          data: "LEVELS",
+          initalStates: "2",
         },
       ]);
     }
@@ -168,6 +187,7 @@ export default function BalanceSheet({
         prev_from_date,
         prev_to_date,
         excel,
+        levels,
       },
       extraHeaders,
       options: others,
@@ -280,6 +300,7 @@ export default function BalanceSheet({
         to_date: t_date,
         excel,
         display_column_by,
+        levels,
       },
       extraHeaders,
       options: others,
@@ -405,13 +426,14 @@ export default function BalanceSheet({
         <Filter
           filters={[firstLevel, filterBuilder([], filter)]}
           callBack={(inputs, cb) => {
-            const { PREVIOUSRANGE, RANGE, BASEDON } = inputs;
+            const { PREVIOUSRANGE, RANGE, BASEDON, LEVELS } = inputs;
             setRangeDate(RANGE);
             setPrevDateRange(PREVIOUSRANGE);
             setChangeInPercentage(inputs["CHANGEIN%"]);
             setChangeInAccount(inputs["CHANGEINAMT."]);
             setBasedOn(BASEDON);
             setStopLoading(cb);
+            setLevels(LEVELS);
 
             setPreview((result) => {
               return result === undefined ? false : !result;

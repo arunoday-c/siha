@@ -1868,11 +1868,21 @@ export default {
 
             if (data.root_id == 1) {
               if (data.debit_amount != input.opening_balance) {
-                voucherStr = `update finance_voucher_details set debit_amount=${input.opening_balance} where finance_voucher_id=${data.finance_voucher_id};`;
+                voucherStr = `update finance_voucher_details set ${
+                  input.type === "CR" ? "credit_amount" : "debit_amount"
+                }=${input.opening_balance},
+                payment_type ='${input.type === "CR" ? "CR" : "DR"}',${
+                  input.type === "CR" ? "debit_amount" : "credit_amount"
+                }=0  where finance_voucher_id=${data.finance_voucher_id};`;
               }
             } else if (data.root_id == 2 || data.root_id == 3) {
               if (data.credit_amount != input.opening_balance) {
-                voucherStr = `update finance_voucher_details set credit_amount=${input.opening_balance} where finance_voucher_id=${data.finance_voucher_id};`;
+                voucherStr = `update finance_voucher_details set ${
+                  input.type === "DR" ? "debit_amount" : "credit_amount"
+                }=${input.opening_balance},
+                payment_type ='${input.type === "DR" ? "DR" : "CR"}',${
+                  input.type === "DR" ? "credit_amount" : "debit_amount"
+                }=0 where finance_voucher_id=${data.finance_voucher_id};`;
               }
             }
             executeFunction();
@@ -1931,6 +1941,14 @@ export default {
                       debit_amount = input.opening_balance;
                       payment_type = "DR";
 
+                      switch (input.type) {
+                        case "CR":
+                          debit_amount = 0;
+                          credit_amount = input.opening_balance;
+                          payment_type = "CR";
+                          break;
+                      }
+
                       voucherStr = _mysql.mysqlQueryFormat(
                         "INSERT INTO finance_voucher_details (voucher_header_id,payment_date,head_id,child_id,debit_amount,credit_amount,\
                         payment_type,hospital_id,year,month,is_opening_bal,entered_by,auth_status)  VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?)",
@@ -1956,6 +1974,13 @@ export default {
                       input.opening_balance > 0
                     ) {
                       credit_amount = input.opening_balance;
+                      switch (input.type) {
+                        case "DR":
+                          credit_amount = 0;
+                          debit_amount = input.opening_balance;
+                          payment_type = "DR";
+                          break;
+                      }
                       voucherStr = _mysql.mysqlQueryFormat(
                         "INSERT INTO finance_voucher_details (voucher_header_id,payment_date,head_id,child_id,debit_amount,credit_amount,\
                       payment_type,hospital_id,year,month,is_opening_bal,entered_by,auth_status)  VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?)",

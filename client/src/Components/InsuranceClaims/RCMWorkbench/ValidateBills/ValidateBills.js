@@ -11,6 +11,7 @@ import spotlightSearch from "../../../../Search/spotlightSearch.json";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import swal from "sweetalert2";
 import AlgaehFileUploader from "../../../Wrapper/algaehFileUpload";
+import { UpdateStatement } from "../../InsuranceStatement/UpdateStatment";
 
 const UcafEditor = React.lazy(() => import("../../../ucafEditors/ucaf"));
 const DcafEditor = React.lazy(() => import("../../../ucafEditors/dcaf"));
@@ -756,7 +757,180 @@ class ValidateBills extends PureComponent {
                     }}
                   />
                 </div>
-                <div id="invoiceDetailGrid_Cntr">
+                {this.props.mode === "R" ? (
+                  <UpdateStatement
+                    data={{
+                      ...this.state.invoices,
+                      insurance_statement_id: this.props.insuranceId,
+                    }}
+                    component={true}
+                  />
+                ) : (
+                  <div id="invoiceDetailGrid_Cntr">
+                    <AlgaehDataGrid
+                      id="invoiceDetailGrid"
+                      columns={[
+                        {
+                          fieldName: "service_type_code",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Service Code" }}
+                            />
+                          ),
+                          editorTemplate: (row) => {
+                            return <span>{row.service_type_code}</span>;
+                          },
+                          disabled: true,
+                        },
+                        {
+                          fieldName: "service_type",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Service Type" }}
+                            />
+                          ),
+                          editorTemplate: (row) => {
+                            return <span>{row.service_type}</span>;
+                          },
+                          disabled: true,
+                          others: { minWidth: 150 },
+                        },
+                        {
+                          fieldName: "service_name",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Service Name" }}
+                            />
+                          ),
+                          // displayTemplate: (row) => {
+                          //   return <span>{row.service_name}</span>;
+                          // },
+                          editorTemplate: (row) => {
+                            return <span>{row.service_name}</span>;
+                          },
+                          disabled: true,
+                          others: { minWidth: 200 },
+                        },
+                        {
+                          fieldName: "cpt_code",
+                          label: (
+                            <AlgaehLabel label={{ forceLabel: "CPT Code" }} />
+                          ),
+                          editorTemplate: (row) => {
+                            return (
+                              <div className="row">
+                                <div className="col globalSearchCntr noLabel">
+                                  <h6 onClick={this.cptSearch.bind(this, row)}>
+                                    {row.cpt_code ? row.cpt_code : "CPT Code"}
+                                    <i className="fas fa-search fa-lg"></i>
+                                  </h6>
+                                </div>
+                              </div>
+                            );
+                          },
+                          others: { minWidth: 150 },
+                        },
+                        {
+                          fieldName: "quantity",
+                          label: (
+                            <AlgaehLabel label={{ forceLabel: "Quantity" }} />
+                          ),
+                          disabled: true,
+                        },
+                        {
+                          fieldName: "gross_amount",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Gross Amount" }}
+                            />
+                          ),
+                          disabled: true,
+                        },
+                        {
+                          fieldName: "discount_amount",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Discount Amount" }}
+                            />
+                          ),
+                          disabled: true,
+                        },
+                        {
+                          fieldName: "patient_resp",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Patient Responsibility" }}
+                            />
+                          ),
+                          disabled: true,
+                        },
+                        {
+                          fieldName: "patient_tax",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Patient Tax" }}
+                            />
+                          ),
+                          disabled: true,
+                        },
+                        {
+                          fieldName: "patient_payable",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Patient Payable" }}
+                            />
+                          ),
+                          disabled: true,
+                        },
+                        {
+                          fieldName: "company_resp",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Company Responsibility" }}
+                            />
+                          ),
+                          disabled: true,
+                        },
+                        {
+                          fieldName: "company_tax",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Company Tax" }}
+                            />
+                          ),
+                          disabled: true,
+                        },
+                        {
+                          fieldName: "company_payable",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Company Payable" }}
+                            />
+                          ),
+                          disabled: true,
+                        },
+                      ]}
+                      keyId="id"
+                      dataSource={{
+                        data: invoice_details,
+                        // data: this.state.invoice_details
+                      }}
+                      isEditable={
+                        claim_validated === "P" || claim_status !== "P"
+                          ? true
+                          : false
+                      }
+                      actions={{ allowDelete: false }}
+                      paging={{ page: 0, rowsPerPage: 10 }}
+                      events={{
+                        onDelete: (row) => {},
+                        onEdit: (row) => {},
+                        onDone: this.updateInvoiceDetail.bind(this),
+                      }}
+                    />
+                  </div>
+                )}
+                {/* <div id="invoiceDetailGrid_Cntr">
                   <AlgaehDataGrid
                     id="invoiceDetailGrid"
                     columns={[
@@ -906,7 +1080,7 @@ class ValidateBills extends PureComponent {
                       onDone: this.updateInvoiceDetail.bind(this),
                     }}
                   />
-                </div>
+                </div> */}
               </div>
               <div className="col-4">
                 <div className="row">
