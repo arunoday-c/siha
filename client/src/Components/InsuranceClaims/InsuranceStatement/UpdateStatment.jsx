@@ -280,7 +280,6 @@ export function UpdateStatement({
   }
 
   const onUpdate = (e) => {
-    debugger;
     update({
       insurance_statement_id: data?.insurance_statement_id,
       invoice_header_id: data?.hims_f_invoice_header_id,
@@ -360,10 +359,7 @@ export function UpdateStatement({
                     value,
                     onChange: (e) => {
                       let { value } = e.target;
-                      const _amount =
-                        parseFloat(currentRow?.company_payable) -
-                        parseFloat(currentRow?.r1_amt) -
-                        parseFloat(currentRow?.r2_amt);
+                      const _amount = currentRow?.[`s${step}_amt`];
 
                       if (value) {
                         if (parseFloat(value) <= _amount) {

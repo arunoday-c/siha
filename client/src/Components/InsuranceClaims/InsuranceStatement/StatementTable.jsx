@@ -10,6 +10,7 @@ import {
 } from "algaeh-react-components";
 import { UpdateStatement } from "./UpdateStatment";
 import { newAlgaehApi, useQueryParams } from "../../../hooks";
+import { FinalRemittance } from "./FinalRemittance";
 
 const getStatements = async (
   key,
@@ -96,7 +97,10 @@ export function StatementTable() {
                       data?.total_remittance_amount) ||
                       "0.00"}
                   </h6>
-                </div>{" "}
+                </div>
+                <div className="col-2">
+                  <FinalRemittance data={data} refetch={refetch} />
+                </div>
               </div>
             </div>
           </div>

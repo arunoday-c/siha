@@ -33,6 +33,7 @@ export function ClaimSearch(history, location) {
           this.setState(
             {
               insurance_statement_id: row?.hims_f_insurance_statement_id,
+              insurance_statement_number: row?.insurance_statement_number
             },
             () => {
               this.getInvoicesForStatementID();

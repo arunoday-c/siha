@@ -903,6 +903,13 @@ CREATE TABLE `hrms_d_kpi_master` (
 
 -- Query from 05-sept-2020 till 14-sept-2020 end here;
 
+-- Query for Employee wise working hour on 18-sept-2020 Start
+alter table hims_d_employee add column standard_work_hours time default null
+after service_dis_percentage, add column consider_overtime enum('Y','N') default  'N'
+after standard_work_hours, add column ramzan_work_hours time default null 
+after consider_overtime, hims_d_employee add column week_day enum('SU','MO','TU','WE','TH','FR','SA') default null
+after ramzan_work_hours;
+-- Query for Employee wise working hour on 18-sept-2020 end
 
 
 
