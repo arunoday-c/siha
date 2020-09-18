@@ -228,7 +228,7 @@ export default {
           eligible_days4=?,eligible_days5=?,end_of_service_calculation=?,end_of_service_days=?,\
           end_of_service_type=?,gratuity_in_final_settle=?,round_off_nearest_year=?, terminate_salary=?,end_of_service_payment=?,\
           end_of_service_years=?, pending_salary_with_final=?, limited_years=?, gratuity_provision=?,updated_by=?,updated_date=?, \
-          benifit_day1=?,benifit_day2=?,benifit_day3=?,benifit_day4=?,benifit_day5=? where hims_d_end_of_service_options_id=?",
+          benifit_day1=?,benifit_day2=?,benifit_day3=?,benifit_day4=?,benifit_day5=?,gratuity_min_year=? where hims_d_end_of_service_options_id=?",
         values: [
           input.end_of_service_component1,
           input.end_of_service_component2,
@@ -263,6 +263,7 @@ export default {
           input.benifit_day4,
           input.benifit_day5,
           input.hims_d_end_of_service_options_id,
+          input.gratuity_min_year,
         ],
 
         printQuery: true,
@@ -305,8 +306,8 @@ export default {
           eligible_days5, end_of_service_calculation, end_of_service_days, end_of_service_type, gratuity_in_final_settle, \
           round_off_nearest_year, terminate_salary, end_of_service_payment, end_of_service_years, pending_salary_with_final, \
           limited_years, gratuity_provision, created_by, created_date,benifit_day1,benifit_day2,benifit_day3,\
-          benifit_day4,benifit_day5) \
-        values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+          benifit_day4,benifit_day5,gratuity_min_year) \
+        values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
         values: [
           input.end_of_service_component1,
           input.end_of_service_component2,
@@ -340,6 +341,7 @@ export default {
           input.benifit_day3,
           input.benifit_day4,
           input.benifit_day5,
+          input.gratuity_min_year,
         ],
 
         printQuery: true,
