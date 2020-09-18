@@ -17,7 +17,7 @@ const closeStatement = async ({
   hims_f_insurance_statement_id,
 }) => {
   const res = await newAlgaehApi({
-    uri: "/insurance/closeStatement",
+    uri: "/resubmission/closeClaim",
     module: "insurance",
     data: {
       total_remittance_amount,
@@ -26,7 +26,7 @@ const closeStatement = async ({
       insurance_status,
       hims_f_insurance_statement_id,
     },
-    method: "PUT",
+    method: "POST",
   });
   return res?.data?.records;
 };

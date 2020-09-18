@@ -130,104 +130,48 @@ export function reSubmissionDetails(req, res, next) {
 export function closeClaim(req, res, next) {
   const _mysql = new algaehMysql();
   const inputParam = req.body;
-  console.log("inputParam", req.body)
-  console.log("inputParam", inputParam)
+
   try {
     _mysql
-      .executeQueryWithTransaction({
-        query: `select sum(company_payable) as total_company_payable,MAX(sub_insurance_id) as sub_insurance_id,
-        SUM(if(claim_status='R1',remittance_amount,if(claim_status='R2',remittance_amount2,remittance_amount3))) as total_remittance_amount,
-        SUM(if(claim_status='R1',denial_amount,if(claim_status='R2',denial_amount2,denial_amount3))) as total_denial_amount
-        from hims_f_invoice_header where insurance_statement_id=? for UPDATE;`,
-        values: [inputParam.insurance_statement_id],
+      .executeQuery({
+        query: `update hims_f_insurance_statement set total_remittance_amount=?,total_denial_amount=?,writeoff_amount=?,insurance_status=? where 
+      hims_f_insurance_statement_id=?`,
+        values: [
+          inputParam.total_remittance_amount,
+          inputParam.total_denial_amount,
+          inputParam.writeoff_amount,
+          inputParam.insurance_status,
+          inputParam.hims_f_insurance_statement_id,
+        ],
         printQuery: true,
       })
       .then((result) => {
-        if (result.length === 0) {
-          _mysql.rollBackTransaction(() => {
-            next(new Error("No invoice found to resubmit"));
-          });
-          return;
-        }
-        const {
-          total_company_payable,
-          total_remittance_amount,
-          total_denial_amount,
-          sub_insurance_id,
-        } = result[0];
 
         _mysql
           .executeQuery({
-            query: `select head_id, child_id from hims_d_insurance_sub where hims_d_insurance_sub_id=? FOR UPDATE;
-            select head_id, child_id, account from finance_accounts_maping  where account in ('INS_WRITE_OFF', 'cash');`,
-            values: [sub_insurance_id],
+            query: `INSERT INTO hims_f_insurance_remitance (claim_id, cliam_number, company_payable, remit_amount, 
+              denail_amount, writeoff_amount) values(?,?,?,?,?,?); `,
+            values: [
+              inputParam.hims_f_insurance_statement_id,
+              inputParam.insurance_statement_number,
+              inputParam.total_company_payable,
+              inputParam.total_remittance_amount,
+              inputParam.total_denial_amount,
+              inputParam.writeoff_amount,
+            ],
             printQuery: true
           })
           .then((final_result) => {
-            const compamy_details = final_result[0][0]
-            const write_off = final_result[1].find(
-              (f) => f.account === "INS_WRITE_OFF"
-            );
-            const cash_acc = final_result[1].find(
-              (f) => f.account === "cash"
-            );
-
-            console.log("compamy_details", compamy_details)
-            console.log("write_off", write_off)
-            console.log("cash_acc", cash_acc)
-
-            let execute_query = _mysql.mysqlQueryFormat(
-              `INSERT INTO hims_f_insurance_remitance (claim_id, cliam_number, head_id, 
-              child_id, amount) values(?,?,?,?,?); 
-              INSERT INTO hims_f_insurance_remitance (claim_id, cliam_number, head_id, 
-              child_id, amount) values(?,?,?,?,?); `,
-              [
-                inputParam.insurance_statement_id,
-                inputParam.insurance_statement_number,
-                compamy_details.head_id,
-                compamy_details.child_id,
-                total_company_payable,
-                inputParam.insurance_statement_id,
-                inputParam.insurance_statement_number,
-                cash_acc.head_id,
-                cash_acc.child_id,
-                total_remittance_amount
-              ]
-            );
-            if (parseFloat(total_denial_amount) > 0) {
-              execute_query += _mysql.mysqlQueryFormat(
-                `INSERT INTO hims_f_insurance_remitance (claim_id, cliam_number, head_id, 
-                                child_id, amount) values(?,?,?,?,?); `,
-                [
-                  inputParam.insurance_statement_id,
-                  inputParam.insurance_statement_number,
-                  write_off.head_id,
-                  write_off.child_id,
-                  total_denial_amount
-                ]
-              );
-            }
-            _mysql
-              .executeQuery({
-                query: execute_query,
-              })
-              .then((data_result) => {
-                _mysql.commitTransaction((error) => {
-                  if (error) {
-                    _mysql.rollBackTransaction(() => {
-                      next(error);
-                    });
-                    return;
-                  }
-                  req.records = data_result;
-                  next();
-                });
-              })
-              .catch((error) => {
+            _mysql.commitTransaction((error) => {
+              if (error) {
                 _mysql.rollBackTransaction(() => {
                   next(error);
                 });
-              });
+                return;
+              }
+              req.records = final_result;
+              next();
+            });
 
           })
           .catch((error) => {
@@ -236,12 +180,13 @@ export function closeClaim(req, res, next) {
             });
           });
 
+
       })
-      .catch((error) => {
-        _mysql.rollBackTransaction(() => {
-          next(error);
-        });
+      .catch((e) => {
+        _mysql.releaseConnection();
+        next(e);
       });
+
   } catch (error) {
     _mysql.rollBackTransaction(() => {
       next(error);
