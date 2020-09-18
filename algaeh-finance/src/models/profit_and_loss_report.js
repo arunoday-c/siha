@@ -11,7 +11,7 @@ export default {
 
     // const input = req.query;
 
-    const { display_column_by, from_date, to_date } = req.query;
+    const { display_column_by, from_date, to_date, levels } = req.query;
 
     //  const default_total = parseFloat(0).toFixed(decimal_places);
     // let trans_symbol = "Cr.";
@@ -216,7 +216,10 @@ export default {
             from  finance_account_child C  left join finance_voucher_details VD on C.finance_account_child_id=VD.child_id and VD.auth_status='A' 
             and VD.payment_date between date('${from_date}') and date('${to_date}')  
             where C.head_id in(${indirect_expense_head_ids}) group by C.finance_account_child_id;   `;
-              const drillDownLevel = finance_options.report_dill_down_level;
+              const drillDownLevel = levels
+                ? parseInt(levels)
+                : finance_options.report_dill_down_level;
+
               let data = {
                 _mysql,
                 columns,
@@ -773,7 +776,10 @@ export default {
           and VD.payment_date between date('${from_date}') and date('${to_date}')  
           where C.head_id in(${indirect_expense_head_ids}) group by C.finance_account_child_id;   `;
           }
-          const drillDownLevel = finance_options.report_dill_down_level;
+          // const drillDownLevel = finance_options.report_dill_down_level;
+          const drillDownLevel = levels
+            ? parseInt(levels)
+            : finance_options.report_dill_down_level;
           let data = {
             _mysql,
             columns,

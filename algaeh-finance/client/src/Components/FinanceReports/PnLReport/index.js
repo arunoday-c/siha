@@ -422,6 +422,12 @@ export default function PnLReport({
                   initalStates:
                     columnType === "comparison" ? undefined : columnType,
                 },
+                {
+                  className: "col-2 form-group",
+                  type: "AC",
+                  data: "LEVELS",
+                  initalStates: "2",
+                },
               ],
               filter
             ),
