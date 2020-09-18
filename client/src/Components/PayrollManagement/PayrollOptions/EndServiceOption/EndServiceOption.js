@@ -213,10 +213,10 @@ export default class EndServiceOption extends Component {
           gratuity_in_final_settle: this.state.gratuity_in_final_settle,
           pending_salary_with_final: this.state.pending_salary_with_final,
           round_off_nearest_year: this.state.round_off_nearest_year,
+          gratuity_min_year: this.state.gratuity_min_year,
           earning_comp: this.state.earning_comp,
           service_days: this.state.service_days,
           gratuity_provision: this.state.gratuity_provision,
-          gratuity_min_year: this.state.gratuity_min_year,
         },
         onSuccess: (res) => {
           if (res.data.success) {
@@ -248,12 +248,12 @@ export default class EndServiceOption extends Component {
           gratuity_in_final_settle: this.state.gratuity_in_final_settle,
           pending_salary_with_final: this.state.pending_salary_with_final,
           round_off_nearest_year: this.state.round_off_nearest_year,
+          gratuity_min_year: this.state.gratuity_min_year,
           earning_comp: this.state.earning_comp,
           service_days: this.state.service_days,
           gratuity_provision: this.state.gratuity_provision,
           hims_d_end_of_service_options_id: this.state
             .hims_d_end_of_service_options_id,
-          gratuity_min_year: this.state.gratuity_min_year,
         },
         onSuccess: (res) => {
           if (res.data.success) {
