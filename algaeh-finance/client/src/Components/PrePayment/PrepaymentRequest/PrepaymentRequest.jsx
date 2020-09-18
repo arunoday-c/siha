@@ -365,7 +365,7 @@ export function PrepaymentRequest() {
     <Spin spinning={loading}>
       <div style={{ paddingTop: 15 }}>
         <div className="row">
-          <div className="col-3">
+          <div className="col-12">
             <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-title">
                 <div className="caption">
@@ -386,7 +386,7 @@ export function PrepaymentRequest() {
                       rules={{ required: "Please select a branch" }}
                       render={({ onBlur, onChange, value }) => (
                         <AlgaehAutoComplete
-                          div={{ className: "col-12 form-group" }}
+                          div={{ className: "col form-group" }}
                           label={{
                             forceLabel: "Branch",
                             isImp: true,
@@ -421,7 +421,7 @@ export function PrepaymentRequest() {
                       rules={{ required: "Please select a cost center" }}
                       render={({ onBlur, onChange, value }) => (
                         <AlgaehAutoComplete
-                          div={{ className: "col-12 form-group" }}
+                          div={{ className: "col form-group" }}
                           label={{
                             forceLabel: "Cost Center",
                             isImp: true,
@@ -461,7 +461,7 @@ export function PrepaymentRequest() {
                       rules={{ required: "Please select a type" }}
                       render={({ value, onChange, onBlur }) => (
                         <AlgaehAutoComplete
-                          div={{ className: "col-12 form-group" }}
+                          div={{ className: "col form-group" }}
                           label={{
                             forceLabel: "Prepayment Type",
                             isImp: true,
@@ -502,7 +502,7 @@ export function PrepaymentRequest() {
                         rules={{ required: "Please select an employee" }}
                         render={({ value, onBlur, onChange }) => (
                           <AlgaehAutoComplete
-                            div={{ className: "col-12 form-group " }}
+                            div={{ className: "col form-group " }}
                             label={{
                               forceLabel: "Employee",
                               isImp: true,
@@ -547,7 +547,7 @@ export function PrepaymentRequest() {
                       render={(props) => (
                         <AlgaehFormGroup
                           div={{
-                            className: "col-12 form-group algaeh-text-fld",
+                            className: "col form-group algaeh-text-fld",
                           }}
                           label={{
                             forceLabel: "Prepayment Remarks",
@@ -752,7 +752,7 @@ export function PrepaymentRequest() {
             </div>
           </div>
 
-          <div className="col-9">
+          <div className="col-12">
             <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-title">
                 <div className="caption">
