@@ -15,6 +15,8 @@ const closeStatement = async ({
   writeoff_amount,
   insurance_status,
   hims_f_insurance_statement_id,
+  total_company_payable,
+  insurance_statement_number,
 }) => {
   const res = await newAlgaehApi({
     uri: "/resubmission/closeClaim",
@@ -68,6 +70,8 @@ export function FinalRemittance({ data, refetch }) {
     closeStat({
       ...e,
       hims_f_insurance_statement_id: data?.hims_f_insurance_statement_id,
+      total_company_payable: data?.total_company_payable,
+      insurance_statement_number: data?.insurance_statement_number,
     });
   };
 
