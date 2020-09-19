@@ -12,17 +12,21 @@ import {
   // dateFormater,
   updateStockDetils,
   // datehandle,
-  // texthandle,
+  getItemLocationStock,
   getBatchWiseData,
   downloadInvStock,
   downloadInvStockDetails,
   closeBatchWise,
+  itemchangeText,
+  checkBoxEvent
 } from "./InvStockEnquiryEvents";
 import "./InvStockEnquiry.scss";
 import "../../../styles/site.scss";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import BatchWiseStock from "./BatchWiseStock";
 import { GetAmountFormart } from "../../../utils/GlobalFunctions";
+import spotlightSearch from "../../../Search/spotlightSearch.json";
+import AlgaehAutoSearch from "../../Wrapper/autoSearch";
 
 class InvStockEnquiry extends Component {
   constructor(props) {
@@ -44,6 +48,7 @@ class InvStockEnquiry extends Component {
       openBatchWise: false,
       item_description: null,
       total_quantity: 0,
+      reorder_qty: "N"
     };
   }
 
@@ -111,68 +116,76 @@ class InvStockEnquiry extends Component {
                     onChange: changeTexts.bind(this, this),
                     onClear: () => {
                       this.setState({
-                        location_id: null,
+                        location_id: null
+                      }, () => {
+                        getItemLocationStock(this, this)
                       });
                     },
                     autoComplete: "off",
                   }}
                 />
-                <div className="col-1">
-                  {" "}
-                  <button
-                    className="btn btn-default"
-                    // disabled={!this.state.location_id}
-                    style={{ marginTop: 20, marginRight: 10 }}
-                    // onClick={() => downloadInvStockDetails(this)}
-                  >
-                    Load
-                  </button>
-                </div>
-                <AlagehAutoComplete
+                <AlgaehAutoSearch
                   div={{ className: "col" }}
-                  label={{ forceLabel: "By Item Name" }}
-                  selector={{
-                    name: "item_id",
-                    className: "select-fld",
-                    value: this.state.item_id,
-                    dataSource: {
-                      textField: "item_description",
-                      valueField: "hims_d_inventory_item_master_id",
-                      data: this.props.inventoryitemlist,
-                    },
-                    onChange: changeTexts.bind(this, this),
-                    onClear: () => {
-                      this.setState({
-                        item_id: null,
-                      });
-                    },
+                  label={{ forceLabel: "Select Item" }}
+                  title="Search Items"
+                  id="item_id_search"
+                  template={result => {
+                    return (
+                      <section className="resultSecStyles">
+                        <div className="row">
+                          <div className="col-8">
+                            <h4 className="title">
+                              {result.item_description}
+                            </h4>
+                            <small>{result.generic_name}</small>
+                            <small>{result.uom_description}</small>
+                          </div>
+                        </div>
+                      </section>
+                    );
                   }}
-                />{" "}
-                <div className="col-1">
-                  {" "}
-                  <button
-                    className="btn btn-default"
-                    // disabled={!this.state.location_id}
-                    style={{ marginTop: 20, marginRight: 10 }}
-                    // onClick={() => downloadInvStockDetails(this)}
-                  >
-                    Load
-                  </button>
+                  name="item_id"
+                  columns={spotlightSearch.Items.Invitemmaster}
+                  displayField="item_description"
+                  value={this.state.item_description}
+                  searchName="invopeningstock"
+                  onClick={itemchangeText.bind(this, this)}
+                  onClear={() => {
+                    this.setState({
+                      item_id: null,
+                      item_description: ""
+                    }, () => {
+                      getItemLocationStock(this, this)
+                    });
+                  }}
+                  ref={attReg => {
+                    this.attReg = attReg;
+                  }}
+                />
+
+                <div
+                  className="col customCheckbox"
+                  style={{ marginTop: 23, border: "none" }}
+                >
+                  <label className="checkbox inline">
+                    <input
+                      type="checkbox"
+                      name="reorder_qty"
+                      value={this.state.reorder_qty}
+                      checked={
+                        this.state.reorder_qty === "Y" ? true : false
+                      }
+                      onChange={checkBoxEvent.bind(this, this)}
+                    />
+                    <span>
+                      <AlgaehLabel
+                        label={{
+                          forceLabel: "After Trans. Ack. Required",
+                        }}
+                      />
+                    </span>
+                  </label>
                 </div>
-                {/* <div className="col-lg-3">
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Total Quantity",
-                    }}
-                  />
-                  <h6>
-                    {this.state.item_id === null
-                      ? 0
-                      : total_quantity
-                      ? total_quantity + " nos"
-                      : "0 nos"}
-                  </h6>
-                </div> */}
               </div>
             </div>
           </div>
@@ -214,6 +227,11 @@ class InvStockEnquiry extends Component {
                   //   others: { filterable: false }
                   // },
                   {
+                    fieldName: "location_description",
+                    label: <AlgaehLabel label={{ forceLabel: "Location" }} />,
+                    others: { filterable: true },
+                  },
+                  {
                     fieldName: "item_code",
                     label: <AlgaehLabel label={{ forceLabel: "Item Code" }} />,
                     others: { filterable: true },
@@ -246,10 +264,10 @@ class InvStockEnquiry extends Component {
                         this.props.inventoryitemuom === undefined
                           ? []
                           : this.props.inventoryitemuom.filter(
-                              (f) =>
-                                f.hims_d_inventory_uom_id ===
-                                row.stocking_uom_id
-                            );
+                            (f) =>
+                              f.hims_d_inventory_uom_id ===
+                              row.stocking_uom_id
+                          );
 
                       return (
                         <span>
@@ -269,8 +287,8 @@ class InvStockEnquiry extends Component {
                         this.props.inventoryitemuom === undefined
                           ? []
                           : this.props.inventoryitemuom.filter(
-                              (f) => f.hims_d_inventory_uom_id === row.sales_uom
-                            );
+                            (f) => f.hims_d_inventory_uom_id === row.sales_uom
+                          );
 
                       return (
                         <span>
@@ -293,8 +311,8 @@ class InvStockEnquiry extends Component {
                           <span className="orderSoon">Order Soon</span>
                         </div>
                       ) : (
-                        parseFloat(row.qtyhand)
-                      );
+                          parseFloat(row.qtyhand)
+                        );
                     },
                     disabled: true,
                     others: { filterable: true },
@@ -347,7 +365,7 @@ class InvStockEnquiry extends Component {
                 paging={{ page: 0, rowsPerPage: 20 }}
                 events={{
                   //   onDelete: deleteServices.bind(this, this),
-                  onEdit: (row) => {},
+                  onEdit: (row) => { },
                   onDone: updateStockDetils.bind(this, this),
                 }}
               />
