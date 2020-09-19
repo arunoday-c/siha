@@ -364,7 +364,7 @@ class OPBilling extends Component {
           Inputobj.patient_payable = $this.state.patient_payable_h;
           Inputobj.company_payable = $this.state.company_payble;
           Inputobj.insurance_yesno = $this.state.insured;
-          Inputobj.ScreenCode = getCookie("ScreenCode");
+          Inputobj.ScreenCode = "BL0001";
           AlgaehLoader({ show: true });
           algaehApiCall({
             uri: "/opBilling/addOpBIlling",
@@ -479,25 +479,25 @@ class OPBilling extends Component {
           printArea={
             this.state.bill_number !== null
               ? {
-                  menuitems: [
-                    {
-                      label: "Print Receipt",
-                      events: {
-                        onClick: () => {
-                          generateReceipt(this, this);
-                        },
+                menuitems: [
+                  {
+                    label: "Print Receipt",
+                    events: {
+                      onClick: () => {
+                        generateReceipt(this, this);
                       },
                     },
-                    {
-                      label: "Print Receipt Small",
-                      events: {
-                        onClick: () => {
-                          generateReceiptSmall(this, this);
-                        },
+                  },
+                  {
+                    label: "Print Receipt Small",
+                    events: {
+                      onClick: () => {
+                        generateReceiptSmall(this, this);
                       },
                     },
-                  ],
-                }
+                  },
+                ],
+              }
               : ""
           }
           selectedLang={this.state.selectedLang}
@@ -559,8 +559,8 @@ class OPBilling extends Component {
                     this.state.patient_id === null
                       ? true
                       : this.state.Billexists === true
-                      ? true
-                      : false
+                        ? true
+                        : false
                   }
                 >
                   <AlgaehLabel

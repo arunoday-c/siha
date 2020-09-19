@@ -163,7 +163,7 @@ export default {
                 VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
               values: [
                 pos_number,
-                today,
+                new Date(),
                 input.patient_id,
                 input.visit_id,
                 input.ip_id,
@@ -1094,9 +1094,9 @@ export default {
                       inputParam.pos_number,
                       inputParam.ScreenCode,
                       "Pharmacy Sales for " +
-                        location_acc[0].location_description +
-                        "/" +
-                        inputParam.net_amount,
+                      location_acc[0].location_description +
+                      "/" +
+                      inputParam.net_amount,
                       new Date(),
                       req.userIdentity.algaeh_d_app_user_id,
                     ],
@@ -1251,11 +1251,11 @@ export default {
                         parseFloat(
                           inputParam.pharmacy_stock_detail[i].quantity
                         ) *
-                          parseFloat(
-                            inputParam.pharmacy_stock_detail[i]
-                              .conversion_factor
-                          ) *
-                          parseFloat(item_avg_cost.waited_avg_cost),
+                        parseFloat(
+                          inputParam.pharmacy_stock_detail[i]
+                            .conversion_factor
+                        ) *
+                        parseFloat(item_avg_cost.waited_avg_cost),
                         decimal_places
                       );
 
