@@ -2,7 +2,7 @@ const executePDF = function executePDFMethod(options) {
   const _ = options.loadash;
   const mysql = options.mysql;
   const parameters = options.args;
-  return new Promise(function(resolve, reject) {
+  return new Promise(function (resolve, reject) {
     try {
       let inputs = {};
       const internalParameters = parameters.reportParams;
@@ -17,7 +17,7 @@ const executePDF = function executePDFMethod(options) {
       )["value"];
       let query =
         "select H.hims_f_pharmacy_pos_header_id,P.patient_code, H.pos_number, P.full_name as patient_full_name,  date_format(V.visit_date,'%d-%m-%Y') as visit_date, 	  \
- P.arabic_name as patient_arabaic_full_name,    date_format(H.pos_date,'%d-%m-%Y') as invoice_date,	  \
+ P.arabic_name as patient_arabaic_full_name,    H.pos_date as invoice_date,	  \
  H.policy_number,  date_format(P.registration_date,'%d-%m-%Y') as registration_date, 	E.full_name, 	   \
  E.arabic_name, 	trim(sub_department_name)as sub_department_name, 	H.card_number, 	V.age_in_years, 	P.gender, 	  \
  N.nationality, 	arabic_sub_department_name, 	IP.insurance_provider_name, 	IP.arabic_provider_name, 	   \
@@ -42,7 +42,7 @@ const executePDF = function executePDFMethod(options) {
         query =
           "select '--' as patient_code,patient_name as patient_full_name,pos_number, \
           date_format(pos_date,'%d-%m-%Y') as visit_date, '' as patient_arabaic_full_name,\
-date_format(pos_date,'%d-%m-%Y') as invoice_date   ,'--'as policy_number, \
+pos_date as invoice_date   ,'--'as policy_number, \
 '--'as registration_date,referal_doctor as full_name,'--' as arabic_name, \
 '--'as sub_department_name, card_number,'--' as age_in_years,'--' as gender, \
 N.nationality, '--' as arabic_sub_department_name,'--' as insurance_provider_name,'--' as arabic_provider_name, '--' as license_number,\
