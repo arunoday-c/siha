@@ -56,7 +56,8 @@ export function bulkInvoiceGeneration(req, res, next) {
         COALESCE(BH.patient_res,0) as patient_resp,
         COALESCE(BH.patient_tax,0)as patient_tax ,COALESCE(BH.patient_payable,0)as patient_payable ,COALESCE(BH.company_res,0) as company_resp,
         COALESCE(BH.company_tax,0)as company_tax ,COALESCE(BH.company_payable,0) as company_payable,COALESCE(BH.sec_company_payable,0) as sec_company_resp,
-        COALESCE(BH.sec_company_tax,0)as sec_company_tax,COALESCE(BH.sec_company_payable,0) as sec_company_payable,PIM.primary_card_number as card_number,V.age_in_years as card_holder_age,P.gender as card_holder_gender,
+        COALESCE(BH.sec_company_tax,0)as sec_company_tax,COALESCE(BH.sec_company_payable,0) as sec_company_payable,
+        PIM.primary_card_number as card_number,V.age_in_years as card_holder_age,P.gender as card_holder_gender,I.insurance_type,
         BD.hims_f_billing_details_id,BD.hims_f_billing_header_id,BD.service_type_id,BD.services_id,BD.quantity,BD.unit_cost,BD.gross_amount as dtl_gross_amount,
         BD.discount_amout as dtl_discount_amout,BD.net_amout as dtl_net_amount,BD.patient_resp as dtl_patient_resp,BD.patient_tax as dtl_patient_tax,
         BD.patient_payable as dtl_patient_payable,BD.comapany_resp as dtl_company_resp,BD.company_tax as dtl_company_tax,BD.company_payble as dtl_company_payable,
@@ -66,6 +67,7 @@ export function bulkInvoiceGeneration(req, res, next) {
         inner join hims_f_billing_header as BH on BH.patient_id  = V.patient_id  and BH.visit_id = V.hims_f_patient_visit_id
         inner join hims_f_patient as P on P.hims_d_patient_id = V.patient_id
         inner join hims_f_billing_details as BD on BH.hims_f_billing_header_id = BD.hims_f_billing_header_id
+        inner join hims_d_insurance_provider as I on I.hims_d_insurance_provider_id = PIM.primary_insurance_provider_id
         where V.hims_f_patient_visit_id  in (?);`,
         values: [vist_ids],
         printQuery: true,
@@ -89,7 +91,8 @@ export function bulkInvoiceGeneration(req, res, next) {
               card_holder_name,
               card_number,
               card_holder_age,
-              card_holder_gender
+              card_holder_gender,
+              insurance_type
             } = _.first(patientVist);
             counter++;
 
@@ -108,9 +111,9 @@ export function bulkInvoiceGeneration(req, res, next) {
                      patient_payable, company_resp, company_tax,company_payable, sec_company_resp,
                      sec_company_tax, sec_company_payable,insurance_provider_id,sub_insurance_id, 
                      network_id, network_office_id, card_number,policy_number,card_holder_name,
-                     card_holder_age, card_holder_gender, card_class, created_date, created_by,
+                     card_holder_age, card_holder_gender, card_class, claim_validated, created_date, created_by,
                       updated_date, updated_by,hospital_id ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,
-                          ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);`,
+                          ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);`,
                 values: [
                   generatedNumbers.INV_NUM,
                   new Date(),
@@ -171,6 +174,7 @@ export function bulkInvoiceGeneration(req, res, next) {
                   card_holder_age,
                   card_holder_gender,
                   null,
+                  insurance_type === "C" ? "V" : "P",
                   new Date(),
                   algaeh_d_app_user_id,
                   new Date(),

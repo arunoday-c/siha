@@ -361,6 +361,54 @@ export default {
     }
   },
 
+  cancelPackage: (req, res, next) => {
+    const _options = req.connection == null ? {} : req.connection;
+    const _mysql = new algaehMysql(_options);
+    try {
+      let inputParam = { ...req.body };
+      const utilities = new algaehUtilities();
+      let _ordered_package_id = []
+      // utilities
+      //   .logger()
+      //   .log("updateEncounterDetails: ", inputParam.billdetails);
+
+      const bill_package = _.filter(
+        inputParam.billdetails,
+        (f) =>
+          f.service_type_id ==
+          appsettings.hims_d_service_type.service_type_id.Package
+      );
+      bill_package.map((o) => {
+        _ordered_package_id.push(o.ordered_package_id);
+      });
+      // console.log("_ordered_package_id", _ordered_package_id)
+      // ordered_package_id
+      // utilities.logger().log("bill_consultation: ", bill_consultation.length);
+      if (_ordered_package_id.length > 0) {
+        _mysql
+          .executeQuery({
+            query:
+              "UPDATE hims_f_package_header set closed = 'Y', closed_type='C' WHERE `hims_f_package_header_id`=?",
+            values: [_ordered_package_id],
+            printQuery: true,
+          })
+          .then((pat_package) => {
+            next();
+          })
+          .catch((e) => {
+            _mysql.rollBackTransaction(() => {
+              next(error);
+            });
+          });
+      } else {
+        next();
+      }
+    } catch (e) {
+      _mysql.rollBackTransaction(() => {
+        next(error);
+      });
+    }
+  },
   updateEncounterDetails: (req, res, next) => {
     const _options = req.connection == null ? {} : req.connection;
     const _mysql = new algaehMysql(_options);
@@ -856,7 +904,7 @@ export default {
                       return f;
                   });
 
-                  console.log("bill", bill)
+                  // console.log("bill", bill)
 
                   const debit_amount = _.sumBy(bill, (s) => parseFloat(s.net_amout))
 

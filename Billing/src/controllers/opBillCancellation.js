@@ -9,7 +9,8 @@ const {
   checkLabSampleCollected,
   checkRadSheduled,
   generateAccountingEntry,
-  checkDentalProcedure
+  checkDentalProcedure,
+  cancelPackage
 } = opModels;
 import recModels from "../models/receiptentry";
 const { getReceiptEntry, addReceiptEntry } = recModels;
@@ -65,6 +66,7 @@ export default () => {
         next();
       }
     },
+    cancelPackage,
     generateAccountingEntry,
     updateOPBilling,
 
