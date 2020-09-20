@@ -180,7 +180,7 @@ class InvStockEnquiry extends Component {
                     <span>
                       <AlgaehLabel
                         label={{
-                          forceLabel: "After Trans. Ack. Required",
+                          forceLabel: "Re Order Items",
                         }}
                       />
                     </span>
