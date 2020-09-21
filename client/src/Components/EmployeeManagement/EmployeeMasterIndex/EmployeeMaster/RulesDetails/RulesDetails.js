@@ -68,7 +68,6 @@ class RulesDetails extends PureComponent {
                     </label>
                   </div>
                 </div>
-
                 <div className="col-6 form-group">
                   <label>Airfare Applicable</label>
                   <div className="customCheckbox">
@@ -83,7 +82,6 @@ class RulesDetails extends PureComponent {
                     </label>
                   </div>
                 </div>
-
                 <div className="col-6 form-group">
                   <label>PF Applicable</label>
                   <div className="customCheckbox">
@@ -98,7 +96,6 @@ class RulesDetails extends PureComponent {
                     </label>
                   </div>
                 </div>
-
                 <div className="col-6 form-group">
                   <label>Gratuity Applicable</label>
                   <div className="customCheckbox">
@@ -113,7 +110,6 @@ class RulesDetails extends PureComponent {
                     </label>
                   </div>
                 </div>
-
                 <div className="col-6 form-group">
                   <label>Suspend from Salary</label>
                   <div className="customCheckbox">
@@ -128,7 +124,6 @@ class RulesDetails extends PureComponent {
                     </label>
                   </div>
                 </div>
-
                 <AlagehFormGroup
                   div={{ className: "col-6" }}
                   label={{
@@ -146,43 +141,44 @@ class RulesDetails extends PureComponent {
                       onChange: changeChecks.bind(this, this),
                     },
                   }}
+                />{" "}
+                <AlagehFormGroup
+                  div={{ className: "col-6" }}
+                  label={{
+                    forceLabel: "Standard Working Hour",
+                  }}
+                  textBox={{
+                    className: "txt-fld",
+                    name: "standard_work_hours",
+                    value: this.state.standard_work_hours,
+                    others: {
+                      type: "time",
+                    },
+                    events: {
+                      onChange: changeChecks.bind(this, this),
+                    },
+                  }}
+                />
+                <AlagehFormGroup
+                  div={{ className: "col-6" }}
+                  label={{
+                    forceLabel: "Ramzan Working Hour",
+                  }}
+                  textBox={{
+                    className: "txt-fld",
+                    name: "ramzan_work_hours",
+                    value: this.state.ramzan_work_hours,
+                    others: {
+                      type: "time",
+                    },
+                    events: {
+                      onChange: changeChecks.bind(this, this),
+                    },
+                  }}
                 />
               </div>
             </div>
-            <AlagehFormGroup
-              div={{ className: "col-6" }}
-              label={{
-                forceLabel: "Standard Working Hour",
-              }}
-              textBox={{
-                className: "txt-fld",
-                name: "standard_work_hours",
-                value: this.state.standard_work_hours,
-                others: {
-                  type: "time",
-                },
-                events: {
-                  onChange: changeChecks.bind(this, this),
-                },
-              }}
-            />
-            <AlagehFormGroup
-              div={{ className: "col-6" }}
-              label={{
-                forceLabel: "Ramzan Working Hour",
-              }}
-              textBox={{
-                className: "txt-fld",
-                name: "ramzan_work_hours",
-                value: this.state.ramzan_work_hours,
-                others: {
-                  type: "time",
-                },
-                events: {
-                  onChange: changeChecks.bind(this, this),
-                },
-              }}
-            />
+
             <div className="col-7 d-none">
               <div className="row">
                 <div className="col-12">
