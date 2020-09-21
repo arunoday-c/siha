@@ -681,14 +681,14 @@ class FinalSettlement extends Component {
       return;
     }
 
-    let input_data = " hospital_id=" + this.state.hospital_id;
+    let input_data = " E.hospital_id=" + this.state.hospital_id;
 
     this.clearState(() => {
       AlgaehSearch({
         searchGrid: {
-          columns: spotlightSearch.Employee_details.employee,
+          columns: spotlightSearch.Employee_details_exit_employee.employee,
         },
-        searchName: "exit_employees",
+        searchName: "exit_employees_final_settlement",
         inputs: input_data,
         uri: "/gloabelSearch/get",
         onContainsChange: (text, serchBy, callBack) => {

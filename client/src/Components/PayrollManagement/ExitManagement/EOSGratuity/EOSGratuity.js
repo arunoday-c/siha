@@ -103,10 +103,10 @@ class EOSGratuity extends Component {
   employeeSearch() {
     AlgaehSearch({
       searchGrid: {
-        columns: spotlightSearch.Employee_details.employee,
+        columns: spotlightSearch.Employee_details_gratuity.employee,
       },
-      searchName: "exit_employees",
-      inputs: `gratuity_applicable = 'Y' and hospital_id=${this.state.hospital_id}`,
+      searchName: "exit_employees_gratuity",
+      inputs: `gratuity_applicable = 'Y' and E.hospital_id=${this.state.hospital_id}`,
       uri: "/gloabelSearch/get",
       onContainsChange: (text, serchBy, callBack) => {
         callBack(text);
