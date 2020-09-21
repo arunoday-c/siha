@@ -126,3 +126,70 @@ export function reSubmissionDetails(req, res, next) {
     });
   }
 }
+
+export function closeClaim(req, res, next) {
+  const _mysql = new algaehMysql();
+  const inputParam = req.body;
+
+  try {
+    _mysql
+      .executeQuery({
+        query: `update hims_f_insurance_statement set total_remittance_amount=?,total_denial_amount=?,writeoff_amount=?,insurance_status=? where 
+      hims_f_insurance_statement_id=?`,
+        values: [
+          inputParam.total_remittance_amount,
+          inputParam.total_denial_amount,
+          inputParam.writeoff_amount,
+          inputParam.insurance_status,
+          inputParam.hims_f_insurance_statement_id,
+        ],
+        printQuery: true,
+      })
+      .then((result) => {
+
+        _mysql
+          .executeQuery({
+            query: `INSERT INTO hims_f_insurance_remitance (claim_id, cliam_number, company_payable, remit_amount, 
+              denail_amount, writeoff_amount) values(?,?,?,?,?,?); `,
+            values: [
+              inputParam.hims_f_insurance_statement_id,
+              inputParam.insurance_statement_number,
+              inputParam.total_company_payable,
+              inputParam.total_remittance_amount,
+              inputParam.total_denial_amount,
+              inputParam.writeoff_amount,
+            ],
+            printQuery: true
+          })
+          .then((final_result) => {
+            _mysql.commitTransaction((error) => {
+              if (error) {
+                _mysql.rollBackTransaction(() => {
+                  next(error);
+                });
+                return;
+              }
+              req.records = final_result;
+              next();
+            });
+
+          })
+          .catch((error) => {
+            _mysql.rollBackTransaction(() => {
+              next(error);
+            });
+          });
+
+
+      })
+      .catch((e) => {
+        _mysql.releaseConnection();
+        next(e);
+      });
+
+  } catch (error) {
+    _mysql.rollBackTransaction(() => {
+      next(error);
+    });
+  }
+}

@@ -741,7 +741,7 @@ export default class NewPackage extends PureComponent {
                       columns={spotlightSearch.Services.servicemaster}
                       displayField="service_name"
                       value={this.state.service_name}
-                      searchName="servicemaster"
+                      searchName="package_service"
                       onClick={this.serviceHandeler.bind(this)}
                       ref={(attReg) => {
                         this.attReg = attReg;

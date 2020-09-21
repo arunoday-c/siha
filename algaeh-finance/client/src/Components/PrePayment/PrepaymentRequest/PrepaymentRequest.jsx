@@ -365,7 +365,7 @@ export function PrepaymentRequest() {
     <Spin spinning={loading}>
       <div style={{ paddingTop: 15 }}>
         <div className="row">
-          <div className="col-12">
+          <div className="col-3">
             <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-title">
                 <div className="caption">
@@ -375,328 +375,333 @@ export function PrepaymentRequest() {
               </div>
               <form onSubmit={handleSubmit(onSubmit)}>
                 <div className="portlet-body">
-                  <div
-                    className="row"
-                    style={{ overflow: "auto", maxHeight: "66vh" }}
-                  >
+                  <div className="row">
                     {" "}
-                    <Controller
-                      control={control}
-                      name="hospital_id"
-                      rules={{ required: "Please select a branch" }}
-                      render={({ onBlur, onChange, value }) => (
-                        <AlgaehAutoComplete
-                          div={{ className: "col form-group" }}
-                          label={{
-                            forceLabel: "Branch",
-                            isImp: true,
-                          }}
-                          selector={{
-                            others: {
-                              disabled: disableEdit,
-                            },
-                            value,
-                            onChange: (_, selected) => {
-                              onChange(selected);
-                              setValue("employee_id", "");
-                              setEmployeeIDNum("");
-                              setValue("cost_center_id", "");
-                            },
-                            name: "hospital_id",
-                            dataSource: {
-                              data: branchAndCenters,
-                              valueField: "hims_d_hospital_id",
-                              textField: "hospital_name",
-                            },
-                          }}
-                        />
-                      )}
-                    />
-                    {errors.hospital_id && (
-                      <span>{errors.hospital_id.message}</span>
-                    )}
-                    <Controller
-                      control={control}
-                      name="cost_center_id"
-                      rules={{ required: "Please select a cost center" }}
-                      render={({ onBlur, onChange, value }) => (
-                        <AlgaehAutoComplete
-                          div={{ className: "col form-group" }}
-                          label={{
-                            forceLabel: "Cost Center",
-                            isImp: true,
-                          }}
-                          selector={{
-                            others: {
-                              disabled: !ihospital || disableEdit,
-                            },
-                            value,
-                            onChange: (_, selected) => {
-                              onChange(selected);
-                            },
-                            onBlur: (_, selected) => {
-                              onBlur(selected);
-                            },
-                            name: "cost_center_id",
-                            dataSource: {
-                              data: ihospital
-                                ? branchAndCenters.filter(
-                                    (item) =>
-                                      item.hims_d_hospital_id == ihospital
-                                  )[0].cost_centers
-                                : [],
-                              valueField: "cost_center_id",
-                              textField: "cost_center",
-                            },
-                          }}
-                        />
-                      )}
-                    />
-                    {errors.cost_center_id && (
-                      <span>{errors.cost_center_id.message}</span>
-                    )}
-                    <Controller
-                      control={control}
-                      name="prepayment_type_id"
-                      rules={{ required: "Please select a type" }}
-                      render={({ value, onChange, onBlur }) => (
-                        <AlgaehAutoComplete
-                          div={{ className: "col form-group" }}
-                          label={{
-                            forceLabel: "Prepayment Type",
-                            isImp: true,
-                          }}
-                          selector={{
-                            others: {
-                              disabled: disableEdit,
-                            },
-                            value,
-                            onChange: (_, selected) => {
-                              onChange(selected);
-                              setValue("start_date", undefined);
-                              setValue("end_date", undefined);
-                              setEmployeeReq(_.employees_req);
-                            },
-                            onClear: () => {
-                              onChange("");
-                              setValue("start_date", undefined);
-                              setValue("end_date", undefined);
-                            },
-                            name: "prepayment_type_id",
-                            dataSource: {
-                              data: prePaymentTypes,
-                              textField: "prepayment_desc",
-                              valueField: "finance_d_prepayment_type_id",
-                            },
-                          }}
-                        />
-                      )}
-                    />
-                    {errors.prepayment_type_id && (
-                      <span>{errors.prepayment_type_id.message}</span>
-                    )}
-                    {employees_req === "Y" ? (
-                      <Controller
-                        name="employee_id"
-                        control={control}
-                        rules={{ required: "Please select an employee" }}
-                        render={({ value, onBlur, onChange }) => (
-                          <AlgaehAutoComplete
-                            div={{ className: "col form-group " }}
-                            label={{
-                              forceLabel: "Employee",
-                              isImp: true,
-                            }}
-                            selector={{
-                              others: {
-                                disabled: disableEdit,
-                              },
-                              value,
-                              onChange: (_, selected) => {
-                                onChange(selected);
-                                setEmployeeIDNum(_.identity_no);
-                              },
-                              onBlur: (_, selected) => {
-                                onBlur(selected);
-                              },
-                              name: "employee_id",
-                              dataSource: {
-                                data: ihospital
-                                  ? employees.filter(
-                                      (item) => item.hospital_id == ihospital
-                                    )
-                                  : employees,
-                                textField: "full_name",
-                                valueField: "hims_d_employee_id",
-                              },
-                            }}
-                          />
-                        )}
-                      />
-                    ) : null}
-                    {employees_req === "Y" ? (
-                      <div className="col">
-                        <label className="style_Label ">Employee ID</label>
-                        <h6>{identity_no ? identity_no : "-----"}</h6>
-                      </div>
-                    ) : null}
-                    <Controller
-                      control={control}
-                      // rules={{ required: "Prepayment Remarks" }}
-                      name="prepayment_remarks"
-                      render={(props) => (
-                        <AlgaehFormGroup
-                          div={{
-                            className: "col form-group algaeh-text-fld",
-                          }}
-                          label={{
-                            forceLabel: "Prepayment Remarks",
-                            // isImp: true,
-                          }}
-                          textBox={{
-                            ...props,
-                            type: "text",
-                            className: "form-control",
-                          }}
-                        />
-                      )}
-                    />
-                    {errors.prepayment_remarks && (
-                      <span>{errors.prepayment_remarks.message}</span>
-                    )}
-                    <Controller
-                      control={control}
-                      rules={{ required: "Please enter an amount" }}
-                      name="prepayment_amount"
-                      render={(props) => (
-                        <AlgaehFormGroup
-                          div={{
-                            className: "col-6 form-group algaeh-text-fld",
-                          }}
-                          label={{
-                            forceLabel: "Prepayment Amt.",
-                            isImp: true,
-                          }}
-                          textBox={{
-                            ...props,
-                            type: "number",
-                            className: "form-control",
-                          }}
-                        />
-                      )}
-                    />
-                    {errors.prepayment_amount && (
-                      <span>{errors.prepayment_amount.message}</span>
-                    )}
-                    <Controller
-                      name="start_date"
-                      control={control}
-                      rules={{ required: "Please select a start date" }}
-                      render={({ value, onChange }) => (
-                        <AlgaehDateHandler
-                          div={{
-                            className: "col-6 algaeh-date-fld",
-                          }}
-                          label={{
-                            forceLabel: "Start Date",
-                            isImp: true,
-                          }}
-                          textBox={{
-                            className: "form-control",
-                            value,
-                          }}
-                          events={{
-                            onChange: (mdate) => {
-                              if (mdate) {
-                                onChange(mdate._d);
-                                const prepayItem = prePaymentTypes.filter(
-                                  (item) =>
-                                    item.finance_d_prepayment_type_id ==
-                                    prepayment_type_id
-                                );
-                                const count =
-                                  prepayItem[0]?.prepayment_duration - 1 || 1;
-                                setValue(
-                                  "end_date",
-                                  moment(mdate).add(count, "months")._d
-                                );
-                              } else {
-                                onChange(undefined);
-                                setValue("end_date", undefined);
-                              }
-                            },
-                            onClear: () => {
-                              onChange(undefined);
-                              setValue("end_date", undefined);
-                            },
-                          }}
-                          others={{ disabled: !prepayment_type_id }}
-                          // maxDate={moment().add(1, "days")}
-                        />
-                      )}
-                    />
-                    {errors.start_date && (
-                      <span>{errors.start_date.message}</span>
-                    )}
-                    <Controller
-                      name="end_date"
-                      control={control}
-                      render={(props) => (
-                        <AlgaehDateHandler
-                          div={{
-                            className: "col-6 algaeh-date-fld form-group",
-                          }}
-                          label={{
-                            forceLabel: "End Date",
-                            isImp: true,
-                          }}
-                          textBox={{
-                            value: props.value,
-                            className: "form-control",
-                          }}
-                          events={{
-                            onChange: (mdate) => props.onChange(mdate?._d),
-                          }}
-                          others={{ disabled: true }}
-                          // maxDate={moment().add(1, "days")}
-                        />
-                      )}
-                    />
-                    <div className="col-12">
-                      <Dragger
-                        accept=".doc,.docx,application/msword,.pdf"
-                        name="payment_reqDoc"
-                        onRemove={(file) => {
-                          setPayment_reqDoc((state) => {
-                            const index = state.indexOf(file);
-                            const newFileList = [...state];
-                            newFileList.splice(index, 1);
-                            return newFileList;
-                          });
-                        }}
-                        beforeUpload={(file) => {
-                          setPayment_reqDoc((state) => {
-                            return [...state, file];
-                          });
-                          return false;
-                        }}
-                        // disabled={this.state.dataExists && !this.state.editMode}
-                        fileList={payment_reqDoc}
-                      >
-                        <p className="upload-drag-icon">
-                          <i className="fas fa-file-upload"></i>
-                        </p>
-                        <p className="ant-upload-text">
-                          {payment_reqDoc
-                            ? `Click or Drag a file to replace the current file`
-                            : `Click or Drag a file to this area to upload`}
-                        </p>
-                      </Dragger>
-                    </div>
                     <div className="col-12">
                       <div className="row">
+                        {" "}
+                        <Controller
+                          control={control}
+                          name="hospital_id"
+                          rules={{ required: "Please select a branch" }}
+                          render={({ onBlur, onChange, value }) => (
+                            <AlgaehAutoComplete
+                              div={{ className: "col-12 form-group" }}
+                              label={{
+                                forceLabel: "Branch",
+                                isImp: true,
+                              }}
+                              selector={{
+                                others: {
+                                  disabled: disableEdit,
+                                },
+                                value,
+                                onChange: (_, selected) => {
+                                  onChange(selected);
+                                  setValue("employee_id", "");
+                                  setEmployeeIDNum("");
+                                  setValue("cost_center_id", "");
+                                },
+                                name: "hospital_id",
+                                dataSource: {
+                                  data: branchAndCenters,
+                                  valueField: "hims_d_hospital_id",
+                                  textField: "hospital_name",
+                                },
+                              }}
+                            />
+                          )}
+                        />
+                        {errors.hospital_id && (
+                          <span>{errors.hospital_id.message}</span>
+                        )}
+                        <Controller
+                          control={control}
+                          name="cost_center_id"
+                          rules={{ required: "Please select a cost center" }}
+                          render={({ onBlur, onChange, value }) => (
+                            <AlgaehAutoComplete
+                              div={{ className: "col-12 form-group" }}
+                              label={{
+                                forceLabel: "Cost Center",
+                                isImp: true,
+                              }}
+                              selector={{
+                                others: {
+                                  disabled: !ihospital || disableEdit,
+                                },
+                                value,
+                                onChange: (_, selected) => {
+                                  onChange(selected);
+                                },
+                                onBlur: (_, selected) => {
+                                  onBlur(selected);
+                                },
+                                name: "cost_center_id",
+                                dataSource: {
+                                  data: ihospital
+                                    ? branchAndCenters.filter(
+                                        (item) =>
+                                          item.hims_d_hospital_id == ihospital
+                                      )[0].cost_centers
+                                    : [],
+                                  valueField: "cost_center_id",
+                                  textField: "cost_center",
+                                },
+                              }}
+                            />
+                          )}
+                        />
+                        {errors.cost_center_id && (
+                          <span>{errors.cost_center_id.message}</span>
+                        )}
+                        <Controller
+                          control={control}
+                          name="prepayment_type_id"
+                          rules={{ required: "Please select a type" }}
+                          render={({ value, onChange, onBlur }) => (
+                            <AlgaehAutoComplete
+                              div={{ className: "col-12 form-group" }}
+                              label={{
+                                forceLabel: "Prepayment Type",
+                                isImp: true,
+                              }}
+                              selector={{
+                                others: {
+                                  disabled: disableEdit,
+                                },
+                                value,
+                                onChange: (_, selected) => {
+                                  onChange(selected);
+                                  setValue("start_date", undefined);
+                                  setValue("end_date", undefined);
+                                  setEmployeeReq(_.employees_req);
+                                },
+                                onClear: () => {
+                                  onChange("");
+                                  setValue("start_date", undefined);
+                                  setValue("end_date", undefined);
+                                },
+                                name: "prepayment_type_id",
+                                dataSource: {
+                                  data: prePaymentTypes,
+                                  textField: "prepayment_desc",
+                                  valueField: "finance_d_prepayment_type_id",
+                                },
+                              }}
+                            />
+                          )}
+                        />
+                        {errors.prepayment_type_id && (
+                          <span>{errors.prepayment_type_id.message}</span>
+                        )}
+                        {employees_req === "Y" ? (
+                          <Controller
+                            name="employee_id"
+                            control={control}
+                            rules={{ required: "Please select an employee" }}
+                            render={({ value, onBlur, onChange }) => (
+                              <AlgaehAutoComplete
+                                div={{ className: "col-12 form-group " }}
+                                label={{
+                                  forceLabel: "Employee",
+                                  isImp: true,
+                                }}
+                                selector={{
+                                  others: {
+                                    disabled: disableEdit,
+                                  },
+                                  value,
+                                  onChange: (_, selected) => {
+                                    onChange(selected);
+                                    setEmployeeIDNum(_.identity_no);
+                                  },
+                                  onBlur: (_, selected) => {
+                                    onBlur(selected);
+                                  },
+                                  name: "employee_id",
+                                  dataSource: {
+                                    data: ihospital
+                                      ? employees.filter(
+                                          (item) =>
+                                            item.hospital_id == ihospital
+                                        )
+                                      : employees,
+                                    textField: "full_name",
+                                    valueField: "hims_d_employee_id",
+                                  },
+                                }}
+                              />
+                            )}
+                          />
+                        ) : null}
+                        {employees_req === "Y" ? (
+                          <div className="col-4">
+                            <label className="style_Label ">Employee ID</label>
+                            <h6>{identity_no ? identity_no : "-----"}</h6>
+                          </div>
+                        ) : null}
+                        <Controller
+                          control={control}
+                          // rules={{ required: "Prepayment Remarks" }}
+                          name="prepayment_remarks"
+                          render={(props) => (
+                            <AlgaehFormGroup
+                              div={{
+                                className: "col-12 form-group algaeh-text-fld",
+                              }}
+                              label={{
+                                forceLabel: "Prepayment Remarks",
+                                // isImp: true,
+                              }}
+                              textBox={{
+                                ...props,
+                                type: "text",
+                                className: "form-control",
+                              }}
+                            />
+                          )}
+                        />
+                        {errors.prepayment_remarks && (
+                          <span>{errors.prepayment_remarks.message}</span>
+                        )}
+                        <Controller
+                          control={control}
+                          rules={{ required: "Please enter an amount" }}
+                          name="prepayment_amount"
+                          render={(props) => (
+                            <AlgaehFormGroup
+                              div={{
+                                className: "col-6 form-group algaeh-text-fld",
+                              }}
+                              label={{
+                                forceLabel: "Prepayment Amt.",
+                                isImp: true,
+                              }}
+                              textBox={{
+                                ...props,
+                                type: "number",
+                                className: "form-control",
+                              }}
+                            />
+                          )}
+                        />
+                        {errors.prepayment_amount && (
+                          <span>{errors.prepayment_amount.message}</span>
+                        )}
+                        <Controller
+                          name="start_date"
+                          control={control}
+                          rules={{ required: "Please select a start date" }}
+                          render={({ value, onChange }) => (
+                            <AlgaehDateHandler
+                              div={{
+                                className: "col-6 algaeh-date-fld",
+                              }}
+                              label={{
+                                forceLabel: "Start Date",
+                                isImp: true,
+                              }}
+                              textBox={{
+                                className: "form-control",
+                                value,
+                              }}
+                              events={{
+                                onChange: (mdate) => {
+                                  if (mdate) {
+                                    onChange(mdate._d);
+                                    const prepayItem = prePaymentTypes.filter(
+                                      (item) =>
+                                        item.finance_d_prepayment_type_id ==
+                                        prepayment_type_id
+                                    );
+                                    const count =
+                                      prepayItem[0]?.prepayment_duration - 1 ||
+                                      1;
+                                    setValue(
+                                      "end_date",
+                                      moment(mdate).add(count, "months")._d
+                                    );
+                                  } else {
+                                    onChange(undefined);
+                                    setValue("end_date", undefined);
+                                  }
+                                },
+                                onClear: () => {
+                                  onChange(undefined);
+                                  setValue("end_date", undefined);
+                                },
+                              }}
+                              others={{ disabled: !prepayment_type_id }}
+                              // maxDate={moment().add(1, "days")}
+                            />
+                          )}
+                        />
+                        {errors.start_date && (
+                          <span>{errors.start_date.message}</span>
+                        )}
+                        <Controller
+                          name="end_date"
+                          control={control}
+                          render={(props) => (
+                            <AlgaehDateHandler
+                              div={{
+                                className: "col-6 algaeh-date-fld form-group",
+                              }}
+                              label={{
+                                forceLabel: "End Date",
+                                isImp: true,
+                              }}
+                              textBox={{
+                                value: props.value,
+                                className: "form-control",
+                              }}
+                              events={{
+                                onChange: (mdate) => props.onChange(mdate?._d),
+                              }}
+                              others={{ disabled: true }}
+                              // maxDate={moment().add(1, "days")}
+                            />
+                          )}
+                        />
+                      </div>
+                    </div>{" "}
+                    <div className="col-12">
+                      <div className="row">
+                        <div className="col-3 draggerCntr">
+                          <Dragger
+                            accept=".doc,.docx,application/msword,.pdf"
+                            name="payment_reqDoc"
+                            onRemove={(file) => {
+                              setPayment_reqDoc((state) => {
+                                const index = state.indexOf(file);
+                                const newFileList = [...state];
+                                newFileList.splice(index, 1);
+                                return newFileList;
+                              });
+                            }}
+                            beforeUpload={(file) => {
+                              setPayment_reqDoc((state) => {
+                                return [...state, file];
+                              });
+                              return false;
+                            }}
+                            // disabled={this.state.dataExists && !this.state.editMode}
+                            fileList={payment_reqDoc}
+                          >
+                            <p className="upload-drag-icon">
+                              <i className="fas fa-file-upload"></i>
+                            </p>
+                            {/* <p className="ant-upload-text">
+                              {payment_reqDoc
+                                ? `Click to Upload`
+                                : `Click to Upload`}
+                            </p> */}
+                          </Dragger>
+                        </div>
+                        <div className="col-9"></div>
                         <div className="col-12">
-                          <ul className="contractAttachmentList">
+                          <ul className="prepaymentachmentList">
                             {prepayment_docs.length && disableEdit ? (
                               prepayment_docs.map((doc) => (
                                 <li>
@@ -720,31 +725,29 @@ export function PrepaymentRequest() {
                             )}
                           </ul>
                         </div>
+                        <div
+                          className="col-12"
+                          style={{ textAlign: "right", marginTop: 10 }}
+                        >
+                          {" "}
+                          <button
+                            className="btn btn-default btn-sm"
+                            type="button"
+                            onClick={() => {
+                              resetForm();
+                            }}
+                          >
+                            Clear
+                          </button>
+                          <button
+                            type="submit"
+                            className="btn btn-primary btn-sm"
+                            style={{ marginLeft: 5 }}
+                          >
+                            {disableEdit ? "Update" : "Add to List"}
+                          </button>
+                        </div>
                       </div>
-                    </div>
-                  </div>
-                  <div className="row">
-                    <div
-                      className="col-12"
-                      style={{ textAlign: "right", marginTop: 10 }}
-                    >
-                      {" "}
-                      <button
-                        className="btn btn-default btn-sm"
-                        type="button"
-                        onClick={() => {
-                          resetForm();
-                        }}
-                      >
-                        Clear
-                      </button>
-                      <button
-                        type="submit"
-                        className="btn btn-primary btn-sm"
-                        style={{ marginLeft: 5 }}
-                      >
-                        {disableEdit ? "Update" : "Add to List"}
-                      </button>
                     </div>
                   </div>
                 </div>
@@ -752,7 +755,7 @@ export function PrepaymentRequest() {
             </div>
           </div>
 
-          <div className="col-12">
+          <div className="col-9">
             <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-title">
                 <div className="caption">
@@ -780,6 +783,64 @@ export function PrepaymentRequest() {
                           </div>
                         ) : null;
                       },
+                    },
+                    {
+                      // fieldName: "",
+                      label: "Attachment",
+                      sortable: true,
+                      displayTemplate: (row) => {
+                        // <span>{row.english_name}</span>
+                        return (
+                          <div>
+                            <Modal
+                              title="Document List"
+                              // title="Request Details"
+                              visible={visible}
+                              footer={null}
+                              onCancel={() => setVisible(false)}
+                              className=""
+                              className={`algaehNewModal preAttachmentModal`}
+                            >
+                              <div className="col-12 popupInner margin-top-15">
+                                <div className="row">
+                                  <div className="col">
+                                    <ul className="preAttachmentList">
+                                      {prepayment_docs.length ? (
+                                        prepayment_docs.map((doc) => (
+                                          <li>
+                                            <b> {doc.filename} </b>
+                                            <span>
+                                              <i
+                                                className="fas fa-download"
+                                                onClick={() => downloadDoc(doc)}
+                                              ></i>
+                                            </span>
+                                          </li>
+                                        ))
+                                      ) : (
+                                        <div
+                                          className="col-12 noAttachment"
+                                          key={1}
+                                        >
+                                          <p>No Attachments Available</p>
+                                        </div>
+                                      )}
+                                    </ul>
+                                  </div>
+                                </div>
+                              </div>
+                            </Modal>
+                            <span
+                              onClick={() => {
+                                openPrepayDocModal(row);
+                              }}
+                            >
+                              <i className="fas fa-eye"></i>
+                            </span>
+                          </div>
+                        );
+                      },
+                      others: { minWidth: 40 },
                     },
 
                     {
@@ -893,53 +954,6 @@ export function PrepaymentRequest() {
                       // editorTemplate: (row) => {
                       //   return null;
                       // },
-                    },
-                    {
-                      // fieldName: "",
-                      label: "Attached Document",
-                      sortable: true,
-                      displayTemplate: (row) => {
-                        // <span>{row.english_name}</span>
-                        return (
-                          <div>
-                            <Modal
-                              title="Notify Users List"
-                              // title="Request Details"
-                              visible={visible}
-                              footer={null}
-                              onCancel={() => setVisible(false)}
-                            >
-                              <ul className="contractAttachmentList">
-                                {prepayment_docs.length ? (
-                                  prepayment_docs.map((doc) => (
-                                    <li>
-                                      <b> {doc.filename} </b>
-                                      <span>
-                                        <i
-                                          className="fas fa-download"
-                                          onClick={() => downloadDoc(doc)}
-                                        ></i>
-                                      </span>
-                                    </li>
-                                  ))
-                                ) : (
-                                  <div className="col-12 noAttachment" key={1}>
-                                    <p>No Attachments Available</p>
-                                  </div>
-                                )}
-                              </ul>
-                            </Modal>
-                            <span
-                              onClick={() => {
-                                openPrepayDocModal(row);
-                              }}
-                            >
-                              <i className="fas fa-eye"></i>
-                            </span>
-                          </div>
-                        );
-                      },
-                      others: { minWidth: 40 },
                     },
                     // editorTemplate: (row) => {
                     //   return null;

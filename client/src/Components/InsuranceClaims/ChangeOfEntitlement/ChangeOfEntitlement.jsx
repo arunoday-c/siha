@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-// import moment from "moment";
+import moment from "moment";
 import { useQuery } from "react-query";
 import { AlgaehLabel, Spin, AlgaehDataGrid } from "algaeh-react-components";
 import {
@@ -69,14 +69,11 @@ export default function ChangeEntitlement(props) {
             <h6>{visit?.full_name ?? "Patient Name"}</h6>
           </div>
         </div>
+
+        <InsuranceForm patientInsurance={insurance} />
         <div className="row">
-          <div
-            className="col-lg-12"
-            id="InvoiceGen"
-            style={{ paddingTop: "15px" }}
-          >
+          <div className="col-6" id="InvoiceGen" style={{ paddingTop: "15px" }}>
             <AlgaehDataGrid
-              id="InvoiceGenGrid"
               columns={[
                 // billed
                 {
@@ -99,8 +96,75 @@ export default function ChangeEntitlement(props) {
               paging={{ page: 0, rowsPerPage: 10 }}
             />
           </div>
+          <div className="col-6 insurance-sec">
+            <div className="row">
+              <div className="col-12">
+                <h6 style={{ marginTop: 10 }}>Primary Insurance</h6>
+                <div className="row">
+                  <div className="col-4">
+                    <AlgaehLabel
+                      label={{
+                        fieldName: "insurance_company",
+                      }}
+                    />
+                    <h6>{insurance?.[0]?.insurance_provider_name ?? "---"}</h6>
+                  </div>
+
+                  <div className="col-4">
+                    <AlgaehLabel
+                      label={{
+                        fieldName: "sub_insurance_company",
+                      }}
+                    />
+                    <h6>
+                      {insurance?.[0]?.sub_insurance_provider_name ?? "---"}
+                    </h6>
+                  </div>
+                  <div className="col-4">
+                    <AlgaehLabel
+                      label={{
+                        fieldName: "plan_desc",
+                      }}
+                    />
+                    <h6>{insurance?.[0]?.network_type ?? "---"}</h6>
+                  </div>
+
+                  <div className="col-4">
+                    <AlgaehLabel
+                      label={{
+                        fieldName: "policy_no",
+                      }}
+                    />
+                    <h6>{insurance?.[0]?.policy_number ?? "---"}</h6>
+                  </div>
+                  <div className="col-4">
+                    <AlgaehLabel
+                      label={{
+                        fieldName: "card_no",
+                      }}
+                    />
+                    <h6>{insurance?.[0]?.card_number ?? "---"}</h6>
+                  </div>
+
+                  <div className="col-4">
+                    <AlgaehLabel
+                      label={{
+                        fieldName: "ins_expiry_date",
+                      }}
+                    />
+                    <h6>
+                      {insurance?.[0]?.effective_end_date
+                        ? moment(insurance?.[0]?.effective_end_date).format(
+                            "DD/MM/YYYY"
+                          )
+                        : "---"}
+                    </h6>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-        <InsuranceForm patientInsurance={insurance} />
         <div className="hptl-phase1-footer">
           <button
             className="btn btn-default"

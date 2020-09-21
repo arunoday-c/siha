@@ -1,0 +1,89 @@
+{{{importStyle 'css/algaehReportStyles.css'}}}
+
+<body>
+    <div class="print-body">
+
+        <section>
+            {{!-- <table class="tableForLabel" cell-padding="0">
+                <tr>
+                    <td><label class="textEnLft">Total Employees</label>:<span class="valueText">{{no_employees}}</span>
+                    </td>
+                </tr>
+            </table> --}}
+
+
+        </section>
+        <section>
+            <table class="tableForData" cell-padding="0">
+                <thead>
+                    <tr>
+                        <th>Sl No.</th>
+                        <th>Visit Code</th>
+                        <th>Service Name</th>
+                        <th>Service Ordered</th>
+                        <th>Service Utlized</th>
+                        <th>Service Balance</th>
+                        <th>Amount</th>
+                        <th>Total Amount</th>
+                    </tr>
+
+                </thead>
+                <tbody>
+                    {{!-- <tr>
+                        <td colspan="10"></td>
+                        <td colspan="1"><span class="textFloatRight">Total No.
+                                Employees: <b>{{no_employees}}</b></span></td>
+
+                    </tr> --}}
+                    {{#hasElement result}}
+
+
+                    {{#each result}}
+                    {{!-- <tr>
+                        <td colspan="8" class="tableSubHdg">{{service_type}}</td>
+
+                    </tr> --}}
+                    {{#each patientList}}
+                    <tr>
+                        <td colspan="8" class="tableSubHdg2">{{patient_code}} - {{full_name}}
+                        </td>
+                        {{!-- <td class="tableSubHdg numberFld"><b>{{totalAmt}}</b></td> --}}
+                    </tr>
+                    {{#each docs}}
+                    <tr>
+                        <td>{{inc @index}}</td>
+                        <td>{{visit_code}}</td>
+                        <td>{{service_name}}</td>
+                       <td>{{qty}}</td>
+                       <td>{{utilized_qty}}</td>
+                       <td>{{available_qty}}</td>
+                       <td>{{service_amount}}</td>
+                       <td>{{tot_service_amount }}</td>
+                    </tr>
+                    {{/each }}
+                     {{!-- <tr class="numberFldTotalBottom">
+                        <td colspan="4"></td>
+                        <td class="numberFld">{{total_net_amout}}</td>
+                    </tr>  --}}
+                    {{/each }}{{/each }}
+                  
+                    {{else}}
+                    <tr>
+                        <td colspan="6" class="noResultTextReport">No Records Found</td>
+                    </tr>{{/hasElement }}
+                </tbody>
+
+            </table>
+             {{!-- <table class="tableTotal">
+                <tr class="bold">
+                    <td>Net Stock Value</td>
+                    <td class="numberFld">{{net_stock_value}}</td>
+                   
+                </tr>
+               
+            </table> --}}
+        </section>
+        {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
+
+    </div>
+</body>

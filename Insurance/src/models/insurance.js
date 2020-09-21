@@ -1609,11 +1609,10 @@ export function saveMultiStatement(req, res, next) {
               printQuery: true,
             })
             .then((result) => {
-
-              req.body.insurance_statement_number = invNum
-              req.body.sub_insurance_id = sub_insurance_id
-              req.body.total_company_payable = total_company_payable
-              req.body.hims_f_insurance_statement_id = result.insertId
+              req.body.insurance_statement_number = invNum;
+              req.body.sub_insurance_id = sub_insurance_id;
+              req.body.total_company_payable = total_company_payable;
+              req.body.hims_f_insurance_statement_id = result.insertId;
 
               _mysql
                 .executeQuery({
@@ -1628,12 +1627,11 @@ export function saveMultiStatement(req, res, next) {
                     result.insertId,
                     new Date(),
                     invoiceList,
-                    invoiceList
+                    invoiceList,
                   ],
                   printQuery: true,
                 })
                 .then((updated) => {
-
                   // _mysql.commitTransaction(() => {
                   //   _mysql.releaseConnection();
                   req.records = {
@@ -1673,8 +1671,6 @@ export function generateAccountingEntry(req, res, next) {
     const _mysql = new algaehMysql(_options);
     // const utilities = new algaehUtilities();
 
-
-
     _mysql
       .executeQuery({
         query:
@@ -1685,12 +1681,11 @@ export function generateAccountingEntry(req, res, next) {
       .then((product_type) => {
         const inputParam = req.body;
 
-        console.log("inputParam.sub_insurance_id", inputParam.sub_insurance_id)
+        console.log("inputParam.sub_insurance_id", inputParam.sub_insurance_id);
         if (product_type.length == 1 && inputParam.sub_insurance_id > 0) {
           _mysql
             .executeQuery({
-              query:
-                `select head_id, child_id from finance_accounts_maping where account in ('OP_CTRL');
+              query: `select head_id, child_id from finance_accounts_maping where account in ('OP_CTRL');
                   select insurance_sub_name, head_id, child_id from hims_d_insurance_sub 
                   where hims_d_insurance_sub_id=${inputParam.sub_insurance_id} limit 1`,
               printQuery: true,
@@ -1698,12 +1693,10 @@ export function generateAccountingEntry(req, res, next) {
             .then((Result) => {
               const OP_CTRL = Result[0][0];
               const insurance_data = Result[1][0];
-              console.log("OP_CTRL", OP_CTRL)
-              console.log("insurance_data", insurance_data)
+              console.log("OP_CTRL", OP_CTRL);
+              console.log("insurance_data", insurance_data);
 
-
-              console.log("OP_CTRL", OP_CTRL)
-
+              console.log("OP_CTRL", OP_CTRL);
 
               let voucher_type = "";
               let narration = "";
@@ -1713,7 +1706,6 @@ export function generateAccountingEntry(req, res, next) {
 
               voucher_type = "journal";
               narration = `, insurance (${insurance_data.insurance_sub_name}) receivable: ${inputParam.total_company_payable}`;
-
 
               EntriesArray.push({
                 payment_date: new Date(),
@@ -1735,13 +1727,13 @@ export function generateAccountingEntry(req, res, next) {
                 hospital_id: req.userIdentity.hospital_id,
               });
 
-              console.log("EntriesArray", EntriesArray)
+              console.log("EntriesArray", EntriesArray);
               _mysql
                 .executeQueryWithTransaction({
                   query:
                     "INSERT INTO finance_day_end_header (transaction_date,amount,voucher_type,document_id,\
                 document_number,from_screen,narration,entered_by,entered_date) \
-                VALUES (?,?,?,?,?,?,?,?,?);" ,
+                VALUES (?,?,?,?,?,?,?,?,?);",
                   values: [
                     new Date(),
                     inputParam.total_company_payable,
@@ -1758,10 +1750,9 @@ export function generateAccountingEntry(req, res, next) {
                 .then((header_result) => {
                   let project_id = null;
 
-                  console.log("header_result", header_result)
+                  console.log("header_result", header_result);
                   let headerDayEnd = header_result;
                   // headerDayEnd = header_result;
-
 
                   const month = moment().format("M");
                   const year = moment().format("YYYY");
@@ -1792,21 +1783,21 @@ export function generateAccountingEntry(req, res, next) {
                       printQuery: true,
                     })
                     .then((subResult) => {
-                      console.log("subResult", subResult)
+                      console.log("subResult", subResult);
                       _mysql.commitTransaction(() => {
                         _mysql.releaseConnection();
                         next();
                       });
                     })
                     .catch((error) => {
-                      console.log("error", error)
+                      console.log("error", error);
                       _mysql.closeConnection(() => {
                         next(error);
                       });
                     });
                 })
                 .catch((error) => {
-                  console.log("error", error)
+                  console.log("error", error);
                   _mysql.closeConnection(() => {
                     next(error);
                   });
@@ -1832,7 +1823,7 @@ export function generateAccountingEntry(req, res, next) {
   } catch (e) {
     _mysql.releaseConnection();
   }
-};
+}
 export function getInsuranceStatement(req, res, next) {
   const _mysql = new algaehMysql();
   const { submission_step, hims_f_insurance_statement_id } = req.query;
@@ -1980,7 +1971,7 @@ export function updateInsuranceStatement(req, res, next) {
 
     let level = claim_status ? claim_status.match(/(\d+)/)[0] : "1";
 
-    console.log("level", level)
+    console.log("level", level);
     _mysql
       .executeQueryWithTransaction({
         query: `update hims_f_invoice_details set r${level}_amt= ${remittance_amount},
@@ -2006,14 +1997,12 @@ export function updateInsuranceStatement(req, res, next) {
               .executeQuery({
                 query: `update hims_f_invoice_header set remittance_amount${
                   level == 1 ? "" : level
-                  }=${
-                  rest["ramt"]
-                  }, claim_status=?,
-                  denial_amount${
-                  level == 1 ? "" : level
-                  }=${rest["damt"]},remittance_date=?,submission_amount${
-                  level == 1 ? 2 : 3
-                  }=${rest["damt"]} where hims_f_invoice_header_id=?`,
+                }=${rest["ramt"]}, claim_status=?,
+                  denial_amount${level == 1 ? "" : level}=${
+                  rest["damt"]
+                },remittance_date=?,submission_amount${level == 1 ? 2 : 3}=${
+                  rest["damt"]
+                } where hims_f_invoice_header_id=?`,
                 values: [claim_status, new Date(), invoice_header_id],
               })
               .then((records) => {
@@ -2062,6 +2051,7 @@ export function updateInsuranceStatement(req, res, next) {
     });
   }
 }
+
 export function getInvoiceDetails(req, res, next) {
   const _mysql = new algaehMysql();
   const input = req.query;
@@ -2072,6 +2062,38 @@ export function getInvoiceDetails(req, res, next) {
         r2_amt, d2_amt, d2_reason_id, r3_amt, d3_amt, d3_reason_id FROM hims_d_services SE, hims_f_invoice_details IVD
           where IVD.service_id = SE.hims_d_services_id and invoice_header_id=?;`,
         values: [input.invoice_header_id],
+      })
+      .then((result) => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch((e) => {
+        _mysql.releaseConnection();
+        next(e);
+      });
+  } catch (e) {
+    _mysql.releaseConnection();
+    next(e);
+  }
+}
+
+export function closeStatement(req, res, next) {
+  const _mysql = new algaehMysql();
+  const input = req.body;
+  try {
+    _mysql
+      .executeQuery({
+        query: `update hims_f_insurance_statement set total_remittance_amount=?,total_denial_amount=?,writeoff_amount=?,insurance_status=? where 
+        hims_f_insurance_statement_id=?`,
+        values: [
+          input.total_remittance_amount,
+          input.total_denial_amount,
+          input.writeoff_amount,
+          input.insurance_status,
+          input.hims_f_insurance_statement_id,
+        ],
+        printQuery: true,
       })
       .then((result) => {
         _mysql.releaseConnection();

@@ -5,71 +5,71 @@ import "./day_end_prc.scss";
 import {
   AlgaehDataGrid,
   AlgaehLabel,
-  AlagehAutoComplete,
+  // AlagehAutoComplete,
   AlgaehDateHandler,
   AlgaehModalPopUp,
 } from "../../Wrapper/algaehWrapper";
 import moment from "moment";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
-const modules = [
-  {
-    name: "OP Bill",
-    value: "5",
+// const modules = [
+//   {
+//     name: "OP Bill",
+//     value: "5",
 
-    trans_type: [
-      { name: "Bill", value: "BL0001" },
-      { name: "Advance", value: "FD0002" },
-      { name: "Refund", value: "FD0002" },
-      { name: "Cancel", value: "BL0003" },
-      { name: "Credit", value: "BL0004" },
-    ],
-  },
-  {
-    name: "Pharmacy",
-    value: "10",
-    trans_type: [
-      { name: "Receipt", value: "PR0004" },
-      { name: "Purchase Return", value: "PR0006" },
-      { name: "POS", value: "PH0002" },
-      { name: "Sales Return", value: "PH0003" },
-      { name: "Transfer", value: "PH0012" },
-      { name: "Adjustment", value: "PH0014" },
-      { name: "Credit Settlement", value: "PH0010" },
-      { name: "Consumption", value: "PH0011" },
-    ],
-  },
-  {
-    name: "Inventory",
-    value: "11",
-    trans_type: [
-      { name: "Receipt", value: "PR0004" },
-      { name: "Sales Invoice", value: "SAL005" },
-      { name: "Sales Return", value: "SAL008" },
-      { name: "Purchase Return", value: "PR0006" },
-      { name: "Transfer", value: "INV0009" },
-      { name: "Adjustment", value: "INV0010" },
-      { name: "Consumption", value: "INV0007" },
-    ],
-  },
-  {
-    name: "Insurance",
-    value: "9",
-    trans_type: [
-      { name: "Invoice", value: "51" },
-      { name: "Receipt", value: "52" },
-      { name: "Adjustment", value: "53" },
-      { name: "Resubmission", value: "54" },
-    ],
-  },
-  {
-    name: "Payroll",
-    value: "27",
-    trans_type: [
-      { name: "Payroll Workbench", value: "PYRLWB" },
-      { name: "Salary Management", value: "SALARY_MANAGE" },
-    ],
-  },
-];
+//     trans_type: [
+//       { name: "Bill", value: "BL0001" },
+//       { name: "Advance", value: "FD0002" },
+//       { name: "Refund", value: "FD0002" },
+//       { name: "Cancel", value: "BL0003" },
+//       { name: "Credit", value: "BL0004" },
+//     ],
+//   },
+//   {
+//     name: "Pharmacy",
+//     value: "10",
+//     trans_type: [
+//       { name: "Receipt", value: "PR0004" },
+//       { name: "Purchase Return", value: "PR0006" },
+//       { name: "POS", value: "PH0002" },
+//       { name: "Sales Return", value: "PH0003" },
+//       { name: "Transfer", value: "PH0012" },
+//       { name: "Adjustment", value: "PH0014" },
+//       { name: "Credit Settlement", value: "PH0010" },
+//       { name: "Consumption", value: "PH0011" },
+//     ],
+//   },
+//   {
+//     name: "Inventory",
+//     value: "11",
+//     trans_type: [
+//       { name: "Receipt", value: "PR0004" },
+//       { name: "Sales Invoice", value: "SAL005" },
+//       { name: "Sales Return", value: "SAL008" },
+//       { name: "Purchase Return", value: "PR0006" },
+//       { name: "Transfer", value: "INV0009" },
+//       { name: "Adjustment", value: "INV0010" },
+//       { name: "Consumption", value: "INV0007" },
+//     ],
+//   },
+//   {
+//     name: "Insurance",
+//     value: "9",
+//     trans_type: [
+//       { name: "Invoice", value: "51" },
+//       { name: "Receipt", value: "52" },
+//       { name: "Adjustment", value: "53" },
+//       { name: "Resubmission", value: "54" },
+//     ],
+//   },
+//   {
+//     name: "Payroll",
+//     value: "27",
+//     trans_type: [
+//       { name: "Payroll Workbench", value: "PYRLWB" },
+//       { name: "Salary Management", value: "SALARY_MANAGE" },
+//     ],
+//   },
+// ];
 
 class DayEndProcess extends Component {
   constructor(props) {
@@ -89,6 +89,22 @@ class DayEndProcess extends Component {
   }
 
   componentDidMount() {
+    debugger
+    const params = new URLSearchParams(this.props.location?.search);
+    if (params?.get("from_date")) {
+      this.setState({
+        from_date: params?.get("from_date"),
+      });
+    }
+    if (params?.get("to_date")) {
+      this.setState(
+        {
+          to_date: params?.get("to_date"),
+        },
+        () => this.getDayEndProcess(this)
+      );
+    }
+
     if (this.props.location.state) {
       algaehApiCall({
         uri: "/finance/getDayEndData",
@@ -129,6 +145,9 @@ class DayEndProcess extends Component {
         module: "finance",
         onSuccess: (response) => {
           this.setState({ dayEnd: response.data.result });
+          return this.props.history?.push(
+            `${this.props.location?.pathname}?from_date=${this.state.from_date}&to_date=${this.state.to_date}`
+          );
         },
         onCatch: (error) => {
           swalMessage({ title: error, type: "error" });
@@ -415,7 +434,7 @@ class DayEndProcess extends Component {
           >
             <div className="col-lg-12">
               <div className="row">
-                <AlagehAutoComplete
+                {/* <AlagehAutoComplete
                   div={{ className: "col" }}
                   label={{ forceLabel: "Select Module" }}
                   selector={{
@@ -436,7 +455,7 @@ class DayEndProcess extends Component {
                     },
                     onChange: this.dropDownHandle.bind(this),
                   }}
-                />
+                /> */}
 
                 {/* <AlagehAutoComplete
                 div={{ className: "col" }}

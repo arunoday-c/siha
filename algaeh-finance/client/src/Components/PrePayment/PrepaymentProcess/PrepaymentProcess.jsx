@@ -318,192 +318,153 @@ export function PrepaymentProcess() {
   return (
     <Spin spinning={loading}>
       <Modal
-        className="prePay_Process_Modal"
         title="Request Details"
         visible={visible}
         footer={null}
         onCancel={() => setVisible(false)}
+        className={`algaehNewModal preProcessModal`}
       >
-        <div className="row">
-          <div className="col">
-            <label className="style_Label ">Total Prepayment</label>
-            <h6>{getTotalAmt()}</h6>
-          </div>{" "}
-          <div className="col">
-            <label className="style_Label ">Balance Prepayment</label>
-            <h6>{getBalAmt()}</h6>
-          </div>
-          <div className="col">
-            <label>Process Balance Prepayment</label>
-            <div className="customCheckbox">
-              <label className="checkbox block">
-                <input
-                  type="checkbox"
-                  name="checkSelf"
-                  value="yes"
-                  checked={proBalPrePay}
-                  onChange={checkBoxCheck}
-                />
-                <span>Yes</span>
-              </label>
+        <div className="col-12 popupInner margin-top-15">
+          <div className="row">
+            <div className="col">
+              <label className="style_Label ">Total Prepayment</label>
+              <h6>{getTotalAmt()}</h6>
+            </div>{" "}
+            <div className="col">
+              <label className="style_Label ">Balance Prepayment</label>
+              <h6>{getBalAmt()}</h6>
             </div>
-          </div>{" "}
-          {
-            <button
-              className="btn btn-default"
-              onClick={processBalPrePay}
-              disabled={proBalPrePay ? false : true}
-            >
-              Process
-            </button>
-          }
-          {/* <div className="col">
-            <label className="style_Label ">Sum Prepayment</label>
-            <h6>0.00</h6>
-          </div> */}
-        </div>
-        <AlgaehDataGrid
-          className="prePay_ProcessDetail_Grid"
-          columns={[
-            // {
-            //   fieldName: "",
-            //   label: "Action",
-            //   displayTemplate: (row) => {
-            //     return (
-            //       <>
-            //         {row.processed === "N" ? (
-            //           <span>
-            //             <i className="fas fa-pen"></i>
-            //           </span>) : (
-            //             ""
-            //           )}
-            //       </>
-            //     );
-            //   },
-            //   others: { minWidth: 40 },
-            // },
-            {
-              fieldName: "cost_center_id",
-              label: "Cost Center",
-              sortable: true,
-              displayTemplate: (row) => {
-                return <span>{row.cost_center}</span>;
-              },
-              editorTemplate: (row) => {
-                const valueRow =
-                  row.hospital_id !== undefined &&
-                  row.hospital_id !== "" &&
-                  row.cost_center_id !== undefined &&
-                  row.cost_center_id !== ""
-                    ? `${row.hospital_id}-${row.cost_center_id}`
-                    : "";
+            <div className="col">
+              <label>Process Balance Prepayment</label>
+              <div className="customCheckbox">
+                <label className="checkbox block">
+                  <input
+                    type="checkbox"
+                    name="checkSelf"
+                    value="yes"
+                    checked={proBalPrePay}
+                    onChange={checkBoxCheck}
+                  />
+                  <span>Yes</span>
+                </label>
+              </div>
+            </div>{" "}
+            <div className="col">
+              {" "}
+              <button
+                className="btn btn-default"
+                onClick={processBalPrePay}
+                disabled={proBalPrePay ? false : true}
+              >
+                Process
+              </button>
+            </div>
+          </div>
+          <AlgaehDataGrid
+            className="PrepaymentAmontGrid"
+            columns={[
+              {
+                fieldName: "cost_center_id",
+                label: "Cost Center",
 
-                return row.processed === "Y" ? (
-                  row.cost_center
-                ) : (
-                  <AlgaehTreeSearch
-                    // div={{ className: "col-10" }}
-                    tree={{
-                      treeDefaultExpandAll: true,
-                      updateInternally: true,
-                      data: costCenter,
-                      disableHeader: true,
-                      textField: "hospital_name",
-                      valueField: "hims_d_hospital_id",
-                      children: {
-                        node: "cost_centers",
-                        textField: "cost_center",
-                        valueField: (node) => {
-                          const { hims_d_hospital_id, cost_center_id } = node;
-                          if (cost_center_id === undefined) {
-                            return hims_d_hospital_id;
+                displayTemplate: (row) => {
+                  return <span>{row.cost_center}</span>;
+                },
+                editorTemplate: (row) => {
+                  const valueRow =
+                    row.hospital_id !== undefined &&
+                    row.hospital_id !== "" &&
+                    row.cost_center_id !== undefined &&
+                    row.cost_center_id !== ""
+                      ? `${row.hospital_id}-${row.cost_center_id}`
+                      : "";
+
+                  return row.processed === "Y" ? (
+                    row.cost_center
+                  ) : (
+                    <AlgaehTreeSearch
+                      div={{ className: "col-12" }}
+                      tree={{
+                        treeDefaultExpandAll: true,
+                        updateInternally: true,
+                        data: costCenter,
+                        disableHeader: true,
+                        textField: "hospital_name",
+                        valueField: "hims_d_hospital_id",
+                        children: {
+                          node: "cost_centers",
+                          textField: "cost_center",
+                          valueField: (node) => {
+                            const { hims_d_hospital_id, cost_center_id } = node;
+                            if (cost_center_id === undefined) {
+                              return hims_d_hospital_id;
+                            } else {
+                              return `${hims_d_hospital_id}-${cost_center_id}`;
+                            }
+                          },
+                        },
+
+                        value: valueRow,
+                        onChange: (value) => {
+                          if (value !== undefined) {
+                            const detl = value.split("-");
+                            row.hospital_id = detl[0];
+                            row.cost_center_id = detl[1];
                           } else {
-                            return `${hims_d_hospital_id}-${cost_center_id}`;
+                            row.hospital_id = undefined;
+                            row.cost_center_id = undefined;
                           }
                         },
-                      },
+                      }}
+                    />
+                  );
+                },
+              },
 
-                      value: valueRow,
-                      onChange: (value) => {
-                        if (value !== undefined) {
-                          const detl = value.split("-");
-                          row.hospital_id = detl[0];
-                          row.cost_center_id = detl[1];
-                        } else {
-                          row.hospital_id = undefined;
-                          row.cost_center_id = undefined;
-                        }
-                      },
-                    }}
-                  />
-                );
+              {
+                fieldName: "amount",
+                label: "Amount",
+
+                editorTemplate: (row) => {
+                  return row.amount;
+                },
               },
-            },
-            // }}
-            // />
-            // <AlgaehAutoComplete
-            //   selector={{
-            //     updateInternally: true,
-            //     dataSource: {
-            //       data: center.cost_centers,
-            //       valueField: "cost_center_id",
-            //       textField: "cost_center",
-            //     },
-            //     value: row["cost_center_id"],
-            //     onChange: (details) => {
-            //       row["cost_center_id"] = details["cost_center_id"];
-            //     },
-            //     onClear: () => {
-            //       row["cost_center_id"] = null;
-            //     },
-            //   }}
-            // />
-            //     );
-            //   },
-            // },
-            {
-              fieldName: "amount",
-              label: "Amount",
-              sortable: true,
-              editorTemplate: (row) => {
-                return row.amount;
+              {
+                fieldName: "processed",
+                label: "Processed",
+                displayTemplate: (row) => {
+                  return row.processed === "N" ? "No" : "Yes";
+                },
+
+                editorTemplate: (row) => {
+                  return row.processed === "N" ? "No" : "Yes";
+                },
               },
-            },
-            {
-              fieldName: "processed",
-              label: "Processed",
-              displayTemplate: (row) => {
-                return row.processed === "N" ? "No" : "Yes";
+              {
+                fieldName: "pay_month",
+                label: "Pay Month",
+
+                editorTemplate: (row) => {
+                  return row.pay_month;
+                },
               },
-              sortable: true,
-              editorTemplate: (row) => {
-                return row.processed === "N" ? "No" : "Yes";
+            ]}
+            loading={false}
+            isEditable={"editOnly"}
+            events={{
+              // onDone: () => {},
+              onSave: updateProcessList,
+              // onSaveShow: (row) => {
+              //   return row.processed === "N" ? true : false;
+              // },
+              onEditShow: (row) => {
+                return !row.processed === "N";
               },
-            },
-            {
-              fieldName: "pay_month",
-              label: "Pay Month",
-              sortable: true,
-              editorTemplate: (row) => {
-                return row.pay_month;
-              },
-            },
-          ]}
-          loading={false}
-          isEditable={"editOnly"}
-          events={{
-            // onDone: () => {},
-            onSave: updateProcessList,
-            // onSaveShow: (row) => {
-            //   return row.processed === "N" ? true : false;
-            // },
-            onEditShow: (row) => {
-              return !row.processed === "N";
-            },
-          }}
-          // height="34vh"
-          data={current}
-        />
+            }}
+            // height="34vh"
+            data={current}
+          />
+        </div>
       </Modal>
       <div>
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -621,62 +582,56 @@ export function PrepaymentProcess() {
                     {
                       fieldName: "prepayment_desc",
                       label: "Prepayment Type",
-                      sortable: true,
+                      others: { minWidth: 100 },
                     },
                     {
                       fieldName: "request_code",
                       label: "Request Code",
-                      sortable: true,
+                      others: { minWidth: 100 },
                     },
                     {
                       fieldName: "hospital_name",
                       label: "Hospital Name",
-                      sortable: true,
+                      others: { minWidth: 200 },
                     },
                     {
                       fieldName: "cost_center",
                       label: "Cost Center",
-                      sortable: true,
+                      others: { minWidth: 250 },
                     },
                     {
                       fieldName: "employee_code",
                       label: "Employee Code",
-                      sortable: true,
+                      others: { minWidth: 100 },
                     },
                     {
                       fieldName: "employee_name",
                       label: "Employee Name",
-                      sortable: true,
+                      others: { minWidth: 200 },
                     },
                     {
                       fieldName: "identity_no",
                       label: "ID No.",
-                      sortable: true,
                     },
                     {
                       fieldName: "prepayment_amount",
                       label: "Prepayment Amt.",
-                      sortable: true,
                     },
                     {
                       fieldName: "",
                       label: "Amortized Amt.",
-                      sortable: true,
                     },
                     {
                       fieldName: "",
                       label: "Balance Amt.",
-                      sortable: true,
                     },
                     {
                       fieldName: "start_date",
                       label: "Start date",
-                      sortable: true,
                     },
                     {
                       fieldName: "end_date",
                       label: "End date",
-                      sortable: true,
                     },
                   ]}
                   loading={false}
@@ -689,7 +644,7 @@ export function PrepaymentProcess() {
             </div>
           </div>
         </div>
-        <div className="row">
+        <div className="row" style={{ marginBottom: 60 }}>
           <div className="col-4"></div>
           <div className="col-8">
             <div className="row">

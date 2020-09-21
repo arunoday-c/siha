@@ -2178,6 +2178,31 @@ th {
       }
     }
   }
+  .popupInner {
+    overflow-y: auto;
+    overflow-x: hidden;
+    .popSubHdg {
+      font-weight: bold;
+      color: #31afb2;
+      margin-top: 10px;
+      border-bottom: 1px dashed #d3d3d3;
+      padding-bottom: 5px;
+    }
+    .popLeftDiv {
+      border-right: 1px dashed #e0e0e0;
+      min-height: 30vh;
+      max-height: 70vh;
+      overflow: auto;
+      padding: 15px;
+    }
+    .popRightDiv {
+      min-height: 30vh;
+      max-height: 70vh;
+      overflow-x: hidden;
+      overflow-y: auto;
+      padding: 15px;
+    }
+  }
 }
 .ant-calendar-picker-container,
 .ant-select-dropdown {
