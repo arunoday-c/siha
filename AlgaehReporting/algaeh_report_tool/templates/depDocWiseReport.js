@@ -25,7 +25,9 @@ const executePDF = function executePDFMethod(options) {
 
       options.mysql
         .executeQuery({
-          query: `select PV.visit_code,PV.visit_date, PV.department_id, D.department_name,PV.sub_department_id, SD.sub_department_name, E.full_name as doctor_name, E.employee_code, E.hims_d_employee_id, SE.service_name as service_name, P.patient_code, P.full_name, BD.net_amout
+          query: `select PV.visit_code,PV.visit_date, PV.department_id, D.department_name,PV.sub_department_id, 
+          SD.sub_department_name, E.full_name as doctor_name, E.employee_code, E.hims_d_employee_id, 
+          SE.service_name as service_name, P.patient_code, P.full_name, BD.net_amout, BH.bill_number, BH.bill_date
 from  hims_f_patient_visit PV
 inner join hims_f_billing_header BH on PV.hims_f_patient_visit_id=BH.visit_id
 inner join hims_f_billing_details BD on BH.hims_f_billing_header_id=BD.hims_f_billing_header_id

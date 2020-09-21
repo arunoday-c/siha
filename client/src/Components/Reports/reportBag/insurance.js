@@ -53,6 +53,7 @@ export default function Insurance({ algaehApiCall, hospital_id }) {
             label: "Company",
             link: {
               uri: "/insurance/getInsuranceProviders",
+              module: "insurance"
             },
             events: {
               onChange: (reportState, currentEvent) => {
@@ -76,19 +77,19 @@ export default function Insurance({ algaehApiCall, hospital_id }) {
               data: undefined,
             },
           },
-          {
-            className: "col-3 form-group mandatory",
-            type: "dropdown",
-            name: "",
-            initialLoad: true,
-            isImp: false,
-            label: "Sub Company",
-            dataSource: {
-              textField: "insurance_sub_name",
-              valueField: "hims_d_insurance_sub_id",
-              data: undefined,
-            },
-          },
+          // {
+          //   className: "col-3 form-group mandatory",
+          //   type: "dropdown",
+          //   name: "",
+          //   initialLoad: true,
+          //   isImp: false,
+          //   label: "Sub Company",
+          //   dataSource: {
+          //     textField: "insurance_sub_name",
+          //     valueField: "hims_d_insurance_sub_id",
+          //     data: undefined,
+          //   },
+          // },
         ],
         //reportParameters: () => <Insurance ui="asset_warty_exp_rep" />
       },

@@ -51,7 +51,7 @@ const getBatchWiseData = ($this, row) => {
 
 const getItemLocationStock = ($this) => {
   if ($this.state.location_id !== null || $this.state.item_id !== null) {
-    let inputObj = {};
+    let inputObj = { reorder_qty: $this.state.reorder_qty };
 
     if ($this.state.location_id !== null) {
       inputObj.inventory_location_id = $this.state.location_id;
@@ -87,7 +87,7 @@ const getItemLocationStock = ($this) => {
   }
 };
 
-const updateStockDetils = ($this) => {};
+const updateStockDetils = ($this) => { };
 
 const datehandle = ($this, row, ctrl, e) => {
   row[e] = moment(ctrl)._d;
@@ -212,6 +212,27 @@ const downloadInvStockDetails = ($this) => {
   });
 };
 
+const itemchangeText = ($this, e, ctrl) => {
+
+  let name = ctrl;
+  let value = e.hims_d_inventory_item_master_id;
+
+  $this.setState({
+    [name]: value,
+    item_description: e.item_description
+  }, () => {
+    getItemLocationStock($this);
+  });
+};
+
+const checkBoxEvent = ($this, e) => {
+  let name = e.target.name;
+  const _value = e.target.checked ? "Y" : "N";
+  $this.setState({ [name]: _value }, () => {
+    getItemLocationStock($this);
+  });
+};
+
 export {
   changeTexts,
   dateFormater,
@@ -224,4 +245,6 @@ export {
   printBarcode,
   downloadInvStock,
   downloadInvStockDetails,
+  itemchangeText,
+  checkBoxEvent
 };

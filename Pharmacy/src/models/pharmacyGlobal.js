@@ -549,7 +549,7 @@ export default {
             expiry_date_filter = new Date(
               today_date.setFullYear(
                 today_date.getFullYear() +
-                  parseInt(result[0].notification_before)
+                parseInt(result[0].notification_before)
               )
             );
           }
@@ -647,7 +647,8 @@ export default {
           query:
             "SELECT NE.*, PL.location_description, IM.item_description \
             FROM hims_d_pharmacy_notification_expiry NE, hims_d_pharmacy_location PL, hims_d_item_master IM where \
-            NE.loaction_id = PL.hims_d_pharmacy_location_id and  NE.item_id=IM.hims_d_item_master_id and NE.loaction_id=?;",
+            NE.loaction_id = PL.hims_d_pharmacy_location_id and  NE.item_id=IM.hims_d_item_master_id and \
+            NE.loaction_id=? order by expiry_date;",
           values: [req.query.location_id],
           printQuery: true,
         })

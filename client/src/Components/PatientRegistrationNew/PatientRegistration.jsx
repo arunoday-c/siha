@@ -69,7 +69,7 @@ const savePatient = async (data) => {
 };
 
 const updatePatient = async (data) => {
-  data.ScreenCode = "BL0002";
+  data.ScreenCode = "BL0001";
   const result = await newAlgaehApi({
     uri: "/frontDesk/update",
     module: "frontDesk",

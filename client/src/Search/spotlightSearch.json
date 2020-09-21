@@ -770,6 +770,40 @@
       }
     ]
   },
+  "Employee_details_gratuity": {
+    "employee": [
+      {
+        "fieldName": "employee_code",
+        "label": "Employee Code"
+      },
+      {
+        "fieldName": "full_name",
+        "label": "Name"
+      },
+      {
+        "fieldName": "end_of_service_number",
+        "label": "Gratuity No."
+      },
+      {
+        "fieldName": "status",
+        "label": "PAYMENT STATUS"
+      },
+      {
+        "fieldName": "exit_status",
+        "label": "Type Of Exit"
+      }
+    ],
+    "loginNewEmployee": [
+      {
+        "fieldName": "employee_code",
+        "label": "Employee Code"
+      },
+      {
+        "fieldName": "full_name",
+        "label": "Name"
+      }
+    ]
+  },
   "Employee_details": {
     "employee": [
       {
@@ -791,6 +825,40 @@
       {
         "fieldName": "designation",
         "label": "Designation"
+      }
+    ],
+    "loginNewEmployee": [
+      {
+        "fieldName": "employee_code",
+        "label": "Employee Code"
+      },
+      {
+        "fieldName": "full_name",
+        "label": "Name"
+      }
+    ]
+  },
+  "Employee_details_exit_employee": {
+    "employee": [
+      {
+        "fieldName": "employee_code",
+        "label": "Employee Code"
+      },
+      {
+        "fieldName": "full_name",
+        "label": "Name"
+      },
+      {
+        "fieldName": "final_settlement_number",
+        "label": "SETTLEMENT NO."
+      },
+      {
+        "fieldName": "status",
+        "label": "Status"
+      },
+      {
+        "fieldName": "exit_status",
+        "label": "Type Of Exit"
       }
     ],
     "loginNewEmployee": [

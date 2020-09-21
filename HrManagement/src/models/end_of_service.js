@@ -87,7 +87,7 @@ export default {
         query: `select EOS.hims_f_end_of_service_id, EOS.employee_id,EOS.join_date,EOS.exit_date,
         EOS.payable_days,EOS.service_years,EOS.payable_days,EOS.calculated_gratutity_amount,
         EOS.payable_amount,EOS.end_of_service_number,CASE WHEN EOS.exit_type ='T' THEN 'Terminated' WHEN EOS.exit_type ='R' THEN 'Resigned' else 'Retirement' END as exit_status, EOS.gratuity_status,EOS.remarks,EOS.total_gratutity_amount,EOS.transaction_date from hims_f_end_of_service EOS 
-        where employee_id = ?;`,
+        where employee_id = ?;select gratuity_min_year from hims_d_end_of_service_options limit 1;`,
         values: [_input.hims_d_employee_id],
       })
       .then((end_of_service) => {
@@ -241,8 +241,10 @@ export default {
                   );
                 } else {
                   const empEOSYears = parseFloat(_employee.endOfServiceYears);
+
                   let difference =
                     empEOSYears - _optionsDetals.from_service_range1;
+
                   if (difference > 0) {
                     let hirearchical =
                       _optionsDetals.from_service_range1 *
@@ -304,25 +306,29 @@ export default {
                       }
                       const actual_maount = _eligibleDays * gratuity;
                       _computatedAmout = actual_maount - gratuity_encash;
-                      const remarks = end_of_service[0]
-                        ? end_of_service[0].remarks
+                      const remarks = end_of_service[0][0]
+                        ? end_of_service[0][0].remarks
                         : "";
-                      const gratuityStatus = end_of_service[0]
-                        ? end_of_service[0].gratuity_status
+                      const gratuityStatus = end_of_service[0][0]
+                        ? end_of_service[0][0].gratuity_status
                         : "";
+
+                      const showCalcGra =
+                        empEOSYears >= end_of_service[1][0].gratuity_min_year;
+
                       req.records = {
-                        computed_amount: _computatedAmout, //_computatedAmoutSum,
-                        paybale_amout: _computatedAmout, //_computatedAmoutSum,
+                        computed_amount: showCalcGra ? _computatedAmout : 0, //_computatedAmoutSum,
+                        paybale_amout: showCalcGra ? _computatedAmout : 0, //_computatedAmoutSum,
                         ..._employee,
                         componentList: earnings, //earnings,
                         totalEarningComponents: _sumOfTotalEarningComponents,
                         eligible_day: _eligibleDays,
                         endofServexit: endofServexit,
-                        gratuity_amount: gratuity,
-                        gratuity_encash: gratuity_encash,
-                        actual_maount: actual_maount,
+                        gratuity_amount: showCalcGra ? gratuity : 0,
+                        gratuity_encash: showCalcGra ? gratuity_encash : 0,
+                        actual_maount: showCalcGra ? actual_maount : 0,
                         gratuity_status: gratuityStatus,
-                        total_gratutity_amount: actual_maount,
+                        total_gratutity_amount: showCalcGra ? actual_maount : 0,
                         remarks: remarks,
                       };
 
@@ -357,7 +363,7 @@ export default {
               values: [_input.hims_d_employee_id],
             })
             .then((result) => {
-              const endOfService = end_of_service[0];
+              const endOfService = end_of_service[0][0];
               const result1 = result[0];
 
               // const gratuityAmount =

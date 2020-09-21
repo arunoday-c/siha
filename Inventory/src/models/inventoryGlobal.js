@@ -1,6 +1,6 @@
 import algaehMysql from "algaeh-mysql";
 import algaehUtilities from "algaeh-utilities/utilities";
-import mysql from "mysql";
+import _ from "lodash";
 
 export default {
   getUomLocationStock: (req, res, next) => {
@@ -361,15 +361,21 @@ export default {
   getItemLocationStock: (req, res, next) => {
     const _mysql = new algaehMysql();
     try {
-      let intValues = [req.query.inventory_location_id];
-      let strAppend = "";
+      let intValues = [];
+      let strAppend = "", strOrder = "", strGroup = "";
       if (req.query.item_id != null) {
         strAppend += " and IL.item_id=?";
         intValues.push(req.query.item_id);
+        strGroup = " group by inventory_location_id"
       }
       if (req.query.inventory_location_id != null) {
+
+        strOrder = ` and location_id=${req.query.inventory_location_id} `;
+
         strAppend += " and inventory_location_id=?";
         intValues.push(req.query.inventory_location_id);
+
+        strGroup = " group by item_id"
       }
       _mysql
         .executeQuery({
@@ -377,21 +383,32 @@ export default {
             "SELECT IM.item_code,IM.item_description, IM.stocking_uom_id,coalesce(ILR.reorder_qty, IM.reorder_qty,0) as reorder_qty, \
             hims_m_inventory_item_location_id, IL.item_id, inventory_location_id, item_location_status, \
             batchno, expirydt, barcode, sum(qtyhand) as qtyhand, qtypo, cost_uom,avgcost, last_purchase_cost, \
-            grn_id, grnno, sale_price, mrp_price, sales_uom, uom_description as stock_uom,\
+            grn_id, grnno, sale_price, mrp_price, sales_uom, uom_description as stock_uom,ILO.location_description,\
             CASE WHEN sum(qtyhand)<=coalesce(ILR.reorder_qty, IM.reorder_qty,0) THEN 'R'   else 'NR' END as reorder \
             from hims_d_inventory_item_master IM \
-            left  join hims_m_inventory_item_location IL on IM.hims_d_inventory_item_master_id=IL.item_id \
-            left  join hims_d_inv_location_reorder ILR on ILR.item_id=IL.item_id and location_id=? \
-            left  join hims_d_inventory_uom IU on IU.hims_d_inventory_uom_id=IM.stocking_uom_id \
-            where qtyhand>0" +
-            strAppend +
-            "group by item_id order by date(expirydt)",
+            left join hims_m_inventory_item_location IL on IM.hims_d_inventory_item_master_id=IL.item_id \
+            inner join hims_d_inventory_location ILO on ILO.hims_d_inventory_location_id=IL.inventory_location_id \
+            left join hims_d_inv_location_reorder ILR on ILR.item_id=IL.item_id " + strOrder +
+            " left join hims_d_inventory_uom IU on IU.hims_d_inventory_uom_id = IM.stocking_uom_id \
+            where qtyhand> 0" +
+            strAppend + strGroup +
+            " order by date(expirydt)",
           values: intValues,
           printQuery: true,
         })
         .then((result) => {
+          let final_result = result
+          if (req.query.reorder_qty == "Y") {
+
+            final_result = _.filter(
+              result,
+              (f) => {
+                return (f.reorder === "R");
+              }
+            );
+          }
           _mysql.releaseConnection();
-          req.records = result;
+          req.records = final_result;
           next();
         })
         .catch((error) => {
