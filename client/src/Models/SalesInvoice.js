@@ -30,7 +30,12 @@ export default {
             net_payable: null,
             narration: null,
             retention_amt: 0,
-            dataRevert: true
+            dataRevert: true,
+            cancelEnable: true,
+            cancel_reason: null,
+            cancel_visible: false,
+            revert_reason: null,
+            revert_visible: false
         };
         return output;
     }

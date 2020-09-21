@@ -8,7 +8,8 @@ import {
     getInvoiceEntry,
     postSalesInvoice,
     generateAccountingEntry,
-    revertSalesInvoice
+    revertSalesInvoice,
+    CancelSalesInvoice
 } from "../models/SalesInvoice";
 
 export default function SalesOrder() {
@@ -80,6 +81,15 @@ export default function SalesOrder() {
     api.put(
         "/revertSalesInvoice",
         revertSalesInvoice,
+        (req, res, next) => {
+            res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+                success: true,
+                records: req.records
+            });
+        });
+    api.put(
+        "/CancelSalesInvoice",
+        CancelSalesInvoice,
         (req, res, next) => {
             res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
                 success: true,
