@@ -35,7 +35,7 @@ export default {
           ],
           query:
             "insert into  hims_f_miscellaneous_earning_deduction (??) values ? ON DUPLICATE KEY UPDATE ?",
-          printQuery: (query) => { },
+          printQuery: (query) => {},
           bulkInsertOrUpdate: true,
         })
         .then((result) => {
@@ -168,8 +168,8 @@ export default {
             accomodation_provided,hospital_id,sub_department_id,overtime_group_id,employee_bank_id,services_id,\
             employee_group_id, reporting_to_id, employee_designation_id, entitled_daily_ot, employee_category,\
             gratuity_encash,identity_type_id, identity_no, agency_id, service_dis_percentage,\
-            created_date,created_by,updated_date,updated_by,eos_id) \
-            values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+            created_date,created_by,updated_date,updated_by,eos_id,standard_work_hours,ramzan_work_hours) \
+            values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
             values: [
               input.employee_code,
               input.full_name,
@@ -230,6 +230,8 @@ export default {
               new Date(),
               req.userIdentity.algaeh_d_app_user_id,
               input.eos_id,
+              input.standard_work_hours,
+              input.ramzan_work_hours,
             ],
             printQuery: true,
           })
@@ -302,7 +304,7 @@ export default {
               pf_applicable=?,overtime_group_id=?,employee_group_id=?, reporting_to_id=?,sub_department_id=?,\
               employee_designation_id=?, entitled_daily_ot= ?, employee_bank_id=?,services_id=?, employee_status=?, \
               inactive_date=?, employee_category=?, gratuity_encash=?, identity_type_id=?, identity_no=?,agency_id=?, \
-              service_dis_percentage=?, updated_date=?,updated_by=?,eos_id=? WHERE record_status='A' and  hims_d_employee_id=?",
+              service_dis_percentage=?, updated_date=?,updated_by=?,eos_id=?,standard_work_hours=?,ramzan_work_hours=? WHERE record_status='A' and  hims_d_employee_id=?",
             values: [
               input.employee_code,
               input.full_name,
@@ -380,6 +382,8 @@ export default {
               new Date(),
               req.userIdentity.algaeh_d_app_user_id,
               input.eos_id,
+              input.standard_work_hours,
+              input.ramzan_work_hours,
               input.hims_d_employee_id,
             ],
           })
@@ -1283,22 +1287,22 @@ export default {
     const _mysql = new algaehMysql();
     let input = req.body;
     if (input.employees != undefined && input.employees.length > 0) {
-
       const insurtColumns = ["employee_id", "amount"];
-      let _myemp = []
+      let _myemp = [];
       input.employees.map((o) => {
         _myemp.push(o.employee_id);
       });
-      console.log("input.employees", _myemp)
+      console.log("input.employees", _myemp);
       _mysql
         .executeQuery({
-          query: "select salary_processed from hims_f_salary where employee_id in (?) and year=? and month =?;",
+          query:
+            "select salary_processed from hims_f_salary where employee_id in (?) and year=? and month =?;",
           values: [_myemp, input.year, input.month],
           bulkInsertOrUpdate: true,
           printQuery: true,
         })
         .then((sal_result) => {
-          console.log("sal_result", sal_result.length)
+          console.log("sal_result", sal_result.length);
           if (sal_result.length > 0 && sal_result[0].salary_processed == "Y") {
             _mysql.releaseConnection();
             req.records = {
@@ -1346,7 +1350,6 @@ export default {
           _mysql.releaseConnection();
           next(e);
         });
-
     } else {
       req.records = { invalid_input: true, message: "invalid input" };
       next();
