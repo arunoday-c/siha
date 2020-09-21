@@ -5586,6 +5586,7 @@ export default {
                           RMZ_HF_MIN,
                           ramzan_start_date: options["ramzan_start_date"],
                           ramzan_end_date: options["ramzan_end_date"],
+                          workingHoursFrom,
                         });
 
                         mergeTimesheetData({
@@ -5601,7 +5602,7 @@ export default {
                           updated_by: req.userIdentity.algaeh_d_app_user_id,
                           previewStr: previewStr,
                           allDates: allDates,
-                          workingHoursFrom
+                          workingHoursFrom,
                         })
                           .then((finalResult) => {
                             req.records = {
