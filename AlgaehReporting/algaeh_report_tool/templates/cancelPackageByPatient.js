@@ -1,5 +1,4 @@
 // const algaehUtilities = require("algaeh-utilities/utilities");
-
 const executePDF = function executePDFMethod(options) {
   return new Promise(function (resolve, reject) {
     try {
@@ -7,115 +6,59 @@ const executePDF = function executePDFMethod(options) {
       const moment = options.moment;
 
       let input = {};
-
-      const params = options.args.reportParams;
-
+      let params = options.args.reportParams;
+      // const utilities = new algaehUtilities();
       params.forEach((para) => {
         input[para["name"]] = para["value"];
       });
 
-      let strQuery = "";
+      let strData = "";
 
-      // if (input.cashier_name > 0) {
-      //   strQuery += ` and PV.created_by= ${input.cashier_name}`;
-      // }
-
-      console.log("params=====", params);
-
-      if (input.hospital_id > 0) {
-        strQuery += ` and PH.hospital_id= ${input.hospital_id}`;
-      }
+      //   if (input.hospital_id > 0) {
+      strData += ` and PH.hospital_id= ${input.hospital_id}`;
+      //   }
 
       options.mysql
         .executeQuery({
-          query: `SELECT PH.patient_id,PT.patient_code,PT.full_name,V.visit_code,V.visit_date,PD.service_type_id,ST.service_type,PD.service_id,S.service_name,PD.service_amount,PD.qty,PD.tot_service_amount,PD.appropriate_amount, PD.utilized_qty,PD.available_qty,PD.utilized_date, PH.hospital_id 
-          FROM hims_f_package_detail as PD
-          inner join hims_f_package_header PH on PD.package_header_id=PH.hims_f_package_header_id
+          query: `SELECT PH.patient_id,PT.patient_code,PT.full_name,PG.package_code,PG.package_name,CASE WHEN PG.package_visit_type='S' THEN 'Single' else 'Multi' END as package_visit_type, V.visit_code,V.visit_date, PH.gross_amount,PH.advance_amount,PH.utilize_amount,PH.balance_amount,E.full_name as doctor_name, PH.hospital_id
+          FROM hims_f_package_header as PH
           inner join hims_f_patient PT on PH.patient_id = PT.hims_d_patient_id
-          inner join hims_d_service_type ST on PD.service_type_id = ST.hims_d_service_type_id
-          inner join hims_d_services S on PD.service_id = S.hims_d_services_id
           inner join hims_f_patient_visit V on PH.visit_id = V.hims_f_patient_visit_id
-          where PD.service_type_id=2 and PH.closed = 'Y'  ${strQuery};`,
+          inner join hims_d_package_header PG on PH.package_id = PG.hims_d_package_header_id
+          inner join hims_d_employee E on PH.doctor_id = E.hims_d_employee_id
+          where PH.closed = 'Y' and PH.closed_type = 'C' ${strData};`,
           // values: [],
           printQuery: true,
         })
-        .then((res) => {
-          options.mysql.releaseConnection();
-          const result = res;
-          const ServiceTypetWise = _.chain(result)
-            .groupBy((g) => g.service_type_id)
-            .map((subDept) => {
-              const { service_type } = subDept[0];
-              const patientList = _.chain(subDept)
-                .groupBy((g) => g.patient_id)
-                .map((docs) => {
-                  const { full_name, patient_code } = docs[0];
-                  return {
-                    full_name,
-                    patient_code,
+        .then((ress) => {
+          let final_result = ress;
+          //   final_result = final_result.concat(ress[1]);
+          //   console.log("final_result", final_result);
 
-                    // total_weighted_cost: _.sumBy(docs, (s) =>
-                    //   parseFloat(s.weighted_cost)
-                    // ),
+          const result = {
+            details: final_result,
+            // total_before_vat: options.currencyFormat(
+            //   _.sumBy(final_result, (s) => parseFloat(s.total_before_vat)),
+            //   options.args.crypto
+            // ),
+            // total_after_vat: options.currencyFormat(
+            //   _.sumBy(final_result, (s) => parseFloat(s.total_after_vat)),
+            //   options.args.crypto
+            // ),
+            // patient_tax: options.currencyFormat(
+            //   _.sumBy(final_result, (s) => parseFloat(s.patient_tax)),
+            //   options.args.crypto
+            // ),
+            // company_tax: options.currencyFormat(
+            //   _.sumBy(final_result, (s) => parseFloat(s.company_tax)),
+            //   options.args.crypto
+            // ),
+          };
 
-                    // total_stock_value: _.sumBy(docs, (s) =>
-                    //   parseFloat(s.stock_value)
-                    // ),
-
-                    docs: docs.map((n) => {
-                      return {
-                        ...n,
-                        // weighted_cost: options.currencyFormat(
-                        //   n.weighted_cost,
-                        //   options.args.crypto
-                        // ),
-                        // stock_value: options.currencyFormat(
-                        //   n.stock_value,
-                        //   options.args.crypto
-                        // ),
-                      };
-                    }),
-                  };
-                })
-                // .sortBy((s) => s.visit_date)
-                .value();
-
-              return {
-                service_type,
-                patientList: patientList,
-                // weighted_cost_total: _.sumBy(patientList, (s) =>
-                //   parseFloat(s.total_weighted_cost)
-                // ),
-
-                // stock_value_total: _.sumBy(patientList, (s) =>
-                //   parseFloat(s.total_stock_value)
-                // ),
-
-                // stock_value_total = options.currencyFormat(
-                //   _.sumBy(patientList, (s) => parseFloat(s.total_stock_value)),
-                //   options.args.crypto
-                // );
-              };
-            })
-            .value();
-
-          //   const net_stock_value = options.currencyFormat(
-          //     _.sumBy(ServiceTypetWise, (s) => parseFloat(s.stock_value_total)),
-          //     options.args.crypto
-          //   );
-          // , net_total: net_total
-          console.log("ServiceTypetWise==", ServiceTypetWise);
-          resolve({
-            result: ServiceTypetWise,
-            // net_qty_hand: net_qty_hand,
-            // net_weighted_cost: net_weighted_cost,
-            // net_stock_value: net_stock_value,
-          });
+          resolve(result);
         })
-        .catch((e) => {
-          console.log("e:", e);
+        .catch((error) => {
           options.mysql.releaseConnection();
-          reject(e);
         });
     } catch (e) {
       reject(e);
