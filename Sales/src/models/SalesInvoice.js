@@ -445,10 +445,11 @@ export function revertSalesInvoice(req, res, next) {
         _mysql
             .executeQueryWithTransaction({
                 query: " UPDATE hims_f_sales_order SET is_posted='N', authorize1='N', authorize2='N',\
-                    is_revert='Y', reverted_date=?, reverted_by=? WHERE hims_f_sales_order_id=?; \
+                    is_revert='Y', revert_reason=?, reverted_date=?, reverted_by=? WHERE hims_f_sales_order_id=?; \
                     UPDATE hims_f_sales_invoice_header SET is_revert='Y', reverted_date=?, reverted_by=? \
                     WHERE hims_f_sales_invoice_header_id=?;"+ strQuery,
                 values: [
+                    inputParam.revert_reason,
                     new Date(),
                     req.userIdentity.algaeh_d_app_user_id,
                     inputParam.sales_order_id,
@@ -514,6 +515,52 @@ export function revertSalesInvoice(req, res, next) {
         _mysql.rollBackTransaction(() => {
             next(e);
         });
+    }
+};
+
+export function CancelSalesInvoice(req, res, next) {
+    const _mysql = new algaehMysql();
+    try {
+        let inputParam = { ...req.body };
+
+        let strQuery = ""
+        if (inputParam.sales_invoice_mode === "I") {
+            let dispatch_note_header_id = _.map(inputParam.invoice_entry_detail_item, o => {
+                return o.dispatch_note_header_id;
+            });
+
+            strQuery += mysql.format(
+                "UPDATE hims_f_sales_dispatch_note_header set invoice_generated = 'N' where hims_f_dispatch_note_header_id in (?);",
+                [dispatch_note_header_id]
+            );
+        }
+        _mysql
+            .executeQuery({
+                query: "update hims_f_sales_invoice_header set is_cancelled='Y', cancel_reason=?, cancelled_by=?, cancelled_date=? \
+                where hims_f_sales_invoice_header_id=?;\
+                UPDATE hims_f_sales_order set invoice_generated='N', closed = 'N' where hims_f_sales_order_id=?;"
+                    + strQuery,
+                values: [
+                    inputParam.cancel_reason,
+                    req.userIdentity.algaeh_d_app_user_id,
+                    new Date(),
+                    inputParam.hims_f_sales_invoice_header_id,
+                    inputParam.sales_order_id
+                ],
+                printQuery: true
+            })
+            .then(headerResult => {
+                _mysql.releaseConnection();
+                req.records = headerResult;
+                next();
+            })
+            .catch(error => {
+                _mysql.releaseConnection();
+                next(error);
+            });
+    } catch (e) {
+        _mysql.releaseConnection();
+        next(e);
     }
 };
 

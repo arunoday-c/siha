@@ -18,17 +18,17 @@ import {
   texthandle,
   PostSalesInvoice,
   generateSalesInvoiceReport,
-  RevertSalesInvoice
+  RevertSalesInvoice,
+  CancelSalesInvoice
 } from "./SalesInvoiceEvents";
 import { AlgaehActions } from "../../../actions/algaehActions";
 // import SalesInvoiceInp from "../../../Models/SalesInvoice";
 import MyContext from "../../../utils/MyContext";
 import { GetAmountFormart } from "../../../utils/GlobalFunctions";
-import { MainContext } from "algaeh-react-components";
 import InvoiceListService from "./InvoiceListService/InvoiceListService";
 import InvoiceItemList from "./InvoiceItemList/InvoiceItemList";
 import SalesInvoiceIO from "../../../Models/SalesInvoice";
-import { AlgaehSecurityComponent } from "algaeh-react-components";
+import { AlgaehSecurityComponent, Modal, AlgaehButton, MainContext } from "algaeh-react-components";
 
 class SalesInvoice extends Component {
   constructor(props) {
@@ -154,13 +154,15 @@ class SalesInvoice extends Component {
                     }}
                   />
                   <h6>
-                    {this.state.is_revert === "Y" ? (
+                    {this.state.is_cancelled === "Y" ? (
+                      <span className="badge badge-danger">Cancelled</span>
+                    ) : this.state.is_revert === "Y" ? (
                       <span className="badge badge-danger">Reverted</span>
                     ) : this.state.is_posted === "N" ? (
                       <span className="badge badge-danger">Not Posted</span>
                     ) : (
-                          <span className="badge badge-success">Posted</span>
-                        )}
+                            <span className="badge badge-success">Posted</span>
+                          )}
                   </h6>
                 </div>
               ) : null}
@@ -409,13 +411,28 @@ class SalesInvoice extends Component {
                     label={{ forceLabel: "Clear", returnText: true }}
                   />
                 </button>
+                <AlgaehSecurityComponent componentCode="SALE_INV_POST">
+                  <button
+                    type="button"
+                    className="btn btn-other"
+                    disabled={this.state.cancelEnable}
+                    onClick={() => this.setState({ cancel_visible: true })}
+                  >
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Cancel",
+                        returnText: true,
+                      }}
+                    />
+                  </button>
+                </AlgaehSecurityComponent>
                 <AlgaehSecurityComponent componentCode="SALES_INV_RVT">
                   {this.state.sales_invoice_mode === "S" ?
                     <button
                       type="button"
                       className="btn btn-other"
                       disabled={this.state.dataRevert}
-                      onClick={RevertSalesInvoice.bind(this, this)}
+                      onClick={() => this.setState({ revert_visible: true })}
                     >
                       <AlgaehLabel
                         label={{
@@ -442,10 +459,67 @@ class SalesInvoice extends Component {
                 </AlgaehSecurityComponent>
 
               </div>
+              <Modal
+                title="Invoice Cancellation"
+                visible={this.state.cancel_visible}
+                width={1080}
+                footer={null}
+                onCancel={() => this.setState({ cancel_visible: false })}
+              >
+                <AlagehFormGroup
+                  div={{ className: "col-3 textAreaLeft" }}
+                  label={{
+                    forceLabel: "Cancellation Reason",
+                    isImp: true,
+                  }}
+                  textBox={{
+                    className: "txt-fld",
+                    name: "cancel_reason",
+                    value: this.state.cancel_reason,
+                    events: {
+                      onChange: (e) => {
+                        this.setState({ cancel_reason: e.target.value });
+                      }
+                    }
+                  }}
+                />
+                <AlgaehButton className="btn btn-primary" onClick={CancelSalesInvoice.bind(this, this)}>
+                  Process
+                </AlgaehButton>
+              </Modal>
+
+              <Modal
+                title="Invoice Revert"
+                visible={this.state.revert_visible}
+                width={1080}
+                footer={null}
+                onCancel={() => this.setState({ revert_visible: false })}
+              >
+                <AlagehFormGroup
+                  div={{ className: "col-3 textAreaLeft" }}
+                  label={{
+                    forceLabel: "Revert Reason",
+                    isImp: true,
+                  }}
+                  textBox={{
+                    className: "txt-fld",
+                    name: "revert_reason",
+                    value: this.state.revert_reason,
+                    events: {
+                      onChange: (e) => {
+                        this.setState({ revert_reason: e.target.value });
+                      }
+                    }
+                  }}
+                />
+                <AlgaehButton className="btn btn-primary" onClick={RevertSalesInvoice.bind(this, this)}>
+                  Process
+                </AlgaehButton>
+              </Modal>
             </div>
           </div>
         </div>
-      </div>
+      </div >
     );
   }
 }
