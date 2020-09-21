@@ -70,8 +70,12 @@ export default function ChangeEntitlement(props) {
           </div>
         </div>
 
-        <InsuranceForm patientInsurance={insurance} />
         <div className="row">
+          <div className="col-6">
+            {" "}
+            <InsuranceForm patientInsurance={insurance} />
+          </div>
+
           <div className="col-6" id="InvoiceGen" style={{ paddingTop: "15px" }}>
             <AlgaehDataGrid
               columns={[

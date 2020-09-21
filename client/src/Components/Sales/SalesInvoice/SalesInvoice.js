@@ -19,7 +19,7 @@ import {
   PostSalesInvoice,
   generateSalesInvoiceReport,
   RevertSalesInvoice,
-  CancelSalesInvoice
+  CancelSalesInvoice,
 } from "./SalesInvoiceEvents";
 import { AlgaehActions } from "../../../actions/algaehActions";
 // import SalesInvoiceInp from "../../../Models/SalesInvoice";
@@ -28,7 +28,12 @@ import { GetAmountFormart } from "../../../utils/GlobalFunctions";
 import InvoiceListService from "./InvoiceListService/InvoiceListService";
 import InvoiceItemList from "./InvoiceItemList/InvoiceItemList";
 import SalesInvoiceIO from "../../../Models/SalesInvoice";
-import { AlgaehSecurityComponent, Modal, AlgaehButton, MainContext } from "algaeh-react-components";
+import {
+  AlgaehSecurityComponent,
+  Modal,
+  AlgaehButton,
+  MainContext,
+} from "algaeh-react-components";
 
 class SalesInvoice extends Component {
   constructor(props) {
@@ -161,28 +166,27 @@ class SalesInvoice extends Component {
                     ) : this.state.is_posted === "N" ? (
                       <span className="badge badge-danger">Not Posted</span>
                     ) : (
-                            <span className="badge badge-success">Posted</span>
-                          )}
+                      <span className="badge badge-success">Posted</span>
+                    )}
                   </h6>
                 </div>
               ) : null}
             </div>
-
           }
           printArea={
             this.state.hims_f_sales_invoice_header_id !== null
               ? {
-                menuitems: [
-                  {
-                    label: "Print Invoice",
-                    events: {
-                      onClick: () => {
-                        generateSalesInvoiceReport(this.state);
+                  menuitems: [
+                    {
+                      label: "Print Invoice",
+                      events: {
+                        onClick: () => {
+                          generateSalesInvoiceReport(this.state);
+                        },
                       },
                     },
-                  },
-                ],
-              }
+                  ],
+                }
               : ""
           }
           selectedLang={this.state.selectedLang}
@@ -292,8 +296,8 @@ class SalesInvoice extends Component {
                 <InvoiceListService SALESInvoiceIOputs={this.state} />
               </div>
             ) : (
-                <InvoiceItemList SALESInvoiceIOputs={this.state} />
-              )}
+              <InvoiceItemList SALESInvoiceIOputs={this.state} />
+            )}
           </MyContext.Provider>
 
           <div className="row">
@@ -367,7 +371,7 @@ class SalesInvoice extends Component {
                       onChange: texthandle.bind(this, this),
                     },
                     others: {
-                      disabled: this.state.dataExitst
+                      disabled: this.state.dataExitst,
                     },
                   }}
                 />
@@ -427,7 +431,7 @@ class SalesInvoice extends Component {
                   </button>
                 </AlgaehSecurityComponent>
                 <AlgaehSecurityComponent componentCode="SALES_INV_RVT">
-                  {this.state.sales_invoice_mode === "S" ?
+                  {this.state.sales_invoice_mode === "S" ? (
                     <button
                       type="button"
                       className="btn btn-other"
@@ -440,7 +444,8 @@ class SalesInvoice extends Component {
                           returnText: true,
                         }}
                       />
-                    </button> : null}
+                    </button>
+                  ) : null}
                 </AlgaehSecurityComponent>
                 <AlgaehSecurityComponent componentCode="SALE_INV_POST">
                   <button
@@ -457,7 +462,6 @@ class SalesInvoice extends Component {
                     />
                   </button>
                 </AlgaehSecurityComponent>
-
               </div>
               <Modal
                 title="Invoice Cancellation"
@@ -465,6 +469,7 @@ class SalesInvoice extends Component {
                 width={1080}
                 footer={null}
                 onCancel={() => this.setState({ cancel_visible: false })}
+                className={`row algaehNewModal advanceRefundModal`}
               >
                 <AlagehFormGroup
                   div={{ className: "col-3 textAreaLeft" }}
@@ -479,13 +484,25 @@ class SalesInvoice extends Component {
                     events: {
                       onChange: (e) => {
                         this.setState({ cancel_reason: e.target.value });
-                      }
-                    }
+                      },
+                    },
                   }}
                 />
-                <AlgaehButton className="btn btn-primary" onClick={CancelSalesInvoice.bind(this, this)}>
-                  Process
-                </AlgaehButton>
+
+                <div className="popupFooter">
+                  <div className="col-lg-12">
+                    <div className="row">
+                      <div className="col-lg-12">
+                        <AlgaehButton
+                          className="btn btn-primary"
+                          onClick={CancelSalesInvoice.bind(this, this)}
+                        >
+                          Process
+                        </AlgaehButton>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </Modal>
 
               <Modal
@@ -494,6 +511,7 @@ class SalesInvoice extends Component {
                 width={1080}
                 footer={null}
                 onCancel={() => this.setState({ revert_visible: false })}
+                className={`row algaehNewModal advanceRefundModal`}
               >
                 <AlagehFormGroup
                   div={{ className: "col-3 textAreaLeft" }}
@@ -508,18 +526,30 @@ class SalesInvoice extends Component {
                     events: {
                       onChange: (e) => {
                         this.setState({ revert_reason: e.target.value });
-                      }
-                    }
+                      },
+                    },
                   }}
                 />
-                <AlgaehButton className="btn btn-primary" onClick={RevertSalesInvoice.bind(this, this)}>
-                  Process
-                </AlgaehButton>
+
+                <div className="popupFooter">
+                  <div className="col-lg-12">
+                    <div className="row">
+                      <div className="col-lg-12">
+                        <AlgaehButton
+                          className="btn btn-primary"
+                          onClick={RevertSalesInvoice.bind(this, this)}
+                        >
+                          Process
+                        </AlgaehButton>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </Modal>
             </div>
           </div>
         </div>
-      </div >
+      </div>
     );
   }
 }
