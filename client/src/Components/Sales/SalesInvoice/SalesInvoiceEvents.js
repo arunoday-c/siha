@@ -105,19 +105,21 @@ const getCtrlCode = ($this, docNumber) => {
           data.dataExitst = true;
 
 
-          if (data.is_posted === "Y" || data.is_revert === "Y") {
+          if (data.is_cancelled === "Y") {
             data.postEnable = true;
             data.dataRevert = true;
+            data.cancelEnable = true;
           } else {
-            data.postEnable = false;
-            data.dataRevert = false;
+            if (data.is_posted === "Y" || data.is_revert === "Y") {
+              data.postEnable = true;
+              data.dataRevert = true;
+              data.cancelEnable = true;
+            } else {
+              data.postEnable = false;
+              data.dataRevert = false;
+              data.cancelEnable = false;
+            }
           }
-
-          // if (data.is_revert === "Y") {
-          //   data.dataRevert = true;
-          // } else {
-          //   data.dataRevert = false;
-          // }
 
           if (data.sales_invoice_mode === "I") {
             data.invoice_entry_detail_item = data.invoice_detail;
@@ -306,6 +308,13 @@ const SalesOrderSearch = ($this, e) => {
 };
 
 const RevertSalesInvoice = ($this) => {
+  if ($this.state.revert_reason === null || $this.state.revert_reason === "") {
+    swalMessage({
+      type: "warning",
+      title: "Revert reason is Mandatory",
+    });
+    return
+  }
   swal({
     title: "Are you sure you want to Revert ?",
     type: "warning",
@@ -324,6 +333,7 @@ const RevertSalesInvoice = ($this) => {
         data: {
           hims_f_sales_invoice_header_id: $this.state.hims_f_sales_invoice_header_id,
           sales_order_id: $this.state.sales_order_id,
+          revert_reason: $this.state.revert_reason,
           sales_invoice_mode: $this.state.sales_invoice_mode
         },
         onSuccess: (response) => {
@@ -348,6 +358,58 @@ const RevertSalesInvoice = ($this) => {
 
 }
 
+const CancelSalesInvoice = $this => {
+  if ($this.state.cancel_reason === null || $this.state.cancel_reason === "") {
+    swalMessage({
+      type: "warning",
+      title: "Cancellation reason is Mandatory",
+    });
+    return
+  }
+  swal({
+    title: "Are you sure you want to Cancel ?",
+    type: "warning",
+    showCancelButton: true,
+    confirmButtonText: "Yes",
+    confirmButtonColor: "#44b8bd",
+    cancelButtonColor: "#d33",
+    cancelButtonText: "No",
+  }).then((willDelete) => {
+    if (willDelete.value) {
+      AlgaehLoader({ show: true });
+      algaehApiCall({
+        uri: "/SalesInvoice/cancelSalesInvoice",
+        module: "sales",
+        method: "PUT",
+        data: {
+          hims_f_sales_invoice_header_id: $this.state.hims_f_sales_invoice_header_id,
+          sales_order_id: $this.state.sales_order_id,
+          sales_invoice_mode: $this.state.sales_invoice_mode,
+          cancel_reason: $this.state.cancel_reason,
+          invoice_entry_detail_item: $this.state.invoice_entry_detail_item
+        },
+        onSuccess: (response) => {
+          if (response.data.success) {
+            getCtrlCode($this, $this.state.invoice_number)
+            swalMessage({
+              type: "success",
+              title: "Cancelled successfully ...",
+            });
+            AlgaehLoader({ show: false });
+          } else {
+            AlgaehLoader({ show: false });
+            swalMessage({
+              type: "error",
+              title: response.data.records.message,
+            });
+          }
+        },
+      });
+    }
+  });
+
+}
+
 export {
   texthandle,
   ClearData,
@@ -356,5 +418,6 @@ export {
   PostSalesInvoice,
   generateSalesInvoiceReport,
   SalesOrderSearch,
-  RevertSalesInvoice
+  RevertSalesInvoice,
+  CancelSalesInvoice
 };

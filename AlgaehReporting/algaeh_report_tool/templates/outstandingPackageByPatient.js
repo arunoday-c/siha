@@ -20,12 +20,11 @@ const executePDF = function executePDFMethod(options) {
 
       options.mysql
         .executeQuery({
-          query: `SELECT PH.patient_id,PT.patient_code,PT.full_name,PG.package_code,PG.package_name,CASE WHEN PG.package_visit_type='S' THEN 'Single' else 'Multi' END as package_visit_type,V.visit_code,V.visit_date, PH.gross_amount,PH.advance_amount,PH.utilize_amount,PH.balance_amount,E.full_name as doctor_name, PH.hospital_id
+          query: `SELECT PH.patient_id,PT.patient_code,PT.full_name,PG.package_code,PG.package_name,CASE WHEN PG.package_visit_type='S' THEN 'Single' else 'Multi' END as package_visit_type,V.visit_code,V.visit_date, PH.gross_amount,PH.advance_amount,PH.utilize_amount,PH.balance_amount, PH.hospital_id
           FROM hims_f_package_header as PH
           inner join hims_f_patient PT on PH.patient_id = PT.hims_d_patient_id
           inner join hims_f_patient_visit V on PH.visit_id = V.hims_f_patient_visit_id
           inner join hims_d_package_header PG on PH.package_id = PG.hims_d_package_header_id
-          inner join hims_d_employee E on PH.doctor_id = E.hims_d_employee_id
           where PH.closed = 'N' and PH.closed_type <> 'C' ${strData};`,
           // values: [],
           printQuery: true,

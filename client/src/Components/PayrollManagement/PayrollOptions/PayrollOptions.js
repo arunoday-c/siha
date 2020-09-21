@@ -4,13 +4,14 @@ import { AlgaehLabel } from "../../Wrapper/algaehWrapper";
 import AttendanceSettings from "./AttendanceSettings/AttendanceSettings";
 import EndServiceOption from "./EndServiceOption/EndServiceOption";
 import LeaveSalarySetup from "./LeaveSalarySetup/LeaveSalarySetup";
+import EmailSetup from "./EmailSetup/EmailSetup";
 import { AlgaehTabs } from "algaeh-react-components";
 
 class PayrollOptions extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      pageDisplay: "AttendanceSettings"
+      pageDisplay: "AttendanceSettings",
     };
   }
 
@@ -22,7 +23,7 @@ class PayrollOptions extends Component {
     e.currentTarget.classList.add("active");
     var specified = e.currentTarget.getAttribute("algaehtabs");
     this.setState({
-      pageDisplay: specified
+      pageDisplay: specified,
     });
   }
 
@@ -36,35 +37,46 @@ class PayrollOptions extends Component {
               title: (
                 <AlgaehLabel
                   label={{
-                    forceLabel: "Attendance Settings"
+                    forceLabel: "Attendance Settings",
                   }}
                 />
               ),
               children: <AttendanceSettings />,
-              componentCode: "PAY_ATT_SET"
+              componentCode: "PAY_ATT_SET",
             },
             {
               title: (
                 <AlgaehLabel
                   label={{
-                    forceLabel: "End of Service"
+                    forceLabel: "End of Service",
                   }}
                 />
               ),
               children: <EndServiceOption />,
-              componentCode: "PAY_EOS_SER&D_MTR"
+              componentCode: "PAY_EOS_SER&D_MTR",
             },
             {
               title: (
                 <AlgaehLabel
                   label={{
-                    forceLabel: "Annual Leave Salary Setup"
+                    forceLabel: "Annual Leave Salary Setup",
                   }}
                 />
               ),
               children: <LeaveSalarySetup />,
-              componentCode: "PAY_ANN_LEV_SAL_SET"
-            }
+              componentCode: "PAY_ANN_LEV_SAL_SET",
+            },
+            {
+              title: (
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Email Setup",
+                  }}
+                />
+              ),
+              children: <EmailSetup />,
+              componentCode: "PAY_ANN_EML_SET",
+            },
           ]}
           renderClass="payrollOptionSection"
         />
