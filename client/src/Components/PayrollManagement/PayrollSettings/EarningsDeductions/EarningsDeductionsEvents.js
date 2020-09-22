@@ -298,6 +298,23 @@ const addEarningsDeductions = ($this) => {
     alertTypeIcon: "warning",
     pageState: $this,
     onSuccess: () => {
+
+      const earning_code_exit = $this.state.earning_deductions.find(
+        f => f.earning_deduction_code === $this.state.earning_deduction_code
+      );
+
+      debugger
+      if (
+        $this.state.hims_d_earning_deduction_id === null &&
+        earning_code_exit !== undefined
+      ) {
+        swalMessage({
+          type: "warning",
+          title: "Code Already Exist."
+        });
+        return
+      }
+
       if ($this.FIN_Active) {
         if (
           $this.state.selected_account === null ||
@@ -413,7 +430,7 @@ const addEarningsDeductions = ($this) => {
               });
             }
           },
-          onFailure: (err) => {},
+          onFailure: (err) => { },
         });
       } else {
         inputObj.hims_d_earning_deduction_id =
@@ -435,7 +452,7 @@ const addEarningsDeductions = ($this) => {
               });
             }
           },
-          onFailure: (err) => {},
+          onFailure: (err) => { },
         });
       }
     },
