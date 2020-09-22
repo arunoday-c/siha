@@ -1175,7 +1175,6 @@ export default {
         selectDoctor = ` and ASD.provider_id=${input.provider_id}  `;
         //provider_id = req.query.provider_id;
       }
-      debugger;
       _mysql
         .executeQuery({
           query: `select  hims_d_appointment_schedule_header_id, sub_dept_id,SD.sub_department_name, SH.schedule_status as schedule_status, schedule_description, month, year,

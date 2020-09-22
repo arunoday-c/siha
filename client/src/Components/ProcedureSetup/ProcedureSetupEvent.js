@@ -10,7 +10,6 @@ export default function ProcedureSetupEvent() {
         method: "GET",
         onSuccess: (response) => {
           if (response.data.success) {
-            debugger;
             let ItemList = Enumerable.from(response.data.records)
               .groupBy("$.hims_d_procedure_id", null, (k, g) => {
                 let firstRecordSet = Enumerable.from(g).firstOrDefault();

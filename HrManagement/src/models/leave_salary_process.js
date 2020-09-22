@@ -40,7 +40,6 @@ export default {
               printQuery: true,
             })
             .then((annul_leave) => {
-              debugger;
               let annul_leave_app = annul_leave[0];
               let hrms_options = annul_leave[1][0];
               let total_applied_days = annul_leave_app[0].total_applied_days;

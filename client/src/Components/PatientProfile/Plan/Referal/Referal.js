@@ -1,8 +1,6 @@
 import React, { PureComponent } from "react";
 import { withRouter } from "react-router-dom";
-import {
-  AlagehFormGroup
-} from "../../../Wrapper/algaehWrapper";
+import { AlagehFormGroup } from "../../../Wrapper/algaehWrapper";
 import "./Referal.scss";
 import "../../../../styles/site.scss";
 import AlgaehAutoSearch from "../../../Wrapper/autoSearch";
@@ -20,22 +18,21 @@ class Referal extends PureComponent {
       hospital_name: "",
       reason: "",
       radio: true,
-      external_doc_name: ""
+      external_doc_name: "",
     };
   }
   doctorDepartmentChangeHandler(item) {
-    debugger
     this.setState({
       sub_department_id: item.hims_d_sub_department_id,
       doctor_id: item.hims_d_employee_id,
       hospital_name: item.hospital_name,
-      doctor_department: item.sub_department_name
+      doctor_department: item.sub_department_name,
     });
   }
   doctorDepartmentClearHandler() {
     this.setState({
       sub_department_id: undefined,
-      doctor_id: undefined
+      doctor_id: undefined,
     });
   }
   render() {
@@ -78,11 +75,11 @@ class Referal extends PureComponent {
               columns={[
                 { fieldName: "full_name" },
                 { fieldName: "sub_department_name" },
-                { fieldName: "hospital_name" }
+                { fieldName: "hospital_name" },
               ]}
               displayField="doctor_department"
               value={this.state.doctor_department}
-              template={row => {
+              template={(row) => {
                 return (
                   <div className="col-12 padd-10">
                     <h6>
@@ -115,26 +112,26 @@ class Referal extends PureComponent {
                   sub_department_id: null,
                   doctor_id: null,
                   hospital_name: null,
-                  doctor_department: null
+                  doctor_department: null,
                 });
               }}
             />
           ) : (
-              <AlagehFormGroup
-                div={{ className: "col-lg-10" }}
-                label={{
-                  forceLabel: "Physician Details"
-                }}
-                textBox={{
-                  className: "txt-fld",
-                  name: "external_doc_name",
-                  value: this.state.external_doc_name,
-                  events: {
-                    onChange: texthandle.bind(this, this)
-                  }
-                }}
-              />
-            )}
+            <AlagehFormGroup
+              div={{ className: "col-lg-10" }}
+              label={{
+                forceLabel: "Physician Details",
+              }}
+              textBox={{
+                className: "txt-fld",
+                name: "external_doc_name",
+                value: this.state.external_doc_name,
+                events: {
+                  onChange: texthandle.bind(this, this),
+                },
+              }}
+            />
+          )}
 
           <div className="actions" style={{ paddingTop: "3.5vh" }}>
             <button
@@ -151,32 +148,32 @@ class Referal extends PureComponent {
           <AlagehFormGroup
             div={{ className: "col" }}
             label={{
-              forceLabel: "Hospital Name"
+              forceLabel: "Hospital Name",
             }}
             textBox={{
               className: "txt-fld",
               name: "hospital_name",
               value: this.state.hospital_name,
               events: {
-                onChange: texthandle.bind(this, this)
+                onChange: texthandle.bind(this, this),
               },
               others: {
-                disabled: this.state.radio
-              }
+                disabled: this.state.radio,
+              },
             }}
           />
           <AlagehFormGroup
             div={{ className: "col" }}
             label={{
-              forceLabel: "Reason"
+              forceLabel: "Reason",
             }}
             textBox={{
               className: "txt-fld",
               name: "reason",
               value: this.state.reason,
               events: {
-                onChange: texthandle.bind(this, this)
-              }
+                onChange: texthandle.bind(this, this),
+              },
             }}
           />
         </div>

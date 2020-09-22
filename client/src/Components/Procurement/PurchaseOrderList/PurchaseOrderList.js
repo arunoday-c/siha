@@ -47,7 +47,8 @@ class PurchaseOrderList extends Component {
       status: "1",
     };
 
-    let bothExisits = false, poSelected = false;
+    let bothExisits = false,
+      poSelected = false;
 
     RawSecurityComponent({ componentCode: "PUR_AUT_AUTH2" }).then((result) => {
       if (result === "show") {
@@ -59,12 +60,12 @@ class PurchaseOrderList extends Component {
       (result) => {
         if (result === "show") {
           bothExisits = false;
-          poSelected = false
+          poSelected = false;
           this.setState(
             {
               po_from: "INV",
               status: status,
-              bothExisits: false
+              bothExisits: false,
             },
             () => {
               getData(this);
@@ -78,7 +79,6 @@ class PurchaseOrderList extends Component {
     RawSecurityComponent({ componentCode: "PUR_AUTH_PHARMACY" }).then(
       (result) => {
         if (result === "show") {
-          debugger
           this.setState(
             {
               po_from: "PHR",
@@ -92,13 +92,11 @@ class PurchaseOrderList extends Component {
             }
           );
         } else {
-          this.setState(
-            {
-              bothExisits: true,
-              poSelected: poSelected === false ? false : true,
-              status: bothExisits === false ? status : "0",
-            }
-          );
+          this.setState({
+            bothExisits: true,
+            poSelected: poSelected === false ? false : true,
+            status: bothExisits === false ? status : "0",
+          });
         }
       }
     );
@@ -118,25 +116,25 @@ class PurchaseOrderList extends Component {
               />
             }
             breadStyle={this.props.breadStyle}
-          // pageNavPath={[
-          //   {
-          //     pageName: (
-          //       <AlgaehLabel
-          //         label={{
-          //           forceLabel: "Home",
-          //           align: "ltr",
-          //         }}
-          //       />
-          //     ),
-          //   },
-          //   {
-          //     pageName: (
-          //       <AlgaehLabel
-          //         label={{ forceLabel: "Purchase Auth List", align: "ltr" }}
-          //       />
-          //     ),
-          //   },
-          // ]}
+            // pageNavPath={[
+            //   {
+            //     pageName: (
+            //       <AlgaehLabel
+            //         label={{
+            //           forceLabel: "Home",
+            //           align: "ltr",
+            //         }}
+            //       />
+            //     ),
+            //   },
+            //   {
+            //     pageName: (
+            //       <AlgaehLabel
+            //         label={{ forceLabel: "Purchase Auth List", align: "ltr" }}
+            //       />
+            //     ),
+            //   },
+            // ]}
           />
           <div
             className="row inner-top-search"
@@ -287,11 +285,13 @@ class PurchaseOrderList extends Component {
                         fieldName: "status",
                         label: <AlgaehLabel label={{ forceLabel: "Status" }} />,
                         displayTemplate: (row) => {
-                          return row.status === "Delivery Completed" && row.po_mode === "I" ? (
+                          return row.status === "Delivery Completed" &&
+                            row.po_mode === "I" ? (
                             <span className="badge badge-success">
                               Delivery Completed / Receipt Pending
                             </span>
-                          ) : row.status === "Delivery Completed" && row.po_mode === "S" ? (
+                          ) : row.status === "Delivery Completed" &&
+                            row.po_mode === "S" ? (
                             <span className="badge badge-success">
                               Receipt Pending
                             </span>
@@ -379,21 +379,21 @@ class PurchaseOrderList extends Component {
 
                           this.state.po_from === "PHR"
                             ? (display =
-                              this.props.polocations === undefined
-                                ? []
-                                : this.props.polocations.filter(
-                                  (f) =>
-                                    f.hims_d_pharmacy_location_id ===
-                                    row.pharmcy_location_id
-                                ))
+                                this.props.polocations === undefined
+                                  ? []
+                                  : this.props.polocations.filter(
+                                      (f) =>
+                                        f.hims_d_pharmacy_location_id ===
+                                        row.pharmcy_location_id
+                                    ))
                             : (display =
-                              this.props.polocations === undefined
-                                ? []
-                                : this.props.polocations.filter(
-                                  (f) =>
-                                    f.hims_d_inventory_location_id ===
-                                    row.inventory_location_id
-                                ));
+                                this.props.polocations === undefined
+                                  ? []
+                                  : this.props.polocations.filter(
+                                      (f) =>
+                                        f.hims_d_inventory_location_id ===
+                                        row.inventory_location_id
+                                    ));
 
                           return (
                             <span>
@@ -434,11 +434,13 @@ class PurchaseOrderList extends Component {
                       {
                         fieldName: "comment",
                         label: (
-                          <AlgaehLabel label={{ forceLabel: "Rejection Comments" }} />
+                          <AlgaehLabel
+                            label={{ forceLabel: "Rejection Comments" }}
+                          />
                         ),
                         disabled: true,
                         others: {
-                          resizable: false
+                          resizable: false,
                         },
                       },
                     ]}

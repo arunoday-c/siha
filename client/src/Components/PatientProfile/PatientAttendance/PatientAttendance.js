@@ -46,7 +46,6 @@ class PatientAttendance extends Component {
   }
 
   PrintPatientAttendance() {
-    debugger;
     if (this.state.from_time === null) {
       swalMessage({
         title: "From time cannot be blank",

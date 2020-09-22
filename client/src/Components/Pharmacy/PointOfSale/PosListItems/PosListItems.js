@@ -502,7 +502,7 @@ class PosListItems extends Component {
                                       />
                                     ),
                                     // displayTemplate: row => {
-                                    //   debugger
+                                    //
                                     //   let display =
                                     //     this.props.positemlist === undefined
                                     //       ? []

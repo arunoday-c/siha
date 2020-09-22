@@ -390,7 +390,7 @@ export function algaehApiCall(options) {
 //   //   };
 //   // }
 //   // const _contentType = settings.header !== undefined ? settings.header : {};
-//   // debugger;
+//   // ;
 //   // const headerToken = getItem("token");
 //   // (async () => {
 //   //   return await getToken();

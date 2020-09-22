@@ -41,7 +41,7 @@ class Examination extends Component {
       this.props.all_patient_examinations.length === 0
     ) {
       getPatientPhysicalExamination(this);
-      getAllDepartmentBased({ that: this, inputData: { allDept: "S" }, });
+      getAllDepartmentBased({ that: this, inputData: { allDept: "S" } });
     }
   }
 
@@ -185,7 +185,6 @@ class Examination extends Component {
   }
 
   changeGeneralOrSpecific(e) {
-    debugger
     const _examination_type = e.target.checked ? "G" : "S";
     getAllDepartmentBased({
       that: this,
@@ -247,22 +246,22 @@ class Examination extends Component {
   render() {
     const _specility =
       this.props.allexaminations !== undefined &&
-        this.props.allexaminations.length !== 0
+      this.props.allexaminations.length !== 0
         ? Enumerable.from(this.props.allexaminations)
-          //    .where(w => w.examination_type === this.state.examination_type)
-          .groupBy(
-            "$.hims_d_physical_examination_header_id",
-            null,
-            (k, g) => {
-              return {
-                hims_d_physical_examination_header_id: k,
-                description: Enumerable.from(g.getSource()).firstOrDefault()
-                  .description,
-                list: g.getSource(),
-              };
-            }
-          )
-          .toArray()
+            //    .where(w => w.examination_type === this.state.examination_type)
+            .groupBy(
+              "$.hims_d_physical_examination_header_id",
+              null,
+              (k, g) => {
+                return {
+                  hims_d_physical_examination_header_id: k,
+                  description: Enumerable.from(g.getSource()).firstOrDefault()
+                    .description,
+                  list: g.getSource(),
+                };
+              }
+            )
+            .toArray()
         : [];
     return (
       <React.Fragment>
@@ -426,7 +425,7 @@ class Examination extends Component {
                     paging={{ page: 0, rowsPerPage: 10 }}
                     events={{
                       onDelete: this.deletePatientExamn.bind(this),
-                      onEdit: (row) => { },
+                      onEdit: (row) => {},
                       onDone: this.updateExamination.bind(this),
                     }}
                   />

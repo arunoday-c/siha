@@ -10,31 +10,31 @@ const texthandle = ($this, e) => {
   let value = e.value || e.target.value;
 
   $this.setState({
-    [name]: value
+    [name]: value,
   });
 };
 
 const PatientSearch = ($this, e) => {
   AlgaehSearch({
     searchGrid: {
-      columns: FrontDesk
+      columns: FrontDesk,
     },
     searchName: "patients",
     uri: "/gloabelSearch/get",
     onContainsChange: (text, serchBy, callBack) => {
       callBack(text);
     },
-    onRowSelect: row => {
+    onRowSelect: (row) => {
       $this.setState(
         {
           patient_code: row.patient_code,
-          patient_id: row.hims_d_patient_id
+          patient_id: row.hims_d_patient_id,
         },
         () => {
           getSampleCollectionDetails($this);
         }
       );
-    }
+    },
   });
 };
 
@@ -45,7 +45,7 @@ const datehandle = ($this, ctrl, e) => {
       intFailure = true;
       swalMessage({
         title: "From Date cannot be grater than To Date.",
-        type: "warning"
+        type: "warning",
       });
     }
   } else if (e === "to_date") {
@@ -53,7 +53,7 @@ const datehandle = ($this, ctrl, e) => {
       intFailure = true;
       swalMessage({
         title: "To Date cannot be less than From Date.",
-        type: "warning"
+        type: "warning",
       });
     }
   }
@@ -61,7 +61,7 @@ const datehandle = ($this, ctrl, e) => {
   if (intFailure === false) {
     $this.setState(
       {
-        [e]: moment(ctrl)._d
+        [e]: moment(ctrl)._d,
       },
       () => {
         getSampleCollectionDetails($this);
@@ -70,7 +70,7 @@ const datehandle = ($this, ctrl, e) => {
   }
 };
 
-const getSampleCollectionDetails = $this => {
+const getSampleCollectionDetails = ($this) => {
   let inputobj = {};
 
   if ($this.state.from_date !== null) {
@@ -100,35 +100,32 @@ const getSampleCollectionDetails = $this => {
     module: "laboratory",
     method: "GET",
     data: inputobj,
-    onSuccess: response => {
+    onSuccess: (response) => {
       if (response.data.success) {
         $this.setState({ sample_collection: response.data.records });
       }
-    }
+    },
   });
-
 };
 
 const AcceptandRejectSample = ($this, row, AccRej) => {
   if (row.status === "O") {
     swalMessage({
       title: "Please collect the sample.",
-      type: "warning"
+      type: "warning",
     });
   } else {
-
-
     if (row.sample_status === "N") {
       if (AccRej === "R") {
         if ($this.state.remarks === null || $this.state.remarks === "") {
           swalMessage({
             title: "Remarks is mandatory",
-            type: "error"
+            type: "error",
           });
           return;
         }
       }
-      debugger
+
       let inputobj = {
         test_id: row.hims_d_investigation_test_id,
         hims_d_lab_sample_id: row.hims_d_lab_sample_id,
@@ -136,7 +133,7 @@ const AcceptandRejectSample = ($this, row, AccRej) => {
         date_of_birth: row.date_of_birth,
         gender: row.gender,
         remarks: $this.state.remarks,
-        status: AccRej
+        status: AccRej,
       };
 
       algaehApiCall({
@@ -144,36 +141,36 @@ const AcceptandRejectSample = ($this, row, AccRej) => {
         module: "laboratory",
         data: inputobj,
         method: "PUT",
-        onSuccess: response => {
+        onSuccess: (response) => {
           if (response.data.success === true) {
             getSampleCollectionDetails($this);
             $this.setState({
               remarks: "",
-              reject_popup: false
+              reject_popup: false,
             });
             swalMessage({
               title: "Record Updated",
-              type: "success"
+              type: "success",
             });
           }
         },
-        onFailure: error => {
+        onFailure: (error) => {
           swalMessage({
             title: error.message,
-            type: "error"
+            type: "error",
           });
-        }
+        },
       });
     } else {
       swalMessage({
         title: "Already Accecpted/Rejected.",
-        type: "warning"
+        type: "warning",
       });
     }
   }
 };
 
-const Refresh = $this => {
+const Refresh = ($this) => {
   let month = moment().format("MM");
   let year = moment().format("YYYY");
 
@@ -184,7 +181,7 @@ const Refresh = $this => {
       patient_id: null,
       patient_code: null,
       proiorty: null,
-      status: null
+      status: null,
     },
     () => {
       getSampleCollectionDetails($this);
@@ -197,5 +194,5 @@ export {
   datehandle,
   getSampleCollectionDetails,
   AcceptandRejectSample,
-  Refresh
+  Refresh,
 };

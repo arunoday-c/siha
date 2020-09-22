@@ -94,7 +94,7 @@ export const ClearData = ($this) => {
     incharge_employee_id: null,
     notification_days1: null,
     notification_days2: null,
-    delete_services: []
+    delete_services: [],
   };
 
   $this.setState(IOputs);
@@ -115,12 +115,10 @@ export const SaveContract = ($this) => {
         }
       }
 
-
       AlgaehLoader({ show: true });
       $this.state.terms_conditions = $this.state.comment_list.join("<br/>");
-      debugger
-      if ($this.state.hims_f_contract_management_id !== null) {
 
+      if ($this.state.hims_f_contract_management_id !== null) {
         algaehApiCall({
           uri: "/ContractManagement/updateContractManagement",
           module: "sales",
@@ -128,7 +126,6 @@ export const SaveContract = ($this) => {
           data: $this.state,
           onSuccess: (response) => {
             if (response.data.success) {
-              debugger
               if ($this.state.contract_files.length) {
                 saveDocument(
                   $this.state.contract_files,
@@ -329,7 +326,7 @@ export function getDocuments(contract_no, $this) {
 
 export const getCtrlCode = ($this, docNumber) => {
   AlgaehLoader({ show: true });
-  ClearData($this)
+  ClearData($this);
   algaehApiCall({
     uri: "/ContractManagement/getContractManagement",
     module: "sales",

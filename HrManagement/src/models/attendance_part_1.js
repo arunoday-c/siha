@@ -559,18 +559,40 @@ export function getEmployeeWeekOffsandHolidays(
       employee["date_of_joining"] > from_date &&
       employee["exit_date"] == null
     ) {
+      console.log("allHolidays", allHolidays);
       emp_holidays = allHolidays.filter((w) => {
+        if (employee["week_day"]) {
+          return (
+            ((w.holiday == "Y" && w.holiday_type == "RE") ||
+              (w.holiday == "Y" &&
+                w.holiday_type == "RS" &&
+                w.religion_id == employee["religion_id"]) ||
+              moment(w.holiday_date).format("dd").toUpperCase() ===
+                employee["week_day"]) &&
+            w.holiday_date >= employee["date_of_joining"]
+          );
+        }
         return (
           ((w.holiday == "Y" && w.holiday_type == "RE") ||
             (w.holiday == "Y" &&
               w.holiday_type == "RS" &&
               w.religion_id == employee["religion_id"]) ||
-            w.weekoff === "Y") &&
+            moment(w.holiday_date).format("dd").toUpperCase() ===
+              employee["week_day"]) &&
           w.holiday_date >= employee["date_of_joining"]
         );
       });
     } else {
       emp_holidays = allHolidays.filter((w) => {
+        if (employee["week_day"]) {
+          return (
+            (w.holiday == "Y" && w.holiday_type == "RE") ||
+            (w.holiday == "Y" &&
+              w.holiday_type == "RS" &&
+              w.religion_id == employee["religion_id"]) ||
+            w.weekoff === "Y"
+          );
+        }
         return (
           (w.holiday == "Y" && w.holiday_type == "RE") ||
           (w.holiday == "Y" &&
@@ -580,7 +602,7 @@ export function getEmployeeWeekOffsandHolidays(
         );
       });
     }
-
+    console.log("employee", employee);
     //EN --------- CALCULATING WEEK OFF AND HOLIDAYS
 
     return emp_holidays;
@@ -3231,11 +3253,25 @@ export function processBulkAtt_Normal(data) {
                                 DilayResult[i]["total_days"] = month_days;
                                 DilayResult[i]["total_work_days"] = month_days;
                               } else {
+                                let annual_leaves = parseFloat(
+                                  DilayResult[i]["anual_leave"]
+                                );
+                                if (
+                                  parseFloat(DilayResult[i]["anual_leave"]) >
+                                  parseFloat(
+                                    options["salary_calendar_fixed_days"]
+                                  )
+                                ) {
+                                  annual_leaves = parseFloat(
+                                    options["salary_calendar_fixed_days"]
+                                  );
+                                }
                                 t_paid_days =
                                   options["salary_calendar_fixed_days"] -
                                   parseFloat(DilayResult[i]["absent_days"]) -
                                   parseFloat(DilayResult[i]["unpaid_leave"]) -
-                                  parseFloat(DilayResult[i]["anual_leave"]) -
+                                  annual_leaves -
+                                  //parseFloat(DilayResult[i]["anual_leave"]) -
                                   parseFloat(pending_unpaid_leave);
                               }
 
@@ -3259,6 +3295,7 @@ export function processBulkAtt_Normal(data) {
                                 updated_by: user_id,
                               });
                             } else {
+                              console.log("Here im i");
                               attResult.push({
                                 ...DilayResult[i],
                                 total_paid_days:

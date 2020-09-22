@@ -564,7 +564,6 @@ export default {
             if (Result[5].length > 1) {
               above_ninety_days_total = Result[5].pop().debit_amount;
             }
-            debugger;
             ledgers.forEach((ledger) => {
               let todays_amount = parseFloat(0).toFixed(decimal_places);
               let thirty_days_amount = parseFloat(0).toFixed(decimal_places);

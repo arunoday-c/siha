@@ -4,7 +4,7 @@ import BillingIOputs from "../../Models/BillCancellation";
 import {
   algaehApiCall,
   swalMessage,
-  getCookie
+  getCookie,
 } from "../../utils/algaehApiCall";
 
 import AlgaehLoader from "../Wrapper/fullPageLoader";
@@ -17,10 +17,10 @@ const ClearData = ($this, e) => {
     uri: "/userPreferences/get",
     data: {
       screenName: _screenName,
-      identifier: "Counter"
+      identifier: "Counter",
     },
     method: "GET",
-    onSuccess: response => {
+    onSuccess: (response) => {
       counter_id = response.data.records.selectedValue;
 
       let IOputs = extend(
@@ -34,11 +34,11 @@ const ClearData = ($this, e) => {
       $this.setState({ ...$this.state, ...IOputs }, () => {
         getCashiersAndShiftMAP($this);
       });
-    }
+    },
   });
 };
 
-const Validations = $this => {
+const Validations = ($this) => {
   let isError = false;
 
   if ($this.state.card_amount > 0) {
@@ -46,7 +46,7 @@ const Validations = $this => {
       isError = true;
       swalMessage({
         type: "warning",
-        title: "Invalid. Card Number cannot be blank."
+        title: "Invalid. Card Number cannot be blank.",
       });
 
       document.querySelector("[name='card_check_number']").focus();
@@ -57,7 +57,7 @@ const Validations = $this => {
       isError = true;
       swalMessage({
         type: "warning",
-        title: "Invalid. Card Date Cannot be blank."
+        title: "Invalid. Card Date Cannot be blank.",
       });
 
       document.querySelector("[name='card_date']").focus();
@@ -71,7 +71,7 @@ const Validations = $this => {
       isError = true;
       swalMessage({
         type: "warning",
-        title: "Check Number cannot be blank."
+        title: "Check Number cannot be blank.",
       });
 
       document.querySelector("[name='cheque_number']").focus();
@@ -82,7 +82,7 @@ const Validations = $this => {
       isError = true;
       swalMessage({
         type: "warning",
-        title: "Cheque Date Cannot be blank."
+        title: "Cheque Date Cannot be blank.",
       });
 
       document.querySelector("[name='cheque_date']").focus();
@@ -92,7 +92,7 @@ const Validations = $this => {
     isError = true;
     swalMessage({
       type: "warning",
-      title: "Total receipt amount should be equal to reciveable amount."
+      title: "Total receipt amount should be equal to reciveable amount.",
     });
 
     return isError;
@@ -100,7 +100,7 @@ const Validations = $this => {
     isError = true;
     swalMessage({
       type: "warning",
-      title: "Shift is Mandatory."
+      title: "Shift is Mandatory.",
     });
 
     return isError;
@@ -111,7 +111,7 @@ const Validations = $this => {
     isError = true;
     swalMessage({
       type: "warning",
-      title: "Cancellation Reason is Mandatory."
+      title: "Cancellation Reason is Mandatory.",
     });
 
     return isError;
@@ -128,50 +128,48 @@ const Validations = $this => {
   // }
 };
 
-const getCashiersAndShiftMAP = $this => {
+const getCashiersAndShiftMAP = ($this) => {
   algaehApiCall({
     uri: "/shiftAndCounter/getCashiersAndShiftMAP",
     module: "masterSettings",
     method: "GET",
     data: { for: "T" },
-    onSuccess: response => {
+    onSuccess: (response) => {
       if (response.data.records.length > 0) {
         $this.setState(
           {
-            shift_assinged: response.data.records
+            shift_assinged: response.data.records,
           },
           () => {
             $this.setState({
-              shift_id: response.data.records[0].shift_id
+              shift_id: response.data.records[0].shift_id,
             });
           }
         );
       }
     },
-    onFailure: error => {
+    onFailure: (error) => {
       swalMessage({
         title: error.message,
-        type: "error"
+        type: "error",
       });
-    }
+    },
   });
 };
 
-const getBillDetails = $this => {
+const getBillDetails = ($this) => {
   AlgaehLoader({ show: true });
   algaehApiCall({
     uri: "/opBilling/get",
     module: "billing",
     method: "GET",
     data: { bill_number: $this.state.bill_number, from_cancellation: "Y" },
-    onSuccess: response => {
+    onSuccess: (response) => {
       if (response.data.success) {
-        debugger
-
         let data = response.data.records;
 
         let x = Enumerable.from($this.props.patienttype)
-          .where(w => w.hims_d_patient_type_id === data.patient_type)
+          .where((w) => w.hims_d_patient_type_id === data.patient_type)
           .toArray();
 
         if (x !== undefined && x.length > 0) {
@@ -197,24 +195,24 @@ const getBillDetails = $this => {
             method: "GET",
             data: {
               patient_id: $this.state.hims_d_patient_id,
-              patient_visit_id: $this.state.visit_id
+              patient_visit_id: $this.state.visit_id,
             },
             redux: {
               type: "EXIT_INSURANCE_GET_DATA",
-              mappingName: "existinsurance"
-            }
+              mappingName: "existinsurance",
+            },
           });
         }
         AlgaehLoader({ show: false });
       }
     },
-    onFailure: error => {
+    onFailure: (error) => {
       AlgaehLoader({ show: false });
       swalMessage({
         title: error.message,
-        type: "error"
+        type: "error",
       });
-    }
+    },
   });
 };
 
@@ -226,12 +224,12 @@ const getCtrlCode = ($this, billcode) => {
     module: "billing",
     method: "GET",
     data: { bill_cancel_number: billcode },
-    onSuccess: response => {
+    onSuccess: (response) => {
       if (response.data.success) {
         let data = response.data.records;
 
         let x = Enumerable.from($this.props.patienttype)
-          .where(w => w.hims_d_patient_type_id === data.patient_type)
+          .where((w) => w.hims_d_patient_type_id === data.patient_type)
           .toArray();
 
         if (x !== undefined && x.length > 0) {
@@ -259,12 +257,12 @@ const getCtrlCode = ($this, billcode) => {
             method: "GET",
             data: {
               patient_id: data.patient_id,
-              patient_visit_id: data.visit_id
+              patient_visit_id: data.visit_id,
             },
             redux: {
               type: "EXIT_INSURANCE_GET_DATA",
-              mappingName: "existinsurance"
-            }
+              mappingName: "existinsurance",
+            },
           });
         }
 
@@ -272,23 +270,23 @@ const getCtrlCode = ($this, billcode) => {
         AlgaehLoader({ show: false });
       }
     },
-    onFailure: error => {
+    onFailure: (error) => {
       AlgaehLoader({ show: false });
       swalMessage({
         title: error.message,
-        type: "error"
+        type: "error",
       });
-    }
+    },
   });
 };
 
-const generateReceipt = $this => {
+const generateReceipt = ($this) => {
   algaehApiCall({
     uri: "/report",
     method: "GET",
     module: "reports",
     headers: {
-      Accept: "blob"
+      Accept: "blob",
     },
     others: { responseType: "blob" },
     data: {
@@ -297,17 +295,17 @@ const generateReceipt = $this => {
         reportParams: [
           {
             name: "hims_f_bill_cancel_header_id",
-            value: $this.state.hims_f_bill_cancel_header_id
-          }
+            value: $this.state.hims_f_bill_cancel_header_id,
+          },
         ],
-        outputFileType: "PDF"
-      }
+        outputFileType: "PDF",
+      },
     },
-    onSuccess: res => {
+    onSuccess: (res) => {
       const urlBlob = URL.createObjectURL(res.data);
       const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}`;
       window.open(origin);
-    }
+    },
   });
 };
 
@@ -317,5 +315,5 @@ export {
   getCashiersAndShiftMAP,
   getBillDetails,
   getCtrlCode,
-  generateReceipt
+  generateReceipt,
 };
