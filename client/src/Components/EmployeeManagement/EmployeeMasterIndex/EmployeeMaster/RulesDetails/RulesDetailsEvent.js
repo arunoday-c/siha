@@ -1,15 +1,15 @@
 const changeChecks = ($this, e) => {
+  e.persist();
   let name = e.target.name;
-
   switch (e.target.name) {
     case "leave_salary_process":
       $this.setState(
         {
-          LeaveSalaryProcess: !$this.state.LeaveSalaryProcess
+          LeaveSalaryProcess: !$this.state.LeaveSalaryProcess,
         },
         () => {
           $this.props.EmpMasterIOputs.updateEmployeeTabs({
-            [name]: $this.state.LeaveSalaryProcess ? "Y" : "N"
+            [name]: $this.state.LeaveSalaryProcess ? "Y" : "N",
           });
         }
       );
@@ -17,11 +17,11 @@ const changeChecks = ($this, e) => {
     case "late_coming_rule":
       $this.setState(
         {
-          LateComingRule: !$this.state.LateComingRule
+          LateComingRule: !$this.state.LateComingRule,
         },
         () => {
           $this.props.EmpMasterIOputs.updateEmployeeTabs({
-            [name]: $this.state.LateComingRule ? "Y" : "N"
+            [name]: $this.state.LateComingRule ? "Y" : "N",
           });
         }
       );
@@ -29,11 +29,11 @@ const changeChecks = ($this, e) => {
     case "airfare_process":
       $this.setState(
         {
-          AirfareProcess: !$this.state.AirfareProcess
+          AirfareProcess: !$this.state.AirfareProcess,
         },
         () => {
           $this.props.EmpMasterIOputs.updateEmployeeTabs({
-            [name]: $this.state.AirfareProcess ? "Y" : "N"
+            [name]: $this.state.AirfareProcess ? "Y" : "N",
           });
         }
       );
@@ -41,11 +41,11 @@ const changeChecks = ($this, e) => {
     case "exclude_machine_data":
       $this.setState(
         {
-          ExcludeMachineData: !$this.state.ExcludeMachineData
+          ExcludeMachineData: !$this.state.ExcludeMachineData,
         },
         () => {
           $this.props.EmpMasterIOputs.updateEmployeeTabs({
-            [name]: $this.state.ExcludeMachineData ? "Y" : "N"
+            [name]: $this.state.ExcludeMachineData ? "Y" : "N",
           });
         }
       );
@@ -53,11 +53,11 @@ const changeChecks = ($this, e) => {
     case "gratuity_applicable":
       $this.setState(
         {
-          GratuityApplicable: !$this.state.GratuityApplicable
+          GratuityApplicable: !$this.state.GratuityApplicable,
         },
         () => {
           $this.props.EmpMasterIOputs.updateEmployeeTabs({
-            [name]: $this.state.GratuityApplicable ? "Y" : "N"
+            [name]: $this.state.GratuityApplicable ? "Y" : "N",
           });
         }
       );
@@ -65,11 +65,11 @@ const changeChecks = ($this, e) => {
     case "suspend_salary":
       $this.setState(
         {
-          SuspendSalary: !$this.state.SuspendSalary
+          SuspendSalary: !$this.state.SuspendSalary,
         },
         () => {
           $this.props.EmpMasterIOputs.updateEmployeeTabs({
-            [name]: $this.state.SuspendSalary ? "Y" : "N"
+            [name]: $this.state.SuspendSalary ? "Y" : "N",
           });
         }
       );
@@ -77,29 +77,38 @@ const changeChecks = ($this, e) => {
     case "pf_applicable":
       $this.setState(
         {
-          PfApplicable: !$this.state.PfApplicable
+          PfApplicable: !$this.state.PfApplicable,
         },
         () => {
           $this.props.EmpMasterIOputs.updateEmployeeTabs({
-            [name]: $this.state.PfApplicable ? "Y" : "N"
+            [name]: $this.state.PfApplicable ? "Y" : "N",
           });
         }
       );
       break;
     case "gratuity_encash":
-      $this.setState({
-        [name]: e.target.value
-      },
+      $this.setState(
+        {
+          [name]: e.target.value,
+        },
         () => {
           $this.props.EmpMasterIOputs.updateEmployeeTabs({
-            [name]: e.target.value
+            [name]: e.target.value,
           });
-        });
+        }
+      );
       break;
-
+    case "standard_work_hours":
+    case "ramzan_work_hours":
+      $this.setState({ [name]: e.target.value }, () => {
+        $this.props.EmpMasterIOputs.updateEmployeeTabs({
+          [name]: e.target.value,
+        });
+      });
+      break;
     default:
       this.setState({
-        [name]: "Y"
+        [name]: "Y",
       });
       break;
   }

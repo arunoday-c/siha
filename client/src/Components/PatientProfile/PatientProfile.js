@@ -77,7 +77,7 @@ class PatientProfile extends Component {
     // if (patientDetails === undefined) {
     //   this.props.history.push("/DoctorsWorkbench");
     // }
-    debugger
+
     this.setState(
       {
         alergyExist: "",
@@ -85,7 +85,7 @@ class PatientProfile extends Component {
           this.state.firstLaunch === undefined ? this.props.firstLaunch : false,
         patient_code:
           this.props.patient_profile !== undefined &&
-            this.props.patient_profile.length > 0
+          this.props.patient_profile.length > 0
             ? this.props.patient_profile[0].patient_code
             : "",
         department_type: patientDetails["department_type"],
@@ -272,12 +272,12 @@ class PatientProfile extends Component {
                   k === "F"
                     ? "Food"
                     : k === "A"
-                      ? "Airborne"
-                      : k === "AI"
-                        ? "Animal  &  Insect"
-                        : k === "C"
-                          ? "Chemical & Others"
-                          : "",
+                    ? "Airborne"
+                    : k === "AI"
+                    ? "Animal  &  Insect"
+                    : k === "C"
+                    ? "Chemical & Others"
+                    : "",
                 allergyList: g.getSource(),
               };
             })
@@ -307,13 +307,13 @@ class PatientProfile extends Component {
     // let significant_signs = Window.global["significant_signs"];
     const _Vitals =
       this.props.patient_vitals !== undefined &&
-        this.props.patient_vitals.length > 0
+      this.props.patient_vitals.length > 0
         ? Enumerable.from(this.props.patient_vitals)
-          .groupBy("$.visit_date", null, (k, g) => {
-            return g.getSource();
-          })
-          .orderBy((g) => g.visit_date)
-          .lastOrDefault()
+            .groupBy("$.visit_date", null, (k, g) => {
+              return g.getSource();
+            })
+            .orderBy((g) => g.visit_date)
+            .lastOrDefault()
         : [];
 
     if (chief_complaint === null || chief_complaint.length < 4) {
@@ -372,13 +372,13 @@ class PatientProfile extends Component {
     // let significant_signs = Window.global["significant_signs"];
     const _Vitals =
       this.props.patient_vitals !== undefined &&
-        this.props.patient_vitals.length > 0
+      this.props.patient_vitals.length > 0
         ? Enumerable.from(this.props.patient_vitals)
-          .groupBy("$.visit_date", null, (k, g) => {
-            return g.getSource();
-          })
-          .orderBy((g) => g.visit_date)
-          .lastOrDefault()
+            .groupBy("$.visit_date", null, (k, g) => {
+              return g.getSource();
+            })
+            .orderBy((g) => g.visit_date)
+            .lastOrDefault()
         : [];
 
     if (
@@ -441,13 +441,13 @@ class PatientProfile extends Component {
     // let significant_signs = Window.global["significant_signs"];
     const _Vitals =
       this.props.patient_vitals !== undefined &&
-        this.props.patient_vitals.length > 0
+      this.props.patient_vitals.length > 0
         ? Enumerable.from(this.props.patient_vitals)
-          .groupBy("$.visit_date", null, (k, g) => {
-            return g.getSource();
-          })
-          .orderBy((g) => g.visit_date)
-          .lastOrDefault()
+            .groupBy("$.visit_date", null, (k, g) => {
+              return g.getSource();
+            })
+            .orderBy((g) => g.visit_date)
+            .lastOrDefault()
         : [];
 
     if (
@@ -648,17 +648,17 @@ class PatientProfile extends Component {
   render() {
     const _pat_profile =
       this.props.patient_profile !== undefined &&
-        this.props.patient_profile.length > 0
+      this.props.patient_profile.length > 0
         ? this.props.patient_profile[0]
         : {};
 
     const _Vitals =
       this.props.patient_vitals !== undefined &&
-        this.props.patient_vitals.length > 0
+      this.props.patient_vitals.length > 0
         ? _.chain(this.props.patient_vitals)
-          .uniqBy((u) => u.vital_id)
-          .orderBy((o) => o.sequence_order)
-          .value()
+            .uniqBy((u) => u.vital_id)
+            .orderBy((o) => o.sequence_order)
+            .value()
         : [];
 
     const _patient_allergies = this.state.patientAllergies;
@@ -726,8 +726,8 @@ class PatientProfile extends Component {
                 {_pat_profile.payment_type === "I"
                   ? "Insurance"
                   : _pat_profile.payment_type === "S"
-                    ? "Self"
-                    : ""}
+                  ? "Self"
+                  : ""}
               </b>
             </span>
           </div>
@@ -779,7 +779,9 @@ class PatientProfile extends Component {
                 <span onClick={this.showSickLeave.bind(this)}>Sick Leave</span>
               </li>
               <li>
-                <span onClick={this.showPatientAttendance.bind(this)}>Patient Attendance</span>
+                <span onClick={this.showPatientAttendance.bind(this)}>
+                  Patient Attendance
+                </span>
               </li>
               <li>
                 <span onClick={this.printGeneralConsentForm.bind(this)}>
@@ -807,10 +809,10 @@ class PatientProfile extends Component {
                   <span>OCAF Report</span>
                 </li>
               ) : (
-                    <li onClick={this.openUCAFReport.bind(this, _pat_profile)}>
-                      <span>UCAF Report</span>
-                    </li>
-                  )}
+                <li onClick={this.openUCAFReport.bind(this, _pat_profile)}>
+                  <span>UCAF Report</span>
+                </li>
+              )}
             </ul>
           </div>
         </div>
@@ -917,23 +919,23 @@ class PatientProfile extends Component {
                                     {allergy.onset === "O"
                                       ? allergy.onset_date
                                       : allergy.onset === "A"
-                                        ? "Adulthood"
-                                        : allergy.onset === "C"
-                                          ? "Childhood"
-                                          : allergy.onset === "P"
-                                            ? "Pre Terms"
-                                            : allergy.onset === "T"
-                                              ? "Teenage"
-                                              : ""}
+                                      ? "Adulthood"
+                                      : allergy.onset === "C"
+                                      ? "Childhood"
+                                      : allergy.onset === "P"
+                                      ? "Pre Terms"
+                                      : allergy.onset === "T"
+                                      ? "Teenage"
+                                      : ""}
                                   </td>
                                   <td>
                                     {allergy.severity === "MO"
                                       ? "Moderate"
                                       : allergy.severity === "MI"
-                                        ? "Mild"
-                                        : allergy.severity === "SE"
-                                          ? "Severe"
-                                          : ""}
+                                      ? "Mild"
+                                      : allergy.severity === "SE"
+                                      ? "Severe"
+                                      : ""}
                                   </td>
                                   <td>{allergy.comment}</td>
                                 </tr>

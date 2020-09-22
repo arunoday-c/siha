@@ -5,12 +5,11 @@ export function Validations(state) {
 
   var tow_word_name = state.state.full_name.split(" ");
 
-  debugger
   if (state.state.full_name.length <= 0) {
     isError = true;
     swalMessage({
       type: "warning",
-      title: "Name Cannot be blank."
+      title: "Name Cannot be blank.",
     });
 
     document.querySelector("[name='full_name']").focus();
@@ -19,16 +18,19 @@ export function Validations(state) {
     isError = true;
     swalMessage({
       type: "warning",
-      title: "Name Atleast 2 word required."
+      title: "Name Atleast 2 word required.",
     });
 
     document.querySelector("[name='full_name']").focus();
     return isError;
-  } else if (state.state.employee_id_required === "Y" && state.state.employee_id <= 0) {
+  } else if (
+    state.state.employee_id_required === "Y" &&
+    state.state.employee_id <= 0
+  ) {
     isError = true;
     swalMessage({
       type: "warning",
-      title: "Employee ID Cannot be blank."
+      title: "Employee ID Cannot be blank.",
     });
 
     document.querySelector("[name='employee_id']").focus();
@@ -38,7 +40,7 @@ export function Validations(state) {
 
     swalMessage({
       type: "warning",
-      title: "Arabic Name Cannot be blank."
+      title: "Arabic Name Cannot be blank.",
     });
 
     document.querySelector("[name='arabic_name']").focus();
@@ -48,7 +50,7 @@ export function Validations(state) {
 
     swalMessage({
       type: "warning",
-      title: "Select Visit Doctor."
+      title: "Select Visit Doctor.",
     });
 
     document.querySelector("[name='doctor_id']").focus();
@@ -58,7 +60,7 @@ export function Validations(state) {
 
     swalMessage({
       type: "warning",
-      title: "Title Cannot be blank."
+      title: "Title Cannot be blank.",
     });
 
     return isError;
@@ -67,7 +69,7 @@ export function Validations(state) {
 
     swalMessage({
       type: "warning",
-      title: "Select the gender."
+      title: "Select the gender.",
     });
 
     return isError;
@@ -76,7 +78,7 @@ export function Validations(state) {
 
     swalMessage({
       type: "warning",
-      title: "Select Primary ID."
+      title: "Select Primary ID.",
     });
 
     return isError;
@@ -85,7 +87,7 @@ export function Validations(state) {
 
     swalMessage({
       type: "warning",
-      title: "Primary ID No. Cannot be blank."
+      title: "Primary ID No. Cannot be blank.",
     });
 
     document.querySelector("[name='primary_id_no']").focus();
@@ -95,7 +97,7 @@ export function Validations(state) {
 
     swalMessage({
       type: "warning",
-      title: "Nationality Cannot be blank."
+      title: "Nationality Cannot be blank.",
     });
     return isError;
   } else if (state.state.country_id <= 0) {
@@ -103,7 +105,7 @@ export function Validations(state) {
 
     swalMessage({
       type: "warning",
-      title: "Country Cannot be blank."
+      title: "Country Cannot be blank.",
     });
 
     return isError;
@@ -112,12 +114,13 @@ export function Validations(state) {
 
     swalMessage({
       type: "warning",
-      title: "Mobile No. Cannot be blank."
+      title: "Mobile No. Cannot be blank.",
     });
 
     document.querySelector("[name='contact_number']").focus();
     return isError;
-  } else if ((state.state.age === null || parseFloat(state.state.age) === 0) &&
+  } else if (
+    (state.state.age === null || parseFloat(state.state.age) === 0) &&
     (state.state.AGEMM === null || parseFloat(state.state.AGEMM) === 0) &&
     (state.state.AGEDD === null || parseFloat(state.state.AGEDD) === 0)
   ) {
@@ -125,7 +128,7 @@ export function Validations(state) {
 
     swalMessage({
       type: "warning",
-      title: "Please enter the age."
+      title: "Please enter the age.",
     });
 
     document.querySelector("[name='age']").focus();
@@ -143,7 +146,7 @@ export function Validations(state) {
     isError = true;
     swalMessage({
       type: "warning",
-      title: "Please select the primary insurance details properly."
+      title: "Please select the primary insurance details properly.",
     });
 
     return isError;
@@ -157,7 +160,7 @@ export function Validations(state) {
 
     swalMessage({
       type: "warning",
-      title: "Please select the secondary insurance details properly."
+      title: "Please select the secondary insurance details properly.",
     });
 
     return isError;
@@ -169,7 +172,7 @@ export function Validations(state) {
 
     swalMessage({
       type: "warning",
-      title: "Please select the Patient Type."
+      title: "Please select the Patient Type.",
     });
     return isError;
   } else if (state.state.unbalanced_amount > 0) {
@@ -177,7 +180,7 @@ export function Validations(state) {
 
     swalMessage({
       type: "warning",
-      title: "Total receipt amount should be equal to reciveable amount."
+      title: "Total receipt amount should be equal to reciveable amount.",
     });
 
     return isError;
@@ -186,7 +189,7 @@ export function Validations(state) {
 
     swalMessage({
       type: "warning",
-      title: "Shift is Mandatory."
+      title: "Shift is Mandatory.",
     });
 
     return isError;
@@ -198,7 +201,7 @@ export function Validations(state) {
 
     swalMessage({
       type: "warning",
-      title: "Treatment Plan is Mandatory."
+      title: "Treatment Plan is Mandatory.",
     });
 
     return isError;
@@ -213,7 +216,7 @@ export function Validations(state) {
   //   });
 
   //   return isError;
-  // } 
+  // }
 
   if (state.state.Cardchecked === true) {
     // if (state.state.card_number === null || state.state.card_number === "") {
@@ -236,13 +239,13 @@ export function Validations(state) {
 
     //   document.querySelector("[name='bank_card_id']").focus();
     //   return isError;
-    // } else 
+    // } else
     if (parseFloat(state.state.card_amount) === 0) {
       isError = true;
 
       swalMessage({
         type: "warning",
-        title: "Enter Card Amount."
+        title: "Enter Card Amount.",
       });
 
       document.querySelector("[name='card_amount']").focus();
@@ -281,7 +284,7 @@ export function Validations(state) {
     swalMessage({
       type: "warning",
       title:
-        "Advance not sufficient for this package , please collect the advance."
+        "Advance not sufficient for this package , please collect the advance.",
     });
 
     return isError;

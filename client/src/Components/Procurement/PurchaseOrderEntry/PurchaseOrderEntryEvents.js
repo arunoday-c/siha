@@ -61,7 +61,7 @@ const texthandle = ($this, ctrl, e) => {
 };
 
 // const textComment = (e) => {
-//   debugger;
+//   ;
 //   let name = e.name || e.target.name;
 //   let value = e.value || e.target.value;
 
@@ -84,7 +84,7 @@ const loctexthandle = ($this, e) => {
 };
 
 const vendortexthandle = ($this, e) => {
-  // debugger;
+  // ;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
   let ReqData = true;
@@ -950,7 +950,7 @@ const getPOOptions = ($this) => {
   });
 };
 const getReportForMail = (data, vedorData) => {
-  // debugger;
+  // ;
   return new Promise((resolve, reject) => {
     try {
       const {

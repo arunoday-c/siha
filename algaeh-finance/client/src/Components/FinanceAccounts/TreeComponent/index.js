@@ -124,7 +124,7 @@ function TreeComponent({ assetCode, title, inDrawer }) {
         //   getNodeKey: ({ treeIndex }) => treeIndex,
         //   newNode: { ...editorRecord.node, subtitle: input?.opening_balance },
         // });
-        // debugger;
+        // ;
         // setTreeData(newTree);
         setEditorRecord({});
 

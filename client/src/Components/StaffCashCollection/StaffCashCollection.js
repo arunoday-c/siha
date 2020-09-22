@@ -84,7 +84,6 @@ class StaffCashCollection extends Component {
   }
 
   loadDetails(value) {
-    debugger;
     this.setState({
       cashHandoverDetails: value.cashiers,
     });
@@ -256,7 +255,6 @@ class StaffCashCollection extends Component {
             user_wise: this.state.user_wise,
           },
           onSuccess: (response) => {
-            debugger;
             AlgaehLoader({ show: false });
             if (response.data.success) {
               this.setState({

@@ -391,7 +391,6 @@ export default {
       });
   },
   selectDoctorByDepartment: (req, res, next) => {
-    debugger;
     let input = req.body;
     const _mysql = new algaehMysql();
     // const { algaeh_d_app_user_id } = req.userIdentity;

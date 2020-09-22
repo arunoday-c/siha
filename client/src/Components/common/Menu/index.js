@@ -159,7 +159,7 @@ function NavBars(props) {
           style={{
             marginRight: 0,
           }}
-          className="dropdown navTopbar-dropdown"
+          className="dropdown navTopbar-dropdown notiIconCntr"
           // disabled={openNotif}
           onClick={showNotification}
         >

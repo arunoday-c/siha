@@ -228,11 +228,11 @@ export function StatementTable() {
                   />
                 ),
                 displayTemplate: (row) => {
-                  return parseFloat(
-                    row?.remittance_amount +
-                      row?.remittance_amount2 +
-                      row?.remittance_amount3
-                  ).toFixed(userToken?.decimal_places);
+                  const sum =
+                    parseFloat(row?.remittance_amount ?? 0) +
+                    parseFloat(row?.remittance_amount2 ?? 0) +
+                    parseFloat(row?.remittance_amount3 ?? 0);
+                  return sum?.toFixed(userToken?.decimal_places);
                 },
               },
               {
@@ -241,11 +241,11 @@ export function StatementTable() {
                   <AlgaehLabel label={{ forceLabel: "Total Denial Amount" }} />
                 ),
                 displayTemplate: (row) => {
-                  return parseFloat(
-                    row?.denial_amount +
-                      row?.denial_amount2 +
-                      row?.denial_amount3
-                  ).toFixed(userToken?.decimal_places);
+                  const sum =
+                    parseFloat(row?.denial_amount ?? 0) +
+                    parseFloat(row?.denial_amount2 ?? 0) +
+                    parseFloat(row?.denial_amount3 ?? 0);
+                  return sum?.toFixed(userToken?.decimal_places);
                 },
               },
             ]}

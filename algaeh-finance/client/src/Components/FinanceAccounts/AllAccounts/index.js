@@ -66,7 +66,6 @@ function AllAccounts({ title, inDrawer }) {
   }
 
   function editChild(input, stopLoad) {
-    debugger;
     renameAccount({ ...input, assetCode })
       .then(() => {
         loadAccount();

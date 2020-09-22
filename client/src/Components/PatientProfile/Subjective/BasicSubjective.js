@@ -39,7 +39,7 @@ import { Dimmer, Loader } from "semantic-ui-react";
 class BasicSubjective extends Component {
   constructor(props) {
     super(props);
-    const { gender } = Window.global;
+
     this.state = {
       pageDisplay: "Orders",
       openMedication: false,
@@ -66,7 +66,7 @@ class BasicSubjective extends Component {
       loadingUnderMedication: true,
       deltaOpen: false,
     };
-    this.isMale = gender === "Male" ? true : false; // String(Window["global"]["gender"]) === "Male" ? true : false;
+    this.isMale = Window?.global?.gender === "Male" ? true : false; // String(Window["global"]["gender"]) === "Male" ? true : false;
     this.chiefComplaintMaxLength = 200;
     this.significantSignsLength = 250;
     this.otherConditionMaxLength = 250;
@@ -167,12 +167,11 @@ class BasicSubjective extends Component {
   }
 
   getPatientEncounterDetails() {
-    const { encounter_id } = Window.global;
     algaehApiCall({
       uri: "/doctorsWorkBench/getPatientEncounter",
       method: "GET",
       data: {
-        encounter_id: encounter_id, //Window.global.encounter_id
+        encounter_id: Window?.global?.encounter_id, //Window.global.encounter_id
       },
       onSuccess: (response) => {
         let data = response.data.records[0];

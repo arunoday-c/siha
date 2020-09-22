@@ -383,7 +383,6 @@ export default function AddNewAccount({
                     value: type,
                     name: "type",
                     onChange: (e) => {
-                      debugger;
                       setType(e.target.value);
                     },
                   }}

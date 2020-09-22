@@ -1,0 +1,30 @@
+.ChangeOfEntitlementScreen {
+  .hptl-phase1-invoice-generation-form {
+    background: #ffff;
+    border-radius: 2px;
+    margin-bottom: 15px;
+    padding-top: 15px;
+  }
+
+  .insurance-sec {
+    background: #ffff;
+    border-radius: 2px;
+    margin-bottom: 15px;
+    padding-top: 5px;
+    padding-bottom: 10px;
+    h5 {
+      border-bottom: 1px dashed #cdd4d8;
+
+      margin-left: -15px;
+      margin-right: -15px;
+      padding-left: 15px;
+      padding: 10px 15px;
+      padding-right: 15px;
+    }
+  }
+  .BillDetailGrid {
+    min-height: 62vh;
+    max-height: 62vh;
+    overflow: auto;
+  }
+}

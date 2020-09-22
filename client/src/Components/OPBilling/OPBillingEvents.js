@@ -422,7 +422,6 @@ const ClosePackage = ($this) => {
 const getPatientDetails = ($this, patient_code) => {
   AlgaehLoader({ show: true });
 
-  debugger;
   algaehApiCall({
     uri: "/frontDesk/get",
     module: "frontDesk",

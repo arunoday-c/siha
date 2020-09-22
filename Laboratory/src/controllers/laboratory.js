@@ -14,6 +14,7 @@ const {
   getComparedLabResult,
   updateResultFromMachine,
   getLabOrderedComment,
+  getAnalytesByTestID,
 } = labModels;
 
 export default () => {
@@ -65,6 +66,13 @@ export default () => {
         data[i].confirm = "Y";
       }
     }
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: req.records,
+    });
+  });
+
+  api.get("/getAnalytesByTestID", getAnalytesByTestID, (req, res, next) => {
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
       success: true,
       records: req.records,

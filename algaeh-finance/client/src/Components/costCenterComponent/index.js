@@ -12,7 +12,7 @@ function CostCenter({
   propBranchID,
   propCenterID,
   costCenterAssin,
-  loadData
+  loadData,
 }) {
   const [costCenterdata, setCostCenterData] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -22,30 +22,29 @@ function CostCenter({
   const [branch, setBranch] = useState([]);
 
   useEffect(() => {
-
     setLoading(true);
     algaehApiCall({
       uri: "/finance_masters/getCostCenters",
       method: "GET",
       module: "finance",
 
-      onSuccess: response => {
+      onSuccess: (response) => {
         setLoading(false);
         if (response.data.success === true) {
           setCostCenterData(response.data.result);
         }
       },
-      onCatch: error => {
+      onCatch: (error) => {
         setLoading(false);
         console.log("error", error);
-      }
+      },
     });
   }, [costCenter]);
 
   // useEffect(() => {
 
   //   function onChangeCostCenter() {
-  //     debugger
+  //
   //     if (costCenter) {
   //       setLoading(true);
   //       algaehApiCall({
@@ -125,7 +124,6 @@ function CostCenter({
       result["hospital_id"] = value;
     }
     costCenterAssin({ branchID: value });
-
   }
 
   function HandleCostCenter(details, value) {
@@ -137,7 +135,6 @@ function CostCenter({
     }
     setHims_d_hospital_id(null);
     costCenterAssin({ projectID: value });
-
   }
 
   function clearValues() {
@@ -150,18 +147,18 @@ function CostCenter({
       uri: "/financeReports/getProfitAndLoss",
       data: {
         hospital_id: hims_d_hospital_id,
-        cost_center_id: costCenter
+        cost_center_id: costCenter,
       },
       method: "GET",
       module: "finance",
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success === true) {
           loadData({ profitLoss: response.data.result });
         }
       },
-      onCatch: error => {
+      onCatch: (error) => {
         console.log("error", error);
-      }
+      },
     });
   }
 
@@ -169,7 +166,6 @@ function CostCenter({
 
   return (
     <>
-
       <div className="col-4">
         <AlgaehAutoComplete
           div={{ ...div }}
@@ -178,17 +174,17 @@ function CostCenter({
             dataSource: {
               data: costCenterdata,
               valueField: "cost_center_id",
-              textField: "cost_center"
+              textField: "cost_center",
             },
             value: costCenter,
             onChange: HandleCostCenter,
             others: {
-              loading: loading
+              loading: loading,
             },
             onClear: () => {
               setCostCenter(null);
               costCenterAssin({ projectID: null });
-            }
+            },
           }}
         />
       </div>
@@ -200,14 +196,14 @@ function CostCenter({
             dataSource: {
               data: branch,
               valueField: "hims_d_hospital_id",
-              textField: "hospital_name"
+              textField: "hospital_name",
             },
             value: hims_d_hospital_id,
             onChange: HandleHospital,
             onClear: () => {
               setHims_d_hospital_id(null);
               costCenterAssin({ branchID: null });
-            }
+            },
           }}
         />
       </div>

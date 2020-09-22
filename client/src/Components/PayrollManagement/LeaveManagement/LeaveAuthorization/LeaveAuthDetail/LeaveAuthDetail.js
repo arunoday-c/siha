@@ -45,7 +45,6 @@ class LeaveAuthDetail extends Component {
       () => {
         console.log("DATA:", this.state.data.leave_category);
         if (nextProps.open) {
-          debugger;
           this.getEmployeeLeaveHistory();
           if (this.state.data.document_mandatory === "Y") {
             this.getDocuments(this.state.data.leave_application_code);
@@ -67,7 +66,6 @@ class LeaveAuthDetail extends Component {
       .then((res) => {
         if (res.data.success) {
           let { data } = res.data;
-          debugger;
           this.setState(
             {
               contract_docs: data,
