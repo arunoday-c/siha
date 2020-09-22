@@ -9,6 +9,7 @@ export default function Hr({
   DATE_OF_JOIN,
   moment,
   allYears,
+  EXPIRY_STATUS,
 }) {
   return {
     name: "HR report",
@@ -1159,6 +1160,87 @@ export default function Hr({
               textField: "sub_department_name",
               valueField: "hims_d_sub_department_id",
               data: undefined,
+            },
+          },
+        ],
+      },
+      {
+        subitem: "Identification Expiry Report",
+        reportName: "idExpiryEmployee",
+        requireIframe: true,
+        pageSize: "A4",
+        pageOrentation: "landscape", //"portrait",
+        reportParameters: [
+          {
+            className: "col-3 form-group mandatory",
+            type: "dropdown",
+            name: "hospital_id",
+            initialLoad: true,
+            isImp: true,
+            label: "branch",
+            link: {
+              uri: "/organization/getOrganizationByUser",
+            },
+            value: hospital_id,
+            dataSource: {
+              textField: "hospital_name",
+              valueField: "hims_d_hospital_id",
+              data: undefined,
+            },
+
+            events: {
+              onChange: (reportState, currentEvent) => {
+                //provider_id_list CONTROL NAME AND APPEND BY _LIST
+                algaehApiCall({
+                  uri: "/branchMaster/getBranchWiseDepartments",
+                  module: "masterSettings",
+                  method: "GET",
+                  data: { hospital_id: currentEvent.value },
+
+                  onSuccess: (result) => {
+                    reportState.setState({
+                      department_id_list: result.data.records,
+                    });
+                  },
+                });
+              },
+              onClear: (reportState, currentName) => {
+                reportState.setState({
+                  [currentName]: undefined,
+                  department_id_list: [],
+                });
+              },
+            },
+          },
+          {
+            className: "col-3 form-group mandatory",
+            type: "dropdown",
+            name: "expiry_status",
+            initialLoad: true,
+            isImp: true,
+            label: "Expiry Status",
+            dataSource: {
+              textField: "name",
+              valueField: "value",
+              data: EXPIRY_STATUS,
+            },
+          },
+          {
+            className: "col-3 mandatory  form-group",
+            type: "date",
+            name: "from_date",
+            isImp: true,
+            hide: (state) => {
+              return state.parameterCollection?.expiry_status === "E";
+            },
+          },
+          {
+            className: "col-3 mandatory  form-group",
+            type: "date",
+            name: "to_date",
+            isImp: true,
+            hide: (state) => {
+              return state.parameterCollection?.expiry_status === "E";
             },
           },
         ],

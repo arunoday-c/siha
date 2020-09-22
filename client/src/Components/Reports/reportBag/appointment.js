@@ -47,11 +47,11 @@ export default function Appointment({ hospital_id }) {
             },
           },
           {
-            className: "col-3 form-group mandatory",
+            className: "col-3 form-group",
             type: "dropdown",
             name: "sub_department_id",
             initialLoad: true,
-            isImp: true,
+            isImp: false,
             label: "Department",
             link: {
               //uri: "/department/get/subdepartment"
