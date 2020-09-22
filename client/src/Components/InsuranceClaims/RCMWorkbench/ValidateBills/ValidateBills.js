@@ -1291,10 +1291,10 @@ class ValidateBills extends PureComponent {
                             );
                           },
                         },
-                        {
-                          fieldName: "icd_type",
-                          label: <AlgaehLabel label={{ forceLabel: "Type" }} />,
-                        },
+                        // {
+                        //   fieldName: "icd_type",
+                        //   label: <AlgaehLabel label={{ forceLabel: "Type" }} />,
+                        // },
                         {
                           fieldName: "icd_code",
                           label: <AlgaehLabel label={{ forceLabel: "Code" }} />,
