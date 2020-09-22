@@ -50,9 +50,11 @@ export function FinalRemittance({ data, refetch }) {
 
   const onSubmit = () => {
     closeStat({
-      total_denial_amount: data?.total_denial_amount,
-      total_remittance_amount: data?.total_remittance_amount,
-      writeoff_amount: data?.total_denial_amount,
+      total_denial_amount:
+        data?.calc_denial_amount ?? data?.total_denial_amount,
+      total_remittance_amount:
+        data?.calc_remittance_amount ?? data?.total_remittance_amount,
+      writeoff_amount: data?.calc_denial_amount ?? data?.total_denial_amount,
       hims_f_insurance_statement_id: data?.hims_f_insurance_statement_id,
       total_company_payable: data?.total_company_payable,
       insurance_statement_number: data?.insurance_statement_number,
@@ -108,7 +110,10 @@ export function FinalRemittance({ data, refetch }) {
                     forceLabel: "Remittance Amount",
                   }}
                 />
-                <h6>{data?.total_remittance_amount}</h6>
+                <h6>
+                  {data?.calc_remittance_amount ??
+                    data?.total_remittance_amount}
+                </h6>
               </div>
               <div className="col-6">
                 <AlgaehLabel
@@ -116,7 +121,7 @@ export function FinalRemittance({ data, refetch }) {
                     forceLabel: "Denial Amount",
                   }}
                 />
-                <h6>{data?.total_denial_amount}</h6>
+                <h6>{data?.calc_denial_amount ?? data?.total_denial_amount}</h6>
               </div>
             </div>
           </div>
