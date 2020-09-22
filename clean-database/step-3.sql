@@ -986,3 +986,21 @@ ADD COLUMN `revert_reason` VARCHAR(200) NULL AFTER `is_revert`;
 INSERT INTO `algaeh_d_app_component` (`screen_id`, `component_code`, `component_name`, `created_date`, `updated_date`, `record_status`) VALUES ('86', 'PAY_ANN_EML_SET', 'Email Setup', '2020-09-21 14:42:30', '2020-09-21 14:42:30', 'A');
 -- Query 21-sept-2020 End
 
+-- 22nd Sept Query for Email Setup Start
+CREATE TABLE `hims_f_email_setup` (
+  `hims_f_email_setup_id` INT NOT NULL AUTO_INCREMENT,
+  `email_type` ENUM('LV', 'LO', 'LE') NULL DEFAULT 'LO',
+  `sub_department_email` VARCHAR(300) NULL DEFAULT NULL,
+  `password` VARCHAR(250) NOT NULL COMMENT 'MD5 encrypted password',
+  `salt` VARCHAR(300) NULL DEFAULT NULL,
+  `sub_department_id` INT NOT NULL,
+  `report_name` VARCHAR(300) NULL DEFAULT NULL,
+  `report_attach` ENUM('Y', 'N') NULL DEFAULT 'N',
+  PRIMARY KEY (`hims_f_email_setup_id`),
+  INDEX `hims_f_email_setup_fk1_idx` (`sub_department_id` ASC) VISIBLE,
+  CONSTRAINT `hims_f_email_setup_fk1`
+    FOREIGN KEY (`sub_department_id`)
+    REFERENCES `hims_d_sub_department` (`hims_d_sub_department_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION);
+-- 22nd Sept Query for Email Setup End

@@ -474,9 +474,10 @@ class OfficalDetails extends Component {
 
                 {this.state.HIMS_Active === true ? (
                   <AlagehFormGroup
-                    div={{ className: "col-2 form-group" }}
+                    div={{ className: "col-3 mandatory form-group" }}
                     label={{
-                      forceLabel: "Discount% Elgible",
+                      forceLabel: "Discount % Elgible",
+                      isImp: false,
                     }}
                     textBox={{
                       decimal: { allowNegative: false },
@@ -600,12 +601,9 @@ class OfficalDetails extends Component {
                       <div className="row">
                         {this.state.entitled_daily_ot === "Y" ? (
                           <AlagehAutoComplete
-                            div={{ className: "col mandatory form-group" }}
-                            // label={
-                            //   {
-                            //     //forceLabel: "Overtime Group",
-                            //   }
-                            // }
+                            div={{
+                              className: "col mandatory form-group noLabel",
+                            }}
                             selector={{
                               name: "overtime_group_id",
                               className: "select-fld",
