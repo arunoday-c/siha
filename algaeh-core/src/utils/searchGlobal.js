@@ -364,7 +364,7 @@ let algaehSearchConfig = (searchName, req) => {
       {
         searchName: "billsforCanel",
         searchQuery:
-          "select SQL_CALC_FOUND_ROWS hims_f_billing_header_id, bill_number, bill_date, PAT.patient_code, PAT.full_name, PAT.contact_number,\
+          "select SQL_CALC_FOUND_ROWS hims_f_billing_header_id, bill_number, bill_date,PAT.primary_id_no, PAT.patient_code, PAT.full_name, PAT.contact_number,\
           PATV.visit_code from hims_f_billing_header BH inner join hims_f_patient as PAT on  \
           BH.patient_id = PAT.hims_d_patient_id inner join hims_f_patient_visit as PATV on \
           BH.visit_id = PATV.hims_f_patient_visit_id where BH.record_status ='A' and \
