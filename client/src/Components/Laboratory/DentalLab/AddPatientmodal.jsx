@@ -171,7 +171,6 @@ export function AddPatientDentalForm({
     }
   };
   const updateDentalForm = async (data) => {
-    debugger;
     const arrival_date =
       data.arrival_date === undefined
         ? undefined

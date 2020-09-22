@@ -10,18 +10,17 @@ export default function NewPackageEvent() {
       let value = e.value || e.target.value;
 
       $this.setState({
-        [name]: value
+        [name]: value,
       });
     },
     serviceHandeler: ($this, e) => {
-
       $this.setState({
         s_service: e.hims_d_services_id,
         s_service_type: e.service_type_id,
         service_name: e.service_name,
         service_type: e.service_type,
         s_service_amount: e.standard_fee,
-        qty: 1
+        qty: 1,
       });
     },
     pakageamtHandaler: ($this, e) => {
@@ -38,13 +37,13 @@ export default function NewPackageEvent() {
       $this.setState({
         [name]: value,
         profit_loss: profit_loss,
-        pl_amount: pl_amount
+        pl_amount: pl_amount,
       });
     },
     serviceTypeHandeler: ($this, e) => {
       $this.setState(
         {
-          [e.name]: e.value
+          [e.name]: e.value,
         },
         () => {
           $this.props.getServices({
@@ -54,33 +53,33 @@ export default function NewPackageEvent() {
             data: { service_type_id: $this.state.s_service_type },
             redux: {
               type: "SERVICES_GET_DATA",
-              mappingName: "services"
-            }
+              mappingName: "services",
+            },
           });
         }
       );
     },
-    AddToList: $this => {
+    AddToList: ($this) => {
       if ($this.state.s_service_type === null) {
         swalMessage({
           type: "warning",
-          title: "Select Service Type."
+          title: "Select Service Type.",
         });
         return;
       } else if ($this.state.s_service === null) {
         swalMessage({
           type: "warning",
-          title: "Select Service."
+          title: "Select Service.",
         });
         return;
       } else if ($this.state.qty === "" || $this.state.qty === 0) {
         swalMessage({
           type: "warning",
-          title: "Enter Quantity."
+          title: "Enter Quantity.",
         });
         return;
       }
-      let SelectedService = _.filter($this.state.PakageDetail, f => {
+      let SelectedService = _.filter($this.state.PakageDetail, (f) => {
         return (
           f.service_type_id === $this.state.s_service_type &&
           f.service_id === $this.state.s_service
@@ -101,7 +100,7 @@ export default function NewPackageEvent() {
             parseFloat($this.state.qty) *
             parseFloat($this.state.s_service_amount),
           service_name: $this.state.service_name,
-          service_type: $this.state.service_type
+          service_type: $this.state.service_type,
         };
 
         if ($this.state.hims_d_package_header_id !== null) {
@@ -113,13 +112,13 @@ export default function NewPackageEvent() {
             qty: $this.state.qty,
             tot_service_amount:
               parseFloat($this.state.qty) *
-              parseFloat($this.state.s_service_amount)
+              parseFloat($this.state.s_service_amount),
           };
           insertPackage.push(InsertObj);
         }
 
         PakageDetail.push(InputObj);
-        let total_service_amount = _.sumBy(PakageDetail, s =>
+        let total_service_amount = _.sumBy(PakageDetail, (s) =>
           parseFloat(s.tot_service_amount)
         );
         let pl_amount =
@@ -138,26 +137,24 @@ export default function NewPackageEvent() {
           pl_amount: pl_amount,
           profit_loss: profit_loss,
           insertPackage: insertPackage,
-          qty: 0
+          qty: 0,
         });
       } else {
         swalMessage({
           title: "Selected Service already exists.",
-          type: "warning"
+          type: "warning",
         });
       }
     },
     DeleteService: ($this, row) => {
-
       let PakageDetail = $this.state.PakageDetail;
       let deletePackage = $this.state.deletePackage;
       let insertPackage = $this.state.insertPackage;
 
-
       if ($this.state.hims_d_package_header_id !== null) {
         if (row.hims_d_package_detail_id !== undefined) {
           deletePackage.push({
-            hims_d_package_detail_id: row.hims_d_package_detail_id
+            hims_d_package_detail_id: row.hims_d_package_detail_id,
           });
         } else {
           for (let k = 0; k < insertPackage.length; k++) {
@@ -179,7 +176,7 @@ export default function NewPackageEvent() {
 
       let profit_loss = "P";
 
-      let total_service_amount = _.sumBy(PakageDetail, s =>
+      let total_service_amount = _.sumBy(PakageDetail, (s) =>
         parseFloat(s.tot_service_amount)
       );
       let pl_amount =
@@ -194,7 +191,7 @@ export default function NewPackageEvent() {
         insertPackage: insertPackage,
         total_service_amount: total_service_amount,
         pl_amount: pl_amount,
-        profit_loss: profit_loss
+        profit_loss: profit_loss,
       });
     },
 
@@ -209,7 +206,7 @@ export default function NewPackageEvent() {
 
           const package_code_exit = _.filter(
             $this.props.all_Pakage_data,
-            f => f.package_code === $this.state.package_code
+            (f) => f.package_code === $this.state.package_code
           );
 
           if (
@@ -218,14 +215,14 @@ export default function NewPackageEvent() {
           ) {
             swalMessage({
               type: "warning",
-              title: "Package Code Already Exist."
+              title: "Package Code Already Exist.",
             });
             return;
           }
           if (parseFloat(InputObj.package_amount) === 0) {
             swalMessage({
               type: "warning",
-              title: "Enter The package amount"
+              title: "Enter The package amount",
             });
             document.querySelector("[name='package_amount']").focus();
             return;
@@ -236,7 +233,7 @@ export default function NewPackageEvent() {
             ) {
               swalMessage({
                 type: "warning",
-                title: "Enter Expiry Days"
+                title: "Enter Expiry Days",
               });
               document.querySelector("[name='expiry_days']").focus();
               return;
@@ -246,7 +243,7 @@ export default function NewPackageEvent() {
             ) {
               swalMessage({
                 type: "warning",
-                title: "Enter The Advance Percentage"
+                title: "Enter The Advance Percentage",
               });
               document.querySelector("[name='advance_percentage']").focus();
               return;
@@ -256,7 +253,7 @@ export default function NewPackageEvent() {
             ) {
               swalMessage({
                 type: "warning",
-                title: "Enter The Advance Amount"
+                title: "Enter The Advance Amount",
               });
               document.querySelector("[name='advance_amount']").focus();
               return;
@@ -265,7 +262,7 @@ export default function NewPackageEvent() {
           if (InputObj.PakageDetail.length === 0) {
             swalMessage({
               type: "warning",
-              title: "Atleast One service is required in the list"
+              title: "Atleast One service is required in the list",
             });
             return;
           }
@@ -287,7 +284,10 @@ export default function NewPackageEvent() {
               100;
           }
 
-          if ($this.state.from === "doctor" || $this.state.package_type === "D") {
+          if (
+            $this.state.from === "doctor" ||
+            $this.state.package_type === "D"
+          ) {
             InputObj.approved = "Y";
           } else {
             InputObj.approved = "N";
@@ -303,17 +303,17 @@ export default function NewPackageEvent() {
               uri: "/packagesetup/addPackage",
               module: "masterSettings",
               data: InputObj,
-              onSuccess: response => {
+              onSuccess: (response) => {
                 if (response.data.success === true) {
                   $this.setState({
-                    approveEnable: false
+                    approveEnable: false,
                   });
                   if ($this.state.from === "doctor") {
                     $this.setState($this.baseState, () => {
                       let obj = {
                         package_service_id:
                           response.data.records.package_service_id,
-                        package_code: InputObj.package_code
+                        package_code: InputObj.package_code,
                       };
                       $this.props.onClose && $this.props.onClose(obj);
                     });
@@ -321,7 +321,7 @@ export default function NewPackageEvent() {
                     $this.setState($this.baseState, () => {
                       swalMessage({
                         type: "success",
-                        title: "Saved successfully . ."
+                        title: "Saved successfully . .",
                       });
                       $this.setState(
                         {
@@ -359,11 +359,12 @@ export default function NewPackageEvent() {
                         },
                         () => {
                           $this.props.onClose && $this.props.onClose(false);
-                        })
+                        }
+                      );
                     });
                   }
                 }
-              }
+              },
             });
           } else {
             for (let i = 0; i < InputObj.insertPackage.length; i++) {
@@ -375,7 +376,7 @@ export default function NewPackageEvent() {
               appropriate_amount = appropriate_amount.toFixed(2);
               InputObj.insertPackage[i].appropriate_amount = appropriate_amount;
             }
-            const updatePakageDetail = _.filter(InputObj.PakageDetail, f => {
+            const updatePakageDetail = _.filter(InputObj.PakageDetail, (f) => {
               return f.hims_d_package_detail_id > 0;
             });
             InputObj.updatePakageDetail = updatePakageDetail;
@@ -389,12 +390,12 @@ export default function NewPackageEvent() {
               module: "masterSettings",
               data: InputObj,
               method: "PUT",
-              onSuccess: response => {
+              onSuccess: (response) => {
                 if (response.data.success === true) {
                   $this.setState($this.baseState, () => {
                     swalMessage({
                       type: "success",
-                      title: "Updated successfully . ."
+                      title: "Updated successfully . .",
                     });
                     $this.setState(
                       {
@@ -432,13 +433,14 @@ export default function NewPackageEvent() {
                       },
                       () => {
                         $this.props.onClose && $this.props.onClose(false);
-                      })
+                      }
+                    );
                   });
                 }
-              }
+              },
             });
           }
-        }
+        },
       });
     },
 
@@ -454,7 +456,7 @@ export default function NewPackageEvent() {
 
       $this.setState({
         advance_percentage: advance_percentage,
-        advance_amount: advance_amount
+        advance_amount: advance_amount,
       });
     },
 
@@ -470,7 +472,7 @@ export default function NewPackageEvent() {
 
       $this.setState({
         cancellation_per: cancellation_per,
-        cancellation_amount: cancellation_amount
+        cancellation_amount: cancellation_amount,
       });
     },
 
@@ -482,7 +484,7 @@ export default function NewPackageEvent() {
 
         PakageDetail[_index] = row;
         $this.setState({
-          PakageDetail: PakageDetail
+          PakageDetail: PakageDetail,
         });
       }
     },
@@ -501,7 +503,7 @@ export default function NewPackageEvent() {
           parseFloat(row["qty"]) * parseFloat(row["service_amount"]);
       }
       PakageDetail[_index] = row;
-      let total_service_amount = _.sumBy(PakageDetail, s =>
+      let total_service_amount = _.sumBy(PakageDetail, (s) =>
         parseFloat(s.tot_service_amount)
       );
       let pl_amount =
@@ -515,7 +517,7 @@ export default function NewPackageEvent() {
         PakageDetail: PakageDetail,
         total_service_amount: total_service_amount,
         pl_amount: pl_amount,
-        profit_loss: profit_loss
+        profit_loss: profit_loss,
       });
     },
     ApprovePackages: ($this, e) => {
@@ -527,7 +529,7 @@ export default function NewPackageEvent() {
           if (InputObj.PakageDetail.length === 0) {
             swalMessage({
               type: "warning",
-              title: "Atleast One service is required in the list"
+              title: "Atleast One service is required in the list",
             });
             return;
           }
@@ -541,7 +543,7 @@ export default function NewPackageEvent() {
             InputObj.PakageDetail[i].appropriate_amount = appropriate_amount;
           }
           InputObj.approved = "Y";
-          const updatePakageDetail = _.filter(InputObj.PakageDetail, f => {
+          const updatePakageDetail = _.filter(InputObj.PakageDetail, (f) => {
             return f.hims_d_package_detail_id > 0;
           });
           InputObj.updatePakageDetail = updatePakageDetail;
@@ -551,11 +553,11 @@ export default function NewPackageEvent() {
             module: "masterSettings",
             data: InputObj,
             method: "PUT",
-            onSuccess: response => {
+            onSuccess: (response) => {
               if (response.data.success === true) {
                 swalMessage({
                   type: "success",
-                  title: "Updated successfully . ."
+                  title: "Updated successfully . .",
                 });
                 $this.setState(
                   {
@@ -593,11 +595,12 @@ export default function NewPackageEvent() {
                   },
                   () => {
                     $this.props.onClose && $this.props.onClose(false);
-                  })
+                  }
+                );
               }
-            }
+            },
           });
-        }
+        },
       });
     },
 
@@ -618,13 +621,13 @@ export default function NewPackageEvent() {
         [e.target.name]: e.target.value,
         radioInactive: radioInactive,
         radioActive: radioActive,
-        package_status: package_status
+        package_status: package_status,
       });
     },
 
     datehandle: ($this, ctrl, e) => {
       $this.setState({
-        [e]: moment(ctrl)._d
+        [e]: moment(ctrl)._d,
       });
     },
 
@@ -633,15 +636,15 @@ export default function NewPackageEvent() {
       if (inRange) {
         swalMessage({
           title: "Package Validate Upto cannot be past Date.",
-          type: "warning"
+          type: "warning",
         });
         event.target.focus();
         $this.setState({
-          [event.target.name]: null
+          [event.target.name]: null,
         });
       }
     },
-    CopyCreatePackage: $this => {
+    CopyCreatePackage: ($this) => {
       let Package_data = $this.state;
 
       Package_data.qty = 1;
@@ -656,12 +659,11 @@ export default function NewPackageEvent() {
       });
     },
     VatAppilicable: ($this, e) => {
-      debugger
       let name = e.target.name;
 
       $this.state.vat_percent = 0;
       $this.setState({
-        [name]: e.target.checked ? "Y" : "N"
+        [name]: e.target.checked ? "Y" : "N",
       });
     },
     numberEventHandaler: ($this, e) => {
@@ -671,25 +673,25 @@ export default function NewPackageEvent() {
       if (parseFloat(value) < 0) {
         swalMessage({
           type: "warning",
-          title: "Cannot be less than zero."
+          title: "Cannot be less than zero.",
         });
         $this.setState({
-          [name]: 0
+          [name]: 0,
         });
-      } if (parseFloat(value) > 100) {
+      }
+      if (parseFloat(value) > 100) {
         swalMessage({
           type: "warning",
-          title: "Cannot be less than zero."
+          title: "Cannot be less than zero.",
         });
         $this.setState({
-          [name]: 0
+          [name]: 0,
         });
       } else {
         $this.setState({
-          [name]: value
+          [name]: value,
         });
       }
-
-    }
+    },
   };
 }

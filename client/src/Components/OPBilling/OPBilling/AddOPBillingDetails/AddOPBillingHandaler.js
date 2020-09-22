@@ -2,7 +2,10 @@ import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import extend from "extend";
 
 const serviceHandeler = ($this, context, e) => {
-  if ((e.service_type_id === 5 || e.service_type_id === 11) && e.hims_d_investigation_test_id === null) {
+  if (
+    (e.service_type_id === 5 || e.service_type_id === 11) &&
+    e.hims_d_investigation_test_id === null
+  ) {
     $this.setState({
       s_service: null,
       service_name: "",
@@ -15,7 +18,7 @@ const serviceHandeler = ($this, context, e) => {
     }
     swalMessage({
       title: "Service Defined But Test not Defined, Please contact Admin.",
-      type: "warning"
+      type: "warning",
     });
 
     return;
@@ -25,17 +28,16 @@ const serviceHandeler = ($this, context, e) => {
     s_service: e.hims_d_services_id,
     s_service_type: e.service_type_id,
     test_id: e.hims_d_investigation_test_id,
-    visittypeselect: false
+    visittypeselect: false,
   });
   if (context !== null) {
     context.updateState({
       service_name: e.service_name,
       s_service: e.hims_d_services_id,
       s_service_type: e.service_type_id,
-      test_id: e.hims_d_investigation_test_id
+      test_id: e.hims_d_investigation_test_id,
     });
   }
-
 };
 
 const texthandle = ($this, context, ctrl, e) => {
@@ -51,7 +53,7 @@ const texthandle = ($this, context, ctrl, e) => {
   }
 
   $this.setState({
-    [name]: value
+    [name]: value,
   });
 
   if (context !== null) {
@@ -67,12 +69,12 @@ const adjustadvance = ($this, context, ctrl, e) => {
     if (parseFloat(e.target.value) > parseFloat($this.state.advance_amount)) {
       swalMessage({
         title: "Adjusted amount cannot be greater than Advance amount",
-        type: "warning"
+        type: "warning",
       });
     } else {
       $this.setState(
         {
-          [e.target.name]: e.target.value
+          [e.target.name]: e.target.value,
         },
         () => {
           billheaderCalculation($this, context);
@@ -81,7 +83,7 @@ const adjustadvance = ($this, context, ctrl, e) => {
 
       if (context !== null) {
         context.updateState({
-          [e.target.name]: e.target.value
+          [e.target.name]: e.target.value,
         });
       }
     }
@@ -106,39 +108,43 @@ const discounthandle = ($this, context, ctrl, e) => {
   if (sheet_discount_percentage > 100) {
     swalMessage({
       title: "Discount % cannot be greater than 100.",
-      type: "Warning"
+      type: "Warning",
     });
     $this.setState({
-      sheet_discount_percentage: $this.state.sheet_discount_percentage
+      sheet_discount_percentage: $this.state.sheet_discount_percentage,
     });
 
     if (context !== null) {
       context.updateState({
-        sheet_discount_percentage: $this.state.sheet_discount_percentage
+        sheet_discount_percentage: $this.state.sheet_discount_percentage,
       });
     }
-  } else if (sheet_discount_percentage > parseFloat($this.state.service_dis_percentage)) {
+  } else if (
+    sheet_discount_percentage > parseFloat($this.state.service_dis_percentage)
+  ) {
     swalMessage({
-      title: "You dont have privilage to give discount More than." + $this.state.service_dis_percentage,
-      type: "warning"
+      title:
+        "You dont have privilage to give discount More than." +
+        $this.state.service_dis_percentage,
+      type: "warning",
     });
     $this.setState({
-      sheet_discount_percentage: $this.state.sheet_discount_percentage
+      sheet_discount_percentage: $this.state.sheet_discount_percentage,
     });
 
     if (context !== null) {
       context.updateState({
-        sheet_discount_percentage: $this.state.sheet_discount_percentage
+        sheet_discount_percentage: $this.state.sheet_discount_percentage,
       });
     }
   } else if (sheet_discount_amount > parseFloat($this.state.patient_payable)) {
     swalMessage({
       title: "Discount Amount cannot be greater than Patient Share.",
-      type: "Warning"
+      type: "Warning",
     });
     $this.setState(
       {
-        sheet_discount_amount: $this.state.sheet_discount_amount
+        sheet_discount_amount: $this.state.sheet_discount_amount,
       },
       () => {
         billheaderCalculation($this, context);
@@ -147,14 +153,14 @@ const discounthandle = ($this, context, ctrl, e) => {
 
     if (context !== null) {
       context.updateState({
-        sheet_discount_amount: $this.state.sheet_discount_amount
+        sheet_discount_amount: $this.state.sheet_discount_amount,
       });
     }
   } else {
     $this.setState(
       {
         sheet_discount_percentage: sheet_discount_percentage,
-        sheet_discount_amount: sheet_discount_amount
+        sheet_discount_amount: sheet_discount_amount,
       },
       () => {
         billheaderCalculation($this, context);
@@ -164,7 +170,7 @@ const discounthandle = ($this, context, ctrl, e) => {
     if (context !== null) {
       context.updateState({
         sheet_discount_percentage: sheet_discount_percentage,
-        sheet_discount_amount: sheet_discount_amount
+        sheet_discount_amount: sheet_discount_amount,
       });
     }
   }
@@ -187,7 +193,7 @@ const billheaderCalculation = ($this, context, e) => {
     credit_amount:
       $this.state.credit_amount === ""
         ? 0
-        : parseFloat($this.state.credit_amount)
+        : parseFloat($this.state.credit_amount),
   };
 
   algaehApiCall({
@@ -195,26 +201,27 @@ const billheaderCalculation = ($this, context, e) => {
     module: "billing",
     method: "POST",
     data: serviceInput,
-    onSuccess: response => {
+    onSuccess: (response) => {
       if (response.data.success) {
         if (context !== null) {
           response.data.records.patient_payable_h =
             response.data.records.patient_payable ||
             $this.state.patient_payable;
           if ($this.state.default_pay_type === "CD") {
-            response.data.records.card_amount = response.data.records.receiveable_amount
-            response.data.records.cash_amount = 0
+            response.data.records.card_amount =
+              response.data.records.receiveable_amount;
+            response.data.records.cash_amount = 0;
           }
           context.updateState({ ...response.data.records });
         }
       }
     },
-    onFailure: error => {
+    onFailure: (error) => {
       swalMessage({
         title: error.message,
-        type: "error"
+        type: "error",
       });
-    }
+    },
   });
 };
 
@@ -241,34 +248,36 @@ const ondiscountgridcol = ($this, context, row, e) => {
 
   if (name === "discount_percentage") {
     if (parseFloat(value) > 100) {
-
       row[name] = 0;
-      row["discount_amout"] = 0
+      row["discount_amout"] = 0;
       billdetails[_index] = row;
       $this.setState({ billdetails: billdetails });
       swalMessage({
         title: "Discount % cannot be greater than 100.",
-        type: "warning"
+        type: "warning",
       });
       // return;
-    } else if (parseFloat(value) > parseFloat($this.state.service_dis_percentage)) {
+    } else if (
+      parseFloat(value) > parseFloat($this.state.service_dis_percentage)
+    ) {
       row[name] = 0;
-      row["discount_amout"] = 0
+      row["discount_amout"] = 0;
       billdetails[_index] = row;
       $this.setState({ billdetails: billdetails });
       swalMessage({
-        title: "You dont have privilage to give discount More than." + $this.state.service_dis_percentage,
-        type: "warning"
+        title:
+          "You dont have privilage to give discount More than." +
+          $this.state.service_dis_percentage,
+        type: "warning",
       });
     } else if (parseFloat(value) < 0) {
-
       row[name] = 0;
-      row["discount_amout"] = 0
+      row["discount_amout"] = 0;
       billdetails[_index] = row;
       $this.setState({ billdetails: billdetails });
       swalMessage({
         title: "Discount % cannot be less than Zero",
-        type: "warning"
+        type: "warning",
       });
       // return;
     } else {
@@ -276,25 +285,23 @@ const ondiscountgridcol = ($this, context, row, e) => {
     }
   } else if (name === "discount_amout") {
     if (parseFloat(row.gross_amount) < parseFloat(value)) {
-
       row[name] = 0;
-      row["discount_percentage"] = 0
+      row["discount_percentage"] = 0;
       billdetails[_index] = row;
       $this.setState({ billdetails: billdetails });
       swalMessage({
         title: "Discount Amount cannot be greater than Gross Amount.",
-        type: "warning"
+        type: "warning",
       });
       // return;
     } else if (parseFloat(value) < 0) {
-
       row[name] = 0;
-      row["discount_percentage"] = 0
+      row["discount_percentage"] = 0;
       billdetails[_index] = row;
       $this.setState({ billdetails: billdetails });
       swalMessage({
         title: "Discount Amount cannot be less than Zero",
-        type: "warning"
+        type: "warning",
       });
       // return;
     } else {
@@ -313,7 +320,7 @@ const onquantitycol = ($this, row, e) => {
   if (value < 0) {
     swalMessage({
       title: "Quantity cannot be less than zero.",
-      type: "warning"
+      type: "warning",
     });
     row[name] = oldvalue;
     row.update();
@@ -329,22 +336,22 @@ const credittexthandle = ($this, context, ctrl, e) => {
   if (parseFloat(e.target.value) > parseFloat($this.state.net_amount)) {
     swalMessage({
       title: "Credit amount cannot be greater than Net amount",
-      type: "warning"
+      type: "warning",
     });
     $this.setState({
-      [e.target.name]: $this.state.credit_amount
+      [e.target.name]: $this.state.credit_amount,
     });
 
     if (context !== null) {
       context.updateState({
-        [e.target.name]: $this.state.credit_amount
+        [e.target.name]: $this.state.credit_amount,
       });
     }
   } else {
     // let balance_credit = $this.state.receiveable_amount - e.target.value;
     $this.setState(
       {
-        [e.target.name]: e.target.value
+        [e.target.name]: e.target.value,
       },
       () => {
         billheaderCalculation($this, context, e);
@@ -354,7 +361,7 @@ const credittexthandle = ($this, context, ctrl, e) => {
     if (context !== null) {
       context.updateState({
         [e.target.name]: e.target.value,
-        balance_credit: e.target.value === "" ? 0 : e.target.value
+        balance_credit: e.target.value === "" ? 0 : e.target.value,
       });
     }
   }
@@ -381,7 +388,7 @@ const EditGrid = ($this, context, cancelRow) => {
     context.updateState({
       saveEnable: saveEnable,
       addNewService: addNewService,
-      billdetails: _billdetails
+      billdetails: _billdetails,
     });
   }
 };
@@ -401,7 +408,7 @@ const CancelGrid = ($this, context, cancelRow) => {
     context.updateState({
       saveEnable: saveEnable,
       addNewService: addNewService,
-      billdetails: _billdetails
+      billdetails: _billdetails,
     });
   }
 };
@@ -411,7 +418,6 @@ const calculateAmount = ($this, context, row, e) => {
 
   // if (e.target.value !== e.target.oldvalue) {
   let billdetails = $this.state.billdetails;
-
 
   // row[e.target.name] = parseFloat(e.target.value === "" ? 0 : e.target.value);
   let inputParam = [
@@ -432,8 +438,8 @@ const calculateAmount = ($this, context, row, e) => {
       secondary_insurance_provider_id:
         $this.state.secondary_insurance_provider_id,
       secondary_network_id: $this.state.secondary_network_id,
-      secondary_network_office_id: $this.state.secondary_network_office_id
-    }
+      secondary_network_office_id: $this.state.secondary_network_office_id,
+    },
   ];
 
   algaehApiCall({
@@ -441,7 +447,7 @@ const calculateAmount = ($this, context, row, e) => {
     module: "billing",
     method: "POST",
     data: inputParam,
-    onSuccess: response => {
+    onSuccess: (response) => {
       if (response.data.success) {
         let data = response.data.records;
 
@@ -454,39 +460,41 @@ const calculateAmount = ($this, context, row, e) => {
             module: "billing",
             method: "POST",
             data: { billdetails: $this.state.billdetails },
-            onSuccess: response => {
-              debugger
+            onSuccess: (response) => {
               if (response.data.success) {
                 response.data.records.patient_payable_h =
-                  response.data.records.patient_payable === 0 ? response.data.records.patient_payable : this.state.patient_payable;
+                  response.data.records.patient_payable === 0
+                    ? response.data.records.patient_payable
+                    : this.state.patient_payable;
                 response.data.records.saveEnable = false;
                 response.data.records.addNewService = false;
 
                 if ($this.state.default_pay_type === "CD") {
-                  response.data.records.card_amount = response.data.records.receiveable_amount
-                  response.data.records.cash_amount = 0
+                  response.data.records.card_amount =
+                    response.data.records.receiveable_amount;
+                  response.data.records.cash_amount = 0;
                 }
                 if (context !== null) {
                   context.updateState({ ...response.data.records });
                 }
               }
             },
-            onFailure: error => {
+            onFailure: (error) => {
               swalMessage({
                 title: error.message,
-                type: "error"
+                type: "error",
               });
-            }
+            },
           });
         });
       }
     },
-    onFailure: error => {
+    onFailure: (error) => {
       swalMessage({
         title: error.message,
-        type: "error"
+        type: "error",
       });
-    }
+    },
   });
 };
 
@@ -494,7 +502,7 @@ const makeZero = ($this, context, e) => {
   if (e.target.value === "") {
     if (context !== null) {
       context.updateState({
-        [e.target.name]: 0
+        [e.target.name]: 0,
       });
     }
   }
@@ -505,7 +513,7 @@ const makeDiscountZero = ($this, context, e) => {
     if (context !== null) {
       context.updateState({
         sheet_discount_percentage: 0,
-        sheet_discount_amount: 0
+        sheet_discount_amount: 0,
       });
     }
   }
@@ -519,7 +527,7 @@ const makeZeroIngrid = ($this, context, row, e) => {
     let _index = billdetails.indexOf(row);
     billdetails[_index] = row;
     context.updateState({
-      billdetails: billdetails
+      billdetails: billdetails,
     });
   }
 };
@@ -540,5 +548,5 @@ export {
   calculateAmount,
   makeZero,
   makeDiscountZero,
-  makeZeroIngrid
+  makeZeroIngrid,
 };

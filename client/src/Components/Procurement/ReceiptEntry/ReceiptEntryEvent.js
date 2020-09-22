@@ -1,7 +1,7 @@
 import {
   swalMessage,
   algaehApiCall,
-  getCookie
+  getCookie,
 } from "../../../utils/algaehApiCall";
 import moment from "moment";
 
@@ -22,7 +22,7 @@ const texthandle = ($this, ctrl, e) => {
       let IOputs = ReceiptEntryInv.inputParam();
 
       IOputs.dataExitst = false;
-      IOputs.receipt_mode = value
+      IOputs.receipt_mode = value;
       $this.setState(IOputs);
 
       break;
@@ -40,11 +40,11 @@ const textEventhandle = ($this, e) => {
     e.value === ""
       ? null
       : e.value || e.target.value === ""
-        ? null
-        : e.target.value;
+      ? null
+      : e.target.value;
 
   $this.setState({
-    [name]: value
+    [name]: value,
   });
 };
 
@@ -60,7 +60,7 @@ const loctexthandle = ($this, e) => {
     // }
     $this.setState({
       [name]: value,
-      ReqData: false
+      ReqData: false,
     });
   }
 };
@@ -83,7 +83,7 @@ const vendortexthandle = ($this, e) => {
       [name]: value,
       payment_terms: e.selected.payment_terms,
       tax_percentage: e.selected.vat_percentage,
-      ReqData: ReqData
+      ReqData: ReqData,
     });
   }
 };
@@ -94,7 +94,7 @@ const poforhandle = ($this, e) => {
 
   $this.setState(
     {
-      [name]: value
+      [name]: value,
     },
     () => {
       getData($this);
@@ -118,18 +118,18 @@ const discounthandle = ($this, context, ctrl, e) => {
   if (sheet_discount_percentage > 100) {
     swalMessage({
       title: "Discount % cannot be greater than 100.",
-      type: "warning"
+      type: "warning",
     });
   } else {
     $this.setState({
       sheet_discount_percentage: sheet_discount_percentage,
-      sheet_discount_amount: sheet_discount_amount
+      sheet_discount_amount: sheet_discount_amount,
     });
 
     if (context !== null) {
       context.updateState({
         sheet_discount_percentage: sheet_discount_percentage,
-        sheet_discount_amount: sheet_discount_amount
+        sheet_discount_amount: sheet_discount_amount,
       });
     }
   }
@@ -142,12 +142,12 @@ const numberchangeTexts = ($this, context, e) => {
   if (value < 0) {
     swalMessage({
       title: "Quantity cannot be less than Zero",
-      type: "warning"
+      type: "warning",
     });
   } else if (value > $this.state.qtyhand) {
     swalMessage({
       title: "Quantity cannot be greater than Quantity in hand",
-      type: "warning"
+      type: "warning",
     });
   } else {
     $this.setState({ [name]: value });
@@ -156,7 +156,7 @@ const numberchangeTexts = ($this, context, e) => {
     texthandlerInterval = setInterval(() => {
       if (context !== undefined) {
         context.updateState({
-          [name]: value
+          [name]: value,
         });
       }
       clearInterval(texthandlerInterval);
@@ -171,7 +171,7 @@ const DeliverySearch = ($this, e) => {
   ) {
     swalMessage({
       title: "Select Location.",
-      type: "warning"
+      type: "warning",
     });
   } else {
     let Inputs = "";
@@ -184,7 +184,7 @@ const DeliverySearch = ($this, e) => {
 
     AlgaehSearch({
       searchGrid: {
-        columns: spotlightSearch.Delivery.DNEntry
+        columns: spotlightSearch.Delivery.DNEntry,
       },
       searchName: "DNEntryInReceipt",
       uri: "/gloabelSearch/get",
@@ -192,13 +192,13 @@ const DeliverySearch = ($this, e) => {
       onContainsChange: (text, serchBy, callBack) => {
         callBack(text);
       },
-      onRowSelect: row => {
+      onRowSelect: (row) => {
         algaehApiCall({
           uri: "/DeliveryNoteEntry/getDeliveryNoteEntry",
           module: "procurement",
           method: "GET",
           data: { delivery_note_number: row.delivery_note_number },
-          onSuccess: response => {
+          onSuccess: (response) => {
             if (response.data.success) {
               let data = response.data.records;
               if (
@@ -216,17 +216,17 @@ const DeliverySearch = ($this, e) => {
                   parseFloat(data.dn_entry_detail[i].quantity_outstanding) === 0
                     ? 0
                     : Math.abs(
-                      data.dn_entry_detail[i].dn_quantity -
-                      data.dn_entry_detail[i].quantity_outstanding
-                    );
+                        data.dn_entry_detail[i].dn_quantity -
+                          data.dn_entry_detail[i].quantity_outstanding
+                      );
 
                 data.dn_entry_detail[i].recieved_quantity =
                   parseFloat(data.dn_entry_detail[i].quantity_outstanding) === 0
                     ? data.dn_entry_detail[i].dn_quantity
                     : Math.abs(
-                      data.dn_entry_detail[i].quantity_recieved_todate -
-                      data.dn_entry_detail[i].quantity_outstanding
-                    );
+                        data.dn_entry_detail[i].quantity_recieved_todate -
+                          data.dn_entry_detail[i].quantity_outstanding
+                      );
 
                 data.dn_entry_detail[i].dn_header_id =
                   data.hims_f_procurement_dn_header_id;
@@ -248,15 +248,15 @@ const DeliverySearch = ($this, e) => {
               AlgaehLoader({ show: false });
             }
           },
-          onFailure: error => {
+          onFailure: (error) => {
             AlgaehLoader({ show: false });
             swalMessage({
               title: error.message,
-              type: "error"
+              type: "error",
             });
-          }
+          },
         });
-      }
+      },
     });
   }
 };
@@ -268,17 +268,17 @@ const ClearData = ($this, e) => {
   $this.setState(IOputs);
 };
 
-const SaveReceiptEnrty = $this => {
+const SaveReceiptEnrty = ($this) => {
   if ($this.state.inovice_number === null) {
     swalMessage({
       type: "warning",
-      title: "Invoice Number is mandatory"
+      title: "Invoice Number is mandatory",
     });
     return;
   } else if ($this.state.invoice_date === null) {
     swalMessage({
       title: "Invoice Date is mandatory",
-      type: "warning"
+      type: "warning",
     });
     return;
   }
@@ -287,7 +287,7 @@ const SaveReceiptEnrty = $this => {
     uri: "/ReceiptEntry/addReceiptEntry",
     module: "procurement",
     data: $this.state,
-    onSuccess: response => {
+    onSuccess: (response) => {
       if (response.data.success === true) {
         $this.setState({
           grn_number: response.data.records.grn_number,
@@ -297,22 +297,22 @@ const SaveReceiptEnrty = $this => {
           period: response.data.records.period,
           saveEnable: true,
           postEnable: false,
-          dataExitst: true
+          dataExitst: true,
         });
         swalMessage({
           type: "success",
-          title: "Saved successfully . ."
+          title: "Saved successfully . .",
         });
       }
       AlgaehLoader({ show: false });
     },
-    onFailure: error => {
+    onFailure: (error) => {
       AlgaehLoader({ show: false });
       swalMessage({
         title: error.message,
-        type: "error"
+        type: "error",
       });
-    }
+    },
   });
 };
 
@@ -328,7 +328,7 @@ const getCtrlCode = ($this, docNumber, row) => {
       module: "procurement",
       method: "GET",
       data: { grn_number: docNumber },
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           let data = response.data.records;
           if (
@@ -343,7 +343,7 @@ const getCtrlCode = ($this, docNumber, row) => {
           data.dataExitst = true;
 
           if (data.receipt_mode === "S") {
-            data.receipt_entry_detail_services = data.receipt_entry_detail
+            data.receipt_entry_detail_services = data.receipt_entry_detail;
           }
 
           data.addedItem = true;
@@ -363,18 +363,18 @@ const getCtrlCode = ($this, docNumber, row) => {
         }
         AlgaehLoader({ show: false });
       },
-      onFailure: error => {
+      onFailure: (error) => {
         AlgaehLoader({ show: false });
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   });
 };
 
-const getData = $this => {
+const getData = ($this) => {
   if ($this.state.grn_for === "PHR") {
     $this.props.getItems({
       uri: "/pharmacy/getItemMaster",
@@ -383,8 +383,8 @@ const getData = $this => {
       method: "GET",
       redux: {
         type: "ITEM_GET_DATA",
-        mappingName: "receiptitemlist"
-      }
+        mappingName: "receiptitemlist",
+      },
     });
 
     $this.props.getLocation({
@@ -393,8 +393,8 @@ const getData = $this => {
       method: "GET",
       redux: {
         type: "LOCATIONS_GET_DATA",
-        mappingName: "receiptlocations"
-      }
+        mappingName: "receiptlocations",
+      },
     });
 
     $this.props.getItemCategory({
@@ -403,8 +403,8 @@ const getData = $this => {
       method: "GET",
       redux: {
         type: "ITEM_CATEGORY_GET_DATA",
-        mappingName: "receiptitemcategory"
-      }
+        mappingName: "receiptitemcategory",
+      },
     });
 
     $this.props.getItemGroup({
@@ -413,8 +413,8 @@ const getData = $this => {
       method: "GET",
       redux: {
         type: "ITEM_GROUP_GET_DATA",
-        mappingName: "receiptitemgroup"
-      }
+        mappingName: "receiptitemgroup",
+      },
     });
 
     $this.props.getItemUOM({
@@ -423,8 +423,8 @@ const getData = $this => {
       method: "GET",
       redux: {
         type: "ITEM_UOM_GET_DATA",
-        mappingName: "receiptitemuom"
-      }
+        mappingName: "receiptitemuom",
+      },
     });
   } else if ($this.state.grn_for === "INV") {
     $this.props.getItems({
@@ -434,8 +434,8 @@ const getData = $this => {
       method: "GET",
       redux: {
         type: "ITEM_GET_DATA",
-        mappingName: "receiptitemlist"
-      }
+        mappingName: "receiptitemlist",
+      },
     });
 
     $this.props.getLocation({
@@ -444,8 +444,8 @@ const getData = $this => {
       method: "GET",
       redux: {
         type: "LOCATIONS_GET_DATA",
-        mappingName: "receiptlocations"
-      }
+        mappingName: "receiptlocations",
+      },
     });
 
     $this.props.getItemCategory({
@@ -454,9 +454,9 @@ const getData = $this => {
       method: "GET",
       redux: {
         type: "ITEM_CATEGORY_GET_DATA",
-        mappingName: "receiptitemcategory"
+        mappingName: "receiptitemcategory",
       },
-      afterSuccess: data => { }
+      afterSuccess: (data) => {},
     });
 
     $this.props.getItemGroup({
@@ -465,8 +465,8 @@ const getData = $this => {
       method: "GET",
       redux: {
         type: "ITEM_GROUP_GET_DATA",
-        mappingName: "receiptitemgroup"
-      }
+        mappingName: "receiptitemgroup",
+      },
     });
 
     $this.props.getItemUOM({
@@ -475,20 +475,20 @@ const getData = $this => {
       method: "GET",
       redux: {
         type: "ITEM_UOM_GET_DATA",
-        mappingName: "receiptitemuom"
-      }
+        mappingName: "receiptitemuom",
+      },
     });
   }
 };
 
-const generateReceiptEntryReport = data => {
+const generateReceiptEntryReport = (data) => {
   console.log("data:", data);
   algaehApiCall({
     uri: "/report",
     method: "GET",
     module: "reports",
     headers: {
-      Accept: "blob"
+      Accept: "blob",
     },
     others: { responseType: "blob" },
     data: {
@@ -500,30 +500,30 @@ const generateReceiptEntryReport = data => {
         reportParams: [
           {
             name: "invoice_date",
-            value: data.invoice_date
+            value: data.invoice_date,
           },
           {
             name: "inovice_number",
-            value: data.inovice_number
+            value: data.inovice_number,
           },
           {
             name: "grn_number",
-            value: data.grn_number
-          }
+            value: data.grn_number,
+          },
         ],
-        outputFileType: "PDF"
-      }
+        outputFileType: "PDF",
+      },
     },
-    onSuccess: res => {
+    onSuccess: (res) => {
       const urlBlob = URL.createObjectURL(res.data);
       const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Receipt Entry Report`;
       window.open(origin);
       // window.document.title = "Receipt Entry Report";
-    }
+    },
   });
 };
 
-const PostReceiptEntry = $this => {
+const PostReceiptEntry = ($this) => {
   AlgaehLoader({ show: true });
   let Inputobj = $this.state;
 
@@ -538,47 +538,47 @@ const PostReceiptEntry = $this => {
     module: "procurement",
     data: Inputobj,
     method: "PUT",
-    onSuccess: response => {
+    onSuccess: (response) => {
       if (response.data.success === true) {
         $this.setState({
-          postEnable: true
+          postEnable: true,
         });
         swalMessage({
           title: "Posted successfully . .",
-          type: "success"
+          type: "success",
         });
       }
       AlgaehLoader({ show: false });
-    }
+    },
   });
 };
 
 const PurchaseOrderSearch = ($this, e) => {
   AlgaehSearch({
     searchGrid: {
-      columns: $this.state.receipt_mode === "I" ? spotlightSearch.Purchase.POEntry : spotlightSearch.Purchase.POServiceEntry
+      columns:
+        $this.state.receipt_mode === "I"
+          ? spotlightSearch.Purchase.POEntry
+          : spotlightSearch.Purchase.POServiceEntry,
     },
     searchName: "POEntryGetReceipt",
     uri: "/gloabelSearch/get",
-    inputs:
-      " po_mode = '" +
-      $this.state.receipt_mode + "'",
+    inputs: " po_mode = '" + $this.state.receipt_mode + "'",
 
     onContainsChange: (text, serchBy, callBack) => {
       callBack(text);
     },
-    onRowSelect: row => {
+    onRowSelect: (row) => {
       if ($this.state.receipt_mode === "I") {
         getDeliveryForReceipt($this, row);
       } else {
         getPOServices($this, row);
       }
-    }
+    },
   });
 };
 
 const getPOServices = ($this, row) => {
-
   AlgaehLoader({ show: true });
 
   algaehApiCall({
@@ -586,25 +586,24 @@ const getPOServices = ($this, row) => {
     module: "procurement",
     method: "GET",
     data: {
-      purchase_order_id: row.hims_f_procurement_po_header_id
+      purchase_order_id: row.hims_f_procurement_po_header_id,
     },
-    onSuccess: response => {
+    onSuccess: (response) => {
       if (response.data.success) {
         let data = response.data.records;
-        data.saveEnable = false
-        data.po_id = data.hims_f_procurement_po_header_id
+        data.saveEnable = false;
+        data.po_id = data.hims_f_procurement_po_header_id;
         $this.setState(data);
-        debugger
       }
       AlgaehLoader({ show: false });
     },
-    onFailure: error => {
+    onFailure: (error) => {
       AlgaehLoader({ show: false });
       swalMessage({
         title: error.message,
-        type: "error"
+        type: "error",
       });
-    }
+    },
   });
 };
 
@@ -616,9 +615,9 @@ const getDeliveryForReceipt = ($this, row) => {
     module: "procurement",
     method: "GET",
     data: {
-      purchase_order_id: row.hims_f_procurement_po_header_id
+      purchase_order_id: row.hims_f_procurement_po_header_id,
     },
-    onSuccess: response => {
+    onSuccess: (response) => {
       if (response.data.success) {
         let data = response.data.records;
 
@@ -626,7 +625,7 @@ const getDeliveryForReceipt = ($this, row) => {
           AlgaehLoader({ show: false });
           swalMessage({
             title: "No delivery note exists for selecetd PO.",
-            type: "warning"
+            type: "warning",
           });
           return;
         }
@@ -640,13 +639,13 @@ const getDeliveryForReceipt = ($this, row) => {
             data[i].dn_header_id = data[i].hims_f_procurement_dn_header_id;
           }
 
-          let sub_total = _.sumBy(data, s => parseFloat(s.extended_cost));
-          let detail_discount = _.sumBy(data, s =>
+          let sub_total = _.sumBy(data, (s) => parseFloat(s.extended_cost));
+          let detail_discount = _.sumBy(data, (s) =>
             parseFloat(s.discount_amount)
           );
-          let net_total = _.sumBy(data, s => parseFloat(s.net_extended_cost));
-          let total_tax = _.sumBy(data, s => parseFloat(s.tax_amount));
-          let net_payable = _.sumBy(data, s => parseFloat(s.total_amount));
+          let net_total = _.sumBy(data, (s) => parseFloat(s.net_extended_cost));
+          let total_tax = _.sumBy(data, (s) => parseFloat(s.tax_amount));
+          let net_payable = _.sumBy(data, (s) => parseFloat(s.total_amount));
 
           $this.setState(
             {
@@ -666,7 +665,7 @@ const getDeliveryForReceipt = ($this, row) => {
               saveEnable: false,
               poSelected: true,
               location_name: row.loc_description,
-              vendor_name: row.vendor_name
+              vendor_name: row.vendor_name,
             },
             () => {
               getData($this);
@@ -677,19 +676,19 @@ const getDeliveryForReceipt = ($this, row) => {
       }
       AlgaehLoader({ show: false });
     },
-    onFailure: error => {
+    onFailure: (error) => {
       AlgaehLoader({ show: false });
       swalMessage({
         title: error.message,
-        type: "error"
+        type: "error",
       });
-    }
+    },
   });
 };
 
 const datehandle = ($this, ctrl, e) => {
   $this.setState({
-    [e]: moment(ctrl)._d
+    [e]: moment(ctrl)._d,
   });
 };
 
@@ -698,11 +697,11 @@ const dateValidate = ($this, value, event) => {
   if (inRange) {
     swalMessage({
       title: "Invoice date cannot be past Date.",
-      type: "warning"
+      type: "warning",
     });
     event.target.focus();
     $this.setState({
-      [event.target.name]: null
+      [event.target.name]: null,
     });
   }
 };
@@ -715,7 +714,7 @@ const getPOOptions = ($this) => {
     onSuccess: (res) => {
       if (res.data.success) {
         $this.setState({
-          po_services_req: res.data.records[0].po_services
+          po_services_req: res.data.records[0].po_services,
         });
       }
     },
@@ -739,5 +738,5 @@ export {
   PurchaseOrderSearch,
   textEventhandle,
   generateReceiptEntryReport,
-  getPOOptions
+  getPOOptions,
 };

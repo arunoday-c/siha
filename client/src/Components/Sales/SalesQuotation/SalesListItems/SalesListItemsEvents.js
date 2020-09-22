@@ -106,13 +106,13 @@ const numberchangeTexts = ($this, context, e) => {
 };
 
 const getItemLocationStock = ($this, value) => {
-  debugger
   algaehApiCall({
     uri: "/inventoryGlobal/getItemLocationStock",
     module: "inventory",
     method: "GET",
     data: {
-      inventory_location_id: $this.props.inventorylocation[0].hims_d_inventory_location_id,
+      inventory_location_id:
+        $this.props.inventorylocation[0].hims_d_inventory_location_id,
       item_id: value.item_id,
     },
     onSuccess: (response) => {
@@ -123,11 +123,9 @@ const getItemLocationStock = ($this, value) => {
             return parseFloat(s.qtyhand);
           });
 
-          debugger
-
           $this.setState({
             qtyhand: total_quantity,
-            stock_uom: data[0].stock_uom
+            stock_uom: data[0].stock_uom,
           });
         }
         AlgaehLoader({ show: false });
@@ -535,7 +533,6 @@ const qtyonchangegridcol = ($this, context, row, e) => {
     row[name] = value;
     calculateAmount($this, context, row, _index);
   }
-
 
   // else if (parseFloat(value) > row.qtyhand) {
   //   swalMessage({

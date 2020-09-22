@@ -14,12 +14,12 @@ const texthandle = ($this, ctrl, e) => {
       $this.setState({
         [name]: value,
         location_type: e.selected.location_type,
-        ReqData: false
+        ReqData: false,
       });
       break;
     default:
       $this.setState({
-        [name]: value
+        [name]: value,
       });
       break;
   }
@@ -28,7 +28,7 @@ const texthandle = ($this, ctrl, e) => {
 const SalesOrderSearch = ($this, e) => {
   AlgaehSearch({
     searchGrid: {
-      columns: spotlightSearch.Sales.SalesOrder
+      columns: spotlightSearch.Sales.SalesOrder,
     },
     searchName: "SalesOrder",
     uri: "/gloabelSearch/get",
@@ -38,7 +38,7 @@ const SalesOrderSearch = ($this, e) => {
     onContainsChange: (text, serchBy, callBack) => {
       callBack(text);
     },
-    onRowSelect: row => {
+    onRowSelect: (row) => {
       AlgaehLoader({ show: true });
       algaehApiCall({
         uri: "/DispatchNote/getSalesOrderItem",
@@ -46,9 +46,9 @@ const SalesOrderSearch = ($this, e) => {
         method: "GET",
         data: {
           sales_order_number: row.sales_order_number,
-          location_id: $this.state.location_id
+          location_id: $this.state.location_id,
         },
-        onSuccess: response => {
+        onSuccess: (response) => {
           if (response.data.success) {
             let data = response.data.records;
 
@@ -66,15 +66,15 @@ const SalesOrderSearch = ($this, e) => {
           }
           AlgaehLoader({ show: false });
         },
-        onFailure: error => {
+        onFailure: (error) => {
           AlgaehLoader({ show: false });
           swalMessage({
             title: error.message,
-            type: "error"
+            type: "error",
           });
-        }
+        },
       });
-    }
+    },
   });
 };
 
@@ -111,11 +111,11 @@ const ClearData = ($this, e) => {
     item_details: [],
     batch_detail_view: false,
     dispatched_quantity: 0,
-    inventory_stock_detail: []
+    inventory_stock_detail: [],
   });
 };
 
-const SaveDispatchNote = $this => {
+const SaveDispatchNote = ($this) => {
   let InputObj = $this.state;
   AlgaehLoader({ show: true });
   InputObj.transaction_type = "SDN";
@@ -138,9 +138,9 @@ const SaveDispatchNote = $this => {
     InputObj.inventory_stock_detail[i].expiry_date =
       InputObj.inventory_stock_detail[i].expiry_date !== null
         ? moment(
-          InputObj.inventory_stock_detail[i].expiry_date,
-          "YYYY-MM-DD"
-        ).format("YYYY-MM-DD")
+            InputObj.inventory_stock_detail[i].expiry_date,
+            "YYYY-MM-DD"
+          ).format("YYYY-MM-DD")
         : null;
   }
   delete InputObj.item_details;
@@ -153,17 +153,17 @@ const SaveDispatchNote = $this => {
     }
   }
 
-  const partial_recived = _.filter(InputObj.stock_detail, f => {
-    return parseFloat(f.quantity_outstanding) != 0
+  const partial_recived = _.filter(InputObj.stock_detail, (f) => {
+    return parseFloat(f.quantity_outstanding) != 0;
   });
-  // .Where((w) => 
+  // .Where((w) =>
   // .ToArray();
 
   if (partial_recived.length > 0) {
     InputObj.complete = "N";
   }
 
-  let stock_detail = _.filter(InputObj.stock_detail, f => {
+  let stock_detail = _.filter(InputObj.stock_detail, (f) => {
     return f.removed === "N";
   });
 
@@ -179,9 +179,9 @@ const SaveDispatchNote = $this => {
     method: "POST",
     header: {
       "content-type": "application/octet-stream",
-      ...settings
+      ...settings,
     },
-    onSuccess: response => {
+    onSuccess: (response) => {
       if (response.data.success === true) {
         $this.setState({
           dispatch_note_number: response.data.records.dispatch_note_number,
@@ -189,22 +189,22 @@ const SaveDispatchNote = $this => {
             response.data.records.hims_f_sales_dispatch_note_header_id,
           saveEnable: true,
           dataExists: true,
-          cannotEdit: true
+          cannotEdit: true,
         });
         swalMessage({
           title: "Saved successfully . .",
-          type: "success"
+          type: "success",
         });
         AlgaehLoader({ show: false });
       }
     },
-    onFailure: error => {
+    onFailure: (error) => {
       AlgaehLoader({ show: false });
       swalMessage({
         title: error.message,
-        type: "error"
+        type: "error",
       });
-    }
+    },
   });
 };
 
@@ -215,7 +215,7 @@ const getCtrlCode = ($this, docNumber, row) => {
       module: "sales",
       method: "GET",
       data: { dispatch_note_number: docNumber },
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success === true) {
           let inventory_stock_detail = [];
           let data = response.data.records[0];
@@ -248,24 +248,24 @@ const getCtrlCode = ($this, docNumber, row) => {
         }
         AlgaehLoader({ show: false });
       },
-      onFailure: error => {
+      onFailure: (error) => {
         AlgaehLoader({ show: false });
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   });
 };
 
-const generateDispatchReport = data => {
+const generateDispatchReport = (data) => {
   algaehApiCall({
     uri: "/report",
     method: "GET",
     module: "reports",
     headers: {
-      Accept: "blob"
+      Accept: "blob",
     },
     others: { responseType: "blob" },
     data: {
@@ -274,24 +274,23 @@ const generateDispatchReport = data => {
         reportParams: [
           {
             name: "dispatch_note_number",
-            value: data.dispatch_note_number
-          }
+            value: data.dispatch_note_number,
+          },
         ],
-        outputFileType: "PDF"
-      }
+        outputFileType: "PDF",
+      },
     },
-    onSuccess: res => {
+    onSuccess: (res) => {
       const urlBlob = URL.createObjectURL(res.data);
-      const reportName = `${data.dispatch_note_number}-Dispatch Note Report`
+      const reportName = `${data.dispatch_note_number}-Dispatch Note Report`;
       const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename= ${reportName}`;
       window.open(origin);
       // window.document.title = "Dispatch Note Report";
-    }
+    },
   });
 };
 
-const CancelDispatchNote = $this => {
-  debugger
+const CancelDispatchNote = ($this) => {
   let InputObj = $this.state;
   AlgaehLoader({ show: true });
   InputObj.transaction_type = "CDN";
@@ -300,7 +299,6 @@ const CancelDispatchNote = $this => {
     "YYYY-MM-DD"
   ).format("YYYY-MM-DD");
 
-  debugger
   for (let i = 0; i < InputObj.inventory_stock_detail.length; i++) {
     InputObj.inventory_stock_detail[i].location_id = InputObj.location_id;
     InputObj.inventory_stock_detail[i].location_type = InputObj.location_type;
@@ -315,9 +313,9 @@ const CancelDispatchNote = $this => {
     InputObj.inventory_stock_detail[i].expiry_date =
       InputObj.inventory_stock_detail[i].expiry_date !== null
         ? moment(
-          InputObj.inventory_stock_detail[i].expiry_date,
-          "YYYY-MM-DD"
-        ).format("YYYY-MM-DD")
+            InputObj.inventory_stock_detail[i].expiry_date,
+            "YYYY-MM-DD"
+          ).format("YYYY-MM-DD")
         : null;
   }
 
@@ -331,9 +329,9 @@ const CancelDispatchNote = $this => {
     method: "POST",
     header: {
       "content-type": "application/octet-stream",
-      ...settings
+      ...settings,
     },
-    onSuccess: response => {
+    onSuccess: (response) => {
       if (response.data.success === true) {
         $this.setState({
           dispatch_note_number: response.data.records.dispatch_note_number,
@@ -341,24 +339,24 @@ const CancelDispatchNote = $this => {
             response.data.records.hims_f_sales_dispatch_note_header_id,
           saveEnable: true,
           dataExists: true,
-          cannotEdit: true
+          cannotEdit: true,
         });
         swalMessage({
           title: "Saved successfully . .",
-          type: "success"
+          type: "success",
         });
         AlgaehLoader({ show: false });
       }
     },
-    onFailure: error => {
+    onFailure: (error) => {
       AlgaehLoader({ show: false });
       swalMessage({
         title: error.message,
-        type: "error"
+        type: "error",
       });
-    }
+    },
   });
-}
+};
 
 export {
   texthandle,
@@ -367,5 +365,5 @@ export {
   SaveDispatchNote,
   getCtrlCode,
   generateDispatchReport,
-  CancelDispatchNote
+  CancelDispatchNote,
 };

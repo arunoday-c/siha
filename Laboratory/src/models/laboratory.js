@@ -431,7 +431,7 @@ export default {
           billed: req.body.billed,
           ordered_date: s.created_date,
           test_type: s.test_type,
-          test_id: s.test_id
+          test_id: s.test_id,
         };
       });
 
@@ -472,9 +472,7 @@ export default {
                   FROM hims_d_investigation_test T inner join  hims_d_test_category C on \
                   T.category_id=C.hims_d_test_category_id and T.services_id in (?) \
                   group by T.hims_d_investigation_test_id;",
-                values: [
-                  get_services_id
-                ],
+                values: [get_services_id],
                 printQuery: true,
               })
               .then((investigation_test) => {
@@ -508,11 +506,7 @@ export default {
                     hims_m_lab_specimen.record_status='A' and test_id in (?); \
                     select hims_f_lab_order_id,service_id from hims_f_lab_order where record_status='A' \
                     and visit_id =? and service_id in (?);",
-                    values: [
-                      test_id,
-                      req.body.visit_id,
-                      get_services_id
-                    ],
+                    values: [test_id, req.body.visit_id, get_services_id],
                     printQuery: true,
                   })
                   .then((specimentRecords) => {
@@ -780,6 +774,32 @@ export default {
       next(e);
     }
   },
+  getAnalytesByTestID: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    try {
+      _mysql
+        .executeQuery({
+          query: `SELECT la.description,la.hims_d_lab_analytes_id from  hims_d_lab_analytes la, hims_m_lab_analyte MAP  where 
+          la.hims_d_lab_analytes_id = MAP.analyte_id and MAP.test_id=?`,
+          values: [req.query.test_id],
+          printQuery: true,
+        })
+        .then((result) => {
+          _mysql.releaseConnection();
+          req.records = result;
+
+          next();
+        })
+        .catch((error) => {
+          _mysql.releaseConnection();
+
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
   getMicroResult: (req, res, next) => {
     const _mysql = new algaehMysql();
     try {
@@ -819,9 +839,8 @@ export default {
         collected +
         "remarks=?,updated_date=?,updated_by=? where hims_d_lab_sample_id=?;";
 
-
-
-      queryBuilder += mysql.format("select case when days<31 then 'D' when days<365 then 'M' else 'Y' end as age_type,\
+      queryBuilder += mysql.format(
+        "select case when days<31 then 'D' when days<365 then 'M' else 'Y' end as age_type,\
                   TIMESTAMPDIFF(day, ?, curdate()) as days,\
                   TIMESTAMPDIFF(month, ?, curdate()) as months,\
                   TIMESTAMPDIFF(year, ?, curdate()) as years from \
@@ -864,9 +883,9 @@ export default {
               break;
           }
 
-          console.log("age_data", age_data)
-          console.log("age_type", age_type)
-          console.log("age", age)
+          console.log("age_data", age_data);
+          console.log("age_type", age_type);
+          console.log("age", age);
           if (input.status == "R") {
             _mysql
               .executeQuery({
@@ -875,7 +894,7 @@ export default {
                 values: [
                   new Date(),
                   req.userIdentity.algaeh_d_app_user_id,
-                  input.order_id
+                  input.order_id,
                 ],
                 printQuery: true,
               })
@@ -885,7 +904,6 @@ export default {
                   req.records = lab_order;
                   next();
                 });
-
               })
               .catch((error) => {
                 _mysql.rollBackTransaction(() => {
@@ -903,12 +921,7 @@ export default {
                     left join  hims_d_lab_analytes_range R on  M.analyte_id=R.analyte_id\
                     and (R.gender=? or R.gender='BOTH') and (R.age_type=? or R.age_type='Y') and ? between R.from_age and R.to_age\
                     where M.test_id in(?);",
-                values: [
-                  req.body.gender,
-                  age_type,
-                  age,
-                  input.test_id
-                ],
+                values: [req.body.gender, age_type, age, input.test_id],
                 printQuery: true,
               })
               .then((all_analytes) => {
@@ -934,11 +947,9 @@ export default {
                       values: all_analytes,
                       includeValues: analyts,
                       extraValues: {
-                        created_by:
-                          req.userIdentity.algaeh_d_app_user_id,
-                        updated_by:
-                          req.userIdentity.algaeh_d_app_user_id,
-                        order_id: input.order_id
+                        created_by: req.userIdentity.algaeh_d_app_user_id,
+                        updated_by: req.userIdentity.algaeh_d_app_user_id,
+                        order_id: input.order_id,
                       },
                       bulkInsertOrUpdate: true,
                       printQuery: true,
@@ -962,7 +973,6 @@ export default {
                     next();
                   });
                 }
-
               })
               .catch((error) => {
                 _mysql.rollBackTransaction(() => {
@@ -1368,7 +1378,7 @@ export default {
           (w) =>
             w.hims_f_ordered_services_id > 0 &&
             w.service_type_id ==
-            appsettings.hims_d_service_type.service_type_id.Lab
+              appsettings.hims_d_service_type.service_type_id.Lab
         )
         .Select((s) => {
           return {

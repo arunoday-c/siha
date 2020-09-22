@@ -89,7 +89,6 @@ class DayEndProcess extends Component {
   }
 
   componentDidMount() {
-    debugger
     const params = new URLSearchParams(this.props.location?.search);
     if (params?.get("from_date")) {
       this.setState({
@@ -208,7 +207,11 @@ class DayEndProcess extends Component {
     }
   }
   DrillDownScree(row) {
-    if (row.from_screen === "FD0002" || row.from_screen === "BL0001" || row.from_screen === "BL0002") {
+    if (
+      row.from_screen === "FD0002" ||
+      row.from_screen === "BL0001" ||
+      row.from_screen === "BL0002"
+    ) {
       // Billing
       this.props.history.push(`/OPBilling?bill_code=${row.document_number}`);
     } else if (row.from_screen === "BL0003") {

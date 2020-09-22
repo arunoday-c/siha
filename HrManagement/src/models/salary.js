@@ -1355,7 +1355,6 @@ export default {
                                   });
                               })
                               .catch((e) => {
-                                debugger;
                                 _mysql.rollBackTransaction(() => {
                                   next(e);
                                 });
@@ -2238,7 +2237,6 @@ function InsertEmployeeLeaveSalary(options) {
       const utilities = new algaehUtilities();
 
       let promiseAll = [];
-      debugger;
       for (let i = 0; i < leave_salary_accrual_detail.length; i++) {
         promiseAll.push(
           new Promise((resolve, reject) => {
@@ -2266,7 +2264,6 @@ function InsertEmployeeLeaveSalary(options) {
                 // printQuery: false
               })
               .then((employee_leave_salary) => {
-                debugger;
                 // console.log("employee_leave_salary", employee_leave_salary)
                 // console.log("leave_salary_accrual_detail", leave_salary_accrual_detail[i])
                 if (employee_leave_salary.length > 0) {

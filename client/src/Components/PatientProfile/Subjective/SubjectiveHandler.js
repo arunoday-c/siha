@@ -1,7 +1,7 @@
 import {
   algaehApiCall,
   swalMessage,
-  getCookie
+  getCookie,
 } from "../../../utils/algaehApiCall";
 import Enumerable from "linq";
 import AlgaehSearch from "../../Wrapper/globalSearch";
@@ -32,7 +32,7 @@ export default function SubjectiveHandler() {
         $this.setState({
           onset_date: _duration_Date_Interval.onset_date,
           interval: _duration_Date_Interval.interval,
-          [name]: value
+          [name]: value,
         });
       } else if (name === "interval") {
         value = e.value || e.target.value;
@@ -43,7 +43,7 @@ export default function SubjectiveHandler() {
 
         $this.setState({
           onset_date: _dur_date_inter.onset_date,
-          [name]: value
+          [name]: value,
         });
       }
     },
@@ -52,7 +52,7 @@ export default function SubjectiveHandler() {
       let value = e.value || e.target.value;
 
       $this.setState({
-        [name]: value
+        [name]: value,
       });
     },
     datehandle: ($this, ctrl, e) => {
@@ -61,7 +61,7 @@ export default function SubjectiveHandler() {
       $this.setState({
         duration: _durat_interval.duration,
         interval: _durat_interval.interval,
-        onset_date: moment(ctrl)._d
+        onset_date: moment(ctrl)._d,
       });
     },
 
@@ -70,14 +70,14 @@ export default function SubjectiveHandler() {
       if (!err) {
         AlgaehSearch({
           searchGrid: {
-            columns: spotlightSearch.Diagnosis.IcdCodes
+            columns: spotlightSearch.Diagnosis.IcdCodes,
           },
           searchName: "IcdCodes",
           uri: "/gloabelSearch/get",
           onContainsChange: (text, serchBy, callBack) => {
             callBack(text);
           },
-          onRowSelect: row => {
+          onRowSelect: (row) => {
             if (diagType === "Final") {
               const existingComplaints =
                 $this.props.patient_diagnosis === undefined
@@ -85,7 +85,7 @@ export default function SubjectiveHandler() {
                   : $this.props.patient_diagnosis;
               const isFind = _.find(
                 existingComplaints,
-                f => f.daignosis_id === row.hims_d_icd_id
+                (f) => f.daignosis_id === row.hims_d_icd_id
               );
               if (isFind === undefined) {
                 insertFinalICDS($this, row);
@@ -93,13 +93,13 @@ export default function SubjectiveHandler() {
                 swalMessage({
                   title:
                     "Selected diagnosis already added. Please choose different.",
-                  type: "info"
+                  type: "info",
                 });
               }
             } else if (diagType === "Intial") {
               // insertInitialICDS($this, row);
             }
-          }
+          },
         });
       }
     },
@@ -107,12 +107,12 @@ export default function SubjectiveHandler() {
       if (e.selected.value === "P" && row.diagnosis_type !== "P") {
         const primaryExists = _.find(
           $this.props.patient_diagnosis,
-          f => f.diagnosis_type === "P"
+          (f) => f.diagnosis_type === "P"
         );
         if (primaryExists !== undefined) {
           swalMessage({
             title: "Primary diagnosis already exists",
-            type: "info"
+            type: "info",
           });
           return;
         }
@@ -122,7 +122,7 @@ export default function SubjectiveHandler() {
         swalMessage({
           title:
             "Already selected as final diagnosis. If changes required change in final diagnosis",
-          type: "info"
+          type: "info",
         });
       } else {
         let name = e.name || e.target.name;
@@ -146,29 +146,26 @@ export default function SubjectiveHandler() {
         hims_f_patient_diagnosis_id: row.hims_f_patient_diagnosis_id,
         diagnosis_type: row.diagnosis_type,
         final_daignosis: row.final_daignosis,
-        record_status: "A"
+        record_status: "A",
       };
       algaehApiCall({
         uri: "/doctorsWorkBench/updatePatientDiagnosis",
         data: data,
         method: "PUT",
-        onSuccess: response => {
+        onSuccess: (response) => {
           if (response.data.success) {
             swalMessage({
               title: "Record updated successfully . .",
-              type: "success"
+              type: "success",
             });
             getPatientDiagnosis($this);
           }
-        }
+        },
       });
     },
 
-    addChiefComplainToPatient: $this => {
-      const {
-        current_patient,
-        episode_id
-      } = Window.global;
+    addChiefComplainToPatient: ($this) => {
+      const { current_patient, episode_id } = Window.global;
       let _screenName = getCookie("ScreenName").replace("/", "");
       if (_screenName === "Login") {
         return;
@@ -189,16 +186,16 @@ export default function SubjectiveHandler() {
         complaint_inactive: "N",
         complaint_inactive_date: null,
         complaint_type: $this.state.complaint_type,
-        lmp_days: $this.state.lmp_days
+        lmp_days: $this.state.lmp_days,
       });
       algaehApiCall({
         uri: "/doctorsWorkBench/addPatientChiefComplaints",
         data: patChiefComp,
-        onSuccess: response => {
+        onSuccess: (response) => {
           if (response.data.success) {
             getPatientChiefComplaints($this);
           }
-        }
+        },
       });
 
       if (
@@ -212,17 +209,14 @@ export default function SubjectiveHandler() {
           data: {
             other_signs: $this.state.other_signs,
             significant_signs: $this.state.significant_signs,
-            encounter_id: encounter_id // Window.global.encounter_id
-          }
+            encounter_id: encounter_id, // Window.global.encounter_id
+          },
         });
       }
     },
 
-    updatePatientChiefComplaints: $this => {
-      const {
-        current_patient,
-        episode_id
-      } = Window.global;
+    updatePatientChiefComplaints: ($this) => {
+      const { current_patient, episode_id } = Window.global;
       let _screenName = getCookie("ScreenName").replace("/", "");
       if (_screenName === "Login") {
         return;
@@ -241,23 +235,23 @@ export default function SubjectiveHandler() {
         patient_id: current_patient, //Window.global["current_patient"],
         chronic: $this.state.chronic,
         complaint_type: $this.state.complaint_type,
-        lmp_days: $this.state.lmp_days
+        lmp_days: $this.state.lmp_days,
       });
       algaehApiCall({
         uri: "/doctorsWorkBench/updatePatientChiefComplaints",
         method: "PUT",
         data: { chief_complaints: patChiefComp },
-        onSuccess: response => {
+        onSuccess: (response) => {
           if (response.data.success) {
             getPatientChiefComplaints($this);
           }
         },
-        onFailure: error => {
+        onFailure: (error) => {
           swalMessage({
             title: error.message,
-            type: "error"
+            type: "error",
           });
-        }
+        },
       });
       if (
         $this.state.significant_signs !== null ||
@@ -270,29 +264,28 @@ export default function SubjectiveHandler() {
           data: {
             other_signs: $this.state.other_signs,
             significant_signs: $this.state.significant_signs,
-            encounter_id: encounter_id //Window.global.encounter_id
-          }
+            encounter_id: encounter_id, //Window.global.encounter_id
+          },
         });
       }
     },
 
-    getPatientChiefComplaints: $this => {
+    getPatientChiefComplaints: ($this) => {
       getPatientChiefComplaints($this);
-    }
+    },
   };
 }
 
 function getPatientChiefComplaints($this) {
-  const { current_patient, episode_id } = Window.global;
   algaehApiCall({
     uri: "/doctorsWorkBench/getPatientBasicChiefComplaints",
     data: {
-      patient_id: current_patient, //Window.global["current_patient"],
-      episode_id: episode_id //Window.global["episode_id"]
+      patient_id: Window?.global?.current_patient,
+      episode_id: Window?.global?.episode_id,
     },
     method: "GET",
     // cancelRequestId: "getPatientBasicChiefComplaints",
-    onSuccess: response => {
+    onSuccess: (response) => {
       if (response.data.success) {
         if (response.data.records.length > 0) {
           $this.setState({
@@ -308,25 +301,21 @@ function getPatientChiefComplaints($this) {
             severity: response.data.records[0].severity,
 
             chronic: response.data.records[0].chronic,
-            complaint_type: response.data.records[0].complaint_type
+            complaint_type: response.data.records[0].complaint_type,
           });
 
           setGlobal({
-            chief_complaint: response.data.records[0].comment
+            chief_complaint: response.data.records[0].comment,
           });
         }
       }
-    }
+    },
   });
 }
 function insertFinalICDS($this, row) {
-  const {
-    current_patient,
-    episode_id,
-    visit_id
-  } = Window.global;
+  const { current_patient, episode_id, visit_id } = Window.global;
   const finalICDS = Enumerable.from($this.props.patient_diagnosis)
-    .where(w => w.final_daignosis === "Y")
+    .where((w) => w.final_daignosis === "Y")
     .toArray();
   let diagnosis_type = "";
   if (finalICDS.length > 0) {
@@ -342,7 +331,7 @@ function insertFinalICDS($this, row) {
     patient_id: current_patient, //Window.global["current_patient"],
     episode_id: episode_id, //Window.global["episode_id"],
     visit_id: visit_id, //Window.global["visit_id"],
-    final_daignosis: "Y"
+    final_daignosis: "Y",
   });
 
   saveDiagnosis($this, insertfinalICDS);
@@ -353,21 +342,21 @@ function saveDiagnosis($this, data) {
     uri: "/doctorsWorkBench/addPatientDiagnosis",
     data: data,
     method: "POST",
-    onSuccess: response => {
+    onSuccess: (response) => {
       if (response.data.success === true) {
         getPatientDiagnosis($this);
         swalMessage({
           title: "Record Added successfully . .",
-          type: "success"
+          type: "success",
         });
       }
     },
-    onFailure: error => {
+    onFailure: (error) => {
       swalMessage({
         title: error.message,
-        type: "error"
+        type: "error",
       });
-    }
+    },
   });
 }
 function showconfirmDialog($this, row) {
@@ -378,62 +367,59 @@ function showconfirmDialog($this, row) {
     confirmButtonColor: "#3085d6",
     cancelButtonColor: "#d33",
     confirmButtonText: "Yes",
-    cancelButtonText: "Cancel"
-  }).then(willDelete => {
+    cancelButtonText: "Cancel",
+  }).then((willDelete) => {
     if (willDelete.value) {
       let data = {
         hims_f_patient_diagnosis_id: row.hims_f_patient_diagnosis_id,
         diagnosis_type: row.diagnosis_type,
         final_daignosis: row.final_daignosis,
-        record_status: "I"
+        record_status: "I",
       };
       algaehApiCall({
         uri: "/doctorsWorkBench/updatePatientDiagnosis",
         data: data,
         method: "PUT",
-        onSuccess: response => {
+        onSuccess: (response) => {
           if (response.data.success) {
             swalMessage({
               title: "Record deleted successfully . .",
-              type: "success"
+              type: "success",
             });
 
             getPatientDiagnosis($this);
           }
-        }
+        },
       });
     }
   });
 }
 function getPatientDiagnosis($this) {
-  const {
-    current_patient,
-    episode_id
-  } = Window.global;
+  const { current_patient, episode_id } = Window.global;
   $this.props.getPatientDiagnosis({
     uri: "/doctorsWorkBench/getPatientDiagnosis",
     cancelRequestId: "getPatientDiagnosis",
     data: {
       patient_id: current_patient, // Window.global["current_patient"],
-      episode_id: episode_id //Window.global["episode_id"]
+      episode_id: episode_id, //Window.global["episode_id"]
     },
     method: "GET",
     redux: {
       type: "PATIENT_DIAGNOSIS_DATA",
-      mappingName: "patient_diagnosis"
+      mappingName: "patient_diagnosis",
     },
-    afterSuccess: data => {
+    afterSuccess: (data) => {
       $this.setState({
         showInitialDiagnosisLoader: false,
-        showFinalDiagnosisLoader: false
+        showFinalDiagnosisLoader: false,
       });
-    }
+    },
   });
 }
 
 function durationToDateAndInterval(duration, interval) {
   const _interval = Enumerable.from(GlobalVariables.PAIN_DURATION)
-    .where(w => w.value === interval)
+    .where((w) => w.value === interval)
     .firstOrDefault().name;
   const _date = moment().add(-duration, _interval.toLowerCase());
   return { interval, onset_date: _date._d };
