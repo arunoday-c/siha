@@ -51,6 +51,7 @@ class RCMWorkbench extends Component {
   }
 
   componentDidMount() {
+    debugger
     this.getInsuranceProviders();
     const params = new URLSearchParams(this.props.location?.search);
     if (params?.get("hims_f_insurance_statement_id")) {
