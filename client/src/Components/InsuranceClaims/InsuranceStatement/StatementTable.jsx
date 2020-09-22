@@ -93,7 +93,8 @@ export function StatementTable() {
                     Total Remittance Amount
                   </label>
                   <h6>
-                    {parseFloat(data?.total_remittance_amount) + parseFloat(data?.calc_remittance_amount) ||
+                    {(data?.calc_remittance_amount ??
+                      data?.total_remittance_amount) ||
                       "0.00"}
                   </h6>
                 </div>
