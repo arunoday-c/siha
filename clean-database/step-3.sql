@@ -901,20 +901,88 @@ CREATE TABLE `hrms_d_kpi_master` (
   
   INSERT INTO `algaeh_d_reports` (`report_name`, `report_name_for_header`, `report_input_series`, `report_header_file_name`, `status`, `created_datetime`, `update_datetime`) VALUES ('billWiseVatReport', 'Bill Wise VAT Report', '[\'hospital_id\',\'from_date\',\'to_date\' ]', 'reportHeader', 'A', '2019-10-17 15:13:22', '2019-10-17 15:13:22');
 
+-- ====== OP Ctrl In Mapping
+INSERT INTO `finance_accounts_maping` (`finance_accounts_maping_id`, `account`, `description`) VALUES ('27', 'OP_CTRL', 'OP Control Account');
+
 -- Query from 05-sept-2020 till 14-sept-2020 end here;
+
+
+-- Query for Employee wise working hour on 17-sept-2020 Start
+-- ====== Final Remittance
+CREATE TABLE `hims_f_insurance_remitance` (
+  `hims_f_insurance_remitance_id` int NOT NULL AUTO_INCREMENT,
+  `claim_id` int DEFAULT NULL,
+  `cliam_number` varchar(45) DEFAULT NULL,
+  `head_id` int DEFAULT NULL,
+  `child_id` int DEFAULT NULL,
+  `amount` decimal(10,3) DEFAULT NULL,
+  PRIMARY KEY (`hims_f_insurance_remitance_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+-- ====== Insurance Write Off Account
+INSERT INTO `finance_accounts_maping` (`finance_accounts_maping_id`, `account`, `description`) VALUES ('28', 'INS_WRITE_OFF', 'Insurance Write Off');
+-- Query for Employee wise working hour on 17-sept-2020 End
+
+
 
 -- Query for Employee wise working hour on 18-sept-2020 Start
 alter table hims_d_employee add column standard_work_hours time default null
 after service_dis_percentage, add column consider_overtime enum('Y','N') default  'N'
 after standard_work_hours, add column ramzan_work_hours time default null 
-after consider_overtime, hims_d_employee add column week_day enum('SU','MO','TU','WE','TH','FR','SA') default null
+after consider_overtime, add column week_day enum('SU','MO','TU','WE','TH','FR','SA') default null
 after ramzan_work_hours;
 -- Query for Employee wise working hour on 18-sept-2020 end
 
 
 
+-- Query 18-sept-2020 Start
+-- ====== Gratuity Min Year of service
+ALTER TABLE `hims_d_end_of_service_options` ADD COLUMN `gratuity_min_year` INT NULL DEFAULT NULL AFTER `gratuity_provision`;
+
+-- ====== Write off Amount in Statement
+ALTER TABLE `hims_f_insurance_statement` 
+ADD COLUMN `writeoff_amount` DECIMAL(20,3) NULL DEFAULT NULL AFTER `submission_step`;
+
+-- ====== Final Remit Alert
+ALTER TABLE `hims_f_insurance_remitance` 
+DROP COLUMN `child_id`,
+DROP COLUMN `head_id`,
+ADD COLUMN `remit_amount` DECIMAL(10,3) NULL AFTER `company_payable`,
+ADD COLUMN `denail_amount` DECIMAL(10,3) NULL AFTER `remit_amount`,
+CHANGE COLUMN `amount` `company_payable` DECIMAL(10,3) NULL DEFAULT NULL ;
+
+ALTER TABLE `hims_f_insurance_remitance` 
+ADD COLUMN `writeoff_amount` DECIMAL(10,3) NULL AFTER `denail_amount`;
+
+-- Query 18-sept-2020 End
 
 
+-- Query 19-sept-2020 Start
+-- ====== Package Related reports
+INSERT INTO `algaeh_d_reports` (`report_name`, `report_name_for_header`, `report_header_file_name`, `status`, `created_datetime`, `update_datetime`) VALUES ('cancelPackageByPatient', 'Cancelled Package by Patient', 'reportHeader', 'A', '2020-09-08 13:48:09', '2020-09-08 13:48:09');
+INSERT INTO `algaeh_d_reports` (`report_name`, `report_name_for_header`, `report_header_file_name`, `status`, `created_datetime`, `update_datetime`) VALUES ('orderdPackageByPatient', 'Ordered Package by Patient', 'reportHeader', 'A', '2020-09-08 13:48:09', '2020-09-08 13:48:09');
+INSERT INTO `algaeh_d_reports` (`report_name`, `report_name_for_header`, `report_header_file_name`, `status`, `created_datetime`, `update_datetime`) VALUES ('utlizePackageByPatient', 'Utilized Package by Patient', 'reportHeader', 'A', '2020-09-08 13:48:09', '2020-09-08 13:48:09');
+INSERT INTO `algaeh_d_reports` (`report_name`, `report_name_for_header`, `report_header_file_name`, `status`, `created_datetime`, `update_datetime`) VALUES ('typePackageByBranch', 'Type Package by Branch', 'reportHeader', 'A', '2020-09-08 13:48:09', '2020-09-08 13:48:09');
+-- Query 19-sept-2020 End
 
-	
+
+-- Query 21-sept-2020 Start
+-- ====== Package Report Updates
+INSERT INTO `algaeh_d_reports` (`report_name`, `report_name_for_header`, `report_header_file_name`, `status`, `created_datetime`, `update_datetime`) VALUES ('outstandingPackageByPatient', 'Outstanding Package by Patient', 'reportHeader', 'A', '2020-09-08 13:48:09', '2020-09-08 13:48:09');
+UPDATE `algaeh_d_reports` SET `report_name_for_header` = 'Ordered Package by Patient' WHERE (`report_name` = 'orderdPackageByPatient');
+UPDATE `algaeh_d_reports` SET `report_name_for_header` = 'Utilized Package by Patient' WHERE (`report_name` = 'utlizePackageByPatient');
+
+
+-- ====== Sales Invoice cancel option =======
+ALTER TABLE `hims_f_sales_invoice_header` 
+ADD COLUMN `is_cancelled` ENUM('N', 'Y') NULL DEFAULT 'N' AFTER `reverted_date`,
+ADD COLUMN `cancelled_by` INT NULL AFTER `is_cancelled`,
+ADD COLUMN `cancelled_date` DATETIME NULL AFTER `cancelled_by`;
+ALTER TABLE `hims_f_sales_invoice_header` 
+ADD COLUMN `cancel_reason` VARCHAR(200) NULL AFTER `is_cancelled`;
+ALTER TABLE `hims_f_sales_order` 
+ADD COLUMN `revert_reason` VARCHAR(200) NULL AFTER `is_revert`;
+
+-- ====== HR Approval Email Setup Screen
+INSERT INTO `algaeh_d_app_component` (`screen_id`, `component_code`, `component_name`, `created_date`, `updated_date`, `record_status`) VALUES ('86', 'PAY_ANN_EML_SET', 'Email Setup', '2020-09-21 14:42:30', '2020-09-21 14:42:30', 'A');
+-- Query 21-sept-2020 End
 
