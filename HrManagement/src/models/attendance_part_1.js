@@ -1981,11 +1981,10 @@ export function mergeTimesheetData(input) {
           });
           let timingObject = {};
           if (workingHoursFrom === "E") {
-            timingObject["standard_work_hours"] =
-              employee["standard_work_hours"];
-            timingObject["consider_overtime"] = employee["consider_overtime"];
-            timingObject["ramzan_work_hours"] = employee["ramzan_work_hours"];
-            timingObject["week_day"] = employee["week_day"];
+            timingObject["standard_work_hours"] = attEmp["standard_work_hours"];
+            timingObject["consider_overtime"] = attEmp["consider_overtime"];
+            timingObject["ramzan_work_hours"] = attEmp["ramzan_work_hours"];
+            timingObject["week_day"] = attEmp["week_day"];
           }
           register.push({
             employee_code: employee["employee_code"],
