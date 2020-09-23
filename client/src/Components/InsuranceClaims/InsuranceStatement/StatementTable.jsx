@@ -25,7 +25,7 @@ const getStatements = async (
   return res?.data?.records;
 };
 
-export function StatementTable(insurance_status) {
+export function StatementTable(status) {
   const { userToken } = useContext(MainContext);
   const [show, setShow] = useState(false);
   const [current, setCurrent] = useState(null);
@@ -57,19 +57,20 @@ export function StatementTable(insurance_status) {
   };
 
   const RemittanceButton = (row) => {
-    return (
-      <Tooltip title="Pay">
-        <span onClick={() => onClickRow(row)}>
-          <i
-            style={{
-              pointerEvents: insurance_status === "C" ? "" : "none",
-              opacity: insurance_status === "C" ? "" : "0.1",
-            }}
-            className="fas fa-pen"
-          ></i>
-        </span>
-      </Tooltip>
-    );
+    debugger
+    if (status.insurance_status === "C") {
+      return null
+    } else {
+      return (
+        <Tooltip title="Pay">
+          <span onClick={() => onClickRow(row)}>
+            <i
+              className="fas fa-pen"
+            ></i>
+          </span>
+        </Tooltip>
+      );
+    }
   };
 
   return (
