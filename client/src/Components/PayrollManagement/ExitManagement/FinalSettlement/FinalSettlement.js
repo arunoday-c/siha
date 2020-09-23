@@ -344,6 +344,7 @@ class FinalSettlement extends Component {
             title: "Final Settlement Recorded",
             type: "success",
           });
+          this.loadFinalSettlement(this);
           this.setState({
             disableSave: true,
           });
