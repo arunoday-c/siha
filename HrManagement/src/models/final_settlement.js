@@ -17,10 +17,9 @@ export default {
           query: `SELECT hims_f_final_settlement_header_id,total_amount,total_earnings,total_deductions,total_loans as total_loan_amount,
               total_salary,
               -- case  total_leave_encash when 0 or total_leave_encash is null then 
-             case final_settlement_status when 'PEN' or final_settlement_status is null then
-              (select total_amount from hims_f_leave_encash_header where employee_id=? and authorized = 'APR' and posted = 'N') 
-         else  total_leave_encash end
-               as total_leave_encash_amount,
+              if(final_settlement_status = 'PEN' or final_settlement_status is null ,
+              (select total_amount from hims_f_leave_encash_header where employee_id=? and authorized = 'APR' and posted = 'N'),
+          total_leave_encash) as total_leave_encash_amount,
                 CASE final_settlement_status when 'PEN' then (select  COALESCE(payable_amount,0)  from hims_f_end_of_service where employee_id=?) 
               else total_eos end  as gratuity_amount,
               forfiet,remarks,final_settlement_status,final_settlement_number,COALESCE(end_of_service_id,(select hims_f_end_of_service_id 
