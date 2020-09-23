@@ -914,6 +914,42 @@ export function Demographics({
               <div className="hptl-phase1-add-other-form">
                 {/* <div className="main-details" /> */}
                 <div className="col-lg-12">
+                  <div className="row" style={{ paddingTop: "10px" }}>
+                    <div className="col-8">
+                      <div className="row">
+                        {" "}
+                        <div className="col">
+                          <AlgaehLabel
+                            label={{
+                              forceLabel: "Income from Billing",
+                            }}
+                          />
+                          <h6>0.00</h6>
+                        </div>{" "}
+                        <i className="fas fa-plus calcSybmbol"></i>
+                        <div className="col">
+                          <AlgaehLabel
+                            label={{
+                              forceLabel: "Income from Point of Sales",
+                            }}
+                          />
+                          <h6>0.00</h6>
+                        </div>{" "}
+                        <i className="fas fa-equals calcSybmbol"></i>
+                        <div className="col">
+                          <AlgaehLabel
+                            label={{
+                              forceLabel: "Net Income from Patient",
+                            }}
+                          />
+                          <h6>0.00</h6>
+                        </div>{" "}
+                      </div>
+                    </div>
+                    <div className="col-4"></div>
+                  </div>
+                  <hr />
+
                   <div className="row" style={{ paddingBottom: "10px" }}>
                     <Controller
                       control={control}
