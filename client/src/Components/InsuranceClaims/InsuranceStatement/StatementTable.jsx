@@ -25,7 +25,8 @@ const getStatements = async (
   return res?.data?.records;
 };
 
-export function StatementTable() {
+export function StatementTable(insurance_status) {
+  debugger
   const { userToken } = useContext(MainContext);
   const [show, setShow] = useState(false);
   const [current, setCurrent] = useState(null);
@@ -60,7 +61,16 @@ export function StatementTable() {
     return (
       <Tooltip title="Pay">
         <span onClick={() => onClickRow(row)}>
-          <i className="fas fa-pen"></i>
+          <i style={{
+            pointerEvents:
+              insurance_status === "C"
+                ? ""
+                : "none",
+            opacity:
+              insurance_status === "C"
+                ? ""
+                : "0.1"
+          }} className="fas fa-pen"></i>
         </span>
       </Tooltip>
     );
