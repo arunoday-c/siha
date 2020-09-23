@@ -1846,10 +1846,11 @@ export function getInsuranceStatement(req, res, next) {
  gross_amount, discount_amount, net_amount, patient_resp, patient_tax, 
  patient_payable, company_resp, company_tax, company_payable, sec_company_resp, 
  sec_company_tax, sec_company_payable, submission_date, 
- remittance_date, remittance_amount, denial_amount, claim_validated, card_holder_name, 
+ remittance_date, COALESCE(remittance_amount,0) as remittance_amount, denial_amount, claim_validated, card_holder_name, 
  card_holder_age, card_holder_gender, card_class, insurance_statement_id,P.patient_code,P.full_name as pat_name,
- submission_amount2,submission_amount3,E.employee_code,E.full_name as doc_name,remittance_amount2,remittance_amount3,denial_amount2,denial_amount3,submission_amount
- from hims_f_invoice_header as IH
+ submission_amount2,submission_amount3,E.employee_code,E.full_name as doc_name,
+ COALESCE(remittance_amount2, 0) as remittance_amount2,COALESCE(remittance_amount3, 0) as remittance_amount3,
+ denial_amount2,denial_amount3,submission_amount from hims_f_invoice_header as IH
  inner join hims_f_patient as P on P.hims_d_patient_id = IH.patient_id inner join hims_f_patient_visit as V
  on V.hims_f_patient_visit_id = IH.visit_id inner join hims_d_employee as E on E.hims_d_employee_id = V.doctor_id where
   ${condition} and claim_status like '%${submission_step}';`,
@@ -1860,15 +1861,29 @@ export function getInsuranceStatement(req, res, next) {
         let otherObjet = {};
         let level = submission_step;
         const claims = result[1];
-        const remittance_amount = _.sumBy(claims, (s) =>
-          parseFloat(s[`remittance_amount${level === "1" ? "" : level}`])
-        );
+        // const remittance_amount = _.sumBy(claims, (s) =>
+        //   parseFloat(s[`remittance_amount${level === "1" ? "" : level}`])
+        // );
         const denial_amount = _.sumBy(claims, (s) =>
           parseFloat(s[`denial_amount${level === "1" ? "" : level}`])
         );
         const submission_amount = _.sumBy(claims, (s) =>
           parseFloat(s[`submission_amount${level === "1" ? "" : level}`])
         );
+
+        console.log("claims", claims)
+
+        const remittance_amount = _.sumBy(claims, (s) =>
+          parseFloat(s.remittance_amount) + parseFloat(s.remittance_amount2) + parseFloat(s.remittance_amount3)
+        );
+
+        console.log("remittance_amount", remittance_amount)
+        // const remittance_amount = _.sumBy(claims, (s) =>
+        //   parseFloat(s.remittance_amount2)
+        // );
+        // const remittance_amount = _.sumBy(claims, (s) =>
+        //   parseFloat(s.remittance_amount3)
+        // );
 
         otherObjet = {
           calc_remittance_amount: remittance_amount,
@@ -1997,12 +2012,12 @@ export function updateInsuranceStatement(req, res, next) {
               .executeQuery({
                 query: `update hims_f_invoice_header set remittance_amount${
                   level == 1 ? "" : level
-                }=${rest["ramt"]}, claim_status=?,
+                  }=${rest["ramt"]}, claim_status=?,
                   denial_amount${level == 1 ? "" : level}=${
                   rest["damt"]
-                },remittance_date=?,submission_amount${level == 1 ? 2 : 3}=${
+                  },remittance_date=?,submission_amount${level == 1 ? 2 : 3}=${
                   rest["damt"]
-                } where hims_f_invoice_header_id=?`,
+                  } where hims_f_invoice_header_id=?`,
                 values: [claim_status, new Date(), invoice_header_id],
               })
               .then((records) => {

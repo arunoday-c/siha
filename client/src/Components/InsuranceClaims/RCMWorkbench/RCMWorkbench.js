@@ -38,7 +38,8 @@ class RCMWorkbench extends Component {
       rcmMode: "C",
       insurance_statement_id: null,
       submitted: false,
-      insurance_statement_number: null
+      insurance_statement_number: null,
+      insurance_status: null
     };
     this.select = true;
     this.dropDownHandler = this.dropDownHandler.bind(this);
@@ -51,6 +52,7 @@ class RCMWorkbench extends Component {
   }
 
   componentDidMount() {
+    debugger
     this.getInsuranceProviders();
     const params = new URLSearchParams(this.props.location?.search);
     if (params?.get("hims_f_insurance_statement_id")) {
@@ -532,6 +534,7 @@ class RCMWorkbench extends Component {
         fieldName: "chkselect",
         label: <AlgaehLabel label={{ forceLabel: "Select" }} />,
         displayTemplate: (row) => {
+          debugger
           if (this.state.rcmMode === "C" && !this.state.submitted) {
             return (
               <input
@@ -545,7 +548,9 @@ class RCMWorkbench extends Component {
               />
             );
           }
-          if (this.state.rcmMode === "R") {
+          if (this.state.rcmMode === "R" && new URLSearchParams(this.props.location?.search).get(
+            "insurance_status"
+          ) !== "C") {
             const [current] = this.state.resubmissionList?.filter(
               (item) =>
                 item.hims_f_invoice_header_id == row?.hims_f_invoice_header_id
@@ -1025,13 +1030,26 @@ class RCMWorkbench extends Component {
                     </h6>
                   </div>
                   <div className="col-2">
-                    {/* <button
-                    onClick={this.getInvoicesForClaims}
-                    className="btn btn-primary"
-                    style={{ marginTop: 20, marginLeft: 5, float: "right" }}
-                  >
-                    Load
-                  </button> */}
+                    {new URLSearchParams(this.props.location?.search).get(
+                      "insurance_statement_number"
+                    ) ? (
+                        <div className="col">
+                          <AlgaehLabel
+                            label={{
+                              forceLabel: "Status",
+                            }}
+                          />
+                          <h6>
+                            {new URLSearchParams(this.props.location?.search).get(
+                              "insurance_status"
+                            ) === "C" ? (
+                                <span className="badge badge-success">Closed</span>
+                              ) : (
+                                <span className="badge badge-success">Open</span>
+                              )}
+                          </h6>
+                        </div>
+                      ) : null}
                     <button
                       // onClick={this.clearSearch}
                       onClick={() => this.props.history.push("/RCMWorkbench")}
@@ -1048,7 +1066,9 @@ class RCMWorkbench extends Component {
 
         {this.state.rcmMode === "S" ? (
           <div className="col-12">
-            <StatementTable />
+            <StatementTable insurance_status={new URLSearchParams(this.props.location?.search).get(
+              "insurance_status"
+            )} />
           </div>
         ) : (
             <div className="col-12">

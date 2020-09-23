@@ -12,14 +12,17 @@
                         <th>Appo. Time (From - To)</th>
                         <th>Patient Code</th>
                         <th>Patient Name</th>
-                        <th>Patient Age (yrs)</th>
+                        <th>Age (yrs)/Gender</th>
+                        <th>Department</th>
+                        <th>Appo. Remarks</th>
                         <th>Appo. Status</th>
+                        <th>Cancel. Remarks</th>
                     </tr>
                 </thead>
                 <tbody>
                     {{#each groupdetails}}
                     <tr>
-                        <td colspan="7" class="tableSubHdg">{{doctor_name}} | {{doctor_code}} <small
+                        <td colspan="10" class="tableSubHdg">Dr. {{doctor_name}} | {{doctor_code}} <small
                                 style="float:right">Total - Checked
                                 In:{{checked_in}} | Cancelled:{{cancel}} | No Show:{{no_show}}</small></td>
                     </tr>
@@ -30,8 +33,11 @@
                         <td>{{appointment_from_time}} - {{appointment_to_time}}</td>
                         <td>{{patient_code}}</td>
                         <td>{{patient_name}}</td>
-                        <td>{{age}}</td>
+                        <td>{{age}}/{{gender}}</td>
+                        <td>{{sub_department_name}}</td>
+                        <td>{{appointment_remarks}}</td>
                         <td>{{app_status}}</td>
+                        <td>{{cancel_reason}}</td>
                     </tr>
                     {{/each }}
                     {{/each }}

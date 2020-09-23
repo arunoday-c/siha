@@ -66,6 +66,7 @@ export default function loadActiveReports(
             DATE_OF_JOIN,
             moment,
             allYears,
+            EXPIRY_STATUS,
           });
           break;
         case "appointment":
