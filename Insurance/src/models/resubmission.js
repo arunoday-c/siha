@@ -134,8 +134,8 @@ export function closeClaim(req, res, next) {
   try {
     _mysql
       .executeQuery({
-        query: `update hims_f_insurance_statement set total_remittance_amount=?,total_denial_amount=?,writeoff_amount=?,insurance_status=? where 
-      hims_f_insurance_statement_id=?`,
+        query: `update hims_f_insurance_statement set insurance_status='C', total_remittance_amount=?,total_denial_amount=?,writeoff_amount=?,insurance_status=? where 
+      hims_f_insurance_statement_id=?; `,
         values: [
           inputParam.total_remittance_amount,
           inputParam.total_denial_amount,
