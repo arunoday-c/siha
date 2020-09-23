@@ -50,7 +50,7 @@ export function reSubmissionDetails(req, res, next) {
             }
             const { insurance_statement_number, submission_step } = records[0];
             const { algaeh_d_app_user_id } = req.userIdentity;
-            const newNumber = "RESUB-" + insurance_statement_number;
+            const newNumber = insurance_statement_number + "-RESUB-" + submission_step;
             _mysql
               .executeQuery({
                 query: `insert into hims_f_insurance_statement (insurance_statement_number,total_gross_amount,total_company_responsibility,total_company_vat,

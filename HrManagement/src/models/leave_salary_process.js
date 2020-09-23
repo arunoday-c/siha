@@ -508,7 +508,7 @@ export default {
                 }
 
                 // let _sarary = await newProcessSalary(req, res, next);
-                // console.log("_sarary before:  ", _sarary);
+
                 if (_sarary === undefined) {
                   utilities.logger().log("Salary Inside: ");
                   _mysql.commitTransaction(() => {
@@ -525,10 +525,7 @@ export default {
                     return;
                   });
                 }
-                // _sarary = _sarary !== null ? parseFloat(_sarary) + 1 : "";
 
-                // Promise.all([_attandance, _sarary]).then(rse => {
-                // utilities.logger().log("Promise: ", rse);
                 strGetdataQry +=
                   "select hims_f_salary_id,salary_number,month,year,employee_id,salary_date,gross_salary,net_salary from hims_f_salary where hims_f_salary_id=" +
                   _sarary +
@@ -537,22 +534,6 @@ export default {
                 if (hrms_options[0].attendance_starts === "PM") {
                   let _selected_year = moment(start_date).year();
                   let _selected_month = moment(start_date).format("M");
-
-                  // console.log("_selected_year: ", _selected_year);
-                  // console.log("selected_month: ", _selected_month);
-
-                  // let selected_day = moment(from_date).format("DD");
-
-                  // if (
-                  //   parseFloat(selected_day) >=
-                  //   parseFloat(hrms_options[0].at_st_date)
-                  // ) {
-                  //   start_date = moment(start_date)
-                  //     .add(1, "M")
-                  //     .format("YYYYMMDD");
-                  //   selected_month = parseFloat(selected_month) + 1;
-                  //   selected_month = String(selected_month).toString();
-                  // }
 
                   fromDate_lastDate = moment(
                     _selected_year +
@@ -590,6 +571,7 @@ export default {
                 printQuery: true,
               })
               .then((Salary_result) => {
+                // console.log("Salary_result", Salary_result);
                 // utilities.logger().log("Salary_result: ", Salary_result);
                 _mysql.commitTransaction(() => {
                   let result_data = [];
@@ -602,7 +584,7 @@ export default {
                       result_data.push(Salary_result[i]);
                     }
                   }
-
+                  // console.log("result_data", result_data);
                   let amount_data = [];
                   amount_data.push({
                     leave_amount: leave_amount,

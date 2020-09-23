@@ -241,11 +241,8 @@ export function StatementTable() {
                   <AlgaehLabel label={{ forceLabel: "Total Denial Amount" }} />
                 ),
                 displayTemplate: (row) => {
-                  const sum =
-                    parseFloat(row?.denial_amount ?? 0) +
-                    parseFloat(row?.denial_amount2 ?? 0) +
-                    parseFloat(row?.denial_amount3 ?? 0);
-                  return sum?.toFixed(userToken?.decimal_places);
+                  const denail_amunt = row.claim_status === "R1" ? parseFloat(row.denial_amount) : row.claim_status === "R2" ? parseFloat(row.denial_amount2) : row.claim_status === "R3" ? parseFloat(row.denial_amount3) : 0
+                  return denail_amunt?.toFixed(userToken?.decimal_places);
                 },
               },
             ]}

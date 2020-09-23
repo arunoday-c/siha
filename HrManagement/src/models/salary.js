@@ -357,6 +357,7 @@ export default {
                           const _deduction = _.filter(results[1], (f) => {
                             return f.employee_id == empResult[i]["employee_id"];
                           });
+
                           getDeductionComponents({
                             deduction: _deduction,
                             empResult: empResult[i],
@@ -3124,10 +3125,9 @@ function getEarningComponents(options) {
             component_type: obj.component_type,
           });
         } else if (obj["calculation_type"] == "V") {
-          let leave_period =
-            empResult["total_applied_days"] === null
-              ? 0
-              : parseFloat(empResult["total_applied_days"]);
+          let leave_period = empResult["total_applied_days"]
+            ? parseFloat(empResult["total_applied_days"])
+            : 0;
 
           let annual_per_day_sal = 0;
 
@@ -3159,7 +3159,10 @@ function getEarningComponents(options) {
           } else if (leave_salary == "N") {
             leave_salary_days =
               parseFloat(empResult["total_days"]) -
-              parseFloat(empResult["paid_leave"]);
+              (parseFloat(empResult["paid_leave"]) >
+              parseFloat(empResult["total_days"])
+                ? parseFloat(empResult["total_days"])
+                : parseFloat(empResult["paid_leave"]));
 
             current_earning_per_day_salary = parseFloat(
               obj["amount"] / parseFloat(empResult["total_days"])
