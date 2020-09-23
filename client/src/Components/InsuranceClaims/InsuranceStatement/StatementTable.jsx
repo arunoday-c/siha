@@ -26,7 +26,7 @@ const getStatements = async (
 };
 
 export function StatementTable(insurance_status) {
-  debugger
+  debugger;
   const { userToken } = useContext(MainContext);
   const [show, setShow] = useState(false);
   const [current, setCurrent] = useState(null);
@@ -61,16 +61,13 @@ export function StatementTable(insurance_status) {
     return (
       <Tooltip title="Pay">
         <span onClick={() => onClickRow(row)}>
-          <i style={{
-            pointerEvents:
-              insurance_status === "C"
-                ? ""
-                : "none",
-            opacity:
-              insurance_status === "C"
-                ? ""
-                : "0.1"
-          }} className="fas fa-pen"></i>
+          <i
+            style={{
+              pointerEvents: insurance_status === "C" ? "" : "none",
+              opacity: insurance_status === "C" ? "" : "0.1",
+            }}
+            className="fas fa-pen"
+          ></i>
         </span>
       </Tooltip>
     );
@@ -82,8 +79,7 @@ export function StatementTable(insurance_status) {
       <div className="portlet portlet-bordered margin-bottom-15">
         <div className="portlet-body">
           <div className="row">
-            <div className="col-5"></div>
-            <div className="col-7">
+            <div className="col-12">
               <div className="row">
                 <div className="col">
                   <label className="style_Label ">Total Claim Amount</label>
@@ -251,7 +247,14 @@ export function StatementTable(insurance_status) {
                   <AlgaehLabel label={{ forceLabel: "Total Denial Amount" }} />
                 ),
                 displayTemplate: (row) => {
-                  const denail_amunt = row.claim_status === "R1" ? parseFloat(row.denial_amount) : row.claim_status === "R2" ? parseFloat(row.denial_amount2) : row.claim_status === "R3" ? parseFloat(row.denial_amount3) : 0
+                  const denail_amunt =
+                    row.claim_status === "R1"
+                      ? parseFloat(row.denial_amount)
+                      : row.claim_status === "R2"
+                      ? parseFloat(row.denial_amount2)
+                      : row.claim_status === "R3"
+                      ? parseFloat(row.denial_amount3)
+                      : 0;
                   return denail_amunt?.toFixed(userToken?.decimal_places);
                 },
               },

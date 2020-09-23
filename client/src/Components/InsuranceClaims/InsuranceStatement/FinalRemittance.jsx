@@ -67,6 +67,7 @@ export function FinalRemittance({ data, refetch }) {
   return (
     <>
       <button
+        style={{ marginTop: 10, float: "right" }}
         className="btn btn-default"
         onClick={() => setVisible(true)}
         disabled={!data}
@@ -75,36 +76,47 @@ export function FinalRemittance({ data, refetch }) {
       </button>
       <Spin spinning={mutLoading}>
         <AlgaehModal
-          title="Update Service"
+          title="Final Remittance"
           visible={visible}
           maskClosable={false}
           width={540}
           closable={true}
-          okButtonProps={{
-            loading: mutLoading,
-            className: "btn btn-primary",
-          }}
           cancelButtonProps={{
             loading: mutLoading,
             className: "btn btn-default",
+          }}
+          okButtonProps={{
+            loading: mutLoading,
+            className: "btn btn-primary",
           }}
           // onOk={handleSubmit(onUpdate)}
           onCancel={() => setVisible(false)}
           onOk={() => {
             onSubmit();
           }}
+          className={`row algaehNewModal finalRemittanceModal`}
         >
           <div className="col-12 popupInner margin-top-15">
             <div className="row">
-              <div className="col-6">
+              <div className="col">
                 <AlgaehLabel
                   label={{
                     forceLabel: "Claim Amount",
                   }}
                 />
                 <h6>{claim_amount}</h6>
+              </div>{" "}
+              <i className="fas fa-minus calcSybmbol"></i>
+              <div className="col">
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Denial Amount",
+                  }}
+                />
+                <h6>{data?.calc_denial_amount ?? data?.total_denial_amount}</h6>
               </div>
-              <div className="col-6">
+              <i className="fas fa-equals calcSybmbol"></i>
+              <div className="col">
                 <AlgaehLabel
                   label={{
                     forceLabel: "Remittance Amount",
@@ -114,15 +126,7 @@ export function FinalRemittance({ data, refetch }) {
                   {data?.calc_remittance_amount ??
                     data?.total_remittance_amount}
                 </h6>
-              </div>
-              <div className="col-6">
-                <AlgaehLabel
-                  label={{
-                    forceLabel: "Denial Amount",
-                  }}
-                />
-                <h6>{data?.calc_denial_amount ?? data?.total_denial_amount}</h6>
-              </div>
+              </div>{" "}
             </div>
           </div>
         </AlgaehModal>
