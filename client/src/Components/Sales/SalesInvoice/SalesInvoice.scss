@@ -1,14 +1,24 @@
 #SaleInvoiceGrid {
-    .ReactTable {
-      max-height: 40vh !important;
-    }
+  .ReactTable {
+    max-height: 40vh !important;
   }
-  .textAreaLeft {
-    text-align: left;
-    margin-bottom: 50px;
-  }
-  
-  .disableFinder{
-    opacity: 0.4;
-    pointer-events: none;
-    }
+}
+.textAreaLeft {
+  text-align: left;
+  margin-bottom: 50px;
+}
+
+.disableFinder {
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+.invoiceCancellationModal {
+  min-width: 500px !important;
+  max-width: 500px !important;
+}
+
+.invoiceRevertModal {
+  min-width: 500px !important;
+  max-width: 500px !important;
+}

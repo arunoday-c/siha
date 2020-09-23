@@ -415,21 +415,6 @@ class SalesInvoice extends Component {
                     label={{ forceLabel: "Clear", returnText: true }}
                   />
                 </button>
-                <AlgaehSecurityComponent componentCode="SALE_INV_POST">
-                  <button
-                    type="button"
-                    className="btn btn-other"
-                    disabled={this.state.cancelEnable}
-                    onClick={() => this.setState({ cancel_visible: true })}
-                  >
-                    <AlgaehLabel
-                      label={{
-                        forceLabel: "Cancel",
-                        returnText: true,
-                      }}
-                    />
-                  </button>
-                </AlgaehSecurityComponent>
                 <AlgaehSecurityComponent componentCode="SALES_INV_RVT">
                   {this.state.sales_invoice_mode === "S" ? (
                     <button
@@ -461,20 +446,34 @@ class SalesInvoice extends Component {
                       }}
                     />
                   </button>
+                </AlgaehSecurityComponent>{" "}
+                <AlgaehSecurityComponent componentCode="SALE_INV_POST">
+                  <button
+                    type="button"
+                    className="btn btn-danger"
+                    disabled={this.state.cancelEnable}
+                    onClick={() => this.setState({ cancel_visible: true })}
+                  >
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Cancel Invoice",
+                        returnText: true,
+                      }}
+                    />
+                  </button>
                 </AlgaehSecurityComponent>
               </div>
               <Modal
                 title="Invoice Cancellation"
                 visible={this.state.cancel_visible}
-                width={1080}
                 footer={null}
                 onCancel={() => this.setState({ cancel_visible: false })}
-                className={`row algaehNewModal advanceRefundModal`}
+                className={`row algaehNewModal invoiceCancellationModal`}
               >
                 <AlagehFormGroup
-                  div={{ className: "col-3 textAreaLeft" }}
+                  div={{ className: "col-12" }}
                   label={{
-                    forceLabel: "Cancellation Reason",
+                    forceLabel: "Enter reason for invoice cancellation",
                     isImp: true,
                   }}
                   textBox={{
@@ -497,7 +496,7 @@ class SalesInvoice extends Component {
                           className="btn btn-primary"
                           onClick={CancelSalesInvoice.bind(this, this)}
                         >
-                          Process
+                          Cancel Invoice
                         </AlgaehButton>
                       </div>
                     </div>
@@ -511,12 +510,12 @@ class SalesInvoice extends Component {
                 width={1080}
                 footer={null}
                 onCancel={() => this.setState({ revert_visible: false })}
-                className={`row algaehNewModal advanceRefundModal`}
+                className={`row algaehNewModal invoiceRevertModal`}
               >
                 <AlagehFormGroup
-                  div={{ className: "col-3 textAreaLeft" }}
+                  div={{ className: "col" }}
                   label={{
-                    forceLabel: "Revert Reason",
+                    forceLabel: "Enter reason for invoice reversal",
                     isImp: true,
                   }}
                   textBox={{
@@ -539,7 +538,7 @@ class SalesInvoice extends Component {
                           className="btn btn-primary"
                           onClick={RevertSalesInvoice.bind(this, this)}
                         >
-                          Process
+                          Revert Invoice
                         </AlgaehButton>
                       </div>
                     </div>
