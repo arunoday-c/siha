@@ -1839,7 +1839,7 @@ export function getInsuranceStatement(req, res, next) {
     _mysql
       .executeQuery({
         query: `select hims_f_insurance_statement_id, insurance_statement_number, total_gross_amount, total_company_responsibility, total_company_vat, total_company_payable,
-        total_remittance_amount, total_denial_amount, total_balance_amount, 
+        total_remittance_amount, total_denial_amount, total_balance_amount, insurance_status,
         insurance_provider_id, sub_insurance_id,insurance_status  from hims_f_insurance_statement where hims_f_insurance_statement_id = ?;
         select hims_f_invoice_header_id, invoice_number, invoice_date, invoice_type, IH.patient_id, visit_id, episode_id, IH.claim_status,
  policy_number, insurance_provider_id, sub_insurance_id, network_id, network_office_id, card_number, 
@@ -1886,8 +1886,8 @@ export function getInsuranceStatement(req, res, next) {
         // );
 
         otherObjet = {
-          calc_remittance_amount: remittance_amount,
-          calc_denial_amount: denial_amount,
+          calc_remittance_amount: result[0][0].insurance_status === "C" ? result[0][0].total_remittance_amount : remittance_amount,
+          calc_denial_amount: result[0][0].insurance_status === "C" ? result[0][0].total_denial_amount : denial_amount,
           cals_submission_amount: submission_amount,
         };
 

@@ -26,7 +26,6 @@ const getStatements = async (
 };
 
 export function StatementTable(insurance_status) {
-  debugger;
   const { userToken } = useContext(MainContext);
   const [show, setShow] = useState(false);
   const [current, setCurrent] = useState(null);
@@ -251,10 +250,10 @@ export function StatementTable(insurance_status) {
                     row.claim_status === "R1"
                       ? parseFloat(row.denial_amount)
                       : row.claim_status === "R2"
-                      ? parseFloat(row.denial_amount2)
-                      : row.claim_status === "R3"
-                      ? parseFloat(row.denial_amount3)
-                      : 0;
+                        ? parseFloat(row.denial_amount2)
+                        : row.claim_status === "R3"
+                          ? parseFloat(row.denial_amount3)
+                          : 0;
                   return denail_amunt?.toFixed(userToken?.decimal_places);
                 },
               },

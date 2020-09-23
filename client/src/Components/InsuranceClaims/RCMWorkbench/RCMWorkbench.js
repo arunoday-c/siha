@@ -52,7 +52,6 @@ class RCMWorkbench extends Component {
   }
 
   componentDidMount() {
-    debugger;
     this.getInsuranceProviders();
     const params = new URLSearchParams(this.props.location?.search);
     if (params?.get("hims_f_insurance_statement_id")) {
@@ -153,7 +152,7 @@ class RCMWorkbench extends Component {
                   });
                 }
               },
-              onError: (error) => {},
+              onError: (error) => { },
             });
           }
         );
@@ -257,7 +256,7 @@ class RCMWorkbench extends Component {
           });
         }
       },
-      onError: (error) => {},
+      onError: (error) => { },
     });
   }
 
@@ -649,8 +648,8 @@ class RCMWorkbench extends Component {
               ) : row.claim_validated === "P" ? (
                 <span className="badge badge-warning">Pending</span>
               ) : (
-                "----"
-              )}
+                        "----"
+                      )}
             </span>
           );
         },
@@ -679,8 +678,8 @@ class RCMWorkbench extends Component {
               ) : row.claim_status === "P" ? (
                 <span className="badge badge-warning">Pending</span>
               ) : (
-                "----"
-              )}
+                              "----"
+                            )}
             </span>
           );
         },
@@ -1021,53 +1020,53 @@ class RCMWorkbench extends Component {
                 </div>
               </>
             ) : (
-              <>
-                <div className="col-3 globalSearchCntr form-group">
-                  <AlgaehLabel label={{ forceLabel: "Search Statement No." }} />
-                  <h6 onClick={ClaimSearch.bind(this)}>
+                <>
+                  <div className="col-3 globalSearchCntr form-group">
+                    <AlgaehLabel label={{ forceLabel: "Search Statement No." }} />
+                    <h6 onClick={ClaimSearch.bind(this)}>
+                      {new URLSearchParams(this.props.location?.search).get(
+                        "insurance_statement_number"
+                      ) ?? "Search Statement No."}
+                      <i className="fas fa-search fa-lg"></i>
+                    </h6>
+                  </div>{" "}
+                  <div className="col">
+                    {" "}
+                    <button
+                      // onClick={this.clearSearch}
+                      onClick={() => this.props.history.push("/RCMWorkbench")}
+                      className="btn btn-default"
+                      style={{ marginTop: 20, float: "left" }}
+                    >
+                      Clear
+                  </button>
+                  </div>
+                  <div className="col">
                     {new URLSearchParams(this.props.location?.search).get(
                       "insurance_statement_number"
-                    ) ?? "Search Statement No."}
-                    <i className="fas fa-search fa-lg"></i>
-                  </h6>
-                </div>{" "}
-                <div className="col">
-                  {" "}
-                  <button
-                    // onClick={this.clearSearch}
-                    onClick={() => this.props.history.push("/RCMWorkbench")}
-                    className="btn btn-default"
-                    style={{ marginTop: 20, float: "left" }}
-                  >
-                    Clear
-                  </button>
-                </div>
-                <div className="col">
-                  {new URLSearchParams(this.props.location?.search).get(
-                    "insurance_statement_number"
-                  ) ? (
-                    <div className="row">
-                      <div className="col">
-                        <AlgaehLabel
-                          label={{
-                            forceLabel: "Status",
-                          }}
-                        />
-                        <h6>
-                          {new URLSearchParams(this.props.location?.search).get(
-                            "insurance_status"
-                          ) === "C" ? (
-                            <span className="badge badge-success">Closed</span>
-                          ) : (
-                            <span className="badge badge-success">Open</span>
-                          )}
-                        </h6>
-                      </div>
-                    </div>
-                  ) : null}
-                </div>
-              </>
-            )}
+                    ) ? (
+                        <div className="row">
+                          <div className="col">
+                            <AlgaehLabel
+                              label={{
+                                forceLabel: "Status",
+                              }}
+                            />
+                            <h6>
+                              {new URLSearchParams(this.props.location?.search).get(
+                                "insurance_status"
+                              ) === "C" ? (
+                                  <span className="badge badge-success">Closed</span>
+                                ) : (
+                                  <span className="badge badge-success">Open</span>
+                                )}
+                            </h6>
+                          </div>
+                        </div>
+                      ) : null}
+                  </div>
+                </>
+              )}
           </div>
         </div>
 
@@ -1080,21 +1079,21 @@ class RCMWorkbench extends Component {
             />
           </div>
         ) : (
-          <div className="col-12">
-            <div className="portlet portlet-bordered margin-bottom-15">
-              <div className="row">
-                <div className="col-12" id="rcmDesktopGrid_Cntr">
-                  <AlgaehDataGrid
-                    id="rcmDesktopGrid"
-                    columns={columns}
-                    keyId="service_type_id"
-                    dataSource={{
-                      data: this.state.claims,
-                    }}
-                    filter={true}
-                    isEditable={false}
-                    height={"80vh"}
-                    paging={{ page: 0, rowsPerPage: 20 }}
+            <div className="col-12">
+              <div className="portlet portlet-bordered margin-bottom-15">
+                <div className="row">
+                  <div className="col-12" id="rcmDesktopGrid_Cntr">
+                    <AlgaehDataGrid
+                      id="rcmDesktopGrid"
+                      columns={columns}
+                      keyId="service_type_id"
+                      dataSource={{
+                        data: this.state.claims,
+                      }}
+                      filter={true}
+                      isEditable={false}
+                      height={"80vh"}
+                      paging={{ page: 0, rowsPerPage: 20 }}
                     // events={{
                     //   onDelete: deletePosDetail.bind(this, this, context),
                     //   onEdit: row => {},
@@ -1103,12 +1102,12 @@ class RCMWorkbench extends Component {
                     // onRowSelect={row => {
                     //   getItemLocationStock(this, row);
                     // }}
-                  />
+                    />
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        )}
+          )}
         {this.state.rcmMode === "C" && (
           <div className="hptl-phase1-footer">
             <div className="row">

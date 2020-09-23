@@ -3,10 +3,13 @@ import {
   AlgaehMessagePop,
   AlgaehModal,
   Spin,
+  AlgaehFormGroup,
+  MainContext
 } from "algaeh-react-components";
-import React, { useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { useMutation } from "react-query";
 import { newAlgaehApi } from "../../../hooks";
+import { useForm, Controller } from "react-hook-form";
 
 const closeStatement = async ({
   total_remittance_amount,
@@ -17,6 +20,7 @@ const closeStatement = async ({
   total_company_payable,
   insurance_statement_number,
 }) => {
+
   const res = await newAlgaehApi({
     uri: "/resubmission/closeClaim",
     module: "insurance",
@@ -49,12 +53,11 @@ export function FinalRemittance({ data, refetch }) {
   });
 
   const onSubmit = () => {
+
     closeStat({
-      total_denial_amount:
-        data?.calc_denial_amount ?? data?.total_denial_amount,
-      total_remittance_amount:
-        data?.calc_remittance_amount ?? data?.total_remittance_amount,
-      writeoff_amount: data?.calc_denial_amount ?? data?.total_denial_amount,
+      total_denial_amount: denial_amount,
+      total_remittance_amount: remittance_amount,
+      writeoff_amount: denial_amount,
       hims_f_insurance_statement_id: data?.hims_f_insurance_statement_id,
       total_company_payable: data?.total_company_payable,
       insurance_statement_number: data?.insurance_statement_number,
@@ -63,6 +66,32 @@ export function FinalRemittance({ data, refetch }) {
   };
 
   const claim_amount = data?.total_company_payable;
+  const { userToken } = useContext(MainContext);
+  const {
+    reset,
+    setValue,
+    control,
+    errors,
+    watch,
+    setError,
+    clearErrors,
+    register
+  } = useForm({
+    defaultValues: {
+      remittance_amount: data?.calc_remittance_amount,
+      denial_amount: data?.calc_remittance_amount
+    },
+  });
+
+  const { remittance_amount, denial_amount } = watch();
+
+  useEffect(() => {
+    reset({
+      remittance_amount: parseFloat(data?.calc_remittance_amount),
+      denial_amount: parseFloat(data?.calc_denial_amount)
+    });
+    //eslint-disable-next-line
+  }, [data]);
 
   return (
     <>
@@ -105,18 +134,68 @@ export function FinalRemittance({ data, refetch }) {
                   }}
                 />
                 <h6>{claim_amount}</h6>
-              </div>{" "}
+              </div>
               <i className="fas fa-minus calcSybmbol"></i>
+              <Controller
+                control={control}
+                name="remittance_amount"
+                rules={{ required: true }}
+                render={({ value, onChange }) => (
+                  <AlgaehFormGroup
+                    div={{ className: "col-6 mandatory" }}
+                    label={{
+                      forceLabel: "Remittance Amount",
+                      isImp: true,
+                    }}
+                    error={errors}
+                    textBox={{
+                      value,
+                      onChange: (e) => {
+
+                        let { value } = e.target;
+
+                        if (value) {
+                          if (parseFloat(value) <= claim_amount) {
+                            onChange(value);
+                            let denial_amount = claim_amount - parseFloat(value);
+                            denial_amount = denial_amount
+                              ? denial_amount.toFixed(userToken.decimal_places)
+                              : 0;
+                            setValue("denial_amount", denial_amount, {
+                              shouldValidate: true,
+                            });
+                            clearErrors();
+                          } else {
+                            setError("remittance_amount", {
+                              type: "manual",
+                              message:
+                                "Remittance Should be less than or equal to claim amount",
+                            });
+                          }
+                        } else {
+                          onChange("");
+                          setValue("denial_amount", "");
+                        }
+                      },
+                      className: "txt-fld",
+                      name: "remittance_amount",
+                      placeholder: "0.00",
+                      tabIndex: "2",
+                    }}
+                  />
+                )}
+              />
+              <i className="fas fa-equals calcSybmbol"></i>
               <div className="col">
                 <AlgaehLabel
                   label={{
                     forceLabel: "Denial Amount",
                   }}
                 />
-                <h6>{data?.calc_denial_amount ?? data?.total_denial_amount}</h6>
+                <h6 ref={register({ name: "denial_amount" })}>{denial_amount}</h6>
               </div>
-              <i className="fas fa-equals calcSybmbol"></i>
-              <div className="col">
+
+              {/* <div className="col">
                 <AlgaehLabel
                   label={{
                     forceLabel: "Remittance Amount",
@@ -126,7 +205,7 @@ export function FinalRemittance({ data, refetch }) {
                   {data?.calc_remittance_amount ??
                     data?.total_remittance_amount}
                 </h6>
-              </div>{" "}
+              </div> */}
             </div>
           </div>
         </AlgaehModal>
