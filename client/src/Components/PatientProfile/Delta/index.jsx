@@ -159,7 +159,7 @@ export default function DeltaCheck({ visible, onCancel }) {
       setChartData([]);
       setSelected([]);
       setShowChart(false);
-      setDates([]);
+      setDates(null);
       setSelectedTest(null);
     }
   }, [visible]);
@@ -197,7 +197,7 @@ export default function DeltaCheck({ visible, onCancel }) {
     //       `${v}`.replace(/\d{1,3}(?=(\d{3})+$)/g, (s) => `${s},`),
     //   },
     // },
-    legend: { position: "right-top" },
+    legend: { position: "top" },
     seriesField: "type",
     color: ["#1979C9", "#D62A0D", "#FAA219"],
   };
@@ -205,7 +205,7 @@ export default function DeltaCheck({ visible, onCancel }) {
   useEffect(() => {
     setChartData([]);
     setShowChart(false);
-    setDates([]);
+    setDates(null);
     setSelected([]);
     setSelectedTest(null);
   }, [mode]);
@@ -284,13 +284,15 @@ export default function DeltaCheck({ visible, onCancel }) {
                   textBox={{
                     className: "txt-fld",
                     name: "recorded_date",
+                    value: dates,
                   }}
                   type="range"
                   // maxDate={}
+
                   events={{
                     onChange: (e) => setDates(e),
                   }}
-                  value={dates}
+                  // value={dates}
                 />
                 <div className="col-12 ">
                   {mode === "vital" ? (
