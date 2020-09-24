@@ -800,6 +800,31 @@ export default {
       next(e);
     }
   },
+  getInvestigationResult: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    try {
+      const { patient_id, test_id } = req.query;
+      _mysql
+        .executeQuery({
+          query: `select * from hims_f_lab_order L inner join hims_f_ord_analytes O on L.hims_f_lab_order_id =O.order_id
+        inner join hims_d_lab_analytes LA on LA.hims_d_lab_analytes_id =O.analyte_id where L.test_id=? and L.patient_id=? and LA.analyte_type='QN';`,
+          values: [test_id, patient_id],
+          printQuery: true,
+        })
+        .then((result) => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch((error) => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
   getMicroResult: (req, res, next) => {
     const _mysql = new algaehMysql();
     try {
