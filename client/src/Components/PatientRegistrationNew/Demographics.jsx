@@ -54,6 +54,8 @@ export function Demographics({
   errors,
   patientIdCard,
   patientImage,
+  incomeByOp,
+  incomeByPoint,
   inModal = false,
 }) {
   const queryParams = useQueryParams();
@@ -76,6 +78,7 @@ export function Demographics({
       "nationality_id",
     ],
   });
+
   const { fieldNameFn } = useLangFieldName();
   const {
     titles = [],
@@ -138,7 +141,7 @@ export function Demographics({
       return "";
     }
   };
-
+  console.log("parseInt(incomeByPoint)", parseInt(incomeByPoint));
   return (
     <Spin spinning={isLoading}>
       <div className="hptl-phase1-patient-details margin-bottom-15 margin-top-15">
@@ -924,7 +927,7 @@ export function Demographics({
                               forceLabel: "Income from Billing",
                             }}
                           />
-                          <h6>0.00</h6>
+                          <h6>{incomeByOp ? incomeByOp : 0.0}</h6>
                         </div>{" "}
                         <i className="fas fa-plus calcSybmbol"></i>
                         <div className="col">
@@ -933,7 +936,7 @@ export function Demographics({
                               forceLabel: "Income from Point of Sales",
                             }}
                           />
-                          <h6>0.00</h6>
+                          <h6>{incomeByPoint ? incomeByPoint : 0.0}</h6>
                         </div>{" "}
                         <i className="fas fa-equals calcSybmbol"></i>
                         <div className="col">
@@ -942,7 +945,11 @@ export function Demographics({
                               forceLabel: "Net Income from Patient",
                             }}
                           />
-                          <h6>0.00</h6>
+                          <h6>
+                            {incomeByPoint || incomeByOp
+                              ? parseInt(incomeByOp) + parseInt(incomeByPoint)
+                              : 0.0}
+                          </h6>
                         </div>{" "}
                       </div>
                     </div>
