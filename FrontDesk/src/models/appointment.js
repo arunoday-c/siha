@@ -2565,6 +2565,36 @@ function getDaysArray(start, end, days) {
 
   return arr;
 }
+export function getIncomeFromPatient(req, res, next) {
+  const _mysql = new algaehMysql();
+  const { patient_id } = req.query;
+  try {
+    _mysql
+      .executeQuery({
+        query: `SELECT BH.patient_id,
+        SUM(COALESCE(BH.net_amount,0) - COALESCE(BC.net_amount,0)) as op_pat_income
+        FROM hims_f_billing_header as BH 
+        left join hims_f_bill_cancel_header BC on BH.hims_f_billing_header_id=BC.from_bill_id where BH.patient_id=?
+        group by BH.patient_id;
+        SELECT PH.patient_id,sum(COALESCE(PH.net_amount,0)) - sum(COALESCE(PC.net_amount,0)) as pos_pat_income
+        FROM hims_f_pharmacy_pos_header as PH
+        left join hims_f_pharmcy_sales_return_header PC on PH.hims_f_pharmacy_pos_header_id=PC.from_pos_id  where PH.patient_id=? group by PH.patient_id;`,
+        values: [patient_id, patient_id],
+      })
+      .then((result) => {
+        _mysql.releaseConnection();
+        req.records = result.length > 0 ? result[0] : {};
+        next();
+      })
+      .catch((error) => {
+        _mysql.releaseConnection();
+        next(error);
+      });
+  } catch (error) {
+    _mysql.releaseConnection();
+    next(error);
+  }
+}
 export function getPatientDetailsWithAppNo(req, res, next) {
   const _mysql = new algaehMysql();
   const { application_id } = req.query;

@@ -44,6 +44,16 @@ const getPatientFromAppointment = async (key, { appointment_id }) => {
   return result?.data?.records;
 };
 
+const getIncomeFromPatient = async (key, { patient_id }) => {
+  const result = await newAlgaehApi({
+    uri: "/appointment/getIncomeFromPatient",
+    module: "frontDesk",
+    method: "GET",
+    data: { patient_id: patient_id },
+  });
+  return result?.data?.records;
+};
+
 const getPatientPackage = async (key, { patient_id }) => {
   const res = await newAlgaehApi({
     uri: "/orderAndPreApproval/getPatientPackage",
@@ -161,6 +171,8 @@ export function PatientRegistration() {
   const [showUpdateModal, setUpdateModal] = useState(false);
   const [showAdvModal, setShowAdvModal] = useState(false);
   const [isInsurance, setIsInsurance] = useState(false);
+  const [incomeByOp, setIncomeByOp] = useState("");
+  const [incomeByPoint, setIncomeByPoint] = useState("");
   const location = useLocation();
   const history = useHistory();
 
@@ -328,6 +340,20 @@ export function PatientRegistration() {
           setValue("visit_type", 10);
           setServiceInfo(doctor);
         }
+      },
+    }
+  );
+
+  const { isLoading: incomeLoading } = useQuery(
+    [
+      "income-by-patient",
+      { patient_id: patientData?.patientRegistration?.hims_d_patient_id },
+    ],
+    getIncomeFromPatient,
+    {
+      onSuccess: (data) => {
+        setIncomeByOp(data[0].op_pat_income);
+        setIncomeByPoint(data[0].pos_pat_income);
       },
     }
   );
@@ -595,7 +621,12 @@ export function PatientRegistration() {
   return (
     <Spin
       spinning={
-        isLoading || packLoading || saveLoading || appLoading || updateLoading
+        isLoading ||
+        packLoading ||
+        saveLoading ||
+        appLoading ||
+        updateLoading ||
+        incomeLoading
       }
     >
       <div id="attach">
@@ -651,27 +682,27 @@ export function PatientRegistration() {
           printArea={
             !!patient_code || !!savedPatient
               ? {
-                menuitems: [
-                  {
-                    label: "ID Card",
-                    events: {
-                      onClick: () => {
-                        generateIdCard(
-                          patientData?.patientRegistration || savedPatient
-                        );
+                  menuitems: [
+                    {
+                      label: "ID Card",
+                      events: {
+                        onClick: () => {
+                          generateIdCard(
+                            patientData?.patientRegistration || savedPatient
+                          );
+                        },
                       },
                     },
-                  },
-                  {
-                    label: "Advance/Refund Receipt",
-                    events: {
-                      onClick: () => {
-                        setShowAdvModal(true);
+                    {
+                      label: "Advance/Refund Receipt",
+                      events: {
+                        onClick: () => {
+                          setShowAdvModal(true);
+                        },
                       },
                     },
-                  },
-                ],
-              }
+                  ],
+                }
               : ""
           }
           selectedLang={userLanguage}
@@ -687,6 +718,8 @@ export function PatientRegistration() {
                   clearErrors={clearErrors}
                   patientImage={patientImage}
                   patientIdCard={patientIdCard}
+                  incomeByOp={incomeByOp}
+                  incomeByPoint={incomeByPoint ? incomeByPoint : "0"}
                 />
                 <InsuranceDetails
                   isInsurance={isInsurance}
@@ -778,7 +811,7 @@ export function PatientRegistration() {
                           history.replace(location.pathname);
                           history.push(
                             `/OPBilling?patient_code=${
-                            patient_code || savedPatient?.patient_code
+                              patient_code || savedPatient?.patient_code
                             }`
                           );
                         }}
@@ -931,18 +964,18 @@ export function PatientRegistration() {
             inputsparameters={
               patient_code
                 ? {
-                  patient_code: patient_code,
-                  full_name: patientData?.patientRegistration?.full_name,
-                  hims_f_patient_id:
-                    patientData?.patientRegistration?.hims_d_patient_id,
-                }
+                    patient_code: patient_code,
+                    full_name: patientData?.patientRegistration?.full_name,
+                    hims_f_patient_id:
+                      patientData?.patientRegistration?.hims_d_patient_id,
+                  }
                 : !!savedPatient
-                  ? {
+                ? {
                     patient_code: savedPatient?.patient_code,
                     full_name: savedPatient?.full_name,
                     hims_f_patient_id: savedPatient?.hims_d_patient_id,
                   }
-                  : {}
+                : {}
             }
           />
         </>
