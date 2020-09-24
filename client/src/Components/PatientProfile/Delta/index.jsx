@@ -24,7 +24,7 @@ import _ from "lodash";
 
 export default function DeltaCheck({ visible, onCancel }) {
   const [mode, setMode] = useState("vital");
-  const [test_id, setTestId] = useState(null);
+  const [test, setSelectedTest] = useState(null);
   const [dates, setDates] = useState([moment(), moment().subtract(1, "month")]);
   const [, setVitalData] = useState(null);
   const [showChart, setShowChart] = useState(false);
@@ -81,19 +81,19 @@ export default function DeltaCheck({ visible, onCancel }) {
   );
 
   const { data: analytes, isLoading: anLoading } = useQuery(
-    ["analytes", { test_id }],
+    ["analytes", { test_id: test?.hims_d_investigation_test_id }],
     getAnalytes,
     {
-      enabled: !!test_id,
+      enabled: !!test,
       initialData: [],
       initialStale: true,
     }
   );
   const { data: testResult, isLoading: testLoading } = useQuery(
-    ["test-results", { test_id, patient_id }],
+    ["test-results", { service_id: test?.service_id, patient_id }],
     getPatientTestResults,
     {
-      enabled: !!test_id && !!patient_id && !!visible,
+      enabled: !!test && !!patient_id && !!visible,
       initialData: [],
       initialStale: true,
     }
@@ -134,12 +134,33 @@ export default function DeltaCheck({ visible, onCancel }) {
     }
   }
 
+  function calculateAnalyteChart() {
+    if (selected.length && testResult?.length) {
+      const data = [];
+      selected.forEach((id) => {
+        let vit = testResult?.filter((item) => item.analyte_id === id);
+        vit = vit?.map((item) => ({
+          date: item?.entered_date?.split(" ")[0],
+          value: parseFloat(item?.result),
+          type: item?.description,
+        }));
+        vit = vit?.filter((item) =>
+          moment(item?.date).isBetween(dates?.[0], dates?.[1])
+        );
+        data.push(...vit);
+      });
+      setChartData(data);
+      setShowChart(true);
+    }
+  }
+
   useEffect(() => {
     if (!visible) {
       setChartData([]);
       setSelected([]);
       setShowChart(false);
       setDates([]);
+      setSelectedTest(null);
     }
   }, [visible]);
 
@@ -180,6 +201,14 @@ export default function DeltaCheck({ visible, onCancel }) {
     seriesField: "type",
     color: ["#1979C9", "#D62A0D", "#FAA219"],
   };
+
+  useEffect(() => {
+    setChartData([]);
+    setShowChart(false);
+    setDates([]);
+    setSelected([]);
+    setSelectedTest(null);
+  }, [mode]);
 
   console.log(patientVitals, "vital");
 
@@ -243,15 +272,15 @@ export default function DeltaCheck({ visible, onCancel }) {
                         valueField: "hims_d_investigation_test_id",
                         textField: "service_name",
                       },
-                      value: test_id,
-                      onChange: (_, selected) => setTestId(selected),
-                      onClear: () => setTestId(null),
+                      value: test?.test_id,
+                      onChange: (obj) => setSelectedTest(obj),
+                      onClear: () => setSelectedTest(null),
                     }}
                   />
                 )}
                 <AlgaehDateHandler
                   div={{ className: "col-12 form-group" }}
-                  label={{ forceLabel: "From & To Date", isImp: false }}
+                  label={{ forceLabel: "From & To Date", isImp: true }}
                   textBox={{
                     className: "txt-fld",
                     name: "recorded_date",
@@ -283,63 +312,32 @@ export default function DeltaCheck({ visible, onCancel }) {
                       value={selected}
                     />
                   )}
-                  {/* <ul className="dimensionList">
-                  {mode === "vital"
-                    ? vitals?.map((item) => (
-                        <li
-                          key={item?.hims_d_vitals_header_id}
-                          onClick={(e) =>
-                            selectItem(item?.hims_d_vitals_header_id)
-                          }
-                        >
-                          <span className="checkBoxPhy">
-                            <input
-                              checked={selected?.some(
-                                (i) => i === item?.hims_d_vitals_header_id
-                              )}
-                              type="checkbox"
-                            />
-                            {selected?.some(
-                              (i) => i == item?.hims_d_vitals_header_id
-                            ) ? (
-                              "checked"
-                            ) : (
-                              <i className="fas fa-check" />
-                            )}
-                          </span>
-                          <span className="dimensionListName">
-                            {item?.vitals_name}
-                          </span>
-                        </li>
-                      ))
-                    : analytes?.map((item) => (
-                        <li>
-                          <span className="checkBoxPhy">
-                            <input
-                              value={item.hims_d_lab_analytes_id}
-                              type="checkbox"
-                            />
-                            <i className="fas fa-check" />
-                          </span>
-                          <span className="dimensionListName">
-                            {item.description}
-                          </span>
-                        </li>
-                      ))}
-                </ul> */}
                 </div>
                 <div className="col-12" style={{ textAlign: "right" }}>
                   <button className="btn btn-default">Clear</button>
-                  <button
-                    disabled={!selected.length || !dates?.length}
-                    className="btn btn-primary"
-                    style={{ marginLeft: 10 }}
-                    onClick={() => {
-                      calculateVitalChart();
-                    }}
-                  >
-                    Apply
-                  </button>
+                  {mode === "vital" ? (
+                    <button
+                      disabled={!selected.length || !dates?.length}
+                      className="btn btn-primary"
+                      style={{ marginLeft: 10 }}
+                      onClick={() => {
+                        calculateVitalChart();
+                      }}
+                    >
+                      Apply
+                    </button>
+                  ) : (
+                    <button
+                      disabled={!selected.length || !dates?.length}
+                      className="btn btn-primary"
+                      style={{ marginLeft: 10 }}
+                      onClick={() => {
+                        calculateAnalyteChart();
+                      }}
+                    >
+                      Apply
+                    </button>
+                  )}
                 </div>
               </div>
             </div>
@@ -350,12 +348,12 @@ export default function DeltaCheck({ visible, onCancel }) {
                 chartData?.length ? (
                   <div className="row">
                     <div className="col-12">
-                      <Line {...config} />
+                      <Line {...config} animation={false} />
                     </div>
                   </div>
                 ) : (
                   <div className="row">
-                    <div className="col">No Data available</div>
+                    <div className="col">No Data available to show</div>
                   </div>
                 )
               ) : (
