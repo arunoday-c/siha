@@ -2583,7 +2583,7 @@ export function getIncomeFromPatient(req, res, next) {
       })
       .then((result) => {
         _mysql.releaseConnection();
-        req.records = result.length > 0 ? result[0] : {};
+        req.records = result;
         next();
       })
       .catch((error) => {
