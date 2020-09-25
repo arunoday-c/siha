@@ -62,4 +62,25 @@
     font-size: 30px;
     color: #afafaf;
   }
+  .deltaList {
+    .ant-checkbox-group {
+      width: 100%;
+      border: 1px solid #dbdbdb;
+      overflow: auto;
+      max-height: 35vh;
+      .ant-checkbox-group-item {
+        display: block;
+        width: 100%;
+        border-bottom: 1px solid #ddd;
+        padding: 5px;
+        .ant-checkbox {
+          border-right: 1px solid #ddd;
+          padding-right: 10px;
+        }
+        span {
+          font-size: 0.9rem;
+        }
+      }
+    }
+  }
 }

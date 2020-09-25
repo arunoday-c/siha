@@ -206,7 +206,7 @@ class ServicePriceList extends PureComponent {
                     style={{ marginTop: 20 }}
                     onClick={Refresh.bind(this, this)}
                   >
-                    Refresh List
+                    Clear Filter
                   </button>
                 </div>
               </div>

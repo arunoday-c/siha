@@ -312,7 +312,9 @@ const onchangegridcol = ($this, context, row, e) => {
     item_details.batches[_index] = row;
 
     item_details.quantity_transferred = quantity_transferred;
-
+    if ($this.state.trans_ack_required === "N") {
+      item_details.ack_quantity = quantity_transferred;
+    }
     item_details.quantity_outstanding =
       item_details.quantity_authorized -
       item_details.transfer_to_date -
@@ -490,16 +492,18 @@ const AddSelectedBatches = ($this, context) => {
         // batch.uom_requested_name = batch.uom_description;
         // batch.sales_price = batch.sale_price;
 
-        // batch.quantity_requested = batch.quantity_required;
-
+        batch.ack_quantity = batch.quantity_transfer;
+        debugger
         if (updateStock !== undefined) {
           const invIndex = _inventory_stock_detail.indexOf(updateStock);
           const totalqty =
             updateStock.quantity_transfer + batch.quantity_transfer;
           if (totalqty > batch.qtyhand) {
             updateStock.quantity_transfer = batch.qtyhand;
+            updateStock.ack_quantity = updateStock.quantity_transfer
           }
           _inventory_stock_detail[invIndex] = updateStock;
+
         } else {
           _inventory_stock_detail.push({
             ...batch,
