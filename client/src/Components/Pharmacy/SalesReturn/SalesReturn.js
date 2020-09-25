@@ -12,6 +12,8 @@ import {
   POSSearch,
   ViewInsurance,
   getCashiersAndShiftMAP,
+  generateReceipt,
+  // generateReceiptSmall,
 } from "./SalesReturnEvents";
 import "./SalesReturn.scss";
 import "../../../styles/site.scss";
@@ -134,25 +136,6 @@ class SalesReturn extends Component {
               />
             }
             breadStyle={this.props.breadStyle}
-            // pageNavPath={[
-            //   {
-            //     pageName: (
-            //       <AlgaehLabel
-            //         label={{
-            //           forceLabel: "Home",
-            //           align: "ltr",
-            //         }}
-            //       />
-            //     ),
-            //   },
-            //   {
-            //     pageName: (
-            //       <AlgaehLabel
-            //         label={{ forceLabel: "Sales Return", align: "ltr" }}
-            //       />
-            //     ),
-            //   },
-            // ]}
             soptlightSearch={{
               label: (
                 <AlgaehLabel
@@ -190,6 +173,30 @@ class SalesReturn extends Component {
                   </h6>
                 </div>
               </div>
+            }
+            printArea={
+              this.state.sales_return_number !== null
+                ? {
+                    menuitems: [
+                      {
+                        label: "Print Receipt",
+                        events: {
+                          onClick: () => {
+                            generateReceipt(this, this);
+                          },
+                        },
+                      },
+                      // {
+                      //   label: "Print Receipt Small",
+                      //   events: {
+                      //     onClick: () => {
+                      //       generateReceiptSmall(this, this);
+                      //     },
+                      //   },
+                      // },
+                    ],
+                  }
+                : ""
             }
             selectedLang={this.state.selectedLang}
           />

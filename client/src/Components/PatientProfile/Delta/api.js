@@ -5,7 +5,7 @@ export async function getVitalsMaster() {
     uri: "/doctorsWorkBench/getVitalsHeaderMaster",
     method: "GET",
   });
-  debugger;
+
   return res.data?.records;
 }
 
@@ -46,12 +46,12 @@ export async function getPatientVitals(key, { patient_id }) {
   return res.data?.records;
 }
 
-export async function getPatientTestResults(key, { patient_id, test_id }) {
+export async function getPatientTestResults(key, { patient_id, service_id }) {
   const res = await newAlgaehApi({
     uri: "/laboratory/getInvestigationResult",
     method: "GET",
     module: "laboratory",
-    data: { patient_id, test_id },
+    data: { patient_id, service_id },
   });
   return res.data?.records;
 }
