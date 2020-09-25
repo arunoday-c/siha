@@ -24,7 +24,9 @@ import {
   generateReport,
 } from "./AppointmentHelper";
 import sockets from "../../sockets";
-import { MainContext } from "algaeh-react-components";
+import { MainContext, AlgaehModal, AlgaehLabel } from "algaeh-react-components";
+// const { confirm } = Modal;
+
 class Appointment extends PureComponent {
   constructor(props) {
     super(props);
@@ -51,6 +53,9 @@ class Appointment extends PureComponent {
       byPassValidation: true,
       patient_name: "",
       requied_emp_id: "N",
+      rejectVisible: false,
+      cancel_reason: "",
+      rowData: [],
     };
     this.appSock = sockets;
   }
@@ -106,7 +111,37 @@ class Appointment extends PureComponent {
       }
     }
   }
-
+  modalOnOk(row) {
+    let data = {
+      cancel_reason: this.state.cancel_reason,
+      hims_f_patient_appointment_id: row.hims_f_patient_appointment_id,
+    };
+    algaehApiCall({
+      uri: "/appointment/cancelPatientAppointment",
+      module: "frontDesk",
+      data: data,
+      method: "PUT",
+      onSuccess: (response) => {
+        if (response.data.success) {
+          this.setState(
+            {
+              openPatEdit: false,
+              rejectVisible: false,
+            },
+            () => {
+              this.clearSaveState();
+              swalMessage({
+                title: "Record cancelled successfully . .",
+                type: "success",
+              });
+            }
+          );
+        }
+        this.getAppointmentSchedule();
+      },
+      onFailure: (error) => {},
+    });
+  }
   cancelAppt(row) {
     let _date = moment(row.appointment_date).format("YYYYMMDD");
     let _time = moment(row.appointment_from_time, "HH:mm:ss").format("HHmm");
@@ -126,46 +161,7 @@ class Appointment extends PureComponent {
         type: "error",
       });
     } else {
-      swal({
-        title: "Cancel Appointment for " + row.patient_name + "?",
-        type: "warning",
-        showCancelButton: true,
-        confirmButtonText: "Yes",
-        confirmButtonColor: "#44b8bd",
-        cancelButtonColor: "#d33",
-        cancelButtonText: "No",
-      }).then((willDelete) => {
-        if (willDelete.value) {
-          let data = {
-            cancel_reason: "Cancelled",
-            hims_f_patient_appointment_id: row.hims_f_patient_appointment_id,
-          };
-          algaehApiCall({
-            uri: "/appointment/cancelPatientAppointment",
-            module: "frontDesk",
-            data: data,
-            method: "PUT",
-            onSuccess: (response) => {
-              if (response.data.success) {
-                this.setState(
-                  {
-                    openPatEdit: false,
-                  },
-                  () => {
-                    this.clearSaveState();
-                    swalMessage({
-                      title: "Record cancelled successfully . .",
-                      type: "success",
-                    });
-                  }
-                );
-              }
-              this.getAppointmentSchedule();
-            },
-            onFailure: (error) => {},
-          });
-        }
-      });
+      this.setState({ rejectVisible: true, rowData: row });
     }
   }
 
@@ -946,6 +942,8 @@ class Appointment extends PureComponent {
             data.hims_d_appointment_status_id !== this.state.RescheduleId
           ) {
             this.updatePatientAppointment(data);
+
+            // this.openModal(data);
           } else {
             this.getTimeSlotsForDropDown(patient.provider_id);
           }
@@ -953,6 +951,21 @@ class Appointment extends PureComponent {
       );
     }
   }
+  // openModal(data){
+  //   if (data !== null) {
+  //     this.setState({
+  //       edit_appointment_status_id: data.hims_d_appointment_status_id,
+  //     });
+  //   }
+  //   AlgaehValidation({
+  //     querySelector: "data-validate='editApptDiv'",
+  //     alertTypeIcon: "warning",
+  //     onSuccess: () => {
+  //   return(
+  //
+  //   )
+  //                   }
+  // }
 
   updatePatientAppointment(data) {
     if (data !== null) {
@@ -1931,34 +1944,59 @@ class Appointment extends PureComponent {
 
   render() {
     return (
-      <AppointmentComponent
-        state={this.state}
-        setState={this.setState}
-        texthandle={(e) => this.texthandle(e)}
-        handleClose={(e) => this.handleClose(e)}
-        editDateHandler={(selectedDate) => this.editDateHandler(selectedDate)}
-        editDateValidate={this.editDateValidate}
-        dropDownHandle={(e) => this.dropDownHandle(e)}
-        nullifyState={(name) => this.nullifyState(name)}
-        updatePatientAppointment={(data) => this.updatePatientAppointment(data)}
-        ageHandler={() => this.ageHandler()}
-        dobHandler={(e) => this.dobHandler(e)}
-        patientSearch={() => this.patientSearch()}
-        validateAge={(e) => this.validateAge(e)}
-        deptDropDownHandler={(value) => this.deptDropDownHandler(value)}
-        getAppointmentSchedule={() => this.getAppointmentSchedule()}
-        addPatientAppointment={(e) => this.addPatientAppointment(e)}
-        monthChangeHandler={(e) => this.monthChangeHandler(e)}
-        generateHorizontalDateBlocks={() => this.generateHorizontalDateBlocks()}
-        generateTimeslots={(data) => this.generateTimeslots(data)}
-        AppointmentSearch={(result, name) =>
-          this.AppointmentSearch(result, name)
-        }
-        requied_emp_id={this.state.requied_emp_id} //requied_emp_id}
-        dropdownDoctorHandler={(selector) => {
-          this.dropdownDoctorHandler(selector);
-        }}
-      />
+      <>
+        <AppointmentComponent
+          state={this.state}
+          setState={this.setState}
+          texthandle={(e) => this.texthandle(e)}
+          handleClose={(e) => this.handleClose(e)}
+          editDateHandler={(selectedDate) => this.editDateHandler(selectedDate)}
+          editDateValidate={this.editDateValidate}
+          dropDownHandle={(e) => this.dropDownHandle(e)}
+          nullifyState={(name) => this.nullifyState(name)}
+          updatePatientAppointment={(data) =>
+            this.updatePatientAppointment(data)
+          }
+          ageHandler={() => this.ageHandler()}
+          dobHandler={(e) => this.dobHandler(e)}
+          patientSearch={() => this.patientSearch()}
+          validateAge={(e) => this.validateAge(e)}
+          deptDropDownHandler={(value) => this.deptDropDownHandler(value)}
+          getAppointmentSchedule={() => this.getAppointmentSchedule()}
+          addPatientAppointment={(e) => this.addPatientAppointment(e)}
+          monthChangeHandler={(e) => this.monthChangeHandler(e)}
+          generateHorizontalDateBlocks={() =>
+            this.generateHorizontalDateBlocks()
+          }
+          generateTimeslots={(data) => this.generateTimeslots(data)}
+          AppointmentSearch={(result, name) =>
+            this.AppointmentSearch(result, name)
+          }
+          requied_emp_id={this.state.requied_emp_id} //requied_emp_id}
+          dropdownDoctorHandler={(selector) => {
+            this.dropdownDoctorHandler(selector);
+          }}
+        />
+        <AlgaehModal
+          title={`Are you Sure you want to Cancle Appointment for ${this.state.rowData.patient_name}`}
+          visible={this.state.rejectVisible}
+          destroyOnClose={true}
+          okText="Update"
+          onOk={() => this.modalOnOk(this.state.rowData)}
+          onCancel={() => {
+            this.setState({ rejectVisible: false, cancel_reason: "" });
+          }}
+        >
+          <div className="col-12">
+            <AlgaehLabel label={{ forceLabel: "Reason For Rejection" }} />
+            <textarea
+              value={this.state.cancel_reason}
+              name="cancel_reason"
+              onChange={(e) => this.texthandle(e)}
+            />
+          </div>
+        </AlgaehModal>
+      </>
     );
   }
 }
