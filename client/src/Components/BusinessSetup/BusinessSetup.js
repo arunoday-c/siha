@@ -8,6 +8,7 @@ import Currency from "./Currency/Currency";
 import Shift from "./Shift/Shift";
 import UserShiftMapping from "./UserShiftMapping/UserShiftMapping";
 import BankMaster from "./BankMaster/BankMaster";
+import { CardMaster } from "./CardMaster";
 import CompanyAccount from "./CompanyAccount/CompanyAccount";
 import ProjectMapping from "./ProjectMapping/ProjectMapping";
 import ProjectMaster from "./ProjectMaster/ProjectMaster";
@@ -117,6 +118,16 @@ class BusinessSetup extends Component {
         ),
         children: <BankMaster />,
         componentCode: "BUSS_BANK",
+      },
+      {
+        title: (
+          <AlgaehLabel
+            label={{
+              forceLabel: "Card Master",
+            }}
+          />
+        ),
+        children: <CardMaster />,
       },
       {
         title: (

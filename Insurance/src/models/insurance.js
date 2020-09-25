@@ -1001,19 +1001,24 @@ export default {
         qryStr += " and insurance_id=? ";
         val_inputs.push(input.insurance_id);
       }
+
       if (input.services_id > 0) {
         qryStr += " and services_id=? ";
         val_inputs.push(input.services_id);
       }
 
+      if (input.service_type_id > 0) {
+        qryStr += ` and service_type_id=${input.service_type_id} `;
+      }
+
       _mysql
         .executeQuery({
           query:
-            "select * from hims_d_services_insurance where record_status='A'  " +
+            "select * from hims_d_services_insurance where record_status='A'" +
             qryStr,
           values: [val_inputs],
 
-          printQuery: false,
+          printQuery: true,
         })
         .then((result) => {
           _mysql.releaseConnection();
@@ -1871,13 +1876,17 @@ export function getInsuranceStatement(req, res, next) {
           parseFloat(s[`submission_amount${level === "1" ? "" : level}`])
         );
 
-        console.log("claims", claims)
+        console.log("claims", claims);
 
-        const remittance_amount = _.sumBy(claims, (s) =>
-          parseFloat(s.remittance_amount) + parseFloat(s.remittance_amount2) + parseFloat(s.remittance_amount3)
+        const remittance_amount = _.sumBy(
+          claims,
+          (s) =>
+            parseFloat(s.remittance_amount) +
+            parseFloat(s.remittance_amount2) +
+            parseFloat(s.remittance_amount3)
         );
 
-        console.log("remittance_amount", remittance_amount)
+        console.log("remittance_amount", remittance_amount);
         // const remittance_amount = _.sumBy(claims, (s) =>
         //   parseFloat(s.remittance_amount2)
         // );
@@ -1886,8 +1895,14 @@ export function getInsuranceStatement(req, res, next) {
         // );
 
         otherObjet = {
-          calc_remittance_amount: result[0][0].insurance_status === "C" ? result[0][0].total_remittance_amount : remittance_amount,
-          calc_denial_amount: result[0][0].insurance_status === "C" ? result[0][0].total_denial_amount : denial_amount,
+          calc_remittance_amount:
+            result[0][0].insurance_status === "C"
+              ? result[0][0].total_remittance_amount
+              : remittance_amount,
+          calc_denial_amount:
+            result[0][0].insurance_status === "C"
+              ? result[0][0].total_denial_amount
+              : denial_amount,
           cals_submission_amount: submission_amount,
         };
 
@@ -2012,12 +2027,12 @@ export function updateInsuranceStatement(req, res, next) {
               .executeQuery({
                 query: `update hims_f_invoice_header set remittance_amount${
                   level == 1 ? "" : level
-                  }=${rest["ramt"]}, claim_status=?,
+                }=${rest["ramt"]}, claim_status=?,
                   denial_amount${level == 1 ? "" : level}=${
                   rest["damt"]
-                  },remittance_date=?,submission_amount${level == 1 ? 2 : 3}=${
+                },remittance_date=?,submission_amount${level == 1 ? 2 : 3}=${
                   rest["damt"]
-                  } where hims_f_invoice_header_id=?`,
+                } where hims_f_invoice_header_id=?`,
                 values: [claim_status, new Date(), invoice_header_id],
               })
               .then((records) => {
