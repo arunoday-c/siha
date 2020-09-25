@@ -15,6 +15,7 @@ const {
   updateResultFromMachine,
   getLabOrderedComment,
   getAnalytesByTestID,
+  getInvestigationResult,
 } = labModels;
 
 export default () => {
@@ -78,6 +79,17 @@ export default () => {
       records: req.records,
     });
   });
+
+  api.get(
+    "/getInvestigationResult",
+    getInvestigationResult,
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records,
+      });
+    }
+  );
 
   api.get("/getMicroResult", getMicroResult, (req, res, next) => {
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
