@@ -294,7 +294,7 @@ export default function DeltaCheck({ visible, onCancel }) {
                   }}
                   // value={dates}
                 />
-                <div className="col-12 ">
+                <div className="col-12 deltaList">
                   {mode === "vital" ? (
                     <Checkbox.Group
                       options={vitals?.map((item) => ({
