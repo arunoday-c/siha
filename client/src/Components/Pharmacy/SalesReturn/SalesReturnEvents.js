@@ -6,7 +6,7 @@ import SalesReturnputs from "../../../Models/SalesReturn";
 import {
   algaehApiCall,
   swalMessage,
-  getCookie
+  getCookie,
 } from "../../../utils/algaehApiCall";
 import _ from "lodash";
 
@@ -40,7 +40,7 @@ const getCtrlCode = ($this, docNumber) => {
       module: "pharmacy",
       method: "GET",
       data: { sales_return_number: docNumber },
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           let data = response.data.records;
           data.saveEnable = true;
@@ -65,13 +65,13 @@ const getCtrlCode = ($this, docNumber) => {
         }
         AlgaehLoader({ show: false });
       },
-      onFailure: error => {
+      onFailure: (error) => {
         AlgaehLoader({ show: false });
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   });
 };
@@ -106,7 +106,7 @@ const GenerateReciept = ($this, callBack) => {
   ) {
     swalMessage({
       title: "Please select receipt type.",
-      type: "error"
+      type: "error",
     });
   } else {
     if ($this.state.cash_amount > 0 || $this.state.Cashchecked === true) {
@@ -117,7 +117,7 @@ const GenerateReciept = ($this, callBack) => {
         pay_type: $this.state.pay_cash,
         amount: $this.state.cash_amount,
         updated_date: null,
-        card_type: null
+        card_type: null,
       });
     }
 
@@ -129,7 +129,7 @@ const GenerateReciept = ($this, callBack) => {
         pay_type: $this.state.pay_card,
         amount: $this.state.card_amount,
         updated_date: null,
-        card_type: null
+        card_type: null,
       });
     }
     if ($this.state.cheque_amount > 0 || $this.state.Checkchecked === true) {
@@ -140,13 +140,13 @@ const GenerateReciept = ($this, callBack) => {
         pay_type: $this.state.pay_cheque,
         amount: $this.state.cheque_amount,
         updated_date: null,
-        card_type: null
+        card_type: null,
       });
     }
 
     $this.setState(
       {
-        receiptdetails: obj
+        receiptdetails: obj,
       },
       () => {
         callBack($this);
@@ -155,20 +155,20 @@ const GenerateReciept = ($this, callBack) => {
   }
 };
 
-const SaveSalesReturn = $this => {
+const SaveSalesReturn = ($this) => {
   const return_qty_zero = _.filter(
     $this.state.pharmacy_stock_detail,
-    f => f.return_quantity === 0 || f.return_quantity === null
+    (f) => f.return_quantity === 0 || f.return_quantity === null
   );
   if (return_qty_zero.length > 0) {
     swalMessage({
       type: "warning",
-      title: "Please Enter the return quantity for each item in the list."
+      title: "Please Enter the return quantity for each item in the list.",
     });
     return;
   }
   AlgaehLoader({ show: true });
-  GenerateReciept($this, that => {
+  GenerateReciept($this, (that) => {
     let inputObj = $this.state;
     inputObj.posted = "Y";
     inputObj.transaction_type = "SRT";
@@ -216,7 +216,7 @@ const SaveSalesReturn = $this => {
       uri: "/salesReturn/addsalesReturn",
       module: "pharmacy",
       data: inputObj,
-      onSuccess: response => {
+      onSuccess: (response) => {
         AlgaehLoader({ show: false });
         if (response.data.success === true) {
           $this.setState({
@@ -227,21 +227,21 @@ const SaveSalesReturn = $this => {
               response.data.records.hims_f_pharmcy_sales_return_header_id,
             receipt_number: response.data.records.receipt_number,
             saveEnable: true,
-            postEnable: false
+            postEnable: false,
           });
           swalMessage({
             title: "Saved successfully . .",
-            type: "success"
+            type: "success",
           });
         }
       },
-      onFailure: error => {
+      onFailure: (error) => {
         AlgaehLoader({ show: false });
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   });
 };
@@ -249,7 +249,7 @@ const SaveSalesReturn = $this => {
 const POSSearch = ($this, e) => {
   AlgaehSearch({
     searchGrid: {
-      columns: spotlightSearch.pointofsaleEntry.POSEntry
+      columns: spotlightSearch.pointofsaleEntry.POSEntry,
     },
     searchName: "POSNOReturn",
     uri: "/gloabelSearch/get",
@@ -257,32 +257,32 @@ const POSSearch = ($this, e) => {
     onContainsChange: (text, serchBy, callBack) => {
       callBack(text);
     },
-    onRowSelect: row => {
+    onRowSelect: (row) => {
       AlgaehLoader({ show: true });
       $this.setState(
         {
           pos_number: row.pos_number,
           from_pos_id: row.hims_f_pharmacy_pos_header_id,
           sub_department_id: row.sub_department_id,
-          saveEnable: false
+          saveEnable: false,
         },
         () => {
           getPOSEntry($this);
         }
       );
-    }
+    },
   });
 };
 
-const getNetworkPlans = $this => {
+const getNetworkPlans = ($this) => {
   algaehApiCall({
     uri: "/insurance/getNetworkAndNetworkOfficRecords",
     method: "GET",
     data: {
       hims_d_insurance_network_office_id:
-        $this.state.hims_d_insurance_network_office_id
+        $this.state.hims_d_insurance_network_office_id,
     },
-    onSuccess: response => {
+    onSuccess: (response) => {
       if (response.data.success) {
         let data = response.data.records[0];
         $this.setState({
@@ -292,26 +292,26 @@ const getNetworkPlans = $this => {
           copay_percent_rad: data.copay_percent_rad,
           copay_medicine: data.copay_medicine,
           copay_percent_trt: data.copay_percent_trt,
-          copay_percent_dental: data.copay_percent_dental
+          copay_percent_dental: data.copay_percent_dental,
         });
       }
     },
-    onFailure: error => {
+    onFailure: (error) => {
       swalMessage({
         title: error.response.data.message,
-        type: "error"
+        type: "error",
       });
-    }
+    },
   });
 };
 
-const getPOSEntry = $this => {
+const getPOSEntry = ($this) => {
   algaehApiCall({
     uri: "/posEntry/getPosEntry",
     module: "pharmacy",
     method: "GET",
     data: { pos_number: $this.state.pos_number, from_screen: "Sales_Return" },
-    onSuccess: response => {
+    onSuccess: (response) => {
       if (response.data.success) {
         let data = response.data.records;
         data.patient_payable_h = data.patient_payable;
@@ -355,69 +355,136 @@ const getPOSEntry = $this => {
               method: "GET",
               data: {
                 patient_id: $this.state.patient_id,
-                patient_visit_id: $this.state.visit_id
+                patient_visit_id: $this.state.visit_id,
               },
               redux: {
                 type: "EXIT_INSURANCE_GET_DATA",
-                mappingName: "existinsurance"
+                mappingName: "existinsurance",
               },
-              afterSuccess: insurance => {
+              afterSuccess: (insurance) => {
                 insurance[0].mode_of_pay = "2";
                 $this.setState(insurance[0], () => {
                   getNetworkPlans($this);
                 });
-              }
+              },
             });
           }
         });
       }
       AlgaehLoader({ show: false });
     },
-    onFailure: error => {
+    onFailure: (error) => {
       AlgaehLoader({ show: false });
       swalMessage({
         title: error.message,
-        type: "error"
+        type: "error",
       });
-    }
+    },
   });
 };
 
 const ViewInsurance = ($this, e) => {
   $this.setState({
     ...$this.state,
-    viewInsurance: !$this.state.viewInsurance
+    viewInsurance: !$this.state.viewInsurance,
   });
 };
 
-const getCashiersAndShiftMAP = $this => {
+const getCashiersAndShiftMAP = ($this) => {
   algaehApiCall({
     uri: "/shiftAndCounter/getCashiersAndShiftMAP",
     module: "masterSettings",
     method: "GET",
     data: { for: "T" },
-    onSuccess: response => {
+    onSuccess: (response) => {
       if (response.data.success) {
         if (response.data.records.length > 0) {
           $this.setState(
             {
-              shift_assinged: response.data.records
+              shift_assinged: response.data.records,
             },
             () => {
               $this.setState({
-                shift_id: response.data.records[0].shift_id
+                shift_id: response.data.records[0].shift_id,
               });
             }
           );
         }
       }
     },
-    onFailure: error => {
+    onFailure: (error) => {
       swalMessage({
         title: error.message,
-        type: "error"
+        type: "error",
       });
-    }
+    },
+  });
+};
+
+const generateReceipt = ($this) => {
+  algaehApiCall({
+    uri: "/report",
+    method: "GET",
+    module: "reports",
+    headers: {
+      Accept: "blob",
+    },
+    others: { responseType: "blob" },
+    data: {
+      report: {
+        reportName: "posSalesReturn",
+        pageSize: "A4",
+        pageOrentation: "portrait",
+        reportParams: [
+          {
+            name: "hims_f_pharmcy_sales_return_header_id",
+            value: $this.state.hims_f_pharmcy_sales_return_header_id,
+          },
+        ],
+        outputFileType: "PDF",
+      },
+    },
+    onSuccess: (res) => {
+      const urlBlob = URL.createObjectURL(res.data);
+      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}`;
+      window.open(origin);
+    },
+  });
+};
+
+const generateReceiptSmall = ($this) => {
+  algaehApiCall({
+    uri: "/report",
+    method: "GET",
+    module: "reports",
+    headers: {
+      Accept: "blob",
+    },
+    others: { responseType: "blob" },
+    data: {
+      report: {
+        others: {
+          width: "80mm",
+          showHeaderFooter: true,
+          usehbs: "Small",
+          singleHeaderFooter: true,
+        },
+        reportName: "posSalesReturn",
+        pageOrentation: "portrait",
+        reportParams: [
+          {
+            name: "hims_f_pharmcy_sales_return_header_id",
+            value: $this.state.hims_f_pharmcy_sales_return_header_id,
+          },
+        ],
+        outputFileType: "PDF",
+      },
+    },
+    onSuccess: (res) => {
+      const urlBlob = URL.createObjectURL(res.data);
+      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}`;
+      window.open(origin);
+    },
   });
 };
 
@@ -429,5 +496,7 @@ export {
   POSSearch,
   getPOSEntry,
   ViewInsurance,
-  getCashiersAndShiftMAP
+  getCashiersAndShiftMAP,
+  generateReceipt,
+  generateReceiptSmall,
 };
