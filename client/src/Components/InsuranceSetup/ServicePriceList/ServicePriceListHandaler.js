@@ -5,18 +5,17 @@ const texthandle = ($this, e) => {
   let value = e.value || e.target.value;
 
   $this.setState({
-    [name]: value
+    [name]: value,
   });
 };
 
 const networkhandle = ($this, e) => {
-
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
 
   let inputObj = {
     insurance_id: $this.state.insurance_provider_id,
-    network_id: value
+    network_id: value,
   };
 
   $this.props.getPriceList({
@@ -26,13 +25,13 @@ const networkhandle = ($this, e) => {
     data: inputObj,
     redux: {
       type: "PRICE_LIST_GET_DATA",
-      mappingName: "pricelist"
+      mappingName: "pricelist",
     },
-    afterSuccess: data => {
+    afterSuccess: (data) => {
       $this.setState({
-        [name]: value
+        [name]: value,
       });
-    }
+    },
   });
 };
 
@@ -70,22 +69,22 @@ const updatePriceList = ($this, data) => {
     module: "insurance",
     data: data,
     method: "PUT",
-    onSuccess: response => {
+    onSuccess: (response) => {
       if (response.data.success) {
         swalMessage({
           title: "Record updated successfully . .",
-          type: "success"
+          type: "success",
         });
 
         getPriceList($this);
       }
     },
-    onFailure: error => {
+    onFailure: (error) => {
       swalMessage({
         title: error.message,
-        type: "error"
+        type: "error",
       });
-    }
+    },
   });
 };
 
@@ -96,19 +95,19 @@ const bulkUpdate = ($this, data) => {
     updateobj = {
       update: data,
       pre_approval: $this.state.pre_approval,
-      insurance_id: $this.state.insurance_provider_id
+      insurance_id: $this.state.insurance_provider_id,
     };
   } else if (data === "covered") {
     updateobj = {
       update: data,
       covered: $this.state.covered,
-      insurance_id: $this.state.insurance_provider_id
+      insurance_id: $this.state.insurance_provider_id,
     };
   } else if (data === "corporate_discount") {
     if ($this.state.applicable === null) {
       swalMessage({
         title: "Record updated successfully . .",
-        type: "success"
+        type: "success",
       });
       return;
     } else {
@@ -117,14 +116,14 @@ const bulkUpdate = ($this, data) => {
           discountType: $this.state.applicable,
           update: data,
           corporate_discount: $this.state.corporate_discount,
-          insurance_id: $this.state.insurance_provider_id
+          insurance_id: $this.state.insurance_provider_id,
         };
       } else if ($this.state.applicable === "A") {
         updateobj = {
           discountType: $this.state.applicable,
           update: data,
           corporate_discount: $this.state.corporate_discount,
-          insurance_id: $this.state.insurance_provider_id
+          insurance_id: $this.state.insurance_provider_id,
         };
       }
     }
@@ -134,20 +133,20 @@ const bulkUpdate = ($this, data) => {
     module: "insurance",
     data: updateobj,
     method: "PUT",
-    onSuccess: response => {
+    onSuccess: (response) => {
       if (response.data.success) {
         if (data === "pre_approval") {
           $this.setState({
-            pre_approval: null
+            pre_approval: null,
           });
         } else if (data === "covered") {
           $this.setState({
-            covered: null
+            covered: null,
           });
         } else if (data === "corporate_discount") {
           $this.setState({
             corporate_discount: 0,
-            applicable: null
+            applicable: null,
           });
         }
 
@@ -165,33 +164,34 @@ const bulkUpdate = ($this, data) => {
           data: inputObj,
           redux: {
             type: "PRICE_LIST_GET_DATA",
-            mappingName: "pricelist"
+            mappingName: "pricelist",
           },
-          afterSuccess: data => {
+          afterSuccess: (data) => {
             swalMessage({
               title: "Record updated successfully . .",
-              type: "success"
+              type: "success",
             });
-          }
+          },
         });
       }
     },
-    onFailure: error => {
+    onFailure: (error) => {
       swalMessage({
         title: error.message,
-        type: "error"
+        type: "error",
       });
-    }
+    },
   });
 };
 
 const serviceTypeHandeler = ($this, e) => {
+  debugger;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
 
   $this.setState(
     {
-      [name]: value
+      [name]: value,
     },
     () => {
       getPriceList($this);
@@ -199,7 +199,7 @@ const serviceTypeHandeler = ($this, e) => {
   );
 };
 
-const getPriceList = $this => {
+const getPriceList = ($this) => {
   let inputObj = { insurance_id: $this.state.insurance_provider_id };
   if ($this.state.service_type_id !== null) {
     inputObj.service_type_id = $this.state.service_type_id;
@@ -212,18 +212,18 @@ const getPriceList = $this => {
     data: inputObj,
     redux: {
       type: "PRICE_LIST_GET_DATA",
-      mappingName: "pricelist"
+      mappingName: "pricelist",
     },
-    afterSuccess: data => {
-      $this.setState({ state_change: !$this.state.state_change })
-    }
+    afterSuccess: (data) => {
+      $this.setState({ state_change: !$this.state.state_change });
+    },
   });
 };
 
-const Refresh = $this => {
+const Refresh = ($this) => {
   $this.setState(
     {
-      service_type_id: null
+      service_type_id: null,
     },
     () => {
       getPriceList($this);
@@ -240,5 +240,5 @@ export {
   serviceTypeHandeler,
   getPriceList,
   Refresh,
-  networkhandle
+  networkhandle,
 };
