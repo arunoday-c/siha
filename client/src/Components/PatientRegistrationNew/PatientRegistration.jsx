@@ -352,8 +352,8 @@ export function PatientRegistration() {
     getIncomeFromPatient,
     {
       onSuccess: (data) => {
-        setIncomeByOp(data[0].op_pat_income);
-        setIncomeByPoint(data[0].pos_pat_income);
+        setIncomeByOp(data[0][0].op_pat_income);
+        setIncomeByPoint(data[1][0].pos_pat_income);
       },
     }
   );
