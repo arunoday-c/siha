@@ -1,0 +1,52 @@
+{{{importStyle 'css/algaehReportStyles.css'}}}
+
+<body>
+    <div class="print-body">
+
+        <section>
+            <table class="tableForData" cell-padding="0">
+                <thead>
+                    <tr>
+                        <th>Sl No.<small>م</small></th>
+                        <th>MRN No.<small>كود المريض</small></th>
+                        <th>Patient Name<small>اسم المريض</small></th>
+                        <th>OP Income</th>
+                        <th>OP Cancel</th>
+                        <th>Total OP Income</th>
+                        <th>POS Income</th>
+                        <th>POS Cancel</th>
+                        <th>Total POS Income</th>
+                        <th>Net Income</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    {{#each result}}
+                    <tr>
+                        <td>{{inc @index}}</td>
+                        <td>{{patient_code}}</td>
+                        <td class="txtFld">{{full_name}}</td>
+                        <td class="numberFld">{{pat_op_income}}</td>
+                        <td class="numberFld">{{pat_op_can}}</td>
+                        <td class="numberFld">{{op_pat_income}}</td>
+                        <td class="numberFld">{{pat_pos_income}}</td>
+                        <td class="numberFld">{{pat_pos_can}}</td>
+                        <td class="numberFld">{{pos_pat_income}}</td>
+                        <td class="numberFld">{{net_pat_income}}</td>
+                        {{!-- <td class="numberFld">{{company_tax}}</td> --}}
+
+                    </tr>
+                    {{/each }}
+                    {{!-- <tr class="numberFldTotalBottom">
+                        <td colspan="6"></td>
+                        <td class="numberFld">{{total_before_vat}}</td>
+                        <td class="numberFld">{{total_after_vat}}</td>
+                        <td class="numberFld">{{patient_tax}}</td>
+
+                    </tr> --}}
+                </tbody>
+            </table>
+        </section>
+        {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
+    </div>
+</body>
