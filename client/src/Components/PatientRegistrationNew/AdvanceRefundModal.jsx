@@ -175,7 +175,7 @@ export function AdvanceModal({
           setTitle("Refund");
           setVisible(true);
         }}
-        disabled={!patient || !patient?.advance_amount || !shifts.length}
+        disabled={!patient || !patient?.advance_amount || !shifts?.length}
       >
         <AlgaehLabel
           label={{
@@ -191,7 +191,7 @@ export function AdvanceModal({
           setVisible(true);
           setTitle("Advance");
         }}
-        disabled={!patient || !shifts.length}
+        disabled={!patient || !shifts?.length}
       >
         <AlgaehLabel
           label={{
