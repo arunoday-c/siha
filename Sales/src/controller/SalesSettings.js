@@ -7,6 +7,7 @@ const {
     getSalesOptions,
     addSalesOptions,
     updateSalesOptions,
+    SaveNarration
 } = salesSettingsModels;
 
 export default () => {
@@ -32,6 +33,15 @@ export default () => {
 
     api.put(
         "/updateSalesOptions", updateSalesOptions, (req, res, next) => {
+            res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+                success: true,
+                records: req.records
+            });
+        }
+    );
+
+    api.put(
+        "/SaveNarration", SaveNarration, (req, res, next) => {
             res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
                 success: true,
                 records: req.records
