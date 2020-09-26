@@ -382,7 +382,7 @@ function Login(props) {
                       // }
                       setLoginLoad(false);
 
-                      history.push("/confirm-auth", {
+                      history.replace("/confirm-auth", {
                         from: location?.state?.from,
                       });
                       // redirect(redPage);
@@ -390,7 +390,7 @@ function Login(props) {
                   })
                   .catch((error) => {
                     setLoginLoad(false);
-                    history.push("/confirm-auth", {
+                    history.replace("/confirm-auth", {
                       from: location?.state?.from,
                     });
                     // const redPage =
