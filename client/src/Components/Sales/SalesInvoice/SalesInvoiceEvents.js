@@ -358,6 +358,34 @@ const RevertSalesInvoice = ($this) => {
 
 }
 
+const SaveNarration = $this => {
+  AlgaehLoader({ show: true });
+  algaehApiCall({
+    uri: "/SalesSettings/SaveNarration",
+    module: "sales",
+    method: "PUT",
+    data: {
+      hims_f_sales_invoice_header_id: $this.state.hims_f_sales_invoice_header_id,
+      narration: $this.state.narration
+    },
+    onSuccess: (response) => {
+      if (response.data.success) {
+        swalMessage({
+          type: "success",
+          title: "Updated successfully ...",
+        });
+        AlgaehLoader({ show: false });
+      } else {
+        AlgaehLoader({ show: false });
+        swalMessage({
+          type: "error",
+          title: response.data.records.message,
+        });
+      }
+    },
+  });
+}
+
 const CancelSalesInvoice = $this => {
   if ($this.state.cancel_reason === null || $this.state.cancel_reason === "") {
     swalMessage({
@@ -419,5 +447,6 @@ export {
   generateSalesInvoiceReport,
   SalesOrderSearch,
   RevertSalesInvoice,
-  CancelSalesInvoice
+  CancelSalesInvoice,
+  SaveNarration
 };

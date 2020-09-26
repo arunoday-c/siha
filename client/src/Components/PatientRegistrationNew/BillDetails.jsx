@@ -16,6 +16,7 @@ import { useLangFieldName, useCurrency } from "./patientHooks";
 import { newAlgaehApi } from "../../hooks/";
 import { FrontdeskContext } from "./FrontdeskContext";
 import { BillDetailModal } from "./BillDetailModal";
+import CardComponent from "../common/CardComponent/CardComponent";
 
 const getBillDetails = async (
   key,
@@ -176,6 +177,7 @@ export function BillDetails({
     }
   );
 
+  const [cardData, setCardData] = useState(null);
   const [billData, setBillData] = useState(null);
 
   const disabled = globalDisable || !billData;
@@ -804,7 +806,20 @@ export function BillDetails({
                       <span style={{ fontSize: "0.8rem" }}>Pay by Card</span>
                     </label>
                   </div>
-                  <AlgaehAutoComplete
+                  <CardComponent
+                    card_id={cardData?.hims_d_bank_card_id}
+                    card_number={cardData?.card_number}
+                    disabled={!enableCard}
+                    onChangeCard={(e) => setCardData((s) => ({ ...s, ...e }))}
+                    onChangeNumber={(e) => {
+                      e.persist();
+                      setCardData((s) => ({
+                        ...s,
+                        card_number: e?.target?.value,
+                      }));
+                    }}
+                  />
+                  {/* <AlgaehAutoComplete
                     div={{ className: "col-3  mandatory" }}
                     label={{
                       forceLabel: "Select Card Type",
@@ -847,7 +862,7 @@ export function BillDetails({
                         }}
                       />
                     )}
-                  />
+                  /> */}
                   {/* <Controller
                     control={control}
                     name="card_date"

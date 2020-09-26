@@ -107,7 +107,7 @@ export function CardMaster() {
   const ToolTipText = () => {
     return (
       <ul style={{ listStyle: "none" }}>
-        <li>1 - is For the numbers</li>
+        <li>0 - is For the numbers</li>
         <li>a - is For the letters</li>
         <li>A - is For the letters, forced to upper case when entered</li>
         <li>* - is For the alphanumericals</li>
