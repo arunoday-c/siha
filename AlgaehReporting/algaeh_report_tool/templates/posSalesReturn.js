@@ -39,7 +39,7 @@ const executePDF = function executePDFMethod(options) {
   left join hims_d_insurance_provider IP on IP.hims_d_insurance_provider_id = H.insurance_provider_id \
   left join hims_d_nationality as N on N.hims_d_nationality_id = P.nationality_id \
   where H.hims_f_pharmcy_sales_return_header_id=?;\
-  select item.sfda_code as registration_number, item.item_description, D.quantity, D.unit_cost as price, 	\
+  select item.sfda_code as registration_number, item.item_code,item.item_description, D.quantity, D.unit_cost as price, 	\
   D.extended_cost as gross_amount, coalesce(D.patient_responsibility,0) as patient_share, \
   coalesce(D.discount_amount,0) as discount_amount, coalesce(D.net_extended_cost,0) as net_amount, \
   coalesce(D.company_responsibility,0) as company_resp, coalesce(D.company_tax,0) as company_tax, \
