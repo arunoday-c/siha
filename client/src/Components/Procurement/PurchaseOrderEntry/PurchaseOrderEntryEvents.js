@@ -589,7 +589,6 @@ const generatePOReceipt = (data) => {
     onSuccess: (res) => {
       const urlBlob = URL.createObjectURL(res.data);
       const reportName = `${data.purchase_number}-Purchase Order Receipt`;
-
       const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename= ${reportName}`;
       window.open(origin);
       // window.document.title = "Purchase Order Receipt";

@@ -49,7 +49,7 @@
                 <tbody>
                     {{#each details}}
                     <tr>
-                        <td colspan="4" class="tableSubHdg"><small>Item Name:</small><br>{{item_description}} </td>
+                        <td colspan="5" class="tableSubHdg"><small>Item Name:</small><br>{{item_description}} </td>
                         <td class="tableSubHdg"><small>Item Code:</small><br> {{item_code}}</td>
                         <td class="tableSubHdg"><small>Purchase UOM:</small><br>{{uom_description}}</td>
                         <td class="tableSubHdg"><small>Req. Qty:</small><br>{{po_quantity}}</td>
@@ -65,20 +65,20 @@
                         <td>{{batchno}}</td>
                         <td>{{po_quantity}}</td>
 
-                        <td>{{unit_cost}}</td>
-                        <td>{{sales_price}}</td>
-                        <td>{{discount_percentage}}</td>
-                        <td>{{discount_amount}}</td>
+                        <td class="numberFld">{{unit_cost}}</td>
+                        <td class="numberFld">{{sales_price}}</td>
+                        <td class="numberFld">{{discount_percentage}}</td>
+                        <td class="numberFld">{{discount_amount}}</td>
 
-                        <td>{{net_extended_cost}}</td>
-                        <td>{{tax_amount}}</td>
-                        <td>{{total_amount}}</td>
+                        <td class="numberFld">{{net_extended_cost}}</td>
+                        <td class="numberFld">{{tax_amount}}</td>
+                        <td class="numberFld">{{total_amount}}</td>
                     </tr>
                     {{/each }}
 
                     {{/each }}<tr class="footerTotalDown">
-                        <td colspan="8">Total Net Amount</td>
-                        <td>{{net_payable}}</td>
+                        <td colspan="9" class="numberFld">Total Net Amount</td>
+                        <td class="numberFld">{{net_payable}}</td>
                     </tr>
                 </tbody>
             </table>
