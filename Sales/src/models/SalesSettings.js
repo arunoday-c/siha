@@ -89,5 +89,34 @@ export default {
             _mysql.releaseConnection();
             next(e);
         }
+    },
+
+    SaveNarration: (req, res, next) => {
+        const _mysql = new algaehMysql();
+        try {
+            let input = { ...req.body };
+            _mysql
+                .executeQuery({
+                    query:
+                        "UPDATE `hims_f_sales_invoice_header` SET `narration` = ? WHERE `hims_f_sales_invoice_header_id`=? ;",
+                    values: [
+                        input.narration,
+                        input.hims_f_sales_invoice_header_id
+                    ],
+                    printQuery: true
+                })
+                .then(result => {
+                    _mysql.releaseConnection();
+                    req.records = result;
+                    next();
+                })
+                .catch(error => {
+                    _mysql.releaseConnection();
+                    next(error);
+                });
+        } catch (e) {
+            _mysql.releaseConnection();
+            next(e);
+        }
     }
 };
