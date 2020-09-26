@@ -1466,6 +1466,7 @@
           var _this3 = this;
 
           function downloadByUrl() {
+            consoel.log("viewer filename", filename);
             downloadManager.downloadUrl(url, filename);
           }
 
@@ -1490,6 +1491,13 @@
               var blob = new Blob([data], {
                 type: "application/pdf",
               });
+            
+              const fName = new URLSearchParams(window.location.search).get(
+                "filename"
+              );
+              if (fName) {
+                filename = fName;
+              }
               downloadManager.download(blob, url, filename);
             })
             ["catch"](downloadByUrl);
@@ -19471,10 +19479,10 @@
           }
 
           var pluralRules = {
-            "0": function _(n) {
+            0: function _(n) {
               return "other";
             },
-            "1": function _(n) {
+            1: function _(n) {
               if (isBetween(n % 100, 3, 10)) return "few";
               if (n === 0) return "zero";
               if (isBetween(n % 100, 11, 99)) return "many";
@@ -19482,54 +19490,54 @@
               if (n == 1) return "one";
               return "other";
             },
-            "2": function _(n) {
+            2: function _(n) {
               if (n !== 0 && n % 10 === 0) return "many";
               if (n == 2) return "two";
               if (n == 1) return "one";
               return "other";
             },
-            "3": function _(n) {
+            3: function _(n) {
               if (n == 1) return "one";
               return "other";
             },
-            "4": function _(n) {
+            4: function _(n) {
               if (isBetween(n, 0, 1)) return "one";
               return "other";
             },
-            "5": function _(n) {
+            5: function _(n) {
               if (isBetween(n, 0, 2) && n != 2) return "one";
               return "other";
             },
-            "6": function _(n) {
+            6: function _(n) {
               if (n === 0) return "zero";
               if (n % 10 == 1 && n % 100 != 11) return "one";
               return "other";
             },
-            "7": function _(n) {
+            7: function _(n) {
               if (n == 2) return "two";
               if (n == 1) return "one";
               return "other";
             },
-            "8": function _(n) {
+            8: function _(n) {
               if (isBetween(n, 3, 6)) return "few";
               if (isBetween(n, 7, 10)) return "many";
               if (n == 2) return "two";
               if (n == 1) return "one";
               return "other";
             },
-            "9": function _(n) {
+            9: function _(n) {
               if (n === 0 || (n != 1 && isBetween(n % 100, 1, 19)))
                 return "few";
               if (n == 1) return "one";
               return "other";
             },
-            "10": function _(n) {
+            10: function _(n) {
               if (isBetween(n % 10, 2, 9) && !isBetween(n % 100, 11, 19))
                 return "few";
               if (n % 10 == 1 && !isBetween(n % 100, 11, 19)) return "one";
               return "other";
             },
-            "11": function _(n) {
+            11: function _(n) {
               if (isBetween(n % 10, 2, 4) && !isBetween(n % 100, 12, 14))
                 return "few";
               if (
@@ -19541,12 +19549,12 @@
               if (n % 10 == 1 && n % 100 != 11) return "one";
               return "other";
             },
-            "12": function _(n) {
+            12: function _(n) {
               if (isBetween(n, 2, 4)) return "few";
               if (n == 1) return "one";
               return "other";
             },
-            "13": function _(n) {
+            13: function _(n) {
               if (isBetween(n % 10, 2, 4) && !isBetween(n % 100, 12, 14))
                 return "few";
               if (
@@ -19558,23 +19566,23 @@
               if (n == 1) return "one";
               return "other";
             },
-            "14": function _(n) {
+            14: function _(n) {
               if (isBetween(n % 100, 3, 4)) return "few";
               if (n % 100 == 2) return "two";
               if (n % 100 == 1) return "one";
               return "other";
             },
-            "15": function _(n) {
+            15: function _(n) {
               if (n === 0 || isBetween(n % 100, 2, 10)) return "few";
               if (isBetween(n % 100, 11, 19)) return "many";
               if (n == 1) return "one";
               return "other";
             },
-            "16": function _(n) {
+            16: function _(n) {
               if (n % 10 == 1 && n != 11) return "one";
               return "other";
             },
-            "17": function _(n) {
+            17: function _(n) {
               if (n == 3) return "few";
               if (n === 0) return "zero";
               if (n == 6) return "many";
@@ -19582,17 +19590,17 @@
               if (n == 1) return "one";
               return "other";
             },
-            "18": function _(n) {
+            18: function _(n) {
               if (n === 0) return "zero";
               if (isBetween(n, 0, 2) && n !== 0 && n != 2) return "one";
               return "other";
             },
-            "19": function _(n) {
+            19: function _(n) {
               if (isBetween(n, 2, 10)) return "few";
               if (isBetween(n, 0, 1)) return "one";
               return "other";
             },
-            "20": function _(n) {
+            20: function _(n) {
               if (
                 (isBetween(n % 10, 3, 4) || n % 10 == 9) &&
                 !(
@@ -19607,20 +19615,20 @@
               if (n % 10 == 1 && !isIn(n % 100, [11, 71, 91])) return "one";
               return "other";
             },
-            "21": function _(n) {
+            21: function _(n) {
               if (n === 0) return "zero";
               if (n == 1) return "one";
               return "other";
             },
-            "22": function _(n) {
+            22: function _(n) {
               if (isBetween(n, 0, 1) || isBetween(n, 11, 99)) return "one";
               return "other";
             },
-            "23": function _(n) {
+            23: function _(n) {
               if (isBetween(n % 10, 1, 2) || n % 20 === 0) return "one";
               return "other";
             },
-            "24": function _(n) {
+            24: function _(n) {
               if (isBetween(n, 3, 10) || isBetween(n, 13, 19)) return "few";
               if (isIn(n, [2, 12])) return "two";
               if (isIn(n, [1, 11])) return "one";

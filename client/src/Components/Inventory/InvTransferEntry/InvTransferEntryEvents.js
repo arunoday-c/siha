@@ -196,9 +196,6 @@ const SaveTransferEntry = $this => {
     InputObj.inventory_stock_detail[i].quantity =
       InputObj.inventory_stock_detail[i].quantity_transfer;
 
-    InputObj.inventory_stock_detail[i].ack_quantity =
-      InputObj.inventory_stock_detail[i].quantity_transfer;
-
     InputObj.inventory_stock_detail[i].grn_number =
       InputObj.inventory_stock_detail[i].grnno;
 
