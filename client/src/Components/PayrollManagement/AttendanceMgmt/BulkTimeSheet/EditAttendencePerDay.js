@@ -26,6 +26,7 @@ export default function EditAttendencePerDay(props) {
   }, [project_state]);
 
   function SaveAttendanceAndProject(options) {
+    debugger
     const { projectId, workingHours } = options;
 
     algaehApiCall({
@@ -35,7 +36,7 @@ export default function EditAttendencePerDay(props) {
       data: {
         hims_f_project_roster_id: project_state.hims_f_project_roster_id,
         hims_f_daily_time_sheet_id: project_state.hims_f_daily_time_sheet_id,
-        project_id: projectId,
+        project_id: projectId === "" ? null : projectId,
         worked_hours: workingHours,
       },
       onSuccess: (response) => {
@@ -163,6 +164,7 @@ export default function EditAttendencePerDay(props) {
                   classname="btn-primary"
                   loading={loadingProcess}
                   onClick={() => {
+                    debugger
                     setLoadingProcess(true);
                     SaveAttendanceAndProject({ workingHours, projectId });
                   }}

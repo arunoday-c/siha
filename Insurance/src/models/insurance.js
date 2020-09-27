@@ -1705,11 +1705,11 @@ export function generateAccountingEntry(req, res, next) {
 
               let voucher_type = "";
               let narration = "";
-              let amount = 0;
+              // let amount = 0;
 
               const EntriesArray = [];
 
-              voucher_type = "journal";
+              voucher_type = "sales";
               narration = `, insurance (${insurance_data.insurance_sub_name}) receivable: ${inputParam.total_company_payable}`;
 
               EntriesArray.push({
@@ -1737,8 +1737,8 @@ export function generateAccountingEntry(req, res, next) {
                 .executeQueryWithTransaction({
                   query:
                     "INSERT INTO finance_day_end_header (transaction_date,amount,voucher_type,document_id,\
-                document_number,from_screen,narration,entered_by,entered_date) \
-                VALUES (?,?,?,?,?,?,?,?,?);",
+                document_number,from_screen,narration, invoice_no, entered_by,entered_date) \
+                VALUES (?,?,?,?,?,?,?,?,?,?);",
                   values: [
                     new Date(),
                     inputParam.total_company_payable,
@@ -1747,6 +1747,7 @@ export function generateAccountingEntry(req, res, next) {
                     inputParam.insurance_statement_number,
                     inputParam.ScreenCode,
                     narration,
+                    inputParam.insurance_statement_number,
                     req.userIdentity.algaeh_d_app_user_id,
                     new Date(),
                   ],
@@ -2027,12 +2028,12 @@ export function updateInsuranceStatement(req, res, next) {
               .executeQuery({
                 query: `update hims_f_invoice_header set remittance_amount${
                   level == 1 ? "" : level
-                }=${rest["ramt"]}, claim_status=?,
+                  }=${rest["ramt"]}, claim_status=?,
                   denial_amount${level == 1 ? "" : level}=${
                   rest["damt"]
-                },remittance_date=?,submission_amount${level == 1 ? 2 : 3}=${
+                  },remittance_date=?,submission_amount${level == 1 ? 2 : 3}=${
                   rest["damt"]
-                } where hims_f_invoice_header_id=?`,
+                  } where hims_f_invoice_header_id=?`,
                 values: [claim_status, new Date(), invoice_header_id],
               })
               .then((records) => {
