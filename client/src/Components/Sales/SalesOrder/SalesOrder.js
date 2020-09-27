@@ -528,7 +528,8 @@ class SalesOrder extends Component {
                       onChange: texthandle.bind(this, this)
                     },
                     others: {
-                      placeholder: "0"
+                      placeholder: "0",
+                      disabled: this.state.selectedData
                     }
                   }}
                 />

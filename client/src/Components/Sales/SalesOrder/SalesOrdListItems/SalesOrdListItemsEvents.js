@@ -475,6 +475,23 @@ const onchangegridcol = ($this, context, row, e) => {
     } else {
       row[name] = value;
     }
+  } else if (name === "tax_percentage") {
+    if (parseFloat(value) > 100) {
+      row[name] = 0;
+      row["discount_amount"] = 0;
+      sales_order_items[_index] = row;
+      $this.setState({
+        sales_order_items: sales_order_items,
+      });
+      swalMessage({
+        title: "Tax % cannot be greater than 100.",
+        type: "warning",
+      });
+
+      // return;
+    } else {
+      row[name] = value;
+    }
   }
   calculateAmount($this, context, row, _index);
 };

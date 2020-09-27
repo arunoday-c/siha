@@ -430,21 +430,21 @@ class SalesInvoice extends Component {
                   />
                 </button>
                 <AlgaehSecurityComponent componentCode="SALES_INV_RVT">
-                  {this.state.sales_invoice_mode === "S" ? (
-                    <button
-                      type="button"
-                      className="btn btn-other"
-                      disabled={this.state.dataRevert}
-                      onClick={() => this.setState({ revert_visible: true })}
-                    >
-                      <AlgaehLabel
-                        label={{
-                          forceLabel: "Revert",
-                          returnText: true,
-                        }}
-                      />
-                    </button>
-                  ) : null}
+                  {/* {this.state.sales_invoice_mode === "S" ? ( */}
+                  <button
+                    type="button"
+                    className="btn btn-other"
+                    disabled={this.state.dataRevert}
+                    onClick={() => this.setState({ revert_visible: true })}
+                  >
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Revert",
+                        returnText: true,
+                      }}
+                    />
+                  </button>
+                  {/* ) : null} */}
                 </AlgaehSecurityComponent>
                 <AlgaehSecurityComponent componentCode="SALE_INV_POST">
                   <button
