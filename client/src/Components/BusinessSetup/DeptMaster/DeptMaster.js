@@ -19,7 +19,7 @@ import swal from "sweetalert2";
 import moment from "moment";
 import { MainContext } from "algaeh-react-components";
 import { AlgaehSecurityElement } from "algaeh-react-components";
-import { Input, Space } from "antd";
+// import { Input, Space } from "antd";
 
 // import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 // import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
@@ -109,8 +109,8 @@ class DeptMaster extends Component {
       sub_department_code: "",
       sub_department_name: "",
       arabic_sub_department_name: "",
-      sub_department_email: "",
-      password: "",
+      // sub_department_email: "",
+      // password: "",
       s_department_type: "N",
     });
   }
@@ -302,8 +302,8 @@ class DeptMaster extends Component {
             department_type: data.department_type,
             hims_d_sub_department_id: data.hims_d_sub_department_id,
             vitals_mandatory: data.vitals_mandatory,
-            sub_department_email: data.sub_department_email,
-            password: data.password,
+            // sub_department_email: data.sub_department_email,
+            // password: data.password,
           },
           module: "masterSettings",
           method: "PUT",
@@ -391,8 +391,8 @@ class DeptMaster extends Component {
           sub_department_code: this.state.sub_department_code,
           sub_department_name: this.state.sub_department_name,
           arabic_sub_department_name: this.state.arabic_sub_department_name,
-          sub_department_email: this.state.sub_department_email,
-          password: this.state.password,
+          // sub_department_email: this.state.sub_department_email,
+          // password: this.state.password,
           effective_start_date: this.state.effective_start_date,
 
           location_description: this.state.sub_department_name,
@@ -624,7 +624,7 @@ class DeptMaster extends Component {
                   }}
                   value={this.state.effective_start_date}
                 />
-                <AlagehFormGroup
+                {/* <AlagehFormGroup
                   div={{ className: "col mandatory" }}
                   label={{
                     fieldName: "sub_department_email",
@@ -657,7 +657,7 @@ class DeptMaster extends Component {
                     value={this.state.password}
                     onChange={this.textHandle.bind(this)}
                   />
-                </Space>
+                </Space> */}
 
                 <AlgaehSecurityElement elementCode="READ_ONLY_ACCESS">
                   <div className="col align-middle">
@@ -933,64 +933,64 @@ class DeptMaster extends Component {
                           );
                         },
                       },
-                      {
-                        fieldName: "sub_department_mail",
-                        label: (
-                          <label className="style_Label">
-                            sub department mail
-                          </label>
-                        ),
-                        displayTemplate: (row) => {
-                          return row.sub_department_email;
-                        },
-                        editorTemplate: (row) => {
-                          return (
-                            <AlagehFormGroup
-                              div={{ className: "col" }}
-                              textBox={{
-                                className: "txt-fld",
-                                name: "sub_department_email",
-                                value: row.sub_department_email,
-                                events: {
-                                  onChange: this.changeGridEditors.bind(
-                                    this,
-                                    row
-                                  ),
-                                },
-                              }}
-                            />
-                          );
-                        },
-                      },
-                      {
-                        fieldName: "password",
-                        label: (
-                          <label className="style_Label">
-                            sub Dept email Password
-                          </label>
-                        ),
-                        displayTemplate: (row) => {
-                          return row.password;
-                        },
-                        editorTemplate: (row) => {
-                          return (
-                            <AlagehFormGroup
-                              div={{ className: "col" }}
-                              textBox={{
-                                className: "txt-fld",
-                                name: "password",
-                                value: row.password,
-                                events: {
-                                  onChange: this.changeGridEditors.bind(
-                                    this,
-                                    row
-                                  ),
-                                },
-                              }}
-                            />
-                          );
-                        },
-                      },
+                      // {
+                      //   fieldName: "sub_department_mail",
+                      //   label: (
+                      //     <label className="style_Label">
+                      //       sub department mail
+                      //     </label>
+                      //   ),
+                      //   displayTemplate: (row) => {
+                      //     return row.sub_department_email;
+                      //   },
+                      //   editorTemplate: (row) => {
+                      //     return (
+                      //       <AlagehFormGroup
+                      //         div={{ className: "col" }}
+                      //         textBox={{
+                      //           className: "txt-fld",
+                      //           name: "sub_department_email",
+                      //           value: row.sub_department_email,
+                      //           events: {
+                      //             onChange: this.changeGridEditors.bind(
+                      //               this,
+                      //               row
+                      //             ),
+                      //           },
+                      //         }}
+                      //       />
+                      //     );
+                      //   },
+                      // },
+                      // {
+                      //   fieldName: "password",
+                      //   label: (
+                      //     <label className="style_Label">
+                      //       sub Dept email Password
+                      //     </label>
+                      //   ),
+                      //   displayTemplate: (row) => {
+                      //     return row.password;
+                      //   },
+                      //   editorTemplate: (row) => {
+                      //     return (
+                      //       <AlagehFormGroup
+                      //         div={{ className: "col" }}
+                      //         textBox={{
+                      //           className: "txt-fld",
+                      //           name: "password",
+                      //           value: row.password,
+                      //           events: {
+                      //             onChange: this.changeGridEditors.bind(
+                      //               this,
+                      //               row
+                      //             ),
+                      //           },
+                      //         }}
+                      //       />
+                      //     );
+                      //   },
+                      // },
                     ]}
                     keyId="hims_d_sub_department_id"
                     dataSource={{

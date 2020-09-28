@@ -218,7 +218,7 @@ export default {
 
       if (input.department_id > 0) {
         query =
-          "select hims_d_sub_department_id, sub_department_code,sub_department_email,sub_department_name, arabic_sub_department_name,\
+          "select hims_d_sub_department_id, sub_department_code,sub_department_name, arabic_sub_department_name,\
             inventory_location_id,sub_department_desc, department_id, SD.effective_start_date, SD.effective_end_date, \
             SD.department_type, sub_department_status,vitals_mandatory, D.department_name  from  hims_d_sub_department SD, \
             hims_d_department D where SD.record_status='A' and D.hims_d_department_id = SD.department_id \
@@ -227,7 +227,7 @@ export default {
         values.push(input.department_id);
       } else {
         query =
-          "select hims_d_sub_department_id, sub_department_code,sub_department_email,sub_department_name, arabic_sub_department_name,\
+          "select hims_d_sub_department_id, sub_department_code,sub_department_name, arabic_sub_department_name,\
             inventory_location_id,sub_department_desc, department_id, SD.effective_start_date, SD.effective_end_date, \
             SD.department_type, sub_department_status, vitals_mandatory, D.department_name from  \
             hims_d_sub_department SD, hims_d_department D\
@@ -325,27 +325,24 @@ export default {
     let input = req.body;
     const _mysql = new algaehMysql();
 
-    const { encrypted, salt } = AESCrypt.encryptWithSalt(
-      SECRETKey,
-      input.password
-    );
+    // const { encrypted, salt } = AESCrypt.encryptWithSalt(
+    //   SECRETKey,
+    //   input.password
+    // );
 
-    const decrypted = AESCrypt.decryptWithSalt(SECRETKey, salt, encrypted);
+    // const decrypted = AESCrypt.decryptWithSalt(SECRETKey, salt, encrypted);
 
     _mysql
       .executeQuery({
         query:
           "INSERT INTO `hims_d_sub_department` (sub_department_code,sub_department_name,\
-            arabic_sub_department_name,sub_department_email,password,salt,sub_department_desc,inventory_location_id,department_id,effective_start_date,\
+            arabic_sub_department_name,sub_department_desc,inventory_location_id,department_id,effective_start_date,\
             effective_end_date,department_type,created_date, created_by, updated_date, updated_by)\
             VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?)",
         values: [
           input.sub_department_code,
           input.sub_department_name,
           input.arabic_sub_department_name,
-          input.sub_department_email,
-          encrypted,
-          salt,
           input.sub_department_desc,
           input.inventory_location_id,
           input.department_id,
@@ -374,29 +371,26 @@ export default {
     let input = req.body;
     const _mysql = new algaehMysql();
 
-    let updatePasswordWithSalt = "";
-    if (input.password) {
-      const { encrypted, salt } = AESCrypt.encryptWithSalt(
-        SECRETKey,
-        input.password
-      );
-      updatePasswordWithSalt = `,password='${encrypted}',salt='${salt}'`;
-    }
+    // let updatePasswordWithSalt = "";
+    // if (input.password) {
+    //   const { encrypted, salt } = AESCrypt.encryptWithSalt(
+    //     SECRETKey,
+    //     input.password
+    //   );
+    //   updatePasswordWithSalt = `,password='${encrypted}',salt='${salt}'`;
+    // }
     _mysql
       .executeQuery({
         query:
           "UPDATE `hims_d_sub_department`\
         SET `sub_department_name`=?, `sub_department_desc`=?,arabic_sub_department_name=?,\
-        `sub_department_email`=?, `effective_start_date`=?, `effective_end_date`=? ,`department_type`=?\
-        ,`updated_date`=?, `updated_by`=?,`vitals_mandatory`=? " +
-          updatePasswordWithSalt +
-          " \
-        WHERE `record_status`='A' AND `hims_d_sub_department_id`=? ;",
+       `effective_start_date`=?, `effective_end_date`=? ,`department_type`=?\
+        ,`updated_date`=?, `updated_by`=?,`vitals_mandatory`=? \
+         WHERE `record_status`='A' AND `hims_d_sub_department_id`=? ;",
         values: [
           input.sub_department_name,
           input.sub_department_desc,
           input.arabic_sub_department_name,
-          input.sub_department_email,
           input.effective_start_date,
           input.effective_end_date,
           input.department_type,
