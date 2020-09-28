@@ -125,4 +125,33 @@ const LEVELS = {
     textField: "name",
   },
 };
-export default { PERIOD, BASEDON, LEVELS };
+const ACCOUNTS = {
+  dataSource: {
+    data: [
+      { name: "ALL", value: "ALL" },
+      {
+        name: "ASSETS",
+        value: "1",
+      },
+      {
+        name: "LIABILITIES",
+        value: "2",
+      },
+      {
+        name: "INCOME",
+        value: "4",
+      },
+      {
+        name: "CAPITAL",
+        value: "3",
+      },
+      {
+        name: "EXPENSE",
+        value: "5",
+      },
+    ],
+    valueField: "value",
+    textField: "name",
+  },
+};
+export default { PERIOD, BASEDON, LEVELS, ACCOUNTS };

@@ -353,7 +353,9 @@ export default {
       from_date: moment(req.query.from_date, "YYYY-MM-DD").format("YYYY-MM-DD"),
       to_date: moment(req.query.to_date, "YYYY-MM-DD").format("YYYY-MM-DD"),
     };
-
+    const level = req.query.ACCOUNTS;
+    const drillDownLevel = req.query.drillDownLevel;
+    option["drillDownLevel"] = drillDownLevel;
     if (option.old == "Y") {
       getAccountHeadsForTrialBalance(decimal_places, 1, option)
         .then((asset) => {
@@ -418,62 +420,83 @@ export default {
       const _mysql = new algaehMysql();
       option["_mysql"] = _mysql;
 
-      getTrialBalanceFunc(decimal_places, 1, option)
-        .then((asset) => {
-          getTrialBalanceFunc(decimal_places, 2, option)
-            .then((liability) => {
-              getTrialBalanceFunc(decimal_places, 3, option)
-                .then((capital) => {
-                  getTrialBalanceFunc(decimal_places, 4, option)
-                    .then((income) => {
-                      getTrialBalanceFunc(decimal_places, 5, option)
-                        .then((expense) => {
-                          _mysql.releaseConnection();
-                          // const total_debit_amount = parseFloat(
-                          //   parseFloat(asset.total_debit_amount) +
-                          //     parseFloat(capital.total_debit_amount) +
-                          //     parseFloat(income.total_debit_amount) +
-                          //     parseFloat(liability.total_debit_amount) +
-                          //     parseFloat(expense.total_debit_amount)
-                          // ).toFixed(decimal_places);
-                          // const total_credit_amount = parseFloat(
-                          //   parseFloat(asset.total_credit_amount) +
-                          //     parseFloat(capital.total_credit_amount) +
-                          //     parseFloat(income.total_credit_amount) +
-                          //     parseFloat(liability.total_credit_amount) +
-                          //     parseFloat(expense.total_credit_amount)
-                          // ).toFixed(decimal_places);
+      if (level === "ALL") {
+        getTrialBalanceFunc(decimal_places, 1, option)
+          .then((asset) => {
+            getTrialBalanceFunc(decimal_places, 2, option)
+              .then((liability) => {
+                getTrialBalanceFunc(decimal_places, 3, option)
+                  .then((capital) => {
+                    getTrialBalanceFunc(decimal_places, 4, option)
+                      .then((income) => {
+                        getTrialBalanceFunc(decimal_places, 5, option)
+                          .then((expense) => {
+                            _mysql.releaseConnection();
 
-                          req.records = {
-                            asset: asset,
-                            liability: liability,
-                            capital: capital,
-                            income: income,
-                            expense: expense,
-                            total_debit_amount: 0,
-                            total_credit_amount: 0,
-                          };
-                          next();
-                        })
-                        .catch((e) => {
-                          next(e);
-                        });
-                    })
-                    .catch((e) => {
-                      next(e);
-                    });
-                })
-                .catch((e) => {
-                  next(e);
-                });
-            })
-            .catch((e) => {
-              next(e);
-            });
-        })
-        .catch((e) => {
-          next(e);
-        });
+                            req.records = {
+                              asset: asset,
+                              liability: liability,
+                              capital: capital,
+                              income: income,
+                              expense: expense,
+                              total_debit_amount: 0,
+                              total_credit_amount: 0,
+                            };
+                            next();
+                          })
+                          .catch((e) => {
+                            next(e);
+                          });
+                      })
+                      .catch((e) => {
+                        next(e);
+                      });
+                  })
+                  .catch((e) => {
+                    next(e);
+                  });
+              })
+              .catch((e) => {
+                next(e);
+              });
+          })
+          .catch((e) => {
+            next(e);
+          });
+      } else {
+        const levelInteger = parseInt(level, 10);
+        getTrialBalanceFunc(decimal_places, levelInteger, option)
+          .then((accountResult) => {
+            _mysql.releaseConnection();
+            let objToplot = {};
+            switch (level) {
+              case "1":
+                objToplot["asset"] = accountResult;
+                break;
+              case "2":
+                objToplot["liability"] = accountResult;
+                break;
+              case "3":
+                objToplot["capital"] = accountResult;
+                break;
+              case "4":
+                objToplot["income"] = accountResult;
+                break;
+              case "5":
+                objToplot["expense"] = accountResult;
+                break;
+            }
+            req.records = {
+              ...objToplot,
+              total_debit_amount: 0,
+              total_credit_amount: 0,
+            };
+            next();
+          })
+          .catch((e) => {
+            next(e);
+          });
+      }
     }
   },
 
@@ -2643,7 +2666,8 @@ function getTrialBalanceFunc(decimal_places, finance_account_head_id, options) {
                         cb_child_data,
                         trans_symbol,
                         default_total,
-                        decimal_places
+                        decimal_places,
+                        options.drillDownLevel
                       );
                       resolve(outputArray[0]);
                     })
@@ -2686,7 +2710,8 @@ function createHierarchyTransactionTB(
   cb_child_data,
   trans_symbol,
   default_total,
-  decimal_places
+  decimal_places,
+  drillDownLevel
 ) {
   try {
     // const onlyChilds = [];
@@ -2696,6 +2721,11 @@ function createHierarchyTransactionTB(
 
     // find the top level nodes and hash the children based on parent_acc_id
     for (let i = 0, len = arry.length; i < len; ++i) {
+      if (drillDownLevel !== 999) {
+        if (arry[i]["account_level"] > drillDownLevel) {
+          break;
+        }
+      }
       let item = arry[i],
         p = item.parent_acc_id,
         //if it has no parent_acc_id
@@ -3132,12 +3162,17 @@ function createHierarchyTransactionTB(
     // function to recursively build the tree
     let findChildren = function (parent) {
       if (children[parent.finance_account_head_id]) {
-        const tempchilds = children[parent.finance_account_head_id];
+        let tempchilds = children[parent.finance_account_head_id];
 
-        parent.children = tempchilds;
+        if (drillDownLevel !== 999) {
+          tempchilds = tempchilds.filter((f) => f.leafnode !== "Y");
+        }
+        if (tempchilds.length > 0) {
+          parent.children = tempchilds;
 
-        for (let i = 0, len = parent.children.length; i < len; ++i) {
-          findChildren(parent.children[i]);
+          for (let i = 0, len = parent.children.length; i < len; ++i) {
+            findChildren(parent.children[i]);
+          }
         }
       }
     };
