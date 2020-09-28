@@ -320,7 +320,17 @@ class SalesOrdListItems extends Component {
                                                                         row
                                                                     )}
                                                                 >
-                                                                    <i className="fas fa-trash-alt" />
+                                                                    <i style={{
+                                                                        pointerEvents:
+                                                                            this.state.is_revert === "Y"
+                                                                                ? "none"
+                                                                                : "",
+                                                                        opacity:
+                                                                            this.state.is_revert === "Y"
+                                                                                ? "0.1"
+                                                                                : ""
+                                                                    }}
+                                                                        className="fas fa-trash-alt" />
                                                                 </span>
                                                             );
                                                         }
@@ -345,7 +355,7 @@ class SalesOrdListItems extends Component {
                                                             />
                                                         ),
                                                         displayTemplate: row => {
-                                                            return this.state.grid_edit === true ? parseFloat(row.quantity) : (
+                                                            return this.state.is_revert === "Y" || this.state.grid_edit === true ? parseFloat(row.quantity) : (
                                                                 <AlagehFormGroup
                                                                     div={{}}
                                                                     textBox={{
@@ -422,7 +432,7 @@ class SalesOrdListItems extends Component {
                                                             />
                                                         ),
                                                         displayTemplate: row => {
-                                                            return this.state.grid_edit === true ? row.discount_percentage : (
+                                                            return this.state.is_revert === "Y" || this.state.grid_edit === true ? row.discount_percentage : (
                                                                 <AlagehFormGroup
                                                                     div={{}}
                                                                     textBox={{
@@ -480,7 +490,34 @@ class SalesOrdListItems extends Component {
                                                                 }}
                                                             />
                                                         ),
-                                                        disabled: true
+                                                        displayTemplate: row => {
+                                                            return this.state.is_revert === "N" || this.state.grid_edit === true ? row.tax_percentage : (
+                                                                <AlagehFormGroup
+                                                                    div={{}}
+                                                                    textBox={{
+                                                                        decimal: { allowNegative: false },
+                                                                        value: row.tax_percentage,
+                                                                        className: "txt-fld",
+                                                                        name: "tax_percentage",
+                                                                        events: {
+                                                                            onChange: onchangegridcol.bind(
+                                                                                this,
+                                                                                this,
+                                                                                context,
+                                                                                row
+                                                                            )
+                                                                        },
+                                                                        others: {
+                                                                            onFocus: e => {
+                                                                                e.target.oldvalue =
+                                                                                    e.target.value;
+                                                                            }
+                                                                        }
+                                                                    }}
+                                                                />
+                                                            );
+                                                        }
+
                                                     },
                                                     {
                                                         fieldName: "tax_amount",

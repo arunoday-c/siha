@@ -152,7 +152,7 @@ class RulesDetails extends PureComponent {
                     name: "standard_work_hours",
                     value: this.state.standard_work_hours,
                     others: {
-                      type: "time",
+                      type: "number",
                     },
                     events: {
                       onChange: changeChecks.bind(this, this),
@@ -169,7 +169,7 @@ class RulesDetails extends PureComponent {
                     name: "ramzan_work_hours",
                     value: this.state.ramzan_work_hours,
                     others: {
-                      type: "time",
+                      type: "number",
                     },
                     events: {
                       onChange: changeChecks.bind(this, this),

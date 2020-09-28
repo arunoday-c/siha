@@ -6,6 +6,7 @@ import {
   Checkbox,
   AlgaehAutoComplete,
 } from "algaeh-react-components";
+
 import { Line } from "@ant-design/charts";
 import moment from "moment";
 import "./DeltaCheckModal.scss";
@@ -20,6 +21,7 @@ import {
 // import AlgaehAutoSearch from "../../Wrapper/autoSearch";
 // import spotlightSearch from "../../../Search/spotlightSearch.json";
 import _ from "lodash";
+import { swalMessage } from "../../../utils/algaehApiCall";
 // import AlgaehLoader from "../../Wrapper/fullPageLoader";
 
 export default function DeltaCheck({ visible, onCancel }) {
@@ -99,8 +101,6 @@ export default function DeltaCheck({ visible, onCancel }) {
     }
   );
 
-  console.log(testResult);
-
   // const selectItem = (id) => {
   //   setSelected((state) => {
   //     const indx = state?.indexOf(id);
@@ -115,13 +115,13 @@ export default function DeltaCheck({ visible, onCancel }) {
   // };
 
   function calculateVitalChart() {
-    if (selected.length && patientVitals?.length) {
+    if (patientVitals?.length) {
       const data = [];
       selected.forEach((id) => {
         let vit = patientVitals?.filter((item) => item.vital_id === id);
         vit = vit?.map((item) => ({
           date: item?.visit_date?.split(" ")[0],
-          value: parseFloat(item?.vital_value),
+          value: parseFloat(item?.vital_value) || 0,
           type: item?.vitals_name,
         }));
         vit = vit?.filter((item) =>
@@ -131,17 +131,26 @@ export default function DeltaCheck({ visible, onCancel }) {
       });
       setChartData(data);
       setShowChart(true);
+    } else {
+      swalMessage({
+        title: "No vitals data available for patient",
+        type: "warning",
+      });
+      // AlgaehMessagePop({
+      //   display: "No vitals data available for patient",
+      //   type: "warning",
+      // });
     }
   }
 
   function calculateAnalyteChart() {
-    if (selected.length && testResult?.length) {
+    if (testResult?.length) {
       const data = [];
       selected.forEach((id) => {
         let vit = testResult?.filter((item) => item.analyte_id === id);
         vit = vit?.map((item) => ({
           date: item?.entered_date?.split(" ")[0],
-          value: parseFloat(item?.result),
+          value: parseFloat(item?.result) || 0,
           type: item?.description,
         }));
         vit = vit?.filter((item) =>
@@ -151,16 +160,25 @@ export default function DeltaCheck({ visible, onCancel }) {
       });
       setChartData(data);
       setShowChart(true);
+    } else {
+      swalMessage({
+        title: "No investigation data available for patient",
+        type: "warning",
+      });
     }
+  }
+
+  function clearFunction() {
+    setChartData([]);
+    setSelected([]);
+    setShowChart(false);
+    setDates(null);
+    setSelectedTest(null);
   }
 
   useEffect(() => {
     if (!visible) {
-      setChartData([]);
-      setSelected([]);
-      setShowChart(false);
-      setDates(null);
-      setSelectedTest(null);
+      clearFunction();
     }
   }, [visible]);
 
@@ -203,14 +221,8 @@ export default function DeltaCheck({ visible, onCancel }) {
   };
 
   useEffect(() => {
-    setChartData([]);
-    setShowChart(false);
-    setDates(null);
-    setSelected([]);
-    setSelectedTest(null);
+    clearFunction();
   }, [mode]);
-
-  console.log(patientVitals, "vital");
 
   return (
     <AlgaehModal
@@ -272,7 +284,7 @@ export default function DeltaCheck({ visible, onCancel }) {
                         valueField: "hims_d_investigation_test_id",
                         textField: "service_name",
                       },
-                      value: test?.test_id,
+                      value: test?.hims_d_investigation_test_id,
                       onChange: (obj) => setSelectedTest(obj),
                       onClear: () => setSelectedTest(null),
                     }}
@@ -297,6 +309,7 @@ export default function DeltaCheck({ visible, onCancel }) {
                 <div className="col-12 deltaList">
                   {mode === "vital" ? (
                     <Checkbox.Group
+                      key="vital"
                       options={vitals?.map((item) => ({
                         label: item?.vitals_name,
                         value: item?.hims_d_vitals_header_id,
@@ -306,6 +319,7 @@ export default function DeltaCheck({ visible, onCancel }) {
                     />
                   ) : (
                     <Checkbox.Group
+                      key="inv"
                       options={analytes?.map((item) => ({
                         label: item?.description,
                         value: item?.hims_d_lab_analytes_id,
@@ -316,7 +330,9 @@ export default function DeltaCheck({ visible, onCancel }) {
                   )}
                 </div>
                 <div className="col-12" style={{ textAlign: "right" }}>
-                  <button className="btn btn-default">Clear</button>
+                  <button className="btn btn-default" onClick={clearFunction}>
+                    Clear
+                  </button>
                   {mode === "vital" ? (
                     <button
                       disabled={!selected.length || !dates?.length}

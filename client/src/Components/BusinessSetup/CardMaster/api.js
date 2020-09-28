@@ -11,7 +11,7 @@ export async function getAccountHeads() {
   return res?.data?.result;
 }
 
-export async function getCards(input = {}) {
+export async function getCards() {
   const res = await newAlgaehApi({
     uri: "/cardmaster/getCards",
     method: "GET",

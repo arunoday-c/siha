@@ -8,7 +8,7 @@ import {
   AlgaehLabel,
   AlgaehAutoComplete,
   AlgaehFormGroup,
-  AlgaehDateHandler,
+  // AlgaehDateHandler,
   Spin,
   AlgaehMessagePop,
 } from "algaeh-react-components";
@@ -16,6 +16,7 @@ import { useLangFieldName, useCurrency } from "./patientHooks";
 import { newAlgaehApi } from "../../hooks/";
 import { FrontdeskContext } from "./FrontdeskContext";
 import { BillDetailModal } from "./BillDetailModal";
+import CardComponent from "../common/CardComponent/CardComponent";
 
 const getBillDetails = async (
   key,
@@ -176,6 +177,7 @@ export function BillDetails({
     }
   );
 
+  const [cardData, setCardData] = useState(null);
   const [billData, setBillData] = useState(null);
 
   const disabled = globalDisable || !billData;
@@ -804,6 +806,36 @@ export function BillDetails({
                       <span style={{ fontSize: "0.8rem" }}>Pay by Card</span>
                     </label>
                   </div>
+                  <CardComponent
+                    card_id={cardData?.hims_d_bank_card_id}
+                    card_number={cardData?.card_number}
+                    disabled={!enableCard}
+                    onChangeCard={(e) => setCardData((s) => ({ ...s, ...e }))}
+                    onChangeNumber={(e) => {
+                      e.persist();
+                      setCardData((s) => ({
+                        ...s,
+                        card_number: e?.target?.value,
+                      }));
+                    }}
+                  />
+                  {/* <AlgaehAutoComplete
+                    div={{ className: "col-3  mandatory" }}
+                    label={{
+                      forceLabel: "Select Card Type",
+                      isImp: true,
+                    }}
+                    error={errors}
+                    selector={{
+                      name: "",
+                      className: "select-fld",
+                      dataSource: {
+                        textField: "",
+                        valueField: "",
+                        data: [],
+                      },
+                    }}
+                  />
                   <Controller
                     control={control}
                     name="card_number"
@@ -830,8 +862,8 @@ export function BillDetails({
                         }}
                       />
                     )}
-                  />
-                  <Controller
+                  /> */}
+                  {/* <Controller
                     control={control}
                     name="card_date"
                     render={({ onBlur, onChange, value }) => (
@@ -862,7 +894,7 @@ export function BillDetails({
                         value={value}
                       />
                     )}
-                  />{" "}
+                  />{" "} */}
                   <Controller
                     control={control}
                     name="card_amount"
@@ -906,11 +938,23 @@ export function BillDetails({
                 </div>
 
                 <hr style={{ margin: "0.3rem 0rem" }} />
-                <div
-                  className="row secondary-box-container"
-                  style={{ textAlign: "right" }}
-                >
-                  <div className="col">
+                <div className="row secondary-box-container">
+                  <AlgaehFormGroup
+                    div={{ className: "col-3" }}
+                    label={{
+                      forceLabel: "Enter Promo Code",
+                      isImp: enableCard,
+                    }}
+                    textBox={{
+                      className: "txt-fld",
+                      name: "",
+                      disabled: disabled || !enableCard,
+                      type: "text",
+                      // ...props,
+                      placeholder: "",
+                    }}
+                  />
+                  <div className="col" style={{ textAlign: "right" }}>
                     <AlgaehLabel
                       label={{
                         fieldName: "unbalanced_amount",

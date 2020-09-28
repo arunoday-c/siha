@@ -7,19 +7,20 @@ import {
   cardtexthandle,
   checkcashhandaler,
   checkcardhandaler,
-  calculateRecipt
+  calculateRecipt,
 } from "./AddReciptFormHandaler";
 import {
   AlgaehDateHandler,
   AlgaehLabel,
   AlagehFormGroup,
-  AlagehAutoComplete
+  AlagehAutoComplete,
 } from "../../../Wrapper/algaehWrapper";
 
 import MyContext from "../../../../utils/MyContext";
 import "./AddReciptForm.scss";
 import "./../../../../styles/site.scss";
 import { GetAmountFormart } from "../../../../utils/GlobalFunctions";
+import CardComponent from "../../../common/CardComponent/CardComponent";
 
 export default class AddReciptForm extends Component {
   constructor(props) {
@@ -27,7 +28,7 @@ export default class AddReciptForm extends Component {
     this.state = {
       errorInCash: false,
       errorInCard: false,
-      errorInCheck: false
+      errorInCheck: false,
     };
   }
 
@@ -44,7 +45,7 @@ export default class AddReciptForm extends Component {
     return (
       <React.Fragment>
         <MyContext.Consumer>
-          {context => (
+          {(context) => (
             <div className="hptl-phase1-add-recipt-form">
               <div className="container-fluid">
                 <div
@@ -54,21 +55,21 @@ export default class AddReciptForm extends Component {
                   <div className="col-lg-3">
                     <AlgaehLabel
                       label={{
-                        fieldName: "receipt_number"
+                        fieldName: "receipt_number",
                       }}
                     />
                     <h6>
                       {this.state.receipt_number
                         ? this.state.receipt_number
                         : this.state.selectedLang === "en"
-                          ? "Not Generated"
-                          : "غير مولدة"}
+                        ? "Not Generated"
+                        : "غير مولدة"}
                     </h6>
                   </div>
                   <div className="col-lg-3">
                     <AlgaehLabel
                       label={{
-                        fieldName: "receipt_date"
+                        fieldName: "receipt_date",
                       }}
                     />
                     <h6>
@@ -107,7 +108,7 @@ export default class AddReciptForm extends Component {
                     div={{ className: "col-lg-3" }}
                     label={{
                       fieldName: "shift_id",
-                      isImp: true
+                      isImp: true,
                     }}
                     userPrefernce={true}
                     selector={{
@@ -120,17 +121,17 @@ export default class AddReciptForm extends Component {
                             ? "shift_description"
                             : "arabic_name",
                         valueField: "shift_id",
-                        data: this.state.shift_assinged
+                        data: this.state.shift_assinged,
                       },
                       others: {
-                        disabled: this.state.Billexists
+                        disabled: this.state.Billexists,
                       },
                       onChange: texthandle.bind(this, this, context),
                       onClear: () => {
                         this.setState({
-                          shift_id: null
+                          shift_id: null,
                         });
-                      }
+                      },
                     }}
                   />
                 </div>
@@ -159,7 +160,7 @@ export default class AddReciptForm extends Component {
                     div={{ className: "col-lg-2" }}
                     label={{
                       fieldName: "amount",
-                      isImp: true
+                      isImp: true,
                     }}
                     textBox={{
                       decimal: { allowNegative: false },
@@ -169,7 +170,7 @@ export default class AddReciptForm extends Component {
                       error: this.state.errorInCash,
                       value: this.state.cash_amount,
                       events: {
-                        onChange: cashtexthandle.bind(this, this, context)
+                        onChange: cashtexthandle.bind(this, this, context),
                       },
                       others: {
                         disabled:
@@ -178,10 +179,10 @@ export default class AddReciptForm extends Component {
                             : !this.state.Cashchecked,
                         placeholder: "0.00",
                         onBlur: calculateRecipt.bind(this, this, context),
-                        onFocus: e => {
+                        onFocus: (e) => {
                           e.target.oldvalue = e.target.value;
-                        }
-                      }
+                        },
+                      },
                     }}
                   />
                 </div>
@@ -202,6 +203,21 @@ export default class AddReciptForm extends Component {
                       <span style={{ fontSize: "0.8rem" }}>Pay by Card</span>
                     </label>
                   </div>
+                  <CardComponent
+                    disabled={!this.state.Cardchecked}
+                    onChangeNumber={(e) => {
+                      e.persist();
+                      texthandle(this, context, {
+                        name: "card_check_number",
+                        value: e.target.value,
+                      });
+                    }}
+                    card_number={this.state.card_check_number}
+                    card_id={this.state.selectedCard?.hims_d_bank_card_id}
+                    onChangeCard={(e) => {
+                      this.setState({ selectedCard: e });
+                    }}
+                  />
 
                   {/* {this.state.Cardchecked === true ? (
                     <AlagehAutoComplete
@@ -239,7 +255,7 @@ export default class AddReciptForm extends Component {
                     div={{ className: "col-lg-2" }}
                     label={{
                       fieldName: "amount",
-                      isImp: this.state.Cardchecked
+                      isImp: this.state.Cardchecked,
                     }}
                     textBox={{
                       decimal: { allowNegative: false },
@@ -249,25 +265,26 @@ export default class AddReciptForm extends Component {
                       error: this.state.errorInCard,
                       value: this.state.card_amount,
                       events: {
-                        onChange: cardtexthandle.bind(this, this, context)
+                        onChange: cardtexthandle.bind(this, this, context),
                       },
                       others: {
-                        disabled: this.state.Billexists === true
-                          ? true
-                          : !this.state.Cardchecked,
+                        disabled:
+                          this.state.Billexists === true
+                            ? true
+                            : !this.state.Cardchecked,
                         placeholder: "0.00",
                         onBlur: calculateRecipt.bind(this, this, context),
-                        onFocus: e => {
+                        onFocus: (e) => {
                           e.target.oldvalue = e.target.value;
-                        }
-                      }
+                        },
+                      },
                     }}
                   />
                   <AlagehFormGroup
                     div={{ className: "col" }}
                     label={{
                       fieldName: "card_check_number",
-                      isImp: this.state.Cardchecked
+                      isImp: this.state.Cardchecked,
                     }}
                     textBox={{
                       number: { allowNegative: false },
@@ -276,31 +293,34 @@ export default class AddReciptForm extends Component {
                       name: "card_check_number",
                       value: this.state.card_check_number,
                       events: {
-                        onChange: texthandle.bind(this, this, context)
+                        onChange: texthandle.bind(this, this, context),
                       },
                       others: {
-                        disabled: this.state.Billexists === true
-                          ? true
-                          : !this.state.Cardchecked
-                      }
+                        disabled:
+                          this.state.Billexists === true
+                            ? true
+                            : !this.state.Cardchecked,
+                      },
                     }}
                   />
 
                   <AlgaehDateHandler
                     div={{ className: "col" }}
                     label={{
-                      fieldName: "expiry_date"
+                      fieldName: "expiry_date",
                     }}
                     textBox={{
                       className: "txt-fld",
-                      name: "card_date"
+                      name: "card_date",
                     }}
-                    disabled={this.state.Billexists === true
-                      ? true
-                      : !this.state.Cardchecked}
+                    disabled={
+                      this.state.Billexists === true
+                        ? true
+                        : !this.state.Cardchecked
+                    }
                     minDate={new Date()}
                     events={{
-                      onChange: datehandle.bind(this, this, context)
+                      onChange: datehandle.bind(this, this, context),
                     }}
                     value={this.state.card_date}
                   />
@@ -392,7 +412,7 @@ export default class AddReciptForm extends Component {
                   <div className="col-lg-5">
                     <AlgaehLabel
                       label={{
-                        fieldName: "unbalanced_amount"
+                        fieldName: "unbalanced_amount",
                       }}
                     />
                     <h6>{GetAmountFormart(this.state.unbalanced_amount)}</h6>
@@ -408,4 +428,3 @@ export default class AddReciptForm extends Component {
     // return <div className="">Recipt Details</div>;
   }
 }
-

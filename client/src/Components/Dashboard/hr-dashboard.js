@@ -286,7 +286,7 @@ class Dashboard extends Component {
                   </div>
                 </div>
               </div>
-              <div className="col-12">
+              <div className="col-6">
                 <div className="card animated fadeInUp faster">
                   <h6>New Employee Joined this Month</h6>
                   <div className="dashboardGridCntr">
@@ -316,6 +316,45 @@ class Dashboard extends Component {
                               <td className="text-center">{row.designation}</td>
                               <td className="text-center">
                                 {row.sub_department_name}
+                              </td>
+                            </tr>
+                          ))
+                        ) : (
+                          <tr>
+                            <td className="text-center" colSpan="6">
+                              No New Joinee for this Month
+                            </td>
+                          </tr>
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+              <div className="col-6">
+                <div className="card animated fadeInUp faster">
+                  <h6>Document Expire next month</h6>
+                  <div className="dashboardGridCntr">
+                    <table className="table  table-bordered table-sm table-striped ">
+                      <thead>
+                        <tr>
+                          <th className="text-center">Employee Code</th>
+                          <th className="text-center">Employee Name</th>
+                          <th className="text-center">Document Type</th>
+                          <th className="text-center">Valid Upto</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {this.state.no_of_emp_join.length > 0 ? (
+                          this.state.no_of_emp_join.map((row, index) => (
+                            <tr key={index}>
+                              <td className="text-center">
+                                {row.employee_code}
+                              </td>
+                              <td className="text-center">{row.full_name}</td>
+                              <td className="text-center">{row.full_name}</td>
+                              <td className="text-center">
+                                {row.date_of_joining}
                               </td>
                             </tr>
                           ))
