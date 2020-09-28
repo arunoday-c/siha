@@ -1022,6 +1022,7 @@ class PatientProfile extends Component {
               vat_applicable={this.vatApplicable()}
               date_of_birth={_pat_profile.date_of_birth}
               gender={_pat_profile.gender}
+              pat_profile={_pat_profile}
             />
           ) : this.state.pageDisplay === "exam_diagram" ? (
             <Suspense

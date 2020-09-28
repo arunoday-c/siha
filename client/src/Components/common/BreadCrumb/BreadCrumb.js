@@ -69,6 +69,16 @@ class BreadCrumb extends PureComponent {
       );
     }
   }
+  showAttachments() {
+    if (this.props.attachments !== undefined) {
+      return (
+        <li onClick={() => this.props.attachments?.onClick()}>
+          {" "}
+          <i className="fas fa-paperclip bredcrumpIconBig" />
+        </li>
+      );
+    }
+  }
   showUserArea() {
     if (this.props.userArea !== undefined) {
       return this.props.userArea;
@@ -150,6 +160,7 @@ class BreadCrumb extends PureComponent {
             <div className="col print-area">
               <div>
                 <ul>
+                  {this.showAttachments()}
                   {this.showEditData()}
                   {this.showPrintArea()}
                 </ul>
