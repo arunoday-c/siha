@@ -2,6 +2,7 @@ import algaehMysql from "algaeh-mysql";
 import { LINQ } from "node-linq";
 import keys from "algaeh-keys";
 import AESCrypt from "aescrypt";
+import _ from "lodash";
 
 const { SECRETKey } = keys.default;
 export default {
@@ -143,7 +144,70 @@ export default {
       next(e);
     }
   },
+  getEmailSetupDetails: (req, res, next) => {
+    let input = req.query;
+    const _mysql = new algaehMysql();
 
+    try {
+      _mysql
+        .executeQuery({
+          query: `select hims_f_email_setup_id, sub_department_id,email_type,
+          sub_department_email,password,salt,report_name,setup_name
+          ,report_attach from hims_f_email_setup `,
+          // values: values,
+          printQuery: true,
+        })
+        .then((result) => {
+          _mysql.releaseConnection();
+          // let obj = {};
+          // _.chain(result)
+          //   .groupBy((g) => g.email_type)
+          //   .each((details, key) => {
+          //     obj = { ...obj, [key]: details };
+          //   })
+          //   .value();
+
+          req.records = result;
+          next();
+        })
+        .catch((error) => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
+  getAllSubDepartment: (req, res, next) => {
+    let input = req.query;
+    const _mysql = new algaehMysql();
+
+    try {
+      _mysql
+        .executeQuery({
+          query: `select hims_d_sub_department_id, sub_department_code,
+          sub_department_name, arabic_sub_department_name,department_id, 
+         sub_department_status from  hims_d_sub_department 
+         where record_status='A' 
+         order by hims_d_sub_department_id desc;`,
+          // values: values,
+          printQuery: true,
+        })
+        .then((result) => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch((error) => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
   selectSubDepartment: (req, res, next) => {
     let input = req.query;
     const _mysql = new algaehMysql();
@@ -190,6 +254,72 @@ export default {
       _mysql.releaseConnection();
       next(e);
     }
+  },
+  addEmailSendSubDept: (req, res, next) => {
+    let input = req.body;
+    const _mysql = new algaehMysql();
+
+    const { encrypted, salt } = AESCrypt.encryptWithSalt(
+      SECRETKey,
+      input.password
+    );
+    const decrypted = AESCrypt.decryptWithSalt(SECRETKey, salt, encrypted);
+    let queryObject = {
+      query: `INSERT INTO hims_f_email_setup (sub_department_id,email_type,
+        sub_department_email,password,salt,report_name
+        ,report_attach,setup_name,created_date, created_by, updated_date, updated_by)
+        VALUE(?,?,?,?,?,?,?,?,?,?,?,?)`,
+      values: [
+        input.sub_department_id,
+        input.email_type,
+        input.sub_department_email,
+        encrypted,
+        salt,
+        input.report_name,
+        input.report_attach,
+        input.setup_name,
+        new Date(),
+        req.userIdentity.algaeh_d_app_user_id,
+        new Date(),
+        req.userIdentity.algaeh_d_app_user_id,
+      ],
+      printQuery: true,
+    };
+    if (input.hims_f_email_setup_id) {
+      queryObject = {
+        query: `update hims_f_email_setup set sub_department_id=?,
+  sub_department_email=?,password=if(? is null or ?='',password,?),salt=if(? is null or ?='',salt,?),report_name=?
+  ,report_attach=? ,updated_date=?, updated_by=? where hims_f_email_setup_id=?`,
+        values: [
+          input.sub_department_id,
+          input.sub_department_email,
+          encrypted,
+          encrypted,
+          encrypted,
+          salt,
+          salt,
+          salt,
+          input.report_name,
+          input.report_attach,
+          new Date(),
+          req.userIdentity.algaeh_d_app_user_id,
+          input.hims_f_email_setup_id,
+        ],
+        printQuery: true,
+      };
+    }
+    _mysql
+      .executeQuery(queryObject)
+      .then((result) => {
+        _mysql.releaseConnection();
+        req.records = result;
+
+        next();
+      })
+      .catch((error) => {
+        _mysql.releaseConnection();
+        next(error);
+      });
   },
   addSubDepartment: (req, res, next) => {
     let input = req.body;
