@@ -3,7 +3,7 @@ import {
   AlgaehFormGroup,
   AlgaehLabel,
 } from "algaeh-react-components";
-import React from "react";
+import React, { useEffect } from "react";
 import { useQuery } from "react-query";
 import { getCards } from "../../BusinessSetup/CardMaster/api";
 import MaskedInput from "react-maskedinput";
@@ -25,6 +25,11 @@ export default function CardComponent({
     (item) => item?.hims_d_bank_card_id === card_id
   );
   const mask = currentCard?.[0]?.card_format;
+
+  useEffect(() => {
+    onChangeCard(null, null);
+    onChangeNumber("");
+  }, [disabled]);
 
   return (
     <>
@@ -65,7 +70,10 @@ export default function CardComponent({
             guide={false}
             id="my-input-id"
             onBlur={() => {}}
-            onChange={onChangeNumber}
+            onChange={(e) => {
+              const { value } = e.target;
+              onChangeNumber(value);
+            }}
             disabled={isLoading || disabled}
           />
         </div>
@@ -81,6 +89,7 @@ export default function CardComponent({
           textBox={{
             className: "txt-fld",
             name: "card_number",
+            disabled: true,
           }}
         />
       )}
