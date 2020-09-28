@@ -15,7 +15,7 @@ import {
   AlgaehDateHandler,
   AlgaehLabel,
   AlagehFormGroup,
-  AlagehAutoComplete
+  AlagehAutoComplete,
 } from "../../../../Wrapper/algaehWrapper";
 
 import MyContext from "../../../../../utils/MyContext";
@@ -23,6 +23,7 @@ import "./AddReciptForm.scss";
 import "./../../../../../styles/site.scss";
 import { AlgaehActions } from "../../../../../actions/algaehActions";
 import { GetAmountFormart } from "../../../../../utils/GlobalFunctions"; //"../../../../../utils/GlobalFunctions"; //from "../../../../../utils/GlobalFunctions";
+import CardComponent from "../../../../common/CardComponent/CardComponent";
 
 class AddReciptForm extends Component {
   constructor(props) {
@@ -30,7 +31,7 @@ class AddReciptForm extends Component {
     this.state = {
       errorInCash: false,
       errorInCard: false,
-      errorInCheck: false
+      errorInCheck: false,
     };
   }
 
@@ -47,14 +48,14 @@ class AddReciptForm extends Component {
     return (
       <React.Fragment>
         <MyContext.Consumer>
-          {context => (
+          {(context) => (
             <div className="hptl-phase1-pos-recipt-form">
               <div className="container-fluid">
                 <div className="row secondary-box-container">
                   <div className="col-lg-3">
                     <AlgaehLabel
                       label={{
-                        forceLabel: "Receipt Number"
+                        forceLabel: "Receipt Number",
                       }}
                     />
                     <h6>
@@ -66,7 +67,7 @@ class AddReciptForm extends Component {
                   <div className="col-lg-3">
                     <AlgaehLabel
                       label={{
-                        forceLabel: "Receipt Date"
+                        forceLabel: "Receipt Date",
                       }}
                     />
                     <h6>
@@ -79,7 +80,7 @@ class AddReciptForm extends Component {
                     div={{ className: "col-lg-3" }}
                     label={{
                       forceLabel: "Shift",
-                      isImp: true
+                      isImp: true,
                     }}
                     userPrefernce={true}
                     selector={{
@@ -89,22 +90,22 @@ class AddReciptForm extends Component {
                       dataSource: {
                         textField: "shift_description",
                         valueField: "shift_id",
-                        data: this.state.shift_assinged
+                        data: this.state.shift_assinged,
                       },
                       others: {
                         disabled:
                           this.state.postEnable === true
                             ? true
                             : this.state.posCancelled === true
-                              ? true
-                              : false
+                            ? true
+                            : false,
                       },
                       onChange: texthandle.bind(this, this, context),
                       onClear: () => {
                         this.setState({
-                          shift_id: null
+                          shift_id: null,
                         });
-                      }
+                      },
                     }}
                   />
                 </div>
@@ -133,7 +134,7 @@ class AddReciptForm extends Component {
                     div={{ className: "col-lg-2" }}
                     label={{
                       forceLabel: "Amount",
-                      isImp: true
+                      isImp: true,
                     }}
                     textBox={{
                       decimal: { allowNegative: false },
@@ -143,7 +144,7 @@ class AddReciptForm extends Component {
                       error: this.state.errorInCash,
                       value: this.state.cash_amount,
                       events: {
-                        onChange: cashtexthandle.bind(this, this, context)
+                        onChange: cashtexthandle.bind(this, this, context),
                       },
                       others: {
                         // disabled: !this.state.Cashchecked,
@@ -151,8 +152,8 @@ class AddReciptForm extends Component {
                           this.state.postEnable === true
                             ? true
                             : !this.state.Cashchecked,
-                        placeholder: "0.00"
-                      }
+                        placeholder: "0.00",
+                      },
                     }}
                   />
                 </div>
@@ -173,12 +174,26 @@ class AddReciptForm extends Component {
                       <span style={{ fontSize: "0.8rem" }}>Pay by Card</span>
                     </label>
                   </div>
+                  <CardComponent
+                    disabled={!this.state.Cardchecked}
+                    onChangeNumber={(e) => {
+                      texthandle(this, context, {
+                        name: "card_check_number",
+                        value: e,
+                      });
+                    }}
+                    card_number={this.state.card_check_number}
+                    card_id={this.state.selectedCard?.hims_d_bank_card_id}
+                    onChangeCard={(e) => {
+                      this.setState({ selectedCard: e });
+                    }}
+                  />
 
                   <AlagehFormGroup
                     div={{ className: "col-lg-2" }}
                     label={{
                       forceLabel: "Amount",
-                      isImp: true
+                      isImp: true,
                     }}
                     textBox={{
                       decimal: { allowNegative: false },
@@ -188,17 +203,18 @@ class AddReciptForm extends Component {
                       error: this.state.errorInCard,
                       value: this.state.card_amount,
                       events: {
-                        onChange: cardtexthandle.bind(this, this, context)
+                        onChange: cardtexthandle.bind(this, this, context),
                       },
                       others: {
-                        disabled: this.state.postEnable === true
-                          ? true
-                          : !this.state.Cardchecked,
-                        placeholder: "0.00"
-                      }
+                        disabled:
+                          this.state.postEnable === true
+                            ? true
+                            : !this.state.Cardchecked,
+                        placeholder: "0.00",
+                      },
                     }}
                   />
-                  <AlagehFormGroup
+                  {/* <AlagehFormGroup
                     div={{ className: "col-lg-5" }}
                     label={{
                       forceLabel: "Card Number"
@@ -217,23 +233,25 @@ class AddReciptForm extends Component {
                           : !this.state.Cardchecked
                       }
                     }}
-                  />
+                  /> */}
 
                   <AlgaehDateHandler
                     div={{ className: "col-lg-3" }}
                     label={{
-                      forceLabel: "Expiry Date"
+                      forceLabel: "Expiry Date",
                     }}
                     textBox={{
                       className: "txt-fld",
-                      name: "card_date"
+                      name: "card_date",
                     }}
-                    disabled={this.state.postEnable === true
-                      ? true
-                      : !this.state.Cardchecked}
+                    disabled={
+                      this.state.postEnable === true
+                        ? true
+                        : !this.state.Cardchecked
+                    }
                     minDate={new Date()}
                     events={{
-                      onChange: datehandle.bind(this, this, context)
+                      onChange: datehandle.bind(this, this, context),
                     }}
                     value={this.state.card_date}
                   />
@@ -321,7 +339,7 @@ class AddReciptForm extends Component {
                   <div className="col-lg-5">
                     <AlgaehLabel
                       label={{
-                        forceLabel: "Unbalanced Amount"
+                        forceLabel: "Unbalanced Amount",
                       }}
                     />
                     <h6>{GetAmountFormart(this.state.unbalanced_amount)}</h6>
@@ -339,14 +357,14 @@ class AddReciptForm extends Component {
 
 function mapStateToProps(state) {
   return {
-    posheader: state.posheader
+    posheader: state.posheader,
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      reciptCalculations: AlgaehActions
+      reciptCalculations: AlgaehActions,
     },
     dispatch
   );

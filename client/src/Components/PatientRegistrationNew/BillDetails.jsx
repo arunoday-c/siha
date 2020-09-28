@@ -810,12 +810,13 @@ export function BillDetails({
                     card_id={cardData?.hims_d_bank_card_id}
                     card_number={cardData?.card_number}
                     disabled={!enableCard}
-                    onChangeCard={(e) => setCardData((s) => ({ ...s, ...e }))}
+                    onChangeCard={(e) => {
+                      setCardData(e);
+                    }}
                     onChangeNumber={(e) => {
-                      e.persist();
                       setCardData((s) => ({
                         ...s,
-                        card_number: e?.target?.value,
+                        card_number: e,
                       }));
                     }}
                   />

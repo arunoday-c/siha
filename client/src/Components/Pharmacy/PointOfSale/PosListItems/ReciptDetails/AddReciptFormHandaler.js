@@ -17,7 +17,7 @@ const texthandle = ($this, context, ctrl, e) => {
   }
 
   $this.setState({
-    [name]: value
+    [name]: value,
   });
 
   if (context !== null) {
@@ -33,7 +33,7 @@ const calculateRecipt = ($this, context) => {
     cash_amount: parseFloat($this.state.cash_amount),
     card_amount: parseFloat($this.state.card_amount),
     cheque_amount: parseFloat($this.state.cheque_amount),
-    receiveable_amount: parseFloat($this.state.receiveable_amount)
+    receiveable_amount: parseFloat($this.state.receiveable_amount),
   };
 
   algaehApiCall({
@@ -41,7 +41,7 @@ const calculateRecipt = ($this, context) => {
     module: "billing",
     method: "POST",
     data: serviceInput,
-    onSuccess: response => {
+    onSuccess: (response) => {
       if (response.data.success) {
         let data = response.data.records;
 
@@ -72,12 +72,12 @@ const calculateRecipt = ($this, context) => {
         }
       }
     },
-    onFailure: error => {
+    onFailure: (error) => {
       swalMessage({
         title: error.message,
-        type: "error"
+        type: "error",
       });
-    }
+    },
   });
 };
 
@@ -92,12 +92,12 @@ const cashtexthandle = ($this, context, ctrl, e) => {
   if (cash_amount + card_amount + cheque_amount > receiveable_amount) {
     swalMessage({
       title: "Sum of all amount to be equal to Receivable.",
-      type: "warning"
+      type: "warning",
     });
     $this.setState(
       {
         [e.target.name]: 0,
-        errorInCash: true
+        errorInCash: true,
       },
       () => {
         $this.setState({ errorInCash: false });
@@ -106,7 +106,7 @@ const cashtexthandle = ($this, context, ctrl, e) => {
   } else {
     $this.setState(
       {
-        [e.target.name]: e.target.value
+        [e.target.name]: e.target.value,
       },
       () => {
         calculateRecipt($this, context);
@@ -129,12 +129,12 @@ const cardtexthandle = ($this, context, ctrl, e) => {
   if (cash_amount + card_amount + cheque_amount > receiveable_amount) {
     swalMessage({
       title: "Sum of all amount to be equal to Receivable.",
-      type: "warning"
+      type: "warning",
     });
     $this.setState(
       {
         [e.target.name]: 0,
-        errorInCard: true
+        errorInCard: true,
       },
       () => {
         $this.setState({ errorInCard: false });
@@ -143,7 +143,7 @@ const cardtexthandle = ($this, context, ctrl, e) => {
   } else {
     $this.setState(
       {
-        [e.target.name]: e.target.value
+        [e.target.name]: e.target.value,
       },
       () => {
         calculateRecipt($this, context);
@@ -196,7 +196,7 @@ const cardtexthandle = ($this, context, ctrl, e) => {
 
 const datehandle = ($this, context, ctrl, e) => {
   $this.setState({
-    [e]: moment(ctrl)._d
+    [e]: moment(ctrl)._d,
   });
 
   if (context !== null) {
@@ -209,7 +209,7 @@ const checkcashhandaler = ($this, context, e) => {
   $this.setState(
     {
       Cashchecked: Cashchecked,
-      cash_amount: 0
+      cash_amount: 0,
     },
     () => {
       calculateRecipt($this, context);
@@ -219,7 +219,7 @@ const checkcashhandaler = ($this, context, e) => {
   if (context !== undefined) {
     context.updateState({
       cash_amount: 0,
-      Cashchecked: Cashchecked
+      Cashchecked: Cashchecked,
     });
   }
 };
@@ -231,7 +231,7 @@ const checkcardhandaler = ($this, context, e) => {
       Cardchecked: Cardchecked,
       card_amount: 0,
       card_check_number: null,
-      expiry_date: null
+      expiry_date: null,
     },
     () => {
       calculateRecipt($this, context);
@@ -243,7 +243,7 @@ const checkcardhandaler = ($this, context, e) => {
       Cardchecked: Cardchecked,
       card_amount: 0,
       card_check_number: null,
-      expiry_date: null
+      expiry_date: null,
     });
   }
 };

@@ -206,10 +206,9 @@ export default class AddReciptForm extends Component {
                   <CardComponent
                     disabled={!this.state.Cardchecked}
                     onChangeNumber={(e) => {
-                      e.persist();
                       texthandle(this, context, {
                         name: "card_check_number",
-                        value: e.target.value,
+                        value: e,
                       });
                     }}
                     card_number={this.state.card_check_number}
@@ -280,7 +279,7 @@ export default class AddReciptForm extends Component {
                       },
                     }}
                   />
-                  <AlagehFormGroup
+                  {/* <AlagehFormGroup
                     div={{ className: "col" }}
                     label={{
                       fieldName: "card_check_number",
@@ -302,7 +301,7 @@ export default class AddReciptForm extends Component {
                             : !this.state.Cardchecked,
                       },
                     }}
-                  />
+                  /> */}
 
                   <AlgaehDateHandler
                     div={{ className: "col" }}
