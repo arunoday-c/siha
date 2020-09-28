@@ -19,12 +19,12 @@ import swal from "sweetalert2";
 import moment from "moment";
 import { MainContext } from "algaeh-react-components";
 import { AlgaehSecurityElement } from "algaeh-react-components";
-// import { Input, Space } from "antd";
+import { Input, Space } from "antd";
+
 // import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 // import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 // const eye = <FontAwesomeIcon icon={faEye} />;
 // const slashEye = <FontAwesomeIcon icon={faEyeSlash} />;
-// import { EyeInvisibleOutlined, EyeTwoTone } from "@ant-design/icons";
 
 class DeptMaster extends Component {
   constructor(props) {
@@ -624,7 +624,7 @@ class DeptMaster extends Component {
                   }}
                   value={this.state.effective_start_date}
                 />
-                {/* <AlagehFormGroup
+                <AlagehFormGroup
                   div={{ className: "col mandatory" }}
                   label={{
                     fieldName: "sub_department_email",
@@ -643,11 +643,21 @@ class DeptMaster extends Component {
                   <Input.Password
                     placeholder="Sub dept email password"
                     name="password"
-                    iconRender={(visible) => (visible ? eye : slashEye)}
+                    iconRender={(visible) =>
+                      visible ? (
+                        <span>
+                          <i className="fas fa-eye" aria-hidden="true" />
+                        </span>
+                      ) : (
+                        <span>
+                          <i class="fa fa-eye-slash" aria-hidden="true"></i>
+                        </span>
+                      )
+                    }
                     value={this.state.password}
                     onChange={this.textHandle.bind(this)}
                   />
-                </Space> */}
+                </Space>
 
                 <AlgaehSecurityElement elementCode="READ_ONLY_ACCESS">
                   <div className="col align-middle">

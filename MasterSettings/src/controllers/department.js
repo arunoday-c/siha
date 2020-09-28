@@ -25,6 +25,9 @@ const {
   deleteSubDepartment,
   makeSubDepartmentInActive,
   makeDepartmentInActive,
+  getAllSubDepartment,
+  addEmailSendSubDept,
+  getEmailSetupDetails,
 } = deptModels;
 
 import { LINQ } from "node-linq";
@@ -51,7 +54,24 @@ export default () => {
       // next();
     }
   );
-
+  api.post("/addEmailSendSubDept", addEmailSendSubDept, (req, res, next) => {
+    let result = req.records;
+    res
+      .status(utlities.httpStatus().ok)
+      .json({
+        success: true,
+        records: result,
+      })
+      .end();
+  });
+  api.get("/getEmailSetupDetails", getEmailSetupDetails, (req, res, next) => {
+    let result = req.records;
+    res.status(utlities.httpStatus().ok).json({
+      success: true,
+      records: result,
+    });
+    next();
+  });
   api.put(
     "/updateDepartment",
     (req, res, next) => {
@@ -120,6 +140,17 @@ export default () => {
   );
 
   api.get("/get/subdepartment", selectSubDepartment, (req, res, next) => {
+    let result = req.records;
+    res
+      .status(utlities.httpStatus().ok)
+      .json({
+        success: true,
+        records: result,
+      })
+      .end();
+    // next();
+  });
+  api.get("/get/getAllSubDepartment", getAllSubDepartment, (req, res, next) => {
     let result = req.records;
     res
       .status(utlities.httpStatus().ok)
