@@ -28,6 +28,7 @@ import ButtonType from "../../Wrapper/algaehButton";
 
 import { FORMAT_PRICE_FROM } from "../../../utils/GlobalVariables.json";
 import MyContext from "../../../utils/MyContext";
+import { MainContext } from "algaeh-react-components";
 
 class NetworkPlan extends PureComponent {
   constructor(props) {
@@ -76,6 +77,8 @@ class NetworkPlan extends PureComponent {
       btnupdate: true,
     };
   }
+
+  static contextType = MainContext;
 
   UNSAFE_componentWillMount() {
     let InputOutput = this.props.InsuranceSetup;
@@ -320,7 +323,7 @@ class NetworkPlan extends PureComponent {
                       value: this.state.price_from,
                       dataSource: {
                         textField:
-                          this.state.selectedLang === "en"
+                          this.context.userLanguage === "en"
                             ? "name"
                             : "arabic_name",
                         valueField: "value",

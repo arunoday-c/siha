@@ -1,12 +1,10 @@
-import React, { useState, useContext } from "react";
+import React, { useState } from "react";
 import "./PolicyModal.scss";
-import { AlgaehModal, Button, MainContext } from "algaeh-react-components";
+import { AlgaehModal, Button } from "algaeh-react-components";
 import { InsuranceDropdown } from "../../common/InsuranceDropdown";
 import NetworkPlan from "../NetworkPlan/NetworkPlan";
 
 export function PolicyModal({ visible, onClose }) {
-  const { userLanguage } = useContext(MainContext);
-
   const [insurance, setInsurance] = useState(null);
 
   return (
@@ -23,7 +21,7 @@ export function PolicyModal({ visible, onClose }) {
       ]}
       width={720}
       // footer={null}
-      className={`${userLanguage}_comp row algaehNewModal patPolicyModal`}
+      className={`row algaehNewModal patPolicyModal`}
       // class={this.state.lang_sets}
     >
       <div className="popupInner">
