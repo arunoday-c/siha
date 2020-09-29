@@ -783,7 +783,6 @@ class NetworkPlan extends PureComponent {
                     <NetworkPlanList
                       insurance_provider_id={this.state.insurance_provider_id}
                       // network_plan={this.state.network_plan}
-                      selectedLang={this.state.selectedLang}
                     />
                   </div>
                 </div>

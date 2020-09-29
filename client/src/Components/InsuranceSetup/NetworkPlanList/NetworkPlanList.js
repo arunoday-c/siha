@@ -21,15 +21,17 @@ import {
   dateValidate,
 } from "./NetworkPlanListEvent.js";
 import { AlgaehActions } from "../../../actions/algaehActions";
+import { MainContext } from "algaeh-react-components";
 
 class NetworkPlanList extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
       network_plan: [],
-      selectedLang: this.props.selectedLang,
     };
   }
+
+  static contextType = MainContext;
 
   componentDidMount() {
     if (this.props.insurance_provider_id !== null) {
@@ -102,7 +104,7 @@ class NetworkPlanList extends PureComponent {
                 return (
                   <span>
                     {display !== null && display.length !== 0
-                      ? this.state.selectedLang === "en"
+                      ? this.context.userLanguage === "en"
                         ? display[0].insurance_sub_name
                         : display[0].arabic_sub_name
                       : ""}
@@ -121,7 +123,7 @@ class NetworkPlanList extends PureComponent {
                 return (
                   <span>
                     {display !== null && display.length !== 0
-                      ? this.state.selectedLang === "en"
+                      ? this.context.userLanguage === "en"
                         ? display[0].insurance_sub_name
                         : display[0].arabic_sub_name
                       : ""}
@@ -144,7 +146,7 @@ class NetworkPlanList extends PureComponent {
                 return (
                   <span>
                     {display !== null && display.length !== 0
-                      ? this.state.selectedLang === "en"
+                      ? this.context.userLanguage === "en"
                         ? display[0].hospital_name
                         : display[0].arabic_hospital_name
                       : ""}
@@ -162,7 +164,7 @@ class NetworkPlanList extends PureComponent {
                 return (
                   <span>
                     {display !== null && display.length !== 0
-                      ? this.state.selectedLang === "en"
+                      ? this.context.userLanguage === "en"
                         ? display[0].hospital_name
                         : display[0].arabic_hospital_name
                       : ""}
