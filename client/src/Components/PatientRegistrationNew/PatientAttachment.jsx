@@ -143,7 +143,6 @@ export function PatientAttachments({
         maskClosable={true}
         onCancel={onClose}
         onOk={() => {
-          debugger;
           saveDocument(
             fileList,
             patientData?.patient_code,
@@ -151,9 +150,10 @@ export function PatientAttachments({
           );
         }}
         okButtonProps={{
-          label: "Save",
+          disabled: !fileList.length,
           loading: loading,
         }}
+        okText="Upload"
         // footer={null}
         className={`${userLanguage}_comp row algaehNewModal`}
         // class={this.state.lang_sets}
@@ -189,6 +189,7 @@ export function PatientAttachments({
                           setFileList((state) => [...state, file]);
                           return false;
                         }}
+                        multiple={true}
                         // disabled={this.state.dataExists && !this.state.editMode}
                         fileList={fileList}
                       >
