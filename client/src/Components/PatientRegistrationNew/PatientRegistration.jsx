@@ -7,7 +7,7 @@ import { CSSTransition } from "react-transition-group";
 import { FrontdeskContext } from "./FrontdeskContext";
 import PackageUtilize from "../PatientProfile/PackageUtilize/PackageUtilize";
 import AdvanceRefundListModal from "../AdvanceRefundList/AdvanceRefundListModal";
-
+import { PatientAttachments } from "./PatientAttachment";
 import { UpdatePatient } from "./UpdatePatient";
 import {
   MainContext,
@@ -167,6 +167,7 @@ export function PatientRegistration() {
     MainContext
   );
   const [openPopup, setOpenPopup] = useState(false);
+  const [attachmentVisible, setAttachmentVisible] = useState(false);
   const [showPackage, setShowPackage] = useState(false);
   const [showUpdateModal, setUpdateModal] = useState(false);
   const [showAdvModal, setShowAdvModal] = useState(false);
@@ -679,6 +680,13 @@ export function PatientRegistration() {
               },
             },
           }}
+          attachments={{
+            onClick: () => {
+              if (!!patient_code || !!savedPatient?.patient_code) {
+                setAttachmentVisible(true);
+              }
+            },
+          }}
           printArea={
             !!patient_code || !!savedPatient
               ? {
@@ -944,6 +952,13 @@ export function PatientRegistration() {
             }}
             patient_code={patient_code || savedPatient?.patient_code}
             show={showUpdateModal}
+          />
+          <PatientAttachments
+            onClose={() => {
+              setAttachmentVisible(false);
+            }}
+            patientData={patientData?.patientRegistration}
+            visible={attachmentVisible}
           />
           <AdvanceRefundListModal
             show={showAdvModal}

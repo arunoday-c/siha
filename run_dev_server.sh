@@ -40,7 +40,7 @@ startServer () {
 # }
 
 
-  # Core Modules #
+  # # # # Core Modules #
   startServer "./algaeh-core" "core"
   startServer "./client" "client"
   startServer "./MasterSettings" "master_settings_server" 
@@ -49,7 +49,7 @@ startServer () {
   startServer "./Sockets" "sockets"
 
   # # # # # HRMS Modules #
-  # startServer "./HrManagement" "hr_server"
+  startServer "./HrManagement" "hr_server"
 
   # # # # HIS Modules #
    startServer "./FrontDesk" "front_desk_server" 
@@ -70,13 +70,13 @@ startServer () {
   # # # # Inventory Modules # 
    startServer "./Inventory" "inventory_server" 
 
-  # # # # Inventory Modules # 
+  # # # # # Inventory Modules # 
    startServer "./Procurement" "procurement_server"
 
-  # # # # Sales Modules # 
+  # # # # # Sales Modules # 
    startServer "./Sales" "sales"  
 
-  # Finance Modules # 
+  # # Finance Modules # 
    startServer "./algaeh-finance" "finance"   
 
 

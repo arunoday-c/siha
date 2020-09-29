@@ -36,6 +36,7 @@ import "./basicSubjective.scss";
 import _ from "lodash";
 import moment from "moment";
 import { Dimmer, Loader } from "semantic-ui-react";
+import { PatientAttachments } from "../../PatientRegistrationNew/PatientAttachment";
 class BasicSubjective extends Component {
   constructor(props) {
     super(props);
@@ -262,6 +263,20 @@ class BasicSubjective extends Component {
       }
       this.setState({
         deltaOpen: !this.state.deltaOpen,
+      });
+    }
+  }
+
+  showAttachments() {
+    const err = Validations(this);
+    if (!err) {
+      if (this.state.hims_f_episode_chief_complaint_id === null) {
+        SubjectiveHandler().addChiefComplainToPatient(this);
+      } else {
+        SubjectiveHandler().updatePatientChiefComplaints(this);
+      }
+      this.setState({
+        attachmentOpen: !this.state.attachmentOpen,
       });
     }
   }
@@ -513,6 +528,22 @@ class BasicSubjective extends Component {
                 state={this.state}
                 visible={this.state.deltaOpen}
                 onCancel={this.showDelta.bind(this)}
+              />
+              <li>
+                <span className="animated slideInLeft faster">Attachments</span>
+                <i
+                  className="fas fa-paperclip"
+                  onClick={this.showAttachments.bind(this)}
+                />
+              </li>
+              <PatientAttachments
+                visible={this.state.attachmentOpen}
+                onClose={this.showAttachments.bind(this)}
+                patientData={{
+                  hims_d_patient_id: Window?.global?.current_patient,
+                  patient_code: this.props.pat_profile?.patient_code,
+                }}
+                onlyShow={true}
               />
             </ul>
           </div>

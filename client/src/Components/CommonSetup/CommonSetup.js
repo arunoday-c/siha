@@ -13,6 +13,7 @@ import VisitType from "./VisitType/VisitType";
 import { AlgaehLabel } from "../Wrapper/algaehWrapper";
 import { AlgaehActions } from "../../actions/algaehActions";
 import { AlgaehTabs, MainContext } from "algaeh-react-components";
+import { PromotionMaster } from "./PromotionMaster";
 
 class CommonSetup extends Component {
   constructor(props) {
@@ -82,6 +83,16 @@ class CommonSetup extends Component {
           ),
           children: <PatientType />,
           componentCode: "COMM_PAT_TYPE",
+        },
+        {
+          title: (
+            <AlgaehLabel
+              label={{
+                forceLabel: "Promotion Master",
+              }}
+            />
+          ),
+          children: <PromotionMaster />,
         }
       );
     }
