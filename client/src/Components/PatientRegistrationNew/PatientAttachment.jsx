@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
+import "./PatientRegistrationStyle.scss";
 import {
   AlgaehModal,
   MainContext,
@@ -172,7 +173,7 @@ export function PatientAttachments({
               <div className="portlet-body">
                 <div className="row">
                   {!onlyShow && (
-                    <div className="col-6">
+                    <div className="col-6 patientAttachmentDrag">
                       {" "}
                       <Dragger
                         accept=".jpg,.png,.pdf"
@@ -205,7 +206,7 @@ export function PatientAttachments({
                   <div className="col-6">
                     <div className="row">
                       <div className="col-12">
-                        <ul className="contractAttachmentList">
+                        <ul className="patientAttachmentList">
                           {savedFiles.length ? (
                             savedFiles.map((doc) => (
                               <li>
