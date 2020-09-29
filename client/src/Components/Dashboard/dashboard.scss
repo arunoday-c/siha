@@ -126,3 +126,11 @@
     margin: 0 !important;
   }
 }
+.hr-dash {
+  .dashboardGrd {
+    width: 100%;
+    min-height: 250px !important;
+    max-height: 250px !important;
+    overflow: auto;
+  }
+}

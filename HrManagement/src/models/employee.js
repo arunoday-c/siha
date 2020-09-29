@@ -663,7 +663,7 @@ export default {
             inner join hims_d_employee E on ID.employee_id = E.hims_d_employee_id
             inner join hims_d_identity_document D on ID.identity_documents_id = D.hims_d_identity_document_id
             inner join hims_d_nationality N on E.nationality = N.hims_d_nationality_id
-              where ID.hospital_id=? and  date(ID.valid_upto) between date(?) and date(?) ;`,
+              where E.hospital_id=? and  date(ID.valid_upto) between date(?) and date(?) ;`,
 
             values: [input.hospital_id, input.from_date, input.to_date],
             printQuery: true,
