@@ -1786,7 +1786,7 @@ export default {
                       query: `select hims_f_salary_id, hims_f_salary_id as document_id, '${inputParam.ScreenCode}' as from_screen,
                   salary_number as document_number, salary_date as transaction_date,
                   S.net_salary as amount, 'journal' as voucher_type,S.hospital_id, 
-                  concat('Salary for Employee: ', E.employee_code , '/' , E.full_name , ' in ' , year , '/' , month) as narration,
+                  concat('Salary for Employee:', E.employee_code , '/' , E.full_name , ' in ' , year , '/' , month) as narration,
                   E.sub_department_id from hims_f_salary S 
                   inner join hims_d_employee E on E.hims_d_employee_id = S.employee_id 
                   where hims_f_salary_id in (?);
