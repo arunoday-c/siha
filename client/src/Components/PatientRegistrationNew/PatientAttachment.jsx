@@ -215,12 +215,11 @@ export function PatientAttachments({
                                     className="fas fa-download"
                                     onClick={() => downloadDoc(doc)}
                                   ></i>
-                                  {onlyShow ? (
-                                    <i
-                                      className="fas fa-eye"
-                                      onClick={() => downloadDoc(doc, true)}
-                                    ></i>
-                                  ) : (
+                                  <i
+                                    className="fas fa-eye"
+                                    onClick={() => downloadDoc(doc, true)}
+                                  ></i>
+                                  {!onlyShow && (
                                     <i
                                       className="fas fa-trash"
                                       onClick={() => deleteDoc(doc)}
