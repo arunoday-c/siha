@@ -11,7 +11,7 @@ import {
   AlgaehLabel,
   AlgaehDateHandler,
   AlagehFormGroup,
-  AlagehAutoComplete
+  AlagehAutoComplete,
 } from "../../Wrapper/algaehWrapper";
 
 import { AlgaehActions } from "../../../actions/algaehActions";
@@ -22,7 +22,7 @@ import {
   addNewNetwork,
   numberhandle,
   prenumberhandle,
-  dateValidate
+  dateValidate,
 } from "./NetworkPlanHandaler";
 import ButtonType from "../../Wrapper/algaehButton";
 
@@ -73,7 +73,7 @@ class NetworkPlan extends PureComponent {
 
       PlanList: false,
       saveupdate: false,
-      btnupdate: true
+      btnupdate: true,
     };
   }
 
@@ -83,19 +83,20 @@ class NetworkPlan extends PureComponent {
   }
 
   componentDidMount() {
-    if (this.state.insurance_provider_id !== null) {
+    if (this.props.InsuranceSetup.insurance_provider_id !== null) {
       this.props.getSubInsuranceDetails({
         uri: "/insurance/getSubInsurance",
         module: "insurance",
         method: "GET",
         printInput: true,
         data: {
-          insurance_provider_id: this.state.insurance_provider_id
+          insurance_provider_id: this.props.InsuranceSetup
+            .insurance_provider_id,
         },
         redux: {
           type: "SUB_INSURANCE_GET_DATA",
-          mappingName: "subinsuranceprovider"
-        }
+          mappingName: "subinsuranceprovider",
+        },
       });
 
       this.props.getNetworkPlans({
@@ -104,12 +105,12 @@ class NetworkPlan extends PureComponent {
         method: "GET",
         printInput: true,
         data: {
-          insuranceProviderId: this.state.insurance_provider_id
+          insuranceProviderId: this.props.InsuranceSetup.insurance_provider_id,
         },
         redux: {
           type: "NETWORK_PLAN_GET_DATA",
-          mappingName: "networkandplans"
-        }
+          mappingName: "networkandplans",
+        },
       });
     }
   }
@@ -122,7 +123,7 @@ class NetworkPlan extends PureComponent {
     return (
       <React.Fragment>
         <MyContext.Consumer>
-          {context => (
+          {(context) => (
             <div
               className="hptl-phase1-network-plan-form"
               data-validate="InsuranceProvider"
@@ -133,13 +134,13 @@ class NetworkPlan extends PureComponent {
                   <div className="col-12">
                     <AlgaehLabel
                       label={{
-                        forceLabel: "Insurar Name"
+                        forceLabel: "Insurance Name",
                       }}
                     />
                     <h6>
-                      {this.state.insurance_provider_name
-                        ? this.state.insurance_provider_name
-                        : "Insurar Name"}
+                      {this.props.InsuranceSetup.insurance_provider_name
+                        ? this.props.InsuranceSetup.insurance_provider_name
+                        : "Insurance Name"}
                     </h6>
                   </div>
                 </div>
@@ -154,7 +155,7 @@ class NetworkPlan extends PureComponent {
                     div={{ className: "col-lg-3" }}
                     label={{
                       fieldName: "insurance_sub_id",
-                      isImp: true
+                      isImp: true,
                     }}
                     selector={{
                       name: "insurance_sub_id",
@@ -166,9 +167,9 @@ class NetworkPlan extends PureComponent {
                             ? "insurance_sub_name"
                             : "arabic_sub_name",
                         valueField: "hims_d_insurance_sub_id",
-                        data: this.props.subinsuranceprovider
+                        data: this.props.subinsuranceprovider,
                       },
-                      onChange: texthandle.bind(this, this)
+                      onChange: texthandle.bind(this, this),
                     }}
                   />
 
@@ -176,7 +177,7 @@ class NetworkPlan extends PureComponent {
                     div={{ className: "col-lg-3" }}
                     label={{
                       fieldName: "network_type",
-                      isImp: true
+                      isImp: true,
                     }}
                     textBox={{
                       value: this.state.network_type,
@@ -184,11 +185,11 @@ class NetworkPlan extends PureComponent {
                       name: "network_type",
 
                       events: {
-                        onChange: texthandle.bind(this, this)
+                        onChange: texthandle.bind(this, this),
                       },
                       others: {
-                        "data-netdata": true
-                      }
+                        "data-netdata": true,
+                      },
                     }}
                   />
 
@@ -196,7 +197,7 @@ class NetworkPlan extends PureComponent {
                     div={{ className: "col-lg-3" }}
                     label={{
                       fieldName: "employer",
-                      isImp: true
+                      isImp: true,
                     }}
                     textBox={{
                       value: this.state.employer,
@@ -204,18 +205,18 @@ class NetworkPlan extends PureComponent {
                       name: "employer",
 
                       events: {
-                        onChange: texthandle.bind(this, this)
+                        onChange: texthandle.bind(this, this),
                       },
                       others: {
-                        "data-netdata": true
-                      }
+                        "data-netdata": true,
+                      },
                     }}
                   />
                   <AlagehFormGroup
                     div={{ className: "col-lg-3" }}
                     label={{
                       fieldName: "policy_number",
-                      isImp: true
+                      isImp: true,
                     }}
                     textBox={{
                       value: this.state.policy_number,
@@ -223,11 +224,11 @@ class NetworkPlan extends PureComponent {
                       name: "policy_number",
 
                       events: {
-                        onChange: texthandle.bind(this, this)
+                        onChange: texthandle.bind(this, this),
                       },
                       others: {
-                        "data-netdata": true
-                      }
+                        "data-netdata": true,
+                      },
                     }}
                   />
                   <AlgaehDateHandler
@@ -235,12 +236,12 @@ class NetworkPlan extends PureComponent {
                     label={{ fieldName: "effective_start_date", isImp: true }}
                     textBox={{
                       className: "txt-fld",
-                      name: "effective_start_date"
+                      name: "effective_start_date",
                     }}
                     maxDate={new Date()}
                     events={{
                       onChange: datehandle.bind(this, this),
-                      onBlur: dateValidate.bind(this, this)
+                      onBlur: dateValidate.bind(this, this),
                     }}
                     value={
                       this.state.effective_start_date !== null
@@ -253,13 +254,13 @@ class NetworkPlan extends PureComponent {
                     label={{ fieldName: "effective_end_date", isImp: true }}
                     textBox={{
                       className: "txt-fld",
-                      name: "effective_end_date"
+                      name: "effective_end_date",
                     }}
                     minDate={new Date()}
                     maxDate={this.state.maxDate_end_date}
                     events={{
                       onChange: datehandle.bind(this, this),
-                      onBlur: dateValidate.bind(this, this)
+                      onBlur: dateValidate.bind(this, this),
                     }}
                     value={
                       this.state.effective_end_date !== null
@@ -291,7 +292,7 @@ class NetworkPlan extends PureComponent {
                   <AlagehFormGroup
                     div={{ className: "col-lg-3" }}
                     label={{
-                      fieldName: "preapp_limit"
+                      fieldName: "preapp_limit",
                     }}
                     textBox={{
                       decimal: { allowNegative: false },
@@ -300,18 +301,18 @@ class NetworkPlan extends PureComponent {
                       name: "preapp_limit",
 
                       events: {
-                        onChange: prenumberhandle.bind(this, this)
+                        onChange: prenumberhandle.bind(this, this),
                       },
                       others: {
-                        "data-netdata": true
-                      }
+                        "data-netdata": true,
+                      },
                     }}
                   />
                   <AlagehAutoComplete
                     div={{ className: "col-lg-3" }}
                     label={{
                       fieldName: "price_from",
-                      isImp: true
+                      isImp: true,
                     }}
                     selector={{
                       name: "price_from",
@@ -323,12 +324,12 @@ class NetworkPlan extends PureComponent {
                             ? "name"
                             : "arabic_name",
                         valueField: "value",
-                        data: FORMAT_PRICE_FROM
+                        data: FORMAT_PRICE_FROM,
                       },
                       onChange: texthandle.bind(this, this),
                       others: {
-                        "data-netdata": true
-                      }
+                        "data-netdata": true,
+                      },
                     }}
                   />
                 </div>
@@ -520,12 +521,12 @@ class NetworkPlan extends PureComponent {
                         className: "txt-fld",
                         name: "copay_consultation",
                         events: {
-                          onChange: numberhandle.bind(this, this)
+                          onChange: numberhandle.bind(this, this),
                         },
                         others: {
                           "data-netdata": true,
-                          type: "number"
-                        }
+                          type: "number",
+                        },
                       }}
                     />
 
@@ -545,12 +546,12 @@ class NetworkPlan extends PureComponent {
                         name: "copay_percent",
 
                         events: {
-                          onChange: numberhandle.bind(this, this)
+                          onChange: numberhandle.bind(this, this),
                         },
                         others: {
                           "data-netdata": true,
-                          type: "number"
-                        }
+                          type: "number",
+                        },
                       }}
                     />
                     <div className="col d-none">
@@ -569,13 +570,13 @@ class NetworkPlan extends PureComponent {
                         name: "copay_percent_rad",
 
                         events: {
-                          onChange: numberhandle.bind(this, this)
+                          onChange: numberhandle.bind(this, this),
                         },
 
                         others: {
                           "data-netdata": true,
-                          type: "number"
-                        }
+                          type: "number",
+                        },
                       }}
                     />
                     <div className="col d-none">
@@ -595,12 +596,12 @@ class NetworkPlan extends PureComponent {
                         name: "copay_percent_trt",
 
                         events: {
-                          onChange: numberhandle.bind(this, this)
+                          onChange: numberhandle.bind(this, this),
                         },
                         others: {
                           "data-netdata": true,
-                          type: "number"
-                        }
+                          type: "number",
+                        },
                       }}
                     />
                     <div className="col d-none">
@@ -645,12 +646,12 @@ class NetworkPlan extends PureComponent {
                         name: "copay_medicine",
 
                         events: {
-                          onChange: numberhandle.bind(this, this)
+                          onChange: numberhandle.bind(this, this),
                         },
                         others: {
                           "data-netdata": true,
-                          type: "number"
-                        }
+                          type: "number",
+                        },
                       }}
                     />
                     {/* <AlagehFormGroup
@@ -680,12 +681,12 @@ class NetworkPlan extends PureComponent {
                         name: "max_value",
 
                         events: {
-                          onChange: numberhandle.bind(this, this)
+                          onChange: numberhandle.bind(this, this),
                         },
                         others: {
                           "data-netdata": true,
-                          type: "number"
-                        }
+                          type: "number",
+                        },
                       }}
                     />
                   </div>
@@ -698,8 +699,8 @@ class NetworkPlan extends PureComponent {
                         name: "insurance_sub_id",
 
                         others: {
-                          "data-netdata": true
-                        }
+                          "data-netdata": true,
+                        },
                       }}
                     />
                     <AlagehFormGroup
@@ -710,8 +711,8 @@ class NetworkPlan extends PureComponent {
                         name: "effective_start_date",
 
                         others: {
-                          "data-netdata": true
-                        }
+                          "data-netdata": true,
+                        },
                       }}
                     />
                     <AlagehFormGroup
@@ -722,8 +723,8 @@ class NetworkPlan extends PureComponent {
                         name: "effective_end_date",
 
                         others: {
-                          "data-netdata": true
-                        }
+                          "data-netdata": true,
+                        },
                       }}
                     />
 
@@ -735,8 +736,8 @@ class NetworkPlan extends PureComponent {
                         name: "insurance_sub_id",
 
                         others: {
-                          "data-netdata": true
-                        }
+                          "data-netdata": true,
+                        },
                       }}
                     />
 
@@ -748,8 +749,8 @@ class NetworkPlan extends PureComponent {
                         name: "price_from",
 
                         others: {
-                          "data-netdata": true
-                        }
+                          "data-netdata": true,
+                        },
                       }}
                     />
                   </div>
@@ -762,7 +763,7 @@ class NetworkPlan extends PureComponent {
                       onClick={saveNetworkPlan.bind(this, this, context)}
                       label={{
                         forceLabel: "Add",
-                        returnText: true
+                        returnText: true,
                       }}
                     />
                     <button
@@ -795,7 +796,7 @@ class NetworkPlan extends PureComponent {
 function mapStateToProps(state) {
   return {
     subinsuranceprovider: state.subinsuranceprovider,
-    networkandplans: state.networkandplans
+    networkandplans: state.networkandplans,
   };
 }
 
@@ -803,15 +804,12 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
       getSubInsuranceDetails: AlgaehActions,
-      getNetworkPlans: AlgaehActions
+      getNetworkPlans: AlgaehActions,
     },
     dispatch
   );
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(NetworkPlan)
+  connect(mapStateToProps, mapDispatchToProps)(NetworkPlan)
 );

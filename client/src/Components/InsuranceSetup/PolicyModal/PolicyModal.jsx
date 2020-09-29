@@ -1,0 +1,49 @@
+import React, { useState, useContext } from "react";
+import { AlgaehModal, Button, MainContext } from "algaeh-react-components";
+import { InsuranceDropdown } from "../../common/InsuranceDropdown";
+import NetworkPlan from "../NetworkPlan/NetworkPlan";
+
+export function PolicyModal({ visible, onClose }) {
+  const { userLanguage } = useContext(MainContext);
+
+  const [insurance, setInsurance] = useState(null);
+
+  return (
+    <AlgaehModal
+      title={"Patient Attachments"}
+      visible={visible}
+      mask={true}
+      maskClosable={true}
+      onCancel={onClose}
+      footer={[
+        <Button className="btn btn-default" onClick={onClose}>
+          Close
+        </Button>,
+      ]}
+      width={720}
+      // footer={null}
+      className={`${userLanguage}_comp row algaehNewModal`}
+      // class={this.state.lang_sets}
+    >
+      <div className="popupInner">
+        <div className="row">
+          <div className="12">
+            <InsuranceDropdown
+              value={insurance?.hims_d_insurance_provider_id}
+              onChange={(obj) => setInsurance(obj)}
+              div={{ className: "col-5" }}
+              label={{ forceLabel: "Insurance" }}
+            />
+            <NetworkPlan
+              key={insurance?.hims_d_insurance_provider_id || "idle"}
+              InsuranceSetup={{
+                insurance_provider_id: insurance?.hims_d_insurance_provider_id,
+                insurance_provider_name: insurance?.insurance_provider_name,
+              }}
+            />
+          </div>
+        </div>
+      </div>
+    </AlgaehModal>
+  );
+}

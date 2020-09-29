@@ -18,6 +18,7 @@ import AlgaehSearch from "../Wrapper/globalSearch";
 import InsuranceFields from "../../Search/Insurance.json";
 import { newAlgaehApi } from "../../hooks/";
 import { FrontdeskContext } from "./FrontdeskContext";
+import { PolicyModal } from "../InsuranceSetup/PolicyModal";
 // import { fieldNameFn } from "./index";
 // import GenericData from "../../utils/GlobalVariables.json";
 const { TabPane } = Tabs;
@@ -48,6 +49,7 @@ export function InsuranceDetails({
     FrontdeskContext
   );
   const { fieldNameFn } = useLangFieldName();
+  const [showPolicy, setShowPolicy] = useState(false);
   // const [isInsurance, setIsInsurance] = useState(false);
   const [insuranceList, setInsuranceList] = useState([]);
   const disabled = !isInsurance || saveDisable;
@@ -113,6 +115,7 @@ export function InsuranceDetails({
 
   return (
     <Spin spinning={isLoading}>
+      <PolicyModal visible={showPolicy} onClose={() => setShowPolicy(false)} />
       <div className="hptl-phase1-insurance-details margin-top-15">
         <div className="insurance-section">
           <Tabs type="card">
@@ -338,7 +341,7 @@ export function InsuranceDetails({
                           }}
                           render={({ onChange, value }) => (
                             <AlgaehAutoComplete
-                              div={{ className: "col-3" }}
+                              div={{ className: "col-2" }}
                               label={{
                                 fieldName: "plan_id",
                                 isImp: isInsurance,
@@ -362,7 +365,19 @@ export function InsuranceDetails({
                             />
                           )}
                         />
-
+                        <div
+                          className="col-1"
+                          style={{ paddingRight: 0, marginTop: 20 }}
+                        >
+                          <button
+                            type="button"
+                            className="btn btn-primary btn-rounded"
+                            onClick={() => setShowPolicy(true)}
+                            // disabled={!isInsurance}
+                          >
+                            <i className="fas fa-plus" />
+                          </button>
+                        </div>
                         <Controller
                           control={control}
                           name="primary_card_number"
