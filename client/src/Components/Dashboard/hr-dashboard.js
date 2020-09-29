@@ -12,7 +12,12 @@ import DashBoardEvents, {
 } from "./DashBoardEvents";
 import { MainContext } from "algaeh-react-components";
 import { AlagehAutoComplete } from "../Wrapper/algaehWrapper";
-
+import {
+  AlgaehDataGrid,
+  AlgaehDateHandler,
+  // AlgaehMessagePop,
+} from "algaeh-react-components";
+import moment from "moment";
 const dashEvents = DashBoardEvents();
 
 class Dashboard extends Component {
@@ -36,8 +41,13 @@ class Dashboard extends Component {
       avg_salary: 0,
       no_of_projects: 0,
       hospital_id: "",
+      dateRange: [moment().startOf("month"), moment().endOf("month")],
+      dateRangeEmployee: [moment().startOf("month"), moment().endOf("month")],
+      documentExipryData: [],
+      employeeJoinedThisMonth: [],
     };
   }
+
   static contextType = MainContext;
   componentDidMount() {
     const userToken = this.context.userToken;
@@ -60,6 +70,8 @@ class Dashboard extends Component {
         dashEvents.getEmployeeDesignationWise(this);
         dashEvents.getProjectList(this);
         dashEvents.getEmployeeProjectWise(this);
+        dashEvents.getDocumentExpiryCurrentMonth(this);
+        dashEvents.getEmployeeCurrentMonth(this);
       }
     );
   }
@@ -289,8 +301,84 @@ class Dashboard extends Component {
               <div className="col-6">
                 <div className="card animated fadeInUp faster">
                   <h6>New Employee Joined this Month</h6>
+                  <AlgaehDateHandler
+                    type={"range"}
+                    div={{
+                      className: "col-12 form-group",
+                    }}
+                    label={{
+                      forceLabel: "Select Date Range",
+                    }}
+                    textBox={{
+                      name: "selectRange",
+                      value: this.state.dateRangeEmployee,
+                    }}
+                    // maxDate={new date()}
+                    events={{
+                      onChange: (dateSelected) => {
+                        // const months = moment(dateSelected[1]).diff(
+                        //   dateSelected[0],
+                        //   "months"
+                        // );
+                        // if (months <= 11) {
+                        this.setState({ dateRange: dateSelected }, () => {
+                          dashEvents.getEmployeeCurrentMonth(this);
+                        });
+                        // } else {
+                        //   AlgaehMessagePop({
+                        //     title: "error",
+                        //     display: "you can select maximum one year.",
+                        //   });
+                        // }
+                      },
+                    }}
+                    // others={{
+                    //   ...format,
+                    // }}
+                  />
                   <div className="dashboardGridCntr">
-                    <table className="table  table-bordered table-sm table-striped ">
+                    <AlgaehDataGrid
+                      className="DetailGrid"
+                      columns={[
+                        {
+                          fieldName: "row_num",
+                          label: "Sl.no",
+                        },
+                        {
+                          fieldName: "date_of_joining",
+                          label: "Join Date",
+                        },
+                        {
+                          fieldName: "employee_code",
+                          label: "Employee Code",
+                        },
+                        {
+                          fieldName: "full_name",
+                          label: "Employee Name",
+                        },
+                        {
+                          fieldName: "sex",
+                          label: "Gender",
+                        },
+                        {
+                          fieldName: "designation",
+                          label: "Designation",
+                        },
+                        {
+                          fieldName: "sub_department_name",
+                          label: "Sub Department",
+                        },
+                      ]}
+                      // height="40vh"
+                      rowUnique="finance_voucher_id"
+                      data={
+                        this.state.employeeJoinedThisMonth
+                          ? this.state.employeeJoinedThisMonth
+                          : []
+                      }
+                    />
+
+                    {/* <table className="table  table-bordered table-sm table-striped ">
                       <thead>
                         <tr>
                           <th className="text-center">Join Date </th>
@@ -327,15 +415,87 @@ class Dashboard extends Component {
                           </tr>
                         )}
                       </tbody>
-                    </table>
+                    </table> */}
                   </div>
                 </div>
               </div>
               <div className="col-6">
                 <div className="card animated fadeInUp faster">
                   <h6>Document Expire next month</h6>
+                  <AlgaehDateHandler
+                    type={"range"}
+                    div={{
+                      className: "col-12 form-group",
+                    }}
+                    label={{
+                      forceLabel: "Select Date Range",
+                    }}
+                    textBox={{
+                      name: "selectRange",
+                      value: this.state.dateRange,
+                    }}
+                    // maxDate={new date()}
+                    events={{
+                      onChange: (dateSelected) => {
+                        // const months = moment(dateSelected[1]).diff(
+                        //   dateSelected[0],
+                        //   "months"
+                        // );
+                        // if (months <= 11) {
+                        this.setState(
+                          { dateRange: dateSelected },
+                          () => {
+                            dashEvents.getDocumentExpiryCurrentMonth(this);
+                          }
+
+                          //     });
+                          //   } else {
+                          //     AlgaehMessagePop({
+                          //       title: "error",
+                          //       display: "you can select maximum one year.",
+                          //     });
+                          //   }
+                        );
+                      },
+                    }}
+                    // others={{
+                    //   ...format,
+                    // }}
+                  />
                   <div className="dashboardGridCntr">
-                    <table className="table  table-bordered table-sm table-striped ">
+                    <AlgaehDataGrid
+                      className="DetailGrid"
+                      columns={[
+                        {
+                          fieldName: "row_num",
+                          label: "Sl.no",
+                        },
+                        {
+                          fieldName: "employee_code",
+                          label: "Employee Code",
+                        },
+                        {
+                          fieldName: "full_name",
+                          label: "Employee Name",
+                        },
+                        {
+                          fieldName: "identity_document_name",
+                          label: "Document Type",
+                        },
+                        {
+                          fieldName: "valid_upto",
+                          label: "Valid Upto",
+                        },
+                      ]}
+                      // height="40vh"
+                      rowUnique="identity_documents_id"
+                      data={
+                        this.state.documentExpiryData
+                          ? this.state.documentExpiryData
+                          : []
+                      }
+                    />
+                    {/* <table className="table  table-bordered table-sm table-striped ">
                       <thead>
                         <tr>
                           <th className="text-center">Employee Code</th>
@@ -366,7 +526,7 @@ class Dashboard extends Component {
                           </tr>
                         )}
                       </tbody>
-                    </table>
+                    </table> */}
                   </div>
                 </div>
               </div>

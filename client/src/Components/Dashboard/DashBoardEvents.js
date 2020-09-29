@@ -19,9 +19,9 @@ export const chartLegends = {
     position: "center",
     fontSize: 12,
     labels: {
-      boxWidth: 10
-    }
-  }
+      boxWidth: 10,
+    },
+  },
 };
 
 export const chartOptions = {
@@ -35,18 +35,18 @@ export const chartOptions = {
             if (Math.floor(value) === value) {
               return value;
             }
-          }
-        }
-      }
+          },
+        },
+      },
     ],
     xAxes: [
       {
         gridLines: {
-          display: false
-        }
-      }
-    ]
-  }
+          display: false,
+        },
+      },
+    ],
+  },
 };
 export const chartOptionsHorizontal = {
   scales: {
@@ -59,23 +59,23 @@ export const chartOptionsHorizontal = {
             if (Math.floor(value) === value) {
               return value;
             }
-          }
-        }
-      }
+          },
+        },
+      },
     ],
     yAxes: [
       {
         gridLines: {
-          display: false
-        }
-      }
-    ]
-  }
+          display: false,
+        },
+      },
+    ],
+  },
 };
 
 export default function DashBoardEvents() {
   return {
-    getSampleCollectionDetails: $this => {
+    getSampleCollectionDetails: ($this) => {
       let inputobj = {};
 
       let month = moment(new Date()).format("MM");
@@ -92,7 +92,7 @@ export default function DashBoardEvents() {
         module: "laboratory",
         method: "GET",
         data: inputobj,
-        onSuccess: response => {
+        onSuccess: (response) => {
           if (response.data.success) {
             let sample_collection = Enumerable.from(response.data.records)
               .groupBy("$.visit_id", null, (k, g) => {
@@ -101,7 +101,7 @@ export default function DashBoardEvents() {
                   patient_code: firstRecordSet.patient_code,
                   full_name: firstRecordSet.full_name,
                   ordered_date: firstRecordSet.ordered_date,
-                  status: firstRecordSet.status
+                  status: firstRecordSet.status,
                 };
               })
               .toArray();
@@ -109,16 +109,80 @@ export default function DashBoardEvents() {
             $this.setState({ sample_collection: sample_collection });
           }
         },
-        onFailure: error => {
+        onFailure: (error) => {
           swalMessage({
             title: error.message,
-            type: "error"
+            type: "error",
           });
-        }
+        },
       });
     },
-
-    getEmployeeList: $this => {
+    getDocumentExpiryCurrentMonth: ($this) => {
+      debugger;
+      // var date = new Date(),
+      //   y = date.getFullYear(),
+      //   m = date.getMonth();
+      // var firstDay = new Date(y, m, 1);
+      // var lastDay = new Date(y, m + 1, 0);
+      let from_date = moment($this.state.dateRange[0]._d).format("YYYY-MM-DD");
+      let to_date = moment($this.state.dateRange[1]._d).format("YYYY-MM-DD");
+      algaehApiCall({
+        uri: "/employee/getDocumentExpiryCurrentMonth",
+        module: "hrManagement",
+        data: {
+          hospital_id: $this.state.hospital_id,
+          from_date: from_date,
+          to_date: to_date,
+        },
+        method: "GET",
+        onSuccess: (response) => {
+          debugger;
+          if (response.data.success) {
+            $this.setState({
+              documentExpiryData: response.data.records,
+            });
+          }
+        },
+        onFailure: (error) => {
+          swalMessage({
+            title: error.message,
+            type: "error",
+          });
+        },
+      });
+    },
+    getEmployeeCurrentMonth: ($this) => {
+      let from_date = moment($this.state.dateRangeEmployee[0]._d).format(
+        "YYYY-MM-DD"
+      );
+      let to_date = moment($this.state.dateRangeEmployee[1]._d).format(
+        "YYYY-MM-DD"
+      );
+      algaehApiCall({
+        uri: "/employee/getEmployeeCurrentMonth",
+        module: "hrManagement",
+        data: {
+          hospital_id: $this.state.hospital_id,
+          from_date: from_date,
+          to_date: to_date,
+        },
+        method: "GET",
+        onSuccess: (response) => {
+          if (response.data.success) {
+            $this.setState({
+              employeeJoinedThisMonth: response.data.records,
+            });
+          }
+        },
+        onFailure: (error) => {
+          swalMessage({
+            title: error.message,
+            type: "error",
+          });
+        },
+      });
+    },
+    getEmployeeList: ($this) => {
       var date = new Date(),
         y = date.getFullYear(),
         m = date.getMonth();
@@ -131,7 +195,7 @@ export default function DashBoardEvents() {
         data: { hospital_id: $this.state.hospital_id },
         method: "GET",
 
-        onSuccess: response => {
+        onSuccess: (response) => {
           if (response.data.success) {
             let no_of_employees = response.data.records.length;
 
@@ -143,11 +207,11 @@ export default function DashBoardEvents() {
                   moment(item.date_of_joining).format("YYYYMMDD"),
                   moment(firstDay).format("YYYYMMDD"),
                   moment(lastDay).format("YYYYMMDD")
-                )
+                ),
               ]);
             });
             // date_of_joining
-            let total_company_salary = _.sumBy(response.data.records, s =>
+            let total_company_salary = _.sumBy(response.data.records, (s) =>
               s.cost_to_company !== null ? parseFloat(s.cost_to_company) : 0
             );
 
@@ -157,36 +221,36 @@ export default function DashBoardEvents() {
             // avg_salary = Math.round(avg_salary);
 
             const total_staff_salary = _.chain(response.data.records)
-              .filter(f => f.employee_group_id === 1)
-              .sumBy(s =>
+              .filter((f) => f.employee_group_id === 1)
+              .sumBy((s) =>
                 s.cost_to_company !== null ? parseFloat(s.cost_to_company) : 0
               )
               .value();
 
             const total_labor_salary = _.chain(response.data.records)
-              .filter(f => f.employee_group_id === 2)
-              .sumBy(s =>
+              .filter((f) => f.employee_group_id === 2)
+              .sumBy((s) =>
                 s.cost_to_company !== null ? parseFloat(s.cost_to_company) : 0
               )
               .value();
 
             const total_staff_count = _.chain(response.data.records)
-              .filter(f => f.employee_group_id === 1)
+              .filter((f) => f.employee_group_id === 1)
               .value().length;
             const total_labour_count = _.chain(response.data.records)
-              .filter(f => f.employee_group_id === 2)
+              .filter((f) => f.employee_group_id === 2)
               .value().length;
 
             const total_localite_count = _.chain(response.data.records)
               .filter(
-                f =>
+                (f) =>
                   f.nationality === $this.context.userToken.default_nationality
               )
               .value().length;
 
             const total_expatriate_count = _.chain(response.data.records)
               .filter(
-                f =>
+                (f) =>
                   f.nationality !== $this.context.userToken.default_nationality
               )
               .value().length;
@@ -201,28 +265,27 @@ export default function DashBoardEvents() {
               total_expatriate_count: total_expatriate_count,
               total_staff_salary: total_staff_salary,
               total_labor_salary: total_labor_salary,
-              avg_salary: avg_salary
+              avg_salary: avg_salary,
             });
           }
         },
-        onFailure: error => {
+        onFailure: (error) => {
           swalMessage({
             title: error.message,
-            type: "error"
+            type: "error",
           });
-        }
+        },
       });
     },
 
-    getEmployeeProjectWise: $this => {
+    getEmployeeProjectWise: ($this) => {
       algaehApiCall({
         uri: "/projectjobcosting/getNoEmployeesProjectWise",
         module: "hrManagement",
         method: "GET",
         data: { hospital_id: $this.state.hospital_id },
 
-        onSuccess: response => {
-
+        onSuccess: (response) => {
           if (response.data.success) {
             const { records } = response.data;
             let labels = [];
@@ -234,35 +297,35 @@ export default function DashBoardEvents() {
                 borderColor: "rgba(255,99,132,1)",
                 borderWidth: 1,
                 hoverBackgroundColor: "rgba(255,99,132,0.4)",
-                hoverBorderColor: "rgba(255,99,132,1)"
-              }
+                hoverBorderColor: "rgba(255,99,132,1)",
+              },
             ];
             for (let i = 0; i < records.length; i++) {
               labels.push(records[i].project_desc);
               datasets[0].data.push(records[i].no_employees);
             }
             $this.setState({
-              projectEmployee: { labels, datasets }
+              projectEmployee: { labels, datasets },
             });
           }
         },
-        onFailure: error => {
+        onFailure: (error) => {
           swalMessage({
             title: error.message,
-            type: "error"
+            type: "error",
           });
-        }
+        },
       });
     },
 
-    getEmployeeDepartmentsWise: $this => {
+    getEmployeeDepartmentsWise: ($this) => {
       algaehApiCall({
         uri: "/employee/getEmployeeDepartmentsWise",
         module: "hrManagement",
         method: "GET",
         data: { hospital_id: $this.state.hospital_id },
 
-        onSuccess: response => {
+        onSuccess: (response) => {
           console.log("response:", response);
           if (response.data.success) {
             let no_of_employees = response.data.records;
@@ -276,8 +339,8 @@ export default function DashBoardEvents() {
                 borderColor: "rgba(255,99,132,1)",
                 borderWidth: 1,
                 hoverBackgroundColor: "rgba(255,99,132,0.4)",
-                hoverBorderColor: "rgba(255,99,132,1)"
-              }
+                hoverBorderColor: "rgba(255,99,132,1)",
+              },
             ];
             for (let i = 0; i < no_of_employees.length; i++) {
               labels.push(no_of_employees[i].sub_department_name);
@@ -286,26 +349,26 @@ export default function DashBoardEvents() {
             let Dept_Employee = { labels, datasets };
 
             $this.setState({
-              Dept_Employee: Dept_Employee
+              Dept_Employee: Dept_Employee,
             });
           }
         },
-        onFailure: error => {
+        onFailure: (error) => {
           swalMessage({
             title: error.message,
-            type: "error"
+            type: "error",
           });
-        }
+        },
       });
     },
 
-    getEmployeeDesignationWise: $this => {
+    getEmployeeDesignationWise: ($this) => {
       algaehApiCall({
         uri: "/employee/getEmployeeDesignationWise",
         module: "hrManagement",
         method: "GET",
         data: { hospital_id: $this.state.hospital_id },
-        onSuccess: response => {
+        onSuccess: (response) => {
           if (response.data.success) {
             let no_of_employees = response.data.records;
 
@@ -318,8 +381,8 @@ export default function DashBoardEvents() {
                 borderColor: "rgba(255,99,132,1)",
                 borderWidth: 1,
                 hoverBackgroundColor: "rgba(255,99,132,0.4)",
-                hoverBorderColor: "rgba(255,99,132,1)"
-              }
+                hoverBorderColor: "rgba(255,99,132,1)",
+              },
             ];
             for (let i = 0; i < no_of_employees.length; i++) {
               labels.push(no_of_employees[i].designation);
@@ -328,40 +391,40 @@ export default function DashBoardEvents() {
             let Desig_Employee = { labels, datasets };
 
             $this.setState({
-              Desig_Employee: Desig_Employee
+              Desig_Employee: Desig_Employee,
             });
           }
         },
-        onFailure: error => {
+        onFailure: (error) => {
           swalMessage({
             title: error.message,
-            type: "error"
+            type: "error",
           });
-        }
+        },
       });
     },
 
-    getProjectList: $this => {
+    getProjectList: ($this) => {
       algaehApiCall({
         uri: "/hrsettings/getProjects",
         module: "hrManagement",
         method: "GET",
         data: { pjoject_status: "A", hospital_id: $this.state.hospital_id },
-        onSuccess: res => {
+        onSuccess: (res) => {
           if (res.data.success) {
             $this.setState({
-              no_of_projects: res.data.records.length
+              no_of_projects: res.data.records.length,
             });
           }
         },
 
-        onFailure: err => {
+        onFailure: (err) => {
           swalMessage({
             title: err.message,
-            type: "error"
+            type: "error",
           });
-        }
+        },
       });
-    }
+    },
   };
 }

@@ -648,6 +648,83 @@ export default {
       next(e);
     });
   },
+  getDocumentExpiryCurrentMonth: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    let input = req.query;
+    return new Promise((resolve, reject) => {
+      try {
+        _mysql
+          .executeQuery({
+            query: `
+            SELECT
+             ROW_NUMBER() OVER (ORDER BY E.hims_d_employee_id) as row_num,
+             ID.identity_documents_id,ID.employee_id,ID.identity_number,D.identity_document_name,ID.valid_upto, E.employee_code, E.full_name, N.nationality
+            FROM hims_d_employee_identification as ID
+            inner join hims_d_employee E on ID.employee_id = E.hims_d_employee_id
+            inner join hims_d_identity_document D on ID.identity_documents_id = D.hims_d_identity_document_id
+            inner join hims_d_nationality N on E.nationality = N.hims_d_nationality_id
+              where ID.hospital_id=? and  date(ID.valid_upto) between date(?) and date(?) ;`,
+
+            values: [input.hospital_id, input.from_date, input.to_date],
+            printQuery: true,
+          })
+          .then((result) => {
+            _mysql.releaseConnection();
+            req.records = result;
+            next();
+            resolve(result);
+          })
+          .catch((e) => {
+            next(e);
+            reject(e);
+          });
+      } catch (e) {
+        reject(e);
+        next(e);
+      }
+    }).catch((e) => {
+      _mysql.releaseConnection();
+      next(e);
+    });
+  },
+  getEmployeeCurrentMonth: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    let input = req.query;
+    return new Promise((resolve, reject) => {
+      try {
+        _mysql
+          .executeQuery({
+            query: `SELECT 
+            ROW_NUMBER() OVER (ORDER BY E.hims_d_employee_id) as row_num,
+            E.hims_d_employee_id,E.employee_designation_id,E.employee_code,E.full_name, N.nationality,E.sex, E.date_of_joining, S.sub_department_name,D.designation
+            FROM hims_d_employee as E
+            inner join hims_d_nationality N on E.nationality = N.hims_d_nationality_id
+            inner join hims_d_sub_department S on E.sub_department_id = S.hims_d_sub_department_id
+            inner join hims_d_designation D on E.employee_designation_id = D.hims_d_designation_id
+           where E.hospital_id=? and  date(E.date_of_joining) between date(?) and date(?) ;`,
+
+            values: [input.hospital_id, input.from_date, input.to_date],
+            printQuery: true,
+          })
+          .then((result) => {
+            _mysql.releaseConnection();
+            req.records = result;
+            next();
+            resolve(result);
+          })
+          .catch((e) => {
+            next(e);
+            reject(e);
+          });
+      } catch (e) {
+        reject(e);
+        next(e);
+      }
+    }).catch((e) => {
+      _mysql.releaseConnection();
+      next(e);
+    });
+  },
 
   getEmployeeDesignationWise: (req, res, next) => {
     const _mysql = new algaehMysql();
