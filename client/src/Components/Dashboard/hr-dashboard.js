@@ -109,7 +109,7 @@ class Dashboard extends Component {
 
   render() {
     return (
-      <div className="dashboard ">
+      <div className="dashboard hr-dash">
         <div className="row">
           <AlagehAutoComplete
             div={{ className: "col-lg-3 col-md-3 col-sm-12  form-group" }}
@@ -301,232 +301,187 @@ class Dashboard extends Component {
               <div className="col-6">
                 <div className="card animated fadeInUp faster">
                   <h6>New Employee Joined this Month</h6>
-                  <AlgaehDateHandler
-                    type={"range"}
-                    div={{
-                      className: "col-12 form-group",
-                    }}
-                    label={{
-                      forceLabel: "Select Date Range",
-                    }}
-                    textBox={{
-                      name: "selectRange",
-                      value: this.state.dateRangeEmployee,
-                    }}
-                    // maxDate={new date()}
-                    events={{
-                      onChange: (dateSelected) => {
-                        // const months = moment(dateSelected[1]).diff(
-                        //   dateSelected[0],
-                        //   "months"
-                        // );
-                        // if (months <= 11) {
-                        this.setState({ dateRange: dateSelected }, () => {
-                          dashEvents.getEmployeeCurrentMonth(this);
-                        });
-                        // } else {
-                        //   AlgaehMessagePop({
-                        //     title: "error",
-                        //     display: "you can select maximum one year.",
-                        //   });
-                        // }
-                      },
-                    }}
-                    // others={{
-                    //   ...format,
-                    // }}
-                  />
-                  <div className="dashboardGridCntr">
-                    <AlgaehDataGrid
-                      className="DetailGrid"
-                      columns={[
-                        {
-                          fieldName: "row_num",
-                          label: "Sl.no",
-                        },
-                        {
-                          fieldName: "date_of_joining",
-                          label: "Join Date",
-                        },
-                        {
-                          fieldName: "employee_code",
-                          label: "Employee Code",
-                        },
-                        {
-                          fieldName: "full_name",
-                          label: "Employee Name",
-                        },
-                        {
-                          fieldName: "sex",
-                          label: "Gender",
-                        },
-                        {
-                          fieldName: "designation",
-                          label: "Designation",
-                        },
-                        {
-                          fieldName: "sub_department_name",
-                          label: "Sub Department",
-                        },
-                      ]}
-                      // height="40vh"
-                      rowUnique="finance_voucher_id"
-                      data={
-                        this.state.employeeJoinedThisMonth
-                          ? this.state.employeeJoinedThisMonth
-                          : []
-                      }
-                    />
 
-                    {/* <table className="table  table-bordered table-sm table-striped ">
-                      <thead>
-                        <tr>
-                          <th className="text-center">Join Date </th>
-                          <th className="text-center">Employee Code</th>
-                          <th className="text-center">Employee Name</th>
-                          <th className="text-center">Gender</th>
-                          <th className="text-center">Designation</th>
-                          <th className="text-center">Sub Department</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {this.state.no_of_emp_join.length > 0 ? (
-                          this.state.no_of_emp_join.map((row, index) => (
-                            <tr key={index}>
-                              <td className="text-center">
-                                {row.date_of_joining}
-                              </td>
-                              <td className="text-center">
-                                {row.employee_code}
-                              </td>
-                              <td className="text-center">{row.full_name}</td>
-                              <td className="text-center">{row.sex}</td>
-                              <td className="text-center">{row.designation}</td>
-                              <td className="text-center">
-                                {row.sub_department_name}
-                              </td>
-                            </tr>
-                          ))
-                        ) : (
-                          <tr>
-                            <td className="text-center" colSpan="6">
-                              No New Joinee for this Month
-                            </td>
-                          </tr>
-                        )}
-                      </tbody>
-                    </table> */}
+                  <div className="row dashboardGridCntr">
+                    <div className="col">
+                      {" "}
+                      <div className="col">
+                        <div className="row">
+                          {" "}
+                          <AlgaehDateHandler
+                            type={"range"}
+                            div={{
+                              className: "col-6 form-group",
+                            }}
+                            label={{
+                              forceLabel: "Select Date Range",
+                            }}
+                            textBox={{
+                              name: "selectRange",
+                              value: this.state.dateRangeEmployee,
+                            }}
+                            // maxDate={new date()}
+                            events={{
+                              onChange: (dateSelected) => {
+                                // const months = moment(dateSelected[1]).diff(
+                                //   dateSelected[0],
+                                //   "months"
+                                // );
+                                // if (months <= 11) {
+                                this.setState(
+                                  { dateRange: dateSelected },
+                                  () => {
+                                    dashEvents.getEmployeeCurrentMonth(this);
+                                  }
+                                );
+                                // } else {
+                                //   AlgaehMessagePop({
+                                //     title: "error",
+                                //     display: "you can select maximum one year.",
+                                //   });
+                                // }
+                              },
+                            }}
+                            // others={{
+                            //   ...format,
+                            // }}
+                          />
+                          <div className="col-12">
+                            <AlgaehDataGrid
+                              className="dashboardGrd"
+                              columns={[
+                                {
+                                  fieldName: "row_num",
+                                  label: "Sl.no",
+                                },
+                                {
+                                  fieldName: "date_of_joining",
+                                  label: "Join Date",
+                                },
+                                {
+                                  fieldName: "employee_code",
+                                  label: "Employee Code",
+                                },
+                                {
+                                  fieldName: "full_name",
+                                  label: "Employee Name",
+                                },
+                                {
+                                  fieldName: "sex",
+                                  label: "Gender",
+                                },
+                                {
+                                  fieldName: "designation",
+                                  label: "Designation",
+                                },
+                                {
+                                  fieldName: "sub_department_name",
+                                  label: "Sub Department",
+                                },
+                              ]}
+                              // height="40vh"
+                              rowUnique="finance_voucher_id"
+                              data={
+                                this.state.employeeJoinedThisMonth
+                                  ? this.state.employeeJoinedThisMonth
+                                  : []
+                              }
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
               <div className="col-6">
                 <div className="card animated fadeInUp faster">
                   <h6>Document Expire next month</h6>
-                  <AlgaehDateHandler
-                    type={"range"}
-                    div={{
-                      className: "col-12 form-group",
-                    }}
-                    label={{
-                      forceLabel: "Select Date Range",
-                    }}
-                    textBox={{
-                      name: "selectRange",
-                      value: this.state.dateRange,
-                    }}
-                    // maxDate={new date()}
-                    events={{
-                      onChange: (dateSelected) => {
-                        // const months = moment(dateSelected[1]).diff(
-                        //   dateSelected[0],
-                        //   "months"
-                        // );
-                        // if (months <= 11) {
-                        this.setState(
-                          { dateRange: dateSelected },
-                          () => {
-                            dashEvents.getDocumentExpiryCurrentMonth(this);
-                          }
+                  <div className="row dashboardGridCntr">
+                    <div className="col">
+                      {" "}
+                      <div className="col">
+                        <div className="row">
+                          {" "}
+                          <AlgaehDateHandler
+                            type={"range"}
+                            div={{
+                              className: "col-6 form-group",
+                            }}
+                            label={{
+                              forceLabel: "Select Date Range",
+                            }}
+                            textBox={{
+                              name: "selectRange",
+                              value: this.state.dateRange,
+                            }}
+                            // maxDate={new date()}
+                            events={{
+                              onChange: (dateSelected) => {
+                                // const months = moment(dateSelected[1]).diff(
+                                //   dateSelected[0],
+                                //   "months"
+                                // );
+                                // if (months <= 11) {
+                                this.setState(
+                                  { dateRange: dateSelected },
+                                  () => {
+                                    dashEvents.getDocumentExpiryCurrentMonth(
+                                      this
+                                    );
+                                  }
 
-                          //     });
-                          //   } else {
-                          //     AlgaehMessagePop({
-                          //       title: "error",
-                          //       display: "you can select maximum one year.",
-                          //     });
-                          //   }
-                        );
-                      },
-                    }}
-                    // others={{
-                    //   ...format,
-                    // }}
-                  />
-                  <div className="dashboardGridCntr">
-                    <AlgaehDataGrid
-                      className="DetailGrid"
-                      columns={[
-                        {
-                          fieldName: "row_num",
-                          label: "Sl.no",
-                        },
-                        {
-                          fieldName: "employee_code",
-                          label: "Employee Code",
-                        },
-                        {
-                          fieldName: "full_name",
-                          label: "Employee Name",
-                        },
-                        {
-                          fieldName: "identity_document_name",
-                          label: "Document Type",
-                        },
-                        {
-                          fieldName: "valid_upto",
-                          label: "Valid Upto",
-                        },
-                      ]}
-                      // height="40vh"
-                      rowUnique="identity_documents_id"
-                      data={
-                        this.state.documentExpiryData
-                          ? this.state.documentExpiryData
-                          : []
-                      }
-                    />
-                    {/* <table className="table  table-bordered table-sm table-striped ">
-                      <thead>
-                        <tr>
-                          <th className="text-center">Employee Code</th>
-                          <th className="text-center">Employee Name</th>
-                          <th className="text-center">Document Type</th>
-                          <th className="text-center">Valid Upto</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {this.state.no_of_emp_join.length > 0 ? (
-                          this.state.no_of_emp_join.map((row, index) => (
-                            <tr key={index}>
-                              <td className="text-center">
-                                {row.employee_code}
-                              </td>
-                              <td className="text-center">{row.full_name}</td>
-                              <td className="text-center">{row.full_name}</td>
-                              <td className="text-center">
-                                {row.date_of_joining}
-                              </td>
-                            </tr>
-                          ))
-                        ) : (
-                          <tr>
-                            <td className="text-center" colSpan="6">
-                              No New Joinee for this Month
-                            </td>
-                          </tr>
-                        )}
-                      </tbody>
-                    </table> */}
+                                  //     });
+                                  //   } else {
+                                  //     AlgaehMessagePop({
+                                  //       title: "error",
+                                  //       display: "you can select maximum one year.",
+                                  //     });
+                                  //   }
+                                );
+                              },
+                            }}
+                            // others={{
+                            //   ...format,
+                            // }}
+                          />
+                          <div className="col-12">
+                            <AlgaehDataGrid
+                              className="dashboardGrd"
+                              columns={[
+                                {
+                                  fieldName: "row_num",
+                                  label: "Sl.no",
+                                },
+                                {
+                                  fieldName: "employee_code",
+                                  label: "Employee Code",
+                                },
+                                {
+                                  fieldName: "full_name",
+                                  label: "Employee Name",
+                                },
+                                {
+                                  fieldName: "identity_document_name",
+                                  label: "Document Type",
+                                },
+                                {
+                                  fieldName: "valid_upto",
+                                  label: "Valid Upto",
+                                },
+                              ]}
+                              // height="40vh"
+                              rowUnique="identity_documents_id"
+                              data={
+                                this.state.documentExpiryData
+                                  ? this.state.documentExpiryData
+                                  : []
+                              }
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>

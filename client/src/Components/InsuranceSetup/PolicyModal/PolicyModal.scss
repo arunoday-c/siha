@@ -1,0 +1,16 @@
+.patPolicyModal {
+  width: 95vw !important;
+  .ant-modal-body {
+    overflow: hidden !important;
+  }
+  .insHeadSec {
+    background: #f5f5f5;
+    border-bottom: 1px dashed #dcdcdc;
+    padding-bottom: 15px;
+  }
+  .insPolicySec {
+    .popRightDiv {
+      padding-bottom: 43px;
+    }
+  }
+}
