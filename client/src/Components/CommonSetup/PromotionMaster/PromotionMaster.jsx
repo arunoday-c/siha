@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 // import { useForm, Controller } from "react-hook-form";
 // import { useMutation, useQuery } from "react-query";
 import "./PromotionMaster.scss";
@@ -9,13 +9,26 @@ import {
   AlgaehDataGrid,
 } from "algaeh-react-components";
 import { useForm, Controller } from "react-hook-form";
+import { PromoAddModal } from "./AddModal";
+import { PromoEditModal } from "./EditModal";
+
 export function PromotionMaster() {
+  const [currentAdd, setCurrentAdd] = useState(null);
+  const [currentEdit, setCurrentEdit] = useState(null);
   const baseValue = {};
   const { errors, control } = useForm({
     defaultValues: baseValue,
   });
   return (
     <div className="PromotionMaster">
+      <PromoAddModal
+        visible={!!currentAdd}
+        onClose={() => setCurrentAdd(null)}
+      />
+      <PromoEditModal
+        visible={!!currentEdit}
+        onClose={() => setCurrentEdit(null)}
+      />
       <div className="row inner-top-search">
         <div className="col">
           <form>
@@ -134,9 +147,15 @@ export function PromotionMaster() {
                       displayTemplate: (row) => {
                         return (
                           <>
-                            <i className="fas fa-pen"></i>
+                            <i
+                              className="fas fa-pen"
+                              onClick={() => setCurrentEdit(row)}
+                            ></i>
 
-                            <i className="fas fa-plus"></i>
+                            <i
+                              className="fas fa-plus"
+                              onClick={() => setCurrentAdd(row)}
+                            ></i>
                           </>
                         );
                       },
@@ -165,7 +184,7 @@ export function PromotionMaster() {
                         <AlgaehLabel label={{ forceLabel: "Promo Validity" }} />
                       ),
                     },
-                    ,
+
                     {
                       fieldName: "",
                       label: (
@@ -175,8 +194,24 @@ export function PromotionMaster() {
                       ),
                     },
                   ]}
-                  rowUniqueId=""
-                  data=""
+                  rowUniqueId="hims_d_promotion_id"
+                  data={[
+                    {
+                      hims_d_promotion_id: 1,
+                      code: "PROM-2010",
+                      name: "some",
+                    },
+                    {
+                      hims_d_promotion_id: 2,
+                      code: "PROM-2011",
+                      name: "another",
+                    },
+                    {
+                      hims_d_promotion_id: 3,
+                      code: "PROM-2012",
+                      name: "spam",
+                    },
+                  ]}
                 />
               </div>
             </div>

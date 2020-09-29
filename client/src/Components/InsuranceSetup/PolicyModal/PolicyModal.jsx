@@ -10,7 +10,7 @@ export function PolicyModal({ visible, onClose }) {
 
   return (
     <AlgaehModal
-      title={"Patient Attachments"}
+      title={"Add New Policy"}
       visible={visible}
       mask={true}
       maskClosable={true}
