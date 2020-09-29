@@ -12,6 +12,7 @@ import AlgaehFileUploader from "../../Wrapper/algaehFileUpload";
 import { useLangFieldName } from "../../PatientRegistrationNew/patientHooks";
 import AlgaehSearch from "../../Wrapper/globalSearch";
 import InsuranceFields from "../../../Search/Insurance.json";
+import { PolicyModal } from "../../InsuranceSetup/PolicyModal";
 
 export function InsuranceForm({
   details = [],
@@ -20,6 +21,7 @@ export function InsuranceForm({
 }) {
   const { fieldNameFn } = useLangFieldName();
   const [isInsurance, setIsInsurance] = useState(false);
+  const [showPolicy, setShowPolicy] = useState(false);
   const [insuranceList, setInsuranceList] = useState([]);
   const insuranceImgFront = useRef(null);
   const insuranceImgBack = useRef(null);
@@ -85,6 +87,7 @@ export function InsuranceForm({
 
   return (
     <div className="hptl-phase1-invoice-generation-form">
+      <PolicyModal visible={showPolicy} onClose={() => setShowPolicy(false)} />
       <div className="col-lg-12">
         <div className="row">
           <div className="col-lg-8 primary-details">
@@ -279,7 +282,7 @@ export function InsuranceForm({
                 }}
                 render={({ onChange, value }) => (
                   <AlgaehAutoComplete
-                    div={{ className: "col-3" }}
+                    div={{ className: "col-2" }}
                     label={{
                       fieldName: "plan_id",
                       isImp: isInsurance,
@@ -303,7 +306,16 @@ export function InsuranceForm({
                   />
                 )}
               />
-
+              <div className="col-1" style={{ paddingRight: 0, marginTop: 20 }}>
+                <button
+                  type="button"
+                  className="btn btn-primary btn-rounded"
+                  onClick={() => setShowPolicy(true)}
+                  // disabled={!isInsurance}
+                >
+                  <i className="fas fa-plus" />
+                </button>
+              </div>
               <Controller
                 control={control}
                 name="primary_card_number"

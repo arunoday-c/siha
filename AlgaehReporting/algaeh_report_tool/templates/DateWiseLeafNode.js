@@ -12,7 +12,7 @@ const executePDF = function executePDFMethod(options) {
       const params = options.args.reportParams;
 
       const decimal_places = options.args.crypto.decimal_places;
-      params.forEach(para => {
+      params.forEach((para) => {
         input[para["name"]] = para["value"];
       });
 
@@ -30,9 +30,9 @@ const executePDF = function executePDFMethod(options) {
           .executeQuery({
             query: `SELECT cost_center_type  FROM finance_options limit 1;`,
             values: [],
-            printQuery: true
+            printQuery: true,
           })
-          .then(resul => {
+          .then((resul) => {
             //ST-cost center
             // if (
             //   resul[0]["cost_center_type"] == "P" &&
@@ -53,7 +53,7 @@ const executePDF = function executePDFMethod(options) {
                       VD.head_id,VD.payment_date ,VD.child_id, AH.root_id,              
                       ROUND(sum(debit_amount),${decimal_places}) as debit_amount,
                       ROUND(sum(credit_amount),${decimal_places})  as credit_amount,C.child_name,C.ledger_code
-                      from finance_voucher_header H inner join finance_voucher_details VD
+                      from finance_voucher_header H right join finance_voucher_details VD
                       on H.finance_voucher_header_id=VD.voucher_header_id inner join finance_account_child C on
                       VD.child_id=C.finance_account_child_id inner join  finance_account_head AH on
                        C.head_id=AH.finance_account_head_id     where  VD.auth_status='A' and
@@ -69,11 +69,11 @@ const executePDF = function executePDFMethod(options) {
                   input.child_id,
                   input.from_date,
                   input.child_id,
-                  input.to_date
+                  input.to_date,
                 ],
-                printQuery: true
+                printQuery: true,
               })
-              .then(output => {
+              .then((output) => {
                 let result = output[0];
                 let opening_balance = parseFloat(0).toFixed(decimal_places);
                 let closing_balance = parseFloat(0).toFixed(decimal_places);
@@ -83,7 +83,7 @@ const executePDF = function executePDFMethod(options) {
                 if (result.length > 0) {
                   let CB_debit_side = null;
                   let CB_credit_side = null;
-                  result.forEach(item => {
+                  result.forEach((item) => {
                     total_credit = (
                       parseFloat(total_credit) + parseFloat(item.credit_amount)
                     ).toFixed(decimal_places);
@@ -93,7 +93,7 @@ const executePDF = function executePDFMethod(options) {
                   });
 
                   const dateWiseGroup = _.chain(result)
-                    .groupBy(g => g.payment_date)
+                    .groupBy((g) => g.payment_date)
                     .value();
 
                   const outputArray = [];
@@ -142,28 +142,28 @@ const executePDF = function executePDFMethod(options) {
                     CB_credit_side: CB_credit_side,
                     final_balance: final_balance,
                     opening_balance: opening_balance,
-                    closing_balance: closing_balance
+                    closing_balance: closing_balance,
                   });
                 } else {
                   resolve({
-                    details: []
+                    details: [],
                   });
                 }
               })
-              .catch(e => {
+              .catch((e) => {
                 console.log("EEEE:", e);
                 options.mysql.releaseConnection();
                 next(e);
               });
           })
-          .catch(e => {
+          .catch((e) => {
             console.log("EEEE6:", e);
             options.mysql.releaseConnection();
             next(e);
           });
       } else {
         resolve({
-          details: []
+          details: [],
         });
       }
     } catch (e) {

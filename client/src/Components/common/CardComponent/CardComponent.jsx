@@ -29,6 +29,7 @@ export default function CardComponent({
   useEffect(() => {
     onChangeCard(null, null);
     onChangeNumber("");
+    // eslint-disable-next-line
   }, [disabled]);
 
   return (
