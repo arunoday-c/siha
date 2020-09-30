@@ -92,6 +92,7 @@ export function AddPatientDentalForm({
         location_id: current.location_id,
         quantity_utilised: current.quantity_utilised,
         quantity_available: current.quantity_available,
+        box_code: current.box_code,
         due_date: current.due_date,
         service_amount: current.procedure_amt,
         doctor: current.provider_id,
@@ -124,8 +125,9 @@ export function AddPatientDentalForm({
         doctor: "",
         arrival_date: undefined,
         location_id: null,
-        quantity_available: null,
-        quantity_utilised: null,
+        quantity_available: "",
+        quantity_utilised: "",
+        box_code: "",
       });
       // setSub_department_id("");
       // setDoctor_id("");
@@ -220,6 +222,7 @@ export function AddPatientDentalForm({
           location_id: data.location_id,
           quantity_utilised: data.quantity_utilised,
           quantity_available: data.quantity_available,
+          box_code: data.box_code,
         },
       });
       if (res.data.success) {
@@ -964,9 +967,10 @@ export function AddPatientDentalForm({
                             error={errors}
                             textBox={{
                               ...props,
-                              type: "number",
+                              // type: "number",
+
                               className: "txt-fld",
-                              min: "0",
+                              // min: "0",
                               name: "quantity_utilised",
                               placeholder: "Enter quantity utilised ",
                               // disabled: disabled || current.request_status === "APR",
@@ -989,10 +993,35 @@ export function AddPatientDentalForm({
                             error={errors}
                             textBox={{
                               ...props,
-                              type: "number",
+                              // type: "number",
                               className: "txt-fld",
-                              min: "0",
+                              // min: "0",
                               name: "quantity_available",
+                              // placeholder: "Enter quantity utilised ",
+                              // disabled: disabled || current.request_status === "APR",
+                              tabIndex: "9",
+                            }}
+                          />
+                        )}
+                      />
+                      <Controller
+                        control={control}
+                        name="box_code"
+                        rules={{ required: "Enter qunatity" }}
+                        render={(props) => (
+                          <AlgaehFormGroup
+                            div={{ className: "col mandatory form-group" }}
+                            label={{
+                              forceLabel: "Enter quantity available",
+                              isImp: true,
+                            }}
+                            error={errors}
+                            textBox={{
+                              ...props,
+                              // type: "number",
+                              className: "txt-fld",
+                              // min: "0",
+                              name: "box_code",
                               // placeholder: "Enter quantity utilised ",
                               // disabled: disabled || current.request_status === "APR",
                               tabIndex: "9",

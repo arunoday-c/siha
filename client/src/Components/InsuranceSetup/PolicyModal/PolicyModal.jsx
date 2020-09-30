@@ -28,7 +28,7 @@ export function PolicyModal({ visible, onClose }) {
         <div className="row">
           <div className="col-12 insHeadSec">
             <InsuranceDropdown
-              div={{ className: "col-5" }}
+              div={{ className: "col-5 mandatory" }}
               value={insurance?.hims_d_insurance_provider_id}
               onChange={(obj) => setInsurance(obj)}
               label={{ forceLabel: "Insurance" }}

@@ -104,7 +104,7 @@ export default {
              E.full_name as  employee_name,
              -- PL.hims_f_treatment_plan_id, PL.plan_name
        D.arrival_date, D.work_status,E.work_email,D.hims_f_dental_form_id,D.due_date ,D.department_id,
-       D.location_id,D.quantity_available,D.quantity_utilised,D.requested_date,D.request_status,D.procedure_id, D.provider_id,D.procedure_amt,D.approved,D.date_of_birth,
+       D.location_id,D.quantity_available,D.box_code,D.quantity_utilised,D.requested_date,D.request_status,D.procedure_id, D.provider_id,D.procedure_amt,D.approved,D.date_of_birth,
         D.full_name, D.patient_code,D.gender, D.age,V.vendor_name,V.hims_d_vendor_id,S.service_name
          from hims_f_dental_form as D 
          -- inner join hims_f_patient as P on P.hims_d_patient_id=D.patient_id 
@@ -141,7 +141,7 @@ export default {
 
     _mysql
       .executeQuery({
-        query: `update hims_f_dental_form set patient_id=?,location_id=?,quantity_available=?,quantity_utilised=?,provider_id=?,procedure_id=?,procedure_amt=?,
+        query: `update hims_f_dental_form set patient_id=?,location_id=?,quantity_available=?,box_code=?,quantity_utilised=?,provider_id=?,procedure_id=?,procedure_amt=?,
         vendor_id=?,request_status=?,work_status=?,full_name=?,gender=?,age=?,patient_code=?,requested_date=?,
         date_of_birth=?,department_id=?,arrival_date=? where hims_f_dental_form_id=? `,
 
@@ -149,6 +149,7 @@ export default {
           input.patient_id,
           input.location_id,
           input.quantity_available,
+          input.box_code,
           input.quantity_utilised,
           input.provider_id,
           input.hims_d_services_id,
