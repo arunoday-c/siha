@@ -6,37 +6,36 @@ import AlgaehLoader from "../../Wrapper/fullPageLoader";
 const texthandle = ($this, e) => {
   // e = e || ctrl;
 
-  let name = e.name || e.target.name;
-  let value = e.value || e.target.value;
+  let name = e.name || e.target?.name;
+  let value = e.value || e.target?.value;
 
   if (name === "insurance_sub_id") {
     $this.setState({
       [name]: value,
       maxDate_end_date: e.selected.effective_end_date,
       effective_start_date: e.selected.effective_start_date,
-      effective_end_date: e.selected.effective_end_date
+      effective_end_date: e.selected.effective_end_date,
     });
   } else {
     $this.setState({
-      [name]: value
+      [name]: value,
     });
   }
 };
 
 const numberhandle = ($this, ctrl, e) => {
   e = e || ctrl;
-
-  let name = e.name || e.target.name;
-  let value = e.value || e.target.value;
+  let name = e.name || e.target?.name;
+  let value = e.value || e.target?.value;
 
   if (value < 0 || value > 100) {
     swalMessage({
       title: "Cannot be less than zero.",
-      type: "warning"
+      type: "warning",
     });
   } else {
     $this.setState({
-      [name]: value
+      [name]: value,
     });
   }
 };
@@ -50,11 +49,11 @@ const prenumberhandle = ($this, ctrl, e) => {
   if (value < 0) {
     swalMessage({
       title: "Cannot be less than zero.",
-      type: "warning"
+      type: "warning",
     });
   } else {
     $this.setState({
-      [name]: value
+      [name]: value,
     });
   }
 };
@@ -63,6 +62,7 @@ const saveNetworkPlan = ($this, context) => {
   const err = Validations($this);
 
   let newdata = [];
+
   if (!err) {
     AlgaehLoader({ show: true });
     let obj = {
@@ -77,6 +77,7 @@ const saveNetworkPlan = ($this, context) => {
       hims_d_insurance_network_office_id: null,
       network_id: null,
       deductible: $this.state.deductible,
+      deductable_type: $this.state.deductable_type,
       copay_consultation: $this.state.copay_consultation,
       max_value: $this.state.max_value,
       deductible_lab: $this.state.deductible_lab,
@@ -101,7 +102,7 @@ const saveNetworkPlan = ($this, context) => {
       preapp_limit: $this.state.preapp_limit,
       hospital_id: $this.state.hospital_id,
       invoice_max_deduct: $this.state.invoice_max_deduct,
-      preapp_limit_from: $this.state.preapp_limit_from
+      preapp_limit_from: $this.state.preapp_limit_from,
     };
     let previous = $this.state.network_plan ? $this.state.network_plan : [];
     previous.push(obj);
@@ -113,7 +114,7 @@ const saveNetworkPlan = ($this, context) => {
       uri: "/insurance/addPlanAndPolicy",
       module: "insurance",
       data: newdata,
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success === true) {
           $this.props.getNetworkPlans({
             uri: "/insurance/getNetworkAndNetworkOfficRecords",
@@ -121,41 +122,41 @@ const saveNetworkPlan = ($this, context) => {
             method: "GET",
             printInput: true,
             data: {
-              insuranceProviderId: $this.state.insurance_provider_id
+              insuranceProviderId: $this.state.insurance_provider_id,
             },
             redux: {
               type: "NETWORK_PLAN_GET_DATA",
-              mappingName: "networkandplans"
+              mappingName: "networkandplans",
             },
-            afterSuccess: data => {
+            afterSuccess: (data) => {
               AlgaehLoader({ show: false });
               swalMessage({
                 type: "success",
-                title: "Added successfully . ."
+                title: "Added successfully . .",
               });
-            }
+            },
           });
 
           $this.setState({
             insurance_plan_saved: true,
-            network_plan: previous
+            network_plan: previous,
           });
           if (context !== undefined) {
             context.updateState({
               network_plan: previous,
               insurance_provider_id: $this.state.insurance_provider_id,
-              insurance_provider_name: $this.state.insurance_provider_name
+              insurance_provider_name: $this.state.insurance_provider_name,
             });
           }
           addNewNetwork($this);
         }
-      }
+      },
     });
     // }
   }
 };
 
-const addNewNetwork = $this => {
+const addNewNetwork = ($this) => {
   $this.setState(
     {
       hims_d_insurance_network_id: null,
@@ -192,7 +193,7 @@ const addNewNetwork = $this => {
       preapp_limit: 0,
       hospital_id: null,
       saveupdate: false,
-      btnupdate: true
+      btnupdate: true,
     },
     () => {}
   );
@@ -200,7 +201,7 @@ const addNewNetwork = $this => {
 
 const datehandle = ($this, ctrl, e) => {
   $this.setState({
-    [e]: moment(ctrl)._d
+    [e]: moment(ctrl)._d,
   });
 };
 
@@ -244,7 +245,7 @@ const UpdateNetworkPlan = ($this, context) => {
       preapp_limit: $this.state.preapp_limit,
       hospital_id: $this.state.hospital_id,
       invoice_max_deduct: $this.state.invoice_max_deduct,
-      preapp_limit_from: $this.state.preapp_limit_from
+      preapp_limit_from: $this.state.preapp_limit_from,
     };
     if ($this.state.hims_d_insurance_network_id !== null) {
       algaehApiCall({
@@ -252,14 +253,14 @@ const UpdateNetworkPlan = ($this, context) => {
         module: "insurance",
         data: updateobj,
         method: "PUT",
-        onSuccess: response => {
+        onSuccess: (response) => {
           if (response.data.success === true) {
             swalMessage({
               type: "success",
-              title: "Updated successfully . ."
+              title: "Updated successfully . .",
             });
           }
-        }
+        },
       });
     }
 
@@ -276,11 +277,11 @@ const dateValidate = ($this, value, e) => {
     if (inRange) {
       swalMessage({
         title: "Active From cannot be grater than Valid Upto.",
-        type: "warning"
+        type: "warning",
       });
       e.target.focus();
       $this.setState({
-        [e.target.name]: null
+        [e.target.name]: null,
       });
     }
   } else if (e.target.name === "effective_end_date") {
@@ -290,11 +291,11 @@ const dateValidate = ($this, value, e) => {
     if (inRange) {
       swalMessage({
         title: "Valid Upto cannot be less than Active From.",
-        type: "warning"
+        type: "warning",
       });
       e.target.focus();
       $this.setState({
-        [e.target.name]: null
+        [e.target.name]: null,
       });
     }
   }
@@ -307,5 +308,5 @@ export {
   UpdateNetworkPlan,
   numberhandle,
   prenumberhandle,
-  dateValidate
+  dateValidate,
 };

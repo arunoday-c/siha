@@ -3,7 +3,7 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
-import GlobalVariables from "../../../utils/GlobalVariables";
+// import GlobalVariables from "../../../utils/GlobalVariables";
 import NetworkPlanList from "../NetworkPlanList/NetworkPlanList";
 
 import "./NetworkPlan.scss";
@@ -35,7 +35,7 @@ class NetworkPlan extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      applicable: null,
+      deductable_type: null,
       hims_d_insurance_network_id: null,
       network_type: null,
 
@@ -662,16 +662,27 @@ class NetworkPlan extends PureComponent {
                             isImp: false,
                           }}
                           selector={{
-                            name: "applicable",
+                            name: "deductable_type",
                             className: "select-fld",
-                            value: this.state.applicable,
+                            value: this.state.deductable_type,
                             dataSource: {
                               textField:
                                 this.state.selectedLang === "en"
                                   ? "name"
                                   : "arabic_name",
                               valueField: "value",
-                              data: GlobalVariables.FORMAT_DISCOUNT,
+                              data: [
+                                {
+                                  name: "Amount",
+                                  value: "AMOUNT",
+                                  arabic_name: "مبلغ",
+                                },
+                                {
+                                  name: "Percentage",
+                                  value: "PERCENTAGE",
+                                  arabic_name: "نسبه مئويه",
+                                },
+                              ],
                             },
                             onChange: texthandle.bind(this, this),
                           }}
