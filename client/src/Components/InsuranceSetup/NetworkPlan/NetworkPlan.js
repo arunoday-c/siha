@@ -3,7 +3,7 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
-import GlobalVariables from "../../../utils/GlobalVariables";
+// import GlobalVariables from "../../../utils/GlobalVariables";
 import NetworkPlanList from "../NetworkPlanList/NetworkPlanList";
 
 import "./NetworkPlan.scss";
@@ -35,7 +35,7 @@ class NetworkPlan extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      applicable: null,
+      deductable_type: null,
       hims_d_insurance_network_id: null,
       network_type: null,
 
@@ -513,45 +513,6 @@ class NetworkPlan extends PureComponent {
                     />
                   </div> */}
                       <div className="row">
-                        <AlagehAutoComplete
-                          div={{ className: "col" }}
-                          label={{
-                            forceLabel: "Deductible Type",
-                            isImp: false,
-                          }}
-                          selector={{
-                            name: "applicable",
-                            className: "select-fld",
-                            value: this.state.applicable,
-                            dataSource: {
-                              textField:
-                                this.state.selectedLang === "en"
-                                  ? "name"
-                                  : "arabic_name",
-                              valueField: "value",
-                              data: GlobalVariables.FORMAT_DISCOUNT,
-                            },
-                            onChange: texthandle.bind(this, this),
-                          }}
-                        />
-                        <AlagehFormGroup
-                          //consultation
-                          div={{ className: "col-6 form-group" }}
-                          label={{ forceLabel: "Consultation DED" }}
-                          textBox={{
-                            value: this.state.deductible,
-                            className: "txt-fld",
-                            name: "deductible",
-
-                            events: {
-                              onChange: numberhandle.bind(this, this),
-                            },
-                            others: {
-                              "data-netdata": true,
-                              type: "number",
-                            },
-                          }}
-                        />
                         <AlagehFormGroup
                           //consultation
                           div={{ className: "col-6 form-group" }}
@@ -642,58 +603,38 @@ class NetworkPlan extends PureComponent {
                             },
                           }}
                         />{" "}
-                      </div>
-                      <div className="row">
-                        <div className="col-6">
-                          <label>Dental Copay</label>
-                          <div className="customCheckbox">
-                            <label className="checkbox inline">
-                              <input type="checkbox" value="" name="" />
-                              <span>Yes</span>
-                            </label>
-                          </div>
-                        </div>
-                        <AlagehFormGroup
-                          //Dental
-                          div={{ className: "col-6 form-group" }}
-                          label={{ forceLabel: "Dental %" }}
-                          textBox={{
-                            value: this.state.copay_percent_dental,
-                            className: "txt-fld",
-                            name: "copay_percent_dental",
+                        {/*
+                     <AlagehFormGroup
+                      //Dental
+                      div={{ className: "col-6 form-group" }}
+                      label={{ forceLabel: "Dental" }}
+                      textBox={{
+                        value: this.state.copay_percent_dental,
+                        className: "txt-fld",
+                        name: "copay_percent_dental",
 
-                            events: {
-                              onChange: numberhandle.bind(this, this),
-                            },
-                            others: {
-                              "data-netdata": true,
-                              type: "number",
-                            },
-                          }}
-                        />
-                        <div className="col-6">
-                          <label>Optical Copay</label>
-                          <div className="customCheckbox">
-                            <label className="checkbox inline">
-                              <input type="checkbox" value="" name="" />
-                              <span>Yes</span>
-                            </label>
-                          </div>
-                        </div>
-                        <AlagehFormGroup
-                          //Optometry
-                          div={{ className: "col-6 form-group" }}
-                          label={{ forceLabel: "Optical %" }}
-                          textBox={{
-                            //value: this.state.copay_medicine,
-                            className: "txt-fld",
-                            name: "",
-                            others: {
-                              "data-netdata": true,
-                              type: "number",
-                            },
-                          }}
-                        />
+                        events: {
+                          onChange: numberhandle.bind(this, this),
+                        },
+                        others: {
+                          "data-netdata": true,
+                          type: "number",
+                        },
+                      }}
+                    />
+                     <AlagehFormGroup
+                      //Optometry
+                      div={{ className: "col-6 form-group" }}   label={{ forceLabel: "Optometry" }}
+                      textBox={{
+                        //value: this.state.copay_medicine,
+                        className: "txt-fld",
+                        name: "",
+                        others: {
+                          "data-netdata": true,
+                          type: "number",
+                        },
+                      }}
+                    /> */}{" "}
                         <AlagehFormGroup
                           //consultation
                           div={{ className: "col-6 form-group" }}
@@ -713,7 +654,58 @@ class NetworkPlan extends PureComponent {
                           }}
                         />
                       </div>
+                      <div className="row">
+                        <AlagehAutoComplete
+                          div={{ className: "col" }}
+                          label={{
+                            forceLabel: "Deductible Type",
+                            isImp: false,
+                          }}
+                          selector={{
+                            name: "deductable_type",
+                            className: "select-fld",
+                            value: this.state.deductable_type,
+                            dataSource: {
+                              textField:
+                                this.state.selectedLang === "en"
+                                  ? "name"
+                                  : "arabic_name",
+                              valueField: "value",
+                              data: [
+                                {
+                                  name: "Amount",
+                                  value: "AMOUNT",
+                                  arabic_name: "مبلغ",
+                                },
+                                {
+                                  name: "Percentage",
+                                  value: "PERCENTAGE",
+                                  arabic_name: "نسبه مئويه",
+                                },
+                              ],
+                            },
+                            onChange: texthandle.bind(this, this),
+                          }}
+                        />
+                        <AlagehFormGroup
+                          //consultation
+                          div={{ className: "col-6 form-group" }}
+                          label={{ forceLabel: "Consultation DED" }}
+                          textBox={{
+                            value: this.state.deductible,
+                            className: "txt-fld",
+                            name: "deductible",
 
+                            events: {
+                              onChange: numberhandle.bind(this, this),
+                            },
+                            others: {
+                              "data-netdata": true,
+                              type: "number",
+                            },
+                          }}
+                        />
+                      </div>
                       <div className="row hidden">
                         <AlagehFormGroup
                           div={{ className: "col-6 form-group" }}

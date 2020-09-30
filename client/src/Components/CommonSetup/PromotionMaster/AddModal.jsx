@@ -32,9 +32,9 @@ export function PromoAddModal({ visible, onClose }) {
       <div className="col popupInner">
         <div className="row inner-top-search margin-bottom-15">
           <AlgaehAutoComplete
-            div={{ className: "col form-group mandatory" }}
+            div={{ className: "col-2 form-group mandatory" }}
             label={{
-              forceLabel: "Service Type",
+              forceLabel: "Patient Gender",
               isImp: true,
             }}
             selector={{
@@ -49,10 +49,10 @@ export function PromoAddModal({ visible, onClose }) {
             }}
           />
           <AlgaehAutoComplete
-            div={{ className: "col form-group mandatory" }}
+            div={{ className: "col-2 form-group mandatory" }}
             label={{
-              forceLabel: "Offer by",
-              isImp: true,
+              forceLabel: "Age Range",
+              isImp: false,
             }}
             selector={{
               name: "applicable",
@@ -66,8 +66,8 @@ export function PromoAddModal({ visible, onClose }) {
             }}
           />
           <AlgaehFormGroup
-            div={{ className: "col form-group" }}
-            label={{ forceLabel: "Offer Value" }}
+            div={{ className: "col-2 form-group" }}
+            label={{ forceLabel: "Enter Age" }}
             textBox={{
               className: "txt-fld",
               name: "",
@@ -80,24 +80,11 @@ export function PromoAddModal({ visible, onClose }) {
               style={{ marginTop: 20 }}
               className="btn btn-primary"
             >
-              Add to List
+              Load Recipient
             </button>
           </div>
         </div>
         <div className="row">
-          <div className="col-4">
-            <div className="portlet portlet-bordered margin-bottom-15">
-              <div className="portlet-title">
-                <div className="caption">
-                  <h3 className="caption-subject">SMS Template Generator</h3>
-                </div>
-                <div className="actions"></div>
-              </div>
-              <div className="portlet-body">
-                <div className="row">dfgfdgf</div>
-              </div>
-            </div>
-          </div>
           <div className="col-8">
             <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-title">
@@ -156,6 +143,19 @@ export function PromoAddModal({ visible, onClose }) {
                     </div>
                   </div>
                 </div>
+              </div>
+            </div>
+          </div>{" "}
+          <div className="col-4">
+            <div className="portlet portlet-bordered margin-bottom-15">
+              <div className="portlet-title">
+                <div className="caption">
+                  <h3 className="caption-subject">SMS Template Generator</h3>
+                </div>
+                <div className="actions"></div>
+              </div>
+              <div className="portlet-body">
+                <div className="row">dfgfdgf</div>
               </div>
             </div>
           </div>

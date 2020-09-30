@@ -32,7 +32,7 @@ export function PromoEditModal({ visible, onClose }) {
       <div className="col popupInner">
         <div className="row inner-top-search margin-bottom-15">
           <AlgaehAutoComplete
-            div={{ className: "col form-group mandatory" }}
+            div={{ className: "col-3 form-group mandatory" }}
             label={{
               forceLabel: "Service Type",
               isImp: true,
@@ -49,7 +49,7 @@ export function PromoEditModal({ visible, onClose }) {
             }}
           />
           <AlgaehAutoComplete
-            div={{ className: "col form-group mandatory" }}
+            div={{ className: "col-2 form-group mandatory" }}
             label={{
               forceLabel: "Offer by",
               isImp: true,
@@ -66,8 +66,8 @@ export function PromoEditModal({ visible, onClose }) {
             }}
           />
           <AlgaehFormGroup
-            div={{ className: "col form-group" }}
-            label={{ forceLabel: "Offer Value" }}
+            div={{ className: "col-2 form-group" }}
+            label={{ forceLabel: "Offer Value", isImp: true }}
             textBox={{
               className: "txt-fld",
               name: "",

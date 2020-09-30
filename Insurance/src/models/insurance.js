@@ -639,7 +639,7 @@ export default {
   //of hospital (insurence plan master)
 
   addPlanAndPolicy: (req, res, next) => {
-    console.log("result:", "addPlanAndPolicy");
+    // console.log("result:", "addPlanAndPolicy");
     const _mysql = new algaehMysql();
     try {
       let input = extend(
@@ -728,7 +728,7 @@ export default {
             req.userIdentity.algaeh_d_app_user_id,
           ],
 
-          printQuery: false,
+          printQuery: true,
         })
         .then((result) => {
           if (result.insertId > 0) {
@@ -747,7 +747,7 @@ export default {
               `lab_max`,`rad_min`,`rad_max`,`trt_max`,`trt_min`,`dental_min`,`dental_max`,`medicine_min`,`medicine_max`,`invoice_max_liability`,\
               `for_alltrt`,`for_alldental`,`for_allmedicine`,`invoice_max_deduct`,`price_from`,`employer`,`policy_number`,`follow_up`,`preapp_limit`,\
               `deductible_ip`,`copay_ip`,`ip_min`,`ip_max`,`for_allip`,`consult_limit`,`preapp_limit_from`,`copay_maternity`,`maternity_min`,`maternity_max`,\
-              `copay_optical`,`optical_min`,`optical_max`,`copay_diagnostic`,`diagnostic_min`,`diagnostic_max`,`created_by`,`updated_by`)\
+              `copay_optical`,`optical_min`,`optical_max`,`copay_diagnostic`,`diagnostic_min`,`diagnostic_max`,`created_by`,`updated_by`,`deductable_type`)\
               SELECT " +
                   result.insertId +
                   ",hims_d_hospital_id," +
@@ -860,7 +860,9 @@ export default {
                   req.userIdentity.algaeh_d_app_user_id +
                   "," +
                   req.userIdentity.algaeh_d_app_user_id +
-                  " from hims_d_hospital",
+                  ",'" +
+                  input.deductable_type +
+                  "' from hims_d_hospital",
                 printQuery: false,
               })
               .then((priceResult) => {
@@ -2028,12 +2030,12 @@ export function updateInsuranceStatement(req, res, next) {
               .executeQuery({
                 query: `update hims_f_invoice_header set remittance_amount${
                   level == 1 ? "" : level
-                  }=${rest["ramt"]}, claim_status=?,
+                }=${rest["ramt"]}, claim_status=?,
                   denial_amount${level == 1 ? "" : level}=${
                   rest["damt"]
-                  },remittance_date=?,submission_amount${level == 1 ? 2 : 3}=${
+                },remittance_date=?,submission_amount${level == 1 ? 2 : 3}=${
                   rest["damt"]
-                  } where hims_f_invoice_header_id=?`,
+                } where hims_f_invoice_header_id=?`,
                 values: [claim_status, new Date(), invoice_header_id],
               })
               .then((records) => {

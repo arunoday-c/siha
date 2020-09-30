@@ -254,45 +254,21 @@ class BasicSubjective extends Component {
   }
 
   showDelta() {
-    const err = Validations(this);
-    if (!err) {
-      if (this.state.hims_f_episode_chief_complaint_id === null) {
-        SubjectiveHandler().addChiefComplainToPatient(this);
-      } else {
-        SubjectiveHandler().updatePatientChiefComplaints(this);
-      }
-      this.setState({
-        deltaOpen: !this.state.deltaOpen,
-      });
-    }
+    this.setState({
+      deltaOpen: !this.state.deltaOpen,
+    });
   }
 
   showAttachments() {
-    const err = Validations(this);
-    if (!err) {
-      if (this.state.hims_f_episode_chief_complaint_id === null) {
-        SubjectiveHandler().addChiefComplainToPatient(this);
-      } else {
-        SubjectiveHandler().updatePatientChiefComplaints(this);
-      }
-      this.setState({
-        attachmentOpen: !this.state.attachmentOpen,
-      });
-    }
+    this.setState({
+      attachmentOpen: !this.state.attachmentOpen,
+    });
   }
 
   showPatientHistory() {
-    const err = Validations(this);
-    if (!err) {
-      if (this.state.hims_f_episode_chief_complaint_id === null) {
-        SubjectiveHandler().addChiefComplainToPatient(this);
-      } else {
-        SubjectiveHandler().updatePatientChiefComplaints(this);
-      }
-      this.setState({
-        openAddModal: !this.state.openAddModal,
-      });
-    }
+    this.setState({
+      openAddModal: !this.state.openAddModal,
+    });
   }
 
   showDietPlan() {
