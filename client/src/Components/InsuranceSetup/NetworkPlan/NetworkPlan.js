@@ -513,6 +513,58 @@ class NetworkPlan extends PureComponent {
                     />
                   </div> */}
                       <div className="row">
+                        <AlagehAutoComplete
+                          div={{ className: "col" }}
+                          label={{
+                            forceLabel: "Deductible Type",
+                            isImp: false,
+                          }}
+                          selector={{
+                            name: "deductable_type",
+                            className: "select-fld",
+                            value: this.state.deductable_type,
+                            dataSource: {
+                              textField:
+                                this.state.selectedLang === "en"
+                                  ? "name"
+                                  : "arabic_name",
+                              valueField: "value",
+                              data: [
+                                {
+                                  name: "Amount",
+                                  value: "AMOUNT",
+                                  arabic_name: "مبلغ",
+                                },
+                                {
+                                  name: "Percentage",
+                                  value: "PERCENTAGE",
+                                  arabic_name: "نسبه مئويه",
+                                },
+                              ],
+                            },
+                            onChange: texthandle.bind(this, this),
+                          }}
+                        />
+                        <AlagehFormGroup
+                          //consultation
+                          div={{ className: "col-6 form-group" }}
+                          label={{ forceLabel: "Consultation DED" }}
+                          textBox={{
+                            value: this.state.deductible,
+                            className: "txt-fld",
+                            name: "deductible",
+
+                            events: {
+                              onChange: numberhandle.bind(this, this),
+                            },
+                            others: {
+                              "data-netdata": true,
+                              type: "number",
+                            },
+                          }}
+                        />
+                      </div>
+                      <div className="row">
                         <AlagehFormGroup
                           //consultation
                           div={{ className: "col-6 form-group" }}
@@ -603,46 +655,28 @@ class NetworkPlan extends PureComponent {
                             },
                           }}
                         />{" "}
-                        {/*
-                     <AlagehFormGroup
-                      //Dental
-                      div={{ className: "col-6 form-group" }}
-                      label={{ forceLabel: "Dental" }}
-                      textBox={{
-                        value: this.state.copay_percent_dental,
-                        className: "txt-fld",
-                        name: "copay_percent_dental",
-
-                        events: {
-                          onChange: numberhandle.bind(this, this),
-                        },
-                        others: {
-                          "data-netdata": true,
-                          type: "number",
-                        },
-                      }}
-                    />
-                     <AlagehFormGroup
-                      //Optometry
-                      div={{ className: "col-6 form-group" }}   label={{ forceLabel: "Optometry" }}
-                      textBox={{
-                        //value: this.state.copay_medicine,
-                        className: "txt-fld",
-                        name: "",
-                        others: {
-                          "data-netdata": true,
-                          type: "number",
-                        },
-                      }}
-                    /> */}{" "}
+                      </div>
+                      <div className="row">
+                        <div className="col-6">
+                          <label>Dental Copay</label>
+                          <div className="customCheckbox">
+                            <label className="checkbox inline">
+                              <input
+                                type="checkbox"
+                                value="D"
+                                name="avail_type"
+                              />
+                              <span>Yes</span>
+                            </label>
+                          </div>
+                        </div>
                         <AlagehFormGroup
-                          //consultation
                           div={{ className: "col-6 form-group" }}
-                          label={{ forceLabel: "Copay Max-Limit" }}
+                          label={{ forceLabel: "Dental Copay" }}
                           textBox={{
-                            value: this.state.max_value,
+                            value: this.state.copay_percent_dental,
                             className: "txt-fld",
-                            name: "max_value",
+                            name: "copay_percent_dental",
 
                             events: {
                               onChange: numberhandle.bind(this, this),
@@ -653,48 +687,41 @@ class NetworkPlan extends PureComponent {
                             },
                           }}
                         />
-                      </div>
-                      <div className="row">
-                        <AlagehAutoComplete
-                          div={{ className: "col" }}
-                          label={{
-                            forceLabel: "Deductible Type",
-                            isImp: false,
-                          }}
-                          selector={{
-                            name: "deductable_type",
-                            className: "select-fld",
-                            value: this.state.deductable_type,
-                            dataSource: {
-                              textField:
-                                this.state.selectedLang === "en"
-                                  ? "name"
-                                  : "arabic_name",
-                              valueField: "value",
-                              data: [
-                                {
-                                  name: "Amount",
-                                  value: "AMOUNT",
-                                  arabic_name: "مبلغ",
-                                },
-                                {
-                                  name: "Percentage",
-                                  value: "PERCENTAGE",
-                                  arabic_name: "نسبه مئويه",
-                                },
-                              ],
+                        <div className="col-6">
+                          <label>Optical Copay</label>
+                          <div className="customCheckbox">
+                            <label className="checkbox inline">
+                              <input
+                                type="checkbox"
+                                value="D"
+                                name="avail_type"
+                              />
+                              <span>Yes</span>
+                            </label>
+                          </div>
+                        </div>
+                        <AlagehFormGroup
+                          //Optometry
+                          div={{ className: "col-6 form-group" }}
+                          label={{ forceLabel: "Optical Copay" }}
+                          textBox={{
+                            //value: this.state.copay_medicine,
+                            className: "txt-fld",
+                            name: "",
+                            others: {
+                              "data-netdata": true,
+                              type: "number",
                             },
-                            onChange: texthandle.bind(this, this),
                           }}
                         />
                         <AlagehFormGroup
                           //consultation
                           div={{ className: "col-6 form-group" }}
-                          label={{ forceLabel: "Consultation DED" }}
+                          label={{ forceLabel: "Copay Max-Limit" }}
                           textBox={{
-                            value: this.state.deductible,
+                            value: this.state.max_value,
                             className: "txt-fld",
-                            name: "deductible",
+                            name: "max_value",
 
                             events: {
                               onChange: numberhandle.bind(this, this),

@@ -252,37 +252,6 @@ export default function Vat({
           {
             className: "col-3 form-group",
             type: "dropdown",
-            name: "primary_insurance_provider_id",
-            initialLoad: true,
-            isImp: false,
-            label: "Company",
-            link: {
-              uri: "/insurance/getInsuranceProviders",
-              module: "insurance",
-            },
-            dataSource: {
-              textField: "insurance_provider_name",
-              valueField: "hims_d_insurance_provider_id",
-            },
-            // events: {
-            //   onChange: (reportState, currentEvent) => {
-            //     reportState.setState({
-            //       [currentEvent.name]: currentEvent.value,
-            //       department_id: currentEvent.value,
-            //       sub_department_id_list: currentEvent.selected.subDepts,
-            //     });
-            //   },
-            //   onClear: (reportState, currentName) => {
-            //     reportState.setState({
-            //       [currentName]: undefined,
-            //       sub_department_id_list: [],
-            //     });
-            //   },
-            // },
-          },
-          {
-            className: "col-3 form-group",
-            type: "dropdown",
             name: "primary_sub_id",
             initialLoad: true,
             isImp: false,

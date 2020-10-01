@@ -126,3 +126,56 @@ export function deletePromotion(req, res, next) {
     next(e);
   }
 }
+
+export function getPromotionDetails(req, res, next) {
+  const _mysql = new algaehMysql();
+  try {
+    _mysql
+      .executeQuery({
+        query:
+          "SELECT *, P.promo_name, ST.service_type FROM hims_d_promotion_detail PD, hims_d_promotion P, hims_d_service_type ST where ST.hims_d_service_type_id = PD.service_type_id and P.hims_d_promo_id = PD.hims_d_promo_id ;",
+      })
+      .then((result) => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch((error) => {
+        _mysql.releaseConnection();
+        next(error);
+      });
+  } catch (e) {
+    _mysql.releaseConnection();
+    next(e);
+  }
+}
+
+export function addPromotionDetail(req, res, next) {
+  const _mysql = new algaehMysql();
+  try {
+    const {
+      service_type_id,
+      avail_type,
+      offer_value,
+      hims_d_promo_id,
+    } = req.body;
+    _mysql
+      .executeQuery({
+        query: `INSERT INTO hims_d_promotion_detail ( 'service_type_id', 'avail_type', 'offer_value', 'hims_d_promo_id') VALUES (?, ?,?,?)`,
+        values: [service_type_id, avail_type, offer_value, hims_d_promo_id],
+        printQuery: true,
+      })
+      .then((result) => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch((error) => {
+        _mysql.releaseConnection();
+        next(error);
+      });
+  } catch (e) {
+    _mysql.releaseConnection();
+    next(e);
+  }
+}

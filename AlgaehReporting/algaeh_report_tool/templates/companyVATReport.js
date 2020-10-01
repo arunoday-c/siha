@@ -15,10 +15,10 @@ const executePDF = function executePDFMethod(options) {
       let strData = "";
 
       if (input.nationality_id > 0) {
-        strData += ` and P.nationality_id= ${input.nationality_id}`;
+        strData += ` and P.nationality_id=${input.nationality_id}`;
       }
       if (input.primary_sub_id > 0) {
-        strData += ` and PI.primary_sub_id= ${input.primary_sub_id}`;
+        strData += ` and PI.primary_sub_id=${input.primary_sub_id}`;
       }
 
       options.mysql
@@ -56,7 +56,6 @@ const executePDF = function executePDFMethod(options) {
           printQuery: true,
         })
         .then((ress) => {
-
           let final_result = ress[0];
           final_result = final_result.concat(ress[1]);
           const result = {
