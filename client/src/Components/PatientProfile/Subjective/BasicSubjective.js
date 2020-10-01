@@ -37,6 +37,7 @@ import _ from "lodash";
 import moment from "moment";
 import { Dimmer, Loader } from "semantic-ui-react";
 import { PatientAttachments } from "../../PatientRegistrationNew/PatientAttachment";
+import { printPrescription } from "../PatientProfileHandlers";
 class BasicSubjective extends Component {
   constructor(props) {
     super(props);
@@ -850,6 +851,15 @@ class BasicSubjective extends Component {
                     </div>
 
                     <div className="actions">
+                      {" "}
+                      <button
+                        className="btn btn-circle"
+                        onClick={printPrescription.bind(this, this)}
+                        style={{ marginRight: 5 }}
+                      >
+                        <i className="fas fa-print" />
+                        {/* <i className="fas fa-retweet" /> */}
+                      </button>
                       <button
                         className="btn btn-primary btn-circle active"
                         onClick={this.showMedication.bind(this)}
@@ -875,9 +885,9 @@ class BasicSubjective extends Component {
                                 <h3>{item.day}</h3>
                                 <span>{item.year}</span>
 
-                                <div className="printOnHover">
+                                {/* <div className="printOnHover">
                                   <i className="fas fa-print" />
-                                </div>
+                                </div> */}
                               </div>
                               <div className="medcineList">
                                 <ul>
@@ -899,9 +909,9 @@ class BasicSubjective extends Component {
                                           "DD dddd MMMM YYYY"
                                         )}
                                       </small>
-                                      <div className="reOrderOnHover">
+                                      {/* <div className="reOrderOnHover">
                                         <i className="fas fa-retweet" />
-                                      </div>
+                                      </div> */}
                                     </li>
                                   ))}
                                 </ul>

@@ -103,6 +103,9 @@ const saveNetworkPlan = ($this, context) => {
       hospital_id: $this.state.hospital_id,
       invoice_max_deduct: $this.state.invoice_max_deduct,
       preapp_limit_from: $this.state.preapp_limit_from,
+      copay_optical: $this.state.copay_optical,
+      coverd_optical: $this.state.coverd_optical,
+      covered_dental: $this.state.covered_dental,
     };
     let previous = $this.state.network_plan ? $this.state.network_plan : [];
     previous.push(obj);
@@ -165,6 +168,9 @@ const addNewNetwork = ($this) => {
 
       effective_start_date: null,
       effective_end_date: null,
+      covered_dental: "N",
+      coverd_optical: "N",
+      copay_optical: 0,
 
       hims_d_insurance_network_office_id: null,
       network_id: null,
