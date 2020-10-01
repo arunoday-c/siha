@@ -77,3 +77,13 @@ export async function updatePromotionDetail(input = {}) {
   });
   return res?.data?.records;
 }
+
+export async function getPatientsForPromo(key, { gender, age_range }) {
+  const res = await newAlgaehApi({
+    uri: "/promotionmaster/getPatientsForPromo",
+    method: "GET",
+    module: "masterSettings",
+    data: { gender, age_range },
+  });
+  return res?.data?.records;
+}

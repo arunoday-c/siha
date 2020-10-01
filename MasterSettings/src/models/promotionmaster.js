@@ -218,3 +218,30 @@ export function updatePromotionDetail(req, res, next) {
     next(e);
   }
 }
+
+export function getPatientsForPromo(req, res, next) {
+  const _mysql = new algaehMysql();
+  try {
+    const { gender, age_range } = req.query;
+    const genderQry = gender === "both" ? "" : `gender=${req.query.gender} and`;
+    const ageRange = !!age_range ? age_range.split("-") : [0, 150];
+    const query = `select hims_d_patient_id, full_name, patient_code from hims_f_patient
+     where ${genderQry} age between ${ageRange[0]} and ${ageRange[1]}`;
+    _mysql
+      .executeQuery({
+        query,
+      })
+      .then((result) => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch((error) => {
+        _mysql.releaseConnection();
+        next(error);
+      });
+  } catch (e) {
+    _mysql.releaseConnection();
+    next(e);
+  }
+}
