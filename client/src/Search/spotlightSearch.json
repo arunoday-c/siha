@@ -2,6 +2,10 @@
   "frontDesk": {
     "patients": [
       {
+        "fieldName": "primary_id_no",
+        "label": "Primary ID No."
+      },
+      {
         "fieldName": "patient_code",
         "label": "Patient Code"
       },
@@ -16,10 +20,6 @@
       {
         "fieldName": "contact_number",
         "label": "Contact Number"
-      },
-      {
-        "fieldName": "primary_id_no",
-        "label": "Primary ID No."
       }
     ],
     "emp_id_patients": [
@@ -377,12 +377,12 @@
   "Diagnosis": {
     "IcdCodes": [
       {
-        "fieldName": "icd_code",
-        "label": "ICD Code"
-      },
-      {
         "fieldName": "icd_description",
         "label": "ICD Description"
+      },
+      {
+        "fieldName": "icd_code",
+        "label": "ICD Code"
       }
     ]
   },

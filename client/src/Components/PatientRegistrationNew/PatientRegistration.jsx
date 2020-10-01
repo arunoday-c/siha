@@ -353,8 +353,19 @@ export function PatientRegistration() {
     getIncomeFromPatient,
     {
       onSuccess: (data) => {
-        setIncomeByOp(data[0][0].op_pat_income);
-        setIncomeByPoint(data[1][0].pos_pat_income);
+        if (data[0].length > 0) {
+          setIncomeByOp(data[0][0].op_pat_income);
+        }
+        if (data[1].length > 0) {
+          setIncomeByPoint(data[1][0].pos_pat_income);
+          return;
+        }
+      },
+      onError: (err) => {
+        AlgaehMessagePop({
+          display: err?.message,
+          type: "error",
+        });
       },
     }
   );
