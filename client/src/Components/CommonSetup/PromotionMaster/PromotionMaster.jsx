@@ -55,10 +55,12 @@ export function PromotionMaster() {
       <div className="PromotionMaster">
         <PromoAddModal
           visible={!!currentAdd}
+          data={currentAdd}
           onClose={() => setCurrentAdd(null)}
         />
         <PromoEditModal
           visible={!!currentEdit}
+          data={currentEdit}
           onClose={() => setCurrentEdit(null)}
         />
         <div className="row inner-top-search">

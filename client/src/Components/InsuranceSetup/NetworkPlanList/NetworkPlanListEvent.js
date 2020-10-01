@@ -130,7 +130,7 @@ const UpdateNetworkPlan = ($this, row) => {
     deductible_medicine: row.deductible_medicine,
     copay_medicine: row.copay_medicine,
     medicine_max: row.medicine_max,
-
+    deductable_type: row.deductable_type,
     price_from: row.price_from,
     employer: row.employer,
     policy_number: row.policy_number,
