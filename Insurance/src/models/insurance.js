@@ -1112,7 +1112,7 @@ export default {
           netoff.hospital_id, netoff.hims_d_insurance_network_office_id, netoff.employer,netoff.policy_number,effective_start_date,effective_end_date,netoff.preapp_limit,netoff.price_from,netoff.deductible,\
           netoff.copay_consultation,netoff.max_value,netoff.deductible_lab,netoff.copay_percent,\
           netoff.lab_max,netoff.deductible_rad,netoff.copay_percent_rad,netoff.rad_max,netoff.deductible_trt,\
-          netoff.copay_percent_trt,netoff.trt_max,netoff.deductible_dental,\
+          netoff.copay_percent_trt,netoff.trt_max,netoff.deductible_dental,netoff.deductable_type,netoff.deductible,\
           netoff.copay_percent_dental,netoff.dental_max, netoff.hospital_id,netoff.deductible_medicine,netoff.copay_medicine,netoff.medicine_max,netoff.invoice_max_deduct, netoff.preapp_limit_from, \
           netoff.covered_dental,netoff.coverd_optical,netoff.copay_optical FROM hims_d_insurance_network net,hims_d_insurance_network_office netoff\
           where netoff.hospital_id=? and netoff.network_id = net.hims_d_insurance_network_id \

@@ -1406,7 +1406,7 @@ function Routes() {
     setNationality,
   } = context;
 
-  useQuery(
+  const { isLoading } = useQuery(
     "common-data",
     () => {
       return Promise.all([
@@ -1461,26 +1461,37 @@ function Routes() {
             />
           );
         })}
-        {privateRoutes.map((routeItem, idx) => {
-          // const others = routeItem.others === undefined ? {} : routeItem.others;
-          const path = routeItem.path.replace("/?", "?");
-          const noSecurityCheck = routeItem.noSecurityCheck;
-          return (
-            <ProtectedRoute
-              key={routeItem.path}
-              path={path}
-              exact={routeItem.isExactPath}
-              strict={true}
-              render={(params) => {
-                return (
-                  <LoadComponent path={path} noSecurityCheck={noSecurityCheck}>
-                    {routeItem.component}
-                  </LoadComponent>
-                );
-              }}
-            />
-          );
-        })}
+        {!isLoading ? (
+          privateRoutes.map((routeItem, idx) => {
+            // const others = routeItem.others === undefined ? {} : routeItem.others;
+            const path = routeItem.path.replace("/?", "?");
+            const noSecurityCheck = routeItem.noSecurityCheck;
+            return (
+              <ProtectedRoute
+                key={routeItem.path}
+                path={path}
+                exact={routeItem.isExactPath}
+                strict={true}
+                render={(params) => {
+                  return (
+                    <LoadComponent
+                      path={path}
+                      noSecurityCheck={noSecurityCheck}
+                    >
+                      {routeItem.component}
+                    </LoadComponent>
+                  );
+                }}
+              />
+            );
+          })
+        ) : (
+          <div className="loader-container">
+            <div className="algaeh-progress float shadow">
+              <div className="progress__item">loading</div>
+            </div>
+          </div>
+        )}
       </Switch>
     </BrowserRouter>
   );

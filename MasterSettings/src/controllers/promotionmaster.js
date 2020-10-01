@@ -7,6 +7,8 @@ import {
   updatePromotion,
   getPromotionDetails,
   addPromotionDetail,
+  updatePromotionDetail,
+  getPatientsForPromo,
 } from "../models/promotionmaster";
 
 export default () => {
@@ -58,6 +60,15 @@ export default () => {
     next();
   });
 
+  api.put("/updatePromotionDetail", updatePromotionDetail, (req, res, next) => {
+    let result = req.records;
+    res.status(utlities.httpStatus().ok).json({
+      success: true,
+      records: result,
+    });
+    next();
+  });
+
   api.delete("/deletePromotion", deletePromotion, (req, res, next) => {
     let result = req.records;
     res.status(utlities.httpStatus().ok).json({
@@ -66,5 +77,15 @@ export default () => {
     });
     next();
   });
+
+  api.get("/getPatientsForPromo", getPatientsForPromo, (req, res, next) => {
+    let result = req.records;
+    res.status(utlities.httpStatus().ok).json({
+      success: true,
+      records: result,
+    });
+    next();
+  });
+
   return api;
 };
