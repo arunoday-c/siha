@@ -944,32 +944,6 @@ class OrderMedication extends Component {
               Save Medication
             </button>
 
-            {/*<ButtonType
-              label={{
-                forceLabel: "Print Prescription",
-                returnText: true
-              }}
-              isReport={true}
-              displayName="Prescription"
-              report={{
-                reportName: "prescription",
-                reportParams: [
-                  {
-                    name: "hims_d_patient_id",
-                    value: Window.global["current_patient"]
-                  },
-                  {
-                    name: "visit_id",
-                    value: Window.global["visit_id"]
-                  },
-                  {
-                    name: "visit_code",
-                    value: null
-                  }
-                ],
-                outputFileType: "PDF"
-              }}
-            />*/}
             <button
               type="button"
               className="btn btn-default"
