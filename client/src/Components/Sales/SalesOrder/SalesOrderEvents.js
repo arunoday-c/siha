@@ -770,6 +770,13 @@ const AuthorizeOrderEntry = ($this, authorize) => {
 };
 
 const CancelSalesServiceOrder = ($this) => {
+  if (!$this.state.canceled_reason_sales) {
+    swalMessage({
+      title: "Please add reason for Rejection",
+      type: "warning",
+    });
+    return;
+  }
   algaehApiCall({
     uri: "/SalesOrder/cancelSalesServiceOrder",
     module: "sales",
@@ -784,6 +791,7 @@ const CancelSalesServiceOrder = ($this) => {
         $this.setState({
           cancelDisable: true,
           rejectVisible: false,
+          authBtnEnable: true,
         });
       }
       AlgaehLoader({ show: false });
