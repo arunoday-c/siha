@@ -5,7 +5,6 @@ import { bindActionCreators } from "redux";
 import "./SalesInvoice.scss";
 import BreadCrumb from "../../common/BreadCrumb/BreadCrumb";
 import { AlgaehLabel, AlagehFormGroup } from "../../Wrapper/algaehWrapper";
-import { AlgaehAutoComplete } from "algaeh-react-components";
 import Options from "../../../Options.json";
 import moment from "moment";
 // import ReceiptItemList from "./ReceiptItemList/ReceiptItemList";
@@ -303,48 +302,26 @@ class SalesInvoice extends Component {
           </MyContext.Provider>
 
           <div className="row">
-            <div className="col-3">
-              <div className="row">
-                {" "}
-                <AlgaehAutoComplete
-                  div={{ className: "col-12 form-group mandatory" }}
-                  label={{
-                    forceLabel: "Select a Bank",
-                    isImp: true,
-                  }}
-                  selector={{
-                    name: "",
-                    className: "select-fld",
-                    value: "",
-                    dataSource: {
-                      textField: "",
-                      valueField: "",
-                      data: "",
-                    },
-                  }}
-                />
-                <AlagehFormGroup
-                  div={{ className: "col-12 textAreaLeft" }}
-                  label={{
-                    forceLabel: "Enter Narration",
-                    isImp: false,
-                  }}
-                  textBox={{
-                    className: "txt-fld",
-                    name: "narration",
-                    value: this.state.narration,
-                    events: {
-                      onChange: texthandle.bind(this, this),
-                    },
-                    others: {
-                      // disabled: this.state.dataExitst,
-                      multiline: true,
-                      rows: "3",
-                    },
-                  }}
-                />
-              </div>
-            </div>
+            <AlagehFormGroup
+              div={{ className: "col-3 textAreaLeft" }}
+              label={{
+                forceLabel: "Enter Narration",
+                isImp: false,
+              }}
+              textBox={{
+                className: "txt-fld",
+                name: "narration",
+                value: this.state.narration,
+                events: {
+                  onChange: texthandle.bind(this, this),
+                },
+                others: {
+                  // disabled: this.state.dataExitst,
+                  multiline: true,
+                  rows: "3",
+                },
+              }}
+            />
             <div className="col-9" style={{ textAlign: "right" }}>
               <div className="row">
                 <div className="col">
