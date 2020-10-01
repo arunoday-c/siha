@@ -131,12 +131,12 @@ class OrderConsumables extends Component {
   UNSAFE_componentWillReceiveProps(nextProps) {
     let Location_name =
       this.props.inventorylocations !== undefined &&
-        this.props.inventorylocations.length > 0
+      this.props.inventorylocations.length > 0
         ? _.filter(this.props.inventorylocations, (f) => {
-          return (
-            f.hims_d_inventory_location_id === nextProps.inventory_location_id
-          );
-        })
+            return (
+              f.hims_d_inventory_location_id === nextProps.inventory_location_id
+            );
+          })
         : [];
 
     if (
@@ -389,11 +389,11 @@ class OrderConsumables extends Component {
                           <AlgaehLabel
                             label={{ fieldName: "service_type_id" }}
                           />
-                        )
+                        ),
                       },
 
                       {
-                        fieldName: "services_name",
+                        fieldName: "service_name",
                         label: (
                           <AlgaehLabel label={{ fieldName: "services_id" }} />
                         ),
