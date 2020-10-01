@@ -14,6 +14,7 @@ import {
 import "./PromotionMaster.scss";
 import { useQuery } from "react-query";
 import { getPatientsForPromo } from "./api";
+import { swalMessage } from "../../../utils/algaehApiCall";
 
 export function PromoAddModal({ visible, onClose }) {
   const { userLanguage } = useContext(MainContext);
@@ -62,6 +63,19 @@ export function PromoAddModal({ visible, onClose }) {
       footer={[
         <Button className="btn btn-default" onClick={onClose}>
           Close
+        </Button>,
+        <Button
+          className="btn btn-primary"
+          disabled={!recepients.length || !sms?.length}
+          onClick={() => {
+            swalMessage({
+              title: "SMS sent to recipients",
+              type: "success",
+            });
+            onClose();
+          }}
+        >
+          Send SMS
         </Button>,
       ]}
       width={720}
@@ -136,7 +150,7 @@ export function PromoAddModal({ visible, onClose }) {
                 onClick={() => refetch()}
                 disabled={!gender && !age_range}
               >
-                Load Recipients
+                Load recipients
               </button>
             </div>
             <div className="col-1">
@@ -144,10 +158,13 @@ export function PromoAddModal({ visible, onClose }) {
                 type="button"
                 style={{ marginTop: 20 }}
                 className="btn btn-default"
-                onClick={() => clear()}
+                onClick={() => {
+                  setRecepients([]);
+                  clear();
+                }}
                 disabled={!patients?.length}
               >
-                Clear Recipients
+                Clear recipients
               </button>
             </div>
           </div>
