@@ -7,6 +7,7 @@ import {
   updatePromotion,
   getPromotionDetails,
   addPromotionDetail,
+  updatePromotionDetail,
 } from "../models/promotionmaster";
 
 export default () => {
@@ -50,6 +51,15 @@ export default () => {
   });
 
   api.put("/updatePromotion", updatePromotion, (req, res, next) => {
+    let result = req.records;
+    res.status(utlities.httpStatus().ok).json({
+      success: true,
+      records: result,
+    });
+    next();
+  });
+
+  api.put("/updatePromotionDetail", updatePromotionDetail, (req, res, next) => {
     let result = req.records;
     res.status(utlities.httpStatus().ok).json({
       success: true,

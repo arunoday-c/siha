@@ -8,9 +8,14 @@ import {
   AlgaehLabel,
   AlgaehDataGrid,
 } from "algaeh-react-components";
+// import { useForm } from "react-hook-form";
 import "./PromotionMaster.scss";
 export function PromoAddModal({ visible, onClose }) {
   const { userLanguage } = useContext(MainContext);
+  // const baseValues = {}
+  // const {} = useForm({
+  //   defaultValues:
+  // })
 
   return (
     <AlgaehModal
@@ -42,9 +47,13 @@ export function PromoAddModal({ visible, onClose }) {
               className: "select-fld",
               value: "",
               dataSource: {
-                textField: "",
+                textField: "text",
                 valueField: "value",
-                data: "",
+                data: [
+                  { text: "Male", value: "Male" },
+                  { text: "Female", value: "Female" },
+                  { text: "both", value: "both" },
+                ],
               },
             }}
           />
