@@ -437,7 +437,7 @@ const RequisitionSearch = ($this, e) => {
   if ($this.state.from_location_id !== null) {
     AlgaehSearch({
       searchGrid: {
-        columns: spotlightSearch.RequisitionEntry.ReqEntry,
+        columns: spotlightSearch.RequisitionEntry.ReqEntryPhar,
       },
       searchName: "REQTransEntry",
       uri: "/gloabelSearch/get",
