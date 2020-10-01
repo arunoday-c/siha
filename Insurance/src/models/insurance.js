@@ -747,7 +747,8 @@ export default {
               `lab_max`,`rad_min`,`rad_max`,`trt_max`,`trt_min`,`dental_min`,`dental_max`,`medicine_min`,`medicine_max`,`invoice_max_liability`,\
               `for_alltrt`,`for_alldental`,`for_allmedicine`,`invoice_max_deduct`,`price_from`,`employer`,`policy_number`,`follow_up`,`preapp_limit`,\
               `deductible_ip`,`copay_ip`,`ip_min`,`ip_max`,`for_allip`,`consult_limit`,`preapp_limit_from`,`copay_maternity`,`maternity_min`,`maternity_max`,\
-              `copay_optical`,`optical_min`,`optical_max`,`copay_diagnostic`,`diagnostic_min`,`diagnostic_max`,`created_by`,`updated_by`,`deductable_type`)\
+              `copay_optical`,`optical_min`,`optical_max`,`copay_diagnostic`,`diagnostic_min`,`diagnostic_max`,`created_by`,`updated_by`,`deductable_type`,\
+               `covered_dental`,`coverd_optical`)\
               SELECT " +
                   result.insertId +
                   ",hims_d_hospital_id," +
@@ -862,6 +863,10 @@ export default {
                   req.userIdentity.algaeh_d_app_user_id +
                   ",'" +
                   input.deductable_type +
+                  "','" +
+                  input.covered_dental +
+                  "','" +
+                  input.coverd_optical +
                   "' from hims_d_hospital",
                 printQuery: false,
               })
@@ -1108,13 +1113,13 @@ export default {
           netoff.copay_consultation,netoff.max_value,netoff.deductible_lab,netoff.copay_percent,\
           netoff.lab_max,netoff.deductible_rad,netoff.copay_percent_rad,netoff.rad_max,netoff.deductible_trt,\
           netoff.copay_percent_trt,netoff.trt_max,netoff.deductible_dental,\
-          netoff.copay_percent_dental,netoff.dental_max, netoff.hospital_id,netoff.deductible_medicine,netoff.copay_medicine,netoff.medicine_max,netoff.invoice_max_deduct, netoff.preapp_limit_from \
-          FROM hims_d_insurance_network net,hims_d_insurance_network_office netoff\
+          netoff.copay_percent_dental,netoff.dental_max, netoff.hospital_id,netoff.deductible_medicine,netoff.copay_medicine,netoff.medicine_max,netoff.invoice_max_deduct, netoff.preapp_limit_from, \
+          netoff.covered_dental,netoff.coverd_optical,netoff.copay_optical FROM hims_d_insurance_network net,hims_d_insurance_network_office netoff\
           where netoff.hospital_id=? and netoff.network_id = net.hims_d_insurance_network_id \
           and net.record_status='A' and netoff.record_status='A' " +
             _stringData,
           values: inputValues,
-          printQuery: false,
+          printQuery: true,
         })
         .then((result) => {
           // utilities.logger().log("result: ", result);
@@ -1209,7 +1214,9 @@ export default {
               `lab_max`=?,`rad_min`=?,`rad_max`=?,`trt_max`=?,`trt_min`=?,`dental_min`=?,`dental_max`=?,`medicine_min`=?,`medicine_max`=?,`invoice_max_liability`=?,\
               `for_alltrt`=?,`for_alldental`=?,`for_allmedicine`=?,`invoice_max_deduct`=?,`price_from`=?,`employer`=?,`policy_number`=?,`follow_up`=?,`preapp_limit`=?,\
               `deductible_ip`=?,`copay_ip`=?,`ip_min`=?,`ip_max`=?,`for_allip`=?,`consult_limit`=?,`preapp_limit_from`=?,`copay_maternity`=?,`maternity_min`=?,`maternity_max`=?,\
-              `copay_optical`=?,`optical_min`=?,`optical_max`=?,`copay_diagnostic`=?,`diagnostic_min`=?,`diagnostic_max`=?,`updated_date`=?,`updated_by`=? WHERE  `hims_d_insurance_network_office_id`=? AND `record_status`='A'",
+              `copay_optical`=?,`optical_min`=?,`optical_max`=?,`copay_diagnostic`=?,`diagnostic_min`=?,`diagnostic_max`=?,`updated_date`=?,`updated_by`=?,  \
+               `covered_dental`=?,`coverd_optical`=? \
+              WHERE  `hims_d_insurance_network_office_id`=? AND `record_status`='A'",
               values: [
                 inputparam.network_id,
                 inputparam.hospital_id,
@@ -1269,6 +1276,8 @@ export default {
                 inputparam.diagnostic_max,
                 new Date(),
                 req.userIdentity.algaeh_d_app_user_id,
+                inputparam.covered_dental,
+                inputparam.coverd_optical,
                 inputparam.hims_d_insurance_network_office_id,
               ],
               printQuery: false,

@@ -38,9 +38,10 @@ class NetworkPlan extends PureComponent {
       deductable_type: null,
       hims_d_insurance_network_id: null,
       network_type: null,
-
+      covered_dental: "N",
+      coverd_optical: "N",
       insurance_sub_id: null,
-
+      copay_optical: "0",
       effective_start_date: null,
       effective_end_date: null,
       maxDate_end_date: null,
@@ -123,7 +124,18 @@ class NetworkPlan extends PureComponent {
   handleClose = () => {
     this.setState({ snackeropen: false });
   };
-
+  handleCheckChange(e) {
+    const status = e.target.checked;
+    const name = e.target.name;
+    let zeroOnSelectNo = {};
+    if (!status) {
+      if (name === "covered_dental") zeroOnSelectNo["copay_percent_dental"] = 0;
+      if (name === "coverd_optical") {
+        zeroOnSelectNo["copay_optical"] = 0;
+      }
+    }
+    this.setState({ [name]: status === true ? "Y" : "N", ...zeroOnSelectNo });
+  }
   render() {
     return (
       <React.Fragment>
@@ -663,8 +675,13 @@ class NetworkPlan extends PureComponent {
                             <label className="checkbox inline">
                               <input
                                 type="checkbox"
-                                value="D"
-                                name="avail_type"
+                                name="covered_dental"
+                                checked={
+                                  this.state.covered_dental === "Y"
+                                    ? true
+                                    : false
+                                }
+                                onChange={this.handleCheckChange.bind(this)}
                               />
                               <span>Yes</span>
                             </label>
@@ -674,7 +691,10 @@ class NetworkPlan extends PureComponent {
                           div={{ className: "col-6 form-group" }}
                           label={{ forceLabel: "Dental Copay" }}
                           textBox={{
-                            value: this.state.copay_percent_dental,
+                            value:
+                              this.state.covered_dental === "N"
+                                ? "0"
+                                : this.state.copay_percent_dental,
                             className: "txt-fld",
                             name: "copay_percent_dental",
 
@@ -684,6 +704,10 @@ class NetworkPlan extends PureComponent {
                             others: {
                               "data-netdata": true,
                               type: "number",
+                              disabled:
+                                this.state.covered_dental === "Y"
+                                  ? false
+                                  : true,
                             },
                           }}
                         />
@@ -693,8 +717,13 @@ class NetworkPlan extends PureComponent {
                             <label className="checkbox inline">
                               <input
                                 type="checkbox"
-                                value="D"
-                                name="avail_type"
+                                name="coverd_optical"
+                                checked={
+                                  this.state.coverd_optical === "Y"
+                                    ? true
+                                    : false
+                                }
+                                onChange={this.handleCheckChange.bind(this)}
                               />
                               <span>Yes</span>
                             </label>
@@ -705,12 +734,19 @@ class NetworkPlan extends PureComponent {
                           div={{ className: "col-6 form-group" }}
                           label={{ forceLabel: "Optical Copay" }}
                           textBox={{
-                            //value: this.state.copay_medicine,
+                            value: this.state.copay_optical,
                             className: "txt-fld",
-                            name: "",
+                            name: "copay_optical",
+                            events: {
+                              onChange: numberhandle.bind(this, this),
+                            },
                             others: {
                               "data-netdata": true,
                               type: "number",
+                              disabled:
+                                this.state.coverd_optical === "N"
+                                  ? true
+                                  : false,
                             },
                           }}
                         />
