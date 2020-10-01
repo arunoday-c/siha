@@ -840,7 +840,7 @@ export default {
           internal_error: true,
           message: "No receipt details",
         };
-        _mysql.rollBackTransaction(() => { });
+        _mysql.rollBackTransaction(() => {});
         next();
         return;
       } else if (
@@ -2204,7 +2204,7 @@ export default {
 
             strQuery = `select hims_d_insurance_network_office_id,price_from ,copay_consultation,copay_percent,copay_percent_rad,copay_percent_trt,\
                  copay_percent_dental,copay_medicine, preapp_limit, deductible, deductible_lab,deductible_rad, \
-               deductible_trt, deductible_medicine from hims_d_insurance_network_office where hospital_id=${req.userIdentity.hospital_id}\
+               deductible_trt, deductible_medicine,deductable_type from hims_d_insurance_network_office where hospital_id=${req.userIdentity.hospital_id}\
                and hims_d_insurance_network_office_id in (${network_office_ids});\
                select SI.insurance_id ,SI.services_id,IP.company_service_price_type,copay_status,copay_amt,deductable_status,\
                deductable_amt,pre_approval,covered,net_amount,gross_amt, cpt_code, IP.insurance_type \
@@ -2382,7 +2382,7 @@ export default {
                     prices = allCompany_price.find((item) => {
                       return (
                         item.insurance_id ==
-                        input[i]["primary_insurance_provider_id"] &&
+                          input[i]["primary_insurance_provider_id"] &&
                         item.services_id == input[i]["hims_d_services_id"]
                       );
                     });
@@ -2490,6 +2490,7 @@ export default {
                         .Consultation == records.service_type_id
                     ) {
                       copay_percentage = policydtls.copay_consultation;
+
                       deductable_percentage = policydtls.deductible;
                     } else if (
                       appsettings.hims_d_service_type.service_type_id
@@ -2571,12 +2572,28 @@ export default {
                     }
 
                     // console.log("deductable_percentage", deductable_percentage);
-                    deductable_amount =
-                      deductable_percentage !== null
-                        ? (parseFloat(net_amout) *
-                          parseFloat(deductable_percentage)) /
-                        100
-                        : 0;
+                    if (policydtls.deductable_type) {
+                      if (policydtls.deductable_type === "AMOUNT") {
+                        deductable_amount =
+                          deductable_percentage !== null
+                            ? parseFloat(deductable_percentage)
+                            : 0;
+                      } else {
+                        deductable_amount =
+                          deductable_percentage !== null
+                            ? (parseFloat(net_amout) *
+                                parseFloat(deductable_percentage)) /
+                              100
+                            : 0;
+                      }
+                    } else {
+                      deductable_amount =
+                        deductable_percentage !== null
+                          ? (parseFloat(net_amout) *
+                              parseFloat(deductable_percentage)) /
+                            100
+                          : 0;
+                    }
 
                     deductable_amount = utilities.decimalPoints(
                       deductable_amount,
@@ -2742,8 +2759,8 @@ export default {
                         from_pos == "Y"
                           ? parseFloat(unit_cost)
                           : unit_cost != 0
-                            ? parseFloat(unit_cost)
-                            : parseFloat(records.standard_fee);
+                          ? parseFloat(unit_cost)
+                          : parseFloat(records.standard_fee);
                     }
                   }
                   // if (FollowUp === true) {
@@ -4283,8 +4300,8 @@ function getBillDetailsFunctionality(req, res, next, resolve) {
                       from_pos == "Y"
                         ? unit_cost
                         : unit_cost != 0
-                          ? unit_cost
-                          : records.standard_fee;
+                        ? unit_cost
+                        : records.standard_fee;
                   }
                 }
 
