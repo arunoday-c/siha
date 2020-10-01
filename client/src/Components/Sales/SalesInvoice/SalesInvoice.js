@@ -5,6 +5,7 @@ import { bindActionCreators } from "redux";
 import "./SalesInvoice.scss";
 import BreadCrumb from "../../common/BreadCrumb/BreadCrumb";
 import { AlgaehLabel, AlagehFormGroup } from "../../Wrapper/algaehWrapper";
+import { AlgaehAutoComplete } from "algaeh-react-components";
 import Options from "../../../Options.json";
 import moment from "moment";
 // import ReceiptItemList from "./ReceiptItemList/ReceiptItemList";
@@ -20,7 +21,7 @@ import {
   generateSalesInvoiceReport,
   RevertSalesInvoice,
   CancelSalesInvoice,
-  SaveNarration
+  SaveNarration,
 } from "./SalesInvoiceEvents";
 import { AlgaehActions } from "../../../actions/algaehActions";
 // import SalesInvoiceInp from "../../../Models/SalesInvoice";
@@ -167,8 +168,8 @@ class SalesInvoice extends Component {
                     ) : this.state.is_posted === "N" ? (
                       <span className="badge badge-danger">Not Posted</span>
                     ) : (
-                            <span className="badge badge-success">Posted</span>
-                          )}
+                      <span className="badge badge-success">Posted</span>
+                    )}
                   </h6>
                 </div>
               ) : null}
@@ -177,17 +178,17 @@ class SalesInvoice extends Component {
           printArea={
             this.state.hims_f_sales_invoice_header_id !== null
               ? {
-                menuitems: [
-                  {
-                    label: "Print Invoice",
-                    events: {
-                      onClick: () => {
-                        generateSalesInvoiceReport(this.state);
+                  menuitems: [
+                    {
+                      label: "Print Invoice",
+                      events: {
+                        onClick: () => {
+                          generateSalesInvoiceReport(this.state);
+                        },
                       },
                     },
-                  },
-                ],
-              }
+                  ],
+                }
               : ""
           }
           selectedLang={this.state.selectedLang}
@@ -297,31 +298,53 @@ class SalesInvoice extends Component {
                 <InvoiceListService SALESInvoiceIOputs={this.state} />
               </div>
             ) : (
-                <InvoiceItemList SALESInvoiceIOputs={this.state} />
-              )}
+              <InvoiceItemList SALESInvoiceIOputs={this.state} />
+            )}
           </MyContext.Provider>
 
           <div className="row">
-            <AlagehFormGroup
-              div={{ className: "col-3 textAreaLeft" }}
-              label={{
-                forceLabel: "Narration",
-                isImp: false,
-              }}
-              textBox={{
-                className: "txt-fld",
-                name: "narration",
-                value: this.state.narration,
-                events: {
-                  onChange: texthandle.bind(this, this),
-                },
-                others: {
-                  // disabled: this.state.dataExitst,
-                  multiline: true,
-                  rows: "3",
-                },
-              }}
-            />
+            <div className="col-3">
+              <div className="row">
+                {" "}
+                <AlgaehAutoComplete
+                  div={{ className: "col-12 form-group mandatory" }}
+                  label={{
+                    forceLabel: "Select a Bank",
+                    isImp: true,
+                  }}
+                  selector={{
+                    name: "",
+                    className: "select-fld",
+                    value: "",
+                    dataSource: {
+                      textField: "",
+                      valueField: "",
+                      data: "",
+                    },
+                  }}
+                />
+                <AlagehFormGroup
+                  div={{ className: "col-12 textAreaLeft" }}
+                  label={{
+                    forceLabel: "Enter Narration",
+                    isImp: false,
+                  }}
+                  textBox={{
+                    className: "txt-fld",
+                    name: "narration",
+                    value: this.state.narration,
+                    events: {
+                      onChange: texthandle.bind(this, this),
+                    },
+                    others: {
+                      // disabled: this.state.dataExitst,
+                      multiline: true,
+                      rows: "3",
+                    },
+                  }}
+                />
+              </div>
+            </div>
             <div className="col-9" style={{ textAlign: "right" }}>
               <div className="row">
                 <div className="col">
@@ -406,19 +429,20 @@ class SalesInvoice extends Component {
                     />
                   </button>
                 </AlgaehSecurityComponent>
-                {this.state.hims_f_sales_invoice_header_id > 0 ? <button
-                  type="button"
-                  className="btn btn-primary"
-                  onClick={SaveNarration.bind(this, this)}
-                >
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Save Narration",
-                      returnText: true,
-                    }}
-                  />
-                </button> : null}
-
+                {this.state.hims_f_sales_invoice_header_id > 0 ? (
+                  <button
+                    type="button"
+                    className="btn btn-primary"
+                    onClick={SaveNarration.bind(this, this)}
+                  >
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Save Narration",
+                        returnText: true,
+                      }}
+                    />
+                  </button>
+                ) : null}
                 <button
                   type="button"
                   className="btn btn-default"
