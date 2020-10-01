@@ -11,6 +11,8 @@ import {
   AlgaehDateHandler,
   AlgaehHijriDatePicker,
   Spin,
+  Input,
+  Select,
 } from "algaeh-react-components";
 import AlgaehFileUploader from "../Wrapper/algaehFileUpload";
 import { newAlgaehApi, useQueryParams } from "../../hooks/";
@@ -18,6 +20,7 @@ import GenericData from "../../utils/GlobalVariables.json";
 import { FrontdeskContext } from "./FrontdeskContext";
 import { useLangFieldName } from "./patientHooks";
 const { TabPane } = Tabs;
+const { Option } = Select;
 const { FORMAT_GENDER, FORMAT_MARTIALSTS } = GenericData;
 
 async function getDemoData() {
@@ -390,7 +393,46 @@ export function Demographics({
                           }}
                         />
 
-                        <Controller
+                        <Input.Group compact>
+                          <Controller
+                            control={control}
+                            name="tel_code"
+                            rules={{
+                              required: true,
+                            }}
+                            render={(props) => (
+                              <>
+                                <Select {...props}>
+                                  {countries?.map((item) => (
+                                    <Option
+                                      value={item.tel_code}
+                                      key={item.tel_code}
+                                    >
+                                      {item.tel_code}
+                                    </Option>
+                                  ))}
+                                </Select>
+                              </>
+                            )}
+                          />
+                          <Controller
+                            control={control}
+                            name="contact_number"
+                            rules={{
+                              required: "Please Enter Contact Number",
+                              minLength: {
+                                message: "Please Enter Valid Number",
+                                value: 6,
+                              },
+                            }}
+                            render={(props) => (
+                              <>
+                                <Input style={{ width: "50%" }} {...props} />
+                              </>
+                            )}
+                          />
+                        </Input.Group>
+                        {/* <Controller
                           control={control}
                           name="contact_number"
                           rules={{
@@ -424,7 +466,7 @@ export function Demographics({
                               }}
                             />
                           )}
-                        />
+                        /> */}
                       </div>
                       <div className="row paddin-bottom-5">
                         <Controller
