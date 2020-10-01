@@ -252,7 +252,7 @@ export default function Vat({
           {
             className: "col-3 form-group",
             type: "dropdown",
-            name: "primary_sub_id",
+            name: "primary_insurance_provider_id",
             initialLoad: true,
             isImp: false,
             label: "Company",
@@ -260,32 +260,40 @@ export default function Vat({
               uri: "/insurance/getInsuranceProviders",
               module: "insurance",
             },
+            dataSource: {
+              textField: "insurance_provider_name",
+              valueField: "hims_d_insurance_provider_id",
+            },
             // events: {
             //   onChange: (reportState, currentEvent) => {
-            //     //provider_id_list CONTROL NAME AND APPEND BY _LIST
-            //     algaehApiCall({
-            //       uri: "/pharmacy/getPharmacyLocation",
-            //       module: "pharmacy",
-            //       method: "GET",
-            //       data: { hospital_id: currentEvent.value },
-
-            //       onSuccess: (result) => {
-            //         reportState.setState({
-            //           location_id_list: result.data.records,
-            //         });
-            //       },
+            //     reportState.setState({
+            //       [currentEvent.name]: currentEvent.value,
+            //       department_id: currentEvent.value,
+            //       sub_department_id_list: currentEvent.selected.subDepts,
             //     });
             //   },
             //   onClear: (reportState, currentName) => {
             //     reportState.setState({
             //       [currentName]: undefined,
-            //       location_id_list: [],
+            //       sub_department_id_list: [],
             //     });
             //   },
             // },
+          },
+          {
+            className: "col-3 form-group",
+            type: "dropdown",
+            name: "primary_sub_id",
+            initialLoad: true,
+            isImp: false,
+            label: "Sub Company",
+            link: {
+              uri: "/insurance/getSubInsurance",
+              module: "insurance",
+            },
             dataSource: {
-              textField: "insurance_provider_name",
-              valueField: "hims_d_insurance_provider_id",
+              textField: "insurance_sub_name",
+              valueField: "hims_d_insurance_sub_id",
             },
           },
         ],

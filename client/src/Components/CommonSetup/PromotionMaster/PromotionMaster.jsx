@@ -199,7 +199,7 @@ export function PromotionMaster() {
                               ></i>
 
                               <i
-                                className="fas fa-plus"
+                                className="fas fa-paper-plane"
                                 onClick={() => setCurrentAdd(row)}
                               ></i>
                             </>
