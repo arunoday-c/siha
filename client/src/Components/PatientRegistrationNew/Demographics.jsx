@@ -1,4 +1,5 @@
 import React, { useContext, useEffect } from "react";
+import "./PatientRegistrationStyle.scss";
 import { useQuery } from "react-query";
 import { Controller, useWatch } from "react-hook-form";
 import moment from "moment";
@@ -139,7 +140,7 @@ export function Demographics({
       let months = moment().diff(fromDate, "months");
       fromDate.add(months, "months");
       let days = moment().diff(fromDate, "days");
-      return `${years} Years, ${months} Months, ${days} Days`;
+      return `${years}y, ${months}m, ${days}d`;
     } else {
       return "";
     }
@@ -374,7 +375,7 @@ export function Demographics({
 
                         <AlgaehFormGroup
                           div={{
-                            className: "col-lg-3 mandatory",
+                            className: "col-lg-2 mandatory",
                             others: {
                               style: { paddingRight: 0 },
                             },
@@ -393,45 +394,50 @@ export function Demographics({
                           }}
                         />
 
-                        <Input.Group compact>
-                          <Controller
-                            control={control}
-                            name="tel_code"
-                            rules={{
-                              required: true,
-                            }}
-                            render={(props) => (
-                              <>
-                                <Select {...props}>
-                                  {countries?.map((item) => (
-                                    <Option
-                                      value={item.tel_code}
-                                      key={item.tel_code}
-                                    >
-                                      {item.tel_code}
-                                    </Option>
-                                  ))}
-                                </Select>
-                              </>
-                            )}
-                          />
-                          <Controller
-                            control={control}
-                            name="contact_number"
-                            rules={{
-                              required: "Please Enter Contact Number",
-                              minLength: {
-                                message: "Please Enter Valid Number",
-                                value: 6,
-                              },
-                            }}
-                            render={(props) => (
-                              <>
-                                <Input style={{ width: "50%" }} {...props} />
-                              </>
-                            )}
-                          />
-                        </Input.Group>
+                        <div className="col-lg-4 algaehInputGroup">
+                          <label className="style_Label">
+                            Contact Number<span className="imp">&nbsp;*</span>
+                          </label>
+                          <Input.Group compact>
+                            <Controller
+                              control={control}
+                              name="tel_code"
+                              rules={{
+                                required: true,
+                              }}
+                              render={(props) => (
+                                <>
+                                  <Select {...props}>
+                                    {countries?.map((item) => (
+                                      <Option
+                                        value={item.tel_code}
+                                        key={item.tel_code}
+                                      >
+                                        {item.tel_code}
+                                      </Option>
+                                    ))}
+                                  </Select>
+                                </>
+                              )}
+                            />
+                            <Controller
+                              control={control}
+                              name="contact_number"
+                              rules={{
+                                required: "Please Enter Contact Number",
+                                minLength: {
+                                  message: "Please Enter Valid Number",
+                                  value: 6,
+                                },
+                              }}
+                              render={(props) => (
+                                <>
+                                  <Input {...props} />
+                                </>
+                              )}
+                            />
+                          </Input.Group>
+                        </div>
                         {/* <Controller
                           control={control}
                           name="contact_number"

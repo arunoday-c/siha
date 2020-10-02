@@ -60,3 +60,15 @@
     }
   }
 }
+.algaehInputGroup {
+  .ant-select-single {
+    width: 89px !important;
+    .ant-select-selector {
+      border: 1px solid $gold-color;
+    }
+  }
+  input {
+    width: calc(100% - 89px) !important;
+    border: 1px solid $gold-color;
+  }
+}
