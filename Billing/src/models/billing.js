@@ -2870,6 +2870,7 @@ export default {
                     test_id: null,
                   },
                   {
+                    deductable_type: policydtls.deductable_type,
                     service_type_id: records.service_type_id,
                     service_name: records.service_name,
                     service_type: records.service_type,
