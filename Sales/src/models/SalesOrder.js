@@ -627,7 +627,7 @@ export function getSalesOrderList(req, res, next) {
             _strAppend += "";
         } else if (inputParam.status == "1") {
             //Pending To Authorize 1
-            _strAppend += " and is_posted = 'Y' and authorize1 = 'N' and cancelled='N'";
+            _strAppend += " and SO.is_posted = 'Y' and authorize1 = 'N' and cancelled='N'";
         } else if (inputParam.status == "2") {
             //Pending To Authorize 2
             _strAppend +=
@@ -644,8 +644,10 @@ export function getSalesOrderList(req, res, next) {
         _mysql
             .executeQuery({
                 query:
-                    "SELECT SO.*, C.customer_name from hims_f_sales_order SO, hims_d_customer C  \
-                where SO.customer_id = C.hims_d_customer_id " +
+                    "SELECT SO.*, C.customer_name, IH.invoice_number from hims_f_sales_order SO \
+                    inner join hims_d_customer C  on SO.customer_id = C.hims_d_customer_id \
+                    left join hims_f_sales_invoice_header IH  on IH.sales_order_id = SO.hims_f_sales_order_id\
+                where 1=1 " +
                     _strAppend +
                     " order by hims_f_sales_order_id desc",
                 printQuery: true,
