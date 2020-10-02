@@ -2566,7 +2566,7 @@ function getTrialBalanceFunc(decimal_places, finance_account_head_id, options) {
         .executeQuery({
           query: `select finance_account_head_id,account_code,concat(account_name,' / ',account_code)as account_name,
            account_parent,account_level, parent_acc_id,root_id,
-          finance_account_child_id,concat(child_name,' / ',ledger_code) as child_name,head_id, 
+          finance_account_child_id,concat(child_name,' / ',coalesce(ledger_code,'')) as child_name,head_id, 
           coalesce(H.arabic_account_name,'') as arabic_account_name, coalesce(C.arabic_child_name,'') as arabic_child_name
           from finance_account_head H left join finance_account_child C on C.head_id=H.finance_account_head_id ${str} where root_id=?  ; 
 
@@ -2719,10 +2719,16 @@ function createHierarchyTransactionTB(
     let roots = [],
       children = {};
 
+    const _drillDownLevel =
+      typeof drillDownLevel === "string" && drillDownLevel !== undefined
+        ? parseInt(drillDownLevel, 10)
+        : typeof drillDownLevel === "number"
+        ? drillDownLevel
+        : 999;
     // find the top level nodes and hash the children based on parent_acc_id
     for (let i = 0, len = arry.length; i < len; ++i) {
-      if (drillDownLevel !== 999) {
-        if (arry[i]["account_level"] > drillDownLevel) {
+      if (_drillDownLevel !== 999) {
+        if (arry[i]["account_level"] > _drillDownLevel) {
           break;
         }
       }
@@ -3163,10 +3169,6 @@ function createHierarchyTransactionTB(
     let findChildren = function (parent) {
       if (children[parent.finance_account_head_id]) {
         let tempchilds = children[parent.finance_account_head_id];
-
-        if (drillDownLevel !== 999) {
-          tempchilds = tempchilds.filter((f) => f.leafnode !== "Y");
-        }
         if (tempchilds.length > 0) {
           parent.children = tempchilds;
 

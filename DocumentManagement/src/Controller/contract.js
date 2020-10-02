@@ -10,17 +10,21 @@ export const saveContractDoc = (req, res) => {
       console.log(err.message, "msg");
       res.status(400).json({ error: err.message });
     }
+    const docs = [];
     for (const [name, file] of Object.entries(files)) {
-      fs.promises.readFile(file.path, { encoding: "base64" }).then((docStr) => {
-        const saveDoc = new contract({
-          ...fields,
-          filename: file.name,
-          filetype: file.type,
-          document: docStr,
-        });
-        saveDoc.save().then((doc) => res.status(200).json({ success: true }));
-      });
+      const docStr = fs.readFileSync(file.path, { encoding: "base64" });
+      const saveDoc = {
+        ...fields,
+        filename: file.name,
+        filetype: file.type,
+        document: docStr,
+      };
+      docs.push(saveDoc);
     }
+
+    contract
+      .insertMany(docs)
+      .then((docs) => res.status(200).json({ success: true }));
   });
 };
 

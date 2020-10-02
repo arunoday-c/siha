@@ -74,6 +74,7 @@ function reducer(state, { type, payload }) {
     case TYPES.setServiceInfo:
       if (payload === null) {
         return {
+          ...state,
           sub_department_id: null,
           services_id: null,
           doctor_id: null,

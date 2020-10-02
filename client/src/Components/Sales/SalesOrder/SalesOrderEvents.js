@@ -61,6 +61,8 @@ const texthandle = ($this, ctrl, e) => {
         organizations: [],
         contract_number: null,
         contract_id: null,
+        canceled_reason_sales: "",
+        rejectVisible: false,
       });
       break;
     case "project_id":
@@ -370,7 +372,9 @@ const ClearData = ($this, e) => {
     organizations: [],
     contract_number: null,
     contract_id: null,
-    dataPosted: true
+    dataPosted: true,
+    canceled_reason_sales: "",
+    rejectVisible: false,
     // services_required: "N"
   };
 
@@ -389,7 +393,7 @@ const SaveSalesOrderEnrty = ($this, from) => {
         });
         return;
       }
-      let InputObj = $this.state
+      let InputObj = $this.state;
       let order_detail =
         InputObj.sales_order_mode === "I"
           ? InputObj.sales_order_items
@@ -407,17 +411,12 @@ const SaveSalesOrderEnrty = ($this, from) => {
       InputObj.quote_validity =
         InputObj.sales_order_mode === "S"
           ? null
-          : moment(InputObj.quote_validity, "YYYY-MM-DD").format(
-            "YYYY-MM-DD"
-          );
+          : moment(InputObj.quote_validity, "YYYY-MM-DD").format("YYYY-MM-DD");
 
       InputObj.delivery_date =
         InputObj.sales_order_mode === "S"
           ? null
-          : moment(InputObj.delivery_date, "YYYY-MM-DD").format(
-            "YYYY-MM-DD"
-          );
-
+          : moment(InputObj.delivery_date, "YYYY-MM-DD").format("YYYY-MM-DD");
 
       let strUri = "";
       let strMessage = "Saved successfully";
@@ -434,7 +433,6 @@ const SaveSalesOrderEnrty = ($this, from) => {
       }
       const settings = { header: undefined, footer: undefined };
 
-
       AlgaehLoader({ show: true });
       algaehApiCall({
         uri: strUri,
@@ -448,7 +446,6 @@ const SaveSalesOrderEnrty = ($this, from) => {
         },
         onSuccess: (response) => {
           if (response.data.success) {
-
             getCtrlCode($this, response.data.records.sales_order_number);
             if ($this.state.invoice_files.length) {
               $this.saveDocument();
@@ -551,7 +548,7 @@ const getCtrlCode = ($this, docNumber) => {
           data.itemAdd = false;
         }
         if (data.authorize1 === "Y" && data.authorize2 === "Y") {
-          data.cancelDisable = true
+          data.cancelDisable = true;
         }
         // let project_details = $this.state.cost_projects.find(
         //   f => f.cost_center_id === data.project_id
@@ -737,7 +734,6 @@ const AuthorizeOrderEntry = ($this, authorize) => {
     }
   }
 
-
   const settings = { header: undefined, footer: undefined };
   algaehApiCall({
     uri: "/SalesOrder/updateSalesOrderEntry",
@@ -774,6 +770,13 @@ const AuthorizeOrderEntry = ($this, authorize) => {
 };
 
 const CancelSalesServiceOrder = ($this) => {
+  if (!$this.state.canceled_reason_sales) {
+    swalMessage({
+      title: "Please add reason for Rejection",
+      type: "warning",
+    });
+    return;
+  }
   algaehApiCall({
     uri: "/SalesOrder/cancelSalesServiceOrder",
     module: "sales",
@@ -787,7 +790,10 @@ const CancelSalesServiceOrder = ($this) => {
         });
         $this.setState({
           cancelDisable: true,
+          rejectVisible: false,
+          // authBtnEnable: true,
         });
+        getCtrlCode($this, $this.state.sales_order_number);
       }
       AlgaehLoader({ show: false });
     },

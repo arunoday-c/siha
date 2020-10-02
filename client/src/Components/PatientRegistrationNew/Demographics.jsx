@@ -1,4 +1,5 @@
 import React, { useContext, useEffect } from "react";
+import "./PatientRegistrationStyle.scss";
 import { useQuery } from "react-query";
 import { Controller, useWatch } from "react-hook-form";
 import moment from "moment";
@@ -11,6 +12,8 @@ import {
   AlgaehDateHandler,
   AlgaehHijriDatePicker,
   Spin,
+  Input,
+  Select,
 } from "algaeh-react-components";
 import AlgaehFileUploader from "../Wrapper/algaehFileUpload";
 import { newAlgaehApi, useQueryParams } from "../../hooks/";
@@ -18,6 +21,7 @@ import GenericData from "../../utils/GlobalVariables.json";
 import { FrontdeskContext } from "./FrontdeskContext";
 import { useLangFieldName } from "./patientHooks";
 const { TabPane } = Tabs;
+// const { Option } = Select;
 const { FORMAT_GENDER, FORMAT_MARTIALSTS } = GenericData;
 
 async function getDemoData() {
@@ -136,7 +140,7 @@ export function Demographics({
       let months = moment().diff(fromDate, "months");
       fromDate.add(months, "months");
       let days = moment().diff(fromDate, "days");
-      return `${years} Years, ${months} Months, ${days} Days`;
+      return `${years}y, ${months}m, ${days}d`;
     } else {
       return "";
     }
@@ -371,7 +375,7 @@ export function Demographics({
 
                         <AlgaehFormGroup
                           div={{
-                            className: "col-lg-3 mandatory",
+                            className: "col-lg-2 mandatory",
                             others: {
                               style: { paddingRight: 0 },
                             },
@@ -389,8 +393,72 @@ export function Demographics({
                             placeholder: "Y",
                           }}
                         />
-
-                        <Controller
+                        {!!countries?.length && (
+                          <div className="col-lg-4 algaehInputGroup">
+                            <label className="style_Label">
+                              Contact Number<span className="imp">&nbsp;*</span>
+                            </label>
+                            <Input.Group compact>
+                              <Controller
+                                control={control}
+                                name="tel_code"
+                                rules={{
+                                  required: true,
+                                }}
+                                render={({ value, onChange }) => (
+                                  <>
+                                    <Select
+                                      value={value}
+                                      onChange={onChange}
+                                      virtual={true}
+                                      showSearch
+                                      filterOption={(input, option) => {
+                                        return (
+                                          option.value
+                                            .toLowerCase()
+                                            .indexOf(input.toLowerCase()) >= 0
+                                        );
+                                      }}
+                                      options={countries
+                                        ?.map((item) => item.tel_code)
+                                        .filter((v, i, a) => a.indexOf(v) === i)
+                                        .map((item) => ({
+                                          label: item,
+                                          value: item,
+                                        }))}
+                                    >
+                                      {/* {countries?.map((item) => (
+                                      <Option
+                                        value={item.tel_code}
+                                        key={item.tel_code}
+                                      >
+                                        {item.tel_code}
+                                      </Option>
+                                    ))} */}
+                                    </Select>
+                                  </>
+                                )}
+                              />
+                              <Controller
+                                control={control}
+                                name="contact_number"
+                                rules={{
+                                  required: "Please Enter Contact Number",
+                                  minLength: {
+                                    message: "Please Enter Valid Number",
+                                    value: 6,
+                                  },
+                                }}
+                                render={(props) => (
+                                  <>
+                                    <Input {...props} />
+                                  </>
+                                )}
+                              />
+                            </Input.Group>
+                          </div>
+                        )}
+                        {/* <Controller
                           control={control}
                           name="contact_number"
                           rules={{
@@ -424,7 +492,7 @@ export function Demographics({
                               }}
                             />
                           )}
-                        />
+                        /> */}
                       </div>
                       <div className="row paddin-bottom-5">
                         <Controller

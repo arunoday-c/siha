@@ -12,6 +12,7 @@ import {
   AlgaehDataGrid,
   AlagehFormGroup,
   AlgaehDateHandler,
+  AlagehAutoComplete,
 } from "../../Wrapper/algaehWrapper";
 import {
   UpdateNetworkPlan,
@@ -648,6 +649,157 @@ class NetworkPlanList extends PureComponent {
                       value: row.copay_medicine,
                       className: "txt-fld",
                       name: "copay_medicine",
+                      events: {
+                        onChange: onchangegridnumber.bind(this, this, row),
+                      },
+                    }}
+                  />
+                );
+              },
+            },
+            {
+              fieldName: "covered_dental",
+              label: <AlgaehLabel label={{ forceLabel: "DENTAL COVERED" }} />,
+              displayTemplate: (row) => {
+                return row.covered_dental === "Y" ? "Yes" : "No";
+              },
+              editorTemplate: (row) => {
+                return (
+                  <input
+                    type="checkbox"
+                    defaultChecked={row.covered_dental === "Y" ? true : false}
+                    onChange={(e) => {
+                      const status = e.target.checked;
+                      row["covered_dental"] = status === true ? "Y" : "N";
+                      if (!status) {
+                        row["copay_percent_dental"] = 0;
+                      }
+                      row.update();
+                    }}
+                  />
+                );
+              },
+            },
+            {
+              fieldName: "copay_percent_dental",
+              label: (
+                <AlgaehLabel label={{ fieldName: "copay_percent_dental" }} />
+              ),
+              editorTemplate: (row) => {
+                return (
+                  <AlagehFormGroup
+                    div={{}}
+                    textBox={{
+                      decimal: { allowNegative: false },
+                      value: row.copay_percent_dental,
+                      className: "txt-fld",
+                      name: "copay_percent_dental",
+                      events: {
+                        onChange: onchangegridnumber.bind(this, this, row),
+                      },
+                      others: {
+                        disabled: row.covered_dental === "Y" ? false : true,
+                      },
+                    }}
+                  />
+                );
+              },
+            },
+            {
+              fieldName: "coverd_optical",
+              label: <AlgaehLabel label={{ forceLabel: "OPTICAL COVERED" }} />,
+              displayTemplate: (row) => {
+                return row.coverd_optical === "Y" ? "Yes" : "No";
+              },
+              editorTemplate: (row) => {
+                return (
+                  <input
+                    type="checkbox"
+                    defaultChecked={row.coverd_optical === "Y" ? true : false}
+                    onChange={(e) => {
+                      const status = e.target.checked;
+                      row["coverd_optical"] = status === true ? "Y" : "N";
+                      if (!status) {
+                        row["copay_optical"] = 0;
+                      }
+                      row.update();
+                    }}
+                  />
+                );
+              },
+            },
+            {
+              fieldName: "copay_optical",
+              label: <AlgaehLabel label={{ forceLabel: "OPTICAL COPAY" }} />,
+              editorTemplate: (row) => {
+                return (
+                  <AlagehFormGroup
+                    div={{}}
+                    textBox={{
+                      decimal: { allowNegative: false },
+                      value: row.copay_optical,
+                      className: "txt-fld",
+                      name: "copay_optical",
+                      events: {
+                        onChange: onchangegridnumber.bind(this, this, row),
+                      },
+                      others: {
+                        disabled: row.coverd_optical === "Y" ? false : true,
+                      },
+                    }}
+                  />
+                );
+              },
+            },
+            {
+              fieldName: "deductable_type",
+              label: <AlgaehLabel label={{ forceLabel: "DEDUCTABLE TYPE" }} />,
+              editorTemplate: (row) => {
+                return (
+                  <AlagehAutoComplete
+                    div={{}}
+                    selector={{
+                      name: "deductable_type",
+                      className: "select-fld",
+                      value: row.deductable_type,
+                      dataSource: {
+                        textField: "name",
+                        valueField: "value",
+                        data: [
+                          {
+                            name: "Amount",
+                            value: "AMOUNT",
+                            arabic_name: "مبلغ",
+                          },
+                          {
+                            name: "Percentage",
+                            value: "PERCENTAGE",
+                            arabic_name: "نسبه مئويه",
+                          },
+                        ],
+                      },
+                      onChange: (e) => {
+                        console.log("e", e);
+                        row.deductable_type = e.value;
+                        row.update();
+                      },
+                    }}
+                  />
+                );
+              },
+            },
+            {
+              fieldName: "deductible",
+              label: <AlgaehLabel label={{ forceLabel: "Deductible" }} />,
+              editorTemplate: (row) => {
+                return (
+                  <AlagehFormGroup
+                    div={{}}
+                    textBox={{
+                      decimal: { allowNegative: false },
+                      value: row.deductible,
+                      className: "txt-fld",
+                      name: "deductible",
                       events: {
                         onChange: onchangegridnumber.bind(this, this, row),
                       },

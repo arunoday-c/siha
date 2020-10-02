@@ -701,7 +701,7 @@ export default {
             inner join hims_d_nationality N on E.nationality = N.hims_d_nationality_id
             inner join hims_d_sub_department S on E.sub_department_id = S.hims_d_sub_department_id
             inner join hims_d_designation D on E.employee_designation_id = D.hims_d_designation_id
-           where E.hospital_id=? and  date(E.date_of_joining) between date(?) and date(?) ;`,
+           where E.hospital_id=? and  date(E.date_of_joining) between date(?) and date(?);`,
 
             values: [input.hospital_id, input.from_date, input.to_date],
             printQuery: true,

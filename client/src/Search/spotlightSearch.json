@@ -2,6 +2,10 @@
   "frontDesk": {
     "patients": [
       {
+        "fieldName": "primary_id_no",
+        "label": "Primary ID No."
+      },
+      {
         "fieldName": "patient_code",
         "label": "Patient Code"
       },
@@ -16,10 +20,6 @@
       {
         "fieldName": "contact_number",
         "label": "Contact Number"
-      },
-      {
-        "fieldName": "primary_id_no",
-        "label": "Primary ID No."
       }
     ],
     "emp_id_patients": [
@@ -272,6 +272,24 @@
         "label": "To Location"
       }
     ],
+    "ReqEntryPhar": [
+      {
+        "fieldName": "material_requisition_number",
+        "label": "Requisition Number"
+      },
+      {
+        "fieldName": "requistion_date",
+        "label": "Requisition Date"
+      },
+      {
+        "fieldName": "from_location",
+        "label": "From Location"
+      },
+      {
+        "fieldName": "to_location",
+        "label": "To Location"
+      }
+    ],
     "ReqPOEntry": [
       {
         "fieldName": "material_requisition_number",
@@ -377,12 +395,12 @@
   "Diagnosis": {
     "IcdCodes": [
       {
-        "fieldName": "icd_code",
-        "label": "ICD Code"
-      },
-      {
         "fieldName": "icd_description",
         "label": "ICD Description"
+      },
+      {
+        "fieldName": "icd_code",
+        "label": "ICD Code"
       }
     ]
   },

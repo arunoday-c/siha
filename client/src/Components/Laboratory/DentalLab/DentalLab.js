@@ -54,12 +54,22 @@ const getDentalFormData = async () => {
       },
       method: "GET",
     }),
+    newAlgaehApi({
+      uri: "/inventory/getInventoryLocation",
+      module: "inventory",
+      method: "GET",
+      redux: {
+        type: "ANALYTES_GET_DATA",
+        mappingName: "inventorylocations",
+      },
+    }),
   ]);
   return {
     povendors: result[0]?.data?.records,
     procedureList: result[1]?.data?.records,
     // subDepartment: result[2]?.data?.records,
     doctors: result[2]?.data?.records,
+    location: result[3]?.data?.records,
   };
 };
 export default function DentalLab() {
@@ -105,6 +115,7 @@ export default function DentalLab() {
       procedureList: [],
       // subDepartment: [],
       doctors: [],
+      location: [],
     },
     refetchOnMount: false,
     initialStale: true,
@@ -123,7 +134,13 @@ export default function DentalLab() {
     // eslint-disable-next-line
   }, []);
 
-  const { povendors, procedureList, subDepartment, doctors } = dropdownData;
+  const {
+    povendors,
+    procedureList,
+    subDepartment,
+    doctors,
+    location,
+  } = dropdownData;
 
   // const getDoctorData = async () => {
   //   try {
@@ -313,6 +330,7 @@ export default function DentalLab() {
             disabled={disabled}
             getRequest={getFormRequest}
             doctors={doctors}
+            location={location}
             // userLanguage={userLanguage}
             // titles={titles}
           />

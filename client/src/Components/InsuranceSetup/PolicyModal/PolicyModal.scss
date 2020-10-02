@@ -9,8 +9,15 @@
     padding-bottom: 15px;
   }
   .insPolicySec {
+    .popLeftDiv {
+      max-height: 61vh;
+    }
     .popRightDiv {
-      padding-bottom: 43px;
+      #networkPlanListCntr {
+        .ReactTable {
+          max-height: 54vh !important;
+        }
+      }
     }
   }
 }

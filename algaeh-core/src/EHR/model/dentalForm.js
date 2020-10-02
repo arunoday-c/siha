@@ -23,6 +23,9 @@ let addDentalForm = (req, res, next) => {
           input.patient_id,
           input.provider_id,
           input.visit_id,
+          // input.location_id,
+          // input.quantity_available,
+          // input.quantity_utilised,
           input.hims_d_services_id,
           input.standard_fee,
           input.hims_d_vendor_id,
@@ -100,7 +103,8 @@ export default {
           -- P.patient_code,concat(T.title,' ',P.full_name)as  patient_name,
              E.full_name as  employee_name,
              -- PL.hims_f_treatment_plan_id, PL.plan_name
-       D.arrival_date, D.work_status,E.work_email,D.hims_f_dental_form_id,D.due_date ,D.department_id,D.requested_date,D.request_status,D.procedure_id, D.provider_id,D.procedure_amt,D.approved,D.date_of_birth,
+       D.arrival_date, D.work_status,E.work_email,D.hims_f_dental_form_id,D.due_date ,D.department_id,
+       D.location_id,D.quantity_available,D.box_code,D.quantity_utilised,D.requested_date,D.request_status,D.procedure_id, D.provider_id,D.procedure_amt,D.approved,D.date_of_birth,
         D.full_name, D.patient_code,D.gender, D.age,V.vendor_name,V.hims_d_vendor_id,S.service_name
          from hims_f_dental_form as D 
          -- inner join hims_f_patient as P on P.hims_d_patient_id=D.patient_id 
@@ -137,12 +141,16 @@ export default {
 
     _mysql
       .executeQuery({
-        query: `update hims_f_dental_form set patient_id=?,provider_id=?,procedure_id=?,procedure_amt=?,
+        query: `update hims_f_dental_form set patient_id=?,location_id=?,quantity_available=?,box_code=?,quantity_utilised=?,provider_id=?,procedure_id=?,procedure_amt=?,
         vendor_id=?,request_status=?,work_status=?,full_name=?,gender=?,age=?,patient_code=?,requested_date=?,
         date_of_birth=?,department_id=?,arrival_date=? where hims_f_dental_form_id=? `,
 
         values: [
           input.patient_id,
+          input.location_id,
+          input.quantity_available,
+          input.box_code,
+          input.quantity_utilised,
           input.provider_id,
           input.hims_d_services_id,
           input.standard_fee,
@@ -172,7 +180,7 @@ export default {
               query: `select E.full_name as employee_name,
 
            D.arrival_date, D.work_status,E.work_email,D.hims_f_dental_form_id,D.due_date ,D.requested_date,D.request_status,D.procedure_id, D.provider_id,D.procedure_amt,D.approved,D.date_of_birth,
-            D.full_name, D.patient_code,S.service_name
+            D.full_name, D.patient_code,D.resend_mail_send,D.approved_mail_send,D.reject_mail_send,D.arrival_mail_send,S.service_name
              from hims_f_dental_form as D
 
              inner join hims_d_employee as E on  E.hims_d_employee_id =D.provider_id
@@ -184,7 +192,6 @@ export default {
               printQuery: true,
             })
             .then((result) => {
-              // console.log("result.request_status", result[0].work_email);
               let request_status =
                 result[0].request_status === "APR"
                   ? "Approved"
@@ -211,42 +218,95 @@ export default {
               req.records = result;
 
               const { hospital_address, hospital_name } = req.userIdentity;
-              try {
-                newAxios(req, {
-                  url: "http://localhost:3006/api/v1//Document/getEmailConfig",
-                }).then((res) => {
-                  const options = res.data;
+              const {
+                arrival_mail_send,
+                approved_mail_send,
+                reject_mail_send,
+                resend_mail_send,
+              } = result[0];
+              //request_status = REJ APR PEN RES
+              //work_status  = PEN WIP COM
+              const isSendEmail =
+                (input.request_status === "APR" &&
+                  input.work_status === "PEN" &&
+                  approved_mail_send === "N") ||
+                (input.request_status === "APR" &&
+                  input.work_status === "COM" &&
+                  arrival_mail_send === "N") ||
+                (input.request_status === "REJ" && reject_mail_send === "N") ||
+                (input.request_status === "RES" && resend_mail_send === "N")
+                  ? true
+                  : false;
 
-                  new algaehMail(options.data[0])
-                    .to(doctor_email)
-                    .subject("Dental Order Update")
-                    .templateHbs("dentalFormMail.hbs", {
-                      request_status,
-                      procedure_amt,
-                      hospital_address,
-                      hospital_name,
-                      work_status,
-                      requested_date,
-                      employee_name,
-                      service_name,
-                      patient_code,
-                      full_name,
-                      arrival_date,
-                    })
-                    .send()
-                    .then((response) => {
-                      _mysql.releaseConnection();
-                      next();
-                    })
-                    .catch((error) => {
-                      _mysql.releaseConnection();
-                      next(e);
-                    });
-                });
-              } catch (e) {
-                _mysql.releaseConnection();
-                next(e);
+              if (isSendEmail) {
+                try {
+                  newAxios(req, {
+                    url:
+                      "http://localhost:3006/api/v1//Document/getEmailConfig",
+                  }).then((res) => {
+                    const options = res.data;
+
+                    new algaehMail(options.data[0])
+                      .to(doctor_email)
+                      .subject("Dental Order Update")
+                      .templateHbs("dentalFormMail.hbs", {
+                        request_status,
+                        procedure_amt,
+                        hospital_address,
+                        hospital_name,
+                        work_status,
+                        requested_date,
+                        employee_name,
+                        service_name,
+                        patient_code,
+                        full_name,
+                        arrival_date,
+                      })
+                      .send()
+                      .then((response) => {
+                        let input = req.body;
+                        let query = _mysql.mysqlQueryFormat(
+                          `update hims_f_dental_form set ${
+                            input.request_status === "APR"
+                              ? "approved_mail_send='Y'"
+                              : input.request_status === "REJ"
+                              ? "reject_mail_send='Y'"
+                              : input.request_status === "RES"
+                              ? "resend_mail_send='Y'"
+                              : input.work_status === "COM"
+                              ? "arrival_mail_send='Y'"
+                              : "approved_mail_send='Y'"
+                          } 
+                            where hims_f_dental_form_id=?`,
+                          [input.hims_f_dental_form_id]
+                        );
+
+                        _mysql
+                          .executeQuery({
+                            query,
+                            printQuery: true,
+                          })
+                          .then(() => {
+                            _mysql.releaseConnection();
+
+                            next();
+                          })
+                          .catch((error) => {
+                            _mysql.releaseConnection();
+                            next(e);
+                          });
+                      })
+                      .catch((error) => {
+                        _mysql.releaseConnection();
+                        next(e);
+                      });
+                  });
+                } catch (e) {
+                  _mysql.releaseConnection();
+                  next(e);
+                }
               }
+
               _mysql.releaseConnection();
 
               next();

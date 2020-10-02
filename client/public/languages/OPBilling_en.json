@@ -48,7 +48,7 @@
   "insurance": "Insurance",
   "copay_percentage": "Copay %",
   "copay_amount": "Copay Amt.",
-  "deductable_percentage": "Deductable %",
+  "deductable_percentage": "Deductable",
   "deductable_amount": "Deductable Amt.",
   "tax_inclusive": "Tax Inclusive",
   "patient_tax": "Patient Tax",

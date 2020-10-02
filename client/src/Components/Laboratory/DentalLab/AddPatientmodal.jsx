@@ -37,6 +37,7 @@ export function AddPatientDentalForm({
   povendors,
   procedureList,
   subDepartment,
+  location,
   current,
   openDentalModal,
   // userLanguage,
@@ -54,6 +55,7 @@ export function AddPatientDentalForm({
   //   const [request_list, setRequestList] = useState([]);
 
   const [checked, setChecked] = useState(true);
+  const [showLocation, setShowLocation] = useState(false);
 
   // const [sub_department_id, setSub_department_id] = useState("");
   // const [doctor_id, setDoctor_id] = useState("");
@@ -87,6 +89,10 @@ export function AddPatientDentalForm({
         request_status: current.request_status,
         work_status: current.work_status,
         provider_id: current.provider_id,
+        location_id: current.location_id,
+        quantity_utilised: current.quantity_utilised,
+        quantity_available: current.quantity_available,
+        box_code: current.box_code,
         due_date: current.due_date,
         service_amount: current.procedure_amt,
         doctor: current.provider_id,
@@ -99,6 +105,9 @@ export function AddPatientDentalForm({
       // setSub_department_id(current.department_id);
       // setDoctor_id(current.provider_id);
       // setDoctors(doctors);
+      if (current.work_status === "COM") {
+        setShowLocation(true);
+      }
     } else {
       reset({
         full_name: "",
@@ -115,10 +124,15 @@ export function AddPatientDentalForm({
         service_amount: "",
         doctor: "",
         arrival_date: undefined,
+        location_id: null,
+        quantity_available: "",
+        quantity_utilised: "",
+        box_code: "",
       });
       // setSub_department_id("");
       // setDoctor_id("");
       // setChecked(false);
+      setShowLocation(false);
     }
     //eslint-disable-next-line
   }, [current, visible]);
@@ -153,6 +167,9 @@ export function AddPatientDentalForm({
           requested_date: requestDate,
           due_date: due_date,
           date_of_birth: date_of_birth,
+          // location_id: data.location_id,
+          // quantity_available: data.quantity_available,
+          // quantity_utilised: data.quantity_utilised,
         },
       });
       if (res.data.success) {
@@ -202,6 +219,10 @@ export function AddPatientDentalForm({
           arrival_date: arrival_date,
           send_mail: checked,
           doctor_email: current.work_email,
+          location_id: data.location_id,
+          quantity_utilised: data.quantity_utilised,
+          quantity_available: data.quantity_available,
+          box_code: data.box_code,
         },
       });
       if (res.data.success) {
@@ -766,7 +787,10 @@ export function AddPatientDentalForm({
                             onChange("");
                           },
                           others: {
-                            disabled: current.request_status === "APR",
+                            disabled:
+                              current.request_status === "APR" ||
+                              current.request_status === "REJ" ||
+                              current.request_status === "RES",
                             // tabIndex: "4",
                           },
                         }}
@@ -775,7 +799,7 @@ export function AddPatientDentalForm({
                   />
                   <Controller
                     control={control}
-                    rules={{ required: "Change Work Status" }}
+                    // rules={{ required: "Change Work Status" }}
                     name="work_status"
                     render={({ onBlur, onChange, value }) => (
                       <AlgaehAutoComplete
@@ -784,7 +808,7 @@ export function AddPatientDentalForm({
                           forceLabel: "Change Work Status",
                           isImp: true,
                         }}
-                        error={errors}
+                        // error={errors}
                         selector={{
                           name: "work_status",
                           className: "select-fld",
@@ -800,6 +824,8 @@ export function AddPatientDentalForm({
                             if (selected !== "COM") {
                               setValue("arrival_date", undefined);
                               return;
+                            } else {
+                              setShowLocation(true);
                             }
                           },
                           onClear: () => {
@@ -885,6 +911,126 @@ export function AddPatientDentalForm({
                       </div>
                     </div>
                   </AlgaehSecurityComponent>
+                  {showLocation ? (
+                    <>
+                      <Controller
+                        control={control}
+                        rules={{ required: "Please Select location " }}
+                        name="location_id"
+                        render={({ onBlur, onChange, value }) => (
+                          <AlgaehAutoComplete
+                            div={{ className: "col-3 mandatory" }}
+                            label={{
+                              forceLabel: "Arrived Location",
+                              isImp: true,
+                            }}
+                            error={errors}
+                            selector={{
+                              name: "location_id",
+                              className: "select-fld",
+
+                              dataSource: {
+                                textField: "location_description",
+                                valueField: "hims_d_inventory_location_id",
+                                data: location,
+                              },
+                              value,
+                              onChange: (_, selected) => {
+                                onChange(selected);
+                                // if (selected !== "APR") {
+                                //   setValue("work_status", "");
+                                //   setValue("arrival_date", undefined);
+                                // }
+                              },
+                              onClear: () => {
+                                onChange("");
+                              },
+                              others: {
+                                // disabled: current.request_status === "APR",
+                                // tabIndex: "4",
+                              },
+                            }}
+                          />
+                        )}
+                      />
+                      <Controller
+                        control={control}
+                        name="quantity_utilised"
+                        rules={{ required: "Enter quantity" }}
+                        render={(props) => (
+                          <AlgaehFormGroup
+                            div={{ className: "col mandatory form-group" }}
+                            label={{
+                              forceLabel: "Enter Quantity Utilised",
+                              isImp: true,
+                            }}
+                            error={errors}
+                            textBox={{
+                              ...props,
+                              // type: "number",
+
+                              className: "txt-fld",
+                              // min: "0",
+                              name: "quantity_utilised",
+                              placeholder: "Enter quantity utilised ",
+                              // disabled: disabled || current.request_status === "APR",
+                              tabIndex: "9",
+                            }}
+                          />
+                        )}
+                      />
+                      <Controller
+                        control={control}
+                        name="quantity_available"
+                        rules={{ required: "Enter qunatity" }}
+                        render={(props) => (
+                          <AlgaehFormGroup
+                            div={{ className: "col mandatory form-group" }}
+                            label={{
+                              forceLabel: "Enter quantity available",
+                              isImp: true,
+                            }}
+                            error={errors}
+                            textBox={{
+                              ...props,
+                              // type: "number",
+                              className: "txt-fld",
+                              // min: "0",
+                              name: "quantity_available",
+                              // placeholder: "Enter quantity utilised ",
+                              // disabled: disabled || current.request_status === "APR",
+                              tabIndex: "9",
+                            }}
+                          />
+                        )}
+                      />
+                      <Controller
+                        control={control}
+                        name="box_code"
+                        rules={{ required: "Enter qunatity" }}
+                        render={(props) => (
+                          <AlgaehFormGroup
+                            div={{ className: "col mandatory form-group" }}
+                            label={{
+                              forceLabel: "Enter quantity available",
+                              isImp: true,
+                            }}
+                            error={errors}
+                            textBox={{
+                              ...props,
+                              // type: "number",
+                              className: "txt-fld",
+                              // min: "0",
+                              name: "box_code",
+                              // placeholder: "Enter quantity utilised ",
+                              // disabled: disabled || current.request_status === "APR",
+                              tabIndex: "9",
+                            }}
+                          />
+                        )}
+                      />
+                    </>
+                  ) : null}
                 </>
               ) : null}
               {/* </div> */}

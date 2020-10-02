@@ -163,9 +163,12 @@ const generateReceipt = (data) => {
 };
 
 export function PatientRegistration() {
-  const { userLanguage, userToken, default_visit_type } = useContext(
-    MainContext
-  );
+  const {
+    userLanguage,
+    userToken,
+    default_visit_type,
+    countries = [],
+  } = useContext(MainContext);
   const [openPopup, setOpenPopup] = useState(false);
   const [attachmentVisible, setAttachmentVisible] = useState(false);
   const [showPackage, setShowPackage] = useState(false);
@@ -207,6 +210,11 @@ export function PatientRegistration() {
     setServiceInfo,
   } = useContext(FrontdeskContext);
 
+  const [currentCountry] = countries?.filter(
+    (item) => item.hims_d_country_id === userToken?.default_country
+  );
+  console.log(currentCountry, "cs");
+
   const {
     control,
     handleSubmit,
@@ -225,6 +233,7 @@ export function PatientRegistration() {
       country_id: userToken?.default_country,
       patient_type: userToken?.default_patient_type,
       visit_type: default_visit_type?.hims_d_visit_type_id,
+      tel_code: currentCountry?.tel_code,
     },
   });
 
@@ -353,8 +362,19 @@ export function PatientRegistration() {
     getIncomeFromPatient,
     {
       onSuccess: (data) => {
-        setIncomeByOp(data[0][0].op_pat_income);
-        setIncomeByPoint(data[1][0].pos_pat_income);
+        if (data[0].length > 0) {
+          setIncomeByOp(data[0][0].op_pat_income);
+        }
+        if (data[1].length > 0) {
+          setIncomeByPoint(data[1][0].pos_pat_income);
+          return;
+        }
+      },
+      onError: (err) => {
+        AlgaehMessagePop({
+          display: err?.message,
+          type: "error",
+        });
       },
     }
   );
