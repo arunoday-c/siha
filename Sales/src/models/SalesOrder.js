@@ -634,7 +634,7 @@ export function getSalesOrderList(req, res, next) {
         } else if (inputParam.status == "1") {
             //Pending To Authorize 1
             _strAppend +=
-                " and is_posted = 'Y' and authorize1 = 'N' and cancelled='N'";
+                " and SO.is_posted = 'Y' and authorize1 = 'N' and cancelled='N'";
         } else if (inputParam.status == "2") {
             //Pending To Authorize 2
             _strAppend +=
