@@ -791,8 +791,9 @@ const CancelSalesServiceOrder = ($this) => {
         $this.setState({
           cancelDisable: true,
           rejectVisible: false,
-          authBtnEnable: true,
+          // authBtnEnable: true,
         });
+        getCtrlCode($this, $this.state.sales_order_number);
       }
       AlgaehLoader({ show: false });
     },
