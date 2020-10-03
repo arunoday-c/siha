@@ -24,7 +24,7 @@ import {
   makeZero,
   makeDiscountZero,
   makeZeroIngrid,
-  ApplyPromo
+  ApplyPromo,
 } from "./AddOPBillingHandaler";
 import ReciptForm from "../ReciptDetails/AddReciptForm";
 import { AlgaehActions } from "../../../../actions/algaehActions";
@@ -79,7 +79,6 @@ class AddOPBillingForm extends Component {
           this.state.s_service_type !== null &&
           this.state.s_service !== null
         ) {
-          debugger
           AlgaehLoader({ show: true });
           let applydiscount = false;
           let serviceInput = [
@@ -97,7 +96,7 @@ class AddOPBillingForm extends Component {
               secondary_network_id: this.state.secondary_network_id,
               secondary_network_office_id: this.state
                 .secondary_network_office_id,
-              test_id: this.state.test_id
+              test_id: this.state.test_id,
             },
           ];
 
@@ -136,7 +135,7 @@ class AddOPBillingForm extends Component {
                       s_service: null,
                       service_name: "",
                       saveEnable: false,
-                      promo_code: null
+                      promo_code: null,
                     });
                   }
 
@@ -411,7 +410,7 @@ class AddOPBillingForm extends Component {
                             className: "col-lg-2 ",
                           }}
                           label={{
-                            fieldName: "Enter Promo Code"
+                            fieldName: "Enter Promo Code",
                           }}
                           textBox={{
                             className: "txt-fld",
@@ -420,9 +419,9 @@ class AddOPBillingForm extends Component {
                             events: {
                               onChange: (e) => {
                                 this.setState({
-                                  [e.target.name]: e.target.value
-                                })
-                              }
+                                  [e.target.name]: e.target.value,
+                                });
+                              },
                             },
                           }}
                         />
@@ -545,7 +544,7 @@ class AddOPBillingForm extends Component {
                               <AlgaehLabel
                                 label={{ fieldName: "service_type_id" }}
                               />
-                            )
+                            ),
                           },
 
                           {
@@ -569,7 +568,7 @@ class AddOPBillingForm extends Component {
                                   </span>
                                 </span>
                               );
-                            }
+                            },
                           },
 
                           {
@@ -699,8 +698,8 @@ class AddOPBillingForm extends Component {
                                         this.state.insurance_yesno === "Y"
                                           ? true
                                           : row.trans_package_detail_id > 0
-                                            ? true
-                                            : this.state.Billexists,
+                                          ? true
+                                          : this.state.Billexists,
                                       onBlur: makeZeroIngrid.bind(
                                         this,
                                         this,

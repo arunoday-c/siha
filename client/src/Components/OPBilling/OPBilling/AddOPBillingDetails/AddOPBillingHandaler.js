@@ -462,7 +462,6 @@ const calculateAmount = ($this, context, row, e) => {
             method: "POST",
             data: { billdetails: $this.state.billdetails },
             onSuccess: (response) => {
-              debugger
               if (response.data.success) {
                 response.data.records.patient_payable_h =
                   response.data.records.patient_payable === 0
@@ -540,30 +539,26 @@ const ApplyPromo = ($this, context) => {
       title: "Please Enter Promo Code.",
       type: "warning",
     });
-    return
+    return;
   }
   AlgaehLoader({ show: true });
-  let serviceInput = []
+  let serviceInput = [];
   for (let i = 0; i < $this.state.billdetails.length; i++) {
-    serviceInput.push(
-      {
-        insured: $this.state.insured,
-        vat_applicable: $this.state.vat_applicable,
-        hims_d_services_id: $this.state.billdetails[i].services_id,
-        primary_insurance_provider_id: $this.state.insurance_provider_id,
-        primary_network_office_id: $this.state
-          .hims_d_insurance_network_office_id,
-        primary_network_id: $this.state.network_id,
-        sec_insured: $this.state.sec_insured,
-        secondary_insurance_provider_id: $this.state
-          .secondary_insurance_provider_id,
-        secondary_network_id: $this.state.secondary_network_id,
-        secondary_network_office_id: $this.state
-          .secondary_network_office_id,
-        test_id: $this.state.billdetails[i].test_id,
-        promo_code: $this.state.promo_code
-      }
-    );
+    serviceInput.push({
+      insured: $this.state.insured,
+      vat_applicable: $this.state.vat_applicable,
+      hims_d_services_id: $this.state.billdetails[i].services_id,
+      primary_insurance_provider_id: $this.state.insurance_provider_id,
+      primary_network_office_id: $this.state.hims_d_insurance_network_office_id,
+      primary_network_id: $this.state.network_id,
+      sec_insured: $this.state.sec_insured,
+      secondary_insurance_provider_id:
+        $this.state.secondary_insurance_provider_id,
+      secondary_network_id: $this.state.secondary_network_id,
+      secondary_network_office_id: $this.state.secondary_network_office_id,
+      test_id: $this.state.billdetails[i].test_id,
+      promo_code: $this.state.promo_code,
+    });
   }
 
   algaehApiCall({
@@ -575,11 +570,10 @@ const ApplyPromo = ($this, context) => {
       if (response.data.success) {
         let existingservices = response.data.records.billdetails;
 
-
         // let existingservices = data.billdetails;
         if (context !== null) {
           context.updateState({
-            billdetails: existingservices
+            billdetails: existingservices,
           });
         }
 
@@ -615,7 +609,6 @@ const ApplyPromo = ($this, context) => {
             });
           },
         });
-
       }
     },
     onFailure: (error) => {
@@ -626,7 +619,7 @@ const ApplyPromo = ($this, context) => {
       });
     },
   });
-}
+};
 
 export {
   serviceHandeler,
@@ -645,5 +638,5 @@ export {
   makeZero,
   makeDiscountZero,
   makeZeroIngrid,
-  ApplyPromo
+  ApplyPromo,
 };
