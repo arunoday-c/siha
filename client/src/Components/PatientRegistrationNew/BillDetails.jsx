@@ -241,7 +241,7 @@ export function BillDetails({
       setValue("card_number", billData?.card_number);
       setValue("card_date", billData?.card_date);
       setBillInfo(billData);
-      if (billData?.unbalanced_amount !== 0) {
+      if (parseFloat(billData?.unbalanced_amount) !== 0) {
         setError("unbalanced", {
           type: "manual",
           message: "Unbalanced Amount should be zero",
