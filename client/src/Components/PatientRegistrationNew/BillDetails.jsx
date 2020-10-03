@@ -507,11 +507,6 @@ export function BillDetails({
                                 sendingObject.sheet_discount_amount;
                               sendingObject.discount_amount =
                                 sendingObject.sheet_discount_amount;
-                              sendingObject.receiveable_amount =
-                                sendingObject.net_amount;
-                              sendingObject.cash_amount =
-                                sendingObject.receiveable_amount;
-                              sendingObject.card_amount = 0;
                               return { ...sendingObject };
                             });
                           } else {
@@ -522,9 +517,6 @@ export function BillDetails({
                                 state.sheet_discount_amount;
                               state.net_amount =
                                 state.gross_total - state.sheet_discount_amount;
-                              state.receiveable_amount = state.net_amount;
-                              state.cash_amount = state.receiveable_amount;
-                              state.card_amount = 0;
                               return { ...state };
                             });
                           }
@@ -564,11 +556,6 @@ export function BillDetails({
                               sendingObject.net_amount =
                                 sendingObject.gross_total -
                                 sendingObject.sheet_discount_amount;
-                              sendingObject.receiveable_amount =
-                                sendingObject.net_amount;
-                              sendingObject.cash_amount =
-                                sendingObject.receiveable_amount;
-                              sendingObject.card_amount = 0;
                               return { ...sendingObject };
                             });
                           } else {
@@ -579,9 +566,6 @@ export function BillDetails({
                                 state.gross_total - state.sheet_discount_amount;
                               state.discount_amount =
                                 state.sheet_discount_amount;
-                              state.receiveable_amount = state.net_amount;
-                              state.cash_amount = state.receiveable_amount;
-                              state.card_amount = 0;
                               return { ...state };
                             });
                           }

@@ -411,6 +411,7 @@ export function Demographics({
                                       value={value}
                                       onChange={onChange}
                                       virtual={true}
+                                      disabled={disabled}
                                       showSearch
                                       filterOption={(input, option) => {
                                         return (
@@ -451,7 +452,7 @@ export function Demographics({
                                 }}
                                 render={(props) => (
                                   <>
-                                    <Input {...props} />
+                                    <Input {...props} disabled={disabled} />
                                   </>
                                 )}
                               />
