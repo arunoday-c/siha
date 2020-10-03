@@ -1,5 +1,6 @@
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import extend from "extend";
+import AlgaehLoader from "../../../Wrapper/fullPageLoader";
 
 const serviceHandeler = ($this, context, e) => {
   if (
@@ -533,6 +534,100 @@ const makeZeroIngrid = ($this, context, row, e) => {
   }
 };
 
+const ApplyPromo = ($this, context) => {
+  if ($this.state.promo_code === null) {
+    swalMessage({
+      title: "Please Enter Promo Code.",
+      type: "warning",
+    });
+    return
+  }
+  AlgaehLoader({ show: true });
+  let serviceInput = []
+  for (let i = 0; i < $this.state.billdetails.length; i++) {
+    serviceInput.push(
+      {
+        insured: $this.state.insured,
+        vat_applicable: $this.state.vat_applicable,
+        hims_d_services_id: $this.state.billdetails[i].services_id,
+        primary_insurance_provider_id: $this.state.insurance_provider_id,
+        primary_network_office_id: $this.state
+          .hims_d_insurance_network_office_id,
+        primary_network_id: $this.state.network_id,
+        sec_insured: $this.state.sec_insured,
+        secondary_insurance_provider_id: $this.state
+          .secondary_insurance_provider_id,
+        secondary_network_id: $this.state.secondary_network_id,
+        secondary_network_office_id: $this.state
+          .secondary_network_office_id,
+        test_id: $this.state.billdetails[i].test_id,
+        promo_code: $this.state.promo_code
+      }
+    );
+  }
+
+  algaehApiCall({
+    uri: "/billing/getBillDetails",
+    module: "billing",
+    method: "POST",
+    data: serviceInput,
+    onSuccess: (response) => {
+      if (response.data.success) {
+        let existingservices = response.data.records.billdetails;
+
+
+        // let existingservices = data.billdetails;
+        if (context !== null) {
+          context.updateState({
+            billdetails: existingservices
+          });
+        }
+
+        algaehApiCall({
+          uri: "/billing/billingCalculations",
+          module: "billing",
+          method: "POST",
+          data: { billdetails: existingservices },
+          onSuccess: (response) => {
+            if (response.data.success) {
+              if (context !== null) {
+                response.data.records.patient_payable_h =
+                  response.data.records.patient_payable ||
+                  $this.state.patient_payable;
+
+                response.data.records.billDetails = false;
+                if ($this.state.default_pay_type === "CD") {
+                  response.data.records.card_amount =
+                    response.data.records.receiveable_amount;
+                  response.data.records.cash_amount = 0;
+                }
+
+                context.updateState({ ...response.data.records });
+                AlgaehLoader({ show: false });
+              }
+            }
+          },
+          onFailure: (error) => {
+            AlgaehLoader({ show: false });
+            swalMessage({
+              title: error.message,
+              type: "error",
+            });
+          },
+        });
+
+      }
+    },
+    onFailure: (error) => {
+      AlgaehLoader({ show: false });
+      swalMessage({
+        title: error.message,
+        type: "error",
+      });
+    },
+  });
+}
+
 export {
   serviceHandeler,
   texthandle,
@@ -550,4 +645,5 @@ export {
   makeZero,
   makeDiscountZero,
   makeZeroIngrid,
+  ApplyPromo
 };

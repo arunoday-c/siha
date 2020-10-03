@@ -24,6 +24,7 @@ import {
   makeZero,
   makeDiscountZero,
   makeZeroIngrid,
+  ApplyPromo
 } from "./AddOPBillingHandaler";
 import ReciptForm from "../ReciptDetails/AddReciptForm";
 import { AlgaehActions } from "../../../../actions/algaehActions";
@@ -78,6 +79,7 @@ class AddOPBillingForm extends Component {
           this.state.s_service_type !== null &&
           this.state.s_service !== null
         ) {
+          debugger
           AlgaehLoader({ show: true });
           let applydiscount = false;
           let serviceInput = [
@@ -134,6 +136,7 @@ class AddOPBillingForm extends Component {
                       s_service: null,
                       service_name: "",
                       saveEnable: false,
+                      promo_code: null
                     });
                   }
 
@@ -403,6 +406,26 @@ class AddOPBillingForm extends Component {
                             this.attReg = attReg;
                           }}
                         />
+                        <AlagehFormGroup
+                          div={{
+                            className: "col-lg-2 ",
+                          }}
+                          label={{
+                            fieldName: "Enter Promo Code"
+                          }}
+                          textBox={{
+                            className: "txt-fld",
+                            name: "promo_code",
+                            value: this.state.promo_code,
+                            events: {
+                              onChange: (e) => {
+                                this.setState({
+                                  [e.target.name]: e.target.value
+                                })
+                              }
+                            },
+                          }}
+                        />
                         <div className="col-lg-2">
                           <button
                             className="btn btn-primary"
@@ -413,6 +436,21 @@ class AddOPBillingForm extends Component {
                             <AlgaehLabel
                               label={{
                                 fieldName: "add_new_service",
+                                align: "ltr",
+                                returnText: true,
+                              }}
+                            />
+                          </button>
+                        </div>
+                        <div className="col-lg-2">
+                          <button
+                            className="btn btn-primary"
+                            style={{ marginTop: "19px" }}
+                            onClick={ApplyPromo.bind(this, this, context)}
+                          >
+                            <AlgaehLabel
+                              label={{
+                                forceLabel: "Apply",
                                 align: "ltr",
                                 returnText: true,
                               }}
