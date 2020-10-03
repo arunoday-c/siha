@@ -101,7 +101,8 @@ export default {
       pack_balance_amount: 0,
       bank_card_id: null,
       card_check_number: null,
-      insured: "N"
+      insured: "N",
+      promo_code: null
     };
     return output;
   }

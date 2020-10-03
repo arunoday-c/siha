@@ -316,6 +316,30 @@ class SalesOrderList extends Component {
                         }
                       },
                       {
+                        fieldName: "is_revert",
+                        label: (
+                          <AlgaehLabel
+                            label={{ forceLabel: "Reverted" }}
+                          />
+                        ),
+                        displayTemplate: row => {
+                          return row.is_revert === "Y" ? (
+                            <span className="badge badge-success">Yes</span>
+                          ) : (
+                              <span className="badge badge-danger">No</span>
+                            );
+                        }
+                      },
+                      {
+                        fieldName: "revert_reason",
+                        label: (
+                          <AlgaehLabel
+                            label={{ forceLabel: "Revert Reason" }}
+                          />
+                        )
+                      },
+
+                      {
                         fieldName: "invoice_generated",
                         label: (
                           <AlgaehLabel
@@ -340,7 +364,18 @@ class SalesOrderList extends Component {
                           filterable: false
                         }
                       },
-
+                      {
+                        fieldName: "invoice_number",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Invoice No." }} />
+                        ),
+                        disabled: true,
+                        others: {
+                          maxWidth: 150,
+                          resizable: false,
+                          style: { textAlign: "center" }
+                        }
+                      },
 
 
                     ]}

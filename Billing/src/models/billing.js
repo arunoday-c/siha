@@ -840,7 +840,7 @@ export default {
           internal_error: true,
           message: "No receipt details",
         };
-        _mysql.rollBackTransaction(() => {});
+        _mysql.rollBackTransaction(() => { });
         next();
         return;
       } else if (
@@ -2219,15 +2219,20 @@ export default {
                inner join hims_d_insurance_provider IP on SIN.insurance_id=IP.hims_d_insurance_provider_id \
                where   SIN.hospital_id=${req.userIdentity.hospital_id} and SIN.network_id in (${network_ids})\
                AND SIN.services_id in (${service_ids}) and SIN.record_status='A' and NET.record_status='A';`;
+          } else {
+            strQuery = `select S.hims_d_services_id, PD.avail_type, offer_value, valid_to_from, valid_to_date, offer_code from hims_d_promotion P 
+            inner join hims_d_promotion_detail PD on P.hims_d_promo_id=PD.hims_d_promo_id
+            inner join hims_d_services S on S.service_type_id=PD.service_type_id
+            where S.hims_d_services_id in (${service_ids})`;
           }
           // req.userIdentity.hospital_id,
           // hospital_id=? and
           _mysql
             .executeQuery({
               query: `select hims_d_services_id, service_code, cpt_code, service_name, arabic_service_name, service_desc, \
-              sub_department_id, service_type_id, procedure_type, standard_fee, followup_free_fee, followup_paid_fee, \
-              discount, vat_applicable, vat_percent, service_status, physiotherapy_service, ST.service_type from hims_d_services S\
-             inner join hims_d_service_type ST on S.service_type_id = ST.hims_d_service_type_id where hims_d_services_id in (?);${strQuery}`,
+            sub_department_id, service_type_id, procedure_type, standard_fee, followup_free_fee, followup_paid_fee, \
+            discount, vat_applicable, vat_percent, service_status, physiotherapy_service, ST.service_type from hims_d_services S\
+            inner join hims_d_service_type ST on S.service_type_id = ST.hims_d_service_type_id where hims_d_services_id in (?); ${ strQuery} `,
               values: [service_ids],
               printQuery: true,
             })
@@ -2238,6 +2243,7 @@ export default {
               const allPolicy = strQuery == "" ? [] : result[1];
               const allCompany_price = strQuery == "" ? [] : result[2];
               const allPolicy_price = strQuery == "" ? [] : result[3];
+              const promo_data = is_insurance.length > 0 ? [] : result[1];
               let apr_amount_bulk = 0;
               // let total_approal_amount = 0;
               for (let i = 0; i < input.length; i++) {
@@ -2247,6 +2253,22 @@ export default {
                   (f) =>
                     f.hims_d_services_id === servicesDetails.hims_d_services_id
                 );
+
+                console.log("input.promo_code", input[i].promo_code)
+                if (promo_data.length > 0) {
+                  const promotion_dis = promo_data.find(
+                    (f) =>
+                      f.hims_d_services_id === servicesDetails.hims_d_services_id
+                  );
+                  console.log("promotion_dis", promotion_dis)
+                  if (promotion_dis !== undefined && servicesDetails.promo_code === promotion_dis.offer_code) {
+                    servicesDetails.discount_amout = promotion_dis.avail_type === "A" ? promotion_dis.offer_value : 0;
+                    servicesDetails.discount_percentage = promotion_dis.avail_type === "P" ? promotion_dis.offer_value : 0;
+                  }
+
+                }
+
+
 
                 let unit_cost =
                   servicesDetails.unit_cost == undefined
@@ -2382,7 +2404,7 @@ export default {
                     prices = allCompany_price.find((item) => {
                       return (
                         item.insurance_id ==
-                          input[i]["primary_insurance_provider_id"] &&
+                        input[i]["primary_insurance_provider_id"] &&
                         item.services_id == input[i]["hims_d_services_id"]
                       );
                     });
@@ -2582,16 +2604,16 @@ export default {
                         deductable_amount =
                           deductable_percentage !== null
                             ? (parseFloat(net_amout) *
-                                parseFloat(deductable_percentage)) /
-                              100
+                              parseFloat(deductable_percentage)) /
+                            100
                             : 0;
                       }
                     } else {
                       deductable_amount =
                         deductable_percentage !== null
                           ? (parseFloat(net_amout) *
-                              parseFloat(deductable_percentage)) /
-                            100
+                            parseFloat(deductable_percentage)) /
+                          100
                           : 0;
                     }
 
@@ -2759,8 +2781,8 @@ export default {
                         from_pos == "Y"
                           ? parseFloat(unit_cost)
                           : unit_cost != 0
-                          ? parseFloat(unit_cost)
-                          : parseFloat(records.standard_fee);
+                            ? parseFloat(unit_cost)
+                            : parseFloat(records.standard_fee);
                     }
                   }
                   // if (FollowUp === true) {
@@ -2868,6 +2890,7 @@ export default {
                     sec_copay_percntage: 0,
                     sec_copay_amount: 0,
                     test_id: null,
+                    created_date: new Date()
                   },
                   {
                     deductable_type: policydtls.deductable_type,
@@ -2933,6 +2956,7 @@ export default {
                     billed: billed,
                     test_id: servicesDetails.test_id,
                     test_type: "R",
+                    created_date: new Date()
                   }
                 );
 
@@ -3399,7 +3423,7 @@ export default {
       const _mysql = new algaehMysql();
       _mysql
         .executeQuery({
-          query: `select hims_f_billing_header_id, bill_number, bill_date, sub_total_amount from hims_f_billing_header where visit_id=?`,
+          query: `select hims_f_billing_header_id, bill_number, bill_date, sub_total_amount from hims_f_billing_header where visit_id =? `,
           values: [req.query.visit_id],
         })
         .then((result) => {
@@ -3457,7 +3481,7 @@ export default {
             // }
 
             // if (inputParam.insured == "Y" && sub_insurance_id > 0) {
-            //   strqry = ` select insurance_sub_name,head_id,child_id from hims_d_insurance_sub
+            //   strqry = ` select insurance_sub_name, head_id, child_id from hims_d_insurance_sub
             //    where hims_d_insurance_sub_id=${sub_insurance_id} limit 1;`;
             // }
 
@@ -4301,8 +4325,8 @@ function getBillDetailsFunctionality(req, res, next, resolve) {
                       from_pos == "Y"
                         ? unit_cost
                         : unit_cost != 0
-                        ? unit_cost
-                        : records.standard_fee;
+                          ? unit_cost
+                          : records.standard_fee;
                   }
                 }
 
