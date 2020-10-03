@@ -241,13 +241,14 @@ export function BillDetails({
       setValue("card_number", billData?.card_number);
       setValue("card_date", billData?.card_date);
       setBillInfo(billData);
+
       if (parseFloat(billData?.unbalanced_amount) !== 0) {
         setError("unbalanced", {
           type: "manual",
           message: "Unbalanced Amount should be zero",
         });
       } else {
-        clearErrors("unbalanced");
+        clearErrors("unbalanced", { exact: false });
       }
     }
     //eslint-disable-next-line
@@ -506,8 +507,10 @@ export function BillDetails({
                                 sendingObject.sheet_discount_amount;
                               sendingObject.discount_amount =
                                 sendingObject.sheet_discount_amount;
-                              sendingObject.receiveable_amount = sendingObject.net_amount;
-                              sendingObject.cash_amount = sendingObject.receiveable_amount;
+                              sendingObject.receiveable_amount =
+                                sendingObject.net_amount;
+                              sendingObject.cash_amount =
+                                sendingObject.receiveable_amount;
                               sendingObject.card_amount = 0;
                               return { ...sendingObject };
                             });
@@ -561,8 +564,10 @@ export function BillDetails({
                               sendingObject.net_amount =
                                 sendingObject.gross_total -
                                 sendingObject.sheet_discount_amount;
-                              sendingObject.receiveable_amount = sendingObject.net_amount;
-                              sendingObject.cash_amount = sendingObject.receiveable_amount;
+                              sendingObject.receiveable_amount =
+                                sendingObject.net_amount;
+                              sendingObject.cash_amount =
+                                sendingObject.receiveable_amount;
                               sendingObject.card_amount = 0;
                               return { ...sendingObject };
                             });
