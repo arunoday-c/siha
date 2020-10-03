@@ -815,7 +815,7 @@ export function PatientRegistration() {
                   </button>
                   <button
                     type="button"
-                    className="btn btn-primary"
+                    className="btn btn-default"
                     onClick={() => onClear(false)}
                     disabled={
                       !disabled &&
