@@ -299,7 +299,7 @@ export default {
           query:
             "UPDATE `hims_f_patient` SET `title_id`=?, `full_name`=?, \
             `arabic_name`=?, `gender`=?, `religion_id`=?,\
-           `date_of_birth`=?, `age`=?, `marital_status`=?, `address1`=?, `address2`=?, `contact_number`=?,\
+           `date_of_birth`=?, `age`=?, `marital_status`=?, `address1`=?, `address2`=?, `tel_code`=?, `contact_number`=?,\
            `secondary_contact_number`=?, `email`=?, `emergency_contact_name`=?, `emergency_contact_number`=?,\
            `relationship_with_patient`=?, `visa_type_id`=?, `nationality_id`=?, `postal_code`=?,\
            `primary_identity_id`=?, `primary_id_no`=?, `secondary_identity_id`=?, `secondary_id_no`=?,\
@@ -318,6 +318,7 @@ export default {
             inputparam.marital_status,
             inputparam.address1,
             inputparam.address2,
+            inputparam.tel_code,
             inputparam.contact_number,
             inputparam.secondary_contact_number,
             inputparam.email,
