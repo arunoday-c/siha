@@ -22,7 +22,6 @@ import {
   bulkUpdate,
   serviceTypeHandeler,
   getPriceList,
-  Refresh,
   networkhandle,
 } from "./ServicePriceListHandaler";
 import GlobalVariables from "../../../utils/GlobalVariables";
@@ -36,6 +35,7 @@ class ServicePriceList extends PureComponent {
       dummy: true,
       view_by: "C",
       state_change: true,
+      service_type_id: null
     };
     this.baseState = this.state;
   }
@@ -95,7 +95,7 @@ class ServicePriceList extends PureComponent {
           type: "NETWORK_PLAN_GET_DATA",
           mappingName: "pricefromplans",
         },
-        afterSuccess: (data) => {},
+        afterSuccess: (data) => { },
       });
       this.setState({
         [e.target.name]: e.target.value,
@@ -197,18 +197,14 @@ class ServicePriceList extends PureComponent {
                       data: this.props.insservicetype,
                     },
                     onChange: serviceTypeHandeler.bind(this, this),
+                    onClear: () => {
+                      this.setState({
+                        service_type_id: null,
+                      }, () => { getPriceList(this, this) });
+                    },
                   }}
                 />
 
-                <div className="col-2">
-                  <button
-                    className="btn btn-default"
-                    style={{ marginTop: 20 }}
-                    onClick={Refresh.bind(this, this)}
-                  >
-                    Clear Filter
-                  </button>
-                </div>
               </div>
               <div className="row">
                 <div className="col-5">
@@ -522,7 +518,7 @@ class ServicePriceList extends PureComponent {
                   paging={{ page: 0, rowsPerPage: 5 }}
                   events={{
                     // onDelete: this.deleteVisaType.bind(this),
-                    onEdit: (row) => {},
+                    onEdit: (row) => { },
                     onDone: updatePriceList.bind(this, this),
                   }}
                 />

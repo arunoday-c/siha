@@ -96,12 +96,14 @@ const bulkUpdate = ($this, data) => {
       update: data,
       pre_approval: $this.state.pre_approval,
       insurance_id: $this.state.insurance_provider_id,
+      service_type_id: $this.state.service_type_id
     };
   } else if (data === "covered") {
     updateobj = {
       update: data,
       covered: $this.state.covered,
       insurance_id: $this.state.insurance_provider_id,
+      service_type_id: $this.state.service_type_id
     };
   } else if (data === "corporate_discount") {
     if ($this.state.applicable === null) {
@@ -117,6 +119,7 @@ const bulkUpdate = ($this, data) => {
           update: data,
           corporate_discount: $this.state.corporate_discount,
           insurance_id: $this.state.insurance_provider_id,
+          service_type_id: $this.state.service_type_id
         };
       } else if ($this.state.applicable === "A") {
         updateobj = {
@@ -124,6 +127,7 @@ const bulkUpdate = ($this, data) => {
           update: data,
           corporate_discount: $this.state.corporate_discount,
           insurance_id: $this.state.insurance_provider_id,
+          service_type_id: $this.state.service_type_id
         };
       }
     }
@@ -220,17 +224,6 @@ const getPriceList = ($this) => {
   });
 };
 
-const Refresh = ($this) => {
-  $this.setState(
-    {
-      service_type_id: null,
-    },
-    () => {
-      getPriceList($this);
-    }
-  );
-};
-
 export {
   texthandle,
   onchangegridcol,
@@ -239,6 +232,5 @@ export {
   bulkUpdate,
   serviceTypeHandeler,
   getPriceList,
-  Refresh,
   networkhandle,
 };
