@@ -2174,6 +2174,7 @@ export default {
         const decimal_places = req.userIdentity.decimal_places;
         const outputArray = [];
 
+        const promo_code = input[0].promo_code
         const zeroBill = input.find((item) => {
           return item.zeroBill == true;
         });
@@ -2189,6 +2190,7 @@ export default {
 
           let strQuery = "";
 
+          console.log("input.promo_code", promo_code)
           if (is_insurance.length > 0) {
             const network_office_ids = is_insurance.map((item) => {
               return item.primary_network_office_id;
@@ -2219,11 +2221,11 @@ export default {
                inner join hims_d_insurance_provider IP on SIN.insurance_id=IP.hims_d_insurance_provider_id \
                where   SIN.hospital_id=${req.userIdentity.hospital_id} and SIN.network_id in (${network_ids})\
                AND SIN.services_id in (${service_ids}) and SIN.record_status='A' and NET.record_status='A';`;
-          } else {
+          } else if (promo_code != null) {
             strQuery = `select S.hims_d_services_id, PD.avail_type, offer_value, valid_to_from, valid_to_date, offer_code from hims_d_promotion P 
             inner join hims_d_promotion_detail PD on P.hims_d_promo_id=PD.hims_d_promo_id
             inner join hims_d_services S on S.service_type_id=PD.service_type_id
-            where S.hims_d_services_id in (${service_ids})`;
+            where S.hims_d_services_id in (${service_ids});`;
           }
           // req.userIdentity.hospital_id,
           // hospital_id=? and
@@ -2243,7 +2245,7 @@ export default {
               const allPolicy = strQuery == "" ? [] : result[1];
               const allCompany_price = strQuery == "" ? [] : result[2];
               const allPolicy_price = strQuery == "" ? [] : result[3];
-              const promo_data = is_insurance.length > 0 ? [] : result[1];
+              const promo_data = promo_code == null ? [] : result[1];
               let apr_amount_bulk = 0;
               // let total_approal_amount = 0;
               for (let i = 0; i < input.length; i++) {
@@ -2254,18 +2256,44 @@ export default {
                     f.hims_d_services_id === servicesDetails.hims_d_services_id
                 );
 
-                console.log("input.promo_code", input[i].promo_code)
+                //Promotions Functionlaity
                 if (promo_data.length > 0) {
                   const promotion_dis = promo_data.find(
                     (f) =>
                       f.hims_d_services_id === servicesDetails.hims_d_services_id
                   );
-                  console.log("promotion_dis", promotion_dis)
-                  if (promotion_dis !== undefined && servicesDetails.promo_code === promotion_dis.offer_code) {
-                    servicesDetails.discount_amout = promotion_dis.avail_type === "A" ? promotion_dis.offer_value : 0;
-                    servicesDetails.discount_percentage = promotion_dis.avail_type === "P" ? promotion_dis.offer_value : 0;
-                  }
 
+                  if (promotion_dis !== undefined) {
+                    if (servicesDetails.promo_code === promotion_dis.offer_code) {
+                      var from = Date.parse(promotion_dis.valid_to_from);
+                      var to = Date.parse(promotion_dis.valid_to_date);
+                      var today_date = Date.parse(moment(new Date()).format("YYYY-MM-DD"));
+
+                      if (today_date <= to && today_date >= from) {
+                        console.log("2")
+                        servicesDetails.discount_amout = promotion_dis.avail_type === "A" ? promotion_dis.offer_value : 0;
+                        servicesDetails.discount_percentage = promotion_dis.avail_type === "P" ? promotion_dis.offer_value : 0;
+                      } else {
+                        _mysql.releaseConnection();
+                        req.records = {
+                          invalid_input: true,
+                          message: "Enterted Promo Code either not valid nor Expired",
+                        };
+
+                        next();
+                        return;
+                      }
+                    } else {
+                      _mysql.releaseConnection();
+                      req.records = {
+                        invalid_input: true,
+                        message: "Enterted Promo Code either not valid nor Expired",
+                      };
+
+                      next();
+                      return;
+                    }
+                  }
                 }
 
 

@@ -421,6 +421,9 @@ class AddOPBillingForm extends Component {
                                 this.setState({
                                   [e.target.name]: e.target.value,
                                 });
+                                context.updateState({
+                                  [e.target.name]: e.target.value
+                                });
                               },
                             },
                           }}
@@ -698,8 +701,8 @@ class AddOPBillingForm extends Component {
                                         this.state.insurance_yesno === "Y"
                                           ? true
                                           : row.trans_package_detail_id > 0
-                                          ? true
-                                          : this.state.Billexists,
+                                            ? true
+                                            : this.state.Billexists,
                                       onBlur: makeZeroIngrid.bind(
                                         this,
                                         this,

@@ -567,6 +567,7 @@ const ApplyPromo = ($this, context) => {
     method: "POST",
     data: serviceInput,
     onSuccess: (response) => {
+      debugger
       if (response.data.success) {
         let existingservices = response.data.records.billdetails;
 
@@ -609,7 +610,14 @@ const ApplyPromo = ($this, context) => {
             });
           },
         });
+      } else if (!response.data.success) {
+        AlgaehLoader({ show: false });
+        swalMessage({
+          title: response.data.records.message,
+          type: "warning",
+        });
       }
+
     },
     onFailure: (error) => {
       AlgaehLoader({ show: false });
