@@ -179,11 +179,6 @@ class SalesOrderList extends Component {
                           return (
                             <span>
                               <i
-                                style={{
-                                  pointerEvents:
-                                    row.is_posted === "N" ? "none" : "",
-                                  opacity: row.is_posted === "N" ? "0.1" : ""
-                                }}
                                 className="fas fa-eye"
                                 onClick={() => {
                                   this.ourOwnMiniNavigator({
@@ -192,19 +187,6 @@ class SalesOrderList extends Component {
                                   });
                                 }}
                               />
-                              {/* {row.trans_pending === true ? (
-                                <i
-                                  className="fa fa-exchange-alt"
-                                  onClick={() => {
-                                    this.ourOwnMiniNavigator({
-                                      RQ_Screen: "TransferEntry",
-                                      hims_f_pharamcy_material_header_id:
-                                        row.hims_f_pharamcy_material_header_id,
-                                      from_location: row.to_location_id
-                                    });
-                                  }}
-                                />
-                              ) : null} */}
                             </span>
                           );
                         },
@@ -334,7 +316,7 @@ class SalesOrderList extends Component {
                         fieldName: "is_revert",
                         label: (
                           <AlgaehLabel
-                            label={{ forceLabel: "Reverted" }}
+                            label={{ forceLabel: "Invoice Reverted" }}
                           />
                         ),
                         displayTemplate: row => {
@@ -346,12 +328,19 @@ class SalesOrderList extends Component {
                         }
                       },
                       {
-                        fieldName: "revert_reason",
+                        fieldName: "cancelled",
                         label: (
                           <AlgaehLabel
-                            label={{ forceLabel: "Revert Reason" }}
+                            label={{ forceLabel: "Order Reject" }}
                           />
-                        )
+                        ),
+                        displayTemplate: row => {
+                          return row.cancelled === "Y" ? (
+                            <span className="badge badge-success">Yes</span>
+                          ) : (
+                              <span className="badge badge-danger">No</span>
+                            );
+                        }
                       },
 
                       {

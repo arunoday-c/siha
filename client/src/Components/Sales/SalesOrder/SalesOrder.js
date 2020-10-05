@@ -384,7 +384,7 @@ class SalesOrder extends Component {
                   />
                   <h6>
                     {this.state.cancelled === "Y" ? (
-                      <span className="badge badge-danger">Cancelled</span>
+                      <span className="badge badge-danger">Rejected</span>
                     ) : this.state.is_posted === "N" &&
                       this.state.is_revert === "N" ? (
                           <span className="badge badge-danger">Not Posted</span>
