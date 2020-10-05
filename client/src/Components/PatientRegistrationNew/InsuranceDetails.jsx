@@ -275,7 +275,7 @@ export function InsuranceDetails({
                                 value,
                                 onClear: () => onChange(""),
                                 dataSource: {
-                                  textField: "sub_insurance_provider_name",
+                                  textField: "insurance_sub_name",
                                   // this.state.selectedLang == "en" ? "sub_insurance_provider_name" : "name",
                                   valueField: "sub_insurance_provider_id",
                                   data: dropDownData,
