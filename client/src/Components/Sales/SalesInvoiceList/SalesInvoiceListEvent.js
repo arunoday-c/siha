@@ -2,19 +2,15 @@ import { swalMessage, algaehApiCall } from "../../../utils/algaehApiCall";
 import moment from "moment";
 import Options from "../../../Options.json";
 
-
-const getSalesInvoiceList = $this => {
+const getSalesInvoiceList = ($this) => {
   let inpObj = {};
 
   if ($this.state.from_date !== null) {
     inpObj.from_date = $this.state.from_date;
-
   }
   if ($this.state.to_date !== null) {
     inpObj.to_date = $this.state.to_date;
   }
-
-
 
   algaehApiCall({
     uri: "/SalesInvoice/getSalesInvoiceList",
@@ -22,17 +18,16 @@ const getSalesInvoiceList = $this => {
     method: "GET",
     data: inpObj,
 
-    onSuccess: response => {
+    onSuccess: (response) => {
       if (response.data.success) {
         let data = response.data.records;
         $this.setState({ invoice_list: data });
-        debugger
+        // debugger
         return $this.props.history?.push(
           `${$this.props.location?.pathname}?from_date=${$this.state.from_date}&to_date=${$this.state.to_date}`
         );
       }
-
-    }
+    },
   });
 };
 
@@ -48,7 +43,7 @@ const datehandle = ($this, ctrl, e) => {
       intFailure = true;
       swalMessage({
         title: "From Date cannot be grater than To Date.",
-        type: "warning"
+        type: "warning",
       });
     }
   } else if (e === "to_date") {
@@ -56,7 +51,7 @@ const datehandle = ($this, ctrl, e) => {
       intFailure = true;
       swalMessage({
         title: "To Date cannot be less than From Date.",
-        type: "warning"
+        type: "warning",
       });
     }
   }
@@ -64,7 +59,7 @@ const datehandle = ($this, ctrl, e) => {
   if (intFailure === false) {
     $this.setState(
       {
-        [e]: moment(ctrl)._d
+        [e]: moment(ctrl)._d,
       },
       () => {
         getSalesInvoiceList($this);
@@ -82,7 +77,6 @@ const changeEventHandaler = ($this, ctrl, e) => {
   });
 };
 
-
 const dateFormaterTime = (value) => {
   if (value !== null) {
     return moment(value).format(Options.datetimeFormat24);
@@ -94,5 +88,5 @@ export {
   getSalesInvoiceList,
   datehandle,
   changeEventHandaler,
-  dateFormaterTime
+  dateFormaterTime,
 };
