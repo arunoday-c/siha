@@ -37,6 +37,8 @@ export function PromoAddModal({ visible, onClose }) {
     setAgeRange(null);
     setGender("both");
     clear();
+
+    //eslint-disable-next-line
   }, [visible]);
 
   const addToList = (row) => {
