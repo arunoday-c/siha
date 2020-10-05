@@ -9,6 +9,7 @@ import {
   addPromotionDetail,
   updatePromotionDetail,
   getPatientsForPromo,
+  deletePromotionDetail,
 } from "../models/promotionmaster";
 
 export default () => {
@@ -77,6 +78,19 @@ export default () => {
     });
     next();
   });
+
+  api.delete(
+    "/deletePromotionDetail",
+    deletePromotionDetail,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(utlities.httpStatus().ok).json({
+        success: true,
+        records: result,
+      });
+      next();
+    }
+  );
 
   api.get("/getPatientsForPromo", getPatientsForPromo, (req, res, next) => {
     let result = req.records;
