@@ -5528,6 +5528,10 @@
     {
       "name": "Per Person",
       "value": "PP"
+    },
+    {
+      "name": "Shift",
+      "value": "S"
     }
   ],
   "SALES_ORDER_STATUS": [

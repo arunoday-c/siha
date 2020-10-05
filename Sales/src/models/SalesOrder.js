@@ -614,7 +614,7 @@ export function getSalesOrderList(req, res, next) {
             req.query.to_date != "" &&
             req.query.to_date != null
         ) {
-            _strAppend += ` and date(sales_order_date)
+            _strAppend += ` date(sales_order_date)
                 between date('${req.query.from_date}') and date('${req.query.to_date}') `;
         }
 
@@ -634,7 +634,7 @@ export function getSalesOrderList(req, res, next) {
         } else if (inputParam.status == "1") {
             //Pending To Authorize 1
             _strAppend +=
-                " and SO.is_posted = 'Y' and authorize1 = 'N' and cancelled='N'";
+                " and authorize1 = 'N' and cancelled='N'";
         } else if (inputParam.status == "2") {
             //Pending To Authorize 2
             _strAppend +=
@@ -653,7 +653,7 @@ export function getSalesOrderList(req, res, next) {
                 query:
                     "SELECT SO.*, C.customer_name, IH.invoice_number from hims_f_sales_order SO \
           inner join hims_d_customer C  on SO.customer_id = C.hims_d_customer_id \
-          left join hims_f_sales_invoice_header IH  on IH.sales_order_id = SO.hims_f_sales_order_id " +
+          left join hims_f_sales_invoice_header IH  on IH.sales_order_id = SO.hims_f_sales_order_id where " +
                     _strAppend +
                     " order by hims_f_sales_order_id desc",
                 printQuery: true,
