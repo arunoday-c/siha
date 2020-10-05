@@ -127,20 +127,6 @@ export function PromotionMaster() {
                     />
                   )}
                 />
-                <div className="col">
-                  <button
-                    className="btn btn-default"
-                    style={{ marginTop: "19px" }}
-                  >
-                    <AlgaehLabel
-                      label={{
-                        forceLabel: "Apply Promo",
-                        align: "ltr",
-                        returnText: true,
-                      }}
-                    />
-                  </button>
-                </div>
                 <Controller
                   control={control}
                   name="dates"
