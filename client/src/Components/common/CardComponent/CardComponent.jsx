@@ -91,7 +91,13 @@ export default function CardComponent({
           textBox={{
             className: "txt-fld",
             name: "card_number",
-            disabled: true,
+            disabled: isLoading || disabled,
+            value: card_number,
+            type: "number",
+            onChange: (e) => {
+              const { value } = e.target;
+              onChangeNumber(value);
+            },
           }}
         />
       )}

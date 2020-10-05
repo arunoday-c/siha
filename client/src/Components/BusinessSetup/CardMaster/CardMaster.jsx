@@ -108,7 +108,7 @@ export function CardMaster() {
   const ToolTipText = () => {
     return (
       <ul style={{ listStyle: "none" }}>
-        <li>0 - is For the numbers</li>
+        <li>1 - is For the numbers</li>
         <li>a - is For the letters</li>
         <li>A - is For the letters, forced to upper case when entered</li>
         <li>* - is For the alphanumericals</li>
@@ -149,15 +149,15 @@ export function CardMaster() {
               <Controller
                 control={control}
                 name="card_format"
-                rules={{ required: "Required" }}
                 render={(props) => (
                   <div className="col form-group cardInputFld mandatory">
                     <label className="styleLabel">
-                      Card Format<span className="imp">&nbsp;*</span>
+                      Card Format
+                      {/* <span className="imp">&nbsp;*</span> */}
                     </label>
                     <div className="ui input txt-fld">
                       <Input
-                        placeholder="00-0000"
+                        placeholder="11-1111"
                         name="masked_identity"
                         {...props}
                         suffix={
@@ -216,7 +216,12 @@ export function CardMaster() {
               <Controller
                 control={control}
                 name="account"
-                rules={{ required: "Required" }}
+                rules={{
+                  required: {
+                    value: true, // Add finance check here
+                    message: "Please select Account",
+                  },
+                }}
                 render={(props) => (
                   <AlgaehTreeSearch
                     div={{ className: "col form-group" }}
@@ -255,7 +260,7 @@ export function CardMaster() {
                   className="btn btn-primary"
                   //   onClick={this.addCardMaster.bind(this)}
                 >
-                  Add to List
+                  {current ? "Update" : "Add to List"}
                 </button>
               </div>
             </div>
