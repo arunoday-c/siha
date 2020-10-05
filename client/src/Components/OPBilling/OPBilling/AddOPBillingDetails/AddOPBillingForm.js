@@ -405,29 +405,6 @@ class AddOPBillingForm extends Component {
                             this.attReg = attReg;
                           }}
                         />
-                        <AlagehFormGroup
-                          div={{
-                            className: "col-lg-2 ",
-                          }}
-                          label={{
-                            fieldName: "Enter Promo Code",
-                          }}
-                          textBox={{
-                            className: "txt-fld",
-                            name: "promo_code",
-                            value: this.state.promo_code,
-                            events: {
-                              onChange: (e) => {
-                                this.setState({
-                                  [e.target.name]: e.target.value,
-                                });
-                                context.updateState({
-                                  [e.target.name]: e.target.value
-                                });
-                              },
-                            },
-                          }}
-                        />
                         <div className="col-lg-2">
                           <button
                             className="btn btn-primary"
@@ -444,21 +421,7 @@ class AddOPBillingForm extends Component {
                             />
                           </button>
                         </div>
-                        <div className="col-lg-2">
-                          <button
-                            className="btn btn-primary"
-                            style={{ marginTop: "19px" }}
-                            onClick={ApplyPromo.bind(this, this, context)}
-                          >
-                            <AlgaehLabel
-                              label={{
-                                forceLabel: "Apply",
-                                align: "ltr",
-                                returnText: true,
-                              }}
-                            />
-                          </button>
-                        </div>
+
                         <div className="col-lg-2">
                           <button
                             className="btn btn-default"
@@ -701,8 +664,8 @@ class AddOPBillingForm extends Component {
                                         this.state.insurance_yesno === "Y"
                                           ? true
                                           : row.trans_package_detail_id > 0
-                                            ? true
-                                            : this.state.Billexists,
+                                          ? true
+                                          : this.state.Billexists,
                                       onBlur: makeZeroIngrid.bind(
                                         this,
                                         this,
@@ -934,7 +897,7 @@ class AddOPBillingForm extends Component {
                     <div className="screenCardStyle">
                       <div className="row secondary-box-container">
                         <AlagehFormGroup
-                          div={{ className: "col-lg-4" }}
+                          div={{ className: "col" }}
                           label={{
                             fieldName: "advance_adjust",
                           }}
@@ -961,7 +924,7 @@ class AddOPBillingForm extends Component {
                           }}
                         />
                         <AlagehFormGroup
-                          div={{ className: "col-lg-4" }}
+                          div={{ className: "col" }}
                           label={{
                             fieldName: "sheet_discount_percentage",
                           }}
@@ -997,7 +960,7 @@ class AddOPBillingForm extends Component {
                         />
 
                         <AlagehFormGroup
-                          div={{ className: "col-lg-4" }}
+                          div={{ className: "col" }}
                           label={{
                             fieldName: "sheet_discount_amount",
                           }}
@@ -1026,6 +989,44 @@ class AddOPBillingForm extends Component {
                             },
                           }}
                         />
+                        <AlagehFormGroup
+                          div={{
+                            className: "col ",
+                          }}
+                          label={{
+                            fieldName: "Enter Promo Code",
+                          }}
+                          textBox={{
+                            className: "txt-fld",
+                            name: "promo_code",
+                            value: this.state.promo_code,
+                            events: {
+                              onChange: (e) => {
+                                this.setState({
+                                  [e.target.name]: e.target.value,
+                                });
+                                context.updateState({
+                                  [e.target.name]: e.target.value,
+                                });
+                              },
+                            },
+                          }}
+                        />
+                        <div className="col">
+                          <button
+                            className="btn btn-default"
+                            style={{ marginTop: "19px" }}
+                            onClick={ApplyPromo.bind(this, this, context)}
+                          >
+                            <AlgaehLabel
+                              label={{
+                                forceLabel: "Apply Promo",
+                                align: "ltr",
+                                returnText: true,
+                              }}
+                            />
+                          </button>
+                        </div>
                       </div>
 
                       <hr />

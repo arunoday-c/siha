@@ -437,7 +437,7 @@ export function BillDetails({
                   name="advance_adjust"
                   render={(props) => (
                     <AlgaehFormGroup
-                      div={{ className: "col-3" }}
+                      div={{ className: "col" }}
                       label={{
                         fieldName: "advance_adjust",
                       }}
@@ -479,7 +479,7 @@ export function BillDetails({
                   name="sheet_discount_percentage"
                   render={({ onChange, ...props }) => (
                     <AlgaehFormGroup
-                      div={{ className: "col-6" }}
+                      div={{ className: "col" }}
                       label={{
                         fieldName: "sheet_discount",
                       }}
@@ -532,7 +532,7 @@ export function BillDetails({
                   name="sheet_discount_amount"
                   render={(props) => (
                     <AlgaehFormGroup
-                      div={{ className: "col-3" }}
+                      div={{ className: "col" }}
                       label={{
                         fieldName: "sheet_discount_amount",
                       }}
@@ -575,6 +575,36 @@ export function BillDetails({
                     />
                   )}
                 />
+                <AlgaehFormGroup
+                  div={{ className: "col" }}
+                  label={{
+                    forceLabel: "Enter Promo Code",
+                    isImp: enableCard,
+                  }}
+                  textBox={{
+                    className: "txt-fld",
+                    name: "",
+                    disabled: disabled || !enableCard,
+                    type: "text",
+                    // ...props,
+                    placeholder: "",
+                  }}
+                />
+
+                <div className="col">
+                  <button
+                    className="btn btn-default"
+                    style={{ marginTop: "19px" }}
+                  >
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Apply Promo",
+                        align: "ltr",
+                        returnText: true,
+                      }}
+                    />
+                  </button>
+                </div>
               </div>
 
               <hr />
@@ -941,21 +971,6 @@ export function BillDetails({
 
                 <hr style={{ margin: "0.3rem 0rem" }} />
                 <div className="row secondary-box-container">
-                  <AlgaehFormGroup
-                    div={{ className: "col-3" }}
-                    label={{
-                      forceLabel: "Enter Promo Code",
-                      isImp: enableCard,
-                    }}
-                    textBox={{
-                      className: "txt-fld",
-                      name: "",
-                      disabled: disabled || !enableCard,
-                      type: "text",
-                      // ...props,
-                      placeholder: "",
-                    }}
-                  />
                   <div className="col" style={{ textAlign: "right" }}>
                     <AlgaehLabel
                       label={{
