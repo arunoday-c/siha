@@ -107,6 +107,7 @@ class FinalSettlement extends Component {
         },
 
         onSuccess: (res) => {
+          AlgaehLoader({ show: false });
           if (res.data.success) {
             const currentData = this.state.data;
             let dtl = res.data.result;
@@ -179,11 +180,12 @@ class FinalSettlement extends Component {
             AlgaehLoader({ show: false });
           }
         },
-        onFailure: (err) => {
+        onCatch: (err) => {
           swalMessage({
             title: err,
             type: "error",
           });
+          AlgaehLoader({ show: false });
           this.setState({
             loading: false,
           });
@@ -298,6 +300,7 @@ class FinalSettlement extends Component {
     });
   }
   saveFinalSettlement(e) {
+    AlgaehLoader({ show: true });
     const url = e
       ? "/finalsettlement/finalSettlementSave"
       : "/finalsettlement/save";
@@ -331,8 +334,6 @@ class FinalSettlement extends Component {
       ScreenCode: getCookie("ScreenCode"),
     };
 
-    AlgaehLoader({ show: true });
-
     algaehApiCall({
       uri: url,
       method: "POST",
@@ -344,12 +345,16 @@ class FinalSettlement extends Component {
             title: "Final Settlement Recorded",
             type: "success",
           });
-          this.loadFinalSettlement(this);
-          this.setState({
-            disableSave: true,
-          });
+
+          this.setState(
+            {
+              disableSave: true,
+            },
+            () => {
+              this.loadFinalSettlement(this);
+            }
+          );
         }
-        AlgaehLoader({ show: false });
       },
       onFailure: (err) => {
         swalMessage({

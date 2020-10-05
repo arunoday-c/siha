@@ -885,6 +885,36 @@ export function generateAccountingEntry(req, res, next) {
     }
 };
 
+export function getSalesInvoiceList(req, res, next) {
+    const _mysql = new algaehMysql();
+    try {
+        _mysql
+            .executeQuery({
+                query:
+                    `SELECT IH.*,C.customer_name, SO.sales_order_number, SO.sales_order_date, SO.customer_po_no 
+                    FROM hims_f_sales_invoice_header IH 
+                    inner join hims_d_customer C  on IH.customer_id = C.hims_d_customer_id 
+                    inner join hims_f_sales_order SO on IH.sales_order_id = SO.hims_f_sales_order_id 
+                    where date(invoice_date) between date('${req.query.from_date}') and date('${req.query.to_date}') 
+                    order by hims_f_sales_invoice_header_id desc`,
+                printQuery: true,
+            })
+            .then((headerResult) => {
+                _mysql.releaseConnection();
+                req.records = headerResult;
+                next();
+            })
+            .catch((error) => {
+                _mysql.releaseConnection();
+                next(error);
+            });
+    } catch (e) {
+        _mysql.releaseConnection();
+        next(e);
+    }
+}
+
+
 function updateSalesOrder(options) {
     return new Promise((resolve, reject) => {
         try {
