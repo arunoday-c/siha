@@ -327,20 +327,56 @@ class NetworkPlanList extends PureComponent {
             //     );
             //   }
             // },
+
             {
-              fieldName: "copay_consultation",
-              label: (
-                <AlgaehLabel label={{ fieldName: "copay_consultation" }} />
-              ),
+              fieldName: "deductable_type",
+              label: <AlgaehLabel label={{ forceLabel: "DEDUCTABLE TYPE" }} />,
+              editorTemplate: (row) => {
+                return (
+                  <AlagehAutoComplete
+                    div={{}}
+                    selector={{
+                      name: "deductable_type",
+                      className: "select-fld",
+                      value: row.deductable_type,
+                      dataSource: {
+                        textField: "name",
+                        valueField: "value",
+                        data: [
+                          {
+                            name: "Amount",
+                            value: "AMOUNT",
+                            arabic_name: "مبلغ",
+                          },
+                          {
+                            name: "Percentage",
+                            value: "PERCENTAGE",
+                            arabic_name: "نسبه مئويه",
+                          },
+                        ],
+                      },
+                      onChange: (e) => {
+                        console.log("e", e);
+                        row.deductable_type = e.value;
+                        row.update();
+                      },
+                    }}
+                  />
+                );
+              },
+            },
+            {
+              fieldName: "deductible",
+              label: <AlgaehLabel label={{ forceLabel: "Deductible" }} />,
               editorTemplate: (row) => {
                 return (
                   <AlagehFormGroup
                     div={{}}
                     textBox={{
                       decimal: { allowNegative: false },
-                      value: row.copay_consultation,
+                      value: row.deductible,
                       className: "txt-fld",
-                      name: "copay_consultation",
+                      name: "deductible",
                       events: {
                         onChange: onchangegridnumber.bind(this, this, row),
                       },
@@ -349,6 +385,28 @@ class NetworkPlanList extends PureComponent {
                 );
               },
             },
+            // {
+            //   fieldName: "copay_consultation",
+            //   label: (
+            //     <AlgaehLabel label={{ fieldName: "copay_consultation" }} />
+            //   ),
+            //   editorTemplate: (row) => {
+            //     return (
+            //       <AlagehFormGroup
+            //         div={{}}
+            //         textBox={{
+            //           decimal: { allowNegative: false },
+            //           value: row.copay_consultation,
+            //           className: "txt-fld",
+            //           name: "copay_consultation",
+            //           events: {
+            //             onChange: onchangegridnumber.bind(this, this, row),
+            //           },
+            //         }}
+            //       />
+            //     );
+            //   },
+            // },
             // {
             //   fieldName: "max_value",
             //   label: <AlgaehLabel label={{ fieldName: "con_max_limit" }} />,
@@ -745,63 +803,6 @@ class NetworkPlanList extends PureComponent {
                       },
                       others: {
                         disabled: row.coverd_optical === "Y" ? false : true,
-                      },
-                    }}
-                  />
-                );
-              },
-            },
-            {
-              fieldName: "deductable_type",
-              label: <AlgaehLabel label={{ forceLabel: "DEDUCTABLE TYPE" }} />,
-              editorTemplate: (row) => {
-                return (
-                  <AlagehAutoComplete
-                    div={{}}
-                    selector={{
-                      name: "deductable_type",
-                      className: "select-fld",
-                      value: row.deductable_type,
-                      dataSource: {
-                        textField: "name",
-                        valueField: "value",
-                        data: [
-                          {
-                            name: "Amount",
-                            value: "AMOUNT",
-                            arabic_name: "مبلغ",
-                          },
-                          {
-                            name: "Percentage",
-                            value: "PERCENTAGE",
-                            arabic_name: "نسبه مئويه",
-                          },
-                        ],
-                      },
-                      onChange: (e) => {
-                        console.log("e", e);
-                        row.deductable_type = e.value;
-                        row.update();
-                      },
-                    }}
-                  />
-                );
-              },
-            },
-            {
-              fieldName: "deductible",
-              label: <AlgaehLabel label={{ forceLabel: "Deductible" }} />,
-              editorTemplate: (row) => {
-                return (
-                  <AlagehFormGroup
-                    div={{}}
-                    textBox={{
-                      decimal: { allowNegative: false },
-                      value: row.deductible,
-                      className: "txt-fld",
-                      name: "deductible",
-                      events: {
-                        onChange: onchangegridnumber.bind(this, this, row),
                       },
                     }}
                   />

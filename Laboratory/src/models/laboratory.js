@@ -510,6 +510,7 @@ export default {
                     printQuery: true,
                   })
                   .then((specimentRecords) => {
+                    // console.log("----------specimentRecords", specimentRecords);
                     if (specimentRecords[0].length > 0) {
                       const specimen_list = specimentRecords[0];
                       const lab_orders = specimentRecords[1];
@@ -560,12 +561,7 @@ export default {
                         });
                     } else {
                       _mysql.rollBackTransaction(() => {
-                        next(
-                          httpStatus.generateError(
-                            httpStatus.forbidden,
-                            "No Specimen Avilable"
-                          )
-                        );
+                        next(new Error("No Specimen Avilable"));
                       });
                     }
                   })

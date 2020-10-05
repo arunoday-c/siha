@@ -16,6 +16,8 @@
                         <th>Paid Days</th>
                         <th>Total Earnings</th>
                         <th>Total Deduction </th>
+						
+                        <th>Total Loan </th>
                         <th>Net Salary</th>
                         <th>Total Contribution</th>
                         <th>Mode Of Payment</th>
@@ -28,11 +30,9 @@
                         <td class="numberFld" colspan="7"></td>
                         <td class="numberFld">{{sum_earnings}}</td>
                         <td class="numberFld">{{sum_deductions}}</td>
+                        <td class="numberFld"></td>
                         <td class="numberFld">{{sum_net_salary}}</td>
                         <td class="numberFld">{{sum_contributions}}</td>
-
-                        {{!-- <td class="numberFld">{{sum_misl_earn}}</td>
-                        <td class="numberFld">{{sum_misl_deduct}}</td> --}}
                         <td colspan="2"></td>
                     </tr>
                     {{#each employees}}

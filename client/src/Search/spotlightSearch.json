@@ -270,6 +270,10 @@
       {
         "fieldName": "TPL.location_description",
         "label": "To Location"
+      },
+      {
+        "fieldName": "requistion_type",
+        "label": "Requisition Type"
       }
     ],
     "ReqEntryPhar": [

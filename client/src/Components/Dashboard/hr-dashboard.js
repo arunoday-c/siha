@@ -300,8 +300,7 @@ class Dashboard extends Component {
               </div>
               <div className="col-6">
                 <div className="card animated fadeInUp faster">
-                  <h6>New Employee Joined this Month</h6>
-
+                  <h6>New Employee Joined</h6>
                   <div className="row dashboardGridCntr">
                     <div className="col">
                       {" "}
@@ -396,7 +395,7 @@ class Dashboard extends Component {
               </div>
               <div className="col-6">
                 <div className="card animated fadeInUp faster">
-                  <h6>Document Expire next month</h6>
+                  <h6>Document Expiry</h6>
                   <div className="row dashboardGridCntr">
                     <div className="col">
                       {" "}
