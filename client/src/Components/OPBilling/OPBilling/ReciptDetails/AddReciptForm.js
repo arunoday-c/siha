@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import moment from "moment";
 import {
   texthandle,
-  datehandle,
+  // datehandle,
   cashtexthandle,
   cardtexthandle,
   checkcashhandaler,
@@ -10,7 +10,7 @@ import {
   calculateRecipt,
 } from "./AddReciptFormHandaler";
 import {
-  AlgaehDateHandler,
+  // AlgaehDateHandler,
   AlgaehLabel,
   AlagehFormGroup,
   AlagehAutoComplete,
@@ -302,7 +302,7 @@ export default class AddReciptForm extends Component {
                       },
                     }}
                   /> */}
-
+                  {/* 
                   <AlgaehDateHandler
                     div={{ className: "col" }}
                     label={{
@@ -322,7 +322,7 @@ export default class AddReciptForm extends Component {
                       onChange: datehandle.bind(this, this, context),
                     }}
                     value={this.state.card_date}
-                  />
+                  /> */}
                 </div>
                 {/* Check */}
                 {/* <div className="row secondary-box-container">
