@@ -167,8 +167,8 @@ class SalesInvoice extends Component {
                     ) : this.state.is_posted === "N" ? (
                       <span className="badge badge-danger">Not Posted</span>
                     ) : (
-                      <span className="badge badge-success">Posted</span>
-                    )}
+                            <span className="badge badge-success">Posted</span>
+                          )}
                   </h6>
                 </div>
               ) : null}
@@ -177,17 +177,17 @@ class SalesInvoice extends Component {
           printArea={
             this.state.hims_f_sales_invoice_header_id !== null && this.state.is_posted === "Y"
               ? {
-                  menuitems: [
-                    {
-                      label: "Print Invoice",
-                      events: {
-                        onClick: () => {
-                          generateSalesInvoiceReport(this.state);
-                        },
+                menuitems: [
+                  {
+                    label: "Print Invoice",
+                    events: {
+                      onClick: () => {
+                        generateSalesInvoiceReport(this.state);
                       },
                     },
-                  ],
-                }
+                  },
+                ],
+              }
               : ""
           }
           selectedLang={this.state.selectedLang}
@@ -243,6 +243,15 @@ class SalesInvoice extends Component {
                       </h6>
                     </div>
 
+                    <AlgaehButton
+                      className="btn btn-primary"
+                      onClick={() => {
+                        this.props.history.push(`/SalesOrder?sales_order_number=${this.state.sales_order_number}`)
+                      }}
+                    >
+                      View Order
+                    </AlgaehButton>
+
                     <div className="col">
                       <AlgaehLabel label={{ forceLabel: "Customer" }} />
                       <h6>
@@ -297,8 +306,8 @@ class SalesInvoice extends Component {
                 <InvoiceListService SALESInvoiceIOputs={this.state} />
               </div>
             ) : (
-              <InvoiceItemList SALESInvoiceIOputs={this.state} />
-            )}
+                <InvoiceItemList SALESInvoiceIOputs={this.state} />
+              )}
           </MyContext.Provider>
 
           <div className="row">

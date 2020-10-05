@@ -433,6 +433,10 @@ const SalesOrderList = React.lazy(() =>
   retry(() => import("./Components/Sales/SalesOrderList/SalesOrderSwitch"))
 );
 
+const SalesInvoiceList = React.lazy(() =>
+  retry(() => import("./Components/Sales/SalesInvoiceList/SalesInvoiceList"))
+);
+
 const SalesReturnEntry = React.lazy(() =>
   retry(() => import("./Components/Sales/SalesReturnEntry/SalesReturnEntry"))
 );
@@ -1110,6 +1114,11 @@ const privateRoutes = [
     component: <SalesOrderList />,
   },
   {
+    path: "/SalesInvoiceList",
+    isExactPath: true,
+    component: <SalesInvoiceList />,
+  },
+  {
     path: "/SalesReturnEntry",
     isExactPath: true,
     component: <SalesReturnEntry />,
@@ -1486,12 +1495,12 @@ function Routes() {
             );
           })
         ) : (
-          <div className="loader-container">
-            <div className="algaeh-progress float shadow">
-              <div className="progress__item">loading</div>
+            <div className="loader-container">
+              <div className="algaeh-progress float shadow">
+                <div className="progress__item">loading</div>
+              </div>
             </div>
-          </div>
-        )}
+          )}
       </Switch>
     </BrowserRouter>
   );

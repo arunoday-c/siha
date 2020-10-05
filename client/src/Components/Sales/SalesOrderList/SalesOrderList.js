@@ -181,8 +181,8 @@ class SalesOrderList extends Component {
                               <i
                                 style={{
                                   pointerEvents:
-                                    row.cancel === "Y" ? "none" : "",
-                                  opacity: row.cancel === "Y" ? "0.1" : ""
+                                    row.is_posted === "N" ? "none" : "",
+                                  opacity: row.is_posted === "N" ? "0.1" : ""
                                 }}
                                 className="fas fa-eye"
                                 onClick={() => {
@@ -213,6 +213,21 @@ class SalesOrderList extends Component {
                           resizable: false,
                           style: { textAlign: "center" },
                           filterable: false
+                        }
+                      },
+                      {
+                        fieldName: "is_posted",
+                        label: (
+                          <AlgaehLabel
+                            label={{ forceLabel: "Posted" }}
+                          />
+                        ),
+                        displayTemplate: row => {
+                          return row.is_posted === "Y" ? (
+                            <span className="badge badge-success">Yes</span>
+                          ) : (
+                              <span className="badge badge-danger">No</span>
+                            );
                         }
                       },
                       {
