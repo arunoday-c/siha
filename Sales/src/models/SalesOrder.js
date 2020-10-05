@@ -315,7 +315,7 @@ export function postSalesOrder(req, res, next) {
             _mysql
                 .executeQuery({
                     query:
-                        "UPDATE hims_f_sales_order set is_posted= ?, sub_total=?, discount_amount=?, net_total=?, \
+                        "UPDATE hims_f_sales_order set cancelled='N', is_posted= ?, sub_total=?, discount_amount=?, net_total=?, \
                         total_tax=?, net_payable=?, narration=?, updated_date=?, updated_by=? \
                         where hims_f_sales_order_id=?",
                     values: [
