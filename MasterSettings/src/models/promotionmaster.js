@@ -245,3 +245,27 @@ export function getPatientsForPromo(req, res, next) {
     next(e);
   }
 }
+
+export function deletePromotionDetail(req, res, next) {
+  const _mysql = new algaehMysql();
+  try {
+    const { hims_d_promotion_detail_id } = req.body;
+    _mysql
+      .executeQuery({
+        query: `delete from hims_d_promotion_detail where hims_d_promotion_detail_id=?`,
+        values: [hims_d_promotion_detail_id],
+      })
+      .then((result) => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch((error) => {
+        _mysql.releaseConnection();
+        next(error);
+      });
+  } catch (e) {
+    _mysql.releaseConnection();
+    next(e);
+  }
+}

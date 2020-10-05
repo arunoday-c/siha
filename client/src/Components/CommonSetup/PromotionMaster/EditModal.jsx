@@ -8,7 +8,7 @@ import {
   AlgaehLabel,
   AlgaehDataGrid,
   Spin,
-  AlgaehMessagePop,
+  // AlgaehMessagePop,
 } from "algaeh-react-components";
 import "./PromotionMaster.scss";
 import { useQuery, useMutation } from "react-query";
@@ -17,8 +17,10 @@ import {
   getPromotionDetails,
   addPromotionDetail,
   updatePromotionDetail,
+  deletePromotionDetail,
 } from "./api";
 import { useForm, Controller } from "react-hook-form";
+import { swalMessage } from "../../../utils/algaehApiCall";
 
 export function PromoEditModal({ visible, onClose, data = {} }) {
   const { userLanguage } = useContext(MainContext);
@@ -47,8 +49,8 @@ export function PromoEditModal({ visible, onClose, data = {} }) {
       reset(base);
       setEditId(null);
       refetch().then(() => {
-        AlgaehMessagePop({
-          display: "Added Successfully",
+        swalMessage({
+          title: "Added Successfully",
           type: "success",
         });
       });
@@ -62,8 +64,22 @@ export function PromoEditModal({ visible, onClose, data = {} }) {
         reset(base);
         setEditId(null);
         refetch().then(() => {
-          AlgaehMessagePop({
-            display: "Added Successfully",
+          swalMessage({
+            title: "Updated Successfully",
+            type: "success",
+          });
+        });
+      },
+    }
+  );
+
+  const [deleteDetail, { isLoading: delLoading }] = useMutation(
+    deletePromotionDetail,
+    {
+      onSuccess: (data) => {
+        refetch().then(() => {
+          swalMessage({
+            title: "Deleted Successfully",
             type: "success",
           });
         });
@@ -103,7 +119,11 @@ export function PromoEditModal({ visible, onClose, data = {} }) {
       className={`${userLanguage}_comp row algaehNewModal`}
       // class={this.state.lang_sets}
     >
-      <Spin spinning={isLoading || pdLoading || mutLoading || upDLoading}>
+      <Spin
+        spinning={
+          isLoading || pdLoading || mutLoading || upDLoading || delLoading
+        }
+      >
         <div className="col popupInner">
           <div className="row inner-top-search margin-bottom-15">
             <Controller
@@ -221,6 +241,15 @@ export function PromoEditModal({ visible, onClose, data = {} }) {
                                   onClick={() => {
                                     setEditId(row?.hims_d_promotion_detail_id);
                                     reset(row);
+                                  }}
+                                ></i>
+                                <i
+                                  className="fas fa-trash-alt"
+                                  onClick={() => {
+                                    deleteDetail({
+                                      hims_d_promotion_detail_id:
+                                        row?.hims_d_promotion_detail_id,
+                                    });
                                   }}
                                 ></i>
                               </>
