@@ -1,0 +1,18 @@
+@import "../../../styles/algaehCssVariables.scss";
+.cardMaskFld {
+  input {
+    border: 1px solid #d3d3d3;
+
+    height: 32px;
+    padding: 10px;
+    background: #fff;
+    font-weight: bold;
+    font-size: 0.9rem;
+    border-radius: $borderRadius;
+  }
+  &.mandatory {
+    input {
+      border: 1px solid $gold-color;
+    }
+  }
+}

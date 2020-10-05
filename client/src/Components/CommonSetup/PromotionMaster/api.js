@@ -78,6 +78,16 @@ export async function updatePromotionDetail(input = {}) {
   return res?.data?.records;
 }
 
+export async function deletePromotionDetail({ hims_d_promotion_detail_id }) {
+  const res = await newAlgaehApi({
+    uri: "/promotionmaster/deletePromotionDetail",
+    method: "DELETE",
+    module: "masterSettings",
+    data: { hims_d_promotion_detail_id },
+  });
+  return res?.data?.records;
+}
+
 export async function getPatientsForPromo(key, { gender, age_range }) {
   const res = await newAlgaehApi({
     uri: "/promotionmaster/getPatientsForPromo",

@@ -21,7 +21,7 @@ import GenericData from "../../utils/GlobalVariables.json";
 import { FrontdeskContext } from "./FrontdeskContext";
 import { useLangFieldName } from "./patientHooks";
 const { TabPane } = Tabs;
-const { Option } = Select;
+// const { Option } = Select;
 const { FORMAT_GENDER, FORMAT_MARTIALSTS } = GenericData;
 
 async function getDemoData() {
@@ -393,51 +393,72 @@ export function Demographics({
                             placeholder: "Y",
                           }}
                         />
-
-                        <div className="col-lg-4 algaehInputGroup">
-                          <label className="style_Label">
-                            Contact Number<span className="imp">&nbsp;*</span>
-                          </label>
-                          <Input.Group compact>
-                            <Controller
-                              control={control}
-                              name="tel_code"
-                              rules={{
-                                required: true,
-                              }}
-                              render={(props) => (
-                                <>
-                                  <Select {...props}>
-                                    {countries?.map((item) => (
+                        {!!countries?.length && (
+                          <div className="col-lg-4 algaehInputGroup">
+                            <label className="style_Label">
+                              Contact Number<span className="imp">&nbsp;*</span>
+                            </label>
+                            <Input.Group compact>
+                              <Controller
+                                control={control}
+                                name="tel_code"
+                                rules={{
+                                  required: true,
+                                }}
+                                render={({ value, onChange }) => (
+                                  <>
+                                    <Select
+                                      value={value}
+                                      onChange={onChange}
+                                      virtual={true}
+                                      disabled={disabled}
+                                      showSearch
+                                      filterOption={(input, option) => {
+                                        return (
+                                          option.value
+                                            .toLowerCase()
+                                            .indexOf(input.toLowerCase()) >= 0
+                                        );
+                                      }}
+                                      options={countries
+                                        ?.map((item) => item.tel_code)
+                                        .filter((v, i, a) => a.indexOf(v) === i)
+                                        .map((item) => ({
+                                          label: item,
+                                          value: item,
+                                        }))}
+                                    >
+                                      {/* {countries?.map((item) => (
                                       <Option
                                         value={item.tel_code}
                                         key={item.tel_code}
                                       >
                                         {item.tel_code}
                                       </Option>
-                                    ))}
-                                  </Select>
-                                </>
-                              )}
-                            />
-                            <Controller
-                              control={control}
-                              name="contact_number"
-                              rules={{
-                                required: "Please Enter Contact Number",
-                                minLength: {
-                                  message: "Please Enter Valid Number",
-                                  value: 6,
-                                },
-                              }}
-                              render={(props) => (
-                                <>
-                                  <Input {...props} />
-                                </>
-                              )}
-                            />
-                          </Input.Group>
-                        </div>
+                                    ))} */}
+                                    </Select>
+                                  </>
+                                )}
+                              />
+                              <Controller
+                                control={control}
+                                name="contact_number"
+                                rules={{
+                                  required: "Please Enter Contact Number",
+                                  minLength: {
+                                    message: "Please Enter Valid Number",
+                                    value: 6,
+                                  },
+                                }}
+                                render={(props) => (
+                                  <>
+                                    <Input {...props} disabled={disabled} />
+                                  </>
+                                )}
+                              />
+                            </Input.Group>
+                          </div>
+                        )}
                         {/* <Controller
                           control={control}
                           name="contact_number"

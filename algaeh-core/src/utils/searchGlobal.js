@@ -67,7 +67,7 @@ let algaehSearchConfig = (searchName, req) => {
         searchName: "new_insurance",
         searchQuery:
           "select SQL_CALC_FOUND_ROWS Ins.hims_d_insurance_provider_id as insurance_provider_id,Ins.insurance_provider_name, Ins.effective_end_date,Ins.effective_start_date,\
-          sIns.hims_d_insurance_sub_id as sub_insurance_provider_id, sIns.insurance_sub_name as sub_insurance_provider_name,Ins.insurance_type,\
+          sIns.hims_d_insurance_sub_id as sub_insurance_provider_id, sIns.insurance_sub_name,Ins.insurance_type,\
           CASE WHEN Ins.insurance_type='I' THEN 'Insurance' else 'Corporate Client' END as insurance_type_d,\
           net.hims_d_insurance_network_id as network_id,  net.network_type, net.effective_start_date as net_effective_start_date, net.effective_end_date as net_effective_end_date, \
           netoff.hims_d_insurance_network_office_id, netoff.policy_number from \

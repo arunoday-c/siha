@@ -5,14 +5,14 @@ import { bindActionCreators } from "redux";
 import moment from "moment";
 import {
   texthandle,
-  datehandle,
+  // datehandle,
   cashtexthandle,
   cardtexthandle,
   checkcashhandaler,
   checkcardhandaler,
 } from "./AddReciptFormHandaler";
 import {
-  AlgaehDateHandler,
+  // AlgaehDateHandler,
   AlgaehLabel,
   AlagehFormGroup,
   AlagehAutoComplete,
@@ -235,7 +235,7 @@ class AddReciptForm extends Component {
                     }}
                   /> */}
 
-                  <AlgaehDateHandler
+                  {/* <AlgaehDateHandler
                     div={{ className: "col-lg-3" }}
                     label={{
                       forceLabel: "Expiry Date",
@@ -254,7 +254,7 @@ class AddReciptForm extends Component {
                       onChange: datehandle.bind(this, this, context),
                     }}
                     value={this.state.card_date}
-                  />
+                  /> */}
                 </div>
                 {/* Check */}
                 {/* <div className="row secondary-box-container">

@@ -591,6 +591,7 @@ export function PatientRegistration() {
       cash_amount: "",
       consultation: "",
       contact_number: "",
+
       date_of_birth: "",
       department_type: "",
       doctor: "",
@@ -625,6 +626,7 @@ export function PatientRegistration() {
       country_id: userToken?.default_country,
       patient_type: userToken?.default_patient_type,
       visit_type: default_visit_type?.hims_d_visit_type_id,
+      tel_code: currentCountry?.tel_code,
     });
     clearState();
     setConsultationInfo(default_visit_type);
@@ -815,7 +817,7 @@ export function PatientRegistration() {
                   </button>
                   <button
                     type="button"
-                    className="btn btn-primary"
+                    className="btn btn-default"
                     onClick={() => onClear(false)}
                     disabled={
                       !disabled &&

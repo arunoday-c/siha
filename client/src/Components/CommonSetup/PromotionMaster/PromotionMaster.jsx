@@ -67,7 +67,7 @@ export function PromotionMaster() {
           <div className="col">
             <form>
               <div className="row">
-                <Controller
+                {/* <Controller
                   control={control}
                   name="promo_code"
                   rules={{ required: "Required" }}
@@ -86,7 +86,7 @@ export function PromotionMaster() {
                       }}
                     />
                   )}
-                />{" "}
+                />{" "} */}
                 <Controller
                   control={control}
                   name="promo_name"
@@ -115,7 +115,7 @@ export function PromotionMaster() {
                     <AlgaehFormGroup
                       div={{ className: "col form-group mandatory" }}
                       label={{
-                        forceLabel: "Offer Code",
+                        forceLabel: "Promo Code",
                         isImp: true,
                       }}
                       error={errors}
@@ -143,6 +143,7 @@ export function PromotionMaster() {
                       events={{
                         onChange,
                       }}
+                      minDate={new Date()}
                     />
                   )}
                 />
@@ -208,14 +209,14 @@ export function PromotionMaster() {
                           );
                         },
                       },
-                      {
-                        fieldName: "promo_code",
-                        label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "Promotion Code" }}
-                          />
-                        ),
-                      },
+                      // {
+                      //   fieldName: "promo_code",
+                      //   label: (
+                      //     <AlgaehLabel
+                      //       label={{ forceLabel: "Promotion Code" }}
+                      //     />
+                      //   ),
+                      // },
                       {
                         fieldName: "promo_name",
                         label: (

@@ -8,7 +8,7 @@ import "./../../../../styles/site.scss";
 import {
   AlgaehDataGrid,
   AlgaehLabel,
-  AlagehFormGroup
+  AlagehFormGroup,
 } from "../../../Wrapper/algaehWrapper";
 
 import {
@@ -17,7 +17,7 @@ import {
   calculateAmount,
   EditGrid,
   CancelGrid,
-  makeZeroIngrid
+  makeZeroIngrid,
 } from "./ItemListsReturnEvents";
 
 import { AlgaehActions } from "../../../../actions/algaehActions";
@@ -49,8 +49,8 @@ class ItemListsReturn extends Component {
         method: "GET",
         redux: {
           type: "ITEM_CATEGORY_GET_DATA",
-          mappingName: "itemcategory"
-        }
+          mappingName: "itemcategory",
+        },
       });
     }
     if (this.props.itemuom === undefined || this.props.itemuom.length === 0) {
@@ -60,8 +60,8 @@ class ItemListsReturn extends Component {
         method: "GET",
         redux: {
           type: "ITEM_UOM_GET_DATA",
-          mappingName: "itemuom"
-        }
+          mappingName: "itemuom",
+        },
       });
     }
   }
@@ -80,7 +80,7 @@ class ItemListsReturn extends Component {
     return (
       <React.Fragment>
         <MyContext.Consumer>
-          {context => (
+          {(context) => (
             <div className="hptl-phase1-item-list-billing-form">
               <div className="portlet portlet-bordered margin-bottom-15">
                 <div className="portlet-body" id="RETURN_detailsGrid_Cntr">
@@ -92,12 +92,12 @@ class ItemListsReturn extends Component {
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Item Name" }} />
                         ),
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           let display =
                             this.props.salesitemlist === undefined
                               ? []
                               : this.props.salesitemlist.filter(
-                                  f => f.hims_d_item_master_id === row.item_id
+                                  (f) => f.hims_d_item_master_id === row.item_id
                                 );
 
                           return (
@@ -108,12 +108,12 @@ class ItemListsReturn extends Component {
                             </span>
                           );
                         },
-                        editorTemplate: row => {
+                        editorTemplate: (row) => {
                           let display =
                             this.props.salesitemlist === undefined
                               ? []
                               : this.props.salesitemlist.filter(
-                                  f => f.hims_d_item_master_id === row.item_id
+                                  (f) => f.hims_d_item_master_id === row.item_id
                                 );
 
                           return (
@@ -125,8 +125,8 @@ class ItemListsReturn extends Component {
                           );
                         },
                         others: {
-                          minWidth: 150
-                        }
+                          minWidth: 150,
+                        },
                       },
 
                       {
@@ -134,16 +134,16 @@ class ItemListsReturn extends Component {
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Expiry Date" }} />
                         ),
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return (
                             <span>{this.dateFormater(row.expiry_date)}</span>
                           );
                         },
-                        editorTemplate: row => {
+                        editorTemplate: (row) => {
                           return (
                             <span>{this.dateFormater(row.expiry_date)}</span>
                           );
-                        }
+                        },
                       },
                       {
                         fieldName: "batchno",
@@ -152,30 +152,30 @@ class ItemListsReturn extends Component {
                         ),
                         others: {
                           disabled: true,
-                          minWidth: 150
-                        }
+                          minWidth: 150,
+                        },
                       },
                       {
                         fieldName: "quantity",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Sold Qty" }} />
                         ),
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return <span>{parseFloat(row.quantity)}</span>;
                         },
-                        editorTemplate: row => {
+                        editorTemplate: (row) => {
                           return <span>{parseFloat(row.quantity)}</span>;
                         },
                         others: {
-                          minWidth: 90
-                        }
+                          minWidth: 90,
+                        },
                       },
                       {
                         fieldName: "return_quantity",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Return Qty" }} />
                         ),
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return (
                             <span>
                               {row.return_quantity !== ""
@@ -184,14 +184,14 @@ class ItemListsReturn extends Component {
                             </span>
                           );
                         },
-                        editorTemplate: row => {
+                        editorTemplate: (row) => {
                           return (
                             <AlagehFormGroup
                               div={{}}
                               textBox={{
                                 number: {
                                   allowNegative: false,
-                                  thousandSeparator: ","
+                                  thousandSeparator: ",",
                                 },
                                 value:
                                   row.return_quantity !== ""
@@ -206,7 +206,7 @@ class ItemListsReturn extends Component {
                                     this,
                                     row,
                                     context
-                                  )
+                                  ),
                                 },
                                 others: {
                                   disabled:
@@ -220,25 +220,25 @@ class ItemListsReturn extends Component {
                                     this,
                                     context,
                                     row
-                                  )
-                                }
+                                  ),
+                                },
                               }}
                             />
                           );
                         },
                         others: {
-                          minWidth: 90
-                        }
+                          minWidth: 90,
+                        },
                       },
                       {
                         fieldName: "uom_id",
                         label: <AlgaehLabel label={{ forceLabel: "UOM" }} />,
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           let display =
                             this.props.itemuom === undefined
                               ? []
                               : this.props.itemuom.filter(
-                                  f => f.hims_d_pharmacy_uom_id === row.uom_id
+                                  (f) => f.hims_d_pharmacy_uom_id === row.uom_id
                                 );
 
                           return (
@@ -249,12 +249,12 @@ class ItemListsReturn extends Component {
                             </span>
                           );
                         },
-                        editorTemplate: row => {
+                        editorTemplate: (row) => {
                           let display =
                             this.props.itemuom === undefined
                               ? []
                               : this.props.itemuom.filter(
-                                  f => f.hims_d_pharmacy_uom_id === row.uom_id
+                                  (f) => f.hims_d_pharmacy_uom_id === row.uom_id
                                 );
 
                           return (
@@ -266,36 +266,36 @@ class ItemListsReturn extends Component {
                           );
                         },
                         others: {
-                          minWidth: 90
-                        }
+                          minWidth: 90,
+                        },
                       },
                       {
                         fieldName: "unit_cost",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Unit Cost" }} />
                         ),
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return (
                             <span>
                               {GetAmountFormart(row.unit_cost, {
-                                appendSymbol: false
+                                appendSymbol: false,
                               })}
                             </span>
                           );
                         },
-                        editorTemplate: row => {
+                        editorTemplate: (row) => {
                           return (
                             <span>
                               {GetAmountFormart(row.unit_cost, {
-                                appendSymbol: false
+                                appendSymbol: false,
                               })}
                             </span>
                           );
                         },
 
                         others: {
-                          minWidth: 90
-                        }
+                          minWidth: 90,
+                        },
                       },
 
                       {
@@ -303,61 +303,61 @@ class ItemListsReturn extends Component {
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Ext. Cost" }} />
                         ),
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return (
                             <span>
                               {GetAmountFormart(row.extended_cost, {
-                                appendSymbol: false
+                                appendSymbol: false,
                               })}
                             </span>
                           );
                         },
-                        editorTemplate: row => {
+                        editorTemplate: (row) => {
                           return (
                             <span>
                               {GetAmountFormart(row.extended_cost, {
-                                appendSymbol: false
+                                appendSymbol: false,
                               })}
                             </span>
                           );
-                        }
+                        },
                       },
                       {
                         fieldName: "discount_percentage",
                         label: (
                           <AlgaehLabel
                             label={{
-                              forceLabel: "discount %"
+                              forceLabel: "discount %",
                             }}
                           />
                         ),
                         others: {
-                          disabled: true
-                        }
+                          disabled: true,
+                        },
                       },
                       {
                         fieldName: "discount_amout",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "discount Amt" }} />
                         ),
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return (
                             <span>
                               {GetAmountFormart(row.discount_amout, {
-                                appendSymbol: false
+                                appendSymbol: false,
                               })}
                             </span>
                           );
                         },
-                        editorTemplate: row => {
+                        editorTemplate: (row) => {
                           return (
                             <span>
                               {GetAmountFormart(row.discount_amout, {
-                                appendSymbol: false
+                                appendSymbol: false,
                               })}
                             </span>
                           );
-                        }
+                        },
                       },
 
                       {
@@ -367,29 +367,29 @@ class ItemListsReturn extends Component {
                             label={{ forceLabel: "Net Extended Cost" }}
                           />
                         ),
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return (
                             <span>
                               {GetAmountFormart(row.net_extended_cost, {
-                                appendSymbol: false
+                                appendSymbol: false,
                               })}
                             </span>
                           );
                         },
-                        editorTemplate: row => {
+                        editorTemplate: (row) => {
                           return (
                             <span>
                               {GetAmountFormart(row.net_extended_cost, {
-                                appendSymbol: false
+                                appendSymbol: false,
                               })}
                             </span>
                           );
-                        }
-                      }
+                        },
+                      },
                     ]}
                     keyId="service_type_id"
                     dataSource={{
-                      data: this.state.pharmacy_stock_detail
+                      data: this.state.pharmacy_stock_detail,
                     }}
                     isEditable={
                       this.state.hims_f_pharmcy_sales_return_header_id === null
@@ -406,7 +406,7 @@ class ItemListsReturn extends Component {
                       ),
                       onEdit: EditGrid.bind(this, this, context),
                       onCancel: CancelGrid.bind(this, this, context),
-                      onDone: updateSalesReturnDetail.bind(this, this, context)
+                      onDone: updateSalesReturnDetail.bind(this, this, context),
                     }}
                   />
 
@@ -417,7 +417,7 @@ class ItemListsReturn extends Component {
                         <div className="col-lg-4">
                           <AlgaehLabel
                             label={{
-                              forceLabel: "Return Sub Total"
+                              forceLabel: "Return Sub Total",
                             }}
                           />
                           <h6>{GetAmountFormart(this.state.sub_total)}</h6>
@@ -425,7 +425,7 @@ class ItemListsReturn extends Component {
                         <div className="col-lg-4">
                           <AlgaehLabel
                             label={{
-                              forceLabel: "Discount Amount"
+                              forceLabel: "Discount Amount",
                             }}
                           />
                           <h6>
@@ -436,7 +436,7 @@ class ItemListsReturn extends Component {
                         <div className="col-lg-4">
                           <AlgaehLabel
                             label={{
-                              forceLabel: "Net Total"
+                              forceLabel: "Net Total",
                             }}
                           />
                           <h6>{GetAmountFormart(this.state.net_total)}</h6>
@@ -452,7 +452,7 @@ class ItemListsReturn extends Component {
                           <div className="col-lg-6">
                             <AlgaehLabel
                               label={{
-                                forceLabel: "Copay Amount"
+                                forceLabel: "Copay Amount",
                               }}
                             />
                             <h6>{GetAmountFormart(this.state.copay_amount)}</h6>
@@ -462,14 +462,14 @@ class ItemListsReturn extends Component {
                           <div className="col-lg-12 patientRespo">
                             <AlgaehLabel
                               label={{
-                                forceLabel: "Patient"
+                                forceLabel: "Patient",
                               }}
                             />
                             <div className="row insurance-details">
                               <div className="col-5">
                                 <AlgaehLabel
                                   label={{
-                                    forceLabel: "Responsibility"
+                                    forceLabel: "Responsibility",
                                   }}
                                 />
                                 <h6>
@@ -482,7 +482,7 @@ class ItemListsReturn extends Component {
                               <div className="col-3">
                                 <AlgaehLabel
                                   label={{
-                                    forceLabel: "Tax"
+                                    forceLabel: "Tax",
                                   }}
                                 />
                                 <h6>
@@ -493,7 +493,7 @@ class ItemListsReturn extends Component {
                               <div className="col-4">
                                 <AlgaehLabel
                                   label={{
-                                    forceLabel: "Payable"
+                                    forceLabel: "Payable",
                                   }}
                                 />
                                 <h6>
@@ -508,14 +508,14 @@ class ItemListsReturn extends Component {
                           <div className="col-lg-12">
                             <AlgaehLabel
                               label={{
-                                forceLabel: "Company"
+                                forceLabel: "Company",
                               }}
                             />
                             <div className="row insurance-details">
                               <div className="col-5">
                                 <AlgaehLabel
                                   label={{
-                                    forceLabel: "Responsibility"
+                                    forceLabel: "Responsibility",
                                   }}
                                 />
                                 <h6>
@@ -528,7 +528,7 @@ class ItemListsReturn extends Component {
                               <div className="col-3">
                                 <AlgaehLabel
                                   label={{
-                                    forceLabel: "Tax"
+                                    forceLabel: "Tax",
                                   }}
                                 />
                                 <h6>
@@ -539,7 +539,7 @@ class ItemListsReturn extends Component {
                               <div className="col-4">
                                 <AlgaehLabel
                                   label={{
-                                    forceLabel: "Payable"
+                                    forceLabel: "Payable",
                                   }}
                                 />
                                 <h6>
@@ -558,7 +558,7 @@ class ItemListsReturn extends Component {
                           <div className="col-3">
                             <AlgaehLabel
                               label={{
-                                forceLabel: "Sheet Level Discount %"
+                                forceLabel: "Sheet Level Dis. %",
                               }}
                             />
                             <h6>
@@ -570,7 +570,7 @@ class ItemListsReturn extends Component {
                           <div className="col-3">
                             <AlgaehLabel
                               label={{
-                                forceLabel: "Sheet Level Discount Amount"
+                                forceLabel: "Sheet Level Discount Amount",
                               }}
                             />
                             <h6>
@@ -589,7 +589,7 @@ class ItemListsReturn extends Component {
                           <div className="col-3">
                             <AlgaehLabel
                               label={{
-                                forceLabel: "Net Amount"
+                                forceLabel: "Net Amount",
                               }}
                             />
                             <h6>{GetAmountFormart(this.state.net_amount)}</h6>
@@ -598,7 +598,7 @@ class ItemListsReturn extends Component {
                           <div className="col-3">
                             <AlgaehLabel
                               label={{
-                                forceLabel: "Credit Amount"
+                                forceLabel: "Credit Amount",
                               }}
                             />
                             <h6>
@@ -610,12 +610,12 @@ class ItemListsReturn extends Component {
                             className="col-3"
                             style={{
                               background: " #44b8bd",
-                              color: " #fff"
+                              color: " #fff",
                             }}
                           >
                             <AlgaehLabel
                               label={{
-                                forceLabel: "Sales Return Total"
+                                forceLabel: "Sales Return Total",
                               }}
                             />
                             <h4>
@@ -643,7 +643,7 @@ function mapStateToProps(state) {
     itemdetaillist: state.itemdetaillist,
     itemcategory: state.itemcategory,
     itemuom: state.itemuom,
-    salesReturn: state.salesReturn
+    salesReturn: state.salesReturn,
   };
 }
 
@@ -655,7 +655,7 @@ function mapDispatchToProps(dispatch) {
       generateBill: AlgaehActions,
       getItemCategory: AlgaehActions,
       getItemUOM: AlgaehActions,
-      SalesReturnCalculations: AlgaehActions
+      SalesReturnCalculations: AlgaehActions,
     },
     dispatch
   );

@@ -1311,11 +1311,16 @@ export default {
     try {
       let inputParam = req.body;
       let strQuery = "";
-      let parameters = [];
+      let parameters = "";
+
+      console.log("inputParam.service_type_id", inputParam.service_type_id)
+      if (inputParam.service_type_id > 0) {
+        parameters = " and service_type_id=" + inputParam.service_type_id
+      }
       if (inputParam.update === "pre_approval") {
         strQuery += mysql.format(
           "UPDATE `hims_d_services_insurance` SET `pre_approval`=?,`updated_by`=?, `updated_date`=? \
-          WHERE `record_status`='A' and `insurance_id`=?",
+          WHERE `record_status`='A' and `insurance_id`=?" + parameters,
           [
             inputParam.pre_approval,
             inputParam.updated_by,
@@ -1326,7 +1331,7 @@ export default {
       } else if (inputParam.update === "covered") {
         strQuery += mysql.format(
           "UPDATE `hims_d_services_insurance` SET `covered`=?,`updated_by`=?, `updated_date`=? \
-          WHERE `record_status`='A' and `insurance_id`=?",
+          WHERE `record_status`='A' and `insurance_id`=?" + parameters,
           [
             inputParam.covered,
             inputParam.updated_by,
@@ -1339,7 +1344,7 @@ export default {
           strQuery += mysql.format(
             "UPDATE `hims_d_services_insurance` SET `corporate_discount_percent`=?,\
             `corporate_discount_amt`=(gross_amt*?)/100, `net_amount`=(gross_amt-(gross_amt*?)/100),\
-            `updated_by`=?, `updated_date`=? WHERE `record_status`='A' and `insurance_id`=?",
+            `updated_by`=?, `updated_date`=? WHERE `record_status`='A' and `insurance_id`=?"+ parameters,
             [
               inputParam.corporate_discount,
               inputParam.corporate_discount,
@@ -1353,7 +1358,7 @@ export default {
           strQuery += mysql.format(
             "UPDATE `hims_d_services_insurance` SET `corporate_discount_amt`=?, \
             `corporate_discount_percent`=(?/gross_amt)*100,`net_amount`=gross_amt-?, \
-            `updated_by`=?, `updated_date`=? WHERE `record_status`='A' and `insurance_id`=?",
+            `updated_by`=?, `updated_date`=? WHERE `record_status`='A' and `insurance_id`=?"+ parameters,
             [
               inputParam.corporate_discount,
               inputParam.corporate_discount,
@@ -1369,7 +1374,7 @@ export default {
       _mysql
         .executeQuery({
           query: strQuery,
-          printQuery: false,
+          printQuery: true,
         })
         .then((result) => {
           _mysql.releaseConnection();
@@ -2039,12 +2044,12 @@ export function updateInsuranceStatement(req, res, next) {
               .executeQuery({
                 query: `update hims_f_invoice_header set remittance_amount${
                   level == 1 ? "" : level
-                }=${rest["ramt"]}, claim_status=?,
+                  }=${rest["ramt"]}, claim_status=?,
                   denial_amount${level == 1 ? "" : level}=${
                   rest["damt"]
-                },remittance_date=?,submission_amount${level == 1 ? 2 : 3}=${
+                  },remittance_date=?,submission_amount${level == 1 ? 2 : 3}=${
                   rest["damt"]
-                } where hims_f_invoice_header_id=?`,
+                  } where hims_f_invoice_header_id=?`,
                 values: [claim_status, new Date(), invoice_header_id],
               })
               .then((records) => {

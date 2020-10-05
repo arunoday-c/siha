@@ -175,7 +175,7 @@ class SalesInvoice extends Component {
             </div>
           }
           printArea={
-            this.state.hims_f_sales_invoice_header_id !== null
+            this.state.hims_f_sales_invoice_header_id !== null && this.state.is_posted === "Y"
               ? {
                   menuitems: [
                     {

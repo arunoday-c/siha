@@ -1123,7 +1123,7 @@ class PosListItems extends Component {
                             <AlagehFormGroup
                               div={{ className: "col-lg-4" }}
                               label={{
-                                forceLabel: "Sheet Level Discount %",
+                                forceLabel: "Sheet Level Dis. %",
                               }}
                               textBox={{
                                 decimal: { allowNegative: false },

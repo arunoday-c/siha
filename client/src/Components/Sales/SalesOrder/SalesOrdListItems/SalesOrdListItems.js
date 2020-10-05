@@ -491,7 +491,7 @@ class SalesOrdListItems extends Component {
                                                             />
                                                         ),
                                                         displayTemplate: row => {
-                                                            return this.state.is_revert === "N" || this.state.grid_edit === true ? row.tax_percentage : (
+                                                            return this.state.is_revert === "N" && this.state.grid_edit === true ? row.tax_percentage : (
                                                                 <AlagehFormGroup
                                                                     div={{}}
                                                                     textBox={{

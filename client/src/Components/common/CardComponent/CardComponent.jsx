@@ -4,6 +4,7 @@ import {
   AlgaehLabel,
 } from "algaeh-react-components";
 import React, { useEffect } from "react";
+import "./CardComponent.scss";
 import { useQuery } from "react-query";
 import { getCards } from "../../BusinessSetup/CardMaster/api";
 import MaskedInput from "react-maskedinput";
@@ -58,7 +59,7 @@ export default function CardComponent({
       />
 
       {mask ? (
-        <div className="col no-padding-left-right  mandatory">
+        <div className="col no-padding-left-right mandatory cardMaskFld">
           <AlgaehLabel
             label={{ fieldName: "card_check_number", isImp: false }}
           />
