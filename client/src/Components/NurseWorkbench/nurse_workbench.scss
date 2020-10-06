@@ -1,4 +1,7 @@
 .nurse_workbench {
+  .portlet {
+    background: #f3f3f3;
+  }
   .panel-layout {
     margin-top: 10px;
     margin-bottom: 50px;
@@ -105,5 +108,11 @@
     overflow-y: auto;
     overflow-x: hidden;
     max-height: 73vh;
+  }
+  .patientNotesGrid_Cntr,
+  .patientAllergyGrid_Cntr {
+    .ReactTable {
+      max-height: 39vh !important;
+    }
   }
 }

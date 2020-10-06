@@ -106,9 +106,15 @@
   -o-transition: All 0.3s ease;
 }
 
-#physicalExamination-grid-cntr {
+.patientExamGrid_Cntr {
   .ReactTable {
-    max-height: 30vh !important;
+    max-height: 27vh !important;
+  }
+}
+
+.patientNotesGrid_Cntr {
+  .ReactTable {
+    max-height: 39vh !important;
   }
 }
 .pullRight {

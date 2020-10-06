@@ -277,23 +277,28 @@ class Examination extends Component {
           <div className="popupInner">
             <div className="col-lg-12">
               <div className="row">
-                <div className="col-lg-3 popLeftDiv">
-                  <label className="switch">
-                    <input
-                      className="switch-input"
-                      type="checkbox"
-                      onChange={this.changeGeneralOrSpecific.bind(this)}
-                    />
-                    <span
-                      className="switch-label"
-                      data-off="Specific"
-                      data-on="General"
-                    />
-                    <span className="switch-handle" />
-                  </label>
+                <div className="col-7 popLeftDiv">
+                  <h6>Enter Examinations</h6>
+                  <hr />
                   <div className="row">
+                    <div className="col form-group">
+                      <label>Examination Categotry</label>
+                      <label className="switch">
+                        <input
+                          className="switch-input"
+                          type="checkbox"
+                          onChange={this.changeGeneralOrSpecific.bind(this)}
+                        />
+                        <span
+                          className="switch-label"
+                          data-off="Specific"
+                          data-on="General"
+                        />
+                        <span className="switch-handle" />
+                      </label>
+                    </div>
                     <AlagehAutoComplete
-                      div={{ className: "col-lg-12" }}
+                      div={{ className: "col form-group" }}
                       label={{
                         fieldName: "exmn_type",
                       }}
@@ -312,7 +317,7 @@ class Examination extends Component {
                     />
 
                     <AlagehAutoComplete
-                      div={{ className: "col-lg-12 margin-top-15" }}
+                      div={{ className: "col form-group" }}
                       label={{
                         fieldName: "exmn_desc",
                       }}
@@ -334,7 +339,7 @@ class Examination extends Component {
                     />
 
                     <AlagehAutoComplete
-                      div={{ className: "col-lg-12 margin-top-15" }}
+                      div={{ className: "col form-group" }}
                       label={{
                         fieldName: "exmn",
                       }}
@@ -354,7 +359,7 @@ class Examination extends Component {
                     />
 
                     <AlagehFormGroup
-                      div={{ className: "col-lg-12 margin-top-15" }}
+                      div={{ className: "col-12 form-group" }}
                       label={{
                         fieldName: "comments",
                         isImp: false,
@@ -364,7 +369,7 @@ class Examination extends Component {
                         name: "examination_comment",
                         others: {
                           multiline: true,
-                          rows: "4",
+                          rows: "2",
                         },
                         value: this.state.examination_comment,
                         events: {
@@ -372,63 +377,139 @@ class Examination extends Component {
                         },
                       }}
                     />
+                    <div className="col-12" style={{ textAlign: "right" }}>
+                      <button
+                        onClick={this.resetExmnState.bind(this)}
+                        type="button"
+                        className="btn btn-default"
+                      >
+                        Clear
+                      </button>
+                      <button
+                        onClick={this.addExaminationToPatient.bind(this)}
+                        type="button"
+                        style={{ marginLeft: 5 }}
+                        className="btn btn-primary"
+                        disabled={
+                          this.state.hims_d_physical_examination_header_id
+                            ? false
+                            : true
+                        }
+                      >
+                        Add Examination
+                      </button>
+                    </div>
+                    <div className="col-12 patientExamGrid_Cntr">
+                      <AlgaehDataGrid
+                        className="patientExamGrid"
+                        columns={[
+                          {
+                            fieldName: "header_description",
+                            label: "Type",
+                            disabled: true,
+                          },
+                          {
+                            fieldName: "detail_description",
+                            label: "Description",
+                            disabled: true,
+                          },
+                          {
+                            fieldName: "subdetail_description",
+                            label: "Examination",
+                            disabled: true,
+                          },
+
+                          {
+                            fieldName: "comments",
+                            label: "Comments",
+                            editorTemplate: (row) => {
+                              return (
+                                <AlagehFormGroup
+                                  div={{}}
+                                  textBox={{
+                                    value: row.comments,
+                                    className: "txt-fld",
+                                    name: "comments",
+                                    events: {
+                                      onChange: this.texthandler.bind(
+                                        this,
+                                        row
+                                      ),
+                                    },
+                                  }}
+                                />
+                              );
+                            },
+                          },
+                        ]}
+                        keyId="hims_f_episode_examination_id"
+                        dataSource={{
+                          data: this.props.all_patient_examinations,
+                        }}
+                        isEditable={true}
+                        paging={{ page: 0, rowsPerPage: 10 }}
+                        events={{
+                          onDelete: this.deletePatientExamn.bind(this),
+                          onEdit: (row) => {},
+                          onDone: this.updateExamination.bind(this),
+                        }}
+                      />
+                    </div>
                   </div>
                 </div>
 
-                <div className="col-lg-9 popRightDiv">
-                  <h6>List of Examinations</h6>
+                <div
+                  className="col-5 popRightDiv"
+                  style={{ maxHeight: "75vh" }}
+                >
+                  <h6>Enter Nursing Notes</h6>
                   <hr />
-                  <AlgaehDataGrid
-                    id="patient-exam-grid"
-                    columns={[
-                      {
-                        fieldName: "header_description",
-                        label: "Examination Type",
-                        disabled: true,
-                      },
-                      {
-                        fieldName: "detail_description",
-                        label: "Examination Description",
-                        disabled: true,
-                      },
-                      {
-                        fieldName: "subdetail_description",
-                        label: "Examination",
-                        disabled: true,
-                      },
-
-                      {
-                        fieldName: "comments",
-                        label: "Comments",
-                        editorTemplate: (row) => {
-                          return (
-                            <AlagehFormGroup
-                              div={{}}
-                              textBox={{
-                                value: row.comments,
-                                className: "txt-fld",
-                                name: "comments",
-                                events: {
-                                  onChange: this.texthandler.bind(this, row),
-                                },
-                              }}
-                            />
-                          );
+                  <div className="row">
+                    {" "}
+                    <AlagehFormGroup
+                      div={{ className: "col-12 form-group" }}
+                      label={{
+                        forceLabel: "Notes",
+                        isImp: false,
+                      }}
+                      textBox={{
+                        className: "txt-fld",
+                        name: "examination_comment",
+                        others: {
+                          multiline: true,
+                          rows: "3",
                         },
-                      },
-                    ]}
-                    keyId="hims_f_episode_examination_id"
-                    dataSource={{
-                      data: this.props.all_patient_examinations,
-                    }}
-                    isEditable={true}
-                    paging={{ page: 0, rowsPerPage: 10 }}
-                    events={{
-                      onDelete: this.deletePatientExamn.bind(this),
-                      onEdit: (row) => {},
-                      onDone: this.updateExamination.bind(this),
-                    }}
-                  />
+                        value: this.state.examination_comment,
+                        events: {
+                          onChange: this.texthandle.bind(this),
+                        },
+                      }}
+                    />
+                    <div className="col-12" style={{ textAlign: "right" }}>
+                      <button className="btn btn-primary">Add Notes</button>
+                    </div>
+                    <div className="col-12 patientNotesGrid_Cntr">
+                      <AlgaehDataGrid
+                        className="patientNotesGrid"
+                        columns={[
+                          {
+                            fieldName: "",
+                            label: "Notes",
+                            disabled: true,
+                          },
+                          {
+                            fieldName: "",
+                            label: "Entered by & Date",
+                            disabled: true,
+                          },
+                        ]}
+                        keyId=""
+                        dataSource=""
+                        isEditable={true}
+                        paging={{ page: 0, rowsPerPage: 10 }}
+                      />
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -436,28 +517,7 @@ class Examination extends Component {
           <div className=" popupFooter">
             <div className="col-lg-12">
               <div className="row">
-                <div className="col-lg-4">
-                  <button
-                    onClick={this.addExaminationToPatient.bind(this)}
-                    type="button"
-                    className="btn btn-primary"
-                    disabled={
-                      this.state.hims_d_physical_examination_header_id
-                        ? false
-                        : true
-                    }
-                  >
-                    Add Examination
-                  </button>
-                  <button
-                    onClick={this.resetExmnState.bind(this)}
-                    type="button"
-                    className="btn btn-default"
-                  >
-                    Clear
-                  </button>
-                </div>
-                <div className="col-lg-8">
+                <div className="col">
                   <button
                     type="button"
                     className="btn btn-default"
