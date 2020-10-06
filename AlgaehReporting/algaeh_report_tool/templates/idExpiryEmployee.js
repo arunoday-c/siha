@@ -31,7 +31,7 @@ const executePDF = function executePDFMethod(options) {
           inner join hims_d_employee E on ID.employee_id = E.hims_d_employee_id
           inner join hims_d_identity_document D on ID.identity_documents_id = D.hims_d_identity_document_id
           inner join hims_d_nationality N on E.nationality = N.hims_d_nationality_id
-          where E.hospital_id=? ${strQuery};`,
+          where E.hospital_id=?   and E.record_status='A' ${strQuery};`,
           values: [input.hospital_id],
           printQuery: true,
         })
