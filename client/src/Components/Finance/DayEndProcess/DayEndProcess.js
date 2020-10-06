@@ -723,7 +723,7 @@ class DayEndProcess extends Component {
                           label: (
                             <AlgaehLabel label={{ forceLabel: "Narration" }} />
                           ),
-                          disabled: true,
+                          disabled: false,
                           others: { filterable: false },
                         },
                       ]}
