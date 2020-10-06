@@ -31,6 +31,7 @@ const getBillDetails = async (
     primary_network_office_id,
     prevVisits,
     consultation,
+    promo_code,
   }
 ) => {
   let zeroBill = false,
@@ -61,6 +62,7 @@ const getBillDetails = async (
         primary_network_office_id,
         vat_applicable:
           default_nationality == nationality_id ? local_vat_applicable : "Y",
+        promo_code: promo_code || null,
       },
     ],
   });
@@ -102,6 +104,7 @@ export function BillDetails({
   const { amountWithCur } = useCurrency();
   const [enableCash, setEnableCash] = useState(true);
   const [enableCard, setEnableCard] = useState(false);
+  const [promoCode, setPromoCode] = useState(null);
   const [visible, setVisible] = useState(false);
   const { userToken } = useContext(MainContext);
   const {
@@ -123,16 +126,19 @@ export function BillDetails({
   } = useContext(FrontdeskContext);
   // const disabled = !!bill_number && !!receipt_number;
   const { fieldNameFn } = useLangFieldName();
+
   const {
     nationality_id,
     primary_insurance_provider_id,
     primary_network_id,
+    promo_code,
   } = useWatch({
     control,
     name: [
       "nationality_id",
       "primary_insurance_provider_id",
       "primary_network_id",
+      "promo_code",
     ],
   });
 
@@ -164,6 +170,7 @@ export function BillDetails({
         local_vat_applicable,
         prevVisits,
         consultation: consultationInfo?.consultation,
+        promo_code: promoCode,
       },
     ],
     getBillDetails,
@@ -171,8 +178,16 @@ export function BillDetails({
       enabled: !!services_id,
       retry: 3,
       onSuccess: (data) => {
-        setGlobalBillData(data);
-        calculateBillDetails(data?.billdetails[0]);
+        if (data?.invalid_input) {
+          AlgaehMessagePop({
+            display: data?.message,
+            type: "error",
+          });
+        } else {
+          // setBillData(null);
+          setGlobalBillData(data);
+          calculateBillDetails(data?.billdetails[0]);
+        }
       },
     }
   );
@@ -185,6 +200,8 @@ export function BillDetails({
   useEffect(() => {
     if (billData) {
       setBillData(null);
+      setPromoCode(null);
+      setValue("promo_code", "");
     }
     //eslint-disable-next-line
   }, [services_id]);
@@ -575,26 +592,33 @@ export function BillDetails({
                     />
                   )}
                 />
-                <AlgaehFormGroup
-                  div={{ className: "col" }}
-                  label={{
-                    forceLabel: "Enter Promo Code",
-                    isImp: enableCard,
-                  }}
-                  textBox={{
-                    className: "txt-fld",
-                    name: "",
-                    disabled: disabled || !enableCard,
-                    type: "text",
-                    // ...props,
-                    placeholder: "",
-                  }}
+                <Controller
+                  control={control}
+                  name="promo_code"
+                  render={(props) => (
+                    <AlgaehFormGroup
+                      div={{ className: "col" }}
+                      label={{
+                        forceLabel: "Enter Promo Code",
+                        isImp: false,
+                      }}
+                      textBox={{
+                        className: "txt-fld",
+                        ...props,
+                        disabled,
+                        type: "text",
+                      }}
+                    />
+                  )}
                 />
 
                 <div className="col">
                   <button
+                    type="button"
                     className="btn btn-default"
                     style={{ marginTop: "19px" }}
+                    disabled={disabled || !promo_code}
+                    onClick={() => setPromoCode(promo_code)}
                   >
                     <AlgaehLabel
                       label={{

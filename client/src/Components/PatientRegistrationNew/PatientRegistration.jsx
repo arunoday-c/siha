@@ -226,7 +226,7 @@ export function PatientRegistration() {
     clearErrors,
     formState,
   } = useForm({
-    reValidateMode: "onSubmit",
+    reValidateMode: "onChange",
     shouldFocusError: true,
     defaultValues: {
       nationality_id: userToken?.default_nationality,
@@ -627,6 +627,7 @@ export function PatientRegistration() {
       patient_type: userToken?.default_patient_type,
       visit_type: default_visit_type?.hims_d_visit_type_id,
       tel_code: currentCountry?.tel_code,
+      promo_code: "",
     });
     clearState();
     setConsultationInfo(default_visit_type);
