@@ -1,0 +1,35 @@
+{
+  "common": {
+    "#CLINICNAME": { "name": "Clininc Name", "mapping": "hospital_name" },
+    "#FDATE": {
+      "name": "From Date",
+      "format": "MMM-YYYY",
+      "mapping": "from_date"
+    },
+    "#TDATE": {
+      "name": "From Date",
+      "format": "MMM-YYYY",
+      "mapping": "to_date"
+    }
+  },
+
+  "bupa": {
+    "type": "master",
+    "column_starts": 0,
+    "columns": [
+      { "name": "SL NO.", "mapping": "sl_no" },
+      { "name": "ID Number.", "mapping": "patient_code" },
+      { "name": "Patient Name", "mapping": "full_name" },
+      { "name": "Invoice No.", "mapping": "invoice_number" },
+      { "name": "Diagnosis", "mapping": "icd_description" },
+      { "name": "Consultation", "mapping": "consultation" },
+      { "name": "Drug", "mapping": "" },
+      { "name": "Lab", "mapping": "lab" },
+      { "name": "X-Ray & U/S", "mapping": "radiology" },
+      { "name": "Other Treatment", "mapping": "procedure" },
+      { "name": "Gross Total", "mapping": "gross_amount" },
+      { "name": "Deductable", "mapping": "" },
+      { "name": "Net Amt", "mapping": "net_amount" }
+    ]
+  }
+}
