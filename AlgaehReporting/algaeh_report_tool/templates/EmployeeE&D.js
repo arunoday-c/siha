@@ -1,6 +1,6 @@
 // const algaehUtilities = require("algaeh-utilities/utilities");
 const executePDF = function executePDFMethod(options) {
-  return new Promise(function(resolve, reject) {
+  return new Promise(function (resolve, reject) {
     try {
       const _ = options.loadash;
       // const utilities = new algaehUtilities();
@@ -10,7 +10,7 @@ const executePDF = function executePDFMethod(options) {
 
       let params = options.args.reportParams;
 
-      params.forEach(para => {
+      params.forEach((para) => {
         input[para["name"]] = para["value"];
       });
 
@@ -40,18 +40,18 @@ const executePDF = function executePDFMethod(options) {
             left join hims_d_designation DG on E.employee_designation_id=DG.hims_d_designation_id\
                       left join hims_d_hospital H  on E.hospital_id=H.hims_d_hospital_id \
 
-            where year=? and month=? and ED.hospital_id=? and category=? ${is_local}  ${str} `,
+            where year=? and month=? and ED.hospital_id=? and category=? and E.record_status='A' ${is_local}  ${str} `,
           values: [input.year, input.month, input.hospital_id, input.edType],
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
-          const total_ED = _.sumBy(result, s => parseFloat(s.amount)).toFixed(
+        .then((result) => {
+          const total_ED = _.sumBy(result, (s) => parseFloat(s.amount)).toFixed(
             decimal_places
           );
 
           resolve({ details: result, total_ED: total_ED });
         })
-        .catch(error => {
+        .catch((error) => {
           options.mysql.releaseConnection();
         });
     } catch (e) {

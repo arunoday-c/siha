@@ -1,13 +1,13 @@
 // const algaehUtilities = require("algaeh-utilities/utilities");
 const executePDF = function executePDFMethod(options) {
   const _ = options.loadash;
-  return new Promise(function(resolve, reject) {
+  return new Promise(function (resolve, reject) {
     try {
       let input = {};
       const decimal_places = options.args.crypto.decimal_places;
       let params = options.args.reportParams;
       // const utilities = new algaehUtilities();
-      params.forEach(para => {
+      params.forEach((para) => {
         input[para["name"]] = para["value"];
       });
 
@@ -42,27 +42,27 @@ const executePDF = function executePDFMethod(options) {
             left join hims_d_department DP on SD.department_id=DP.hims_d_department_id
             left join  hims_d_nationality NA  on E.nationality=NA.hims_d_nationality_id
                	left join hims_d_hospital H  on E.hospital_id=H.hims_d_hospital_id \
-            WHERE  E.hospital_id=? and S.year=? and S.month=? ${is_local} ${strData} ;`,
+            WHERE  E.hospital_id=? and S.year=? and S.month=? and E.record_status='A' ${is_local} ${strData} ;`,
           values: [input.hospital_id, input.year, input.month],
-          printQuery: true
+          printQuery: true,
         })
-        .then(ress => {
+        .then((ress) => {
           if (ress.length > 0) {
             const departmentWise = _.chain(ress)
-              .groupBy(g => g.hims_d_department_id)
-              .map(m => m)
+              .groupBy((g) => g.hims_d_department_id)
+              .map((m) => m)
               .value();
 
             const outputArray = [];
 
             for (let i = 0; i < departmentWise.length; i++) {
               const sub_dept = _.chain(departmentWise[i])
-                .groupBy(g => g.hims_d_sub_department_id)
-                .map(sub => {
+                .groupBy((g) => g.hims_d_sub_department_id)
+                .map((sub) => {
                   return {
                     sub_department_name: sub[0].sub_department_name,
                     sub_no_employee: sub.length,
-                    employees: sub
+                    employees: sub,
                   };
                 })
                 .value();
@@ -70,20 +70,20 @@ const executePDF = function executePDFMethod(options) {
               outputArray.push({
                 department_name: departmentWise[i][0]["department_name"],
                 dep_no_employee: departmentWise[i].length,
-                sub_dept: sub_dept
+                sub_dept: sub_dept,
               });
             }
 
-            const total_salary_amount = _.sumBy(ress, s =>
+            const total_salary_amount = _.sumBy(ress, (s) =>
               parseFloat(s.salary_amount)
             ).toFixed(decimal_places);
-            const total_leave_amount = _.sumBy(ress, s =>
+            const total_leave_amount = _.sumBy(ress, (s) =>
               parseFloat(s.leave_amount)
             ).toFixed(decimal_places);
-            const total_airfare_amount = _.sumBy(ress, s =>
+            const total_airfare_amount = _.sumBy(ress, (s) =>
               parseFloat(s.airfare_amount)
             ).toFixed(decimal_places);
-            const net_total_amount = _.sumBy(ress, s =>
+            const net_total_amount = _.sumBy(ress, (s) =>
               parseFloat(s.total_amount)
             ).toFixed(decimal_places);
 
@@ -92,18 +92,18 @@ const executePDF = function executePDFMethod(options) {
               total_salary_amount: total_salary_amount,
               total_leave_amount: total_leave_amount,
               total_airfare_amount: total_airfare_amount,
-              net_total_amount: net_total_amount
+              net_total_amount: net_total_amount,
             };
 
             // utilities.logger().log("outputArray:", result);
             resolve(result);
           } else {
             resolve({
-              result: { details: ress }
+              result: { details: ress },
             });
           }
         })
-        .catch(error => {
+        .catch((error) => {
           options.mysql.releaseConnection();
         });
     } catch (e) {

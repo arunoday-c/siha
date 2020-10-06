@@ -52,7 +52,7 @@ const executePDF = function executePDFMethod(options) {
 						inner join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id \
 						left join hims_d_department D on SD.department_id=D.hims_d_department_id \
 						left join hims_d_employee_group EG on E.employee_group_id=EG.hims_d_employee_group_id \ left join hims_d_hospital H  on E.hospital_id=H.hims_d_hospital_id \
-						where date(loan_application_date) between date(?) and date(?) and LA.hospital_id=? and loan_closed='N' ${is_local} ${strData} ;`,
+						where date(loan_application_date) between date(?) and date(?) and LA.hospital_id=? and loan_closed='N' and E.record_status='A' ${is_local} ${strData} ;`,
           values: [input.from_date, input.to_date, input.hospital_id],
           printQuery: true,
         })
