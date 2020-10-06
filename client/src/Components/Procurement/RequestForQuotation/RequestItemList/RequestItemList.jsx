@@ -90,33 +90,35 @@ class RequestItemList extends Component {
                             <AlgaehLabel label={{ forceLabel: "Item Name" }} />
                           ),
                           displayTemplate: (row) => {
-                            let display;
+                            // let display;
+                            debugger;
+                            // quotation_for === "INV";
+                            return row["item_description"];
+                            // isPharmacy
+                            //   ? (display =
+                            //       this.props.poitemlist === undefined
+                            //         ? []
+                            //         : this.props.poitemlist.filter(
+                            //             (f) =>
+                            //               f.hims_d_item_master_id ===
+                            //               row.phar_item_id
+                            //           ))
+                            //   : (display =
+                            //       this.props.poitemlist === undefined
+                            //         ? []
+                            //         : this.props.poitemlist.filter(
+                            //             (f) =>
+                            //               f.hims_d_inventory_item_master_id ===
+                            //               row.inv_item_id
+                            //           ));
 
-                            isPharmacy
-                              ? (display =
-                                  this.props.poitemlist === undefined
-                                    ? []
-                                    : this.props.poitemlist.filter(
-                                        (f) =>
-                                          f.hims_d_item_master_id ===
-                                          row.phar_item_id
-                                      ))
-                              : (display =
-                                  this.props.poitemlist === undefined
-                                    ? []
-                                    : this.props.poitemlist.filter(
-                                        (f) =>
-                                          f.hims_d_inventory_item_master_id ===
-                                          row.inv_item_id
-                                      ));
-
-                            return (
-                              <span>
-                                {display !== undefined && display.length !== 0
-                                  ? display[0].item_description
-                                  : ""}
-                              </span>
-                            );
+                            // return (
+                            //   <span>
+                            //     {display !== undefined && display.length !== 0
+                            //       ? display[0].item_description
+                            //       : ""}
+                            //   </span>
+                            // );
                           },
                           others: {
                             minWidth: 200,
