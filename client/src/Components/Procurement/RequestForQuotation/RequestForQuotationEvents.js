@@ -31,7 +31,7 @@ const RequisitionSearch = ($this, e) => {
     searchGrid: {
       columns:
         $this.state.quotation_for === "PHR"
-          ? spotlightSearch.RequisitionEntry.ReqEntry
+          ? spotlightSearch.RequisitionEntry.ReqEntryPharma
           : spotlightSearch.RequisitionEntry.ReqEntryInv,
     },
     searchName:
