@@ -140,9 +140,9 @@ class SalesOrdListItems extends Component {
                                             ref={attReg => {
                                                 this.attReg = attReg;
                                             }}
-                                            // others={{
-                                            //     disabled: this.state.itemAdd
-                                            // }}
+                                            others={{
+                                                disabled: this.state.itemAdd
+                                            }}
                                         />
 
                                         <AlagehAutoComplete

@@ -100,7 +100,7 @@ class SalesInvoiceList extends Component {
                             <span>
                               <Tooltip title="View Invoce" placement="top">
                                 <i
-                                  className="fas fa-eye"
+                                  className="fas fa-file-alt"
                                   onClick={() => {
                                     this.props.history.push(
                                       `/SalesInvoice?invoice_number=${row.invoice_number}`

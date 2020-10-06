@@ -7,22 +7,19 @@ import algaehLoader from "../Wrapper/fullPageLoader";
 import {
   algaehApiCall,
   swalMessage,
-  maxCharactersLeft
+  maxCharactersLeft,
 } from "../../utils/algaehApiCall";
 import {
   AlagehAutoComplete,
   AlgaehDataGrid,
-  AlgaehDateHandler
+  AlgaehDateHandler,
 } from "../Wrapper/algaehWrapper";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { AlgaehActions } from "../../actions/algaehActions";
 import GlobalVariables from "../../utils/GlobalVariables.json";
-import {
-  setGlobal,
-  AlgaehValidation
-} from "../../utils/GlobalFunctions";
+import { setGlobal, AlgaehValidation } from "../../utils/GlobalFunctions";
 import config from "../../utils/config.json";
 import {
   getAllChiefComplaints,
@@ -32,7 +29,7 @@ import {
   datehandle,
   getPatientAllergies,
   texthandle,
-  getAllAllergies
+  getAllAllergies,
 } from "./NurseWorkbenchEvents";
 import swal from "sweetalert2";
 import Options from "../../Options.json";
@@ -72,7 +69,7 @@ class NurseWorkbench extends Component {
       chronic: null,
       complaint_type: null,
       pageDisplay: "Orders",
-      patient_id: null
+      patient_id: null,
     };
 
     this.baseState = this.state;
@@ -101,9 +98,9 @@ class NurseWorkbench extends Component {
       this.props.allallergies === undefined ||
       this.props.allallergies.length === 0
     ) {
-      getAllAllergies(this, data => {
+      getAllAllergies(this, (data) => {
         this.setState({
-          allSpecificAllergies: this.getPerticularAllergyList(data)
+          allSpecificAllergies: this.getPerticularAllergyList(data),
         });
       });
     }
@@ -117,7 +114,7 @@ class NurseWorkbench extends Component {
     e.currentTarget.classList.add("active");
     var specified = e.currentTarget.getAttribute("algaehtabs");
     this.setState({
-      pageDisplay: specified
+      pageDisplay: specified,
     });
   }
 
@@ -128,7 +125,7 @@ class NurseWorkbench extends Component {
         allSpecificAllergies: this.getPerticularAllergyList(
           this.props.allallergies,
           value.value
-        )
+        ),
       };
     }
     this.setState({ [value.name]: value.value, ..._filter_allergies });
@@ -137,7 +134,7 @@ class NurseWorkbench extends Component {
   getPerticularAllergyList(allergies, allergy_type) {
     allergy_type = allergy_type || this.state.allergy_value;
     return Enumerable.from(allergies)
-      .where(w => w.allergy_type === allergy_type)
+      .where((w) => w.allergy_type === allergy_type)
       .toArray();
   }
 
@@ -148,7 +145,7 @@ class NurseWorkbench extends Component {
       allergy_inactive: "N",
       allergy_onset: "",
       allergy_severity: "",
-      allergy_onset_date: null
+      allergy_onset_date: null,
       //...this.baseState
     });
   }
@@ -158,7 +155,7 @@ class NurseWorkbench extends Component {
     if (this.state.hims_d_allergy_id === "") {
       this.setState({
         allergyNameError: true,
-        allergyNameErrorText: "Required"
+        allergyNameErrorText: "Required",
       });
     }
     algaehApiCall({
@@ -171,18 +168,18 @@ class NurseWorkbench extends Component {
         onset_date: this.state.allergy_onset_date,
         severity: this.state.allergy_severity,
         comment: this.state.allergy_comment,
-        allergy_inactive: this.state.allergy_inactive
+        allergy_inactive: this.state.allergy_inactive,
       },
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           getPatientAllergies(this);
           this.resetAllergies();
           swalMessage({
             title: "Allergy added successfully . .",
-            type: "success"
+            type: "success",
           });
         }
-      }
+      },
     });
   }
 
@@ -206,7 +203,7 @@ class NurseWorkbench extends Component {
       bp_position: null,
       complaint_type: null,
       chief_complaint: null,
-      pageDisplay: "Orders"
+      pageDisplay: "Orders",
     });
 
     const _resetElements = document.getElementById("vitals_recording");
@@ -214,7 +211,7 @@ class NurseWorkbench extends Component {
     for (let i = 0; i < _childs.length; i++) {
       let _name = _childs[i].name;
       this.setState({
-        [_name]: ""
+        [_name]: "",
       });
     }
   }
@@ -229,16 +226,16 @@ class NurseWorkbench extends Component {
 
   dropDownHandler(value) {
     this.setState({
-      [value.name]: value.value
+      [value.name]: value.value,
     });
 
     value.value === "PREGNANCY"
       ? this.setState({
-        isPregnancy: false
-      })
+          isPregnancy: false,
+        })
       : this.setState({
-        isPregnancy: true
-      });
+          isPregnancy: true,
+        });
   }
   dataLevelUpdate(e) {
     NursingWorkbenchHandler().dataLevelUpdate(this, e);
@@ -251,7 +248,7 @@ class NurseWorkbench extends Component {
     let value = e.value === "" ? null : e.value || e.target.value;
 
     this.setState({
-      [name]: value
+      [name]: value,
     });
   }
 
@@ -262,19 +259,19 @@ class NurseWorkbench extends Component {
       uri: "/doctorsWorkbench/updatePatientAllergy",
       method: "PUT",
       data: data,
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           getPatientAllergies(this);
           swalMessage({
             title: "Record updated successfully . .",
-            type: "success"
+            type: "success",
           });
         }
-      }
+      },
     });
   }
 
-  changeDateFormat = date => {
+  changeDateFormat = (date) => {
     if (date != null) {
       return moment(date).format(Options.dateFormat);
     }
@@ -288,8 +285,8 @@ class NurseWorkbench extends Component {
       confirmButtonText: "Yes",
       confirmButtonColor: "#44b8bd",
       cancelButtonColor: "#d33",
-      cancelButtonText: "No"
-    }).then(willDelete => {
+      cancelButtonText: "No",
+    }).then((willDelete) => {
       if (willDelete.value) {
         let data = {
           allergy_inactive: row.allergy_inactive,
@@ -298,22 +295,22 @@ class NurseWorkbench extends Component {
           severity: row.severity,
           onset_date: row.onset_date,
           record_status: "I",
-          hims_f_patient_allergy_id: row.hims_f_patient_allergy_id
+          hims_f_patient_allergy_id: row.hims_f_patient_allergy_id,
         };
         algaehApiCall({
           uri: "/doctorsWorkBench/updatePatientAllergy",
           data: data,
           method: "PUT",
-          onSuccess: response => {
+          onSuccess: (response) => {
             if (response.data.success) {
               swalMessage({
                 title: "Record deleted successfully . .",
-                type: "success"
+                type: "success",
               });
               getPatientAllergies(this);
             }
           },
-          onFailure: error => { }
+          onFailure: (error) => {},
         });
       }
     });
@@ -327,7 +324,7 @@ class NurseWorkbench extends Component {
     ) {
       swalMessage({
         title: "Please Select a patient",
-        type: "warning"
+        type: "warning",
       });
       return;
     } else {
@@ -350,7 +347,7 @@ class NurseWorkbench extends Component {
               _isDepended !== null
                 ? document.getElementsByName(_isDepended)[0].value
                 : null,
-            formula_value: _elements[i].getAttribute("formula_value")
+            formula_value: _elements[i].getAttribute("formula_value"),
           });
         }
       }
@@ -367,11 +364,11 @@ class NurseWorkbench extends Component {
             uri: "/nurseWorkBench/addPatientNurseChiefComplaints",
             method: "POST",
             data: send_data,
-            onSuccess: response => {
+            onSuccess: (response) => {
               if (response.data.success) {
                 swalMessage({
                   title: "Recorded Successfully",
-                  type: "success"
+                  type: "success",
                 });
                 // var element = document.querySelectorAll("[nursing_pat]");
                 // for (var i = 0; i < element.length; i++) {
@@ -381,13 +378,13 @@ class NurseWorkbench extends Component {
                 this.loadListofData();
               }
             },
-            onError: error => {
+            onError: (error) => {
               swalMessage({
                 title: error.message,
-                type: "error"
+                type: "error",
               });
-            }
-          })
+            },
+          }),
       });
     }
   }
@@ -395,11 +392,11 @@ class NurseWorkbench extends Component {
   deptDropDownHandler(value) {
     this.setState({ [value.name]: value.value }, () => {
       let dept = Enumerable.from(this.state.departments)
-        .where(w => w.sub_dept_id === this.state.sub_department_id)
+        .where((w) => w.sub_dept_id === this.state.sub_department_id)
         .firstOrDefault();
       this.setState(
         {
-          doctors: dept.doctors
+          doctors: dept.doctors,
         },
         () => {
           this.loadListofData();
@@ -425,13 +422,13 @@ class NurseWorkbench extends Component {
     this.setState({
       onset_date: selectedDate,
       duration: duration,
-      interval: interval
+      interval: interval,
     });
   }
 
   durationToDateAndInterval(duration, interval) {
     const _interval = Enumerable.from(GlobalVariables.PAIN_DURATION)
-      .where(w => w.value === interval)
+      .where((w) => w.value === interval)
       .firstOrDefault().name;
     const _date = moment().add(-duration, _interval.toLowerCase());
     return { interval, onset_date: _date._d };
@@ -457,12 +454,12 @@ class NurseWorkbench extends Component {
         ) {
           swalMessage({
             title: "Please Select a patient",
-            type: "warning"
+            type: "warning",
           });
         } else {
           this.setState({
             [value.name]: value.value,
-            chief_complaint_name: value.selected.hpi_description
+            chief_complaint_name: value.selected.hpi_description,
           });
         }
 
@@ -475,11 +472,11 @@ class NurseWorkbench extends Component {
         ) {
           swalMessage({
             title: "Please Select a patient",
-            type: "error"
+            type: "error",
           });
         } else {
           this.setState({
-            [value.name]: value.value
+            [value.name]: value.value,
           });
         }
 
@@ -492,19 +489,19 @@ class NurseWorkbench extends Component {
       uri: "/department/selectDoctorsAndClinic",
       module: "masterSettings",
       method: "GET",
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           this.setState({
-            departments: response.data.records.departmets
+            departments: response.data.records.departmets,
           });
         }
       },
-      onFailure: error => {
+      onFailure: (error) => {
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -589,13 +586,13 @@ class NurseWorkbench extends Component {
       confirmButtonText: "Yes",
       confirmButtonColor: "#44b8bd",
       cancelButtonColor: "#d33",
-      cancelButtonText: "No"
-    }).then(willDelete => {
+      cancelButtonText: "No",
+    }).then((willDelete) => {
       if (willDelete.value) {
         this.state.patChiefComp.pop(row);
 
         this.setState({
-          patChiefComp: this.state.patChiefComp
+          patChiefComp: this.state.patChiefComp,
         });
       }
     });
@@ -606,7 +603,7 @@ class NurseWorkbench extends Component {
     this.setState({
       selectedHDate: dt,
       activeDateHeader: dt,
-      patient_name: null
+      patient_name: null,
     });
   }
 
@@ -630,7 +627,7 @@ class NurseWorkbench extends Component {
       generatedLi.push({
         day: dt.format("DD"),
         currentdate: dt._d,
-        dayName: dt.format("ddd")
+        dayName: dt.format("ddd"),
       });
 
       initialDate.setDate(initialDate.getDate() + 1);
@@ -644,7 +641,7 @@ class NurseWorkbench extends Component {
         activeDateHeader: e.currentTarget.getAttribute("date"),
         fromDate: e.currentTarget.getAttribute("date"),
         toDate: e.currentTarget.getAttribute("date"),
-        patient_name: null
+        patient_name: null,
       },
       () => {
         localStorage.setItem(
@@ -652,7 +649,7 @@ class NurseWorkbench extends Component {
           JSON.stringify({
             fromDate: fromDate,
             toDate: fromDate,
-            activeDateHeader: fromDate
+            activeDateHeader: fromDate,
           })
         );
         this.loadListofData();
@@ -674,7 +671,7 @@ class NurseWorkbench extends Component {
     this.isMale = data.gender === "Male" ? true : false;
     if (data.gender === "Male") {
       this.complaintType = Enumerable.from(GlobalVariables.COMPLAINT_TYPE)
-        .where(w => w["value"] !== "PREGNANCY")
+        .where((w) => w["value"] !== "PREGNANCY")
         .toArray();
     } else {
       this.complaintType = GlobalVariables.COMPLAINT_TYPE;
@@ -684,43 +681,43 @@ class NurseWorkbench extends Component {
       episode_id: data.episode_id,
       visit_id: data.visit_id,
       encounter_id: data.hims_f_patient_encounter_id,
-      provider_id: data.provider_id
+      provider_id: data.provider_id,
     });
 
     this.props.getOrderList({
       uri: "/orderAndPreApproval/selectOrderServicesbyDoctor",
       method: "GET",
       data: {
-        visit_id: data.visit_id
+        visit_id: data.visit_id,
       },
       redux: {
         type: "ORDER_SERVICES_GET_DATA",
-        mappingName: "orderedList"
-      }
+        mappingName: "orderedList",
+      },
     });
 
     this.props.getConsumableOrderList({
       uri: "/orderAndPreApproval/getVisitConsumable",
       method: "GET",
       data: {
-        visit_id: data.visit_id
+        visit_id: data.visit_id,
       },
       redux: {
         type: "ORDER_SERVICES_GET_DATA",
-        mappingName: "consumableorderedList"
-      }
+        mappingName: "consumableorderedList",
+      },
     });
 
     this.props.getPakageList({
       uri: "/orderAndPreApproval/getPatientPackage",
       method: "GET",
       data: {
-        patient_id: data.visit_id
+        patient_id: data.visit_id,
       },
       redux: {
         type: "PAIENT_PACKAGE_GET_DATA",
-        mappingName: "pakageList"
-      }
+        mappingName: "pakageList",
+      },
     });
 
     this.setState(
@@ -730,7 +727,7 @@ class NurseWorkbench extends Component {
         episode_id: data.episode_id,
         encounter_id: data.hims_f_patient_encounter_id,
         patient_id: data.patient_id,
-        visit_id: data.visit_id
+        visit_id: data.visit_id,
       },
       () => {
         getPatientAllergies(this);
@@ -744,13 +741,13 @@ class NurseWorkbench extends Component {
                 k === "F"
                   ? "Food"
                   : k === "A"
-                    ? "Airborne"
-                    : k === "AI"
-                      ? "Animal  &  Insect"
-                      : k === "C"
-                        ? "Chemical & Others"
-                        : "",
-              allergyList: g.getSource()
+                  ? "Airborne"
+                  : k === "AI"
+                  ? "Animal  &  Insect"
+                  : k === "C"
+                  ? "Chemical & Others"
+                  : "",
+              allergyList: g.getSource(),
             };
           })
           .toArray();
@@ -760,7 +757,7 @@ class NurseWorkbench extends Component {
             this.props.allallergies
           ),
           patientAllergies: _allergies,
-          allPatientAllergies: this.props.patient_allergies
+          allPatientAllergies: this.props.patient_allergies,
         });
       }
     );
@@ -793,8 +790,8 @@ class NurseWorkbench extends Component {
                           ? " activeDate CurrentDate"
                           : " activeDate"
                         : _currDate === moment().format("YYYYMMDD")
-                          ? " CurrentDate"
-                          : ""
+                        ? " CurrentDate"
+                        : ""
                     }
                     onClick={this.onSelectedDateHandler.bind(this)}
                   >
@@ -817,10 +814,10 @@ class NurseWorkbench extends Component {
       localStorage.getItem("workbenchDateRange") !== null
         ? JSON.parse(localStorage.getItem("workbenchDateRange"))
         : {
-          fromDate: this.state.fromDate,
-          toDate: this.state.toDate,
-          activeDateHeader: this.state.fromDate
-        };
+            fromDate: this.state.fromDate,
+            toDate: this.state.toDate,
+            activeDateHeader: this.state.fromDate,
+          };
 
     let inputObj = { fromDate: dateRange.fromDate, toDate: dateRange.toDate };
     if (this.state.sub_department_id !== null) {
@@ -836,7 +833,7 @@ class NurseWorkbench extends Component {
       data: inputObj,
       method: "GET",
       cancelRequestId: "getNurseMyDay",
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           const _selecDate = new Date(dateRange.activeDateHeader).setDate(1);
 
@@ -844,7 +841,7 @@ class NurseWorkbench extends Component {
             {
               selectedHDate: _selecDate,
               data: response.data.records,
-              activeDateHeader: dateRange.activeDateHeader
+              activeDateHeader: dateRange.activeDateHeader,
             },
             () => {
               algaehLoader({ show: false });
@@ -852,13 +849,13 @@ class NurseWorkbench extends Component {
           );
         }
       },
-      onFailure: error => {
+      onFailure: (error) => {
         algaehLoader({ show: false });
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -872,7 +869,7 @@ class NurseWorkbench extends Component {
     for (let i = 0; i < patChiefComplain.length; i++) {
       let idex = Enumerable.from(allChiefComp)
         .where(
-          w =>
+          (w) =>
             w.hims_d_hpi_header_id === patChiefComplain[i]["chief_complaint_id"]
         )
         .firstOrDefault();
@@ -889,20 +886,20 @@ class NurseWorkbench extends Component {
     ) {
       swalMessage({
         title: "Please Select a patient",
-        type: "warning"
+        type: "warning",
       });
       return;
     } else if (parseFloat(e.target.value) < 0) {
       swalMessage({
         title: "Cannot be less than zero",
-        type: "warning"
+        type: "warning",
       });
       return;
     } else if (e.target.name === "o2 sat") {
       if (parseFloat(e.target.value) > 100) {
         swalMessage({
           title: "% Cannot be greater than 100",
-          type: "warning"
+          type: "warning",
         });
         return;
       }
@@ -913,9 +910,9 @@ class NurseWorkbench extends Component {
         HEIGHTAS: "CM",
         WEIGHT: e.target.value,
         HEIGHT: this.state.height,
-        onSuccess: bmi => {
+        onSuccess: (bmi) => {
           this.setState({ bmi: bmi });
-        }
+        },
       });
     } else if (e.target.name === "height") {
       //TODO  now hardCoded options need to pull from Db
@@ -924,20 +921,20 @@ class NurseWorkbench extends Component {
         HEIGHTAS: "CM",
         WEIGHT: this.state.weight,
         HEIGHT: e.target.value,
-        onSuccess: bmi => {
+        onSuccess: (bmi) => {
           this.setState({ bmi: bmi });
-        }
+        },
       });
     }
     this.setState({
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
   }
 
   render() {
     const _department_viatals =
       this.props.department_vitals === undefined ||
-        this.props.department_vitals.length === 0
+      this.props.department_vitals.length === 0
         ? []
         : this.props.department_vitals;
 
@@ -987,7 +984,9 @@ class NurseWorkbench extends Component {
                   <span className="countNo">
                     {
                       Enumerable.from(this.state.data)
-                        .where(w => w.status === "V" && w.nurse_examine === "N")
+                        .where(
+                          (w) => w.status === "V" && w.nurse_examine === "N"
+                        )
                         .toArray().length
                     }
                   </span>
@@ -999,7 +998,7 @@ class NurseWorkbench extends Component {
                   div={{ className: "col" }}
                   label={{
                     fieldName: "department_name",
-                    isImp: false
+                    isImp: false,
                   }}
                   selector={{
                     name: "sub_department_id",
@@ -1008,7 +1007,7 @@ class NurseWorkbench extends Component {
                     dataSource: {
                       textField: "sub_department_name",
                       valueField: "sub_dept_id",
-                      data: this.state.departments
+                      data: this.state.departments,
                     },
                     onChange: this.deptDropDownHandler.bind(this),
                     onClear: () => {
@@ -1016,19 +1015,19 @@ class NurseWorkbench extends Component {
                         {
                           sub_department_id: null,
                           doctors: [],
-                          provider_id: null
+                          provider_id: null,
                         },
                         () => {
                           this.loadListofData();
                         }
                       );
-                    }
+                    },
                   }}
                 />
                 <AlagehAutoComplete
                   div={{ className: "col" }}
                   label={{
-                    fieldName: "doctor_name"
+                    fieldName: "doctor_name",
                   }}
                   selector={{
                     name: "provider_id",
@@ -1037,19 +1036,19 @@ class NurseWorkbench extends Component {
                     dataSource: {
                       textField: "full_name",
                       valueField: "provider_id",
-                      data: this.state.doctors
+                      data: this.state.doctors,
                     },
                     onChange: this.dropDownHandle.bind(this),
                     onClear: () => {
                       this.setState(
                         {
-                          provider_id: null
+                          provider_id: null,
                         },
                         () => {
                           this.loadListofData();
                         }
                       );
-                    }
+                    },
                   }}
                 />
               </div>
@@ -1106,50 +1105,47 @@ class NurseWorkbench extends Component {
                         </div>
                       )} */}
                     {this.state.data.length !== 0 ? (
-                      this.state.data
-                        .map((data, index) => (
-                          <li
-                            nursing_pat={index}
-                            key={index}
-                            onClick={this.moveToStation.bind(this, data)}
-                          >
-                            <span className="op-sec-1">
-                              <i
-                                className={
-                                  data.appointment_patient === "Y"
-                                    ? "appointment-icon"
-                                    : "walking-icon"
-                                }
-                              />
-                              <span className="opTime">
-                                {moment(data.encountered_date).format(
-                                  "HH:mm A"
-                                )}
-                              </span>
+                      this.state.data.map((data, index) => (
+                        <li
+                          nursing_pat={index}
+                          key={index}
+                          onClick={this.moveToStation.bind(this, data)}
+                        >
+                          <span className="op-sec-1">
+                            <i
+                              className={
+                                data.appointment_patient === "Y"
+                                  ? "appointment-icon"
+                                  : "walking-icon"
+                              }
+                            />
+                            <span className="opTime">
+                              {moment(data.encountered_date).format("HH:mm A")}
                             </span>
-                            <span className="op-sec-2">
-                              <span className="opPatientName">
-                                {data.full_name}
-                              </span>
-                              <span className="opStatus nursing">
-                                {data.nurse_examine === "Y"
-                                  ? "Nursing Done"
-                                  : "Nursing Pending"}
-                              </span>
+                          </span>
+                          <span className="op-sec-2">
+                            <span className="opPatientName">
+                              {data.full_name}
                             </span>
-                            <span className="op-sec-3">
-                              <span className="opPatientStatus newVisit">
-                                New Visit
-                              </span>
+                            <span className="opStatus nursing">
+                              {data.nurse_examine === "Y"
+                                ? "Nursing Done"
+                                : "Nursing Pending"}
                             </span>
-                          </li>
-                        ))
+                          </span>
+                          <span className="op-sec-3">
+                            <span className="opPatientStatus newVisit">
+                              New Visit
+                            </span>
+                          </span>
+                        </li>
+                      ))
                     ) : (
-                        <div className="col noPatientDiv">
-                          {/* <h4>Relax</h4> */}
-                          <p>No Patients Available</p>
-                        </div>
-                      )}
+                      <div className="col noPatientDiv">
+                        {/* <h4>Relax</h4> */}
+                        <p>No Patients Available</p>
+                      </div>
+                    )}
                   </ul>
                 </div>
               </div>
@@ -1183,22 +1179,22 @@ class NurseWorkbench extends Component {
                       item.hims_d_vitals_header_id === 1
                         ? "col-3"
                         : item.hims_d_vitals_header_id >= 3
-                          ? "col-3 vitalTopFld15"
-                          : item.hims_d_vitals_header_id === 5 ||
-                            item.hims_d_vitals_header_id === 6
-                            ? "col-3 vitalTopFld20"
-                            : "col-3";
+                        ? "col-3 vitalTopFld15"
+                        : item.hims_d_vitals_header_id === 5 ||
+                          item.hims_d_vitals_header_id === 6
+                        ? "col-3 vitalTopFld20"
+                        : "col-3";
                     const _name = String(item.vitals_name)
                       .replace(/" "/g, "_")
                       .toLowerCase();
                     const _disable = _name === "bmi" ? true : false;
                     const _dependent =
                       item.hims_d_vitals_header_id === 8 ||
-                        item.hims_d_vitals_header_id === 9
+                      item.hims_d_vitals_header_id === 9
                         ? { dependent: "bp_position" }
                         : item.hims_d_vitals_header_id === 4
-                          ? { dependent: "temperature_from" }
-                          : {};
+                        ? { dependent: "temperature_from" }
+                        : {};
                     return (
                       <React.Fragment key={index}>
                         {item.hims_d_vitals_header_id === 4 ? (
@@ -1206,7 +1202,7 @@ class NurseWorkbench extends Component {
                             <AlagehAutoComplete
                               div={{ className: "col-3" }}
                               label={{
-                                fieldName: "temp_frm"
+                                fieldName: "temp_frm",
                               }}
                               selector={{
                                 name: "temperature_from",
@@ -1215,10 +1211,10 @@ class NurseWorkbench extends Component {
                                 dataSource: {
                                   textField: "name",
                                   valueField: "value",
-                                  data: GlobalVariables.TEMP_FROM
+                                  data: GlobalVariables.TEMP_FROM,
                                 },
 
-                                onChange: this.dropDownHandle.bind(this)
+                                onChange: this.dropDownHandle.bind(this),
                               }}
                             />
                           </React.Fragment>
@@ -1226,7 +1222,7 @@ class NurseWorkbench extends Component {
                           <AlagehAutoComplete
                             div={{ className: "col-3" }}
                             label={{
-                              fieldName: "bp"
+                              fieldName: "bp",
                               // fieldName: "BP_type"
                             }}
                             selector={{
@@ -1236,9 +1232,9 @@ class NurseWorkbench extends Component {
                               dataSource: {
                                 textField: "name",
                                 valueField: "value",
-                                data: GlobalVariables.BP_POSITION
+                                data: GlobalVariables.BP_POSITION,
                               },
-                              onChange: this.dropDownHandle.bind(this)
+                              onChange: this.dropDownHandle.bind(this),
                             }}
                           />
                         ) : null}
@@ -1246,19 +1242,19 @@ class NurseWorkbench extends Component {
                         <AlagehFormGroup
                           div={{
                             className: _className,
-                            others: { key: index }
+                            others: { key: index },
                           }}
                           label={{
                             forceLabel:
                               item.uom === "C"
                                 ? "°C"
                                 : item.uom === "F"
-                                  ? "°F"
-                                  : item.vital_short_name +
+                                ? "°F"
+                                : item.vital_short_name +
                                   " (" +
                                   String(item.uom).trim() +
                                   ")",
-                            isImp: item.mandatory === 0 ? false : true
+                            isImp: item.mandatory === 0 ? false : true,
                           }}
                           textBox={{
                             className: "txt-fld",
@@ -1269,12 +1265,12 @@ class NurseWorkbench extends Component {
                               disabled: _disable,
                               vitalid: item.hims_d_vitals_header_id,
                               formula_value: String(item.uom).trim(),
-                              ..._dependent
+                              ..._dependent,
                             },
                             value: this.state[_name],
                             events: {
-                              onChange: this.texthandle.bind(this)
-                            }
+                              onChange: this.texthandle.bind(this),
+                            },
                           }}
                         />
 
@@ -1282,7 +1278,7 @@ class NurseWorkbench extends Component {
                           <AlagehFormGroup
                             div={{ className: "col-3" }}
                             label={{
-                              forceLabel: item.uom === "C" ? "°F" : "°C"
+                              forceLabel: item.uom === "C" ? "°F" : "°C",
                             }}
                             textBox={{
                               className: "txt-fld",
@@ -1290,7 +1286,7 @@ class NurseWorkbench extends Component {
                               value: temperatureConvertion(
                                 this.state[_name],
                                 item.uom
-                              )
+                              ),
                             }}
                           />
                         ) : null}
@@ -1304,13 +1300,13 @@ class NurseWorkbench extends Component {
                     label={{ fieldName: "rec_date", isImp: true }}
                     textBox={{
                       className: "txt-fld",
-                      name: "recorded_date"
+                      name: "recorded_date",
                     }}
                     maxDate={new Date()}
                     events={{
-                      onChange: selectedDate => {
+                      onChange: (selectedDate) => {
                         this.setState({ recorded_date: selectedDate });
-                      }
+                      },
                     }}
                     value={this.state.recorded_date}
                   />
@@ -1319,18 +1315,18 @@ class NurseWorkbench extends Component {
                     div={{ className: "col-3" }}
                     label={{
                       isImp: true,
-                      fieldName: "rec_time"
+                      fieldName: "rec_time",
                     }}
                     textBox={{
                       others: {
-                        type: "time"
+                        type: "time",
                       },
                       className: "txt-fld",
                       name: "recorded_time",
                       value: this.state.recorded_time,
                       events: {
-                        onChange: this.texthandle.bind(this)
-                      }
+                        onChange: this.texthandle.bind(this),
+                      },
                     }}
                   />
                 </div>
@@ -1344,7 +1340,7 @@ class NurseWorkbench extends Component {
                         div={{ className: "col-lg-6" }}
                         label={{
                           forceLabel: "Allergy Type",
-                          fieldName: "sample"
+                          fieldName: "sample",
                         }}
                         selector={{
                           name: "allergy_value",
@@ -1353,9 +1349,9 @@ class NurseWorkbench extends Component {
                           dataSource: {
                             textField: "name",
                             valueField: "value",
-                            data: GlobalVariables.ALLERGY_TYPES
+                            data: GlobalVariables.ALLERGY_TYPES,
                           },
-                          onChange: this.allergyDropdownHandler.bind(this)
+                          onChange: this.allergyDropdownHandler.bind(this),
                         }}
                       />
 
@@ -1363,7 +1359,7 @@ class NurseWorkbench extends Component {
                         div={{ className: "col-lg-6" }}
                         label={{
                           forceLabel: "Select an Allergy",
-                          fieldName: "sample"
+                          fieldName: "sample",
                         }}
                         selector={{
                           name: "hims_d_allergy_id",
@@ -1372,16 +1368,16 @@ class NurseWorkbench extends Component {
                           dataSource: {
                             textField: "allergy_name",
                             valueField: "hims_d_allergy_id",
-                            data: this.state.allSpecificAllergies
+                            data: this.state.allSpecificAllergies,
                           },
-                          onChange: this.dropDownHandle.bind(this)
+                          onChange: this.dropDownHandle.bind(this),
                         }}
                       />
 
                       <AlagehAutoComplete
                         div={{ className: "col-lg-6 margin-top-15" }}
                         label={{
-                          forceLabel: "Onset"
+                          forceLabel: "Onset",
                         }}
                         selector={{
                           name: "allergy_onset",
@@ -1390,9 +1386,9 @@ class NurseWorkbench extends Component {
                           dataSource: {
                             textField: "name",
                             valueField: "value",
-                            data: GlobalVariables.ALLERGY_ONSET
+                            data: GlobalVariables.ALLERGY_ONSET,
                           },
-                          onChange: this.dropDownHandle.bind(this)
+                          onChange: this.dropDownHandle.bind(this),
                         }}
                       />
 
@@ -1400,15 +1396,15 @@ class NurseWorkbench extends Component {
                         <AlgaehDateHandler
                           div={{ className: "col-lg-6 margin-top-15" }}
                           label={{
-                            forceLabel: "Onset Date"
+                            forceLabel: "Onset Date",
                           }}
                           textBox={{
                             className: "txt-fld",
-                            name: "allergy_onset_date"
+                            name: "allergy_onset_date",
                           }}
                           maxDate={new Date()}
                           events={{
-                            onChange: datehandle.bind(this, this)
+                            onChange: datehandle.bind(this, this),
                           }}
                           value={this.state.allergy_onset_date}
                         />
@@ -1418,7 +1414,7 @@ class NurseWorkbench extends Component {
                         div={{ className: "col-lg-6 margin-top-15" }}
                         label={{
                           forceLabel: "Severity",
-                          fieldName: "sample"
+                          fieldName: "sample",
                         }}
                         selector={{
                           name: "allergy_severity",
@@ -1427,9 +1423,9 @@ class NurseWorkbench extends Component {
                           dataSource: {
                             textField: "name",
                             valueField: "value",
-                            data: GlobalVariables.PAIN_SEVERITY
+                            data: GlobalVariables.PAIN_SEVERITY,
                           },
-                          onChange: this.dropDownHandle.bind(this)
+                          onChange: this.dropDownHandle.bind(this),
                         }}
                       />
 
@@ -1460,19 +1456,19 @@ class NurseWorkbench extends Component {
                         div={{ className: "col-12" }}
                         label={{
                           isImp: false,
-                          fieldName: "comments"
+                          fieldName: "comments",
                         }}
                         textBox={{
                           others: {
                             multiline: true,
-                            rows: "2"
+                            rows: "2",
                           },
                           className: "txt-fld",
                           name: "allergy_comment",
                           value: this.state.allergy_comment,
                           events: {
-                            onChange: this.texthandle.bind(this)
-                          }
+                            onChange: this.texthandle.bind(this),
+                          },
                         }}
                       />
                       <div className="col-12 margin-top-15">
@@ -1488,7 +1484,10 @@ class NurseWorkbench extends Component {
                 </div>
                 <hr />
                 <div className="row">
-                  <div className="col-12" id="hpi-grid-cntr">
+                  <div
+                    className="col-12 patientAllergyGrid_Cntr"
+                    id="hpi-grid-cntr"
+                  >
                     <AlgaehDataGrid
                       id="patient-allergy-grid"
                       columns={[
@@ -1500,7 +1499,7 @@ class NurseWorkbench extends Component {
                             />
                           ),
 
-                          displayTemplate: data => {
+                          displayTemplate: (data) => {
                             return (
                               <span>
                                 {data.allergy_type === "F" ? (
@@ -1519,7 +1518,7 @@ class NurseWorkbench extends Component {
                               </span>
                             );
                           },
-                          editorTemplate: data => {
+                          editorTemplate: (data) => {
                             return (
                               <span>
                                 {data.allergy_type === "F" ? (
@@ -1537,7 +1536,7 @@ class NurseWorkbench extends Component {
                                 ) : null}
                               </span>
                             );
-                          }
+                          },
                         },
                         {
                           fieldName: "allergy_name",
@@ -1547,16 +1546,16 @@ class NurseWorkbench extends Component {
                             />
                           ),
                           disabled: true,
-                          editorTemplate: data => {
+                          editorTemplate: (data) => {
                             return <span>{data.allergy_name}</span>;
-                          }
+                          },
                         },
                         {
                           fieldName: "onset",
                           label: (
                             <AlgaehLabel label={{ forceLabel: "Onset" }} />
                           ),
-                          displayTemplate: data => {
+                          displayTemplate: (data) => {
                             return data.onset === "A" ? (
                               <span>Adulthood</span>
                             ) : data.onset === "T" ? (
@@ -1568,10 +1567,10 @@ class NurseWorkbench extends Component {
                             ) : data.onset === "O" ? (
                               <span>Onset Date</span>
                             ) : (
-                                        ""
-                                      );
+                              ""
+                            );
                           },
-                          editorTemplate: data => {
+                          editorTemplate: (data) => {
                             return (
                               <AlagehAutoComplete
                                 div={{}}
@@ -1582,58 +1581,58 @@ class NurseWorkbench extends Component {
                                   dataSource: {
                                     textField: "name",
                                     valueField: "value",
-                                    data: GlobalVariables.ALLERGY_ONSET
+                                    data: GlobalVariables.ALLERGY_ONSET,
                                   },
                                   others: {
-                                    disabled: true
+                                    disabled: true,
                                   },
 
                                   onChange: this.changeOnsetEdit.bind(
                                     this,
                                     data
-                                  )
+                                  ),
                                 }}
                               />
                             );
-                          }
+                          },
                         },
                         {
                           fieldName: "onset_date",
                           label: (
                             <AlgaehLabel label={{ forceLabel: "Onset Date" }} />
                           ),
-                          displayTemplate: data => {
+                          displayTemplate: (data) => {
                             return (
                               <span>
                                 {this.changeDateFormat(data.onset_date)}
                               </span>
                             );
                           },
-                          editorTemplate: data => {
+                          editorTemplate: (data) => {
                             return (
                               <AlgaehDateHandler
                                 div={{}}
                                 textBox={{
                                   className: "txt-fld hidden",
-                                  name: "onset_date"
+                                  name: "onset_date",
                                 }}
                                 minDate={new Date()}
                                 events={{
-                                  onChange: datehandle.bind(this, this, data)
+                                  onChange: datehandle.bind(this, this, data),
                                 }}
                                 // disabled={data.onset === "O" ? false : true}
                                 disabled={true}
                                 value={data.onset_date}
                               />
                             );
-                          }
+                          },
                         },
                         {
                           fieldName: "severity",
                           label: (
                             <AlgaehLabel label={{ forceLabel: "Severity" }} />
                           ),
-                          displayTemplate: data => {
+                          displayTemplate: (data) => {
                             return data.severity === "MI" ? (
                               <span>Mild</span>
                             ) : data.severity === "MO" ? (
@@ -1641,10 +1640,10 @@ class NurseWorkbench extends Component {
                             ) : data.severity === "SE" ? (
                               <span>Severe</span>
                             ) : (
-                                    ""
-                                  );
+                              ""
+                            );
                           },
-                          editorTemplate: data => {
+                          editorTemplate: (data) => {
                             return (
                               <AlagehAutoComplete
                                 div={{}}
@@ -1655,20 +1654,20 @@ class NurseWorkbench extends Component {
                                   dataSource: {
                                     textField: "name",
                                     valueField: "value",
-                                    data: GlobalVariables.PAIN_SEVERITY
+                                    data: GlobalVariables.PAIN_SEVERITY,
                                   },
-                                  onChange: texthandle.bind(this, this, data)
+                                  onChange: texthandle.bind(this, this, data),
                                 }}
                               />
                             );
-                          }
+                          },
                         },
                         {
                           fieldName: "comment",
                           label: (
                             <AlgaehLabel label={{ forceLabel: "Comment" }} />
                           ),
-                          editorTemplate: data => {
+                          editorTemplate: (data) => {
                             return (
                               <AlagehFormGroup
                                 div={{}}
@@ -1677,40 +1676,33 @@ class NurseWorkbench extends Component {
                                   name: "comment",
                                   value: data.comment,
                                   events: {
-                                    onChange: texthandle.bind(this, this, data)
-                                  }
+                                    onChange: texthandle.bind(this, this, data),
+                                  },
                                 }}
                               />
                             );
-                          }
-                        }
+                          },
+                        },
                       ]}
                       keyId="hims_f_patient_allergy_id"
                       dataSource={{
-                        data: this.state.allPatientAllergies
+                        data: this.state.allPatientAllergies,
                       }}
                       isEditable={true}
                       paging={{ page: 0, rowsPerPage: 10 }}
                       events={{
                         onDelete: this.deleteAllergy.bind(this),
-                        onEdit: row => { },
-                        onDone: this.updatePatientAllergy.bind(this)
+                        onEdit: (row) => {},
+                        onDone: this.updatePatientAllergy.bind(this),
                       }}
                     />
                   </div>
                 </div>
                 <hr />
-                <h6>Enter Chief Complaints</h6>
                 <div className="row">
                   <div className="col-12">
+                    <h6>Enter Chief Complaints</h6>
                     <div className="portlet portlet-bordered margin-bottom-15">
-                      <div className="portlet-title">
-                        <div className="caption">
-                          <h3 className="caption-subject">
-                            Chief Complaints & Main Symptoms
-                          </h3>
-                        </div>
-                      </div>
                       <div className="portlet-body">
                         <div className="row">
                           <div className="col-12">
@@ -1740,15 +1732,15 @@ class NurseWorkbench extends Component {
                               <AlgaehDateHandler
                                 div={{ className: "col-8" }}
                                 label={{
-                                  forceLabel: "Onset Date"
+                                  forceLabel: "Onset Date",
                                 }}
                                 textBox={{
                                   className: "txt-fld",
-                                  name: "onset_date"
+                                  name: "onset_date",
                                 }}
                                 maxDate={new Date()}
                                 events={{
-                                  onChange: this.datehandle.bind(this)
+                                  onChange: this.datehandle.bind(this),
                                 }}
                                 value={this.state.onset_date}
                               />
@@ -1763,9 +1755,9 @@ class NurseWorkbench extends Component {
                                   dataSource: {
                                     textField: "name",
                                     valueField: "value",
-                                    data: GlobalVariables.PAIN_DURATION
+                                    data: GlobalVariables.PAIN_DURATION,
                                   },
-                                  onChange: this.dataLevelUpdate.bind(this)
+                                  onChange: this.dataLevelUpdate.bind(this),
                                 }}
                               />
 
@@ -1773,29 +1765,29 @@ class NurseWorkbench extends Component {
                                 div={{ className: "col-4" }}
                                 label={{
                                   forceLabel: "Duration",
-                                  isImp: false
+                                  isImp: false,
                                 }}
                                 textBox={{
                                   number: {
-                                    allowNegative: false
+                                    allowNegative: false,
                                   },
                                   dontAllowKeys: ["-", "e"],
                                   className: "txt-fld",
                                   name: "duration",
                                   value: this.state.duration,
                                   events: {
-                                    onChange: this.dataLevelUpdate.bind(this)
+                                    onChange: this.dataLevelUpdate.bind(this),
                                   },
                                   others: {
-                                    min: 0
-                                  }
+                                    min: 0,
+                                  },
                                 }}
                               />
                               <AlagehAutoComplete
                                 div={{ className: "col-4" }}
                                 label={{
                                   forceLabel: "Complaint Type",
-                                  isImp: false
+                                  isImp: false,
                                 }}
                                 selector={{
                                   name: "complaint_type",
@@ -1804,9 +1796,9 @@ class NurseWorkbench extends Component {
                                   dataSource: {
                                     textField: "name",
                                     valueField: "value",
-                                    data: this.complaintType
+                                    data: this.complaintType,
                                   },
-                                  onChange: this.dropDownHandler.bind(this)
+                                  onChange: this.dropDownHandler.bind(this),
                                 }}
                               />
 
@@ -1815,7 +1807,7 @@ class NurseWorkbench extends Component {
                                   div={{ className: "col-4" }}
                                   label={{
                                     forceLabel: "LMP (Days)",
-                                    isImp: false
+                                    isImp: false,
                                   }}
                                   textBox={{
                                     className: "txt-fld",
@@ -1826,8 +1818,8 @@ class NurseWorkbench extends Component {
                                     events: {
                                       onChange: this.ChangeEventHandler.bind(
                                         this
-                                      )
-                                    }
+                                      ),
+                                    },
                                   }}
                                 />
                               )}
@@ -1847,373 +1839,89 @@ class NurseWorkbench extends Component {
                         </div>
                       </div>
                     </div>
+                    {/* Chief Complaint End */}
                   </div>
-                  {/*<div className="col-8">
-                    <div className="row">
-                      <AlagehAutoComplete
-                        div={{ className: "col-8" }}
-                        label={{
-                          fieldName: "chief_cmpln",
-                          isImp: false
-                        }}
-                        selector={{
-                          name: "chief_complaint_id",
-                          className: "col select-fld",
-                          value: this.state.chief_complaint_id,
-                          dataSource: {
-                            textField: "hpi_description",
-                            valueField: "hims_d_hpi_header_id",
-                            data: _allUnselectedChiefComp
-                          },
-                          onChange: this.dropDownHandle.bind(this)
-                        }}
-                      />
+                  <div className="col-12">
+                    {/* Notes Start */}
+                    <h6>Enter Nurse Notes</h6>
 
-                      <AlagehAutoComplete
-                        div={{ className: "col-4" }}
-                        label={{
-                          fieldName: "pain",
-                          isImp: false
-                        }}
-                        selector={{
-                          name: "pain",
-                          className: "col select-fld",
-                          value: this.state.pain,
-                          dataSource: {
-                            textField: "name",
-                            valueField: "value",
-                            data: GlobalVariables.PAIN_SCALE
-                          },
-                          onChange: this.dropDownHandle.bind(this)
-                        }}
-                      />
-                      <AlagehAutoComplete
-                        div={{ className: "col-4" }}
-                        label={{
-                          fieldName: "severity",
-                          isImp: false
-                        }}
-                        selector={{
-                          name: "severity",
-                          className: "col select-fld",
-                          value: this.state.severity,
-                          dataSource: {
-                            textField: "name",
-                            valueField: "value",
-                            data: GlobalVariables.PAIN_SEVERITY
-                          },
-                          onChange: this.dropDownHandle.bind(this)
-                        }}
-                      />
-
-                      <AlgaehDateHandler
-                        div={{ className: "col-4" }}
-                        label={{ forceLabel: "Onset Date", isImp: false }}
-                        textBox={{
-                          className: "txt-fld",
-                          name: "onset_date"
-                        }}
-                        maxDate={new Date()}
-                        events={{
-                          onChange: this.dateDurationAndInterval.bind(this)
-                        }}
-                        value={this.state.onset_date}
-                      />
-                      <AlagehFormGroup
-                        div={{ className: "col-4" }}
-                        label={{
-                          isImp: false,
-                          fieldName: "duration"
-                        }}
-                        textBox={{
-                          className: "txt-fld",
-                          name: "duration",
-                          number: true,
-                          value: this.state.duration,
-                          events: {
-                            onChange: this.texthandle.bind(this)
-                          },
-                          others: {
-                            min: 0
-                          }
-                        }}
-                      />
-
-                      <AlagehAutoComplete
-                        div={{ className: "col-4" }}
-                        label={{
-                          fieldName: "interval",
-                          isImp: false
-                        }}
-                        selector={{
-                          name: "interval",
-                          className: "select-fld",
-                          value: this.state.interval,
-                          dataSource: {
-                            textField: "name",
-                            valueField: "value",
-                            data: GlobalVariables.PAIN_DURATION
-                          },
-                          onChange: this.dropDownHandle.bind(this)
-                        }}
-                      />
-                    </div>
-                  </div>
-                  <div className="col-4">
-                    <div className="row">
-                      <AlagehFormGroup
-                        div={{ className: "col-12" }}
-                        label={{
-                          isImp: false,
-                          fieldName: "comments"
-                        }}
-                        textBox={{
-                          others: {
-                            multiline: true,
-                            rows: "2"
-                          },
-                          className: "txt-fld",
-                          name: "comment",
-                          value: this.state.comment,
-                          events: {
-                            onChange: this.texthandle.bind(this)
-                          }
-                        }}
-                      />
-                      <div className="col-12 margin-top-15">
-                        <button
-                          className="btn btn-primary"
-                          onClick={this.addChiefComplainToPatient.bind(this)}
-                        >
-                          ADD
-                        </button>
+                    <div className="portlet portlet-bordered margin-bottom-15">
+                      <div className="portlet-body">
+                        <div className="row">
+                          {" "}
+                          <AlagehFormGroup
+                            div={{ className: "col-12 form-group" }}
+                            label={{
+                              forceLabel: "Notes",
+                              isImp: false,
+                            }}
+                            textBox={{
+                              className: "txt-fld",
+                              name: "examination_comment",
+                              others: {
+                                multiline: true,
+                                rows: "3",
+                              },
+                              value: this.state.examination_comment,
+                              events: {
+                                onChange: this.texthandle.bind(this),
+                              },
+                            }}
+                          />
+                          <div
+                            className="col-12"
+                            style={{ textAlign: "right" }}
+                          >
+                            <button className="btn btn-primary">
+                              Add Notes
+                            </button>
+                          </div>
+                          <div className="col-12 patientNotesGrid_Cntr">
+                            <AlgaehDataGrid
+                              className="patientNotesGrid"
+                              columns={[
+                                {
+                                  fieldName: "",
+                                  label: "Notes",
+                                  disabled: true,
+                                },
+                                {
+                                  fieldName: "",
+                                  label: "Entered by & Date",
+                                  disabled: true,
+                                },
+                              ]}
+                              keyId=""
+                              dataSource=""
+                              isEditable={true}
+                              paging={{ page: 0, rowsPerPage: 10 }}
+                            />
+                          </div>
+                        </div>
                       </div>
                     </div>
-                  </div>*/}
-                </div>
-                <hr />
-                {/* Chief Complaint Start*/}
-                {/*<div className="row">
-                  <div className="col-12" id="hpi-grid-cntr">
-                    <AlgaehDataGrid
-                      id="complaint-grid"
-                      columns={[
-                        {
-                          fieldName: "chief_complaint_name",
-                          label: (
-                            <AlgaehLabel
-                              label={{ fieldName: "complaint_name" }}
-                            />
-                          ),
-                          disabled: true,
-                          others: {
-                            style: { textAlign: "center" },
-                            fixed: "left"
-                          }
-                        },
-                        {
-                          fieldName: "pain",
-                          label: <AlgaehLabel label={{ fieldName: "pain" }} />,
-                          displayTemplate: data => {
-                            return (
-                              <span>
-                                {data.pain === "NH" ? (
-                                  <span>No Hurt</span>
-                                ) : data.severity === "HLB" ? (
-                                  <span>Hurts Little Bit</span>
-                                ) : data.severity === "HLM" ? (
-                                  <span>Hurts Little More</span>
-                                ) : data.severity === "HEM" ? (
-                                  <span>Hurts Even More</span>
-                                ) : data.severity === "HWL" ? (
-                                  <span>Hurts Whole Lot</span>
-                                ) : (
-                                  <span>Hurts Worst</span>
-                                )}
-                              </span>
-                            );
-                          },
-                          editorTemplate: row => {
-                            return (
-                              <AlagehAutoComplete
-                                selector={{
-                                  name: "pain",
-                                  className: "select-fld",
-                                  value: row.pain,
-                                  dataSource: {
-                                    textField: "name",
-                                    valueField: "value",
-                                    data: GlobalVariables.PAIN_SCALE
-                                  },
-                                  onChange: this.gridLevelUpdate.bind(this, row)
-                                }}
-                              />
-                            );
-                          }
-                        },
-                        {
-                          fieldName: "severity",
-                          label: (
-                            <AlgaehLabel label={{ fieldName: "severity" }} />
-                          ),
-                          displayTemplate: data => {
-                            const _serv = Enumerable.from(
-                              GlobalVariables.PAIN_SEVERITY
-                            )
-                              .where(w => w.value === data.severity)
-                              .firstOrDefault().name;
-                            return (
-                              <span>{_serv !== undefined ? _serv : ""}</span>
-                            );
-                          },
-                          editorTemplate: row => {
-                            return (
-                              <AlagehAutoComplete
-                                selector={{
-                                  name: "severity",
-                                  className: "select-fld",
-                                  value: row.severity,
-                                  dataSource: {
-                                    textField: "name",
-                                    valueField: "value",
-                                    data: GlobalVariables.PAIN_SEVERITY
-                                  },
-                                  onChange: this.gridLevelUpdate.bind(this, row)
-                                }}
-                              />
-                            );
-                          }
-                        },
-                        {
-                          fieldName: "onset_date",
-                          label: (
-                            <AlgaehLabel label={{ fieldName: "onset_date" }} />
-                          ),
-                          displayTemplate: data => {
-                            return new Date(
-                              data.onset_date
-                            ).toLocaleDateString();
-                          },
-                          editorTemplate: row => {
-                            return (
-                              <AlgaehDateHandler
-                                textBox={{
-                                  className: "txt-fld",
-                                  name: "onset_date"
-                                }}
-                                maxDate={new Date()}
-                                events={{
-                                  onChange: this.gridLevelUpdate.bind(this, row)
-                                }}
-                                singleOutput={true}
-                                value={row.onset_date}
-                              />
-                            );
-                          }
-                        },
-                        {
-                          fieldName: "duration",
-                          label: (
-                            <AlgaehLabel label={{ fieldName: "duration" }} />
-                          ),
-                          editorTemplate: row => {
-                            return (
-                              <AlagehFormGroup
-                                textBox={{
-                                  className: "txt-fld",
-                                  name: "duration",
-                                  number: true,
-                                  value: row.duration,
-                                  events: {
-                                    onChange: this.gridLevelUpdate.bind(
-                                      this,
-                                      row
-                                    )
-                                  },
-                                  others: {
-                                    min: 0
-                                  }
-                                }}
-                              />
-                            );
-                          }
-                        },
-                        {
-                          fieldName: "interval",
-                          label: (
-                            <AlgaehLabel label={{ fieldName: "interval" }} />
-                          ),
-                          displayTemplate: data => {
-                            return Enumerable.from(
-                              GlobalVariables.PAIN_DURATION
-                            )
-                              .where(w => w.value === data.interval)
-                              .firstOrDefault().name;
-                          },
-
-                          editorTemplate: row => {
-                            return (
-                              <AlagehAutoComplete
-                                selector={{
-                                  name: "interval",
-                                  className: "select-fld",
-                                  value: row.interval,
-                                  dataSource: {
-                                    textField: "name",
-                                    valueField: "value",
-                                    data: GlobalVariables.PAIN_DURATION
-                                  },
-                                  onChange: this.gridLevelUpdate.bind(this, row)
-                                }}
-                              />
-                            );
-                          }
-                        },
-                        {
-                          fieldName: "comment",
-                          label: "Comments",
-                          displayTemplate: row => {
-                            return <span>{row.comment}</span>;
-                          },
-                          editorTemplate: row => {
-                            return (
-                              <AlagehFormGroup
-                                textBox={{
-                                  name: "comment",
-                                  others: {
-                                    multiline: true,
-                                    rows: "4"
-                                  },
-                                  value: row.comment,
-                                  events: {
-                                    onChange: this.gridLevelUpdate.bind(
-                                      this,
-                                      row
-                                    )
-                                  }
-                                }}
-                              />
-                            );
-                          }
-                        }
-                      ]}
-                      noDataText="No Chief Complaints Recorded"
-                      keyId="patient_id"
-                      dataSource={{
-                        data: this.state.patChiefComp
+                    {/* <AlagehFormGroup
+                      div={{ className: "col-lg-12" }}
+                      label={{
+                        forceLabel: "",
+                        isImp: false,
                       }}
-                      isEditable={true}
-                      paging={{ page: 0, rowsPerPage: 10 }}
-                      events={{
-                        onEdit: () => {},
-                        onDelete: this.onChiefComplaintRowDelete.bind(this),
-                        onDone: this.onChiefComplaintRowDone.bind(this)
+                      textBox={{
+                        className: "txt-fld",
+                        name: "nurse_notes",
+                        value: this.state.nurse_notes,
+                        others: {
+                          multiline: true,
+                          rows: "6",
+                        },
+                        events: {
+                          onChange: this.texthandle.bind(this),
+                        },
                       }}
-                    />
+                    /> */}
+                    {/* Notes End */}
                   </div>
-                </div>*/}
-                {/* Chief Complaint End */}
-                <hr />
+                </div>
                 <h6>Nurse Order Service</h6>
                 {this.state.patient_id !== null ? (
                   <div className="row">
@@ -2228,7 +1936,7 @@ class NurseWorkbench extends Component {
                             {
                               <AlgaehLabel
                                 label={{
-                                  forceLabel: "Order Investigation"
+                                  forceLabel: "Order Investigation",
                                 }}
                               />
                             }
@@ -2242,7 +1950,7 @@ class NurseWorkbench extends Component {
                             {
                               <AlgaehLabel
                                 label={{
-                                  forceLabel: "Order Consumable"
+                                  forceLabel: "Order Consumable",
                                 }}
                               />
                             }
@@ -2256,7 +1964,7 @@ class NurseWorkbench extends Component {
                             {
                               <AlgaehLabel
                                 label={{
-                                  forceLabel: "Order Package"
+                                  forceLabel: "Order Package",
                                 }}
                               />
                             }
@@ -2288,33 +1996,8 @@ class NurseWorkbench extends Component {
                     </div>
                   </div>
                 ) : (
-                    <p>Please select a patient first</p>
-                  )}
-                {/* Notes Start */}
-                <hr />
-                <h6>Enter Nurse Notes</h6>
-                <div className="row">
-                  <AlagehFormGroup
-                    div={{ className: "col-lg-12" }}
-                    label={{
-                      forceLabel: "",
-                      isImp: false
-                    }}
-                    textBox={{
-                      className: "txt-fld",
-                      name: "nurse_notes",
-                      value: this.state.nurse_notes,
-                      others: {
-                        multiline: true,
-                        rows: "6"
-                      },
-                      events: {
-                        onChange: this.texthandle.bind(this)
-                      }
-                    }}
-                  />
-                </div>
-                {/* Notes End */}
+                  <p>Please select a patient first</p>
+                )}
               </div>
             </div>
           </div>
@@ -2346,7 +2029,7 @@ function mapStateToProps(state) {
     patient_allergies: state.patient_allergies,
     consumableorderedList: state.consumableorderedList,
     pakageList: state.pakageList,
-    orderedList: state.orderedList
+    orderedList: state.orderedList,
   };
 }
 
@@ -2360,7 +2043,7 @@ function mapDispatchToProps(dispatch) {
       getPatientAllergies: AlgaehActions,
       getOrderList: AlgaehActions,
       getConsumableOrderList: AlgaehActions,
-      getPakageList: AlgaehActions
+      getPakageList: AlgaehActions,
     },
     dispatch
   );

@@ -577,7 +577,7 @@ class NetworkPlan extends PureComponent {
                         />
                       </div>
                       <div className="row">
-                        <AlagehFormGroup
+                        {/* <AlagehFormGroup
                           //consultation
                           div={{ className: "col-6 form-group" }}
                           label={{ forceLabel: "Consultation Copay" }}
@@ -593,7 +593,7 @@ class NetworkPlan extends PureComponent {
                               type: "number",
                             },
                           }}
-                        />
+                        /> */}
                         <AlagehFormGroup
                           //Lab
                           div={{ className: "col-6 form-group" }}

@@ -514,10 +514,10 @@ const getCtrlCode = ($this, docNumber) => {
           $this.props.sales_order_number !== undefined &&
           $this.props.sales_order_number.length !== 0
         ) {
-          data.authBtnEnable = data.cancelled === "Y" ? true : false;
+          data.authBtnEnable = data.cancelled === "Y" || data.is_posted === "N" ? true : false;
           data.ItemDisable = true;
           data.ClearDisable = true;
-          data.cancelDisable = data.cancelled === "Y" ? true : false;
+          data.cancelDisable = data.cancelled === "Y" || data.is_posted === "N" ? true : false;
 
           // for (let i = 0; i < data.order_detail.length; i++) {
           //   data.order_detail[i].quantity_outstanding =
@@ -533,19 +533,21 @@ const getCtrlCode = ($this, docNumber) => {
           data.sales_order_services = data.order_detail;
         }
 
+
         data.dataExists = true;
         data.selectedData = true;
-
+        data.itemAdd = false
+        if (data.is_revert === "Y") {
+          data.itemAdd = true
+        }
         if (data.is_posted === "Y") {
           data.saveEnable = true;
           data.addedItem = true;
           data.dataPosted = true;
-          data.itemAdd = true;
         } else {
           data.saveEnable = false;
           data.addedItem = false;
           data.dataPosted = false;
-          data.itemAdd = false;
         }
         if (data.authorize1 === "Y" && data.authorize2 === "Y") {
           data.cancelDisable = true;

@@ -384,7 +384,7 @@ class SalesOrder extends Component {
                   />
                   <h6>
                     {this.state.cancelled === "Y" ? (
-                      <span className="badge badge-danger">Cancelled</span>
+                      <span className="badge badge-danger">Rejected</span>
                     ) : this.state.is_posted === "N" &&
                       this.state.is_revert === "N" ? (
                           <span className="badge badge-danger">Not Posted</span>
@@ -719,7 +719,13 @@ class SalesOrder extends Component {
               </div>
             </div>
           </div>
-
+          {this.state.cancelled === "Y" || this.state.is_revert === "Y" ?
+            <div className="alert alert-danger">
+              <h4 className="alert-heading">Rejected</h4>
+              <p>
+                {this.state.revert_reason}
+              </p>
+            </div> : null}
           <div className="row">
             <MyContext.Provider
               value={{

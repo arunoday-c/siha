@@ -2643,9 +2643,8 @@ let getPatientHistory = (req, res, next) => {
   try {
     _mysql
       .executeQuery({
-        query: `select hims_f_patient_history_id, history_type, provider_id, 
- concat(T.title,' ', E.full_name) as provider_name, patient_id, remarks, 
- PH.created_date       from  hims_f_patient_history as PH  inner join  hims_d_employee as E 
+        query: `select hims_f_patient_history_id, history_type, provider_id, E.full_name as provider_name, patient_id, remarks, 
+ PH.created_date from  hims_f_patient_history as PH  inner join  hims_d_employee as E 
  on PH.provider_id = E.hims_d_employee_id  left join hims_d_title as T 
  on T.his_d_title_id = E.title_id       where  PH.provider_id = E.hims_d_employee_id 
  and PH.record_status = 'A'  and E.record_status = 'A'  and  patient_id =?;`,

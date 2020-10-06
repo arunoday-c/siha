@@ -167,27 +167,28 @@ class SalesInvoice extends Component {
                     ) : this.state.is_posted === "N" ? (
                       <span className="badge badge-danger">Not Posted</span>
                     ) : (
-                            <span className="badge badge-success">Posted</span>
-                          )}
+                      <span className="badge badge-success">Posted</span>
+                    )}
                   </h6>
                 </div>
               ) : null}
             </div>
           }
           printArea={
-            this.state.hims_f_sales_invoice_header_id !== null && this.state.is_posted === "Y"
+            this.state.hims_f_sales_invoice_header_id !== null &&
+            this.state.is_posted === "Y"
               ? {
-                menuitems: [
-                  {
-                    label: "Print Invoice",
-                    events: {
-                      onClick: () => {
-                        generateSalesInvoiceReport(this.state);
+                  menuitems: [
+                    {
+                      label: "Print Invoice",
+                      events: {
+                        onClick: () => {
+                          generateSalesInvoiceReport(this.state);
+                        },
                       },
                     },
-                  },
-                ],
-              }
+                  ],
+                }
               : ""
           }
           selectedLang={this.state.selectedLang}
@@ -233,7 +234,7 @@ class SalesInvoice extends Component {
 
                 <div className="col">
                   <div className="row">
-                    <div className={"col-3 globalSearchCntr" + class_finder}>
+                    <div className={"col-2 globalSearchCntr" + class_finder}>
                       <AlgaehLabel label={{ forceLabel: "Search Order No." }} />
                       <h6 onClick={SalesOrderSearch.bind(this, this)}>
                         {this.state.sales_order_number
@@ -244,9 +245,12 @@ class SalesInvoice extends Component {
                     </div>
 
                     <AlgaehButton
-                      className="btn btn-primary"
+                      className="btn btn-default"
+                      style={{ marginTop: 21 }}
                       onClick={() => {
-                        this.props.history.push(`/SalesOrder?sales_order_number=${this.state.sales_order_number}`)
+                        this.props.history.push(
+                          `/SalesOrder?sales_order_number=${this.state.sales_order_number}`
+                        );
                       }}
                     >
                       View Order
@@ -306,8 +310,8 @@ class SalesInvoice extends Component {
                 <InvoiceListService SALESInvoiceIOputs={this.state} />
               </div>
             ) : (
-                <InvoiceItemList SALESInvoiceIOputs={this.state} />
-              )}
+              <InvoiceItemList SALESInvoiceIOputs={this.state} />
+            )}
           </MyContext.Provider>
 
           <div className="row">
@@ -399,7 +403,24 @@ class SalesInvoice extends Component {
 
           <div className="hptl-phase1-footer">
             <div className="row">
-              <div className="col-lg-12">
+              <div className="col-4 leftBtnGroup">
+                {" "}
+                {this.state.hims_f_sales_invoice_header_id > 0 ? (
+                  <button
+                    type="button"
+                    className="btn btn-other"
+                    onClick={SaveNarration.bind(this, this)}
+                  >
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Save Narration",
+                        returnText: true,
+                      }}
+                    />
+                  </button>
+                ) : null}
+              </div>
+              <div className="col-8">
                 <AlgaehSecurityComponent componentCode="SALES_INV_MAIN">
                   <button
                     type="button"
@@ -415,20 +436,6 @@ class SalesInvoice extends Component {
                     />
                   </button>
                 </AlgaehSecurityComponent>
-                {this.state.hims_f_sales_invoice_header_id > 0 ? (
-                  <button
-                    type="button"
-                    className="btn btn-primary"
-                    onClick={SaveNarration.bind(this, this)}
-                  >
-                    <AlgaehLabel
-                      label={{
-                        forceLabel: "Save Narration",
-                        returnText: true,
-                      }}
-                    />
-                  </button>
-                ) : null}
                 <button
                   type="button"
                   className="btn btn-default"
