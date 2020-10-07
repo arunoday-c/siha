@@ -3124,6 +3124,130 @@ let getActiveEncounters = (req, res, next) => {
   }
 };
 
+export const getNurseNotes = (req, res, next) => {
+  const _mysql = new algaehMysql();
+
+  let queryStr = "";
+  if (req.query.visit_id) {
+    queryStr = `and visit_id=${req.query.visit_id}`;
+  }
+
+  try {
+    _mysql
+      .executeQuery({
+        query: `SELECT * FROM hims_f_nurse_notes where record_status='A' and patient_id=? ${queryStr}`,
+        values: [req.query.patient_id],
+      })
+      .then((result) => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch((error) => {
+        _mysql.releaseConnection();
+        next(error);
+      });
+  } catch (error) {
+    _mysql.releaseConnection();
+    next(error);
+  }
+};
+
+export const addNurseNote = (req, res, next) => {
+  const _mysql = new algaehMysql();
+  const {
+    patient_id,
+    visit_id,
+    episode_id,
+    nursing_notes,
+    visit_date,
+  } = req.body;
+  try {
+    _mysql
+      .executeQuery({
+        query: `INSERT INTO hims_f_nurse_notes (patient_id, visit_id, visit_date, episode_id, nursing_notes, created_date, created_by, updated_date, updated_by)
+          values(?,?,?,?,?,?,?,?,?)`,
+        values: [
+          patient_id,
+          visit_id,
+          new Date(visit_date),
+          episode_id,
+          nursing_notes,
+          new Date(),
+          req.userIdentity.algaeh_d_app_user_id,
+          new Date(),
+          req.userIdentity.algaeh_d_app_user_id,
+        ],
+      })
+      .then((result) => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch((error) => {
+        _mysql.releaseConnection();
+        next(error);
+      });
+  } catch (error) {
+    _mysql.releaseConnection();
+    next(error);
+  }
+};
+
+export const updateNurseNote = (req, res, next) => {
+  const _mysql = new algaehMysql();
+  const { hims_f_nurse_notes_id, nursing_notes } = req.body;
+  try {
+    _mysql
+      .executeQuery({
+        query: `update hims_f_nurse_notes  set nursing_notes=?, updated_by=?, updated_date=?
+        where hims_f_nurse_notes_id=?`,
+        values: [
+          nursing_notes,
+          req.userIdentity.algaeh_d_app_user_id,
+          new Date(),
+          hims_f_nurse_notes_id,
+        ],
+      })
+      .then((result) => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch((error) => {
+        _mysql.releaseConnection();
+        next(error);
+      });
+  } catch (error) {
+    _mysql.releaseConnection();
+    next(error);
+  }
+};
+
+export const deleteNurseNote = (req, res, next) => {
+  const _mysql = new algaehMysql();
+  const { hims_f_nurse_notes_id } = req.body;
+  try {
+    _mysql
+      .executeQuery({
+        query: `update hims_f_nurse_notes  set record_status='I' where hims_f_nurse_notes_id=?`,
+        values: [hims_f_nurse_notes_id],
+      })
+      .then((result) => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch((error) => {
+        _mysql.releaseConnection();
+        next(error);
+      });
+  } catch (error) {
+    _mysql.releaseConnection();
+    next(error);
+  }
+};
+
 export default {
   physicalExaminationHeader,
   physicalExaminationDetails,

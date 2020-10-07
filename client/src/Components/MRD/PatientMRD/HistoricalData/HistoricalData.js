@@ -10,6 +10,7 @@ import Enumerable from "linq";
 import config from "../../../../utils/config.json";
 import { Line } from "react-chartjs-2";
 import { AlgaehDataGrid } from "../../../Wrapper/algaehWrapper";
+import NursesNotes from "../../../PatientProfile/Examination/NursesNotes";
 
 const TreeTable = treeTableHOC(ReactTable);
 
@@ -1041,6 +1042,23 @@ class HistoricalData extends Component {
                   data={_groupData}
                   // data={this.state.patientPayments}
                   defaultPageSize={10}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="portlet portlet-bordered margin-bottom-15">
+          <div className="portlet-title">
+            <div className="caption">
+              <h3 className="caption-subject">Nurse Notes</h3>
+            </div>
+          </div>
+          <div className="portlet-body">
+            <div className="row">
+              <div className="col-lg-12" id="PaymentHistoryGrid_Cntr">
+                <NursesNotes
+                  patient_id={Window?.global?.mrd_patient}
+                  viewOnly={true}
                 />
               </div>
             </div>
