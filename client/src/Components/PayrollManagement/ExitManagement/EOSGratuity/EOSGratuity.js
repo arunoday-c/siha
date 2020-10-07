@@ -794,7 +794,7 @@ class EOSGratuity extends Component {
                           />
                         </div>
                         <div className="row">
-                          <div className="col-5">
+                          {/* <div className="col-5">
                             <div
                               className="customCheckbox"
                               style={{ marginTop: 24 }}
@@ -809,7 +809,7 @@ class EOSGratuity extends Component {
                                 <span>Forfeiture</span>
                               </label>
                             </div>
-                          </div>
+                          </div> */}
                           <div className="col-12">
                             <label>Remarks</label>
                             <textarea
