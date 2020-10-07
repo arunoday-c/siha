@@ -21,6 +21,7 @@ import {
 } from "../../../utils/algaehApiCall";
 import swal from "sweetalert2";
 import Enumerable from "linq";
+import NursesNotes from "./NursesNotes";
 class Examination extends Component {
   constructor(props) {
     super(props);
@@ -462,7 +463,13 @@ class Examination extends Component {
                   className="col-5 popRightDiv"
                   style={{ maxHeight: "75vh" }}
                 >
-                  <h6>Enter Nursing Notes</h6>
+                  <NursesNotes
+                    patient_id={Window?.global?.current_patient}
+                    episode_id={Window?.global?.episode_id}
+                    visit_id={Window?.global?.visit_id}
+                  />
+                </div>
+                {/* <h6>Enter Nursing Notes</h6>
                   <hr />
                   <div className="row">
                     {" "}
@@ -510,7 +517,7 @@ class Examination extends Component {
                       />
                     </div>
                   </div>
-                </div>
+                </div> */}
               </div>
             </div>
           </div>

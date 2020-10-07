@@ -35,6 +35,7 @@ import swal from "sweetalert2";
 import Options from "../../Options.json";
 import NursingWorkbenchHandler from "./NursingWorkbenchHandler";
 import OrderedList from "../PatientProfile/Assessment/OrderedList/OrderedList";
+import NursesNotes from "../PatientProfile/Examination/NursesNotes";
 
 class NurseWorkbench extends Component {
   constructor(props) {
@@ -1843,7 +1844,21 @@ class NurseWorkbench extends Component {
                   </div>
                   <div className="col-12">
                     {/* Notes Start */}
-                    <h6>Enter Nurse Notes</h6>
+                    {this.state.patient_id ? (
+                      <NursesNotes
+                        key={this.state.patient_id}
+                        patient_id={this.state.patient_id}
+                        episode_id={this.state.episode_id}
+                        visit_id={this.state.visit_id}
+                        visit_date={this.state.visit_date}
+                      />
+                    ) : (
+                      <>
+                        <h6>Enter Nurse Notes</h6>
+                        <p>Please select a patient first</p>
+                      </>
+                    )}
+                    {/* 
 
                     <div className="portlet portlet-bordered margin-bottom-15">
                       <div className="portlet-body">
@@ -1899,7 +1914,7 @@ class NurseWorkbench extends Component {
                           </div>
                         </div>
                       </div>
-                    </div>
+                    </div> */}
                     {/* <AlagehFormGroup
                       div={{ className: "col-lg-12" }}
                       label={{

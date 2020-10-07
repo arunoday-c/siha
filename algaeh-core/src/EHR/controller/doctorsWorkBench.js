@@ -1,7 +1,12 @@
 import { Router } from "express";
 import utils from "../../utils";
 import httpStatus from "../../utils/httpStatus";
-import workBenchModels from "../model/doctorsWorkBench";
+import workBenchModels, {
+  addNurseNote,
+  getNurseNotes,
+  deleteNurseNote,
+  updateNurseNote,
+} from "../model/doctorsWorkBench";
 
 const {
   physicalExaminationHeader,
@@ -65,7 +70,7 @@ const {
   getSickLeave,
   getActiveEncounters,
   updateAllergy,
-  deleteAllergy
+  deleteAllergy,
 } = workBenchModels;
 const { releaseConnection } = utils;
 
@@ -80,7 +85,7 @@ export default () => {
       let result = req.records;
       res.status(httpStatus.ok).json({
         success: true,
-        records: result
+        records: result,
       });
       next();
     },
@@ -95,7 +100,7 @@ export default () => {
       let result = req.records;
       res.status(httpStatus.ok).json({
         success: true,
-        records: result
+        records: result,
       });
       next();
     },
@@ -110,7 +115,7 @@ export default () => {
       let result = req.records;
       res.status(httpStatus.ok).json({
         success: true,
-        records: result
+        records: result,
       });
       next();
     },
@@ -125,7 +130,7 @@ export default () => {
       let result = req.records;
       res.status(httpStatus.ok).json({
         success: true,
-        records: result
+        records: result,
       });
       next();
     },
@@ -139,7 +144,7 @@ export default () => {
       let result = req.records;
       res.status(httpStatus.ok).json({
         success: true,
-        records: result
+        records: result,
       });
       next();
     },
@@ -153,7 +158,7 @@ export default () => {
       let result = req.records;
       res.status(httpStatus.ok).json({
         success: true,
-        records: result
+        records: result,
       });
       next();
     },
@@ -168,7 +173,7 @@ export default () => {
       let result = req.records;
       res.status(httpStatus.ok).json({
         success: true,
-        records: result
+        records: result,
       });
       next();
     },
@@ -183,7 +188,7 @@ export default () => {
       let result = req.records;
       res.status(httpStatus.ok).json({
         success: true,
-        records: result
+        records: result,
       });
       next();
     },
@@ -198,7 +203,7 @@ export default () => {
       let result = req.records;
       res.status(httpStatus.ok).json({
         success: true,
-        records: result
+        records: result,
       });
       next();
     },
@@ -213,7 +218,7 @@ export default () => {
       let result = req.records;
       res.status(httpStatus.ok).json({
         success: true,
-        records: result
+        records: result,
       });
       next();
     },
@@ -228,7 +233,7 @@ export default () => {
       let result = req.records;
       res.status(httpStatus.ok).json({
         success: true,
-        records: result
+        records: result,
       });
       next();
     },
@@ -236,44 +241,32 @@ export default () => {
   );
 
   // created by irfan : add Allergy
-  api.post(
-    "/addAllergy",
-    addAllergy,
-    (req, res, next) => {
-      let result = req.records;
-      res.status(httpStatus.ok).json({
-        success: true,
-        records: result
-      });
-      next();
-    }
-  );
+  api.post("/addAllergy", addAllergy, (req, res, next) => {
+    let result = req.records;
+    res.status(httpStatus.ok).json({
+      success: true,
+      records: result,
+    });
+    next();
+  });
 
-  api.put(
-    "/updateAllergy",
-    updateAllergy,
-    (req, res, next) => {
-      let result = req.records;
-      res.status(httpStatus.ok).json({
-        success: true,
-        records: result
-      });
-      next();
-    }
-  );
+  api.put("/updateAllergy", updateAllergy, (req, res, next) => {
+    let result = req.records;
+    res.status(httpStatus.ok).json({
+      success: true,
+      records: result,
+    });
+    next();
+  });
 
-  api.delete(
-    "/deleteAllergy",
-    deleteAllergy,
-    (req, res, next) => {
-      let result = req.records;
-      res.status(httpStatus.ok).json({
-        success: true,
-        records: result
-      });
-      next();
-    }
-  );
+  api.delete("/deleteAllergy", deleteAllergy, (req, res, next) => {
+    let result = req.records;
+    res.status(httpStatus.ok).json({
+      success: true,
+      records: result,
+    });
+    next();
+  });
 
   // created by irfan : get Allergy details
   api.get(
@@ -283,7 +276,7 @@ export default () => {
       let result = req.records;
       res.status(httpStatus.ok).json({
         success: true,
-        records: result
+        records: result,
       });
       next();
     },
@@ -298,7 +291,7 @@ export default () => {
       let result = req.records;
       res.status(httpStatus.ok).json({
         success: true,
-        records: result
+        records: result,
       });
       next();
     },
@@ -313,7 +306,7 @@ export default () => {
       let result = req.records;
       res.status(httpStatus.ok).json({
         success: true,
-        records: result
+        records: result,
       });
       next();
     },
@@ -328,7 +321,7 @@ export default () => {
       let result = req.records;
       res.status(httpStatus.ok).json({
         success: true,
-        records: result
+        records: result,
       });
       next();
     },
@@ -343,7 +336,7 @@ export default () => {
       let result = req.records;
       res.status(httpStatus.ok).json({
         success: true,
-        records: result
+        records: result,
       });
       next();
     },
@@ -357,7 +350,7 @@ export default () => {
       let result = req.records;
       res.status(httpStatus.ok).json({
         success: true,
-        records: result
+        records: result,
       });
       next();
     },
@@ -372,7 +365,7 @@ export default () => {
       if (resultSelect.length != 0) {
         res.status(httpStatus.ok).json({
           success: true,
-          records: resultSelect
+          records: resultSelect,
         });
         next();
       } else {
@@ -390,7 +383,7 @@ export default () => {
       let result = req.records;
       res.status(httpStatus.ok).json({
         success: true,
-        records: result
+        records: result,
       });
       next();
     },
@@ -406,7 +399,7 @@ export default () => {
       let result = req.records;
       res.status(httpStatus.ok).json({
         success: true,
-        records: result
+        records: result,
       });
       next();
     },
@@ -421,7 +414,7 @@ export default () => {
       let result = req.records;
       res.status(httpStatus.ok).json({
         success: true,
-        records: result
+        records: result,
       });
       next();
     },
@@ -436,7 +429,7 @@ export default () => {
       let result = req.records;
       res.status(httpStatus.ok).json({
         success: true,
-        records: result
+        records: result,
       });
       next();
     },
@@ -451,7 +444,7 @@ export default () => {
       let result = req.records;
       res.status(httpStatus.ok).json({
         success: true,
-        records: result
+        records: result,
       });
       next();
     },
@@ -466,7 +459,7 @@ export default () => {
       let result = req.records;
       res.status(httpStatus.ok).json({
         success: true,
-        records: result
+        records: result,
       });
       next();
     },
@@ -481,7 +474,7 @@ export default () => {
       let result = req.records;
       res.status(httpStatus.ok).json({
         success: true,
-        records: result
+        records: result,
       });
       next();
     },
@@ -496,7 +489,7 @@ export default () => {
       let result = req.records;
       res.status(httpStatus.ok).json({
         success: true,
-        records: result
+        records: result,
       });
       next();
     },
@@ -511,7 +504,7 @@ export default () => {
       let result = req.records;
       res.status(httpStatus.ok).json({
         success: true,
-        records: result
+        records: result,
       });
       next();
     },
@@ -526,7 +519,7 @@ export default () => {
       if (resultSelect.length != 0) {
         res.status(httpStatus.ok).json({
           success: true,
-          records: resultSelect
+          records: resultSelect,
         });
         next();
       } else {
@@ -544,7 +537,7 @@ export default () => {
       let result = req.records;
       res.status(httpStatus.ok).json({
         success: true,
-        records: result
+        records: result,
       });
       next();
     },
@@ -559,7 +552,7 @@ export default () => {
       let result = req.records;
       res.status(httpStatus.ok).json({
         success: true,
-        records: result
+        records: result,
       });
       next();
     },
@@ -575,7 +568,7 @@ export default () => {
       if (resultSelect.length != 0) {
         res.status(httpStatus.ok).json({
           success: true,
-          records: resultSelect
+          records: resultSelect,
         });
         next();
       } else {
@@ -593,7 +586,7 @@ export default () => {
       let result = req.records;
       res.status(httpStatus.ok).json({
         success: true,
-        records: result
+        records: result,
       });
       next();
     },
@@ -609,7 +602,7 @@ export default () => {
       if (resultSelect.length != 0) {
         res.status(httpStatus.ok).json({
           success: true,
-          records: resultSelect
+          records: resultSelect,
         });
         next();
       } else {
@@ -628,7 +621,7 @@ export default () => {
       let result = req.records;
       res.status(httpStatus.ok).json({
         success: true,
-        records: result
+        records: result,
       });
       next();
     },
@@ -644,7 +637,7 @@ export default () => {
       let result = req.records;
       res.status(httpStatus.ok).json({
         success: true,
-        records: result
+        records: result,
       });
       next();
     },
@@ -660,7 +653,7 @@ export default () => {
       let result = req.records;
       res.status(httpStatus.ok).json({
         success: true,
-        records: result
+        records: result,
       });
       next();
     },
@@ -676,7 +669,7 @@ export default () => {
       if (resultSelect.length != 0) {
         res.status(httpStatus.ok).json({
           success: true,
-          records: resultSelect
+          records: resultSelect,
         });
         next();
       } else {
@@ -694,7 +687,7 @@ export default () => {
       let result = req.records;
       res.status(httpStatus.ok).json({
         success: true,
-        records: result
+        records: result,
       });
       next();
     },
@@ -709,7 +702,7 @@ export default () => {
       let result = req.records;
       res.status(httpStatus.ok).json({
         success: true,
-        records: result
+        records: result,
       });
       next();
     },
@@ -724,7 +717,7 @@ export default () => {
       let result = req.records;
       res.status(httpStatus.ok).json({
         success: true,
-        records: result
+        records: result,
       });
       next();
     },
@@ -739,7 +732,7 @@ export default () => {
       let result = req.records;
       res.status(httpStatus.ok).json({
         success: true,
-        records: result
+        records: result,
       });
       next();
     },
@@ -754,7 +747,7 @@ export default () => {
       let result = req.records;
       res.status(httpStatus.ok).json({
         success: true,
-        records: result
+        records: result,
       });
       next();
     },
@@ -770,7 +763,7 @@ export default () => {
       if (resultSelect.length != 0) {
         res.status(httpStatus.ok).json({
           success: true,
-          records: resultSelect
+          records: resultSelect,
         });
         next();
       } else {
@@ -787,7 +780,7 @@ export default () => {
       let result = req.records;
       res.status(httpStatus.ok).json({
         success: true,
-        records: result
+        records: result,
       });
       next();
     },
@@ -802,7 +795,7 @@ export default () => {
       let result = req.records;
       res.status(httpStatus.ok).json({
         success: true,
-        records: result
+        records: result,
       });
       next();
     },
@@ -817,7 +810,7 @@ export default () => {
       let result = req.records;
       res.status(httpStatus.ok).json({
         success: true,
-        records: result
+        records: result,
       });
       next();
     },
@@ -832,7 +825,7 @@ export default () => {
       let result = req.records;
       res.status(httpStatus.ok).json({
         success: true,
-        records: result
+        records: result,
       });
       next();
     },
@@ -847,7 +840,7 @@ export default () => {
       let result = req.records;
       res.status(httpStatus.ok).json({
         success: true,
-        records: result
+        records: result,
       });
       next();
     },
@@ -862,7 +855,7 @@ export default () => {
       let result = req.records;
       res.status(httpStatus.ok).json({
         success: true,
-        records: result
+        records: result,
       });
       next();
     },
@@ -877,7 +870,7 @@ export default () => {
       let result = req.records;
       res.status(httpStatus.ok).json({
         success: true,
-        records: result
+        records: result,
       });
       next();
     },
@@ -892,7 +885,7 @@ export default () => {
       let result = req.records;
       res.status(httpStatus.ok).json({
         success: true,
-        records: result
+        records: result,
       });
       next();
     },
@@ -907,7 +900,7 @@ export default () => {
       let result = req.records;
       res.status(httpStatus.ok).json({
         success: true,
-        records: result
+        records: result,
       });
       next();
     },
@@ -922,7 +915,7 @@ export default () => {
       let result = req.records;
       res.status(httpStatus.ok).json({
         success: true,
-        records: result
+        records: result,
       });
       next();
     },
@@ -937,7 +930,7 @@ export default () => {
       let result = req.records;
       res.status(httpStatus.ok).json({
         success: true,
-        records: result
+        records: result,
       });
       next();
     },
@@ -952,7 +945,7 @@ export default () => {
       let result = req.records;
       res.status(httpStatus.ok).json({
         success: true,
-        records: result
+        records: result,
       });
       next();
     },
@@ -967,7 +960,7 @@ export default () => {
       let result = req.records;
       res.status(httpStatus.ok).json({
         success: true,
-        records: result
+        records: result,
       });
       next();
     },
@@ -982,7 +975,7 @@ export default () => {
       let result = req.records;
       res.status(httpStatus.ok).json({
         success: true,
-        records: result
+        records: result,
       });
       next();
     },
@@ -997,7 +990,7 @@ export default () => {
       let result = req.records;
       res.status(httpStatus.ok).json({
         success: true,
-        records: result
+        records: result,
       });
       next();
     },
@@ -1012,10 +1005,51 @@ export default () => {
       .status(httpStatus.ok)
       .json({
         success: true,
-        records: result
+        records: result,
       })
       .end();
   });
 
+  api.get("/getNurseNotes", getNurseNotes, (req, res, next) => {
+    let result = req.records;
+    res
+      .status(httpStatus.ok)
+      .json({
+        success: true,
+        records: result,
+      })
+      .end();
+  });
+
+  api.post("/addNurseNote", addNurseNote, (req, res, next) => {
+    let result = req.records;
+    res
+      .status(httpStatus.ok)
+      .json({
+        success: true,
+        records: result,
+      })
+      .end();
+  });
+  api.put("/updateNurseNote", updateNurseNote, (req, res, next) => {
+    let result = req.records;
+    res
+      .status(httpStatus.ok)
+      .json({
+        success: true,
+        records: result,
+      })
+      .end();
+  });
+  api.delete("/deleteNurseNote", deleteNurseNote, (req, res, next) => {
+    let result = req.records;
+    res
+      .status(httpStatus.ok)
+      .json({
+        success: true,
+        records: result,
+      })
+      .end();
+  });
   return api;
 };
