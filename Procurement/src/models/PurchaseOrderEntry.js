@@ -855,9 +855,18 @@ export default {
           if (headerResult.length != 0) {
             _mysql
               .executeQuery({
-                query:
-                  "select * from hims_f_pharmacy_material_detail p left outer join hims_d_item_master l \
-                on l.hims_d_item_master_id =p.item_id where pharmacy_header_id=?",
+                query: `select MD.*,l.*, MD.hims_f_pharmacy_material_detail_id,MD.pharmacy_header_id,MD.completed,MD.item_category_id
+                  ,MD.item_group_id,MD.item_id,MD.from_qtyhand,MD.to_qtyhand,
+                  MD.quantity_required,MD.quantity_authorized,MD.item_uom,MD.quantity_recieved,
+                  MD.quantity_outstanding,MD.po_created_date,MD.po_created,MD.po_created_quantity,
+                  MD.po_outstanding_quantity,MD.po_completed,IM.item_description,IC.category_desc,IG.group_description,UOM.uom_description from hims_f_pharmacy_material_detail as MD
+                  left outer join hims_d_item_master l on l.hims_d_item_master_id =MD.item_id
+                  inner join hims_d_item_master IM ON MD.item_id=IM.hims_d_item_master_id 
+                  inner join hims_d_item_category IC ON MD.item_category_id=IC.hims_d_item_category_id 
+                  inner join hims_d_item_group IG ON MD.item_group_id=IG.hims_d_item_group_id 
+                  inner join hims_d_pharmacy_uom UOM ON MD.item_uom=UOM.hims_d_pharmacy_uom_id 
+                  
+                   where pharmacy_header_id=?`,
                 values: [headerResult[0].hims_f_pharamcy_material_header_id],
                 printQuery: true,
               })
@@ -903,11 +912,12 @@ export default {
           if (headerResult.length != 0) {
             _mysql
               .executeQuery({
-                query:
-                  "select p.*, l.*, IU.uom_description as purchase_uom_desc from hims_f_inventory_material_detail p \
-                  inner join hims_d_inventory_item_master l on l.hims_d_inventory_item_master_id =p.item_id \
-                  inner join hims_d_inventory_uom IU on IU.hims_d_inventory_uom_id = p.item_uom\
-                  where inventory_header_id=?",
+                query: `select p.*, l.*, IU.uom_description as purchase_uom_desc,IC.category_desc,IG.group_description from hims_f_inventory_material_detail p 
+                  inner join hims_d_inventory_item_master l on l.hims_d_inventory_item_master_id =p.item_id 
+                  inner join hims_d_inventory_uom IU on IU.hims_d_inventory_uom_id = p.item_uom
+                  inner join hims_d_inventory_tem_category IC ON p.item_category_id=IC.hims_d_inventory_tem_category_id
+                  inner join hims_d_inventory_item_group IG ON p.item_group_id=IG.hims_d_inventory_item_group_id
+                  where inventory_header_id=?`,
                 values: [headerResult[0].hims_f_inventory_material_header_id],
                 printQuery: true,
               })

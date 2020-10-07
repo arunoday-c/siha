@@ -39,10 +39,6 @@ const executePDF = function executePDFMethod(options) {
       } else if (input.is_local === "N") {
         is_local = " and H.default_nationality<>E.nationality ";
       }
-
-      if (input.employee_group_id > 0) {
-        str += ` and E.employee_group_id= ${input.employee_group_id}`;
-      }
       if (input.sub_department_id > 0) {
         str += ` and E.sub_department_id= ${input.sub_department_id}`;
       }
@@ -53,28 +49,15 @@ const executePDF = function executePDFMethod(options) {
 
       options.mysql
         .executeQuery({
-          query: `select hims_d_earning_deduction_id,earning_deduction_description,short_desc,component_category, print_order_by, \
-				nationality_id from hims_d_earning_deduction where record_status='A' and print_report='Y' order by print_order_by ;\
-				select E.employee_code,E.full_name,E.employee_designation_id,S.employee_id,E.sub_department_id,E.date_of_joining,E.nationality,E.mode_of_payment,\
-				E.hospital_id,E.employee_group_id,D.designation,EG.group_description,N.nationality,\
-				S.hims_f_salary_id,S.salary_number,S.salary_date,S.present_days,S.total_days,S.display_present_days,S.total_paid_days,S.net_salary,S.total_earnings,S.loan_due_amount,S.total_deductions,S.salary_paid_date, case when S.salary_paid='Y' then 'Paid' else 'Unpaid' end as payment_status,
-case when S.salary_processed='Y' then 'Finalized' else 'Not Finalized' end as processed_status,\
-        S.total_contributions,coalesce(S.ot_work_hours,0.0) as ot_work_hours,    coalesce(S.ot_weekoff_hours,0.0) as ot_weekoff_hours,\
-        coalesce(S.ot_holiday_hours,0.0) as ot_holiday_hours,H.hospital_name,SD.sub_department_name
-				from hims_d_employee E\
-				left join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id\
-				left join hims_d_hospital H  on E.hospital_id=H.hims_d_hospital_id  \
-				left join hims_d_designation D on E.employee_designation_id=D.hims_d_designation_id\
-				left join hims_d_employee_group EG on E.employee_group_id=EG.hims_d_employee_group_id\
-				left join hims_d_nationality N on E.nationality=N.hims_d_nationality_id\
-				left join  hims_f_salary S on E.hims_d_employee_id=S.employee_id\
-				where  E.hospital_id=?  and E.suspend_salary ='N' and S.salary_type ='NS' and E.employee_status='A' and E.employee_group_id=? and S.month=? and S.year=?  ${is_local} ${str}`,
-          values: [
-            input.hospital_id,
-            input.employee_group_id,
-            input.month,
-            input.year,
-          ],
+          query: `select E.employee_code,E.full_name,E.employee_designation_id,E.employee_id,E.sub_department_id,E.date_of_joining,E.nationality,E.mode_of_payment,E.hospital_id,E.employee_group_id,D.designation,EG.group_description,N.nationality,S.net_salary,S.total_earnings,S.total_deductions
+          from hims_d_employee E
+          left join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id
+          left join hims_d_hospital H  on E.hospital_id=H.hims_d_hospital_id
+          left join hims_d_designation D on E.employee_designation_id=D.hims_d_designation_id 
+          left join hims_d_employee_group EG on E.employee_group_id=EG.hims_d_employee_group_id
+          left join hims_d_nationality N on E.nationality=N.hims_d_nationality_id
+          where  E.hospital_id=? and E.employee_status='A' and E.employee_group_id=?  ${is_local} ${str}`,
+          values: [input.hospital_id, input.employee_group_id],
           printQuery: true,
         })
         .then((result) => {
@@ -112,11 +95,8 @@ case when S.salary_processed='Y' then 'Finalized' else 'Not Finalized' end as pr
 
             sum_net_salary = _.sumBy(salary, (s) => parseFloat(s.net_salary));
 
-            const salary_header_ids = [];
             const employee_ids = [];
             salary.forEach((s) => {
-              salary_header_ids.push(s.hims_f_salary_id);
-
               employee_ids.push(s.employee_id);
             });
 
@@ -125,44 +105,22 @@ case when S.salary_processed='Y' then 'Finalized' else 'Not Finalized' end as pr
             options.mysql
               .executeQuery({
                 query:
-                  "select hims_f_salary_earnings_id,salary_header_id,earnings_id,amount,per_day_salary,ED.nationality_id from \
-					  hims_f_salary_earnings SE inner join hims_d_earning_deduction ED on \
-					  SE.earnings_id=ED.hims_d_earning_deduction_id  and ED.print_report='Y' where salary_header_id in (" +
-                  salary_header_ids +
-                  ");\
-					  select hims_f_salary_deductions_id,salary_header_id,deductions_id,amount,per_day_salary,ED.nationality_id from \
-					  hims_f_salary_deductions SD inner join hims_d_earning_deduction ED on \
-					  SD.deductions_id=ED.hims_d_earning_deduction_id  and ED.print_report='Y' \
-					  where salary_header_id in ( " +
-                  salary_header_ids +
-                  ");select basic_earning_component from hims_d_hrms_options;\
-						select employee_id,gratuity_amount from hims_f_gratuity_provision where year=? and month=?;\
-						select employee_id,leave_days,leave_salary,airfare_amount from hims_f_leave_salary_accrual_detail\
-						where year=? and month=?;\
-						select hims_f_salary_contributions_id,salary_header_id,contributions_id,amount,ED.nationality_id from \
-						hims_f_salary_contributions SC inner join hims_d_earning_deduction ED on \
-						SC.contributions_id=ED.hims_d_earning_deduction_id  and ED.print_report='Y' \
-						where salary_header_id in ( " +
-                  salary_header_ids +
-                  ");   select employee_id,sum(amount) as amount  from hims_f_miscellaneous_earning_deduction\
-                  where year=? and  month=?  and  category='E' and employee_id in(?)\
-                  group by  employee_id WITH ROLLUP; \
-                   select  employee_id,sum(amount) as amount  from hims_f_miscellaneous_earning_deduction\
-                  where year=? and  month=?  and  category='D' and employee_id in(?)\
-                  group by  employee_id WITH ROLLUP; ",
+                  "select hims_d_employee_earnings_id,earnings_id,amount \
+                  from hims_d_employee_earnings SE \
+                  inner join hims_d_earning_deduction ED on SE.earnings_id=ED.hims_d_earning_deduction_id and ED.print_report='Y'\
+                  where employee_id in ("+ employee_ids +");\
+                  select hims_d_employee_deductions_id,deductions_id,amount \ 
+                  from hims_d_employee_deductions SD \
+                  inner join hims_d_earning_deduction ED on SD.hims_d_employee_deductions_id=ED.hims_d_earning_deduction_id and ED.print_report='Y' \
+                  where employee_id in ("+ employee_ids +");\
+                  select hims_d_employee_contributions_id,contributions_id,amount \
+                  from hims_d_employee_contributions SC \
+                  inner join hims_d_earning_deduction ED on SC.hims_d_employee_contributions_id=ED.hims_d_earning_deduction_id and ED.print_report='Y' \
+                  where employee_id in ( " + employee_ids +");",
                 values: [
-                  input.year,
-                  input.month,
-                  input.year,
-                  input.month,
-                  input.year,
-                  input.month,
-                  employee_ids,
-                  input.year,
-                  input.month,
                   employee_ids,
                 ],
-                printQuery: false,
+                printQuery: true,
               })
               .then((results) => {
                 //ST print inputs in report
@@ -199,41 +157,7 @@ case when S.salary_processed='Y' then 'Finalized' else 'Not Finalized' end as pr
                 let sum_misle_earnings = results[6].pop();
                 let sum_misle_deductions = results[7].pop();
                 for (let i = 0; i < salary.length; i++) {
-                  //ST-complete OVER-Time (ot,wot,hot all togather sum)  calculation
-                  let ot_hours = 0;
-                  let ot_min = 0;
-
-                  ot_hours += parseInt(
-                    salary[i]["ot_work_hours"].toString().split(".")[0]
-                  );
-                  ot_min += parseInt(
-                    salary[i]["ot_work_hours"].toString().split(".")[1]
-                  );
-
-                  ot_hours += parseInt(
-                    salary[i]["ot_weekoff_hours"].toString().split(".")[0]
-                  );
-                  ot_min += parseInt(
-                    salary[i]["ot_weekoff_hours"].toString().split(".")[1]
-                  );
-
-                  ot_hours += parseInt(
-                    salary[i]["ot_holiday_hours"].toString().split(".")[0]
-                  );
-                  ot_min += parseInt(
-                    salary[i]["ot_holiday_hours"].toString().split(".")[1]
-                  );
-
-                  ot_hours += parseInt(parseInt(ot_min) / parseInt(60));
-
-                  let complete_ot =
-                    ot_hours + "." + (parseInt(ot_min) % parseInt(60));
-                  //EN-complete OVER-Time  calculation
-
-                  const earning_obj = earnings.filter(
-                    (item) =>
-                      item.salary_header_id == salary[i]["hims_f_salary_id"]
-                  );
+                
 
                   let employee_earning = earning_component.map((m) => {
                     const obj = earning_obj.find((f) => {
@@ -253,9 +177,7 @@ case when S.salary_processed='Y' then 'Finalized' else 'Not Finalized' end as pr
                   });
 
                   const deduction_obj = deductions.filter(
-                    (item) =>
-                      item.salary_header_id == salary[i]["hims_f_salary_id"]
-                  );
+                 
 
                   const employee_deduction = deduction_component.map((m) => {
                     const obj = deduction_obj.find((f) => {

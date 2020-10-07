@@ -26,6 +26,9 @@ export function InputItem({
     category_id: "",
     group_id: "",
     item_notes: "",
+    category_desc: "",
+    group_description: "",
+    uom_description: "",
     disableAddBtn: true,
   };
   const [state, setState] = useState(baseState);
@@ -40,6 +43,9 @@ export function InputItem({
       uom_id: i.purchase_uom_id,
       category_id: i.category_id,
       group_id: i.group_id,
+      category_desc: i.category_desc,
+      group_description: i.group_description,
+      uom_description: i.purchase_uom_desc,
       disableAddBtn: false,
     }));
   };

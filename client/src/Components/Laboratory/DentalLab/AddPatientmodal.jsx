@@ -955,6 +955,31 @@ export function AddPatientDentalForm({
                       />
                       <Controller
                         control={control}
+                        name="box_code"
+                        rules={{ required: "Enter qunatity" }}
+                        render={(props) => (
+                          <AlgaehFormGroup
+                            div={{ className: "col mandatory form-group" }}
+                            label={{
+                              forceLabel: "Enter Box Code",
+                              isImp: true,
+                            }}
+                            error={errors}
+                            textBox={{
+                              ...props,
+                              // type: "number",
+                              className: "txt-fld",
+                              // min: "0",
+                              name: "box_code",
+                              // placeholder: "Enter quantity utilised ",
+                              // disabled: disabled || current.request_status === "APR",
+                              tabIndex: "9",
+                            }}
+                          />
+                        )}
+                      />
+                      <Controller
+                        control={control}
                         name="quantity_utilised"
                         rules={{ required: "Enter quantity" }}
                         render={(props) => (
@@ -997,31 +1022,6 @@ export function AddPatientDentalForm({
                               className: "txt-fld",
                               // min: "0",
                               name: "quantity_available",
-                              // placeholder: "Enter quantity utilised ",
-                              // disabled: disabled || current.request_status === "APR",
-                              tabIndex: "9",
-                            }}
-                          />
-                        )}
-                      />
-                      <Controller
-                        control={control}
-                        name="box_code"
-                        rules={{ required: "Enter qunatity" }}
-                        render={(props) => (
-                          <AlgaehFormGroup
-                            div={{ className: "col mandatory form-group" }}
-                            label={{
-                              forceLabel: "Enter quantity available",
-                              isImp: true,
-                            }}
-                            error={errors}
-                            textBox={{
-                              ...props,
-                              // type: "number",
-                              className: "txt-fld",
-                              // min: "0",
-                              name: "box_code",
                               // placeholder: "Enter quantity utilised ",
                               // disabled: disabled || current.request_status === "APR",
                               tabIndex: "9",

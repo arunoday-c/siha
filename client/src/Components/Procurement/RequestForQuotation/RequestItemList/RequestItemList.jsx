@@ -32,11 +32,19 @@ class RequestItemList extends Component {
         ItemInput.phar_item_group = input.group_id;
         ItemInput.phar_item_id = input.item_id;
         ItemInput.pharmacy_uom_id = input.uom_id;
+        ItemInput.item_description = input.item_description;
+        ItemInput.category_desc = input.category_desc;
+        ItemInput.group_description = input.group_description;
+        ItemInput.uom_description = input.uom_description;
       } else {
         ItemInput.inv_item_category_id = input.category_id;
         ItemInput.inv_item_group_id = input.group_id;
         ItemInput.inv_item_id = input.item_id;
         ItemInput.inventory_uom_id = input.uom_id;
+        ItemInput.item_description = input.item_description;
+        ItemInput.category_desc = input.category_desc;
+        ItemInput.group_description = input.group_description;
+        ItemInput.uom_description = input.uom_description;
       }
       let quotation_detail = [...this.context.state.quotation_detail];
       quotation_detail.push(ItemInput);
@@ -91,9 +99,9 @@ class RequestItemList extends Component {
                           ),
                           displayTemplate: (row) => {
                             // let display;
-                            debugger;
+
                             // quotation_for === "INV";
-                            return row["item_description"];
+                            return row.item_description;
                             // isPharmacy
                             //   ? (display =
                             //       this.props.poitemlist === undefined
@@ -136,33 +144,33 @@ class RequestItemList extends Component {
                           ),
 
                           displayTemplate: (row) => {
-                            let display;
+                            // let display;
+                            return row.category_desc;
+                            // isPharmacy
+                            //   ? (display =
+                            //       this.props.poitemcategory === undefined
+                            //         ? []
+                            //         : this.props.poitemcategory.filter(
+                            //             (f) =>
+                            //               f.hims_d_item_category_id ===
+                            //               row.phar_item_category
+                            //           ))
+                            //   : (display =
+                            //       this.props.poitemcategory === undefined
+                            //         ? []
+                            //         : this.props.poitemcategory.filter(
+                            //             (f) =>
+                            //               f.hims_d_inventory_tem_category_id ===
+                            //               row.inv_item_category_id
+                            //           ));
 
-                            isPharmacy
-                              ? (display =
-                                  this.props.poitemcategory === undefined
-                                    ? []
-                                    : this.props.poitemcategory.filter(
-                                        (f) =>
-                                          f.hims_d_item_category_id ===
-                                          row.phar_item_category
-                                      ))
-                              : (display =
-                                  this.props.poitemcategory === undefined
-                                    ? []
-                                    : this.props.poitemcategory.filter(
-                                        (f) =>
-                                          f.hims_d_inventory_tem_category_id ===
-                                          row.inv_item_category_id
-                                      ));
-
-                            return (
-                              <span>
-                                {display !== undefined && display.length !== 0
-                                  ? display[0].category_desc
-                                  : ""}
-                              </span>
-                            );
+                            // return (
+                            //   <span>
+                            //     {display !== undefined && display.length !== 0
+                            //       ? display[0].category_desc
+                            //       : ""}
+                            //   </span>
+                            // );
                           },
                           others: {
                             minWidth: 150,
@@ -177,33 +185,34 @@ class RequestItemList extends Component {
                           ),
 
                           displayTemplate: (row) => {
-                            let display;
+                            return row.group_description;
+                            // let display;
 
-                            isPharmacy
-                              ? (display =
-                                  this.props.poitemgroup === undefined
-                                    ? []
-                                    : this.props.poitemgroup.filter(
-                                        (f) =>
-                                          f.hims_d_item_group_id ===
-                                          row.phar_item_group
-                                      ))
-                              : (display =
-                                  this.props.poitemgroup === undefined
-                                    ? []
-                                    : this.props.poitemgroup.filter(
-                                        (f) =>
-                                          f.hims_d_inventory_item_group_id ===
-                                          row.inv_item_group_id
-                                      ));
+                            // isPharmacy
+                            //   ? (display =
+                            //       this.props.poitemgroup === undefined
+                            //         ? []
+                            //         : this.props.poitemgroup.filter(
+                            //             (f) =>
+                            //               f.hims_d_item_group_id ===
+                            //               row.phar_item_group
+                            //           ))
+                            //   : (display =
+                            //       this.props.poitemgroup === undefined
+                            //         ? []
+                            //         : this.props.poitemgroup.filter(
+                            //             (f) =>
+                            //               f.hims_d_inventory_item_group_id ===
+                            //               row.inv_item_group_id
+                            //           ));
 
-                            return (
-                              <span>
-                                {display !== undefined && display.length !== 0
-                                  ? display[0].group_description
-                                  : ""}
-                              </span>
-                            );
+                            // return (
+                            //   <span>
+                            //     {display !== undefined && display.length !== 0
+                            //       ? display[0].group_description
+                            //       : ""}
+                            //   </span>
+                            // );
                           },
                           others: {
                             minWidth: 150,
@@ -215,33 +224,36 @@ class RequestItemList extends Component {
                             : "inventory_uom_id",
                           label: <AlgaehLabel label={{ forceLabel: "UOM" }} />,
                           displayTemplate: (row) => {
-                            let display;
+                            return row.uom_description
+                              ? row.uom_description
+                              : row.purchase_uom_desc;
+                            // let display;
 
-                            isPharmacy
-                              ? (display =
-                                  this.props.poitemuom === undefined
-                                    ? []
-                                    : this.props.poitemuom.filter(
-                                        (f) =>
-                                          f.hims_d_pharmacy_uom_id ===
-                                          row.pharmacy_uom_id
-                                      ))
-                              : (display =
-                                  this.props.poitemuom === undefined
-                                    ? []
-                                    : this.props.poitemuom.filter(
-                                        (f) =>
-                                          f.hims_d_inventory_uom_id ===
-                                          row.inventory_uom_id
-                                      ));
+                            // isPharmacy
+                            //   ? (display =
+                            //       this.props.poitemuom === undefined
+                            //         ? []
+                            //         : this.props.poitemuom.filter(
+                            //             (f) =>
+                            //               f.hims_d_pharmacy_uom_id ===
+                            //               row.pharmacy_uom_id
+                            //           ))
+                            //   : (display =
+                            //       this.props.poitemuom === undefined
+                            //         ? []
+                            //         : this.props.poitemuom.filter(
+                            //             (f) =>
+                            //               f.hims_d_inventory_uom_id ===
+                            //               row.inventory_uom_id
+                            //           ));
 
-                            return (
-                              <span>
-                                {display !== undefined && display.length !== 0
-                                  ? display[0].uom_description
-                                  : ""}
-                              </span>
-                            );
+                            // return (
+                            //   <span>
+                            //     {display !== undefined && display.length !== 0
+                            //       ? display[0].uom_description
+                            //       : ""}
+                            //   </span>
+                            // );
                           },
                           others: {
                             minWidth: 100,

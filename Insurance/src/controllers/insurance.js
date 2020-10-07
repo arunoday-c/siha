@@ -8,7 +8,7 @@ import insuranceModels, {
   generateAccountingEntry,
   closeStatement,
 } from "../models/insurance";
-
+import { generateInsuranceStatement } from "../models/insuranceStatement";
 const {
   addPatientInsuranceData,
   getListOfInsuranceProvider,
@@ -283,6 +283,6 @@ export default () => {
     });
     next();
   });
-
+  api.get("/generateInsuranceStatement", generateInsuranceStatement);
   return api;
 };

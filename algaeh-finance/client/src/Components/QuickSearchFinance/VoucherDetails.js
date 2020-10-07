@@ -81,12 +81,12 @@ export default function VoucherDetails({ visible, data, onClose }) {
                   label: "Ledger Name",
                 },
                 {
-                  fieldName: "credit_amount",
-                  label: "Credit Amount",
-                },
-                {
                   fieldName: "debit_amount",
                   label: "Debit Amount",
+                },
+                {
+                  fieldName: "credit_amount",
+                  label: "Credit Amount",
                 },
               ]}
               height="40vh"
