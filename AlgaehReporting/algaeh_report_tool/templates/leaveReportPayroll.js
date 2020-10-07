@@ -69,7 +69,7 @@ left join hims_d_hospital H  on E.hospital_id=H.hims_d_hospital_id \
 left join algaeh_d_app_user L1 on LA.authorized1_by=L1.algaeh_d_app_user_id \
 left join algaeh_d_app_user L2 on LA.authorized2_by=L2.algaeh_d_app_user_id \
 left join algaeh_d_app_user L3 on LA.authorized3_by=L3.algaeh_d_app_user_id \
-where E.record_status='A' and  (  (  date(?)>=date(from_date) and date(?)<=date(to_date)) or \
+where E.employee_status='A' and  (  (  date(?)>=date(from_date) and date(?)<=date(to_date)) or \
 ( date(?)>=date(from_date) and   date(?)<=date(to_date)) \
 or (date(from_date)>= date(?) and date(from_date)<=date(?) ) )  ${is_local}	${str};`,
           values: [
