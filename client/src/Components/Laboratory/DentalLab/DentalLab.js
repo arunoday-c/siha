@@ -123,7 +123,8 @@ export default function DentalLab() {
   });
   useEffect(() => {
     Promise.all([
-      loadRequestList(getValues()),
+      // loadRequestList(getValues()),
+      loadRequestListAll(),
       // // getDoctorData(),
       // vendorDetails(),
       // getProcedures(),
@@ -172,6 +173,7 @@ export default function DentalLab() {
   // });
   const loadRequestList = async (data) => {
     setLoadingRequestList(true);
+
     try {
       const res = await newAlgaehApi({
         uri: "/dentalForm/getDentalLab",
@@ -194,7 +196,30 @@ export default function DentalLab() {
       });
     }
   };
-
+  const loadRequestListAll = async () => {
+    setLoadingRequestList(true);
+    try {
+      const res = await newAlgaehApi({
+        uri: "/dentalForm/getDentalLabAll",
+        method: "GET",
+        // data: {
+        //   from_request_date: data.from_request_date,
+        //   to_request_date: data.to_request_date,
+        // },
+      });
+      if (res.data.success) {
+        setRequestList(res.data.records);
+        setLoadingRequestList(false);
+        setLoading(false);
+      }
+    } catch (e) {
+      setLoading(false);
+      AlgaehMessagePop({
+        type: "error",
+        display: e.message,
+      });
+    }
+  };
   // const vendorDetails = () => {
   //   newAlgaehApi({
   //     uri: "/vendor/getVendorMaster",
@@ -291,7 +316,7 @@ export default function DentalLab() {
   // };
   const onClose = () => {
     setOpenDentalModal(false);
-    loadRequestList(getValues());
+    loadRequestListAll();
     setDisabled(false);
     setCurrent([]);
   };
@@ -518,6 +543,17 @@ export default function DentalLab() {
                             );
                           },
                         },
+
+                        {
+                          fieldName: "full_name",
+                          label: "Patient Name",
+                          filterable: true,
+                        },
+                        {
+                          fieldName: "patient_code",
+                          label: "MRN Number",
+                          filterable: true,
+                        },
                         {
                           fieldName: "employee_name",
                           label: "Requested By",
@@ -551,13 +587,8 @@ export default function DentalLab() {
                           label: "Received Date",
                         },
                         {
-                          fieldName: "patient_code",
-                          label: "MRN Number",
-                          filterable: true,
-                        },
-                        {
-                          fieldName: "full_name",
-                          label: "Patient Name",
+                          fieldName: "location_description",
+                          label: "Arrived LOcation",
                           filterable: true,
                         },
                       ]}
