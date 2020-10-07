@@ -89,7 +89,6 @@ class Dashboard extends Component {
   }
 
   eventHandaler(e) {
-    console.log(e, "eventObj");
     let name = e.name || e.target.name;
     let value = e.value || e.target.value;
 
@@ -103,6 +102,8 @@ class Dashboard extends Component {
         dashEvents.getEmployeeDesignationWise(this);
         dashEvents.getProjectList(this);
         dashEvents.getEmployeeProjectWise(this);
+        dashEvents.getDocumentExpiryCurrentMonth(this);
+        dashEvents.getEmployeeCurrentMonth(this);
       }
     );
   }

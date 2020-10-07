@@ -118,7 +118,7 @@ export default function DashBoardEvents() {
       });
     },
     getDocumentExpiryCurrentMonth: ($this) => {
-      debugger;
+      // debugger;
       // var date = new Date(),
       //   y = date.getFullYear(),
       //   m = date.getMonth();
@@ -136,7 +136,7 @@ export default function DashBoardEvents() {
         },
         method: "GET",
         onSuccess: (response) => {
-          debugger;
+          // debugger;
           if (response.data.success) {
             $this.setState({
               documentExpiryData: response.data.records,
