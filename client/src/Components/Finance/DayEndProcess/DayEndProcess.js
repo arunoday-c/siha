@@ -386,17 +386,18 @@ class DayEndProcess extends Component {
                       ),
                     },
                     {
-                      fieldName: "credit_amount",
-                      label: (
-                        <AlgaehLabel label={{ forceLabel: "Credit Amount" }} />
-                      ),
-                    },
-                    {
                       fieldName: "debit_amount",
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Debit Amount" }} />
                       ),
                     },
+                    {
+                      fieldName: "credit_amount",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Credit Amount" }} />
+                      ),
+                    },
+
                     // {
                     //   fieldName: "narration",
                     //   label: <AlgaehLabel label={{ forceLabel: "Narration" }} />

@@ -1589,7 +1589,7 @@ export default {
         _mysql.releaseConnection();
 
         req.records = {
-          entries: result,
+          entries: _.orderBy(result, ["payment_type"], ["desc"]),
         };
         next();
       })

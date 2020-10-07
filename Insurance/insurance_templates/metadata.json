@@ -23,7 +23,7 @@
       { "name": "Invoice No.", "mapping": "invoice_number" },
       { "name": "Diagnosis", "mapping": "icd_description" },
       { "name": "Consultation", "mapping": "consultation" },
-      { "name": "Drug", "mapping": "" },
+      { "name": "Drug", "mapping": "pharmacy" },
       { "name": "Lab", "mapping": "lab" },
       { "name": "X-Ray & U/S", "mapping": "radiology" },
       { "name": "Other Treatment", "mapping": "procedure" },
