@@ -24,7 +24,7 @@ const executePDF = function executePDFMethod(options) {
 		  case when advance_status='PAI' then 'Approved & Paid'  when advance_status='APR' then 'Approved & Unpaid' \
 		  when advance_status='REJ' then 'Rejected & Unpaid' end as status from hims_f_employee_advance adv,\
 		  hims_d_employee emp where adv.employee_id = emp.hims_d_employee_id and adv.hospital_id=?\
-		  and adv.deducting_year = ?  and adv.deducting_month = ? and emp.record_status='A' ${str}`,
+		  and adv.deducting_year = ?  and adv.deducting_month = ? and emp.employee_status='A' ${str}`,
           values: [input.hospital_id, input.year, input.month],
           printQuery: true,
         })

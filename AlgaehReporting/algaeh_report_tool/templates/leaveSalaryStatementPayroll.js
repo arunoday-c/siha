@@ -42,7 +42,7 @@ const executePDF = function executePDFMethod(options) {
             left join hims_d_department DP on SD.department_id=DP.hims_d_department_id
             left join  hims_d_nationality NA  on E.nationality=NA.hims_d_nationality_id
                	left join hims_d_hospital H  on E.hospital_id=H.hims_d_hospital_id \
-            WHERE  E.hospital_id=? and S.year=? and S.month=? and E.record_status='A' ${is_local} ${strData} ;`,
+            WHERE  E.hospital_id=? and S.year=? and S.month=? and E.employee_status='A' ${is_local} ${strData} ;`,
           values: [input.hospital_id, input.year, input.month],
           printQuery: true,
         })

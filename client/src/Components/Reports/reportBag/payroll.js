@@ -1092,6 +1092,115 @@ export default function Payroll({
         //reportParameters: () => <General ui="asset_warty_exp_rep" />
       },
       {
+        subitem: "Employee Payroll Details",
+        reportName: "employeePayrollDetails",
+        requireIframe: true,
+        pageSize: "A3",
+        componentCode: "RPT_PAY_EMP_SAL_DTL",
+        pageOrentation: "landscape", //"portrait",
+        reportParameters: [
+          {
+            className: "col-3 form-group mandatory",
+            type: "dropdown",
+            name: "hospital_id",
+            initialLoad: true,
+            isImp: true,
+            label: "branch",
+            link: {
+              uri: "/organization/getOrganizationByUser",
+            },
+            value: hospital_id,
+            dataSource: {
+              textField: "hospital_name",
+              valueField: "hims_d_hospital_id",
+              data: undefined,
+            },
+          },
+          {
+            className: "col-3 form-group mandatory",
+            type: "dropdown",
+            name: "employee_group_id",
+            initialLoad: true,
+            isImp: true,
+            label: "Employee Group",
+            link: {
+              uri: "/hrsettings/getEmployeeGroups",
+              module: "hrManagement",
+            },
+            dataSource: {
+              textField: "group_description",
+              valueField: "hims_d_employee_group_id",
+            },
+          },
+          {
+            className: "col-3 form-group",
+            type: "dropdown",
+            name: "department_id",
+            initialLoad: true,
+            isImp: false,
+            label: "Department",
+            link: {
+              uri: "/department/get",
+              module: "masterSettings",
+            },
+            dataSource: {
+              textField: "department_name",
+              valueField: "hims_d_department_id",
+              data: undefined,
+            },
+            events: {
+              onChange: (reportState, currentEvent) => {
+                //provider_id_list CONTROL NAME AND APPEND BY _LIST
+                algaehApiCall({
+                  uri: "/department/get/subdepartment",
+                  module: "masterSettings",
+                  method: "GET",
+                  data: { department_id: currentEvent.value },
+
+                  onSuccess: (result) => {
+                    reportState.setState({
+                      sub_department_id_list: result.data.records,
+                    });
+                  },
+                });
+              },
+              onClear: (reportState, currentName) => {
+                reportState.setState({
+                  [currentName]: undefined,
+                  sub_department_id_list: [],
+                });
+              },
+            },
+          },
+          {
+            className: "col-3 form-group",
+            type: "dropdown",
+            name: "sub_department_id",
+            isImp: false,
+            label: "Sub-Department",
+            dataSource: {
+              textField: "sub_department_name",
+              valueField: "hims_d_sub_department_id",
+              data: undefined,
+            },
+          },
+          {
+            className: "col-3 form-group",
+            type: "dropdown",
+            name: "is_local",
+            initialLoad: true,
+            // isImp: true,
+            label: "Employee Type",
+            dataSource: {
+              textField: "name",
+              valueField: "value",
+              data: LOCAL_TYPE,
+            },
+          },
+        ],
+        //reportParameters: () => <General ui="asset_warty_exp_rep" />
+      },
+      {
         subitem: "Leave Salary Statement",
         reportName: "leaveSalaryStatementPayroll",
         requireIframe: true,
