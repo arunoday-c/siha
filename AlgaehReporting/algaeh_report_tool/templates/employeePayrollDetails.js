@@ -49,15 +49,14 @@ const executePDF = function executePDFMethod(options) {
 
       options.mysql
         .executeQuery({
-          query: `select E.employee_code,E.full_name,E.employee_designation_id,S.employee_id,E.sub_department_id,E.date_of_joining,E.nationality,E.mode_of_payment,E.hospital_id,E.employee_group_id,D.designation,EG.group_description,N.nationality,S.net_salary,S.total_earnings,S.total_deductions
+          query: `select E.employee_code,E.full_name,E.employee_designation_id,E.employee_id,E.sub_department_id,E.date_of_joining,E.nationality,E.mode_of_payment,E.hospital_id,E.employee_group_id,D.designation,EG.group_description,N.nationality,S.net_salary,S.total_earnings,S.total_deductions
           from hims_d_employee E
           left join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id
           left join hims_d_hospital H  on E.hospital_id=H.hims_d_hospital_id
           left join hims_d_designation D on E.employee_designation_id=D.hims_d_designation_id 
           left join hims_d_employee_group EG on E.employee_group_id=EG.hims_d_employee_group_id
           left join hims_d_nationality N on E.nationality=N.hims_d_nationality_id
-          left join  hims_f_salary S on E.hims_d_employee_id=S.employee_id
-          where  E.hospital_id=? and E.record_status='A' and E.employee_group_id=?  ${is_local} ${str}`,
+          where  E.hospital_id=? and E.employee_status='A' and E.employee_group_id=?  ${is_local} ${str}`,
           values: [input.hospital_id, input.employee_group_id],
           printQuery: true,
         })
