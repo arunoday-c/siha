@@ -133,8 +133,11 @@ export default function NursesNotes({
         <div className="row">
           {!viewOnly && (
             <>
-              <h6>Enter Nursing Notes</h6>
-              <hr />{" "}
+              <div className="col-12">
+                {" "}
+                <h6>Enter Nursing Notes</h6>
+                <hr />{" "}
+              </div>
               <div className="col-12">
                 <textarea
                   value={input}
@@ -142,7 +145,7 @@ export default function NursesNotes({
                   onChange={(e) => setInput(e.target.value)}
                 />
               </div>
-              <div className="col-12" style={{ textAlign: "right" }}>
+              <div className="col-12 form-group" style={{ textAlign: "right" }}>
                 <button
                   className="btn btn-primary"
                   onClick={() => {

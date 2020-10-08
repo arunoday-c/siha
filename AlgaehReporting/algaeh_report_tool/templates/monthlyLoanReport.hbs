@@ -14,10 +14,10 @@
                         <th>Loan Number</th>
                         <th>Deducting Month & Year</th>
                         <th>Loan Type</th>
-                        <th>Approved Amt.</th>
-                        <th>Payble Amt.</th>
-                        <th>Balance Amt.</th>
-                        <th>Balance EMI</th>
+                        <th>Approved Amount</th>
+                        <th>Opening Balance</th>
+                        <th>Deducting Amount</th>
+                        <th>Closing Balance</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -31,9 +31,9 @@
                         <td>{{deducting_month}}-{{year}}</td>
                         <td>{{loan_description}}</td>
                         <td>{{approved_amount}}</td>
-                        <td>{{loan_due_amount}}</td>
                         <td>{{pending_loan}}</td>
-                        <td>{{pending_tenure}}</td>
+                        <td>{{loan_due_amount}}</td>
+                        <td>{{closing_balance}}</td>
                     </tr>
                     {{/each }}
 

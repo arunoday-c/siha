@@ -109,7 +109,12 @@
     overflow-x: hidden;
     max-height: 73vh;
   }
-  .patientNotesGrid_Cntr,
+  .patientNotesGrid {
+    min-height: 20vh !important;
+    max-height: 45vh !important;
+    overflow: auto;
+    margin-bottom: 15px;
+  }
   .patientAllergyGrid_Cntr {
     .ReactTable {
       max-height: 39vh !important;

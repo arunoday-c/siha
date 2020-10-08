@@ -108,14 +108,14 @@
 
 .patientExamGrid_Cntr {
   .ReactTable {
-    max-height: 27vh !important;
+    max-height: 2vh !important;
   }
 }
 
-.patientNotesGrid_Cntr {
-  .ReactTable {
-    max-height: 39vh !important;
-  }
+.patientNotesGrid {
+  min-height: 45vh !important;
+  max-height: 45vh !important;
+  overflow: auto;
 }
 .pullRight {
   button {

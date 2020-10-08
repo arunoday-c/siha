@@ -1872,7 +1872,8 @@ td {
   .fa-print,
   .fa-random,
   .fa-undo-alt,
-  .fa-paper-plane {
+  .fa-paper-plane,
+  .fa-paperclip {
     cursor: pointer;
     border: 1px solid lighten($primary-color, 10%);
     height: 28px;
@@ -1909,7 +1910,8 @@ td {
   .fa-exchange-alt:hover,
   .fa-print:hover,
   .fa-random:hover,
-  .fa-paper-plane:hover {
+  .fa-paper-plane:hover,
+  .fa-paperclip:hover {
     background: $primary-color;
     color: #fff;
     border-color: $primary-color;
