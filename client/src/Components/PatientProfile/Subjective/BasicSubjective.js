@@ -339,17 +339,9 @@ class BasicSubjective extends Component {
   }
 
   showPhysicalExamination() {
-    const err = Validations(this);
-    if (!err) {
-      if (this.state.hims_f_episode_chief_complaint_id === null) {
-        SubjectiveHandler().addChiefComplainToPatient(this);
-      } else {
-        SubjectiveHandler().updatePatientChiefComplaints(this);
-      }
-      this.setState({
-        openExamnModal: !this.state.openExamnModal,
-      });
-    }
+    this.setState({
+      openExamnModal: !this.state.openExamnModal,
+    });
   }
 
   textAreaEvent(e) {

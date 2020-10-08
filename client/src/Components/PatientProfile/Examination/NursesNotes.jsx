@@ -3,6 +3,7 @@ import {
   AlgaehDataGrid,
   AlgaehMessagePop,
   Spin,
+  Modal,
 } from "algaeh-react-components";
 import { useQuery, useMutation } from "react-query";
 import {
@@ -11,6 +12,8 @@ import {
   updateNurseNote,
   deleteNurseNote,
 } from "./api";
+
+const { confirm } = Modal;
 
 export default function NursesNotes({
   viewOnly = false,
@@ -86,6 +89,20 @@ export default function NursesNotes({
     },
   });
 
+  function deleteConfirm(row) {
+    confirm({
+      title: "Do you Want to delete these item?",
+      onOk() {
+        delNote({
+          hims_f_nurse_notes_id: row?.hims_f_nurse_notes_id,
+        });
+      },
+      onCancel() {
+        console.log("Cancel");
+      },
+    });
+  }
+
   const columns = [
     {
       fieldName: "nursing_notes",
@@ -116,9 +133,7 @@ export default function NursesNotes({
             <i
               className="fas fa-trash-alt"
               onClick={() => {
-                delNote({
-                  hims_f_nurse_notes_id: row?.hims_f_nurse_notes_id,
-                });
+                deleteConfirm(row);
               }}
             ></i>
           </>
@@ -162,7 +177,7 @@ export default function NursesNotes({
                     }
                   }}
                 >
-                  Add Notes
+                  {current ? "Update" : "Add Notes"}
                 </button>
               </div>
             </>
