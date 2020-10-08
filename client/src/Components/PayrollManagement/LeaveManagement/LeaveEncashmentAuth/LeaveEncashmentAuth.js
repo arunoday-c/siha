@@ -8,7 +8,7 @@ import {
   texthandler,
   LoadEncashment,
   getLeaveEncashDetails,
-  // generateLeaveEncashSlip,
+  generateLeaveEncashSlip,
   getLeaveLevels,
   dateFormater,
 } from "./LeaveEncashmentAuthEvents.js";
@@ -390,14 +390,14 @@ class LeaveEncashmentAuth extends Component {
                                   row
                                 )}
                               />
-                              {/* <i
+                              <i
                                 className="fas fa-print"
                                 onClick={generateLeaveEncashSlip.bind(
                                   this,
                                   this,
                                   row
                                 )}
-                              /> */}
+                              />
                             </span>
                           );
                         },

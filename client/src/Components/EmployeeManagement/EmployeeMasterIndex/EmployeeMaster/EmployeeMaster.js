@@ -22,7 +22,10 @@ import { InsertUpdateEmployee } from "./EmployeeMasterEvents";
 import AlgaehLoader from "../../../Wrapper/fullPageLoader";
 import { AlgaehValidation } from "../../../../utils/GlobalFunctions";
 import { MainContext } from "algaeh-react-components";
-import { AlgaehSecurityElement } from "algaeh-react-components";
+import {
+  AlgaehSecurityElement,
+  AlgaehSecurityComponent,
+} from "algaeh-react-components";
 
 class EmployeeMaster extends Component {
   constructor(props) {
@@ -301,32 +304,36 @@ class EmployeeMaster extends Component {
               <div className="tab-container toggle-section">
                 {this.state.personalDetails.hims_d_employee_id !== null ? (
                   <ul className="nav">
-                    <li
-                      algaehtabs={"PersonalDetails"}
-                      className={"nav-item tab-button active"}
-                      onClick={this.openTab.bind(this)}
-                    >
-                      {
-                        <AlgaehLabel
-                          label={{
-                            fieldName: "personal_details",
-                          }}
-                        />
-                      }
-                    </li>
-                    <li
-                      algaehtabs={"OfficalDetails"}
-                      className={"nav-item tab-button"}
-                      onClick={this.openTab.bind(this)}
-                    >
-                      {
-                        <AlgaehLabel
-                          label={{
-                            forceLabel: "Official Details",
-                          }}
-                        />
-                      }
-                    </li>
+                    <AlgaehSecurityComponent componentCode="EMP_TAB_PER">
+                      <li
+                        algaehtabs={"PersonalDetails"}
+                        className={"nav-item tab-button active"}
+                        onClick={this.openTab.bind(this)}
+                      >
+                        {
+                          <AlgaehLabel
+                            label={{
+                              fieldName: "personal_details",
+                            }}
+                          />
+                        }
+                      </li>
+                    </AlgaehSecurityComponent>
+                    <AlgaehSecurityComponent componentCode="EMP_TAB_OFF">
+                      <li
+                        algaehtabs={"OfficalDetails"}
+                        className={"nav-item tab-button"}
+                        onClick={this.openTab.bind(this)}
+                      >
+                        {
+                          <AlgaehLabel
+                            label={{
+                              forceLabel: "Official Details",
+                            }}
+                          />
+                        }
+                      </li>
+                    </AlgaehSecurityComponent>
                     {/*  <li
                       algaehtabs={"DeptUserDetails"}
                       className={"nav-item tab-button"}
@@ -341,64 +348,72 @@ class EmployeeMaster extends Component {
                       }
                     </li>*/}
                     {this.state.HRMS_Active === true ? (
-                      <li
-                        algaehtabs={"PayRollDetails"}
-                        className={"nav-item tab-button"}
-                        onClick={this.openTab.bind(this)}
-                      >
-                        {
-                          <AlgaehLabel
-                            label={{
-                              forceLabel: "Payroll Details",
-                            }}
-                          />
-                        }
-                      </li>
+                      <AlgaehSecurityComponent componentCode="EMP_TAB_PAY">
+                        <li
+                          algaehtabs={"PayRollDetails"}
+                          className={"nav-item tab-button"}
+                          onClick={this.openTab.bind(this)}
+                        >
+                          {
+                            <AlgaehLabel
+                              label={{
+                                forceLabel: "Payroll Details",
+                              }}
+                            />
+                          }
+                        </li>{" "}
+                      </AlgaehSecurityComponent>
                     ) : null}
                     {this.state.personalDetails.isdoctor === "Y" ? (
-                      <li
-                        algaehtabs={"CommissionSetup"}
-                        className={"nav-item tab-button"}
-                        onClick={this.openTab.bind(this)}
-                      >
-                        {
-                          <AlgaehLabel
-                            label={{
-                              fieldName: "commission_setup",
-                            }}
-                          />
-                        }
-                      </li>
+                      <AlgaehSecurityComponent componentCode="EMP_TAB_COMM">
+                        <li
+                          algaehtabs={"CommissionSetup"}
+                          className={"nav-item tab-button"}
+                          onClick={this.openTab.bind(this)}
+                        >
+                          {
+                            <AlgaehLabel
+                              label={{
+                                fieldName: "commission_setup",
+                              }}
+                            />
+                          }
+                        </li>
+                      </AlgaehSecurityComponent>
                     ) : null}
                     {this.state.HRMS_Active === true ? (
-                      <li
-                        algaehtabs={"FamilyAndIdentification"}
-                        className={"nav-item tab-button"}
-                        onClick={this.openTab.bind(this)}
-                      >
-                        {
-                          <AlgaehLabel
-                            label={{
-                              forceLabel: "Family & Identification Details",
-                            }}
-                          />
-                        }
-                      </li>
+                      <AlgaehSecurityComponent componentCode="EMP_TAB_FAM">
+                        <li
+                          algaehtabs={"FamilyAndIdentification"}
+                          className={"nav-item tab-button"}
+                          onClick={this.openTab.bind(this)}
+                        >
+                          {
+                            <AlgaehLabel
+                              label={{
+                                forceLabel: "Family & Identification Details",
+                              }}
+                            />
+                          }
+                        </li>
+                      </AlgaehSecurityComponent>
                     ) : null}
                     {this.state.HRMS_Active === true ? (
-                      <li
-                        algaehtabs={"RulesDetails"}
-                        className={"nav-item tab-button"}
-                        onClick={this.openTab.bind(this)}
-                      >
-                        {
-                          <AlgaehLabel
-                            label={{
-                              forceLabel: "Rules Details",
-                            }}
-                          />
-                        }
-                      </li>
+                      <AlgaehSecurityComponent componentCode="EMP_TAB_RUL">
+                        <li
+                          algaehtabs={"RulesDetails"}
+                          className={"nav-item tab-button"}
+                          onClick={this.openTab.bind(this)}
+                        >
+                          {
+                            <AlgaehLabel
+                              label={{
+                                forceLabel: "Rules Details",
+                              }}
+                            />
+                          }
+                        </li>
+                      </AlgaehSecurityComponent>
                     ) : null}{" "}
                     {/* {this.state.HRMS_Active === true ? (
                       <li

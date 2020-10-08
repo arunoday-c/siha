@@ -725,7 +725,7 @@ class DayEndProcess extends Component {
                             <AlgaehLabel label={{ forceLabel: "Narration" }} />
                           ),
                           disabled: false,
-                          others: { filterable: false },
+                          others: { filterable: true },
                         },
                       ]}
                       keyId="finance_day_end_header_id"

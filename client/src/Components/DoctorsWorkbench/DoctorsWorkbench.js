@@ -708,6 +708,7 @@ class DoctorsWorkbench extends Component {
                             width: 130,
                             style: { textAlign: "center" },
                           },
+                          filterable: true,
                         },
                         {
                           fieldName: "full_name",
@@ -716,6 +717,7 @@ class DoctorsWorkbench extends Component {
                               label={{ fieldName: "patient_name" }}
                             />
                           ),
+                          filterable: true,
                         },
                         {
                           fieldName: "encountered_date",
@@ -790,6 +792,7 @@ class DoctorsWorkbench extends Component {
                           .toArray(),
                       }}
                       isEditable={false}
+                      filter={true}
                       paging={{ page: 0, rowsPerPage: 20 }}
                       events={{
                         onDelete: (row) => {},

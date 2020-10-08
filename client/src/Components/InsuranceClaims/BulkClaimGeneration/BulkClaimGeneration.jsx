@@ -103,6 +103,9 @@ export default function BulkClaimGeneration() {
     }
   };
 
+  const today = new Date();
+  today.setDate(today.getDate() + 1);
+
   return (
     <Spin
       spinning={
@@ -120,7 +123,7 @@ export default function BulkClaimGeneration() {
               textBox={{
                 value: dates,
               }}
-              maxDate={new Date()}
+              maxDate={today}
               events={{
                 onChange: (selected) => {
                   setDates(selected);

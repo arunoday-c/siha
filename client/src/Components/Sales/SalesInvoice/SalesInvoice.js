@@ -167,28 +167,27 @@ class SalesInvoice extends Component {
                     ) : this.state.is_posted === "N" ? (
                       <span className="badge badge-danger">Not Posted</span>
                     ) : (
-                      <span className="badge badge-success">Posted</span>
-                    )}
+                            <span className="badge badge-success">Posted</span>
+                          )}
                   </h6>
                 </div>
               ) : null}
             </div>
           }
           printArea={
-            this.state.hims_f_sales_invoice_header_id !== null &&
-            this.state.is_posted === "Y"
+            this.state.hims_f_sales_invoice_header_id !== null
               ? {
-                  menuitems: [
-                    {
-                      label: "Print Invoice",
-                      events: {
-                        onClick: () => {
-                          generateSalesInvoiceReport(this.state);
-                        },
+                menuitems: [
+                  {
+                    label: "Print Invoice",
+                    events: {
+                      onClick: () => {
+                        generateSalesInvoiceReport(this.state);
                       },
                     },
-                  ],
-                }
+                  },
+                ],
+              }
               : ""
           }
           selectedLang={this.state.selectedLang}
@@ -310,8 +309,8 @@ class SalesInvoice extends Component {
                 <InvoiceListService SALESInvoiceIOputs={this.state} />
               </div>
             ) : (
-              <InvoiceItemList SALESInvoiceIOputs={this.state} />
-            )}
+                <InvoiceItemList SALESInvoiceIOputs={this.state} />
+              )}
           </MyContext.Provider>
 
           <div className="row">
