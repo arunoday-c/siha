@@ -4,12 +4,13 @@ import {
   AlgaehModal,
   Spin,
   AlgaehFormGroup,
-  MainContext
+  MainContext,
 } from "algaeh-react-components";
 import React, { useEffect, useState, useContext } from "react";
 import { useMutation } from "react-query";
 import { newAlgaehApi } from "../../../hooks";
 import { useForm, Controller } from "react-hook-form";
+import { algaehApiCall } from "../../../utils/algaehApiCall";
 
 const closeStatement = async ({
   total_remittance_amount,
@@ -20,7 +21,6 @@ const closeStatement = async ({
   total_company_payable,
   insurance_statement_number,
 }) => {
-
   const res = await newAlgaehApi({
     uri: "/resubmission/closeClaim",
     module: "insurance",
@@ -53,7 +53,6 @@ export function FinalRemittance({ data, refetch }) {
   });
 
   const onSubmit = () => {
-
     closeStat({
       total_denial_amount: denial_amount,
       total_remittance_amount: remittance_amount,
@@ -75,11 +74,11 @@ export function FinalRemittance({ data, refetch }) {
     watch,
     setError,
     clearErrors,
-    register
+    register,
   } = useForm({
     defaultValues: {
       remittance_amount: data?.calc_remittance_amount,
-      denial_amount: data?.calc_remittance_amount
+      denial_amount: data?.calc_remittance_amount,
     },
   });
 
@@ -88,13 +87,57 @@ export function FinalRemittance({ data, refetch }) {
   useEffect(() => {
     reset({
       remittance_amount: parseFloat(data?.calc_remittance_amount),
-      denial_amount: parseFloat(data?.calc_denial_amount)
+      denial_amount: parseFloat(data?.calc_denial_amount),
     });
     //eslint-disable-next-line
   }, [data]);
-
+  function onClickGenerateStatement() {
+    algaehApiCall({
+      uri: "/insurance/generateInsuranceStatement",
+      module: "insurance",
+      data: {
+        insurance_statement_id: data?.hims_f_insurance_statement_id,
+      },
+      method: "GET",
+      extraHeaders: {
+        headers: {
+          Accept: "blob",
+        },
+      },
+      others: {
+        responseType: "blob",
+      },
+      onSuccess: (response) => {
+        let blob = new Blob([response.data], {
+          type: "application/octet-stream",
+        });
+        var objectUrl = URL.createObjectURL(blob);
+        var link = document.createElement("a");
+        link.setAttribute("href", objectUrl);
+        link.setAttribute(
+          "download",
+          `${data?.insurance_statement_number}.xlsx`
+        );
+        link.click();
+      },
+      onCatch: (error) => {
+        AlgaehMessagePop({
+          type: "error",
+          display: error,
+        });
+      },
+    });
+  }
   return (
     <>
+      <button
+        style={{ marginTop: 10, float: "right" }}
+        className="btn btn-default"
+        onClick={onClickGenerateStatement}
+        disabled={!data}
+      >
+        Generate Statement
+      </button>
       <button
         style={{ marginTop: 10, float: "right" }}
         className="btn btn-default"
@@ -151,13 +194,13 @@ export function FinalRemittance({ data, refetch }) {
                     textBox={{
                       value,
                       onChange: (e) => {
-
                         let { value } = e.target;
 
                         if (value) {
                           if (parseFloat(value) <= claim_amount) {
                             onChange(value);
-                            let denial_amount = claim_amount - parseFloat(value);
+                            let denial_amount =
+                              claim_amount - parseFloat(value);
                             denial_amount = denial_amount
                               ? denial_amount.toFixed(userToken.decimal_places)
                               : 0;
@@ -192,7 +235,9 @@ export function FinalRemittance({ data, refetch }) {
                     forceLabel: "Denial Amount",
                   }}
                 />
-                <h6 ref={register({ name: "denial_amount" })}>{denial_amount}</h6>
+                <h6 ref={register({ name: "denial_amount" })}>
+                  {denial_amount}
+                </h6>
               </div>
 
               {/* <div className="col">
