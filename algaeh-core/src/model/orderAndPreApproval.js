@@ -1017,13 +1017,13 @@ let selectOrderServicesbyDoctor = (req, res, next) => {
     let _stringData = "";
     let inputValues = [];
     if (req.query.visit_id != null) {
-      _stringData += " and visit_id=?";
+      _stringData += " and OS.visit_id=?";
       inputValues.push(req.query.visit_id);
     }
     _mysql
       .executeQuery({
         query:
-          "SELECT  OS.`hims_f_ordered_services_id`, OS.`patient_id`, OS.`visit_id`, OS.`doctor_id`,\
+          "SELECT  OS.hims_f_ordered_services_id,LO.lab_id_number, OS.`patient_id`, OS.`visit_id`, OS.`doctor_id`,\
            OS.`service_type_id`, OS.`services_id`, OS.`test_type`, OS.`insurance_yesno`, \
            OS.`insurance_provider_id`, OS.`insurance_sub_id`, OS.`network_id`, \
            OS.`insurance_network_office_id`, OS.`policy_number`, OS.`pre_approval`, OS.`apprv_status`, \
@@ -1041,6 +1041,7 @@ let selectOrderServicesbyDoctor = (req, res, next) => {
            OS.`trans_package_detail_id`, ST.service_type FROM `hims_f_ordered_services` OS \
            inner join  `hims_d_services` S on OS.services_id = S.hims_d_services_id \
            inner join  `hims_d_service_type` ST on OS.service_type_id = ST.hims_d_service_type_id \
+           left join  `hims_f_lab_order` LO on OS.hims_f_ordered_services_id=LO.ordered_services_id\
            WHERE OS.`record_status`='A'  " +
           _stringData,
         values: inputValues,
@@ -1219,7 +1220,7 @@ let getOrderServices = (req, res, next) => {
       connection.query(
         "SELECT  * FROM `hims_f_ordered_services` \
        WHERE `record_status`='A' AND " +
-        where.condition,
+          where.condition,
         where.values,
         (error, result) => {
           releaseDBConnection(db, connection);

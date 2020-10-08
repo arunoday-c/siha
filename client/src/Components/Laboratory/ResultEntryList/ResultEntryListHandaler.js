@@ -3,7 +3,7 @@ import FrontDesk from "../../../Search/FrontDesk.json";
 import moment from "moment";
 import Options from "../../../Options.json";
 // import Enumerable from "linq";
-
+import { newAlgaehApi } from "../../../hooks";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 
 const texthandle = ($this, e) => {
@@ -12,7 +12,7 @@ const texthandle = ($this, e) => {
 
   $this.setState(
     {
-      [name]: value
+      [name]: value,
     },
     () => {
       getSampleCollectionDetails($this);
@@ -23,26 +23,82 @@ const texthandle = ($this, e) => {
 const PatientSearch = ($this, e) => {
   AlgaehSearch({
     searchGrid: {
-      columns: FrontDesk
+      columns: FrontDesk,
     },
     searchName: "patients",
     uri: "/gloabelSearch/get",
     onContainsChange: (text, serchBy, callBack) => {
       callBack(text);
     },
-    onRowSelect: row => {
+    onRowSelect: (row) => {
       $this.setState(
         {
           patient_code: row.patient_code,
-          patient_id: row.hims_d_patient_id
+          patient_id: row.hims_d_patient_id,
         },
         () => {
           getSampleCollectionDetails($this);
         }
       );
-    }
+    },
   });
 };
+export function getSavedDocument($this) {
+  getDocuments($this.state.lab_id_number, $this);
+}
+export function saveDocumentCheck($this) {
+  saveDocument(
+    $this.state.attached_files,
+    $this.state.lab_id_number,
+    $this.state.investigation_test_id,
+    $this
+  );
+}
+export function saveDocument(files = [], contract_no, contract_id, $this) {
+  const formData = new FormData();
+  formData.append("contract_no", contract_no);
+  formData.append("contract_id", contract_id);
+  files.forEach((file, index) => {
+    formData.append(`file_${index}`, file, file.name);
+  });
+  newAlgaehApi({
+    uri: "/saveContractDoc",
+    data: formData,
+    extraHeaders: { "Content-Type": "multipart/form-data" },
+    method: "POST",
+    module: "documentManagement",
+  })
+    .then((value) => getDocuments(contract_no, $this))
+    .catch((e) => console.log(e));
+}
+
+export function getDocuments(contract_no, $this) {
+  newAlgaehApi({
+    uri: "/getContractDoc",
+    module: "documentManagement",
+    method: "GET",
+    data: {
+      contract_no,
+    },
+  })
+    .then((res) => {
+      if (res.data.success) {
+        let { data } = res.data;
+        $this.setState({
+          attached_docs: data,
+          attached_files: [],
+          // saveEnable: $this.state.dataExists,
+        });
+      }
+    })
+    .catch((e) => {
+      // AlgaehLoader({ show: false });
+      swalMessage({
+        title: e.message,
+        type: "error",
+      });
+    });
+}
 
 const datehandle = ($this, ctrl, e) => {
   let intFailure = false;
@@ -51,7 +107,7 @@ const datehandle = ($this, ctrl, e) => {
       intFailure = true;
       swalMessage({
         title: "From Date cannot be grater than To Date.",
-        type: "warning"
+        type: "warning",
       });
     }
   } else if (e === "to_date") {
@@ -59,7 +115,7 @@ const datehandle = ($this, ctrl, e) => {
       intFailure = true;
       swalMessage({
         title: "To Date cannot be less than From Date.",
-        type: "warning"
+        type: "warning",
       });
     }
   }
@@ -67,7 +123,7 @@ const datehandle = ($this, ctrl, e) => {
   if (intFailure === false) {
     $this.setState(
       {
-        [e]: moment(ctrl)._d
+        [e]: moment(ctrl)._d,
       },
       () => {
         getSampleCollectionDetails($this);
@@ -76,7 +132,7 @@ const datehandle = ($this, ctrl, e) => {
   }
 };
 
-const getSampleCollectionDetails = $this => {
+const getSampleCollectionDetails = ($this) => {
   let inputobj = {};
 
   if ($this.state.from_date !== null) {
@@ -106,12 +162,11 @@ const getSampleCollectionDetails = $this => {
     module: "laboratory",
     method: "GET",
     data: inputobj,
-    onSuccess: response => {
+    onSuccess: (response) => {
       if (response.data.success) {
-
         $this.setState({ sample_collection: response.data.records });
       }
-    }
+    },
   });
 
   // $this.props.getSampleCollection({
@@ -130,7 +185,6 @@ const getSampleCollectionDetails = $this => {
 };
 
 const ResultEntryModel = ($this, row) => {
-
   // row.comment_list = row.comments !== null ? row.comments.split("<br/>") : []
   if (row.test_section === "M") {
     if (row.group_id !== null) {
@@ -139,63 +193,63 @@ const ResultEntryModel = ($this, row) => {
         module: "laboratory",
         data: { micro_group_id: row.group_id },
         method: "GET",
-        onSuccess: response => {
-
+        onSuccess: (response) => {
           if (response.data.success) {
-            row.comments_data = response.data.records
+            row.comments_data = response.data.records;
             row.microopen = true;
             $this.setState({
               isMicroOpen: !$this.state.isMicroOpen,
-              selectedPatient: row
+              selectedPatient: row,
             });
           }
         },
-        onFailure: error => {
+        onFailure: (error) => {
           swalMessage({
             title: error.message,
-            type: "error"
+            type: "error",
           });
-        }
+        },
       });
     } else {
-      row.comments_data = []
+      row.comments_data = [];
       row.microopen = true;
       $this.setState({
         isMicroOpen: !$this.state.isMicroOpen,
-        selectedPatient: row
+        selectedPatient: row,
       });
     }
-
   } else {
     if (row.status === "O") {
       swalMessage({
         title: "Please collect the sample.",
-        type: "warning"
+        type: "warning",
       });
     } else {
       if (row.sample_status === "N") {
         swalMessage({
           title: "Please accept the sample.",
-          type: "warning"
+          type: "warning",
         });
       } else {
         algaehApiCall({
           uri: "/investigation/getTestComments",
           module: "laboratory",
-          data: { investigation_test_id: row.hims_d_investigation_test_id, comment_status: "A" },
+          data: {
+            investigation_test_id: row.hims_d_investigation_test_id,
+            comment_status: "A",
+          },
           method: "GET",
-          onSuccess: response => {
+          onSuccess: (response) => {
             if (response.data.success === true) {
               row.open = true;
-              row.comments_data = response.data.records
+              row.comments_data = response.data.records;
               $this.setState({
                 isOpen: !$this.state.isOpen,
-                selectedPatient: row
+                selectedPatient: row,
               });
             }
-          }
+          },
         });
-
       }
     }
   }
@@ -204,7 +258,7 @@ const ResultEntryModel = ($this, row) => {
 const closeMicroResultEntry = ($this, e) => {
   $this.setState(
     {
-      isMicroOpen: !$this.state.isMicroOpen
+      isMicroOpen: !$this.state.isMicroOpen,
     },
     () => {
       getSampleCollectionDetails($this);
@@ -215,7 +269,7 @@ const closeMicroResultEntry = ($this, e) => {
 const closeResultEntry = ($this, e) => {
   $this.setState(
     {
-      isOpen: !$this.state.isOpen
+      isOpen: !$this.state.isOpen,
     },
     () => {
       getSampleCollectionDetails($this);
@@ -223,7 +277,7 @@ const closeResultEntry = ($this, e) => {
   );
 };
 
-const Refresh = $this => {
+const Refresh = ($this) => {
   let month = moment().format("MM");
   let year = moment().format("YYYY");
 
@@ -234,7 +288,7 @@ const Refresh = $this => {
       patient_id: null,
       patient_code: null,
       proiorty: null,
-      status: null
+      status: null,
     },
     () => {
       getSampleCollectionDetails($this);
@@ -250,5 +304,5 @@ export {
   ResultEntryModel,
   closeResultEntry,
   Refresh,
-  closeMicroResultEntry
+  closeMicroResultEntry,
 };
