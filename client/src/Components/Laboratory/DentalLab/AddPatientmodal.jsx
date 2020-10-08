@@ -91,7 +91,7 @@ export function AddPatientDentalForm({
         provider_id: current.provider_id,
         location_id: current.location_id,
         quantity_utilised: current.quantity_utilised,
-        quantity_available: current.quantity_available,
+        // quantity_available: current.quantity_available,
         box_code: current.box_code,
         due_date: current.due_date,
         service_amount: current.procedure_amt,
@@ -125,7 +125,7 @@ export function AddPatientDentalForm({
         doctor: "",
         arrival_date: undefined,
         location_id: null,
-        quantity_available: "",
+        // quantity_available: "",
         quantity_utilised: "",
         box_code: "",
       });
@@ -221,7 +221,7 @@ export function AddPatientDentalForm({
           doctor_email: current.work_email,
           location_id: data.location_id,
           quantity_utilised: data.quantity_utilised,
-          quantity_available: data.quantity_available,
+          // quantity_available: data.quantity_available,
           box_code: data.box_code,
         },
       });
@@ -1004,7 +1004,7 @@ export function AddPatientDentalForm({
                           />
                         )}
                       />
-                      <Controller
+                      {/* <Controller
                         control={control}
                         name="quantity_available"
                         rules={{ required: "Enter qunatity" }}
@@ -1028,7 +1028,7 @@ export function AddPatientDentalForm({
                             }}
                           />
                         )}
-                      />
+                      /> */}
                     </>
                   ) : null}
                 </>
