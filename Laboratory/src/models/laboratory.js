@@ -11,8 +11,8 @@ export default {
   getLabOrderedServices: (req, res, next) => {
     const _mysql = new algaehMysql();
     try {
-      const utilities = new algaehUtilities();
-      utilities.logger().log("getLabOrderedServices: ");
+      // const utilities = new algaehUtilities();
+      // utilities.logger().log("getLabOrderedServices: ");
       let inputValues = [];
       let _stringData = "";
 
@@ -45,12 +45,12 @@ export default {
         inputValues.push(req.query.test_type);
       }
 
-      utilities.logger().log("_stringData: ", _stringData);
+      // utilities.logger().log("_stringData: ", _stringData);
       _mysql
         .executeQuery({
           query:
             " select hims_f_lab_order_id, LO.patient_id, entered_by, confirmed_by, validated_by, visit_id, critical_status,\
-            group_id, organism_type, bacteria_name, bacteria_type, V.visit_code, provider_id, \
+            group_id, organism_type, bacteria_name, bacteria_type, V.visit_code, provider_id, LO.send_out_test,\
             E.full_name as doctor_name, billed, service_id,  S.service_code, S.service_name, \
             LO.status, cancelled, provider_id, ordered_date, test_type, concat(V.age_in_years,'Y')years, \
             concat(V.age_in_months,'M')months, concat(V.age_in_days,'D')days, \
@@ -72,7 +72,6 @@ export default {
           printQuery: true,
         })
         .then((result) => {
-          utilities.logger().log("result: ", result);
           _mysql.releaseConnection();
           req.records = result;
           next();
@@ -608,14 +607,14 @@ export default {
           inner join hims_d_investigation_test IT on IT.hims_d_investigation_test_id = LS.test_id \
           inner join hims_d_lab_container LC on LC.hims_d_lab_container_id = LS.container_id \
           where IT.services_id=?;\
-          SELECT lab_location_code from hims_d_hospital where hims_d_hospital_id=?",
+          SELECT lab_location_code from hims_d_hospital where hims_d_hospital_id=?;",
             values: [
               inputParam.collected,
               inputParam.status,
               req.userIdentity.algaeh_d_app_user_id,
               inputParam.hims_d_lab_sample_id,
               inputParam.service_id,
-              inputParam.hims_d_hospital_id,
+              inputParam.hims_d_hospital_id
             ],
             printQuery: true,
           })
@@ -676,7 +675,8 @@ export default {
 
                 condition.push;
                 query =
-                  "Update hims_m_hospital_container_mapping set number =?,updated_by=?,updated_date=now() where hims_m_hospital_container_mapping_id =?";
+                  "Update hims_m_hospital_container_mapping set number =?,updated_by=?,updated_date=now() \
+                  where hims_m_hospital_container_mapping_id =?";
               } else {
                 condition.push(
                   inputParam.hims_d_hospital_id,
@@ -688,7 +688,8 @@ export default {
                 );
 
                 query =
-                  "insert into hims_m_hospital_container_mapping (`hospital_id`,`container_id`,`date`,`number`,`created_by`,`updated_by`) values (?,?,?,?,?,?)";
+                  "insert into hims_m_hospital_container_mapping (`hospital_id`,`container_id`,`date`,\
+                  `number`,`created_by`,`updated_by`) values (?,?,?,?,?,?)";
               }
 
               padNum = pad(String(_newNumber), 3, "LEFT", "0");
@@ -706,7 +707,7 @@ export default {
                     query +
                     ";update hims_f_lab_order set lab_id_number ='" +
                     labIdNumber +
-                    "',status='CL' where hims_f_lab_order_id=" +
+                    "',status='CL', send_out_test='" + inputParam.send_out_test + "' where hims_f_lab_order_id=" +
                     inputParam.hims_f_lab_order_id,
                   values: condition,
                   printQuery: true,
@@ -1399,7 +1400,7 @@ export default {
           (w) =>
             w.hims_f_ordered_services_id > 0 &&
             w.service_type_id ==
-              appsettings.hims_d_service_type.service_type_id.Lab
+            appsettings.hims_d_service_type.service_type_id.Lab
         )
         .Select((s) => {
           return {
