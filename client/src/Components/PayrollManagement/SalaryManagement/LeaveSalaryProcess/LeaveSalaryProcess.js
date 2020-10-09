@@ -326,29 +326,45 @@ class LeaveSalaryProcess extends Component {
         </div>
         <div className="col-8">
           <div className="portlet portlet-bordered margin-bottom-15">
-            <div className="portlet-title">
-              <div className="caption">
-                <h3 className="caption-subject">
-                  Employee Name: {this.state.employee_name}
-                </h3>
-              </div>
-              <div className="actions">
-                {this.state.leave_salary_number ? (
-                  <>
-                    {this.state.status === "PEN" ? (
-                      <span className="badge badge-info">Payment Pending</span>
-                    ) : this.state.status === "PRO" ? (
-                      <span className="badge badge-success">Salary Paid</span>
-                    ) : this.state.status === "CAN" ? (
-                      <span className="badge badge-danger">Cancelled</span>
-                    ) : (
-                      ""
-                    )}{" "}
-                  </>
-                ) : null}
-              </div>
-            </div>
             <div className="portlet-body">
+              <div className="row">
+                <div className="col">
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Employee Code & Name",
+                    }}
+                  />
+                  <h6>
+                    {this.state.employee_code} - {this.state.employee_name}
+                  </h6>
+                </div>
+                <div className="col">
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Payment Status",
+                    }}
+                  />
+                  <h6>
+                    {this.state.leave_salary_number ? (
+                      <>
+                        {this.state.status === "PEN" ? (
+                          <span className="badge badge-info">
+                            Payment Pending
+                          </span>
+                        ) : this.state.status === "PRO" ? (
+                          <span className="badge badge-success">
+                            Salary Paid
+                          </span>
+                        ) : this.state.status === "CAN" ? (
+                          <span className="badge badge-danger">Cancelled</span>
+                        ) : (
+                          ""
+                        )}{" "}
+                      </>
+                    ) : null}
+                  </h6>
+                </div>
+              </div>
               <div className="row">
                 <div className="col-12" id="leaveSalaryProcessGrid_Cntr">
                   <AlgaehDataGrid

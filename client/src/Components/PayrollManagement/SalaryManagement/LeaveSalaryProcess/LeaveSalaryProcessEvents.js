@@ -110,6 +110,7 @@ const selectEmployee = ($this, row) => {
   IOputs.employee_name = row.full_name;
   IOputs.employee_id = row.hims_d_employee_id;
   IOputs.dis_employee_name = row.full_name;
+  IOputs.employee_code = row.employee_code;
   $this.setState(IOputs, () => {
     getLeaveSalaryProcess($this);
   });
