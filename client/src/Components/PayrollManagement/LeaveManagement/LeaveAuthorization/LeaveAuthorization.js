@@ -14,6 +14,8 @@ import Enumerable from "linq";
 import GlobalVariables from "../../../../utils/GlobalVariables.json";
 import LeaveAuthDetail from "./LeaveAuthDetail/LeaveAuthDetail";
 import { MainContext } from "algaeh-react-components";
+
+import { generateLeaveRequestSlip } from "./LeaveAuthorizationEvents.js";
 export default class LeaveAuthorization extends Component {
   constructor(props) {
     super(props);
@@ -27,6 +29,7 @@ export default class LeaveAuthorization extends Component {
       auth_level: undefined,
     };
     this.getLeaveLevels();
+    this.getHospitals();
     this.getHospitals();
   }
   static contextType = MainContext;
@@ -477,26 +480,44 @@ export default class LeaveAuthorization extends Component {
                                       row.status === "APR" ? "C" : undefined,
                                   });
                                 }}
+                              />{" "}
+                              <i
+                                className="fas fa-print"
+                                onClick={generateLeaveRequestSlip.bind(
+                                  this,
+                                  this,
+                                  row
+                                )}
                               />
                             </React.Fragment>
                           ) : row.status === "APR" ? (
-                            <i
-                              className="fas fa-times"
-                              onClick={() => {
-                                this.setState({
-                                  open: true,
-                                  currLeavAppln: row,
-                                  type: "C",
-                                });
-                              }}
-                            />
+                            <React.Fragment>
+                              <i
+                                className="fas fa-times"
+                                onClick={() => {
+                                  this.setState({
+                                    open: true,
+                                    currLeavAppln: row,
+                                    type: "C",
+                                  });
+                                }}
+                              />{" "}
+                              <i
+                                className="fas fa-print"
+                                onClick={generateLeaveRequestSlip.bind(
+                                  this,
+                                  this,
+                                  row
+                                )}
+                              />{" "}
+                            </React.Fragment>
                           ) : (
                             "------"
                           );
                         },
                         others: {
                           filterable: false,
-                          maxWidth: 60,
+                          maxWidth: 100,
                         },
                       },
                       {
