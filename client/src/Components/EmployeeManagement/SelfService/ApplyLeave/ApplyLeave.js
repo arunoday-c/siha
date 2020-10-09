@@ -17,6 +17,7 @@ import Socket from "../../../../sockets";
 import AlgaehLoader from "../../../Wrapper/fullPageLoader";
 import { MainContext, Upload } from "algaeh-react-components";
 import { newAlgaehApi } from "../../../../hooks";
+import { AlgaehMessagePop } from "algaeh-react-components";
 
 const { Dragger } = Upload;
 class ApplyLeave extends Component {
@@ -509,17 +510,17 @@ class ApplyLeave extends Component {
             ...this.state.extra,
           },
           onSuccess: (res) => {
+            // debugger;
             if (res.data.success) {
               this.saveDocument(
                 this.state.contract_files,
                 res.data?.records[0]?.leave_application_code,
                 res.data?.records[0]?.hims_f_leave_application_id
               ).then(() => {
-                AlgaehLoader({ show: false });
-                swalMessage({
-                  title: "Leave Applied Successfully",
-                  type: "success",
-                });
+                // swalMessage({
+                //   title: "Leave Applied Successfully",
+                //   type: "success",
+                // });
                 if (this.leaveSocket.connected) {
                   this.leaveSocket.emit("/leave/applied", {
                     full_name,
@@ -528,9 +529,38 @@ class ApplyLeave extends Component {
                     leave_type: leave_desc[0].leave_description,
                   });
                 }
-                this.setState({ loading_Process: false });
-                this.getEmployeeLeaveHistory();
-                this.clearState();
+                debugger;
+                newAlgaehApi({
+                  uri: "/leave/mailSendForLeave",
+                  method: "GET",
+                  module: "hrManagement",
+                  data: {
+                    reporting_to_id,
+                    email_type: "LV",
+                    full_name,
+                    leave_days: this.state.total_applied_days,
+                    leave_type: leave_desc[0].leave_description,
+                  },
+                })
+                  .then((res) => {
+                    debugger;
+                    if (res.data.success) {
+                      AlgaehLoader({ show: false });
+                      this.setState({ loading_Process: false });
+                      this.getEmployeeLeaveHistory();
+                      this.clearState();
+                      AlgaehMessagePop({
+                        type: "info",
+                        display: "Successfully Sent Mail",
+                      });
+                    }
+                  })
+                  .catch((e) => {
+                    AlgaehMessagePop({
+                      type: "error",
+                      display: e.message,
+                    });
+                  });
               });
             } else if (!res.data.success) {
               this.setState({ loading_Process: false });
