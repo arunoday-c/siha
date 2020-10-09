@@ -542,6 +542,7 @@ class ApplyLeave extends Component {
             ...this.state.extra,
           },
           onSuccess: (res) => {
+            debugger;
             if (res.data.success) {
               this.saveDocument(
                 this.state.contract_files,

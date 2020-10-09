@@ -190,73 +190,79 @@ class ResultEntryList extends Component {
               </button>
             </div>,
           ]}
-          className="costCenterModal"
+          className={`algaehNewModal investigationAttachmentModal`}
         >
           <div className="portlet-body">
-            <div className="row">
-              <div className="col-3">
-                {" "}
-                <Dragger
-                  accept=".doc,.docx,application/msword,.pdf"
-                  name="attached_files"
-                  onRemove={(file) => {
-                    this.setState((state) => {
-                      const index = state.attached_filess.indexOf(file);
-                      const newFileList = [...state.attached_files];
-                      newFileList.splice(index, 1);
-                      return {
-                        attached_files: newFileList,
-                        // saveEnable: state.dataExists && !newFileList.length,
-                      };
-                    });
-                  }}
-                  beforeUpload={(file) => {
-                    this.setState((state) => ({
-                      attached_files: [...state.attached_files, file],
-                      // saveEnable: false,
-                    }));
-                    return false;
-                  }}
-                  // disabled={this.state.dataExists && !this.state.editMode}
-                  fileList={this.state.attached_files}
-                >
-                  <p className="upload-drag-icon">
-                    <i className="fas fa-file-upload"></i>
-                  </p>
-                  <p className="ant-upload-text">
-                    {this.state.attached_files
-                      ? `Click or Drag a file to replace the current file`
-                      : `Click or Drag a file to this area to upload`}
-                  </p>
-                </Dragger>
-              </div>
-              <div className="col-3"></div>
-              <div className="col-6">
-                <div className="row">
-                  <div className="col-12">
-                    <ul className="contractAttachmentList">
-                      {this.state.attached_docs.length ? (
-                        this.state.attached_docs.map((doc) => (
-                          <li>
-                            <b> {doc.filename} </b>
-                            <span>
-                              <i
-                                className="fas fa-download"
-                                onClick={() => this.downloadDoc(doc)}
-                              ></i>
-                              <i
-                                className="fas fa-trash"
-                                onClick={() => this.deleteDoc(doc)}
-                              ></i>
-                            </span>
-                          </li>
-                        ))
-                      ) : (
-                        <div className="col-12 noAttachment" key={1}>
-                          <p>No Attachments Available</p>
-                        </div>
-                      )}
-                    </ul>
+            <div className="col-12">
+              <div className="row">
+                <div className="col-3 investigationAttachmentDrag">
+                  {" "}
+                  <Dragger
+                    accept=".doc,.docx,application/msword,.jpg,.png,.pdf"
+                    name="attached_files"
+                    onRemove={(file) => {
+                      this.setState((state) => {
+                        const index = state.attached_filess.indexOf(file);
+                        const newFileList = [...state.attached_files];
+                        newFileList.splice(index, 1);
+                        return {
+                          attached_files: newFileList,
+                          // saveEnable: state.dataExists && !newFileList.length,
+                        };
+                      });
+                    }}
+                    beforeUpload={(file) => {
+                      this.setState((state) => ({
+                        attached_files: [...state.attached_files, file],
+                        // saveEnable: false,
+                      }));
+                      return false;
+                    }}
+                    // disabled={this.state.dataExists && !this.state.editMode}
+                    fileList={this.state.attached_files}
+                  >
+                    <p className="upload-drag-icon">
+                      <i className="fas fa-file-upload"></i>
+                    </p>
+                    <p className="ant-upload-text">
+                      {this.state.attached_files
+                        ? `Click or Drag a file to replace the current file`
+                        : `Click or Drag a file to this area to upload`}
+                    </p>
+                  </Dragger>
+                </div>
+                <div className="col-3"></div>
+                <div className="col-6">
+                  <div className="row">
+                    <div className="col-12">
+                      <ul className="investigationAttachmentList">
+                        {this.state.attached_docs.length ? (
+                          this.state.attached_docs.map((doc) => (
+                            <li>
+                              <b> {doc.filename} </b>
+                              <span>
+                                <i
+                                  className="fas fa-download"
+                                  onClick={() => this.downloadDoc(doc)}
+                                ></i>
+                                <i
+                                  className="fas fa-eye"
+                                  onClick={() => this.downloadDoc(doc, true)}
+                                ></i>
+                                <i
+                                  className="fas fa-trash"
+                                  onClick={() => this.deleteDoc(doc)}
+                                ></i>
+                              </span>
+                            </li>
+                          ))
+                        ) : (
+                          <div className="col-12 noAttachment" key={1}>
+                            <p>No Attachments Available</p>
+                          </div>
+                        )}
+                      </ul>
+                    </div>
                   </div>
                 </div>
               </div>

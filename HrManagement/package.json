@@ -17,6 +17,7 @@
     "run-dev": "cross-env PORT=3004 NODE_ENV=development nodemon --exec 'node --inspect=localhost:2004 build/app.js'"
   },
   "dependencies": {
+    "aescrypt": "^1.0.0",
     "algaeh-mysql": "^1.5.1",
     "body-parser": "^1.18.2",
     "compression": "^1.7.3",

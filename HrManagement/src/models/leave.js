@@ -5,6 +5,13 @@ import moment from "moment";
 import { LINQ } from "node-linq";
 //import utilities from "algaeh-utilities";
 import algaehUtilities from "algaeh-utilities/utilities";
+// import newAxios from "algaeh-utilities/axios";
+import keys from "algaeh-keys";
+import AESCrypt from "aescrypt";
+import algaehMail from "algaeh-utilities/mail-send";
+// import _ from "lodash";
+
+const { SECRETKey } = keys.default;
 
 //import { getMaxAuth } from "../../../src/utils";
 // import Sync from "sync";
@@ -940,6 +947,91 @@ export default {
     } catch (e) {
       next(e);
     }
+  },
+  mailSendForLeave: (req, res, next) => {
+    const input = req.query;
+
+    const _mysql = new algaehMysql();
+
+    _mysql
+      .executeQuery({
+        query: `select full_name,work_email from hims_d_employee where hims_d_employee_id=?;
+            select hims_f_email_setup_id,sub_department_email,password,salt,report_attach,report_name,sub_department_id from
+            hims_f_email_setup where email_type=?`,
+        values: [input.reporting_to_id, input.email_type],
+        printQuery: true,
+      })
+      .then((result) => {
+        const toSendDetails = result[0][0];
+        const fromSendDetails = result[1][0];
+        // console.log("fromSendDetails", fromSendDetails);
+        const decrypted = AESCrypt.decryptWithSalt(
+          SECRETKey,
+          fromSendDetails.salt,
+          fromSendDetails.password
+        );
+        const full_name = input.full_name;
+        const leave_days = input.leave_days;
+        const leave_type = input.leave_type;
+        const { hospital_address, hospital_name } = req.userIdentity;
+        try {
+          const user = fromSendDetails.sub_department_email;
+          const pass = decrypted;
+
+          // const mailSender =
+          new algaehMail([user, pass])
+            .to(toSendDetails.work_email)
+            .subject("Applieed Leave Status")
+            .templateHbs("applyLeave.hbs", {
+              full_name,
+              hospital_name,
+              hospital_address,
+              leave_days,
+              leave_type,
+            })
+            .send()
+            .then((response) => {
+              _mysql.releaseConnection();
+            })
+            .catch((error) => {
+              next(error);
+            });
+
+          // if (send_attachment === "true") {
+          //   mailSender.attachReportsAndSend(
+          //     req,
+          //     reportInput,
+          //     (error, records) => {
+          //       if (error) {
+          //         next(error);
+          //         return;
+          //       }
+
+          //       next();
+          //     }
+          //   );
+          // } else {
+          //   mailSender
+          //     .send()
+          //     .then(() => {
+          //       // console.log("Mail Sent");
+          //       next();
+          //     })
+          //     .catch((error) => {
+          //       next(error);
+          //     });
+        } catch (e) {
+          //_mysql.releaseConnection();
+          next(e);
+        }
+        // _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch((e) => {
+        _mysql.releaseConnection();
+        next(e);
+      });
   },
   //created by irfan: to get which leaves applicable  for employee
   getEmployeeLeaveData: (req, res, next) => {
