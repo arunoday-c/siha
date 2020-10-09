@@ -6,29 +6,37 @@ import Enumerable from "linq";
 
 import "./ResultEntryList.scss";
 import "./../../../styles/site.scss";
-
+import {
+  // AlgaehDataGrid,
+  AlgaehModal,
+  // AlgaehButton,
+} from "algaeh-react-components";
 import {
   datehandle,
   getSampleCollectionDetails,
   ResultEntryModel,
   closeResultEntry,
   Refresh,
-  closeMicroResultEntry
+  closeMicroResultEntry,
+  saveDocumentCheck,
+  getSavedDocument,
 } from "./ResultEntryListHandaler";
-
+import { Upload, Modal } from "antd";
 import {
   AlgaehDataGrid,
   AlgaehLabel,
-  AlgaehDateHandler
+  AlgaehDateHandler,
 } from "../../Wrapper/algaehWrapper";
-
+import { newAlgaehApi } from "../../../hooks";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import moment from "moment";
 import Options from "../../../Options.json";
 import ResultEntry from "../ResultEntry/ResultEntry";
 import MicrobiologyResultEntry from "../MicrobiologyResultEntry/MicrobiologyResultEntry";
 import _ from "lodash";
-
+// import { AlgaehMessagePop } from "algaeh-react-components";
+const { Dragger } = Upload;
+const { confirm } = Modal;
 class ResultEntryList extends Component {
   constructor(props) {
     super(props);
@@ -45,17 +53,24 @@ class ResultEntryList extends Component {
       proiorty: null,
       status: null,
       isMicroOpen: false,
-      comments_data: []
+      comments_data: [],
+      openUploadModal: false,
+      attached_files: [],
+      attached_docs: [],
+      saveEnable: true,
+      // currentRow: [],
+      lab_id_number: "",
+      investigation_test_id: null,
     };
   }
 
-  changeDateFormat = date => {
+  changeDateFormat = (date) => {
     if (date != null) {
       return moment(date).format(Options.datetimeFormat);
     }
   };
 
-  changeTimeFormat = date => {
+  changeTimeFormat = (date) => {
     if (date != null) {
       return moment(date).format(Options.timeFormat);
     }
@@ -64,13 +79,56 @@ class ResultEntryList extends Component {
   ShowCollectionModel(row, e) {
     this.setState({
       isOpen: !this.state.isOpen,
-      selected_patient: row
+      selected_patient: row,
     });
   }
 
   componentDidMount() {
     getSampleCollectionDetails(this, this);
   }
+  downloadDoc = (doc) => {
+    const link = document.createElement("a");
+    link.download = doc.filename;
+    link.href = `data:${doc.filetype};base64,${doc.document}`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+  deleteDoc = (doc) => {
+    const self = this;
+    confirm({
+      title: `Are you sure you want to delete this file?`,
+      content: `${doc.filename}`,
+      icon: "",
+      okText: "Yes",
+      okType: "danger",
+      cancelText: "No",
+      onOk() {
+        self.onDelete(doc);
+      },
+      onCancel() {
+        console.log("Cancel");
+      },
+    });
+  };
+
+  onDelete = (doc) => {
+    newAlgaehApi({
+      uri: "/deleteContractDoc",
+      method: "DELETE",
+      module: "documentManagement",
+      data: { id: doc._id },
+    }).then((res) => {
+      if (res.data.success) {
+        this.setState((state) => {
+          const attached_docs = state.attached_docs.filter(
+            (item) => item._id !== doc._id
+          );
+          return { attached_docs };
+        });
+      }
+    });
+  };
 
   render() {
     let _Collected = [];
@@ -80,24 +138,131 @@ class ResultEntryList extends Component {
 
     let _Cancelled = [];
     if (this.state.sample_collection !== undefined) {
-      _Collected = _.filter(this.state.sample_collection, f => {
+      _Collected = _.filter(this.state.sample_collection, (f) => {
         return f.status === "CL";
       });
 
-      _Validated = _.filter(this.state.sample_collection, f => {
+      _Validated = _.filter(this.state.sample_collection, (f) => {
         return f.status === "V";
       });
-      _Confirmed = _.filter(this.state.sample_collection, f => {
+      _Confirmed = _.filter(this.state.sample_collection, (f) => {
         return f.status === "CF";
       });
 
-      _Cancelled = _.filter(this.state.sample_collection, f => {
+      _Cancelled = _.filter(this.state.sample_collection, (f) => {
         return f.status === "CN";
       });
     }
 
     return (
       <React.Fragment>
+        <AlgaehModal
+          title="Attach Report"
+          visible={this.state.openUploadModal}
+          mask={true}
+          maskClosable={false}
+          onCancel={() => {
+            this.setState({
+              openUploadModal: false,
+              attached_files: [],
+              attached_docs: [],
+            });
+          }}
+          footer={[
+            <div className="col-12">
+              <button
+                onClick={saveDocumentCheck.bind(this, this)}
+                className="btn btn-primary btn-sm"
+              >
+                Attach Document
+              </button>
+              <button
+                onClick={() => {
+                  this.setState({
+                    openUploadModal: false,
+                    attached_files: [],
+                    attached_docs: [],
+                  });
+                }}
+                className="btn btn-default btn-sm"
+              >
+                Cancel
+              </button>
+            </div>,
+          ]}
+          className="costCenterModal"
+        >
+          <div className="portlet-body">
+            <div className="row">
+              <div className="col-3">
+                {" "}
+                <Dragger
+                  accept=".doc,.docx,application/msword,.pdf"
+                  name="attached_files"
+                  onRemove={(file) => {
+                    this.setState((state) => {
+                      const index = state.attached_filess.indexOf(file);
+                      const newFileList = [...state.attached_files];
+                      newFileList.splice(index, 1);
+                      return {
+                        attached_files: newFileList,
+                        // saveEnable: state.dataExists && !newFileList.length,
+                      };
+                    });
+                  }}
+                  beforeUpload={(file) => {
+                    this.setState((state) => ({
+                      attached_files: [...state.attached_files, file],
+                      // saveEnable: false,
+                    }));
+                    return false;
+                  }}
+                  // disabled={this.state.dataExists && !this.state.editMode}
+                  fileList={this.state.attached_files}
+                >
+                  <p className="upload-drag-icon">
+                    <i className="fas fa-file-upload"></i>
+                  </p>
+                  <p className="ant-upload-text">
+                    {this.state.attached_files
+                      ? `Click or Drag a file to replace the current file`
+                      : `Click or Drag a file to this area to upload`}
+                  </p>
+                </Dragger>
+              </div>
+              <div className="col-3"></div>
+              <div className="col-6">
+                <div className="row">
+                  <div className="col-12">
+                    <ul className="contractAttachmentList">
+                      {this.state.attached_docs.length ? (
+                        this.state.attached_docs.map((doc) => (
+                          <li>
+                            <b> {doc.filename} </b>
+                            <span>
+                              <i
+                                className="fas fa-download"
+                                onClick={() => this.downloadDoc(doc)}
+                              ></i>
+                              <i
+                                className="fas fa-trash"
+                                onClick={() => this.deleteDoc(doc)}
+                              ></i>
+                            </span>
+                          </li>
+                        ))
+                      ) : (
+                        <div className="col-12 noAttachment" key={1}>
+                          <p>No Attachments Available</p>
+                        </div>
+                      )}
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </AlgaehModal>
         <div className="hptl-phase1-result-entry-form">
           <div
             className="row inner-top-search"
@@ -108,7 +273,7 @@ class ResultEntryList extends Component {
               label={{ fieldName: "from_date" }}
               textBox={{ className: "txt-fld", name: "from_date" }}
               events={{
-                onChange: datehandle.bind(this, this)
+                onChange: datehandle.bind(this, this),
               }}
               value={this.state.from_date}
             />
@@ -117,7 +282,7 @@ class ResultEntryList extends Component {
               label={{ fieldName: "to_date" }}
               textBox={{ className: "txt-fld", name: "to_date" }}
               events={{
-                onChange: datehandle.bind(this, this)
+                onChange: datehandle.bind(this, this),
               }}
               value={this.state.to_date}
             />{" "}
@@ -194,38 +359,71 @@ class ResultEntryList extends Component {
                       {
                         fieldName: "action",
                         label: <AlgaehLabel label={{ fieldName: "action" }} />,
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return (
-                            <span>
-                              <i
-                                style={{
-                                  pointerEvents:
-                                    row.status === "O"
-                                      ? ""
-                                      : row.sample_status === "N"
-                                      ? "none"
-                                      : ""
-                                }}
-                                className="fas fa-file-signature"
-                                aria-hidden="true"
-                                onClick={ResultEntryModel.bind(this, this, row)}
-                              />
-                            </span>
+                            <>
+                              <span>
+                                <i
+                                  style={{
+                                    pointerEvents:
+                                      row.status === "O"
+                                        ? ""
+                                        : row.sample_status === "N"
+                                        ? "none"
+                                        : "",
+                                  }}
+                                  className="fas fa-file-signature"
+                                  aria-hidden="true"
+                                  onClick={ResultEntryModel.bind(
+                                    this,
+                                    this,
+                                    row
+                                  )}
+                                />
+                              </span>
+                              <span>
+                                <i
+                                  // style={{
+                                  //   pointerEvents:
+                                  //     row.status === "O"
+                                  //       ? ""
+                                  //       : row.sample_status === "N"
+                                  //       ? "none"
+                                  //       : "",
+                                  // }}
+                                  className="fas fa-paperclip"
+                                  aria-hidden="true"
+                                  onClick={() => {
+                                    this.setState(
+                                      {
+                                        openUploadModal: true,
+                                        // currentRow: row,
+                                        lab_id_number: row.lab_id_number,
+                                        investigation_test_id:
+                                          row.hims_d_investigation_test_id,
+                                      },
+
+                                      getSavedDocument.bind(this, this)
+                                    );
+                                  }}
+                                />
+                              </span>
+                            </>
                           );
                         },
                         others: {
                           filterable: false,
                           maxWidth: 70,
                           resizable: false,
-                          style: { textAlign: "center" }
-                        }
+                          style: { textAlign: "center" },
+                        },
                       },
                       {
                         fieldName: "ordered_date",
                         label: (
                           <AlgaehLabel label={{ fieldName: "ordered_date" }} />
                         ),
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return (
                             <span>
                               {this.changeDateFormat(row.ordered_date)}
@@ -237,15 +435,15 @@ class ResultEntryList extends Component {
                         others: {
                           maxWidth: 150,
                           resizable: false,
-                          style: { textAlign: "center" }
-                        }
+                          style: { textAlign: "center" },
+                        },
                       },
                       {
                         fieldName: "test_type",
                         label: (
                           <AlgaehLabel label={{ fieldName: "proiorty" }} />
                         ),
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return row.test_type === "S" ? (
                             <span className="badge badge-danger">Stat</span>
                           ) : (
@@ -258,8 +456,8 @@ class ResultEntryList extends Component {
                         others: {
                           maxWidth: 90,
                           resizable: false,
-                          style: { textAlign: "center" }
-                        }
+                          style: { textAlign: "center" },
+                        },
                       },
                       {
                         fieldName: "sample_status",
@@ -268,7 +466,7 @@ class ResultEntryList extends Component {
                             label={{ forceLabel: "Specimen Status" }}
                           />
                         ),
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return row.sample_status === "N" ? (
                             <span className="badge badge-light">Not Done</span>
                           ) : row.sample_status === "A" ? (
@@ -283,8 +481,8 @@ class ResultEntryList extends Component {
                         others: {
                           maxWidth: 150,
                           resizable: false,
-                          style: { textAlign: "center" }
-                        }
+                          style: { textAlign: "center" },
+                        },
                       },
                       {
                         fieldName: "lab_id_number",
@@ -297,8 +495,8 @@ class ResultEntryList extends Component {
                         others: {
                           maxWidth: 130,
                           resizable: false,
-                          style: { textAlign: "center" }
-                        }
+                          style: { textAlign: "center" },
+                        },
                       },
                       {
                         fieldName: "patient_code",
@@ -309,8 +507,8 @@ class ResultEntryList extends Component {
                         others: {
                           maxWidth: 150,
                           resizable: false,
-                          style: { textAlign: "center" }
-                        }
+                          style: { textAlign: "center" },
+                        },
                       },
                       {
                         fieldName: "full_name",
@@ -320,8 +518,8 @@ class ResultEntryList extends Component {
                         disabled: true,
                         others: {
                           resizable: false,
-                          style: { textAlign: "left" }
-                        }
+                          style: { textAlign: "left" },
+                        },
                       },
                       {
                         fieldName: "service_name",
@@ -332,13 +530,13 @@ class ResultEntryList extends Component {
                         disabled: true,
                         others: {
                           resizable: false,
-                          style: { textAlign: "center" }
-                        }
+                          style: { textAlign: "center" },
+                        },
                       },
                       {
                         fieldName: "status",
                         label: <AlgaehLabel label={{ fieldName: "status" }} />,
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return row.status === "CL" ? (
                             <span className="badge badge-secondary">
                               Collected
@@ -361,8 +559,8 @@ class ResultEntryList extends Component {
                         others: {
                           maxWidth: 130,
                           resizable: false,
-                          style: { textAlign: "center" }
-                        }
+                          style: { textAlign: "center" },
+                        },
                       },
                       {
                         fieldName: "critical_status",
@@ -371,7 +569,7 @@ class ResultEntryList extends Component {
                             label={{ forceLabel: "Critical Result" }}
                           />
                         ),
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return row.critical_status === "N" ? (
                             <span className="badge badge-primary">No</span>
                           ) : (
@@ -382,15 +580,15 @@ class ResultEntryList extends Component {
                         others: {
                           maxWidth: 130,
                           resizable: false,
-                          style: { textAlign: "center" }
-                        }
-                      }
+                          style: { textAlign: "center" },
+                        },
+                      },
                     ]}
                     keyId="patient_code"
                     dataSource={{
                       data: Enumerable.from(this.state.sample_collection)
-                        .where(w => w.sample_status === "A")
-                        .toArray()
+                        .where((w) => w.sample_status === "A")
+                        .toArray(),
                       // data: this.state.sample_collection
                     }}
                     filter={true}
@@ -421,14 +619,14 @@ class ResultEntryList extends Component {
 
 function mapStateToProps(state) {
   return {
-    samplecollection: state.samplecollection
+    samplecollection: state.samplecollection,
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getSampleCollection: AlgaehActions
+      getSampleCollection: AlgaehActions,
     },
     dispatch
   );

@@ -7,7 +7,7 @@ import "regenerator-runtime/runtime";
 import Excel from "exceljs/dist/es5";
 import metaData from "../../insurance_templates/metadata.json";
 export async function generateInsuranceStatement(req, res, next) {
-  const { from_date, to_date, insurance_provider_id } = req.query;
+  const { insurance_statement_id } = req.query;
   const _mysql = new algaehMysql();
   try {
     // const {hospital_address,hospital_name,arabic_hospital_name,tax_number,business_registration_number}
@@ -18,25 +18,31 @@ export async function generateInsuranceStatement(req, res, next) {
       .filter((f) => f.includes(".xl"));
     _mysql
       .executeQuery({
-        query: `select p.patient_code,p.full_name,ih.invoice_number,micd.icd_description,st.service_type,MAX(isb.insurance_sub_name)as file_name,
-        SUM(id.net_amount) as net_amount,SUM(id.gross_amount) as gross_amount,SUM(id.company_payable) as company_payable
+        query: `  select p.patient_code,p.full_name,ih.invoice_number,micd.icd_description,st.service_type,MAX(isb.insurance_sub_name)as file_name,
+        SUM(id.net_amount) as net_amount,SUM(id.gross_amount) as gross_amount,SUM(id.company_payable) as company_payable,MAX(ins.updated_date)as update_date
         from hims_f_invoice_header as ih inner join hims_f_invoice_details as id 
         on ih.hims_f_invoice_header_id  = id.invoice_header_id 
-        left join hims_f_invoice_icd as icd on icd.invoice_header_id  = ih.hims_f_invoice_header_id inner join hims_d_icd as micd 
+        left join hims_f_invoice_icd as icd on icd.invoice_header_id  = ih.hims_f_invoice_header_id left join hims_d_icd as micd 
         on micd.hims_d_icd_id = icd.daignosis_id inner join hims_d_service_type as st  on
         st.hims_d_service_type_id  = id.service_type_id
         inner join hims_d_insurance_sub as isb on isb.hims_d_insurance_sub_id = ih.sub_insurance_id 
-        and ih.insurance_provider_id  = isb.insurance_provider_id 
+        and ih.insurance_provider_id  =isb.insurance_provider_id 
         inner join hims_f_patient as p on p.hims_d_patient_id = ih.patient_id 
-        where date(ih.invoice_date) between date(?) and date(?) 
-        and ih.insurance_provider_id =? group by p.patient_code,p.full_name,ih.invoice_number,micd.icd_description,st.service_type`,
-        values: [from_date, to_date, insurance_provider_id],
+        inner join hims_f_insurance_statement as ins on ins.insurance_provider_id  =ih.insurance_provider_id 
+         where (ih.insurance_statement_id =? or ih.insurance_statement_id_2=? or ih.insurance_statement_id_3=?)
+        group by p.patient_code,p.full_name,ih.invoice_number,micd.icd_description,st.service_type;`,
+        values: [
+          insurance_statement_id,
+          insurance_statement_id,
+          insurance_statement_id,
+        ],
         printQuery: true,
       })
       .then((result) => {
         let insurance = [];
         let slno = 1;
         const fileName = result.length > 0 ? result[0]["file_name"] : "";
+        const update_date = result.length > 0 ? result[0]["update_date"] : "";
         _.chain(result)
           .groupBy((g) => g.patient_code)
           .forEach((patients, idx) => {
@@ -47,7 +53,7 @@ export async function generateInsuranceStatement(req, res, next) {
                 let patObj = {
                   patient_code: idx,
                   sl_no: slno,
-                  icd_description: key,
+                  icd_description: key === "null" ? undefined : key,
                   full_name: full_name,
                   invoice_number,
                   net_amount: _.sumBy(items, (s) => parseFloat(s.net_amount)),
@@ -69,6 +75,7 @@ export async function generateInsuranceStatement(req, res, next) {
               .value();
           })
           .value();
+
         const requireMetaData = rest[fileName.toLowerCase()];
         if (requireMetaData) {
           const filePath = filesList.find((f) =>
@@ -91,10 +98,10 @@ export async function generateInsuranceStatement(req, res, next) {
                 ? common["#FDATE"]["format"]
                 : "DD-MM-YYYY";
               const currentFDate = common["#FDATE"]
-                ? moment(from_date).format(date_format)
+                ? moment(update_date).format(date_format)
                 : "";
               const currentTDate = common["#TDATE"]
-                ? moment(to_date).format(date_format)
+                ? moment(update_date).format(date_format)
                 : "";
               worksheet.eachRow({ includeEmpty: false }, (row, rowNumber) => {
                 row.eachCell((cell) => {
@@ -105,13 +112,10 @@ export async function generateInsuranceStatement(req, res, next) {
                       .replace("#TDATE", currentTDate);
                   }
                 });
-                // console.log(
-                //   "Row " + rowNumber + " = " + JSON.stringify(row.values)
-                // );
+
                 _lastRow = rowNumber;
               });
 
-              // console.log("insurance", insurance);
               const columns = requireMetaData["columns"];
               const columnStart = requireMetaData["column_starts"]
                 ? requireMetaData["column_starts"]
@@ -124,7 +128,12 @@ export async function generateInsuranceStatement(req, res, next) {
                 }
                 columns.forEach((column) => {
                   const { mapping } = column;
-                  cols.push(row[mapping.toLowerCase()]);
+
+                  cols.push(
+                    row[mapping.toLowerCase()] !== null
+                      ? row[mapping.toLowerCase()]
+                      : ""
+                  );
                 });
                 worksheet.insertRow(_lastRow + index + 1, cols);
               });
@@ -135,15 +144,11 @@ export async function generateInsuranceStatement(req, res, next) {
               );
               res.setHeader(
                 "Content-Disposition",
-                `attachment; filename=${fileName}${from_date}-${to_date}.xlsx`
+                `attachment; filename=${fileName}${update_date}-${update_date}.xlsx`
               );
               await workbook.xlsx.write(res).then(function () {
                 res.end();
               });
-              // res.status(200).json({
-              //   success: true,
-              //   message: "Done",
-              // });
             })();
           } else {
             next(new Error("No template for " + fileName));

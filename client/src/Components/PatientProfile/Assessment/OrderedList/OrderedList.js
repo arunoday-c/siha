@@ -20,6 +20,12 @@ import OrderProcedureItems from "../OrderProcedureItems/OrderProcedureItems";
 import PackageUtilize from "../../PackageUtilize/PackageUtilize";
 import swal from "sweetalert2";
 import _ from "lodash";
+import { newAlgaehApi } from "../../../../hooks";
+import {
+  // AlgaehDataGrid,
+  AlgaehModal,
+  // AlgaehButton,
+} from "algaeh-react-components";
 
 class OrderedList extends PureComponent {
   constructor(props) {
@@ -34,6 +40,9 @@ class OrderedList extends PureComponent {
       isPackOpen: false,
       isPackUtOpen: false,
       package_detail: null,
+      attached_docs: [],
+      attached_files: [],
+      openModal: false,
     };
   }
 
@@ -115,6 +124,7 @@ class OrderedList extends PureComponent {
       onSuccess: (response) => {
         if (response.data.success) {
           let orderedList = this.props.orderedList;
+
           let preserviceInput = [];
           if (orderedList.length > 0) {
             for (let k = 0; k < orderedList.length; k++) {
@@ -551,7 +561,44 @@ class OrderedList extends PureComponent {
       }
     });
   }
-
+  getSavedDocument(row) {
+    this.getSaved(row.lab_id_number);
+  }
+  getSaved(contract_no) {
+    newAlgaehApi({
+      uri: "/getContractDoc",
+      module: "documentManagement",
+      method: "GET",
+      data: {
+        contract_no,
+      },
+    })
+      .then((res) => {
+        if (res.data.success) {
+          let { data } = res.data;
+          this.setState({
+            attached_docs: data,
+            attached_files: [],
+            // saveEnable: $this.state.dataExists,
+          });
+        }
+      })
+      .catch((e) => {
+        // AlgaehLoader({ show: false });
+        swalMessage({
+          title: e.message,
+          type: "error",
+        });
+      });
+  }
+  downloadDoc = (doc) => {
+    const link = document.createElement("a");
+    link.download = doc.filename;
+    link.href = `data:${doc.filetype};base64,${doc.document}`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
   DeleteOrderedPackage(row) {
     swal({
       title: "Are you sure you want to delete this Package?",
@@ -613,589 +660,679 @@ class OrderedList extends PureComponent {
         : [];
     const { current_patient, visit_id, provider_id } = Window.global;
     return (
-      <div className="hptl-phase1-ordering-services-form">
-        {this.props.openData === "Investigation" ? (
-          <div>
-            <div
-              className="col-lg-12"
-              style={{
-                textAlign: "right",
-                paddingTop: 10,
-              }}
-            >
-              <button
-                className="btn btn-primary"
-                onClick={this.ShowModel.bind(this)}
-              >
-                Order Investigation
-              </button>
-
-              <div className="row">
-                <div className="col-md-10 col-lg-12" id="doctorOrder">
-                  <AlgaehDataGrid
-                    id="Orderd_list"
-                    columns={[
-                      {
-                        fieldName: "actions",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "Details" }} />
-                        ),
-                        displayTemplate: (row) => {
-                          return (
-                            <span>
-                              <i
-                                style={{
-                                  pointerEvents:
-                                    row.service_type_id === 2 ||
-                                    row.service_type_id === 14 ||
-                                    row.service_type_id === "2" ||
-                                    row.service_type_id === "14"
-                                      ? ""
-                                      : "none",
-                                  opacity:
-                                    row.service_type_id === 2 ||
-                                    row.service_type_id === 14 ||
-                                    row.service_type_id === "2" ||
-                                    row.service_type_id === "14"
-                                      ? ""
-                                      : "0.1",
-                                }}
-                                className="fas fa-eye"
-                                onClick={this.ShowProcedureModel.bind(
-                                  this,
-                                  row
-                                )}
-                              />
-                              <i
-                                style={{
-                                  pointerEvents:
-                                    row.billed === "N" &&
-                                    row.trans_package_detail_id > 0
-                                      ? ""
-                                      : "none",
-                                  opacity:
-                                    row.billed === "N" &&
-                                    row.trans_package_detail_id > 0
-                                      ? ""
-                                      : "0.1",
-                                }}
-                                className="fas fa-trash-alt"
-                                onClick={this.DeleteOrderService.bind(
-                                  this,
-                                  row
-                                )}
-                              />
-                            </span>
-                          );
-                        },
-                        others: {
-                          fixed: "left",
-                        },
-                      },
-                      {
-                        fieldName: "billed",
-                        label: <AlgaehLabel label={{ fieldName: "Billed" }} />,
-                        displayTemplate: (row) => {
-                          return row.billed === "N" ? "No" : "Yes";
-                        },
-                      },
-                      {
-                        fieldName: "created_date",
-                        label: (
-                          <AlgaehLabel label={{ fieldName: "created_date" }} />
-                        ),
-                        displayTemplate: (row) => {
-                          return (
-                            <span>{this.dateFormater(row.created_date)}</span>
-                          );
-                        },
-                      },
-
-                      {
-                        fieldName: "service_type",
-                        label: (
-                          <AlgaehLabel
-                            label={{ fieldName: "service_type_id" }}
-                          />
-                        ),
-                        others: {
-                          minWidth: 100,
-                          maxWidth: 500,
-                        },
-
-                        disabled: true,
-                      },
-                      {
-                        fieldName: "service_name",
-                        label: (
-                          <AlgaehLabel label={{ fieldName: "services_id" }} />
-                        ),
-                        displayTemplate: (row) => {
-                          let package_service =
-                            row.trans_package_detail_id > 0
-                              ? "(Package Service)"
-                              : "";
-
-                          return (
-                            <span>
-                              {row.service_name}
-                              <span className="packageAvail">
-                                {package_service}
-                              </span>
-                            </span>
-                          );
-                        },
-                        others: {
-                          minWidth: 200,
-                          maxWidth: 400,
-                        },
-                        disabled: true,
-                      },
-
-                      {
-                        fieldName: "insurance_yesno",
-                        label: (
-                          <AlgaehLabel label={{ fieldName: "insurance" }} />
-                        ),
-                        displayTemplate: (row) => {
-                          return row.insurance_yesno === "Y"
-                            ? "Covered"
-                            : "Not Covered";
-                        },
-                        disabled: true,
-                      },
-                      {
-                        fieldName: "pre_approval",
-                        label: (
-                          <AlgaehLabel label={{ fieldName: "pre_approval" }} />
-                        ),
-                        displayTemplate: (row) => {
-                          return (
-                            <span>
-                              {row.pre_approval === "Y"
-                                ? "Required"
-                                : "Not Required"}
-                            </span>
-                          );
-                        },
-                        disabled: true,
-                      },
-                      {
-                        fieldName: "patient_payable",
-                        label: (
-                          <AlgaehLabel
-                            label={{ fieldName: "patient_payable" }}
-                          />
-                        ),
-                        disabled: true,
-                      },
-                      {
-                        fieldName: "company_payble",
-                        label: (
-                          <AlgaehLabel
-                            label={{ fieldName: "company_payble" }}
-                          />
-                        ),
-                        disabled: true,
-                      },
-                    ]}
-                    keyId="Inv_type_id"
-                    dataSource={{
-                      data:
-                        this.props.orderedList === undefined
-                          ? []
-                          : this.props.orderedList,
-                    }}
-                    paging={{ page: 0, rowsPerPage: 10 }}
-                  />
-                </div>
+      <>
+        <AlgaehModal
+          title="View the Report"
+          visible={this.state.openModal}
+          mask={true}
+          maskClosable={false}
+          onCancel={() => {
+            this.setState({
+              openModal: false,
+              attached_files: [],
+              attached_docs: [],
+            });
+          }}
+          footer={null}
+          className="orderInvestigationModal"
+        >
+          <div className="col-6">
+            <div className="row">
+              <div className="col-12">
+                <ul className="contractAttachmentList">
+                  {this.state.attached_docs.length ? (
+                    this.state.attached_docs.map((doc) => (
+                      <li>
+                        <b> {doc.filename} </b>
+                        <span>
+                          <i
+                            className="fas fa-download"
+                            onClick={() => this.downloadDoc(doc)}
+                          ></i>
+                          {/* <i
+                            className="fas fa-trash"
+                            onClick={() => this.deleteDoc(doc)}
+                          ></i> */}
+                        </span>
+                      </li>
+                    ))
+                  ) : (
+                    <div className="col-12 noAttachment" key={1}>
+                      <p>No Attachments Available</p>
+                    </div>
+                  )}
+                </ul>
               </div>
             </div>
           </div>
-        ) : this.props.openData === "Consumable" ? (
-          <div>
-            <div
-              className="col-lg-12"
-              style={{
-                textAlign: "right",
-                paddingTop: 10,
-              }}
-            >
-              <button
-                className="btn btn-primary"
-                onClick={this.ShowConsumableModel.bind(this)}
+        </AlgaehModal>
+        <div className="hptl-phase1-ordering-services-form">
+          {this.props.openData === "Investigation" ? (
+            <div>
+              <div
+                className="col-lg-12"
+                style={{
+                  textAlign: "right",
+                  paddingTop: 10,
+                }}
               >
-                Order Consumables
-              </button>
+                <button
+                  className="btn btn-primary"
+                  onClick={this.ShowModel.bind(this)}
+                >
+                  Order Investigation
+                </button>
 
-              <div className="row">
-                <div className="col-md-10 col-lg-12" id="doctorOrder">
-                  <AlgaehDataGrid
-                    id="Orderd_Consumable"
-                    columns={[
-                      {
-                        fieldName: "actions",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "Details" }} />
-                        ),
-                        displayTemplate: (row) => {
-                          return (
-                            <span>
-                              <i
-                                style={{
-                                  pointerEvents:
-                                    row.billed === "N" ? "" : "none",
-                                  opacity: row.billed === "N" ? "" : "0.1",
-                                }}
-                                className="fas fa-trash-alt"
-                                onClick={this.DeleteInvOrderItems.bind(
-                                  this,
-                                  row
-                                )}
-                              />
-                            </span>
-                          );
-                        },
-                        others: {
-                          fixed: "left",
-                        },
-                      },
-                      {
-                        fieldName: "billed",
-                        label: <AlgaehLabel label={{ fieldName: "Billed" }} />,
-                        displayTemplate: (row) => {
-                          return row.billed === "N" ? "No" : "Yes";
-                        },
-                      },
-                      {
-                        fieldName: "created_date",
-                        label: (
-                          <AlgaehLabel label={{ fieldName: "created_date" }} />
-                        ),
-                        displayTemplate: (row) => {
-                          return (
-                            <span>{this.dateFormater(row.created_date)}</span>
-                          );
-                        },
-                      },
-
-                      {
-                        fieldName: "service_type",
-                        label: (
-                          <AlgaehLabel
-                            label={{ fieldName: "service_type_id" }}
-                          />
-                        ),
-                        others: {
-                          minWidth: 100,
-                          maxWidth: 500,
-                        },
-
-                        disabled: true,
-                      },
-                      {
-                        fieldName: "service_name",
-                        label: (
-                          <AlgaehLabel label={{ fieldName: "services_id" }} />
-                        ),
-                        others: {
-                          minWidth: 200,
-                          maxWidth: 400,
-                        },
-                        disabled: true,
-                      },
-                      {
-                        fieldName: "item_notchargable",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "Chargable" }} />
-                        ),
-                        displayTemplate: (row) => {
-                          return row.item_notchargable === "N" ? "Yes" : "No";
-                        },
-                        disabled: true,
-                      },
-                      {
-                        fieldName: "insurance_yesno",
-                        label: (
-                          <AlgaehLabel label={{ fieldName: "insurance" }} />
-                        ),
-                        displayTemplate: (row) => {
-                          return row.insurance_yesno === "Y"
-                            ? "Covered"
-                            : "Not Covered";
-                        },
-                        disabled: true,
-                      },
-                      {
-                        fieldName: "pre_approval",
-                        label: (
-                          <AlgaehLabel label={{ fieldName: "pre_approval" }} />
-                        ),
-                        displayTemplate: (row) => {
-                          return (
-                            <span>
-                              {row.pre_approval === "Y"
-                                ? "Required"
-                                : "Not Required"}
-                            </span>
-                          );
-                        },
-                        disabled: true,
-                      },
-                      {
-                        fieldName: "patient_payable",
-                        label: (
-                          <AlgaehLabel
-                            label={{ fieldName: "patient_payable" }}
-                          />
-                        ),
-                        disabled: true,
-                      },
-                      {
-                        fieldName: "company_payble",
-                        label: (
-                          <AlgaehLabel
-                            label={{ fieldName: "company_payble" }}
-                          />
-                        ),
-                        disabled: true,
-                      },
-                    ]}
-                    keyId="Cons_type_id"
-                    dataSource={{
-                      data:
-                        this.props.consumableorderedList === undefined
-                          ? []
-                          : this.props.consumableorderedList,
-                    }}
-                    paging={{ page: 0, rowsPerPage: 10 }}
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-        ) : (
-          <div>
-            <div
-              className="col-lg-12"
-              style={{
-                textAlign: "right",
-                paddingTop: 10,
-              }}
-            >
-              <button
-                className="btn btn-primary"
-                onClick={this.ShowPackageModel.bind(this)}
-              >
-                Order Package
-              </button>
-            </div>
-            <div className="col-lg-12">
-              <div className="row">
-                <div className="col-md-10 col-lg-12" id="doctorOrder">
-                  <AlgaehDataGrid
-                    id="Package_list"
-                    columns={[
-                      {
-                        fieldName: "actions",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "Details" }} />
-                        ),
-                        displayTemplate: (row) => {
-                          return (
-                            <span>
-                              {row.package_visit_type === "M" ? (
+                <div className="row">
+                  <div className="col-md-10 col-lg-12" id="doctorOrder">
+                    <AlgaehDataGrid
+                      id="Orderd_list"
+                      columns={[
+                        {
+                          fieldName: "actions",
+                          label: (
+                            <AlgaehLabel label={{ forceLabel: "Details" }} />
+                          ),
+                          displayTemplate: (row) => {
+                            return (
+                              <span>
                                 <i
+                                  style={{
+                                    pointerEvents:
+                                      row.service_type_id === 2 ||
+                                      row.service_type_id === 14 ||
+                                      row.service_type_id === "2" ||
+                                      row.service_type_id === "14"
+                                        ? ""
+                                        : "none",
+                                    opacity:
+                                      row.service_type_id === 2 ||
+                                      row.service_type_id === 14 ||
+                                      row.service_type_id === "2" ||
+                                      row.service_type_id === "14"
+                                        ? ""
+                                        : "0.1",
+                                  }}
                                   className="fas fa-eye"
-                                  onClick={this.ShowPackageUtilize.bind(
+                                  onClick={this.ShowProcedureModel.bind(
                                     this,
                                     row
                                   )}
                                 />
-                              ) : null}
+                                <i
+                                  style={{
+                                    pointerEvents:
+                                      row.billed === "N" &&
+                                      row.trans_package_detail_id > 0
+                                        ? ""
+                                        : "none",
+                                    opacity:
+                                      row.billed === "N" &&
+                                      row.trans_package_detail_id > 0
+                                        ? ""
+                                        : "0.1",
+                                  }}
+                                  className="fas fa-trash-alt"
+                                  onClick={this.DeleteOrderService.bind(
+                                    this,
+                                    row
+                                  )}
+                                />
+                                {row.lab_id_number ? (
+                                  <i
+                                    // style={{
+                                    //   pointerEvents:
+                                    //     row.status === "O"
+                                    //       ? ""
+                                    //       : row.sample_status === "N"
+                                    //       ? "none"
+                                    //       : "",
+                                    // }}
+                                    className="fas fa-paperclip"
+                                    aria-hidden="true"
+                                    onClick={() => {
+                                      this.setState(
+                                        {
+                                          openModal: true,
+                                          // currentRow: row,
+                                          // lab_id_number: row.lab_id_number,
+                                        },
 
-                              <i
-                                style={{
-                                  pointerEvents:
-                                    row.billed === "N" ? "" : "none",
-                                  opacity: row.billed === "N" ? "" : "0.1",
-                                }}
-                                onClick={this.DeleteOrderedPackage.bind(
-                                  this,
-                                  row
-                                )}
-                                className="fas fa-trash-alt"
-                              />
-                            </span>
-                          );
+                                        this.getSavedDocument.bind(this, row)
+                                      );
+                                    }}
+                                  />
+                                ) : null}
+                              </span>
+                            );
+                          },
+                          others: {
+                            fixed: "left",
+                          },
                         },
-                        others: {
-                          fixed: "left",
+                        {
+                          fieldName: "billed",
+                          label: (
+                            <AlgaehLabel label={{ fieldName: "Billed" }} />
+                          ),
+                          displayTemplate: (row) => {
+                            return row.billed === "N" ? "No" : "Yes";
+                          },
                         },
-                      },
-                      {
-                        fieldName: "billed",
-                        label: <AlgaehLabel label={{ fieldName: "Billed" }} />,
-                        displayTemplate: (row) => {
-                          return row.billed === "N" ? "No" : "Yes";
-                        },
-                      },
-                      {
-                        fieldName: "created_date",
-                        label: (
-                          <AlgaehLabel label={{ fieldName: "created_date" }} />
-                        ),
-                        displayTemplate: (row) => {
-                          return (
-                            <span>{this.dateFormater(row.created_date)}</span>
-                          );
-                        },
-                      },
-
-                      {
-                        fieldName: "service_type",
-                        label: (
-                          <AlgaehLabel
-                            label={{ fieldName: "service_type_id" }}
-                          />
-                        ),
-                        others: {
-                          minWidth: 100,
-                          maxWidth: 500,
+                        {
+                          fieldName: "created_date",
+                          label: (
+                            <AlgaehLabel
+                              label={{ fieldName: "created_date" }}
+                            />
+                          ),
+                          displayTemplate: (row) => {
+                            return (
+                              <span>{this.dateFormater(row.created_date)}</span>
+                            );
+                          },
                         },
 
-                        disabled: true,
-                      },
-                      {
-                        fieldName: "service_name",
-                        label: (
-                          <AlgaehLabel label={{ fieldName: "services_id" }} />
-                        ),
-                        others: {
-                          minWidth: 200,
-                          maxWidth: 400,
+                        {
+                          fieldName: "service_type",
+                          label: (
+                            <AlgaehLabel
+                              label={{ fieldName: "service_type_id" }}
+                            />
+                          ),
+                          others: {
+                            minWidth: 100,
+                            maxWidth: 500,
+                          },
+
+                          disabled: true,
                         },
-                        disabled: true,
-                      },
-                      {
-                        fieldName: "insurance_yesno",
-                        label: (
-                          <AlgaehLabel label={{ fieldName: "insurance" }} />
-                        ),
-                        displayTemplate: (row) => {
-                          return row.insurance_yesno === "Y"
-                            ? "Covered"
-                            : "Not Covered";
+                        {
+                          fieldName: "service_name",
+                          label: (
+                            <AlgaehLabel label={{ fieldName: "services_id" }} />
+                          ),
+                          displayTemplate: (row) => {
+                            let package_service =
+                              row.trans_package_detail_id > 0
+                                ? "(Package Service)"
+                                : "";
+
+                            return (
+                              <span>
+                                {row.service_name}
+                                <span className="packageAvail">
+                                  {package_service}
+                                </span>
+                              </span>
+                            );
+                          },
+                          others: {
+                            minWidth: 200,
+                            maxWidth: 400,
+                          },
+                          disabled: true,
                         },
-                        disabled: true,
-                      },
-                      {
-                        fieldName: "pre_approval",
-                        label: (
-                          <AlgaehLabel label={{ fieldName: "pre_approval" }} />
-                        ),
-                        displayTemplate: (row) => {
-                          return (
-                            <span>
-                              {row.pre_approval === "Y"
-                                ? "Required"
-                                : "Not Required"}
-                            </span>
-                          );
+
+                        {
+                          fieldName: "insurance_yesno",
+                          label: (
+                            <AlgaehLabel label={{ fieldName: "insurance" }} />
+                          ),
+                          displayTemplate: (row) => {
+                            return row.insurance_yesno === "Y"
+                              ? "Covered"
+                              : "Not Covered";
+                          },
+                          disabled: true,
                         },
-                        disabled: true,
-                      },
-                      {
-                        fieldName: "patient_payable",
-                        label: (
-                          <AlgaehLabel
-                            label={{ fieldName: "patient_payable" }}
-                          />
-                        ),
-                        disabled: true,
-                      },
-                      {
-                        fieldName: "company_payble",
-                        label: (
-                          <AlgaehLabel
-                            label={{ fieldName: "company_payble" }}
-                          />
-                        ),
-                        disabled: true,
-                      },
-                    ]}
-                    keyId="list_type_id"
-                    dataSource={{
-                      data:
-                        this.props.pakageList === undefined
-                          ? []
-                          : this.props.pakageList,
-                    }}
-                    paging={{ page: 0, rowsPerPage: 10 }}
-                  />
+                        {
+                          fieldName: "pre_approval",
+                          label: (
+                            <AlgaehLabel
+                              label={{ fieldName: "pre_approval" }}
+                            />
+                          ),
+                          displayTemplate: (row) => {
+                            return (
+                              <span>
+                                {row.pre_approval === "Y"
+                                  ? "Required"
+                                  : "Not Required"}
+                              </span>
+                            );
+                          },
+                          disabled: true,
+                        },
+                        {
+                          fieldName: "patient_payable",
+                          label: (
+                            <AlgaehLabel
+                              label={{ fieldName: "patient_payable" }}
+                            />
+                          ),
+                          disabled: true,
+                        },
+                        {
+                          fieldName: "company_payble",
+                          label: (
+                            <AlgaehLabel
+                              label={{ fieldName: "company_payble" }}
+                            />
+                          ),
+                          disabled: true,
+                        },
+                      ]}
+                      keyId="Inv_type_id"
+                      dataSource={{
+                        data:
+                          this.props.orderedList === undefined
+                            ? []
+                            : this.props.orderedList,
+                      }}
+                      paging={{ page: 0, rowsPerPage: 10 }}
+                    />
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        )}
+          ) : this.props.openData === "Consumable" ? (
+            <div>
+              <div
+                className="col-lg-12"
+                style={{
+                  textAlign: "right",
+                  paddingTop: 10,
+                }}
+              >
+                <button
+                  className="btn btn-primary"
+                  onClick={this.ShowConsumableModel.bind(this)}
+                >
+                  Order Consumables
+                </button>
 
-        <OrderingServices
-          open={this.state.isOpen}
-          onClose={this.CloseModel.bind(this)}
-          vat_applicable={this.props.vat_applicable}
-          approval_amt={this.state.approval_amt}
-          approval_limit_yesno={this.state.approval_limit_yesno}
-          preserviceInput={this.state.preserviceInput}
-          addNew={true}
-          date_of_birth={this.props.date_of_birth}
-          gender={this.props.gender}
-        />
+                <div className="row">
+                  <div className="col-md-10 col-lg-12" id="doctorOrder">
+                    <AlgaehDataGrid
+                      id="Orderd_Consumable"
+                      columns={[
+                        {
+                          fieldName: "actions",
+                          label: (
+                            <AlgaehLabel label={{ forceLabel: "Details" }} />
+                          ),
+                          displayTemplate: (row) => {
+                            return (
+                              <span>
+                                <i
+                                  style={{
+                                    pointerEvents:
+                                      row.billed === "N" ? "" : "none",
+                                    opacity: row.billed === "N" ? "" : "0.1",
+                                  }}
+                                  className="fas fa-trash-alt"
+                                  onClick={this.DeleteInvOrderItems.bind(
+                                    this,
+                                    row
+                                  )}
+                                />
+                              </span>
+                            );
+                          },
+                          others: {
+                            fixed: "left",
+                          },
+                        },
+                        {
+                          fieldName: "billed",
+                          label: (
+                            <AlgaehLabel label={{ fieldName: "Billed" }} />
+                          ),
+                          displayTemplate: (row) => {
+                            return row.billed === "N" ? "No" : "Yes";
+                          },
+                        },
+                        {
+                          fieldName: "created_date",
+                          label: (
+                            <AlgaehLabel
+                              label={{ fieldName: "created_date" }}
+                            />
+                          ),
+                          displayTemplate: (row) => {
+                            return (
+                              <span>{this.dateFormater(row.created_date)}</span>
+                            );
+                          },
+                        },
 
-        <OrderingPackages
-          open={this.state.isPackOpen}
-          onClose={this.ClosePackage.bind(this)}
-          vat_applicable={this.props.vat_applicable}
-          patient_id={current_patient} //Window.global["current_patient"]}
-          visit_id={visit_id} //Window.global["visit_id"]}
-          provider_id={provider_id} //Window.global["provider_id"]}
-          addNew={true}
-        />
+                        {
+                          fieldName: "service_type",
+                          label: (
+                            <AlgaehLabel
+                              label={{ fieldName: "service_type_id" }}
+                            />
+                          ),
+                          others: {
+                            minWidth: 100,
+                            maxWidth: 500,
+                          },
 
-        <OrderConsumables
-          open={this.state.isConsOpen}
-          onClose={this.CloseConsumableModel.bind(this)}
-          vat_applicable={this.props.vat_applicable}
-          inventory_location_id={this.state.inventory_location_id}
-          approval_amt={this.state.approval_amt}
-          approval_limit_yesno={this.state.approval_limit_yesno}
-          // preserviceInput={this.state.preserviceInput}
-          addNew={true}
-        />
+                          disabled: true,
+                        },
+                        {
+                          fieldName: "service_name",
+                          label: (
+                            <AlgaehLabel label={{ fieldName: "services_id" }} />
+                          ),
+                          others: {
+                            minWidth: 200,
+                            maxWidth: 400,
+                          },
+                          disabled: true,
+                        },
+                        {
+                          fieldName: "item_notchargable",
+                          label: (
+                            <AlgaehLabel label={{ forceLabel: "Chargable" }} />
+                          ),
+                          displayTemplate: (row) => {
+                            return row.item_notchargable === "N" ? "Yes" : "No";
+                          },
+                          disabled: true,
+                        },
+                        {
+                          fieldName: "insurance_yesno",
+                          label: (
+                            <AlgaehLabel label={{ fieldName: "insurance" }} />
+                          ),
+                          displayTemplate: (row) => {
+                            return row.insurance_yesno === "Y"
+                              ? "Covered"
+                              : "Not Covered";
+                          },
+                          disabled: true,
+                        },
+                        {
+                          fieldName: "pre_approval",
+                          label: (
+                            <AlgaehLabel
+                              label={{ fieldName: "pre_approval" }}
+                            />
+                          ),
+                          displayTemplate: (row) => {
+                            return (
+                              <span>
+                                {row.pre_approval === "Y"
+                                  ? "Required"
+                                  : "Not Required"}
+                              </span>
+                            );
+                          },
+                          disabled: true,
+                        },
+                        {
+                          fieldName: "patient_payable",
+                          label: (
+                            <AlgaehLabel
+                              label={{ fieldName: "patient_payable" }}
+                            />
+                          ),
+                          disabled: true,
+                        },
+                        {
+                          fieldName: "company_payble",
+                          label: (
+                            <AlgaehLabel
+                              label={{ fieldName: "company_payble" }}
+                            />
+                          ),
+                          disabled: true,
+                        },
+                      ]}
+                      keyId="Cons_type_id"
+                      dataSource={{
+                        data:
+                          this.props.consumableorderedList === undefined
+                            ? []
+                            : this.props.consumableorderedList,
+                      }}
+                      paging={{ page: 0, rowsPerPage: 10 }}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div>
+              <div
+                className="col-lg-12"
+                style={{
+                  textAlign: "right",
+                  paddingTop: 10,
+                }}
+              >
+                <button
+                  className="btn btn-primary"
+                  onClick={this.ShowPackageModel.bind(this)}
+                >
+                  Order Package
+                </button>
+              </div>
+              <div className="col-lg-12">
+                <div className="row">
+                  <div className="col-md-10 col-lg-12" id="doctorOrder">
+                    <AlgaehDataGrid
+                      id="Package_list"
+                      columns={[
+                        {
+                          fieldName: "actions",
+                          label: (
+                            <AlgaehLabel label={{ forceLabel: "Details" }} />
+                          ),
+                          displayTemplate: (row) => {
+                            return (
+                              <span>
+                                {row.package_visit_type === "M" ? (
+                                  <i
+                                    className="fas fa-eye"
+                                    onClick={this.ShowPackageUtilize.bind(
+                                      this,
+                                      row
+                                    )}
+                                  />
+                                ) : null}
 
-        <OrderProcedureItems
-          show={this.state.isOpenItems}
-          onClose={this.CloseProcedureModel.bind(this)}
-          inputsparameters={{
-            patient_code:
-              patient_date.length > 0 ? patient_date[0].patient_code : null,
-            full_name:
-              patient_date.length > 0 ? patient_date[0].full_name : null,
-            inventory_location_id: this.state.inventory_location_id,
-            procedure_name: this.state.procedure_name,
-            procedure_id: this.state.hims_d_procedure_id,
-          }}
-        />
+                                <i
+                                  style={{
+                                    pointerEvents:
+                                      row.billed === "N" ? "" : "none",
+                                    opacity: row.billed === "N" ? "" : "0.1",
+                                  }}
+                                  onClick={this.DeleteOrderedPackage.bind(
+                                    this,
+                                    row
+                                  )}
+                                  className="fas fa-trash-alt"
+                                />
+                              </span>
+                            );
+                          },
+                          others: {
+                            fixed: "left",
+                          },
+                        },
+                        {
+                          fieldName: "billed",
+                          label: (
+                            <AlgaehLabel label={{ fieldName: "Billed" }} />
+                          ),
+                          displayTemplate: (row) => {
+                            return row.billed === "N" ? "No" : "Yes";
+                          },
+                        },
+                        {
+                          fieldName: "created_date",
+                          label: (
+                            <AlgaehLabel
+                              label={{ fieldName: "created_date" }}
+                            />
+                          ),
+                          displayTemplate: (row) => {
+                            return (
+                              <span>{this.dateFormater(row.created_date)}</span>
+                            );
+                          },
+                        },
 
-        <PackageUtilize
-          open={this.state.isPackUtOpen}
-          onClose={this.ClosePackageUtilize.bind(this)}
-          package_detail={this.state.package_detail}
-          patient_id={current_patient} //Window.global["current_patient"]}
-          visit_id={visit_id} //Window.global["visit_id"]}
-          doctor_id={provider_id} //Window.global["provider_id"]}
-          inventory_location_id={this.state.inventory_location_id}
-        />
-      </div>
+                        {
+                          fieldName: "service_type",
+                          label: (
+                            <AlgaehLabel
+                              label={{ fieldName: "service_type_id" }}
+                            />
+                          ),
+                          others: {
+                            minWidth: 100,
+                            maxWidth: 500,
+                          },
+
+                          disabled: true,
+                        },
+                        {
+                          fieldName: "service_name",
+                          label: (
+                            <AlgaehLabel label={{ fieldName: "services_id" }} />
+                          ),
+                          others: {
+                            minWidth: 200,
+                            maxWidth: 400,
+                          },
+                          disabled: true,
+                        },
+                        {
+                          fieldName: "insurance_yesno",
+                          label: (
+                            <AlgaehLabel label={{ fieldName: "insurance" }} />
+                          ),
+                          displayTemplate: (row) => {
+                            return row.insurance_yesno === "Y"
+                              ? "Covered"
+                              : "Not Covered";
+                          },
+                          disabled: true,
+                        },
+                        {
+                          fieldName: "pre_approval",
+                          label: (
+                            <AlgaehLabel
+                              label={{ fieldName: "pre_approval" }}
+                            />
+                          ),
+                          displayTemplate: (row) => {
+                            return (
+                              <span>
+                                {row.pre_approval === "Y"
+                                  ? "Required"
+                                  : "Not Required"}
+                              </span>
+                            );
+                          },
+                          disabled: true,
+                        },
+                        {
+                          fieldName: "patient_payable",
+                          label: (
+                            <AlgaehLabel
+                              label={{ fieldName: "patient_payable" }}
+                            />
+                          ),
+                          disabled: true,
+                        },
+                        {
+                          fieldName: "company_payble",
+                          label: (
+                            <AlgaehLabel
+                              label={{ fieldName: "company_payble" }}
+                            />
+                          ),
+                          disabled: true,
+                        },
+                      ]}
+                      keyId="list_type_id"
+                      dataSource={{
+                        data:
+                          this.props.pakageList === undefined
+                            ? []
+                            : this.props.pakageList,
+                      }}
+                      paging={{ page: 0, rowsPerPage: 10 }}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          <OrderingServices
+            open={this.state.isOpen}
+            onClose={this.CloseModel.bind(this)}
+            vat_applicable={this.props.vat_applicable}
+            approval_amt={this.state.approval_amt}
+            approval_limit_yesno={this.state.approval_limit_yesno}
+            preserviceInput={this.state.preserviceInput}
+            addNew={true}
+            date_of_birth={this.props.date_of_birth}
+            gender={this.props.gender}
+          />
+
+          <OrderingPackages
+            open={this.state.isPackOpen}
+            onClose={this.ClosePackage.bind(this)}
+            vat_applicable={this.props.vat_applicable}
+            patient_id={current_patient} //Window.global["current_patient"]}
+            visit_id={visit_id} //Window.global["visit_id"]}
+            provider_id={provider_id} //Window.global["provider_id"]}
+            addNew={true}
+          />
+
+          <OrderConsumables
+            open={this.state.isConsOpen}
+            onClose={this.CloseConsumableModel.bind(this)}
+            vat_applicable={this.props.vat_applicable}
+            inventory_location_id={this.state.inventory_location_id}
+            approval_amt={this.state.approval_amt}
+            approval_limit_yesno={this.state.approval_limit_yesno}
+            // preserviceInput={this.state.preserviceInput}
+            addNew={true}
+          />
+
+          <OrderProcedureItems
+            show={this.state.isOpenItems}
+            onClose={this.CloseProcedureModel.bind(this)}
+            inputsparameters={{
+              patient_code:
+                patient_date.length > 0 ? patient_date[0].patient_code : null,
+              full_name:
+                patient_date.length > 0 ? patient_date[0].full_name : null,
+              inventory_location_id: this.state.inventory_location_id,
+              procedure_name: this.state.procedure_name,
+              procedure_id: this.state.hims_d_procedure_id,
+            }}
+          />
+
+          <PackageUtilize
+            open={this.state.isPackUtOpen}
+            onClose={this.ClosePackageUtilize.bind(this)}
+            package_detail={this.state.package_detail}
+            patient_id={current_patient} //Window.global["current_patient"]}
+            visit_id={visit_id} //Window.global["visit_id"]}
+            doctor_id={provider_id} //Window.global["provider_id"]}
+            inventory_location_id={this.state.inventory_location_id}
+          />
+        </div>
+      </>
     );
   }
 }

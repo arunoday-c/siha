@@ -57,16 +57,13 @@ export function StatementTable(status) {
   };
 
   const RemittanceButton = (row) => {
-    debugger
     if (status.insurance_status === "C") {
-      return null
+      return null;
     } else {
       return (
         <Tooltip title="Pay">
           <span onClick={() => onClickRow(row)}>
-            <i
-              className="fas fa-pen"
-            ></i>
+            <i className="fas fa-pen"></i>
           </span>
         </Tooltip>
       );
@@ -251,10 +248,10 @@ export function StatementTable(status) {
                     row.claim_status === "R1"
                       ? parseFloat(row.denial_amount)
                       : row.claim_status === "R2"
-                        ? parseFloat(row.denial_amount2)
-                        : row.claim_status === "R3"
-                          ? parseFloat(row.denial_amount3)
-                          : 0;
+                      ? parseFloat(row.denial_amount2)
+                      : row.claim_status === "R3"
+                      ? parseFloat(row.denial_amount3)
+                      : 0;
                   return denail_amunt?.toFixed(userToken?.decimal_places);
                 },
               },
