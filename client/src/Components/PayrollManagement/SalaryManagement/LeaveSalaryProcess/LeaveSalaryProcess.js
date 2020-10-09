@@ -191,7 +191,7 @@ class LeaveSalaryProcess extends Component {
       onSuccess: (res) => {
         const urlBlob = URL.createObjectURL(res.data);
         // const documentName="Salary Slip"
-        const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Salary Slip`;
+        const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Leave Settlement Slip for ${this.state.employee_code}-${this.state.employee_name}`;
         window.open(origin);
       },
     });

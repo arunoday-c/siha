@@ -1493,10 +1493,6 @@
       "value": "STK"
     },
     {
-      "name": "Non Stock Item",
-      "value": "NSK"
-    },
-    {
       "name": "Asset Item",
       "value": "AST"
     },

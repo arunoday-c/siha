@@ -97,13 +97,7 @@ export default () => {
 
   api.post(
     "/addItemMaster",
-    (req, res, next) => {
-      if (req.body.item_type === "STK" || req.body.item_type === "OITM") {
-        addServices(req, res, next);
-      } else {
-        next();
-      }
-    },
+    addServices,
     addItemMaster,
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({

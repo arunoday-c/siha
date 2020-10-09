@@ -28,7 +28,7 @@ const executePDF = function executePDFMethod(options) {
 
       options.mysql
         .executeQuery({
-          query: `SELECT H.hospital_name,E.full_name, E.employee_code,L.leave_description, LE.encashment_number,LE.encashment_date,LB.close_balance,LE.leave_days,LE.leave_amount,LE.total_amount, CASE WHEN LE.authorized ='PEN' THEN 'Pending' WHEN LE.authorized ='APR' THEN 'Approved' else 'Processed' END as approval_status, CASE WHEN LE.posted='Y' THEN 'Paid' else 'Pending' END as payment_status, SD.sub_department_name, D.designation 
+          query: `SELECT H.hospital_name,E.full_name,E.date_of_joining, E.employee_code,L.leave_description, LE.encashment_number,LE.encashment_date,LB.close_balance,LE.leave_days,LE.leave_amount,LE.total_amount, CASE WHEN LE.authorized ='PEN' THEN 'Pending' WHEN LE.authorized ='APR' THEN 'Approved' else 'Processed' END as approval_status, CASE WHEN LE.posted='Y' THEN 'Paid' else 'Pending' END as payment_status, SD.sub_department_name, D.designation 
           FROM hims_f_leave_encash_header LE
           inner join hims_d_hospital H on LE.hospital_id = H.hims_d_hospital_id
           inner join hims_d_employee E on LE.employee_id = E.hims_d_employee_id

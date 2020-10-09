@@ -166,7 +166,7 @@ const generateLeaveEncashSlip = ($this, row) => {
       // );
       const urlBlob = URL.createObjectURL(res.data);
       // const documentName="Salary Slip"
-      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Salary Slip`;
+      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Leave Encashment Slip for ${row.employee_code}-${row.full_name}`;
       window.open(origin);
     },
   });

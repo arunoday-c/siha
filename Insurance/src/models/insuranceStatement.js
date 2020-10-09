@@ -18,19 +18,31 @@ export async function generateInsuranceStatement(req, res, next) {
       .filter((f) => f.includes(".xl"));
     _mysql
       .executeQuery({
-        query: `  select p.patient_code,p.full_name,ih.invoice_number,micd.icd_description,st.service_type,MAX(isb.insurance_sub_name)as file_name,
-        SUM(id.net_amount) as net_amount,SUM(id.gross_amount) as gross_amount,SUM(id.company_payable) as company_payable,MAX(ins.updated_date)as update_date
+        query: `  select  p.patient_code,p.full_name,ih.invoice_number,micd.icd_description,st.service_type,MAX(isb.insurance_sub_name)as file_name,
+        SUM(id.net_amount) as net_amount,SUM(id.gross_amount) as gross_amount,
+        MAX(ins.updated_date)as update_date,
+        ih.visit_id,CONCAT(MAX(t.title),". ",MAX(e.full_name)) as doctor_name,MAX(e.license_number) as license_number,
+        MAX(ih.card_number) as card_number,MAX(ih.policy_number) as policy_number,
+        MAX(DATE(v.visit_date)) as visit_date,
+        SUM(id.company_resp) as company_resp,
+        SUM(id.company_tax) as company_tax_amount,
+       ROUND(COALESCE((SUM(id.company_tax) / SUM(id.company_payable))*100,0),2) as comp_tax_percent,
+         SUM(id.company_payable) as company_payable
         from hims_f_invoice_header as ih inner join hims_f_invoice_details as id 
         on ih.hims_f_invoice_header_id  = id.invoice_header_id 
-        left join hims_f_invoice_icd as icd on icd.invoice_header_id  = ih.hims_f_invoice_header_id left join hims_d_icd as micd 
-        on micd.hims_d_icd_id = icd.daignosis_id inner join hims_d_service_type as st  on
+        left join hims_f_invoice_icd as icd on icd.invoice_header_id  = ih.hims_f_invoice_header_id inner join hims_d_icd as micd 
+        on micd.hims_d_icd_id = icd.daignosis_id   inner join hims_d_service_type as st  on
         st.hims_d_service_type_id  = id.service_type_id
         inner join hims_d_insurance_sub as isb on isb.hims_d_insurance_sub_id = ih.sub_insurance_id 
         and ih.insurance_provider_id  =isb.insurance_provider_id 
         inner join hims_f_patient as p on p.hims_d_patient_id = ih.patient_id 
         inner join hims_f_insurance_statement as ins on ins.insurance_provider_id  =ih.insurance_provider_id 
-         where (ih.insurance_statement_id =? or ih.insurance_statement_id_2=? or ih.insurance_statement_id_3=?)
-        group by p.patient_code,p.full_name,ih.invoice_number,micd.icd_description,st.service_type;`,
+        inner join hims_f_patient_visit as v on ih.visit_id = v.hims_f_patient_visit_id 
+        inner join hims_d_employee as e on v.doctor_id = e.hims_d_employee_id 
+        inner join hims_d_title as t on  e.title_id  = t.his_d_title_id 
+        where (ih.insurance_statement_id =? or ih.insurance_statement_id_2=? or ih.insurance_statement_id_3=?)
+         and (icd.hims_f_invoice_icd_id is null or icd.diagnosis_type ='p' )
+        group by p.patient_code,p.full_name,ih.invoice_number,micd.icd_description,st.service_type,ih.visit_id ;`,
         values: [
           insurance_statement_id,
           insurance_statement_id,
@@ -43,30 +55,56 @@ export async function generateInsuranceStatement(req, res, next) {
         let slno = 1;
         const fileName = result.length > 0 ? result[0]["file_name"] : "";
         const update_date = result.length > 0 ? result[0]["update_date"] : "";
+        const requireMetaData = rest[fileName.toLowerCase()];
+        const { combineservices } = requireMetaData;
         _.chain(result)
-          .groupBy((g) => g.patient_code)
+          .groupBy((g) => g.visit_id)
           .forEach((patients, idx) => {
             _.chain(patients)
               .groupBy((g) => g.icd_description)
               .forEach((items, key) => {
-                const { full_name, invoice_number } = _.head(items);
+                //{ full_name, invoice_number, patient_code }
+                const firstRecords = _.head(items);
                 let patObj = {
-                  patient_code: idx,
+                  ...firstRecords,
                   sl_no: slno,
                   icd_description: key === "null" ? undefined : key,
-                  full_name: full_name,
-                  invoice_number,
+                  company_resp: _.sumBy(items, (s) =>
+                    parseFloat(s.company_resp)
+                  ),
+                  company_tax_amount: _.sumBy(items, (s) =>
+                    parseFloat(s.company_tax_amount)
+                  ),
+                  comp_tax_percent: _.sumBy(items, (s) =>
+                    parseFloat(s.comp_tax_percent)
+                  ),
+                  company_payable: _.sumBy(items, (s) =>
+                    parseFloat(s.company_payable)
+                  ),
                   net_amount: _.sumBy(items, (s) => parseFloat(s.net_amount)),
                   gross_amount: _.sumBy(items, (s) =>
                     parseFloat(s.gross_amount)
                   ),
                 };
+
                 _.chain(items)
                   .groupBy((g) => g.service_type)
                   .forEach((service, sKey) => {
-                    patObj[sKey.toLowerCase()] = _.sumBy(service, (s) =>
+                    const amountSum = _.sumBy(service, (s) =>
                       parseFloat(s.company_payable)
                     );
+                    if (combineservices?.service_type) {
+                      const appendName = combineservices?.service_type?.name;
+                      if (patObj[appendName]) {
+                        patObj[appendName] += `${
+                          combineservices?.service_type?.delimiter ?? ","
+                        }${sKey}`;
+                      } else {
+                        patObj[appendName] = sKey;
+                      }
+                    } else {
+                      patObj[sKey.toLowerCase()] = amountSum;
+                    }
                   })
                   .value();
                 slno = slno + 1;
@@ -76,7 +114,6 @@ export async function generateInsuranceStatement(req, res, next) {
           })
           .value();
 
-        const requireMetaData = rest[fileName.toLowerCase()];
         if (requireMetaData) {
           const filePath = filesList.find((f) =>
             f.toLowerCase().includes(fileName.toLowerCase())

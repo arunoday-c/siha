@@ -13,6 +13,7 @@ const CollectSample = ($this, context, row) => {
     hims_d_hospital_id: $this.state.hospital_id,
     service_id: row.service_id,
     service_code: row.service_code,
+    send_out_test: row.send_out_test
   };
 
   algaehApiCall({
