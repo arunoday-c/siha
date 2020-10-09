@@ -788,7 +788,7 @@ class FinalSettlement extends Component {
       onSuccess: (res) => {
         const urlBlob = URL.createObjectURL(res.data);
         // const documentName="Salary Slip"
-        const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Salary Slip`;
+        const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Final Settlment Slip for ${this.state.data.employee_code}-${this.state.data.full_name}`;
         window.open(origin);
       },
     });
