@@ -1,5 +1,72 @@
+@import "../../../../styles/algaehCssVariables.scss";
 .packageAvail {
   display: block;
   font-size: 0.7rem;
   font-weight: bold;
+}
+.investigationAttachmentModal {
+  min-width: 17vw !important;
+
+  .investigationAttachmentDrag {
+    .ant-upload-drag {
+      height: 80px !important;
+    }
+  }
+  .investigationAttachmentList {
+    margin: 15px;
+    padding: 0;
+    list-style: none;
+    border: 1px solid lighten($color-black, 70%) !important;
+    min-height: 55vh;
+    max-height: 55vh;
+    overflow-x: hidden;
+    overflow-y: auto;
+    li {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      border-bottom: 1px solid lighten($color-black, 70%) !important;
+      b {
+        width: calc(100% - 105px);
+        padding: 3px 5px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: inline-block;
+        height: 22px;
+        line-height: 26px;
+      }
+      span {
+        display: inline-block;
+        width: 105px;
+        text-align: right;
+        i {
+          padding: 10px;
+          border-left: 1px dashed lighten($color-black, 70%) !important;
+          &:hover {
+            background-color: $primary-color;
+            color: $color-white;
+            cursor: pointer;
+          }
+          &.fa-trash {
+            &:hover {
+              background-color: red;
+            }
+          }
+        }
+      }
+      &:last-child {
+        border-bottom: none;
+      }
+    }
+    .noAttachment {
+      min-height: 137px;
+      max-height: 137px;
+      text-align: center;
+      p {
+        line-height: 137px;
+        padding: 0 10px;
+      }
+    }
+  }
 }

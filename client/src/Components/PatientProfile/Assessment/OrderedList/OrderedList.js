@@ -674,36 +674,32 @@ class OrderedList extends PureComponent {
             });
           }}
           footer={null}
-          className="orderInvestigationModal"
+          className={`algaehNewModal investigationAttachmentModal`}
         >
-          <div className="col-6">
-            <div className="row">
-              <div className="col-12">
-                <ul className="contractAttachmentList">
-                  {this.state.attached_docs.length ? (
-                    this.state.attached_docs.map((doc) => (
-                      <li>
-                        <b> {doc.filename} </b>
-                        <span>
-                          <i
-                            className="fas fa-download"
-                            onClick={() => this.downloadDoc(doc)}
-                          ></i>
-                          {/* <i
+          <div className="col-12">
+            <ul className="investigationAttachmentList">
+              {this.state.attached_docs.length ? (
+                this.state.attached_docs.map((doc) => (
+                  <li>
+                    <b> {doc.filename} </b>
+                    <span>
+                      <i
+                        className="fas fa-download"
+                        onClick={() => this.downloadDoc(doc)}
+                      ></i>
+                      {/* <i
                             className="fas fa-trash"
                             onClick={() => this.deleteDoc(doc)}
                           ></i> */}
-                        </span>
-                      </li>
-                    ))
-                  ) : (
-                    <div className="col-12 noAttachment" key={1}>
-                      <p>No Attachments Available</p>
-                    </div>
-                  )}
-                </ul>
-              </div>
-            </div>
+                    </span>
+                  </li>
+                ))
+              ) : (
+                <div className="col-12 noAttachment" key={1}>
+                  <p>No Attachments Available</p>
+                </div>
+              )}
+            </ul>
           </div>
         </AlgaehModal>
         <div className="hptl-phase1-ordering-services-form">
