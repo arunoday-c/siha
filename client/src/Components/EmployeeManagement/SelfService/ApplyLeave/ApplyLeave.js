@@ -17,7 +17,7 @@ import Socket from "../../../../sockets";
 import AlgaehLoader from "../../../Wrapper/fullPageLoader";
 import { MainContext, Upload } from "algaeh-react-components";
 import { newAlgaehApi } from "../../../../hooks";
-// import { AlgaehMessagePop } from "algaeh-react-components";
+import { AlgaehMessagePop } from "algaeh-react-components";
 
 const { Dragger } = Upload;
 class ApplyLeave extends Component {
@@ -530,37 +530,36 @@ class ApplyLeave extends Component {
                   });
                 }
 
-                // newAlgaehApi({
-                //   uri: "/leave/mailSendForLeave",
-                //   method: "GET",
-                //   module: "hrManagement",
-                //   data: {
-                //     reporting_to_id,
-                //     email_type: "LV",
-                //     full_name,
-                //     leave_days: this.state.total_applied_days,
-                //     leave_type: leave_desc[0].leave_description,
-                //   },
-                // })
-                //   .then((res) => {
-                //
-                //     if (res.data.success) {
-                //       AlgaehLoader({ show: false });
-                //       this.setState({ loading_Process: false });
-                //       this.getEmployeeLeaveHistory();
-                //       this.clearState();
-                //       AlgaehMessagePop({
-                //         type: "info",
-                //         display: "Successfully Sent Mail",
-                //       });
-                //     }
-                //   })
-                //   .catch((e) => {
-                //     AlgaehMessagePop({
-                //       type: "error",
-                //       display: e.message,
-                //     });
-                //   });
+                newAlgaehApi({
+                  uri: "/leave/mailSendForLeave",
+                  method: "GET",
+                  module: "hrManagement",
+                  data: {
+                    reporting_to_id,
+                    email_type: "LV",
+                    full_name,
+                    leave_days: this.state.total_applied_days,
+                    leave_type: leave_desc[0].leave_description,
+                  },
+                })
+                  .then((res) => {
+                    if (res.data.success) {
+                      AlgaehLoader({ show: false });
+                      this.setState({ loading_Process: false });
+                      this.getEmployeeLeaveHistory();
+                      this.clearState();
+                      AlgaehMessagePop({
+                        type: "info",
+                        display: "Successfully Sent Mail",
+                      });
+                    }
+                  })
+                  .catch((e) => {
+                    AlgaehMessagePop({
+                      type: "error",
+                      display: e.message,
+                    });
+                  });
               });
             } else if (!res.data.success) {
               this.setState({ loading_Process: false });
