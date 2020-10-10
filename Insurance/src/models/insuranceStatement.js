@@ -13,6 +13,8 @@ export async function generateInsuranceStatement(req, res, next) {
     // const {hospital_address,hospital_name,arabic_hospital_name,tax_number,business_registration_number}
     const identity = req.userIdentity;
     const { common, ...rest } = metaData;
+    //MAX(ins.updated_date)as update_date,
+    //inner join hims_f_insurance_statement as ins on ins.insurance_provider_id  =ih.insurance_provider_id
     const filesList = fs
       .readdirSync(path.join(process.cwd(), "insurance_templates"))
       .filter((f) => f.includes(".xl"));
@@ -20,14 +22,13 @@ export async function generateInsuranceStatement(req, res, next) {
       .executeQuery({
         query: `  select  p.patient_code,p.full_name,ih.invoice_number,micd.icd_description,st.service_type,MAX(isb.insurance_sub_name)as file_name,
         SUM(id.net_amount) as net_amount,SUM(id.gross_amount) as gross_amount,
-        MAX(ins.updated_date)as update_date,
         ih.visit_id,CONCAT(MAX(t.title),". ",MAX(e.full_name)) as doctor_name,MAX(e.license_number) as license_number,
         MAX(ih.card_number) as card_number,MAX(ih.policy_number) as policy_number,
         MAX(DATE(v.visit_date)) as visit_date,
         SUM(id.company_resp) as company_resp,
         SUM(id.company_tax) as company_tax_amount,
-       ROUND(COALESCE((SUM(id.company_tax) / SUM(id.company_payable))*100,0),2) as comp_tax_percent,
-         SUM(id.company_payable) as company_payable
+        ROUND(COALESCE((SUM(id.company_tax) / SUM(id.company_payable))*100,0),2) as comp_tax_percent,
+         SUM(id.company_payable) as company_payable,SUM(id.patient_payable) as patient_payable
         from hims_f_invoice_header as ih inner join hims_f_invoice_details as id 
         on ih.hims_f_invoice_header_id  = id.invoice_header_id 
         left join hims_f_invoice_icd as icd on icd.invoice_header_id  = ih.hims_f_invoice_header_id inner join hims_d_icd as micd 
@@ -36,7 +37,6 @@ export async function generateInsuranceStatement(req, res, next) {
         inner join hims_d_insurance_sub as isb on isb.hims_d_insurance_sub_id = ih.sub_insurance_id 
         and ih.insurance_provider_id  =isb.insurance_provider_id 
         inner join hims_f_patient as p on p.hims_d_patient_id = ih.patient_id 
-        inner join hims_f_insurance_statement as ins on ins.insurance_provider_id  =ih.insurance_provider_id 
         inner join hims_f_patient_visit as v on ih.visit_id = v.hims_f_patient_visit_id 
         inner join hims_d_employee as e on v.doctor_id = e.hims_d_employee_id 
         inner join hims_d_title as t on  e.title_id  = t.his_d_title_id 
@@ -173,6 +173,7 @@ export async function generateInsuranceStatement(req, res, next) {
                   );
                 });
                 worksheet.insertRow(_lastRow + index + 1, cols);
+                worksheet.getRow(_lastRow + index + 1).font = { size: 18 };
               });
 
               res.setHeader(
