@@ -25,6 +25,7 @@ import projectjobcosting from "../controllers/project_job_costing";
 import openingBalanceUpload from "../controllers/openingBalanceUpload";
 import salarypayment from "../controllers/salarypayment";
 import performanceManagement from "../controllers/performanceMangement";
+// import sendAuthorizeLeaveEmail from "../controllers/sendAuthorizeLeaveEmail";
 
 const router = express();
 router.use("/attendance", attendance());
@@ -53,5 +54,6 @@ router.use("/projectjobcosting", projectjobcosting());
 router.use("/openingBalanceUpload", openingBalanceUpload());
 router.use("/salarypayment", salarypayment());
 router.use("/performanceManagement", performanceManagement());
+// router.use("/sendAuthorizeLeaveEmail", sendAuthorizeLeaveEmail());
 
 export default router;

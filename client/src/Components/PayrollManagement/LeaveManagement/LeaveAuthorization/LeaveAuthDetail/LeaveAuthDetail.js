@@ -135,6 +135,11 @@ class LeaveAuthDetail extends Component {
       leave_category: this.state.data.leave_category,
       hospital_id: this.state.data.hospital_id,
       from_normal_salary: this.state.data.from_normal_salary,
+      email_type: "LV",
+      name: this.state.data.employee_name,
+      code: this.state.data.employee_code,
+      // branch: branch.hospital_name,
+      leave_desc: this.state.data.leave_description,
     };
     const [branch] = this.props.hospitals.filter(
       (item) => item.hims_d_hospital_id === this.state.data.hospital_id
@@ -162,10 +167,30 @@ class LeaveAuthDetail extends Component {
                 }
               );
             }
-            swalMessage({
-              title: "Leave Authorized Successfully",
-              type: "success",
-            });
+
+            // algaehApiCall({
+            //   uri: "/leave/sendAuthorizeLeaveEmail",
+            //   method: "get",
+            //   data: {
+            //     employee_id: send_data.employee_id,
+            //     from_date: send_data.from_date,
+            //     auth_level: send_data.auth_level,
+            //     name: this.state.data.employee_name,
+            //     code: this.state.data.employee_code,
+            //     branch: branch.hospital_name,
+            //     leave_desc: this.state.data.leave_description,
+            //     email_type: "LV",
+            //   },
+            //   module: "hrManagement",
+            //   onSuccess: (res) => {
+            //     if (res.data.success) {
+            //       swalMessage({
+            //         title: "Leave Authorized Successfully",
+            //         type: "success",
+            //       });
+            //     }
+            //   },
+            // });
           } else {
             if (this.context.socket.connected) {
               this.context.socket.emit(
@@ -180,11 +205,30 @@ class LeaveAuthDetail extends Component {
                   leave_desc: this.state.data.leave_description,
                 }
               );
+              // algaehApiCall({
+              //   uri: "/leave/sendAuthorizeLeaveRejEmail",
+              //   method: "get",
+              //   data: {
+              //     employee_id: send_data.employee_id,
+              //     from_date: send_data.from_date,
+              //     auth_level: send_data.auth_level,
+              //     // name: this.state.data.employee_name,
+              //     // code: this.state.data.employee_code,
+              //     // branch: branch.hospital_name,
+              //     // leave_desc: this.state.data.leave_description,
+              //     email_type: "LV",
+              //   },
+              //   module: "hrManagement",
+              //   onSuccess: (res) => {
+              //     if (res.data.success) {
+              //       swalMessage({
+              //         title: "Leave Rejected Successfully",
+              //         type: "success",
+              //       });
+              //     }
+              //   },
+              // });
             }
-            swalMessage({
-              title: "Leave Rejected Successfully",
-              type: "success",
-            });
           }
 
           this.setState({

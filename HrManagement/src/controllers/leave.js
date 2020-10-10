@@ -31,23 +31,39 @@ const {
   getLeaveBalances,
   updateEmployeeLeave,
   mailSendForLeave,
+  sendAuthorizeLeaveRejEmail,
+  sendAuthorizeLeaveEmail,
 } = leave;
 
 export default () => {
   const api = Router();
-  api.put("/authorizeLeave", authorizeLeave, (req, res, next) => {
-    if (req.records.invalid_input == true) {
-      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
-        success: false,
-        records: req.records,
-      });
-    } else {
-      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
-        success: true,
-        records: req.records,
-      });
+  api.put(
+    "/authorizeLeave",
+    authorizeLeave,
+    (req, res, next) => {
+      if (req.body.status === "A") {
+        sendAuthorizeLeaveEmail(req, res, next);
+      } else if (req.body.status === "R") {
+        sendAuthorizeLeaveRejEmail(req, res, next);
+      } else {
+        next();
+      }
+    },
+
+    (req, res, next) => {
+      if (req.records.invalid_input == true) {
+        res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+          success: false,
+          records: req.records,
+        });
+      } else {
+        res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+          success: true,
+          records: req.records,
+        });
+      }
     }
-  });
+  );
 
   api.get("/calculateLeaveDays", calculateLeaveDays, (req, res, next) => {
     if (req.records.invalid_input == true) {
@@ -62,6 +78,26 @@ export default () => {
       });
     }
   });
+  api.get(
+    "/sendAuthorizeLeaveRejEmail",
+    sendAuthorizeLeaveRejEmail,
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records,
+      });
+    }
+  );
+  api.get(
+    "/sendAuthorizeLeaveEmail",
+    sendAuthorizeLeaveEmail,
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records,
+      });
+    }
+  );
 
   api.post("/applyEmployeeLeave", applyEmployeeLeave, (req, res, next) => {
     if (req.records.leave_already_exist == true) {
