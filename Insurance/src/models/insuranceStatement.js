@@ -31,7 +31,8 @@ export async function generateInsuranceStatement(req, res, next) {
          SUM(id.company_payable) as company_payable,SUM(id.patient_payable) as patient_payable
         from hims_f_invoice_header as ih inner join hims_f_invoice_details as id 
         on ih.hims_f_invoice_header_id  = id.invoice_header_id 
-        left join hims_f_invoice_icd as icd on icd.invoice_header_id  = ih.hims_f_invoice_header_id inner join hims_d_icd as micd 
+        left join hims_f_invoice_icd as icd on icd.invoice_header_id  = ih.hims_f_invoice_header_id 
+        left join hims_d_icd as micd 
         on micd.hims_d_icd_id = icd.daignosis_id   inner join hims_d_service_type as st  on
         st.hims_d_service_type_id  = id.service_type_id
         inner join hims_d_insurance_sub as isb on isb.hims_d_insurance_sub_id = ih.sub_insurance_id 
@@ -51,6 +52,10 @@ export async function generateInsuranceStatement(req, res, next) {
         printQuery: true,
       })
       .then((result) => {
+        if (result.length === 0) {
+          next(new Error("No records funds"));
+          return;
+        }
         let insurance = [];
         let slno = 1;
         const fileName = result.length > 0 ? result[0]["file_name"] : "";
@@ -127,7 +132,7 @@ export async function generateInsuranceStatement(req, res, next) {
             const workbook = new Excel.Workbook();
             (async () => {
               await workbook.xlsx.readFile(completeXlsPath);
-              const worksheet = workbook.getWorksheet("Sheet1");
+              const worksheet = workbook.getWorksheet(1);
               let _lastRow = 0;
               const clinincNameMapping =
                 identity[common["#CLINICNAME"]["mapping"]];
@@ -157,7 +162,7 @@ export async function generateInsuranceStatement(req, res, next) {
               const columnStart = requireMetaData["column_starts"]
                 ? requireMetaData["column_starts"]
                 : 0;
-
+              console.log("Last row", _lastRow);
               insurance.forEach((row, index) => {
                 let cols = [];
                 for (let i = 0; i < columnStart; i++) {
@@ -173,7 +178,7 @@ export async function generateInsuranceStatement(req, res, next) {
                   );
                 });
                 worksheet.insertRow(_lastRow + index + 1, cols);
-                worksheet.getRow(_lastRow + index + 1).font = { size: 18 };
+                // worksheet.getRow(_lastRow + index + 1).font = { size: 18 };
               });
 
               res.setHeader(

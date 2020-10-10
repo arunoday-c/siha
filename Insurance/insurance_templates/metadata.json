@@ -31,6 +31,29 @@
       { "name": "Net Amt", "mapping": "net_amount" }
     ]
   },
+  "snic": {
+    "type": "detail",
+    "column_starts": 0,
+
+    "columns": [
+      { "name": "SL NO.", "mapping": "sl_no" },
+      { "name": "ID Number.", "mapping": "patient_code" },
+      { "name": "Patient Name", "mapping": "full_name" },
+      { "name": "Card No.", "mapping": "card_number" },
+      { "name": "CPR No.", "mapping": "" },
+      { "name": "Invoice No.", "mapping": "invoice_number" },
+      { "name": "Invoice Date", "mapping": "visit_date" },
+      { "name": "Consultation", "mapping": "consultation" },
+      { "name": "Lab", "mapping": "lab" },
+      { "name": "X-Ray & U/S", "mapping": "radiology" },
+      { "name": "Injection", "mapping": "" },
+      { "name": "Other Treatment", "mapping": "procedure" },
+      { "name": "Gross Total", "mapping": "gross_amount" },
+      { "name": "Excess", "mapping": "company_tax_amount" },
+      { "name": "Discount", "mapping": "" },
+      { "name": "Net Amt", "mapping": "company_payable" }
+    ]
+  },
   "bupa": {
     "type": "overview",
     "column_starts": 0,
