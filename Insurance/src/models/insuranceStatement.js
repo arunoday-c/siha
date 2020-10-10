@@ -93,7 +93,7 @@ export async function generateInsuranceStatement(req, res, next) {
                     const amountSum = _.sumBy(service, (s) =>
                       parseFloat(s.company_payable)
                     );
-                    if (combineservices?.service_type) {
+                    if (combineservices) {
                       const appendName = combineservices?.service_type?.name;
                       if (patObj[appendName]) {
                         patObj[appendName] += `${
