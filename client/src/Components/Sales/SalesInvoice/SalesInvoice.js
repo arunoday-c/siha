@@ -157,7 +157,7 @@ class SalesInvoice extends Component {
                   onChange: datehandle.bind(this, this),
                   onBlur: dateValidate.bind(this, this),
                 }}
-                disabled={this.state.selectedData}
+                disabled={this.state.dataExitst}
                 value={this.state.invoice_date}
               />
               {/* <div className="col">
