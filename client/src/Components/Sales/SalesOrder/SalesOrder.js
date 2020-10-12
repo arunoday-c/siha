@@ -292,7 +292,7 @@ class SalesOrder extends Component {
   };
 
   render() {
-    const class_finder = this.state.dataExists === true ? " disableFinder" : "";
+    const class_finder = this.state.selectedData === true ? " disableFinder" : "";
 
     const class_emp_finder =
       this.state.selectedData === true ? " disableFinder" : "";
@@ -470,7 +470,7 @@ class SalesOrder extends Component {
                             this.state.sales_order_mode === "I" ? true : false
                           }
                           onChange={texthandle.bind(this, this)}
-                          disabled={this.state.dataExitst}
+                          disabled={this.state.selectedData}
                         />
                         <span>Item</span>
                       </label>
@@ -483,7 +483,7 @@ class SalesOrder extends Component {
                             this.state.sales_order_mode === "S" ? true : false
                           }
                           onChange={texthandle.bind(this, this)}
-                          disabled={this.state.dataExitst}
+                          disabled={this.state.selectedData}
                         />
                         <span>Service</span>
                       </label>
@@ -724,6 +724,10 @@ class SalesOrder extends Component {
               <h4 className="alert-heading">Rejected</h4>
               <p>
                 {this.state.revert_reason}
+              </p>
+              <h4 className="alert-heading"> Rejected By</h4>
+              <p>
+                {this.state.user_display_name}
               </p>
             </div> : null}
           <div className="row">

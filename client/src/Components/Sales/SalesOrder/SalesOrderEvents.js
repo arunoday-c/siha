@@ -536,18 +536,24 @@ const getCtrlCode = ($this, docNumber) => {
 
         data.dataExists = true;
         data.selectedData = true;
-        data.itemAdd = false
+        data.itemAdd = false;
+
         if (data.is_revert === "Y") {
-          data.itemAdd = true
+          data.itemAdd = true;
+          data.serviceAdd = false;
+          data.dataExists = false;
         }
         if (data.is_posted === "Y") {
           data.saveEnable = true;
           data.addedItem = true;
           data.dataPosted = true;
+          data.serviceAdd = true;
+          data.itemAdd = true;
         } else {
           data.saveEnable = false;
           data.addedItem = false;
           data.dataPosted = false;
+          data.serviceAdd = false;
         }
         if (data.authorize1 === "Y" && data.authorize2 === "Y") {
           data.cancelDisable = true;

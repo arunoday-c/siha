@@ -111,7 +111,7 @@ export default class SalesOrdListService extends Component {
                         this.attReg = attReg;
                       }}
                       others={{
-                        disabled: this.state.itemAdd,
+                        disabled: this.state.serviceAdd,
                       }}
                     />
 
