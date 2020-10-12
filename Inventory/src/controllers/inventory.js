@@ -176,13 +176,7 @@ export default () => {
 
   api.put(
     "/updateItemMasterAndUom",
-    (req, res, next) => {
-      if (req.body.item_type === "STK" || req.body.item_type === "OITM") {
-        updateServicesOthrs(req, res, next);
-      } else {
-        next();
-      }
-    },
+    updateServicesOthrs,
     updateItemMasterAndUom,
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
