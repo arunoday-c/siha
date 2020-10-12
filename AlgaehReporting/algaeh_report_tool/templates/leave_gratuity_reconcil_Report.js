@@ -29,13 +29,13 @@ const executePDF = function executePDFMethod(options) {
       }
       options.mysql
         .executeQuery({
-          query: `select  distinct employee_code, EM.employee_code, EM.full_name,SL.salary_number,SL.year, MONTHNAME(CONCAT('2011-',SL.month,'-01')) as deducting_month, LM.loan_description, LA.loan_application_number,LA.approved_amount, LA.pending_loan, SLL.loan_due_amount, SLL.balance_amount
+          query: `select distinct SL.employee_id, EM.employee_code, EM.full_name,SL.salary_number,SL.year, MONTHNAME(CONCAT('2011-',SL.month,'-01')) as deducting_month, GR.gratuity_amount, GR.acc_gratuity, LSD.leave_days, LSD.leave_salary_amount, LSH.balance_leave_days, LSH.balance_leave_salary_amount,LSD.airticket_amount,LSH.balance_airticket_amount
           from hims_f_salary as SL
-          left join hims_d_employee as EM on SL.employee_id = EM.hims_d_employee_id 
-          left join hims_f_salary_loans as SLL on SL.hims_f_salary_id = salary_header_id 
-          left join hims_f_loan_application as LA on SLL.loan_application_id=hims_f_loan_application_id 
-          left join hims_d_loan as LM on LA.loan_id=LM.hims_d_loan_id
-          where  loan_authorized='IS'and LA.loan_closed ='N' and SL.hospital_id=? and SL.year=? and SL.month=? ${str};`,
+          inner join hims_d_employee as EM on SL.employee_id = EM.hims_d_employee_id 
+          left join hims_f_gratuity_provision as GR on SL.employee_id = GR.employee_id and SL.year = GR.year and SL.month = GR.month
+          left join hims_f_employee_leave_salary_header as LSH on SL.employee_id = LSH.employee_id
+          left join hims_f_employee_leave_salary_detail as LSD on LSH.hims_f_employee_leave_salary_header_id = LSD.employee_leave_salary_header_id and SL.year = LSD.year and SL.month = LSD.month
+          where SL.hospital_id=? and SL.year=? and SL.month=? ${str};`,
           values: [input.hospital_id, input.year, input.month],
           printQuery: true,
         })
