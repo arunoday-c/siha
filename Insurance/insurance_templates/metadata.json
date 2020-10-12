@@ -46,7 +46,7 @@
       { "name": "Consultation", "mapping": "consultation" },
       { "name": "Lab", "mapping": "lab" },
       { "name": "X-Ray & U/S", "mapping": "radiology" },
-      { "name": "Injection", "mapping": "" },
+      { "name": "Injection", "mapping": "inventory item" },
       { "name": "Other Treatment", "mapping": "procedure" },
       { "name": "Gross Total", "mapping": "gross_amount" },
       { "name": "Excess", "mapping": "company_tax_amount" },

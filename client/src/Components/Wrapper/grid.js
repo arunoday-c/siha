@@ -79,13 +79,14 @@ class DataGrid extends Component {
         return false;
       }
       return row[id] !== undefined
-        ? String(_value.toString().toLowerCase()).startsWith(
+        ? String(_value.toString().toLowerCase()).includes(
             filter.value.toLowerCase()
           )
         : true;
     } else {
+      //startsWith
       return row[id] !== undefined
-        ? String(row[id].toString().toLowerCase()).startsWith(
+        ? String(row[id].toString().toLowerCase()).includes(
             filter.value.toLowerCase()
           )
         : true;
