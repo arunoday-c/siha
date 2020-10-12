@@ -54,6 +54,13 @@ const ClearData = ($this) => {
 
 const SaveInvoiceEnrty = ($this) => {
   AlgaehLoader({ show: true });
+  if ($this.state.invoice_date === null) {
+    swalMessage({
+      type: "warning",
+      title: "Invoice Date - Cannot be empty.",
+    });
+    return;
+  }
   algaehApiCall({
     uri: "/SalesInvoice/addInvoiceEntry",
     module: "sales",
@@ -209,6 +216,8 @@ const PostSalesInvoice = ($this) => {
 };
 
 const SalesOrderSearch = ($this, e) => {
+
+  const invoice_date = moment($this.state.invoice_date, "YYYY-MM-DD").format("YYYY-MM-DD")
   AlgaehSearch({
     searchGrid: {
       columns: spotlightSearch.Sales.SalesOrder,
@@ -216,7 +225,7 @@ const SalesOrderSearch = ($this, e) => {
     searchName: "SalesOrder",
     uri: "/gloabelSearch/get",
     inputs:
-      " sales_order_mode = '" +
+      " date(sales_order_date) <= date('" + invoice_date + "') and sales_order_mode = '" +
       $this.state.sales_invoice_mode +
       "' and authorize1='Y' \
                 and authorize2='Y' and closed='N' and cancelled='N'",
@@ -438,6 +447,30 @@ const CancelSalesInvoice = $this => {
 
 }
 
+const datehandle = ($this, ctrl, e) => {
+  $this.setState({
+    [e]: moment(ctrl)._d,
+  });
+};
+
+const dateValidate = ($this, value, event) => {
+  let inRange = false;
+  if (event.target.name === "invoice_date") {
+    inRange = moment(value).isAfter(moment().format("YYYY-MM-DD"));
+    if (inRange) {
+      swalMessage({
+        title: "Selected Date cannot be future Date.",
+        type: "warning",
+      });
+      event.target.focus();
+      $this.setState({
+        [event.target.name]: null,
+      });
+    }
+  }
+
+};
+
 export {
   texthandle,
   ClearData,
@@ -448,5 +481,7 @@ export {
   SalesOrderSearch,
   RevertSalesInvoice,
   CancelSalesInvoice,
-  SaveNarration
+  SaveNarration,
+  datehandle,
+  dateValidate
 };

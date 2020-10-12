@@ -14,8 +14,8 @@ import {
 } from "../../Wrapper/algaehWrapper";
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
 
-import Options from "../../../Options.json";
-import moment from "moment";
+// import Options from "../../../Options.json";
+// import moment from "moment";
 // import GlobalVariables from "../../../utils/GlobalVariables.json";
 import { newAlgaehApi } from "../../../hooks";
 import {
@@ -360,7 +360,25 @@ class SalesOrder extends Component {
           }}
           userArea={
             <div className="row">
-              <div className="col">
+              <AlgaehDateHandler
+                div={{ className: "col mandatory" }}
+                label={{
+                  forceLabel: "Order Date",
+                  isImp: true,
+                }}
+                textBox={{
+                  className: "txt-fld",
+                  name: "sales_order_date",
+                }}
+                maxDate={new Date()}
+                events={{
+                  onChange: datehandle.bind(this, this),
+                  onBlur: dateValidate.bind(this, this),
+                }}
+                disabled={this.state.selectedData}
+                value={this.state.sales_order_date}
+              />
+              {/* <div className="col">
                 <AlgaehLabel
                   label={{
                     forceLabel: "SO Date",
@@ -373,7 +391,7 @@ class SalesOrder extends Component {
                     )
                     : Options.dateFormat}
                 </h6>
-              </div>
+              </div> */}
 
               {this.state.dataExists === true ? (
                 <div className="col">
