@@ -234,7 +234,7 @@ export function InsuranceDetails({
                                   trigger();
                                 },
                                 value,
-                                onClear: () => onChange(""),
+                                // onClear: () => onChange(""),
                                 dataSource: {
                                   textField: fieldNameFn(
                                     "insurance_provider_name",
@@ -273,7 +273,7 @@ export function InsuranceDetails({
                                 className: "select-fld",
                                 onChange: (_, selected) => onChange(selected),
                                 value,
-                                onClear: () => onChange(""),
+                                // onClear: () => onChange(""),
                                 dataSource: {
                                   textField: insuranceList?.length
                                     ? "insurance_sub_name"
