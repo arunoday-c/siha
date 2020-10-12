@@ -981,7 +981,7 @@ export default {
             pass: decrypted,
           })
             .to(toSendDetails.work_email)
-            .subject("Applieed Leave Status")
+            .subject("Employee Leave Request")
             .templateHbs("applyLeave.hbs", {
               full_name,
               hospital_name,
@@ -1140,7 +1140,7 @@ export default {
               pass: decrypted,
             })
               .to(toSendDetails)
-              .subject("Applieed Leave Status")
+              .subject("Leave Request Status")
               .templateHbs("authorizeLeaveAppMail.hbs", {
                 full_name,
                 hospital_name,
@@ -1235,7 +1235,7 @@ export default {
             pass: decrypted,
           })
             .to(toSendDetails.work_email)
-            .subject("Applieed Leave Status")
+            .subject("Leave Request Status")
             .templateHbs("leaveEmpRejMail.hbs", {
               full_name,
               hospital_name,
