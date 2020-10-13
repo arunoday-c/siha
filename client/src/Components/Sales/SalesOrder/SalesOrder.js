@@ -340,7 +340,7 @@ class SalesOrder extends Component {
             searchName: "SalesOrder",
           }}
           userArea={
-            <div className="row" style={{marginTop:-10}}>
+            <div className="row" style={{ marginTop: -10 }}>
               <AlgaehDateHandler
                 div={{ className: "col-6 mandatory" }}
                 label={{
@@ -374,7 +374,7 @@ class SalesOrder extends Component {
                 </h6>
               </div> */}
 
-              {this.state.dataExists === true ? (
+              {this.state.selectedData === true ? (
                 <div className="col-6">
                   <AlgaehLabel
                     label={{
@@ -721,13 +721,13 @@ class SalesOrder extends Component {
           {this.state.cancelled === "Y" || this.state.is_revert === "Y" ?
             <div className="alert alert-danger">
               <div className="row">
-<div className="col"> <p>
-                Reason:<b>{this.state.revert_reason}</b>
-              </p>  
-             </div>
-<div className="col-4"> <p>
-                Reverted By:<b>{this.state.user_display_name}</b>
-              </p></div>
+                <div className="col"> <p>
+                  Reason:<b>{this.state.revert_reason}</b>
+                </p>
+                </div>
+                <div className="col-4"> <p>
+                  Reverted By:<b>{this.state.user_display_name}</b>
+                </p></div>
 
               </div>
             </div> : null}

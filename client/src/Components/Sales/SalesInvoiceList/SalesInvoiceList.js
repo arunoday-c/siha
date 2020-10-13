@@ -49,6 +49,8 @@ class SalesInvoiceList extends Component {
                 },
                 () => getSalesInvoiceList(this)
             );
+        } else {
+            getSalesInvoiceList(this)
         }
     }
 
