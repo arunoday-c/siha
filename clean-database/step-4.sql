@@ -1,11 +1,72 @@
--- On Sept-29-2020
--- HR To Day End if getting Error as mysql Error Code: 1366. Incorrect string value: '\xD9\x90...."                             ALTER TABLE finance_day_end_header MODIFY COLUMN narration MEDIUMTEXT  
-    ALTER TABLE finance_day_end_header MODIFY COLUMN narration MEDIUMTEXT CHARACTER SET utf8mb4 NULL, MODIFY COLUMN voucher_type ENUM('journal', 'contra', 'receipt', 'payment', 'sales', 'purchase', 'credit_note', 'debit_note') CHARACTER SET utf8mb4 NULL COMMENT 'journal,contra,receipt,payment,sales,purchase,credit_note,debit_note', MODIFY COLUMN document_number VARCHAR(45) CHARACTER SET utf8mb4 NULL, MODIFY COLUMN from_screen VARCHAR(45) CHARACTER SET utf8mb4 NULL; MODIFY COLUMN from_screen VARCHAR(45) CHARACTER SET utf8mb4 NULL;
 
-    -- End Sept-29-2020
+-- =================================  Start 29 Sept 2020 =======================================
+-- ******** Promotion Master Screen Enable
+INSERT INTO `algaeh_d_app_component` (`screen_id`, `component_code`, `component_name`, `created_date`, `updated_date`, `record_status`) VALUES ('5', 'COMM_PROM_MSTR', 'Promotion Master', '2020-09-29 08:04:53', '2020-09-29 08:04:53', 'A');
 
-    ALTER TABLE hims_d_insurance_network_office ADD COLUMN covered_dental ENUM('Y','N') default 'N' 
-after dental_max, ADD COLUMN coverd_optical ENUM('Y','N') default 'N' after optical_max;
+-- ******** Promotion Master Table Creation
+CREATE TABLE `hims_d_promotion` (
+  `hims_d_promo_id` INT NOT NULL AUTO_INCREMENT,
+  `promo_code` VARCHAR(45) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_0900_ai_ci' NULL DEFAULT NULL,
+  `promo_name` VARCHAR(45) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_0900_ai_ci' NULL DEFAULT NULL,
+  `offer_code` VARCHAR(45) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_0900_ai_ci' NULL DEFAULT NULL,
+  `valid_to_from` DATE NULL DEFAULT NULL,
+  `valid_to_date` DATE NULL DEFAULT NULL,
+  `avail_type` ENUM('M', 'O') NULL DEFAULT 'O' COMMENT 'M = Multiple Times \\n O = One Time',
+  UNIQUE INDEX `promo_code_UNIQUE` (`promo_code` ASC) VISIBLE,
+  UNIQUE INDEX `offer_code_UNIQUE` (`offer_code` ASC) VISIBLE,
+  PRIMARY KEY (`hims_d_promo_id`));
+
+
+
+ALTER TABLE `hims_d_promotion` 
+ADD COLUMN `record_status` ENUM('A', 'I') CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_0900_ai_ci' NULL DEFAULT 'A' AFTER `avail_type`;
+
+-- ******** HR To Day End if getting Error as mysql Error Code: 1366. Incorrect string value: '\xD9\x90...."
+CHARACTER SET utf8mb4 NULL,
+    MODIFY COLUMN voucher_type ENUM('journal', 'contra', 'receipt', 'payment', 'sales', 'purchase', 'credit_note', 'debit_note')  CHARACTER SET utf8mb4 NULL COMMENT 'journal,contra,receipt,payment,sales,purchase,credit_note,debit_note',
+    MODIFY COLUMN document_number VARCHAR(45) CHARACTER SET utf8mb4 NULL,
+   
+-- ******** Added all MIS Report under Algaeh Security
+INSERT INTO `algaeh_d_app_component` (`screen_id`, `component_code`, `component_name`, `created_date`, `updated_date`, `record_status`) VALUES ('176', 'RPT_MIS_CAN_PAT', 'Cancelled Service by Patient', '2020-09-29 16:04:22', '2020-09-29 16:04:22', 'A');
+INSERT INTO `algaeh_d_app_component` (`screen_id`, `component_code`, `component_name`, `created_date`, `updated_date`, `record_status`) VALUES ('176', 'RPT_MIS_DIS_SRV_PAT', 'Discounted Services by Patient', '2020-09-29 16:04:55', '2020-09-29 16:04:55', 'A');
+INSERT INTO `algaeh_d_app_component` (`screen_id`, `component_code`, `component_name`, `created_date`, `updated_date`, `record_status`) VALUES ('176', 'RPT_MIS_ORD_PCK_PAT', 'Ordred Package by Patient', '2020-09-29 16:05:50', '2020-09-29 16:05:50', 'A');
+INSERT INTO `algaeh_d_app_component` (`screen_id`, `component_code`, `component_name`, `created_date`, `updated_date`, `record_status`) VALUES ('176', 'RPT_MIS_UTL_PCK_PAT', 'Utlized Package by Patient', '2020-09-29 16:06:15', '2020-09-29 16:06:15', 'A');
+INSERT INTO `algaeh_d_app_component` (`screen_id`, `component_code`, `component_name`, `created_date`, `updated_date`, `record_status`) VALUES ('176', 'RPT_MIS_OUT_PCK_PAT', 'Outstanding Package by Patient', '2020-09-29 16:06:38', '2020-09-29 16:06:38', 'A');
+INSERT INTO `algaeh_d_app_component` (`screen_id`, `component_code`, `component_name`, `created_date`, `updated_date`, `record_status`) VALUES ('176', 'RPT_MIS_CAN_PCK_PAT', 'Cancelled Package by Patient', '2020-09-29 16:07:35', '2020-09-29 16:07:35', 'A');
+INSERT INTO `algaeh_d_app_component` (`screen_id`, `component_code`, `component_name`, `created_date`, `updated_date`, `record_status`) VALUES ('176', 'RPT_MIS_PCK_BNH', 'Type Package by Branch', '2020-09-29 16:08:11', '2020-09-29 16:08:11', 'A');
+INSERT INTO `algaeh_d_app_component` (`screen_id`, `component_code`, `component_name`, `created_date`, `updated_date`, `record_status`) VALUES ('176', 'RPT_MIS_CNT_SRV', 'Count by Services', '2020-09-29 16:08:30', '2020-09-29 16:08:30', 'A');
+
+   
+-- ******** Added Count by Service report under MIS
+   INSERT INTO `algaeh_d_reports` ( `report_name`, `report_name_for_header`, `data_manupulation`, `report_input_series`, `report_header_file_name`, `report_footer_file_name`, `uniq_identity_to_report`, `status`, `created_datetime`, `update_datetime`) VALUES ('countByService', 'Count By Service', '', '[\"hospital_id\",\"from_date\",\"to_date\",\"service_type_id\"]', 'reportHeader', '', '', 'A', '2019-06-18 14:53:28', '2019-06-18 14:53:28');
+-- ******** Create Promotion Detail Table
+   CREATE TABLE `hims_d_promotion_detail` (
+  `hims_d_promotion_detail_id` INT NOT NULL AUTO_INCREMENT,
+  `service_type_id` INT NOT NULL,
+  `avail_type` ENUM('P', 'A') NULL DEFAULT 'P' COMMENT 'A = Amount \\\\n P = Percentage',
+  `offer_value` INT NOT NULL,
+  `hims_d_promo_id` INT NULL,
+  PRIMARY KEY (`hims_d_promotion_detail_id`),
+  INDEX `hims_d_promotion_detail_fk1_idx` (`hims_d_promo_id` ASC) VISIBLE,
+  CONSTRAINT `hims_d_promotion_detail_fk1`
+    FOREIGN KEY (`hims_d_promo_id`)
+    REFERENCES `hims_d_promotion` (`hims_d_promo_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION);
+
+-- ******** Dental and Optical Insurance Covered
+ALTER TABLE hims_d_insurance_network_office ADD COLUMN covered_dental ENUM('Y','N') default 'N' after dental_max, ADD COLUMN coverd_optical ENUM('Y','N') default 'N' after optical_max;
+   
+-- ******** Promotion Details Service type relation
+ALTER TABLE `hims_d_promotion_detail` 
+ADD INDEX `hims_d_promotion_detail_fk2_idx` (`service_type_id` ASC) VISIBLE;
+;
+ALTER TABLE `hims_d_promotion_detail` 
+ADD CONSTRAINT `hims_d_promotion_detail_fk2`
+  FOREIGN KEY (`service_type_id`)
+  REFERENCES `hims_d_service_type` (`hims_d_service_type_id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION;
 
 
 -- =================================  Start Oct 2 2020 =======================================
