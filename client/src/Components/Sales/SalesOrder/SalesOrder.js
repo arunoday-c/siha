@@ -964,7 +964,7 @@ class SalesOrder extends Component {
                 />
               </button>
 
-              {this.props.order_auth === true ? (
+              {this.state.order_auth === true ? (
                 <div>
                   <AlgaehSecurityComponent componentCode="SALES_ORD_REJECT">
                     <button

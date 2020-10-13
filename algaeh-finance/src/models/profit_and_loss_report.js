@@ -39,6 +39,7 @@ export default {
         )select * from cte ;  SELECT cost_center_type,cost_center_required,report_dill_down_level  FROM finance_options limit 1; 
         
         `,
+        printQuery: false,
       })
       .then((result) => {
         //Income head ids
@@ -108,7 +109,7 @@ export default {
           _mysql
             .executeQuery({
               query: costCenterQuery,
-              printQuery: true,
+              printQuery: false,
             })
             .then((costResult) => {
               columns = costResult;
@@ -874,6 +875,7 @@ export default {
                           const allCOS = item.children.filter(
                             (f) => f.is_cos_account === "Y"
                           );
+
                           if (allCOS.length > 0) {
                             const tot = _.sumBy(allCOS, (s) =>
                               parseFloat(s.total)
@@ -907,6 +909,7 @@ export default {
                           const allCOS = item.children.filter(
                             (f) => f.is_cos_account === "Y"
                           );
+
                           if (allCOS.length > 0) {
                             const tot = _.sumBy(allCOS, (s) =>
                               parseFloat(s.total)
@@ -914,21 +917,48 @@ export default {
                             item["total"] = item["total"] - tot;
                             //const { children, ...rest } = item;
                             cosResult[0]["total"] = cosResult[0]["total"] + tot;
-                            for (let i = 0; i < allCOS.length; i++)
+                            for (let i = 0; i < allCOS.length; i++) {
                               cosResult[0]["children"].push(allCOS[i]);
+                            }
                           }
+
                           if (allNonCOS.length > 0) {
-                            directExpeneseResult[0]["total"] = parseFloat(
-                              parseFloat(directExpeneseResult[0]["total"]) +
+                            if (directExpeneseResult.length > 0) {
+                              directExpeneseResult[0]["total"] = parseFloat(
+                                parseFloat(directExpeneseResult[0]["total"]) +
+                                  _.sumBy(allNonCOS, (s) => parseFloat(s.total))
+                              ).toFixed(decimal_places);
+                            } else {
+                              // directExpeneseResult = [];
+                              const tot = parseFloat(
                                 _.sumBy(allNonCOS, (s) => parseFloat(s.total))
-                            ).toFixed(decimal_places);
-                            for (let x = 0; x < allNonCOS.length; x++)
-                              directExpeneseResult[0]["children"].push(
-                                allNonCOS[x]
-                              );
+                              ).toFixed(decimal_places);
+                              directExpeneseResult.push({
+                                label: "Expence",
+                                total: tot,
+                                children: [],
+                              });
+                            }
+                            // directExpeneseResult[0]["total"] = parseFloat(
+                            //   parseFloat(directExpeneseResult[0]["total"]) +
+                            //     _.sumBy(allNonCOS, (s) => parseFloat(s.total))
+                            // ).toFixed(decimal_places);
+
+                            for (let x = 0; x < allNonCOS.length; x++) {
+                              // directExpeneseResult[0]["children"].push(
+                              //   allNonCOS[x]
+                              // );
+
+                              if (directExpeneseResult.length > 0) {
+                                directExpeneseResult[0]["children"].push(
+                                  allNonCOS[x]
+                                );
+                              }
+                            }
                           }
                         }
                       });
+
                       let g_prop = {};
                       let cosExpenseResult = [];
 
@@ -951,6 +981,7 @@ export default {
 
                         ...g_prop,
                       });
+
                       req.records = {
                         columns,
                         income: incomeResult,
