@@ -11,13 +11,15 @@
                         <th>Employee Code</th>
                         <th>Employee Name</th>
                         <th>Salary Number</th>
-                        <th>Loan Number</th>
                         <th>Deducting Month & Year</th>
-                        <th>Loan Type</th>
-                        <th>Approved Amount</th>
-                        <th>Opening Balance</th>
-                        <th>Deducting Amount</th>
-                        <th>Closing Balance</th>
+                        <th>Accured Leave Days</th>
+                        <th>Leave Days Closing Balance</th>
+                        <th>Accured Leave Salary</th>
+                        <th>Leave Salary Closing Balance</th>
+                        <th>Accured Airfare</th>
+                        <th>Airfare Closing Balance</th>
+                        <th>Accured Gratuity</th>
+                        <th>Gratuity Closing Balance</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -27,13 +29,15 @@
                         <td>{{employee_code}}</td>
                         <td>{{full_name}}</td>
                         <td>{{salary_number}}</td>
-                        <td>{{loan_application_number}}</td>
                         <td>{{deducting_month}}-{{year}}</td>
-                        <td>{{loan_description}}</td>
-                        <td>{{approved_amount}}</td>
-                        <td>{{pending_loan}}</td>
-                        <td>{{loan_due_amount}}</td>
-                        <td>{{closing_balance}}</td>
+                        <td>{{leave_days}}</td>
+                        <td>{{balance_leave_days}}</td>
+                        <td>{{leave_salary_amount}}</td>
+                        <td>{{balance_leave_salary_amount}}</td>
+                        <td>{{airticket_amount}}</td>
+                        <td>{{balance_airticket_amount}}</td>
+                        <td>{{gratuity_amount}}</td>
+                        <td>{{acc_gratuity}}</td>
                     </tr>
                     {{/each }}
 

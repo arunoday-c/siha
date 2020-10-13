@@ -35,7 +35,7 @@ const executePDF = function executePDFMethod(options) {
           left join hims_f_salary_loans as SLL on SL.hims_f_salary_id = salary_header_id 
           left join hims_f_loan_application as LA on SLL.loan_application_id=hims_f_loan_application_id 
           left join hims_d_loan as LM on LA.loan_id=LM.hims_d_loan_id
-          where  loan_authorized='IS'and LA.loan_closed ='N' and SL.hospital_id=? and SL.year=? and SL.month=? ${str};`,
+          where  loan_authorized='IS'and LA.loan_closed ='N' and SL.hospital_id=? and SL.year=? and SL.month=?   and SL.salary_type <> 'LS' ${str}  ORDER BY SL.salary_number DESC;`,
           values: [input.hospital_id, input.year, input.month],
           printQuery: true,
         })

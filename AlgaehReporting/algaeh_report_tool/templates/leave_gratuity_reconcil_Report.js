@@ -35,7 +35,7 @@ const executePDF = function executePDFMethod(options) {
           left join hims_f_gratuity_provision as GR on SL.employee_id = GR.employee_id and SL.year = GR.year and SL.month = GR.month
           left join hims_f_employee_leave_salary_header as LSH on SL.employee_id = LSH.employee_id
           left join hims_f_employee_leave_salary_detail as LSD on LSH.hims_f_employee_leave_salary_header_id = LSD.employee_leave_salary_header_id and SL.year = LSD.year and SL.month = LSD.month
-          where SL.hospital_id=? and SL.year=? and SL.month=? ${str};`,
+          where SL.hospital_id=? and SL.year=? and SL.month=?  and SL.salary_type <> 'LS' ${str}  ORDER BY SL.salary_number DESC;`,
           values: [input.hospital_id, input.year, input.month],
           printQuery: true,
         })

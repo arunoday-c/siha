@@ -141,7 +141,7 @@ class SalesInvoice extends Component {
             searchName: "SalesInvoice",
           }}
           userArea={
-            <div className="row">
+            <div className="row"  style={{marginTop:-10}}>
               <AlgaehDateHandler
                 div={{ className: "col mandatory" }}
                 label={{

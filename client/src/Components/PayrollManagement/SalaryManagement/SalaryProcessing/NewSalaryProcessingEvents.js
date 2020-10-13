@@ -384,7 +384,7 @@ const generateMonthlyLoanReport = ($this) => {
     onSuccess: (res) => {
       const urlBlob = URL.createObjectURL(res.data);
       // const documentName="Salary Slip"
-      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Monthly Loan Report`;
+      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Loan Reconciliation Report - ${$this.state.month}/${$this.state.year}`;
       window.open(origin);
     },
   });
@@ -445,7 +445,7 @@ const generateLevGratReconReport = ($this) => {
     onSuccess: (res) => {
       const urlBlob = URL.createObjectURL(res.data);
       // const documentName="Salary Slip"
-      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Monthly Loan Report`;
+      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Leave and  Gratuity Reconciliation Report - ${$this.state.month}/${$this.state.year}`;
       window.open(origin);
     },
   });
