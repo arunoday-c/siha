@@ -4,9 +4,9 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import "./SalesInvoice.scss";
 import BreadCrumb from "../../common/BreadCrumb/BreadCrumb";
-import { AlgaehLabel, AlagehFormGroup } from "../../Wrapper/algaehWrapper";
-import Options from "../../../Options.json";
-import moment from "moment";
+import { AlgaehLabel, AlagehFormGroup, AlgaehDateHandler } from "../../Wrapper/algaehWrapper";
+// import Options from "../../../Options.json";
+// import moment from "moment";
 // import ReceiptItemList from "./ReceiptItemList/ReceiptItemList";
 // import GlobalVariables from "../../../utils/GlobalVariables.json";
 
@@ -21,6 +21,8 @@ import {
   RevertSalesInvoice,
   CancelSalesInvoice,
   SaveNarration,
+  dateValidate,
+  datehandle
 } from "./SalesInvoiceEvents";
 import { AlgaehActions } from "../../../actions/algaehActions";
 // import SalesInvoiceInp from "../../../Models/SalesInvoice";
@@ -139,8 +141,26 @@ class SalesInvoice extends Component {
             searchName: "SalesInvoice",
           }}
           userArea={
-            <div className="row">
-              <div className="col">
+            <div className="row"  style={{marginTop:-10}}>
+              <AlgaehDateHandler
+                div={{ className: "col mandatory" }}
+                label={{
+                  forceLabel: "Invoice Date",
+                  isImp: true,
+                }}
+                textBox={{
+                  className: "txt-fld",
+                  name: "invoice_date",
+                }}
+                maxDate={new Date()}
+                events={{
+                  onChange: datehandle.bind(this, this),
+                  onBlur: dateValidate.bind(this, this),
+                }}
+                disabled={this.state.dataExitst}
+                value={this.state.invoice_date}
+              />
+              {/* <div className="col">
                 <AlgaehLabel
                   label={{
                     forceLabel: "Invoice Date",
@@ -151,12 +171,12 @@ class SalesInvoice extends Component {
                     ? moment(this.state.invoice_date).format(Options.dateFormat)
                     : Options.dateFormat}
                 </h6>
-              </div>
+              </div> */}
               {this.state.dataExitst === true ? (
                 <div className="col">
                   <AlgaehLabel
                     label={{
-                      forceLabel: "Order Status",
+                      forceLabel: "Invoice Status",
                     }}
                   />
                   <h6>

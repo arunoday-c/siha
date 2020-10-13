@@ -8,18 +8,20 @@ export function getSalesOrder(req, res, next) {
         let strQuery = "";
         if (req.query.HRMNGMT_Active === "true") {
             strQuery =
-                "SELECT SO.*, C.customer_name, E.full_name as employee_name, SQ.sales_quotation_number, CM.contract_number from hims_f_sales_order SO \
+                "SELECT SO.*, C.customer_name, E.full_name as employee_name, SQ.sales_quotation_number, CM.contract_number, U.user_display_name from hims_f_sales_order SO \
                         left join  hims_f_sales_quotation SQ on  SO.sales_quotation_id = SQ.hims_f_sales_quotation_id \
                         left join  hims_f_contract_management CM on  SO.contract_id = CM.hims_f_contract_management_id \
                         inner join  hims_d_customer C on  SO.customer_id = C.hims_d_customer_id \
                         inner join  hims_d_employee E on  SO.sales_person_id = E.hims_d_employee_id \
+                        left join  algaeh_d_app_user U on  SO.reverted_by = U.algaeh_d_app_user_id \
                         where SO.sales_order_number =? ";
         } else {
             strQuery =
-                "SELECT SO.*, C.customer_name, SQ.sales_quotation_number, CM.contract_number from hims_f_sales_order SO \
+                "SELECT SO.*, C.customer_name, SQ.sales_quotation_number, CM.contract_number, U.user_display_name  from hims_f_sales_order SO \
                         left join  hims_f_sales_quotation SQ on  SO.sales_quotation_id = SQ.hims_f_sales_quotation_id \
                         left join  hims_f_contract_management CM on  SO.contract_id = CM.hims_f_contract_management_id \
                         inner join  hims_d_customer C on  SO.customer_id = C.hims_d_customer_id \
+                        left join  algaeh_d_app_user U on  SO.reverted_by = U.algaeh_d_app_user_id \
                         where SO.sales_order_number =? ";
         }
         _mysql
@@ -115,7 +117,7 @@ export function addSalesOrder(req, res, next) {
                           values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
                             values: [
                                 sales_order_number,
-                                new Date(),
+                                input.sales_order_date,
                                 input.sales_order_mode,
                                 input.sales_quotation_id,
                                 input.contract_id,
@@ -315,10 +317,14 @@ export function postSalesOrder(req, res, next) {
             _mysql
                 .executeQuery({
                     query:
-                        "UPDATE hims_f_sales_order set cancelled='N', is_posted= ?, sub_total=?, discount_amount=?, net_total=?, \
+                        "UPDATE hims_f_sales_order set cancelled='N', customer_id=?, project_id=?, \
+                        hospital_id=?, is_posted= ?, sub_total=?, discount_amount=?, net_total=?, \
                         total_tax=?, net_payable=?, narration=?, updated_date=?, updated_by=? \
                         where hims_f_sales_order_id=?",
                     values: [
+                        input.customer_id,
+                        input.project_id,
+                        input.hospital_id,
                         input.is_posted,
                         input.sub_total,
                         input.discount_amount,
@@ -808,10 +814,13 @@ export function updateSalesOrderEntry(req, res, next) {
                                     if (inputParam.sales_order_mode === "S") {
                                         _mysql
                                             .executeQueryWithTransaction({
-                                                query: `UPDATE hims_f_sales_invoice_header SET is_revert='N', sub_total=?, net_total=?, discount_amount=?, \
+                                                query: `UPDATE hims_f_sales_invoice_header SET is_revert='N', customer_id=?,project_id=?, hospital_id=?, sub_total=?, net_total=?, discount_amount=?, \
                                                     total_tax=?, net_payable=? WHERE hims_f_sales_invoice_header_id=?; \
                                                     DELETE from hims_f_sales_invoice_services where hims_f_sales_invoice_services_id>0 and sales_invoice_header_id=?`,
                                                 values: [
+                                                    inputParam.customer_id,
+                                                    inputParam.project_id,
+                                                    inputParam.hospital_id,
                                                     inputParam.sub_total,
                                                     inputParam.net_total,
                                                     inputParam.discount_amount,

@@ -27,35 +27,62 @@ import GlobalVariables from "../../../utils/GlobalVariables.json";
 class SalesOrderList extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    let month = moment().format("MM");
+    let year = moment().format("YYYY");
+    this.state = {
+      to_date: new Date(),
+      from_date: moment("01" + month + year, "DDMMYYYY")._d,
+      status: "1"
+    };
   }
 
   componentDidMount() {
-    let month = moment().format("MM");
-    let year = moment().format("YYYY");
+
     //to load the same list when user come back from whatever screen they went.
-    if (this.props.backToAuth) {
-      const { from_date, to_date, customer_id, status } = this.props.prev;
+    // if (this.props.backToAuth) {
+    //   const { from_date, to_date, customer_id, status } = this.props.prev;
+    //   this.setState(
+    //     {
+    //       from_date,
+    //       to_date,
+    //       customer_id,
+    //       status
+    //     },
+    //     () => getSalesOrderList(this)
+    //   );
+    // } else {
+    //   this.setState(
+    //     {
+    //       to_date: new Date(),
+    //       from_date: moment("01" + month + year, "DDMMYYYY")._d,
+    //       customer_id: null,
+    //       order_list: [],
+    //       status: "1"
+    //     },
+    //     () => getSalesOrderList(this)
+    //   );
+    // }
+    const params = new URLSearchParams(this.props.location?.search);
+    if (params?.get("status")) {
+      this.setState({
+        status: params?.get("status")
+      });
+    }
+    if (params?.get("from_date")) {
+      this.setState({
+        // from_date: params?.get("from_date"),
+        from_date: moment(params?.get("from_date"))._d,
+      });
+    }
+    if (params?.get("to_date")) {
       this.setState(
         {
-          from_date,
-          to_date,
-          customer_id,
-          status
+          to_date: moment(params?.get("to_date"))._d,
         },
         () => getSalesOrderList(this)
       );
     } else {
-      this.setState(
-        {
-          to_date: new Date(),
-          from_date: moment("01" + month + year, "DDMMYYYY")._d,
-          customer_id: null,
-          order_list: [],
-          status: "1"
-        },
-        () => getSalesOrderList(this)
-      );
+      getSalesOrderList(this)
     }
 
     this.props.getHospitalDetails({
@@ -79,11 +106,11 @@ class SalesOrderList extends Component {
     // });
   }
 
-  ourOwnMiniNavigator = obj => {
-    const { order_list, radioYes, authorize1, ...rest } = this.state;
-    let sendObj = Object.assign(rest, obj);
-    this.props.new_routeComponents(sendObj);
-  };
+  // ourOwnMiniNavigator = obj => {
+  //   const { order_list, radioYes, authorize1, ...rest } = this.state;
+  //   let sendObj = Object.assign(rest, obj);
+  //   this.props.new_routeComponents(sendObj);
+  // };
 
   render() {
     return (
@@ -181,10 +208,14 @@ class SalesOrderList extends Component {
                               <i
                                 className="fas fa-eye"
                                 onClick={() => {
-                                  this.ourOwnMiniNavigator({
-                                    RQ_Screen: "SalesOrder",
-                                    sales_order_number: row.sales_order_number
-                                  });
+                                  this.props.history.push(
+                                    `/SalesOrder?sales_order_number=${row.sales_order_number}`
+                                  );
+
+                                  // this.ourOwnMiniNavigator({
+                                  //   RQ_Screen: "SalesOrder",
+                                  //   sales_order_number: row.sales_order_number
+                                  // });
                                 }}
                               />
                             </span>

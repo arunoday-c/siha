@@ -122,6 +122,7 @@ class LeaveAuthDetail extends Component {
       auth_level: this.state.data.auth_level,
       status: type,
       employee_id: this.state.data.employee_id,
+      employee_code: this.state.data.employee_code,
       leave_id: this.state.data.leave_id,
       year: moment(this.state.data.from_date).format("YYYY"),
       religion_id: this.state.data.religion_id,
@@ -140,6 +141,7 @@ class LeaveAuthDetail extends Component {
       code: this.state.data.employee_code,
       // branch: branch.hospital_name,
       leave_desc: this.state.data.leave_description,
+      leave_days: this.state.data.total_applied_days,
     };
     const [branch] = this.props.hospitals.filter(
       (item) => item.hims_d_hospital_id === this.state.data.hospital_id

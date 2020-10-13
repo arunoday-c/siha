@@ -384,7 +384,68 @@ const generateMonthlyLoanReport = ($this) => {
     onSuccess: (res) => {
       const urlBlob = URL.createObjectURL(res.data);
       // const documentName="Salary Slip"
-      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Monthly Loan Report`;
+      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Loan Reconciliation Report - ${$this.state.month}/${$this.state.year}`;
+      window.open(origin);
+    },
+  });
+};
+
+
+
+const generateLevGratReconReport = ($this) => {
+  algaehApiCall({
+    uri: "/report",
+    method: "GET",
+    module: "reports",
+    headers: {
+      Accept: "blob",
+    },
+    others: { responseType: "blob" },
+    data: {
+      report: {
+        reportName: "leave_gratuity_reconcil_Report",
+        pageOrentation: "landscape",
+        reportParams: [
+          {
+            name: "hospital_id",
+            value: $this.state.hospital_id,
+          },
+          {
+            name: "year",
+            value: $this.state.year,
+          },
+          {
+            name: "month",
+            value: $this.state.month,
+          },
+          {
+            name: "department_id",
+            value: $this.state.department_id,
+          },
+          {
+            name: "sub_department_id",
+            value: $this.state.sub_department_id,
+          },
+          {
+            name: "designation_id",
+            value: $this.state.designation_id,
+          },
+          {
+            name: "group_id",
+            value: $this.state.group_id,
+          },
+          {
+            name: "hims_d_employee_id",
+            value: $this.state.hims_d_employee_id,
+          },
+        ],
+        outputFileType: "PDF",
+      },
+    },
+    onSuccess: (res) => {
+      const urlBlob = URL.createObjectURL(res.data);
+      // const documentName="Salary Slip"
+      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Leave and  Gratuity Reconciliation Report - ${$this.state.month}/${$this.state.year}`;
       window.open(origin);
     },
   });
@@ -397,5 +458,5 @@ export {
   openSalaryComponents,
   closeSalaryComponents,
   getOptions,
-  generateMonthlyLoanReport,
+  generateMonthlyLoanReport,generateLevGratReconReport,
 };

@@ -393,6 +393,13 @@ const SaveSalesOrderEnrty = ($this, from) => {
         });
         return;
       }
+      if ($this.state.sales_order_date === null) {
+        swalMessage({
+          type: "warning",
+          title: "Order Date - Cannot be empty.",
+        });
+        return;
+      }
       let InputObj = $this.state;
       let order_detail =
         InputObj.sales_order_mode === "I"
@@ -417,6 +424,9 @@ const SaveSalesOrderEnrty = ($this, from) => {
         InputObj.sales_order_mode === "S"
           ? null
           : moment(InputObj.delivery_date, "YYYY-MM-DD").format("YYYY-MM-DD");
+
+      debugger
+      InputObj.sales_order_date = moment(InputObj.sales_order_date).format("YYYY-MM-DD h:mm:ss");
 
       let strUri = "";
       let strMessage = "Saved successfully";
@@ -536,18 +546,24 @@ const getCtrlCode = ($this, docNumber) => {
 
         data.dataExists = true;
         data.selectedData = true;
-        data.itemAdd = false
+        data.itemAdd = false;
+
         if (data.is_revert === "Y") {
-          data.itemAdd = true
+          data.itemAdd = true;
+          data.serviceAdd = false;
+          data.dataExists = false;
         }
         if (data.is_posted === "Y") {
           data.saveEnable = true;
           data.addedItem = true;
           data.dataPosted = true;
+          data.serviceAdd = true;
+          data.itemAdd = true;
         } else {
           data.saveEnable = false;
           data.addedItem = false;
           data.dataPosted = false;
+          data.serviceAdd = false;
         }
         if (data.authorize1 === "Y" && data.authorize2 === "Y") {
           data.cancelDisable = true;
@@ -677,17 +693,33 @@ const employeeSearch = ($this) => {
 };
 
 const dateValidate = ($this, value, event) => {
-  let inRange = moment(value).isBefore(moment().format("YYYY-MM-DD"));
-  if (inRange) {
-    swalMessage({
-      title: "Selected Date cannot be past Date.",
-      type: "warning",
-    });
-    event.target.focus();
-    $this.setState({
-      [event.target.name]: null,
-    });
+  let inRange = false;
+  if (event.target.name === "sales_order_date") {
+    inRange = moment(value).isAfter(moment().format("YYYY-MM-DD"));
+    if (inRange) {
+      swalMessage({
+        title: "Selected Date cannot be future Date.",
+        type: "warning",
+      });
+      event.target.focus();
+      $this.setState({
+        [event.target.name]: null,
+      });
+    }
+  } else {
+    inRange = moment(value).isBefore(moment().format("YYYY-MM-DD"))
+    if (inRange) {
+      swalMessage({
+        title: "Selected Date cannot be past Date.",
+        type: "warning",
+      });
+      event.target.focus();
+      $this.setState({
+        [event.target.name]: null,
+      });
+    }
   }
+
 };
 
 const AuthorizeOrderEntry = ($this, authorize) => {

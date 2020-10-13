@@ -39,7 +39,7 @@ const executePDF = function executePDFMethod(options) {
         .executeQuery({
           query: `select  H.*, C.customer_name, C.bank_account_no, C.bank_name, C.arabic_customer_name,C.vat_number,C.address, 
           SO.sales_order_number, SO.customer_po_no, SO.sales_order_date, HO.hospital_name, 
-          CASE WHEN H.is_posted='N' THEN 'Not Finalized' ELSE 'Finalized' END as invoice_status
+          CASE WHEN H.is_posted='N' THEN 'Invoice Not Finalized' ELSE '' END as invoice_status
           from  hims_f_sales_invoice_header H 
           inner join hims_d_customer C on H.customer_id = C.hims_d_customer_id
           inner join hims_f_sales_order SO on H.sales_order_id = SO.hims_f_sales_order_id

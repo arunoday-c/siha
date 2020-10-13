@@ -296,8 +296,11 @@ export function BillDetails({
       if (!enableCash) {
         setBillData((state) => {
           state.cash_amount = 0;
-          state.unbalanced_amount =
-            state?.receiveable_amount - state?.cash_amount - state?.card_amount;
+          state.unbalanced_amount = (
+            state?.receiveable_amount -
+            state?.cash_amount -
+            state?.card_amount
+          ).toFixed(3);
           return { ...state };
         });
       }
@@ -310,8 +313,11 @@ export function BillDetails({
       if (!enableCard) {
         setBillData((state) => {
           state.card_amount = 0;
-          state.unbalanced_amount =
-            state.receiveable_amount - state.cash_amount - state.card_amount;
+          state.unbalanced_amount = (
+            state.receiveable_amount -
+            state.cash_amount -
+            state.card_amount
+          ).toFixed(3);
           return { ...state };
         });
       }
@@ -481,7 +487,9 @@ export function BillDetails({
                               state.net_amount - amount;
                             state.cash_amount = 0;
                             state.card_amount = 0;
-                            state.unbalanced_amount = state.receiveable_amount;
+                            state.unbalanced_amount = state.receiveable_amount.toFixed(
+                              3
+                            );
                             return { ...state };
                           });
                         },
@@ -514,6 +522,7 @@ export function BillDetails({
                           if (perc > 100) {
                             perc = 99;
                           }
+
                           if (perc > 0) {
                             setBillData((sendingObject) => {
                               sendingObject.sheet_discount_percentage = perc;
@@ -527,6 +536,14 @@ export function BillDetails({
                               sendingObject.receiveable_amount =
                                 sendingObject.gross_total -
                                 sendingObject.sheet_discount_amount;
+                              sendingObject.cash_amount = (
+                                sendingObject.gross_total -
+                                sendingObject.sheet_discount_amount
+                              ).toFixed(3);
+                              sendingObject.unbalanced_amount = (
+                                sendingObject.receiveable_amount -
+                                sendingObject.cash_amount
+                              ).toFixed(3);
                               return { ...sendingObject };
                             });
                           } else {
@@ -691,8 +708,9 @@ export function BillDetails({
                               credit;
                             sendingObject.cash_amount = 0;
                             sendingObject.card_amount = 0;
-                            sendingObject.unbalanced_amount =
-                              sendingObject.receiveable_amount;
+                            sendingObject.unbalanced_amount = sendingObject.receiveable_amount.toFixed(
+                              3
+                            );
                             return { ...sendingObject };
                           });
                         },
@@ -806,7 +824,16 @@ export function BillDetails({
                         name="Pay by Cash"
                         checked={enableCash}
                         disabled={disabled}
-                        onChange={() => setEnableCash((state) => !state)}
+                        onChange={(e) => {
+                          setEnableCash(e.target.checked);
+                          if (e.target.checked) {
+                            setValue(
+                              "cash_amount",
+                              billData?.receiveable_amount
+                            );
+                            return;
+                          }
+                        }}
                       />
 
                       <span style={{ fontSize: "0.8rem" }}>Pay by Cash</span>
@@ -828,15 +855,17 @@ export function BillDetails({
                           ...props,
                           disabled: disabled || !enableCash,
                           onChange: (e) => {
+                            debugger;
                             const amount = e.target.value
                               ? parseFloat(e.target.value)
                               : 0;
                             setBillData((state) => {
                               state.cash_amount = amount;
-                              state.unbalanced_amount =
+                              state.unbalanced_amount = (
                                 state?.receiveable_amount -
                                 amount -
-                                state?.card_amount;
+                                state?.card_amount
+                              ).toFixed(3);
                               return { ...state };
                             });
                           },
@@ -860,7 +889,14 @@ export function BillDetails({
                         type="checkbox"
                         name="Pay by Card"
                         checked={enableCard}
-                        onChange={() => setEnableCard((state) => !state)}
+                        onChange={(e) => {
+                          setEnableCard(e.target.checked);
+
+                          if (!e.target.checked) {
+                            setValue("cash_amount", billData?.patient_payable);
+                            return;
+                          }
+                        }}
                         disabled={disabled}
                       />
                       <span style={{ fontSize: "0.8rem" }}>Pay by Card</span>
@@ -984,10 +1020,11 @@ export function BillDetails({
                               : 0;
                             setBillData((state) => {
                               state.card_amount = amount;
-                              state.unbalanced_amount =
+                              state.unbalanced_amount = (
                                 state?.receiveable_amount -
                                 amount -
-                                state?.cash_amount;
+                                state?.cash_amount
+                              ).toFixed(3);
                               return { ...state };
                             });
                           },

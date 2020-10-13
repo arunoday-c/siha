@@ -123,7 +123,7 @@
 									<tr>
 										<td colspan="2" class="bg_white email-section">
 											<div class="heading-section" style="text-align: center; padding: 0 30px;">
-												<h2>Employee Leave Request</h2>
+												<h2>Employee Loan Request</h2>
 												<p> {{hospital_address}}</p>
 											</div>
 											<hr style=" height: 1px; background: #eaeaea; border: 0;">
@@ -131,13 +131,71 @@
 									</tr>
 								</tbody>
 							</table>
-							<table role="presentation" cellspacing="0" cellpadding="0" border="0" width="80%" style="text-align: left; padding: 0 40px;margin-bottom:20px">
+							<table role="presentation" cellspacing="0" cellpadding="0" border="0"  width="100%"  style="text-align: left; padding: 0 40px;margin-bottom:20px">
 								<tr>
 									<td colspan="2">
-										<p>Hello, <b>{{full_name}}</b></p>
-										<p>{{leave_desc}} Requested from {{from_date}} to {{to_date}} is Approved For {{total_approved_days}} days </p>
+										<p>Hello, <b>Manager</b></p>
+										<p>Approval Pending for the Loan Requested by <b>{{full_name}}</b> from {{hospital_name}} Branch.</p>
 									</td>
 								</tr>
+							</table>
+							<table cellspacing="0" cellpadding="2" border="1"  width="80%" style="text-align: left; margin: 0 40px 20px;">
+								<tr>
+									<td colspan="2"><b>Employee Details:-</td>
+								</tr>
+								<tr>
+									<td>Employee Code:</td>
+									<td>{{employee_code}}</td>
+								</tr>
+								<tr>
+									<td>Employee Name:</td>
+									<td>{{full_name}}</td>
+								</tr>
+								<tr>
+									<td>Branch:</td>
+									<td>{{hospital_name}}</td>
+								</tr>
+								
+								<tr>
+									<td colspan="2"><b>Request Details:-</td>
+								</tr>
+								<tr>
+									<td>Loan Request No.:</td>
+									<td>{{leave_type}}</td>
+								</tr>
+								
+								<tr>
+									<td>Loan Requested Date:</td>
+									<td>{{loan_application_date}}</td>
+								</tr>
+								
+								<tr>
+									<td colspan="2"><b>Loan Details:-</td>
+								</tr>
+								<tr>
+									<td>Loan Desc:</td>
+									<td>{{loan_description}}</td>
+								</tr>
+								<tr>
+									<td>Loan Application Reason:</td>
+									<td>{{application_reason}}</td>
+								</tr>
+								
+								<tr>
+									<td>Requested Amount:</td>
+									<td>{{loan_amount}}</td>
+								</tr>
+								
+								<tr>
+									<td>Requested EMI Amt:</td>
+									<td>{{installment_amount}}</td>
+								</tr>
+								
+								<tr>
+									<td>Loan Start From:</td>
+									<td>{{start_month}} - {{start_year}} </td>
+								</tr>
+								
 							</table>
 						</td>
 					</tr>
