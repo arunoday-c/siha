@@ -39,6 +39,7 @@ export default {
         )select * from cte ;  SELECT cost_center_type,cost_center_required,report_dill_down_level  FROM finance_options limit 1; 
         
         `,
+        printQuery: false,
       })
       .then((result) => {
         //Income head ids
@@ -108,7 +109,7 @@ export default {
           _mysql
             .executeQuery({
               query: costCenterQuery,
-              printQuery: true,
+              printQuery: false,
             })
             .then((costResult) => {
               columns = costResult;
@@ -916,8 +917,9 @@ export default {
                             item["total"] = item["total"] - tot;
                             //const { children, ...rest } = item;
                             cosResult[0]["total"] = cosResult[0]["total"] + tot;
-                            for (let i = 0; i < allCOS.length; i++)
+                            for (let i = 0; i < allCOS.length; i++) {
                               cosResult[0]["children"].push(allCOS[i]);
+                            }
                           }
 
                           if (allNonCOS.length > 0) {
@@ -927,26 +929,30 @@ export default {
                                   _.sumBy(allNonCOS, (s) => parseFloat(s.total))
                               ).toFixed(decimal_places);
                             } else {
-                              directExpeneseResult = [];
+                              // directExpeneseResult = [];
                               const tot = parseFloat(
                                 _.sumBy(allNonCOS, (s) => parseFloat(s.total))
                               ).toFixed(decimal_places);
-
                               directExpeneseResult.push({
+                                label: "Expence",
                                 total: tot,
                                 children: [],
                               });
                             }
+                            // directExpeneseResult[0]["total"] = parseFloat(
+                            //   parseFloat(directExpeneseResult[0]["total"]) +
+                            //     _.sumBy(allNonCOS, (s) => parseFloat(s.total))
+                            // ).toFixed(decimal_places);
 
                             for (let x = 0; x < allNonCOS.length; x++) {
+                              // directExpeneseResult[0]["children"].push(
+                              //   allNonCOS[x]
+                              // );
+
                               if (directExpeneseResult.length > 0) {
                                 directExpeneseResult[0]["children"].push(
                                   allNonCOS[x]
                                 );
-                              } else {
-                                directExpeneseResult.push({
-                                  children: allNonCOS[x],
-                                });
                               }
                             }
                           }
@@ -975,6 +981,7 @@ export default {
 
                         ...g_prop,
                       });
+
                       req.records = {
                         columns,
                         income: incomeResult,

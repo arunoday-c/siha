@@ -10,7 +10,9 @@ import {
   AlgaehModalPopUp,
 } from "../../Wrapper/algaehWrapper";
 import moment from "moment";
+import { GetAmountFormart } from "../../../utils/GlobalFunctions";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
+import { MainContext } from "algaeh-react-components";
 // const modules = [
 //   {
 //     name: "OP Bill",
@@ -88,7 +90,17 @@ class DayEndProcess extends Component {
     this.selectedDayEndIds = "";
   }
 
+  static contextType = MainContext;
   componentDidMount() {
+    const userToken = this.context.userToken;
+
+    const {
+      decimal_places,
+      symbol_position,
+      currency_symbol,
+    } = userToken;
+
+    const currency = { decimal_places, addSymbol: false, symbol_position, currency_symbol }
     const params = new URLSearchParams(this.props.location?.search);
     if (params?.get("from_date")) {
       this.setState({
@@ -99,6 +111,7 @@ class DayEndProcess extends Component {
       this.setState(
         {
           to_date: params?.get("to_date"),
+          currency: currency
         },
         () => this.getDayEndProcess(this)
       );
@@ -390,12 +403,30 @@ class DayEndProcess extends Component {
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Debit Amount" }} />
                       ),
+                      displayTemplate: (row) => {
+                        return (
+                          <span>
+                            {GetAmountFormart(row.debit_amount, {
+                              appendSymbol: false,
+                            })}
+                          </span>
+                        );
+                      }
                     },
                     {
                       fieldName: "credit_amount",
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Credit Amount" }} />
                       ),
+                      displayTemplate: (row) => {
+                        return (
+                          <span>
+                            {GetAmountFormart(row.credit_amount, {
+                              appendSymbol: false,
+                            })}
+                          </span>
+                        );
+                      }
                     },
 
                     // {
@@ -706,6 +737,16 @@ class DayEndProcess extends Component {
                           label: (
                             <AlgaehLabel label={{ forceLabel: "Amount" }} />
                           ),
+
+                          displayTemplate: (row) => {
+                            return (
+                              <span>
+                                {GetAmountFormart(row.amount, {
+                                  appendSymbol: false,
+                                })}
+                              </span>
+                            );
+                          },
                           others: { filterable: false },
                         },
 

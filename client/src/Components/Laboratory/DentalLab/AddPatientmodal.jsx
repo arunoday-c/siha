@@ -49,7 +49,12 @@ export function AddPatientDentalForm({
   doctors,
 }) {
   //   const { userLanguage, titles = [] } = useContext(MainContext);
-  const { FORMAT_GENDER, REQUEST_STATUS, WORK_STATUS } = GenericData;
+  const {
+    FORMAT_GENDER,
+    REQUEST_STATUS,
+    WORK_STATUS,
+    ORDERED_TYPE,
+  } = GenericData;
   //   const [openDentalModal, setOpenDentalModal] = useState(false);
   // const [loading_request_list, setLoadingRequestList] = useState(false);
   //   const [request_list, setRequestList] = useState([]);
@@ -96,8 +101,11 @@ export function AddPatientDentalForm({
         due_date: current.due_date,
         service_amount: current.procedure_amt,
         doctor: current.provider_id,
+        ordered_type: current.ordered_type,
         arrival_date:
           current.arrival_date === null ? undefined : current.arrival_date,
+        odered_date:
+          current.odered_date === null ? undefined : current.odered_date,
       });
 
       // .map((item) => item.doctors);
@@ -124,10 +132,12 @@ export function AddPatientDentalForm({
         service_amount: "",
         doctor: "",
         arrival_date: undefined,
+        odered_date: undefined,
         location_id: null,
         // quantity_available: "",
         quantity_utilised: "",
         box_code: "",
+        ordered_type: "",
       });
       // setSub_department_id("");
       // setDoctor_id("");
@@ -167,6 +177,7 @@ export function AddPatientDentalForm({
           requested_date: requestDate,
           due_date: due_date,
           date_of_birth: date_of_birth,
+          ordered_type: data.ordered_type,
           // location_id: data.location_id,
           // quantity_available: data.quantity_available,
           // quantity_utilised: data.quantity_utilised,
@@ -192,6 +203,10 @@ export function AddPatientDentalForm({
       data.arrival_date === undefined
         ? undefined
         : moment(data.arrival_date).format("YYYY-MM-DD");
+    const odered_date =
+      data.odered_date === undefined
+        ? undefined
+        : moment(data.odered_date).format("YYYY-MM-DD");
     // const due_date = moment(new Date()).format("YYYY-MM-DD");
     const years = moment().diff(data.date_of_birth, "year");
     // const date_of_birth = moment(data.date_of_birth).format("YYYY-MM-DD");
@@ -217,12 +232,14 @@ export function AddPatientDentalForm({
           date_of_birth: data.date_of_birth,
           hims_f_dental_form_id: current.hims_f_dental_form_id,
           arrival_date: arrival_date,
+          odered_date: odered_date,
           send_mail: checked,
           doctor_email: current.work_email,
           location_id: data.location_id,
           quantity_utilised: data.quantity_utilised,
           // quantity_available: data.quantity_available,
           box_code: data.box_code,
+          ordered_type: data.ordered_type,
         },
       });
       if (res.data.success) {
@@ -307,12 +324,14 @@ export function AddPatientDentalForm({
       className={`row algaehNewModal dentalLabRequest`}
       footer={[
         <div className="col-12">
-          <button
-            onClick={handleSubmit(onSubmit)}
-            className="btn btn-primary btn-sm"
-          >
-            {current.length !== 0 ? "Update" : "Add to List"}
-          </button>
+          {disabled || current.request_status === "APR" ? null : (
+            <button
+              onClick={handleSubmit(onSubmit)}
+              className="btn btn-primary btn-sm"
+            >
+              {current.length !== 0 ? "Update" : "Add to List"}
+            </button>
+          )}
           <button onClick={onClose} className="btn btn-default btn-sm">
             Cancel
           </button>
@@ -354,6 +373,7 @@ export function AddPatientDentalForm({
                   },
                 }}
               /> */}
+              {/* ENUM('NEW', 'REF', 'REM', 'RIM') */}
               {/* <Controller
                 control={control}
                 name="doctor"
@@ -542,6 +562,45 @@ export function AddPatientDentalForm({
               />
               <Controller
                 control={control}
+                rules={{ required: "Please Select request status " }}
+                name="ordered_type"
+                render={({ onBlur, onChange, value }) => (
+                  <AlgaehAutoComplete
+                    div={{ className: "col-3 mandatory" }}
+                    label={{
+                      forceLabel: "Order Marker",
+                      isImp: true,
+                    }}
+                    error={errors}
+                    selector={{
+                      name: "ordered_type",
+                      className: "select-fld",
+
+                      dataSource: {
+                        textField: fieldNameFn("name"),
+                        valueField: "value",
+                        data: ORDERED_TYPE,
+                      },
+                      value,
+                      onChange: (_, selected) => {
+                        onChange(selected);
+                        // if (selected !== "APR") {
+                        //   setValue("work_status", "");
+                        //   setValue("arrival_date", undefined);
+                        // }
+                      },
+                      onClear: () => {
+                        onChange("");
+                      },
+                      others: {
+                        disabled: disabled || current.request_status === "APR",
+                      },
+                    }}
+                  />
+                )}
+              />
+              {/* <Controller
+                control={control}
                 name="due_date"
                 // rules={{ required: "Please Select DOB" }}
                 render={({ onChange, value }) => (
@@ -578,7 +637,7 @@ export function AddPatientDentalForm({
                     }}
                   />
                 )}
-              />
+              /> */}
             </div>
             <hr></hr>
             <div className="row">
@@ -823,6 +882,7 @@ export function AddPatientDentalForm({
                             onChange(selected);
                             if (selected !== "COM") {
                               setValue("arrival_date", undefined);
+
                               return;
                             } else {
                               setShowLocation(true);
@@ -883,7 +943,47 @@ export function AddPatientDentalForm({
                       />
                     )}
                   />
-
+                  <Controller
+                    name="odered_date"
+                    control={control}
+                    rules={{
+                      required:
+                        work_status === "WIP" ? " please enter date" : false,
+                    }}
+                    render={({ onChange, value }) => (
+                      <AlgaehDateHandler
+                        div={{ className: "col-3 form-group mandatory" }}
+                        error={errors}
+                        label={{
+                          forceLabel: "Odered Date",
+                          isImp: true,
+                        }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "odered_date",
+                          value: value || undefined,
+                        }}
+                        others={{
+                          disabled:
+                            work_status !== "WIP" || current.odered_date,
+                        }}
+                        minDate={new Date()}
+                        events={{
+                          onChange: (mdate) => {
+                            if (mdate) {
+                              onChange(mdate._d);
+                            } else {
+                              onChange(undefined);
+                            }
+                          },
+                          onClear: () => {
+                            onChange(undefined);
+                            // setValue("arrival_date", undefined);
+                          },
+                        }}
+                      />
+                    )}
+                  />
                   <AlgaehSecurityComponent componentCode="DEN_MAIL_NOTY">
                     <div className="col">
                       <label>Notify Via Email</label>

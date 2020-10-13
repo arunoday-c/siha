@@ -644,8 +644,8 @@ export default {
 
                 if (inputParam.grn_for === "PHR") {
                   strQuery = "select GH.hims_f_procurement_grn_header_id, GH.grn_number, GH.inovice_number, \
-                    GH.net_total, GH.total_tax, \
-                    GH.net_payable, PL.head_id, PL.child_id, PL.hospital_id ,V.head_id as v_head_id, V.child_id as v_child_id \
+                    GH.net_total, GH.total_tax, GH.net_payable, PL.head_id, PL.child_id, PL.hospital_id, \
+                    V.head_id as v_head_id, V.child_id as v_child_id, V.vendor_name \
                     from hims_f_procurement_grn_header GH \
                     inner join hims_d_pharmacy_location PL on PL.hims_d_pharmacy_location_id = GH.pharmcy_location_id\
                     inner join hims_d_vendor V on V.hims_d_vendor_id = GH.vendor_id\
@@ -699,7 +699,7 @@ export default {
                           headerResult[0].hims_f_procurement_grn_header_id,
                           headerResult[0].grn_number,
                           inputParam.ScreenCode,
-                          "Receipt Generated " + + headerResult[0].vendor_name + "/" + headerResult[0].net_payable,
+                          "Receipt Generated " + "/" + headerResult[0].vendor_name + "/" + headerResult[0].net_payable,
                           headerResult[0].inovice_number,
                           inputParam.due_date,
                           new Date(),

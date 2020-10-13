@@ -12,13 +12,13 @@ let addDentalForm = (req, res, next) => {
     _mysql
       .executeQuery({
         query:
-          "INSERT INTO hims_f_dental_form (patient_id,provider_id,visit_id,procedure_id,procedure_amt,vendor_id,request_status,\
+          "INSERT INTO hims_f_dental_form (patient_id,provider_id,visit_id,procedure_id,procedure_amt,vendor_id,request_status,ordered_type\
             full_name,gender,age,patient_code,requested_date,date_of_birth,department_id,episode,approved,work_status,\
             due_date,bruxzir_anterior,ips_e_max,lava,lumineers,zirconia_e_max_layered,\
             bruxzir,nobel,white_high_nobel,non_precious,pmma,titanium,zirconia_w_ti_base,\
             biomet_3i_encode,screw_retained,flexi,analog,models,implant_parts,impression,\
             bite,shade_tab,others,photos,bags,rx_forms,created_date,created_by,updated_date,updated_by,hospital_id)\
-                 values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                 values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
         values: [
           input.patient_id,
           input.provider_id,
@@ -30,6 +30,7 @@ let addDentalForm = (req, res, next) => {
           input.standard_fee,
           input.hims_d_vendor_id,
           input.request_status,
+          input.ordered_type,
           input.full_name,
           input.gender,
           input.age,
@@ -103,8 +104,8 @@ export default {
           -- P.patient_code,concat(T.title,' ',P.full_name)as  patient_name,
              E.full_name as  employee_name,
              -- PL.hims_f_treatment_plan_id, PL.plan_name
-       D.arrival_date, D.work_status,E.work_email,D.hims_f_dental_form_id,D.due_date ,D.department_id,
-       D.location_id,D.quantity_available,D.box_code,D.quantity_utilised,D.requested_date,D.request_status,D.procedure_id, D.provider_id,D.procedure_amt,D.approved,D.date_of_birth,
+       D.arrival_date,D.odered_date, D.work_status,E.work_email,D.hims_f_dental_form_id,D.due_date ,D.department_id,
+       D.location_id,D.quantity_available,D.box_code,D.quantity_utilised,D.requested_date,D.request_status,D.ordered_type,D.procedure_id, D.provider_id,D.procedure_amt,D.approved,D.date_of_birth,
         D.full_name, D.patient_code,D.gender, D.age,V.vendor_name,V.hims_d_vendor_id,S.service_name
          from hims_f_dental_form as D 
          -- inner join hims_f_patient as P on P.hims_d_patient_id=D.patient_id 
@@ -145,8 +146,8 @@ export default {
           -- P.patient_code,concat(T.title,' ',P.full_name)as  patient_name,
              E.full_name as  employee_name,
              -- PL.hims_f_treatment_plan_id, PL.plan_name
-       D.arrival_date, D.work_status,E.work_email,D.hims_f_dental_form_id,D.due_date ,D.department_id,IL.location_description,
-       D.location_id,D.quantity_available,D.box_code,D.quantity_utilised,D.requested_date,D.request_status,D.procedure_id, D.provider_id,D.procedure_amt,D.approved,D.date_of_birth,
+       D.arrival_date,D.odered_date, D.work_status,E.work_email,D.hims_f_dental_form_id,D.due_date ,D.department_id,IL.location_description,
+       D.location_id,D.quantity_available,D.box_code,D.quantity_utilised,D.requested_date,D.request_status,D.ordered_type,D.procedure_id, D.provider_id,D.procedure_amt,D.approved,D.date_of_birth,
         D.full_name, D.patient_code,D.gender, D.age,V.vendor_name,V.hims_d_vendor_id,S.service_name
          from hims_f_dental_form as D 
          -- inner join hims_f_patient as P on P.hims_d_patient_id=D.patient_id 
@@ -184,8 +185,8 @@ export default {
     _mysql
       .executeQuery({
         query: `update hims_f_dental_form set patient_id=?,location_id=?,quantity_available=?,box_code=?,quantity_utilised=?,provider_id=?,procedure_id=?,procedure_amt=?,
-        vendor_id=?,request_status=?,work_status=?,full_name=?,gender=?,age=?,patient_code=?,requested_date=?,
-        date_of_birth=?,department_id=?,arrival_date=? where hims_f_dental_form_id=? `,
+        vendor_id=?,request_status=?,ordered_type=?,work_status=?,full_name=?,gender=?,age=?,patient_code=?,requested_date=?,
+        date_of_birth=?,department_id=?,arrival_date=? ,odered_date=? where hims_f_dental_form_id=? `,
 
         values: [
           input.patient_id,
@@ -198,6 +199,7 @@ export default {
           input.standard_fee,
           input.hims_d_vendor_id,
           input.request_status ? input.request_status : "PEN",
+          input.ordered_type,
           input.work_status ? input.work_status : "PEN",
           input.full_name,
           input.gender,
@@ -207,6 +209,7 @@ export default {
           input.date_of_birth,
           input.department_id,
           input.arrival_date,
+          input.odered_date,
           input.hims_f_dental_form_id,
         ],
         printQuery: true,
@@ -221,7 +224,7 @@ export default {
             .executeQuery({
               query: `select E.full_name as employee_name,
 
-           D.arrival_date, D.work_status,E.work_email,D.hims_f_dental_form_id,D.due_date ,D.requested_date,D.request_status,D.procedure_id, D.provider_id,D.procedure_amt,D.approved,D.date_of_birth,
+           D.arrival_date,D.odered_date, D.work_status,E.work_email,D.hims_f_dental_form_id,D.due_date ,D.requested_date,D.request_status,D.ordered_type,D.procedure_id, D.provider_id,D.procedure_amt,D.approved,D.date_of_birth,
             D.full_name, D.patient_code,D.resend_mail_send,D.approved_mail_send,D.reject_mail_send,D.arrival_mail_send,S.service_name
              from hims_f_dental_form as D
 
@@ -256,6 +259,7 @@ export default {
               let patient_code = result[0].patient_code;
               let full_name = result[0].full_name;
               let arrival_date = result[0].arrival_date;
+              let odered_date = result[0].odered_date;
 
               req.records = result;
 
@@ -303,6 +307,7 @@ export default {
                         patient_code,
                         full_name,
                         arrival_date,
+                        odered_date,
                       })
                       .send()
                       .then((response) => {

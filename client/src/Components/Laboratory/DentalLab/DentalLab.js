@@ -12,7 +12,7 @@ import { useQuery } from "react-query";
 import ButtonType from "../../Wrapper/algaehButton";
 import { newAlgaehApi } from "../../../hooks/";
 // import GenericData from "../../../utils/GlobalVariables.json";
-import moment from "moment";
+// import moment from "moment";
 // import swal from "sweetalert2";
 import { Controller, useForm } from "react-hook-form";
 import { AddPatientDentalForm } from "./AddPatientmodal";
@@ -99,11 +99,11 @@ export default function DentalLab() {
 
   const { getValues, control, handleSubmit, errors } = useForm({
     shouldFocusError: true,
-    defaultValues: {
-      // requesting_date: new Date(),
-      from_request_date: moment().startOf("month").format("YYYY-MM-DD"),
-      to_request_date: new Date(),
-    },
+    // defaultValues: {
+    //   // requesting_date: new Date(),
+    //   from_request_date: moment().startOf("month").format("YYYY-MM-DD"),
+    //   to_request_date: new Date(),
+    // },
   });
   // const { date_of_birth } = useWatch({
   //   control,
@@ -353,7 +353,7 @@ export default function DentalLab() {
             onClose={onClose}
             visible={openDentalModal}
             disabled={disabled}
-            getRequest={getFormRequest}
+            getRequest={loadRequestListAll}
             doctors={doctors}
             location={location}
             // userLanguage={userLanguage}
@@ -372,9 +372,9 @@ export default function DentalLab() {
                 label={{ forceLabel: "From Requested Date", isImp: false }}
                 error={errors}
                 textBox={{
-                  className: "form-control",
+                  className: "txt-fld",
                   name: "from_request_date",
-                  value,
+                  value: value || undefined,
                 }}
                 // maxDate={new Date()}
                 events={{
@@ -406,9 +406,9 @@ export default function DentalLab() {
                 label={{ forceLabel: "From Requested Date", isImp: false }}
                 error={errors}
                 textBox={{
-                  className: "form-control",
+                  className: "txt-fld",
                   name: "to_request_date",
-                  value,
+                  value: value || undefined,
                 }}
                 // maxDate={new Date()}
                 events={{
@@ -490,7 +490,7 @@ export default function DentalLab() {
                         {
                           fieldName: "request_status",
                           label: "Request status",
-
+                          filterable: true,
                           displayTemplate: (row) => {
                             return (
                               <span>
@@ -520,7 +520,7 @@ export default function DentalLab() {
                         {
                           fieldName: "work_status",
                           label: "Work Status",
-
+                          filterable: true,
                           displayTemplate: (row) => {
                             return (
                               <span>
@@ -543,7 +543,28 @@ export default function DentalLab() {
                             );
                           },
                         },
-
+                        {
+                          fieldName: "ordered_type",
+                          label: "Order Type",
+                          filterable: true,
+                          displayTemplate: (row) => {
+                            return (
+                              <span>
+                                {row.ordered_type === "NEW" ? (
+                                  <span>NEW</span>
+                                ) : row.ordered_type === "REF" ? (
+                                  <span>Refine</span>
+                                ) : row.ordered_type === "REM" ? (
+                                  <span>Remake</span>
+                                ) : row.ordered_type === "RIM" ? (
+                                  <span>Reimpression</span>
+                                ) : (
+                                  "------"
+                                )}
+                              </span>
+                            );
+                          },
+                        },
                         {
                           fieldName: "full_name",
                           label: "Patient Name",
