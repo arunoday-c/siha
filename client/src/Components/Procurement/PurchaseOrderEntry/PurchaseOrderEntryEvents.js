@@ -473,13 +473,16 @@ const getCtrlCode = ($this, docNumber) => {
       data: { purchase_number: docNumber },
       onSuccess: (response) => {
         if (response.data.success) {
+          const queryParams = new URLSearchParams($this.props.location.search);
           let data = response.data.records;
 
           getData($this, data.po_from);
-          if (
-            $this.props.purchase_number !== undefined &&
-            $this.props.purchase_number.length !== 0
-          ) {
+          // if (
+          //   $this.props.purchase_number !== undefined &&
+          //   $this.props.purchase_number.length !== 0
+          // ) {
+          if (queryParams.get("purchase_number")) {
+            data.purchase_auth = true;
             data.authorizeEnable = false;
             data.ItemDisable = true;
             data.ClearDisable = true;
@@ -986,8 +989,8 @@ const getReportForMail = (data, vedorData) => {
           vendor_email: email_id_1
             ? email_id_1
             : email_id_2
-            ? email_id_2
-            : email_id_1,
+              ? email_id_2
+              : email_id_1,
           po_from: po_from,
           net_total,
           location_name,

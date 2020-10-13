@@ -517,18 +517,17 @@ const getCtrlCode = ($this, docNumber) => {
     },
     onSuccess: (response) => {
       if (response.data.success) {
+        const queryParams = new URLSearchParams($this.props.location.search);
         let data = response.data.records;
 
         data.grid_edit = true;
-        if (
-          $this.props.sales_order_number !== undefined &&
-          $this.props.sales_order_number.length !== 0
-        ) {
+
+        if (queryParams.get("sales_order_number")) {
           data.authBtnEnable = data.cancelled === "Y" || data.is_posted === "N" ? true : false;
           data.ItemDisable = true;
           data.ClearDisable = true;
           data.cancelDisable = data.cancelled === "Y" || data.is_posted === "N" ? true : false;
-
+          data.order_auth = true
           // for (let i = 0; i < data.order_detail.length; i++) {
           //   data.order_detail[i].quantity_outstanding =
           //     data.order_detail[i].quantity;

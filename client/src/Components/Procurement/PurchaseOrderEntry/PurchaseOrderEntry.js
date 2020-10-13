@@ -820,7 +820,7 @@ class PurchaseOrderEntry extends Component {
             <div className="row">
               <div className="col-4 leftBtnGroup">
                 <AlgaehSecurityComponent componentCode="PUR_AUT_AUTH1">
-                  {this.props.purchase_auth === true ? (
+                  {this.state.purchase_auth === true ? (
                     <button
                       type="button"
                       className="btn btn-other"
@@ -850,7 +850,7 @@ class PurchaseOrderEntry extends Component {
                   ) : null}
                 </AlgaehSecurityComponent>
                 <AlgaehSecurityComponent componentCode="PUR_AUT_AUTH2">
-                  {this.props.purchase_auth === true ? (
+                  {this.state.purchase_auth === true ? (
                     <button
                       type="button"
                       className="btn btn-other"
@@ -880,7 +880,7 @@ class PurchaseOrderEntry extends Component {
                   ) : null}
                 </AlgaehSecurityComponent>
 
-                {this.props.purchase_auth === true ? (
+                {this.state.purchase_auth === true ? (
                   <button
                     type="button"
                     className="btn btn-danger"
@@ -938,7 +938,7 @@ class PurchaseOrderEntry extends Component {
                       returnText: true,
                     }}
                   />
-                </button>{" "}
+                </button>
                 <AlgaehSecurityComponent componentCode="PO_VIA_EMAIL">
                   <AlgaehButton
                     loading={this.state.mailSend}

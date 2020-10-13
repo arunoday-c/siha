@@ -884,7 +884,7 @@ export function updateSalesOrderEntry(req, res, next) {
                                             .executeQueryWithTransaction({
                                                 query: `select hims_f_dispatch_note_header_id,sum(B.tax_amount) as tax_amount, sum(B.total_amount) as total_amount from hims_f_sales_dispatch_note_header H inner join 
                                                     hims_f_sales_dispatch_note_detail D on H.hims_f_dispatch_note_header_id=D.dispatch_note_header_id 
-                                                    inner join hims_f_sales_dispatch_note_batches B on  D.hims_f_sales_dispatch_note_detail_id = B.sales_dispatch_note_detail_id where H.sales_order_id=17 
+                                                    inner join hims_f_sales_dispatch_note_batches B on  D.hims_f_sales_dispatch_note_detail_id = B.sales_dispatch_note_detail_id where H.sales_order_id=?
                                                     group by H.hims_f_dispatch_note_header_id;`,
                                                 values: [inputParam.hims_f_sales_order_id],
                                                 printQuery: true,
@@ -941,8 +941,11 @@ export function updateSalesOrderEntry(req, res, next) {
                                                                 }
                                                                 for (let q = 0; q < invoiceDetail.length; q++) {
                                                                     strInvoiceQry += mysql.format(
-                                                                        "update hims_f_sales_invoice_header set total_tax=?, net_payable=? where hims_f_sales_invoice_header_id=?;",
+                                                                        "update hims_f_sales_invoice_header set is_revert='N', customer_id=?,project_id=?, hospital_id=?, total_tax=?, net_payable=? where hims_f_sales_invoice_header_id=?;",
                                                                         [
+                                                                            inputParam.customer_id,
+                                                                            inputParam.project_id,
+                                                                            inputParam.hospital_id,
                                                                             invoiceDetail[q].total_tax,
                                                                             invoiceDetail[q].net_payable,
                                                                             invoiceDetail[q].sales_invoice_header_id,

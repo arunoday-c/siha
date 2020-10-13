@@ -110,25 +110,42 @@ export function getSalesOrderItem(req, res, next) {
           _mysql
             .executeQuery({
               query:
-                `select D.*, D.hims_f_sales_order_items_id as sales_order_items_id,         
+                `select D.*, D.hims_f_sales_order_items_id as sales_order_items_id,     IM.item_description,    
               (D.quantity - D.quantity_outstanding) as delivered_to_date,
               D.quantity as ordered_quantity, 0 as selected_quantity, 'N' as removed, 
-              COALESCE(LOC.hims_m_inventory_item_location_id, LOCAD.hims_m_inventory_item_location_id) as hims_m_inventory_item_location_id ,
-              COALESCE(LOC.inventory_location_id, LOCAD.inventory_location_id) as inventory_location_id, COALESCE(LOC.batchno,LOCAD.batchno) as batchno
-              ,COALESCE(LOC.expirydt, LOCAD.expirydt) as expiry_date,COALESCE(LOC.barcode,LOCAD.barcode) as barcode,
-              COALESCE(LOC.qtyhand,LOCAD.qtyhand) as qtyhand,COALESCE(LOC.cost_uom, LOCAD.cost_uom) as cost_uom, 
-              COALESCE(LOC.avgcost, LOCAD.avgcost) as avgcost,COALESCE(LOC.item_type, LOCAD.item_type) as item_type,
-              COALESCE(LOC.sale_price, LOCAD.sale_price) as sale_price,COALESCE(LOC.sales_uom, LOCAD.sales_uom) as sales_uom,
+              LOC.hims_m_inventory_item_location_id, 
+              LOC.inventory_location_id, LOC.batchno,
+              LOC.expirydt,LOC.barcode,
+              LOC.qtyhand, LOC.cost_uom, 
+              LOC.avgcost, LOC.item_type,
+              LOC.sale_price, LOC.sales_uom,
               IM.hims_d_inventory_item_master_id, IM.item_description,IM.category_id as item_category_id, IM.group_id as item_group_id,
               PU.uom_description, 0 as dispatch_quantity from hims_f_sales_order_items D
               inner join hims_d_inventory_uom PU  on PU.hims_d_inventory_uom_id=D.uom_id
               inner join hims_d_inventory_item_master IM  on IM.hims_d_inventory_item_master_id=D.item_id
               left join hims_m_inventory_item_location LOC  on D.item_id=LOC.item_id
-              and  date(LOC.expirydt) > date(CURDATE()) 
-              left join hims_m_inventory_item_location LOCAD  on D.item_id=LOCAD.item_id and
-              LOCAD.expirydt is null and IM.exp_date_required='N'
-              where D.sales_order_id=?
+              and  (date(LOC.expirydt) > date(CURDATE()) or LOC.expirydt is null)
+              where D.sales_order_id=? and LOC.inventory_location_id=? and LOC.qtyhand > 0
               and D.quantity_outstanding<>0 order by  date(LOC.expirydt)`,
+              //   `select D.*, D.hims_f_sales_order_items_id as sales_order_items_id,         
+              // (D.quantity - D.quantity_outstanding) as delivered_to_date,
+              // D.quantity as ordered_quantity, 0 as selected_quantity, 'N' as removed, 
+              // COALESCE(LOC.hims_m_inventory_item_location_id, LOCAD.hims_m_inventory_item_location_id) as hims_m_inventory_item_location_id ,
+              // COALESCE(LOC.inventory_location_id, LOCAD.inventory_location_id) as inventory_location_id, COALESCE(LOC.batchno,LOCAD.batchno) as batchno
+              // ,COALESCE(LOC.expirydt, LOCAD.expirydt) as expiry_date,COALESCE(LOC.barcode,LOCAD.barcode) as barcode,
+              // COALESCE(LOC.qtyhand,LOCAD.qtyhand) as qtyhand,COALESCE(LOC.cost_uom, LOCAD.cost_uom) as cost_uom, 
+              // COALESCE(LOC.avgcost, LOCAD.avgcost) as avgcost,COALESCE(LOC.item_type, LOCAD.item_type) as item_type,
+              // COALESCE(LOC.sale_price, LOCAD.sale_price) as sale_price,COALESCE(LOC.sales_uom, LOCAD.sales_uom) as sales_uom,
+              // IM.hims_d_inventory_item_master_id, IM.item_description,IM.category_id as item_category_id, IM.group_id as item_group_id,
+              // PU.uom_description, 0 as dispatch_quantity from hims_f_sales_order_items D
+              // inner join hims_d_inventory_uom PU  on PU.hims_d_inventory_uom_id=D.uom_id
+              // inner join hims_d_inventory_item_master IM  on IM.hims_d_inventory_item_master_id=D.item_id
+              // left join hims_m_inventory_item_location LOC  on D.item_id=LOC.item_id
+              // and  date(LOC.expirydt) > date(CURDATE()) 
+              // left join hims_m_inventory_item_location LOCAD  on D.item_id=LOCAD.item_id and
+              // LOCAD.expirydt is null and IM.exp_date_required='N'
+              // where D.sales_order_id=?
+              // and D.quantity_outstanding<>0 order by  date(LOC.expirydt)`,
               // "select D.*, IM.hims_d_inventory_item_master_id, D.quantity as ordered_quantity ,LOC.*,IM.*, PU.uom_description \
               //                 from hims_f_sales_order_items D \
               //             left join hims_m_inventory_item_location LOC  on D.item_id=LOC.item_id \
@@ -136,7 +153,7 @@ export function getSalesOrderItem(req, res, next) {
               //             inner join `hims_d_inventory_uom` PU  on PU.hims_d_inventory_uom_id=D.uom_id \
               //             where D.sales_order_id=? and  (date(LOC.expirydt) > date(CURDATE()) || exp_date_required='N') \
               //             and D.quantity_outstanding <> 0 order by  date(LOC.expirydt) ",
-              values: [headerResult[0].hims_f_sales_order_id],
+              values: [headerResult[0].hims_f_sales_order_id, inputParam.location_id],
               printQuery: true,
             })
             .then((inventory_stock_detail) => {
@@ -177,7 +194,7 @@ export function getSalesOrderItem(req, res, next) {
                     selected_quantity,
                     delivered_to_date,
                     removed,
-                    batches: detail.filter((f) => f.qtyhand > 0 && f.inventory_location_id === inputParam.location_id),
+                    batches: detail
                   };
                 })
                 .value();
