@@ -214,7 +214,7 @@ export function addInvoiceEntry(req, res, next) {
                           values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
                         values: [
                             invoice_number,
-                            new Date(),
+                            input.invoice_date,
                             input.sales_invoice_mode,
                             input.sales_order_id,
                             input.location_id,

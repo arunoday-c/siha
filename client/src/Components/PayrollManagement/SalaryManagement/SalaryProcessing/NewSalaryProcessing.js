@@ -11,7 +11,7 @@ import {
   openSalaryComponents,
   closeSalaryComponents,
   getOptions,
-  generateMonthlyLoanReport,
+  generateMonthlyLoanReport,generateLevGratReconReport
 } from "./NewSalaryProcessingEvents.js";
 import SalariesComponents from "./SalariesComponents";
 import { AlgaehSecurityElement } from "algaeh-react-components";
@@ -444,7 +444,6 @@ class NewSalaryProcessing extends Component {
                   <button
                     type="button"
                     className="btn btn-other"
-                    // onClick={this.clearState.bind(this)}
                     onClick={generateMonthlyLoanReport.bind(this, this)}
                     disabled={
                       this.state.salaryprocess_header.length === 0
@@ -454,7 +453,24 @@ class NewSalaryProcessing extends Component {
                   >
                     <AlgaehLabel
                       label={{
-                        forceLabel: "Monthly Loan Report",
+                        forceLabel: "Loan Reconciliation Report",
+                        returnText: true,
+                      }}
+                    />
+                  </button>
+                  <button
+                    type="button"
+                    className="btn btn-other"
+                    onClick={generateLevGratReconReport.bind(this, this)}
+                    disabled={
+                      this.state.salaryprocess_header.length === 0
+                        ? true
+                        : false
+                    }
+                  >
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Leave & Gratuity Reconciliation Report",
                         returnText: true,
                       }}
                     />

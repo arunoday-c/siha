@@ -14,8 +14,8 @@ import {
 } from "../../Wrapper/algaehWrapper";
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
 
-import Options from "../../../Options.json";
-import moment from "moment";
+// import Options from "../../../Options.json";
+// import moment from "moment";
 // import GlobalVariables from "../../../utils/GlobalVariables.json";
 import { newAlgaehApi } from "../../../hooks";
 import {
@@ -322,25 +322,6 @@ class SalesOrder extends Component {
             <AlgaehLabel label={{ forceLabel: "Sales Order", align: "ltr" }} />
           }
           breadStyle={this.props.breadStyle}
-          // pageNavPath={[
-          //   {
-          //     pageName: (
-          //       <AlgaehLabel
-          //         label={{
-          //           forceLabel: "Home",
-          //           align: "ltr",
-          //         }}
-          //       />
-          //     ),
-          //   },
-          //   {
-          //     pageName: (
-          //       <AlgaehLabel
-          //         label={{ forceLabel: "Sales Order", align: "ltr" }}
-          //       />
-          //     ),
-          //   },
-          // ]}
           soptlightSearch={{
             label: (
               <AlgaehLabel
@@ -359,8 +340,26 @@ class SalesOrder extends Component {
             searchName: "SalesOrder",
           }}
           userArea={
-            <div className="row">
-              <div className="col">
+            <div className="row" style={{ marginTop: -10 }}>
+              <AlgaehDateHandler
+                div={{ className: "col-6 mandatory" }}
+                label={{
+                  forceLabel: "Order Date",
+                  isImp: true,
+                }}
+                textBox={{
+                  className: "txt-fld",
+                  name: "sales_order_date",
+                }}
+                maxDate={new Date()}
+                events={{
+                  onChange: datehandle.bind(this, this),
+                  onBlur: dateValidate.bind(this, this),
+                }}
+                disabled={this.state.selectedData}
+                value={this.state.sales_order_date}
+              />
+              {/* <div className="col">
                 <AlgaehLabel
                   label={{
                     forceLabel: "SO Date",
@@ -373,10 +372,10 @@ class SalesOrder extends Component {
                     )
                     : Options.dateFormat}
                 </h6>
-              </div>
+              </div> */}
 
-              {this.state.dataExists === true ? (
-                <div className="col">
+              {this.state.selectedData === true ? (
+                <div className="col-6">
                   <AlgaehLabel
                     label={{
                       forceLabel: "Order Status",
@@ -721,14 +720,16 @@ class SalesOrder extends Component {
           </div>
           {this.state.cancelled === "Y" || this.state.is_revert === "Y" ?
             <div className="alert alert-danger">
-              <h4 className="alert-heading">Rejected</h4>
-              <p>
-                {this.state.revert_reason}
-              </p>
-              <h4 className="alert-heading"> Rejected By</h4>
-              <p>
-                {this.state.user_display_name}
-              </p>
+              <div className="row">
+                <div className="col"> <p>
+                  Reason:<b>{this.state.revert_reason}</b>
+                </p>
+                </div>
+                <div className="col-4"> <p>
+                  Reverted By:<b>{this.state.user_display_name}</b>
+                </p></div>
+
+              </div>
             </div> : null}
           <div className="row">
             <MyContext.Provider

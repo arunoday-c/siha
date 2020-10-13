@@ -117,7 +117,7 @@ export function addSalesOrder(req, res, next) {
                           values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
                             values: [
                                 sales_order_number,
-                                new Date(),
+                                input.sales_order_date,
                                 input.sales_order_mode,
                                 input.sales_quotation_id,
                                 input.contract_id,

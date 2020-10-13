@@ -430,7 +430,7 @@ const SalesQuotationList = React.lazy(() =>
   )
 );
 const SalesOrderList = React.lazy(() =>
-  retry(() => import("./Components/Sales/SalesOrderList/SalesOrderSwitch"))
+  retry(() => import("./Components/Sales/SalesOrderList/SalesOrderList"))
 );
 
 const SalesInvoiceList = React.lazy(() =>

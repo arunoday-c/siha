@@ -84,22 +84,21 @@
                         </span></td>
                     <td><label class="textEnLft">Leave End Date:</label><span
                             class="valueText">{{leave_end_date}}</span>
-                    <td><label class="textEnLft">Total Leave Days: </label><span class="valueText">{{leave_period}}
-                            days</span></td>
+                   
                 </tr>
-                {{!-- <tr>
-                    <td><label class="textEnLft">Total Leave Salary:</label><span
-                            class="valueText">{{leave_amount}}</span></td>
-                    <td><label class="textEnLft">Total Normal Salary: </label><span class="valueText">{{net_salary}}
-                            days</span></td>
-                    <td><label class="textEnLft">Airfare Amt:</label><span class="valueText">{{airfare_amount}}</span>
-                    </td>
-                </tr> --}}
             </table>
             <table class="tableForData">
                 <tr class="footerTotalUp">
-                    <td class="numberFld">Total Leave Salary</td>
+                    <td class="numberFld">Leave Salary Paid Days</td>
+                    <td class="numberFld" width="29.5%" colspan="3">{{leave_period}} Days</td>
+                </tr>
+                <tr class="footerTotalUp">
+                    <td class="numberFld">Total Leave Salary </td>
                     <td class="numberFld" width="29.5%" colspan="3">{{leave_amount}}</td>
+                </tr>
+                <tr class="footerTotalUp">
+                    <td class="numberFld">Normal Salary Paid Days</td>
+                    <td class="numberFld" width="29.5%" colspan="3">{{total_paid_days}} Days</td>
                 </tr>
                 <tr class="footerTotalUp">
                     <td class="numberFld">Total Normal Salary</td>

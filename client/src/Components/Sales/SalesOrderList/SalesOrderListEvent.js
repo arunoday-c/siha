@@ -68,6 +68,9 @@ const getSalesOrderList = $this => {
       if (response.data.success) {
         let data = response.data.records;
         $this.setState({ order_list: data });
+        return $this.props.history?.push(
+          `${$this.props.location?.pathname}?status=${$this.state.status}&from_date=${$this.state.from_date}&to_date=${$this.state.to_date}`
+        );
       }
     }
   });

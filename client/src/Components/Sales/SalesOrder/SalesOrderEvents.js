@@ -393,6 +393,13 @@ const SaveSalesOrderEnrty = ($this, from) => {
         });
         return;
       }
+      if ($this.state.sales_order_date === null) {
+        swalMessage({
+          type: "warning",
+          title: "Order Date - Cannot be empty.",
+        });
+        return;
+      }
       let InputObj = $this.state;
       let order_detail =
         InputObj.sales_order_mode === "I"
@@ -417,6 +424,9 @@ const SaveSalesOrderEnrty = ($this, from) => {
         InputObj.sales_order_mode === "S"
           ? null
           : moment(InputObj.delivery_date, "YYYY-MM-DD").format("YYYY-MM-DD");
+
+      debugger
+      InputObj.sales_order_date = moment(InputObj.sales_order_date).format("YYYY-MM-DD h:mm:ss");
 
       let strUri = "";
       let strMessage = "Saved successfully";
@@ -683,17 +693,33 @@ const employeeSearch = ($this) => {
 };
 
 const dateValidate = ($this, value, event) => {
-  let inRange = moment(value).isBefore(moment().format("YYYY-MM-DD"));
-  if (inRange) {
-    swalMessage({
-      title: "Selected Date cannot be past Date.",
-      type: "warning",
-    });
-    event.target.focus();
-    $this.setState({
-      [event.target.name]: null,
-    });
+  let inRange = false;
+  if (event.target.name === "sales_order_date") {
+    inRange = moment(value).isAfter(moment().format("YYYY-MM-DD"));
+    if (inRange) {
+      swalMessage({
+        title: "Selected Date cannot be future Date.",
+        type: "warning",
+      });
+      event.target.focus();
+      $this.setState({
+        [event.target.name]: null,
+      });
+    }
+  } else {
+    inRange = moment(value).isBefore(moment().format("YYYY-MM-DD"))
+    if (inRange) {
+      swalMessage({
+        title: "Selected Date cannot be past Date.",
+        type: "warning",
+      });
+      event.target.focus();
+      $this.setState({
+        [event.target.name]: null,
+      });
+    }
   }
+
 };
 
 const AuthorizeOrderEntry = ($this, authorize) => {
