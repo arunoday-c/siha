@@ -62,8 +62,6 @@ class SalesOrderList extends Component {
     //     () => getSalesOrderList(this)
     //   );
     // }
-
-    debugger
     const params = new URLSearchParams(this.props.location?.search);
     if (params?.get("status")) {
       this.setState({
@@ -108,11 +106,11 @@ class SalesOrderList extends Component {
     // });
   }
 
-  ourOwnMiniNavigator = obj => {
-    const { order_list, radioYes, authorize1, ...rest } = this.state;
-    let sendObj = Object.assign(rest, obj);
-    this.props.new_routeComponents(sendObj);
-  };
+  // ourOwnMiniNavigator = obj => {
+  //   const { order_list, radioYes, authorize1, ...rest } = this.state;
+  //   let sendObj = Object.assign(rest, obj);
+  //   this.props.new_routeComponents(sendObj);
+  // };
 
   render() {
     return (
