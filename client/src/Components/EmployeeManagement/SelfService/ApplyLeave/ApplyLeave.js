@@ -83,6 +83,7 @@ class ApplyLeave extends Component {
       this.setState(
         {
           employee_id: this.props.empData.hims_d_employee_id,
+          employee_code: this.props.empData.employee_code,
           sub_department_id: this.props.empData.sub_department_id,
           employee_type: this.props.empData.employee_type,
           gender: this.props.empData.sex,
@@ -470,7 +471,7 @@ class ApplyLeave extends Component {
   };
 
   applyLeave() {
-    const { full_name, reporting_to_id } = this.props.empData;
+    const { full_name, reporting_to_id, employee_code } = this.props.empData;
     const leave_desc = this.state.emp_leaves_data.filter(
       (leave) => leave.leave_id === this.state.leave_id
     );
@@ -538,8 +539,14 @@ class ApplyLeave extends Component {
                     reporting_to_id,
                     email_type: "LV",
                     full_name,
+                    employee_code,
                     leave_days: this.state.total_applied_days,
                     leave_type: leave_desc[0].leave_description,
+                    from_date: this.state.from_date,
+                    to_date: this.state.to_date,
+                    reason: this.state.remarks,
+                    leave_code: res.data?.records[0]?.leave_application_code,
+                    // applied_date:
                   },
                 })
                   .then((res) => {

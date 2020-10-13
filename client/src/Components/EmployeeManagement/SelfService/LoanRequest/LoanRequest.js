@@ -18,6 +18,8 @@ import Socket from "../../../../sockets";
 import { MainContext } from "algaeh-react-components";
 import swal from "sweetalert2";
 import AlgaehLoader from "../../../Wrapper/fullPageLoader";
+import { newAlgaehApi } from "../../../../hooks";
+import { AlgaehMessagePop } from "algaeh-react-components";
 
 class LoanRequest extends Component {
   constructor(props) {
@@ -194,7 +196,7 @@ class LoanRequest extends Component {
   }
 
   applyLoan() {
-    const { full_name, reporting_to_id } = this.props.empData;
+    const { full_name, reporting_to_id, employee_code } = this.props.empData;
     const { loan_master, loan_id } = this.state;
     const [{ loan_description }] = loan_master.filter(
       (loan) => loan.hims_d_loan_id === loan_id
@@ -214,6 +216,7 @@ class LoanRequest extends Component {
             type: "warning",
           });
         } else {
+          AlgaehLoader({ show: true });
           algaehApiCall({
             uri: "/loan/addLoanApplication",
             module: "hrManagement",
@@ -231,10 +234,6 @@ class LoanRequest extends Component {
             },
             onSuccess: (res) => {
               if (res.data.success) {
-                swalMessage({
-                  title: "Record Added Successfully",
-                  type: "success",
-                });
                 if (this.loanSocket.connected) {
                   this.loanSocket.emit("/loan/applied", {
                     full_name,
@@ -242,8 +241,42 @@ class LoanRequest extends Component {
                     loan_description,
                   });
                 }
-                this.clearState();
-                this.getEmployeeLoans();
+                newAlgaehApi({
+                  uri: "/loan/mailSendForLoan",
+                  method: "GET",
+                  module: "hrManagement",
+                  data: {
+                    reporting_to_id,
+                    email_type: "LO",
+                    full_name,
+                    employee_code,
+                    loan_description,
+                    application_reason: this.state.loan_description,
+                    loan_amount: this.state.loan_amount,
+                    start_month: this.state.start_month,
+                    start_year: this.state.start_year,
+                    loan_tenure: this.state.loan_tenure,
+                    installment_amount: this.state.installment_amount,
+                  },
+                })
+                  .then((res) => {
+                    if (res.data.success) {
+                      AlgaehLoader({ show: false });
+
+                      swalMessage({
+                        title: "Record Added Successfully",
+                        type: "success",
+                      });
+                      this.clearState();
+                      this.getEmployeeLoans();
+                    }
+                  })
+                  .catch((e) => {
+                    AlgaehMessagePop({
+                      type: "error",
+                      display: e.message,
+                    });
+                  });
               }
             },
             onFailure: (err) => {

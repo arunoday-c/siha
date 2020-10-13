@@ -7,6 +7,16 @@ import algaehUtilities from "algaeh-utilities/utilities";
 //import { getMaxAuth } from "../../../src/utils";
 // import Sync from "sync";
 import leave from "../models/leave";
+import keys from "algaeh-keys";
+import AESCrypt from "aescrypt";
+import algaehMail from "algaeh-utilities/mail-send";
+// import _ from "lodash";
+import newAxios from "algaeh-utilities/axios";
+// import { currencyFormat } from "../../../AlgaehUtilities";
+// import utilitites from "algaeh-utilities/utilities";
+// import { currencyFormat } from "algaeh-utilities/currencyFormat";
+
+const { SECRETKey } = keys.default;
 
 const { getMaxAuth } = leave;
 
@@ -133,9 +143,10 @@ export default {
                       printQuery: true,
                     })
                     .then((result) => {
+                      req.records = result;
                       _mysql.commitTransaction(() => {
                         _mysql.releaseConnection();
-                        req.records = result;
+
                         next();
                       });
                     })
@@ -169,6 +180,419 @@ export default {
     } catch (e) {
       next(e);
     }
+  },
+
+  mailSendForLoan: (req, res, next) => {
+    const input = req.query;
+
+    const _mysql = new algaehMysql();
+
+    _mysql
+      .executeQuery({
+        query: ` select  UM.user_id, UM.role_id,U.employee_id,E.work_email,E.employee_code,E.full_name
+        from algaeh_m_role_user_mappings UM inner join algaeh_d_app_roles R on
+        UM.role_id=R.app_d_app_roles_id and R.loan_authorize_privilege ='1'
+        inner join algaeh_d_app_user U on UM.user_id=U.algaeh_d_app_user_id 
+        inner join hims_d_employee E on U.employee_id=E.hims_d_employee_id;
+            select hims_f_email_setup_id,sub_department_email,password,salt,report_attach,report_name,sub_department_id from
+            hims_f_email_setup where email_type=?`,
+        values: [input.email_type],
+        printQuery: true,
+      })
+      .then((result) => {
+        const toSendDetails = result[0].map((item) => {
+          return item.work_email;
+        });
+        const fromSendDetails = result[1][0];
+        // console.log("fromSendDetails", fromSendDetails);
+        const decrypted = AESCrypt.decryptWithSalt(
+          SECRETKey,
+          fromSendDetails.salt,
+          fromSendDetails.password
+        );
+        const full_name = input.full_name;
+        const employee_code = input.employee_code;
+        const loan_application_date = new Date();
+        const application_reason = input.application_reason;
+        const loan_amount = input.loan_amount;
+        const installment_amount = input.installment_amount;
+        const start_month = input.start_month;
+        const start_year = input.start_year;
+        const loan_description = input.loan_description;
+        const { hospital_address, hospital_name } = req.userIdentity;
+        try {
+          newAxios(req, {
+            url: "http://localhost:3006/api/v1//Document/getEmailConfig",
+          }).then((res) => {
+            const options = res.data.data[0];
+
+            // const mailSender =
+            new algaehMail({
+              user: fromSendDetails.sub_department_email,
+              pass: decrypted,
+              smtp: options.host,
+              port: options.port,
+              useSSL: options.useSSL,
+              service: options.service,
+            })
+              .to(toSendDetails)
+              .subject("Employee Loan Request")
+              .templateHbs("loan_request_mail.hbs", {
+                full_name,
+                hospital_name,
+                hospital_address,
+                employee_code,
+                loan_application_date,
+                application_reason,
+                loan_description,
+                loan_amount,
+                installment_amount,
+                start_month,
+                start_year,
+              })
+              .send()
+              .then((response) => {
+                next();
+              })
+              .catch((error) => {
+                next(error);
+              });
+
+            // if (send_attachment === "true") {
+            //   mailSender.attachReportsAndSend(
+            //     req,
+            //     reportInput,
+            //     (error, records) => {
+            //       if (error) {
+            //         next(error);
+            //         return;
+            //       }
+
+            //       next();
+            //     }
+            //   );
+            // } else {
+            //   mailSender
+            //     .send()
+            //     .then(() => {
+            //       // console.log("Mail Sent");
+            //       next();
+            //     })
+            //     .catch((error) => {
+            //       next(error);
+            //     });
+            _mysql.releaseConnection();
+            req.records = result;
+            next();
+          });
+        } catch (e) {
+          _mysql.releaseConnection();
+          next(e);
+        }
+        // _mysql.releaseConnection();
+        // req.records = result;
+        // next();
+      })
+      .catch((e) => {
+        _mysql.releaseConnection();
+        next(e);
+      });
+  },
+  sendAuthorizeLoanEmail: (req, res, next) => {
+    const input = req.body;
+
+    const _mysql = new algaehMysql();
+    _mysql
+      .executeQuery({
+        query: `
+        select  UM.user_id, UM.role_id,U.employee_id,E.work_email,E.employee_code,E.full_name
+    from algaeh_m_role_user_mappings UM inner join algaeh_d_app_roles R on
+    UM.role_id=R.app_d_app_roles_id and R.loan_authorize_privilege ='${
+      parseInt(input.auth_level) + 1
+    }'
+    inner join algaeh_d_app_user U on UM.user_id=U.algaeh_d_app_user_id 
+    inner join hims_d_employee E on U.employee_id=E.hims_d_employee_id;
+        
+        select hims_f_email_setup_id,sub_department_email,password,salt,report_attach,report_name,sub_department_id from
+        hims_f_email_setup where email_type=?;
+        select EM.work_email from hims_d_employee EM where hims_d_employee_id=?;  `,
+        values: [input.email_type, input.employee_id],
+        printQuery: true,
+      })
+      .then((result) => {
+        const toSendDetails = result[0].map((item) => {
+          return item.work_email;
+        });
+
+        const fromSendDetails = result[1][0];
+        // console.log("fromSendDetails", fromSendDetails);
+        const decrypted = AESCrypt.decryptWithSalt(
+          SECRETKey,
+          fromSendDetails.salt,
+          fromSendDetails.password
+        );
+        const full_name = input.name;
+
+        // const employee_code = input.code;
+        const employee_email = result[2][0].work_email;
+
+        const auth_level = input.auth_level;
+        const loan_desc = input.loan_desc;
+        const approved_amount = input.approved_amount;
+        const installment_amount = input.installment_amount;
+        const loan_tenure = input.loan_tenure;
+        const employee_code = input.employee_code;
+        const loan_application_date = new Date();
+        const application_reason = input.application_reason;
+        const loan_amount = input.loan_amount;
+
+        const start_month = input.start_month;
+        const start_year = input.start_year;
+
+        const { hospital_address, hospital_name } = req.userIdentity;
+        // const branch = hospital_name;
+        try {
+          newAxios(req, {
+            url: "http://localhost:3006/api/v1//Document/getEmailConfig",
+          }).then((res) => {
+            const options = res.data.data[0];
+
+            if (toSendDetails.length <= 0 && employee_email) {
+              try {
+                // const mailSender =
+                new algaehMail({
+                  user: fromSendDetails.sub_department_email,
+                  pass: decrypted,
+                  smtp: options.host,
+                  port: options.port,
+                  useSSL: options.useSSL,
+                  service: options.service,
+                })
+                  .to(employee_email)
+                  .subject("Applied Loan Status")
+                  .templateHbs("loan_approve_mail.hbs", {
+                    full_name,
+                    hospital_name,
+                    hospital_address,
+                    auth_level,
+                    loan_desc,
+                    approved_amount,
+                    installment_amount,
+                    loan_tenure,
+                  })
+                  .send()
+                  .then((response) => {
+                    _mysql.releaseConnection();
+                    next();
+                  })
+                  .catch((error) => {
+                    next(error);
+                  });
+
+                // if (send_attachment === "true") {
+                //   mailSender.attachReportsAndSend(
+                //     req,
+                //     reportInput,
+                //     (error, records) => {
+                //       if (error) {
+                //         next(error);
+                //         return;
+                //       }
+
+                //       next();
+                //     }
+                //   );
+                // } else {
+                //   mailSender
+                //     .send()
+                //     .then(() => {
+                //       // console.log("Mail Sent");
+                //       next();
+                //     })
+                //     .catch((error) => {
+                //       next(error);
+                //     });
+              } catch (e) {
+                //_mysql.releaseConnection();
+                next(e);
+              }
+            } else {
+              try {
+                // const mailSender =
+                new algaehMail({
+                  user: fromSendDetails.sub_department_email,
+                  pass: decrypted,
+                  smtp: options.host,
+                  port: options.port,
+                  useSSL: options.useSSL,
+                  service: options.service,
+                })
+                  .to(toSendDetails)
+                  .subject("Loan Request Status")
+                  .templateHbs("loan_request_mail.hbs", {
+                    full_name,
+                    hospital_name,
+                    hospital_address,
+                    employee_code,
+                    loan_application_date,
+                    application_reason,
+                    loan_amount,
+                    installment_amount,
+                    start_month,
+                    start_year,
+                  })
+                  .send()
+                  .then((response) => {
+                    _mysql.releaseConnection();
+                    next();
+                  })
+                  .catch((error) => {
+                    next(error);
+                  });
+
+                // if (send_attachment === "true") {
+                //   mailSender.attachReportsAndSend(
+                //     req,
+                //     reportInput,
+                //     (error, records) => {
+                //       if (error) {
+                //         next(error);
+                //         return;
+                //       }
+
+                //       next();
+                //     }
+                //   );
+                // } else {
+                //   mailSender
+                //     .send()
+                //     .then(() => {
+                //       // console.log("Mail Sent");
+                //       next();
+                //     })
+                //     .catch((error) => {
+                //       next(error);
+                //     });
+              } catch (e) {
+                //_mysql.releaseConnection();
+                next(e);
+              }
+            }
+          });
+        } catch (e) {
+          //_mysql.releaseConnection();
+          next(e);
+        }
+
+        // _mysql.releaseConnection();
+        // req.records = result;
+        // next();
+      })
+      .catch((e) => {
+        _mysql.releaseConnection();
+        next(e);
+      });
+  },
+
+  sendAuthorizeLoanRejEmail: (req, res, next) => {
+    const input = req.body;
+
+    const _mysql = new algaehMysql();
+    _mysql
+      .executeQuery({
+        query: `select work_email from hims_d_employee where hims_d_employee_id=?;
+            select hims_f_email_setup_id,sub_department_email,password,salt,report_attach,report_name,sub_department_id from
+            hims_f_email_setup where email_type=? ;
+            `,
+        values: [input.employee_id, input.email_type],
+        printQuery: true,
+      })
+      .then((result) => {
+        const toSendDetails = result[0][0].work_email;
+        const fromSendDetails = result[1][0];
+        // console.log("fromSendDetails", fromSendDetails);
+        const decrypted = AESCrypt.decryptWithSalt(
+          SECRETKey,
+          fromSendDetails.salt,
+          fromSendDetails.password
+        );
+        const full_name = input.name;
+        // const employee_code = input.code;
+        // const branch = input.branch;
+        const loan_desc = input.loan_desc;
+        // const loan_type = input.loan_type;
+        const loan_amount = input.loan_amount;
+
+        const auth_level = input.auth_level;
+        const { hospital_address, hospital_name } = req.userIdentity;
+        try {
+          newAxios(req, {
+            url: "http://localhost:3006/api/v1//Document/getEmailConfig",
+          }).then((res) => {
+            const options = res.data.data[0];
+            // const mailSender =
+            new algaehMail({
+              user: fromSendDetails.sub_department_email,
+              pass: decrypted,
+              smtp: options.host,
+              port: options.port,
+              useSSL: options.useSSL,
+              service: options.service,
+            })
+              .to(toSendDetails.work_email)
+              .subject("Loan Request Status")
+              .templateHbs("loan_reject_mail.hbs", {
+                full_name,
+                hospital_name,
+                hospital_address,
+                loan_amount,
+                auth_level,
+                loan_desc,
+              })
+              .send()
+              .then((response) => {
+                _mysql.releaseConnection();
+              })
+              .catch((error) => {
+                next(error);
+              });
+
+            // if (send_attachment === "true") {
+            //   mailSender.attachReportsAndSend(
+            //     req,
+            //     reportInput,
+            //     (error, records) => {
+            //       if (error) {
+            //         next(error);
+            //         return;
+            //       }
+
+            //       next();
+            //     }
+            //   );
+            // } else {
+            //   mailSender
+            //     .send()
+            //     .then(() => {
+            //       // console.log("Mail Sent");
+            //       next();
+            //     })
+            //     .catch((error) => {
+            //       next(error);
+            //     });
+          });
+        } catch (e) {
+          //_mysql.releaseConnection();
+          next(e);
+        }
+        // _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch((e) => {
+        _mysql.releaseConnection();
+        next(e);
+      });
   },
 
   //created by irfan:
@@ -598,10 +1022,10 @@ export default {
                         "YYYY-MM-DD"
                       )}', authorized_by=${
                         req.userIdentity.algaeh_d_app_user_id
-                        }\
+                      }\
                   where record_status='A' and loan_authorized='PEN' and hims_f_loan_application_id=${
-                        input.hims_f_loan_application_id
-                        }`;
+                    input.hims_f_loan_application_id
+                  }`;
                     }
 
                     //---------------

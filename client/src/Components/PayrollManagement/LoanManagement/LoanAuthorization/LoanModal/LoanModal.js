@@ -126,6 +126,11 @@ class LoanModal extends Component {
             authorized: type,
             auth_level: this.props.auth_level,
             approved_amount: this.state.approved_amount,
+            email_type: "LO",
+            employee_code: this.state.employee_code,
+            loan_desc: this.state.loan_description,
+            name: this.state.employee_name,
+            employee_id: this.state.employee_id,
           };
 
           const [branch] = this.props.hospitals.filter(
@@ -382,8 +387,8 @@ class LoanModal extends Component {
                           ) : row.loan_authorized === "IS" ? (
                             <span className="badge badge-success">Issued</span>
                           ) : (
-                                    "------"
-                                  )}
+                            "------"
+                          )}
                         </span>
                       );
                     },
