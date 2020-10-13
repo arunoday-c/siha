@@ -15,6 +15,7 @@ import {
   AlagehAutoComplete,
   AlgaehDataGrid,
 } from "../../../Wrapper/algaehWrapper";
+import { AlgaehMessagePop } from "algaeh-react-components";
 // import AlgaehAutoSearch from "../../../Wrapper/autoSearch";
 import spotlightSearch from "../../../../Search/spotlightSearch.json";
 import { getYears } from "../../../../utils/GlobalFunctions";
@@ -23,7 +24,7 @@ import moment from "moment";
 import AlgaehSearch from "../../../Wrapper/globalSearch";
 import { MainContext } from "algaeh-react-components";
 import { AlgaehSecurityElement } from "algaeh-react-components";
-
+import { newAlgaehApi } from "../../../../hooks";
 import swal from "sweetalert2";
 import AlgaehLoader from "../../../Wrapper/fullPageLoader";
 
@@ -352,10 +353,6 @@ class LoanRequest extends Component {
             },
             onSuccess: (res) => {
               if (res.data.success) {
-                swalMessage({
-                  title: "Record Added Successfully",
-                  type: "success",
-                });
                 if (this.context.socket.connected) {
                   this.context.socket.emit("/loan/applied", {
                     full_name,
@@ -363,17 +360,49 @@ class LoanRequest extends Component {
                     loan_description,
                   });
                 }
-
-                this.clearState([
-                  "start_year",
-                  "start_month",
-                  "employee_name",
-                  "employee_id",
-                  "hims_d_employee_id",
-                ]);
-                this.getEmployeeLoans();
               }
+              newAlgaehApi({
+                uri: "/loan/mailSendForLoan",
+                method: "GET",
+                module: "hrManagement",
+                data: {
+                  reporting_to_id,
+                  email_type: "LO",
+                  full_name,
+                  // employee_code,
+
+                  application_reason: this.state.loan_description,
+                  loan_amount: this.state.loan_amount,
+                  start_month: this.state.start_month,
+                  start_year: this.state.start_year,
+                  loan_tenure: this.state.loan_tenure,
+                  installment_amount: this.state.installment_amount,
+                },
+              })
+                .then((res) => {
+                  if (res.data.success) {
+                    swalMessage({
+                      title: "Record Added Successfully",
+                      type: "success",
+                    });
+                    this.clearState([
+                      "start_year",
+                      "start_month",
+                      "employee_name",
+                      "employee_id",
+                      "hims_d_employee_id",
+                    ]);
+                    this.getEmployeeLoans();
+                  }
+                })
+                .catch((e) => {
+                  AlgaehMessagePop({
+                    type: "error",
+                    display: e.message,
+                  });
+                });
             },
+
             onFailure: (err) => {
               swalMessage({
                 title: err.message,

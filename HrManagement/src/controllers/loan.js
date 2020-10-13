@@ -10,7 +10,10 @@ const {
   getLoanLevels,
   addLoanReciept,
   getEmployeeLoanReciept,
-  getEmployeeLoanOpenBal
+  getEmployeeLoanOpenBal,
+  mailSendForLoan,
+  sendAuthorizeLoanRejEmail,
+  sendAuthorizeLoanEmail,
 } = loan;
 
 export default () => {
@@ -20,26 +23,31 @@ export default () => {
     if (req.records.invalid_input == true) {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: false,
-        records: req.records
+        records: req.records,
       });
     } else {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
-        records: req.records
+        records: req.records,
       });
     }
   });
-
+  api.get("/mailSendForLoan", mailSendForLoan, (req, res, next) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: req.records,
+    });
+  });
   api.put("/adjustLoanApplication", adjustLoanApplication, (req, res, next) => {
     if (req.records.invalid_input == true) {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: false,
-        records: req.records
+        records: req.records,
       });
     } else {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
-        records: req.records
+        records: req.records,
       });
     }
   });
@@ -47,39 +55,52 @@ export default () => {
     if (req.records.invalid_input == true) {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: false,
-        records: req.records
+        records: req.records,
       });
     } else {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
-        records: req.records
+        records: req.records,
       });
     }
   });
-  api.put("/authorizeLoan", authorizeLoan, (req, res, next) => {
-    if (req.records.invalid_input == true) {
-      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
-        success: false,
-        records: req.records
-      });
-    } else {
-      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
-        success: true,
-        records: req.records
-      });
+  api.put(
+    "/authorizeLoan",
+    authorizeLoan,
+    (req, res, next) => {
+      if (req.body.authorized === "A") {
+        sendAuthorizeLoanEmail(req, res, next);
+      } else if (req.body.authorized === "R") {
+        sendAuthorizeLoanRejEmail(req, res, next);
+      } else {
+        next();
+      }
+    },
+    (req, res, next) => {
+      if (req.records.invalid_input == true) {
+        res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+          success: false,
+          records: req.records,
+        });
+      } else {
+        res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+          success: true,
+          records: req.records,
+        });
+      }
     }
-  });
+  );
 
   api.get("/getLoanLevels", getLoanLevels, (req, res, next) => {
     if (req.records.invalid_input == true) {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: false,
-        records: req.records
+        records: req.records,
       });
     } else {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
-        records: req.records
+        records: req.records,
       });
     }
   });
@@ -87,12 +108,12 @@ export default () => {
     if (req.records.invalid_input == true) {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: false,
-        records: req.records
+        records: req.records,
       });
     } else {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
-        records: req.records
+        records: req.records,
       });
     }
   });
@@ -103,12 +124,12 @@ export default () => {
       if (req.records.invalid_input == true) {
         res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
           success: false,
-          records: req.records
+          records: req.records,
         });
       } else {
         res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
           success: true,
-          records: req.records
+          records: req.records,
         });
       }
     }
@@ -120,7 +141,7 @@ export default () => {
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
-        records: req.records
+        records: req.records,
       });
     }
   );
@@ -129,12 +150,12 @@ export default () => {
     if (req.records.invalid_input == true) {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: false,
-        records: req.records
+        records: req.records,
       });
     } else {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
-        records: req.records
+        records: req.records,
       });
     }
   });

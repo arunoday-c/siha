@@ -874,6 +874,7 @@ export default {
                           const allCOS = item.children.filter(
                             (f) => f.is_cos_account === "Y"
                           );
+
                           if (allCOS.length > 0) {
                             const tot = _.sumBy(allCOS, (s) =>
                               parseFloat(s.total)
@@ -907,6 +908,7 @@ export default {
                           const allCOS = item.children.filter(
                             (f) => f.is_cos_account === "Y"
                           );
+
                           if (allCOS.length > 0) {
                             const tot = _.sumBy(allCOS, (s) =>
                               parseFloat(s.total)
@@ -917,18 +919,40 @@ export default {
                             for (let i = 0; i < allCOS.length; i++)
                               cosResult[0]["children"].push(allCOS[i]);
                           }
+
                           if (allNonCOS.length > 0) {
-                            directExpeneseResult[0]["total"] = parseFloat(
-                              parseFloat(directExpeneseResult[0]["total"]) +
+                            if (directExpeneseResult.length > 0) {
+                              directExpeneseResult[0]["total"] = parseFloat(
+                                parseFloat(directExpeneseResult[0]["total"]) +
+                                  _.sumBy(allNonCOS, (s) => parseFloat(s.total))
+                              ).toFixed(decimal_places);
+                            } else {
+                              directExpeneseResult = [];
+                              const tot = parseFloat(
                                 _.sumBy(allNonCOS, (s) => parseFloat(s.total))
-                            ).toFixed(decimal_places);
-                            for (let x = 0; x < allNonCOS.length; x++)
-                              directExpeneseResult[0]["children"].push(
-                                allNonCOS[x]
-                              );
+                              ).toFixed(decimal_places);
+
+                              directExpeneseResult.push({
+                                total: tot,
+                                children: [],
+                              });
+                            }
+
+                            for (let x = 0; x < allNonCOS.length; x++) {
+                              if (directExpeneseResult.length > 0) {
+                                directExpeneseResult[0]["children"].push(
+                                  allNonCOS[x]
+                                );
+                              } else {
+                                directExpeneseResult.push({
+                                  children: allNonCOS[x],
+                                });
+                              }
+                            }
                           }
                         }
                       });
+
                       let g_prop = {};
                       let cosExpenseResult = [];
 

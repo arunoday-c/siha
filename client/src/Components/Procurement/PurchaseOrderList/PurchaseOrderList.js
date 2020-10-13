@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import Enumerable from "linq";
+// import Enumerable from "linq";
 import BreadCrumb from "../../common/BreadCrumb/BreadCrumb";
 import { setGlobal } from "../../../utils/GlobalFunctions";
 import "./PurchaseOrderList.scss";
@@ -10,7 +10,7 @@ import "./../../../styles/site.scss";
 import GlobalVariables from "../../../utils/GlobalVariables.json";
 
 import {
-  LocationchangeTexts,
+  // LocationchangeTexts,
   dateFormater,
   poforhandle,
   datehandle,
@@ -34,7 +34,6 @@ class PurchaseOrderList extends Component {
     super(props);
     let month = moment().format("MM");
     let year = moment().format("YYYY");
-    let status = "1";
     this.state = {
       to_date: new Date(),
       from_date: moment("01" + month + year, "DDMMYYYY")._d,
@@ -47,65 +46,100 @@ class PurchaseOrderList extends Component {
       status: "1",
     };
 
-    let bothExisits = false,
-      poSelected = false;
 
-    RawSecurityComponent({ componentCode: "PUR_AUT_AUTH2" }).then((result) => {
-      if (result === "show") {
-        status = "2";
-      }
-    });
-
-    RawSecurityComponent({ componentCode: "PUR_AUTH_INVENTORY" }).then(
-      (result) => {
-        if (result === "show") {
-          bothExisits = false;
-          poSelected = false;
-          this.setState(
-            {
-              po_from: "INV",
-              status: status,
-              bothExisits: false,
-            },
-            () => {
-              getData(this);
-              getPurchaseOrderList(this);
-            }
-          );
-        }
-      }
-    );
-
-    RawSecurityComponent({ componentCode: "PUR_AUTH_PHARMACY" }).then(
-      (result) => {
-        if (result === "show") {
-          this.setState(
-            {
-              po_from: "PHR",
-              bothExisits: bothExisits === false ? false : true,
-              poSelected: poSelected === false ? false : true,
-              status: bothExisits === false ? status : "0",
-            },
-            () => {
-              getData(this);
-              getPurchaseOrderList(this);
-            }
-          );
-        } else {
-          this.setState({
-            bothExisits: true,
-            poSelected: poSelected === false ? false : true,
-            status: bothExisits === false ? status : "0",
-          });
-        }
-      }
-    );
   }
 
+  componentDidMount() {
+    const params = new URLSearchParams(this.props.location?.search);
+    if (params?.get("po_from")) {
+      this.setState({
+        po_from: params?.get("po_from"),
+        bothExisits: params?.get("bothExisits")
+      });
+    }
+    if (params?.get("status")) {
+      this.setState({
+        status: params?.get("status")
+      });
+    }
+    if (params?.get("from_date")) {
+      this.setState({
+        // from_date: params?.get("from_date"),
+        from_date: moment(params?.get("from_date"))._d,
+      });
+    }
+    if (params?.get("to_date")) {
+      this.setState(
+        {
+          to_date: moment(params?.get("to_date"))._d,
+        },
+        () => {
+          getData(this);
+          getPurchaseOrderList(this);
+        }
+      );
+    } else {
+      let bothExisits = false,
+        poSelected = false, status = "1";
+
+      RawSecurityComponent({ componentCode: "PUR_AUT_AUTH2" }).then((result) => {
+        if (result === "show") {
+          status = "2";
+        }
+      });
+
+      RawSecurityComponent({ componentCode: "PUR_AUTH_INVENTORY" }).then(
+        (result) => {
+          if (result === "show") {
+            bothExisits = false;
+            poSelected = false;
+            this.setState(
+              {
+                po_from: "INV",
+                status: status,
+                bothExisits: false,
+              },
+              () => {
+                getData(this);
+                getPurchaseOrderList(this);
+              }
+            );
+          }
+        }
+      );
+
+      RawSecurityComponent({ componentCode: "PUR_AUTH_PHARMACY" }).then(
+        (result) => {
+          if (result === "show") {
+            this.setState(
+              {
+                po_from: "PHR",
+                bothExisits: bothExisits === false ? false : true,
+                poSelected: poSelected === false ? false : true,
+                status: bothExisits === false ? status : "0",
+              },
+              () => {
+                getData(this);
+                getPurchaseOrderList(this);
+              }
+            );
+          } else {
+            this.setState({
+              bothExisits: true,
+              poSelected: poSelected === false ? false : true,
+              status: bothExisits === false ? status : "0",
+            });
+          }
+        }
+      );
+    }
+  }
+
+
   render() {
-    const _mainStore = Enumerable.from(this.props.polocations)
-      .where((w) => w.location_type === "WH")
-      .toArray();
+    // const _mainStore = Enumerable.from(this.props.polocations)
+    //   .where((w) => w.location_type === "WH")
+    //   .toArray();
     return (
       <React.Fragment>
         <div className="hptl-phase1-requisition-list-form">
@@ -116,25 +150,25 @@ class PurchaseOrderList extends Component {
               />
             }
             breadStyle={this.props.breadStyle}
-            // pageNavPath={[
-            //   {
-            //     pageName: (
-            //       <AlgaehLabel
-            //         label={{
-            //           forceLabel: "Home",
-            //           align: "ltr",
-            //         }}
-            //       />
-            //     ),
-            //   },
-            //   {
-            //     pageName: (
-            //       <AlgaehLabel
-            //         label={{ forceLabel: "Purchase Auth List", align: "ltr" }}
-            //       />
-            //     ),
-            //   },
-            // ]}
+          // pageNavPath={[
+          //   {
+          //     pageName: (
+          //       <AlgaehLabel
+          //         label={{
+          //           forceLabel: "Home",
+          //           align: "ltr",
+          //         }}
+          //       />
+          //     ),
+          //   },
+          //   {
+          //     pageName: (
+          //       <AlgaehLabel
+          //         label={{ forceLabel: "Purchase Auth List", align: "ltr" }}
+          //       />
+          //     ),
+          //   },
+          // ]}
           />
           <div
             className="row inner-top-search"
@@ -204,7 +238,7 @@ class PurchaseOrderList extends Component {
                     },
                   }}
                 />
-                <AlagehAutoComplete
+                {/* <AlagehAutoComplete
                   div={{ className: "col-3" }}
                   label={{ forceLabel: "Location" }}
                   selector={{
@@ -228,7 +262,7 @@ class PurchaseOrderList extends Component {
                     onChange: LocationchangeTexts.bind(this, this),
                     onClear: LocationchangeTexts.bind(this, this),
                   }}
-                />
+                /> */}
               </div>
             </div>
           </div>
@@ -249,11 +283,14 @@ class PurchaseOrderList extends Component {
                               <i
                                 className="fas fa-eye"
                                 onClick={() => {
-                                  setGlobal({
-                                    "RQ-STD": "PurchaseOrderEntry",
-                                    purchase_number: row.purchase_number,
-                                  });
-                                  document.getElementById("rq-router").click();
+                                  this.props.history.push(
+                                    `/PurchaseOrderEntry?purchase_number=${row.purchase_number}`
+                                  );
+                                  // setGlobal({
+                                  //   "RQ-STD": "PurchaseOrderEntry",
+                                  //   purchase_number: row.purchase_number,
+                                  // });
+                                  // document.getElementById("rq-router").click();
                                 }}
                               />
 
@@ -287,39 +324,39 @@ class PurchaseOrderList extends Component {
                         displayTemplate: (row) => {
                           return row.status === "Delivery Completed" &&
                             row.po_mode === "I" ? (
-                            <span className="badge badge-success">
-                              Delivery Completed / Receipt Pending
-                            </span>
-                          ) : row.status === "Delivery Completed" &&
-                            row.po_mode === "S" ? (
-                            <span className="badge badge-success">
-                              Receipt Pending
-                            </span>
-                          ) : row.status === "PO Closed" ? (
-                            <span className="badge badge-success">
-                              PO Closed
-                            </span>
-                          ) : row.status === "Delivery Pending" ? (
-                            <span className="badge badge-warning">
-                              Delivery Pending
-                            </span>
-                          ) : row.status === "Autorization 1 Pending" ? (
-                            <span className="badge badge-danger">
-                              Auth 1 Pending
-                            </span>
-                          ) : row.status === "Final Autorization Pending" ? (
-                            <span className="badge badge-danger">
-                              Auth 2 Pending
-                            </span>
-                          ) : row.status === "PO Rejected" ? (
-                            <span className="badge badge-danger">
-                              {row.status}
-                            </span>
-                          ) : row.status === null ? (
-                            <span className="badge badge-danger">
-                              Send for Authorization pending
-                            </span>
-                          ) : null;
+                              <span className="badge badge-success">
+                                Delivery Completed / Receipt Pending
+                              </span>
+                            ) : row.status === "Delivery Completed" &&
+                              row.po_mode === "S" ? (
+                                <span className="badge badge-success">
+                                  Receipt Pending
+                                </span>
+                              ) : row.status === "PO Closed" ? (
+                                <span className="badge badge-success">
+                                  PO Closed
+                                </span>
+                              ) : row.status === "Delivery Pending" ? (
+                                <span className="badge badge-warning">
+                                  Delivery Pending
+                                </span>
+                              ) : row.status === "Autorization 1 Pending" ? (
+                                <span className="badge badge-danger">
+                                  Auth 1 Pending
+                                </span>
+                              ) : row.status === "Final Autorization Pending" ? (
+                                <span className="badge badge-danger">
+                                  Auth 2 Pending
+                                </span>
+                              ) : row.status === "PO Rejected" ? (
+                                <span className="badge badge-danger">
+                                  {row.status}
+                                </span>
+                              ) : row.status === null ? (
+                                <span className="badge badge-danger">
+                                  Send for Authorization pending
+                                </span>
+                              ) : null;
                         },
 
                         others: {
@@ -379,21 +416,21 @@ class PurchaseOrderList extends Component {
 
                           this.state.po_from === "PHR"
                             ? (display =
-                                this.props.polocations === undefined
-                                  ? []
-                                  : this.props.polocations.filter(
-                                      (f) =>
-                                        f.hims_d_pharmacy_location_id ===
-                                        row.pharmcy_location_id
-                                    ))
+                              this.props.polocations === undefined
+                                ? []
+                                : this.props.polocations.filter(
+                                  (f) =>
+                                    f.hims_d_pharmacy_location_id ===
+                                    row.pharmcy_location_id
+                                ))
                             : (display =
-                                this.props.polocations === undefined
-                                  ? []
-                                  : this.props.polocations.filter(
-                                      (f) =>
-                                        f.hims_d_inventory_location_id ===
-                                        row.inventory_location_id
-                                    ));
+                              this.props.polocations === undefined
+                                ? []
+                                : this.props.polocations.filter(
+                                  (f) =>
+                                    f.hims_d_inventory_location_id ===
+                                    row.inventory_location_id
+                                ));
 
                           return (
                             <span>

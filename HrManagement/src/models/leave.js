@@ -973,53 +973,74 @@ export default {
         const full_name = input.full_name;
         const leave_days = input.leave_days;
         const leave_type = input.leave_type;
+        const employee_code = input.employee_code;
+        const from_date = input.from_date;
+        const to_date = input.to_date;
+        const reason = input.reason;
+        const leave_code = input.leave_code;
+        const applied_date = new Date();
         const { hospital_address, hospital_name } = req.userIdentity;
         try {
-          // const mailSender =
-          new algaehMail({
-            user: fromSendDetails.sub_department_email,
-            pass: decrypted,
-          })
-            .to(toSendDetails.work_email)
-            .subject("Employee Leave Request")
-            .templateHbs("applyLeave.hbs", {
-              full_name,
-              hospital_name,
-              hospital_address,
-              leave_days,
-              leave_type,
+          newAxios(req, {
+            url: "http://localhost:3006/api/v1//Document/getEmailConfig",
+          }).then((res) => {
+            const options = res.data.data[0];
+            // const mailSender =
+            new algaehMail({
+              user: fromSendDetails.sub_department_email,
+              pass: decrypted,
+              smtp: options.host,
+              port: options.port,
+              useSSL: options.useSSL,
+              service: options.service,
             })
-            .send()
-            .then((response) => {
-              _mysql.releaseConnection();
-            })
-            .catch((error) => {
-              next(error);
-            });
+              .to(toSendDetails.work_email)
+              .subject("Employee Leave Request")
+              .templateHbs("applyLeave.hbs", {
+                full_name,
+                employee_code,
+                from_date,
+                to_date,
+                reason,
+                leave_code,
+                hospital_name,
+                hospital_address,
+                leave_days,
+                leave_type,
+                applied_date,
+              })
+              .send()
+              .then((response) => {
+                _mysql.releaseConnection();
+              })
+              .catch((error) => {
+                next(error);
+              });
 
-          // if (send_attachment === "true") {
-          //   mailSender.attachReportsAndSend(
-          //     req,
-          //     reportInput,
-          //     (error, records) => {
-          //       if (error) {
-          //         next(error);
-          //         return;
-          //       }
+            // if (send_attachment === "true") {
+            //   mailSender.attachReportsAndSend(
+            //     req,
+            //     reportInput,
+            //     (error, records) => {
+            //       if (error) {
+            //         next(error);
+            //         return;
+            //       }
 
-          //       next();
-          //     }
-          //   );
-          // } else {
-          //   mailSender
-          //     .send()
-          //     .then(() => {
-          //       // console.log("Mail Sent");
-          //       next();
-          //     })
-          //     .catch((error) => {
-          //       next(error);
-          //     });
+            //       next();
+            //     }
+            //   );
+            // } else {
+            //   mailSender
+            //     .send()
+            //     .then(() => {
+            //       // console.log("Mail Sent");
+            //       next();
+            //     })
+            //     .catch((error) => {
+            //       next(error);
+            //     });
+          });
         } catch (e) {
           //_mysql.releaseConnection();
           next(e);
@@ -1068,127 +1089,149 @@ export default {
         const from_date = input.from_date;
         const to_date = input.to_date;
         const employee_code = input.code;
-        const employee_email = result[2][0];
+        const employee_email = result[2][0].work_email;
         const leave_desc = input.leave_desc;
         const auth_level = input.auth_level;
+        const total_applied_days = input.total_applied_days;
+        const total_approved_days = input.leave_days;
+        const authorized_comment = input.authorized_comment;
         const { hospital_address, hospital_name } = req.userIdentity;
         const branch = hospital_name;
-        if (
-          toSendDetails.length < 0 &&
-          input.status === "A" &&
-          employee_email
-        ) {
-          try {
-            // const mailSender =
-            new algaehMail({
-              user: fromSendDetails.sub_department_email,
-              pass: decrypted,
-            })
-              .to(employee_email)
-              .subject("Applieed Leave Status")
-              .templateHbs("approvedLeaveMail.hbs", {
-                full_name,
-                hospital_name,
-                hospital_address,
-                // leave_days,
-                from_date,
-                to_date,
-                leave_desc,
+        try {
+          newAxios(req, {
+            url: "http://localhost:3006/api/v1//Document/getEmailConfig",
+          }).then((res) => {
+            const options = res.data.data[0];
 
-                // leave_type,
-              })
-              .send()
-              .then((response) => {
-                _mysql.releaseConnection();
-              })
-              .catch((error) => {
-                next(error);
-              });
+            if (toSendDetails.length <= 0 && employee_email) {
+              try {
+                // const mailSender =
+                new algaehMail({
+                  user: fromSendDetails.sub_department_email,
+                  pass: decrypted,
+                  smtp: options.host,
+                  port: options.port,
+                  useSSL: options.useSSL,
+                  service: options.service,
+                })
+                  .to(employee_email)
+                  .subject("Applieed Leave Status")
+                  .templateHbs("approvedLeaveMail.hbs", {
+                    full_name,
+                    hospital_name,
+                    hospital_address,
+                    // leave_days,
+                    from_date,
+                    to_date,
+                    leave_desc,
+                    total_approved_days,
+                    // leave_type,
+                    authorized_comment,
+                  })
+                  .send()
+                  .then((response) => {
+                    _mysql.releaseConnection();
+                  })
+                  .catch((error) => {
+                    next(error);
+                  });
 
-            // if (send_attachment === "true") {
-            //   mailSender.attachReportsAndSend(
-            //     req,
-            //     reportInput,
-            //     (error, records) => {
-            //       if (error) {
-            //         next(error);
-            //         return;
-            //       }
+                // if (send_attachment === "true") {
+                //   mailSender.attachReportsAndSend(
+                //     req,
+                //     reportInput,
+                //     (error, records) => {
+                //       if (error) {
+                //         next(error);
+                //         return;
+                //       }
 
-            //       next();
-            //     }
-            //   );
-            // } else {
-            //   mailSender
-            //     .send()
-            //     .then(() => {
-            //       // console.log("Mail Sent");
-            //       next();
-            //     })
-            //     .catch((error) => {
-            //       next(error);
-            //     });
-          } catch (e) {
-            //_mysql.releaseConnection();
-            next(e);
-          }
-        } else {
-          try {
-            // const mailSender =
-            new algaehMail({
-              user: fromSendDetails.sub_department_email,
-              pass: decrypted,
-            })
-              .to(toSendDetails)
-              .subject("Leave Request Status")
-              .templateHbs("authorizeLeaveAppMail.hbs", {
-                full_name,
-                hospital_name,
-                hospital_address,
-                // leave_days,
-                branch,
-                employee_code,
-                leave_desc,
-                auth_level,
-                // leave_type,
-              })
-              .send()
-              .then((response) => {
-                _mysql.releaseConnection();
-              })
-              .catch((error) => {
-                next(error);
-              });
+                //       next();
+                //     }
+                //   );
+                // } else {
+                //   mailSender
+                //     .send()
+                //     .then(() => {
+                //       // console.log("Mail Sent");
+                //       next();
+                //     })
+                //     .catch((error) => {
+                //       next(error);
+                //     });
+              } catch (e) {
+                //_mysql.releaseConnection();
+                next(e);
+              }
+            } else {
+              try {
+                // const mailSender =
+                new algaehMail({
+                  user: fromSendDetails.sub_department_email,
+                  pass: decrypted,
+                  smtp: options.host,
+                  port: options.port,
+                  useSSL: options.useSSL,
+                  service: options.service,
+                })
+                  .to(toSendDetails)
+                  .subject("Leave Request Status")
+                  .templateHbs("authorizeLeaveAppMail.hbs", {
+                    full_name,
+                    hospital_name,
+                    hospital_address,
+                    // leave_days,
+                    branch,
+                    employee_code,
+                    leave_desc,
+                    auth_level,
+                    total_applied_days,
+                    from_date,
+                    to_date,
+                    authorized_comment,
+                    // leave_type,
+                  })
+                  .send()
+                  .then((response) => {
+                    _mysql.releaseConnection();
+                  })
+                  .catch((error) => {
+                    next(error);
+                  });
 
-            // if (send_attachment === "true") {
-            //   mailSender.attachReportsAndSend(
-            //     req,
-            //     reportInput,
-            //     (error, records) => {
-            //       if (error) {
-            //         next(error);
-            //         return;
-            //       }
+                // if (send_attachment === "true") {
+                //   mailSender.attachReportsAndSend(
+                //     req,
+                //     reportInput,
+                //     (error, records) => {
+                //       if (error) {
+                //         next(error);
+                //         return;
+                //       }
 
-            //       next();
-            //     }
-            //   );
-            // } else {
-            //   mailSender
-            //     .send()
-            //     .then(() => {
-            //       // console.log("Mail Sent");
-            //       next();
-            //     })
-            //     .catch((error) => {
-            //       next(error);
-            //     });
-          } catch (e) {
-            //_mysql.releaseConnection();
-            next(e);
-          }
+                //       next();
+                //     }
+                //   );
+                // } else {
+                //   mailSender
+                //     .send()
+                //     .then(() => {
+                //       // console.log("Mail Sent");
+                //       next();
+                //     })
+                //     .catch((error) => {
+                //       next(error);
+                //     });
+              } catch (e) {
+                //_mysql.releaseConnection();
+                next(e);
+              }
+            }
+          });
+        } catch (e) {
+          //_mysql.releaseConnection();
+          next(e);
         }
-
         // _mysql.releaseConnection();
         req.records = result;
         next();
@@ -1229,51 +1272,60 @@ export default {
         const auth_level = input.auth_level;
         const { hospital_address, hospital_name } = req.userIdentity;
         try {
-          // const mailSender =
-          new algaehMail({
-            user: fromSendDetails.sub_department_email,
-            pass: decrypted,
-          })
-            .to(toSendDetails.work_email)
-            .subject("Leave Request Status")
-            .templateHbs("leaveEmpRejMail.hbs", {
-              full_name,
-              hospital_name,
-              hospital_address,
-              from_date,
-              auth_level,
+          newAxios(req, {
+            url: "http://localhost:3006/api/v1//Document/getEmailConfig",
+          }).then((res) => {
+            const options = res.data.data[0];
+            // const mailSender =
+            new algaehMail({
+              user: fromSendDetails.sub_department_email,
+              pass: decrypted,
+              smtp: options.host,
+              port: options.port,
+              useSSL: options.useSSL,
+              service: options.service,
             })
-            .send()
-            .then((response) => {
-              _mysql.releaseConnection();
-            })
-            .catch((error) => {
-              next(error);
-            });
+              .to(toSendDetails.work_email)
+              .subject("Leave Request Status")
+              .templateHbs("leaveEmpRejMail.hbs", {
+                full_name,
+                hospital_name,
+                hospital_address,
+                from_date,
+                auth_level,
+              })
+              .send()
+              .then((response) => {
+                _mysql.releaseConnection();
+              })
+              .catch((error) => {
+                next(error);
+              });
 
-          // if (send_attachment === "true") {
-          //   mailSender.attachReportsAndSend(
-          //     req,
-          //     reportInput,
-          //     (error, records) => {
-          //       if (error) {
-          //         next(error);
-          //         return;
-          //       }
+            // if (send_attachment === "true") {
+            //   mailSender.attachReportsAndSend(
+            //     req,
+            //     reportInput,
+            //     (error, records) => {
+            //       if (error) {
+            //         next(error);
+            //         return;
+            //       }
 
-          //       next();
-          //     }
-          //   );
-          // } else {
-          //   mailSender
-          //     .send()
-          //     .then(() => {
-          //       // console.log("Mail Sent");
-          //       next();
-          //     })
-          //     .catch((error) => {
-          //       next(error);
-          //     });
+            //       next();
+            //     }
+            //   );
+            // } else {
+            //   mailSender
+            //     .send()
+            //     .then(() => {
+            //       // console.log("Mail Sent");
+            //       next();
+            //     })
+            //     .catch((error) => {
+            //       next(error);
+            //     });
+          });
         } catch (e) {
           //_mysql.releaseConnection();
           next(e);
