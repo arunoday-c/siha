@@ -54,6 +54,7 @@ const SalesOrderSearch = ($this, e) => {
 
             data.sales_order_id = data.hims_f_sales_order_id;
             data.saveEnable = true;
+            data.ReqData = true;
             data.selectedData = true;
             data.sub_total = 0;
             data.discount_amount = 0;
@@ -138,9 +139,9 @@ const SaveDispatchNote = ($this) => {
     InputObj.inventory_stock_detail[i].expiry_date =
       InputObj.inventory_stock_detail[i].expiry_date !== null
         ? moment(
-            InputObj.inventory_stock_detail[i].expiry_date,
-            "YYYY-MM-DD"
-          ).format("YYYY-MM-DD")
+          InputObj.inventory_stock_detail[i].expiry_date,
+          "YYYY-MM-DD"
+        ).format("YYYY-MM-DD")
         : null;
   }
   delete InputObj.item_details;
@@ -313,9 +314,9 @@ const CancelDispatchNote = ($this) => {
     InputObj.inventory_stock_detail[i].expiry_date =
       InputObj.inventory_stock_detail[i].expiry_date !== null
         ? moment(
-            InputObj.inventory_stock_detail[i].expiry_date,
-            "YYYY-MM-DD"
-          ).format("YYYY-MM-DD")
+          InputObj.inventory_stock_detail[i].expiry_date,
+          "YYYY-MM-DD"
+        ).format("YYYY-MM-DD")
         : null;
   }
 

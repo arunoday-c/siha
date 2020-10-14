@@ -689,8 +689,7 @@ export default {
                 inner join hims_d_inventory_item_master IM  on IM.hims_d_inventory_item_master_id=D.item_id
                 left join hims_m_inventory_item_location LOC  on D.item_id=LOC.item_id
                 and  (date(LOC.expirydt) > date(CURDATE()) or LOC.expirydt is null)
-                where D.inventory_header_id=? and LOC.inventory_location_id=? and LOC.qtyhand > 0
-                and D.quantity_outstanding<>0 order by  date(LOC.expirydt);`,
+                where D.inventory_header_id=? and D.quantity_outstanding<>0 order by  date(LOC.expirydt);`,
                 // "select D.*,LOC.*, IM.hims_d_inventory_item_master_id, IM.item_description, PU.uom_description from hims_f_inventory_material_detail D \
                 // left join hims_m_inventory_item_location LOC  on D.item_id=LOC.item_id \
                 // inner join `hims_d_inventory_item_master` IM  on IM.hims_d_inventory_item_master_id=D.item_id \
@@ -740,7 +739,7 @@ export default {
                       item_description,
                       uom_description,
                       unit_cost,
-                      batches: detail
+                      batches: detail.filter((f) => f.qtyhand > 0 && f.inventory_location_id == inputParam.from_location_id),
                     };
                   })
                   .value();
