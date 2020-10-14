@@ -142,24 +142,17 @@ export default {
 
       _mysql
         .executeQuery({
-          query: `select 
-          -- P.patient_code,concat(T.title,' ',P.full_name)as  patient_name,
-             E.full_name as  employee_name,
-             -- PL.hims_f_treatment_plan_id, PL.plan_name
-       D.arrival_date,D.odered_date, D.work_status,E.work_email,D.hims_f_dental_form_id,D.due_date ,D.department_id,IL.location_description,
-       D.location_id,D.quantity_available,D.box_code,D.quantity_utilised,D.requested_date,D.request_status,D.ordered_type,D.procedure_id, D.provider_id,D.procedure_amt,D.approved,D.date_of_birth,
-        D.full_name, D.patient_code,D.gender, D.age,V.vendor_name,V.hims_d_vendor_id,S.service_name
-         from hims_f_dental_form as D 
-         -- inner join hims_f_patient as P on P.hims_d_patient_id=D.patient_id 
-       -- left join hims_d_title as T on T.his_d_title_id = P.title_id 
-         inner join hims_d_employee as E on  E.hims_d_employee_id =D.provider_id
-        -- left join hims_d_title as ET on ET.his_d_title_id = E.title_id  
-         left join hims_d_vendor as V on V.hims_d_vendor_id=D.vendor_id
-         left join hims_d_services as S on S.hims_d_services_id =D.procedure_id
-        left join hims_d_inventory_location IL on D.location_id= IL.hims_d_inventory_location_id
-         -- inner join hims_f_treatment_plan as PL 
-         -- on PL.patient_id = P.hims_d_patient_id and PL.visit_id = D.visit_id  and PL.episode_id = D.episode
-         ORDER BY requested_date DESC  `,
+          query: `select E.full_name as  employee_name, D.arrival_date,D.odered_date, D.work_status,
+          case D.work_status when 'PEN' then 'Pending' when 'WIP' then 'Ordered' else 'Arrived' END as work_status_desc,D.request_status,
+          case D.request_status when 'PEN' then 'Pending' when 'APR' then 'Approved' when 'REJ' then 'Reject' else 'Resend' END as request_status_desc,D.ordered_type,
+          case D.ordered_type when 'NEW' then 'New' when 'REF' then 'Refine'  when 'REM' then 'Remake' else 'Reimpression' END as ordered_type_desc,
+          E.work_email,D.hims_f_dental_form_id,D.due_date ,D.department_id,IL.location_description, D.location_id,D.quantity_available,D.box_code,D.quantity_utilised,D.requested_date,D.procedure_id, D.provider_id,D.procedure_amt,D.approved,D.date_of_birth, D.full_name, D.patient_code,D.gender, D.age,V.vendor_name,V.hims_d_vendor_id,S.service_name
+          from hims_f_dental_form as D 
+          inner join hims_d_employee as E on  E.hims_d_employee_id =D.provider_id
+          left join hims_d_vendor as V on V.hims_d_vendor_id=D.vendor_id
+          left join hims_d_services as S on S.hims_d_services_id =D.procedure_id
+          left join hims_d_inventory_location IL on D.location_id= IL.hims_d_inventory_location_id
+          ORDER BY requested_date DESC;`,
           // values: [input.from_request_date, input.to_request_date],
           printQuery: true,
         })

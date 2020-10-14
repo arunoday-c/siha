@@ -432,26 +432,26 @@ export default function DentalLab() {
               // </div>
             )}
           />
-          <div className="col-2" style={{ marginTop: 21 }}>
-            {" "}
-            <ButtonType
-              className="btn btn-default"
-              label={{
-                forceLabel: "Load",
-                returnText: true,
-              }}
-              onClick={handleSubmit(getFormRequest)}
-              loading={loading_request_list}
-            />
-            <ButtonType
-              className="btn btn-primary"
+          <div className="col-2" style={{ marginTop: 21 }}> 
+           <span>   <ButtonType
+              classname="btn btn-default"
               label={{
                 forceLabel: "Clear",
                 returnText: true,
               }}
               onClick={onClear}
               loading={loading_request_list}
-            />
+            /> </span>
+          <span style={{marginRight:15}}>  <ButtonType
+              classname="btn btn-primary"
+              label={{
+                forceLabel: "Load",
+                returnText: true,
+              }}
+              onClick={handleSubmit(getFormRequest)}
+              loading={loading_request_list}
+            /></span>
+          
           </div>
         </div>
         <div className="row">
@@ -502,82 +502,43 @@ export default function DentalLab() {
                           freezable: true,
                         },
                         {
-                          fieldName: "request_status",
+                          fieldName: "request_status_desc",
                           label: "Request status",
                           filterable: true,
                           displayTemplate: (row) => {
                             return (
-                              <span>
-                                {row.request_status === "PEN" ? (
-                                  <span className="badge badge-warning">
-                                    Pending
-                                  </span>
-                                ) : row.request_status === "APR" ? (
-                                  <span className="badge badge-success">
-                                    Approved
-                                  </span>
-                                ) : row.request_status === "REJ" ? (
-                                  <span className="badge badge-danger">
-                                    Rejected
-                                  </span>
-                                ) : row.request_status === "RES" ? (
-                                  <span className="badge badge-warning">
-                                    Resend
-                                  </span>
-                                ) : (
-                                  "------"
-                                )}
-                              </span>
+                            <span className={`badge badge-${row.request_status === "PEN" ? "warning" : row.request_status === "APR" ? "success" : "info" }`}>
+                              {row.request_status_desc}
+                            </span>
                             );
                           },
                         },
                         {
-                          fieldName: "work_status",
+                          fieldName: "work_status_desc",
                           label: "Work Status",
                           filterable: true,
                           displayTemplate: (row) => {
                             return (
-                              <span>
-                                {row.work_status === "PEN" ? (
-                                  <span className="badge badge-warning">
-                                    Pending
-                                  </span>
-                                ) : row.work_status === "WIP" ? (
-                                  <span className="badge badge-info">
-                                    Ordered
-                                  </span>
-                                ) : row.work_status === "COM" ? (
-                                  <span className="badge badge-success">
-                                    Arrived
-                                  </span>
-                                ) : (
-                                  "------"
-                                )}
-                              </span>
+                            <span className={`badge badge-${row.work_status === "PEN" ? "warning" : row.work_status === "WIP" ? "info" : "success" }`}>
+                              {row.work_status_desc}
+                            </span>
                             );
                           },
                         },
                         {
-                          fieldName: "ordered_type",
+                          fieldName: "ordered_type_desc",
                           label: "Order Type",
                           filterable: true,
+
+
                           displayTemplate: (row) => {
                             return (
-                              <span>
-                                {row.ordered_type === "NEW" ? (
-                                  <span>NEW</span>
-                                ) : row.ordered_type === "REF" ? (
-                                  <span>Refine</span>
-                                ) : row.ordered_type === "REM" ? (
-                                  <span>Remake</span>
-                                ) : row.ordered_type === "RIM" ? (
-                                  <span>Reimpression</span>
-                                ) : (
-                                  "------"
-                                )}
-                              </span>
+                            <span className="badge badge-light">
+                              {row.ordered_type_desc}
+                            </span>
                             );
                           },
+                          
                         },
                         {
                           fieldName: "full_name",
