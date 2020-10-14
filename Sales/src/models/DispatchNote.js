@@ -153,12 +153,10 @@ export function getSalesOrderItem(req, res, next) {
               printQuery: true,
             })
             .then((inventory_stock_detail) => {
-              console.log("inputParam.location_id", inputParam.location_id)
               _mysql.releaseConnection();
               const grouppedData = _.chain(inventory_stock_detail)
                 .groupBy((g) => g.hims_d_inventory_item_master_id)
                 .map((detail, key) => {
-                  console.log("detail", detail)
                   const {
                     sales_order_items_id,
                     item_category_id,
