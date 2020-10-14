@@ -382,4 +382,7 @@ UPDATE `algaeh_d_reports` SET `report_name_for_header` = 'Loan Reconciliation Re
 -- ******** Dental Lab - Ordered Type
 ALTER TABLE `hims_f_dental_form` 
 ADD COLUMN `ordered_type` ENUM('NEW', 'REF', 'REM') NULL DEFAULT 'NEW' COMMENT 'New=New //nREF=Refine //nREM=Remake //n' AFTER `box_code`;
+ALTER TABLE `hims_f_dental_form` 
+CHANGE COLUMN `ordered_type` `ordered_type` ENUM('NEW', 'REF', 'REM', 'RIM') NULL DEFAULT 'NEW' COMMENT 'New=New //nREF=Refine //nREM=Remake //nRIM=Re-Impression//n' ;
+
 alter table hims_f_dental_form add column odered_date datetime;
