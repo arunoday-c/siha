@@ -123,7 +123,7 @@
 									<tr>
 										<td colspan="2" class="bg_white email-section">
 											<div class="heading-section" style="text-align: center; padding: 0 30px;">
-												<h2>Employee Leave Request</h2>
+												<h2>Leave Request Status</h2>
 												<p> {{hospital_address}}</p>
 											</div>
 											<hr style=" height: 1px; background: #eaeaea; border: 0;">
@@ -131,12 +131,53 @@
 									</tr>
 								</tbody>
 							</table>
-							<table role="presentation" cellspacing="0" cellpadding="0" border="0" width="80%" style="text-align: left; padding: 0 40px;margin-bottom:20px">
+								<table role="presentation" cellspacing="0" cellpadding="0" border="0"  width="100%"  style="text-align: left; padding: 0 40px;margin-bottom:20px">
 								<tr>
 									<td colspan="2">
 										<p>Hello, <b>{{full_name}}</b></p>
-										<p>{{leave_type}} Requested from {{from_date}} to {{to_date}} has been rejected by Level {{auth_level}}</p>
+										<p>Your below leave request got rejected</p>
 									</td>
+								</tr>
+							</table>
+							
+							<table cellspacing="0" cellpadding="2" border="1"  width="80%" style="text-align: left; margin: 0 40px 20px;">
+								
+								
+								<tr>
+									<td colspan="2"><b>Leave Details:-</td>
+								</tr>
+								<tr>
+									<td>Leave Request Code:</td>
+									<td>{{leave_code}}</td>
+								</tr>
+								<tr>
+									<td>Leave Desc:</td>
+									<td>{{leave_type}}</td>
+								</tr>
+								
+								<tr>
+									<td>Leave Applied Date:</td>
+									<td>{{applied_date}}</td>
+								</tr>
+
+								<tr>
+									<td>Leave Start Date:</td>
+									<td>{{from_date}}</td>
+								</tr>
+								
+								<tr>
+									<td>Leave End Date:</td>
+									<td>{{to_date}}</td>
+								</tr>
+								
+								<tr>
+									<td>Total Leave Days:</td>
+									<td>{{leave_days}} days</td>
+								</tr>
+								
+								<tr>
+									<td>Leave Reason:</td>
+									<td>{{reason}}</td>
 								</tr>
 							</table>
 						</td>

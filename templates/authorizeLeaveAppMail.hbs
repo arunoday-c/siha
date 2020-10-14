@@ -131,21 +131,20 @@
 									</tr>
 								</tbody>
 							</table>
-							<table role="presentation" cellspacing="0" cellpadding="0" border="0" width="80%" style="text-align: left;  margin: 0 40px 20px;">
+							<table role="presentation" cellspacing="0" cellpadding="0" border="0"  width="100%"  style="text-align: left; padding: 0 40px;margin-bottom:20px">
 								<tr>
 									<td colspan="2">
 										<p>Hello, <b>Manager</b></p>
-										<p>Approval level {{auth_level}} Pending for the Leave Requested by <b>{{full_name}}</b> from {{hospital_name}} Branch.</p>
+										<p>Your approval pending for leave requested by <b>{{full_name}}</b> from {{hospital_name}} Branch.</p>
 									</td>
 								</tr>
 							</table>
-						
 							<table cellspacing="0" cellpadding="2" border="1"  width="80%" style="text-align: left; margin: 0 40px 20px;">
 								<tr>
 									<td colspan="2"><b>Employee Details:-</td>
 								</tr>
 								<tr>
-									<td>Employee Code:</td>
+									<td>Employee code:</td>
 									<td>{{employee_code}}</td>
 								</tr>
 								<tr>
@@ -161,10 +160,19 @@
 									<td colspan="2"><b>Leave Details:-</td>
 								</tr>
 								<tr>
+									<td>Leave Request Code:</td>
+									<td>{{leave_code}}</td>
+								</tr>
+								<tr>
 									<td>Leave Desc:</td>
-									<td>{{leave_desc}}</td>
+									<td>{{leave_type}}</td>
 								</tr>
 								
+								<tr>
+									<td>Leave Applied Date:</td>
+									<td>{{applied_date}}</td>
+								</tr>
+
 								<tr>
 									<td>Leave Start Date:</td>
 									<td>{{from_date}}</td>
@@ -177,12 +185,12 @@
 								
 								<tr>
 									<td>Total Leave Days:</td>
-									<td>{{total_applied_days}}</td>
+									<td>{{leave_days}} days</td>
 								</tr>
 								
 								<tr>
 									<td>Leave Reason:</td>
-									<td>{{authorized_comment}} days</td>
+									<td>{{reason}} </td>
 								</tr>
 							</table>
 						</td>
