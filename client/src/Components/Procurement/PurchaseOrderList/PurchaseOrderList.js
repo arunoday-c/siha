@@ -67,7 +67,7 @@ class PurchaseOrderList extends Component {
         from_date: moment(params?.get("from_date"))._d,
       });
     }
-    // debugger
+    debugger
     if (params?.get("to_date")) {
       this.setState(
         {
@@ -81,8 +81,8 @@ class PurchaseOrderList extends Component {
         }
       );
     } else {
-      let bothExisits = false,
-        poSelected = false, status = "1";
+      let bothExisits = true,
+        poSelected = true, status = "1";
 
       RawSecurityComponent({ componentCode: "PUR_AUT_AUTH2" }).then((result) => {
         if (result === "show") {
@@ -93,6 +93,8 @@ class PurchaseOrderList extends Component {
       RawSecurityComponent({ componentCode: "PUR_AUTH_PHARMACY" }).then(
         (result) => {
           if (result === "show") {
+            bothExisits = false;
+            poSelected = false;
             this.setState(
               {
                 po_from: "PHR",
@@ -109,14 +111,12 @@ class PurchaseOrderList extends Component {
             RawSecurityComponent({ componentCode: "PUR_AUTH_INVENTORY" }).then(
               (result) => {
                 if (result === "show") {
-                  bothExisits = false;
-                  poSelected = false;
                   this.setState(
                     {
-                      poSelected: poSelected === false ? false : true,
+                      poSelected: poSelected,
                       po_from: "INV",
-                      status: bothExisits === false ? status : "0",
-                      bothExisits: false,
+                      status: bothExisits === true ? status : "0",
+                      bothExisits: bothExisits,
                     },
                     () => {
                       getData(this);
