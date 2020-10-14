@@ -12,7 +12,7 @@ let addDentalForm = (req, res, next) => {
     _mysql
       .executeQuery({
         query:
-          "INSERT INTO hims_f_dental_form (patient_id,provider_id,visit_id,procedure_id,procedure_amt,vendor_id,request_status,ordered_type\
+          "INSERT INTO hims_f_dental_form (patient_id,provider_id,visit_id,procedure_id,procedure_amt,vendor_id,request_status,ordered_type,\
             full_name,gender,age,patient_code,requested_date,date_of_birth,department_id,episode,approved,work_status,\
             due_date,bruxzir_anterior,ips_e_max,lava,lumineers,zirconia_e_max_layered,\
             bruxzir,nobel,white_high_nobel,non_precious,pmma,titanium,zirconia_w_ti_base,\
@@ -181,26 +181,49 @@ export default {
     // const utilities = new algaehUtilities();
     const _mysql = new algaehMysql();
     let input = req.body;
+    let workStatusAndRequestStatus = "";
+    if (input.work_status) {
+      workStatusAndRequestStatus = `,work_status='${input.work_status}'`;
+    }
+    if (input.request_status) {
+      workStatusAndRequestStatus += `,request_status='${input.request_status}'`;
+    }
+    if (input.box_code) {
+      workStatusAndRequestStatus += `,box_code='${input.box_code}'`;
+    }
+    if (input.quantity_utilised) {
+      workStatusAndRequestStatus += `,quantity_utilised='${input.quantity_utilised}'`;
+    }
+    if (input.location_id) {
+      workStatusAndRequestStatus += `,location_id='${input.location_id}'`;
+    }
+    if (input.arrival_date) {
+      workStatusAndRequestStatus += `,arrival_date='${input.arrival_date}'`;
+    }
+    if (input.odered_date) {
+      workStatusAndRequestStatus += `,odered_date='${input.odered_date}'`;
+    }
 
+    // input.work_status ? input.work_status : "PEN",
+    //   input.request_status ? input.request_status : "PEN",
     _mysql
       .executeQuery({
-        query: `update hims_f_dental_form set patient_id=?,location_id=?,quantity_available=?,box_code=?,quantity_utilised=?,provider_id=?,procedure_id=?,procedure_amt=?,
-        vendor_id=?,request_status=?,ordered_type=?,work_status=?,full_name=?,gender=?,age=?,patient_code=?,requested_date=?,
-        date_of_birth=?,department_id=?,arrival_date=? ,odered_date=? where hims_f_dental_form_id=? `,
+        query: `update hims_f_dental_form set patient_id=?,quantity_available=?,provider_id=?,procedure_id=?,procedure_amt=?,
+        vendor_id=?,ordered_type=?,full_name=?,gender=?,age=?,patient_code=?,requested_date=?,
+        date_of_birth=?,department_id=? ${workStatusAndRequestStatus} where hims_f_dental_form_id=? `,
 
         values: [
           input.patient_id,
-          input.location_id,
+
           input.quantity_available,
-          input.box_code,
-          input.quantity_utilised,
+
           input.provider_id,
           input.hims_d_services_id,
           input.standard_fee,
           input.hims_d_vendor_id,
-          input.request_status ? input.request_status : "PEN",
+
           input.ordered_type,
-          input.work_status ? input.work_status : "PEN",
+
           input.full_name,
           input.gender,
           input.age,
@@ -208,8 +231,7 @@ export default {
           input.requested_date,
           input.date_of_birth,
           input.department_id,
-          input.arrival_date,
-          input.odered_date,
+
           input.hims_f_dental_form_id,
         ],
         printQuery: true,

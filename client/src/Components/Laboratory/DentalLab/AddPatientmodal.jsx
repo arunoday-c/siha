@@ -156,7 +156,9 @@ export function AddPatientDentalForm({
     const requestDate = moment(data.requesting_date).format("YYYY-MM-DD");
     const due_date = moment(new Date()).format("YYYY-MM-DD");
     const years = moment().diff(data.date_of_birth, "year");
-    const date_of_birth = moment(data.date_of_birth).format("YYYY-MM-DD");
+    const date_of_birth = data.date_of_birth
+      ? moment(data.date_of_birth).format("YYYY-MM-DD")
+      : null;
 
     try {
       const res = await newAlgaehApi({
@@ -324,7 +326,8 @@ export function AddPatientDentalForm({
       className={`row algaehNewModal dentalLabRequest`}
       footer={[
         <div className="col-12">
-          {disabled || current.request_status === "APR" ? null : (
+          {current.request_status === "APR" &&
+          current.work_status === "COM" ? null : (
             <button
               onClick={handleSubmit(onSubmit)}
               className="btn btn-primary btn-sm"
@@ -882,7 +885,7 @@ export function AddPatientDentalForm({
                             onChange(selected);
                             if (selected !== "COM") {
                               setValue("arrival_date", undefined);
-
+                              setShowLocation(false);
                               return;
                             } else {
                               setShowLocation(true);
@@ -896,48 +899,6 @@ export function AddPatientDentalForm({
                               request_status !== "APR" ||
                               current.work_status === "COM",
                             // tabIndex: "4",
-                          },
-                        }}
-                      />
-                    )}
-                  />
-
-                  <Controller
-                    name="arrival_date"
-                    control={control}
-                    rules={{
-                      required:
-                        work_status === "COM" ? " please enter date" : false,
-                    }}
-                    render={({ onChange, value }) => (
-                      <AlgaehDateHandler
-                        div={{ className: "col-3 form-group mandatory" }}
-                        error={errors}
-                        label={{
-                          forceLabel: "Received Date",
-                          isImp: true,
-                        }}
-                        textBox={{
-                          className: "form-control",
-                          name: "arrival_date",
-                          value,
-                        }}
-                        others={{
-                          disabled:
-                            work_status !== "COM" || current.arrival_date,
-                        }}
-                        minDate={new Date()}
-                        events={{
-                          onChange: (mdate) => {
-                            if (mdate) {
-                              onChange(mdate._d);
-                            } else {
-                              onChange(undefined);
-                            }
-                          },
-                          onClear: () => {
-                            onChange(undefined);
-                            // setValue("arrival_date", undefined);
                           },
                         }}
                       />
@@ -984,6 +945,48 @@ export function AddPatientDentalForm({
                       />
                     )}
                   />
+                  <Controller
+                    name="arrival_date"
+                    control={control}
+                    rules={{
+                      required:
+                        work_status === "COM" ? " please enter date" : false,
+                    }}
+                    render={({ onChange, value }) => (
+                      <AlgaehDateHandler
+                        div={{ className: "col-3 form-group mandatory" }}
+                        error={errors}
+                        label={{
+                          forceLabel: "Received Date",
+                          isImp: true,
+                        }}
+                        textBox={{
+                          className: "form-control",
+                          name: "arrival_date",
+                          value,
+                        }}
+                        others={{
+                          disabled:
+                            work_status !== "COM" || current.arrival_date,
+                        }}
+                        minDate={new Date()}
+                        events={{
+                          onChange: (mdate) => {
+                            if (mdate) {
+                              onChange(mdate._d);
+                            } else {
+                              onChange(undefined);
+                            }
+                          },
+                          onClear: () => {
+                            onChange(undefined);
+                            // setValue("arrival_date", undefined);
+                          },
+                        }}
+                      />
+                    )}
+                  />
+
                   <AlgaehSecurityComponent componentCode="DEN_MAIL_NOTY">
                     <div className="col">
                       <label>Notify Via Email</label>

@@ -97,7 +97,7 @@ export default function DentalLab() {
 
   // const [viewDentalModal, setViewDentalModal] = useState(false);
 
-  const { getValues, control, handleSubmit, errors } = useForm({
+  const { getValues, setValue, control, handleSubmit, errors } = useForm({
     shouldFocusError: true,
     // defaultValues: {
     //   // requesting_date: new Date(),
@@ -328,7 +328,12 @@ export default function DentalLab() {
     console.log(errors);
     loadRequestList(getValues());
   };
+  const onClear = () => {
+    setValue("from_request_date", undefined);
+    setValue("to_request_date", undefined);
 
+    loadRequestListAll();
+  };
   // componentDidMount() {
 
   //   RawSecurityComponent({ componentCode: "PUR_ORD_INVENTORY" }).then(
@@ -436,6 +441,15 @@ export default function DentalLab() {
                 returnText: true,
               }}
               onClick={handleSubmit(getFormRequest)}
+              loading={loading_request_list}
+            />
+            <ButtonType
+              className="btn btn-primary"
+              label={{
+                forceLabel: "Clear",
+                returnText: true,
+              }}
+              onClick={onClear}
               loading={loading_request_list}
             />
           </div>
@@ -599,9 +613,13 @@ export default function DentalLab() {
                           fieldName: "requested_date",
                           label: "Request Date",
                         },
+                        // {
+                        //   fieldName: "due_date",
+                        //   label: "Due Date",
+                        // },
                         {
-                          fieldName: "due_date",
-                          label: "Due Date",
+                          fieldName: "odered_date",
+                          label: "Odered Date",
                         },
                         {
                           fieldName: "arrival_date",
