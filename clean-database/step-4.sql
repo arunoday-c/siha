@@ -1,4 +1,183 @@
 
+-- =================================  Start 14 Sept 2020 =======================================
+-- ******** Added Email and Password Field in Sub Department
+ALTER TABLE `hims_d_sub_department` 
+ADD COLUMN `sub_department_email` VARCHAR(300) NULL DEFAULT NULL AFTER `vitals_mandatory`;
+ALTER TABLE `hims_d_sub_department` 
+ADD COLUMN `password` VARCHAR(250) NOT NULL COMMENT 'MD5 encrypted password' AFTER `sub_department_email` ;
+ALTER TABLE `hims_d_sub_department`
+ADD COLUMN `salt` VARCHAR(300) NULL DEFAULT NULL AFTER `vitals_mandatory`;
+
+-- ******** Added Performance Management Query
+CREATE TABLE `hrms_d_performance_appraisal_matrix_range` (
+  `hrms_d_apprisal_range_id` int NOT NULL AUTO_INCREMENT,
+  `from_range` decimal(5,2) DEFAULT NULL,
+  `to_range` decimal(5,2) DEFAULT NULL,
+  `result` varchar(20) DEFAULT NULL,
+  `increment` decimal(5,2) DEFAULT NULL,
+  `created_date` datetime DEFAULT NULL,
+  `created_by` int DEFAULT NULL,
+  `updated_date` datetime DEFAULT NULL,
+  `updated_by` int DEFAULT NULL,
+  `record_status` enum('A','I') DEFAULT 'A',
+  PRIMARY KEY (`hrms_d_apprisal_range_id`),
+  KEY `FK` (`created_by`,`updated_by`),
+  KEY `hrms_d_performance_appraisal_matrix_range_FK2` (`updated_by`),
+  CONSTRAINT `hrms_d_performance_appraisal_matrix_range_FK1` FOREIGN KEY (`created_by`) REFERENCES `algaeh_d_app_user` (`algaeh_d_app_user_id`),
+  CONSTRAINT `hrms_d_performance_appraisal_matrix_range_FK2` FOREIGN KEY (`updated_by`) REFERENCES `algaeh_d_app_user` (`algaeh_d_app_user_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=53 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
+CREATE TABLE `hrms_d_questionnaire_group` (
+  `hrms_d_questionnaire_group_id` INT,
+  `group_name` VARCHAR(100),
+  `created_date` DATETIME,
+  `created_by` INT,
+  `updated_date` DATETIME,
+  `updated_by` INT,
+  `record_status` ENUM('A', 'I'),
+  PRIMARY KEY (`hrms_d_questionnaire_group_id`),
+  KEY `FK` (`created_by`, `updated_by`),
+  CONSTRAINT `hrms_d_questionnaire_group_FK1` FOREIGN KEY (`created_by`) REFERENCES `algaeh_d_app_user` (`algaeh_d_app_user_id`),
+  CONSTRAINT `hrms_d_questionnaire_group_FK2` FOREIGN KEY (`updated_by`) REFERENCES `algaeh_d_app_user` (`algaeh_d_app_user_id`)
+);
+
+
+CREATE TABLE `hrms_d_perfrmance_questionnaire_master` (
+  `hrms_d_perfrmance_questionnaire_master_id` INT,
+  `hrms_d_questionnaire_group_id` INT,
+  `questionaries` VARCHAR(250),
+  `created_date` DATETIME,
+  `created_by` INT,
+  `updated_date` DATETIME,
+  `updated_by` INT,
+  `record_status` ENUM('A', 'I') DEFAULT 'A',
+  PRIMARY KEY (`hrms_d_perfrmance_questionnaire_master_id`),
+  KEY `FK` (`hrms_d_questionnaire_group_id`, `created_by`, `updated_by`),
+  CONSTRAINT `hrms_d_perfrmance_questionnaire_master_FK1` FOREIGN KEY (`hrms_d_questionnaire_group_id`) REFERENCES `hrms_d_questionnaire_group` (`hrms_d_questionnaire_group_id`),
+   CONSTRAINT `hrms_d_perfrmance_questionnaire_master_FK2` FOREIGN KEY (`created_by`) REFERENCES `algaeh_d_app_user` (`algaeh_d_app_user_id`),
+  CONSTRAINT `hrms_d_perfrmance_questionnaire_master_FK3` FOREIGN KEY (`updated_by`) REFERENCES `algaeh_d_app_user` (`algaeh_d_app_user_id`)
+);
+
+
+CREATE TABLE `hrms_d_kpi_master` (
+  `hrms_d_kpi_master_id` INT,
+  `kpi_name` VARCHAR(100),
+  `created_date` DATETIME,
+  `created_by` INT,
+  `updated_date` DATETIME,
+  `updated_by` INT,
+  `record_status` ENUM('A', 'I')
+  );
+  
+
+-- ******** Sales Invoice Security
+INSERT INTO `algaeh_d_app_component` (`screen_id`, `component_code`, `component_name`, `created_date`, `updated_date`, `record_status`) VALUES ('144', 'SALE_INV_POST', 'Sales Invoice Post', '2020-09-14 12:06:42', '2020-09-14 12:06:42', 'A');
+INSERT INTO `algaeh_d_app_component` (`screen_id`, `component_code`, `component_name`, `created_date`, `updated_date`, `record_status`) VALUES ('144', 'SALES_INV_RVT', 'Sales Invoice Revert', '2020-09-14 12:07:00', '2020-09-14 12:07:00', 'A');
+INSERT INTO `algaeh_d_app_component` (`screen_id`, `component_code`, `component_name`, `created_date`, `updated_date`, `record_status`) VALUES ('144', 'SALES_INV_MAIN', 'Sales Maintanance', '2020-09-14 12:17:56', '2020-09-14 12:17:56', 'A');
+
+-- ******** Bill Wise Vat Report
+  INSERT INTO `algaeh_d_reports` (`report_name`, `report_name_for_header`, `report_input_series`, `report_header_file_name`, `status`, `created_datetime`, `update_datetime`) VALUES ('billWiseVatReport', 'Bill Wise VAT Report', '[\'hospital_id\',\'from_date\',\'to_date\' ]', 'reportHeader', 'A', '2019-10-17 15:13:22', '2019-10-17 15:13:22');
+
+-- ******** OP Ctrl In Mapping
+INSERT INTO `finance_accounts_maping` (`finance_accounts_maping_id`, `account`, `description`) VALUES ('27', 'OP_CTRL', 'OP Control Account');
+
+
+-- =================================  Start 17 Sept 2020 =======================================
+-- ******** Final Remittance
+CREATE TABLE `hims_f_insurance_remitance` (
+  `hims_f_insurance_remitance_id` int NOT NULL AUTO_INCREMENT,
+  `claim_id` int DEFAULT NULL,
+  `cliam_number` varchar(45) DEFAULT NULL,
+  `head_id` int DEFAULT NULL,
+  `child_id` int DEFAULT NULL,
+  `amount` decimal(10,3) DEFAULT NULL,
+  PRIMARY KEY (`hims_f_insurance_remitance_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- ******** Insurance Write Off Account
+INSERT INTO `finance_accounts_maping` (`finance_accounts_maping_id`, `account`, `description`) VALUES ('28', 'INS_WRITE_OFF', 'Insurance Write Off');
+
+
+-- =================================  Start 18 Sept 2020 =======================================
+-- ******** Gratuity Min Year of service
+ALTER TABLE `hims_d_end_of_service_options` ADD COLUMN `gratuity_min_year` INT NULL DEFAULT NULL AFTER `gratuity_provision`;
+
+-- ******** Write off Amount in Statement
+ALTER TABLE `hims_f_insurance_statement` 
+ADD COLUMN `writeoff_amount` DECIMAL(20,3) NULL DEFAULT NULL AFTER `submission_step`;
+
+
+-- ******** Final Remit Alert
+ALTER TABLE `hims_f_insurance_remitance` 
+DROP COLUMN `child_id`,
+DROP COLUMN `head_id`,
+ADD COLUMN `remit_amount` DECIMAL(10,3) NULL AFTER `company_payable`,
+ADD COLUMN `denail_amount` DECIMAL(10,3) NULL AFTER `remit_amount`,
+CHANGE COLUMN `amount` `company_payable` DECIMAL(10,3) NULL DEFAULT NULL ;
+
+ALTER TABLE `hims_f_insurance_remitance` 
+ADD COLUMN `writeoff_amount` DECIMAL(10,3) NULL AFTER `denail_amount`;
+
+
+-- ********Query for Employee wise working hour
+alter table hims_d_employee add column standard_work_hours time default null
+after service_dis_percentage, add column consider_overtime enum('Y','N') default  'N'
+after standard_work_hours, add column ramzan_work_hours time default null 
+after consider_overtime, add column week_day enum('SU','MO','TU','WE','TH','FR','SA') default null
+after ramzan_work_hours;
+
+-- =================================  Start 19 Sept 2020 =======================================
+-- ******** Package Related reports
+INSERT INTO `algaeh_d_reports` (`report_name`, `report_name_for_header`, `report_header_file_name`, `status`, `created_datetime`, `update_datetime`) VALUES ('cancelPackageByPatient', 'Cancelled Package by Patient', 'reportHeader', 'A', '2020-09-08 13:48:09', '2020-09-08 13:48:09');
+INSERT INTO `algaeh_d_reports` (`report_name`, `report_name_for_header`, `report_header_file_name`, `status`, `created_datetime`, `update_datetime`) VALUES ('orderdPackageByPatient', 'Ordered Package by Patient', 'reportHeader', 'A', '2020-09-08 13:48:09', '2020-09-08 13:48:09');
+INSERT INTO `algaeh_d_reports` (`report_name`, `report_name_for_header`, `report_header_file_name`, `status`, `created_datetime`, `update_datetime`) VALUES ('utlizePackageByPatient', 'Utilized Package by Patient', 'reportHeader', 'A', '2020-09-08 13:48:09', '2020-09-08 13:48:09');
+INSERT INTO `algaeh_d_reports` (`report_name`, `report_name_for_header`, `report_header_file_name`, `status`, `created_datetime`, `update_datetime`) VALUES ('typePackageByBranch', 'Type Package by Branch', 'reportHeader', 'A', '2020-09-08 13:48:09', '2020-09-08 13:48:09');
+
+
+-- =================================  Start 21 Sept 2020 =======================================
+-- ******** Package Report Updates
+INSERT INTO `algaeh_d_reports` (`report_name`, `report_name_for_header`, `report_header_file_name`, `status`, `created_datetime`, `update_datetime`) VALUES ('outstandingPackageByPatient', 'Outstanding Package by Patient', 'reportHeader', 'A', '2020-09-08 13:48:09', '2020-09-08 13:48:09');
+UPDATE `algaeh_d_reports` SET `report_name_for_header` = 'Ordered Package by Patient' WHERE (`report_name` = 'orderdPackageByPatient');
+UPDATE `algaeh_d_reports` SET `report_name_for_header` = 'Utilized Package by Patient' WHERE (`report_name` = 'utlizePackageByPatient');
+
+-- ********Sales Invoice cancel option
+ALTER TABLE `hims_f_sales_invoice_header` 
+ADD COLUMN `is_cancelled` ENUM('N', 'Y') NULL DEFAULT 'N' AFTER `reverted_date`,
+ADD COLUMN `cancelled_by` INT NULL AFTER `is_cancelled`,
+ADD COLUMN `cancelled_date` DATETIME NULL AFTER `cancelled_by`;
+ALTER TABLE `hims_f_sales_invoice_header` 
+ADD COLUMN `cancel_reason` VARCHAR(200) NULL AFTER `is_cancelled`;
+ALTER TABLE `hims_f_sales_order` 
+ADD COLUMN `revert_reason` VARCHAR(200) NULL AFTER `is_revert`;
+
+-- ******** HR Approval Email Setup Screen
+INSERT INTO `algaeh_d_app_component` (`screen_id`, `component_code`, `component_name`, `created_date`, `updated_date`, `record_status`) VALUES ('86', 'PAY_ANN_EML_SET', 'Email Setup', '2020-09-21 14:42:30', '2020-09-21 14:42:30', 'A');
+
+
+-- =================================  Start 22 Sept 2020 =======================================
+-- ******** Email Setup - HRMS
+CREATE TABLE `hims_f_email_setup` (
+  `hims_f_email_setup_id` INT NOT NULL AUTO_INCREMENT,
+  `email_type` ENUM('LV', 'LO', 'LE') NULL DEFAULT 'LO',
+  `sub_department_email` VARCHAR(300) NULL DEFAULT NULL,
+  `password` VARCHAR(250) NOT NULL COMMENT 'MD5 encrypted password',
+  `salt` VARCHAR(300) NULL DEFAULT NULL,
+  `sub_department_id` INT NOT NULL,
+  `report_name` VARCHAR(300) NULL DEFAULT NULL,
+  `report_attach` ENUM('Y', 'N') NULL DEFAULT 'N',
+  PRIMARY KEY (`hims_f_email_setup_id`),
+  INDEX `hims_f_email_setup_fk1_idx` (`sub_department_id` ASC) VISIBLE,
+  CONSTRAINT `hims_f_email_setup_fk1`
+    FOREIGN KEY (`sub_department_id`)
+    REFERENCES `hims_d_sub_department` (`hims_d_sub_department_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION);
+
+-- ******** Identification Expiry Report
+INSERT INTO `algaeh_d_reports` (`report_name`, `report_name_for_header`, `report_query`, `data_manupulation`, `report_input_series`, `report_header_file_name`, `report_footer_file_name`, `uniq_identity_to_report`, `status`, `created_datetime`, `update_datetime`) VALUES ('idExpiryEmployee', 'Identification Expiry Report', '', '', '[\"hospital_id\",\"from_date\",\"to_date\"]', 'reportHeader', '', '', 'A', '2019-06-17 19:46:54', '2019-06-17 19:46:54');
+
+
 -- =================================  Start 25 Sept 2020 =======================================
 -- ******** Income and Sales Return Report
 INSERT INTO `algaeh_d_reports` (`report_name`, `report_name_for_header`, `report_query`, `report_input_series`, `report_header_file_name`, `status`, `created_datetime`, `update_datetime`) VALUES ('patientWiseIncome', 'Income by Patients', '', '[\"hospital_id\",\"from_date\", \"to_date\"]', 'reportHeader', 'A', '2019-06-17 18:57:28', '2019-06-17 18:57:28');
