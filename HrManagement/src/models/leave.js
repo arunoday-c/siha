@@ -5,7 +5,7 @@ import moment from "moment";
 import { LINQ } from "node-linq";
 //import utilities from "algaeh-utilities";
 import algaehUtilities from "algaeh-utilities/utilities";
-// import newAxios from "algaeh-utilities/axios";
+import newAxios from "algaeh-utilities/axios";
 import keys from "algaeh-keys";
 import AESCrypt from "aescrypt";
 import algaehMail from "algaeh-utilities/mail-send";

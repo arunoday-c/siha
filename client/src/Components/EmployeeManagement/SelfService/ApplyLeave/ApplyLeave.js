@@ -488,7 +488,7 @@ class ApplyLeave extends Component {
             return;
           }
         }
-        AlgaehLoader({ show: true });
+        // AlgaehLoader({ show: true });
         algaehApiCall({
           uri: "/leave/applyEmployeeLeave",
           method: "POST",
@@ -551,7 +551,7 @@ class ApplyLeave extends Component {
                 })
                   .then((res) => {
                     if (res.data.success) {
-                      AlgaehLoader({ show: false });
+                      // AlgaehLoader({ show: false });
                       this.setState({ loading_Process: false });
                       this.getEmployeeLeaveHistory();
                       this.clearState();
