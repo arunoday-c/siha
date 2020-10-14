@@ -1,4 +1,48 @@
 
+-- =================================  Start 25 Sept 2020 =======================================
+-- ******** Income and Sales Return Report
+INSERT INTO `algaeh_d_reports` (`report_name`, `report_name_for_header`, `report_query`, `report_input_series`, `report_header_file_name`, `status`, `created_datetime`, `update_datetime`) VALUES ('patientWiseIncome', 'Income by Patients', '', '[\"hospital_id\",\"from_date\", \"to_date\"]', 'reportHeader', 'A', '2019-06-17 18:57:28', '2019-06-17 18:57:28');
+INSERT INTO `algaeh_d_reports` (`report_name`, `report_name_for_header`, `report_header_file_name`, `status`, `created_datetime`, `update_datetime`) VALUES ('posSalesReturn', 'Pharmacy Return', 'reportHeader', 'A', '2020-09-25 08:03:21', '2020-09-25 08:03:21');
+INSERT INTO `algaeh_d_app_component` (`screen_id`, `component_code`, `component_name`, `created_date`, `updated_date`, `record_status`) VALUES ('156', 'RPT_INC_PAT', 'Income by Patient', '2020-09-25 09:08:59', '2020-09-25 09:08:59', 'A');
+
+-- ******** Card Master
+ALTER TABLE `hims_d_bank_card` 
+ADD COLUMN `card_format` VARCHAR(45) NULL DEFAULT NULL AFTER `child_id`,
+ADD COLUMN `vat_percentage` DECIMAL(10,3) NULL DEFAULT 0.00 AFTER `card_format`,
+ADD COLUMN `service_charge` DECIMAL(20,3) NULL DEFAULT 0.00 AFTER `vat_percentage`;
+
+-- ******** Inactive few Service Type
+UPDATE `hims_d_service_type` SET `record_status` = 'I' WHERE (`hims_d_service_type_id` = '3');
+UPDATE `hims_d_service_type` SET `record_status` = 'I' WHERE (`hims_d_service_type_id` = '8');
+UPDATE `hims_d_service_type` SET `record_status` = 'I' WHERE (`hims_d_service_type_id` = '9');
+
+-- ******** Cash Receipt Patient Primary ID in Report
+UPDATE `algaeh_d_reports` SET `report_query` = 'select BH.bill_number as invoice_number,P.patient_code, P.full_name as patient_full_name,  P.arabic_name as patient_arabaic_full_name, P.primary_id_no, V.visit_date,E.full_name,E.arabic_name,SD.arabic_sub_department_name,	  SD.sub_department_name,N.nationality, BH.bill_date invoice_date, P.registration_date, V.age_in_years, P.gender,IP.insurance_provider_name,INET.network_type from hims_f_patient P inner join hims_f_patient_visit V on P.hims_d_patient_id = V.patient_id inner join hims_d_nationality as N on N.hims_d_nationality_id = P.nationality_id inner join hims_d_sub_department SD on V.sub_department_id =SD.hims_d_sub_department_id inner join hims_d_employee E on V.doctor_id =E.hims_d_employee_id inner join hims_f_billing_header BH on V.hims_f_patient_visit_id = BH.visit_id left join hims_m_patient_insurance_mapping IM on IM.patient_visit_id = V.hims_f_patient_visit_id left join hims_d_insurance_provider IP on IP.hims_d_insurance_provider_id = IM.primary_insurance_provider_id left join hims_d_insurance_network INET on INET.hims_d_insurance_network_id = IM.primary_network_id where BH.hims_f_billing_header_id=?;   select BH.hims_f_billing_header_id,BH.bill_number ,ST.service_type,	ST.arabic_service_type, S.service_name,	  S.arabic_service_name,    BD.quantity,	BD.unit_cost as price,	BD.gross_amount, BD.patient_resp as patient_share,	  BD.patient_payable,	coalesce(BD.discount_amout,	0)as discount_amount, coalesce(BD.net_amout,	0)as net_amount,	  BD.comapany_resp,	BD.company_tax,	BD.company_payble, BD.patient_tax,	coalesce(BD.company_tax,	0)+   coalesce(BD.comapany_resp,	0) as net_claim, BD.service_type_id,V.new_visit_patient from hims_f_billing_header BH       inner join hims_f_patient_visit V on BH.visit_id = V.hims_f_patient_visit_id    inner join hims_f_billing_details BD on BH.hims_f_billing_header_id=BD.hims_f_billing_header_id    inner join hims_d_services S on S.hims_d_services_id = BD.services_id    inner join hims_d_service_type ST on BD.service_type_id = ST.hims_d_service_type_id       where BH.hims_f_billing_header_id=?;' WHERE ( report_name ='cashReceipt' and `report_id` >0);
+
+-- =================================  Start 26 Sept 2020 =======================================
+-- ******** Purchase order - report is coming blank - Fixed
+UPDATE `algaeh_d_reports` SET `report_input_series` = '[\'purchase_number\' ]' WHERE (`report_name` = 'poInventoryProcurement');
+UPDATE `algaeh_d_reports` SET `report_input_series` = '[\'purchase_number\' ]' WHERE (`report_name` = 'poInventoryProcurementNoPrice');
+UPDATE `algaeh_d_reports` SET `report_input_series` = '[\'purchase_return_number\' ]' WHERE (`report_name` = 'poInventoryProcurementReturn');
+UPDATE `algaeh_d_reports` SET `report_input_series` = '[\'purchase_return_number\' ]' WHERE (`report_name` = 'poInventoryProcurementReturnNoPrice');
+
+-- ******** Sales Order Report - coming blank - Fixed
+UPDATE `algaeh_d_reports` SET `report_input_series` = '[\'sales_order_number\' ]' WHERE (`report_name` = 'SalesOrderReportService');
+UPDATE `algaeh_d_reports` SET `report_input_series` = '[\'sales_order_number\' ]' WHERE (`report_name` = 'SalesOrderReportItem');
+
+-- =================================  Start 27 Sept 2020 =======================================
+-- ******** Purchase order - report is coming blank - Fixed
+ALTER TABLE `hims_d_employee` 
+CHANGE COLUMN `standard_work_hours` `standard_work_hours` DECIMAL(4,2) NULL DEFAULT NULL ,
+CHANGE COLUMN `ramzan_work_hours` `ramzan_work_hours` DECIMAL(4,2) NULL DEFAULT NULL ;
+
+-- ******** Inventory Procedure
+-- Take from Trello
+
+-- =================================  Start 28 Sept 2020 =======================================
+-- ******** Removed Email Feature from Sub Department Module
+alter table hims_d_sub_department drop column sub_department_email,drop column password,drop salt;
+
 -- =================================  Start 29 Sept 2020 =======================================
 -- ******** Promotion Master Screen Enable
 INSERT INTO `algaeh_d_app_component` (`screen_id`, `component_code`, `component_name`, `created_date`, `updated_date`, `record_status`) VALUES ('5', 'COMM_PROM_MSTR', 'Promotion Master', '2020-09-29 08:04:53', '2020-09-29 08:04:53', 'A');
@@ -159,3 +203,4 @@ UPDATE `algaeh_d_reports` SET `report_name_for_header` = 'Loan Reconciliation Re
 -- ******** Dental Lab - Ordered Type
 ALTER TABLE `hims_f_dental_form` 
 ADD COLUMN `ordered_type` ENUM('NEW', 'REF', 'REM') NULL DEFAULT 'NEW' COMMENT 'New=New //nREF=Refine //nREM=Remake //n' AFTER `box_code`;
+alter table hims_f_dental_form add column odered_date datetime;

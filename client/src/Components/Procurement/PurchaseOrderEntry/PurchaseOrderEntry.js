@@ -495,7 +495,7 @@ class PurchaseOrderEntry extends Component {
                   <div className="col">
                     <div className="row">
                       <AlagehAutoComplete
-                        div={{ className: "col mandatory" }}
+                        div={{ className: "col-4 mandatory" }}
                         label={{ forceLabel: "PO Type" }}
                         selector={{
                           name: "po_type",
@@ -522,7 +522,7 @@ class PurchaseOrderEntry extends Component {
                       />
 
                       <AlagehAutoComplete
-                        div={{ className: "col mandatory" }}
+                        div={{ className: "col-4 mandatory" }}
                         label={{ forceLabel: "PO For" }}
                         selector={{
                           name: "po_from",
@@ -550,7 +550,7 @@ class PurchaseOrderEntry extends Component {
                       />
 
                       <AlagehAutoComplete
-                        div={{ className: "col mandatory" }}
+                        div={{ className: "col-4 mandatory" }}
                         label={{ forceLabel: "Location Code" }}
                         selector={{
                           name:
@@ -590,7 +590,7 @@ class PurchaseOrderEntry extends Component {
                     <div className="col">
                       <div className="row">
                         <AlagehAutoComplete
-                          div={{ className: "col form-group mandatory" }}
+                          div={{ className: "col-6 form-group mandatory" }}
                           label={{
                             forceLabel: "Select Project",
                             isImp: true,
@@ -619,7 +619,7 @@ class PurchaseOrderEntry extends Component {
                         />
 
                         <AlagehAutoComplete
-                          div={{ className: "col mandatory" }}
+                          div={{ className: "col-6 mandatory" }}
                           label={{
                             forceLabel: "Select Branch",
                             isImp: true,
@@ -648,7 +648,7 @@ class PurchaseOrderEntry extends Component {
                     </div>
                   )}
                 <AlagehAutoComplete
-                  div={{ className: "col" }}
+                  div={{ className: "col-3" }}
                   label={{ forceLabel: "Vendor Name" }}
                   selector={{
                     name: "vendor_id",
