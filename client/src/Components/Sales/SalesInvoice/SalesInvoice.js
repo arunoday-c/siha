@@ -141,7 +141,7 @@ class SalesInvoice extends Component {
             searchName: "SalesInvoice",
           }}
           userArea={
-            <div className="row"  style={{marginTop:-10}}>
+            <div className="row" style={{ marginTop: -10 }}>
               <AlgaehDateHandler
                 div={{ className: "col mandatory" }}
                 label={{
@@ -271,6 +271,7 @@ class SalesInvoice extends Component {
                           `/SalesOrder?sales_order_number=${this.state.sales_order_number}`
                         );
                       }}
+                      disabled={this.state.sales_order_number ? false : true}
                     >
                       View Order
                     </AlgaehButton>
