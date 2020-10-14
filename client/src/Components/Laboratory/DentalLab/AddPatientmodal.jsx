@@ -503,7 +503,7 @@ export function AddPatientDentalForm({
                         textField: "service_name",
                       },
                       others: {
-                        disabled: disabled || current.request_status === "APR",
+                        disabled: current.request_status === "APR" && current.work_status=== "COM",
                         tabIndex: "4",
                       },
                     }}
@@ -526,7 +526,7 @@ export function AddPatientDentalForm({
                       ...props,
                       type: "number",
                       className: "form-control",
-                      disabled: disabled || current.request_status === "APR",
+                      disabled: current.request_status === "APR"  && current.work_status=== "COM",
                       placeholder: "0.00",
                       name: "service_amount",
                       others: {
@@ -661,7 +661,7 @@ export function AddPatientDentalForm({
                       className: "txt-fld",
                       name: "patient_code",
                       // placeholder: "MRN Number",
-                      disabled: disabled || current.request_status === "APR",
+                      disabled: current.request_status === "APR"  && current.work_status=== "COM",
                       tabIndex: "8",
                     }}
                   />
@@ -684,7 +684,7 @@ export function AddPatientDentalForm({
                       className: "txt-fld",
                       name: "full_name",
                       placeholder: "Enter Full Name",
-                      disabled: disabled || current.request_status === "APR",
+                      disabled: current.request_status === "APR"  && current.work_status=== "COM",
                       tabIndex: "9",
                     }}
                   />
