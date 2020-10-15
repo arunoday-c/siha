@@ -44,7 +44,9 @@ export default {
       invoice_date: new Date(),
 
       dataExitst: false,
-
+      recepit_files: [],
+      receipt_docs: [],
+      docChanged: false,
       ReqData: true,
       ClearDisable: false,
       saveEnable: true,
@@ -55,8 +57,8 @@ export default {
       receipt_mode: "I",
       receipt_entry_detail_services: [],
       hospital_name: null,
-      project_desc: null
+      project_desc: null,
     };
     return output;
-  }
+  },
 };

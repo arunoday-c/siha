@@ -86,14 +86,24 @@ class ResultEntryList extends Component {
   componentDidMount() {
     getSampleCollectionDetails(this, this);
   }
-  downloadDoc = (doc) => {
+  downloadDoc(doc, isPreview) {
+    const fileUrl = `data:${doc.filetype};base64,${doc.document}`;
     const link = document.createElement("a");
-    link.download = doc.filename;
-    link.href = `data:${doc.filetype};base64,${doc.document}`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
+    if (!isPreview) {
+      link.download = doc.filename;
+      link.href = fileUrl;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } else {
+      fetch(fileUrl)
+        .then((res) => res.blob())
+        .then((fblob) => {
+          const newUrl = URL.createObjectURL(fblob);
+          window.open(newUrl);
+        });
+    }
+  }
   deleteDoc = (doc) => {
     const self = this;
     confirm({

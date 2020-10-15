@@ -437,11 +437,11 @@ export function AlgaehValidation(options) {
           _title =
             _langua === "en"
               ? _lable
-                .replace("*", "")
-                .toLowerCase()
-                .replace(/^\w/, (c) => {
-                  return c.toUpperCase();
-                }) + "- Cannot be empty"
+                  .replace("*", "")
+                  .toLowerCase()
+                  .replace(/^\w/, (c) => {
+                    return c.toUpperCase();
+                  }) + "- Cannot be empty"
               : _lable.replace("*", "") + "- لا يمكن أن يكون فارغا";
         }
         swalMessage({
@@ -484,7 +484,6 @@ export function GetAmountFormart(value, options) {
 }
 
 export function numberFormater(value, options, CurrencyDetail) {
-  debugger
   const settings = {
     ...CurrencyDetail,
     ...{ appendSymbol: true },

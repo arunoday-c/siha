@@ -10,6 +10,7 @@ import spotlightSearch from "../../../Search/spotlightSearch.json";
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
 import ReceiptEntryInv from "../../../Models/ReceiptEntry";
 import _ from "lodash";
+import { newAlgaehApi } from "../../../hooks";
 
 let texthandlerInterval = null;
 
@@ -315,7 +316,39 @@ const SaveReceiptEnrty = ($this) => {
     },
   });
 };
-
+const getDocuments = ($this) => {
+  newAlgaehApi({
+    uri: "/getReceiptEntryDoc",
+    module: "documentManagement",
+    method: "GET",
+    data: {
+      grn_number: $this.state.grn_number,
+    },
+  })
+    .then((res) => {
+      if (res.data.success) {
+        let { data } = res.data;
+        $this.setState(
+          {
+            receipt_docs: data,
+            recepit_files: [],
+            saveEnable: $this.state.saveEnable,
+            docChanged: false,
+          },
+          () => {
+            AlgaehLoader({ show: false });
+          }
+        );
+      }
+    })
+    .catch((e) => {
+      AlgaehLoader({ show: false });
+      swalMessage({
+        title: e.message,
+        type: "error",
+      });
+    });
+};
 const getCtrlCode = ($this, docNumber, row) => {
   AlgaehLoader({ show: true });
 
@@ -356,6 +389,7 @@ const getCtrlCode = ($this, docNumber, row) => {
           // data.vendor_name = row.vendor_name;
           $this.setState(data, () => {
             getData($this);
+            getDocuments($this);
           });
           AlgaehLoader({ show: false });
 
@@ -733,6 +767,7 @@ export {
   ClearData,
   SaveReceiptEnrty,
   getCtrlCode,
+  getDocuments,
   loctexthandle,
   PostReceiptEntry,
   PurchaseOrderSearch,

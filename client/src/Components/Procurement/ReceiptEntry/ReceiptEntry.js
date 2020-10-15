@@ -13,29 +13,34 @@ import Options from "../../../Options.json";
 import moment from "moment";
 import ReceiptItemList from "./ReceiptItemList/ReceiptItemList";
 import ReceiptServiceList from "./ReceiptServiceList";
-
+import { newAlgaehApi } from "../../../hooks";
+import { Upload, Modal } from "antd";
+import { swalMessage } from "../../../utils/algaehApiCall";
+// import AlgaehLoader from "../../Wrapper/fullPageLoader";
 import {
   texthandle,
   ClearData,
   SaveReceiptEnrty,
   getCtrlCode,
+  getDocuments,
   PostReceiptEntry,
   PurchaseOrderSearch,
   datehandle,
   textEventhandle,
   generateReceiptEntryReport,
-  getPOOptions
+  getPOOptions,
 } from "./ReceiptEntryEvent";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import ReceiptEntryInp from "../../../Models/ReceiptEntry";
 import MyContext from "../../../utils/MyContext";
 import { GetAmountFormart } from "../../../utils/GlobalFunctions";
-
+const { Dragger } = Upload;
+const { confirm } = Modal;
 class ReceiptEntry extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      po_services_req: "N"
+      po_services_req: "N",
     };
     getPOOptions(this, this);
   }
@@ -58,6 +63,128 @@ class ReceiptEntry extends Component {
       getCtrlCode(this, queryParams.get("grn_number"));
     }
   }
+  // getDocuments = () => {
+  //
+  //   newAlgaehApi({
+  //     uri: "/getReceiptEntryDoc",
+  //     module: "documentManagement",
+  //     method: "GET",
+  //     data: {
+  //       grn_number: this.state.grn_number,
+  //     },
+  //   })
+  //     .then((res) => {
+  //       if (res.data.success) {
+  //         let { data } = res.data;
+  //         this.setState(
+  //           {
+  //             receipt_docs: data,
+  //             recepit_files: [],
+  //             saveEnable: this.state.saveEnable,
+  //             docChanged: false,
+  //           },
+  //           () => {
+  //             AlgaehLoader({ show: false });
+  //           }
+  //         );
+  //       }
+  //     })
+  //     .catch((e) => {
+  //       AlgaehLoader({ show: false });
+  //       swalMessage({
+  //         title: e.message,
+  //         type: "error",
+  //       });
+  //     });
+  // };
+
+  saveDocument = (files = [], number, id) => {
+    if (this.state.grn_number) {
+      const formData = new FormData();
+      formData.append("grn_number", number || this.state.grn_number);
+      formData.append(
+        "hims_f_procurement_grn_header_id",
+        id || this.state.hims_f_procurement_grn_header_id
+      );
+      if (files.length) {
+        files.forEach((file, index) => {
+          formData.append(`file_${index}`, file, file.name);
+        });
+      } else {
+        this.state.recepit_files.forEach((file, index) => {
+          formData.append(`file_${index}`, file, file.name);
+        });
+      }
+      newAlgaehApi({
+        uri: "/saveReceiptEntryDoc",
+        data: formData,
+        extraHeaders: { "Content-Type": "multipart/form-data" },
+        method: "POST",
+        module: "documentManagement",
+      })
+        .then((value) => getDocuments(this))
+        .catch((e) => console.log(e));
+    } else {
+      swalMessage({
+        title: "Can't upload attachments for unsaved Receipt Entry",
+        type: "error",
+      });
+    }
+  };
+  downloadDoc(doc, isPreview) {
+    const fileUrl = `data:${doc.filetype};base64,${doc.document}`;
+    const link = document.createElement("a");
+    if (!isPreview) {
+      link.download = doc.filename;
+      link.href = fileUrl;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } else {
+      fetch(fileUrl)
+        .then((res) => res.blob())
+        .then((fblob) => {
+          const newUrl = URL.createObjectURL(fblob);
+          window.open(newUrl);
+        });
+    }
+  }
+
+  deleteDoc = (doc) => {
+    const self = this;
+    confirm({
+      title: `Are you sure you want to delete this file?`,
+      content: `${doc.filename}`,
+      icon: "",
+      okText: "Yes",
+      okType: "danger",
+      cancelText: "No",
+      onOk() {
+        self.onDelete(doc);
+      },
+      onCancel() {
+        console.log("Cancel");
+      },
+    });
+  };
+
+  onDelete = (doc) => {
+    newAlgaehApi({
+      uri: "/deleteReceiptEntryDoc",
+      method: "DELETE",
+      module: "documentManagement",
+      data: { id: doc._id },
+    }).then((res) => {
+      if (res.data.success) {
+        this.setState((state) => {
+          const receipt_docs = state.receipt_docs.filter(
+            (item) => item._id !== doc._id
+          );
+          return { receipt_docs };
+        });
+      }
+    });
+  };
 
   render() {
     const class_finder = this.state.dataExitst === true ? " disableFinder" : "";
@@ -126,17 +253,17 @@ class ReceiptEntry extends Component {
           printArea={
             this.state.hims_f_procurement_po_header_id !== null
               ? {
-                menuitems: [
-                  {
-                    label: "Receipt Entry Report",
-                    events: {
-                      onClick: () => {
-                        generateReceiptEntryReport(this.state);
+                  menuitems: [
+                    {
+                      label: "Receipt Entry Report",
+                      events: {
+                        onClick: () => {
+                          generateReceiptEntryReport(this.state);
+                        },
                       },
                     },
-                  },
-                ],
-              }
+                  ],
+                }
               : ""
           }
           selectedLang={this.state.selectedLang}
@@ -157,7 +284,9 @@ class ReceiptEntry extends Component {
                           type="radio"
                           value="I"
                           name="receipt_mode"
-                          checked={this.state.receipt_mode === "I" ? true : false}
+                          checked={
+                            this.state.receipt_mode === "I" ? true : false
+                          }
                           onChange={texthandle.bind(this, this)}
                           disabled={this.state.dataExitst}
                         />
@@ -168,7 +297,9 @@ class ReceiptEntry extends Component {
                           type="radio"
                           value="S"
                           name="receipt_mode"
-                          checked={this.state.receipt_mode === "S" ? true : false}
+                          checked={
+                            this.state.receipt_mode === "S" ? true : false
+                          }
                           onChange={texthandle.bind(this, this)}
                           disabled={this.state.dataExitst}
                         />
@@ -215,28 +346,28 @@ class ReceiptEntry extends Component {
                     </div>
                   </div>
                 ) : (
-                    <div className="col-6">
-                      <div className="row">
-                        <div className="col">
-                          <AlgaehLabel label={{ forceLabel: "Branch" }} />
-                          <h6>
-                            {this.state.hospital_name
-                              ? this.state.hospital_name
-                              : "------"}
-                          </h6>
-                        </div>
+                  <div className="col-6">
+                    <div className="row">
+                      <div className="col">
+                        <AlgaehLabel label={{ forceLabel: "Branch" }} />
+                        <h6>
+                          {this.state.hospital_name
+                            ? this.state.hospital_name
+                            : "------"}
+                        </h6>
+                      </div>
 
-                        <div className="col">
-                          <AlgaehLabel label={{ forceLabel: "Project" }} />
-                          <h6>
-                            {this.state.project_desc
-                              ? this.state.project_desc
-                              : "------"}
-                          </h6>
-                        </div>
+                      <div className="col">
+                        <AlgaehLabel label={{ forceLabel: "Project" }} />
+                        <h6>
+                          {this.state.project_desc
+                            ? this.state.project_desc
+                            : "------"}
+                        </h6>
                       </div>
                     </div>
-                  )}
+                  </div>
+                )}
 
                 <div className="col">
                   <AlgaehLabel label={{ forceLabel: "Vendor" }} />
@@ -409,14 +540,85 @@ class ReceiptEntry extends Component {
                 <ReceiptServiceList ReceiptEntryInp={this.state} />
               </div>
             ) : (
-                <ReceiptItemList ReceiptEntryInp={this.state} />
-              )}
+              <ReceiptItemList ReceiptEntryInp={this.state} />
+            )}
           </MyContext.Provider>
 
           <div className="col-12">
             <div className="row" style={{ marginBottom: 55 }}>
               <div className="col" />
+              <div className="col-3">
+                {" "}
+                <Dragger
+                  accept=".doc,.docx,application/msword,.pdf"
+                  name="contract_file"
+                  multiple={false}
+                  onRemove={() => {
+                    this.setState((state) => {
+                      return {
+                        recepit_files: [],
+                        docChanged: false,
+                        // saveEnable: state.dataExists && !newFileList.length,
+                      };
+                    });
+                  }}
+                  beforeUpload={(file) => {
+                    this.setState((state) => ({
+                      recepit_files: [file],
+                      docChanged: true,
 
+                      // saveEnable: false,
+                    }));
+                    return false;
+                  }}
+                  fileList={this.state.recepit_files}
+                >
+                  <p className="upload-drag-icon">
+                    <i className="fas fa-file-upload"></i>
+                  </p>
+                  <p className="ant-upload-text">
+                    {this.state.contract_file
+                      ? `Click or Drag a file to replace the current file`
+                      : `Click or Drag a file to this area to upload`}
+                  </p>
+                </Dragger>
+              </div>
+              <div className="col-3"></div>
+              <div className="col-6">
+                <div className="row">
+                  <div className="col-12">
+                    <ul className="contractAttachmentList">
+                      {this.state.receipt_docs.length ? (
+                        this.state.receipt_docs.map((doc) => (
+                          <li>
+                            <b> {doc.filename} </b>
+                            <span>
+                              <i
+                                className="fas fa-download"
+                                onClick={() => this.downloadDoc(doc)}
+                              ></i>
+                              <i
+                                className="fas fa-eye"
+                                onClick={() => this.downloadDoc(doc, true)}
+                              ></i>
+                              {!this.state.postEnable ? (
+                                <i
+                                  className="fas fa-trash"
+                                  onClick={() => this.deleteDoc(doc)}
+                                ></i>
+                              ) : null}
+                            </span>
+                          </li>
+                        ))
+                      ) : (
+                        <div className="col-12 noAttachment" key={1}>
+                          <p>No Attachments Available</p>
+                        </div>
+                      )}
+                    </ul>
+                  </div>
+                </div>
+              </div>
               <div className="col-lg-5" style={{ textAlign: "right" }}>
                 <div className="row">
                   <div className="col-lg-3">
@@ -461,19 +663,35 @@ class ReceiptEntry extends Component {
           <div className="hptl-phase1-footer">
             <div className="row">
               <div className="col-lg-12">
-                <button
-                  type="button"
-                  className="btn btn-primary"
-                  onClick={SaveReceiptEnrty.bind(this, this)}
-                  disabled={this.state.saveEnable}
-                >
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Save",
-                      returnText: true,
-                    }}
-                  />
-                </button>
+                {this.state.docChanged && this.state.grn_number ? (
+                  <button
+                    type="button"
+                    className="btn btn-primary"
+                    onClick={this.saveDocument}
+                    disabled={!this.state.docChanged}
+                  >
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Upload Documents",
+                        returnText: true,
+                      }}
+                    />
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    className="btn btn-primary"
+                    onClick={SaveReceiptEnrty.bind(this, this)}
+                    disabled={this.state.saveEnable}
+                  >
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Save",
+                        returnText: true,
+                      }}
+                    />
+                  </button>
+                )}
 
                 <button
                   type="button"

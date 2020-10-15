@@ -11,6 +11,11 @@ import {
   getInvoiceDoc,
   saveInvoiceDoc,
 } from "../Controller/invoice";
+import {
+  deleteReceiptEntryDoc,
+  getReceiptEntryDoc,
+  saveReceiptEntryDoc,
+} from "../Controller/receiptEntryDoc";
 import { setUserPreference, getUserPreferences } from "../Model/userPreference";
 import { getLogs } from "../Model/loggers";
 const router = express();
@@ -23,7 +28,12 @@ initializedDb((db) => {
   router.get("/getContractDoc", getContractDoc);
   router.delete("/deleteContractDoc", deleteContractDoc);
   router.post("/saveInvoiceDoc", saveInvoiceDoc);
+
   router.get("/getInvoiceDoc", getInvoiceDoc);
   router.delete("/deleteInvoiceDoc", deleteInvoiceDoc);
+  router.post("/saveReceiptEntryDoc", saveReceiptEntryDoc);
+
+  router.get("/getReceiptEntryDoc", getReceiptEntryDoc);
+  router.delete("/deleteReceiptEntryDoc", deleteReceiptEntryDoc);
 });
 export default router;
