@@ -110,7 +110,7 @@ const InvoiceSearch = ($this, e) => {
     },
     searchName: "SalesInvoice",
     uri: "/gloabelSearch/get",
-    inputs: "sales_invoice_mode = 'I' and return_done = 'N' and is_posted='Y' ",
+    inputs: "sales_invoice_mode = 'I' and return_done = 'N' and IH.is_posted='Y' ",
     onContainsChange: (text, serchBy, callBack) => {
       callBack(text);
     },

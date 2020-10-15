@@ -5,7 +5,7 @@ import moment from "moment";
 import { LINQ } from "node-linq";
 //import utilities from "algaeh-utilities";
 import algaehUtilities from "algaeh-utilities/utilities";
-// import newAxios from "algaeh-utilities/axios";
+import newAxios from "algaeh-utilities/axios";
 import keys from "algaeh-keys";
 import AESCrypt from "aescrypt";
 import algaehMail from "algaeh-utilities/mail-send";
@@ -995,7 +995,7 @@ export default {
               service: options.service,
             })
               .to(toSendDetails.work_email)
-              .subject("Employee Leave Request")
+              .subject("Pending Leave Request")
               .templateHbs("applyLeave.hbs", {
                 full_name,
                 employee_code,
@@ -1115,7 +1115,7 @@ export default {
                   service: options.service,
                 })
                   .to(employee_email)
-                  .subject("Applieed Leave Status")
+                  .subject("Your leave got approved")
                   .templateHbs("approvedLeaveMail.hbs", {
                     full_name,
                     hospital_name,
@@ -1175,7 +1175,7 @@ export default {
                   service: options.service,
                 })
                   .to(toSendDetails)
-                  .subject("Leave Request Status")
+                  .subject("Pending Leave Request")
                   .templateHbs("authorizeLeaveAppMail.hbs", {
                     full_name,
                     hospital_name,
@@ -1286,7 +1286,7 @@ export default {
               service: options.service,
             })
               .to(toSendDetails.work_email)
-              .subject("Leave Request Status")
+              .subject("Your leave got rejected")
               .templateHbs("leaveEmpRejMail.hbs", {
                 full_name,
                 hospital_name,

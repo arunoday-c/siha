@@ -317,11 +317,12 @@ export function postSalesOrder(req, res, next) {
             _mysql
                 .executeQuery({
                     query:
-                        "UPDATE hims_f_sales_order set cancelled='N', customer_id=?, project_id=?, \
+                        "UPDATE hims_f_sales_order set cancelled='N', customer_po_no=?, customer_id=?, project_id=?, \
                         hospital_id=?, is_posted= ?, sub_total=?, discount_amount=?, net_total=?, \
                         total_tax=?, net_payable=?, narration=?, updated_date=?, updated_by=? \
                         where hims_f_sales_order_id=?",
                     values: [
+                        input.customer_po_no,
                         input.customer_id,
                         input.project_id,
                         input.hospital_id,

@@ -42,7 +42,7 @@ class PurchaseOrderList extends Component {
       purchase_list: [],
       bothExisits: false,
       authorize1: "Y",
-      poSelected: true,
+      poSelected: false,
       status: "1",
     };
 
@@ -53,8 +53,7 @@ class PurchaseOrderList extends Component {
     const params = new URLSearchParams(this.props.location?.search);
     if (params?.get("po_from")) {
       this.setState({
-        po_from: params?.get("po_from"),
-        bothExisits: params?.get("bothExisits")
+        po_from: params?.get("po_from")
       });
     }
     if (params?.get("status")) {
@@ -68,10 +67,13 @@ class PurchaseOrderList extends Component {
         from_date: moment(params?.get("from_date"))._d,
       });
     }
+    debugger
     if (params?.get("to_date")) {
       this.setState(
         {
           to_date: moment(params?.get("to_date"))._d,
+          bothExisits: JSON.parse(params?.get("bothExisits")),
+          poSelected: JSON.parse(params?.get("poSelected"))
         },
         () => {
           getData(this);
@@ -79,8 +81,8 @@ class PurchaseOrderList extends Component {
         }
       );
     } else {
-      let bothExisits = false,
-        poSelected = false, status = "1";
+      let bothExisits = true,
+        poSelected = true, status = "1";
 
       RawSecurityComponent({ componentCode: "PUR_AUT_AUTH2" }).then((result) => {
         if (result === "show") {
@@ -88,29 +90,11 @@ class PurchaseOrderList extends Component {
         }
       });
 
-      RawSecurityComponent({ componentCode: "PUR_AUTH_INVENTORY" }).then(
+      RawSecurityComponent({ componentCode: "PUR_AUTH_PHARMACY" }).then(
         (result) => {
           if (result === "show") {
             bothExisits = false;
             poSelected = false;
-            this.setState(
-              {
-                po_from: "INV",
-                status: status,
-                bothExisits: false,
-              },
-              () => {
-                getData(this);
-                getPurchaseOrderList(this);
-              }
-            );
-          }
-        }
-      );
-
-      RawSecurityComponent({ componentCode: "PUR_AUTH_PHARMACY" }).then(
-        (result) => {
-          if (result === "show") {
             this.setState(
               {
                 po_from: "PHR",
@@ -124,14 +108,36 @@ class PurchaseOrderList extends Component {
               }
             );
           } else {
-            this.setState({
-              bothExisits: true,
-              poSelected: poSelected === false ? false : true,
-              status: bothExisits === false ? status : "0",
-            });
+            RawSecurityComponent({ componentCode: "PUR_AUTH_INVENTORY" }).then(
+              (result) => {
+                if (result === "show") {
+                  this.setState(
+                    {
+                      poSelected: poSelected,
+                      po_from: "INV",
+                      status: bothExisits === true ? status : "0",
+                      bothExisits: bothExisits,
+                    },
+                    () => {
+                      getData(this);
+                      getPurchaseOrderList(this);
+                    }
+                  );
+                }
+              }
+            );
+            // this.setState({
+            //   bothExisits: true,
+            //   poSelected: poSelected === false ? false : true,
+            //   status: bothExisits === false ? status : "0",
+            // });
           }
         }
       );
+
+
+
+
     }
   }
 

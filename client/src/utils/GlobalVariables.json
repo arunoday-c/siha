@@ -33,6 +33,24 @@
       "color": "#ff99ff80"
     }
   ],
+  "ORDERED_TYPE": [
+    {
+      "name": "New",
+      "value": "NEW"
+    },
+    {
+      "name": "Refine",
+      "value": "REF"
+    },
+    {
+      "name": "Remake",
+      "value": "REM"
+    },
+    {
+      "name": "Reimpression",
+      "value": "RIM"
+    }
+  ],
   "REQUEST_STATUS": [
     {
       "name": "Pending",

@@ -135,7 +135,7 @@
 								<tr>
 									<td colspan="2">
 										<p>Hello, <b>Manager</b></p>
-										<p>Approval Pending for the Leave Requested by <b>{{full_name}}</b> from {{hospital_name}} Branch.</p>
+										<p>Your approval pending for leave requested by <b>{{full_name}}</b> from {{hospital_name}} Branch.</p>
 									</td>
 								</tr>
 							</table>
@@ -144,12 +144,8 @@
 									<td colspan="2"><b>Employee Details:-</td>
 								</tr>
 								<tr>
-									<td>Employee Code:</td>
-									<td>{{leave_code}}</td>
-								</tr>
-								<tr>
-									<td>Employee Leave code:</td>
-									<td>{{full_name}}</td>
+									<td>Employee code:</td>
+									<td>{{employee_code}}</td>
 								</tr>
 								<tr>
 									<td>Employee Name:</td>
@@ -162,6 +158,10 @@
 								
 								<tr>
 									<td colspan="2"><b>Leave Details:-</td>
+								</tr>
+								<tr>
+									<td>Leave Request Code:</td>
+									<td>{{leave_code}}</td>
 								</tr>
 								<tr>
 									<td>Leave Desc:</td>
@@ -185,12 +185,12 @@
 								
 								<tr>
 									<td>Total Leave Days:</td>
-									<td>{{leave_days}}</td>
+									<td>{{leave_days}} days</td>
 								</tr>
 								
 								<tr>
 									<td>Leave Reason:</td>
-									<td>{{reason}} days</td>
+									<td>{{reason}}</td>
 								</tr>
 							</table>
 						</td>

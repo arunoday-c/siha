@@ -19,6 +19,8 @@ import {
   ApproveReject,
   LoadVoucherDetails
 } from "./event";
+import { getAmountFormart } from "../../utils/GlobalFunctions";
+
 const { confirm } = Modal;
 let rejectText = "";
 let finance_voucher_header_id = "";
@@ -230,8 +232,8 @@ export default memo(function(props) {
             <i className="fas fa-print" onClick={generateJVReport}></i>
           </span>
         ) : (
-          "----"
-        )}
+              "----"
+            )}
       </>
     );
   };
@@ -485,8 +487,8 @@ export default memo(function(props) {
                                     Rejected
                                   </span>
                                 ) : (
-                                  "------"
-                                )}
+                                        "------"
+                                      )}
                               </span>
                             );
                           }
@@ -521,7 +523,19 @@ export default memo(function(props) {
                         // { fieldName: "ref_no", label: "Reference No" },
                         // { fieldName: "cheque_date", label: "Cheque Date" },
                         /* Commented End */
-                        { fieldName: "amount", label: "Amount" },
+                        {
+                          fieldName: "amount",
+                          label: "Amount",
+                          displayTemplate: (row) => {
+                            return (
+                              <span>
+                                {getAmountFormart(row.amount, {
+                                  appendSymbol: false,
+                                })}
+                              </span>
+                            );
+                          }
+                        },
                         { fieldName: "narration", label: "Narration" },
                         {
                           fieldName: "entered_by",

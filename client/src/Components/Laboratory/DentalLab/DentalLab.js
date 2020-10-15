@@ -12,7 +12,7 @@ import { useQuery } from "react-query";
 import ButtonType from "../../Wrapper/algaehButton";
 import { newAlgaehApi } from "../../../hooks/";
 // import GenericData from "../../../utils/GlobalVariables.json";
-import moment from "moment";
+// import moment from "moment";
 // import swal from "sweetalert2";
 import { Controller, useForm } from "react-hook-form";
 import { AddPatientDentalForm } from "./AddPatientmodal";
@@ -97,13 +97,13 @@ export default function DentalLab() {
 
   // const [viewDentalModal, setViewDentalModal] = useState(false);
 
-  const { getValues, control, handleSubmit, errors } = useForm({
+  const { getValues, setValue, control, handleSubmit, errors } = useForm({
     shouldFocusError: true,
-    defaultValues: {
-      // requesting_date: new Date(),
-      from_request_date: moment().startOf("month").format("YYYY-MM-DD"),
-      to_request_date: new Date(),
-    },
+    // defaultValues: {
+    //   // requesting_date: new Date(),
+    //   from_request_date: moment().startOf("month").format("YYYY-MM-DD"),
+    //   to_request_date: new Date(),
+    // },
   });
   // const { date_of_birth } = useWatch({
   //   control,
@@ -328,7 +328,12 @@ export default function DentalLab() {
     console.log(errors);
     loadRequestList(getValues());
   };
+  const onClear = () => {
+    setValue("from_request_date", undefined);
+    setValue("to_request_date", undefined);
 
+    loadRequestListAll();
+  };
   // componentDidMount() {
 
   //   RawSecurityComponent({ componentCode: "PUR_ORD_INVENTORY" }).then(
@@ -353,7 +358,7 @@ export default function DentalLab() {
             onClose={onClose}
             visible={openDentalModal}
             disabled={disabled}
-            getRequest={getFormRequest}
+            getRequest={loadRequestListAll}
             doctors={doctors}
             location={location}
             // userLanguage={userLanguage}
@@ -372,9 +377,9 @@ export default function DentalLab() {
                 label={{ forceLabel: "From Requested Date", isImp: false }}
                 error={errors}
                 textBox={{
-                  className: "form-control",
+                  className: "txt-fld",
                   name: "from_request_date",
-                  value,
+                  value: value || undefined,
                 }}
                 // maxDate={new Date()}
                 events={{
@@ -406,9 +411,9 @@ export default function DentalLab() {
                 label={{ forceLabel: "From Requested Date", isImp: false }}
                 error={errors}
                 textBox={{
-                  className: "form-control",
+                  className: "txt-fld",
                   name: "to_request_date",
-                  value,
+                  value: value || undefined,
                 }}
                 // maxDate={new Date()}
                 events={{
@@ -427,17 +432,26 @@ export default function DentalLab() {
               // </div>
             )}
           />
-          <div className="col-2" style={{ marginTop: 21 }}>
-            {" "}
-            <ButtonType
-              className="btn btn-default"
+          <div className="col-2" style={{ marginTop: 21 }}> 
+           <span>   <ButtonType
+              classname="btn btn-default"
+              label={{
+                forceLabel: "Clear",
+                returnText: true,
+              }}
+              onClick={onClear}
+              loading={loading_request_list}
+            /> </span>
+          <span style={{marginRight:15}}>  <ButtonType
+              classname="btn btn-primary"
               label={{
                 forceLabel: "Load",
                 returnText: true,
               }}
               onClick={handleSubmit(getFormRequest)}
               loading={loading_request_list}
-            />
+            /></span>
+          
           </div>
         </div>
         <div className="row">
@@ -488,62 +502,44 @@ export default function DentalLab() {
                           freezable: true,
                         },
                         {
-                          fieldName: "request_status",
+                          fieldName: "request_status_desc",
                           label: "Request status",
-
+                          filterable: true,
                           displayTemplate: (row) => {
                             return (
-                              <span>
-                                {row.request_status === "PEN" ? (
-                                  <span className="badge badge-warning">
-                                    Pending
-                                  </span>
-                                ) : row.request_status === "APR" ? (
-                                  <span className="badge badge-success">
-                                    Approved
-                                  </span>
-                                ) : row.request_status === "REJ" ? (
-                                  <span className="badge badge-danger">
-                                    Rejected
-                                  </span>
-                                ) : row.request_status === "RES" ? (
-                                  <span className="badge badge-warning">
-                                    Resend
-                                  </span>
-                                ) : (
-                                  "------"
-                                )}
-                              </span>
+                            <span className={`badge badge-${row.request_status === "PEN" ? "warning" : row.request_status === "APR" ? "success" : "info" }`}>
+                              {row.request_status_desc}
+                            </span>
                             );
                           },
                         },
                         {
-                          fieldName: "work_status",
+                          fieldName: "work_status_desc",
                           label: "Work Status",
-
+                          filterable: true,
                           displayTemplate: (row) => {
                             return (
-                              <span>
-                                {row.work_status === "PEN" ? (
-                                  <span className="badge badge-warning">
-                                    Pending
-                                  </span>
-                                ) : row.work_status === "WIP" ? (
-                                  <span className="badge badge-info">
-                                    Ordered
-                                  </span>
-                                ) : row.work_status === "COM" ? (
-                                  <span className="badge badge-success">
-                                    Arrived
-                                  </span>
-                                ) : (
-                                  "------"
-                                )}
-                              </span>
+                            <span className={`badge badge-${row.work_status === "PEN" ? "warning" : row.work_status === "WIP" ? "info" : "success" }`}>
+                              {row.work_status_desc}
+                            </span>
                             );
                           },
                         },
+                        {
+                          fieldName: "ordered_type_desc",
+                          label: "Order Type",
+                          filterable: true,
 
+
+                          displayTemplate: (row) => {
+                            return (
+                            <span className="badge badge-light">
+                              {row.ordered_type_desc}
+                            </span>
+                            );
+                          },
+                          
+                        },
                         {
                           fieldName: "full_name",
                           label: "Patient Name",
@@ -578,9 +574,13 @@ export default function DentalLab() {
                           fieldName: "requested_date",
                           label: "Request Date",
                         },
+                        // {
+                        //   fieldName: "due_date",
+                        //   label: "Due Date",
+                        // },
                         {
-                          fieldName: "due_date",
-                          label: "Due Date",
+                          fieldName: "odered_date",
+                          label: "Odered Date",
                         },
                         {
                           fieldName: "arrival_date",

@@ -10,6 +10,7 @@ import { InfoBar } from "../../../Wrappers";
 import { LedgerReport } from "../../InvoiceCommon";
 import { getInvoicesForSupplier } from "./SupPaymentEvents";
 import { Button, Spin, Checkbox, Modal } from "antd";
+import { getAmountFormart } from "../../../utils/GlobalFunctions";
 
 export default memo(function (props) {
   const location = useLocation();
@@ -221,12 +222,30 @@ export default memo(function (props) {
                           {
                             fieldName: "invoice_amount",
                             label: "Invoice Amount",
+                            displayTemplate: (row) => {
+                              return (
+                                <span>
+                                  {getAmountFormart(row.invoice_amount, {
+                                    appendSymbol: false,
+                                  })}
+                                </span>
+                              );
+                            },
                             sortable: true,
                             filterable: true,
                           },
                           {
                             fieldName: "settled_amount",
                             label: "Paid Amount",
+                            displayTemplate: (row) => {
+                              return (
+                                <span>
+                                  {getAmountFormart(row.settled_amount, {
+                                    appendSymbol: false,
+                                  })}
+                                </span>
+                              );
+                            },
                             sortable: true,
                             filterable: true,
                           },
@@ -235,6 +254,15 @@ export default memo(function (props) {
                             label: "Balance Amount",
                             sortable: true,
                             filterable: true,
+                            displayTemplate: (row) => {
+                              return (
+                                <span>
+                                  {getAmountFormart(row.balance_amount, {
+                                    appendSymbol: false,
+                                  })}
+                                </span>
+                              );
+                            }
                           },
                           {
                             fieldName: "invoice_status",
@@ -279,7 +307,9 @@ export default memo(function (props) {
                   <label className="style_Label ">
                     Selected Invoice Amount
                   </label>
-                  <h6>{selectAmount}</h6>
+                  <h6>{getAmountFormart(selectAmount, {
+                    appendSymbol: false,
+                  })}</h6>
                 </div>
               </div>
             </div>

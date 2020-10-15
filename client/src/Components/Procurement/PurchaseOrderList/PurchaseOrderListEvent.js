@@ -72,7 +72,7 @@ const getPurchaseOrderList = $this => {
         $this.setState({ purchase_list: data });
 
         return $this.props.history?.push(
-          `${$this.props.location?.pathname}?po_from=${$this.state.po_from}&status=${$this.state.status}&from_date=${$this.state.from_date}&to_date=${$this.state.to_date}&bothExisits=${$this.state.bothExisits}`
+          `${$this.props.location?.pathname}?po_from=${$this.state.po_from}&status=${$this.state.status}&from_date=${$this.state.from_date}&to_date=${$this.state.to_date}&bothExisits=${$this.state.bothExisits}&poSelected=${$this.state.poSelected}`
         );
       }
     },

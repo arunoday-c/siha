@@ -4,8 +4,7 @@ import SortableTree, {
   getNodeAtPath,
   addNodeUnderParent,
   removeNodeAtPath,
-  toggleExpandedForAll,
-  changeNodeAtPath,
+  toggleExpandedForAll
 } from "react-sortable-tree";
 
 import AddNewAccount from "../AddNewAccount/AddNewAccount";
@@ -30,7 +29,7 @@ import {
   getGridChildNodes,
 } from ".././FinanceAccountEvent";
 import { AlgaehSecurityComponent } from "algaeh-react-components";
-
+import { getAmountFormart } from "../../../utils/GlobalFunctions";
 import "../alice.scss";
 
 const mergeExpanded = (expandA, expandB) => expandA || expandB;
@@ -200,7 +199,11 @@ function TreeComponent({ assetCode, title, inDrawer }) {
 
             return result;
           });
-          setAmount(firstData["subtitle"]);
+          // setAmount(firstData["subtitle"]);
+          debugger
+          setAmount(getAmountFormart(firstData["subtitle"], {
+            appendSymbol: false,
+          }));
           setSymbol(firstData["trans_symbol"]);
           setExpandAll(false);
           setLayout("tree");
@@ -303,8 +306,8 @@ function TreeComponent({ assetCode, title, inDrawer }) {
                 {JSON.stringify(editorRecord) === JSON.stringify(rowInfo) ? (
                   <i className="fas fa-times" />
                 ) : (
-                  <i className="fas fa-pen" />
-                )}
+                    <i className="fas fa-pen" />
+                  )}
               </li>
             </AlgaehSecurityComponent>
 
@@ -377,7 +380,9 @@ function TreeComponent({ assetCode, title, inDrawer }) {
               node.subtitle !== undefined ? isPositive(node.subtitle) : ""
             }
           >
-            {node.subtitle === undefined ? "0.00" : node.subtitle}
+            {node.subtitle === undefined ? "0.00" : getAmountFormart(node.subtitle, {
+              appendSymbol: false,
+            })}
           </span>
           <small>
             {node.trans_symbol === undefined ? symbol : node.trans_symbol}
@@ -388,8 +393,8 @@ function TreeComponent({ assetCode, title, inDrawer }) {
         node.created_status === "S"
           ? "systemGen"
           : node.leafnode === "Y"
-          ? ""
-          : "accGroup",
+            ? ""
+            : "accGroup",
     };
   };
 
@@ -570,8 +575,8 @@ function TreeComponent({ assetCode, title, inDrawer }) {
                   {layout === "tree" ? (
                     <i className="fas fa-th"></i>
                   ) : (
-                    <i className="fas fa-stream"></i>
-                  )}
+                      <i className="fas fa-stream"></i>
+                    )}
                 </button>
                 <button
                   className="btn btn-default btn-circle active"
@@ -614,7 +619,7 @@ function TreeComponent({ assetCode, title, inDrawer }) {
                     const values =
                       searchFocusIndex !== undefined
                         ? (searchFoundCount + searchFocusIndex - 1) %
-                          searchFoundCount
+                        searchFoundCount
                         : searchFoundCount - 1;
                     setSearchFocusIndex(values);
                   }}
@@ -667,47 +672,55 @@ function TreeComponent({ assetCode, title, inDrawer }) {
                       />
                     </div>
                   ) : (
-                    <div className="row">
-                      {loadingGridData === true ? (
-                        <p>Please wait loading</p>
-                      ) : (
-                        <div className="col-12">
-                          {" "}
-                          <AlgaehTable
-                            className="accountTable"
-                            columns={[
-                              {
-                                fieldName: "ledger_code",
-                                label: "Ledger Code",
-                                filterable: true,
-                              },
-                              {
-                                fieldName: "child_name",
-                                label: "Ledger Name",
-                                filterable: true,
-                              },
-                              {
-                                fieldName: "arabic_child_name",
-                                label: "Ledger Arabic",
-                                filterable: true,
-                              },
-                              {
-                                fieldName: "closing_balance",
-                                label: "Closing Balance",
-                                filterable: true,
-                              },
-                            ]}
-                            data={gridData}
-                            // hasFooter={true}
-                            isFilterable={true}
-                            // aggregate={field => {
-                            //   return total[field];
-                            // }}
-                          />
-                        </div>
-                      )}
-                    </div>
-                  )}
+                      <div className="row">
+                        {loadingGridData === true ? (
+                          <p>Please wait loading</p>
+                        ) : (
+                            <div className="col-12">
+                              <AlgaehTable
+                                className="accountTable"
+                                columns={[
+                                  {
+                                    fieldName: "ledger_code",
+                                    label: "Ledger Code",
+                                    filterable: true,
+                                  },
+                                  {
+                                    fieldName: "child_name",
+                                    label: "Ledger Name",
+                                    filterable: true,
+                                  },
+                                  {
+                                    fieldName: "arabic_child_name",
+                                    label: "Ledger Arabic",
+                                    filterable: true,
+                                  },
+                                  {
+                                    fieldName: "closing_balance",
+                                    label: "Closing Balance",
+                                    displayTemplate: (row) => {
+                                      return (
+                                        <span>
+                                          {getAmountFormart(row.closing_balance, {
+                                            appendSymbol: false,
+                                          })}
+                                        </span>
+                                      );
+                                    },
+                                    filterable: true,
+                                  },
+                                ]}
+                                data={gridData}
+                                // hasFooter={true}
+                                isFilterable={true}
+                              // aggregate={field => {
+                              //   return total[field];
+                              // }}
+                              />
+                            </div>
+                          )}
+                      </div>
+                    )}
                 </div>
               </div>
             </div>
