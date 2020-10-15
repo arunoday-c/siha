@@ -3423,7 +3423,7 @@ let updateLeaveMaster = (req, res, next) => {
           "UPDATE hims_d_leave SET leave_description=?,leave_category=?, calculation_type=?,include_weekoff=?,include_holiday=?,leave_mode=?,leave_status=?,leave_accrual=?,\
           leave_encash=?,leave_type=?,encashment_percentage=?,leave_carry_forward=?,carry_forward_percentage=?,religion_required=?,\
           religion_id=?,holiday_reimbursement=?,exit_permit_required=?,proportionate_leave=?,document_mandatory=?,\
-          updated_date=?, updated_by=? ,encash_calc_method=? WHERE hims_d_leave_id = ?",
+          updated_date=?, updated_by=? ,encash_calc_method=?,leave_accrual_calc=? WHERE hims_d_leave_id = ?",
         printQuery: true,
         values: [
           input.leave_description,
@@ -3449,6 +3449,7 @@ let updateLeaveMaster = (req, res, next) => {
           new Date(),
           req.userIdentity.algaeh_d_app_user_id,
           input.encash_calc_method,
+          input.leave_accrual_calc,
           input.hims_d_leave_id,
         ],
         // (error, result) => {
