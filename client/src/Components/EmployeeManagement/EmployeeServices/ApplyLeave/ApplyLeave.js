@@ -52,6 +52,8 @@ class ApplyLeave extends Component {
       projected_applied_leaves: null,
       is_projected_leave: "N",
       loading_Process: false,
+      employee_code: "",
+      hospital_name: "",
     };
     this.getLeaveTypes();
   }
@@ -80,6 +82,7 @@ class ApplyLeave extends Component {
     const userToken = this.context.userToken;
     this.setState({
       hospital_id: userToken.hims_d_hospital_id,
+      hospital_name: userToken.hospital_name,
     });
     if (
       this.props.organizations === undefined ||
@@ -113,6 +116,7 @@ class ApplyLeave extends Component {
           {
             employee_name: row.full_name,
             employee_id: row.hims_d_employee_id,
+            employee_code: row.employee_code,
           },
           () => this.getEmployees()
         );
@@ -475,6 +479,7 @@ class ApplyLeave extends Component {
         this.setState(
           {
             [value.name]: value.value,
+            hospital_name: value.selected.hospital_name,
           },
           () => {
             this.validate();
@@ -521,7 +526,7 @@ class ApplyLeave extends Component {
             return;
           }
         }
-        AlgaehLoader({ show: true });
+
         algaehApiCall({
           uri: "/leave/applyEmployeeLeave",
           method: "POST",
@@ -572,11 +577,16 @@ class ApplyLeave extends Component {
                     full_name: this.state.employee.full_name,
                     leave_days: this.state.total_applied_days,
                     leave_type: leave_desc[0].leave_description,
+                    leave_code: res.data?.records[0]?.leave_application_code,
+                    employee_code: this.state.employee_code,
+                    hospital_name: this.state.hospital_name,
+                    from_date: this.state.from_date,
+                    to_date: this.state.to_date,
+                    reason: this.state.remarks,
                   },
                 })
                   .then((res) => {
                     if (res.data.success) {
-                      AlgaehLoader({ show: false });
                       this.setState({ loading_Process: false });
                       this.getEmployeeLeaveHistory();
                       this.clearState();

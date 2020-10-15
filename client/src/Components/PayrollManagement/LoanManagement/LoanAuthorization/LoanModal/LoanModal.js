@@ -16,6 +16,7 @@ import {
 } from "../../../../../utils/GlobalFunctions";
 import Socket from "../../../../../sockets";
 import { AlgaehSecurityElement } from "algaeh-react-components";
+import AlgaehLoader from "../../../../Wrapper/fullPageLoader";
 
 class LoanModal extends Component {
   constructor(props) {
@@ -116,6 +117,7 @@ class LoanModal extends Component {
             type: "warning",
           });
         } else {
+          AlgaehLoader({ show: true });
           let data = {
             hims_f_loan_application_id: this.state.hims_f_loan_application_id,
             loan_amount: this.state.loan_amount,
@@ -130,7 +132,10 @@ class LoanModal extends Component {
             employee_code: this.state.employee_code,
             loan_desc: this.state.loan_description,
             name: this.state.employee_name,
+            loan_code: this.state.loan_code,
             employee_id: this.state.employee_id,
+            application_reason: this.state.application_reason,
+            loan_application_date: this.state.loan_application_date,
           };
 
           const [branch] = this.props.hospitals.filter(
@@ -145,6 +150,7 @@ class LoanModal extends Component {
             onSuccess: (res) => {
               if (res.data.success) {
                 if (type === "A") {
+                  AlgaehLoader({ show: false });
                   swalMessage({
                     title: "Loan Authorized Successfully",
                     type: "success",
@@ -163,6 +169,7 @@ class LoanModal extends Component {
                     );
                   }
                 } else if (type === "R") {
+                  AlgaehLoader({ show: false });
                   swalMessage({
                     title: "Loan Rejected",
                     type: "success",
@@ -191,6 +198,7 @@ class LoanModal extends Component {
               }
             },
             onFailure: (err) => {
+              AlgaehLoader({ show: false });
               swalMessage({
                 title: err.message,
                 type: "error",

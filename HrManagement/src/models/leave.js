@@ -973,13 +973,14 @@ export default {
         const full_name = input.full_name;
         const leave_days = input.leave_days;
         const leave_type = input.leave_type;
-        const employee_code = input.employee_code;
-        const from_date = input.from_date;
-        const to_date = input.to_date;
-        const reason = input.reason;
         const leave_code = input.leave_code;
-        const applied_date = new Date();
-        const { hospital_address, hospital_name } = req.userIdentity;
+        const employee_code = input.employee_code;
+        const from_date = moment(input.from_date).format("DD-MM-YYYY");
+        const to_date = moment(input.to_date).format("DD-MM-YYYY");
+        const reason = input.reason;
+        const hospital_name = input.hospital_name;
+        const applied_date = moment(new Date()).format("DD-MM-YYYY");
+        const { hospital_address } = req.userIdentity;
         try {
           newAxios(req, {
             url: "http://localhost:3006/api/v1//Document/getEmailConfig",
@@ -1085,147 +1086,97 @@ export default {
           fromSendDetails.salt,
           fromSendDetails.password
         );
+
         const full_name = input.name;
-        const from_date = input.from_date;
-        const to_date = input.to_date;
+        const from_date = moment(input.from_date).format("DD-MM-YYYY");
+        const to_date = moment(input.to_date).format("DD-MM-YYYY");
         const employee_code = input.code;
         const employee_email = result[2][0].work_email;
         const leave_desc = input.leave_desc;
         const auth_level = input.auth_level;
         const total_applied_days = input.total_applied_days;
-        const total_approved_days = input.leave_days;
-        const authorized_comment = input.authorized_comment;
+        const leave_days = input.leave_days;
+        const remarks = input.authorized_comment;
         const { hospital_address, hospital_name } = req.userIdentity;
+        const leave_code = input.leave_code;
+        const leave_type = input.leave_type;
+        const applied_date = moment(input.applied_date).format("DD-MM-YYYY");
+        const reason = input.reason;
+
+        const total_approved_days = input.total_approved_days;
+        // const remarks = input.remarks;
         const branch = hospital_name;
+
         try {
           newAxios(req, {
             url: "http://localhost:3006/api/v1//Document/getEmailConfig",
           }).then((res) => {
             const options = res.data.data[0];
-
-            if (toSendDetails.length <= 0 && employee_email) {
-              try {
-                // const mailSender =
-                new algaehMail({
-                  user: fromSendDetails.sub_department_email,
-                  pass: decrypted,
-                  smtp: options.host,
-                  port: options.port,
-                  useSSL: options.useSSL,
-                  service: options.service,
-                })
-                  .to(employee_email)
-                  .subject("Your leave got approved")
-                  .templateHbs("approvedLeaveMail.hbs", {
-                    full_name,
-                    hospital_name,
-                    hospital_address,
-                    // leave_days,
-                    from_date,
-                    to_date,
-                    leave_desc,
-                    total_approved_days,
-                    // leave_type,
-                    authorized_comment,
-                  })
-                  .send()
-                  .then((response) => {
-                    _mysql.releaseConnection();
-                  })
-                  .catch((error) => {
-                    next(error);
-                  });
-
-                // if (send_attachment === "true") {
-                //   mailSender.attachReportsAndSend(
-                //     req,
-                //     reportInput,
-                //     (error, records) => {
-                //       if (error) {
-                //         next(error);
-                //         return;
-                //       }
-
-                //       next();
-                //     }
-                //   );
-                // } else {
-                //   mailSender
-                //     .send()
-                //     .then(() => {
-                //       // console.log("Mail Sent");
-                //       next();
-                //     })
-                //     .catch((error) => {
-                //       next(error);
-                //     });
-              } catch (e) {
-                //_mysql.releaseConnection();
-                next(e);
+            let templateName = "";
+            let subject = "";
+            let toEmail = undefined;
+            if (toSendDetails.length <= 0) {
+              if (
+                Array.isArray(employee_email) &&
+                employee_email.length === 0
+              ) {
+                _mysql.releaseConnection();
+                next(new Error(`There is no email found for '${full_name}'`));
+                return;
+              } else {
+                templateName = "approvedLeaveMail.hbs";
+                subject = "Your leave got approved";
+                toEmail = employee_email;
               }
             } else {
-              try {
-                // const mailSender =
-                new algaehMail({
-                  user: fromSendDetails.sub_department_email,
-                  pass: decrypted,
-                  smtp: options.host,
-                  port: options.port,
-                  useSSL: options.useSSL,
-                  service: options.service,
+              templateName = "applyLeave.hbs";
+              subject = "Pending Leave Request";
+              toEmail = toSendDetails;
+            }
+
+            try {
+              // const mailSender =
+              new algaehMail({
+                user: fromSendDetails.sub_department_email,
+                pass: decrypted,
+                smtp: options.host,
+                port: options.port,
+                useSSL: options.useSSL,
+                service: options.service,
+              })
+                .to(toEmail)
+                .subject(subject)
+                .templateHbs(templateName, {
+                  full_name,
+                  hospital_name,
+                  hospital_address,
+                  leave_type,
+                  branch,
+                  employee_code,
+                  leave_desc,
+                  auth_level,
+                  total_applied_days,
+                  total_approved_days,
+                  from_date,
+                  to_date,
+                  remarks,
+                  leave_code,
+                  reason,
+                  applied_date,
+                  leave_days,
                 })
-                  .to(toSendDetails)
-                  .subject("Pending Leave Request")
-                  .templateHbs("authorizeLeaveAppMail.hbs", {
-                    full_name,
-                    hospital_name,
-                    hospital_address,
-                    // leave_days,
-                    branch,
-                    employee_code,
-                    leave_desc,
-                    auth_level,
-                    total_applied_days,
-                    from_date,
-                    to_date,
-                    authorized_comment,
-                    // leave_type,
-                  })
-                  .send()
-                  .then((response) => {
-                    _mysql.releaseConnection();
-                  })
-                  .catch((error) => {
-                    next(error);
-                  });
-
-                // if (send_attachment === "true") {
-                //   mailSender.attachReportsAndSend(
-                //     req,
-                //     reportInput,
-                //     (error, records) => {
-                //       if (error) {
-                //         next(error);
-                //         return;
-                //       }
-
-                //       next();
-                //     }
-                //   );
-                // } else {
-                //   mailSender
-                //     .send()
-                //     .then(() => {
-                //       // console.log("Mail Sent");
-                //       next();
-                //     })
-                //     .catch((error) => {
-                //       next(error);
-                //     });
-              } catch (e) {
-                //_mysql.releaseConnection();
-                next(e);
-              }
+                .send()
+                .then((response) => {
+                  _mysql.releaseConnection();
+                  req.records = result;
+                  next();
+                })
+                .catch((error) => {
+                  next(error);
+                });
+            } catch (e) {
+              //_mysql.releaseConnection();
+              next(e);
             }
           });
         } catch (e) {
@@ -1233,8 +1184,6 @@ export default {
           next(e);
         }
         // _mysql.releaseConnection();
-        req.records = result;
-        next();
       })
       .catch((e) => {
         _mysql.releaseConnection();
@@ -1256,7 +1205,7 @@ export default {
         printQuery: true,
       })
       .then((result) => {
-        const toSendDetails = result[0][0];
+        const toSendDetails = result[0][0].work_email;
         const fromSendDetails = result[1][0];
         // console.log("fromSendDetails", fromSendDetails);
         const decrypted = AESCrypt.decryptWithSalt(
@@ -1271,64 +1220,70 @@ export default {
         const from_date = input.from_date;
         const auth_level = input.auth_level;
         const { hospital_address, hospital_name } = req.userIdentity;
-        try {
-          newAxios(req, {
-            url: "http://localhost:3006/api/v1//Document/getEmailConfig",
-          }).then((res) => {
-            const options = res.data.data[0];
-            // const mailSender =
-            new algaehMail({
-              user: fromSendDetails.sub_department_email,
-              pass: decrypted,
-              smtp: options.host,
-              port: options.port,
-              useSSL: options.useSSL,
-              service: options.service,
-            })
-              .to(toSendDetails.work_email)
-              .subject("Your leave got rejected")
-              .templateHbs("leaveEmpRejMail.hbs", {
-                full_name,
-                hospital_name,
-                hospital_address,
-                from_date,
-                auth_level,
+        if (!toSendDetails) {
+          _mysql.releaseConnection();
+          next(new Error(`There is no email found for '${full_name}'`));
+          return;
+        } else {
+          try {
+            newAxios(req, {
+              url: "http://localhost:3006/api/v1//Document/getEmailConfig",
+            }).then((res) => {
+              const options = res.data.data[0];
+              // const mailSender =
+              new algaehMail({
+                user: fromSendDetails.sub_department_email,
+                pass: decrypted,
+                smtp: options.host,
+                port: options.port,
+                useSSL: options.useSSL,
+                service: options.service,
               })
-              .send()
-              .then((response) => {
-                _mysql.releaseConnection();
-              })
-              .catch((error) => {
-                next(error);
-              });
+                .to(toSendDetails)
+                .subject("Your leave got rejected")
+                .templateHbs("leaveEmpRejMail.hbs", {
+                  full_name,
+                  hospital_name,
+                  hospital_address,
+                  from_date,
+                  auth_level,
+                })
+                .send()
+                .then((response) => {
+                  _mysql.releaseConnection();
+                })
+                .catch((error) => {
+                  next(error);
+                });
 
-            // if (send_attachment === "true") {
-            //   mailSender.attachReportsAndSend(
-            //     req,
-            //     reportInput,
-            //     (error, records) => {
-            //       if (error) {
-            //         next(error);
-            //         return;
-            //       }
+              // if (send_attachment === "true") {
+              //   mailSender.attachReportsAndSend(
+              //     req,
+              //     reportInput,
+              //     (error, records) => {
+              //       if (error) {
+              //         next(error);
+              //         return;
+              //       }
 
-            //       next();
-            //     }
-            //   );
-            // } else {
-            //   mailSender
-            //     .send()
-            //     .then(() => {
-            //       // console.log("Mail Sent");
-            //       next();
-            //     })
-            //     .catch((error) => {
-            //       next(error);
-            //     });
-          });
-        } catch (e) {
-          //_mysql.releaseConnection();
-          next(e);
+              //       next();
+              //     }
+              //   );
+              // } else {
+              //   mailSender
+              //     .send()
+              //     .then(() => {
+              //       // console.log("Mail Sent");
+              //       next();
+              //     })
+              //     .catch((error) => {
+              //       next(error);
+              //     });
+            });
+          } catch (e) {
+            //_mysql.releaseConnection();
+            next(e);
+          }
         }
         // _mysql.releaseConnection();
         req.records = result;

@@ -142,6 +142,9 @@ class LeaveAuthDetail extends Component {
       // branch: branch.hospital_name,
       leave_desc: this.state.data.leave_description,
       leave_days: this.state.data.total_applied_days,
+      leave_code: this.state.data.leave_application_code,
+      applied_date: this.state.data.application_date,
+      reason: this.state.data.remarks,
     };
     const [branch] = this.props.hospitals.filter(
       (item) => item.hims_d_hospital_id === this.state.data.hospital_id
@@ -155,6 +158,10 @@ class LeaveAuthDetail extends Component {
       onSuccess: (res) => {
         if (res.data.success) {
           if (type === "A") {
+            swalMessage({
+              title: "Leave Authorized Successfully",
+              type: "success",
+            });
             if (this.context.socket.connected) {
               this.context.socket.emit(
                 "/leave/authorized",
@@ -194,6 +201,10 @@ class LeaveAuthDetail extends Component {
             //   },
             // });
           } else {
+            swalMessage({
+              title: "Leave Rejected Successfully",
+              type: "success",
+            });
             if (this.context.socket.connected) {
               this.context.socket.emit(
                 "/leave/rejected",
@@ -294,6 +305,7 @@ class LeaveAuthDetail extends Component {
       hospital_id: this.state.data.hospital_id,
       leave_from: this.state.data.leave_from,
       is_projected_leave: this.state.data.is_projected_leave,
+      leave_code: this.state.data.leave_application_code,
     };
 
     algaehApiCall({

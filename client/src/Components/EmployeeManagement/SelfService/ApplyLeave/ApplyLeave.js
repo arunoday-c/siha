@@ -48,6 +48,7 @@ class ApplyLeave extends Component {
       loading_Process: false,
       hospital_id: "",
       employee_branch: "",
+      hospital_name: "",
     };
     this.leaveSocket = Socket;
     this.getLeaveTypes();
@@ -60,6 +61,7 @@ class ApplyLeave extends Component {
     this.setState({
       hospital_id: userToken.hims_d_hospital_id,
       employee_branch: userToken.hims_d_hospital_id,
+      hospital_name: userToken.hospital_name,
     });
   }
 
@@ -547,6 +549,7 @@ class ApplyLeave extends Component {
                     reason: this.state.remarks,
                     leave_code: res.data?.records[0]?.leave_application_code,
                     // applied_date:
+                    hospital_name: this.state.hospital_name,
                   },
                 })
                   .then((res) => {

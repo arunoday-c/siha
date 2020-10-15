@@ -251,6 +251,7 @@ class LoanRequest extends Component {
                     full_name,
                     employee_code,
                     loan_description,
+                    loan_code: res.data.records.EMPLOYEE_LOAN,
                     application_reason: this.state.loan_description,
                     loan_amount: this.state.loan_amount,
                     start_month: this.state.start_month,
