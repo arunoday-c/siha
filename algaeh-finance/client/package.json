@@ -62,6 +62,7 @@
     "react-dom": "^16.9.0",
     "react-dropdown-tree-select": "^2.1.1",
     "react-hook-form": "^6.0.4",
+    "react-query": "^2.23.1",
     "react-router-dom": "^5.0.1",
     "react-sortable-tree": "^2.6.2",
     "react-to-print": "^2.5.0",

@@ -18,14 +18,14 @@ CREATE TABLE `hims_d_promotion` (
 
 
 
-ALTER TABLE `hims_d_promotion` 
+ALTER TABLE `hims_d_promotion`
 ADD COLUMN `record_status` ENUM('A', 'I') CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_0900_ai_ci' NULL DEFAULT 'A' AFTER `avail_type`;
 
 -- ******** HR To Day End if getting Error as mysql Error Code: 1366. Incorrect string value: '\xD9\x90...."
 CHARACTER SET utf8mb4 NULL,
     MODIFY COLUMN voucher_type ENUM('journal', 'contra', 'receipt', 'payment', 'sales', 'purchase', 'credit_note', 'debit_note')  CHARACTER SET utf8mb4 NULL COMMENT 'journal,contra,receipt,payment,sales,purchase,credit_note,debit_note',
     MODIFY COLUMN document_number VARCHAR(45) CHARACTER SET utf8mb4 NULL,
-   
+
 -- ******** Added all MIS Report under Algaeh Security
 INSERT INTO `algaeh_d_app_component` (`screen_id`, `component_code`, `component_name`, `created_date`, `updated_date`, `record_status`) VALUES ('176', 'RPT_MIS_CAN_PAT', 'Cancelled Service by Patient', '2020-09-29 16:04:22', '2020-09-29 16:04:22', 'A');
 INSERT INTO `algaeh_d_app_component` (`screen_id`, `component_code`, `component_name`, `created_date`, `updated_date`, `record_status`) VALUES ('176', 'RPT_MIS_DIS_SRV_PAT', 'Discounted Services by Patient', '2020-09-29 16:04:55', '2020-09-29 16:04:55', 'A');
@@ -36,7 +36,7 @@ INSERT INTO `algaeh_d_app_component` (`screen_id`, `component_code`, `component_
 INSERT INTO `algaeh_d_app_component` (`screen_id`, `component_code`, `component_name`, `created_date`, `updated_date`, `record_status`) VALUES ('176', 'RPT_MIS_PCK_BNH', 'Type Package by Branch', '2020-09-29 16:08:11', '2020-09-29 16:08:11', 'A');
 INSERT INTO `algaeh_d_app_component` (`screen_id`, `component_code`, `component_name`, `created_date`, `updated_date`, `record_status`) VALUES ('176', 'RPT_MIS_CNT_SRV', 'Count by Services', '2020-09-29 16:08:30', '2020-09-29 16:08:30', 'A');
 
-   
+
 -- ******** Added Count by Service report under MIS
    INSERT INTO `algaeh_d_reports` ( `report_name`, `report_name_for_header`, `data_manupulation`, `report_input_series`, `report_header_file_name`, `report_footer_file_name`, `uniq_identity_to_report`, `status`, `created_datetime`, `update_datetime`) VALUES ('countByService', 'Count By Service', '', '[\"hospital_id\",\"from_date\",\"to_date\",\"service_type_id\"]', 'reportHeader', '', '', 'A', '2019-06-18 14:53:28', '2019-06-18 14:53:28');
 -- ******** Create Promotion Detail Table
@@ -56,12 +56,12 @@ INSERT INTO `algaeh_d_app_component` (`screen_id`, `component_code`, `component_
 
 -- ******** Dental and Optical Insurance Covered
 ALTER TABLE hims_d_insurance_network_office ADD COLUMN covered_dental ENUM('Y','N') default 'N' after dental_max, ADD COLUMN coverd_optical ENUM('Y','N') default 'N' after optical_max;
-   
+
 -- ******** Promotion Details Service type relation
-ALTER TABLE `hims_d_promotion_detail` 
+ALTER TABLE `hims_d_promotion_detail`
 ADD INDEX `hims_d_promotion_detail_fk2_idx` (`service_type_id` ASC) VISIBLE;
 ;
-ALTER TABLE `hims_d_promotion_detail` 
+ALTER TABLE `hims_d_promotion_detail`
 ADD CONSTRAINT `hims_d_promotion_detail_fk2`
   FOREIGN KEY (`service_type_id`)
   REFERENCES `hims_d_service_type` (`hims_d_service_type_id`)
@@ -71,10 +71,10 @@ ADD CONSTRAINT `hims_d_promotion_detail_fk2`
 
 -- =================================  Start Oct 2 2020 =======================================
 -- ******** Patient Reg. Country Code
-ALTER TABLE `hims_d_country` 
+ALTER TABLE `hims_d_country`
 ADD COLUMN `tel_code` VARCHAR(10) NULL AFTER `arabic_country_name`;
 
-ALTER TABLE `hims_f_patient` 
+ALTER TABLE `hims_f_patient`
 ADD COLUMN `tel_code` VARCHAR(10) NULL AFTER `address2`;
 
 -- ******** Dental Lab New Field Added
@@ -98,18 +98,18 @@ alter table hims_f_sales_order add column canceled_reason_sales varchar(150);
 INSERT INTO `algaeh_d_reports` (`report_name`, `report_name_for_header`, `report_query`, `report_input_series`, `report_header_file_name`, `status`, `created_datetime`, `update_datetime`) VALUES ('PurchaseReqInv', 'Purchase Req - Inventory', 'select hims_f_inventory_material_header_id,material_requisition_number\n,date_format(H.requistion_date,\'%d-%m-%Y\') as requistion_date,\nFL.location_description as from_location,\nD.from_qtyhand,D.to_qtyhand,D.quantity_required,D.quantity_authorized,\nD.quantity_recieved,D.quantity_outstanding,IM.item_description,U.uom_description,C.category_desc\nfrom hims_f_inventory_material_header H\ninner join hims_d_inventory_location FL on H.from_location_id=FL.hims_d_inventory_location_id\ninner join hims_f_inventory_material_detail D on H.hims_f_inventory_material_header_id=D.inventory_header_id\ninner join hims_d_inventory_item_master IM on D.item_id=IM.hims_d_inventory_item_master_id\ninner join hims_d_inventory_tem_category C on IM.category_id=C.hims_d_inventory_tem_category_id\ninner join hims_d_inventory_uom U on D.item_uom=U.hims_d_inventory_uom_id\nwhere H.material_requisition_number=?', '[\'material_requisition_number\']', 'reportHeader', 'A', '2019-06-11 17:33:35', '2019-06-11 17:33:35');
 
 -- ******** Sales Frequency New type
-ALTER TABLE `hims_f_sales_invoice_services` 
+ALTER TABLE `hims_f_sales_invoice_services`
 CHANGE COLUMN `service_frequency` `service_frequency` ENUM('M', 'W', 'D', 'H', 'PT', 'PP', 'S') NULL DEFAULT 'M' COMMENT 'M-Monthly,\\\\\\\\\\\\\\\\nW-Weekly,\\\\\\\\\\\\\\\\nD-Daily,\\\\\\\\\\\\\\\\nH-Hourly, PT- Per Trip, PP- Per Person, S-Shift' ;
 
 
-ALTER TABLE `hims_f_sales_order_adj_services` 
+ALTER TABLE `hims_f_sales_order_adj_services`
 CHANGE COLUMN `service_frequency` `service_frequency` ENUM('M', 'W', 'D', 'H', 'PT', 'PP', 'S') NULL DEFAULT 'M' COMMENT 'M-Monthly,\\\\\\\\\\\\\\\\nW-Weekly,\\\\\\\\\\\\\\\\nD-Daily,\\\\\\\\\\\\\\\\nH-Hourly, PT- Per Trip, PP- Per Person, S-Shift' ;
 
 
-ALTER TABLE `hims_f_sales_order_services` 
+ALTER TABLE `hims_f_sales_order_services`
 CHANGE COLUMN `service_frequency` `service_frequency` ENUM('M', 'W', 'D', 'H', 'PT', 'PP', 'S') NULL DEFAULT 'M' COMMENT 'M-Monthly,\\\\\\\\nW-Weekly,\\\\\\\\nD-Daily,\\\\\\\\nH-Hourly, PT- Per Trip, PP- Per Person, S-Shift' ;
 
-ALTER TABLE `hims_f_sales_quotation_services` 
+ALTER TABLE `hims_f_sales_quotation_services`
 CHANGE COLUMN `service_frequency` `service_frequency` ENUM('M', 'W', 'D', 'H', 'PT', 'PP', 'S') NULL DEFAULT 'M' COMMENT 'M-Monthly,\\\\nW-Weekly,\\\\nD-Daily,\\\\nH-Hourly, PT- Per Trip, PP- Per Person, S-Shift' ;
 
 -- ******** Sales New Screen
@@ -147,7 +147,7 @@ INSERT INTO `algaeh_d_app_component` ( `screen_id`, `component_code`, `component
 
 -- =================================  Start Oct 9 2020 =======================================
 -- ******** Lab Send Out
-ALTER TABLE `hims_f_lab_order` 
+ALTER TABLE `hims_f_lab_order`
 ADD COLUMN `send_out_test` ENUM('Y', 'N') NULL DEFAULT 'N' AFTER `critical_status`;
 
 -- =================================  Start Oct 13 2020 =======================================
@@ -157,5 +157,17 @@ INSERT INTO `algaeh_d_reports` ( `report_name`, `report_name_for_header`, `repor
 UPDATE `algaeh_d_reports` SET `report_name_for_header` = 'Loan Reconciliation Report' WHERE (`report_name` = 'monthlyLoanReport');
 
 -- ******** Dental Lab - Ordered Type
-ALTER TABLE `hims_f_dental_form` 
+ALTER TABLE `hims_f_dental_form`
 ADD COLUMN `ordered_type` ENUM('NEW', 'REF', 'REM') NULL DEFAULT 'NEW' COMMENT 'New=New //nREF=Refine //nREM=Remake //n' AFTER `box_code`;
+
+-- 14-oct-2020 narration detail level
+alter table finance_voucher_details add column narration text default null
+after payment_type;
+
+insert into finance_numgen(`finance_numgen_id`,`numgen_code`,`module_desc`,`prefix`,`intermediate_series`,`postfix`,
+`length`,`increment_by`,`numgen_seperator`,`postfix_start`,`postfix_end`,`current_num`,`pervious_num`,
+`preceding_zeros_req`,`intermediate_series_req`,`reset_slno_on_year_change`)
+values(9,'EXPENSE_VOUCHER','for finance expense voucher number','EXP',20,'0',13,1,'-','0','9999999','0','0','Y','Y','Y');
+
+ALTER TABLE finance_voucher_header`
+CHANGE COLUMN `voucher_type` `voucher_type` ENUM('journal', 'contra', 'receipt', 'payment', 'sales', 'purchase', 'credit_note', 'debit_note', 'expense_voucher') NULL DEFAULT NULL COMMENT 'journal,contra,receipt,payment,sales,purchase,credit_note,debit_note,expense_voucher' ;

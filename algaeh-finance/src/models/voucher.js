@@ -10,9 +10,9 @@ function getMaxAuth(options) {
   return new Promise((resolve, reject) => {
     _mysql
       .executeQuery({
-        query: "SELECT auth_level,auth1_limit FROM finance_options limit 1;",
+        query: "SELECT auth_level,auth1_limit FROM finance_options limit 1;"
       })
-      .then((result) => {
+      .then(result => {
         _mysql.releaseConnection();
         //LEAVE
         switch (result[0]["auth_level"]) {
@@ -33,15 +33,15 @@ function getMaxAuth(options) {
           limit: [
             {
               auth_level: 1,
-              auth_limit: result[0]["auth1_limit"],
+              auth_limit: result[0]["auth1_limit"]
             },
             {
-              auth_level: 2,
-            },
-          ],
+              auth_level: 2
+            }
+          ]
         });
       })
-      .catch((e) => {
+      .catch(e => {
         _mysql.releaseConnection();
         reject(e);
       });
@@ -128,22 +128,25 @@ export default {
       case "debit_note":
         voucher_type = "DEBIT_NOTE";
         break;
+      default:
+        voucher_type = input.voucher_type.toUpperCase();
     }
     const { merdgeRecords } = input;
     if (voucher_type == "") {
       req.records = {
         invalid_input: true,
-        message: "Please select voucher type",
+        message: "Please select voucher type"
       };
       next();
+      return;
     } else {
       _mysql
         .generateRunningNumber({
           user_id: req.userIdentity.algaeh_d_app_user_id,
           numgen_codes: [voucher_type],
-          table_name: "finance_numgen",
+          table_name: "finance_numgen"
         })
-        .then((numgen) => {
+        .then(numgen => {
           let transaction_date = "";
 
           if (
@@ -169,14 +172,14 @@ export default {
           //   }
           // });
           credit_amount = _.chain(input.details)
-            .filter((f) => f.payment_type === "CR")
-            .sumBy((s) => {
+            .filter(f => f.payment_type === "CR")
+            .sumBy(s => {
               return parseFloat(s.amount);
             })
             .value();
           debit_amount = _.chain(input.details)
-            .filter((f) => f.payment_type === "DR")
-            .sumBy((s) => {
+            .filter(f => f.payment_type === "DR")
+            .sumBy(s => {
               return parseFloat(s.amount);
             })
             .value();
@@ -185,9 +188,9 @@ export default {
             _mysql
               .executeQuery({
                 query:
-                  "SELECT cost_center_type,cost_center_required  FROM finance_options limit 1; ",
+                  "SELECT cost_center_type,cost_center_required  FROM finance_options limit 1; "
               })
-              .then((resul) => {
+              .then(resul => {
                 if (
                   resul.length == 1 &&
                   (resul[0]["cost_center_type"] == "P" ||
@@ -211,7 +214,7 @@ export default {
                   /* added by noor for detail level costcenters */
                   const cost_center_type = resul[0]["cost_center_type"];
                   const cost_center_required = resul[0]["cost_center_required"];
-                  const newDetails = input.details.map((item) => {
+                  const newDetails = input.details.map(item => {
                     const {
                       cost_center_id,
                       slno,
@@ -225,12 +228,12 @@ export default {
                       cost_center_type === "P"
                         ? {
                             project_id: cost_center_id,
-                            sub_department_id: null,
+                            sub_department_id: null
                           }
                         : cost_center_type === "S"
                         ? {
                             project_id: null,
-                            sub_department_id: cost_center_id,
+                            sub_department_id: cost_center_id
                           }
                         : {};
 
@@ -246,7 +249,7 @@ export default {
                       hospital_id:
                         cost_center_required === "Y"
                           ? hims_d_hospital_id
-                          : input.hospital_id,
+                          : input.hospital_id
                     };
                   });
 
@@ -273,6 +276,7 @@ export default {
                   }
                   const isMultipleInvoices =
                     input.receipt_type === undefined ? "S" : input.receipt_type;
+
                   _mysql
                     .executeQueryWithTransaction({
                       query:
@@ -299,11 +303,11 @@ export default {
                         req.userIdentity.algaeh_d_app_user_id,
                         new Date(),
                         new Date(),
-                        isMultipleInvoices,
+                        isMultipleInvoices
                       ],
-                      printQuery: true,
+                      printQuery: true
                     })
-                    .then((result) => {
+                    .then(result => {
                       // const IncludeValues = ["amount", "payment_mode"];
                       // const insertColumns = [
                       //   "head_id",
@@ -326,26 +330,26 @@ export default {
                             "insert into finance_voucher_sub_header(finance_voucher_header_id,invoice_ref_no,amount)value(?,?,?);",
                             [result.insertId, invoice_no, balance_amount]
                           );
-                          newDetails.forEach((item) => {
+                          newDetails.forEach(item => {
                             const { amount, ...rest } = item;
                             arrCounter.push({
                               ...rest,
                               debit_amount:
                                 item.payment_type === "DR" ? balance_amount : 0,
                               credit_amount:
-                                item.payment_type === "CR" ? balance_amount : 0,
+                                item.payment_type === "CR" ? balance_amount : 0
                             });
                           });
                         }
                         _mysql
                           .executeQueryWithTransaction({
-                            query: queryString,
+                            query: queryString
                           })
-                          .then((resultsubheader) => {
+                          .then(resultsubheader => {
                             //Done.....
                             console.log("Subdetails are inserted");
                           })
-                          .catch((error) => {
+                          .catch(error => {
                             _mysql.rollBackTransaction(() => {
                               next(error);
                             });
@@ -364,11 +368,11 @@ export default {
                           // includeValues: insertColumns,
                           bulkInsertOrUpdate: true,
                           printQuery: true,
-                          excludeValues: ["disabled"],
+                          excludeValues: ["disabled", "paytypedisable"],
                           extraValues: {
                             voucher_header_id: result.insertId,
-                            hospital_id: input.hospital_id,
-                          },
+                            hospital_id: input.hospital_id
+                          }
                           // extraValues: {
                           //   payment_date: transaction_date,
                           //   month: month,
@@ -380,22 +384,22 @@ export default {
                           //   sub_department_id: subDept_cost_center
                           // }
                         })
-                        .then((result2) => {
+                        .then(result2 => {
                           _mysql.commitTransaction(() => {
                             _mysql.releaseConnection();
                             req.records = {
-                              voucher_no: numgen[voucher_type],
+                              voucher_no: numgen[voucher_type]
                             };
                             next();
                           });
                         })
-                        .catch((error) => {
+                        .catch(error => {
                           _mysql.rollBackTransaction(() => {
                             next(error);
                           });
                         });
                     })
-                    .catch((e) => {
+                    .catch(e => {
                       _mysql.rollBackTransaction(() => {
                         next(e);
                       });
@@ -404,13 +408,13 @@ export default {
                   _mysql.rollBackTransaction(() => {
                     req.records = {
                       invalid_input: true,
-                      message: "Please Define cost center type",
+                      message: "Please Define cost center type"
                     };
                     next();
                   });
                 }
               })
-              .catch((e) => {
+              .catch(e => {
                 _mysql.rollBackTransaction(() => {
                   next(e);
                 });
@@ -419,13 +423,13 @@ export default {
             _mysql.rollBackTransaction(() => {
               req.records = {
                 invalid_input: true,
-                message: "Credit and Debit Amount are not equal",
+                message: "Credit and Debit Amount are not equal"
               };
               next();
             });
           }
         })
-        .catch((e) => {
+        .catch(e => {
           _mysql.rollBackTransaction(() => {
             next(e);
           });
@@ -441,9 +445,9 @@ export default {
       .executeQuery({
         query:
           "select hims_d_hospital_id,head_office,cost_center_type from \
-          hims_d_hospital where  head_office='Y'; ",
+          hims_d_hospital where  head_office='Y'; "
       })
-      .then((result) => {
+      .then(result => {
         if (result.length == 1) {
           if (result[0]["cost_center_type"] == "P") {
             let hospital_id = req.userIdentity.hospital_id;
@@ -456,14 +460,14 @@ export default {
                   "select project_id as cost_center_id,P.project_desc as cost_center from \
               hims_m_division_project DP inner join hims_d_project P\
               on DP.project_id=P.hims_d_project_id where DP.division_id=?; ",
-                values: [hospital_id],
+                values: [hospital_id]
               })
-              .then((results) => {
+              .then(results => {
                 _mysql.releaseConnection();
                 req.records = results;
                 next();
               })
-              .catch((e) => {
+              .catch(e => {
                 _mysql.releaseConnection();
                 next(e);
               });
@@ -471,7 +475,7 @@ export default {
             _mysql.releaseConnection();
             req.records = {
               invalid_input: true,
-              message: "Please Define cost_center_type",
+              message: "Please Define cost_center_type"
             };
             next();
           }
@@ -479,12 +483,12 @@ export default {
           _mysql.releaseConnection();
           req.records = {
             invalid_input: true,
-            message: "Please Define proper Head-Office",
+            message: "Please Define proper Head-Office"
           };
           next();
         }
       })
-      .catch((e) => {
+      .catch(e => {
         _mysql.releaseConnection();
         next(e);
       });
@@ -499,14 +503,14 @@ export default {
       const _mysql = new algaehMysql();
       // get highest auth level
       getMaxAuth({
-        mysql: _mysql,
+        mysql: _mysql
       })
-        .then((option) => {
+        .then(option => {
           if (
             req.userIdentity.finance_authorize_privilege < option.MaxAuth ||
             input.auth_level < option.MaxAuth
           ) {
-            getFinanceAuthFields(input["auth_level"]).then((authFields) => {
+            getFinanceAuthFields(input["auth_level"]).then(authFields => {
               if (input.auth_status == "A" && input.voucher_header_id > 0) {
                 _mysql
                   .executeQuery({
@@ -517,12 +521,12 @@ export default {
                        inner join finance_account_child C on VD.child_id=C.finance_account_child_id\
                       where voucher_header_id=? and auth_status='P';",
                     values: [input.voucher_header_id],
-                    printQuery: false,
+                    printQuery: false
                   })
-                  .then((result) => {
+                  .then(result => {
                     if (result.length > 0) {
                       const child_ids = [];
-                      result.forEach((child) => {
+                      result.forEach(child => {
                         child_ids.push(child.child_id);
                       });
 
@@ -535,18 +539,18 @@ export default {
                           from finance_voucher_details \
                           where auth_status='A' and child_id in (?) group by child_id;",
                             values: [child_ids],
-                            printQuery: false,
+                            printQuery: false
                           })
-                          .then((closeBalance) => {
+                          .then(closeBalance => {
                             let internal_eror = false;
                             //ST-closing balance CHECK
-                            result.forEach((entry) => {
+                            result.forEach(entry => {
                               //checking debit balance for asset and expence
                               if (
                                 (entry.root_id == 1 || entry.root_id == 5) &&
                                 entry.payment_type == "CR"
                               ) {
-                                let ledger = closeBalance.find((f) => {
+                                let ledger = closeBalance.find(f => {
                                   return f.child_id == entry.child_id;
                                 });
 
@@ -559,7 +563,7 @@ export default {
                                     internal_eror = true;
                                     req.records = {
                                       invalid_user: true,
-                                      message: `${entry.child_name} doesn't have debit balance`,
+                                      message: `${entry.child_name} doesn't have debit balance`
                                     };
                                     next();
                                     return;
@@ -570,7 +574,7 @@ export default {
                                   internal_eror = true;
                                   req.records = {
                                     invalid_user: true,
-                                    message: `${entry.child_name} doesn't have debit balance`,
+                                    message: `${entry.child_name} doesn't have debit balance`
                                   };
                                   next();
                                   return;
@@ -583,7 +587,7 @@ export default {
                                   entry.root_id == 4) &&
                                 entry.payment_type == "DR"
                               ) {
-                                let ledger = closeBalance.find((f) => {
+                                let ledger = closeBalance.find(f => {
                                   return f.child_id == entry.child_id;
                                 });
 
@@ -596,7 +600,7 @@ export default {
                                     internal_eror = true;
                                     req.records = {
                                       invalid_user: true,
-                                      message: `${entry.child_name} doesn't have credit balance`,
+                                      message: `${entry.child_name} doesn't have credit balance`
                                     };
                                     next();
                                     return;
@@ -607,7 +611,7 @@ export default {
                                   internal_eror = true;
                                   req.records = {
                                     invalid_user: true,
-                                    message: `${entry.child_name} doesn't have credit balance`,
+                                    message: `${entry.child_name} doesn't have credit balance`
                                   };
                                   next();
                                   return;
@@ -622,11 +626,11 @@ export default {
                               next();
                             }
                           })
-                          .catch((error) => {
+                          .catch(error => {
                             _mysql.releaseConnection();
                             next(error);
                           });
-                      }).then((res) => {
+                      }).then(res => {
                         // code comes here
                         _mysql
                           .executeQuery({
@@ -639,16 +643,16 @@ export default {
                               "Y",
                               req.userIdentity.algaeh_d_app_user_id,
                               new Date(),
-                              input.voucher_header_id,
+                              input.voucher_header_id
                             ],
-                            printQuery: false,
+                            printQuery: false
                           })
-                          .then((authResult) => {
+                          .then(authResult => {
                             _mysql.releaseConnection();
                             req.records = authResult;
                             next();
                           })
-                          .catch((error) => {
+                          .catch(error => {
                             _mysql.releaseConnection();
                             next(error);
                           });
@@ -656,13 +660,13 @@ export default {
                     } else {
                       req.records = {
                         invalid_user: true,
-                        message: "data not found",
+                        message: "data not found"
                       };
                       next();
                     }
                     //---------
                   })
-                  .catch((error) => {
+                  .catch(error => {
                     _mysql.releaseConnection();
                     next(error);
                   });
@@ -682,23 +686,23 @@ export default {
 
                       new Date(),
                       input.rejected_reason,
-                      input.voucher_header_id,
+                      input.voucher_header_id
                     ],
-                    printQuery: false,
+                    printQuery: false
                   })
-                  .then((authResult) => {
+                  .then(authResult => {
                     _mysql.releaseConnection();
                     req.records = authResult;
                     next();
                   })
-                  .catch((error) => {
+                  .catch(error => {
                     _mysql.releaseConnection();
                     next(error);
                   });
               } else {
                 req.records = {
                   invalid_user: true,
-                  message: "Please provide valid input",
+                  message: "Please provide valid input"
                 };
                 next();
               }
@@ -707,7 +711,7 @@ export default {
             req.userIdentity.finance_authorize_privilege >= option.MaxAuth &&
             input.auth_level >= option.MaxAuth
           ) {
-            getFinanceAuthFields(input["auth_level"]).then((authFields) => {
+            getFinanceAuthFields(input["auth_level"]).then(authFields => {
               if (input.auth_status == "A" && input.voucher_header_id > 0) {
                 _mysql
                   .executeQuery({
@@ -718,16 +722,16 @@ export default {
                     inner join finance_account_child C on VD.child_id=C.finance_account_child_id\
                     where voucher_header_id=? and auth_status='P';",
                     values: [input.voucher_header_id],
-                    printQuery: false,
+                    printQuery: false
                   })
-                  .then((result) => {
+                  .then(result => {
                     let total_income = 0;
                     let total_expense = 0;
                     let balance = 0;
 
                     if (result.length > 0) {
                       const child_ids = [];
-                      result.forEach((child) => {
+                      result.forEach(child => {
                         child_ids.push(child.child_id);
                       });
 
@@ -740,18 +744,18 @@ export default {
                           from finance_voucher_details \
                           where auth_status='A' and child_id in (?) group by child_id;",
                             values: [child_ids],
-                            printQuery: false,
+                            printQuery: false
                           })
-                          .then((closeBalance) => {
+                          .then(closeBalance => {
                             let internal_eror = false;
                             //ST-closing balance CHECK
-                            result.forEach((entry) => {
+                            result.forEach(entry => {
                               //checking debit balance for asset and expence
                               if (
                                 (entry.root_id == 1 || entry.root_id == 5) &&
                                 entry.payment_type == "CR"
                               ) {
-                                let ledger = closeBalance.find((f) => {
+                                let ledger = closeBalance.find(f => {
                                   return f.child_id == entry.child_id;
                                 });
 
@@ -764,7 +768,7 @@ export default {
                                     internal_eror = true;
                                     req.records = {
                                       invalid_user: true,
-                                      message: `${entry.child_name} doesn't have debit balance`,
+                                      message: `${entry.child_name} doesn't have debit balance`
                                     };
                                     next();
                                     return;
@@ -775,7 +779,7 @@ export default {
                                   internal_eror = true;
                                   req.records = {
                                     invalid_user: true,
-                                    message: `${entry.child_name} doesn't have debit balance`,
+                                    message: `${entry.child_name} doesn't have debit balance`
                                   };
                                   next();
                                   return;
@@ -788,7 +792,7 @@ export default {
                                   entry.root_id == 4) &&
                                 entry.payment_type == "DR"
                               ) {
-                                let ledger = closeBalance.find((f) => {
+                                let ledger = closeBalance.find(f => {
                                   return f.child_id == entry.child_id;
                                 });
 
@@ -801,7 +805,7 @@ export default {
                                     internal_eror = true;
                                     req.records = {
                                       invalid_user: true,
-                                      message: `${entry.child_name} doesn't have credit balance`,
+                                      message: `${entry.child_name} doesn't have credit balance`
                                     };
                                     next();
                                     return;
@@ -812,7 +816,7 @@ export default {
                                   internal_eror = true;
                                   req.records = {
                                     invalid_user: true,
-                                    message: `${entry.child_name} doesn't have credit balance`,
+                                    message: `${entry.child_name} doesn't have credit balance`
                                   };
                                   next();
                                   return;
@@ -827,14 +831,14 @@ export default {
                               next();
                             }
                           })
-                          .catch((error) => {
+                          .catch(error => {
                             _mysql.releaseConnection();
                             next(error);
                           });
-                      }).then((res) => {
+                      }).then(res => {
                         console.log("res:", res);
                         //ST-profit and loss calculation
-                        result.forEach((m) => {
+                        result.forEach(m => {
                           if (m.root_id == 4) {
                             if (m.payment_type == "CR") {
                               total_income =
@@ -872,7 +876,7 @@ export default {
                             payment_type: "CR",
                             hospital_id: result[0]["hospital_id"],
                             year: moment().format("YYYY"),
-                            month: moment().format("M"),
+                            month: moment().format("M")
                           };
                         } else if (balance < 0) {
                           pl_account = {
@@ -884,7 +888,7 @@ export default {
                             payment_type: "DR",
                             hospital_id: result[0]["hospital_id"],
                             year: moment().format("YYYY"),
-                            month: moment().format("M"),
+                            month: moment().format("M")
                           };
                         }
 
@@ -906,7 +910,7 @@ export default {
                               pl_account.month,
                               "Y",
                               req.userIdentity.algaeh_d_app_user_id,
-                              "A",
+                              "A"
                             ]
                           );
                         }
@@ -922,18 +926,18 @@ export default {
                               "Y",
                               req.userIdentity.algaeh_d_app_user_id,
                               new Date(),
-                              input.voucher_header_id,
+                              input.voucher_header_id
                             ],
-                            printQuery: false,
+                            printQuery: false
                           })
-                          .then((authResult) => {
+                          .then(authResult => {
                             _mysql.commitTransaction(() => {
                               _mysql.releaseConnection();
                               req.records = authResult;
                               next();
                             });
                           })
-                          .catch((error) => {
+                          .catch(error => {
                             _mysql.rollBackTransaction(() => {
                               next(error);
                             });
@@ -942,13 +946,13 @@ export default {
                     } else {
                       req.records = {
                         invalid_user: true,
-                        message: "data not found",
+                        message: "data not found"
                       };
                       next();
                     }
                     //---------
                   })
-                  .catch((error) => {
+                  .catch(error => {
                     _mysql.releaseConnection();
                     next(error);
                   });
@@ -968,23 +972,23 @@ export default {
                       new Date(),
                       input.rejected_reason,
 
-                      input.voucher_header_id,
+                      input.voucher_header_id
                     ],
-                    printQuery: false,
+                    printQuery: false
                   })
-                  .then((authResult) => {
+                  .then(authResult => {
                     _mysql.releaseConnection();
                     req.records = authResult;
                     next();
                   })
-                  .catch((error) => {
+                  .catch(error => {
                     _mysql.releaseConnection();
                     next(error);
                   });
               } else {
                 req.records = {
                   invalid_user: true,
-                  message: "Please provide valid input",
+                  message: "Please provide valid input"
                 };
                 next();
               }
@@ -992,19 +996,19 @@ export default {
           } else {
             req.records = {
               invalid_user: true,
-              message: "you dont have authorization privilege",
+              message: "you dont have authorization privilege"
             };
             next();
           }
         })
-        .catch((e) => {
+        .catch(e => {
           _mysql.releaseConnection();
           next(e);
         });
     } else {
       req.records = {
         invalid_user: true,
-        message: "you dont have authorization privilege",
+        message: "you dont have authorization privilege"
       };
       next();
     }
@@ -1023,14 +1027,14 @@ export default {
       // get highest auth level
 
       getMaxAuth({
-        mysql: _mysql,
+        mysql: _mysql
       })
-        .then((option) => {
+        .then(option => {
           if (
             req.userIdentity.finance_authorize_privilege < option.MaxAuth ||
             input.auth_level < option.MaxAuth
           ) {
-            getFinanceAuthFields(input["auth_level"]).then((authFields) => {
+            getFinanceAuthFields(input["auth_level"]).then(authFields => {
               if (input.auth_status == "A" && input.voucher_header_id > 0) {
                 _mysql
                   .executeQuery({
@@ -1041,9 +1045,9 @@ export default {
                        inner join finance_account_child C on VD.child_id=C.finance_account_child_id\
                       where voucher_header_id=? and auth_status='P';SELECT allow_negative_balance FROM finance_options;",
                     values: [input.voucher_header_id],
-                    printQuery: false,
+                    printQuery: false
                   })
-                  .then((results) => {
+                  .then(results => {
                     const result = results[0];
 
                     const options = results[1][0];
@@ -1053,7 +1057,7 @@ export default {
                           resolve({});
                         } else {
                           const child_ids = [];
-                          result.forEach((child) => {
+                          result.forEach(child => {
                             child_ids.push(child.child_id);
                           });
 
@@ -1065,18 +1069,18 @@ export default {
                           from finance_voucher_details \
                           where auth_status='A' and child_id in (?) group by child_id;",
                               values: [child_ids],
-                              printQuery: false,
+                              printQuery: false
                             })
-                            .then((closeBalance) => {
+                            .then(closeBalance => {
                               let internal_eror = false;
                               //ST-closing balance CHECK
-                              result.forEach((entry) => {
+                              result.forEach(entry => {
                                 //checking debit balance for asset and expence
                                 if (
                                   (entry.root_id == 1 || entry.root_id == 5) &&
                                   entry.payment_type == "CR"
                                 ) {
-                                  let ledger = closeBalance.find((f) => {
+                                  let ledger = closeBalance.find(f => {
                                     return f.child_id == entry.child_id;
                                   });
 
@@ -1089,7 +1093,7 @@ export default {
                                       internal_eror = true;
                                       req.records = {
                                         invalid_user: true,
-                                        message: `${entry.child_name} doesn't have debit balance`,
+                                        message: `${entry.child_name} doesn't have debit balance`
                                       };
                                       next();
                                       return;
@@ -1100,7 +1104,7 @@ export default {
                                     internal_eror = true;
                                     req.records = {
                                       invalid_user: true,
-                                      message: `${entry.child_name} doesn't have debit balance`,
+                                      message: `${entry.child_name} doesn't have debit balance`
                                     };
                                     next();
                                     return;
@@ -1113,7 +1117,7 @@ export default {
                                     entry.root_id == 4) &&
                                   entry.payment_type == "DR"
                                 ) {
-                                  let ledger = closeBalance.find((f) => {
+                                  let ledger = closeBalance.find(f => {
                                     return f.child_id == entry.child_id;
                                   });
 
@@ -1126,7 +1130,7 @@ export default {
                                       internal_eror = true;
                                       req.records = {
                                         invalid_user: true,
-                                        message: `${entry.child_name} doesn't have credit balance`,
+                                        message: `${entry.child_name} doesn't have credit balance`
                                       };
                                       next();
                                       return;
@@ -1137,7 +1141,7 @@ export default {
                                     internal_eror = true;
                                     req.records = {
                                       invalid_user: true,
-                                      message: `${entry.child_name} doesn't have credit balance`,
+                                      message: `${entry.child_name} doesn't have credit balance`
                                     };
                                     next();
                                     return;
@@ -1152,12 +1156,12 @@ export default {
                                 next();
                               }
                             })
-                            .catch((error) => {
+                            .catch(error => {
                               _mysql.releaseConnection();
                               next(error);
                             });
                         }
-                      }).then((res) => {
+                      }).then(res => {
                         // code comes here
                         _mysql
                           .executeQuery({
@@ -1170,16 +1174,16 @@ export default {
                               "Y",
                               req.userIdentity.algaeh_d_app_user_id,
                               moment().format("YYYY-MM-DD"),
-                              input.voucher_header_id,
+                              input.voucher_header_id
                             ],
-                            printQuery: false,
+                            printQuery: false
                           })
-                          .then((authResult) => {
+                          .then(authResult => {
                             _mysql.releaseConnection();
                             req.records = authResult;
                             next();
                           })
-                          .catch((error) => {
+                          .catch(error => {
                             _mysql.releaseConnection();
                             next(error);
                           });
@@ -1187,13 +1191,13 @@ export default {
                     } else {
                       req.records = {
                         invalid_user: true,
-                        message: "data not found",
+                        message: "data not found"
                       };
                       next();
                     }
                     //---------
                   })
-                  .catch((error) => {
+                  .catch(error => {
                     _mysql.releaseConnection();
                     next(error);
                   });
@@ -1213,23 +1217,23 @@ export default {
 
                       new Date(),
                       input.rejected_reason,
-                      input.voucher_header_id,
+                      input.voucher_header_id
                     ],
-                    printQuery: false,
+                    printQuery: false
                   })
-                  .then((authResult) => {
+                  .then(authResult => {
                     _mysql.releaseConnection();
                     req.records = authResult;
                     next();
                   })
-                  .catch((error) => {
+                  .catch(error => {
                     _mysql.releaseConnection();
                     next(error);
                   });
               } else {
                 req.records = {
                   invalid_user: true,
-                  message: "Please provide valid input",
+                  message: "Please provide valid input"
                 };
                 next();
               }
@@ -1239,7 +1243,7 @@ export default {
             (req.userIdentity.finance_authorize_privilege >= option.MaxAuth &&
               input.auth_level >= option.MaxAuth)
           ) {
-            getFinanceAuthFields(input["auth_level"]).then((authFields) => {
+            getFinanceAuthFields(input["auth_level"]).then(authFields => {
               if (input.auth_status == "A" && input.voucher_header_id > 0) {
                 _mysql
                   .executeQuery({
@@ -1250,9 +1254,9 @@ export default {
                     inner join finance_account_child C on VD.child_id=C.finance_account_child_id\
                     where voucher_header_id=? and auth_status='P';SELECT allow_negative_balance FROM finance_options;",
                     values: [input.voucher_header_id],
-                    printQuery: false,
+                    printQuery: false
                   })
-                  .then((results) => {
+                  .then(results => {
                     const result = results[0];
                     const options = results[1][0];
                     let total_income = 0;
@@ -1265,7 +1269,7 @@ export default {
                           resolve({});
                         } else {
                           const child_ids = [];
-                          result.forEach((child) => {
+                          result.forEach(child => {
                             child_ids.push(child.child_id);
                           });
                           _mysql
@@ -1276,18 +1280,18 @@ export default {
                           from finance_voucher_details \
                           where auth_status='A' and child_id in (?) group by child_id;",
                               values: [child_ids],
-                              printQuery: true,
+                              printQuery: true
                             })
-                            .then((closeBalance) => {
+                            .then(closeBalance => {
                               let internal_eror = false;
                               //ST-closing balance CHECK
-                              result.forEach((entry) => {
+                              result.forEach(entry => {
                                 //checking debit balance for asset and expence
                                 if (
                                   (entry.root_id == 1 || entry.root_id == 5) &&
                                   entry.payment_type == "CR"
                                 ) {
-                                  let ledger = closeBalance.find((f) => {
+                                  let ledger = closeBalance.find(f => {
                                     return f.child_id == entry.child_id;
                                   });
 
@@ -1300,7 +1304,7 @@ export default {
                                       internal_eror = true;
                                       req.records = {
                                         invalid_user: true,
-                                        message: `${entry.child_name} doesn't have debit balance`,
+                                        message: `${entry.child_name} doesn't have debit balance`
                                       };
                                       next();
                                       return;
@@ -1311,7 +1315,7 @@ export default {
                                     internal_eror = true;
                                     req.records = {
                                       invalid_user: true,
-                                      message: `${entry.child_name} doesn't have debit balance`,
+                                      message: `${entry.child_name} doesn't have debit balance`
                                     };
                                     next();
                                     return;
@@ -1324,7 +1328,7 @@ export default {
                                     entry.root_id == 4) &&
                                   entry.payment_type == "DR"
                                 ) {
-                                  let ledger = closeBalance.find((f) => {
+                                  let ledger = closeBalance.find(f => {
                                     return f.child_id == entry.child_id;
                                   });
 
@@ -1337,7 +1341,7 @@ export default {
                                       internal_eror = true;
                                       req.records = {
                                         invalid_user: true,
-                                        message: `${entry.child_name} doesn't have credit balance`,
+                                        message: `${entry.child_name} doesn't have credit balance`
                                       };
                                       next();
                                       return;
@@ -1348,7 +1352,7 @@ export default {
                                     internal_eror = true;
                                     req.records = {
                                       invalid_user: true,
-                                      message: `${entry.child_name} doesn't have credit balance`,
+                                      message: `${entry.child_name} doesn't have credit balance`
                                     };
                                     next();
                                     return;
@@ -1363,15 +1367,15 @@ export default {
                                 next();
                               }
                             })
-                            .catch((error) => {
+                            .catch(error => {
                               _mysql.releaseConnection();
                               next(error);
                             });
                         }
-                      }).then((res) => {
+                      }).then(res => {
                         console.log("res:", res);
                         //ST-profit and loss calculation
-                        result.forEach((m) => {
+                        result.forEach(m => {
                           if (m.root_id == 4) {
                             if (m.payment_type == "CR") {
                               total_income =
@@ -1409,7 +1413,7 @@ export default {
                             payment_type: "CR",
                             hospital_id: result[0]["hospital_id"],
                             year: moment().format("YYYY"),
-                            month: moment().format("M"),
+                            month: moment().format("M")
                           };
                         } else if (balance < 0) {
                           pl_account = {
@@ -1421,7 +1425,7 @@ export default {
                             payment_type: "DR",
                             hospital_id: result[0]["hospital_id"],
                             year: moment().format("YYYY"),
-                            month: moment().format("M"),
+                            month: moment().format("M")
                           };
                         }
 
@@ -1443,7 +1447,7 @@ export default {
                               pl_account.month,
                               "Y",
                               req.userIdentity.algaeh_d_app_user_id,
-                              "A",
+                              "A"
                             ]
                           );
                         }
@@ -1461,16 +1465,14 @@ export default {
                             }
                             _mysql
                               .executeQuery({
-                                query: queryType,
+                                query: queryType
                               })
-                              .then((subHeaderResult) => {
+                              .then(subHeaderResult => {
                                 let ref_no_headers = [];
                                 if (hasMultiple === "M") {
-                                  ref_no_headers = subHeaderResult.map(
-                                    (item) => {
-                                      return item.invoice_ref_no;
-                                    }
-                                  );
+                                  ref_no_headers = subHeaderResult.map(item => {
+                                    return item.invoice_ref_no;
+                                  });
                                 } else {
                                   ref_no_headers.push(
                                     result[0]["invoice_ref_no"]
@@ -1483,9 +1485,9 @@ export default {
                                       "select finance_voucher_header_id,voucher_no, voucher_type,amount,settlement_status,settled_amount,invoice_no\
                                from finance_voucher_header where invoice_no in(?) and voucher_type in ('purchase' ,'sales') and settlement_status='P';",
                                     values: [ref_no_headers],
-                                    printQuery: true,
+                                    printQuery: true
                                   })
-                                  .then((BalanceInvoice) => {
+                                  .then(BalanceInvoice => {
                                     if (
                                       result[0]["voucher_type"] ==
                                         "credit_note" ||
@@ -1503,12 +1505,12 @@ export default {
                                           settled_amount,
                                           finance_voucher_header_id,
                                           voucher_no,
-                                          invoice_no,
+                                          invoice_no
                                         } = BalanceInvoice[b];
                                         let head_amount = result[0]["amount"];
                                         if (hasMultiple === "M") {
                                           const oneRecord = subHeaderResult.find(
-                                            (f) =>
+                                            f =>
                                               f.invoice_ref_no === voucher_no ||
                                               f.invoice_ref_no === invoice_no
                                           );
@@ -1557,12 +1559,12 @@ export default {
 
                                     resolve({});
                                   })
-                                  .catch((error) => {
+                                  .catch(error => {
                                     _mysql.releaseConnection();
                                     next(error);
                                   });
                               })
-                              .catch((error) => {
+                              .catch(error => {
                                 _mysql.releaseConnection();
                                 next(error);
                               });
@@ -1623,7 +1625,7 @@ export default {
                           } else {
                             resolve({});
                           }
-                        }).then((Invoc) => {
+                        }).then(Invoc => {
                           _mysql
                             .executeQueryWithTransaction({
                               query:
@@ -1637,18 +1639,18 @@ export default {
                                 "Y",
                                 req.userIdentity.algaeh_d_app_user_id,
                                 new Date(),
-                                input.voucher_header_id,
+                                input.voucher_header_id
                               ],
-                              printQuery: true,
+                              printQuery: true
                             })
-                            .then((authResult) => {
+                            .then(authResult => {
                               _mysql.commitTransaction(() => {
                                 _mysql.releaseConnection();
                                 req.records = authResult;
                                 next();
                               });
                             })
-                            .catch((error) => {
+                            .catch(error => {
                               _mysql.rollBackTransaction(() => {
                                 next(error);
                               });
@@ -1658,13 +1660,13 @@ export default {
                     } else {
                       req.records = {
                         invalid_user: true,
-                        message: "data not found",
+                        message: "data not found"
                       };
                       next();
                     }
                     //---------
                   })
-                  .catch((error) => {
+                  .catch(error => {
                     _mysql.releaseConnection();
                     next(error);
                   });
@@ -1684,23 +1686,23 @@ export default {
                       new Date(),
                       input.rejected_reason,
 
-                      input.voucher_header_id,
+                      input.voucher_header_id
                     ],
-                    printQuery: false,
+                    printQuery: false
                   })
-                  .then((authResult) => {
+                  .then(authResult => {
                     _mysql.releaseConnection();
                     req.records = authResult;
                     next();
                   })
-                  .catch((error) => {
+                  .catch(error => {
                     _mysql.releaseConnection();
                     next(error);
                   });
               } else {
                 req.records = {
                   invalid_user: true,
-                  message: "Please provide valid input",
+                  message: "Please provide valid input"
                 };
                 next();
               }
@@ -1708,19 +1710,19 @@ export default {
           } else {
             req.records = {
               invalid_user: true,
-              message: "you dont have authorization privilege",
+              message: "you dont have authorization privilege"
             };
             next();
           }
         })
-        .catch((e) => {
+        .catch(e => {
           _mysql.releaseConnection();
           next(e);
         });
     } else {
       req.records = {
         invalid_user: true,
-        message: "you dont have authorization privilege",
+        message: "you dont have authorization privilege"
       };
       next();
     }
@@ -1775,24 +1777,24 @@ export default {
       _mysql
         .executeQuery({
           query: `select distinct finance_voucher_header_id,voucher_type, ROUND(amount,${decimal_places}) as amount,H.payment_date,\
-          narration,voucher_no,payment_mode, ref_no, H.cheque_date,   VD.auth_status ,U.username as entered_by from finance_voucher_header H\
+          VD.narration,voucher_no,payment_mode, ref_no, H.cheque_date,   VD.auth_status ,U.username as entered_by from finance_voucher_header H\
           inner join finance_voucher_details VD on H.finance_voucher_header_id=VD.voucher_header_id\
           left join algaeh_d_app_user U on VD.entered_by=U.algaeh_d_app_user_id
-          where posted_from='V'   ${strQry};`,
+          where posted_from='V'   ${strQry};`
         })
-        .then((result) => {
+        .then(result => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch((e) => {
+        .catch(e => {
           _mysql.releaseConnection();
           next(e);
         });
     } else {
       req.records = {
         invalid_input: true,
-        message: "please provide auth level",
+        message: "please provide auth level"
       };
       next();
     }
@@ -1814,14 +1816,14 @@ export default {
           inner join finance_voucher_header FH on FH.finance_voucher_header_id=VD.voucher_header_id
           where VD.voucher_header_id=?; `,
         values: [input.finance_voucher_header_id],
-        printQuery: true,
+        printQuery: true
       })
-      .then((result) => {
+      .then(result => {
         _mysql.releaseConnection();
         req.records = result;
         next();
       })
-      .catch((e) => {
+      .catch(e => {
         _mysql.releaseConnection();
         next(e);
       });
@@ -1835,15 +1837,15 @@ export default {
       .generateRunningNumber({
         user_id: req.userIdentity.algaeh_d_app_user_id,
         numgen_codes: ["OP_CRD", "OP_CBIL"],
-        table_name: "hims_f_app_numgen",
+        table_name: "hims_f_app_numgen"
       })
-      .then((result) => {
+      .then(result => {
         _mysql.commitTransaction(() => {
           req.records = result;
           next();
         });
       })
-      .catch((e) => {
+      .catch(e => {
         _mysql.rollBackTransaction(() => {
           next(e);
         });
@@ -1873,7 +1875,7 @@ export default {
     if (voucher_type == "") {
       req.records = {
         invalid_input: true,
-        message: "Please Select Proper Voucher Type",
+        message: "Please Select Proper Voucher Type"
       };
       next();
     } else {
@@ -1881,20 +1883,20 @@ export default {
         .executeQuery({
           query: `select distinct finance_voucher_header_id,invoice_no from
         finance_voucher_header H inner join finance_voucher_details D on H.finance_voucher_header_id=D.voucher_header_id
-        and D.auth_status='A' where voucher_type='${voucher_type}' and 
-        settlement_status='P' and invoice_no is not null ${str}; `,
+        and D.auth_status='A' where voucher_type='${voucher_type}' and
+        settlement_status='P' and invoice_no is not null ${str}; `
         })
-        .then((result) => {
+        .then(result => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch((e) => {
+        .catch(e => {
           _mysql.releaseConnection();
           next(e);
         });
     }
-  },
+  }
 };
 
 // select head_office_id,H.hospital_name as head_office,
