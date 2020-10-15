@@ -33,7 +33,7 @@ export default {
           "-" +
           moment(to_date).format("DD MMM") +
           ", " +
-          endYear,
+          endYear
       });
     } else {
       columns.push({
@@ -45,7 +45,7 @@ export default {
           "-" +
           moment(to_date).format("DD MMM") +
           ", " +
-          endYear,
+          endYear
       });
     }
     //END-- GENERATING FIRST COLUMN ID
@@ -62,7 +62,7 @@ export default {
           "-" +
           moment(prev_to_date).format("DD MMM") +
           ", " +
-          prev_endYear,
+          prev_endYear
       });
     } else {
       columns.push({
@@ -74,7 +74,7 @@ export default {
           "-" +
           moment(prev_to_date).format("DD MMM") +
           ", " +
-          prev_endYear,
+          prev_endYear
       });
     }
     //END-- GENERATING SECOND COLUMN ID
@@ -84,7 +84,7 @@ export default {
     if (input.change_in_amount == "Y") {
       columns.push({
         column_id: "change",
-        label: "Change In Amount",
+        label: "Change In Amount"
       });
     }
 
@@ -95,7 +95,7 @@ export default {
     if (input.change_in_percent == "Y") {
       columns.push({
         column_id: "percent",
-        label: "% Change ",
+        label: "% Change "
       });
     }
 
@@ -103,43 +103,43 @@ export default {
     _mysql
       .executeQuery({
         query: ` with recursive cte as (
-          select finance_account_head_id,account_code,account_name,       
+          select finance_account_head_id,account_code,account_name,
           parent_acc_id from finance_account_head   where root_id=4
-          union select H.finance_account_head_id,H.account_code,H.account_name,       
-          H.parent_acc_id from finance_account_head H  
-          inner join cte on H.parent_acc_id = cte.finance_account_head_id  
-          )select * from cte ; 
+          union select H.finance_account_head_id,H.account_code,H.account_name,
+          H.parent_acc_id from finance_account_head H
+          inner join cte on H.parent_acc_id = cte.finance_account_head_id
+          )select * from cte ;
 
           with recursive cte as (
-          select finance_account_head_id,account_code,account_name,       
-          parent_acc_id from finance_account_head   where root_id=5 and  account_code='5.1' 
-          union select H.finance_account_head_id,H.account_code,H.account_name,       
-          H.parent_acc_id from finance_account_head H  
-          inner join cte on H.parent_acc_id = cte.finance_account_head_id  
+          select finance_account_head_id,account_code,account_name,
+          parent_acc_id from finance_account_head   where root_id=5 and  account_code='5.1'
+          union select H.finance_account_head_id,H.account_code,H.account_name,
+          H.parent_acc_id from finance_account_head H
+          inner join cte on H.parent_acc_id = cte.finance_account_head_id
           )select * from cte ;
 
 
         with recursive cte as (
-        select finance_account_head_id,account_code,account_name,       
-        parent_acc_id from finance_account_head   where root_id=5 and  account_code<>'5.1' 
-        union select H.finance_account_head_id,H.account_code,H.account_name,       
-        H.parent_acc_id from finance_account_head H  
+        select finance_account_head_id,account_code,account_name,
+        parent_acc_id from finance_account_head   where root_id=5 and  account_code<>'5.1'
+        union select H.finance_account_head_id,H.account_code,H.account_name,
+        H.parent_acc_id from finance_account_head H
         inner join cte on H.parent_acc_id = cte.finance_account_head_id  and H.account_code<>'5.1'
-        )select * from cte ;        `,
+        )select * from cte ;        `
       })
-      .then((result) => {
+      .then(result => {
         //Income head ids
-        const income_head_ids = result[0].map((m) => m.finance_account_head_id);
+        const income_head_ids = result[0].map(m => m.finance_account_head_id);
         //direct expense or COGS
         const direct_expense_head_ids = result[1].map(
-          (m) => m.finance_account_head_id
+          m => m.finance_account_head_id
         );
         //indirect expense
         const indirect_expense_head_ids = result[2].map(
-          (m) => m.finance_account_head_id
+          m => m.finance_account_head_id
         );
 
-        const expens = result[2].find((f) => f.account_code == 5);
+        const expens = result[2].find(f => f.account_code == 5);
         direct_expense_head_ids.push(expens.finance_account_head_id);
 
         const data = {
@@ -152,18 +152,18 @@ export default {
           decimal_places,
           default_total,
           trans_symbol,
-          head_ids: income_head_ids,
+          head_ids: income_head_ids
         };
 
         getDataForProfitAndLoss(data)
-          .then((incomeRes) => {
+          .then(incomeRes => {
             data["head_ids"] = direct_expense_head_ids;
             data["trans_symbol"] = "Dr.";
             getDataForProfitAndLoss(data)
-              .then((DirectRes) => {
+              .then(DirectRes => {
                 data["head_ids"] = indirect_expense_head_ids;
                 getDataForProfitAndLoss(data)
-                  .then((IndirectRes) => {
+                  .then(IndirectRes => {
                     _mysql.releaseConnection();
 
                     let gross_profit = {};
@@ -192,33 +192,35 @@ export default {
                     req.records = {
                       columns,
                       income: incomeRes[0],
-                      Direct_expense: DirectRes[0]["children"][0],
+                      Direct_expense: DirectRes[0]["children"]
+                        ? DirectRes[0]["children"][0]
+                        : { label: "Direct Expense", total: 0 },
                       Indirect_expense: IndirectRes[0]["children"],
                       gross_profit,
-                      net_profit,
+                      net_profit
                     };
                     next();
                   })
-                  .catch((e) => {
+                  .catch(e => {
                     _mysql.releaseConnection();
                     next(e);
                   });
               })
-              .catch((e) => {
+              .catch(e => {
                 _mysql.releaseConnection();
                 next(e);
               });
           })
-          .catch((e) => {
+          .catch(e => {
             _mysql.releaseConnection();
             next(e);
           });
       })
-      .catch((e) => {
+      .catch(e => {
         _mysql.releaseConnection();
         next(e);
       });
-  },
+  }
 };
 
 //created by irfan:
@@ -235,56 +237,56 @@ function getDataForProfitAndLoss(options) {
         trans_symbol,
         default_total,
         decimal_places,
-        head_ids,
+        head_ids
       } = options;
 
       _mysql
         .executeQuery({
-          query: ` select finance_account_head_id,account_code,account_name,account_parent,account_level,sort_order,parent_acc_id,root_id,  
+          query: ` select finance_account_head_id,account_code,account_name,account_parent,account_level,sort_order,parent_acc_id,root_id,
                   finance_account_child_id, child_name,head_id from finance_account_head H left join finance_account_child C on
-                  C.head_id=H.finance_account_head_id where H.finance_account_head_id in (${head_ids}) order by account_level,sort_order;  
-                  
-                  select max(account_level) as account_level from finance_account_head 
+                  C.head_id=H.finance_account_head_id where H.finance_account_head_id in (${head_ids}) order by account_level,sort_order;
+
+                  select max(account_level) as account_level from finance_account_head
                   where  finance_account_head_id in (${head_ids});
 
                   select finance_account_head_id,coalesce(parent_acc_id,'root') as parent_acc_id  ,
                   account_name,account_level ,ROUND(coalesce(sum(debit_amount) ,0),${decimal_places}) as debit_amount,
                   ROUND( coalesce(sum(credit_amount) ,0),${decimal_places})  as credit_amount
-                  from finance_account_head H              
-                  left join finance_voucher_details VD on  VD.head_id=H.finance_account_head_id 
+                  from finance_account_head H
+                  left join finance_voucher_details VD on  VD.head_id=H.finance_account_head_id
                   and VD.auth_status='A' and VD.payment_date between date('${from_date}') and date('${to_date}')
                   where H.finance_account_head_id in(${head_ids})
-                  group by H.finance_account_head_id   order by account_level; 
-        
-                  select C.head_id,finance_account_child_id as child_id   
+                  group by H.finance_account_head_id   order by account_level;
+
+                  select C.head_id,finance_account_child_id as child_id
                   ,ROUND(coalesce(sum(debit_amount) ,0),${decimal_places}) as debit_amount,
-                  ROUND( coalesce(sum(credit_amount) ,0),${decimal_places})  as credit_amount, 
+                  ROUND( coalesce(sum(credit_amount) ,0),${decimal_places})  as credit_amount,
                   ROUND((coalesce(sum(credit_amount) ,0)- coalesce(sum(debit_amount) ,0) ),${decimal_places}) as cred_minus_deb,
                   ROUND( (coalesce(sum(debit_amount) ,0)- coalesce(sum(credit_amount) ,0)),${decimal_places})  as deb_minus_cred
                   from   finance_account_child C  left join finance_voucher_details VD on C.finance_account_child_id=VD.child_id
-                  and VD.auth_status='A'   and VD.payment_date between date('${from_date}') and 
-                  date('${to_date}') where C.head_id in(${head_ids}) group by C.finance_account_child_id ; 
-                  
+                  and VD.auth_status='A'   and VD.payment_date between date('${from_date}') and
+                  date('${to_date}') where C.head_id in(${head_ids}) group by C.finance_account_child_id ;
+
                   select finance_account_head_id,coalesce(parent_acc_id,'root') as parent_acc_id  ,
                   account_name,account_level ,ROUND(coalesce(sum(debit_amount) ,0),${decimal_places}) as debit_amount,
                   ROUND( coalesce(sum(credit_amount) ,0),${decimal_places})  as credit_amount
-                  from finance_account_head H              
-                  left join finance_voucher_details VD on  VD.head_id=H.finance_account_head_id 
+                  from finance_account_head H
+                  left join finance_voucher_details VD on  VD.head_id=H.finance_account_head_id
                   and VD.auth_status='A' and VD.payment_date between date('${prev_from_date}') and date('${prev_to_date}')
                   where H.finance_account_head_id in(${head_ids})
-                  group by H.finance_account_head_id   order by account_level; 
-        
-                  select C.head_id,finance_account_child_id as child_id   
+                  group by H.finance_account_head_id   order by account_level;
+
+                  select C.head_id,finance_account_child_id as child_id
                   ,ROUND(coalesce(sum(debit_amount) ,0),${decimal_places}) as debit_amount,
-                  ROUND( coalesce(sum(credit_amount) ,0),${decimal_places})  as credit_amount, 
+                  ROUND( coalesce(sum(credit_amount) ,0),${decimal_places})  as credit_amount,
                   ROUND((coalesce(sum(credit_amount) ,0)- coalesce(sum(debit_amount) ,0) ),${decimal_places}) as cred_minus_deb,
                   ROUND( (coalesce(sum(debit_amount) ,0)- coalesce(sum(credit_amount) ,0)),${decimal_places})  as deb_minus_cred
                   from   finance_account_child C  left join finance_voucher_details VD on C.finance_account_child_id=VD.child_id
-                  and VD.auth_status='A'   and VD.payment_date between date('${prev_from_date}') and 
+                  and VD.auth_status='A'   and VD.payment_date between date('${prev_from_date}') and
                   date('${prev_to_date}') where C.head_id in(${head_ids}) group by C.finance_account_child_id ; `,
-          printQuery: true,
+          printQuery: true
         })
-        .then((result) => {
+        .then(result => {
           const headObj = {};
           const childObj = {};
 
@@ -312,7 +314,7 @@ function getDataForProfitAndLoss(options) {
           );
           resolve(outputArray);
         })
-        .catch((e) => {
+        .catch(e => {
           console.log("e:", e);
           _mysql.releaseConnection();
           next(e);
@@ -329,10 +331,10 @@ function calcAmountForProfitAndLoss(account_heads, levels, decimal_places) {
     const max_account_level = parseInt(levels[0]["account_level"]);
 
     let levels_group = _.chain(account_heads)
-      .groupBy((g) => g.account_level)
+      .groupBy(g => g.account_level)
       .value();
 
-    levels_group[max_account_level].map((m) => {
+    levels_group[max_account_level].map(m => {
       m["total_debit_amount"] = m["debit_amount"];
       m["total_credit_amount"] = m["credit_amount"];
 
@@ -347,20 +349,20 @@ function calcAmountForProfitAndLoss(account_heads, levels, decimal_places) {
 
     for (let i = max_account_level - 1; i >= 0; i--) {
       // for (let k = 0; k < levels_group[i].length; k++) {
-      levels_group[i].map((item) => {
-        let immediate_childs = levels_group[i + 1].filter((child) => {
+      levels_group[i].map(item => {
+        let immediate_childs = levels_group[i + 1].filter(child => {
           if (item.finance_account_head_id == child.parent_acc_id) {
             return item;
           }
         });
 
         const total_debit_amount = _.chain(immediate_childs)
-          .sumBy((s) => parseFloat(s.total_debit_amount))
+          .sumBy(s => parseFloat(s.total_debit_amount))
           .value()
           .toFixed(decimal_places);
 
         const total_credit_amount = _.chain(immediate_childs)
-          .sumBy((s) => parseFloat(s.total_credit_amount))
+          .sumBy(s => parseFloat(s.total_credit_amount))
           .value()
           .toFixed(decimal_places);
 
@@ -432,7 +434,7 @@ function buildHierarchyForProfitAndLoss(
 
         for (let child in child_data) {
           //ST---calulating Amount
-          const BALANCE = child_data[child].find((f) => {
+          const BALANCE = child_data[child].find(f => {
             return (
               item.finance_account_head_id == f.head_id &&
               item.finance_account_child_id == f.child_id
@@ -480,11 +482,11 @@ function buildHierarchyForProfitAndLoss(
 
           leafnode: "Y",
           change: changed_amount,
-          percent: percent,
+          percent: percent
         });
 
         //if children array doesnt contain this non-leaf node then push
-        const data = target.find((val) => {
+        const data = target.find(val => {
           return val.finance_account_head_id == item.finance_account_head_id;
         });
 
@@ -492,7 +494,7 @@ function buildHierarchyForProfitAndLoss(
           let columns_wise_amounts = {};
           //ST---calulating Amount
           for (let head in head_data) {
-            const BALANCE = head_data[head].find((f) => {
+            const BALANCE = head_data[head].find(f => {
               return item.finance_account_head_id == f.finance_account_head_id;
             });
 
@@ -533,14 +535,14 @@ function buildHierarchyForProfitAndLoss(
             label: item.account_name,
             leafnode: "N",
             change: changed_amount,
-            percent: percent,
+            percent: percent
           });
         }
       } else {
         let columns_wise_amounts = {};
         //ST---calulating Amount
         for (let head in head_data) {
-          const BALANCE = head_data[head].find((f) => {
+          const BALANCE = head_data[head].find(f => {
             return item.finance_account_head_id == f.finance_account_head_id;
           });
 
@@ -580,13 +582,13 @@ function buildHierarchyForProfitAndLoss(
           label: item.account_name,
           leafnode: "N",
           change: changed_amount,
-          percent: percent,
+          percent: percent
         });
       }
     }
 
     // function to recursively build the tree
-    let findChildren = function (parent) {
+    let findChildren = function(parent) {
       if (children[parent.finance_account_head_id]) {
         const tempchilds = children[parent.finance_account_head_id];
 
