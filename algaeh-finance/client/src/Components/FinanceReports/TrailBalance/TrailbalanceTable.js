@@ -7,11 +7,12 @@ import React from "react";
 // import { AlgaehMessagePop } from "algaeh-react-components";
 // import ReportHeader from "../header";
 import PrintLayout from "../printlayout";
+import { getAmountFormart } from "../../../utils/GlobalFunctions";
 export default function TrailBalaceReport({
   style,
   data,
   nonZero = true,
-  layout,
+  layout
   // createPrintObject,
 }) {
   const { asset, expense, liability, capital, income } = data;
@@ -70,24 +71,58 @@ export default function TrailBalaceReport({
           fieldName: "label",
           label: "Paticulars",
           filterable: true,
-          freezable: true,
+          freezable: true
         },
         {
           fieldName: "op_amount",
           label: "Opening Balance",
+          displayTemplate: row => {
+            const opamt = String(row["op_amount"]).replace(/[^0-9\.]+/g, "");
+
+            if (!isNaN(opamt)) {
+              return (
+                getAmountFormart(parseFloat(opamt), { appendSymbol: false }) +
+                " " +
+                String(row["op_amount"]).replace(/[^a-zA-Z]+/g, "")
+              );
+            }
+            return row["op_amount"];
+          }
         },
         {
           fieldName: "tr_debit_amount",
           label: "Transactions Debit",
+          displayTemplate: row => {
+            return getAmountFormart(row["tr_debit_amount"], {
+              appendSymbol: false
+            });
+          }
         },
         {
           fieldName: "tr_credit_amount",
           label: "Transaction Credit",
+          displayTemplate: row => {
+            return getAmountFormart(row["tr_credit_amount"], {
+              appendSymbol: false
+            });
+          }
         },
         {
           fieldName: "cb_amount",
           label: "Closing Balance",
-        },
+          displayTemplate: row => {
+            const opamt = String(row["cb_amount"]).replace(/[^0-9\.]+/g, "");
+
+            if (!isNaN(opamt)) {
+              return (
+                getAmountFormart(parseFloat(opamt), { appendSymbol: false }) +
+                " " +
+                String(row["cb_amount"]).replace(/[^a-zA-Z]+/g, "")
+              );
+            }
+            return row["cb_amount"];
+          }
+        }
       ]}
       data={accounts || []}
       layout={layout}

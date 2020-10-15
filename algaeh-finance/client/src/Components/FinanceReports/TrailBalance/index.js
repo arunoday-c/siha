@@ -47,7 +47,7 @@ export default function TrailBalance({ layout, dates, finOptions }) {
       from_date: dates[0],
       to_date: dates[1],
       ACCOUNTS,
-      drillDownLevel,
+      drillDownLevel
     };
     if (type === "tree") {
       input.old = "Y";
@@ -55,7 +55,7 @@ export default function TrailBalance({ layout, dates, finOptions }) {
     const result = await newAlgaehApi({
       module: "finance",
       data: { ...input },
-      uri: "/financeReports/getTrialBalance",
+      uri: "/financeReports/getTrialBalance"
     });
     setData(result.data.result);
   }
@@ -78,15 +78,15 @@ export default function TrailBalance({ layout, dates, finOptions }) {
                     className: "col-2 form-group",
                     type: "AC",
                     data: "ACCOUNTS",
-                    initalStates: "1",
+                    initalStates: "1"
                   },
                   {
                     className: "col-2 form-group",
                     type: "AC",
                     data: "LEVELS",
-                    initalStates: "2",
-                  },
-                ],
+                    initalStates: "2"
+                  }
+                ]
               ]}
               callBack={(inputs, cb) => {
                 const { ACCOUNTS, LEVELS } = inputs;
@@ -97,7 +97,7 @@ export default function TrailBalance({ layout, dates, finOptions }) {
                     setLoading(false);
                     cb();
                   })
-                  .catch((e) => {
+                  .catch(e => {
                     setLoading(false);
                     cb();
                   });
