@@ -21,6 +21,7 @@ class LeaveEdit extends Component {
       leaveRules: [],
       earning_deductions: [],
       encash_calc_method: undefined,
+      leave_accrual_calc:undefined,
     };
     this.getEarningsDeds();
   }
@@ -232,6 +233,7 @@ class LeaveEdit extends Component {
           document_mandatory: this.isItReallyChecked(document_mandatory),
           reset_leave: this.state.reset_leave,
           encash_calc_method: this.state.encash_calc_method,
+          leave_accrual_calc:this.state.leave_accrual_calc,
         };
 
         algaehApiCall({

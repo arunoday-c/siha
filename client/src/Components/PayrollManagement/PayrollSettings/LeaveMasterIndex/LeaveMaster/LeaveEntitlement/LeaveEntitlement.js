@@ -247,7 +247,7 @@ function LeaveEntitlement(props) {
               </div>
             </div>
             <AlagehFormGroup
-              div={{ className: "col-8  form-group" }}
+              div={{ className: "col-4  form-group" }}
               label={{
                 forceLabel: "Carry Forward %",
                 isImp:
@@ -270,7 +270,36 @@ function LeaveEntitlement(props) {
                 },
               }}
             />
-
+<div className="col-4  form-group">
+              <label>Accural Calc Method</label>
+              <div className="customRadio">
+                <label className="radio inline">
+                  <input
+                    type="radio"
+                    name="leave_accrual_calc"
+                    value="P"
+                    checked={myParent.state.leave_accrual_calc === "P"}
+                    onChange={(e) => {
+                      myParent.setState({ leave_accrual_calc: "P" });
+                    }}
+                    disabled={myParent.state.leave_accrual === "Y"}
+                  />
+                  <span>Proportionate</span>
+                </label>
+                <label className="radio inline">
+                  <input
+                    type="radio"
+                    name="leave_accrual_calc"
+                    value="F"
+                    checked={myParent.state.leave_accrual_calc === "F"}
+                    onChange={(e) => {
+                      myParent.setState({ leave_accrual_calc: "F" });
+                    }}  disabled={myParent.state.leave_accrual === "Y"}
+                  />
+                  <span>Fixed</span>
+                </label>
+              </div>
+            </div>
             <div className="col-4  form-group">
               <label>Religion Mandatory</label>
               <div className="customCheckbox">

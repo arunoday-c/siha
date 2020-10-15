@@ -2,6 +2,11 @@ const executePDF = function executePDFMethod(options) {
   return new Promise(function (resolve, reject) {
     try {
       const _ = options.loadash;
+      const {
+        decimal_places,
+        symbol_position,
+        currency_symbol,
+      } = options.args.crypto;
 
       let str = "";
       let input = {};
@@ -28,6 +33,12 @@ const executePDF = function executePDFMethod(options) {
           resolve({
             result: result,
             no_employees: result.length,
+            currency: {
+              decimal_places,
+              addSymbol: false,
+              symbol_position,
+              currency_symbol
+            }
           });
         })
         .catch((error) => {

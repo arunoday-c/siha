@@ -23,8 +23,8 @@
                         <td>{{inc @index}}</td>
                         <td>{{account_name}} > {{child_name}}</td>
                         <td>{{arabic_account_name}} > {{arabic_child_name}}</td>
-                        <td>{{debit_amount}}</td>
-                        <td>{{credit_amount}}</td>
+                        <td>{{numberFormating debit_amount ../currency}}</td>
+                        <td>{{numberFormating credit_amount ../currency}}</td>
                         <td>{{payment_type}}</td>
                         <td>{{payment_date}}</td>
                         <td>{{narration}}</td>

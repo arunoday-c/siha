@@ -3,6 +3,7 @@ import { useHistory } from "react-router-dom";
 import { AlgaehMessagePop, AlgaehTable } from "algaeh-react-components";
 import { LoadSupplierPayable } from "./event";
 import { InfoBar } from "../../Wrappers";
+import { getAmountFormart } from "../../utils/GlobalFunctions";
 
 function CustomerList(props) {
   const [supplier_payable, setSupplierPayable] = useState([]);
@@ -105,6 +106,15 @@ function CustomerList(props) {
                         {
                           label: "Balance",
                           sortable: true,
+                          displayTemplate: (row) => {
+                            return (
+                              <span>
+                                {getAmountFormart(row.balance_amount, {
+                                  appendSymbol: false,
+                                })}
+                              </span>
+                            );
+                          },
                           filterable: true,
                           fieldName: "balance_amount",
                           others: {

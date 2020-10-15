@@ -11,7 +11,7 @@ const executePDF = function executePDFMethod(options) {
       const {
         decimal_places,
         symbol_position,
-        currency_symbol,
+        currency_symbol
       } = options.args.crypto;
 
       if (result.length > 0) {
@@ -71,7 +71,7 @@ const executePDF = function executePDFMethod(options) {
             decimal_places,
             addSymbol: false,
             symbol_position,
-            currency_symbol,
+            currency_symbol
           },
         });
       }

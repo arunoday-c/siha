@@ -6,6 +6,7 @@ import {
 } from "algaeh-react-components";
 import { useHistory } from "react-router-dom";
 import { newAlgaehApi } from "../../hooks";
+import { getAmountFormart } from "../../utils/GlobalFunctions";
 
 export default function VoucherDetails({ visible, data, onClose }) {
   const history = useHistory();
@@ -83,10 +84,28 @@ export default function VoucherDetails({ visible, data, onClose }) {
                 {
                   fieldName: "debit_amount",
                   label: "Debit Amount",
+                  displayTemplate: (row) => {
+                    return (
+                      <span>
+                        {getAmountFormart(row.debit_amount, {
+                          appendSymbol: false,
+                        })}
+                      </span>
+                    );
+                  }
                 },
                 {
                   fieldName: "credit_amount",
                   label: "Credit Amount",
+                  displayTemplate: (row) => {
+                    return (
+                      <span>
+                        {getAmountFormart(row.credit_amount, {
+                          appendSymbol: false,
+                        })}
+                      </span>
+                    );
+                  }
                 },
               ]}
               height="40vh"
