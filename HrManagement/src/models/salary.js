@@ -1190,7 +1190,7 @@ export default {
           where E.employee_group_id = EG.hims_d_employee_group_id and EE.employee_id = E.hims_d_employee_id and \
           EE.earnings_id=ED.hims_d_earning_deduction_id and \
           ED.annual_salary_comp='Y' and E.leave_salary_process = 'Y' and E.hims_d_employee_id in (?) \
-          group by EE.employee_id; SELECT hims_d_leave_id FROM hims_d_leave where leave_category='A';";
+          group by EE.employee_id; SELECT hims_d_leave_id, leave_accrual_calc FROM hims_d_leave where leave_category='A';";
       } else if (inputParam.annual_leave_calculation === "M") {
         let acc_str = `  case when E.date_of_joining between date('${month_start}') and date('${month_end}') 
                   then round((monthly_accrual_days/30)*(datediff( '${month_end}' ,E.date_of_joining)+1 ),2) 
@@ -1220,7 +1220,7 @@ export default {
           from hims_d_employee E, hims_d_employee_group EG,hims_d_hrms_options O, hims_d_employee_earnings EE ,hims_d_earning_deduction ED\
           where E.employee_group_id = EG.hims_d_employee_group_id and EE.employee_id = E.hims_d_employee_id and \
           EE.earnings_id=ED.hims_d_earning_deduction_id and \
-          ED.annual_salary_comp='Y' and E.leave_salary_process = 'Y' and E.hims_d_employee_id in (?) group by EE.employee_id; SELECT hims_d_leave_id FROM hims_d_leave where leave_category='A';";
+          ED.annual_salary_comp='Y' and E.leave_salary_process = 'Y' and E.hims_d_employee_id in (?) group by EE.employee_id; SELECT hims_d_leave_id, leave_accrual_calc FROM hims_d_leave where leave_category='A';";
       }
 
       strQuery += "select employee_id from hims_f_leave_salary_accrual_detail where employee_id in (?) and year=? and month=?"
@@ -1236,10 +1236,28 @@ export default {
           let annual_leave_data = leave_accrual_data[1];
           let accrual_exit = leave_accrual_data[2];
 
-          console.log("accrual_exit", accrual_exit)
+          // console.log("annual_leave_data", annual_leave_data)
           if (leave_accrual_detail.length > 0) {
+            if (annual_leave_data[0].leave_accrual_calc === "P") {
+              for (let p = 0; p < leave_accrual_detail.length; p++) {
+
+                const total_paid_days = inputParam.net_salary.find(
+                  (f) => f.employee_id === leave_accrual_detail[p].employee_id
+                );
+                // console.log("total_paid_days", total_paid_days)
+
+                leave_accrual_detail[p].leave_days =
+                  parseFloat(
+                    (parseFloat(leave_accrual_detail[p].leave_days) / 30) * total_paid_days.total_paid_days
+                  ).toFixed(decimal_places)
+                leave_accrual_detail[p].leave_salary =
+                  parseFloat(
+                    (parseFloat(leave_accrual_detail[p].leave_salary) / 30) * total_paid_days.total_paid_days
+                  ).toFixed(decimal_places)
+              }
+            }
             const leave_salary_accrual_detail = leave_accrual_detail;
-            console.log("leave_salary_accrual_detail 1", leave_salary_accrual_detail)
+            // console.log("leave_salary_accrual_detail 1", leave_salary_accrual_detail)
             for (let i = 0; i < accrual_exit.length; i++) {
 
               const salary_pay_acc = leave_salary_accrual_detail.find(
@@ -1248,7 +1266,7 @@ export default {
               leave_salary_accrual_detail.pop(salary_pay_acc)
             }
 
-            console.log("leave_salary_accrual_detail", leave_salary_accrual_detail)
+            // console.log("leave_salary_accrual_detail", leave_salary_accrual_detail)
 
             if (leave_salary_accrual_detail.length > 0) {
               _mysql
