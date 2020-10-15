@@ -4,6 +4,7 @@ import { AlgaehTable } from "algaeh-react-components";
 import { Spin, Button } from "antd";
 import FilterComponent from "./FilterComponent";
 import VoucherDetails from "./VoucherDetails";
+import { getAmountFormart } from "../../utils/GlobalFunctions";
 // import { useLocation } from "react-router-dom";
 
 export default memo(function QuickSearch(props) {
@@ -90,6 +91,15 @@ export default memo(function QuickSearch(props) {
                               label: "Amount",
                               sortable: true,
                               filterable: true,
+                              displayTemplate: (row) => {
+                                return (
+                                  <span>
+                                    {getAmountFormart(row.amount, {
+                                      appendSymbol: false,
+                                    })}
+                                  </span>
+                                );
+                              }
                             },
                             {
                               fieldName: "updated_date",

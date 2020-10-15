@@ -290,45 +290,51 @@ let addDentalTreatment = (req, res, next) => {
   let input = extend({}, req.body);
   try {
     let finalInput = [];
-    for (let i = 0; i < input.send_teeth.length; i++) {
-      let surfaceArray = {
-        distal: "N",
-        incisal: "N",
-        occlusal: "N",
-        mesial: "N",
-        buccal: "N",
-        labial: "N",
-        cervical: "N",
-        palatal: "N",
-        lingual: "N"
-      };
-      let singleObj = new LINQ(input.send_teeth[i]["details"])
-        .Select(s => s.surface)
-        .ToArray();
+    if (this.state.price_tooth === "S") {
+      for (let i = 0; i < input.send_teeth.length; i++) {
+        let surfaceArray = {
+          distal: "N",
+          incisal: "N",
+          occlusal: "N",
+          mesial: "N",
+          buccal: "N",
+          labial: "N",
+          cervical: "N",
+          palatal: "N",
+          lingual: "N"
+        };
 
-      let teeth_number = input.send_teeth[i]["teeth_number"];
-      extend(surfaceArray, { teeth_number });
+        let singleObj = new LINQ(input.send_teeth[i]["details"])
+          .Select(s => s.surface)
+          .ToArray();
 
-      for (let d = 0; d < singleObj.length; d++) {
-        if (singleObj[d] == "M") {
-          extend(surfaceArray, { mesial: "Y" });
+        let teeth_number = input.send_teeth[i]["teeth_number"];
+        extend(surfaceArray, { teeth_number });
+
+        for (let d = 0; d < singleObj.length; d++) {
+          if (singleObj[d] == "M") {
+            extend(surfaceArray, { mesial: "Y" });
+          }
+          if (singleObj[d] == "P") {
+            extend(surfaceArray, { palatal: "Y" });
+          }
+          if (singleObj[d] == "D") {
+            extend(surfaceArray, { distal: "Y" });
+          }
+          if (singleObj[d] == "I") {
+            extend(surfaceArray, { incisal: "Y" });
+          }
+          if (singleObj[d] == "L") {
+            extend(surfaceArray, { labial: "Y" });
+          }
         }
-        if (singleObj[d] == "P") {
-          extend(surfaceArray, { palatal: "Y" });
-        }
-        if (singleObj[d] == "D") {
-          extend(surfaceArray, { distal: "Y" });
-        }
-        if (singleObj[d] == "I") {
-          extend(surfaceArray, { incisal: "Y" });
-        }
-        if (singleObj[d] == "L") {
-          extend(surfaceArray, { labial: "Y" });
-        }
+
+        finalInput.push(surfaceArray);
       }
+    } else {
 
-      finalInput.push(surfaceArray);
     }
+
 
     const insurtColumns = [
       "teeth_number",

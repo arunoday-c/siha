@@ -82,13 +82,17 @@ export default {
   getCurrencyMaster: (req, res, next) => {
     const _mysql = new algaehMysql();
 
+    let strQuery = ""
+    if (req.query.hims_d_currency_id > 0) {
+      strQuery += " and hims_d_currency_id= " + req.query.hims_d_currency_id;
+    }
     try {
       _mysql
         .executeQuery({
           query:
-            "select hims_d_currency_id, currency_code, currency_description, currency_symbol,\
-          decimal_places, symbol_position, thousand_separator, decimal_separator, negative_separator\
-          FROM hims_d_currency where record_status='A' order by hims_d_currency_id desc ",
+            `select hims_d_currency_id, currency_code, currency_description, currency_symbol,
+          decimal_places, symbol_position, thousand_separator, decimal_separator, negative_separator
+          FROM hims_d_currency where record_status='A' ${strQuery} order by hims_d_currency_id desc `,
 
           printQuery: true
         })

@@ -1,5 +1,7 @@
 import React from "react";
 import { AlgaehModal, AlgaehDataGrid } from "algaeh-react-components";
+import { getAmountFormart } from "../../utils/GlobalFunctions";
+
 export default function ({ visible, voucherNo, inVisible, data }) {
   // let narration = data[0];
 
@@ -25,10 +27,28 @@ export default function ({ visible, voucherNo, inVisible, data }) {
             {
               fieldName: "credit_amount",
               label: "Credit Amount",
+              displayTemplate: (row) => {
+                return (
+                  <span>
+                    {getAmountFormart(row.credit_amount, {
+                      appendSymbol: false,
+                    })}
+                  </span>
+                );
+              }
             },
             {
               fieldName: "debit_amount",
               label: "Debit Amount",
+              displayTemplate: (row) => {
+                return (
+                  <span>
+                    {getAmountFormart(row.debit_amount, {
+                      appendSymbol: false,
+                    })}
+                  </span>
+                );
+              }
             },
             {
               fieldName: "narration",

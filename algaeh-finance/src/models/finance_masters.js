@@ -15,7 +15,7 @@ export default {
       .executeQuery({
         query: `select default_cost_center_id,default_branch_id,cost_center_required,P.project_desc as default_cost_center_name,third_party_payroll,
        cost_center_type ,start_month,F.start_date,end_month,F.end_date,auth_level,auth1_limit_amount,auth1_limit,hospital_name as default_branch_name,
-       allow_negative_balance,grni_required      from finance_options F
+       allow_negative_balance,grni_required,default_currency from finance_options F
       left join hims_d_project P on F.default_cost_center_id=P.hims_d_project_id 
       left join  hims_d_hospital H on H.hims_d_hospital_id=F.default_branch_id  limit 1; `,
         printQuery: true,

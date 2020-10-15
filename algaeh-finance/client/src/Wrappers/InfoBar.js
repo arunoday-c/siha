@@ -1,5 +1,6 @@
 import React from "react";
 import "./infobar.scss";
+import { getAmountFormart } from "../utils/GlobalFunctions";
 
 export default function InfoBar({ data }) {
   const { over_due, total_receivable, past_payments, day_end_pending } = data;
@@ -10,7 +11,9 @@ export default function InfoBar({ data }) {
           <div className="col">
             <div className="infoValCntr green">
               <div className="label">Paid Last 30 days</div>
-              <h5> {past_payments}</h5>
+              <h5> {getAmountFormart(past_payments, {
+                appendSymbol: false,
+              })}</h5>
             </div>
           </div>
         ) : null}
@@ -18,7 +21,9 @@ export default function InfoBar({ data }) {
           <div className="col">
             <div className="infoValCntr yellow">
               <div className="label">Open Invoices</div>
-              <h5>{total_receivable}</h5>
+              <h5>{getAmountFormart(total_receivable, {
+                appendSymbol: false,
+              })}</h5>
             </div>
           </div>
         ) : null}
@@ -26,18 +31,22 @@ export default function InfoBar({ data }) {
           <div className="col">
             <div className="infoValCntr red">
               <div className="label">Overdue</div>
-              <h5>{over_due}</h5>
+              <h5>{getAmountFormart(over_due, {
+                appendSymbol: false,
+              })}</h5>
             </div>
           </div>
         ) : null}
-        {day_end_pending ? (
+        {/* {day_end_pending ? (
           <div className="col ">
             <div className="infoValCntr blue">
               <div className="label">Dayend Pending Transactions</div>
-              <h5>{day_end_pending}</h5>
+              <h5>{getAmountFormart(day_end_pending, {
+                appendSymbol: false,
+              })}</h5>
             </div>
           </div>
-        ) : null}
+        ) : null} */}
       </div>
     );
   } else {

@@ -3,6 +3,7 @@ import { useHistory } from "react-router-dom";
 import { InfoBar } from "../../Wrappers";
 import { AlgaehMessagePop, AlgaehTable } from "algaeh-react-components";
 import { LoadCustomerReceivables } from "./event";
+import { getAmountFormart } from "../../utils/GlobalFunctions";
 
 function CustomerList(props) {
   const history = useHistory();
@@ -87,6 +88,15 @@ function CustomerList(props) {
                             width: 200,
                             style: { textAlign: "right" },
                           },
+                          displayTemplate: (row) => {
+                            return (
+                              <span>
+                                {getAmountFormart(row.balance_amount, {
+                                  appendSymbol: false,
+                                })}
+                              </span>
+                            );
+                          }
                         },
                       ]}
                       // height="80vh"
