@@ -248,22 +248,33 @@ class ReceiptEntry extends Component {
                     : Options.dateFormat}
                 </h6>
               </div>
+              {this.state.dataExitst === true ? (
+                <div className="col">
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Created By",
+                    }}
+                  />
+                  <h6>{this.state.full_name}</h6>
+
+                </div>
+              ) : null}
             </div>
           }
           printArea={
             this.state.hims_f_procurement_po_header_id !== null
               ? {
-                  menuitems: [
-                    {
-                      label: "Receipt Entry Report",
-                      events: {
-                        onClick: () => {
-                          generateReceiptEntryReport(this.state);
-                        },
+                menuitems: [
+                  {
+                    label: "Receipt Entry Report",
+                    events: {
+                      onClick: () => {
+                        generateReceiptEntryReport(this.state);
                       },
                     },
-                  ],
-                }
+                  },
+                ],
+              }
               : ""
           }
           selectedLang={this.state.selectedLang}
@@ -346,28 +357,28 @@ class ReceiptEntry extends Component {
                     </div>
                   </div>
                 ) : (
-                  <div className="col-6">
-                    <div className="row">
-                      <div className="col">
-                        <AlgaehLabel label={{ forceLabel: "Branch" }} />
-                        <h6>
-                          {this.state.hospital_name
-                            ? this.state.hospital_name
-                            : "------"}
-                        </h6>
-                      </div>
+                    <div className="col-6">
+                      <div className="row">
+                        <div className="col">
+                          <AlgaehLabel label={{ forceLabel: "Branch" }} />
+                          <h6>
+                            {this.state.hospital_name
+                              ? this.state.hospital_name
+                              : "------"}
+                          </h6>
+                        </div>
 
-                      <div className="col">
-                        <AlgaehLabel label={{ forceLabel: "Project" }} />
-                        <h6>
-                          {this.state.project_desc
-                            ? this.state.project_desc
-                            : "------"}
-                        </h6>
+                        <div className="col">
+                          <AlgaehLabel label={{ forceLabel: "Project" }} />
+                          <h6>
+                            {this.state.project_desc
+                              ? this.state.project_desc
+                              : "------"}
+                          </h6>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                )}
+                  )}
 
                 <div className="col">
                   <AlgaehLabel label={{ forceLabel: "Vendor" }} />
@@ -540,100 +551,100 @@ class ReceiptEntry extends Component {
                 <ReceiptServiceList ReceiptEntryInp={this.state} />
               </div>
             ) : (
-              <ReceiptItemList ReceiptEntryInp={this.state} />
-            )}
+                <ReceiptItemList ReceiptEntryInp={this.state} />
+              )}
           </MyContext.Provider>
 
           <div className="col-12">
             <div className="row" style={{ marginBottom: 55 }}>
               <div className="col" >
-              <div className="row" >
+                <div className="row" >
 
-              <div
-              className="portlet portlet-bordered"
-              style={{ marginBottom: 60 }}
-            >
-              <div className="portlet-title">
-                <div className="caption">
-                  <h3 className="caption-subject">Attachments</h3>
-                </div>
-              </div>
-              <div className="portlet-body">
-                
-                <div className="row">
-              <div className="col-3">
-              {" "}
-              <Dragger
-                accept=".doc,.docx,application/msword,.pdf"
-                name="contract_file"
-                multiple={false}
-                onRemove={() => {
-                  this.setState((state) => {
-                    return {
-                      recepit_files: [],
-                      docChanged: false,
-                      // saveEnable: state.dataExists && !newFileList.length,
-                    };
-                  });
-                }}
-                beforeUpload={(file) => {
-                  this.setState((state) => ({
-                    recepit_files: [file],
-                    docChanged: true,
-
-                    // saveEnable: false,
-                  }));
-                  return false;
-                }}
-                fileList={this.state.recepit_files}
-              >
-                <p className="upload-drag-icon">
-                  <i className="fas fa-file-upload"></i>
-                </p>
-                <p className="ant-upload-text">
-                  {this.state.contract_file
-                    ? `Click or Drag a file to replace the current file`
-                    : `Click or Drag a file to this area to upload`}
-                </p>
-              </Dragger>
-            </div>
-            <div className="col-3"></div>
-            <div className="col-6">
-              <div className="row">
-                <div className="col-12">
-                  <ul className="receiptEntryAttachment">
-                    {this.state.receipt_docs.length ? (
-                      this.state.receipt_docs.map((doc) => (
-                        <li>
-                          <b> {doc.filename} </b>
-                          <span>
-                            <i
-                              className="fas fa-download"
-                              onClick={() => this.downloadDoc(doc)}
-                            ></i>
-                            <i
-                              className="fas fa-eye"
-                              onClick={() => this.downloadDoc(doc, true)}
-                            ></i>
-                            {!this.state.postEnable ? (
-                              <i
-                                className="fas fa-trash"
-                                onClick={() => this.deleteDoc(doc)}
-                              ></i>
-                            ) : null}
-                          </span>
-                        </li>
-                      ))
-                    ) : (
-                      <div className="col-12 noAttachment" key={1}>
-                        <p>No Attachments Available</p>
+                  <div
+                    className="portlet portlet-bordered"
+                    style={{ marginBottom: 60 }}
+                  >
+                    <div className="portlet-title">
+                      <div className="caption">
+                        <h3 className="caption-subject">Attachments</h3>
                       </div>
-                    )}
-                  </ul>
-                </div>
-              </div>
-            </div></div></div>
-                </div></div>
+                    </div>
+                    <div className="portlet-body">
+
+                      <div className="row">
+                        <div className="col-3">
+                          {" "}
+                          <Dragger
+                            accept=".doc,.docx,application/msword,.pdf"
+                            name="contract_file"
+                            multiple={false}
+                            onRemove={() => {
+                              this.setState((state) => {
+                                return {
+                                  recepit_files: [],
+                                  docChanged: false,
+                                  // saveEnable: state.dataExists && !newFileList.length,
+                                };
+                              });
+                            }}
+                            beforeUpload={(file) => {
+                              this.setState((state) => ({
+                                recepit_files: [file],
+                                docChanged: true,
+
+                                // saveEnable: false,
+                              }));
+                              return false;
+                            }}
+                            fileList={this.state.recepit_files}
+                          >
+                            <p className="upload-drag-icon">
+                              <i className="fas fa-file-upload"></i>
+                            </p>
+                            <p className="ant-upload-text">
+                              {this.state.contract_file
+                                ? `Click or Drag a file to replace the current file`
+                                : `Click or Drag a file to this area to upload`}
+                            </p>
+                          </Dragger>
+                        </div>
+                        <div className="col-3"></div>
+                        <div className="col-6">
+                          <div className="row">
+                            <div className="col-12">
+                              <ul className="receiptEntryAttachment">
+                                {this.state.receipt_docs.length ? (
+                                  this.state.receipt_docs.map((doc) => (
+                                    <li>
+                                      <b> {doc.filename} </b>
+                                      <span>
+                                        <i
+                                          className="fas fa-download"
+                                          onClick={() => this.downloadDoc(doc)}
+                                        ></i>
+                                        <i
+                                          className="fas fa-eye"
+                                          onClick={() => this.downloadDoc(doc, true)}
+                                        ></i>
+                                        {!this.state.postEnable ? (
+                                          <i
+                                            className="fas fa-trash"
+                                            onClick={() => this.deleteDoc(doc)}
+                                          ></i>
+                                        ) : null}
+                                      </span>
+                                    </li>
+                                  ))
+                                ) : (
+                                    <div className="col-12 noAttachment" key={1}>
+                                      <p>No Attachments Available</p>
+                                    </div>
+                                  )}
+                              </ul>
+                            </div>
+                          </div>
+                        </div></div></div>
+                  </div></div>
               </div>
               <div className="col-lg-5" style={{ textAlign: "right" }}>
                 <div className="row">
@@ -694,20 +705,20 @@ class ReceiptEntry extends Component {
                     />
                   </button>
                 ) : (
-                  <button
-                    type="button"
-                    className="btn btn-primary"
-                    onClick={SaveReceiptEnrty.bind(this, this)}
-                    disabled={this.state.saveEnable}
-                  >
-                    <AlgaehLabel
-                      label={{
-                        forceLabel: "Save",
-                        returnText: true,
-                      }}
-                    />
-                  </button>
-                )}
+                    <button
+                      type="button"
+                      className="btn btn-primary"
+                      onClick={SaveReceiptEnrty.bind(this, this)}
+                      disabled={this.state.saveEnable}
+                    >
+                      <AlgaehLabel
+                        label={{
+                          forceLabel: "Save",
+                          returnText: true,
+                        }}
+                      />
+                    </button>
+                  )}
 
                 <button
                   type="button"

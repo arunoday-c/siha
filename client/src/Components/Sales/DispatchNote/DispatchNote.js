@@ -200,6 +200,17 @@ class DispatchNote extends Component {
                     : Options.dateFormat}
                 </h6>
               </div>
+              {this.state.dataExists === true ? (
+                <div className="col">
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Created By",
+                    }}
+                  />
+                  <h6>{this.state.full_name}</h6>
+
+                </div>
+              ) : null}
             </div>
           }
           printArea={

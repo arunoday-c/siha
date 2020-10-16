@@ -11,7 +11,7 @@ export default {
       _mysql
         .executeQuery({
           query:
-            "SELECT PH.*, VQH.vendor_quotation_number, \
+            "SELECT PH.*, VQH.vendor_quotation_number, E.full_name, \
             CASE WHEN PH.po_from = 'INV' THEN (select material_requisition_number from hims_f_inventory_material_header \
             where hims_f_inventory_material_header_id=PH.inv_requisition_id ) \
             else (select material_requisition_number from hims_f_pharamcy_material_header  \
@@ -19,6 +19,8 @@ export default {
             CASE PH.po_from WHEN 'INV' then IL.location_description \
             else PL.location_description end as location_name, V.vendor_name,V.email_id_1\
             from  hims_f_procurement_po_header PH inner join hims_d_vendor V on PH.vendor_id = V.hims_d_vendor_id \
+            inner join algaeh_d_app_user U on PH.created_by = U.algaeh_d_app_user_id \
+            inner join hims_d_employee E on E.hims_d_employee_id = U.employee_id \
             left join hims_d_pharmacy_location PL on PH.pharmcy_location_id = PL.hims_d_pharmacy_location_id \
             left join hims_d_inventory_location IL on PH.inventory_location_id = IL.hims_d_inventory_location_id \
             left join hims_f_procurement_vendor_quotation_header VQH on VQH.hims_f_procurement_vendor_quotation_header_id = PH.vendor_quotation_header_id \
@@ -64,7 +66,7 @@ export default {
                    and IC.hims_d_inventory_tem_category_id = PD.inv_item_category_id and \
                    IG.hims_d_inventory_item_group_id =PD.inv_item_group_id \
                    and procurement_header_id=?" +
-                    strCondition,
+                  strCondition,
                   [headerResult[0].hims_f_procurement_po_header_id]
                 );
               } else if (headerResult[0].po_from == "PHR") {
@@ -84,7 +86,7 @@ export default {
                 where PD.phar_item_id = IM.hims_d_item_master_id and PD.pharmacy_uom_id = PU.hims_d_pharmacy_uom_id \
                 and IM.stocking_uom_id = STOCK_UOM.hims_d_pharmacy_uom_id and IM.service_id = S.hims_d_services_id and \
                 IC.hims_d_item_category_id = PD.phar_item_category and IG.hims_d_item_group_id = PD.phar_item_group and procurement_header_id=?" +
-                    strCondition,
+                  strCondition,
                   [headerResult[0].hims_f_procurement_po_header_id]
                 );
               }
