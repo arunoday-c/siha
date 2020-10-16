@@ -64,7 +64,7 @@ export default {
         query: `select finance_voucher_header_id ,round(amount ,${decimal_places})as invoice_amount,
         round(amount-settled_amount,${decimal_places})as balance_amount,
         round(settled_amount,${decimal_places}) as settled_amount,
-        invoice_no ,voucher_type,COALESCE(D.narration,H.narration) as narration,H.payment_date as invoice_date,
+        invoice_no ,voucher_type,H.narration,H.payment_date as invoice_date,
         due_date, updated_date as last_modified,
         case when settlement_status='S' then 'closed'
         when settlement_status='P' and curdate()> due_date then 'over due'
