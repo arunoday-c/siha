@@ -387,10 +387,40 @@ CHANGE COLUMN `ordered_type` `ordered_type` ENUM('NEW', 'REF', 'REM', 'RIM') NUL
 
 alter table hims_f_dental_form add column odered_date datetime;
 
--- 14-oct-2020 narration detail level
+
+-- =================================  Start Oct 15 2020 =======================================
+-- ******** For Detail level narration
 alter table finance_voucher_details add column narration text default null
 after payment_type;
 
+
+-- ******** For Leave Accural Calc
+ALTER TABLE `hims_d_leave` 
+ADD COLUMN `leave_accrual_calc` ENUM('P', 'F') NULL DEFAULT 'F' COMMENT 'P =Proportional\\nF= Fixed' AFTER `leave_accrual`;
+
+ALTER TABLE `hims_d_leave` 
+CHANGE COLUMN `leave_accrual_calc` `leave_accrual_calc` ENUM('P', 'F') NULL DEFAULT NULL COMMENT 'P =Proportional\\\\nF= Fixed' ;
+
+
+-- ******** For Email Setup
+alter table hims_d_sub_department drop column sub_department_email,drop column password,drop salt;
+ALTER TABLE `hims_f_email_setup` 
+ADD COLUMN `setup_name` VARCHAR(50) NULL DEFAULT NULL AFTER `report_attach`,
+ADD COLUMN `created_date` DATETIME NULL DEFAULT CURRENT_TIMESTAMP AFTER `setup_name`,
+ADD COLUMN `created_by` INT NULL DEFAULT NULL AFTER `created_date`,
+ADD COLUMN `updated_date` DATETIME NULL DEFAULT CURRENT_TIMESTAMP AFTER `created_by`,
+ADD COLUMN `updated_by` INT NULL DEFAULT NULL AFTER `updated_date`;
+
+-- ******** Leave Salary Header - Decimal
+ALTER TABLE `hims_f_employee_leave_salary_header` 
+CHANGE COLUMN `leave_salary_amount` `leave_salary_amount` DECIMAL(15,3) NULL DEFAULT '0.000' ,
+CHANGE COLUMN `airticket_amount` `airticket_amount` DECIMAL(15,3) NULL DEFAULT '0.000' ,
+CHANGE COLUMN `balance_leave_salary_amount` `balance_leave_salary_amount` DECIMAL(15,3) NULL DEFAULT '0.000' ,
+CHANGE COLUMN `balance_airticket_amount` `balance_airticket_amount` DECIMAL(15,3) NULL DEFAULT '0.000' ,
+CHANGE COLUMN `utilized_leave_salary_amount` `utilized_leave_salary_amount` DECIMAL(10,3) NULL DEFAULT '0.000' ,
+CHANGE COLUMN `utilized_airticket_amount` `utilized_airticket_amount` DECIMAL(10,3) NULL DEFAULT '0.000' ;
+
+-- ******** EXPENSE_VOUCHER Numgen
 insert into finance_numgen(`finance_numgen_id`,`numgen_code`,`module_desc`,`prefix`,`intermediate_series`,`postfix`,
 `length`,`increment_by`,`numgen_seperator`,`postfix_start`,`postfix_end`,`current_num`,`pervious_num`,
 `preceding_zeros_req`,`intermediate_series_req`,`reset_slno_on_year_change`)

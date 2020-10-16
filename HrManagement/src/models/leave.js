@@ -972,7 +972,7 @@ export default {
         );
         const full_name = input.full_name;
         const leave_days = input.leave_days;
-        const leave_type = input.leave_type;
+        const leave_desc = input.leave_type;
         const leave_code = input.leave_code;
         const employee_code = input.employee_code;
         const from_date = moment(input.from_date).format("DD-MM-YYYY");
@@ -1007,7 +1007,7 @@ export default {
                 hospital_name,
                 hospital_address,
                 leave_days,
-                leave_type,
+                leave_desc,
                 applied_date,
               })
               .send()

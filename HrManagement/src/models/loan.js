@@ -224,7 +224,7 @@ export default {
         );
         const start_month = input.start_month;
         const start_year = input.start_year;
-        const loan_description = input.loan_description;
+        const loan_desc = input.loan_description;
         const loan_code = input.loan_code;
         const { hospital_address, hospital_name } = req.userIdentity;
         const loan_amount = new utilitites().getCurrencyFormart(
@@ -256,7 +256,7 @@ export default {
                 employee_code,
                 loan_application_date,
                 application_reason,
-                loan_description,
+                loan_desc,
                 loan_amount,
                 installment_amount,
                 start_month,
@@ -393,7 +393,7 @@ export default {
                 return;
               } else {
                 templateName = "loan_approve_mail.hbs";
-                subject = "Applied Loan Status";
+                subject = "Your loan got approved";
                 toEmail = employee_email;
               }
               // try {
@@ -456,7 +456,7 @@ export default {
               // }
             } else {
               templateName = "loan_request_mail.hbs";
-              subject = "Loan Request Status";
+              subject = "Employee Loan Request";
               toEmail = toSendDetails;
             }
             try {
@@ -588,7 +588,7 @@ export default {
                 service: options.service,
               })
                 .to(toSendDetails)
-                .subject("Loan Request Status")
+                .subject("Your loan got rejected")
                 .templateHbs("loan_reject_mail.hbs", {
                   full_name,
                   hospital_name,

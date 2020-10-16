@@ -135,13 +135,13 @@
 								<tr>
 									<td colspan="2">
 										<p>Hello, <b>{{full_name}}</b></p>
-										<p>Your request for {{loan_desc}} for sum of {{approved_amount}} & EMI {{installment_amount}} for {{loan_tenure}} month has been Approved by Level {{auth_level}}</p>
+										<p>Your request for loan has been Approved by Level {{auth_level}}</p>
 									</td>
 								</tr>
 							</table>
 							<table cellspacing="0" cellpadding="2" border="1"  width="80%" style="text-align: left; margin: 0 40px 20px;">
-								
-									<td colspan="2"><b>Request Details:-</td>
+								<tr>
+									<td colspan="2"><b>Loan Details:-</td>
 								</tr>
 								<tr>
 									<td>Loan Request No.:</td>
@@ -151,10 +151,6 @@
 								<tr>
 									<td>Loan Requested Date:</td>
 									<td>{{loan_application_date}}</td>
-								</tr>
-								
-								<tr>
-									<td colspan="2"><b>Loan Details:-</td>
 								</tr>
 								<tr>
 									<td>Loan Desc:</td>
