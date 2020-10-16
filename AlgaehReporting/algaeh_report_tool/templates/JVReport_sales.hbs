@@ -1,0 +1,39 @@
+{{{importStyle 'css/algaehReportStyles.css'}}}
+
+<body>
+    <div class="print-body">
+
+        <section>
+            <table class="tableForData" cell-padding="0">
+                <thead>
+                    <tr>
+                        <th>Sl No.</th>
+                        <th>Ledger</th>
+                        <th>Ledger Arabic</th>
+                        <th>Debit Amount</th>
+                        <th>Credit Amount</th>
+                        <th>Type</th>
+                        <th>Payment Date</th>
+                        <th>Narration</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each result}}
+                    <tr>
+                        <td>{{inc @index}}</td>
+                        <td>{{account_name}} > {{child_name}}</td>
+                        <td>{{arabic_account_name}} > {{arabic_child_name}}</td>
+                        <td>{{numberFormating debit_amount ../currency}}</td>
+                        <td>{{numberFormating credit_amount ../currency}}</td>
+                        <td>{{payment_type}}</td>
+                        <td>{{payment_date}}</td>
+                        <td>{{narration}}</td>
+                    </tr>
+                    {{/each }}
+
+                </tbody>
+            </table>
+        </section>
+        {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
+    </div>
+</body>

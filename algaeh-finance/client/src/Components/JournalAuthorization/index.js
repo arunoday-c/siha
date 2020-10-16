@@ -185,7 +185,17 @@ export default memo(function(props) {
         others: { responseType: "blob" },
         data: {
           report: {
-            reportName: "JVReport",
+
+            // enum('journal','contra','receipt','payment','sales','purchase','credit_note','debit_note','expense_voucher')
+            reportName: record.voucher_type === "journal" ? "JVReport_journal" 
+            : record.voucher_type === "contra" ? "JVReport_contra" 
+            : record.voucher_type === "receipt" ? "JVReport_receipt" 
+            : record.voucher_type === "payment" ? "JVReport_payment" 
+            : record.voucher_type === "sales" ? "JVReport_sales" 
+            : record.voucher_type === "purchase" ? "JVReport_purchase" 
+            : record.voucher_type === "credit_note" ? "JVReport_creditNote" 
+            : record.voucher_type === "debit_note" ? "JVReport_debitNote" 
+            : "JVReport_expense",
             // pageOrentation: "landscape",
             reportParams: [
               {
@@ -195,6 +205,10 @@ export default memo(function(props) {
               {
                 name: "voucher_type",
                 value: record.voucher_type
+              },
+              {
+                name: "voucher_no",
+                value: record.voucher_no
               }
             ],
             outputFileType: "PDF"
@@ -203,7 +217,7 @@ export default memo(function(props) {
         onSuccess: res => {
           const urlBlob = URL.createObjectURL(res.data);
           // const documentName = `${record.voucher_type} Voucher Report`;
-          const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=${record.voucher_type} Voucher Report`;
+          const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Voucher Report - ${record.voucher_type} (${record.voucher_no}) `;
           window.open(origin);
         }
       });
@@ -223,9 +237,7 @@ export default memo(function(props) {
                 <i className="fas fa-thumbs-down"></i>
               </span>
             </Tooltip>
-            {/* <i className="fas fa-thumbs-up" onClick={approve}></i>
-
-            <i className="fas fa-thumbs-down" onClick={reject}></i> */}
+            {/* <i className="fas fa-thumbs-up" onClick={approve}></i><i className="fas fa-thumbs-down" onClick={reject}></i> */}
           </>
         ) : record.auth_status === "A" ? (
           <span>

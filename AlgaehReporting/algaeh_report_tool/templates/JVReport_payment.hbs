@@ -1,0 +1,125 @@
+{{{importStyle 'css/algaehReportStyles.css'}}}
+
+<body>
+<div class="print-body">
+    <section>
+        <table class="tableNoBorder" cell-padding="0">
+        <tr>
+            <td colspan="2"><h1 class="voucherHdg">Remittance Advice</h1></td>
+        <tr>
+        <tr>
+            <td width="55%">
+                <table class="tableNoBorder">
+                    <tr>
+                        <td  class="txtFld">
+                            <p>Payment To:</p>
+                            <p><b>Name Here</b></p>
+                            <p><b>Address Here</b></p>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+            <td width="55%">
+                <table class="tableNoBorder">
+                    <tr>
+                        <td  class="numberFld"><p>Date: <b>Date Here</b></p></td>
+                    </tr>
+                     <tr>
+                        <td  class="numberFld"><p>Reference No: <b>#56445</b></p></td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        </table>
+    </section>
+        <section>
+        
+            <table class="tableForData" cell-padding="0">
+                <thead>
+                    <tr>
+                        <th>Sl No.</th>
+                        <th>Bill No.</th>
+                        <th>Bill Date</th>
+                        <th>Due Date</th>
+                        <th>Orginal Amount</th>
+                        <th>Balance</th>
+                        <th>Payment</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each result}}
+                    <tr>
+                        <td>{{inc @index}}</td>
+                        <td>{{account_name}}</td>
+                        <td>{{account_name}}</td>
+                        <td>{{account_name}}</td>
+                        <td>{{account_name}}</td>
+                        <td>{{account_name}}</td>
+                        <td>{{account_name}}</td>
+                    </tr>
+                    {{/each }}
+
+                </tbody>
+            </table>
+            <br>
+            <table class="tableNoBorder">
+                <tr class="footerTotalUp">
+                    <td class="txtFld" width="60%" rowspan="3"><b>Memo:</b>
+                    <p>sjdhgfhdjsgf</p></td>
+                    <td class="numberFld">Sub Total: </td>
+                    <td class="numberFld">0.00</td>
+                </tr>
+                 <tr class="footerTotalUp">
+                    <td class="numberFld">Credits Included: </td>
+                    <td class="numberFld">0.00</td>
+                </tr>
+                 <tr class="footerTotalUp">
+                    <td class="numberFld">Total: </td>
+                    <td class="numberFld">0.00</td>
+                </tr>
+            </table>
+        </section>
+        
+    <section>
+        <table class="tableNoBorder" cell-padding="0">
+        <tr>
+            <td colspan="2"><h3 class="voucherSubHdg">Credits Summary</h3></td>
+        <tr>
+        </table>
+        
+            <table class="tableForData" cell-padding="0">
+                <thead>
+                    <tr>
+                        <th>Sl No.</th>
+                        <th>Credit No.</th>
+                        <th>Credit Date</th>
+                        <th>Orginal Amount</th>
+                        <th>Balance</th>
+                        <th>Payment</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each result}}
+                    <tr>
+                        <td>{{inc @index}}</td>
+                        <td>{{account_name}}</td>
+                        <td>{{account_name}}</td>
+                        <td>{{account_name}}</td>
+                        <td>{{account_name}}</td>
+                        <td>{{account_name}}</td>
+                    </tr>
+                    {{/each }}
+
+                </tbody>
+            </table>
+            <br>
+            <table class="tableNoBorder">
+                 <tr class="footerTotalUp">
+                    <td class="numberFld">Total: </td>
+                    <td class="numberFld" width="25%">0.00</td>
+                </tr>
+            </table>
+    </section>
+        {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
+    </div>
+</body>

@@ -720,3 +720,13 @@ body {
   width: 16px;
   height: 16px;
 }
+.voucherHdg{
+  font-size: 30px;
+  font-weight: 400;
+  margin: 0;
+}
+.voucherSubHdg{
+  font-size: 15px;
+  font-weight: bold;
+  margin: 0;
+}
