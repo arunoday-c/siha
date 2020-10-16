@@ -9,13 +9,18 @@ export function getSalesQuotation(req, res, next) {
     console.log("getSalesQuotation: ", req.query.HRMNGMT_Active)
     let strQuery = ""
     if (req.query.HRMNGMT_Active === "true") {
-      strQuery = "SELECT SQ.*, C.customer_name, E.full_name as employee_name from hims_f_sales_quotation SQ \
+      strQuery = "SELECT SQ.*, C.customer_name, E.full_name as employee_name, UE.full_name \
+      from hims_f_sales_quotation SQ \
       inner join  hims_d_customer C on  SQ.customer_id = C.hims_d_customer_id \
       inner join  hims_d_employee E on  SQ.sales_person_id = E.hims_d_employee_id \
+      inner join algaeh_d_app_user U on SQ.created_by = U.algaeh_d_app_user_id \
+      inner join hims_d_employee UE on UE.hims_d_employee_id = U.employee_id \
       where SQ.sales_quotation_number =? "
     } else {
       strQuery = "SELECT SQ.*, C.customer_name from hims_f_sales_quotation SQ \
           inner join  hims_d_customer C on  SQ.customer_id = C.hims_d_customer_id \
+          inner join algaeh_d_app_user U on SQ.created_by = U.algaeh_d_app_user_id \
+          inner join hims_d_employee E on E.hims_d_employee_id = U.employee_id \
           where SQ.sales_quotation_number =? "
     }
     _mysql

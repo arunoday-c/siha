@@ -870,12 +870,15 @@ export default {
         .executeQuery({
           query:
             "select DN.*, PH.purchase_number, CASE PH.po_from WHEN 'INV' then IL.location_description \
-            else PL.location_description end as location_name, V.vendor_name\
-            from hims_f_procurement_dn_header DN,\
-            hims_f_procurement_po_header PH inner join hims_d_vendor V on PH.vendor_id = V.hims_d_vendor_id \
+            else PL.location_description end as location_name, V.vendor_name, E.full_name\
+            from hims_f_procurement_dn_header DN \
+            inner join hims_f_procurement_po_header PH on DN.purchase_order_id=PH.hims_f_procurement_po_header_id  \
+            inner join hims_d_vendor V on PH.vendor_id = V.hims_d_vendor_id \
+            inner join algaeh_d_app_user U on DN.created_by = U.algaeh_d_app_user_id \
+            inner join hims_d_employee E on E.hims_d_employee_id = U.employee_id \
             left join hims_d_pharmacy_location PL on PH.pharmcy_location_id = PL.hims_d_pharmacy_location_id\
-            left join hims_d_inventory_location IL on PH.inventory_location_id = IL.hims_d_inventory_location_id   where DN.purchase_order_id=PH.hims_f_procurement_po_header_id \
-            and DN.delivery_note_number=?; \
+            left join hims_d_inventory_location IL on PH.inventory_location_id = IL.hims_d_inventory_location_id \
+            where DN.delivery_note_number=?; \
             select D.*,CASE H.dn_from WHEN 'INV' then II.item_description else PI.item_description end as \
             item_description,CASE H.dn_from WHEN 'INV' then IU.uom_description else PU.uom_description end as \
             uom_description  from hims_f_procurement_dn_header H  inner join hims_f_procurement_dn_detail D\

@@ -192,6 +192,17 @@ class SalesInvoice extends Component {
                   </h6>
                 </div>
               ) : null}
+              {this.state.dataExitst === true ? (
+                <div className="col">
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Created By",
+                    }}
+                  />
+                  <h6>{this.state.full_name}</h6>
+
+                </div>
+              ) : null}
             </div>
           }
           printArea={

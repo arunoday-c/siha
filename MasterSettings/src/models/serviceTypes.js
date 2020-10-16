@@ -792,17 +792,24 @@ export default {
         .executeQueryWithTransaction({
           query:
             "UPDATE `hims_d_services` SET `service_code`=?, `service_name`=?, `standard_fee`=?, \
-            `vat_applicable`=?,`vat_percent`=?, `updated_by`=?, `updated_date`=? WHERE `hims_d_services_id`=?",
+            `vat_applicable`=?,`vat_percent`=?, `updated_by`=?, `updated_date`=? WHERE `hims_d_services_id`=?;\
+            update hims_d_services_insurance set service_name=?, insurance_service_name=? where services_id=? and hims_d_services_insurance_id>0;\
+            update hims_d_services_insurance_network set service_name=?, insurance_service_name=? where services_id=? and hims_d_services_insurance_network_id>0;",
           values: [
             inputParam.service_code,
             inputParam.service_name,
             inputParam.standard_fee,
             inputParam.vat_applicable,
             inputParam.vat_percent,
-
             req.userIdentity.algaeh_d_app_user_id,
             new Date(),
             inputParam.service_id,
+            inputParam.service_name,
+            inputParam.service_name,
+            inputParam.service_id,
+            inputParam.service_name,
+            inputParam.service_name,
+            inputParam.service_id
           ],
           printQuery: true,
         })
