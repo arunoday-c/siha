@@ -11,7 +11,8 @@ import {
   openSalaryComponents,
   closeSalaryComponents,
   getOptions,
-  generateMonthlyLoanReport,generateLevGratReconReport
+  generateMonthlyLoanReport,
+  // generateLevGratReconReport
 } from "./NewSalaryProcessingEvents.js";
 import SalariesComponents from "./SalariesComponents";
 import { AlgaehSecurityElement } from "algaeh-react-components";
@@ -458,7 +459,7 @@ class NewSalaryProcessing extends Component {
                       }}
                     />
                   </button>
-                  <button
+                  {/* <button
                     type="button"
                     className="btn btn-other"
                     onClick={generateLevGratReconReport.bind(this, this)}
@@ -474,7 +475,7 @@ class NewSalaryProcessing extends Component {
                         returnText: true,
                       }}
                     />
-                  </button>
+                  </button> */}
                 </div>
               </div>
             </div>

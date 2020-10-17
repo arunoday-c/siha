@@ -56,7 +56,7 @@ const executePDF = function executePDFMethod(options) {
             salary_in_words:
               options.args.crypto.currency_symbol +
               " " +
-              writtenForm(result[0].total_amount) +
+              writtenForm(total_amount) +
               " Only",
           });
         })

@@ -40,10 +40,23 @@ const executePDF = function executePDFMethod(options) {
           printQuery: true,
         })
         .then((result) => {
+          const total_approved_amount = options.currencyFormat(_.sumBy(result, s => parseFloat(s.approved_amount)),options.args.crypto);
+          const total_balance_amount = options.currencyFormat(_.sumBy(result, s => parseFloat(s.balance_amount)),options.args.crypto);
+          const total_loan_due_amount = options.currencyFormat(_.sumBy(result, s => parseFloat(s.loan_due_amount)),options.args.crypto);
+          const total_pending_loan = options.currencyFormat(_.sumBy(result, s => parseFloat(s.pending_loan)),options.args.crypto);
+
           resolve({
             result: result,
-            no_employees: result.length,
+            total_approved_amount,
+            total_balance_amount,
+            total_loan_due_amount,
+            total_pending_loan,
+          //  total_balance_amount:_.sumBy(result, s => parseFloat(s.balance_amount)),
+          //  total_loan_due_amount:_.sumBy(result, s => parseFloat(s.loan_due_amount)),
+          //  total_pending_loan:_.sumBy(result, s => parseFloat(s.pending_loan)),
+            // no_employees: result.length,
           });
+          
         })
         .catch((error) => {
           options.mysql.releaseConnection();

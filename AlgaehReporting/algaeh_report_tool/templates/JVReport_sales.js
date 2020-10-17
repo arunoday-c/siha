@@ -20,7 +20,8 @@ const executePDF = function executePDFMethod(options) {
 
       options.mysql
         .executeQuery({
-          query: `SELECT AD.account_name, AD.arabic_account_name, CD.child_name,CD.arabic_child_name, FD.debit_amount, FD.credit_amount, FD.payment_type, FD.payment_date, FD.narration as narration_detail,VD.narration as narration_head
+          query: `SELECT AD.account_name, AD.arabic_account_name, CD.child_name,CD.arabic_child_name, FD.debit_amount, FD.credit_amount, 
+          FD.payment_type, FD.payment_date, FD.narration as narration_detail,VD.narration as narration_head
           FROM finance_voucher_details as FD
           inner join finance_account_head AD on FD.head_id = AD.finance_account_head_id
           inner join finance_account_child CD on FD.child_id = CD.finance_account_child_id
@@ -30,9 +31,10 @@ const executePDF = function executePDFMethod(options) {
           printQuery: true,
         })
         .then((result) => {
+          // console.log("result",result[0].narration_head)
           resolve({
             result: result,
-            // no_employees: result.length,
+            narration_header:result[0].narration_head,
             currency: {
               decimal_places,
               addSymbol: false,
