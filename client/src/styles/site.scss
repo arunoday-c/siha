@@ -2209,6 +2209,21 @@ input.autoselect-input:disabled {
     border: 1px solid #ff3855 !important;
   }
 }
+
+.algaehGrpPassword{
+  .ant-space-item{ width: 100%;}
+.algaehFldPassword {
+
+  input[type="password"]{
+
+max-height: 29px !important;
+/* border: 1px solid #e9e9e9; */
+padding: 0;
+margin: 0;
+line-height: 0px;
+min-height: 23px;
+}}
+}
 /*====================== New Patient Registration CSS starts here ======================*/
 .ant-input {
   min-height: $formMinHt;
