@@ -7,14 +7,29 @@
         <tr>
             <td colspan="2"><h1 class="voucherHdg">Expense Voucher</h1></td>
         <tr>
+            
         <tr>
+             <td width="55%">
+                <table class="tableNoBorder">
+                    <tr>
+                        <td  class="txtFld">
+                            <p>Payment From:</p>
+                            <p><b>{{resultHeader.child_name}}</b></p>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+           
             <td width="55%">
+            </td>
+        </tr>
+        <tr>
+          <td width="55%">
                 <table class="tableNoBorder">
                     <tr>
                         <td  class="txtFld">
                             <p>Payment To:</p>
-                            <p><b>Name Here</b></p>
-                            <p><b>Address Here</b></p>
+                            <p><b></b></p>
                         </td>
                     </tr>
                 </table>
@@ -22,10 +37,10 @@
             <td width="55%">
                 <table class="tableNoBorder">
                     <tr>
-                        <td  class="numberFld"><p>Date: <b>Date Here</b></p></td>
+                        <td  class="numberFld"><p>Date: <b>{{resultHeader.payment_date}}</b></p></td>
                     </tr>
                      <tr>
-                        <td  class="numberFld"><p>Reference No: <b>#56445</b></p></td>
+                        <td  class="numberFld"><p>Reference No: <b>{{resultHeader.voucher_no}}</b></p></td>
                     </tr>
                 </table>
             </td>
@@ -37,30 +52,37 @@
                 <thead>
                     <tr>
                         <th>Sl No.</th>
-                        <th>Ledger</th>
-                        <th>Ledger Arabic</th>
+                        <th>Account/Item</th>
+                        <th>Description</th>
                         <th>Debit Amount</th>
-                        <th>Credit Amount</th>
-                        <th>Type</th>
-                        <th>Payment Date</th>
-                        <th>Narration</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {{#each result}}
+                    {{#each resultInvoice}}
                     <tr>
                         <td>{{inc @index}}</td>
                         <td>{{account_name}} > {{child_name}}</td>
-                        <td>{{arabic_account_name}} > {{arabic_child_name}}</td>
-                        <td>{{numberFormating debit_amount ../currency}}</td>
-                        <td>{{numberFormating credit_amount ../currency}}</td>
-                        <td>{{payment_type}}</td>
-                        <td>{{payment_date}}</td>
                         <td>{{narration_detail}}</td>
+                        <td class="numberFld">{{numberFormating debit_amount ../currency}}</td>
                     </tr>
                     {{/each }}
 
                 </tbody>
+            </table>
+            <br>
+            <table class="tableNoBorder">
+                <tr class="footerTotalUp">
+                    <td class="txtFld" width="60%" rowspan="3"><b>Memo:</b>
+                    <p>{{resultHeader.narration}}</p></td>
+                    <td class="numberFld">Sub Total: </td>
+                     <td class="numberFld">{{numberFormating resultHeader.credit_amount currencyHeader}}</td>
+
+                     
+                </tr>
+                 <tr class="footerTotalUp">
+                    <td class="numberFld">Total Due: </td>
+                    <td class="numberFld">0.00</td>
+                </tr>
             </table>
         </section>
         {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}

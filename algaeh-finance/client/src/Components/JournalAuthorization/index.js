@@ -483,6 +483,7 @@ export default memo(function(props) {
                           fieldName: "auth_status",
                           label: "Record Status",
                           sortable: true,
+                          filterable: true,
                           displayTemplate: row => {
                             return (
                               <span>
@@ -508,19 +509,22 @@ export default memo(function(props) {
                         {
                           fieldName: "voucher_no",
                           label: "Voucher Number",
+                          filterable: true,
                           sortable: true,
                           displayTemplate: voucherCol
                         },
                         {
                           fieldName: "voucher_type",
                           label: "Voucher Type",
+                          filterable: true,
                           displayTemplate: row => {
                             return _.startCase(
                               row.voucher_type ? row.voucher_type : ""
                             );
                           }
                         },
-                        { fieldName: "payment_date", label: "Payment Date" },
+                        { fieldName: "payment_date", label: "Payment Date" ,
+                        filterable: true,},
                         // ...paymentTemplates,
                         /* Commented paymentTemplates there is no condition we can use directly   */
                         // {
@@ -538,6 +542,7 @@ export default memo(function(props) {
                         {
                           fieldName: "amount",
                           label: "Amount",
+                          filterable: true,
                           displayTemplate: (row) => {
                             return (
                               <span>
@@ -548,14 +553,16 @@ export default memo(function(props) {
                             );
                           }
                         },
-                        { fieldName: "narration", label: "Narration" },
+                        { fieldName: "narration", label: "Narration",
+                          filterable: true, },
                         {
                           fieldName: "entered_by",
                           label: "Enterd By",
-                          filtered: true
+                          filterable: true,
                         }
                       ]}
                       height="40vh"
+                      isFilterable={true}
                       rowUnique="finance_voucher_header_id"
                       data={data}
                     />

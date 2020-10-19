@@ -25,12 +25,12 @@ export default function ({ visible, voucherNo, inVisible, data }) {
               label: "Ledger",
             },
             {
-              fieldName: "credit_amount",
-              label: "Credit Amount",
+              fieldName: "debit_amount",
+              label: "Debit Amount",
               displayTemplate: (row) => {
                 return (
                   <span>
-                    {getAmountFormart(row.credit_amount, {
+                    {getAmountFormart(row.debit_amount, {
                       appendSymbol: false,
                     })}
                   </span>
@@ -38,12 +38,12 @@ export default function ({ visible, voucherNo, inVisible, data }) {
               }
             },
             {
-              fieldName: "debit_amount",
-              label: "Debit Amount",
+              fieldName: "credit_amount",
+              label: "Credit Amount",
               displayTemplate: (row) => {
                 return (
                   <span>
-                    {getAmountFormart(row.debit_amount, {
+                    {getAmountFormart(row.credit_amount, {
                       appendSymbol: false,
                     })}
                   </span>
