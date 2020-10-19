@@ -535,9 +535,10 @@ export default {
       _mysql
         .executeQueryWithTransaction({
           query:
-            "UPDATE `hims_f_procurement_grn_header` SET `posted`=?, `posted_date`=?, `posted_by`=? \
+            "UPDATE `hims_f_procurement_grn_header` SET payment_terms=?, `posted`=?, `posted_date`=?, `posted_by`=? \
           WHERE `hims_f_procurement_grn_header_id`=?",
           values: [
+            inputParam.payment_terms,
             inputParam.posted,
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
