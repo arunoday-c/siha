@@ -251,7 +251,12 @@ export function PatientRegistration() {
       initialStale: true,
       onSuccess: (data) => {
         if (data?.patientRegistration) {
-          reset(data?.patientRegistration);
+          let patientRegistration = data?.patientRegistration;
+          reset({
+            ...patientRegistration,
+            // consultation: "Y",
+            visit_type: default_visit_type?.hims_d_visit_type_id,
+          });
         }
       },
       onError: (err) => {

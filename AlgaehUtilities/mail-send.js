@@ -16,24 +16,28 @@ function algaehMail(options) {
     options = {};
   }
 
-  const { smtp, port, useSSL, user, pass, service } = options; //.data[0];
+  let { smtp, port, useSSL, user, pass, service } = options; //.data[0];
   const { EMAIL_USER, EMAIL_PASSWORD } = process.env;
 
   const host = smtp === undefined ? "smtp.gmail.com" : smtp;
-  const _service =
-    service === undefined && host.includes("gmail")
-      ? {
-          service: "gmail",
-        }
-      : { service: service };
+  let _service = {};
+  if (service === undefined && host.includes("gmail")) {
+    _service = {
+      service: "gmail"
+    };
+  } else {
+    if (service !== undefined) _service = { service: service };
+  }
+
   const tls =
     useSSL === true
       ? {}
       : {
           tls: {
-            rejectUnauthorized: false,
-          },
+            rejectUnauthorized: false
+          }
         };
+
   this.transporter = nodemailer.createTransport({
     ..._service,
     host: host,
@@ -52,24 +56,24 @@ function algaehMail(options) {
           ? EMAIL_PASSWORD === undefined
             ? "heagla100%"
             : EMAIL_PASSWORD
-          : pass,
-    },
+          : pass
+    }
   });
   this.mailOptions = {
-    from: user ? user : "Algaeh Technologies <we@algaeh.com>",
+    from: user ? user : "Algaeh Technologies <we@algaeh.com>"
   };
   this.hbsFilePath = undefined;
   this.hbsData = undefined;
 }
-algaehMail.prototype.proxy = function (proxy) {
+algaehMail.prototype.proxy = function(proxy) {
   this.mailOptions["proxy"] = proxy;
   return this;
 };
-algaehMail.prototype.from = function (from) {
+algaehMail.prototype.from = function(from) {
   this.mailOptions["from"] = from;
   return this;
 };
-algaehMail.prototype.to = function (to, cc, bcc) {
+algaehMail.prototype.to = function(to, cc, bcc) {
   this.mailOptions["to"] = to;
   if (cc !== undefined) {
     this.mailOptions["cc"] = cc;
@@ -82,7 +86,7 @@ algaehMail.prototype.to = function (to, cc, bcc) {
 /*
    attachments : typeof array ex [{path:"path of file"/ base64 string}]
 */
-algaehMail.prototype.attachments = function (attachments) {
+algaehMail.prototype.attachments = function(attachments) {
   this.mailOptions["attachments"] = attachments;
   return this;
 };
@@ -90,27 +94,27 @@ algaehMail.prototype.attachments = function (attachments) {
 /*
   Attachments to reports
  */
-algaehMail.prototype.attachReportsAndSend = function (
+algaehMail.prototype.attachReportsAndSend = function(
   req,
   inputArray,
   callBack
 ) {
   //const result = await
   reportEngine(req, inputArray)
-    .then((result) => {
-      this.deletePath = result.map((item) => {
+    .then(result => {
+      this.deletePath = result.map(item => {
         return { path: item.data.path, filename: item.data.filename };
       });
       this.mailOptions["attachments"] = this.deletePath;
       this.send()
-        .then((result) => {
+        .then(result => {
           if (typeof callBack === "function") callBack(null, result);
         })
-        .catch((error) => {
+        .catch(error => {
           if (typeof callBack === "function") callBack(error, null);
         });
     })
-    .catch((error) => {
+    .catch(error => {
       if (typeof callBack === "function") callBack(error, null);
     });
 };
@@ -120,9 +124,9 @@ algaehMail.prototype.attachReportsAndSend = function (
   description / organizer / category :typeof string,
   attendees : typeof array ex [{email:"abc@gmail.com",name:"ABC"}]
   alarm : typeof integer ex 300 => 5mins
-  
+
 */
-algaehMail.prototype.calender = function (options, eventName, category) {
+algaehMail.prototype.calender = function(options, eventName, category) {
   if (options === undefined) {
     options = {};
   }
@@ -130,7 +134,7 @@ algaehMail.prototype.calender = function (options, eventName, category) {
   const cal = ical({
     domain: os.hostname(),
     prodId: { company: "algaeh.com", product: "algaeh-email-sender-service" },
-    name: eventName,
+    name: eventName
   });
   const timeZone = jstz.determine().name();
   const event = cal.createEvent({
@@ -140,24 +144,24 @@ algaehMail.prototype.calender = function (options, eventName, category) {
     timestamp: new Date(),
     summary: eventName,
     description: description,
-    floating: true,
+    floating: true
     //organizer: organizer === undefined ? "Algaeh Technologies" : organizer
   });
   if (organizer !== undefined) {
     event.organizer({
       name: organizer,
-      email: this.mailOptions.from,
+      email: this.mailOptions.from
     });
   }
   if (category !== undefined) {
     event.createCategory({
-      name: category.toUpperCase(),
+      name: category.toUpperCase()
     });
   }
   if (alarm !== undefined) {
     event.createAlarm({
       type: "audio",
-      trigger: alarm,
+      trigger: alarm
     });
   }
   if (attendees !== undefined) {
@@ -167,23 +171,23 @@ algaehMail.prototype.calender = function (options, eventName, category) {
   }
   this.mailOptions["icalEvent"] = {
     method: "request",
-    content: cal.toString(),
+    content: cal.toString()
   };
   return this;
 };
-algaehMail.prototype.subject = function (subject) {
+algaehMail.prototype.subject = function(subject) {
   this.mailOptions["subject"] = subject;
   return this;
 };
-algaehMail.prototype.text = function (text) {
+algaehMail.prototype.text = function(text) {
   this.mailOptions["text"] = text;
   return this;
 };
-algaehMail.prototype.html = function (html) {
+algaehMail.prototype.html = function(html) {
   this.mailOptions["html"] = html;
   return this;
 };
-algaehMail.prototype.templateHbs = function (fileName, data) {
+algaehMail.prototype.templateHbs = function(fileName, data) {
   const file = path.join(process.cwd(), "../templates", fileName);
 
   if (!fs.existsSync(file)) {
@@ -193,7 +197,7 @@ algaehMail.prototype.templateHbs = function (fileName, data) {
   this.hbsData = data;
   return this;
 };
-algaehMail.prototype.send = function (printInput) {
+algaehMail.prototype.send = function(printInput) {
   return new Promise((resolve, reject) => {
     try {
       if (printInput === true) console.log("Mail Input.", this.mailOptions);
@@ -206,26 +210,26 @@ algaehMail.prototype.send = function (printInput) {
 
         this.transporter
           .sendMail(this.mailOptions)
-          .then((result) => {
+          .then(result => {
             this.transporter.close();
             this.hbsFilePath = undefined;
             this.hbsData = undefined;
             if (this.deletePath) {
-              this.deletePath.map((item) => {
-                fs.exists(item.path, (exists) => {
+              this.deletePath.map(item => {
+                fs.exists(item.path, exists => {
                   if (exists) fs.unlink(item.path);
                 });
               });
             }
             resolve(result);
           })
-          .catch((error) => {
+          .catch(error => {
             this.transporter.close();
             this.hbsFilePath = undefined;
             this.hbsData = undefined;
             if (this.deletePath) {
-              this.deletePath.map((item) => {
-                fs.exists(item.path, (exists) => {
+              this.deletePath.map(item => {
+                fs.exists(item.path, exists => {
                   if (exists) fs.unlink(item.path);
                 });
               });
@@ -235,8 +239,8 @@ algaehMail.prototype.send = function (printInput) {
       })();
     } catch (error) {
       if (this.deletePath) {
-        this.deletePath.map((item) => {
-          fs.exists(item.path, (exists) => {
+        this.deletePath.map(item => {
+          fs.exists(item.path, exists => {
             if (exists) fs.unlink(item.path);
           });
         });

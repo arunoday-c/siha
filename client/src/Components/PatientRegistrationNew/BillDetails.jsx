@@ -200,6 +200,7 @@ export function BillDetails({
   useEffect(() => {
     if (billData) {
       setBillData(null);
+      setCardData(null);
       setPromoCode(null);
       setValue("promo_code", "");
     }
