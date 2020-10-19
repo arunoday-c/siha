@@ -15,7 +15,7 @@ import { GetAmountFormart } from "../../../utils/GlobalFunctions";
 import {
   MainContext,
   AlgaehDateHandler,
-  RawSecurityElement,
+  RawSecurityElement
 } from "algaeh-react-components";
 import GlobalVariables from "../../../utils/GlobalVariables";
 import spotlightSearch from "../../../Search/spotlightSearch.json";
@@ -40,6 +40,7 @@ export default class NewPackage extends PureComponent {
       s_service_amount: null,
       s_service_type: null,
       s_service: null,
+      s_service_name: null,
       package_type: "S",
       package_visit_type: "S",
       advance_percentage: 0,
@@ -70,15 +71,6 @@ export default class NewPackage extends PureComponent {
     this.setState({
       hospital_id: userToken.hims_d_hospital_id,
     });
-
-    RawSecurityElement({ elementCode: "Enable_Multi_Package" }).then(
-      (result) => {
-        console.log("showPackageSection", result);
-        if (result === "show") {
-          this.setState({ showPackageSection: "" });
-        }
-      }
-    );
   }
 
   UNSAFE_componentWillReceiveProps(newProps) {
@@ -100,6 +92,13 @@ export default class NewPackage extends PureComponent {
         this.setState({ ...this.state, ...IOputs });
       }
     }
+    RawSecurityElement({ elementCode: "Enable_Multi_Package" }).then(
+      (result) => {
+        if (result === "show") {
+          this.setState({ showPackageSection: "" });
+        }
+      }
+    );
   }
 
   onClose = (e) => {
@@ -739,8 +738,8 @@ export default class NewPackage extends PureComponent {
                       }}
                       name="s_service"
                       columns={spotlightSearch.Services.servicemaster}
-                      displayField="service_name"
-                      value={this.state.service_name}
+                      displayField="s_service_name"
+                      value={this.state.s_service_name}
                       searchName="package_service"
                       onClick={this.serviceHandeler.bind(this)}
                       ref={(attReg) => {

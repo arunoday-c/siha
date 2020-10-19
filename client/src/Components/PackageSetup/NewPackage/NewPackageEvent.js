@@ -17,7 +17,7 @@ export default function NewPackageEvent() {
       $this.setState({
         s_service: e.hims_d_services_id,
         s_service_type: e.service_type_id,
-        service_name: e.service_name,
+        s_service_name: e.service_name,
         service_type: e.service_type,
         s_service_amount: e.standard_fee,
         qty: 1,
@@ -86,6 +86,7 @@ export default function NewPackageEvent() {
         );
       });
 
+      debugger
       if (SelectedService.length === 0) {
         let PakageDetail = $this.state.PakageDetail;
         let insertPackage = $this.state.insertPackage;
@@ -99,7 +100,7 @@ export default function NewPackageEvent() {
           tot_service_amount:
             parseFloat($this.state.qty) *
             parseFloat($this.state.s_service_amount),
-          service_name: $this.state.service_name,
+          service_name: $this.state.s_service_name,
           service_type: $this.state.service_type,
         };
 
@@ -130,7 +131,7 @@ export default function NewPackageEvent() {
         $this.setState({
           PakageDetail: PakageDetail,
           // s_service_type: null,
-          service_name: "",
+          S_service_name: "",
           s_service: null,
           s_service_amount: null,
           total_service_amount: total_service_amount,
