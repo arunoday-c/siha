@@ -962,7 +962,6 @@ export default {
         printQuery: true,
       })
       .then((result) => {
-        debugger;
         const toSendDetails = result[0][0];
         const fromSendDetails = result[1][0];
         if (fromSendDetails.enable_email === "N") {
@@ -993,7 +992,7 @@ export default {
             url: "http://localhost:3006/api/v1//Document/getEmailConfig",
           }).then((res) => {
             const options = res.data.data[0];
-            debugger;
+
             new algaehMail({
               user: fromSendDetails.sub_department_email,
               pass: decrypted,
