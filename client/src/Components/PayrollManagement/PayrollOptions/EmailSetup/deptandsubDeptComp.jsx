@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import { useQuery } from "react-query";
 import { newAlgaehApi } from "../../../../hooks";
+
 // import { AlgaehSecurityElement } from "algaeh-react-components";
 import "./EmailSetup.scss";
+
 import {
   AlgaehLabel,
   AlgaehFormGroup,
@@ -44,6 +46,8 @@ export default function DeptSubDeptComponent(props) {
     },
   });
 
+  // const disabledEdits =
+  //   userToken.user_type === "SU" || userToken.user_type === "AD" ? false : true;
   const { data: dropdownData } = useQuery("dropdown-data", getDeptAndSubDept, {
     onSuccess: (data) => {
       console.log(data, "datta");
@@ -66,6 +70,7 @@ export default function DeptSubDeptComponent(props) {
           report_name: "test",
           report_attach: attachMail,
           hims_f_email_setup_id: props.data.hims_f_email_setup_id,
+          enable_email: enableEmail,
         },
       });
       if (res.data.success) {
@@ -90,25 +95,25 @@ export default function DeptSubDeptComponent(props) {
 
   return (
     <>
-    <div className="col-8 form-group">
-      <label>Enable Email</label>
-      <div className="customCheckbox">
-        <label className="checkbox inline">
-          <input
-            type="checkbox"
-            value={attachMail}
-            name="enable_email"
-            checked={enableEmail === "Y" ? true : false}
-            onChange={(e) => {
-              return e.target.checked
-                ? setEnableEmail("Y")
-                : setEnableEmail("N");
-            }}
-          />
-          <span>Yes</span>
-        </label>
+      <div className="col-8 form-group">
+        <label>Enable Email</label>
+        <div className="customCheckbox">
+          <label className="checkbox inline">
+            <input
+              type="checkbox"
+              value={enableEmail}
+              name="enable_email"
+              checked={enableEmail === "Y" ? true : false}
+              onChange={(e) => {
+                return e.target.checked
+                  ? setEnableEmail("Y")
+                  : setEnableEmail("N");
+              }}
+            />
+            <span>Yes</span>
+          </label>
+        </div>
       </div>
-    </div>
       <Controller
         name="SubDept"
         control={control}
@@ -168,27 +173,29 @@ export default function DeptSubDeptComponent(props) {
       />
 
       <Space className="col-12 algaehGrpPassword form-group">
-      <div className="row">
-        <label className="style_Label col-12">Enter Password</label>
-            <div className="col"> <Input.Password
-        className="algaehFldPassword"
-          placeholder="Enter Password"
-          name="password"
-          iconRender={(visible) =>
-            visible ? (
-              <span>
-                <i className="fas fa-eye" aria-hidden="true" />
-              </span>
-            ) : (
-              <span>
-                <i class="fa fa-eye-slash" aria-hidden="true"></i>
-              </span>
-            )
-          }
-          value={password}
-          onChange={changePassword}
-        />
-        </div>
+        <div className="row">
+          <label className="style_Label col-12">Enter Password</label>
+          <div className="col">
+            {" "}
+            <Input.Password
+              className="algaehFldPassword"
+              placeholder="Enter Password"
+              name="password"
+              iconRender={(visible) =>
+                visible ? (
+                  <span>
+                    <i className="fas fa-eye" aria-hidden="true" />
+                  </span>
+                ) : (
+                  <span>
+                    <i class="fa fa-eye-slash" aria-hidden="true"></i>
+                  </span>
+                )
+              }
+              value={password}
+              onChange={changePassword}
+            />
+          </div>
         </div>
       </Space>
       <div className="col-8 form-group">
@@ -211,7 +218,7 @@ export default function DeptSubDeptComponent(props) {
         </div>
       </div>
 
-      <div className="col" style={{marginTop:21, textAlign:"right"}}>
+      <div className="col" style={{ marginTop: 21, textAlign: "right" }}>
         <button
           type="button"
           className="btn btn-primary"

@@ -590,10 +590,17 @@ class ApplyLeave extends Component {
                       this.setState({ loading_Process: false });
                       this.getEmployeeLeaveHistory();
                       this.clearState();
-                      AlgaehMessagePop({
-                        type: "info",
-                        display: "Successfully Sent Mail",
-                      });
+                      if (res.status === 200) {
+                        AlgaehMessagePop({
+                          type: "info",
+                          display: "Your Leave Has been Processed",
+                        });
+                      } else {
+                        AlgaehMessagePop({
+                          type: "success",
+                          display: "Successfully Sent Mail",
+                        });
+                      }
                     }
                   })
                   .catch((e) => {
