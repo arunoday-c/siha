@@ -168,7 +168,9 @@ export default {
           `updated_by`=?, `updated_date`=?,  `record_status`=? " +
                 str +
                 "\
-          WHERE `hims_d_services_id`=?;",
+          WHERE `hims_d_services_id`=?; \
+          update hims_d_services_insurance set service_name=?, insurance_service_name=? where services_id=?;\
+          update hims_d_services_insurance_network set service_name=?, insurance_service_name=? where services_id=?;",
               values: [
                 inputParam.service_code,
                 inputParam.cpt_code,
@@ -188,6 +190,12 @@ export default {
                 new Date(),
                 inputParam.record_status,
                 inputParam.hims_d_services_id,
+                inputParam.service_name,
+                inputParam.service_name,
+                inputParam.hims_d_services_id,
+                inputParam.service_name,
+                inputParam.service_name,
+                inputParam.hims_d_services_id
               ],
               printQuery: true,
             })

@@ -245,9 +245,10 @@ ALTER TABLE `hims_d_promotion`
 ADD COLUMN `record_status` ENUM('A', 'I') CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_0900_ai_ci' NULL DEFAULT 'A' AFTER `avail_type`;
 
 -- ******** HR To Day End if getting Error as mysql Error Code: 1366. Incorrect string value: '\xD9\x90...."
-CHARACTER SET utf8mb4 NULL,
-    MODIFY COLUMN voucher_type ENUM('journal', 'contra', 'receipt', 'payment', 'sales', 'purchase', 'credit_note', 'debit_note')  CHARACTER SET utf8mb4 NULL COMMENT 'journal,contra,receipt,payment,sales,purchase,credit_note,debit_note',
-    MODIFY COLUMN document_number VARCHAR(45) CHARACTER SET utf8mb4 NULL,
+ALTER TABLE `finance_day_end_header`
+CHANGE COLUMN `voucher_type` `voucher_type` ENUM('journal', 'contra', 'receipt', 'payment', 'sales', 'purchase', 'credit_note', 'debit_note')
+CHARACTER SET 'utf8mb4' NULL DEFAULT NULL COMMENT 'journal,contra,receipt,payment,sales,purchase,credit_note,debit_note' ,
+CHANGE COLUMN `narration` `narration` MEDIUMTEXT CHARACTER SET 'utf8mb4' NULL DEFAULT NULL ;
 
 -- ******** Added all MIS Report under Algaeh Security
 INSERT INTO `algaeh_d_app_component` (`screen_id`, `component_code`, `component_name`, `created_date`, `updated_date`, `record_status`) VALUES ('176', 'RPT_MIS_CAN_PAT', 'Cancelled Service by Patient', '2020-09-29 16:04:22', '2020-09-29 16:04:22', 'A');
@@ -395,16 +396,16 @@ after payment_type;
 
 
 -- ******** For Leave Accural Calc
-ALTER TABLE `hims_d_leave` 
+ALTER TABLE `hims_d_leave`
 ADD COLUMN `leave_accrual_calc` ENUM('P', 'F') NULL DEFAULT 'F' COMMENT 'P =Proportional\\nF= Fixed' AFTER `leave_accrual`;
 
-ALTER TABLE `hims_d_leave` 
+ALTER TABLE `hims_d_leave`
 CHANGE COLUMN `leave_accrual_calc` `leave_accrual_calc` ENUM('P', 'F') NULL DEFAULT NULL COMMENT 'P =Proportional\\\\nF= Fixed' ;
 
 
 -- ******** For Email Setup
 alter table hims_d_sub_department drop column sub_department_email,drop column password,drop salt;
-ALTER TABLE `hims_f_email_setup` 
+ALTER TABLE `hims_f_email_setup`
 ADD COLUMN `setup_name` VARCHAR(50) NULL DEFAULT NULL AFTER `report_attach`,
 ADD COLUMN `created_date` DATETIME NULL DEFAULT CURRENT_TIMESTAMP AFTER `setup_name`,
 ADD COLUMN `created_by` INT NULL DEFAULT NULL AFTER `created_date`,
@@ -412,7 +413,7 @@ ADD COLUMN `updated_date` DATETIME NULL DEFAULT CURRENT_TIMESTAMP AFTER `created
 ADD COLUMN `updated_by` INT NULL DEFAULT NULL AFTER `updated_date`;
 
 -- ******** Leave Salary Header - Decimal
-ALTER TABLE `hims_f_employee_leave_salary_header` 
+ALTER TABLE `hims_f_employee_leave_salary_header`
 CHANGE COLUMN `leave_salary_amount` `leave_salary_amount` DECIMAL(15,3) NULL DEFAULT '0.000' ,
 CHANGE COLUMN `airticket_amount` `airticket_amount` DECIMAL(15,3) NULL DEFAULT '0.000' ,
 CHANGE COLUMN `balance_leave_salary_amount` `balance_leave_salary_amount` DECIMAL(15,3) NULL DEFAULT '0.000' ,
@@ -441,7 +442,7 @@ INSERT INTO `algaeh_d_reports` (`report_name`, `report_name_for_header`, `report
 
 -- =================================  Start Oct 18 2020 =======================================
 -- ******** Email Setup - Enable Email (Yes/No)
-ALTER TABLE `hims_f_email_setup` 
+ALTER TABLE `hims_f_email_setup`
 ADD COLUMN `enable_email` ENUM('Y', 'N') NULL DEFAULT 'N' AFTER `hims_f_email_setup_id`;
 
 
@@ -451,3 +452,5 @@ INSERT INTO `algaeh_d_reports` ( `report_name`, `report_name_for_header`, `repor
 
 -- ******** Employee Payroll Details Report
 INSERT INTO `algaeh_d_reports` ( `report_name`, `report_name_for_header`, `report_input_series`, `report_header_file_name`, `status`, `created_datetime`, `update_datetime`) VALUES ('employeePayrollDetails', 'Employee Payroll Details', '[\"hospital_id\",\"employee_group_id\",\"month\",\"year\",\"year\",\"month\",\"year\",\"month\"]', 'voucherHeader', 'A', '2020-09-05 10:22:55', '2020-09-05 10:22:55');
+
+alter table finance_voucher_sub_header add column voucher_type enum('journal','contra','receipt','payment','sales','purchase','credit_note','debit_note','expense_voucher')

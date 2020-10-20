@@ -16,7 +16,7 @@ export function getSalesOrder(req, res, next) {
                         inner join  hims_d_employee E on  SO.sales_person_id = E.hims_d_employee_id \
                         left join  algaeh_d_app_user U on  SO.reverted_by = U.algaeh_d_app_user_id \
                         inner join algaeh_d_app_user UC on SO.created_by = UC.algaeh_d_app_user_id \
-                        inner join hims_d_employee UE on UE.hims_d_employee_id = U.employee_id \
+                        inner join hims_d_employee UE on UE.hims_d_employee_id = UC.employee_id \
                         where SO.sales_order_number =? ";
         } else {
             strQuery =
@@ -27,7 +27,7 @@ export function getSalesOrder(req, res, next) {
                         inner join  hims_d_customer C on  SO.customer_id = C.hims_d_customer_id \
                         left join  algaeh_d_app_user U on  SO.reverted_by = U.algaeh_d_app_user_id \
                         inner join algaeh_d_app_user UC on SO.created_by = UC.algaeh_d_app_user_id \
-                        inner join hims_d_employee UE on UE.hims_d_employee_id = U.employee_id \
+                        inner join hims_d_employee UE on UE.hims_d_employee_id = UC.employee_id \
                         where SO.sales_order_number =? ";
         }
         _mysql
