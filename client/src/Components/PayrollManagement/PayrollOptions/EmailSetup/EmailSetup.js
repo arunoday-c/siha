@@ -1,4 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
+import { MainContext } from "algaeh-react-components";
+import EmailConfig from "../../../BusinessSetup/BranchMaster/Organisation/EmailConfig";
 // import "./EmailSetup.scss";
 import // AlgaehLabel,
 // AlgaehFormGroup,
@@ -31,6 +33,7 @@ const getDeptAndSubDept = async () => {
 };
 export default function EmailSetup() {
   const [emailData, setEmailData] = useState([]);
+  const { userToken } = useContext(MainContext);
   // const [subdepartment, setDepartment] = useState([]);
   // // const [hospital_id, setHospitalId] = useState("");
   // const { control, errors } = useForm({
@@ -52,27 +55,32 @@ export default function EmailSetup() {
   // // const { departments } = dropdownData;
   console.log("hospital_id", dropdownData);
   return (
-    <div className="row EmailSetupScreen">
-      {emailData.map((item) => (
-        <div className="col-3 form-group">
-          <div className="portlet portlet-bordered">
-            <div className="portlet-title">
-              <div className="caption">
-                <h3 className="caption-subject">{item.setup_name}</h3>
+    <>
+      <div className="col-4">
+        {userToken.user_type === "SU" ? <EmailConfig /> : null}
+      </div>
+      <div className="row EmailSetupScreen">
+        {emailData.map((item) => (
+          <div className="col-3 form-group">
+            <div className="portlet portlet-bordered">
+              <div className="portlet-title">
+                <div className="caption">
+                  <h3 className="caption-subject">{item.setup_name}</h3>
+                </div>
               </div>
-            </div>
-            <div className="portlet-body">
-              <div className="row">
-                <DeptSubDeptComponent
-                  data={item}
-                  name={item.setup_name}
-                  id={item.email_type}
-                ></DeptSubDeptComponent>
+              <div className="portlet-body">
+                <div className="row">
+                  <DeptSubDeptComponent
+                    data={item}
+                    name={item.setup_name}
+                    id={item.email_type}
+                  ></DeptSubDeptComponent>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      ))}
-    </div>
+        ))}
+      </div>
+    </>
   );
 }

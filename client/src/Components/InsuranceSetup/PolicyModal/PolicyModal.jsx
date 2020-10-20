@@ -22,7 +22,7 @@ export function PolicyModal({ visible, onClose }) {
       width={720}
       // footer={null}
       className={`row algaehNewModal patPolicyModal`}
-      // class={this.state.lang_sets}
+    // class={this.state.lang_sets}
     >
       <div className="popupInner">
         <div className="row">
@@ -35,7 +35,6 @@ export function PolicyModal({ visible, onClose }) {
             />
           </div>
           <div className="col-12 insPolicySec">
-            {" "}
             <NetworkPlan
               key={insurance?.hims_d_insurance_provider_id || "idle"}
               InsuranceSetup={{

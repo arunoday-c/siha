@@ -2,6 +2,7 @@
 
 <body>
 <div class="print-body">
+     
     <section>
         <table class="tableNoBorder" cell-padding="0">
         <tr>
@@ -13,8 +14,9 @@
                     <tr>
                         <td  class="txtFld">
                             <p>Payment To:</p>
-                            <p><b>Name Here</b></p>
-                            <p><b>Address Here</b></p>
+                            <p><b>{{resultHeader.vendor_name}}</b></p>
+                            <p><b>{{resultHeader.address}}</b></p>
+                            <p><b>{{resultHeader.contact_number}}</b></p>
                         </td>
                     </tr>
                 </table>
@@ -22,16 +24,16 @@
             <td width="55%">
                 <table class="tableNoBorder">
                     <tr>
-                        <td  class="numberFld"><p>Date: <b>Date Here</b></p></td>
+                        <td  class="numberFld"><p>Date: <b>{{resultHeader.payment_date}}</b></p></td>
                     </tr>
                      <tr>
-                        <td  class="numberFld"><p>Reference No: <b>#56445</b></p></td>
+                        <td  class="numberFld"><p>Reference No: <b>{{resultHeader.voucher_no}}</b></p></td>
                     </tr>
                 </table>
             </td>
         </tr>
         </table>
-    </section>
+    </section> 
         <section>
         
             <table class="tableForData" cell-padding="0">
@@ -47,15 +49,15 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {{#each result}}
+                    {{#each resultInvoice}}
                     <tr>
                         <td>{{inc @index}}</td>
-                        <td>{{account_name}}</td>
-                        <td>{{account_name}}</td>
-                        <td>{{account_name}}</td>
-                        <td>{{account_name}}</td>
-                        <td>{{account_name}}</td>
-                        <td>{{account_name}}</td>
+                        <td>{{invoice_no}}</td>
+                        <td>{{payment_date}}</td>
+                        <td>{{due_date}}</td>
+                        <td class="numberFld">{{numberFormating amount ../currency}}</td>
+                        <td class="numberFld">{{numberFormating balance ../currency}}</td>
+                        <td class="numberFld">{{numberFormating settled_amount ../currency}}</td>
                     </tr>
                     {{/each }}
 
@@ -65,9 +67,11 @@
             <table class="tableNoBorder">
                 <tr class="footerTotalUp">
                     <td class="txtFld" width="60%" rowspan="3"><b>Memo:</b>
-                    <p>sjdhgfhdjsgf</p></td>
+                    <p>{{resultHeader.narration}}</p></td>
                     <td class="numberFld">Sub Total: </td>
-                    <td class="numberFld">0.00</td>
+                     <td class="numberFld">{{numberFormating resultHeader.amount currencyHeader}}</td>
+
+                     
                 </tr>
                  <tr class="footerTotalUp">
                     <td class="numberFld">Credits Included: </td>
@@ -99,16 +103,16 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {{#each result}}
+                     {{!-- {{#each resultDebitNote} --}}
                     <tr>
                         <td>{{inc @index}}</td>
-                        <td>{{account_name}}</td>
-                        <td>{{account_name}}</td>
-                        <td>{{account_name}}</td>
-                        <td>{{account_name}}</td>
+                        <td>{{invoice_no}}</td>
+                        <td>{{payment_date}}</td>
+                        <td>{{due_date}}</td>
+                        <td>{{amount}}</td>
                         <td>{{account_name}}</td>
                     </tr>
-                    {{/each }}
+                    {{!-- {{/each }} --}}
 
                 </tbody>
             </table>

@@ -41,23 +41,9 @@ const executePDF = function executePDFMethod(options) {
           printQuery: true,
         })
         .then((result) => {
+        
           resolve({
-            result: result,
-
-            leave_amount: options.currencyFormat(
-              result.length > 0 ? result[0].leave_amount : 0,
-              options.args.crypto
-            ),
-
-            total_amount: options.currencyFormat(
-              result.length > 0 ? result[0].total_amount : 0,
-              options.args.crypto
-            ),
-            salary_in_words:
-              options.args.crypto.currency_symbol +
-              " " +
-              writtenForm(total_amount) +
-              " Only",
+            result: result.map(item => {return{...item,salary_in_words:writtenForm(item.total_amount)}}),
           });
         })
         .catch((error) => {

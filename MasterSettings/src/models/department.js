@@ -153,7 +153,7 @@ export default {
         .executeQuery({
           query: `select hims_f_email_setup_id, sub_department_id,email_type,
           sub_department_email,password,salt,report_name,setup_name
-          ,report_attach from hims_f_email_setup `,
+          ,report_attach,enable_email from hims_f_email_setup `,
           // values: values,
           printQuery: true,
         })
@@ -266,7 +266,7 @@ export default {
     const decrypted = AESCrypt.decryptWithSalt(SECRETKey, salt, encrypted);
     let queryObject = {
       query: `INSERT INTO hims_f_email_setup (sub_department_id,email_type,
-        sub_department_email,password,salt,report_name
+        sub_department_email,password,salt,report_name,enable_email
         ,report_attach,setup_name,created_date, created_by, updated_date, updated_by)
         VALUE(?,?,?,?,?,?,?,?,?,?,?,?)`,
       values: [
@@ -276,6 +276,7 @@ export default {
         encrypted,
         salt,
         input.report_name,
+        input.enable_email,
         input.report_attach,
         input.setup_name,
         new Date(),
@@ -288,7 +289,7 @@ export default {
     if (input.hims_f_email_setup_id) {
       queryObject = {
         query: `update hims_f_email_setup set sub_department_id=?,
-  sub_department_email=?,password=if(? is null or ?='',password,?),salt=if(? is null or ?='',salt,?),report_name=?
+  sub_department_email=?,password=if(? is null or ?='',password,?),salt=if(? is null or ?='',salt,?),report_name=?,enable_email=?
   ,report_attach=? ,updated_date=?, updated_by=? where hims_f_email_setup_id=?`,
         values: [
           input.sub_department_id,
@@ -300,6 +301,7 @@ export default {
           salt,
           salt,
           input.report_name,
+          input.enable_email,
           input.report_attach,
           new Date(),
           req.userIdentity.algaeh_d_app_user_id,

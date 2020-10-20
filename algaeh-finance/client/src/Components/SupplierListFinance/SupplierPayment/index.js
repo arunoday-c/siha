@@ -473,7 +473,7 @@ export default memo(function(props) {
               loading={loading}
               onClick={onClickSendSelected}
             >
-              Bulk Receive Payment
+              Bulk Payment
             </AlgaehButton>
             {/* <AlgaehButton
               className="btn btn-primary"

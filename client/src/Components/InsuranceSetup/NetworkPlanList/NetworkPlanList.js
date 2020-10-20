@@ -20,6 +20,7 @@ import {
   onchangegridnumber,
   gridDatehandle,
   dateValidate,
+  deleteNetWorkPlan
 } from "./NetworkPlanListEvent.js";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import { MainContext } from "algaeh-react-components";
@@ -98,9 +99,9 @@ class NetworkPlanList extends PureComponent {
                   this.props.subinsuranceprovider === undefined
                     ? []
                     : this.props.subinsuranceprovider.filter(
-                        (f) =>
-                          f.hims_d_insurance_sub_id === row.insurance_sub_id
-                      );
+                      (f) =>
+                        f.hims_d_insurance_sub_id === row.insurance_sub_id
+                    );
 
                 return (
                   <span>
@@ -117,9 +118,9 @@ class NetworkPlanList extends PureComponent {
                   this.props.subinsuranceprovider === undefined
                     ? []
                     : this.props.subinsuranceprovider.filter(
-                        (f) =>
-                          f.hims_d_insurance_sub_id === row.insurance_sub_id
-                      );
+                      (f) =>
+                        f.hims_d_insurance_sub_id === row.insurance_sub_id
+                    );
 
                 return (
                   <span>
@@ -141,8 +142,8 @@ class NetworkPlanList extends PureComponent {
                   this.props.hospitaldetails === undefined
                     ? []
                     : this.props.hospitaldetails.filter(
-                        (f) => f.hims_d_hospital_id === row.hospital_id
-                      );
+                      (f) => f.hims_d_hospital_id === row.hospital_id
+                    );
 
                 return (
                   <span>
@@ -159,8 +160,8 @@ class NetworkPlanList extends PureComponent {
                   this.props.hospitaldetails === undefined
                     ? []
                     : this.props.hospitaldetails.filter(
-                        (f) => f.hims_d_hospital_id === row.hospital_id
-                      );
+                      (f) => f.hims_d_hospital_id === row.hospital_id
+                    );
 
                 return (
                   <span>
@@ -176,7 +177,21 @@ class NetworkPlanList extends PureComponent {
             {
               fieldName: "network_type",
               label: <AlgaehLabel label={{ fieldName: "network_type" }} />,
-              disabled: true,
+              editorTemplate: (row) => {
+                return (
+                  <AlagehFormGroup
+                    div={{}}
+                    textBox={{
+                      value: row.network_type,
+                      className: "txt-fld",
+                      name: "network_type",
+                      events: {
+                        onChange: onchangegridcol.bind(this, this, row),
+                      },
+                    }}
+                  />
+                );
+              }
             },
             {
               fieldName: "policy_number",
@@ -195,7 +210,7 @@ class NetworkPlanList extends PureComponent {
                     }}
                   />
                 );
-              },
+              }
             },
             {
               fieldName: "employer",
@@ -837,10 +852,8 @@ class NetworkPlanList extends PureComponent {
           isEditable={true}
           paging={{ page: 0, rowsPerPage: 10 }}
           events={{
-            onDelete: () => {
-              this.deleteNetWorkPlan.bind(this);
-            },
-            onEdit: (row) => {},
+            onDelete: deleteNetWorkPlan.bind(this, this),
+            onEdit: (row) => { },
             onDone: UpdateNetworkPlan.bind(this, this),
           }}
           filter={true}

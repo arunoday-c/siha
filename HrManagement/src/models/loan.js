@@ -197,7 +197,7 @@ export default {
         UM.role_id=R.app_d_app_roles_id and R.loan_authorize_privilege ='1'
         inner join algaeh_d_app_user U on UM.user_id=U.algaeh_d_app_user_id 
         inner join hims_d_employee E on U.employee_id=E.hims_d_employee_id;
-            select hims_f_email_setup_id,sub_department_email,password,salt,report_attach,report_name,sub_department_id from
+            select hims_f_email_setup_id,sub_department_email,enable_email,password,salt,report_attach,report_name,sub_department_id from
             hims_f_email_setup where email_type=?`,
         values: [input.email_type],
         printQuery: true,
@@ -206,7 +206,13 @@ export default {
         const toSendDetails = result[0].map((item) => {
           return item.work_email;
         });
+
         const fromSendDetails = result[1][0];
+        if (fromSendDetails.enable_email === "N") {
+          _mysql.releaseConnection();
+          next();
+          return;
+        }
         // console.log("fromSendDetails", fromSendDetails);
         const decrypted = AESCrypt.decryptWithSalt(
           SECRETKey,
@@ -265,6 +271,7 @@ export default {
               })
               .send()
               .then((response) => {
+                res.status(200).json({ success: true, message: "sucess" });
                 next();
               })
               .catch((error) => {
@@ -326,7 +333,7 @@ export default {
     inner join algaeh_d_app_user U on UM.user_id=U.algaeh_d_app_user_id 
     inner join hims_d_employee E on U.employee_id=E.hims_d_employee_id;
         
-        select hims_f_email_setup_id,sub_department_email,password,salt,report_attach,report_name,sub_department_id from
+        select hims_f_email_setup_id,sub_department_email,password,salt,report_attach,enable_email,report_name,sub_department_id from
         hims_f_email_setup where email_type=?;
         select EM.work_email from hims_d_employee EM where hims_d_employee_id=?;  `,
         values: [input.email_type, input.employee_id],
@@ -338,6 +345,12 @@ export default {
         });
 
         const fromSendDetails = result[1][0];
+        if (fromSendDetails.enable_email === "N") {
+          _mysql.releaseConnection();
+          next();
+          return;
+        }
+        req.sendingMail = true;
         // console.log("fromSendDetails", fromSendDetails);
         const decrypted = AESCrypt.decryptWithSalt(
           SECRETKey,
@@ -490,6 +503,7 @@ export default {
                 })
                 .send()
                 .then((response) => {
+                  res.status(200).json({ success: true, message: "sucess" });
                   _mysql.releaseConnection();
                   req.records = result;
                   next();
@@ -559,6 +573,12 @@ export default {
 
         const toSendDetails = result[0][0].work_email;
         const fromSendDetails = result[1][0];
+        if (fromSendDetails.enable_email === "N") {
+          _mysql.releaseConnection();
+          next();
+          return;
+        }
+        req.sendingMail = true;
         // console.log("fromSendDetails", fromSendDetails);
         const decrypted = AESCrypt.decryptWithSalt(
           SECRETKey,
@@ -608,6 +628,7 @@ export default {
                 })
                 .send()
                 .then((response) => {
+                  res.status(200).json({ success: true, message: "sucess" });
                   _mysql.releaseConnection();
                 })
                 .catch((error) => {

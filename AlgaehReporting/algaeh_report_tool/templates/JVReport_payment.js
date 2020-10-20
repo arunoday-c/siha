@@ -16,26 +16,35 @@ const executePDF = function executePDFMethod(options) {
         input[para["name"]] = para["value"];
       });
 
-      console.log("INPUT:", input);
 
       options.mysql
         .executeQuery({
-          query: `SELECT AD.account_name, AD.arabic_account_name, CD.child_name,CD.arabic_child_name, FD.debit_amount, FD.credit_amount, FD.payment_type, FD.payment_date, FD.narration as narration_detail,VD.narration as narration_head
-          FROM finance_voucher_details as FD
-          inner join finance_account_head AD on FD.head_id = AD.finance_account_head_id
-          inner join finance_account_child CD on FD.child_id = CD.finance_account_child_id
-          inner join finance_voucher_header VD on FD.voucher_header_id = VD.finance_voucher_header_id
-          where VD.finance_voucher_header_id=?;`,
-          values: [input.voucher_header_id],
+          query: `SELECT VH.voucher_no,VH.voucher_type,VH.amount,VH.payment_date,VH.settled_amount, VD.child_id, VN.vendor_name,VN.address,VN.contact_number,VH.narration
+          FROM finance_voucher_header as VH
+          left join finance_voucher_details as VD on  VD.voucher_header_id = VH.finance_voucher_header_id
+          inner join hims_d_vendor as VN on  VN.child_id = VD.child_id
+          where VH.finance_voucher_header_id=? group by VN.hims_d_vendor_id;
+          SELECT VH.voucher_no,VH.invoice_no,VH.due_date,VH.amount,VH.payment_date,VH.settled_amount,VH.voucher_type, (VH.amount - VH.settled_amount) as balance
+          FROM finance_voucher_sub_header as VSH
+          left join finance_voucher_header as VH on VH.invoice_no=VSH.invoice_ref_no
+          where VSH.finance_voucher_header_id=?;`,
+          values: [input.voucher_header_id,input.voucher_header_id],
           printQuery: true,
         })
-        .then((result) => {
-          resolve({
-            result: result,
-            // no_employees: result.length,
+        .then((result) => {         
+          resolve({            
+            resultHeader: result[0].length > 0 ? result[0][0] : {},
+            // subTotal:resultHeader.amount,
+            resultInvoice: result[1],
             currency: {
               decimal_places,
               addSymbol: false,
+              symbol_position,
+              currency_symbol
+            },
+            currencyHeader: {
+              decimal_places,
+              addSymbol: true,
               symbol_position,
               currency_symbol
             }

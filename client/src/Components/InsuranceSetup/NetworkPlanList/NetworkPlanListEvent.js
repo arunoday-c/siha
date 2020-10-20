@@ -3,6 +3,7 @@ import swal from "sweetalert2";
 import moment from "moment";
 
 const showconfirmDialog = ($this, row) => {
+  debugger
   swal({
     title: "Are you sure you want to delete this Network Plan?",
     type: "warning",
@@ -82,6 +83,7 @@ const showconfirmDialog = ($this, row) => {
 };
 
 const deleteNetWorkPlan = ($this, row) => {
+  debugger
   showconfirmDialog($this, row);
 };
 
@@ -168,6 +170,7 @@ const UpdateNetworkPlan = ($this, row) => {
 };
 
 const onchangegridcol = ($this, row, e) => {
+  debugger
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
   row[name] = value;

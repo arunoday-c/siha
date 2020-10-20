@@ -1821,7 +1821,7 @@ export default {
           left join finance_account_head H on VD.head_id=H.finance_account_head_id\
           left join finance_account_child C on VD.child_id=C.finance_account_child_id\
           inner join finance_voucher_header FH on FH.finance_voucher_header_id=VD.voucher_header_id
-          where VD.voucher_header_id=?; `,
+          where VD.voucher_header_id=? order by payment_type; `,
         values: [input.finance_voucher_header_id],
         printQuery: true
       })
