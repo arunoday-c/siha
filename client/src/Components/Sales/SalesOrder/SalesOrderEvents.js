@@ -425,7 +425,6 @@ const SaveSalesOrderEnrty = ($this, from) => {
           ? null
           : moment(InputObj.delivery_date, "YYYY-MM-DD").format("YYYY-MM-DD");
 
-      debugger
       InputObj.sales_order_date = moment(InputObj.sales_order_date).format("YYYY-MM-DD h:mm:ss");
 
       let strUri = "";
@@ -517,6 +516,7 @@ const getCtrlCode = ($this, docNumber) => {
     },
     onSuccess: (response) => {
       if (response.data.success) {
+        debugger
         const queryParams = new URLSearchParams($this.props.location.search);
         let data = response.data.records;
 
@@ -573,7 +573,8 @@ const getCtrlCode = ($this, docNumber) => {
         data.organizations = $this.props.hospitaldetails;
 
         $this.setState(data, () => {
-          $this.getDocuments();
+          debugger
+          // $this.getDocuments();
         });
       }
       AlgaehLoader({ show: false });

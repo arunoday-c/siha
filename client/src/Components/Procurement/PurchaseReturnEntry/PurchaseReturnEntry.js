@@ -289,6 +289,15 @@ class PurchaseReturnEntry extends Component {
                   </h6>
                 </div>
 
+                <div className="col">
+                  <AlgaehLabel label={{ forceLabel: "Invoice Number" }} />
+                  <h6>
+                    {this.state.inovice_number
+                      ? this.state.inovice_number
+                      : "------"}
+                  </h6>
+                </div>
+
                 {/* <AlagehFormGroup
                                     div={{ className: "col-2" }}
                                     label={{

@@ -9,7 +9,7 @@ export default {
       _mysql
         .executeQuery({
           query:
-            "SELECT PH.*, GRN.grn_number from  hims_f_procurement_po_return_header PH  \
+            "SELECT PH.*, GRN.grn_number, GRN.inovice_number from  hims_f_procurement_po_return_header PH  \
             inner join hims_f_procurement_grn_header GRN on GRN.hims_f_procurement_grn_header_id=PH.grn_header_id\
             where purchase_return_number=?",
           values: [req.query.purchase_return_number],
@@ -417,7 +417,7 @@ export default {
                 if (inputParam.po_return_from === "PHR") {
                   strQuery = "select RH.hims_f_procurement_return_po_header_id, RH.purchase_return_number, GH.grn_number, \
                   GH.inovice_number, RH.net_total, RH.tax_amount,RH.return_total, PL.head_id, PL.child_id, PL.hospital_id,V.head_id as v_head_id, \
-                  V.child_id as v_child_id\
+                  V.child_id as v_child_id, V.vendor_name\
                   from hims_f_procurement_po_return_header RH \
                   inner join hims_f_procurement_grn_header GH on GH.hims_f_procurement_grn_header_id = RH.grn_header_id \
                   inner join hims_d_pharmacy_location PL on PL.hims_d_pharmacy_location_id = RH.pharmcy_location_id\
@@ -426,8 +426,9 @@ export default {
                   sub_department_id = result[2].length > 0 ? result[2][0].hims_d_sub_department_id : null
                 } else {
                   strQuery = "select RH.hims_f_procurement_return_po_header_id, RH.purchase_return_number, GH.grn_number, \
+                  GH.inovice_number, \
                   RH.net_total, RH.tax_amount,RH.return_total, PL.head_id, PL.child_id,PL.hospital_id, V.head_id as v_head_id, \
-                  V.child_id as v_child_id\
+                  V.child_id as v_child_id, V.vendor_name\
                   from hims_f_procurement_po_return_header RH \
                   inner join hims_f_procurement_grn_header GH on GH.hims_f_procurement_grn_header_id = RH.grn_header_id \
                   inner join hims_d_inventory_location PL on PL.hims_d_inventory_location_id = GH.inventory_location_id\
@@ -470,7 +471,7 @@ export default {
                           headerResult[0].hims_f_procurement_return_po_header_id,
                           headerResult[0].purchase_return_number,
                           inputParam.ScreenCode,
-                          headerResult[0].grn_number,
+                          "Purchase Return " + "/" + headerResult[0].vendor_name + "/" + headerResult[0].grn_number,
                           "Y",
                           headerResult[0].inovice_number,
                           new Date(),
