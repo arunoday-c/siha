@@ -12,14 +12,14 @@ export default function ConsumptionItemsEvents() {
         [name]: value,
         conversion_factor: e.selected.conversion_factor,
         unit_cost: unit_cost,
-        uom_description: e.selected.uom_description
+        uom_description: e.selected.uom_description,
       });
       if (context !== undefined) {
         context.updateState({
           [name]: value,
           conversion_factor: e.selected.conversion_factor,
           unit_cost: unit_cost,
-          uom_description: e.selected.uom_description
+          uom_description: e.selected.uom_description,
         });
       }
     },
@@ -34,12 +34,12 @@ export default function ConsumptionItemsEvents() {
       if (parseFloat(value) < 0) {
         swalMessage({
           title: "Cannot be less than zero.",
-          type: "warning"
+          type: "warning",
         });
       } else if (parseFloat(value) > parseFloat($this.state.qtyhand)) {
         swalMessage({
           title: "Cannot be greater than QTY in Hand.",
-          type: "warning"
+          type: "warning",
         });
       } else {
         let extended_cost = $this.state.unit_cost * value;
@@ -47,17 +47,18 @@ export default function ConsumptionItemsEvents() {
         if (context !== undefined) {
           context.updateState({
             [name]: value,
-            extended_cost: extended_cost
+            extended_cost: extended_cost,
           });
         }
       }
     },
 
     itemchangeText: ($this, context, e) => {
-      let name = e.name || e.target.name;
-
+      // let name = e.name || e.target.name;
+      let name = e.item_description;
       if ($this.state.location_id !== null) {
-        let value = e.value || e.target.value;
+        // let value = e.value || e.target.value;
+        let value = e.hims_d_inventory_item_master_id;
 
         algaehApiCall({
           uri: "/inventoryGlobal/getUomLocationStock",
@@ -65,18 +66,18 @@ export default function ConsumptionItemsEvents() {
           method: "GET",
           data: {
             location_id: $this.state.location_id,
-            item_id: value
+            item_id: value,
           },
-          onSuccess: response => {
+          onSuccess: (response) => {
             if (response.data.success === true) {
               let data = response.data.records;
               if (data.locationResult.length > 0) {
                 getItemLocationStock($this, context, {
                   location_id: $this.state.location_id,
-                  item_id: value
+                  item_id: value,
                 });
 
-                let uom_array = _.filter(data.uomResult, f => {
+                let uom_array = _.filter(data.uomResult, (f) => {
                   return f.uom_id === e.selected.stocking_uom_id;
                 });
                 $this.setState({
@@ -98,7 +99,7 @@ export default function ConsumptionItemsEvents() {
                   barcode: data.locationResult[0].barcode,
 
                   ItemUOM: data.uomResult,
-                  uom_description: uom_array[0].uom_description
+                  uom_description: uom_array[0].uom_description,
                 });
 
                 if (context !== undefined) {
@@ -119,27 +120,27 @@ export default function ConsumptionItemsEvents() {
                     qtyhand: data.locationResult[0].qtyhand,
                     barcode: data.locationResult[0].barcode,
 
-                    ItemUOM: data.uomResult
+                    ItemUOM: data.uomResult,
                   });
                 }
               } else {
                 swalMessage({
                   title: "No Stock Avaiable for selected Item.",
-                  type: "warning"
+                  type: "warning",
                 });
               }
             }
-          }
+          },
         });
       } else {
         $this.setState(
           {
-            [name]: null
+            [name]: null,
           },
           () => {
             swalMessage({
               title: "Please select Location.",
-              type: "warning"
+              type: "warning",
             });
           }
         );
@@ -149,7 +150,7 @@ export default function ConsumptionItemsEvents() {
       if ($this.state.item_id === null) {
         swalMessage({
           title: "Select Item.",
-          type: "warning"
+          type: "warning",
         });
       } else if (
         parseFloat($this.state.quantity) === 0 ||
@@ -157,7 +158,7 @@ export default function ConsumptionItemsEvents() {
       ) {
         swalMessage({
           title: "Please enter Quantity.",
-          type: "warning"
+          type: "warning",
         });
       } else {
         let inventory_stock_detail = $this.state.inventory_stock_detail;
@@ -182,7 +183,7 @@ export default function ConsumptionItemsEvents() {
           barcode: $this.state.barcode,
           unit_cost: $this.state.unit_cost,
           extended_cost: $this.state.extended_cost,
-          operation: "-"
+          operation: "-",
         };
         inventory_stock_detail.push(ItemInput);
         $this.setState({
@@ -200,7 +201,7 @@ export default function ConsumptionItemsEvents() {
           batchno: null,
           grn_no: null,
           unit_cost: 0,
-          extended_cost: 0
+          extended_cost: 0,
         });
 
         if (context !== undefined) {
@@ -218,7 +219,7 @@ export default function ConsumptionItemsEvents() {
             barcode: null,
             expiry_date: null,
             batchno: null,
-            grn_no: null
+            grn_no: null,
           });
         }
       }
@@ -226,7 +227,7 @@ export default function ConsumptionItemsEvents() {
 
     datehandle: ($this, ctrl, e) => {
       $this.setState({
-        [e]: moment(ctrl)._d
+        [e]: moment(ctrl)._d,
       });
     },
 
@@ -243,10 +244,10 @@ export default function ConsumptionItemsEvents() {
       if (context !== undefined) {
         context.updateState({
           inventory_stock_detail: inventory_stock_detail,
-          saveEnable: saveEnable
+          saveEnable: saveEnable,
         });
       }
-    }
+    },
   };
 }
 
@@ -257,9 +258,9 @@ function getItemLocationStock($this, context, value) {
     method: "GET",
     data: {
       inventory_location_id: value.location_id,
-      item_id: value.item_id
+      item_id: value.item_id,
     },
-    onSuccess: response => {
+    onSuccess: (response) => {
       if (response.data.success === true) {
         let data = response.data.records;
         if (data.length !== 0) {
@@ -272,17 +273,17 @@ function getItemLocationStock($this, context, value) {
           $this.setState({
             qtyhand: total_quantity,
             unit_cost: data[0].avgcost,
-            extended_cost: extended_cost
+            extended_cost: extended_cost,
           });
           if (context !== undefined) {
             context.updateState({
               qtyhand: total_quantity,
               unit_cost: data[0].avgcost,
-              extended_cost: extended_cost
+              extended_cost: extended_cost,
             });
           }
         }
       }
-    }
+    },
   });
 }
