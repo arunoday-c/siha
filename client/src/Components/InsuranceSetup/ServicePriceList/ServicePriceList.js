@@ -95,7 +95,7 @@ class ServicePriceList extends PureComponent {
           type: "NETWORK_PLAN_GET_DATA",
           mappingName: "pricefromplans",
         },
-        afterSuccess: (data) => {},
+        afterSuccess: (data) => { },
       });
       this.setState({
         [e.target.name]: e.target.value,
@@ -356,7 +356,8 @@ class ServicePriceList extends PureComponent {
                 {
                   fieldName: "service_name",
                   label: <AlgaehLabel label={{ fieldName: "service_name" }} />,
-                  disabled: true,
+                  others: { disabled: true, }
+
                 },
 
                 {
@@ -523,7 +524,7 @@ class ServicePriceList extends PureComponent {
               paging={{ page: 0, rowsPerPage: 5 }}
               events={{
                 // onDelete: this.deleteVisaType.bind(this),
-                onEdit: (row) => {},
+                onEdit: (row) => { },
                 onDone: updatePriceList.bind(this, this),
               }}
             />
