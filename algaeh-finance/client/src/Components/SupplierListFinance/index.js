@@ -11,23 +11,23 @@ function CustomerList(props) {
   const [info, setInfo] = useState({
     over_due: "",
     total_receivable: "",
-    day_end_pending: "",
+    day_end_pending: ""
   });
 
   useEffect(() => {
     LoadSupplierPayable()
-      .then((data) => {
+      .then(data => {
         setSupplierPayable(data.result);
         setInfo({
           over_due: data.over_due,
           total_receivable: data.total_receivable,
-          day_end_pending: data.day_end_pending,
+          day_end_pending: data.day_end_pending
         });
       })
-      .catch((error) => {
+      .catch(error => {
         AlgaehMessagePop({
           type: "error",
-          display: error,
+          display: error
         });
       });
   }, []);
@@ -42,9 +42,8 @@ function CustomerList(props) {
               <div className="portlet-title">
                 <div className="caption">
                   <h3 className="caption-subject">Supplier List</h3>
-                </div>{" "}
+                </div>
                 <div className="actions">
-                  {" "}
                   <button
                     className="btn btn-primary"
                     onClick={() => {
@@ -69,21 +68,21 @@ function CustomerList(props) {
                           filterable: true,
                           fieldName: "child_name",
                           filtered: true,
-                          displayTemplate: (record) => {
+                          displayTemplate: record => {
                             return (
                               <p
                                 className="p-link"
                                 // type="link"
                                 onClick={() =>
                                   history.push("/SupplierPayment", {
-                                    data: record,
+                                    data: record
                                   })
                                 }
                               >
                                 {record.child_name}
                               </p>
                             );
-                          },
+                          }
                         },
                         {
                           label: "Contact Number",
@@ -91,8 +90,8 @@ function CustomerList(props) {
                           filterable: true,
                           fieldName: "contact_number",
                           others: {
-                            width: 200,
-                          },
+                            width: 200
+                          }
                         },
                         {
                           label: "Account Number",
@@ -100,17 +99,17 @@ function CustomerList(props) {
                           filterable: true,
                           fieldName: "bank_account_no",
                           others: {
-                            width: 200,
-                          },
+                            width: 200
+                          }
                         },
                         {
                           label: "Balance",
                           sortable: true,
-                          displayTemplate: (row) => {
+                          displayTemplate: row => {
                             return (
                               <span>
                                 {getAmountFormart(row.balance_amount, {
-                                  appendSymbol: false,
+                                  appendSymbol: false
                                 })}
                               </span>
                             );
@@ -118,9 +117,9 @@ function CustomerList(props) {
                           filterable: true,
                           fieldName: "balance_amount",
                           others: {
-                            width: 200,
-                          },
-                        },
+                            width: 200
+                          }
+                        }
                       ]}
                       height="80vh"
                       isFilterable={true}

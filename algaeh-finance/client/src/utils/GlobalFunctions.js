@@ -311,7 +311,7 @@ const loadJSON = (file, callback) => {
   var xobj = new XMLHttpRequest();
   xobj.overrideMimeType("application/json");
   xobj.open("GET", file, true);
-  xobj.onreadystatechange = function () {
+  xobj.onreadystatechange = function() {
     if (xobj.readyState === 4 && xobj.status === 200) {
       callback(JSON.parse(xobj.responseText));
     }
@@ -422,11 +422,11 @@ export function AlgaehValidation(options) {
           _title =
             _langua === "en"
               ? _lable
-                .replace("*", "")
-                .toLowerCase()
-                .replace(/^\w/, c => {
-                  return c.toUpperCase();
-                }) + "- Cannot be empty"
+                  .replace("*", "")
+                  .toLowerCase()
+                  .replace(/^\w/, c => {
+                    return c.toUpperCase();
+                  }) + "- Cannot be empty"
               : _lable.replace("*", "") + "- لا يمكن أن يكون فارغا";
         }
         swalMessage({
@@ -466,11 +466,10 @@ export function getAmountFormart(value, options) {
 }
 
 export function numberFormater(value, options, CurrencyDetail) {
-  debugger
   const settings = {
     ...CurrencyDetail,
     ...{ appendSymbol: true },
-    ...options,
+    ...options
   };
 
   const precesions = 2;
@@ -513,7 +512,7 @@ export function numberFormater(value, options, CurrencyDetail) {
   let currency = parseFloat(n).toLocaleString(`en-US`, {
     minimumFractionDigits: precesions,
     maximumFractionDigits: precesions,
-    useGrouping: true,
+    useGrouping: true
   });
 
   if (settings.appendSymbol) {
@@ -615,8 +614,8 @@ export function checkSecurity(options) {
   let currentSecurity =
     sessionStorage.getItem("AlgaehScreener") !== null
       ? JSON.parse(
-        AlgaehOpenContainer(sessionStorage.getItem("AlgaehScreener"))
-      )
+          AlgaehOpenContainer(sessionStorage.getItem("AlgaehScreener"))
+        )
       : undefined;
   if (currentSecurity !== undefined) {
     if (options.securityType === "componet") {

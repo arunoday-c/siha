@@ -3,16 +3,16 @@ import { useLocation, useHistory } from "react-router-dom";
 import {
   AlgaehMessagePop,
   AlgaehTable,
-  AlgaehButton,
+  AlgaehButton
 } from "algaeh-react-components";
 import _ from "lodash";
 import { InfoBar } from "../../../Wrappers";
 import { LedgerReport } from "../../InvoiceCommon";
-import { getInvoicesForSupplier } from "./SupPaymentEvents";
+import { getInvoicesForSupplier, getDebitNotes } from "./SupPaymentEvents";
 import { Button, Spin, Checkbox, Modal } from "antd";
 import { getAmountFormart } from "../../../utils/GlobalFunctions";
 
-export default memo(function (props) {
+export default memo(function(props) {
   const location = useLocation();
   const history = useHistory();
   const [visible, setvisible] = useState(false);
@@ -21,44 +21,52 @@ export default memo(function (props) {
     over_due: "0.00",
     total_receivable: "0.00",
     past_payments: "0.00",
-    day_end_pending: "0",
+    day_end_pending: "0"
   });
   const [supplierName, setSupplierName] = useState("");
   const [loading, setLoading] = useState(false);
   const [indeterminate, setIndeterminate] = useState(false);
   const [checkAll, setCheckAll] = useState(false);
   const [selectAmount, setSelectedAmount] = useState(0);
+  const [showDebitNote, setShowDebitNote] = useState(false);
+  const [debitNode, setDebitNode] = useState([]);
   useEffect(() => {
     if (location.state) {
       setLoading(true);
       const { finance_account_child_id, child_name } = location.state.data;
       setSupplierName(child_name);
       getInvoicesForSupplier(finance_account_child_id)
-        .then((res) => {
+        .then(res => {
           if (res.data.success) {
             const { result } = res.data;
             setData(result.result);
-            setInfo((state) => ({
+            setInfo(state => ({
               ...state,
               over_due: result.over_due,
               total_receivable: result.total_receivable,
               past_payments: result.past_payments,
-              day_end_pending: result.day_end_pending,
+              day_end_pending: result.day_end_pending
             }));
             setLoading(false);
           }
         })
-        .catch((e) => {
+        .catch(e => {
           setLoading(false);
           AlgaehMessagePop({
             type: "Error",
-            display: e.message,
+            display: e.message
           });
         });
     }
   }, [location.state]);
-
-  const receive = (row) => {
+  function onCloseDebitNote() {
+    setShowDebitNote(false);
+  }
+  function onProcessDebitNote() {
+    setShowDebitNote(false);
+    onClickSendSelected(true);
+  }
+  const receive = row => {
     return (
       <Button
         disabled={row.invoice_status === "closed"}
@@ -66,7 +74,7 @@ export default memo(function (props) {
         onClick={() => {
           history.push("/JournalVoucher", {
             data: { ...row, disabled: true },
-            type: "supplier",
+            type: "supplier"
           });
         }}
       >
@@ -74,9 +82,36 @@ export default memo(function (props) {
       </Button>
     );
   };
+  async function onClickDebitNotes() {
+    const filterCheck = data.filter(f => f.checked === true);
+    if (filterCheck.length > 0) {
+      if (debitNode.length > 0) {
+        setShowDebitNote(true);
+        return;
+      }
+      const det = await getDebitNotes(filterCheck[0]["child_id"]);
+      const { result, success } = det.data;
+      if (success && result.length > 0) {
+        setDebitNode(result);
+        setShowDebitNote(true);
+      } else {
+        AlgaehMessagePop({
+          type: "info",
+          display: "No debit invoice found..."
+        });
+        return;
+      }
+    } else {
+      AlgaehMessagePop({
+        type: "warning",
+        display: "Please select atleast one Invoice."
+      });
+      return;
+    }
+  }
   function onChangeCheck(checked, row) {
     row["checked"] = checked;
-    const filterCheck = data.filter((f) => f.checked === true);
+    const filterCheck = data.filter(f => f.checked === true);
     if (data.length === filterCheck.length) {
       setCheckAll(true);
       setIndeterminate(false);
@@ -95,57 +130,110 @@ export default memo(function (props) {
       );
     }
   }
-  function onClickSendSelected() {
-    const filterCheck = data.filter((f) => f.checked === true);
+  function onClickSendSelected(isFromProcessed) {
+    isFromProcessed = isFromProcessed || false;
+    const filterCheck = data.filter(f => f.checked === true);
     if (filterCheck.length === 0) {
       AlgaehMessagePop({
         type: "warning",
-        display: "Please select atleast one Invoice.",
+        display: "Please select atleast one Invoice."
       });
       return;
     }
-    const totalAmount = _.sumBy(filterCheck, (s) => {
+    const totalAmount = _.sumBy(filterCheck, s => {
       return parseFloat(s.balance_amount);
     });
+    let debitNoteTotal = 0;
+    let grandTotal = 0;
+    let filterDebitNotes = [];
+    if (isFromProcessed === true) {
+      filterDebitNotes = debitNode
+        .filter(f => f.checked === true)
+        .map(item => {
+          const { invoice_no, amount, finance_voucher_header_id } = item;
+          return {
+            invoice_no,
+            balance_amount: amount,
+            finance_voucher_header_id,
+            voucher_type: "debit_note"
+          };
+        });
+      if (filterDebitNotes) {
+        debitNoteTotal = _.sumBy(filterDebitNotes, s =>
+          parseFloat(s.balance_amount)
+        );
+      }
+      grandTotal = totalAmount - debitNoteTotal;
+    }
     const {
       narration,
       child_id,
       head_id,
       voucher_type,
-      invoice_no,
+      invoice_no
     } = filterCheck[0];
     Modal.confirm({
       title: "Are you sure do you want to process ?",
       content: (
-        <span>
-          Total amount<b>{totalAmount} </b>for the <b>{narration}</b>
-        </span>
+        <>
+          {isFromProcessed === true ? (
+            <>
+              <span>
+                Payment amount<b>{totalAmount} </b>
+              </span>
+              <hr />
+              <span>
+                Debit Note amount<b>{debitNoteTotal} </b>
+              </span>
+              <hr />
+              <span>
+                Net Total <b>{grandTotal}</b>
+              </span>
+            </>
+          ) : (
+            <span>
+              Payment amount<b>{totalAmount} </b>
+            </span>
+          )}
+        </>
       ),
       okText: "Proceed",
       cancelText: "Cancel",
       onOk: () => {
-        const merdge = filterCheck.map((item) => {
+        const merdge = filterCheck.map(item => {
           const {
             invoice_no,
             balance_amount,
-            finance_voucher_header_id,
+            finance_voucher_header_id
           } = item;
-          return { invoice_no, balance_amount, finance_voucher_header_id };
+          return {
+            invoice_no,
+            balance_amount,
+            finance_voucher_header_id,
+            voucher_type: "payment"
+          };
         });
+        let merdgeData = merdge;
+        if (isFromProcessed === true) {
+          for (let i = 0; i < filterDebitNotes.length; i++)
+            merdgeData.push(filterDebitNotes[i]);
+        }
+
         history.push("/JournalVoucher", {
           data: {
             narration,
             child_id,
             head_id,
-            balance_amount: totalAmount,
+            balance_amount: isFromProcessed === true ? grandTotal : totalAmount,
             voucher_type: voucher_type,
             invoice_no,
-            disabled: true,
+            disabled: true
           },
-          merdge,
-          type: "supplier",
+          merdge: merdgeData,
+          filterDebitNotes,
+          type: "supplier"
         });
-      },
+      }
     });
   }
   return (
@@ -155,6 +243,55 @@ export default memo(function (props) {
         visible={visible}
         setVisible={setvisible}
       />
+      <Modal
+        title="Debit notes"
+        visible={showDebitNote}
+        maskClosable={false}
+        okText="Process"
+        onOk={onProcessDebitNote}
+        onCancel={onCloseDebitNote}
+      >
+        <AlgaehTable
+          columns={[
+            {
+              fieldName: "checked",
+              label: "Select",
+              sortable: false,
+              filterable: false,
+              displayTemplate: row => {
+                return (
+                  <Checkbox
+                    disabled={row.invoice_status === "closed"}
+                    defaultChecked={row["checked"]}
+                    onChange={e => {
+                      const { checked } = e.target;
+                      row["checked"] = checked;
+                    }}
+                  />
+                );
+              }
+            },
+            {
+              fieldName: "payment_date",
+              label: "Payment Date"
+            },
+            {
+              fieldName: "invoice_no",
+              label: "Invoice No."
+            },
+            {
+              fieldName: "amount",
+              label: "Amount"
+            },
+            {
+              fieldName: "narration",
+              label: "Narration"
+            }
+          ]}
+          rowUniqueId="finance_voucher_header_id"
+          data={debitNode}
+        />
+      </Modal>
       <div className="row">
         <div className="col-12">
           <InfoBar data={info} />
@@ -183,82 +320,82 @@ export default memo(function (props) {
                             label: "Select",
                             sortable: false,
                             filterable: false,
-                            displayTemplate: (row) => {
+                            displayTemplate: row => {
                               return (
                                 <Checkbox
                                   disabled={row.invoice_status === "closed"}
                                   defaultChecked={row["checked"]}
-                                  onChange={(e) => {
+                                  onChange={e => {
                                     const { checked } = e.target;
                                     onChangeCheck(checked, row);
                                   }}
                                 />
                               );
-                            },
+                            }
                           },
                           {
                             fieldName: "invoice_date",
                             label: "Date",
                             sortable: true,
-                            filterable: true,
+                            filterable: true
                           },
                           {
                             fieldName: "invoice_no",
                             label: "Invoice No",
                             sortable: true,
-                            filterable: true,
+                            filterable: true
                           },
                           {
                             fieldName: "narration",
                             label: "Description",
-                            filterable: true,
+                            filterable: true
                           },
                           {
                             fieldName: "due_date",
                             label: "Due Date",
                             sortable: true,
-                            filterable: true,
+                            filterable: true
                           },
                           {
                             fieldName: "invoice_amount",
                             label: "Invoice Amount",
-                            displayTemplate: (row) => {
+                            displayTemplate: row => {
                               return (
                                 <span>
                                   {getAmountFormart(row.invoice_amount, {
-                                    appendSymbol: false,
+                                    appendSymbol: false
                                   })}
                                 </span>
                               );
                             },
                             sortable: true,
-                            filterable: true,
+                            filterable: true
                           },
                           {
                             fieldName: "settled_amount",
                             label: "Paid Amount",
-                            displayTemplate: (row) => {
+                            displayTemplate: row => {
                               return (
                                 <span>
                                   {getAmountFormart(row.settled_amount, {
-                                    appendSymbol: false,
+                                    appendSymbol: false
                                   })}
                                 </span>
                               );
                             },
                             sortable: true,
-                            filterable: true,
+                            filterable: true
                           },
                           {
                             fieldName: "balance_amount",
                             label: "Balance Amount",
                             sortable: true,
                             filterable: true,
-                            displayTemplate: (row) => {
+                            displayTemplate: row => {
                               return (
                                 <span>
                                   {getAmountFormart(row.balance_amount, {
-                                    appendSymbol: false,
+                                    appendSymbol: false
                                   })}
                                 </span>
                               );
@@ -267,21 +404,21 @@ export default memo(function (props) {
                           {
                             fieldName: "invoice_status",
                             label: "Status",
-                            displayTemplate: (row) =>
+                            displayTemplate: row =>
                               row.invoice_status.toUpperCase(),
                             sortable: true,
-                            filterable: true,
+                            filterable: true
                           },
                           {
                             fieldName: "last_modified",
                             label: "Last Modified Date",
                             sortable: true,
-                            filterable: true,
+                            filterable: true
                           },
                           {
                             label: "Action",
-                            displayTemplate: receive,
-                          },
+                            displayTemplate: receive
+                          }
                         ]}
                         height="80vh"
                         // rowUnique="finance_voucher_header_id"
@@ -307,9 +444,11 @@ export default memo(function (props) {
                   <label className="style_Label ">
                     Selected Invoice Amount
                   </label>
-                  <h6>{getAmountFormart(selectAmount, {
-                    appendSymbol: false,
-                  })}</h6>
+                  <h6>
+                    {getAmountFormart(selectAmount, {
+                      appendSymbol: false
+                    })}
+                  </h6>
                 </div>
               </div>
             </div>
@@ -324,6 +463,14 @@ export default memo(function (props) {
               className="btn btn-primary"
               // disabled={!processList.length}
               loading={loading}
+              onClick={onClickDebitNotes}
+            >
+              Debit Note Required
+            </AlgaehButton>
+            <AlgaehButton
+              className="btn btn-primary"
+              // disabled={!processList.length}
+              loading={loading}
               onClick={onClickSendSelected}
             >
               Bulk Receive Payment
@@ -333,10 +480,10 @@ export default memo(function (props) {
               loading={loading}
               onClick={() =>
                 history.push("/DayEndProcess", {
-                  data: location.state.data,
+              data: location.state.data,
                 })
               }
-            >
+              >
               Process
             </AlgaehButton> */}
             <AlgaehButton
