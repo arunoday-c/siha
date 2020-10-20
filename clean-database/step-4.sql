@@ -426,5 +426,28 @@ insert into finance_numgen(`finance_numgen_id`,`numgen_code`,`module_desc`,`pref
 `preceding_zeros_req`,`intermediate_series_req`,`reset_slno_on_year_change`)
 values(9,'EXPENSE_VOUCHER','for finance expense voucher number','EXP',20,'0',13,1,'-','0','9999999','0','0','Y','Y','Y');
 
-ALTER TABLE finance_voucher_header`
-CHANGE COLUMN `voucher_type` `voucher_type` ENUM('journal', 'contra', 'receipt', 'payment', 'sales', 'purchase', 'credit_note', 'debit_note', 'expense_voucher') NULL DEFAULT NULL COMMENT 'journal,contra,receipt,payment,sales,purchase,credit_note,debit_note,expense_voucher' ;
+-- ALTER TABLE finance_voucher_header` CHANGE COLUMN `voucher_type` `voucher_type` ENUM('journal', 'contra', 'receipt', 'payment', 'sales', 'purchase', 'credit_note', 'debit_note', 'expense_voucher') NULL DEFAULT NULL COMMENT 'journal,contra,receipt,payment,sales,purchase,credit_note,debit_note,expense_voucher' ;
+
+-- =================================  Start Oct 16 2020 =======================================
+-- ******** Journal Voucher Reports
+INSERT INTO `algaeh_d_reports` (`report_name`, `report_name_for_header`, `report_input_series`, `report_header_file_name`, `status`, `created_datetime`, `update_datetime`) VALUES ('JVReport_contra', 'Journal Voucher Contra', '[\"finance_voucher_header_id\"]', 'voucherHeader', 'A', '2020-09-05 10:22:55', '2020-09-05 10:22:55');
+INSERT INTO `algaeh_d_reports` (`report_name`, `report_name_for_header`, `report_input_series`, `report_header_file_name`, `status`, `created_datetime`, `update_datetime`) VALUES ('JVReport_receipt', 'Journal Voucher Receipt', '[\"finance_voucher_header_id\"]', 'voucherHeader', 'A', '2020-09-05 10:22:55', '2020-09-05 10:22:55');
+INSERT INTO `algaeh_d_reports` (`report_name`, `report_name_for_header`, `report_input_series`, `report_header_file_name`, `status`, `created_datetime`, `update_datetime`) VALUES ('JVReport_payment', 'Journal Voucher Payment', '[\"finance_voucher_header_id\"]', 'voucherHeader', 'A', '2020-09-05 10:22:55', '2020-09-05 10:22:55');
+INSERT INTO `algaeh_d_reports` (`report_name`, `report_name_for_header`, `report_input_series`, `report_header_file_name`, `status`, `created_datetime`, `update_datetime`) VALUES ('JVReport_sales', 'Journal Voucher Sales', '[\"finance_voucher_header_id\"]', 'voucherHeader', 'A', '2020-09-05 10:22:55', '2020-09-05 10:22:55');
+INSERT INTO `algaeh_d_reports` (`report_name`, `report_name_for_header`, `report_input_series`, `report_header_file_name`, `status`, `created_datetime`, `update_datetime`) VALUES ('JVReport_purchase', 'Journal Voucher Purchase', '[\"finance_voucher_header_id\"]', 'voucherHeader', 'A', '2020-09-05 10:22:55', '2020-09-05 10:22:55');
+INSERT INTO `algaeh_d_reports` (`report_name`, `report_name_for_header`, `report_input_series`, `report_header_file_name`, `status`, `created_datetime`, `update_datetime`) VALUES ('JVReport_creditNote', 'Journal Voucher Credit Note', '[\"finance_voucher_header_id\"]', 'voucherHeader', 'A', '2020-09-05 10:22:55', '2020-09-05 10:22:55');
+INSERT INTO `algaeh_d_reports` (`report_name`, `report_name_for_header`, `report_input_series`, `report_header_file_name`, `status`, `created_datetime`, `update_datetime`) VALUES ('JVReport_debitNote', 'Journal Voucher Debit Note', '[\"finance_voucher_header_id\"]', 'voucherHeader', 'A', '2020-09-05 10:22:55', '2020-09-05 10:22:55');
+
+
+-- =================================  Start Oct 18 2020 =======================================
+-- ******** Email Setup - Enable Email (Yes/No)
+ALTER TABLE `hims_f_email_setup` 
+ADD COLUMN `enable_email` ENUM('Y', 'N') NULL DEFAULT 'N' AFTER `hims_f_email_setup_id`;
+
+
+-- =================================  Start Oct 18 2020 =======================================
+-- ******** Leave Request Slip
+INSERT INTO `algaeh_d_reports` ( `report_name`, `report_name_for_header`, `report_input_series`, `report_header_file_name`, `status`, `created_datetime`, `update_datetime`) VALUES ( 'LeaveRequestSlip', 'Leave Request Slip', '[\"hims_f_leave_application_id\"]', 'reportHeader', 'A', '2019-07-25 18:21:38', '2019-07-25 18:21:38');
+
+-- ******** Employee Payroll Details Report
+INSERT INTO `algaeh_d_reports` ( `report_name`, `report_name_for_header`, `report_input_series`, `report_header_file_name`, `status`, `created_datetime`, `update_datetime`) VALUES ('employeePayrollDetails', 'Employee Payroll Details', '[\"hospital_id\",\"employee_group_id\",\"month\",\"year\",\"year\",\"month\",\"year\",\"month\"]', 'voucherHeader', 'A', '2020-09-05 10:22:55', '2020-09-05 10:22:55');
