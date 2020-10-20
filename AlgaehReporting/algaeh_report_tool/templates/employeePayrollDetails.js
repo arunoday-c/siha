@@ -49,7 +49,11 @@ const executePDF = function executePDFMethod(options) {
 
       options.mysql
         .executeQuery({
-          query: `select E.employee_code,E.full_name,E.employee_designation_id,E.employee_id,E.sub_department_id,E.date_of_joining,E.nationality,E.mode_of_payment,E.hospital_id,E.employee_group_id,D.designation,EG.group_description,N.nationality,S.net_salary,S.total_earnings,S.total_deductions
+          query: `select hims_d_earning_deduction_id,earning_deduction_description,short_desc,component_category, print_order_by, 
+          nationality_id from hims_d_earning_deduction where record_status='A' and print_report='Y' order by print_order_by ;
+          select E.hims_d_employee_id,E.employee_code,E.full_name,E.employee_designation_id,E.sub_department_id,E.date_of_joining,
+          E.nationality,E.mode_of_payment,E.hospital_id,E.employee_group_id,D.designation,EG.group_description,
+          N.nationality,E.net_salary,E.total_earnings,E.total_deductions
           from hims_d_employee E
           left join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id
           left join hims_d_hospital H  on E.hospital_id=H.hims_d_hospital_id
@@ -97,7 +101,7 @@ const executePDF = function executePDFMethod(options) {
 
             const employee_ids = [];
             salary.forEach((s) => {
-              employee_ids.push(s.employee_id);
+              employee_ids.push(s.hims_d_employee_id);
             });
 
             //--------first part------
@@ -105,21 +109,19 @@ const executePDF = function executePDFMethod(options) {
             options.mysql
               .executeQuery({
                 query:
-                  "select hims_d_employee_earnings_id,earnings_id,amount \
-                  from hims_d_employee_earnings SE \
-                  inner join hims_d_earning_deduction ED on SE.earnings_id=ED.hims_d_earning_deduction_id and ED.print_report='Y'\
-                  where employee_id in ("+ employee_ids +");\
-                  select hims_d_employee_deductions_id,deductions_id,amount \ 
-                  from hims_d_employee_deductions SD \
-                  inner join hims_d_earning_deduction ED on SD.hims_d_employee_deductions_id=ED.hims_d_earning_deduction_id and ED.print_report='Y' \
-                  where employee_id in ("+ employee_ids +");\
-                  select hims_d_employee_contributions_id,contributions_id,amount \
-                  from hims_d_employee_contributions SC \
-                  inner join hims_d_earning_deduction ED on SC.hims_d_employee_contributions_id=ED.hims_d_earning_deduction_id and ED.print_report='Y' \
-                  where employee_id in ( " + employee_ids +");",
-                values: [
-                  employee_ids,
-                ],
+                  `select employee_id, hims_d_employee_earnings_id,earnings_id,amount 
+                  from hims_d_employee_earnings SE 
+                  inner join hims_d_earning_deduction ED on SE.earnings_id=ED.hims_d_earning_deduction_id and ED.print_report='Y'
+                  where employee_id in (${employee_ids});
+                  select employee_id, hims_d_employee_deductions_id,deductions_id,amount 
+                  from hims_d_employee_deductions SD 
+                  inner join hims_d_earning_deduction ED on SD.hims_d_employee_deductions_id=ED.hims_d_earning_deduction_id and ED.print_report='Y' 
+                  where employee_id in (${employee_ids});
+                  select employee_id, hims_d_employee_contributions_id,contributions_id,amount 
+                  from hims_d_employee_contributions SC 
+                  inner join hims_d_earning_deduction ED on SC.hims_d_employee_contributions_id=ED.hims_d_earning_deduction_id and ED.print_report='Y' 
+                  where employee_id in (${employee_ids});
+                  select basic_earning_component from hims_d_hrms_options`,
                 printQuery: true,
               })
               .then((results) => {
@@ -143,21 +145,18 @@ const executePDF = function executePDFMethod(options) {
 
                 let earnings = results[0];
                 let deductions = results[1];
-                let basic_id = results[2][0]["basic_earning_component"];
-                let gratuity = results[3];
-                let accrual = results[4];
-                let contributions = results[5];
+                let contributions = results[2];
+                let basic_id = results[3][0]["basic_earning_component"];
+
 
                 let sum_basic = 0;
                 let sum_employe_plus_emplyr = 0;
-                let sum_gratuity = 0;
-                let sum_leave_salary = 0;
-                let sum_airfare_amount = 0;
-
-                let sum_misle_earnings = results[6].pop();
-                let sum_misle_deductions = results[7].pop();
                 for (let i = 0; i < salary.length; i++) {
-                
+
+                  const earning_obj = earnings.filter(
+                    (item) =>
+                      item.employee_id == salary[i]["hims_d_employee_id"]
+                  );
 
                   let employee_earning = earning_component.map((m) => {
                     const obj = earning_obj.find((f) => {
@@ -168,16 +167,17 @@ const executePDF = function executePDFMethod(options) {
                       return obj;
                     } else {
                       return {
-                        hims_f_salary_earnings_id: null,
                         earnings_id: m.hims_d_earning_deduction_id,
-                        amount: "-",
-                        nationality_id: null,
+                        amount: "-"
                       };
                     }
                   });
 
                   const deduction_obj = deductions.filter(
-                 
+                    (item) =>
+                      item.employee_id == salary[i]["hims_d_employee_id"]
+                  );
+
 
                   const employee_deduction = deduction_component.map((m) => {
                     const obj = deduction_obj.find((f) => {
@@ -188,17 +188,15 @@ const executePDF = function executePDFMethod(options) {
                       return obj;
                     } else {
                       return {
-                        hims_f_salary_deductions_id: null,
                         deductions_id: m.hims_d_earning_deduction_id,
-                        amount: "-",
-                        nationality_id: null,
+                        amount: "-"
                       };
                     }
                   });
 
                   const contributions_obj = contributions.filter(
                     (item) =>
-                      item.salary_header_id == salary[i]["hims_f_salary_id"]
+                      item.employee_id == salary[i]["hims_d_employee_id"]
                   );
 
                   const employee_contributions = contributions_component.map(
@@ -213,10 +211,8 @@ const executePDF = function executePDFMethod(options) {
                         return obj;
                       } else {
                         return {
-                          hims_f_salary_earnings_id: null,
                           contributions_id: m.hims_d_earning_deduction_id,
-                          amount: "-",
-                          nationality_id: null,
+                          amount: "-"
                         };
                       }
                     }
@@ -251,63 +247,14 @@ const executePDF = function executePDFMethod(options) {
                   );
                   sum_basic += basic ? parseFloat(basic.amount) : parseFloat(0);
 
-                  const grat = gratuity.find(
-                    (item) => item.employee_id == salary[i]["employee_id"]
-                  );
-                  sum_gratuity += grat
-                    ? parseFloat(grat.gratuity_amount)
-                    : parseFloat(0);
-
-                  const accu = accrual.find(
-                    (item) => item.employee_id == salary[i]["employee_id"]
-                  );
-                  sum_leave_salary += accu ? parseFloat(accu.leave_salary) : 0;
-
-                  sum_airfare_amount += accu
-                    ? parseFloat(accu.airfare_amount)
-                    : parseFloat(0);
-
-                  let emp_gratuity = grat
-                    ? parseFloat(grat.gratuity_amount)
-                    : "-";
-
-                  let emp_accural = accu
-                    ? {
-                        leave_days: accu.leave_days,
-                        leave_salary: accu.leave_salary,
-                        airfare_amount: accu.airfare_amount,
-                      }
-                    : {
-                        leave_days: 0,
-                        leave_salary: 0,
-                        airfare_amount: 0,
-                      };
-
-                  let emp_misl_earn = results[6].find((f) => {
-                    return f.employee_id == salary[i]["employee_id"];
-                  });
-
-                  let emp_misl_dedc = results[7].find((f) => {
-                    return f.employee_id == salary[i]["employee_id"];
-                  });
-
-                  //  utilities.logger().log("salary[i]: ", salary[i]);
-
-                  //console.log("outputArray: ", outputArray);
-
                   outputArray.push({
                     ...salary[i],
-                    gratuity_amount: emp_gratuity,
-                    ...emp_accural,
                     employee_earning: employee_earning,
                     employee_deduction: employee_deduction,
                     employee_contributions: employee_contributions,
                     employe_plus_employr: employe_plus_employr.toFixed(
                       decimal_places
-                    ),
-                    complete_ot: complete_ot,
-                    emp_misl_earn: emp_misl_earn ? emp_misl_earn["amount"] : 0,
-                    emp_misl_dedc: emp_misl_dedc ? emp_misl_dedc["amount"] : 0,
+                    )
                   });
                 }
                 // console.log("outputArray: ", outputArray);
@@ -324,18 +271,9 @@ const executePDF = function executePDFMethod(options) {
                   sum_contributions: sum_contributions.toFixed(decimal_places),
                   sum_net_salary: sum_net_salary.toFixed(decimal_places),
                   sum_employe_plus_emplyr: sum_employe_plus_emplyr,
-                  sum_gratuity: sum_gratuity,
-                  sum_leave_salary: sum_leave_salary,
-                  sum_airfare_amount: sum_airfare_amount,
                   span_earning: earning_component.length,
                   span_deduction: deduction_component.length,
-                  span_contribution: contributions_component.length,
-                  sum_misl_earn: sum_misle_earnings
-                    ? sum_misle_earnings["amount"]
-                    : 0,
-                  sum_misl_deduct: sum_misle_deductions
-                    ? sum_misle_deductions["amount"]
-                    : 0,
+                  span_contribution: contributions_component.length
                 };
                 utilities.logger().log("outputArray: ", outputArray);
                 resolve(result);

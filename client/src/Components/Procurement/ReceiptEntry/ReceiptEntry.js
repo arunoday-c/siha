@@ -460,14 +460,29 @@ class ReceiptEntry extends Component {
                   }}
                 />*/}
 
-                <div className="col-2">
-                  <AlgaehLabel label={{ forceLabel: "Payment Terms" }} />
-                  <h6>
-                    {this.state.payment_terms
-                      ? this.state.payment_terms + " Days"
-                      : "0 Days"}
-                  </h6>
-                </div>
+                <AlagehFormGroup
+                  div={{ className: "col-2  form-group" }}
+                  label={{
+                    forceLabel: "Payment Terms in Days",
+                  }}
+                  textBox={{
+                    number: {
+                      allowNegative: false,
+                      thousandSeparator: ",",
+                    },
+                    dontAllowKeys: ["-", "e", "."],
+                    value: this.state.payment_terms,
+                    className: "txt-fld",
+                    name: "payment_terms",
+                    events: {
+                      onChange: texthandle.bind(this, this),
+                    },
+                    others: {
+                      placeholder: "0",
+                      disabled: this.state.postEnable,
+                    },
+                  }}
+                />
 
                 <AlagehFormGroup
                   div={{ className: "col-2 mandatory" }}
