@@ -2219,7 +2219,7 @@ export default {
                net_amount,gross_amt from  hims_d_services_insurance_network SIN\
                inner join hims_d_insurance_network NET on NET.hims_d_insurance_network_id=SIN.network_id\
                inner join hims_d_insurance_provider IP on SIN.insurance_id=IP.hims_d_insurance_provider_id \
-               where   SIN.hospital_id=${req.userIdentity.hospital_id} and SIN.network_id in (${network_ids})\
+               where SIN.hospital_id=${req.userIdentity.hospital_id} and SIN.network_id in (${network_ids})\
                AND SIN.services_id in (${service_ids}) and SIN.record_status='A' and NET.record_status='A';`;
           } else if (promo_code != null) {
             strQuery = `select S.hims_d_services_id, PD.avail_type, offer_value, valid_to_from, valid_to_date, offer_code from hims_d_promotion P 
