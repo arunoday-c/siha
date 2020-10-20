@@ -4,12 +4,12 @@ import { removeGlobal } from "../../../../utils/GlobalFunctions";
 import Enumerable from "linq";
 import Options from "../../../../Options.json";
 import _ from "lodash";
-import {
-  PRESCRIPTION_FREQ_PERIOD,
-  PRESCRIPTION_FREQ_TIME,
-  PRESCRIPTION_FREQ_DURATION,
-  PRESCRIPTION_FREQ_ROUTE,
-} from "../../../../utils/GlobalVariables.json";
+// import {
+//   PRESCRIPTION_FREQ_PERIOD,
+//   PRESCRIPTION_FREQ_TIME,
+//   PRESCRIPTION_FREQ_DURATION,
+//   PRESCRIPTION_FREQ_ROUTE,
+// } from "../../../../utils/GlobalVariables.json";
 
 //Text Handaler Change
 const texthandle = ($this, e) => {
