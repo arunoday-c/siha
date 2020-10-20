@@ -22,15 +22,16 @@ import {
   texthandle,
   itemhandle,
   AddItems,
+  // AddItemsOrUpdate,
   deleteItems,
   datehandle,
   SaveMedication,
   dateFormater,
   numberhandle,
-  updateItems,
-  onchangegridcol,
-  EditGrid,
-  CancelGrid,
+  // updateItems,
+  // onchangegridcol,
+  // EditGrid,
+  // CancelGrid,
 } from "./OrderMedicationEvents";
 import "./OrderMedication.scss";
 import "../../../../styles/site.scss";
@@ -82,6 +83,9 @@ class OrderMedication extends Component {
       frequency: null,
       no_of_days: 0,
       dispense: 0,
+
+      updateButton: false,
+      rowDetails: [],
 
       frequency_type: null,
       frequency_time: null,
@@ -231,7 +235,35 @@ class OrderMedication extends Component {
       total_quantity: 0,
     });
   };
-
+  onEditRow(row) {
+    this.setState({
+      rowDetails: row,
+      generic_name_item_description: row.generic_name,
+      saveMedicationEnable: true,
+      addItemEnable: false,
+      item_id: row.item_id,
+      generic_id: row.generic_id,
+      frequency: row.frequency,
+      dispense: row.dispense,
+      uom_id: row.uom_id,
+      service_id: row.service_id,
+      item_category_id: row.item_category_id,
+      item_group_id: row.item_group_id,
+      pre_approval: row.pre_approval,
+      frequency_type: row.frequency_type,
+      frequency_time: row.frequency_time,
+      frequency_route: row.frequency_route,
+      dosage: row.dosage,
+      item_description: row.item_description,
+      // total_quantity:row.
+      updateButton: true,
+      generic_name: row.generic_name,
+      med_units: row.med_units,
+      no_of_days: row.no_of_days,
+      start_date: row.start_date,
+      instructions: row.instructions,
+    });
+  }
   clearAction = (e) => {
     Swal.fire({
       title: "Are you sure?",
@@ -466,7 +498,7 @@ class OrderMedication extends Component {
                     onClick={AddItems.bind(this, this)}
                     disabled={this.state.addItemEnable}
                   >
-                    Add Item
+                    {this.state.updateButton ? "Update" : "Add Item"}
                   </button>
                 </div>
               </div>{" "}
@@ -479,6 +511,23 @@ class OrderMedication extends Component {
                   <AlgaehDataGrid
                     id="OrderMedicationGrid"
                     columns={[
+                      {
+                        fieldName: "request_status",
+                        label: "Actions",
+                        sortable: true,
+                        displayTemplate: (row) => {
+                          return (
+                            <>
+                              <span onClick={() => this.onEditRow(row)}>
+                                <i className="fas fa-pen"></i>
+                              </span>
+                              <span onClick={deleteItems.bind(this, this)}>
+                                <i className="fas fa-trash-alt"></i>
+                              </span>
+                            </>
+                          );
+                        },
+                      },
                       {
                         fieldName: "generic_name",
                         label: (
@@ -543,49 +592,49 @@ class OrderMedication extends Component {
                             ? "Other (According To Physician)"
                             : null;
                         },
-                        editorTemplate: (row) => {
-                          return row.frequency === "0"
-                            ? "1-0-1"
-                            : row.frequency === "1"
-                            ? "1-0-0"
-                            : row.frequency === "2"
-                            ? "0-0-1"
-                            : row.frequency === "3"
-                            ? "0-1-0"
-                            : row.frequency === "4"
-                            ? "1-1-0"
-                            : row.frequency === "5"
-                            ? "0-1-1"
-                            : row.frequency === "6"
-                            ? "1-1-1"
-                            : row.frequency === "7"
-                            ? "Once only"
-                            : row.frequency === "8"
-                            ? "Once daily (q24h)"
-                            : row.frequency === "9"
-                            ? "Twice daily (Bid)"
-                            : row.frequency === "10"
-                            ? "Three times daily (tid)"
-                            : row.frequency === "11"
-                            ? "Five times daily"
-                            : row.frequency === "12"
-                            ? "Every two hours (q2h)"
-                            : row.frequency === "13"
-                            ? "Every three hours (q3h)"
-                            : row.frequency === "14"
-                            ? "Every four hours (q4h)"
-                            : row.frequency === "15"
-                            ? "Every six hours (q6h)"
-                            : row.frequency === "16"
-                            ? "Every eight hours (q8h)"
-                            : row.frequency === "17"
-                            ? "Every twelve hours (q12h)"
-                            : row.frequency === "18"
-                            ? "Four times daily (qid)"
-                            : row.frequency === "19"
-                            ? "Other (According To Physician)"
-                            : null;
-                        },
+                        // editorTemplate: (row) => {
+                        //   return row.frequency === "0"
+                        //     ? "1-0-1"
+                        //     : row.frequency === "1"
+                        //     ? "1-0-0"
+                        //     : row.frequency === "2"
+                        //     ? "0-0-1"
+                        //     : row.frequency === "3"
+                        //     ? "0-1-0"
+                        //     : row.frequency === "4"
+                        //     ? "1-1-0"
+                        //     : row.frequency === "5"
+                        //     ? "0-1-1"
+                        //     : row.frequency === "6"
+                        //     ? "1-1-1"
+                        //     : row.frequency === "7"
+                        //     ? "Once only"
+                        //     : row.frequency === "8"
+                        //     ? "Once daily (q24h)"
+                        //     : row.frequency === "9"
+                        //     ? "Twice daily (Bid)"
+                        //     : row.frequency === "10"
+                        //     ? "Three times daily (tid)"
+                        //     : row.frequency === "11"
+                        //     ? "Five times daily"
+                        //     : row.frequency === "12"
+                        //     ? "Every two hours (q2h)"
+                        //     : row.frequency === "13"
+                        //     ? "Every three hours (q3h)"
+                        //     : row.frequency === "14"
+                        //     ? "Every four hours (q4h)"
+                        //     : row.frequency === "15"
+                        //     ? "Every six hours (q6h)"
+                        //     : row.frequency === "16"
+                        //     ? "Every eight hours (q8h)"
+                        //     : row.frequency === "17"
+                        //     ? "Every twelve hours (q12h)"
+                        //     : row.frequency === "18"
+                        //     ? "Four times daily (qid)"
+                        //     : row.frequency === "19"
+                        //     ? "Other (According To Physician)"
+                        //     : null;
+                        // },
                         others: {
                           minWidth: 150,
                         },
@@ -618,29 +667,29 @@ class OrderMedication extends Component {
                             ? "Every 6 months"
                             : null;
                         },
-                        editorTemplate: (row) => {
-                          return row.frequency_type === "PD"
-                            ? "Per Day"
-                            : row.frequency_type === "PH"
-                            ? "Per Hour"
-                            : row.frequency_type === "PW"
-                            ? "Per Week"
-                            : row.frequency_type === "PM"
-                            ? "Per Month"
-                            : row.frequency_type === "AD"
-                            ? "Alternate Day"
-                            : row.frequency_type === "2W"
-                            ? "Every 2 weeks"
-                            : row.frequency_type === "2M"
-                            ? "Every 2 months"
-                            : row.frequency_type === "3M"
-                            ? "Every 3 months"
-                            : row.frequency_type === "4M"
-                            ? "Every 4 months"
-                            : row.frequency_type === "6M"
-                            ? "Every 6 months"
-                            : null;
-                        },
+                        // editorTemplate: (row) => {
+                        //   return row.frequency_type === "PD"
+                        //     ? "Per Day"
+                        //     : row.frequency_type === "PH"
+                        //     ? "Per Hour"
+                        //     : row.frequency_type === "PW"
+                        //     ? "Per Week"
+                        //     : row.frequency_type === "PM"
+                        //     ? "Per Month"
+                        //     : row.frequency_type === "AD"
+                        //     ? "Alternate Day"
+                        //     : row.frequency_type === "2W"
+                        //     ? "Every 2 weeks"
+                        //     : row.frequency_type === "2M"
+                        //     ? "Every 2 months"
+                        //     : row.frequency_type === "3M"
+                        //     ? "Every 3 months"
+                        //     : row.frequency_type === "4M"
+                        //     ? "Every 4 months"
+                        //     : row.frequency_type === "6M"
+                        //     ? "Every 6 months"
+                        //     : null;
+                        // },
                         others: {
                           minWidth: 150,
                         },
@@ -665,21 +714,21 @@ class OrderMedication extends Component {
                             ? "At Bed Time"
                             : null;
                         },
-                        editorTemplate: (row) => {
-                          return row.frequency_time === "BM"
-                            ? "Before Meals"
-                            : row.frequency_time === "AM"
-                            ? "After Meals"
-                            : row.frequency_time === "WF"
-                            ? "With Food"
-                            : row.frequency_time === "EM"
-                            ? "Early Morning"
-                            : row.frequency_time === "BB"
-                            ? "Before Bed Time"
-                            : row.frequency_time === "AB"
-                            ? "At Bed Time"
-                            : null;
-                        },
+                        // editorTemplate: (row) => {
+                        //   return row.frequency_time === "BM"
+                        //     ? "Before Meals"
+                        //     : row.frequency_time === "AM"
+                        //     ? "After Meals"
+                        //     : row.frequency_time === "WF"
+                        //     ? "With Food"
+                        //     : row.frequency_time === "EM"
+                        //     ? "Early Morning"
+                        //     : row.frequency_time === "BB"
+                        //     ? "Before Bed Time"
+                        //     : row.frequency_time === "AB"
+                        //     ? "At Bed Time"
+                        //     : null;
+                        // },
                         others: {
                           minWidth: 100,
                         },
@@ -724,41 +773,41 @@ class OrderMedication extends Component {
                             ? "Transdermal"
                             : null;
                         },
-                        editorTemplate: (row) => {
-                          return row.frequency_route === "BL"
-                            ? "Buccal"
-                            : row.frequency_route === "EL"
-                            ? "Enteral"
-                            : row.frequency_route === "IL"
-                            ? "Inhalation"
-                            : row.frequency_route === "IF"
-                            ? "Infusion"
-                            : row.frequency_route === "IM"
-                            ? "Intramuscular Inj"
-                            : row.frequency_route === "IT"
-                            ? "Intrathecal Inj"
-                            : row.frequency_route === "IR"
-                            ? "Intravenous Inj"
-                            : row.frequency_route === "NL"
-                            ? "Nasal"
-                            : row.frequency_route === "OP"
-                            ? "Ophthalmic"
-                            : row.frequency_route === "OR"
-                            ? "Oral"
-                            : row.frequency_route === "OE"
-                            ? "Otic (ear)"
-                            : row.frequency_route === "RL"
-                            ? "Rectal"
-                            : row.frequency_route === "ST"
-                            ? "Subcutaneous"
-                            : row.frequency_route === "SL"
-                            ? "Sublingual"
-                            : row.frequency_route === "TL"
-                            ? "Topical"
-                            : row.frequency_route === "TD"
-                            ? "Transdermal"
-                            : null;
-                        },
+                        // editorTemplate: (row) => {
+                        //   return row.frequency_route === "BL"
+                        //     ? "Buccal"
+                        //     : row.frequency_route === "EL"
+                        //     ? "Enteral"
+                        //     : row.frequency_route === "IL"
+                        //     ? "Inhalation"
+                        //     : row.frequency_route === "IF"
+                        //     ? "Infusion"
+                        //     : row.frequency_route === "IM"
+                        //     ? "Intramuscular Inj"
+                        //     : row.frequency_route === "IT"
+                        //     ? "Intrathecal Inj"
+                        //     : row.frequency_route === "IR"
+                        //     ? "Intravenous Inj"
+                        //     : row.frequency_route === "NL"
+                        //     ? "Nasal"
+                        //     : row.frequency_route === "OP"
+                        //     ? "Ophthalmic"
+                        //     : row.frequency_route === "OR"
+                        //     ? "Oral"
+                        //     : row.frequency_route === "OE"
+                        //     ? "Otic (ear)"
+                        //     : row.frequency_route === "RL"
+                        //     ? "Rectal"
+                        //     : row.frequency_route === "ST"
+                        //     ? "Subcutaneous"
+                        //     : row.frequency_route === "SL"
+                        //     ? "Sublingual"
+                        //     : row.frequency_route === "TL"
+                        //     ? "Topical"
+                        //     : row.frequency_route === "TD"
+                        //     ? "Transdermal"
+                        //     : null;
+                        // },
                         others: {
                           minWidth: 100,
                         },
@@ -769,26 +818,26 @@ class OrderMedication extends Component {
                         others: {
                           minWidth: 70,
                         },
-                        displayTemplate: (row) => {
-                          return (
-                            <AlagehFormGroup
-                              div={{}}
-                              textBox={{
-                                number: { allowNegative: false },
-                                value: row.dosage,
-                                className: "txt-fld",
-                                name: "dosage",
-                                events: {
-                                  onChange: onchangegridcol.bind(
-                                    this,
-                                    this,
-                                    row
-                                  ),
-                                },
-                              }}
-                            />
-                          );
-                        },
+                        // displayTemplate: (row) => {
+                        //   return (
+                        //     <AlagehFormGroup
+                        //       div={{}}
+                        //       textBox={{
+                        //         number: { allowNegative: false },
+                        //         value: row.dosage,
+                        //         className: "txt-fld",
+                        //         name: "dosage",
+                        //         events: {
+                        //           onChange: onchangegridcol.bind(
+                        //             this,
+                        //             this,
+                        //             row
+                        //           ),
+                        //         },
+                        //       }}
+                        //     />
+                        //   );
+                        // },
                       },
                       {
                         fieldName: "med_units",
@@ -796,29 +845,29 @@ class OrderMedication extends Component {
                         others: {
                           minWidth: 40,
                         },
-                        displayTemplate: (row) => {
-                          return (
-                            <AlagehFormGroup
-                              div={{}}
-                              textBox={{
-                                value: row.med_units,
-                                className: "txt-fld",
-                                name: "med_units",
-                                others: {
-                                  maxLength: 10,
-                                  placeHolder: "ml, drops etc",
-                                },
-                                events: {
-                                  onChange: onchangegridcol.bind(
-                                    this,
-                                    this,
-                                    row
-                                  ),
-                                },
-                              }}
-                            />
-                          );
-                        },
+                        // displayTemplate: (row) => {
+                        //   return (
+                        //     <AlagehFormGroup
+                        //       div={{}}
+                        //       textBox={{
+                        //         value: row.med_units,
+                        //         className: "txt-fld",
+                        //         name: "med_units",
+                        //         others: {
+                        //           maxLength: 10,
+                        //           placeHolder: "ml, drops etc",
+                        //         },
+                        //         events: {
+                        //           onChange: onchangegridcol.bind(
+                        //             this,
+                        //             this,
+                        //             row
+                        //           ),
+                        //         },
+                        //       }}
+                        //     />
+                        //   );
+                        // },
                       },
                       {
                         fieldName: "no_of_days",
@@ -830,26 +879,26 @@ class OrderMedication extends Component {
                         others: {
                           minWidth: 90,
                         },
-                        displayTemplate: (row) => {
-                          return (
-                            <AlagehFormGroup
-                              div={{}}
-                              textBox={{
-                                number: { allowNegative: false },
-                                value: row.no_of_days,
-                                className: "txt-fld",
-                                name: "no_of_days",
-                                events: {
-                                  onChange: onchangegridcol.bind(
-                                    this,
-                                    this,
-                                    row
-                                  ),
-                                },
-                              }}
-                            />
-                          );
-                        },
+                        // displayTemplate: (row) => {
+                        //   return (
+                        //     <AlagehFormGroup
+                        //       div={{}}
+                        //       textBox={{
+                        //         number: { allowNegative: false },
+                        //         value: row.no_of_days,
+                        //         className: "txt-fld",
+                        //         name: "no_of_days",
+                        //         events: {
+                        //           onChange: onchangegridcol.bind(
+                        //             this,
+                        //             this,
+                        //             row
+                        //           ),
+                        //         },
+                        //       }}
+                        //     />
+                        //   );
+                        // },
                       },
                       {
                         fieldName: "start_date",
@@ -859,9 +908,9 @@ class OrderMedication extends Component {
                         displayTemplate: (row) => {
                           return <span>{dateFormater(row.start_date)}</span>;
                         },
-                        editorTemplate: (row) => {
-                          return <span>{dateFormater(row.start_date)}</span>;
-                        },
+                        // editorTemplate: (row) => {
+                        //   return <span>{dateFormater(row.start_date)}</span>;
+                        // },
                         others: {
                           minWidth: 100,
                         },
@@ -876,36 +925,36 @@ class OrderMedication extends Component {
                             ? "Required"
                             : "Not Required";
                         },
-                        editorTemplate: (row) => {
-                          return row.pre_approval === "Y"
-                            ? "Required"
-                            : "Not Required";
-                        },
+                        // editorTemplate: (row) => {
+                        //   return row.pre_approval === "Y"
+                        //     ? "Required"
+                        //     : "Not Required";
+                        // },
                       },
                       {
                         fieldName: "instructions",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Instruction" }} />
                         ),
-                        displayTemplate: (row) => {
-                          return (
-                            <AlagehFormGroup
-                              div={{}}
-                              textBox={{
-                                value: row.instructions,
-                                className: "txt-fld",
-                                name: "instructions",
-                                events: {
-                                  onChange: onchangegridcol.bind(
-                                    this,
-                                    this,
-                                    row
-                                  ),
-                                },
-                              }}
-                            />
-                          );
-                        },
+                        // displayTemplate: (row) => {
+                        //   return (
+                        //     <AlagehFormGroup
+                        //       div={{}}
+                        //       textBox={{
+                        //         value: row.instructions,
+                        //         className: "txt-fld",
+                        //         name: "instructions",
+                        //         events: {
+                        //           onChange: onchangegridcol.bind(
+                        //             this,
+                        //             this,
+                        //             row
+                        //           ),
+                        //         },
+                        //       }}
+                        //     />
+                        //   );
+                        // },
                         others: {
                           minWidth: 200,
                         },
@@ -915,18 +964,20 @@ class OrderMedication extends Component {
                     dataSource={{
                       data: this.state.medicationitems,
                     }}
-                    actions={{
-                      allowEdit: false,
-                    }}
-                    isEditable={true}
+                    // actions={{
+                    //   allowEdit: false,
+                    // }}
+                    // isEditable={true}
                     paging={{ page: 0, rowsPerPage: 10 }}
                     byForceEvents={true}
-                    events={{
-                      onDelete: deleteItems.bind(this, this),
-                      onEdit: EditGrid.bind(this, this),
-                      onCancel: CancelGrid.bind(this, this),
-                      onDone: updateItems.bind(this, this),
-                    }}
+                    events={
+                      {
+                        // onDelete: deleteItems.bind(this, this),
+                        // onEdit: this.onEditRow.bind(this, row),
+                        // onCancel: CancelGrid.bind(this, this),
+                        // onDone: updateItems.bind(this, this),
+                      }
+                    }
                   />
                 </div>
               </div>
