@@ -323,12 +323,19 @@ export default {
                       if (isMultipleInvoices === "M") {
                         let queryString = "";
                         for (let i = 0; i < merdgeRecords.length; i++) {
-                          const { balance_amount, invoice_no } = merdgeRecords[
-                            i
-                          ];
+                          const {
+                            balance_amount,
+                            invoice_no,
+                            voucher_type
+                          } = merdgeRecords[i];
                           queryString += _mysql.mysqlQueryFormat(
-                            "insert into finance_voucher_sub_header(finance_voucher_header_id,invoice_ref_no,amount)value(?,?,?);",
-                            [result.insertId, invoice_no, balance_amount]
+                            "insert into finance_voucher_sub_header(finance_voucher_header_id,invoice_ref_no,amount,voucher_type)value(?,?,?,?);",
+                            [
+                              result.insertId,
+                              invoice_no,
+                              balance_amount,
+                              voucher_type
+                            ]
                           );
                           newDetails.forEach(item => {
                             const { amount, ...rest } = item;

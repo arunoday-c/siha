@@ -1,5 +1,5 @@
 import { Router } from "express";
-import finance_supplier from "../models/finance_supplier";
+import finance_supplier, { getAllDebitNotes } from "../models/finance_supplier";
 import utlities from "algaeh-utilities";
 
 const { getSupplierPayables, getSupplierInvoiceDetails } = finance_supplier;
@@ -49,6 +49,14 @@ export default () => {
       }
     }
   );
-
+  api.get("/getAllDebitNotes", getAllDebitNotes, (req, res) => {
+    res
+      .status(utlities.AlgaehUtilities().httpStatus().ok)
+      .json({
+        success: true,
+        result: req.records
+      })
+      .end();
+  });
   return api;
 };
