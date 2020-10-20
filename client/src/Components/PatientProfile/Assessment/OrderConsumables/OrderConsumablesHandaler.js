@@ -391,6 +391,7 @@ const deleteServices = ($this, row, rowId) => {
   const _order_index = orderconsumabledata.indexOf(row);
 
   orderconsumabledata.splice(_order_index, 1);
+
   if (orderconsumabledata.length === 0) {
     saved = true;
 
@@ -474,6 +475,12 @@ const deleteServices = ($this, row, rowId) => {
       preserviceInput: preserviceInput,
       approval_amt: app_amt,
       saved: saved,
+      patient_payable: $this.state.patient_payable - row.patient_payable,
+      company_payble: $this.state.company_payble - row.company_payble,
+      // sec_company_paybale: null,
+      sub_total_amount: $this.state.sub_total_amount - row.gross_amount,
+      discount_amount: $this.state.discount_amount - row.discount_amout,
+      net_total: $this.state.net_total - row.net_amout,
     });
   }
 };
@@ -495,14 +502,14 @@ const SaveOrdersServices = ($this, e) => {
     method: "POST",
     onSuccess: (response) => {
       if (response.data.success === true) {
-        let inputOb = $this.state
+        let inputOb = $this.state;
         inputOb.transaction_type = "CS";
         inputOb.location_id = $this.state.inventory_location_id;
         // $this.state.location_type = $this.state.location_type;
         inputOb.inventory_stock_detail = $this.state.orderconsumabledata;
         inputOb.provider_id = Window.global["provider_id"];
         inputOb.transaction_date = new Date();
-        inputOb.ScreenCode = "INV0007"
+        inputOb.ScreenCode = "INV0007";
         algaehApiCall({
           uri: "/inventoryconsumption/addInventoryConsumption",
           module: "inventory",
