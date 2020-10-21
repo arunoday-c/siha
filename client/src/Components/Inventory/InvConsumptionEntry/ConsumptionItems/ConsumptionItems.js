@@ -10,13 +10,15 @@ import {
   AlgaehLabel,
   AlagehFormGroup,
   AlagehAutoComplete,
-  AlgaehDateHandler
+  AlgaehDateHandler,
 } from "../../../Wrapper/algaehWrapper";
 
 import ConsumptionItemsEvents from "./ConsumptionItemsEvents";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import Options from "../../../../Options.json";
 import moment from "moment";
+import AlgaehAutoSearch from "../../../Wrapper/autoSearch";
+import spotlightSearch from "../../../../Search/spotlightSearch.json";
 
 class ConsumptionItems extends Component {
   constructor(props) {
@@ -40,8 +42,8 @@ class ConsumptionItems extends Component {
         method: "GET",
         redux: {
           type: "ITEM_CATEGORY_GET_DATA",
-          mappingName: "inventoryitemcategory"
-        }
+          mappingName: "inventoryitemcategory",
+        },
       });
     }
 
@@ -55,8 +57,8 @@ class ConsumptionItems extends Component {
         method: "GET",
         redux: {
           type: "ITEM_GROUOP_GET_DATA",
-          mappingName: "inventoryitemgroup"
-        }
+          mappingName: "inventoryitemgroup",
+        },
       });
     }
 
@@ -70,8 +72,8 @@ class ConsumptionItems extends Component {
         method: "GET",
         redux: {
           type: "ITEM_UOM_GET_DATA",
-          mappingName: "inventoryitemuom"
-        }
+          mappingName: "inventoryitemuom",
+        },
       });
     }
   }
@@ -106,13 +108,13 @@ class ConsumptionItems extends Component {
     return (
       <React.Fragment>
         <MyContext.Consumer>
-          {context => (
+          {(context) => (
             <div className="hptl-phase1-requisition-item-form">
               <div className="row">
                 <div className="col-lg-12">
                   <div className="portlet portlet-bordered margin-bottom-15">
                     <div className="row">
-                      <AlagehAutoComplete
+                      {/* <AlagehAutoComplete
                         div={{ className: "col-lg-4" }}
                         label={{ forceLabel: "Item Name" }}
                         selector={{
@@ -129,6 +131,52 @@ class ConsumptionItems extends Component {
                           },
                           onChange: this.itemchangeText.bind(this, context)
                         }}
+                      /> */}
+                      <AlgaehAutoSearch
+                        div={{ className: "col-12 form-group mandatory" }}
+                        label={{ forceLabel: "Item Name", isImp: true }}
+                        title="Search Items"
+                        id="item_id_search"
+                        template={(result) => {
+                          return (
+                            <section className="resultSecStyles">
+                              <div className="row">
+                                <div className="col-12">
+                                  <h4 className="title">
+                                    {result.item_description}
+                                  </h4>
+                                  <small>{result.uom_description}</small>
+                                </div>
+                              </div>
+                            </section>
+                          );
+                        }}
+                        name={"hims_d_inventory_item_master_id"}
+                        columns={spotlightSearch.Items.Invitemmaster}
+                        displayField="item_description"
+                        value={this.state.item_description}
+                        searchName={"InventryForMaterialRequsition"}
+                        onClick={this.itemchangeText.bind(this, context)}
+                        onClear={() => {
+                          this.setState({
+                            item_description: "",
+                            // item_description: e.item_description,
+                            item_code: null,
+                            item_category_id: null,
+                            item_uom: null,
+                            item_id: null,
+                            item_group_id: null,
+                            quantity: null,
+                            // barcode: null,
+                            addItemButton: false,
+                            group_description: null,
+                            uom_description: null,
+                            category_desc: null,
+                          });
+                        }}
+                        others={{
+                          disabled: this.state.ItemDisable,
+                        }}
                       />
                       <AlagehAutoComplete
                         div={{ className: "col" }}
@@ -140,31 +188,31 @@ class ConsumptionItems extends Component {
                           dataSource: {
                             textField: "uom_description",
                             valueField: "uom_id",
-                            data: this.state.ItemUOM
+                            data: this.state.ItemUOM,
                           },
                           others: {
-                            disabled: true
+                            disabled: true,
                           },
 
-                          onChange: this.UomchangeTexts.bind(this, context)
+                          onChange: this.UomchangeTexts.bind(this, context),
                         }}
                       />
 
                       <AlagehFormGroup
                         div={{ className: "col" }}
                         label={{
-                          forceLabel: "Batch No."
+                          forceLabel: "Batch No.",
                         }}
                         textBox={{
                           className: "txt-fld",
                           name: "batchno",
                           value: this.state.batchno,
                           events: {
-                            onChange: null
+                            onChange: null,
                           },
                           others: {
-                            disabled: true
-                          }
+                            disabled: true,
+                          },
                         }}
                       />
                       <AlgaehDateHandler
@@ -172,12 +220,12 @@ class ConsumptionItems extends Component {
                         label={{ forceLabel: "Expiry Date" }}
                         textBox={{
                           className: "txt-fld",
-                          name: "expiry_date"
+                          name: "expiry_date",
                         }}
                         minDate={new Date()}
                         disabled={true}
                         events={{
-                          onChange: null
+                          onChange: null,
                         }}
                         value={this.state.expiry_date}
                       />
@@ -185,45 +233,48 @@ class ConsumptionItems extends Component {
                       <AlagehFormGroup
                         div={{ className: "col" }}
                         label={{
-                          forceLabel: "Quantity"
+                          forceLabel: "Quantity",
                         }}
                         textBox={{
                           number: {
                             allowNegative: false,
-                            thousandSeparator: ","
+                            thousandSeparator: ",",
                           },
                           dontAllowKeys: ["-", "e", "."],
                           className: "txt-fld",
                           name: "quantity",
                           value: this.state.quantity,
                           events: {
-                            onChange: this.numberchangeTexts.bind(this, context)
+                            onChange: this.numberchangeTexts.bind(
+                              this,
+                              context
+                            ),
                           },
                           others: {
-                            disabled: this.state.ItemDisable
-                          }
+                            disabled: this.state.ItemDisable,
+                          },
                         }}
                       />
 
                       <AlagehFormGroup
                         div={{ className: "col" }}
                         label={{
-                          forceLabel: "Qty In Hand"
+                          forceLabel: "Qty In Hand",
                         }}
                         textBox={{
                           number: {
                             allowNegative: false,
-                            thousandSeparator: ","
+                            thousandSeparator: ",",
                           },
                           className: "txt-fld",
                           name: "qtyhand",
                           value: this.state.qtyhand,
                           events: {
-                            onChange: null
+                            onChange: null,
                           },
                           others: {
-                            disabled: true
-                          }
+                            disabled: true,
+                          },
                         }}
                       />
                     </div>
@@ -255,7 +306,7 @@ class ConsumptionItems extends Component {
                               label: (
                                 <AlgaehLabel label={{ forceLabel: "action" }} />
                               ),
-                              displayTemplate: row => {
+                              displayTemplate: (row) => {
                                 return (
                                   <span>
                                     <i
@@ -268,7 +319,7 @@ class ConsumptionItems extends Component {
                                         opacity:
                                           this.state.ItemDisable === true
                                             ? "0.1"
-                                            : ""
+                                            : "",
                                       }}
                                       onClick={this.deleteConsumptionDetail.bind(
                                         this,
@@ -283,8 +334,8 @@ class ConsumptionItems extends Component {
                                 maxWidth: 65,
                                 resizable: false,
                                 filterable: false,
-                                style: { textAlign: "center" }
-                              }
+                                style: { textAlign: "center" },
+                              },
                             },
                             {
                               fieldName: "item_id",
@@ -293,12 +344,12 @@ class ConsumptionItems extends Component {
                                   label={{ forceLabel: "Item Name" }}
                                 />
                               ),
-                              displayTemplate: row => {
+                              displayTemplate: (row) => {
                                 let display =
                                   this.props.inventoryitemlist === undefined
                                     ? []
                                     : this.props.inventoryitemlist.filter(
-                                        f =>
+                                        (f) =>
                                           f.hims_d_inventory_item_master_id ===
                                           row.item_id
                                       );
@@ -311,7 +362,7 @@ class ConsumptionItems extends Component {
                                       : ""}
                                   </span>
                                 );
-                              }
+                              },
                             },
 
                             {
@@ -321,12 +372,12 @@ class ConsumptionItems extends Component {
                                   label={{ forceLabel: "Item Category" }}
                                 />
                               ),
-                              displayTemplate: row => {
+                              displayTemplate: (row) => {
                                 let display =
                                   this.props.inventoryitemcategory === undefined
                                     ? []
                                     : this.props.inventoryitemcategory.filter(
-                                        f =>
+                                        (f) =>
                                           f.hims_d_inventory_tem_category_id ===
                                           row.item_category_id
                                       );
@@ -338,7 +389,7 @@ class ConsumptionItems extends Component {
                                       : ""}
                                   </span>
                                 );
-                              }
+                              },
                             },
 
                             {
@@ -348,12 +399,12 @@ class ConsumptionItems extends Component {
                                   label={{ forceLabel: "Item Group" }}
                                 />
                               ),
-                              displayTemplate: row => {
+                              displayTemplate: (row) => {
                                 let display =
                                   this.props.inventoryitemgroup === undefined
                                     ? []
                                     : this.props.inventoryitemgroup.filter(
-                                        f =>
+                                        (f) =>
                                           f.hims_d_inventory_item_group_id ===
                                           row.item_group_id
                                       );
@@ -365,7 +416,7 @@ class ConsumptionItems extends Component {
                                       : ""}
                                   </span>
                                 );
-                              }
+                              },
                             },
 
                             {
@@ -373,12 +424,12 @@ class ConsumptionItems extends Component {
                               label: (
                                 <AlgaehLabel label={{ forceLabel: "UOM" }} />
                               ),
-                              displayTemplate: row => {
+                              displayTemplate: (row) => {
                                 let display =
                                   this.props.inventoryitemuom === undefined
                                     ? []
                                     : this.props.inventoryitemuom.filter(
-                                        f =>
+                                        (f) =>
                                           f.hims_d_inventory_uom_id ===
                                           row.uom_id
                                       );
@@ -390,7 +441,7 @@ class ConsumptionItems extends Component {
                                       : ""}
                                   </span>
                                 );
-                              }
+                              },
                             },
 
                             {
@@ -400,7 +451,7 @@ class ConsumptionItems extends Component {
                                   label={{ forceLabel: "Batch No." }}
                                 />
                               ),
-                              disabled: true
+                              disabled: true,
                             },
                             {
                               fieldName: "expiry_date",
@@ -409,14 +460,14 @@ class ConsumptionItems extends Component {
                                   label={{ forceLabel: "Expiry Date" }}
                                 />
                               ),
-                              displayTemplate: row => {
+                              displayTemplate: (row) => {
                                 return (
                                   <span>
                                     {this.dateFormater(row.expiry_date)}
                                   </span>
                                 );
                               },
-                              disabled: true
+                              disabled: true,
                             },
                             {
                               fieldName: "quantity",
@@ -425,7 +476,7 @@ class ConsumptionItems extends Component {
                                   label={{ forceLabel: "Quantity" }}
                                 />
                               ),
-                              disabled: true
+                              disabled: true,
                             },
                             {
                               fieldName: "qtyhand",
@@ -434,12 +485,12 @@ class ConsumptionItems extends Component {
                                   label={{ forceLabel: "Qty in Hand" }}
                                 />
                               ),
-                              disabled: true
-                            }
+                              disabled: true,
+                            },
                           ]}
                           keyId="consumption_id"
                           dataSource={{
-                            data: this.state.inventory_stock_detail
+                            data: this.state.inventory_stock_detail,
                           }}
                           isEditable={false}
                           paging={{ page: 0, rowsPerPage: 10 }}
@@ -463,7 +514,7 @@ function mapStateToProps(state) {
     inventoryitemlist: state.inventoryitemlist,
     inventoryitemcategory: state.inventoryitemcategory,
     inventoryitemuom: state.inventoryitemuom,
-    inventoryitemgroup: state.inventoryitemgroup
+    inventoryitemgroup: state.inventoryitemgroup,
   };
 }
 
@@ -472,15 +523,12 @@ function mapDispatchToProps(dispatch) {
     {
       getItemCategory: AlgaehActions,
       getItemGroup: AlgaehActions,
-      getItemUOM: AlgaehActions
+      getItemUOM: AlgaehActions,
     },
     dispatch
   );
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(ConsumptionItems)
+  connect(mapStateToProps, mapDispatchToProps)(ConsumptionItems)
 );
