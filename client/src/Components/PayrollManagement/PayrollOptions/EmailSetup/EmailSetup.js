@@ -56,12 +56,12 @@ export default function EmailSetup() {
   console.log("hospital_id", dropdownData);
   return (
     <>
-      <div className="col-4">
+      
+      <div className="row EmailSetupScreen"><div className="col">
         {userToken.user_type === "SU" ? <EmailConfig /> : null}
       </div>
-      <div className="row EmailSetupScreen">
         {emailData.map((item) => (
-          <div className="col-3 form-group">
+          <div className="col form-group">
             <div className="portlet portlet-bordered">
               <div className="portlet-title">
                 <div className="caption">
