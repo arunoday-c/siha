@@ -1417,7 +1417,39 @@ export default {
         });
       });
   },
+  //created by irfan: to
+  revertDayEnd: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    // const utilities = new algaehUtilities();
+    let input = req.body;
 
+    let strQuery = ""
+    if (input.from_screen == "PR0004") {
+      strQuery += `update hims_f_procurement_grn_header set posted='N' where grn_number='${input.document_number}';`;
+    } else if (input.from_screen == "SAL005") {
+      strQuery += `update hims_f_sales_invoice_header set posted='N' where invoice_number='${input.document_number}';`;
+    }
+    _mysql
+      .executeQuery({
+        query: `delete from finance_day_end_sub_detail where day_end_header_id=?; \
+        delete from finance_day_end_header where finance_day_end_header_id=?;`+ strQuery,
+        values: [
+          input.finance_day_end_header_id,
+          input.finance_day_end_header_id
+        ],
+        printQuery: false,
+      })
+      .then((result) => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch((e) => {
+        _mysql.releaseConnection();
+        next(e);
+      });
+
+  },
   //created by irfan: to
   removeAccountHead: (req, res, next) => {
     const _mysql = new algaehMysql();

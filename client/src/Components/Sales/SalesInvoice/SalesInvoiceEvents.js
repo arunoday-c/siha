@@ -1,8 +1,7 @@
 /* eslint-disable no-multi-str */
 import {
   swalMessage,
-  algaehApiCall,
-  getCookie,
+  algaehApiCall
 } from "../../../utils/algaehApiCall";
 import swal from "sweetalert2";
 import AlgaehSearch from "../../Wrapper/globalSearch";
@@ -192,7 +191,7 @@ const PostSalesInvoice = ($this) => {
   let Inputobj = $this.state;
 
   Inputobj.posted = "Y";
-  Inputobj.ScreenCode = getCookie("ScreenCode");
+  Inputobj.ScreenCode = "SAL005";
   Inputobj.due_date = moment($this.state.invoice_date, "YYYY-MM-DD")
     .add($this.state.payment_terms, "days")
     .format("YYYY-MM-DD");

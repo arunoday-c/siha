@@ -503,7 +503,9 @@ export function AddPatientDentalForm({
                         textField: "service_name",
                       },
                       others: {
-                        disabled: current.request_status === "APR" && current.work_status=== "COM",
+                        disabled:
+                          current.request_status === "APR" &&
+                          current.work_status === "COM",
                         tabIndex: "4",
                       },
                     }}
@@ -526,7 +528,9 @@ export function AddPatientDentalForm({
                       ...props,
                       type: "number",
                       className: "form-control",
-                      disabled: current.request_status === "APR"  && current.work_status=== "COM",
+                      disabled:
+                        current.request_status === "APR" &&
+                        current.work_status === "COM",
                       placeholder: "0.00",
                       name: "service_amount",
                       others: {
@@ -661,7 +665,9 @@ export function AddPatientDentalForm({
                       className: "txt-fld",
                       name: "patient_code",
                       // placeholder: "MRN Number",
-                      disabled: current.request_status === "APR"  && current.work_status=== "COM",
+                      disabled:
+                        current.request_status === "APR" &&
+                        current.work_status === "COM",
                       tabIndex: "8",
                     }}
                   />
@@ -684,7 +690,9 @@ export function AddPatientDentalForm({
                       className: "txt-fld",
                       name: "full_name",
                       placeholder: "Enter Full Name",
-                      disabled: current.request_status === "APR"  && current.work_status=== "COM",
+                      disabled:
+                        current.request_status === "APR" &&
+                        current.work_status === "COM",
                       tabIndex: "9",
                     }}
                   />
@@ -851,7 +859,7 @@ export function AddPatientDentalForm({
                           others: {
                             disabled:
                               current.request_status === "APR" ||
-                              current.request_status === "REJ" ||
+                              // current.request_status === "REJ" ||
                               current.request_status === "RES",
                             // tabIndex: "4",
                           },
