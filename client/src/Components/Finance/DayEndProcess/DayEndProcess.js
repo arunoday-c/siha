@@ -14,6 +14,7 @@ import moment from "moment";
 import { GetAmountFormart } from "../../../utils/GlobalFunctions";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import { MainContext } from "algaeh-react-components";
+import swal from "sweetalert2";
 // const modules = [
 //   {
 //     name: "OP Bill",
@@ -197,6 +198,44 @@ class DayEndProcess extends Component {
     } catch (e) {
       console.error(e);
     }
+  }
+
+  RejectProcess(row) {
+    swal({
+      title: "Are you sure you want to Revert " + row.document_number + " ?",
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes",
+      confirmButtonColor: "#44b8bd",
+      cancelButtonColor: "#d33",
+      cancelButtonText: "No",
+    }).then((willProcess) => {
+      if (willProcess.value) {
+        algaehApiCall({
+          uri: "/finance/revertDayEnd",
+          module: "finance",
+          data: {
+            finance_day_end_header_id: row.finance_day_end_header_id,
+            from_screen: row.from_screen,
+            document_number: row.document_number
+          },
+          method: "PUT",
+          onSuccess: (response) => {
+            this.getDayEndProcess(this)
+            swalMessage({
+              title: "Reverted Successfully . .",
+              type: "success",
+            })
+          },
+          onFailure: (error) => {
+            swalMessage({
+              title: error.message,
+              type: "error",
+            });
+          },
+        });
+      }
+    });
   }
 
   checkHandaler(e) {
@@ -630,6 +669,13 @@ class DayEndProcess extends Component {
                                   }}
                                 ></i>
                               ) : null}
+
+                              {this.state.posted === "N" && (row.from_screen === "PR0004" || row.from_screen === "SAL005") ? (<i
+                                className="fa fa-times"
+                                aria-hidden="true"
+                                onClick={this.RejectProcess.bind(this, row)}
+                              />) : null}
+
 
                               <i
                                 className="fas fa-eye"

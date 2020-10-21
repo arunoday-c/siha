@@ -6,6 +6,7 @@ import spotlightSearch from "../../../Search/spotlightSearch.json";
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
 import _ from "lodash";
 import Enumerable from "linq";
+import extend from "extend";
 
 const texthandle = ($this, ctrl, e) => {
   e = ctrl || e;
@@ -400,7 +401,7 @@ const SaveSalesOrderEnrty = ($this, from) => {
         });
         return;
       }
-      let InputObj = $this.state;
+      let InputObj = extend({}, $this.state);
       let order_detail =
         InputObj.sales_order_mode === "I"
           ? InputObj.sales_order_items
@@ -415,6 +416,7 @@ const SaveSalesOrderEnrty = ($this, from) => {
         });
         return;
       }
+      debugger
       InputObj.quote_validity =
         InputObj.sales_order_mode === "S"
           ? null
@@ -440,6 +442,8 @@ const SaveSalesOrderEnrty = ($this, from) => {
       } else {
         strUri = "/SalesOrder/addSalesOrder";
       }
+      delete InputObj.organizations
+      delete InputObj.cost_projects
       const settings = { header: undefined, footer: undefined };
 
       AlgaehLoader({ show: true });
