@@ -596,6 +596,14 @@ export function BillDetails({
                               sendingObject.net_amount =
                                 sendingObject.gross_total -
                                 sendingObject.sheet_discount_amount;
+
+                              sendingObject.receiveable_amount =
+                                sendingObject.gross_total -
+                                sendingObject.sheet_discount_amount;
+                              sendingObject.cash_amount =
+                                sendingObject.gross_total -
+                                sendingObject.sheet_discount_amount;
+
                               return { ...sendingObject };
                             });
                           } else {
@@ -856,7 +864,6 @@ export function BillDetails({
                           ...props,
                           disabled: disabled || !enableCash,
                           onChange: (e) => {
-                            debugger;
                             const amount = e.target.value
                               ? parseFloat(e.target.value)
                               : 0;
