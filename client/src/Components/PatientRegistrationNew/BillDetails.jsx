@@ -614,8 +614,10 @@ export function BillDetails({
                               });
                             } else {
                               setBillData((sendingObject) => {
-                                sendingObject.sheet_discount_percentage =
-                                  (amount / sendingObject.gross_total) * 100;
+                                sendingObject.sheet_discount_percentage = (
+                                  (amount / sendingObject.gross_total) *
+                                  100
+                                ).toFixed(3);
 
                                 sendingObject.sheet_discount_amount = amount;
                                 sendingObject.discount_amount =
