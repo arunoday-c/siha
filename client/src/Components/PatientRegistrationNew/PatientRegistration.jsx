@@ -718,27 +718,27 @@ export function PatientRegistration() {
           printArea={
             !!patient_code || !!savedPatient
               ? {
-                  menuitems: [
-                    {
-                      label: "ID Card",
-                      events: {
-                        onClick: () => {
-                          generateIdCard(
-                            patientData?.patientRegistration || savedPatient
-                          );
-                        },
+                menuitems: [
+                  {
+                    label: "ID Card",
+                    events: {
+                      onClick: () => {
+                        generateIdCard(
+                          patientData?.patientRegistration || savedPatient
+                        );
                       },
                     },
-                    {
-                      label: "Advance/Refund Receipt",
-                      events: {
-                        onClick: () => {
-                          setShowAdvModal(true);
-                        },
+                  },
+                  {
+                    label: "Advance/Refund Receipt",
+                    events: {
+                      onClick: () => {
+                        setShowAdvModal(true);
                       },
                     },
-                  ],
-                }
+                  },
+                ],
+              }
               : ""
           }
           selectedLang={userLanguage}
@@ -756,6 +756,7 @@ export function PatientRegistration() {
                   patientIdCard={patientIdCard}
                   incomeByOp={incomeByOp}
                   incomeByPoint={incomeByPoint ? incomeByPoint : "0"}
+                  isEmpIdRequired={isEmpIdRequired}
                 />
                 <InsuranceDetails
                   isInsurance={isInsurance}
@@ -847,7 +848,7 @@ export function PatientRegistration() {
                           history.replace(location.pathname);
                           history.push(
                             `/OPBilling?patient_code=${
-                              patient_code || savedPatient?.patient_code
+                            patient_code || savedPatient?.patient_code
                             }`
                           );
                         }}
@@ -1007,18 +1008,18 @@ export function PatientRegistration() {
             inputsparameters={
               patient_code
                 ? {
-                    patient_code: patient_code,
-                    full_name: patientData?.patientRegistration?.full_name,
-                    hims_f_patient_id:
-                      patientData?.patientRegistration?.hims_d_patient_id,
-                  }
+                  patient_code: patient_code,
+                  full_name: patientData?.patientRegistration?.full_name,
+                  hims_f_patient_id:
+                    patientData?.patientRegistration?.hims_d_patient_id,
+                }
                 : !!savedPatient
-                ? {
+                  ? {
                     patient_code: savedPatient?.patient_code,
                     full_name: savedPatient?.full_name,
                     hims_f_patient_id: savedPatient?.hims_d_patient_id,
                   }
-                : {}
+                  : {}
             }
           />
         </>
