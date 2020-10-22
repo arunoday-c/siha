@@ -24,8 +24,8 @@
     ],
     "emp_id_patients": [
       {
-        "fieldName": "employee_id",
-        "label": "Employee ID"
+        "fieldName": "primary_id_no",
+        "label": "Primary ID No."
       },
       {
         "fieldName": "patient_code",
@@ -44,8 +44,8 @@
         "label": "Contact Number"
       },
       {
-        "fieldName": "primary_id_no",
-        "label": "Primary ID No."
+        "fieldName": "employee_id",
+        "label": "Employee ID"
       }
     ],
     "patientappoinment": [
