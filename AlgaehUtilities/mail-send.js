@@ -37,7 +37,7 @@ function algaehMail(options) {
             rejectUnauthorized: false
           }
         };
-
+  console.log("Here is the credentials",options);
   this.transporter = nodemailer.createTransport({
     ..._service,
     host: host,
