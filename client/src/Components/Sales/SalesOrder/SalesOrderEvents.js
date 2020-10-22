@@ -579,8 +579,7 @@ const getCtrlCode = ($this, docNumber) => {
         data.organizations = $this.props.hospitaldetails;
 
         $this.setState(data, () => {
-          debugger
-          // $this.getDocuments();
+          $this.getDocuments();
         });
       }
       AlgaehLoader({ show: false });
