@@ -957,6 +957,7 @@ let getMyDay = (req, res, next) => {
           ID.hims_d_identity_document_id = P.primary_identity_id left join hims_f_patient_appointment as PA 
           on V.appointment_id = PA.hims_f_patient_appointment_id inner join hims_d_title as T 
           on P.title_id = T.his_d_title_id
+          inner join hims_d_visit_type VT on V.visit_type=VT.hims_d_visit_type_id and consultation='Y'
           where E.cancelled='N' and E.record_status='A' AND  V.record_status='A' and V.hospital_id=? AND ${_query}`,
         values: [req.userIdentity.hospital_id],
         printQuery: true,
@@ -2663,14 +2664,14 @@ let getPatientHistory = (req, res, next) => {
                 key == "SOH"
                   ? "Social History"
                   : key === "MEH"
-                  ? "Medical History"
-                  : key === "SGH"
-                  ? "Surgical History"
-                  : key === "FMH"
-                  ? "Family History"
-                  : key === "BRH"
-                  ? "Birth History"
-                  : "",
+                    ? "Medical History"
+                    : key === "SGH"
+                      ? "Surgical History"
+                      : key === "FMH"
+                        ? "Family History"
+                        : key === "BRH"
+                          ? "Birth History"
+                          : "",
               groupDetail: detail,
             };
           })
@@ -2838,8 +2839,8 @@ let updatePatientEncounter = (req, res, next) => {
         inputData.examination_notes != null
           ? ","
           : inputData.assesment_notes != null
-          ? ","
-          : "";
+            ? ","
+            : "";
       strQuery += _mysql.mysqlQueryFormat(putComma + "significant_signs = ?", [
         inputData.significant_signs,
       ]);
@@ -2850,10 +2851,10 @@ let updatePatientEncounter = (req, res, next) => {
         inputData.examination_notes != null
           ? ","
           : inputData.assesment_notes != null
-          ? ","
-          : inputData.significant_signs != null
-          ? ","
-          : "";
+            ? ","
+            : inputData.significant_signs != null
+              ? ","
+              : "";
       strQuery += _mysql.mysqlQueryFormat(putComma + "other_signs = ?", [
         inputData.other_signs,
       ]);
