@@ -568,7 +568,7 @@ class UpdatePatientForm extends Component {
                       />
                       {this.state.requied_emp_id === "Y" ? (
                         <AlagehFormGroup
-                          div={{ className: "col-3 form-group mandatory" }}
+                          div={{ className: "col-3 form-group" }}
                           label={{
                             fieldName: "employee_id",
                             isImp: true,
