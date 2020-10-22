@@ -70,6 +70,7 @@ export function UpdatePatient({
 
   const patientImage = useRef(null);
   const patientIdCard = useRef(null);
+  const isEmpIdRequired = userToken?.requied_emp_id === "Y";
 
   useEffect(() => {
     if (show) {
@@ -164,6 +165,7 @@ export function UpdatePatient({
       patientImage={patientImage}
       patientIdCard={patientIdCard}
       inModal={true}
+      isEmpIdRequired={isEmpIdRequired}
     />
   );
 
@@ -224,7 +226,7 @@ export function UpdatePatient({
               {
                 label: "ID Card",
                 events: {
-                  onClick: () => {},
+                  onClick: () => { },
                 },
               },
             ],

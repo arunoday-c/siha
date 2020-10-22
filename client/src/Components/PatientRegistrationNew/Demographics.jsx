@@ -617,7 +617,7 @@ export function Demographics({
                             render={(props) => (
                               <AlgaehFormGroup
                                 div={{
-                                  className: "col-3 form-group mandatory",
+                                  className: "col-3 form-group",
                                 }}
                                 label={{
                                   fieldName: "employee_id"

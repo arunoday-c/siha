@@ -466,8 +466,8 @@ export default function Income({ hospital_id, RECEIPT_TYPE, cashier_id }) {
       },
       {
         subitem: "Daily Cash Collection - Summary",
-        //template_name: "Income/dailyCashCollection",
-        reportName: "RPT_DLY_COLL",
+        // template_name: "Income/dailyCashCollection",
+        reportName: "dailyCashCollection",
         componentCode: "RPT_INC_CASH_COLL",
         requireIframe: true,
         reportParameters: [
