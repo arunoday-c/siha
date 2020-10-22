@@ -19,7 +19,7 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { AlgaehActions } from "../../actions/algaehActions";
 import GlobalVariables from "../../utils/GlobalVariables.json";
-import { setGlobal, AlgaehValidation } from "../../utils/GlobalFunctions";
+import { setGlobal } from "../../utils/GlobalFunctions";
 import config from "../../utils/config.json";
 import {
   getAllChiefComplaints,
@@ -360,36 +360,36 @@ class NurseWorkbench extends Component {
       send_data.patient_vitals = bodyArray;
       send_data.hims_f_patient_encounter_id = this.state.encounter_id;
 
-      AlgaehValidation({
-        // querySelector: "data-validate='vitalsForm'",
-        // alertTypeIcon: "warning",
-        onSuccess: () =>
-          algaehApiCall({
-            uri: "/nurseWorkBench/addPatientNurseChiefComplaints",
-            method: "POST",
-            data: send_data,
-            onSuccess: (response) => {
-              if (response.data.success) {
-                swalMessage({
-                  title: "Recorded Successfully",
-                  type: "success",
-                });
-                // var element = document.querySelectorAll("[nursing_pat]");
-                // for (var i = 0; i < element.length; i++) {
-                //   element[i].classList.remove("active");
-                // }
-                this.resetSaveState();
-                this.loadListofData();
-              }
-            },
-            onError: (error) => {
-              swalMessage({
-                title: error.message,
-                type: "error",
-              });
-            },
-          }),
+      // AlgaehValidation({
+      // querySelector: "data-validate='vitalsForm'",
+      // alertTypeIcon: "warning",
+      // onSuccess: () =>
+      algaehApiCall({
+        uri: "/nurseWorkBench/addPatientNurseChiefComplaints",
+        method: "POST",
+        data: send_data,
+        onSuccess: (response) => {
+          if (response.data.success) {
+            swalMessage({
+              title: "Recorded Successfully",
+              type: "success",
+            });
+            // var element = document.querySelectorAll("[nursing_pat]");
+            // for (var i = 0; i < element.length; i++) {
+            //   element[i].classList.remove("active");
+            // }
+            this.resetSaveState();
+            this.loadListofData();
+          }
+        },
+        onError: (error) => {
+          swalMessage({
+            title: error.message,
+            type: "error",
+          });
+        },
       });
+      // });
     }
   }
 
