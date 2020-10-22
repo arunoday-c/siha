@@ -344,7 +344,9 @@ class NurseWorkbench extends Component {
             visit_time: this.state.recorded_time,
             case_type: this.state.case_type,
             vital_id: _elements[i].getAttribute("vitalid"),
-            vital_value: _elements[i].children[0].value,
+            vital_value: _elements[i].children[0].value
+              ? _elements[i].children[0].value
+              : 0.0,
             vital_value_one:
               _isDepended !== null
                 ? document.getElementsByName(_isDepended)[0].value
@@ -359,8 +361,8 @@ class NurseWorkbench extends Component {
       send_data.hims_f_patient_encounter_id = this.state.encounter_id;
 
       AlgaehValidation({
-        querySelector: "data-validate='vitalsForm'",
-        alertTypeIcon: "warning",
+        // querySelector: "data-validate='vitalsForm'",
+        // alertTypeIcon: "warning",
         onSuccess: () =>
           algaehApiCall({
             uri: "/nurseWorkBench/addPatientNurseChiefComplaints",
