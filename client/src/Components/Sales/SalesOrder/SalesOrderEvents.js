@@ -376,6 +376,7 @@ const ClearData = ($this, e) => {
     dataPosted: true,
     canceled_reason_sales: "",
     rejectVisible: false,
+    is_posted: "N"
     // services_required: "N"
   };
 
@@ -550,6 +551,7 @@ const getCtrlCode = ($this, docNumber) => {
         data.dataExists = true;
         data.selectedData = true;
         data.itemAdd = false;
+
 
         if (data.is_revert === "Y") {
           data.itemAdd = true;

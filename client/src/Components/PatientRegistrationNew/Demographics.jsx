@@ -61,7 +61,9 @@ export function Demographics({
   incomeByOp,
   incomeByPoint,
   inModal = false,
+  isEmpIdRequired
 }) {
+  debugger
   const queryParams = useQueryParams();
   const patient_code = queryParams.get("patient_code");
   const { savedPatient } = useContext(FrontdeskContext);
@@ -71,7 +73,7 @@ export function Demographics({
     state_id,
     date_of_birth,
     primary_id_no,
-    nationality_id,
+    nationality_id
   } = useWatch({
     control,
     name: [
@@ -79,7 +81,7 @@ export function Demographics({
       "state_id",
       "date_of_birth",
       "primary_id_no",
-      "nationality_id",
+      "nationality_id"
     ],
   });
 
@@ -105,7 +107,7 @@ export function Demographics({
     }
   );
   const { visaTypes, patientTypes, identities } = dropdownData;
-  const requied_emp_id = "N";
+  // const requied_emp_id = isEmpIdRequired;
 
   const states = country
     ? countries?.filter((i) => i.hims_d_country_id == country)[0]?.states
@@ -232,17 +234,17 @@ export function Demographics({
                                 tabIndex: "2",
                               }}
 
-                              // target={{
-                              //   tElement: (arabicText) => {
-                              //     const arabic_name = this.state.arabic_name;
-                              //     this.setState({
-                              //       arabic_name:
-                              //         arabic_name !== "" || arabic_name !== undefined
-                              //           ? `${arabic_name} ${arabicText}`
-                              //           : arabicText,
-                              //     });
-                              //   },
-                              // }}
+                            // target={{
+                            //   tElement: (arabicText) => {
+                            //     const arabic_name = this.state.arabic_name;
+                            //     this.setState({
+                            //       arabic_name:
+                            //         arabic_name !== "" || arabic_name !== undefined
+                            //           ? `${arabic_name} ${arabicText}`
+                            //           : arabicText,
+                            //     });
+                            //   },
+                            // }}
                             />
                           )}
                         />
@@ -608,7 +610,7 @@ export function Demographics({
                           )}
                         />
 
-                        {requied_emp_id === "Y" ? (
+                        {isEmpIdRequired === true ? (
                           <Controller
                             control={control}
                             name="employee_id"
@@ -618,8 +620,7 @@ export function Demographics({
                                   className: "col-3 form-group mandatory",
                                 }}
                                 label={{
-                                  fieldName: "employee_id",
-                                  isImp: requied_emp_id === "Y" ? true : false,
+                                  fieldName: "employee_id"
                                 }}
                                 error={errors}
                                 textBox={{
