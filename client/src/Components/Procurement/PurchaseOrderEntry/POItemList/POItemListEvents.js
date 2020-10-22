@@ -516,6 +516,13 @@ const AddItems = ($this, context) => {
         }).then((hasValue) => {
           if (hasValue.value === true) {
             pharmacy_stock_detail[index]["total_quantity"] = toQty;
+            pharmacy_stock_detail[index]["extended_price"] = parseFloat(pharmacy_stock_detail[index]["unit_price"]) * toQty;
+
+            pharmacy_stock_detail[index]["sub_discount_amount"] = (parseFloat(pharmacy_stock_detail[index]["extended_price"]) * parseFloat(pharmacy_stock_detail[index]["sub_discount_percentage"])) / 100;
+            pharmacy_stock_detail[index]["net_extended_cost"] = parseFloat(pharmacy_stock_detail[index]["extended_price"]) - parseFloat(pharmacy_stock_detail[index]["sub_discount_amount"]);
+            pharmacy_stock_detail[index]["tax_amount"] = (parseFloat(pharmacy_stock_detail[index]["net_extended_cost"]) * parseFloat(pharmacy_stock_detail[index]["tax_percentage"])) / 100;
+            pharmacy_stock_detail[index]["total_amount"] = parseFloat(pharmacy_stock_detail[index]["net_extended_cost"]) + parseFloat(pharmacy_stock_detail[index]["tax_amount"]);
+
             assignDataandclear(
               $this,
               context,
@@ -567,6 +574,12 @@ const AddItems = ($this, context) => {
         }).then((hasValue) => {
           if (hasValue.value === true) {
             inventory_stock_detail[index]["total_quantity"] = toQty;
+            inventory_stock_detail[index]["extended_price"] = parseFloat(inventory_stock_detail[index]["unit_price"]) * toQty;
+
+            inventory_stock_detail[index]["sub_discount_amount"] = (parseFloat(inventory_stock_detail[index]["extended_price"]) * parseFloat(inventory_stock_detail[index]["sub_discount_percentage"])) / 100;
+            inventory_stock_detail[index]["net_extended_cost"] = parseFloat(inventory_stock_detail[index]["extended_price"]) - parseFloat(inventory_stock_detail[index]["sub_discount_amount"]);
+            inventory_stock_detail[index]["tax_amount"] = (parseFloat(inventory_stock_detail[index]["net_extended_cost"]) * parseFloat(inventory_stock_detail[index]["tax_percentage"])) / 100;
+            inventory_stock_detail[index]["total_amount"] = parseFloat(inventory_stock_detail[index]["net_extended_cost"]) + parseFloat(inventory_stock_detail[index]["tax_amount"]);
             assignDataandclear(
               $this,
               context,
