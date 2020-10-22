@@ -11,7 +11,7 @@ import {
   EMP_FORMAT_GENDER,
   DATE_OF_JOIN,
   EMPLOYEE_TYPE,
-  RECEIPT_TYPE,SENDOUT_TYPE
+  RECEIPT_TYPE,SENDOUT_TYPE,FORMAT_PRIORITY
 } from "../../utils/GlobalVariables.json";
 import { getYears } from "../../utils/GlobalFunctions";
 import { algaehApiCall } from "../../utils/algaehApiCall";
@@ -77,7 +77,7 @@ export default function loadActiveReports(
           result = Clinical({});
           break;
           case "laboratory":
-            result = Laboratory({SENDOUT_TYPE,});
+            result = Laboratory({SENDOUT_TYPE,FORMAT_PRIORITY,});
             break;
         case "inventory":
           result = Inventory({

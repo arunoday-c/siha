@@ -47,12 +47,12 @@ where LO.billed='Y' and date(LO.ordered_date) between date(?) and date(?) and LO
             });
           })
           .catch((e) => {
-            console.log("e:", e);
+            // console.log("e:", e);
             options.mysql.releaseConnection();
             reject(e);
           });
       } catch (e) {
-        console.log("e:", e);
+        // console.log("e:", e);
         reject(e);
       }
     });
