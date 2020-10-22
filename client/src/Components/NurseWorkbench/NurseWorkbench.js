@@ -30,6 +30,7 @@ import {
   getPatientAllergies,
   texthandle,
   getAllAllergies,
+  getPatientProfile,
 } from "./NurseWorkbenchEvents";
 import swal from "sweetalert2";
 import Options from "../../Options.json";
@@ -732,7 +733,7 @@ class NurseWorkbench extends Component {
       },
       () => {
         getPatientAllergies(this);
-
+        getPatientProfile(this);
         // else {
         let _allergies = Enumerable.from(this.props.patient_allergies)
           .groupBy("$.allergy_type", null, (k, g) => {
@@ -2059,6 +2060,7 @@ function mapDispatchToProps(dispatch) {
       getOrderList: AlgaehActions,
       getConsumableOrderList: AlgaehActions,
       getPakageList: AlgaehActions,
+      getPatientProfile: AlgaehActions,
     },
     dispatch
   );
