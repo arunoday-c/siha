@@ -51,7 +51,8 @@ where date(PV.visit_date) between date(?) and date(?) and PV.hospital_id=? ${str
               const doctors = _.chain(subDept)
                 .groupBy((g) => g.hims_d_employee_id)
                 .map((docs) => {
-                  const { employee_code, doctor_name } = docs[0];
+                  const { employee_code, doctor_name, } = docs[0];
+                  console.log(docs.length)
                   return {
                     employee_code,
                     doctor_name,

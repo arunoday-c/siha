@@ -5597,5 +5597,15 @@
       "name": "3",
       "value": "3"
     }
+  ],
+  "SENDOUT_TYPE": [
+    {
+      "name": "Send Out",
+      "value": "Y"
+    },
+    {
+      "name": "Test In",
+      "value": "N"
+    }
   ]
 }
