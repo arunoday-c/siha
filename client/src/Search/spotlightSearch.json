@@ -45,7 +45,7 @@
       },
       {
         "fieldName": "employee_id",
-        "label": "Employee ID"
+        "label": "File No."
       }
     ],
     "patientappoinment": [

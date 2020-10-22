@@ -4,14 +4,14 @@ import {
   AlagehFormGroup,
   AlagehAutoComplete,
   AlgaehDateHandler,
-  AlgaehModalPopUp
+  AlgaehModalPopUp,
 } from "../../Wrapper/algaehWrapper";
 import GlobalVariables from "../../../utils/GlobalVariables.json";
 import {
   getVitalHistory,
   getFormula,
   temperatureConvertion,
-  getDepartmentVitals
+  getDepartmentVitals,
 } from "./VitalsHandlers";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
@@ -42,7 +42,7 @@ class Vitals extends Component {
       systolic: "",
       diastolic: "",
       recorded_date: new Date(),
-      recorded_time: moment().format(config.formators.time)
+      recorded_time: moment().format(config.formators.time),
     };
     this.handleClose = this.handleClose.bind(this);
   }
@@ -65,7 +65,7 @@ class Vitals extends Component {
     this.setState({ openVitalModal: false });
   }
   addVitals() {
-    getVitalHistory(this, data => {
+    getVitalHistory(this, (data) => {
       this.setState({ openVitalModal: true });
     });
   }
@@ -78,9 +78,9 @@ class Vitals extends Component {
         HEIGHTAS: "CM",
         WEIGHT: e.target.value,
         HEIGHT: this.state.height,
-        onSuccess: bmi => {
+        onSuccess: (bmi) => {
           this.setState({ bmi: bmi });
-        }
+        },
       });
     } else if (e.target.name === "height") {
       //TODO  now hardCoded options need to pull from Db
@@ -89,13 +89,13 @@ class Vitals extends Component {
         HEIGHTAS: "CM",
         WEIGHT: this.state.weight,
         HEIGHT: e.target.value,
-        onSuccess: bmi => {
+        onSuccess: (bmi) => {
           this.setState({ bmi: bmi });
-        }
+        },
       });
     }
     this.setState({
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
   }
 
@@ -109,12 +109,12 @@ class Vitals extends Component {
     for (let i = 0; i < _childs.length; i++) {
       let _name = _childs[i].name;
       this.setState({
-        [_name]: ""
+        [_name]: "",
       });
     }
   }
 
-  onClose = e => {
+  onClose = (e) => {
     this.setState(
       {
         weight: "",
@@ -130,7 +130,7 @@ class Vitals extends Component {
         systolic: "",
         diastolic: "",
         recorded_date: new Date(),
-        recorded_time: moment().format(config.formators.time)
+        recorded_time: moment().format(config.formators.time),
       },
       () => {
         this.props.onClose && this.props.onClose(e);
@@ -142,7 +142,7 @@ class Vitals extends Component {
     e.preventDefault();
 
     AlgaehValidation({
-      querySelector: "id='vitals_recording'",
+      // querySelector: "id='vitals_recording'",
       onSuccess: () => {
         let bodyArray = [];
         const _elements = document.querySelectorAll("[vitalid]");
@@ -161,12 +161,14 @@ class Vitals extends Component {
               visit_time: moment().format(config.formators.time),
               case_type: case_type, //Window.global["case_type"],
               vital_id: _elements[i].getAttribute("vitalid"),
-              vital_value: _elements[i].children[0].value,
+              vital_value: _elements[i].children[0].value
+                ? _elements[i].children[0].value
+                : 0.0,
               vital_value_one:
                 _isDepended !== null
                   ? document.getElementsByName(_isDepended)[0].value
                   : null,
-              formula_value: _elements[i].getAttribute("formula_value")
+              formula_value: _elements[i].getAttribute("formula_value"),
             });
           }
         }
@@ -175,7 +177,7 @@ class Vitals extends Component {
           uri: "/doctorsWorkBench/addPatientVitals",
           method: "POST",
           data: bodyArray,
-          onSuccess: response => {
+          onSuccess: (response) => {
             if (response.data.success) {
               this.setState(
                 {
@@ -183,21 +185,21 @@ class Vitals extends Component {
                   temperature_from: "",
                   bp_position: "",
                   recorded_date: new Date(),
-                  recorded_time: moment().format(config.formators.time)
+                  recorded_time: moment().format(config.formators.time),
                 },
                 () => {
                   getVitalHistory(this);
 
                   swalMessage({
                     title: "Vitals recorded successfully . .",
-                    type: "success"
+                    type: "success",
                   });
                 }
               );
             }
-          }
+          },
         });
-      }
+      },
     });
   }
 
@@ -209,7 +211,7 @@ class Vitals extends Component {
   render() {
     const _department_viatals =
       this.props.department_vitals === undefined ||
-        this.props.department_vitals.length === 0
+      this.props.department_vitals.length === 0
         ? []
         : this.props.department_vitals;
     let _chartLabels = [];
@@ -218,16 +220,16 @@ class Vitals extends Component {
     const _vitalsGroup =
       this.props.patient_vitals !== undefined
         ? Enumerable.from(this.props.patient_vitals)
-          .groupBy("$.visit_date", null, (key, g) => {
-            let firstRecordSet = Enumerable.from(g).firstOrDefault();
-            _chartLabels.push(key);
-            return {
-              dateTime: key,
-              recorded_by: firstRecordSet.user_display_name,
-              list: g.getSource()
-            };
-          })
-          .toArray()
+            .groupBy("$.visit_date", null, (key, g) => {
+              let firstRecordSet = Enumerable.from(g).firstOrDefault();
+              _chartLabels.push(key);
+              return {
+                dateTime: key,
+                recorded_by: firstRecordSet.user_display_name,
+                list: g.getSource(),
+              };
+            })
+            .toArray()
         : [];
 
     Enumerable.from(
@@ -236,19 +238,19 @@ class Vitals extends Component {
       .groupBy("$.vital_id", null, (k, gg) => {
         if (k === 1 || k === 3 || k === 4 || k === 7 || k === 8 || k === 9) {
           let _gId = Enumerable.from(gg.getSource())
-            .where(w => w.vital_id === k)
+            .where((w) => w.vital_id === k)
             .firstOrDefault();
           let _names = String(_gId.vital_short_name).replace(/" "/g, "_");
 
           let row = Enumerable.from(_yAxes)
-            .where(w => w.id === _names)
+            .where((w) => w.id === _names)
             .firstOrDefault();
           const _index = _yAxes.indexOf(row);
           if (_index > -1) {
             _yAxes.splice(_index, 1);
           }
           _yAxes.push({
-            id: _names
+            id: _names,
           });
 
           let _bground = "";
@@ -295,9 +297,9 @@ class Vitals extends Component {
             borderColor: _borderColor,
             yAxisID: _names,
             data: Enumerable.from(gg.getSource())
-              .where(w => w.vital_id === k)
-              .select(s => s.vital_value)
-              .toArray()
+              .where((w) => w.vital_id === k)
+              .select((s) => s.vital_value)
+              .toArray(),
           });
         }
       })
@@ -307,7 +309,7 @@ class Vitals extends Component {
         <div className="row">
           <AlgaehModalPopUp
             events={{
-              onClose: this.handleClose.bind(this)
+              onClose: this.handleClose.bind(this),
             }}
             title="Patient Vitals"
             openPopup={this.state.openVitalModal}
@@ -316,7 +318,7 @@ class Vitals extends Component {
               <div
                 className="row"
                 style={{
-                  paddingTop: "10px"
+                  paddingTop: "10px",
                 }}
               >
                 <div
@@ -353,7 +355,7 @@ class Vitals extends Component {
 
           <AlgaehModalPopUp
             events={{
-              onClose: this.onClose.bind(this)
+              onClose: this.onClose.bind(this),
             }}
             title="Patient Vitals"
             openPopup={this.props.openVital}
@@ -371,22 +373,22 @@ class Vitals extends Component {
                           item.hims_d_vitals_header_id === 1
                             ? "col-2"
                             : item.hims_d_vitals_header_id >= 3
-                              ? "col-2"
-                              : item.hims_d_vitals_header_id === 5 ||
-                                item.hims_d_vitals_header_id === 6
-                                ? "col-2"
-                                : "col-2";
+                            ? "col-2"
+                            : item.hims_d_vitals_header_id === 5 ||
+                              item.hims_d_vitals_header_id === 6
+                            ? "col-2"
+                            : "col-2";
                         const _name = String(item.vitals_name)
                           .replace(/" "/g, "_")
                           .toLowerCase();
                         const _disable = _name === "bmi" ? true : false;
                         const _dependent =
                           item.hims_d_vitals_header_id === 8 ||
-                            item.hims_d_vitals_header_id === 9
+                          item.hims_d_vitals_header_id === 9
                             ? { dependent: "bp_position" }
                             : item.hims_d_vitals_header_id === 4
-                              ? { dependent: "temperature_from" }
-                              : {};
+                            ? { dependent: "temperature_from" }
+                            : {};
                         return (
                           <React.Fragment key={index}>
                             {item.hims_d_vitals_header_id === 4 ? (
@@ -394,7 +396,7 @@ class Vitals extends Component {
                                 <AlagehAutoComplete
                                   div={{ className: "col-2" }}
                                   label={{
-                                    forceLabel: "Temp. From"
+                                    forceLabel: "Temp. From",
                                   }}
                                   selector={{
                                     name: "temperature_from",
@@ -403,11 +405,11 @@ class Vitals extends Component {
                                     dataSource: {
                                       textField: "name",
                                       valueField: "value",
-                                      data: GlobalVariables.TEMP_FROM
+                                      data: GlobalVariables.TEMP_FROM,
                                     },
 
                                     onChange: this.dropDownHandle.bind(this),
-                                    autoComplete: "off"
+                                    autoComplete: "off",
                                   }}
                                 />
                               </React.Fragment>
@@ -416,7 +418,7 @@ class Vitals extends Component {
                                 div={{ className: "col-2" }}
                                 label={{
                                   forceLabel: "BP (mmHg)",
-                                  fieldName: "BP_type"
+                                  fieldName: "BP_type",
                                 }}
                                 selector={{
                                   name: "bp_position",
@@ -425,10 +427,10 @@ class Vitals extends Component {
                                   dataSource: {
                                     textField: "name",
                                     valueField: "value",
-                                    data: GlobalVariables.BP_POSITION
+                                    data: GlobalVariables.BP_POSITION,
                                   },
                                   onChange: this.dropDownHandle.bind(this),
-                                  autoComplete: "off"
+                                  autoComplete: "off",
                                 }}
                               />
                             ) : null}
@@ -436,25 +438,25 @@ class Vitals extends Component {
                             <AlagehFormGroup
                               div={{
                                 className: _className,
-                                others: { key: index }
+                                others: { key: index },
                               }}
                               label={{
                                 forceLabel:
                                   item.uom === "C"
                                     ? "°C"
                                     : item.uom === "F"
-                                      ? "°F"
-                                      : item.vital_short_name +
+                                    ? "°F"
+                                    : item.vital_short_name +
                                       " (" +
                                       String(item.uom).trim() +
                                       ")",
-                                isImp: item.mandatory === 0 ? false : true
+                                isImp: item.mandatory === 0 ? false : true,
                               }}
                               textBox={{
                                 className: "txt-fld",
                                 name: _name,
                                 number: {
-                                  allowNegative: false
+                                  allowNegative: false,
                                 },
                                 dontAllowKeys: ["-", "e"],
                                 others: {
@@ -463,12 +465,12 @@ class Vitals extends Component {
                                   disabled: _disable,
                                   vitalid: item.hims_d_vitals_header_id,
                                   formula_value: String(item.uom).trim(),
-                                  ..._dependent
+                                  ..._dependent,
                                 },
                                 value: this.state[_name],
                                 events: {
-                                  onChange: this.texthandle.bind(this)
-                                }
+                                  onChange: this.texthandle.bind(this),
+                                },
                               }}
                             />
 
@@ -476,13 +478,13 @@ class Vitals extends Component {
                               <AlagehFormGroup
                                 div={{ className: "col-2" }}
                                 label={{
-                                  forceLabel: item.uom === "C" ? "°F" : "°C"
+                                  forceLabel: item.uom === "C" ? "°F" : "°C",
                                 }}
                                 textBox={{
                                   className: "txt-fld",
                                   disabled: true,
                                   number: {
-                                    allowNegative: false
+                                    allowNegative: false,
                                   },
                                   dontAllowKeys: ["-", "e"],
                                   value: temperatureConvertion(
@@ -490,7 +492,7 @@ class Vitals extends Component {
                                       ? 0
                                       : this.state[_name],
                                     item.uom
-                                  )
+                                  ),
                                 }}
                               />
                             ) : null}
@@ -504,13 +506,13 @@ class Vitals extends Component {
                         label={{ forceLabel: "Recorded Date", isImp: true }}
                         textBox={{
                           className: "txt-fld",
-                          name: "recorded_date"
+                          name: "recorded_date",
                         }}
                         maxDate={new Date()}
                         events={{
-                          onChange: selectedDate => {
+                          onChange: (selectedDate) => {
                             this.setState({ recorded_date: selectedDate });
-                          }
+                          },
                         }}
                         value={this.state.recorded_date}
                         disabled={true}
@@ -520,19 +522,19 @@ class Vitals extends Component {
                         div={{ className: "col-2" }}
                         label={{
                           isImp: true,
-                          forceLabel: "Recorded Time"
+                          forceLabel: "Recorded Time",
                         }}
                         textBox={{
                           others: {
                             type: "time",
-                            disabled: true
+                            disabled: true,
                           },
                           className: "txt-fld",
                           name: "recorded_time",
                           value: this.state.recorded_time,
                           events: {
-                            onChange: this.texthandle.bind(this)
-                          }
+                            onChange: this.texthandle.bind(this),
+                          },
                         }}
                       />
                       <div className="col-12 margin-top-15">
@@ -577,7 +579,7 @@ class Vitals extends Component {
                                   <ul className="vitals-box">
                                     {_.orderBy(
                                       data.list,
-                                      o => o.sequence_order
+                                      (o) => o.sequence_order
                                     ).map((vitals, ind) => (
                                       <li className="each-vitals-box" key={ind}>
                                         <p>{vitals.vital_short_name}</p>
@@ -598,12 +600,12 @@ class Vitals extends Component {
                         <Line
                           options={{
                             scales: {
-                              yAxes: _yAxes
-                            }
+                              yAxes: _yAxes,
+                            },
                           }}
                           data={{
                             datasets: _plotGraph,
-                            labels: _chartLabels
+                            labels: _chartLabels,
                           }}
                         />
                       </div>
@@ -619,7 +621,7 @@ class Vitals extends Component {
                     <button
                       type="button"
                       className="btn btn-default"
-                      onClick={e => {
+                      onClick={(e) => {
                         this.onClose(e);
                       }}
                     >
@@ -639,7 +641,7 @@ class Vitals extends Component {
 function mapStateToProps(state) {
   return {
     patient_vitals: state.patient_vitals,
-    department_vitals: state.department_vitals
+    department_vitals: state.department_vitals,
   };
 }
 
@@ -647,7 +649,7 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
       getVitalHistory: AlgaehActions,
-      getDepartmentVitals: AlgaehActions
+      getDepartmentVitals: AlgaehActions,
     },
     dispatch
   );

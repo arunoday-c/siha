@@ -3,7 +3,23 @@ import { algaehApiCall, swalMessage } from "../../utils/algaehApiCall";
 import config from "../../utils/config.json";
 import moment from "moment";
 import Enumerable from "linq";
-
+const getPatientProfile = ($this) => {
+  const { current_patient, episode_id } = Window.global;
+  $this.props.getPatientProfile({
+    uri: "/doctorsWorkBench/getPatientProfile",
+    method: "GET",
+    data: {
+      patient_id: current_patient, //Window.global["current_patient"],
+      episode_id: episode_id, //Window.global["episode_id"]
+    },
+    cancelRequestId: "getPatientProfile",
+    redux: {
+      type: "PATIENT_PROFILE",
+      mappingName: "patient_profile",
+    },
+    afterSuccess: (data) => {},
+  });
+};
 const getPatientAllergies = ($this) => {
   $this.props.getPatientAllergies({
     uri: "/doctorsWorkBench/getPatientAllergies",
@@ -205,4 +221,5 @@ export {
   getPatientAllergies,
   texthandle,
   getAllAllergies,
+  getPatientProfile,
 };
