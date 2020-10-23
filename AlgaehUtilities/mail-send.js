@@ -41,6 +41,9 @@ function algaehMail(options) {
   this.transporter = nodemailer.createTransport({
     ..._service,
     host: host,
+    name:"shaksyengineering.com",
+    // sendmail: true,
+    driver: "smtp",
     port: port === undefined ? 465 : port,
     secure: useSSL === undefined ? false : useSSL,
     ...tls,
