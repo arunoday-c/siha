@@ -22,6 +22,7 @@ import {
   EditGrid,
   ItemChargable,
   makeZeroIngrid,
+  texthandle
 } from "./OrderConsumablesHandaler";
 import "./OrderConsumables.scss";
 import "../../../../styles/site.scss";
@@ -71,6 +72,7 @@ class OrderConsumables extends Component {
       addNewService: false,
       inventory_location_id: this.props.inventory_location_id,
       item_notchargable: "N",
+      instructions: null,
       itemchargable: false,
     };
   }
@@ -131,12 +133,12 @@ class OrderConsumables extends Component {
   UNSAFE_componentWillReceiveProps(nextProps) {
     let Location_name =
       this.props.inventorylocations !== undefined &&
-      this.props.inventorylocations.length > 0
+        this.props.inventorylocations.length > 0
         ? _.filter(this.props.inventorylocations, (f) => {
-            return (
-              f.hims_d_inventory_location_id === nextProps.inventory_location_id
-            );
-          })
+          return (
+            f.hims_d_inventory_location_id === nextProps.inventory_location_id
+          );
+        })
         : [];
 
     if (
@@ -205,6 +207,7 @@ class OrderConsumables extends Component {
         discount_amount: null,
         net_total: null,
         item_notchargable: "N",
+        instructions: null,
         itemchargable: false,
       },
       () => {
@@ -338,6 +341,22 @@ class OrderConsumables extends Component {
                   }}
                 />
 
+                <AlagehFormGroup
+                  div={{ className: "col-2 mandatory" }}
+                  label={{
+                    forceLabel: "Instructions",
+                    isImp: true,
+                  }}
+                  textBox={{
+                    className: "txt-fld",
+                    name: "instructions",
+                    value: this.state.instructions,
+                    events: {
+                      onChange: texthandle.bind(this, this)
+                    },
+                  }}
+                />
+
                 <div
                   className="customCheckbox col-2"
                   style={{ border: "none", marginTop: "19px" }}
@@ -400,6 +419,12 @@ class OrderConsumables extends Component {
                         others: {
                           minWidth: 250,
                         },
+                      },
+                      {
+                        fieldName: "instructions",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Instructions" }} />
+                        ),
                       },
                       {
                         fieldName: "batchno",
