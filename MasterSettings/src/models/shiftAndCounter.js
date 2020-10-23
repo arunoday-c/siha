@@ -242,14 +242,11 @@ export default {
     try {
       _mysql
         .executeQuery({
-          query:
-            "select E.employee_code,E.full_name as cashier_name,algaeh_d_app_user_id as cashier_id \
-            from hims_m_user_employee UM \
-            inner join algaeh_d_app_user U on UM.user_id=U.algaeh_d_app_user_id\
-            inner join hims_d_employee  E on U.employee_id=E.hims_d_employee_id\
-            where UM.record_status='A' and U.record_status='A' and E.record_status='A' \
-            and UM.hospital_id=? and  E.employee_status='A' and U.user_status='A' and U.user_type='C'\
-            order by cashier_id desc;",
+          query: `select E.employee_code,E.full_name as cashier_name,U.algaeh_d_app_user_id as cashier_id          
+             from algaeh_d_app_user as U inner join hims_d_employee  E on U.employee_id=E.hims_d_employee_id           
+              where   U.record_status='A' and E.record_status='A' 
+               and  E.employee_status='A' and U.user_status='A' and U.user_type='C'          
+              and E.hospital_id=?  order by cashier_id desc; `,
           values: [req.userIdentity.hospital_id],
           printQuery: true,
         })
