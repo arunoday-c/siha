@@ -563,6 +563,9 @@ export function AddPatientDentalForm({
                       onChange: (reqDate) => {
                         setValue("requesting_date", moment(reqDate));
                       },
+                      onClear: () => {
+                        onChange(undefined);
+                      },
                     }}
                   />
                 )}

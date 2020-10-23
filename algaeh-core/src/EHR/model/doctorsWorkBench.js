@@ -2664,14 +2664,14 @@ let getPatientHistory = (req, res, next) => {
                 key == "SOH"
                   ? "Social History"
                   : key === "MEH"
-                    ? "Medical History"
-                    : key === "SGH"
-                      ? "Surgical History"
-                      : key === "FMH"
-                        ? "Family History"
-                        : key === "BRH"
-                          ? "Birth History"
-                          : "",
+                  ? "Medical History"
+                  : key === "SGH"
+                  ? "Surgical History"
+                  : key === "FMH"
+                  ? "Family History"
+                  : key === "BRH"
+                  ? "Birth History"
+                  : "",
               groupDetail: detail,
             };
           })
@@ -2839,8 +2839,8 @@ let updatePatientEncounter = (req, res, next) => {
         inputData.examination_notes != null
           ? ","
           : inputData.assesment_notes != null
-            ? ","
-            : "";
+          ? ","
+          : "";
       strQuery += _mysql.mysqlQueryFormat(putComma + "significant_signs = ?", [
         inputData.significant_signs,
       ]);
@@ -2851,10 +2851,10 @@ let updatePatientEncounter = (req, res, next) => {
         inputData.examination_notes != null
           ? ","
           : inputData.assesment_notes != null
-            ? ","
-            : inputData.significant_signs != null
-              ? ","
-              : "";
+          ? ","
+          : inputData.significant_signs != null
+          ? ","
+          : "";
       strQuery += _mysql.mysqlQueryFormat(putComma + "other_signs = ?", [
         inputData.other_signs,
       ]);
@@ -2991,6 +2991,7 @@ let addSickLeave = (req, res, next) => {
 
   try {
     let input = req.body;
+
     _mysql
       .executeQuery({
         query:
@@ -3002,11 +3003,14 @@ let addSickLeave = (req, res, next) => {
           req.records = [];
           next();
         } else {
+          const test = input.reported_sick ? "Y" : "N";
+          console.log("test", test);
+
           _mysql
             .executeQuery({
-              query:
-                "insert into hims_f_patient_sick_leave(patient_id, visit_id, episode_id, from_date, \
-              to_date, no_of_days, remarks)values(?, ?, ?, ?, ?, ?, ?)",
+              query: `insert into hims_f_patient_sick_leave(patient_id, visit_id, episode_id, from_date, \
+              to_date, no_of_days, remarks,reported_sick,accompanying_patient,patient_unfit,advice_light_duty,pat_need_emp_care)
+              values(?, ?, ?, ?, ?, ?, ?,?,?,?,?,?)`,
               values: [
                 input.patient_id,
                 input.visit_id,
@@ -3015,6 +3019,11 @@ let addSickLeave = (req, res, next) => {
                 input.to_date,
                 input.no_of_days,
                 input.remarks,
+                input.reported_sick ? "Y" : "N",
+                input.accompanying_patient ? "Y" : "N",
+                input.patient_unfit ? "Y" : "N",
+                input.advice_light_duty ? "Y" : "N",
+                input.pat_need_emp_care ? "Y" : "N",
               ],
             })
             .then((resultd) => {
