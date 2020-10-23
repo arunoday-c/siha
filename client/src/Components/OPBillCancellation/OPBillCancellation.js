@@ -28,6 +28,7 @@ import {
 } from "../../utils/algaehApiCall.js";
 import AlgaehLoader from "../Wrapper/fullPageLoader";
 import moment from "moment";
+import { RawSecurityComponent } from "algaeh-react-components";
 
 class OPBillCancellation extends Component {
   constructor(props) {
@@ -48,6 +49,7 @@ class OPBillCancellation extends Component {
       cheque_amount: 0,
       advance: 0,
       cancel_remarks: null,
+      cancel_checkin: "N"
     };
   }
 
@@ -96,7 +98,18 @@ class OPBillCancellation extends Component {
       getCtrlCode(this, queryParams.get("bill_cancel_number"));
     }
 
-    getCashiersAndShiftMAP(this, this);
+
+
+    RawSecurityComponent({ componentCode: "OP_CAL_CON" }).then(
+      (result) => {
+        debugger
+        if (result === "show") {
+          getCashiersAndShiftMAP(this, "Y");
+        } else {
+          getCashiersAndShiftMAP(this, "N");
+        }
+      }
+    );
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
@@ -198,7 +211,7 @@ class OPBillCancellation extends Component {
                 saveEnable: true,
               });
               swalMessage({
-                title: "Done Successfully",
+                title: "Cancelled Successfully",
                 type: "success",
               });
             } else {
@@ -277,17 +290,17 @@ class OPBillCancellation extends Component {
           printArea={
             this.state.bill_cancel_number !== null
               ? {
-                  menuitems: [
-                    {
-                      label: "Print Receipt",
-                      events: {
-                        onClick: () => {
-                          generateReceipt(this, this);
-                        },
+                menuitems: [
+                  {
+                    label: "Print Receipt",
+                    events: {
+                      onClick: () => {
+                        generateReceipt(this, this);
                       },
                     },
-                  ],
-                }
+                  },
+                ],
+              }
               : ""
           }
           selectedLang={this.state.selectedLang}

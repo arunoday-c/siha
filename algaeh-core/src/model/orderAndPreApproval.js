@@ -1083,7 +1083,7 @@ let getVisitConsumable = (req, res, next) => {
         OS.`comapany_resp`, OS.`company_payble`, OS.`sec_company`, OS.`sec_deductable_percentage`, OS.`sec_deductable_amount`,\
         OS.`sec_company_res`, OS.`sec_company_tax`, OS.`sec_company_paybale`, OS.`sec_copay_percntage`, OS.`sec_copay_amount`,\
         OS.`created_by`, OS.`created_date`, OS.`updated_by`, OS.`updated_date`, OS.`record_status`,\
-        OS.item_notchargable,\
+        OS.item_notchargable,OS.instructions, \
         S.`hims_d_services_id`, S.`service_code`, S.`cpt_code`, S.`service_name`, S.`arabic_service_name`, \
         S.`service_desc`, S.`sub_department_id`, S.`hospital_id`, S.`service_type_id`, S.`procedure_type`, \
         S.`standard_fee`, S.`followup_free_fee`, S.`followup_paid_fee`, S.`discount`, S.`vat_applicable`, \
@@ -1220,7 +1220,7 @@ let getOrderServices = (req, res, next) => {
       connection.query(
         "SELECT  * FROM `hims_f_ordered_services` \
        WHERE `record_status`='A' AND " +
-          where.condition,
+        where.condition,
         where.values,
         (error, result) => {
           releaseDBConnection(db, connection);
@@ -1463,6 +1463,7 @@ let insertInvOrderedServices = (req, res, next) => {
       "sec_company_paybale",
       "sec_copay_percntage",
       "sec_copay_amount",
+      "instructions"
     ];
 
     _mysql
