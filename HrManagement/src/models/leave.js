@@ -1018,7 +1018,7 @@ export default {
               })
               .send()
               .then((response) => {
-                console.log("Mail Sent Sucessfully",response);
+                console.log("Mail Sent Sucessfully", response);
                 // res.status(200).json({ success: true, message: "sucess" });
               })
               .catch((error) => {
@@ -1184,7 +1184,8 @@ export default {
                   // res.status(200).json({ success: true, message: "sucess" });
                 })
                 .catch((error) => {
-                  next(error);
+                  // next(error);
+                  console.log(error);
                 });
             } catch (e) {
               //_mysql.releaseConnection();

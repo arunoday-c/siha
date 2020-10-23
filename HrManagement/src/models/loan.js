@@ -213,6 +213,7 @@ export default {
           next();
           return;
         }
+        req.sendingMail = true;
         // console.log("fromSendDetails", fromSendDetails);
         const decrypted = AESCrypt.decryptWithSalt(
           SECRETKey,
@@ -250,7 +251,7 @@ export default {
               pass: decrypted,
               smtp: options.host,
               port: options.port,
-              useSSL: options.useSSL,
+              useSSL: options.secure,
               service: options.service,
             })
               .to(toSendDetails)
@@ -271,11 +272,14 @@ export default {
               })
               .send()
               .then((response) => {
-                res.status(200).json({ success: true, message: "sucess" });
-                next();
+                // res.status(200).json({ success: true, message: "sucess" });
+                // next();
+                console.log("Mail Sent Sucessfully", response);
               })
               .catch((error) => {
-                next(error);
+                // next(error);
+
+                console.log(error);
               });
 
             // if (send_attachment === "true") {
@@ -301,17 +305,17 @@ export default {
             //     .catch((error) => {
             //       next(error);
             //     });
-            _mysql.releaseConnection();
-            req.records = result;
-            next();
+            // _mysql.releaseConnection();
+            // req.records = result;
+            // next();
           });
         } catch (e) {
           _mysql.releaseConnection();
           next(e);
         }
-        // _mysql.releaseConnection();
+        _mysql.releaseConnection();
         // req.records = result;
-        // next();
+        next();
       })
       .catch((e) => {
         _mysql.releaseConnection();
@@ -479,7 +483,7 @@ export default {
                 pass: decrypted,
                 smtp: options.host,
                 port: options.port,
-                useSSL: options.useSSL,
+                useSSL: options.secure,
                 service: options.service,
               })
                 .to(toEmail)
@@ -503,13 +507,15 @@ export default {
                 })
                 .send()
                 .then((response) => {
-                  res.status(200).json({ success: true, message: "sucess" });
-                  _mysql.releaseConnection();
-                  req.records = result;
-                  next();
+                  // res.status(200).json({ success: true, message: "sucess" });
+                  // _mysql.releaseConnection();
+                  // req.records = result;
+                  // next();
+                  console.log("Mail Sent Sucessfully");
                 })
                 .catch((error) => {
-                  next(error);
+                  // next(error);
+                  console.log(error);
                 });
             } catch (e) {
               //_mysql.releaseConnection();
@@ -604,7 +610,7 @@ export default {
                 pass: decrypted,
                 smtp: options.host,
                 port: options.port,
-                useSSL: options.useSSL,
+                useSSL: options.secure,
                 service: options.service,
               })
                 .to(toSendDetails)
@@ -628,11 +634,13 @@ export default {
                 })
                 .send()
                 .then((response) => {
-                  res.status(200).json({ success: true, message: "sucess" });
-                  _mysql.releaseConnection();
+                  // res.status(200).json({ success: true, message: "sucess" });
+                  // _mysql.releaseConnection();
+                  console.log("Mail Sent Sucessfully");
                 })
                 .catch((error) => {
-                  next(error);
+                  // next(error);
+                  console.log(error);
                 });
 
               // if (send_attachment === "true") {
