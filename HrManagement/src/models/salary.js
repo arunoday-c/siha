@@ -1236,7 +1236,7 @@ export default {
           let annual_leave_data = leave_accrual_data[1];
           let accrual_exit = leave_accrual_data[2];
 
-          console.log("accrual_exit", accrual_exit)
+          // console.log("accrual_exit", accrual_exit)
           if (leave_accrual_detail.length > 0) {
             // if (annual_leave_data[0].leave_accrual_calc === "P") {
             //   for (let p = 0; p < leave_accrual_detail.length; p++) {
@@ -1257,7 +1257,7 @@ export default {
             //   }
             // }
             const leave_salary_accrual_detail = leave_accrual_detail;
-            console.log("leave_salary_accrual_detail 1", leave_salary_accrual_detail)
+            // console.log("leave_salary_accrual_detail 1", leave_salary_accrual_detail)
             for (let i = 0; i < accrual_exit.length; i++) {
 
               const salary_pay_acc = leave_salary_accrual_detail.find(
@@ -1266,7 +1266,7 @@ export default {
               leave_salary_accrual_detail.pop(salary_pay_acc)
             }
 
-            console.log("leave_salary_accrual_detail", leave_salary_accrual_detail)
+            // console.log("leave_salary_accrual_detail", leave_salary_accrual_detail)
 
             if (leave_salary_accrual_detail.length > 0) {
               _mysql
@@ -1277,7 +1277,7 @@ export default {
                 })
                 .then((generatedNumbers) => {
                   const leave_salary_number = generatedNumbers.LEAVE_ACCRUAL;
-                  console.log("leave_salary_number", leave_salary_number)
+                  // console.log("leave_salary_number", leave_salary_number)
 
                   const total_leave_salary = _.sumBy(
                     leave_salary_accrual_detail,
@@ -1314,7 +1314,7 @@ export default {
                       printQuery: true
                     })
                     .then((accrual_header) => {
-                      console.log("Header")
+                      // console.log("Header")
                       let leave_salary_header_id = accrual_header.insertId;
 
                       let IncludeValues = [
@@ -1339,7 +1339,7 @@ export default {
                           printQuery: true
                         })
                         .then((leave_detail) => {
-                          console.log("Detail")
+                          // console.log("Detail")
                           _mysql
                             .executeQueryWithTransaction({
                               query:
@@ -1353,7 +1353,7 @@ export default {
                               // printQuery: false
                             })
                             .then((salary_process) => {
-                              console.log("Salary Update")
+                              // console.log("Salary Update")
                               // console.log("salary")
                               InsertEmployeeLeaveSalary({
                                 leave_salary_accrual_detail: leave_salary_accrual_detail,
@@ -1367,7 +1367,7 @@ export default {
                                     : false,
                               })
                                 .then((Employee_Leave_Salary) => {
-                                  console.log("Leave Salary")
+                                  // console.log("Leave Salary")
                                   InsertGratuityProvision({
                                     inputParam: inputParam,
                                     _mysql: _mysql,
@@ -1376,7 +1376,7 @@ export default {
                                       req.userIdentity.decimal_places,
                                   })
                                     .then((gratuity_provision) => {
-                                      console.log("gratuity_provision")
+                                      // console.log("gratuity_provision")
                                       if (
                                         inputParam._leave_salary_acc.length > 0
                                       ) {
@@ -1883,7 +1883,7 @@ export default {
   },
 
   generateAccountingEntry: (req, res, next) => {
-    console.log("generateAccountingEntry");
+    // console.log("generateAccountingEntry");
     const _options = req.connection == null ? {} : req.connection;
     const _mysql = new algaehMysql(_options);
     try {
@@ -1896,7 +1896,7 @@ export default {
               "select product_type from hims_d_organization where hims_d_organization_id=1 limit 1;",
           })
           .then((org_data) => {
-            console.log("org_data", org_data)
+            // console.log("org_data", org_data)
             if (
               org_data[0]["product_type"] == "HIMS_ERP" ||
               org_data[0]["product_type"] == "FINANCE_ERP"
@@ -2345,7 +2345,7 @@ export default {
                   });
                 });
             } else {
-              console.log("Else")
+              // console.log("Else")
               _mysql.commitTransaction(() => {
                 _mysql.releaseConnection();
                 // req.records = org_data;
@@ -2389,11 +2389,11 @@ function InsertEmployeeLeaveSalary(options) {
         employee_ids.push(o.employee_id);
       });
 
-      console.log("employee_ids", employee_ids)
+      // console.log("employee_ids", employee_ids)
       const utilities = new algaehUtilities();
 
       let promiseAll = [];
-      console.log("Leave")
+      // console.log("Leave")
       _mysql
         .executeQueryWithTransaction({
           query:
@@ -2664,21 +2664,21 @@ function InsertEmployeeLeaveSalary(options) {
                             // printQuery: false
                           })
                           .then((monthly_leave) => {
-                            console.log("monthly_leave")
+                            // console.log("monthly_leave")
                             resolve();
                           })
                           .catch((error) => {
-                            console.log("Reject Insert", error)
+                            // console.log("Reject Insert", error)
                             reject(error);
                           });
                       })
                       .catch((error) => {
-                        console.log("error", error)
+                        // console.log("error", error)
                         reject(error);
                       });
                   })
                   .catch((e) => {
-                    console.log("data error", error)
+                    // console.log("data error", error)
                     reject(e);
                   });
               }
@@ -2690,7 +2690,7 @@ function InsertEmployeeLeaveSalary(options) {
                     printQuery: false,
                   })
                   .then((update_employee_leave) => {
-                    console.log("update_employee_leave")
+                    // console.log("update_employee_leave")
                     resolve();
                   })
                   .catch((e) => {
@@ -2765,7 +2765,7 @@ function InsertEmployeeLeaveSalary_Old(options) {
       const utilities = new algaehUtilities();
 
       let promiseAll = [];
-      console.log("Leave")
+      // console.log("Leave")
       for (let i = 0; i < leave_salary_accrual_detail.length; i++) {
         promiseAll.push(
           new Promise((resolve, reject) => {
@@ -2793,7 +2793,7 @@ function InsertEmployeeLeaveSalary_Old(options) {
                 // printQuery: false
               })
               .then((employee_leave_salary) => {
-                console.log("Leave Salary")
+                // console.log("Leave Salary")
                 // console.log("leave_salary_accrual_detail", leave_salary_accrual_detail[i])
                 if (employee_leave_salary.length > 0) {
                   let employee_leave_salary_header = employee_leave_salary[0];
@@ -2942,7 +2942,7 @@ function InsertEmployeeLeaveSalary_Old(options) {
                         printQuery: true,
                       })
                       .then((update_employee_leave) => {
-                        console.log("update_employee_leave")
+                        // console.log("update_employee_leave")
                         resolve();
                       })
                       .catch((e) => {
