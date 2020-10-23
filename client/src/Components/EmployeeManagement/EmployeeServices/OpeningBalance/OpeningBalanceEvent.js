@@ -158,7 +158,7 @@ export default function ManualAttendanceEvents() {
           ? " hospital_id=" + $this.state.hospital_id
           : "1=1";
       if ($this.state.employee_group_id !== null) {
-        input_data += "employee_group_id = " + $this.state.employee_group_id;
+        input_data += " and employee_group_id = " + $this.state.employee_group_id;
       }
 
       AlgaehSearch({
