@@ -38,10 +38,11 @@ function algaehMail(options) {
           }
         };
   console.log("Here is the credentials",options);
+  const serverName = user.split("@")[1];
   this.transporter = nodemailer.createTransport({
     ..._service,
     host: host,
-    name:"shaksyengineering.com",
+    name:serverName,//"shaksyengineering.com",
     // sendmail: true,
     driver: "smtp",
     port: port === undefined ? 465 : port,
