@@ -17,17 +17,17 @@ const executePDF = function executePDFMethod(options) {
       let strQuery = "";
 
       if (input.cashier_name > 0) {
-        strQuery += ` and PV.created_by= ${input.cashier_name}`;
+        strQuery += ` and BH.created_by= ${input.cashier_name}`;
       }
 
       options.mysql
         .executeQuery({
-          query: `select PV.created_by, PV.visit_code,PV.visit_date, PV.department_id, D.department_name,PV.sub_department_id,
+          query: `select BH.created_by, PV.visit_code,PV.visit_date, PV.department_id, D.department_name,PV.sub_department_id,
           SD.sub_department_name, E.full_name as doctor_name, E.employee_code, E.hims_d_employee_id,
           SE.service_name as service_name,BD.service_type_id,ST.service_type, P.patient_code, P.full_name, BD.services_id, BD.net_amout,
           EU.full_name as cashier_name,BH.created_by, EU.employee_code as cashier_code, BH.bill_number, BH.bill_date
-          from  hims_f_billing_header BH
-          inner join hims_f_patient_visit PV on PV.hims_f_patient_visit_id=BH.visit_id
+          from  hims_f_patient_visit PV
+          inner join hims_f_billing_header BH on PV.hims_f_patient_visit_id=BH.visit_id
           inner join hims_f_billing_details BD on BH.hims_f_billing_header_id=BD.hims_f_billing_header_id
           inner join hims_d_services SE on BD.services_id=SE.hims_d_services_id
           inner join hims_d_service_type ST on BD.service_type_id=ST.hims_d_service_type_id
