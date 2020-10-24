@@ -13,7 +13,6 @@ class RequestItemList extends Component {
     super(props);
     this.state = {};
   }
-
   static contextType = MyContext;
 
   AddItems = (input) => {
@@ -68,13 +67,14 @@ class RequestItemList extends Component {
 
   render() {
     const { state } = this.context;
+
     const isPharmacy = state.quotation_for === "PHR";
     return (
       <React.Fragment>
         <div className="hims-purchase-order-entry">
           <div className="row">
             <InputItem
-              disabled={state.dataExists || !state.quotation_for}
+              disabled={this.props.disabled}
               poitemcategory={this.props.poitemcategory}
               poitemgroup={this.props.poitemgroup}
               poitemuom={this.props.poitemuom}
