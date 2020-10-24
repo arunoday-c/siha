@@ -248,6 +248,10 @@
         "label": "Patient Name"
       },
       {
+        "fieldName": "insured",
+        "label": "Insured"
+      },
+      {
         "fieldName": "contact_number",
         "label": "Mobile No."
       }
