@@ -18,5 +18,6 @@
   "currency_symbol": null,
   "thousand_separator": null,
   "decimal_separator": null,
-  "finance_authorize_privilege":null
+  "finance_authorize_privilege": null,
+  "vat_applicable": null
 }

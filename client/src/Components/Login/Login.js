@@ -468,7 +468,8 @@ function Login(props) {
           type: "success",
           title: "please check your email",
         });
-        pinOneRef.current.focus();
+        //For the error focus of undefned.
+        if (pinOneRef.current) pinOneRef.current.focus();
       },
       onCatch: (error) => {
         setRSPLoader(false);

@@ -5,8 +5,8 @@ const executePDF = function executePDFMethod(options) {
       const header = options.result[0].length > 0 ? options.result[0] : [{}];
       const detail = options.result[1];
       const userObject = options.args.crypto;
-      let otherObj = {};
 
+      console.log("userObject", userObject)
       const result = {
         header: { ...header[0], ...options.mainData[0] },
         detail: _.chain(detail)
@@ -75,7 +75,8 @@ const executePDF = function executePDFMethod(options) {
           _.sumBy(detail, s => parseFloat(s.net_claim)),
           userObject,
           false
-        )
+        ),
+        vat_applicable: userObject.vat_applicable
       };
 
       resolve(result);
