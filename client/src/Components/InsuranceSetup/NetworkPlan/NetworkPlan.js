@@ -537,7 +537,7 @@ class NetworkPlan extends PureComponent {
                             value: this.state.deductable_type,
                             dataSource: {
                               textField:
-                                this.state.selectedLang === "en"
+                                this.context.selectedLang === "en"
                                   ? "name"
                                   : "arabic_name",
                               valueField: "value",

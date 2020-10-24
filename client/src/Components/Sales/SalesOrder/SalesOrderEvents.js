@@ -6,6 +6,7 @@ import spotlightSearch from "../../../Search/spotlightSearch.json";
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
 import _ from "lodash";
 import Enumerable from "linq";
+import extend from "extend";
 
 const texthandle = ($this, ctrl, e) => {
   e = ctrl || e;
@@ -375,6 +376,7 @@ const ClearData = ($this, e) => {
     dataPosted: true,
     canceled_reason_sales: "",
     rejectVisible: false,
+    is_posted: "N"
     // services_required: "N"
   };
 
@@ -400,7 +402,7 @@ const SaveSalesOrderEnrty = ($this, from) => {
         });
         return;
       }
-      let InputObj = $this.state;
+      let InputObj = extend({}, $this.state);
       let order_detail =
         InputObj.sales_order_mode === "I"
           ? InputObj.sales_order_items
@@ -415,6 +417,7 @@ const SaveSalesOrderEnrty = ($this, from) => {
         });
         return;
       }
+      debugger
       InputObj.quote_validity =
         InputObj.sales_order_mode === "S"
           ? null
@@ -440,6 +443,8 @@ const SaveSalesOrderEnrty = ($this, from) => {
       } else {
         strUri = "/SalesOrder/addSalesOrder";
       }
+      delete InputObj.organizations
+      delete InputObj.cost_projects
       const settings = { header: undefined, footer: undefined };
 
       AlgaehLoader({ show: true });
@@ -547,6 +552,7 @@ const getCtrlCode = ($this, docNumber) => {
         data.selectedData = true;
         data.itemAdd = false;
 
+
         if (data.is_revert === "Y") {
           data.itemAdd = true;
           data.serviceAdd = false;
@@ -573,8 +579,7 @@ const getCtrlCode = ($this, docNumber) => {
         data.organizations = $this.props.hospitaldetails;
 
         $this.setState(data, () => {
-          debugger
-          // $this.getDocuments();
+          $this.getDocuments();
         });
       }
       AlgaehLoader({ show: false });

@@ -1018,10 +1018,11 @@ export default {
               })
               .send()
               .then((response) => {
-                res.status(200).json({ success: true, message: "sucess" });
+                console.log("Mail Sent Sucessfully", response);
+                // res.status(200).json({ success: true, message: "sucess" });
               })
               .catch((error) => {
-                next(error);
+                console.log(error);
               });
 
             // if (send_attachment === "true") {
@@ -1179,10 +1180,12 @@ export default {
                 })
                 .send()
                 .then((response) => {
-                  res.status(200).json({ success: true, message: "sucess" });
+                  console.log("Mail Sent Sucessfully");
+                  // res.status(200).json({ success: true, message: "sucess" });
                 })
                 .catch((error) => {
-                  next(error);
+                  // next(error);
+                  console.log(error);
                 });
             } catch (e) {
               //_mysql.releaseConnection();
@@ -1270,7 +1273,8 @@ export default {
                 })
                 .send()
                 .then((response) => {
-                  res.status(200).json({ success: true, message: "sucess" });
+                  console.log("Mail Sent Sucessfully");
+                  // res.status(200).json({ success: true, message: "sucess" });
                 })
                 .catch((error) => {
                   next(error);

@@ -14,6 +14,7 @@ import {
 import "./SickLeave.scss";
 import "../../../styles/site.scss";
 import { swalMessage, algaehApiCall } from "../../../utils/algaehApiCall";
+// import { Checkbox } from "antd";
 
 class SickLeave extends Component {
   constructor(props) {
@@ -24,10 +25,17 @@ class SickLeave extends Component {
       to_date: null,
       no_of_days: 0,
       remarks: "",
+      reported_sick: false,
+      accompanying_patient: false,
+      patient_unfit: false,
+      patient_fit: false,
+      advice_light_duty: false,
+      pat_need_emp_care: false,
       episode_id: Window?.global?.episode_id,
       patient_id: Window?.global?.current_patient,
       visit_id: Window?.global?.visit_id,
       disableEdit: false,
+      hims_f_patient_sick_leave_id: null,
     };
     this.getSickLeave();
   }
@@ -45,6 +53,13 @@ class SickLeave extends Component {
         if (response.data.success) {
           this.setState({
             ...data,
+            reported_sick: data.reported_sick === "Y" ? true : false,
+            accompanying_patient:
+              data.accompanying_patient === "Y" ? true : false,
+            patient_unfit: data.patient_unfit === "Y" ? true : false,
+            patient_fit: data.patient_fit === "Y" ? true : false,
+            advice_light_duty: data.advice_light_duty === "Y" ? true : false,
+            pat_need_emp_care: data.pat_need_emp_care === "Y" ? true : false,
             disableEdit: response.data.records.length > 0 ? true : false,
           });
         }
@@ -108,14 +123,88 @@ class SickLeave extends Component {
   }
 
   onClose = (e) => {
-    this.setState(
-      { from_date: null, to_date: null, no_of_days: 0, remarks: "" },
-      () => {
-        this.props.onClose && this.props.onClose(e);
-      }
-    );
+    this.setState({}, () => {
+      this.props.onClose && this.props.onClose(e);
+    });
   };
 
+  printSickleaveAfterUpadteAndAdd() {
+    const { episode_id, current_patient, visit_id } = Window.global;
+    algaehApiCall({
+      uri: "/report",
+      method: "GET",
+      module: "reports",
+      headers: {
+        Accept: "blob",
+      },
+      others: { responseType: "blob" },
+      data: {
+        report: {
+          reportName: "sickLeave",
+          reportParams: [
+            {
+              name: "patient_id",
+              value: current_patient, //Window.global["current_patient"]
+            },
+            {
+              name: "visit_id",
+              value: visit_id, //Window.global["visit_id"]
+            },
+            {
+              name: "episode_id",
+              value: episode_id, // Window.global["episode_id"]
+            },
+          ],
+          outputFileType: "PDF",
+        },
+      },
+      onSuccess: (res) => {
+        const urlBlob = URL.createObjectURL(res.data);
+        const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Sick Leave`;
+        window.open(origin);
+        // window.document.title = "";
+      },
+
+      onFailure: (error) => {
+        swalMessage({
+          title: error.message,
+          type: "error",
+        });
+      },
+    });
+  }
+  printUpdatedSickLeave() {
+    if (this.state.from_date === null) {
+      swalMessage({
+        title: "From date cannot be blank",
+        type: "warning",
+      });
+      return;
+    } else if (this.state.to_date === null) {
+      swalMessage({
+        title: "To date cannot be blank",
+        type: "warning",
+      });
+      return;
+    } else if (this.state.remarks.length === 0) {
+      swalMessage({
+        title: "Remarks cannot be blank",
+        type: "warning",
+      });
+      return;
+    }
+
+    algaehApiCall({
+      uri: "/doctorsWorkBench/updateSickLeave",
+      data: this.state,
+      method: "PUT",
+      onSuccess: (response) => {
+        if (response.data.success) {
+          this.printSickleaveAfterUpadteAndAdd();
+        }
+      },
+    });
+  }
   PrintSickLeave() {
     if (this.state.from_date === null) {
       swalMessage({
@@ -136,56 +225,22 @@ class SickLeave extends Component {
       });
       return;
     }
-    const { episode_id, current_patient, visit_id } = Window.global;
+
     algaehApiCall({
       uri: "/doctorsWorkBench/addSickLeave",
       data: this.state,
       method: "POST",
       onSuccess: (response) => {
         if (response.data.success) {
-          algaehApiCall({
-            uri: "/report",
-            method: "GET",
-            module: "reports",
-            headers: {
-              Accept: "blob",
-            },
-            others: { responseType: "blob" },
-            data: {
-              report: {
-                reportName: "sickLeave",
-                reportParams: [
-                  {
-                    name: "patient_id",
-                    value: current_patient, //Window.global["current_patient"]
-                  },
-                  {
-                    name: "visit_id",
-                    value: visit_id, //Window.global["visit_id"]
-                  },
-                  {
-                    name: "episode_id",
-                    value: episode_id, // Window.global["episode_id"]
-                  },
-                ],
-                outputFileType: "PDF",
-              },
-            },
-            onSuccess: (res) => {
-              const urlBlob = URL.createObjectURL(res.data);
-              const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Sick Leave`;
-              window.open(origin);
-              // window.document.title = "";
-            },
-          });
+          this.printSickleaveAfterUpadteAndAdd();
         }
       },
-      onFailure: (error) => {
-        swalMessage({
-          title: error.message,
-          type: "error",
-        });
-      },
+    });
+  }
+  changeCheck(e) {
+    const { name, checked } = e.target;
+    this.setState({
+      [name]: checked,
     });
   }
 
@@ -240,13 +295,13 @@ class SickLeave extends Component {
               <div className="popRightDiv">
                 <div className="row">
                   <AlgaehDateHandler
-                    div={{ className: "col-4 form-group" }}
+                    div={{ className: "col-4 form-group mandatory" }}
                     label={{ forceLabel: "From Date", isImp: true }}
                     textBox={{
                       className: "txt-fld",
                       name: "from_date",
                       others: {
-                        disabled: this.state.disableEdit,
+                        // disabled: this.state.disableEdit,
                       },
                     }}
                     minDate={new Date()}
@@ -257,13 +312,13 @@ class SickLeave extends Component {
                     value={this.state.from_date}
                   />
                   <AlgaehDateHandler
-                    div={{ className: "col-4 form-group" }}
+                    div={{ className: "col-4 form-group mandatory" }}
                     label={{ forceLabel: "To Date", isImp: true }}
                     textBox={{
                       className: "txt-fld",
                       name: "to_date",
                       others: {
-                        disabled: this.state.disableEdit,
+                        // disabled: this.state.disableEdit,
                       },
                     }}
                     minDate={new Date()}
@@ -292,7 +347,108 @@ class SickLeave extends Component {
                       },
                     }}
                   />
-                  <div className="col form-group">
+                </div>
+                <div className="row">
+                  <div className="col-3">
+                    <label>Reported as Sick</label>
+                    <div className="customCheckbox">
+                      <label className="checkbox block">
+                        <input
+                          type="checkbox"
+                          value={this.state.reported_sick ? "Y" : "N"}
+                          name="reported_sick"
+                          // disabled={this.state.disableEdit}
+                          checked={this.state.reported_sick}
+                          onChange={this.changeCheck.bind(this)}
+                        />
+                        <span>Yes</span>
+                      </label>
+                    </div>
+                  </div>
+                  <div className="col-3">
+                    <label>Accompanying Patient</label>
+                    <div className="customCheckbox">
+                      <label className="checkbox block">
+                        <input
+                          type="checkbox"
+                          name="accompanying_patient"
+                          value={this.state.accompanying_patient ? "Y" : "N"}
+                          checked={this.state.accompanying_patient}
+                          // disabled={this.state.disableEdit}
+                          onChange={this.changeCheck.bind(this)}
+                        />
+                        <span>Yes</span>
+                      </label>
+                    </div>
+                  </div>
+                  <div className="col-3">
+                    <label>Patient UNfit for duty</label>
+                    <div className="customCheckbox">
+                      <label className="checkbox block">
+                        <input
+                          type="checkbox"
+                          name="patient_unfit"
+                          value={this.state.patient_unfit ? "Y" : "N"}
+                          checked={this.state.patient_unfit}
+                          // disabled={this.state.disableEdit}
+                          onChange={this.changeCheck.bind(this)}
+                        />
+                        <span>Yes</span>
+                      </label>
+                    </div>
+                  </div>
+                  <div className="col-3">
+                    <label>Patient fit for duty</label>
+                    <div className="customCheckbox">
+                      <label className="checkbox block">
+                        <input
+                          type="checkbox"
+                          name="patient_fit"
+                          value={this.state.patient_fit ? "Y" : "N"}
+                          checked={this.state.patient_fit}
+                          // disabled={this.state.disableEdit}
+                          onChange={this.changeCheck.bind(this)}
+                        />
+                        <span>Yes</span>
+                      </label>
+                    </div>
+                  </div>
+                  <div className="col-3">
+                    <label>Advice Light Duty</label>
+                    <div className="customCheckbox">
+                      <label className="checkbox block">
+                        <input
+                          type="checkbox"
+                          name="advice_light_duty"
+                          value={this.state.advice_light_duty ? "Y" : "N"}
+                          checked={this.state.advice_light_duty}
+                          // disabled={this.state.disableEdit}
+                          onChange={this.changeCheck.bind(this)}
+                        />
+                        <span>Yes</span>
+                      </label>
+                    </div>
+                  </div>
+                  <div className="col">
+                    <label>Patient needs employees care</label>
+                    <div className="customCheckbox">
+                      <label className="checkbox block">
+                        <input
+                          type="checkbox"
+                          name="pat_need_emp_care"
+                          value={this.state.pat_need_emp_care ? "Y" : "N"}
+                          checked={this.state.pat_need_emp_care}
+                          // disabled={this.state.disableEdit}
+                          onChange={this.changeCheck.bind(this)}
+                        />
+                        <span>Yes</span>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+                <div className="row">
+                  {" "}
+                  <div className="col-12 form-group  mandatory">
                     <AlgaehLabel
                       label={{
                         forceLabel: "Remarks",
@@ -303,7 +459,7 @@ class SickLeave extends Component {
                       value={this.state.remarks}
                       name="remarks"
                       onChange={this.textAreaEvent.bind(this)}
-                      disabled={this.state.disableEdit}
+                      // disabled={this.state.disableEdit}
                     />
                   </div>
                 </div>
@@ -311,16 +467,23 @@ class SickLeave extends Component {
             </div>
 
             <div className=" popupFooter">
-              <div className="col-lg-12">
+              <div className="col-12">
                 <div className="row">
-                  <div className="col-lg-12">
+                  <div className="col-12">
                     <button
                       type="button"
                       className="btn btn-primary"
-                      onClick={this.PrintSickLeave.bind(this)}
+                      onClick={
+                        this.state.hims_f_patient_sick_leave_id
+                          ? this.printUpdatedSickLeave.bind(this)
+                          : this.PrintSickLeave.bind(this)
+                      }
                     >
-                      Save
+                      {this.state.hims_f_patient_sick_leave_id
+                        ? " Update & Print"
+                        : "save & print"}
                     </button>
+
                     <button
                       type="button"
                       className="btn btn-default"

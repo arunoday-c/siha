@@ -102,6 +102,7 @@ class SalesOrder extends Component {
       itemAdd: false,
       canceled_reason_sales: "",
       rejectVisible: false,
+      is_posted: "N"
     };
   }
 
@@ -648,7 +649,7 @@ class SalesOrder extends Component {
                       onChange: texthandle.bind(this, this),
                     },
                     others: {
-                      disabled: this.state.dataExists,
+                      disabled: this.state.is_posted === "Y" ? true : false
                     },
                   }}
                 />
@@ -699,7 +700,7 @@ class SalesOrder extends Component {
                     },
                     onChange: texthandle.bind(this, this),
                     others: {
-                      disabled: this.state.dataExists,
+                      disabled: this.state.is_posted === "Y" ? true : false
                     },
                     onClear: () => {
                       this.setState({
@@ -722,7 +723,7 @@ class SalesOrder extends Component {
                       onChange: texthandle.bind(this, this),
                     },
                     others: {
-                      disabled: this.state.dataExists,
+                      disabled: this.state.is_posted === "Y" ? true : false
                     },
                   }}
                 />

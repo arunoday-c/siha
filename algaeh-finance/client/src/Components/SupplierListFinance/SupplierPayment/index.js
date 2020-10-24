@@ -1,4 +1,5 @@
 import React, { memo, useState, useEffect } from "react";
+import "./SupplierPayment.scss";
 import { useLocation, useHistory } from "react-router-dom";
 import {
   AlgaehMessagePop,
@@ -173,31 +174,47 @@ export default memo(function(props) {
       invoice_no
     } = filterCheck[0];
     Modal.confirm({
-      title: "Are you sure do you want to process ?",
+      title: "Please verify payment details",
+      className:"debitNoteConfirmModal",
       content: (
-        <>
+        <div className="debitNoteConfirmWindow">
           {isFromProcessed === true ? (
-            <>
-              <span>
-                Payment amount<b>{totalAmount} </b>
-              </span>
-              <hr />
-              <span>
-                Debit Note amount<b>{debitNoteTotal} </b>
-              </span>
-              <hr />
-              <span>
-                Net Total <b>{grandTotal}</b>
-              </span>
-            </>
+           <div className="row">
+           <div className="col">
+           <label className="style_Label ">Payment Amount</label>
+           <h6>
+           {totalAmount}
+           </h6>
+         </div>
+                      <i className="fas fa-minus calcSybmbol"></i>
+          
+          <div className="col">
+           <label className="style_Label ">Debit Note Amount</label>
+           <h6>
+           {debitNoteTotal}
+           </h6>
+         </div>
+          
+         <i className="fas fa-equals calcSybmbol"></i>
+          <div className="col">
+           <label className="style_Label ">Net Total</label>
+           <h6>
+           {grandTotal}
+           </h6>
+         </div>
+         </div>
           ) : (
-            <span>
-              Payment amount<b>{totalAmount} </b>
-            </span>
+            <div className="row">
+    <div className="col">
+     <label className="style_Label ">Payment amount</label>
+     <h6>
+     {totalAmount}
+     </h6>
+   </div></div>
           )}
-        </>
+       </div>
       ),
-      okText: "Proceed",
+      okText: "Continue to Payment",
       cancelText: "Cancel",
       onOk: () => {
         const merdge = filterCheck.map(item => {
@@ -244,53 +261,60 @@ export default memo(function(props) {
         setVisible={setvisible}
       />
       <Modal
-        title="Debit notes"
+        title="Debit Notes List"
         visible={showDebitNote}
         maskClosable={false}
-        okText="Process"
+        okText="Continue with Selected"
         onOk={onProcessDebitNote}
         onCancel={onCloseDebitNote}
+        
+      className={`row algaehNewModal`}
       >
-        <AlgaehTable
-          columns={[
-            {
-              fieldName: "checked",
-              label: "Select",
-              sortable: false,
-              filterable: false,
-              displayTemplate: row => {
-                return (
-                  <Checkbox
-                    disabled={row.invoice_status === "closed"}
-                    defaultChecked={row["checked"]}
-                    onChange={e => {
-                      const { checked } = e.target;
-                      row["checked"] = checked;
-                    }}
-                  />
-                );
-              }
-            },
-            {
-              fieldName: "payment_date",
-              label: "Payment Date"
-            },
-            {
-              fieldName: "invoice_no",
-              label: "Invoice No."
-            },
-            {
-              fieldName: "amount",
-              label: "Amount"
-            },
-            {
-              fieldName: "narration",
-              label: "Narration"
-            }
-          ]}
-          rowUniqueId="finance_voucher_header_id"
-          data={debitNode}
+        <div className="col-12">
+         <div className="portlet portlet-bordered margin-top-15  margin-bottom-15">
+                <div className="portlet-body">
+                  <div className="row">
+                  <div className="col-12">
+                    <AlgaehTable
+columns={[
+  {
+    fieldName: "checked",
+    label: "Select",
+    sortable: false,
+    filterable: false,
+    displayTemplate: row => {
+      return (
+        <Checkbox
+          disabled={row.invoice_status === "closed"}
+          defaultChecked={row["checked"]}
+          onChange={e => {
+            const { checked } = e.target;
+            row["checked"] = checked;
+          }}
         />
+      );
+    }
+  },
+  {
+    fieldName: "payment_date",
+    label: "Payment Date"
+  },
+  {
+    fieldName: "invoice_no",
+    label: "Invoice No."
+  },
+  {
+    fieldName: "amount",
+    label: "Amount"
+  },
+  {
+    fieldName: "narration",
+    label: "Narration"
+  }
+]}
+rowUniqueId="finance_voucher_header_id"
+data={debitNode}
+/></div></div></div></div></div>
       </Modal>
       <div className="row">
         <div className="col-12">
@@ -435,7 +459,7 @@ export default memo(function(props) {
           </div>
         </div>
       </div>
-      <div className="portlet portlet-bordered margin-bottom-15">
+      <div className="portlet portlet-bordered " style={{marginBottom:50}}>
         <div className="portlet-body">
           <div className="row">
             <div className="col-12" style={{ textAlign: "right" }}>
@@ -459,14 +483,7 @@ export default memo(function(props) {
       <div className="hptl-phase1-footer">
         <div className="row">
           <div className="col-12">
-            <AlgaehButton
-              className="btn btn-primary"
-              // disabled={!processList.length}
-              loading={loading}
-              onClick={onClickDebitNotes}
-            >
-              Debit Note Required
-            </AlgaehButton>
+          
             <AlgaehButton
               className="btn btn-primary"
               // disabled={!processList.length}
@@ -474,6 +491,13 @@ export default memo(function(props) {
               onClick={onClickSendSelected}
             >
               Bulk Payment
+            </AlgaehButton>  <AlgaehButton
+              className="btn btn-default"
+              // disabled={!processList.length}
+              loading={loading}
+              onClick={onClickDebitNotes}
+            >
+              Include Debit Note
             </AlgaehButton>
             {/* <AlgaehButton
               className="btn btn-primary"

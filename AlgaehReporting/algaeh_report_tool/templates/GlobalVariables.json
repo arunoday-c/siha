@@ -5156,5 +5156,15 @@
       "name": "Delivery Completed",
       "value": "3"
     }
+  ],
+  "SENDOUT_TYPE": [
+    {
+      "name": "Send Out",
+      "value": "Y"
+    },
+    {
+      "name": "Test In",
+      "value": "N"
+    }
   ]
 }

@@ -15,7 +15,8 @@ const {
   getLedgerDataForChart,
   renameAccountHeads,
   getOpeningBalance,
-  getCildLedgers
+  getCildLedgers,
+  revertDayEnd
 } = finance;
 
 export default () => {
@@ -146,6 +147,16 @@ export default () => {
         .end();
     }
   });
+  api.put("/revertDayEnd", revertDayEnd, (req, res, next) => {
+    res
+      .status(utlities.AlgaehUtilities().httpStatus().ok)
+      .json({
+        success: true,
+        result: req.records
+      })
+      .end();
+  });
+
   api.delete("/removeAccountHead", removeAccountHead, (req, res, next) => {
     if (
       req.records.invalid_input == true &&

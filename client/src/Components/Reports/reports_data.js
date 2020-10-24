@@ -11,7 +11,7 @@ import {
   EMP_FORMAT_GENDER,
   DATE_OF_JOIN,
   EMPLOYEE_TYPE,
-  RECEIPT_TYPE,
+  RECEIPT_TYPE,SENDOUT_TYPE,FORMAT_PRIORITY
 } from "../../utils/GlobalVariables.json";
 import { getYears } from "../../utils/GlobalFunctions";
 import { algaehApiCall } from "../../utils/algaehApiCall";
@@ -27,6 +27,7 @@ import Pharmacy from "./reportBag/pharmacy";
 import Project from "./reportBag/projectpayroll";
 import Vat from "./reportBag/vat";
 import Clinical from "./reportBag/clinical";
+import Laboratory from "./reportBag/laboratory";
 let allYears = getYears();
 
 export default function loadActiveReports(
@@ -75,6 +76,9 @@ export default function loadActiveReports(
         case "clinical":
           result = Clinical({});
           break;
+          case "laboratory":
+            result = Laboratory({SENDOUT_TYPE,FORMAT_PRIORITY,});
+            break;
         case "inventory":
           result = Inventory({
             hospital_id: hims_d_hospital_id,

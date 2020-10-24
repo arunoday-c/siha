@@ -33,7 +33,12 @@ export default () => {
     }
   });
   api.get("/mailSendForLoan", mailSendForLoan, (req, res, next) => {
-    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+    let statusCode = utlities.AlgaehUtilities().httpStatus().ok;
+
+    if (req.sendingMail) {
+      statusCode = 201;
+    }
+    res.status(statusCode).json({
       success: true,
       records: req.records,
     });
@@ -77,13 +82,18 @@ export default () => {
       }
     },
     (req, res, next) => {
+      let statusCode = utlities.AlgaehUtilities().httpStatus().ok;
+
+      if (req.sendingMail) {
+        statusCode = 201;
+      }
       if (req.records.invalid_input == true) {
-        res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        res.status(statusCode).json({
           success: false,
           records: req.records,
         });
       } else {
-        res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        res.status(statusCode).json({
           success: true,
           records: req.records,
         });

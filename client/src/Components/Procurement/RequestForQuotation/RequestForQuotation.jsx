@@ -235,7 +235,7 @@ class RequestForQuotation extends Component {
               },
             }}
           >
-            <RequestItemList />
+            <RequestItemList disabled={this.state.dataExitst} />
           </MyContext.Provider>
         </div>
 
@@ -280,6 +280,7 @@ function mapStateToProps(state) {
     poitemcategory: state.poitemcategory,
     poitemgroup: state.poitemgroup,
     poitemuom: state.poitemuom,
+    disabled: state.bothExisits,
   };
 }
 

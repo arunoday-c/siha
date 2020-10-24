@@ -18,6 +18,7 @@
                 <thead>
                     <tr>
                         <th>Sl No.</th>
+                        <th>Service Name</th>
                         <th>Patient Code</th>
                         <th>Patient Name</th>
                         <th>Visit No.</th>
@@ -40,19 +41,20 @@
 
                     {{#each result}}
                     <tr>
-                        <td colspan="7" class="tableSubHdg">{{cashier_name}}</td>
-                        <td class="tableSubHdg2 numberFld"><b>{{cashier_total}}</b></td>
+                        <td colspan="8" class="tableSubHdg">{{cashier_name}}</td>
+                        <td class="tableSubHdg numberFld"><b>{{cashier_total}}</b></td>
 
                     </tr>
                     {{#each doctors}}
                     <tr>
-                        <td colspan="7" class="tableSubHdg2">{{service_name}}
+                        <td colspan="8" class="tableSubHdg2">{{service_type}}
                         </td>
                         <td class="tableSubHdg2 numberFld"><b>{{totalAmt}}</b></td>
                     </tr>
                     {{#each docs}}
                     <tr>
                         <td>{{inc @index}}</td>
+                        <td>{{service_name}}</td>
                         <td>{{patient_code}}</td>
                         <td excelborder='{"top":{"style":"thin","color":{"argb":"dddddd"}},"left":{"style":"thin","color":{"argb":"dddddd"}},"bottom":{"style":"thin","color":{"argb":"dddddd"}},"right":{"style":"thin","color":{"argb":"dddddd"}}}'
                             class="txtFld">{{full_name}}</td>
@@ -64,12 +66,12 @@
                     </tr>
                     {{/each }}{{/each }}{{/each }}
                     <tr class="numberFldTotalBottom">
-                        <td colspan="7"></td>
+                        <td colspan="8"></td>
                         <td class="numberFld">{{net_total}}</td>
                     </tr>
                     {{else}}
                     <tr>
-                        <td colspan="8  " class="noResultTextReport">No Records Found</td>
+                        <td colspan="9" class="noResultTextReport">No Records Found</td>
                     </tr>{{/hasElement }}
 
                 </tbody>

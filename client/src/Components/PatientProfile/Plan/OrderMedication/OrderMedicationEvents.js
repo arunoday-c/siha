@@ -4,12 +4,12 @@ import { removeGlobal } from "../../../../utils/GlobalFunctions";
 import Enumerable from "linq";
 import Options from "../../../../Options.json";
 import _ from "lodash";
-import {
-  PRESCRIPTION_FREQ_PERIOD,
-  PRESCRIPTION_FREQ_TIME,
-  PRESCRIPTION_FREQ_DURATION,
-  PRESCRIPTION_FREQ_ROUTE,
-} from "../../../../utils/GlobalVariables.json";
+// import {
+//   PRESCRIPTION_FREQ_PERIOD,
+//   PRESCRIPTION_FREQ_TIME,
+//   PRESCRIPTION_FREQ_DURATION,
+//   PRESCRIPTION_FREQ_ROUTE,
+// } from "../../../../utils/GlobalVariables.json";
 
 //Text Handaler Change
 const texthandle = ($this, e) => {
@@ -330,6 +330,98 @@ const itemhandle = ($this, item) => {
   //   );
   // }
 };
+const AddItemsOrUpdate = ($this) => {
+  let medicationitems = $this.state.medicationitems;
+  let medicationobj = {
+    item_id: $this.state.item_id,
+    generic_id: $this.state.generic_id,
+    dosage: $this.state.dosage,
+    med_units: $this.state.med_units,
+    frequency: $this.state.frequency,
+    no_of_days: $this.state.no_of_days,
+    frequency_type: $this.state.frequency_type,
+    frequency_time: $this.state.frequency_time,
+    frequency_route: $this.state.frequency_route,
+    start_date: $this.state.start_date,
+    uom_id: $this.state.uom_id,
+    service_id: $this.state.service_id,
+    item_category_id: $this.state.item_category_id,
+    item_group_id: $this.state.item_group_id,
+    instructions: $this.state.instructions,
+    dispense: $this.state.dispense,
+    requested_quantity: $this.state.dispense,
+    approved_qty: $this.state.dispense,
+    insured: $this.state.insured,
+    item_status: "A",
+  };
+
+  let serviceInput = [
+    {
+      insured: $this.state.insured,
+      vat_applicable: $this.state.vat_applicable,
+      hims_d_services_id: $this.state.service_id,
+      primary_insurance_provider_id: $this.state.insurance_provider_id,
+      primary_network_office_id: $this.state.hims_d_insurance_network_office_id,
+      primary_network_id: $this.state.network_id,
+      sec_insured: $this.state.sec_insured,
+      secondary_insurance_provider_id:
+        $this.state.secondary_insurance_provider_id,
+      secondary_network_id: $this.state.secondary_network_id,
+      secondary_network_office_id: $this.state.secondary_network_office_id,
+    },
+  ];
+
+  algaehApiCall({
+    uri: "/billing/getBillDetails",
+    module: "billing",
+    method: "POST",
+    data: serviceInput,
+    onSuccess: (response) => {
+      if (response.data.success) {
+        let data = response.data.records;
+
+        medicationobj.pre_approval =
+          data.billdetails[0].pre_approval === undefined
+            ? "N"
+            : data.billdetails[0].pre_approval;
+        medicationobj.insured = data.billdetails[0].insurance_yesno;
+        medicationobj.gross_amt =
+          parseFloat(data.billdetails[0].gross_amount) *
+          parseFloat($this.state.dispense);
+        medicationobj.net_amount =
+          parseFloat(data.billdetails[0].net_amout) *
+          parseFloat($this.state.dispense);
+        medicationobj["generic_name"] = $this.state.generic_name;
+        medicationobj["item_description"] = $this.state.item_description;
+        medicationobj["insurance_service_name"] = $this.state.item_description;
+
+        medicationobj["doctor_id"] = $this.state.provider_id;
+        if (medicationobj.pre_approval === "Y") {
+          swalMessage({
+            title: "Selected Item is Pre Approval",
+            type: "warning",
+          });
+        }
+
+        medicationitems.push(medicationobj);
+        $this.setState(
+          {
+            medicationitems: medicationitems,
+            updateButton: false,
+            rowDetails: [],
+          },
+          $this.clearInputState
+        );
+      }
+    },
+    onFailure: (error) => {
+      swalMessage({
+        title: error.message,
+        type: "error",
+      });
+    },
+  });
+};
 const AddItems = ($this) => {
   if (
     $this.state.no_of_days === "" ||
@@ -360,7 +452,7 @@ const AddItems = ($this) => {
     return;
   }
 
-  if (
+  let validate =
     $this.state.item_id !== null &&
     $this.state.generic_id !== null &&
     $this.state.dosage !== null &&
@@ -374,97 +466,13 @@ const AddItems = ($this) => {
     $this.state.service_id !== null &&
     $this.state.item_category_id !== null &&
     $this.state.item_group_id !== null
-  ) {
-    let medicationitems = $this.state.medicationitems;
-    let medicationobj = {
-      item_id: $this.state.item_id,
-      generic_id: $this.state.generic_id,
-      dosage: $this.state.dosage,
-      med_units: $this.state.med_units,
-      frequency: $this.state.frequency,
-      no_of_days: $this.state.no_of_days,
-      frequency_type: $this.state.frequency_type,
-      frequency_time: $this.state.frequency_time,
-      frequency_route: $this.state.frequency_route,
-      start_date: $this.state.start_date,
-      uom_id: $this.state.uom_id,
-      service_id: $this.state.service_id,
-      item_category_id: $this.state.item_category_id,
-      item_group_id: $this.state.item_group_id,
-      instructions: $this.state.instructions,
-      dispense: $this.state.dispense,
-      requested_quantity: $this.state.dispense,
-      approved_qty: $this.state.dispense,
-      insured: $this.state.insured,
-      item_status: "A",
-    };
-
-    let serviceInput = [
-      {
-        insured: $this.state.insured,
-        vat_applicable: $this.state.vat_applicable,
-        hims_d_services_id: $this.state.service_id,
-        primary_insurance_provider_id: $this.state.insurance_provider_id,
-        primary_network_office_id:
-          $this.state.hims_d_insurance_network_office_id,
-        primary_network_id: $this.state.network_id,
-        sec_insured: $this.state.sec_insured,
-        secondary_insurance_provider_id:
-          $this.state.secondary_insurance_provider_id,
-        secondary_network_id: $this.state.secondary_network_id,
-        secondary_network_office_id: $this.state.secondary_network_office_id,
-      },
-    ];
-
-    algaehApiCall({
-      uri: "/billing/getBillDetails",
-      module: "billing",
-      method: "POST",
-      data: serviceInput,
-      onSuccess: (response) => {
-        if (response.data.success) {
-          let data = response.data.records;
-
-          medicationobj.pre_approval =
-            data.billdetails[0].pre_approval === undefined
-              ? "N"
-              : data.billdetails[0].pre_approval;
-          medicationobj.insured = data.billdetails[0].insurance_yesno;
-          medicationobj.gross_amt =
-            parseFloat(data.billdetails[0].gross_amount) *
-            parseFloat($this.state.dispense);
-          medicationobj.net_amount =
-            parseFloat(data.billdetails[0].net_amout) *
-            parseFloat($this.state.dispense);
-          medicationobj["generic_name"] = $this.state.generic_name;
-          medicationobj["item_description"] = $this.state.item_description;
-          medicationobj["insurance_service_name"] =
-            $this.state.item_description;
-
-          medicationobj["doctor_id"] = $this.state.provider_id;
-          if (medicationobj.pre_approval === "Y") {
-            swalMessage({
-              title: "Selected Item is Pre Approval",
-              type: "warning",
-            });
-          }
-
-          medicationitems.push(medicationobj);
-          $this.setState(
-            {
-              medicationitems: medicationitems,
-            },
-            $this.clearInputState
-          );
-        }
-      },
-      onFailure: (error) => {
-        swalMessage({
-          title: error.message,
-          type: "error",
-        });
-      },
-    });
+      ? true
+      : false;
+  if ($this.state.updateButton && validate) {
+    deleteItems($this, $this.state.rowDetails);
+    AddItemsOrUpdate($this);
+  } else if (!$this.state.updateButton && validate) {
+    AddItemsOrUpdate($this);
   } else {
     swalMessage({
       title: "Please enter all detils of prescription",
@@ -496,22 +504,22 @@ const deleteItems = ($this, row) => {
   });
 };
 
-const updateItems = ($this, row) => {
-  let medicationitems = $this.state.medicationitems;
-  const { dosage, no_of_days, instructions } = row;
-  if (dosage || no_of_days || instructions) {
-    swalMessage({
-      title: "Please Enter Correct Values",
-      type: "error",
-    });
-  } else {
-    medicationitems[row.rowId] = row;
-    $this.setState({
-      saveMedicationEnable: false,
-      medicationitems: medicationitems,
-    });
-  }
-};
+// const updateItems = ($this, row) => {
+//   let medicationitems = $this.state.medicationitems;
+//   const { dosage, no_of_days, instructions } = row;
+//   if (dosage || no_of_days || instructions) {
+//     swalMessage({
+//       title: "Please Enter Correct Values",
+//       type: "error",
+//     });
+//   } else {
+//     medicationitems[row.rowId] = row;
+//     $this.setState({
+//       saveMedicationEnable: false,
+//       medicationitems: medicationitems,
+//     });
+//   }
+// };
 
 const calcuateDispense = ($this, e) => {
   // if (e.target === null || e.target.value !== e.target.oldvalue) {
@@ -608,79 +616,79 @@ const getItemStock = ($this) => {
   });
 };
 
-const onchangegridcol = ($this, row, e) => {
-  let name = e.name || e.target.name;
-  let value = e.value || e.target.value;
-  let medicationitems = $this.state.medicationitems;
-  let _index = medicationitems.indexOf(row);
-  if (name !== "instructions") {
-    value = value && value > 0 ? value : "";
+// const onchangegridcol = ($this, row, e) => {
+//   let name = e.name || e.target.name;
+//   let value = e.value || e.target.value;
+//   let medicationitems = $this.state.medicationitems;
+//   let _index = medicationitems.indexOf(row);
+//   if (name !== "instructions") {
+//     value = value && value > 0 ? value : "";
 
-    const frequency = _.find(
-      PRESCRIPTION_FREQ_PERIOD,
-      (f) => f.value === row.frequency
-    );
-    const frequencyType = _.find(
-      PRESCRIPTION_FREQ_TIME,
-      (f) => f.value === row.frequency_type
-    );
-    const consume = _.find(
-      PRESCRIPTION_FREQ_DURATION,
-      (f) => f.value === row.frequency_time
-    );
-    const route = _.find(
-      PRESCRIPTION_FREQ_ROUTE,
-      (f) => f.value === this.state.frequency_route
-    );
-    if (frequency !== undefined && frequencyType !== undefined) {
-      if (name === "dosage") {
-        row["instructions"] = `${this.state.dosage} ${this.state.med_units}, ${
-          frequency.name
-        }, ${frequencyType.name}, ${
-          consume !== undefined ? consume.name : ""
-        }, ${route !== undefined ? route.name : ""} for ${
-          this.state.no_of_days
-        } day(s)`;
-      } else if (name === "no_of_days") {
-        row["instructions"] = `${this.state.dosage}${this.state.med_units}, ${
-          frequency.name
-        }, ${frequencyType.name}, ${
-          consume !== undefined ? consume.name : ""
-        }, ${route !== undefined ? route.name : ""} for ${
-          this.state.no_of_days
-        } day(s)`;
-      }
-    }
-  }
-  row[name] = value;
-  medicationitems[_index] = row;
+//     const frequency = _.find(
+//       PRESCRIPTION_FREQ_PERIOD,
+//       (f) => f.value === row.frequency
+//     );
+//     const frequencyType = _.find(
+//       PRESCRIPTION_FREQ_TIME,
+//       (f) => f.value === row.frequency_type
+//     );
+//     const consume = _.find(
+//       PRESCRIPTION_FREQ_DURATION,
+//       (f) => f.value === row.frequency_time
+//     );
+//     const route = _.find(
+//       PRESCRIPTION_FREQ_ROUTE,
+//       (f) => f.value === $this.state.frequency_route
+//     );
+//     if (frequency !== undefined && frequencyType !== undefined) {
+//       if (name === "dosage") {
+//         row["instructions"] = `${$this.state.dosage} ${
+//           $this.state.med_units
+//         }, ${frequency.name}, ${frequencyType.name}, ${
+//           consume !== undefined ? consume.name : ""
+//         }, ${route !== undefined ? route.name : ""} for ${
+//           $this.state.no_of_days
+//         } day(s)`;
+//       } else if (name === "no_of_days") {
+//         row["instructions"] = `${$this.state.dosage}${$this.state.med_units}, ${
+//           frequency.name
+//         }, ${frequencyType.name}, ${
+//           consume !== undefined ? consume.name : ""
+//         }, ${route !== undefined ? route.name : ""} for ${
+//           $this.state.no_of_days
+//         } day(s)`;
+//       }
+//     }
+//   }
+//   row[name] = value;
+//   medicationitems[_index] = row;
 
-  $this.setState({
-    medicationitems: medicationitems,
-  });
-};
+//   $this.setState({
+//     medicationitems: medicationitems,
+//   });
+// };
 
-const EditGrid = ($this, cancelRow) => {
-  let _medicationitems = $this.state.medicationitems;
-  if (cancelRow !== undefined) {
-    _medicationitems[cancelRow.rowIdx] = cancelRow;
-  }
-  $this.setState({
-    saveMedicationEnable: true,
-    medicationitems: _medicationitems,
-  });
-};
+// const EditGrid = ($this, cancelRow) => {
+//   let _medicationitems = $this.state.medicationitems;
+//   if (cancelRow !== undefined) {
+//     _medicationitems[cancelRow.rowIdx] = cancelRow;
+//   }
+//   $this.setState({
+//     saveMedicationEnable: true,
+//     medicationitems: _medicationitems,
+//   });
+// };
 
-const CancelGrid = ($this, cancelRow) => {
-  let _medicationitems = $this.state.medicationitems;
-  if (cancelRow !== undefined) {
-    _medicationitems[cancelRow.rowIdx] = cancelRow;
-  }
-  $this.setState({
-    saveMedicationEnable: false,
-    medicationitems: _medicationitems,
-  });
-};
+// const CancelGrid = ($this, cancelRow) => {
+//   let _medicationitems = $this.state.medicationitems;
+//   if (cancelRow !== undefined) {
+//     _medicationitems[cancelRow.rowIdx] = cancelRow;
+//   }
+//   $this.setState({
+//     saveMedicationEnable: false,
+//     medicationitems: _medicationitems,
+//   });
+// };
 
 export {
   texthandle,
@@ -694,9 +702,10 @@ export {
   numberhandle,
   calcuateDispense,
   getItemStock,
+  AddItemsOrUpdate,
   printPrescription,
-  updateItems,
-  onchangegridcol,
-  EditGrid,
-  CancelGrid,
+  // updateItems,
+  // onchangegridcol,
+  // EditGrid,
+  // CancelGrid,
 };

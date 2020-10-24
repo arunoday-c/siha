@@ -173,6 +173,14 @@ class MRDList extends Component {
                       }
                     },
                     {
+                      fieldName: "primary_id_no",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Primary ID No." }} />
+                      ),
+
+                      others: { resizable: false }
+                    },
+                    {
                       fieldName: "patient_code",
                       //label: "Patient Code",
                       label: (

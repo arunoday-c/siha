@@ -17,7 +17,7 @@ export function generateExcelDilyTrans(req, res, next) {
         E.employee_code ,BH.bill_number as bill_invoice,V.insured,BH.hims_f_billing_header_id,BD.service_type_id,ST.service_type ,ST.arabic_service_type,
         S.arabic_service_name,S.service_name,if(S.procedure_type ='GN','General','Dental') as procedure_type,
         BD.hims_f_billing_details_id ,BD.quantity,BD.net_amout ,BD.company_payble,BD.patient_payable,BD.discount_amout,IP.insurance_provider_name,
-        IP.arabic_provider_name,COALESCE(BH.advance_amount,0)as advance_amount,COALESCE(BH.advance_adjust,0) as advance_adjust,V.new_visit_patient
+        IP.arabic_provider_name,COALESCE(BH.advance_amount,0)as advance_amount,COALESCE(BH.advance_adjust,0) as advance_adjust,case BD.service_type_id when 1 then 'Y' else 'N'  end new_visit_patient
         from hims_f_patient as P inner join hims_f_patient_visit as V on P.hims_d_patient_id = V.patient_id
         inner join hims_f_billing_header as BH on V.hims_f_patient_visit_id  = BH.visit_id  and V.patient_id = BH.patient_id
         and BH.cancelled ='N'
@@ -29,7 +29,7 @@ export function generateExcelDilyTrans(req, res, next) {
         left join hims_m_patient_insurance_mapping as PIM on V.patient_id  = PIM.patient_id  and V.hims_f_patient_visit_id =PIM.patient_visit_id 
         left join hims_d_insurance_provider as IP on PIM.primary_insurance_provider_id  = IP.hims_d_insurance_provider_id 
         where
-         date(BH.bill_date)=date(?);select hims_d_service_type_id,service_type from hims_d_service_type where record_status='A' and hims_d_service_type_id not in(3,4,6,8,9,10,12,13);`,
+         date(BH.bill_date)=date(?);select hims_d_service_type_id,service_type from hims_d_service_type where record_status='A' and hims_d_service_type_id not in(3,6,8,9,10,12,13);`,
         values: [date],
         printQuery: true,
       })
@@ -82,17 +82,18 @@ export function generateExcelDilyTrans(req, res, next) {
             bold: true,
           },
           { header: "Patient Name", key: "pat_name", width: 30, bold: true },
-          { header: "Invoice Time", key: "bill_time", width: 10, bold: true },
+          {header:"Billing Type",key:"billing_type",width:20,bold:true},
+          { header: "Invoice Time", key: "bill_time", width: 15, bold: true },
           {
             header: "Cash Invoice No.",
             key: "csh_bill_invoice",
-            width: 15,
+            width: 20,
             bold: true,
           },
           {
             header: "Credit Invoice No.",
             key: "crd_bill_invoice",
-            width: 15,
+            width: 20,
             bold: true,
           },
           { header: "Amount", key: "net_amout", width: 15, bold: true },
@@ -104,29 +105,34 @@ export function generateExcelDilyTrans(req, res, next) {
               header: servceTypes[i]["service_type"],
               key: servceTypes[i]["hims_d_service_type_id"] + "_amount",
               bold: true,
+              width: 18
             },
             {
               header: servceTypes[i]["service_type"] + " Discount",
               key: servceTypes[i]["hims_d_service_type_id"] + "_desc_amount",
               bold: true,
+              width: 18
             }
           );
         }
-        generalColumns.push({ header: "Advance", key: "advance_amount" });
+        generalColumns.push({ header: "Advance", key: "advance_amount", width: 18 });
         generalColumns.push({
           header: "Advance Adjust",
           key: "advance_adjust",
           bold: true,
+          width: 18
         });
         generalColumns.push({
           header: "New Visit",
           key: "new_visit",
           bold: true,
+          width: 18
         });
         generalColumns.push({
           header: "Follow Up Visit",
           key: "followup_visit",
           bold: true,
+          width: 18
         });
         worksheet.columns = generalColumns;
         let lastRow = worksheet.rowCount;
@@ -164,6 +170,7 @@ export function generateExcelDilyTrans(req, res, next) {
                   insured,
                   bill_date,
                   new_visit_patient,
+                  insurance_provider_name
                 } = _.head(billGroup);
                 // console.log("insured", insured, bill_invoice);
                 let serviceObject = {
@@ -202,9 +209,10 @@ export function generateExcelDilyTrans(req, res, next) {
                       ? parseFloat(s.company_payble)
                       : parseFloat(s.patient_payable);
                   }),
+                  billing_type:insured === "N" ? "Credit" : insurance_provider_name,
                   ...serviceObject,
-                  new_visit: new_visit_patient === "Y" ? 1 : undefined,
-                  followup_visit: new_visit_patient !== "Y" ? 1 : undefined,
+                  new_visit: new_visit_patient === "Y" ? 1 : 0,
+                  followup_visit: new_visit_patient !== "Y" ? 1 : 0,
                 });
                 counter++;
               })

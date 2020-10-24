@@ -65,10 +65,11 @@ export default {
 
       _mysql
         .executeQuery({
-          query: `select visit_code from hims_d_sub_department SD,hims_f_patient_visit V where 
-          V.sub_department_id=SD.hims_d_sub_department_id and SD.record_status='A' and V.record_status='A' 
-          and date(V.visit_expiery_date) between date(now()) and DATE(V.visit_expiery_date) and SD.hims_d_sub_department_id=?
-          and V.doctor_id=? and patient_id =? and V.hospital_id=? and V.visit_status!='CN'`,
+          query: `select visit_code from hims_f_patient_visit V \
+          inner join hims_d_sub_department SD on V.sub_department_id=SD.hims_d_sub_department_id and SD.record_status='A' \
+          inner join hims_d_visit_type VT on V.visit_type=VT.hims_d_visit_type_id and consultation='Y'\
+          where date(V.visit_expiery_date) between date(now()) and DATE(V.visit_expiery_date) \
+          and SD.hims_d_sub_department_id=? and V.doctor_id=? and patient_id =? and V.hospital_id=? and V.visit_status!='CN'`,
           values: [
             inputParam.sub_department_id,
             inputParam.doctor_id,
@@ -231,150 +232,148 @@ export default {
           });
       };
 
-      if (inputParam.consultation == "Y") {
-        _mysql
-          .executeQuery({
-            query:
-              "SET SESSION sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));select max(visit_expiery_date) as visit_expiery_date,max(episode_id) as episode_id, no_free_visit\
-                 from hims_f_patient_visit where\
-                patient_id=? and doctor_id=? and record_status='A' and  hospital_id=?;",
-            values: [
-              inputParam.patient_id,
-              inputParam.doctor_id,
-              req.userIdentity.hospital_id,
-            ],
-            printQuery: true,
-          })
-          .then((expectedResult) => {
-            expectedResult.shift();
-            let expResult = expectedResult;
+      // if (inputParam.consultation == "Y") {
+      _mysql
+        .executeQuery({
+          query:
+            "SET SESSION sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));select max(visit_expiery_date) as visit_expiery_date,\
+              max(episode_id) as episode_id, no_free_visit from hims_f_patient_visit V \
+              inner join hims_d_visit_type VT on V.visit_type=VT.hims_d_visit_type_id and consultation='Y' where\
+              patient_id=? and doctor_id=? and  hospital_id=?;",
+          values: [
+            inputParam.patient_id,
+            inputParam.doctor_id,
+            req.userIdentity.hospital_id,
+          ],
+          printQuery: true,
+        })
+        .then((expectedResult) => {
+          expectedResult.shift();
+          let expResult = expectedResult[0];
 
-            // utilities.logger().log("existing_plan: ", inputParam.existing_plan);
-            // utilities.logger().log("expResult: ", expResult);
-            if (inputParam.existing_plan === "Y") {
-              inputParam.visit_expiery_date = moment(
+          console.log("1", inputParam.existing_plan)
+          if (inputParam.existing_plan === "Y") {
+            inputParam.visit_expiery_date = moment(
+              expResult[0]["visit_expiery_date"]
+            ).format("YYYY-MM-DD");
+            inputParam.episode_id = expResult[0]["episode_id"];
+            req.body.episode_id = inputParam.episode_id;
+            internalInsertPatientVisitData();
+          } else {
+            console.log("2", expResult[0])
+            //fetching expiry date and episode id for existing patient
+            if (
+              expResult[0].visit_expiery_date != null &&
+              expResult[0].episode_id != null
+            ) {
+              existingExparyDate = moment(
                 expResult[0]["visit_expiery_date"]
               ).format("YYYY-MM-DD");
+              currentPatientEpisodeNo = expResult[0]["episode_id"];
+            }
+            console.log("2", existingExparyDate)
+            let currentEpisodeNo = null;
+            if (
+              existingExparyDate == null ||
+              existingExparyDate == undefined ||
+              existingExparyDate < today
+            ) {
+              _mysql
+                .executeQuery({
+                  query:
+                    "SELECT param_value,episode_id from algaeh_d_app_config WHERE algaeh_d_app_config_id=11 \
+                        and record_status='A';",
+                  printQuery: true,
+                })
+                .then((record) => {
+                  if (record.length == 0) {
+                    if (req.connection == null) {
+                      _mysql.rollBackTransaction(() => {
+                        next(
+                          utilities
+                            .httpStatus()
+                            .generateError(
+                              utilities.httpStatus().noContent,
+                              "Episode value not found.Please contact administrator."
+                            )
+                        );
+                      });
+                    } else {
+                      next();
+                    }
+                  }
+                  inputParam.visit_expiery_date = moment()
+                    .add(parseInt(record[0]["param_value"], 10), "days")
+                    .format("YYYY-MM-DD");
+                  currentEpisodeNo = record[0].episode_id;
+
+                  if (currentEpisodeNo > 0) {
+                    let nextEpisodeNo = currentEpisodeNo + 1;
+                    inputParam.episode_id = currentEpisodeNo;
+                    req.body.episode_id = inputParam.episode_id;
+
+                    _mysql
+                      .executeQuery({
+                        query:
+                          "update algaeh_d_app_config set episode_id=? where algaeh_d_app_config_id=11 and record_status='A';",
+                        values: [nextEpisodeNo],
+                        printQuery: true,
+                      })
+                      .then((updateResult) => {
+                        internalInsertPatientVisitData();
+                      })
+                      .catch((e) => {
+                        _mysql.rollBackTransaction(() => {
+                          next(e);
+                        });
+                      });
+                  }
+                })
+                .catch((e) => {
+                  _mysql.rollBackTransaction(() => {
+                    next(e);
+                  });
+                });
+            } else {
               inputParam.episode_id = expResult[0]["episode_id"];
               req.body.episode_id = inputParam.episode_id;
-              // utilities
-              //   .logger()
-              //   .log("existing_plan: ", inputParam.existing_plan);
               internalInsertPatientVisitData();
-              //Data
-            } else {
-              //fetching expiry date and episode id for existing patient
-              if (
-                expResult[0].visit_expiery_date != null &&
-                expResult[0].episode_id != null
-              ) {
-                existingExparyDate = moment(
-                  expResult[0]["visit_expiery_date"]
-                ).format("YYYY-MM-DD");
-                currentPatientEpisodeNo = expResult[0]["episode_id"];
-              }
-              let currentEpisodeNo = null;
-              if (
-                existingExparyDate == null ||
-                existingExparyDate == undefined ||
-                existingExparyDate < today
-              ) {
-                _mysql
-                  .executeQuery({
-                    query:
-                      "SELECT param_value,episode_id from algaeh_d_app_config WHERE algaeh_d_app_config_id=11 \
-                        and record_status='A';",
-                    printQuery: true,
-                  })
-                  .then((record) => {
-                    if (record.length == 0) {
-                      if (req.connection == null) {
-                        _mysql.rollBackTransaction(() => {
-                          next(
-                            utilities
-                              .httpStatus()
-                              .generateError(
-                                utilities.httpStatus().noContent,
-                                "Episode value not found.Please contact administrator."
-                              )
-                          );
-                        });
-                      } else {
-                        next();
-                      }
-                    }
-                    inputParam.visit_expiery_date = moment()
-                      .add(parseInt(record[0]["param_value"], 10), "days")
-                      .format("YYYY-MM-DD");
-                    currentEpisodeNo = record[0].episode_id;
-
-                    if (currentEpisodeNo > 0) {
-                      let nextEpisodeNo = currentEpisodeNo + 1;
-                      inputParam.episode_id = currentEpisodeNo;
-                      req.body.episode_id = inputParam.episode_id;
-
-                      _mysql
-                        .executeQuery({
-                          query:
-                            "update algaeh_d_app_config set episode_id=? where algaeh_d_app_config_id=11 and record_status='A';",
-                          values: [nextEpisodeNo],
-                          printQuery: true,
-                        })
-                        .then((updateResult) => {
-                          internalInsertPatientVisitData();
-                        })
-                        .catch((e) => {
-                          _mysql.rollBackTransaction(() => {
-                            next(e);
-                          });
-                        });
-                    }
-                  })
-                  .catch((e) => {
-                    _mysql.rollBackTransaction(() => {
-                      next(e);
-                    });
-                  });
-              } else {
-                inputParam.episode_id = expResult[0]["episode_id"];
-                req.body.episode_id = inputParam.episode_id;
-                internalInsertPatientVisitData();
-              }
             }
-          })
-          .catch((e) => {
-            _mysql.rollBackTransaction(() => {
-              next(e);
-            });
-          });
-      } //for non consultaion
-      else if (inputParam.consultation == "N") {
-        inputParam.visit_expiery_date = new Date();
-        inputParam.episode_id = null;
-        internalInsertPatientVisitData();
-      } else {
-        if (req.options == null) {
+          }
+        })
+        .catch((e) => {
           _mysql.rollBackTransaction(() => {
-            next(
-              utilities
-                .httpStatus()
-                .generateError(
-                  utilities.httpStatus().noContent,
-                  "Please select consultation type"
-                )
-            );
+            next(e);
           });
-        } else {
-          req.options.onFailure(
-            utilities
-              .httpStatus()
-              .generateError(
-                httpStatus.noContent,
-                "Please select consultation type"
-              )
-          );
-        }
-      }
+        });
+      // } //for non consultaion
+      // else if (inputParam.consultation == "N") {
+      //   inputParam.visit_expiery_date = new Date();
+      //   inputParam.episode_id = null;
+      //   internalInsertPatientVisitData();
+      // } else {
+      //   if (req.options == null) {
+      //     _mysql.rollBackTransaction(() => {
+      //       next(
+      //         utilities
+      //           .httpStatus()
+      //           .generateError(
+      //             utilities.httpStatus().noContent,
+      //             "Please select consultation type"
+      //           )
+      //       );
+      //     });
+      //   } else {
+      //     req.options.onFailure(
+      //       utilities
+      //         .httpStatus()
+      //         .generateError(
+      //           httpStatus.noContent,
+      //           "Please select consultation type"
+      //         )
+      //     );
+      //   }
+      // }
     } catch (e) {
       _mysql.rollBackTransaction(() => {
         next(e);
@@ -387,102 +386,102 @@ export default {
     try {
       const input = { ...req.body };
       // const utilities = new algaehUtilities();
-      if (input.consultation == "Y") {
-        //utilities.logger().log("consultation: ", input);
-        _mysql
-          .executeQuery({
-            query:
-              "insert into hims_f_patient_encounter(patient_id,provider_id,visit_id,source,\
+      // if (input.consultation == "Y") {
+      //utilities.logger().log("consultation: ", input);
+      _mysql
+        .executeQuery({
+          query:
+            "insert into hims_f_patient_encounter(patient_id,provider_id,visit_id,source,\
                 episode_id,age,payment_type,created_date,created_by,updated_date,updated_by,hospital_id)values(\
                  ?,?,?,?,?,?,?,?,?,?,?,?) ",
-            values: [
-              input.patient_id,
-              input.doctor_id ? input.doctor_id : input.provider_id,
-              input.visit_id,
-              input.source ? input.source : "0",
-              input.episode_id,
-              input.age ? input.age : input.age_in_years,
-              input.payment_type
-                ? input.payment_type
-                : input.insured === "Y"
+          values: [
+            input.patient_id,
+            input.doctor_id ? input.doctor_id : input.provider_id,
+            input.visit_id,
+            input.source ? input.source : "0",
+            input.episode_id,
+            input.age ? input.age : input.age_in_years,
+            input.payment_type
+              ? input.payment_type
+              : input.insured === "Y"
                 ? "I"
                 : "S",
-              new Date(),
-              req.userIdentity.algaeh_d_app_user_id,
-              new Date(),
-              req.userIdentity.algaeh_d_app_user_id,
-              req.userIdentity.hospital_id,
-            ],
-            printQuery: true,
-          })
-          .then((encounter_details) => {
-            _mysql
-              .executeQuery({
-                query:
-                  "update hims_f_patient_appointment set visit_created='Y',updated_date=?, \
+            new Date(),
+            req.userIdentity.algaeh_d_app_user_id,
+            new Date(),
+            req.userIdentity.algaeh_d_app_user_id,
+            req.userIdentity.hospital_id,
+          ],
+          printQuery: true,
+        })
+        .then((encounter_details) => {
+          _mysql
+            .executeQuery({
+              query:
+                "update hims_f_patient_appointment set visit_created='Y',updated_date=?, \
                   updated_by=? where record_status='A' and hims_f_patient_appointment_id=?",
-                values: [
-                  new Date(),
-                  input.updated_by,
-                  input.hims_f_patient_appointment_id,
-                ],
-                printQuery: true,
-              })
-              .then((patAppointment) => {
-                // if (req.connection == null) {
-                //   _mysql.commitTransaction(() => {
-                //     _mysql.releaseConnection();
-                //     req.records = result;
-                //     next();
-                //   });
-                // } else {
-                //   next();
-                // }
-                let result = {
-                  patient_code: input.patient_code,
-                  receipt_number: input.receipt_number,
-                  bill_number: input.bill_number,
-                  patient_visit_id: input.visit_id,
-                  hims_d_patient_id: input.patient_id,
-                  hims_f_billing_header_id: input.hims_f_billing_header_id,
-                  full_name: req.full_name,
-                  arabic_name: req.pat_arabic_name,
-                };
-                _mysql.commitTransaction(() => {
-                  _mysql.releaseConnection();
-                  req.records = result;
-                  next();
-                });
-              })
-              .catch((e) => {
-                _mysql.rollBackTransaction(() => {
-                  next(e);
-                });
+              values: [
+                new Date(),
+                input.updated_by,
+                input.hims_f_patient_appointment_id,
+              ],
+              printQuery: true,
+            })
+            .then((patAppointment) => {
+              // if (req.connection == null) {
+              //   _mysql.commitTransaction(() => {
+              //     _mysql.releaseConnection();
+              //     req.records = result;
+              //     next();
+              //   });
+              // } else {
+              //   next();
+              // }
+              let result = {
+                patient_code: input.patient_code,
+                receipt_number: input.receipt_number,
+                bill_number: input.bill_number,
+                patient_visit_id: input.visit_id,
+                hims_d_patient_id: input.patient_id,
+                hims_f_billing_header_id: input.hims_f_billing_header_id,
+                full_name: req.full_name,
+                arabic_name: req.pat_arabic_name,
+              };
+              _mysql.commitTransaction(() => {
+                _mysql.releaseConnection();
+                req.records = result;
+                next();
               });
-          })
-          .catch((e) => {
-            _mysql.rollBackTransaction(() => {
-              next(e);
+            })
+            .catch((e) => {
+              _mysql.rollBackTransaction(() => {
+                next(e);
+              });
             });
+        })
+        .catch((e) => {
+          _mysql.rollBackTransaction(() => {
+            next(e);
           });
-      } else {
-        // utilities.logger().log("Non consultation: ", input);
-        let result = {
-          patient_code: input.patient_code,
-          receipt_number: input.receipt_number,
-          bill_number: input.bill_number,
-          patient_visit_id: input.visit_id,
-          hims_d_patient_id: input.patient_id,
-          hims_f_billing_header_id: input.hims_f_billing_header_id,
-          full_name: req.full_name,
-          arabic_name: req.pat_arabic_name,
-        };
-        _mysql.commitTransaction(() => {
-          _mysql.releaseConnection();
-          req.records = result;
-          next();
         });
-      }
+      // } else {
+      //   // utilities.logger().log("Non consultation: ", input);
+      //   let result = {
+      //     patient_code: input.patient_code,
+      //     receipt_number: input.receipt_number,
+      //     bill_number: input.bill_number,
+      //     patient_visit_id: input.visit_id,
+      //     hims_d_patient_id: input.patient_id,
+      //     hims_f_billing_header_id: input.hims_f_billing_header_id,
+      //     full_name: req.full_name,
+      //     arabic_name: req.pat_arabic_name,
+      //   };
+      //   _mysql.commitTransaction(() => {
+      //     _mysql.releaseConnection();
+      //     req.records = result;
+      //     next();
+      //   });
+      // }
     } catch (e) {
       _mysql.rollBackTransaction(() => {
         next(e);

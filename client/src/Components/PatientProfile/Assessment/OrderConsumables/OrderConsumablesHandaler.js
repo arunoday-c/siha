@@ -8,10 +8,10 @@ import _ from "lodash";
 const texthandle = ($this, ctrl, e) => {
   e = e || ctrl;
   let name = e.name || e.target.name;
-  let value = e.value || e.target.value;
+  let value = e.value === "" ? null : e.value || e.target.value;
 
   $this.setState({
-    [name]: value,
+    [name]: value
   });
 };
 
@@ -173,8 +173,9 @@ const ProcessService = ($this, e) => {
                           $this.state.test_type;
                         Service_data.billdetails[i].item_notchargable =
                           $this.state.item_notchargable;
+                        Service_data.billdetails[i].instructions =
+                          $this.state.instructions;
                       }
-
                       $this.setState({
                         orderconsumabledata: Service_data.billdetails,
                         approval_amt: approval_amt,
@@ -214,6 +215,7 @@ const ProcessService = ($this, e) => {
                               qtyhand: null,
                               uom_id: null,
                               item_notchargable: "N",
+                              instructions: null,
                               itemchargable: false,
                               item_description: "",
                             });
@@ -284,7 +286,8 @@ const ProcessService = ($this, e) => {
             data.billdetails[0].test_type = $this.state.test_type;
             data.billdetails[0].item_notchargable =
               $this.state.item_notchargable;
-
+            data.billdetails[0].instructions =
+              $this.state.instructions;
             //If pre-approval required for selected service
 
             if (
@@ -319,6 +322,7 @@ const ProcessService = ($this, e) => {
               // s_service_type: null,
               s_service: null,
               test_type: "R",
+              instructions: null
             });
 
             algaehApiCall({

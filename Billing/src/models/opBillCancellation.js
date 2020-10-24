@@ -435,10 +435,9 @@ export default {
             printQuery: true,
           })
           .then((patient_encounter) => {
-            utilities
-              .logger()
-              .log("checked_in: ", patient_encounter[0].checked_in);
-            if (patient_encounter[0].checked_in == "Y") {
+            console.log("checked_in", patient_encounter[0].checked_in)
+            console.log("cancel_checkin", inputParam.cancel_checkin)
+            if (patient_encounter[0].checked_in == "Y" && inputParam.cancel_checkin == "N") {
               req.patientencounter = {
                 internal_error: true,
                 message: "Already Consultation done you cannot cancel",
