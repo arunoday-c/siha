@@ -67,6 +67,7 @@ const {
   deleteDietAdvice,
   getSummaryFollowUp,
   addSickLeave,
+  updateSickLeave,
   getSickLeave,
   getActiveEncounters,
   updateAllergy,
@@ -981,7 +982,16 @@ export default () => {
     },
     releaseConnection
   );
-
+  api.put("/updateSickLeave", updateSickLeave, (req, res, next) => {
+    let result = req.records;
+    res
+      .status(httpStatus.ok)
+      .json({
+        success: true,
+        records: result,
+      })
+      .end();
+  });
   //created by Nowshad:
   api.get(
     "/getSickLeave",

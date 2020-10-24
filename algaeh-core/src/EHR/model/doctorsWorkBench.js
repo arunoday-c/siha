@@ -902,8 +902,8 @@ let getMyDay = (req, res, next) => {
       req.query.fromDate != "" &&
       req.query.fromDate != undefined
     )
-    //Change for Encounter Patient showing in wrong date - 16 - Start
-    //created_date 
+      //Change for Encounter Patient showing in wrong date - 16 - Start
+      //created_date
       _query += _mysql.mysqlQueryFormat(
         "date(E.updated_date) BETWEEN date(?) and date(?)",
         [
@@ -915,7 +915,7 @@ let getMyDay = (req, res, next) => {
           ),
         ]
       );
-      //Change for Encounter Patient showing in wrong date - 16 - End
+    //Change for Encounter Patient showing in wrong date - 16 - End
     else if (
       req.query.toDate != null &&
       req.query.toDate != "" &&
@@ -3006,14 +3006,12 @@ let addSickLeave = (req, res, next) => {
           req.records = [];
           next();
         } else {
-          const test = input.reported_sick ? "Y" : "N";
-          console.log("test", test);
-
           _mysql
             .executeQuery({
               query: `insert into hims_f_patient_sick_leave(patient_id, visit_id, episode_id, from_date, \
-              to_date, no_of_days, remarks,reported_sick,accompanying_patient,patient_unfit,advice_light_duty,pat_need_emp_care)
-              values(?, ?, ?, ?, ?, ?, ?,?,?,?,?,?)`,
+              to_date, no_of_days, remarks,reported_sick,accompanying_patient,patient_unfit,patient_fit,advice_light_duty,pat_need_emp_care,
+              created_date,created_by,updated_date,updated_by)
+              values(?, ?, ?, ?, ?, ?, ?,?,?,?,?,?,?,?,?,?,?)`,
               values: [
                 input.patient_id,
                 input.visit_id,
@@ -3025,8 +3023,13 @@ let addSickLeave = (req, res, next) => {
                 input.reported_sick ? "Y" : "N",
                 input.accompanying_patient ? "Y" : "N",
                 input.patient_unfit ? "Y" : "N",
+                input.patient_fit ? "Y" : "N",
                 input.advice_light_duty ? "Y" : "N",
                 input.pat_need_emp_care ? "Y" : "N",
+                new Date(),
+                req.userIdentity.algaeh_d_app_user_id,
+                new Date(),
+                req.userIdentity.algaeh_d_app_user_id,
               ],
             })
             .then((resultd) => {
@@ -3049,7 +3052,43 @@ let addSickLeave = (req, res, next) => {
     next(e);
   }
 };
+let updateSickLeave = (req, res, next) => {
+  const _mysql = new algaehMysql({ path: keyPath });
 
+  try {
+    let input = req.body;
+
+    _mysql
+      .executeQuery({
+        query: `update hims_f_patient_sick_leave  set from_date=?, to_date=?, no_of_days=?,remarks=?,reported_sick=?,accompanying_patient=?,
+          patient_unfit=?,patient_fit=?,advice_light_duty=?,pat_need_emp_care=?,updated_date=?,updated_by=?
+          where hims_f_patient_sick_leave_id=?`,
+        values: [
+          input.from_date,
+          input.to_date,
+          input.no_of_days,
+          input.remarks,
+          input.reported_sick ? "Y" : "N",
+          input.accompanying_patient ? "Y" : "N",
+          input.patient_unfit ? "Y" : "N",
+          input.patient_fit ? "Y" : "N",
+          input.advice_light_duty ? "Y" : "N",
+          input.pat_need_emp_care ? "Y" : "N",
+          new Date(),
+          req.userIdentity.algaeh_d_app_user_id,
+          input.hims_f_patient_sick_leave_id,
+        ],
+      })
+      .then((result) => {
+        req.records = result;
+        _mysql.releaseConnection();
+        next();
+      });
+  } catch (e) {
+    _mysql.releaseConnection();
+    next(e);
+  }
+};
 //created by irfan: to add  physical_examination_details
 let getSickLeave = (req, res, next) => {
   const _mysql = new algaehMysql({ path: keyPath });
@@ -3322,6 +3361,7 @@ export default {
   deleteDietAdvice,
   getSummaryFollowUp,
   addSickLeave,
+  updateSickLeave,
   getSickLeave,
   updateAllergy,
   deleteAllergy,
