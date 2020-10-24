@@ -902,8 +902,10 @@ let getMyDay = (req, res, next) => {
       req.query.fromDate != "" &&
       req.query.fromDate != undefined
     )
+    //Change for Encounter Patient showing in wrong date - 16 - Start
+    //created_date 
       _query += _mysql.mysqlQueryFormat(
-        "date(E.created_date) BETWEEN date(?) and date(?)",
+        "date(E.updated_date) BETWEEN date(?) and date(?)",
         [
           moment(new Date(req.query.fromDate)).format(
             keyPath.default.dbFormat.date
@@ -913,6 +915,7 @@ let getMyDay = (req, res, next) => {
           ),
         ]
       );
+      //Change for Encounter Patient showing in wrong date - 16 - End
     else if (
       req.query.toDate != null &&
       req.query.toDate != "" &&
