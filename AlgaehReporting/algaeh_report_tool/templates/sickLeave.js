@@ -26,7 +26,7 @@ const executePDF = function executePDFMethod(options) {
           left join hims_d_icd ID on ID.hims_d_icd_id = PD.daignosis_id
           inner join hims_d_employee EMP on PV.doctor_id = EMP.hims_d_employee_id
           inner join hims_d_sub_department SDEP on PV.sub_department_id = SDEP.hims_d_sub_department_id
-          where PD.diagnosis_type='P' and SL.patient_id=? and SL.visit_id=? and SL.episode_id = ?;`,
+          where SL.patient_id=? and SL.visit_id=? and SL.episode_id = ?;`,
           values: [
             input.patient_id,
             input.visit_id,

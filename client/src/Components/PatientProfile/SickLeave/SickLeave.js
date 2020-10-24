@@ -255,7 +255,7 @@ class SickLeave extends Component {
               <div className="popRightDiv">
                 <div className="row">
                   <AlgaehDateHandler
-                    div={{ className: "col-4 form-group" }}
+                    div={{ className: "col-4 form-group mandatory" }}
                     label={{ forceLabel: "From Date", isImp: true }}
                     textBox={{
                       className: "txt-fld",
@@ -272,7 +272,7 @@ class SickLeave extends Component {
                     value={this.state.from_date}
                   />
                   <AlgaehDateHandler
-                    div={{ className: "col-4 form-group" }}
+                    div={{ className: "col-4 form-group mandatory" }}
                     label={{ forceLabel: "To Date", isImp: true }}
                     textBox={{
                       className: "txt-fld",
@@ -390,7 +390,7 @@ class SickLeave extends Component {
 
                 
                 </div>
-                <div className="row">  <div className="col-12 form-group">
+                <div className="row">  <div className="col-12 form-group  mandatory">
                     <AlgaehLabel
                       label={{
                         forceLabel: "Remarks",
@@ -416,7 +416,7 @@ class SickLeave extends Component {
                       className="btn btn-primary"
                       onClick={this.PrintSickLeave.bind(this)}
                     >
-                      Save
+                      Save & Print
                     </button>
                     <button
                       type="button"
