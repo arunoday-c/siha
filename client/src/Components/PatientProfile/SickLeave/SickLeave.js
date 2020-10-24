@@ -14,7 +14,7 @@ import {
 import "./SickLeave.scss";
 import "../../../styles/site.scss";
 import { swalMessage, algaehApiCall } from "../../../utils/algaehApiCall";
-import { Checkbox } from "antd";
+// import { Checkbox } from "antd";
 
 class SickLeave extends Component {
   constructor(props) {
@@ -307,54 +307,90 @@ class SickLeave extends Component {
                       },
                     }}
                   />
-
-                  <Checkbox
-                    style={{ marginBottom: 10 }}
-                    name="reported_sick"
-                    value={this.state.reported_sick ? "Y" : "N"}
-                    checked={this.state.reported_sick}
-                    onChange={this.changeCheck.bind(this)}
-                  >
-                    Reported Sick
-                  </Checkbox>
-                  <Checkbox
-                    style={{ marginBottom: 10 }}
+                  </div>
+                  <div className="row">
+                  <div className="col-3">
+                      <label>Reported as Sick</label>
+                      <div className="customCheckbox">
+                        <label className="checkbox block">
+                          <input
+                            type="checkbox"
+                            value={this.state.reported_sick ? "Y" : "N"}
+                            name="reported_sick"
+                            checked={this.state.reported_sick}
+                            onChange={this.changeCheck.bind(this)}
+                          />
+                          <span>Yes</span>
+                        </label>
+                      </div>
+                    </div>
+                    <div className="col-3">
+                      <label>Accompanying Patient</label>
+                      <div className="customCheckbox">
+                        <label className="checkbox block">
+                          <input
+                            type="checkbox"
+                         
                     name="accompanying_patient"
                     value={this.state.accompanying_patient ? "Y" : "N"}
                     checked={this.state.accompanying_patient}
                     onChange={this.changeCheck.bind(this)}
-                  >
-                    Accompanying patient
-                  </Checkbox>
-                  <Checkbox
-                    style={{ marginBottom: 10 }}
+                          />
+                          <span>Yes</span>
+                        </label>
+                      </div>
+                    </div>
+                    <div className="col-3">
+                      <label>Patient Fit for duty</label>
+                      <div className="customCheckbox">
+                        <label className="checkbox block">
+                          <input
+                            type="checkbox"
+                          
                     name="patient_unfit"
                     value={this.state.patient_unfit ? "Y" : "N"}
                     checked={this.state.patient_unfit}
                     onChange={this.changeCheck.bind(this)}
-                  >
-                    Patient UNFIT for Duty
-                  </Checkbox>
-                  <Checkbox
-                    style={{ marginBottom: 10 }}
-                    name="advice_light_duty"
-                    value={this.state.advice_light_duty ? "Y" : "N"}
-                    checked={this.state.advice_light_duty}
-                    onChange={this.changeCheck.bind(this)}
-                  >
-                    Adviced Light Duty
-                  </Checkbox>
-                  <Checkbox
-                    style={{ marginBottom: 10 }}
-                    name="pat_need_emp_care"
-                    value={this.state.pat_need_emp_care ? "Y" : "N"}
-                    checked={this.state.pat_need_emp_care}
-                    onChange={this.changeCheck.bind(this)}
-                  >
-                    Patient Needs Employees Care
-                  </Checkbox>
+                          />
+                          <span>Yes</span>
+                        </label>
+                      </div>
+                    </div>
+                    <div className="col-3">
+                      <label>Advice Light Duty</label>
+                      <div className="customCheckbox">
+                        <label className="checkbox block">
+                          <input
+                            type="checkbox"
+                            name="advice_light_duty"
+                            value={this.state.advice_light_duty ? "Y" : "N"}
+                            checked={this.state.advice_light_duty}
+                            onChange={this.changeCheck.bind(this)}
+                          />
+                          <span>Yes</span>
+                        </label>
+                      </div>
+                    </div>
+                    <div className="col">
+                      <label>Patient needs employees care</label>
+                      <div className="customCheckbox">
+                        <label className="checkbox block">
+                          <input
+                            type="checkbox"
+                            name="pat_need_emp_care"
+                            value={this.state.pat_need_emp_care ? "Y" : "N"}
+                            checked={this.state.pat_need_emp_care}
+                            onChange={this.changeCheck.bind(this)}
+                          />
+                          <span>Yes</span>
+                        </label>
+                      </div>
+                    </div>
+                 
 
-                  <div className="col form-group">
+                
+                </div>
+                <div className="row">  <div className="col-12 form-group">
                     <AlgaehLabel
                       label={{
                         forceLabel: "Remarks",
@@ -367,15 +403,14 @@ class SickLeave extends Component {
                       onChange={this.textAreaEvent.bind(this)}
                       disabled={this.state.disableEdit}
                     />
-                  </div>
-                </div>
+                  </div></div>
               </div>
             </div>
 
             <div className=" popupFooter">
-              <div className="col-lg-12">
+              <div className="col-12">
                 <div className="row">
-                  <div className="col-lg-12">
+                  <div className="col-12">
                     <button
                       type="button"
                       className="btn btn-primary"

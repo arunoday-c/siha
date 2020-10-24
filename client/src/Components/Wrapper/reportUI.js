@@ -36,7 +36,7 @@ export default class ReportUI extends Component {
       report_name: null,
       base64Pdf: undefined,
       pageOrentation: "landscape",
-      pageSize: "A3",
+      pageSize: "A4",
     };
 
     if (props.options !== undefined && props.options.plotUI !== undefined) {
