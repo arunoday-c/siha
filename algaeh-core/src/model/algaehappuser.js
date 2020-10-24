@@ -1212,9 +1212,10 @@ let updateUser = (req, res, next) => {
       _mysql
         .executeQueryWithTransaction({
           query:
-            "update algaeh_d_app_user set user_status=?, updated_date=?, updated_by=? where algaeh_d_app_user_id=?;",
+            "update algaeh_d_app_user set user_status=?,user_type=?, updated_date=?, updated_by=? where algaeh_d_app_user_id=?;",
           values: [
             input.user_status,
+            input.user_type,
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
             input.algaeh_d_app_user_id,
