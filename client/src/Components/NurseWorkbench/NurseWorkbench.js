@@ -37,6 +37,7 @@ import Options from "../../Options.json";
 import NursingWorkbenchHandler from "./NursingWorkbenchHandler";
 import OrderedList from "../PatientProfile/Assessment/OrderedList/OrderedList";
 import NursesNotes from "../PatientProfile/Examination/NursesNotes";
+import { AlgaehSecurityComponent } from "algaeh-react-components";
 
 class NurseWorkbench extends Component {
   constructor(props) {
@@ -972,6 +973,8 @@ class NurseWorkbench extends Component {
             {this.generateHorizontalDateBlocks()}
           </div>
         </div>
+
+
         <div className="row card-deck panel-layout">
           <div className="col-lg-4">
             <div className="portlet portlet-bordered margin-bottom-15">
@@ -1177,6 +1180,8 @@ class NurseWorkbench extends Component {
               </div>
 
               <div className="portlet-body" id="vitals_recording">
+                
+            <AlgaehSecurityComponent componentCode="NUR_PAT_VIT">
                 {/* Vitals Start */}
                 <div
                   className="row margin-bottom-15"
@@ -1340,6 +1345,10 @@ class NurseWorkbench extends Component {
                 </div>
                 {/* Vitals End */}
                 <hr />
+                
+            </AlgaehSecurityComponent>
+            
+            <AlgaehSecurityComponent componentCode="NUR_PAT_ALRGY">
                 <h6>Enter Patient Allergies</h6>
                 <div className="row">
                   <div className="col-8">
@@ -1706,7 +1715,9 @@ class NurseWorkbench extends Component {
                     />
                   </div>
                 </div>
-                <hr />
+                <hr /></AlgaehSecurityComponent>
+                
+            <AlgaehSecurityComponent componentCode="NUR_PAT_CHF_COM">
                 <div className="row">
                   <div className="col-12">
                     <h6>Enter Chief Complaints</h6>
@@ -1849,7 +1860,11 @@ class NurseWorkbench extends Component {
                     </div>
                     {/* Chief Complaint End */}
                   </div>
-                  <div className="col-12">
+                </div>
+                  </AlgaehSecurityComponent>
+                
+            <AlgaehSecurityComponent componentCode="NUR_PAT_NOTE">
+               <div className="row">   <div className="col-12">
                     {/* Notes Start */}
                     {this.state.patient_id ? (
                       <NursesNotes
@@ -1865,85 +1880,10 @@ class NurseWorkbench extends Component {
                           <p>Please select a patient first</p>
                         </>
                       )}
-                    {/* 
-
-                    <div className="portlet portlet-bordered margin-bottom-15">
-                      <div className="portlet-body">
-                        <div className="row">
-                          {" "}
-                          <AlagehFormGroup
-                            div={{ className: "col-12 form-group" }}
-                            label={{
-                              forceLabel: "Notes",
-                              isImp: false,
-                            }}
-                            textBox={{
-                              className: "txt-fld",
-                              name: "examination_comment",
-                              others: {
-                                multiline: true,
-                                rows: "3",
-                              },
-                              value: this.state.examination_comment,
-                              events: {
-                                onChange: this.texthandle.bind(this),
-                              },
-                            }}
-                          />
-                          <div
-                            className="col-12"
-                            style={{ textAlign: "right" }}
-                          >
-                            <button className="btn btn-primary">
-                              Add Notes
-                            </button>
-                          </div>
-                          <div className="col-12 patientNotesGrid_Cntr">
-                            <AlgaehDataGrid
-                              className="patientNotesGrid"
-                              columns={[
-                                {
-                                  fieldName: "",
-                                  label: "Notes",
-                                  disabled: true,
-                                },
-                                {
-                                  fieldName: "",
-                                  label: "Entered by & Date",
-                                  disabled: true,
-                                },
-                              ]}
-                              keyId=""
-                              dataSource=""
-                              isEditable={true}
-                              paging={{ page: 0, rowsPerPage: 10 }}
-                            />
-                          </div>
-                        </div>
-                      </div>
-                    </div> */}
-                    {/* <AlagehFormGroup
-                      div={{ className: "col-lg-12" }}
-                      label={{
-                        forceLabel: "",
-                        isImp: false,
-                      }}
-                      textBox={{
-                        className: "txt-fld",
-                        name: "nurse_notes",
-                        value: this.state.nurse_notes,
-                        others: {
-                          multiline: true,
-                          rows: "6",
-                        },
-                        events: {
-                          onChange: this.texthandle.bind(this),
-                        },
-                      }}
-                    /> */}
-                    {/* Notes End */}
                   </div>
-                </div>
+                  </div>
+                  </AlgaehSecurityComponent>
+            <AlgaehSecurityComponent componentCode="NUR_ORD_SERV">
                 <h6>Nurse Order Service</h6>
                 {this.state.patient_id !== null ? (
                   <div className="row">
@@ -2020,6 +1960,7 @@ class NurseWorkbench extends Component {
                 ) : (
                     <p>Please select a patient first</p>
                   )}
+                  </AlgaehSecurityComponent>
               </div>
             </div>
           </div>

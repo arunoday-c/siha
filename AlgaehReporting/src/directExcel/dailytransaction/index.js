@@ -209,7 +209,7 @@ export function generateExcelDilyTrans(req, res, next) {
                       ? parseFloat(s.company_payble)
                       : parseFloat(s.patient_payable);
                   }),
-                  billing_type:insured === "N" ? "Credit" : insurance_provider_name,
+                  billing_type:insured === "N" ? "Cash" : insurance_provider_name,
                   ...serviceObject,
                   new_visit: new_visit_patient === "Y" ? 1 : 0,
                   followup_visit: new_visit_patient !== "Y" ? 1 : 0,
