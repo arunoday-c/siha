@@ -307,90 +307,92 @@ class SickLeave extends Component {
                       },
                     }}
                   />
-                  </div>
-                  <div className="row">
-                  <div className="col-3">
-                      <label>Reported as Sick</label>
-                      <div className="customCheckbox">
-                        <label className="checkbox block">
-                          <input
-                            type="checkbox"
-                            value={this.state.reported_sick ? "Y" : "N"}
-                            name="reported_sick"
-                            checked={this.state.reported_sick}
-                            onChange={this.changeCheck.bind(this)}
-                          />
-                          <span>Yes</span>
-                        </label>
-                      </div>
-                    </div>
-                    <div className="col-3">
-                      <label>Accompanying Patient</label>
-                      <div className="customCheckbox">
-                        <label className="checkbox block">
-                          <input
-                            type="checkbox"
-                         
-                    name="accompanying_patient"
-                    value={this.state.accompanying_patient ? "Y" : "N"}
-                    checked={this.state.accompanying_patient}
-                    onChange={this.changeCheck.bind(this)}
-                          />
-                          <span>Yes</span>
-                        </label>
-                      </div>
-                    </div>
-                    <div className="col-3">
-                      <label>Patient Fit for duty</label>
-                      <div className="customCheckbox">
-                        <label className="checkbox block">
-                          <input
-                            type="checkbox"
-                          
-                    name="patient_unfit"
-                    value={this.state.patient_unfit ? "Y" : "N"}
-                    checked={this.state.patient_unfit}
-                    onChange={this.changeCheck.bind(this)}
-                          />
-                          <span>Yes</span>
-                        </label>
-                      </div>
-                    </div>
-                    <div className="col-3">
-                      <label>Advice Light Duty</label>
-                      <div className="customCheckbox">
-                        <label className="checkbox block">
-                          <input
-                            type="checkbox"
-                            name="advice_light_duty"
-                            value={this.state.advice_light_duty ? "Y" : "N"}
-                            checked={this.state.advice_light_duty}
-                            onChange={this.changeCheck.bind(this)}
-                          />
-                          <span>Yes</span>
-                        </label>
-                      </div>
-                    </div>
-                    <div className="col">
-                      <label>Patient needs employees care</label>
-                      <div className="customCheckbox">
-                        <label className="checkbox block">
-                          <input
-                            type="checkbox"
-                            name="pat_need_emp_care"
-                            value={this.state.pat_need_emp_care ? "Y" : "N"}
-                            checked={this.state.pat_need_emp_care}
-                            onChange={this.changeCheck.bind(this)}
-                          />
-                          <span>Yes</span>
-                        </label>
-                      </div>
-                    </div>
-                 
-
-                
                 </div>
-                <div className="row">  <div className="col-12 form-group  mandatory">
+                <div className="row">
+                  <div className="col-3">
+                    <label>Reported as Sick</label>
+                    <div className="customCheckbox">
+                      <label className="checkbox block">
+                        <input
+                          type="checkbox"
+                          value={this.state.reported_sick ? "Y" : "N"}
+                          name="reported_sick"
+                          disabled={this.state.disableEdit}
+                          checked={this.state.reported_sick}
+                          onChange={this.changeCheck.bind(this)}
+                        />
+                        <span>Yes</span>
+                      </label>
+                    </div>
+                  </div>
+                  <div className="col-3">
+                    <label>Accompanying Patient</label>
+                    <div className="customCheckbox">
+                      <label className="checkbox block">
+                        <input
+                          type="checkbox"
+                          name="accompanying_patient"
+                          value={this.state.accompanying_patient ? "Y" : "N"}
+                          checked={this.state.accompanying_patient}
+                          disabled={this.state.disableEdit}
+                          onChange={this.changeCheck.bind(this)}
+                        />
+                        <span>Yes</span>
+                      </label>
+                    </div>
+                  </div>
+                  <div className="col-3">
+                    <label>Patient Fit for duty</label>
+                    <div className="customCheckbox">
+                      <label className="checkbox block">
+                        <input
+                          type="checkbox"
+                          name="patient_unfit"
+                          value={this.state.patient_unfit ? "Y" : "N"}
+                          checked={this.state.patient_unfit}
+                          disabled={this.state.disableEdit}
+                          onChange={this.changeCheck.bind(this)}
+                        />
+                        <span>Yes</span>
+                      </label>
+                    </div>
+                  </div>
+                  <div className="col-3">
+                    <label>Advice Light Duty</label>
+                    <div className="customCheckbox">
+                      <label className="checkbox block">
+                        <input
+                          type="checkbox"
+                          name="advice_light_duty"
+                          value={this.state.advice_light_duty ? "Y" : "N"}
+                          checked={this.state.advice_light_duty}
+                          disabled={this.state.disableEdit}
+                          onChange={this.changeCheck.bind(this)}
+                        />
+                        <span>Yes</span>
+                      </label>
+                    </div>
+                  </div>
+                  <div className="col">
+                    <label>Patient needs employees care</label>
+                    <div className="customCheckbox">
+                      <label className="checkbox block">
+                        <input
+                          type="checkbox"
+                          name="pat_need_emp_care"
+                          value={this.state.pat_need_emp_care ? "Y" : "N"}
+                          checked={this.state.pat_need_emp_care}
+                          disabled={this.state.disableEdit}
+                          onChange={this.changeCheck.bind(this)}
+                        />
+                        <span>Yes</span>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+                <div className="row">
+                  {" "}
+                  <div className="col-12 form-group  mandatory">
                     <AlgaehLabel
                       label={{
                         forceLabel: "Remarks",
@@ -403,7 +405,8 @@ class SickLeave extends Component {
                       onChange={this.textAreaEvent.bind(this)}
                       disabled={this.state.disableEdit}
                     />
-                  </div></div>
+                  </div>
+                </div>
               </div>
             </div>
 
