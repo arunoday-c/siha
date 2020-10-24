@@ -65,10 +65,11 @@ export default {
 
       _mysql
         .executeQuery({
-          query: `select visit_code from hims_d_sub_department SD,hims_f_patient_visit V where 
-          V.sub_department_id=SD.hims_d_sub_department_id and SD.record_status='A' and V.record_status='A' 
-          and date(V.visit_expiery_date) between date(now()) and DATE(V.visit_expiery_date) and SD.hims_d_sub_department_id=?
-          and V.doctor_id=? and patient_id =? and V.hospital_id=? and V.visit_status!='CN'`,
+          query: `select visit_code from hims_f_patient_visit V \
+          inner join hims_d_sub_department SD on V.sub_department_id=SD.hims_d_sub_department_id and SD.record_status='A' \
+          inner join hims_d_visit_type VT on V.visit_type=VT.hims_d_visit_type_id and consultation='Y'\
+          where date(V.visit_expiery_date) between date(now()) and DATE(V.visit_expiery_date) \
+          and SD.hims_d_sub_department_id=? and V.doctor_id=? and patient_id =? and V.hospital_id=? and V.visit_status!='CN'`,
           values: [
             inputParam.sub_department_id,
             inputParam.doctor_id,
@@ -235,9 +236,10 @@ export default {
       _mysql
         .executeQuery({
           query:
-            "SET SESSION sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));select max(visit_expiery_date) as visit_expiery_date,max(episode_id) as episode_id, no_free_visit\
-                 from hims_f_patient_visit where\
-                patient_id=? and doctor_id=? and record_status='A' and  hospital_id=?;",
+            "SET SESSION sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));select max(visit_expiery_date) as visit_expiery_date,\
+              max(episode_id) as episode_id, no_free_visit from hims_f_patient_visit V \
+              inner join hims_d_visit_type VT on V.visit_type=VT.hims_d_visit_type_id and consultation='Y' where\
+              patient_id=? and doctor_id=? and  hospital_id=?;",
           values: [
             inputParam.patient_id,
             inputParam.doctor_id,
@@ -246,7 +248,6 @@ export default {
           printQuery: true,
         })
         .then((expectedResult) => {
-          console.log("expectedResult", expectedResult)
           expectedResult.shift();
           let expResult = expectedResult[0];
 

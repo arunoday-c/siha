@@ -32,7 +32,7 @@ const ClearData = ($this, e) => {
       IOputs.counter_id = counter_id;
       IOputs.cancel_remarks = null;
       $this.setState({ ...$this.state, ...IOputs }, () => {
-        getCashiersAndShiftMAP($this);
+        getCashiersAndShiftMAP($this, $this.state.cancel_checkin);
       });
     },
   });
@@ -128,7 +128,8 @@ const Validations = ($this) => {
   // }
 };
 
-const getCashiersAndShiftMAP = ($this) => {
+const getCashiersAndShiftMAP = ($this, cancel_checkin) => {
+  debugger
   algaehApiCall({
     uri: "/shiftAndCounter/getCashiersAndShiftMAP",
     module: "masterSettings",
@@ -139,6 +140,7 @@ const getCashiersAndShiftMAP = ($this) => {
         $this.setState(
           {
             shift_assinged: response.data.records,
+            cancel_checkin: cancel_checkin
           },
           () => {
             $this.setState({

@@ -14,6 +14,7 @@ import {
 import "./SickLeave.scss";
 import "../../../styles/site.scss";
 import { swalMessage, algaehApiCall } from "../../../utils/algaehApiCall";
+import { Checkbox } from "antd";
 
 class SickLeave extends Component {
   constructor(props) {
@@ -24,6 +25,11 @@ class SickLeave extends Component {
       to_date: null,
       no_of_days: 0,
       remarks: "",
+      reported_sick: false,
+      accompanying_patient: false,
+      patient_unfit: false,
+      advice_light_duty: false,
+      pat_need_emp_care: false,
       episode_id: Window?.global?.episode_id,
       patient_id: Window?.global?.current_patient,
       visit_id: Window?.global?.visit_id,
@@ -45,6 +51,12 @@ class SickLeave extends Component {
         if (response.data.success) {
           this.setState({
             ...data,
+            reported_sick: data.reported_sick === "Y" ? true : false,
+            accompanying_patient:
+              data.accompanying_patient === "Y" ? true : false,
+            patient_unfit: data.patient_unfit === "Y" ? true : false,
+            advice_light_duty: data.advice_light_duty === "Y" ? true : false,
+            pat_need_emp_care: data.pat_need_emp_care === "Y" ? true : false,
             disableEdit: response.data.records.length > 0 ? true : false,
           });
         }
@@ -108,12 +120,9 @@ class SickLeave extends Component {
   }
 
   onClose = (e) => {
-    this.setState(
-      { from_date: null, to_date: null, no_of_days: 0, remarks: "" },
-      () => {
-        this.props.onClose && this.props.onClose(e);
-      }
-    );
+    this.setState({}, () => {
+      this.props.onClose && this.props.onClose(e);
+    });
   };
 
   PrintSickLeave() {
@@ -186,6 +195,12 @@ class SickLeave extends Component {
           type: "error",
         });
       },
+    });
+  }
+  changeCheck(e) {
+    const { name, checked } = e.target;
+    this.setState({
+      [name]: checked,
     });
   }
 
@@ -292,6 +307,53 @@ class SickLeave extends Component {
                       },
                     }}
                   />
+
+                  <Checkbox
+                    style={{ marginBottom: 10 }}
+                    name="reported_sick"
+                    value={this.state.reported_sick ? "Y" : "N"}
+                    checked={this.state.reported_sick}
+                    onChange={this.changeCheck.bind(this)}
+                  >
+                    Reported Sick
+                  </Checkbox>
+                  <Checkbox
+                    style={{ marginBottom: 10 }}
+                    name="accompanying_patient"
+                    value={this.state.accompanying_patient ? "Y" : "N"}
+                    checked={this.state.accompanying_patient}
+                    onChange={this.changeCheck.bind(this)}
+                  >
+                    Accompanying patient
+                  </Checkbox>
+                  <Checkbox
+                    style={{ marginBottom: 10 }}
+                    name="patient_unfit"
+                    value={this.state.patient_unfit ? "Y" : "N"}
+                    checked={this.state.patient_unfit}
+                    onChange={this.changeCheck.bind(this)}
+                  >
+                    Patient UNFIT for Duty
+                  </Checkbox>
+                  <Checkbox
+                    style={{ marginBottom: 10 }}
+                    name="advice_light_duty"
+                    value={this.state.advice_light_duty ? "Y" : "N"}
+                    checked={this.state.advice_light_duty}
+                    onChange={this.changeCheck.bind(this)}
+                  >
+                    Adviced Light Duty
+                  </Checkbox>
+                  <Checkbox
+                    style={{ marginBottom: 10 }}
+                    name="pat_need_emp_care"
+                    value={this.state.pat_need_emp_care ? "Y" : "N"}
+                    checked={this.state.pat_need_emp_care}
+                    onChange={this.changeCheck.bind(this)}
+                  >
+                    Patient Needs Employees Care
+                  </Checkbox>
+
                   <div className="col form-group">
                     <AlgaehLabel
                       label={{

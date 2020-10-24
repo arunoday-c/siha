@@ -156,6 +156,7 @@ class LoanRequest extends Component {
             employee_id: row.hims_d_employee_id,
             hims_d_employee_id: row.hims_d_employee_id,
             reporting_to_id: row.reporting_to_id,
+            employee_code: row.employee_code,
           },
           () => {
             this.state.request_type === "AD"
@@ -209,6 +210,7 @@ class LoanRequest extends Component {
       start_year: null,
       start_month: null,
       employee_name: null,
+      employee_code: null,
       employee_id: null,
       hims_d_employee_id: null,
     };
@@ -227,6 +229,7 @@ class LoanRequest extends Component {
       advance_amount: null,
       advance_reason: null,
       employee_name: null,
+      employee_code: null,
       employee_id: null,
       hims_d_employee_id: null,
     };
@@ -317,6 +320,7 @@ class LoanRequest extends Component {
       reporting_to_id,
       loan_master,
       loan_id,
+      employee_code,
     } = this.state;
     const [{ loan_description }] = loan_master.filter(
       (loan) => loan.hims_d_loan_id === loan_id
@@ -370,7 +374,9 @@ class LoanRequest extends Component {
                   email_type: "LO",
                   full_name,
                   // employee_code,
-
+                  loan_code: res.data.records.EMPLOYEE_LOAN,
+                  loan_description,
+                  employee_code,
                   application_reason: this.state.loan_description,
                   loan_amount: this.state.loan_amount,
                   start_month: this.state.start_month,
@@ -389,6 +395,7 @@ class LoanRequest extends Component {
                       "start_year",
                       "start_month",
                       "employee_name",
+                      "employee_code",
                       "employee_id",
                       "hims_d_employee_id",
                     ]);
