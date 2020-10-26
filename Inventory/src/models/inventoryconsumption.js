@@ -88,10 +88,10 @@ export default {
           _mysql
             .executeQuery({
               query:
-                "INSERT INTO `hims_f_inventory_consumption_header` (consumption_number,consumption_date,`year`, \
-                period,location_type,location_id,provider_id,created_date,created_by,updated_date,\
-                updated_by,hospital_id) \
-              VALUE(?,?,?,?,?,?,?,?,?,?,?,?)",
+                "INSERT INTO `hims_f_inventory_consumption_header` (consumption_number, consumption_date, `year`, \
+                period, location_type, location_id, provider_id, patient_id, created_date, created_by, updated_date,\
+                updated_by, hospital_id) \
+              VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?)",
               values: [
                 document_number,
                 today,
@@ -100,6 +100,7 @@ export default {
                 input.location_type,
                 input.location_id,
                 input.provider_id,
+                input.patient_id,
                 new Date(),
                 req.userIdentity.algaeh_d_app_user_id,
                 new Date(),
@@ -259,11 +260,11 @@ export default {
                   })
                   .then(header_result => {
                     let project_id = null;
-                    let day_end_header =[]
+                    let day_end_header = []
                     if (header_result.length > 1) {
                       day_end_header = header_result[0]
                       project_id = header_result[1][0].project_id
-                    }else{
+                    } else {
                       day_end_header = header_result
                     }
                     // let day_end_header = "";
