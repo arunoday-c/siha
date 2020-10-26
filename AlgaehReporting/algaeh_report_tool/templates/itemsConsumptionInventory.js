@@ -15,27 +15,28 @@ const executePDF = function executePDFMethod(options) {
 
       // utilities.logger().log("input: ", input);
 
-      if (input.provider_id > 0) {
-        str += ` and  H.provider_id=${input.provider_id}`;
+      if (input.location_id > 0) {
+        str += ` and INV.hims_d_inventory_location_id=${input.location_id}`;
       }
+
+      // if (input.provider_id > 0) {
+      //   str += ` and  H.provider_id=${input.provider_id}`;
+      // }
 
       if (input.item_id > 0) {
         str += ` and D.item_id=${input.item_id}`;
       }
+
       options.mysql
         .executeQuery({
-          query: `select hims_f_inventory_consumption_header_id,consumption_number,
-          date(consumption_date)as consumption_date,H.provider_id,E.full_name,E.employee_code,
-          D.quantity,D.unit_cost,D.extended_cost,IM.item_code,IM.item_description
+          query: `select H.hims_f_inventory_consumption_header_id,H.consumption_number, date(H.consumption_date)as consumption_date,H.provider_id,E.full_name,E.employee_code, D.quantity,D.unit_cost,D.extended_cost,IM.item_code,IM.item_description,INV.location_description
           from hims_f_inventory_consumption_header H inner join hims_f_inventory_consumption_detail D on
           H.hims_f_inventory_consumption_header_id=D.inventory_consumption_header_id
           inner join  hims_d_employee E on E.hims_d_employee_id=H.provider_id
           inner join hims_d_inventory_item_master IM on  D.item_id=IM.hims_d_inventory_item_master_id
-          inner join hims_d_sub_department SD on H.location_id=SD.inventory_location_id
-          where  SD.hims_d_sub_department_id=? and H.hospital_id=?  and  date(H.consumption_date) between 
-          date(?) and date(?)	${str};`,
+          inner join hims_d_inventory_location INV on H.location_id = INV.hims_d_inventory_location_id
+          where H.hospital_id=?  and  date(H.consumption_date) between date(?) and date(?) ${str};`,
           values: [
-            input.sub_department_id,
             input.hospital_id,
             input.from_date,
             input.to_date

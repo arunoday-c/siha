@@ -1417,7 +1417,7 @@ export default {
         });
       });
   },
-  //created by irfan: to
+  //created by Nowshad: to
   revertDayEnd: (req, res, next) => {
     const _mysql = new algaehMysql();
     // const utilities = new algaehUtilities();
@@ -1427,7 +1427,7 @@ export default {
     if (input.from_screen == "PR0004") {
       strQuery += `update hims_f_procurement_grn_header set posted='N' where grn_number='${input.document_number}';`;
     } else if (input.from_screen == "SAL005") {
-      strQuery += `update hims_f_sales_invoice_header set posted='N' where invoice_number='${input.document_number}';`;
+      strQuery += `update hims_f_sales_invoice_header set is_posted='N' where invoice_number='${input.document_number}';`;
     }
     _mysql
       .executeQuery({

@@ -2056,12 +2056,13 @@ export default {
   addPatientAppointment: (req, res, next) => {
     const _mysql = new algaehMysql();
     let input = req.body;
-    if (input.contact_number.length < 10) {
-      next(
-        new Error("Contact number is not valid please provide valid number")
-      );
-      return;
-    }
+    //Removed mobile number validation as per discussion
+    // if (input.contact_number.length < 10) {
+    //   next(
+    //     new Error("Contact number is not valid please provide valid number")
+    //   );
+    //   return;
+    // }
 
     let strQry = "";
     if (

@@ -148,6 +148,7 @@ export default function Inventory({
         pageSize: "A4",
         pageOrentation: "portrait", //"landscape",
         reportParameters: [
+          
           {
             className: "col-3 form-group mandatory",
             type: "dropdown",
@@ -158,7 +159,30 @@ export default function Inventory({
             link: {
               uri: "/organization/getOrganizationByUser",
             },
-            // value: hospital_id,
+            events: {
+              onChange: (reportState, currentEvent) => {
+                //provider_id_list CONTROL NAME AND APPEND BY _LIST
+                algaehApiCall({
+                  uri: "/inventory/getInventoryLocation",
+                  module: "inventory",
+                  method: "GET",
+                  data: { hospital_id: currentEvent.value },
+
+                  onSuccess: (result) => {
+                    reportState.setState({
+                      location_id_list: result.data.records,
+                    });
+                  },
+                });
+              },
+              onClear: (reportState, currentName) => {
+                reportState.setState({
+                  [currentName]: undefined,
+                  location_id_list: [],
+                });
+              },
+            },
+
             dataSource: {
               textField: "hospital_name",
               valueField: "hims_d_hospital_id",
@@ -188,54 +212,74 @@ export default function Inventory({
           {
             className: "col-3 form-group mandatory",
             type: "dropdown",
-            name: "sub_department_id",
+            name: "location_id",
             initialLoad: true,
             isImp: true,
-            label: "Department",
-            link: {
-              //uri: "/department/get/subdepartment"
-              uri: "/department/get/get_All_Doctors_DepartmentWise",
-              module: "masterSettings",
-            },
-            manupulation: (response, reportState, stateProperty) => {
-              reportState.setState({
-                [stateProperty]: response.records.departmets,
-              });
-            },
+            label: "Location",
             dataSource: {
-              textField: "sub_department_name",
-              valueField: "sub_department_id",
-              data: undefined,
+              textField: "location_description",
+              valueField: "hims_d_inventory_location_id",
+              data: [],
             },
             events: {
-              onChange: (reportState, currentEvent) => {
-                //provider_id_list CONTROL NAME AND APPEND BY _LIST
-                reportState.setState({
-                  sub_department_id: currentEvent.value,
-                  provider_id_list: currentEvent.selected.doctors,
-                });
-              },
               onClear: (reportState, currentName) => {
                 reportState.setState({
                   [currentName]: undefined,
-                  provider_id_list: [],
                 });
               },
             },
           },
-          {
-            className: "col-3 form-group",
-            type: "dropdown",
-            name: "provider_id",
-            initialLoad: true,
-            isImp: false,
-            label: "Filter by Doctor",
-            dataSource: {
-              textField: "full_name",
-              valueField: "employee_id",
-              data: undefined,
-            },
-          },
+          // {
+          //   className: "col-3 form-group",
+          //   type: "dropdown",
+          //   name: "sub_department_id",
+          //   initialLoad: true,
+          //   isImp: false,
+          //   label: "Department",
+          //   link: {
+          //     //uri: "/department/get/subdepartment"
+          //     uri: "/department/get/get_All_Doctors_DepartmentWise",
+          //     module: "masterSettings",
+          //   },
+          //   manupulation: (response, reportState, stateProperty) => {
+          //     reportState.setState({
+          //       [stateProperty]: response.records.departmets,
+          //     });
+          //   },
+          //   dataSource: {
+          //     textField: "sub_department_name",
+          //     valueField: "sub_department_id",
+          //     data: undefined,
+          //   },
+          //   events: {
+          //     onChange: (reportState, currentEvent) => {
+          //       //provider_id_list CONTROL NAME AND APPEND BY _LIST
+          //       reportState.setState({
+          //         sub_department_id: currentEvent.value,
+          //         provider_id_list: currentEvent.selected.doctors,
+          //       });
+          //     },
+          //     onClear: (reportState, currentName) => {
+          //       reportState.setState({
+          //         [currentName]: undefined,
+          //         provider_id_list: [],
+          //       });
+          //     },
+          //   },
+          // },
+          // {
+          //   className: "col-3 form-group",
+          //   type: "dropdown",
+          //   name: "provider_id",
+          //   initialLoad: true,
+          //   isImp: false,
+          //   label: "Filter by Doctor",
+          //   dataSource: {
+          //     textField: "full_name",
+          //     valueField: "employee_id",
+          //     data: undefined,
+          //   },
+          // },
           {
             className: "col-3 form-group",
             type: "dropdown",

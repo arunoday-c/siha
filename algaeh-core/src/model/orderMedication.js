@@ -83,8 +83,8 @@ let addPatientPrescriptionOLD = (req, res, next) => {
 
               connection.query(
                 "INSERT INTO hims_f_prescription_detail(" +
-                  insurtColumns.join(",") +
-                  ",`prescription_id`) VALUES ?",
+                insurtColumns.join(",") +
+                ",`prescription_id`) VALUES ?",
                 [
                   jsonArrayToObject({
                     sampleInputObject: insurtColumns,
@@ -137,7 +137,7 @@ let addPatientPrescriptionOLD = (req, res, next) => {
                                 ...s,
                                 prescription_detail_id:
                                   detail_res[i][
-                                    "hims_f_prescription_detail_id"
+                                  "hims_f_prescription_detail_id"
                                   ],
                               };
                             })
@@ -161,8 +161,8 @@ let addPatientPrescriptionOLD = (req, res, next) => {
 
                           connection.query(
                             "INSERT INTO hims_f_medication_approval(" +
-                              insurtCols.join(",") +
-                              ",created_by,updated_by,created_date,updated_date,insurance_provider_id,\
+                            insurtCols.join(",") +
+                            ",created_by,updated_by,created_date,updated_date,insurance_provider_id,\
                               sub_insurance_id, network_id, insurance_network_office_id, patient_id, visit_id,\
                                hospital_id) VALUES ?",
                             [
@@ -256,6 +256,84 @@ let addPatientPrescriptionOLD = (req, res, next) => {
     next(e);
   }
 };
+
+let getPastMedication = (req, res, next) => {
+  const _mysql = new algaehMysql({ path: keyPath });
+
+  try {
+    _mysql
+      .executeQueryWithTransaction({
+        query:
+          "SELECT M.*, IM.item_description, IG.generic_name FROM hims_f_past_medication M \
+          inner join hims_d_item_master IM on IM.hims_d_item_master_id = M.item_id \
+          inner join hims_d_item_generic IG on IG.hims_d_item_generic_id = IM.generic_id \
+          where M.patient_id=?",
+        values: [req.query.patient_id],
+        printQuery: true,
+      })
+      .then((result) => {
+        _mysql.commitTransaction(() => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        });
+      })
+      .catch((error) => {
+        _mysql.rollBackTransaction(() => {
+          next(error);
+        });
+      });
+  } catch (e) {
+    _mysql.releaseConnection();
+    next(e);
+  }
+}
+
+let addPastMedication = (req, res, next) => {
+  const _mysql = new algaehMysql({ path: keyPath });
+
+  try {
+    let input = req.body;
+
+    _mysql
+      .executeQueryWithTransaction({
+        query:
+          "INSERT INTO `hims_f_past_medication` (`patient_id`, `item_id`, `dosage`, `frequency`,\
+        `no_of_days`, `dispense`, `frequency_type`, `frequency_time`, `frequency_route`, `med_units`,\
+        `start_date`,`instructions`) values(?,?,?,?,?,?,?,?,?,?,?,?);",
+        values: [
+          input.patient_id,
+          input.item_id,
+          input.dosage,
+          input.frequency,
+          input.no_of_days,
+          input.dispense,
+          input.frequency_type,
+          input.frequency_time,
+          input.frequency_route,
+          input.med_units,
+          input.start_date,
+          input.instructions
+        ],
+        printQuery: false,
+      })
+      .then((result) => {
+        _mysql.commitTransaction(() => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        });
+      })
+      .catch((error) => {
+        _mysql.rollBackTransaction(() => {
+          next(error);
+        });
+      });
+  } catch (e) {
+    _mysql.releaseConnection();
+    next(e);
+  }
+}
 
 //created by irfan: to add Patient Prescription
 
@@ -479,7 +557,7 @@ let getPatientPrescriptionOLD = (req, res, next) => {
         H.prescription_date,H.prescription_status,H.cancelled,D.hims_f_prescription_detail_id, D.prescription_id, D.item_id, D.generic_id, D.dosage,D.med_units,\
         D.frequency, D.no_of_days,D.dispense, D.frequency_type, D.frequency_time,D.frequency_route, D.start_date, D.item_status \
         from hims_f_prescription H,hims_f_prescription_detail D ,hims_f_patient P WHERE H.hims_f_prescription_id = D.prescription_id and P.hims_d_patient_id=H.patient_id and " +
-          where.condition,
+        where.condition,
         where.values,
 
         (error, result) => {
@@ -606,9 +684,9 @@ let getPatientMedications = (req, res, next) => {
               enddate: endDate,
               active:
                 parseInt(moment().format("YYYYMMDD")) <=
-                parseInt(
-                  moment(endDate, "YYYY-MM-DD HH:mm:ss").format("YYYYMMDD")
-                )
+                  parseInt(
+                    moment(endDate, "YYYY-MM-DD HH:mm:ss").format("YYYYMMDD")
+                  )
                   ? true
                   : false,
             };
@@ -639,4 +717,6 @@ export default {
   addPatientPrescription,
   getPatientPrescription,
   getPatientMedications,
+  addPastMedication,
+  getPastMedication
 };

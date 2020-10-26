@@ -117,10 +117,13 @@
                     <td>{{total_discount_amount}}</td>
                     <td class="numberFld">: الخصم</td>
                 </tr>
+                <tr> {{#if vat_applicable "Y"}}
                 <tr>
                     <td>VAT 15%</td>
                     <td>{{total_patient_tax}}</td>
                     <td class="numberFld">:15% قيمة الضريبة</td>
+                </tr>
+                {{else}} <tr></tr>>{{/if}}
                 </tr>
                 <tr>
                     <td>Receivable</td>
@@ -139,6 +142,6 @@
                 </tr> --}}
             </table>
         </section>
-       
+
     </div>
 </body>
