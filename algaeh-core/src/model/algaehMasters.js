@@ -181,8 +181,8 @@ let addAlgaehRoleMAster = (req, res, next) => {
           .executeQuery({
             query:
               "INSERT INTO `algaeh_d_app_roles` (app_group_id, role_code, role_name, role_discreption,\
-              role_type, loan_authorize_privilege, leave_authorize_privilege, edit_monthly_attendance,created_date, created_by, updated_date, updated_by)\
-            VALUE(?,?,?,?,?,?,?,?,?,?,?,?)",
+              role_type, loan_authorize_privilege, leave_authorize_privilege,finance_authorize_privilege, edit_monthly_attendance,created_date, created_by, updated_date, updated_by)\
+            VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?)",
             values: [
               input.app_group_id,
               input.role_code,
@@ -191,6 +191,7 @@ let addAlgaehRoleMAster = (req, res, next) => {
               input.role_type,
               input.loan_authorize_privilege,
               input.leave_authorize_privilege,
+              input.finance_authorize_privilege,
               input.edit_monthly_attendance,
               new Date(),
               req.userIdentity.algaeh_d_app_user_id,
@@ -238,7 +239,7 @@ let updateAlgaehRoleMAster = (req, res, next) => {
           .executeQuery({
             query:
               "update algaeh_d_app_roles set role_name=?,role_discreption=?,role_type=?,\
-              loan_authorize_privilege=?, leave_authorize_privilege=?, edit_monthly_attendance=?,updated_by=?, updated_date=?\
+              loan_authorize_privilege=?, leave_authorize_privilege=?,finance_authorize_privilege=?, edit_monthly_attendance=?,updated_by=?, updated_date=?\
               where app_d_app_roles_id=?",
             values: [
               input.role_name,
@@ -246,6 +247,7 @@ let updateAlgaehRoleMAster = (req, res, next) => {
               input.role_type,
               input.loan_authorize_privilege,
               input.leave_authorize_privilege,
+              input.finance_authorize_privilege,
               input.edit_monthly_attendance,
               req.userIdentity.algaeh_d_app_user_id,
               new Date(),
@@ -2520,8 +2522,7 @@ let getHrmsAuthLevels = (req, res, next) => {
         if (dbExist.length > 0) {
           _mysql
             .executeQuery({
-              query:
-                " select  leave_level,loan_level from hims_d_hrms_options;",
+              query: ` select  leave_level,loan_level from hims_d_hrms_options;`,
               printQuery: true,
             })
             .then((result) => {
@@ -2529,6 +2530,7 @@ let getHrmsAuthLevels = (req, res, next) => {
               if (result.length > 0) {
                 const leave_levels = [];
                 const loan_levels = [];
+                // const finance_levels = [];
                 switch (result[0]["leave_level"]) {
                   case "1":
                     leave_levels.push(
@@ -2615,17 +2617,39 @@ let getHrmsAuthLevels = (req, res, next) => {
                       { name: "None", value: "N" }
                     );
                     break;
-
-                  default:
-                    leave_levels.push({ name: "None", value: "N" });
                 }
+                // switch (result[1]["auth_level"]) {
+                //   case "1":
+                //     finance_levels.push(
+                //       { name: "Level 1", value: "1" },
+                //       { name: "None", value: "N" }
+                //     );
+                //     break;
+                //   case "2":
+                //     finance_levels.push(
+                //       { name: "Level 2", value: "2" },
+                //       { name: "Level 1", value: "1" },
+                //       { name: "None", value: "N" }
+                //     );
+                //     break;
+                //   default:
+                //     finance_levels.push({
+                //       name: "None",
+                //       value: "N",
+                //     });
+                // }
 
-                req.records = { leave_levels, loan_levels };
+                req.records = {
+                  leave_levels,
+                  loan_levels,
+                  // finance_levels,
+                };
                 next();
               } else {
                 req.records = {
                   leave_levels: [{ name: "None", value: "N" }],
                   loan_levels: [{ name: "None", value: "N" }],
+                  // finance_levels: [{ name: "None", value: "N" }],
                 };
                 next();
               }
