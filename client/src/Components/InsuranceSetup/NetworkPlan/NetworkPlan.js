@@ -82,7 +82,7 @@ class NetworkPlan extends PureComponent {
   }
 
   static contextType = MainContext;
-
+  z;
   UNSAFE_componentWillMount() {
     let InputOutput = this.props.InsuranceSetup;
     this.setState({ ...this.state, ...InputOutput });
@@ -537,7 +537,7 @@ class NetworkPlan extends PureComponent {
                             value: this.state.deductable_type,
                             dataSource: {
                               textField:
-                                this.context.selectedLang === "en"
+                                this.context.userLanguage === "en"
                                   ? "name"
                                   : "arabic_name",
                               valueField: "value",
