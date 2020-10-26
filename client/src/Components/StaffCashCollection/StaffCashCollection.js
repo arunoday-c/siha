@@ -17,6 +17,7 @@ import {
   AlgaehSecurityComponent,
   RawSecurityComponent,
 } from "algaeh-react-components";
+import swal from "sweetalert2";
 
 class StaffCashCollection extends Component {
   constructor(props) {
@@ -94,56 +95,75 @@ class StaffCashCollection extends Component {
     AlgaehValidation({
       alertTypeIcon: "warning",
       onSuccess: () => {
-        AlgaehLoader({ show: true });
+        let srtMessage = "Are you sure want to";
+        if (status === "A") {
+          srtMessage += " Authorize ?"
+        } else {
+          srtMessage += " Close ?"
+        }
 
-        let send_data = {
-          shift_status: status,
-          close_date: new Date(),
-          close_by: 1,
-          actual_cash: this.state.actual_cash,
-          difference_cash: this.state.difference_cash,
-          cash_status: this.state.cash_status,
-          actual_card: this.state.actual_card,
-          difference_card: this.state.difference_card,
-          card_status: this.state.card_status,
-          actual_cheque: this.state.actual_cheque,
-          difference_cheque: this.state.difference_cheque,
-          cheque_status: this.state.cheque_status,
-          remarks: this.state.remarks,
-          hims_f_cash_handover_detail_id: this.state
-            .hims_f_cash_handover_detail_id,
-        };
+        swal({
+          title: srtMessage,
+          type: "warning",
+          showCancelButton: true,
+          confirmButtonText: "Yes",
+          confirmButtonColor: "#44b8bd",
+          cancelButtonColor: "#d33",
+          cancelButtonText: "No"
+        }).then(willProceed => {
+          if (willProceed.value) {
+            AlgaehLoader({ show: true });
 
-        algaehApiCall({
-          uri: "/frontDesk/updateCashHandoverDetails",
-          module: "frontDesk",
-          method: "PUT",
-          data: send_data,
-          onSuccess: (response) => {
-            AlgaehLoader({ show: false });
-            if (response.data.success) {
-              swalMessage({
-                title: "Shift Closed",
-                type: "success",
-              });
+            let send_data = {
+              shift_status: status,
+              close_date: new Date(),
+              close_by: 1,
+              actual_cash: this.state.actual_cash,
+              difference_cash: this.state.difference_cash,
+              cash_status: this.state.cash_status,
+              actual_card: this.state.actual_card,
+              difference_card: this.state.difference_card,
+              card_status: this.state.card_status,
+              actual_cheque: this.state.actual_cheque,
+              difference_cheque: this.state.difference_cheque,
+              cheque_status: this.state.cheque_status,
+              remarks: this.state.remarks,
+              hims_f_cash_handover_detail_id: this.state
+                .hims_f_cash_handover_detail_id,
+            };
 
-              this.getCashHandoverDetails();
-              this.setState({
-                cashHandoverDetails: [],
-              });
-            }
-          },
-          onFailure: (error) => {
-            AlgaehLoader({ show: false });
-            let message = error.message;
-            if (error.message.startsWith("Incorrect decimal value")) {
-              message = "Please enter proper amount";
-            }
-            swalMessage({
-              title: message,
-              type: "error",
+            algaehApiCall({
+              uri: "/frontDesk/updateCashHandoverDetails",
+              module: "frontDesk",
+              method: "PUT",
+              data: send_data,
+              onSuccess: (response) => {
+                AlgaehLoader({ show: false });
+                if (response.data.success) {
+                  swalMessage({
+                    title: "Shift Closed",
+                    type: "success",
+                  });
+
+                  this.getCashHandoverDetails();
+                  this.setState({
+                    cashHandoverDetails: [],
+                  });
+                }
+              },
+              onFailure: (error) => {
+                AlgaehLoader({ show: false });
+                let message = error.message;
+                if (error.message.startsWith("Incorrect decimal value")) {
+                  message = "Please enter proper amount";
+                }
+                swalMessage({
+                  title: message,
+                  type: "error",
+                });
+              },
             });
-          },
+          }
         });
       },
     });
@@ -316,17 +336,17 @@ class StaffCashCollection extends Component {
   render() {
     const _cash =
       this.state.difference_cash !== undefined &&
-      this.state.difference_cash !== ""
+        this.state.difference_cash !== ""
         ? parseFloat(this.state.difference_cash)
         : 0;
     const _card =
       this.state.difference_card !== undefined &&
-      this.state.difference_card !== ""
+        this.state.difference_card !== ""
         ? parseFloat(this.state.difference_card)
         : 0;
     const _cheque =
       this.state.difference_cheque !== undefined &&
-      this.state.difference_cheque !== ""
+        this.state.difference_cheque !== ""
         ? parseFloat(this.state.difference_cheque)
         : 0;
 
@@ -339,25 +359,25 @@ class StaffCashCollection extends Component {
             />
           }
           breadStyle={this.props.breadStyle}
-          // pageNavPath={[
-          //   {
-          //     pageName: (
-          //       <AlgaehLabel
-          //         label={{
-          //           fieldName: "front_desk",
-          //           align: "ltr",
-          //         }}
-          //       />
-          //     ),
-          //   },
-          //   {
-          //     pageName: (
-          //       <AlgaehLabel
-          //         label={{ fieldName: "staff_cash_collection", align: "ltr" }}
-          //       />
-          //     ),
-          //   },
-          // ]}
+        // pageNavPath={[
+        //   {
+        //     pageName: (
+        //       <AlgaehLabel
+        //         label={{
+        //           fieldName: "front_desk",
+        //           align: "ltr",
+        //         }}
+        //       />
+        //     ),
+        //   },
+        //   {
+        //     pageName: (
+        //       <AlgaehLabel
+        //         label={{ fieldName: "staff_cash_collection", align: "ltr" }}
+        //       />
+        //     ),
+        //   },
+        // ]}
         />
         <div className="row" style={{ marginTop: 90 }}>
           <div className="col-3">
@@ -454,8 +474,8 @@ class StaffCashCollection extends Component {
                         </div>
                       ))
                     ) : (
-                      <span className="noDataStyle">Select Shift Date</span>
-                    )}
+                        <span className="noDataStyle">Select Shift Date</span>
+                      )}
                   </div>
                 </div>
               </div>
@@ -496,10 +516,10 @@ class StaffCashCollection extends Component {
                         </div>
                       ))
                     ) : (
-                      <div className="noDataStyle">
-                        Relax! No more Open Shift Available.
-                      </div>
-                    )}
+                        <div className="noDataStyle">
+                          Relax! No more Open Shift Available.
+                        </div>
+                      )}
                   </div>
                 </div>
               </div>
@@ -576,8 +596,8 @@ class StaffCashCollection extends Component {
                                 Authorized
                               </span>
                             ) : (
-                              "------"
-                            );
+                                    "------"
+                                  );
                           },
                           others: {
                             maxWidth: 100,
@@ -653,8 +673,8 @@ class StaffCashCollection extends Component {
                                 Shortage
                               </span>
                             ) : (
-                              "------"
-                            );
+                                    "------"
+                                  );
                           },
                           others: {
                             maxWidth: 100,
@@ -708,8 +728,8 @@ class StaffCashCollection extends Component {
                                 Shortage
                               </span>
                             ) : (
-                              "------"
-                            );
+                                    "------"
+                                  );
                           },
                           others: {
                             maxWidth: 100,
@@ -777,8 +797,8 @@ class StaffCashCollection extends Component {
                                 Shortage
                               </span>
                             ) : (
-                              "------"
-                            );
+                                    "------"
+                                  );
                           },
                           others: {
                             maxWidth: 105,
@@ -1012,8 +1032,8 @@ class StaffCashCollection extends Component {
                                     Shortage
                                   </span>
                                 ) : (
-                                  "------"
-                                )}
+                                        "------"
+                                      )}
                               </td>
                               <td>
                                 {this.state.card_status === "T" ? (
@@ -1029,8 +1049,8 @@ class StaffCashCollection extends Component {
                                     Shortage
                                   </span>
                                 ) : (
-                                  "------"
-                                )}
+                                        "------"
+                                      )}
                               </td>
                               <td>
                                 {this.state.cheque_status === "T" ? (
@@ -1046,8 +1066,8 @@ class StaffCashCollection extends Component {
                                     Shortage
                                   </span>
                                 ) : (
-                                  "------"
-                                )}
+                                        "------"
+                                      )}
                               </td>
                             </tr>
                             {/* <tr>
