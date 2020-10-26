@@ -527,3 +527,13 @@ CREATE TABLE `hims_f_past_medication` (
 -- ********  Added None on consumption
 ALTER TABLE `hims_f_prescription_detail` 
 CHANGE COLUMN `frequency_time` `frequency_time` ENUM('BM', 'AM', 'WF', 'EM', 'BB', 'AB', 'NN') CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_0900_ai_ci' NULL DEFAULT 'BM' COMMENT 'BM = BEFORE MEAL\\\\nAM = AFTER MEAL\\\\nWF = WITH FOOD\\\\nEM = EARLY MORNING\\\\nBB =BEFORE BED TIME\\\\nAB =AT BED TIME\\\\nNN =None' ;
+
+-- ********  Bill Cancellation If consultant too cancel
+INSERT INTO `algaeh_d_app_component` (`screen_id`, `component_code`, `component_name`, `created_date`, `updated_date`, `record_status`) VALUES ('64', 'OP_CAL_MAIN', 'Maintenance', '2020-10-23 16:38:47', '2020-10-23 16:38:47', 'A');
+INSERT INTO `algaeh_d_app_component` (`screen_id`, `component_code`, `component_name`, `created_date`, `updated_date`, `record_status`) VALUES ('64', 'OP_CAL_CON', 'Cancel If Consultant', '2020-10-23 16:39:06', '2020-10-23 16:39:06', 'A');
+
+-- =================================  Start Oct 23 2020 =======================================
+-- ******** Consumption Patient Id Added
+ALTER TABLE `hims_f_inventory_consumption_header` 
+ADD COLUMN `patient_id` INT NULL AFTER `provider_id`,
+ADD COLUMN `cancelled` ENUM('N', 'Y') NULL DEFAULT 'N' AFTER `patient_id`;
