@@ -446,11 +446,84 @@ ALTER TABLE `hims_f_email_setup`
 ADD COLUMN `enable_email` ENUM('Y', 'N') NULL DEFAULT 'N' AFTER `hims_f_email_setup_id`;
 
 
--- =================================  Start Oct 18 2020 =======================================
+-- =================================  Start Oct 19 2020 =======================================
 -- ******** Leave Request Slip
 INSERT INTO `algaeh_d_reports` ( `report_name`, `report_name_for_header`, `report_input_series`, `report_header_file_name`, `status`, `created_datetime`, `update_datetime`) VALUES ( 'LeaveRequestSlip', 'Leave Request Slip', '[\"hims_f_leave_application_id\"]', 'reportHeader', 'A', '2019-07-25 18:21:38', '2019-07-25 18:21:38');
 
 -- ******** Employee Payroll Details Report
 INSERT INTO `algaeh_d_reports` ( `report_name`, `report_name_for_header`, `report_input_series`, `report_header_file_name`, `status`, `created_datetime`, `update_datetime`) VALUES ('employeePayrollDetails', 'Employee Payroll Details', '[\"hospital_id\",\"employee_group_id\",\"month\",\"year\",\"year\",\"month\",\"year\",\"month\"]', 'voucherHeader', 'A', '2020-09-05 10:22:55', '2020-09-05 10:22:55');
 
-alter table finance_voucher_sub_header add column voucher_type enum('journal','contra','receipt','payment','sales','purchase','credit_note','debit_note','expense_voucher')
+
+-- =================================  Start Oct 20 2020 =======================================
+-- ******** Finance Voucher Sub Header (Voucher Type)
+alter table finance_voucher_sub_header add column voucher_type enum('journal','contra','receipt','payment','sales','purchase','credit_note','debit_note','expense_voucher');
+
+
+-- =================================  Start Oct 22 2020 =======================================
+-- ******** Lab Report Section Added under Algaeh Screen
+INSERT INTO `algaeh_d_app_screens` (`screen_code`, `screen_name`, `page_to_redirect`, `redirect_url`, `child_pages`, `module_id`, `other_language`, `created_by`, `created_date`, `updated_by`, `updated_date`, `record_status`) VALUES ('RPT_LAB', 'Laboratory Reports', 'Reports List', 'laboratory', '/ReportsList/:name', '25', 'تقرير المختبر', '1', '2020-02-05 13:02:44', '1', '2020-02-12 14:51:28', 'A');
+
+-- ******** Lab Reports Newly Added
+INSERT INTO `algaeh_d_reports` (`report_name`, `report_name_for_header`, `report_query`, `report_input_series`, `report_header_file_name`, `status`, `created_datetime`, `update_datetime`) VALUES ('labReportSend', 'Lab Send Out Report', null, '[]', 'reportHeader', 'A', '2019-06-17 18:57:28', '2019-06-17 18:57:28');
+INSERT INTO `algaeh_d_reports` (`report_name`, `report_name_for_header`, `report_query`, `report_input_series`, `report_header_file_name`, `status`, `created_datetime`, `update_datetime`) VALUES ('labReportTAT', 'Lab TAT Report', null, '[]', 'reportHeader', 'A', '2019-06-17 18:57:28', '2019-06-17 18:57:28');
+
+
+-- =================================  Start Oct 23 2020 =======================================
+-- ******** Order Consumable
+ALTER TABLE `hims_f_ordered_inventory` 
+ADD COLUMN `instructions` VARCHAR(150) NULL AFTER `trans_package_detail_id`;
+
+-- ******** Sick Leave Report Bug - Fix
+UPDATE `algaeh_d_reports` SET `report_query` = 'select P.patient_code,P.full_name as patient_full_name,P.arabic_name as patient_arabaic_full_name,\nP.registration_date,SL.from_date,SL.to_date,SL.no_of_days,SL.remarks, PV.visit_date,EC.comment, ID.icd_description,\nSDEP.sub_department_name,SDEP.arabic_sub_department_name, EMP.full_name, EMP.arabic_name from hims_f_patient_sick_leave as SL inner join hims_f_patient P on P.hims_d_patient_id = SL.patient_id\ninner join hims_f_patient_visit PV on PV.hims_f_patient_visit_id = SL.visit_id left join hims_f_episode_chief_complaint EC\non EC.episode_id = SL.episode_id left join hims_f_patient_diagnosis PD on  PD.episode_id = SL.episode_id left join \nhims_d_icd ID on ID.hims_d_icd_id = PD.daignosis_id inner join hims_d_employee EMP on PV.doctor_id = EMP.hims_d_employee_id\ninner join hims_d_sub_department SDEP on PV.sub_department_id = SDEP.hims_d_sub_department_id\nwhere SL.patient_id=? and SL.visit_id=? and SL.episode_id = ?;' WHERE (`report_id` = '17');
+
+-- ******** Sick Leave New Format Changes
+UPDATE `algaeh_d_reports` SET `report_name_for_header` = 'Medical Certificate' WHERE (`report_id` = '17');
+ALTER TABLE `hims_f_patient_sick_leave` ADD COLUMN (reported_sick enum('Y','N'), accompanying_patient enum('Y','N'), patient_unfit enum('Y','N'), advice_light_duty enum('Y','N'), pat_need_emp_care enum('Y','N')) ;
+ALTER TABLE `hims_f_patient_sick_leave` 
+CHANGE COLUMN `reported_sick` `reported_sick` ENUM('Y', 'N') NULL DEFAULT 'N' ,
+CHANGE COLUMN `accompanying_patient` `accompanying_patient` ENUM('Y', 'N') NULL DEFAULT 'N' ,
+CHANGE COLUMN `patient_unfit` `patient_unfit` ENUM('Y', 'N') NULL DEFAULT 'N' ,
+CHANGE COLUMN `advice_light_duty` `advice_light_duty` ENUM('Y', 'N') NULL DEFAULT 'N' ,
+CHANGE COLUMN `pat_need_emp_care` `pat_need_emp_care` ENUM('Y', 'N') NULL DEFAULT 'N' ;
+update algaeh_d_reports set report_query = null where report_name = 'sickLeave';
+
+-- =================================  Start Oct 23 2020 =======================================
+-- ******** Security Added for Nursing Section
+INSERT INTO`algaeh_d_app_component` (`screen_id`, `component_code`, `component_name`, `created_date`, `updated_date`, `record_status`) VALUES ('31', 'NUR_PAT_VIT', 'Capture Patient Vitals', '2020-10-24 12:17:22', '2020-10-24 12:17:22', 'A');
+INSERT INTO`algaeh_d_app_component` (`screen_id`, `component_code`, `component_name`, `created_date`, `updated_date`, `record_status`) VALUES ('31', 'NUR_PAT_ALRGY', 'Capture Patient Allergy', '2020-10-24 12:17:52', '2020-10-24 12:17:52', 'A');
+INSERT INTO`algaeh_d_app_component` (`screen_id`, `component_code`, `component_name`, `created_date`, `updated_date`, `record_status`) VALUES ('31', 'NUR_PAT_CHF_COM', 'Capture Chief Complaints', '2020-10-24 12:18:11', '2020-10-24 12:18:11', 'A');
+INSERT INTO`algaeh_d_app_component` (`screen_id`, `component_code`, `component_name`, `created_date`, `updated_date`, `record_status`) VALUES ('31', 'NUR_PAT_NOTE', 'Capture Nursing Notes', '2020-10-24 12:18:36', '2020-10-24 12:18:36', 'A');
+INSERT INTO`algaeh_d_app_component` (`screen_id`, `component_code`, `component_name`, `created_date`, `updated_date`, `record_status`) VALUES ('31', 'NUR_ORD_SERV', 'Order Services or Consumables', '2020-10-24 12:19:16', '2020-10-24 12:19:16', 'A');
+
+-- ******** New Field added for Sick Leave Report
+ALTER TABLE `hims_f_patient_sick_leave` 
+ADD COLUMN `patient_fit` ENUM('Y', 'N') NULL DEFAULT 'N' AFTER `accompanying_patient`,
+ADD COLUMN `created_by` INT NULL DEFAULT NULL AFTER `pat_need_emp_care`,
+ADD COLUMN `created_date` DATETIME NULL DEFAULT NULL AFTER `created_by`,
+ADD COLUMN `updated_by` INT NULL DEFAULT NULL AFTER `created_date`,
+ADD COLUMN `updated_date` DATETIME NULL DEFAULT NULL AFTER `updated_by`;
+
+-- ******** Vat Applicable in branch Level
+ALTER TABLE `hims_d_hospital` 
+ADD COLUMN `vat_applicable` ENUM('N', 'Y') NULL DEFAULT 'N' AFTER `mrn_num_sep_cop_client`;
+
+-- ******** Past Medication
+CREATE TABLE `hims_f_past_medication` (
+  `hims_f_past_medication_id` INT NOT NULL AUTO_INCREMENT,
+  `patient_id` INT NULL DEFAULT NULL,
+  `item_id` INT NULL DEFAULT NULL,
+  `dosage` VARCHAR(10) NULL DEFAULT NULL,
+  `frequency` ENUM('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18') CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_0900_ai_ci' NULL DEFAULT '0' COMMENT '0 = 1-0-1\\\\\\\\n1 = 1-0-0\\\\\\\\n2 = 0-0-1\\\\\\\\n3 = 0-1-0\\\\\\\\n4 = 1-1-0\\\\\\\\n5 = 0-1-1\\\\\\\\n6 = 1-1-1\\\\\\\\n7 = Once only\\\\\\\\n8 = Once daily (q24h)\\\\\\\\n9 = Twice daily (Bid)\\\\\\\\n10 = Three times daily (tid)\\\\\\\\n11 = Five times daily\\\\\\\\n12 = Every two hours (q2h)\\\\\\\\n13 = Every three hours (q3h) \\\\\\\\n14 = Every four hours (q4h)\\\\\\\\n15 = Every six hours (q6h)\\\\\\\\n16 = Every eight hours (q8h)\\\\\\\\n17 = Every twelve hours (q12h\\\\\\\\n18 = Four times daily (qid)\\\\\\\\n19 = Other (According To Physician)',
+  `no_of_days` INT NULL DEFAULT NULL,
+  `dispense` DECIMAL(5,3) NULL DEFAULT NULL,
+  `frequency_type` ENUM('PD', 'PH', 'PW', 'PM', 'AD', '2W', '2M', '3M', '4M', '6M') CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_0900_ai_ci' NULL DEFAULT 'PD' COMMENT 'PD = PER DAY\\\\\\\\nPH = PER HOUR\\\\\\\\nPW = PER WEEK\\\\\\\\nPM = PER MONTH\\\\\\\\nAD = ALTERNATE DAY\\\\\\\\n2W = EVERY 2 WEEKS\\\\\\\\n2M = EVERY 2 MONTH\\\\\\\\n3M = EVERY 3 MONTH\\\\\\\\n4M = EVERY 4 MONTH\\\\\\\\n6M = EVERY 6 MONTH\\\\\\\\n',
+  `frequency_time` ENUM('BM', 'AM', 'WF', 'EM', 'BB', 'AB') CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_0900_ai_ci' NULL DEFAULT 'BM' COMMENT 'BM = BEFORE MEAL\\\\\\\\nAM = AFTER MEAL\\\\\\\\nWF = WITH FOOD\\\\\\\\nEM = EARLY MORNING\\\\\\\\nBB =BEFORE BED TIME\\\\\\\\nAB =AT BED TIME',
+  `frequency_route` ENUM('BL', 'EL', 'IL', 'IF', 'IM', 'IT', 'IR', 'NL', 'OP', 'OR', 'OE', 'RL', 'ST', 'SL', 'TL', 'TD') CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_0900_ai_ci' NULL DEFAULT 'OR' COMMENT 'BL = Buccal\\\\\\\\\\\\\\\\nEL = Enteral\\\\\\\\\\\\\\\\nIL = Inhalation\\\\\\\\\\\\\\\\nIF = Infusion\\\\\\\\\\\\\\\\nIM = Intramuscular Inj\\\\\\\\\\\\\\\\nIT = Intrathecal Inj\\\\\\\\\\\\\\\\nR = Intravenous Inj\\\\\\\\\\\\\\\\nNL = Nasal\\\\\\\\\\\\\\\\nOP = Ophthalmic\\\\\\\\\\\\\\\\nOR = Oral\\\\\\\\\\\\\\\\nOE = Otic (ear)\\\\\\\\\\\\\\\\nRL = Rectal\\\\\\\\\\\\\\\\nST = Subcutaneous\\\\\\\\\\\\\\\\nSL = Sublingual\\\\\\\\\\\\\\\\nTL = Topical\\\\\\\\\\\\\\\\nTD = Transdermal',
+  `med_units` VARCHAR(10) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_0900_ai_ci' NULL DEFAULT NULL,
+  `start_date` DATETIME NULL DEFAULT CURRENT_TIMESTAMP,
+  `instructions` VARCHAR(250) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_0900_ai_ci' NULL DEFAULT NULL,
+  PRIMARY KEY (`hims_f_past_medication_id`));
+  
+-- ********  Added None on consumption
+ALTER TABLE `hims_f_prescription_detail` 
+CHANGE COLUMN `frequency_time` `frequency_time` ENUM('BM', 'AM', 'WF', 'EM', 'BB', 'AB', 'NN') CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_0900_ai_ci' NULL DEFAULT 'BM' COMMENT 'BM = BEFORE MEAL\\\\nAM = AFTER MEAL\\\\nWF = WITH FOOD\\\\nEM = EARLY MORNING\\\\nBB =BEFORE BED TIME\\\\nAB =AT BED TIME\\\\nNN =None' ;

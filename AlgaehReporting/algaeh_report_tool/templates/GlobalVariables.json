@@ -831,7 +831,7 @@
       "value": "18"
     },
     {
-      "name": "Other (According To Physician)",
+      "name": "Other (As per need)",
       "value": "19"
     }
   ],
@@ -901,6 +901,10 @@
     {
       "name": "At Bed Time",
       "value": "AB"
+    },
+    {
+      "name": "None",
+      "value": "NN"
     }
   ],
   "PRESCRIPTION_FREQ_ROUTE": [
