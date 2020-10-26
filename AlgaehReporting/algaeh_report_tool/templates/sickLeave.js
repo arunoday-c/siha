@@ -16,6 +16,7 @@ const executePDF = function executePDFMethod(options) {
           case when SL.reported_sick = 'Y' then 'Yes' else 'No' end as reported_sick,
           case when SL.accompanying_patient = 'Y' then 'Yes' else 'No' end as accompanying_patient,
           case when SL.patient_unfit = 'Y' then 'Yes' else 'No' end as patient_unfit,
+          case when SL.patient_fit = 'Y' then 'Yes' else 'No' end as patient_fit,
           case when SL.advice_light_duty = 'Y' then 'Yes' else 'No' end as advice_light_duty,
           case when SL.pat_need_emp_care = 'Y' then 'Yes' else 'No' end as pat_need_emp_care
           from hims_f_patient_sick_leave as SL

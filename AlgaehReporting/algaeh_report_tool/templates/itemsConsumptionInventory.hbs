@@ -12,6 +12,7 @@
     <th>Cons. Code</th>
     <th>Item Code</th>
     <th>Item Name</th>
+    <th>Department</th>
     <th>Qty</th>
     <th>Unit Price</th>
     <th>Net Amount</th>
@@ -19,7 +20,9 @@
                 </thead>
                 <tbody>
             {{#each detail}}
-                    <tr> <td colspan="8"  class="tableSubHdg">{{doctor}}</td></tr>
+                    <tr class="tableSubHdg">
+                        <td colspan="9"  class="txtFld">{{doctor}}</td>
+                    </tr>
                     {{#each detailList}}
                     <tr>
                         <td>{{inc @index}}</td>
@@ -27,12 +30,16 @@
                         <td>{{consumption_number}}</td>
                         <td>{{item_code}}</td>
                         <td>{{item_description}}</td>
+                        <td>{{sub_department_name}}</td>
                         <td>{{quantity}}</td>
                         <td class="numberFld">{{unit_cost}}</td>
                         <td class="numberFld">{{extended_cost}}</td>
                     </tr>
                     {{/each }}
-                    <tr> <td colspan="7"  class="tableSubTotal">Total Net Amount</td><td class="tableSubTotal">{{total_cost}}</td></tr>
+                    <tr class="tableSubHdg2">
+                        <td colspan="8" class="numberFld">Total Net Amount</td>
+                        <td class="numberFld">{{total_cost}}</td>
+                    </tr>
                     {{/each }}
               
                 </tbody>

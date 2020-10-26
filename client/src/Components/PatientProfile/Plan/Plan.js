@@ -10,6 +10,7 @@ import FollowUp from "./FollowUp/FollowUp";
 import OrderMedication from "./OrderMedication/OrderMedication";
 import ActiveMedication from "./ActiveMedication/ActiveMedication";
 import MedicationHistory from "./MedicationHistory/MedicationHistory";
+import PastMedication from "./PastMedication/PastMedication";
 // import OwnMedication from "./OwnMedication/OwnMedication";
 // import { swalMessage, algaehApiCall } from "../../../utils/algaehApiCall";
 import { removeGlobal } from "../../../utils/GlobalFunctions";
@@ -126,6 +127,19 @@ class Plan extends Component {
                     />
                   }
                 </li>
+                <li
+                  algaehtabs={"PastMedication"}
+                  className={"nav-item tab-button"}
+                  onClick={this.openTab.bind(this)}
+                >
+                  {
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Past Medication"
+                      }}
+                    />
+                  }
+                </li>
               </ul>
             </div>
 
@@ -159,6 +173,15 @@ class Plan extends Component {
                   });
                 }}
                 all_mediction={this.props.mainState.state.all_mediction}
+              />
+            ) : this.state.pageDisplay === "PastMedication" ? (
+              <PastMedication
+                onclosePopup={e => {
+                  removeGlobal("orderMedicationState");
+                  this.setState({ pageDisplay: "PastMedication" }, () => {
+                    this.props.onClose && this.props.onClose(e);
+                  });
+                }}
               />
             ) : null}
           </AlgaehModalPopUp>

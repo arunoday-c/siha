@@ -87,7 +87,7 @@ class ActiveMedication extends Component {
                       : row.frequency === "18"
                       ? "Four times daily (qid)"
                       : row.frequency === "19"
-                      ? "Other (According To Physician)"
+                      ? "Other (As per need)"
                       : null;
                   },
 
@@ -142,6 +142,8 @@ class ActiveMedication extends Component {
                       ? "Before Bed Time"
                       : row.frequency_time === "AB"
                       ? "At Bed Time"
+                      : row.frequency_time === "NN"
+                      ? "None"
                       : null;
                   },
 

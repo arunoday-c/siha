@@ -2,12 +2,26 @@
 
 <body>
     <div class="print-body">
+
+<section>
+            <table class="tableNoBorder" cell-padding="0">
+
+                <tr>
+                    <td><label class="textEnLft">To whom it may concern</label>:<span
+                            class="valueText">...............................................................................................................................</span></span><label class="textArRht">إلي من يهمه الامر</label></td>
+                </tr>
+            </table>
+
+
+        </section>
+
+
         <section>
             <table class="tableForLabel" cell-padding="0">
 
                 <tr>
                     <td><label class="textEnLft">This is to certify that Mr./Ms.</label>:<span
-                            class="valueText">{{header.patient_full_name}}{{header.primary_id_no}}</span></span><label class="textArRht">
+                            class="valueText">{{header.patient_full_name}}</span></span><label class="textArRht">
                             هذا للاعتقاد بأن السيد / السيدة</label></td>
                 </tr>
                 <tr>
@@ -37,12 +51,18 @@
                          <td><label class="">Consult Date and Time</label>:</td>
                         <td><span class="valueTextSick">{{dateTime header.visit_date "date"}}</span></td>
                         <td style="text-align:right"><label class="">استشر التاريخ والوقت</label></td>
-                        
+                        <td colspan="4"></td>
+                    </tr>
+                    
+                    <tr>
+                         <td><label class="">Fit for Duty</label>:</td>
+                        <td><span class="valueTextSick">{{header.patient_fit}}</span></td>
+                        <td style="text-align:right"><label class="">يصلح لواجب</label></td>
                                 
                                 <td ><label class=""></label></td>
-                                <td ><label class="">Fit for duty</label>:</td>
+                                <td ><label class="">Unfit for duty</label>:</td>
                         <td><span class="valueTextSick">{{header.patient_unfit}}</span></td>
-                        <td style="text-align:right"><label class="">يصلح لواجب</label></td>
+                        <td style="text-align:right"><label class="">غير صالح للخدمة</label></td>
                     </tr>
 
                     <tr>
@@ -138,14 +158,14 @@
                     </tr>
                      <tr>
                         <td style="text-align:left"><label class="">Date of Issue</label>:</td>
-                        <td>{{header.from_date}}</td>
+                        <td>{{dateTime header.visit_date "date"}}</td>
                         <td style="text-align:right"><label class="">تاريخ المسألة</label>:</td>
                     </tr>
                 </tbody>
             </table>
 
                         </td>
-                        <td style="text-align:right;width:25%;"><img style="width:100px;height:auto;" src="{{imageSource 'images/clientSeal.png'}}" /></td>
+                        {{!-- <td style="text-align:right;width:25%;"><img style="width:100px;height:auto;" src="{{imageSource 'images/clientSeal.png'}}" /></td> --}}
                     </tr>
 
                 </tbody>

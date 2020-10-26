@@ -75,6 +75,7 @@ const executePDF = function executePDFMethod(options) {
           userObject,
           false
         ),
+        vat_applicable: userObject.vat_applicable
       };
 
       resolve(result);

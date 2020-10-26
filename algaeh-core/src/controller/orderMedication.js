@@ -8,16 +8,28 @@ const { releaseConnection } = utils;
 const {
   addPatientPrescription,
   getPatientPrescription,
-  getPatientMedications
+  getPatientMedications,
+  addPastMedication,
+  getPastMedication
 } = orderModels;
 
 export default ({ config, db }) => {
   let api = Router();
   // created by irfan: to  addPatientPrescription
   api.post(
-    "/addPatientPrescription",
-    addPatientPrescription,
-    (req, res, next) => {
+    "/addPatientPrescription", addPatientPrescription, (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  api.post(
+    "/addPastMedication", addPastMedication, (req, res, next) => {
       let result = req.records;
       res.status(httpStatus.ok).json({
         success: true,
@@ -44,6 +56,14 @@ export default ({ config, db }) => {
   );
 
   api.get("/getPatientMedications", getPatientMedications, (req, res, next) => {
+    res.status(httpStatus.ok).json({
+      success: true,
+      records: req.records
+    });
+    next();
+  });
+
+  api.get("/getPastMedication", getPastMedication, (req, res, next) => {
     res.status(httpStatus.ok).json({
       success: true,
       records: req.records

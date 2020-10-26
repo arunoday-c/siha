@@ -344,7 +344,7 @@ let selectRoles = (req, res, next) => {
       _mysql
         .executeQuery({
           query: `select app_d_app_roles_id,G.app_group_name,role_code,role_name,role_discreption,role_type, \
-            loan_authorize_privilege, leave_authorize_privilege, edit_monthly_attendance from algaeh_d_app_roles R \
+            loan_authorize_privilege, leave_authorize_privilege,finance_authorize_privilege, edit_monthly_attendance from algaeh_d_app_roles R \
             inner join algaeh_d_app_group G on R.app_group_id=G.algaeh_d_app_group_id\
             where R.record_status='A'   and  role_type <>'SU' ${group_id}            ${adminUSer} \
             order by app_d_app_roles_id desc`,

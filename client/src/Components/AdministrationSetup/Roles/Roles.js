@@ -68,6 +68,7 @@ class Roles extends Component {
       role_type: null,
       loan_authorize_privilege: null,
       leave_authorize_privilege: null,
+      finance_authorize_privilege: null,
       edit_monthly_attendance: null,
     });
   }
@@ -85,6 +86,7 @@ class Roles extends Component {
         role_type: data.role_type,
         loan_authorize_privilege: data.loan_authorize_privilege,
         leave_authorize_privilege: data.leave_authorize_privilege,
+        finance_authorize_privilege: data.finance_authorize_privilege,
         edit_monthly_attendance: data.edit_monthly_attendance,
         app_d_app_roles_id: data.app_d_app_roles_id,
       },
@@ -94,6 +96,7 @@ class Roles extends Component {
             title: "Record updated successfully",
             type: "success",
           });
+          this.getRoles();
         }
       },
       onFailure: (error) => {
@@ -154,6 +157,7 @@ class Roles extends Component {
         role_type: this.state.role_type,
         loan_authorize_privilege: this.state.loan_authorize_privilege,
         leave_authorize_privilege: this.state.leave_authorize_privilege,
+        finance_authorize_privilege: this.state.finance_authorize_privilege,
         edit_monthly_attendance: this.state.edit_monthly_attendance,
       },
       onSuccess: (res) => {
@@ -233,6 +237,7 @@ class Roles extends Component {
           this.setState({
             leave_levels: res.data.records.leave_levels,
             loan_levels: res.data.records.loan_levels,
+            // finance_levels: res.data.records.finance_levels,
           });
         }
       },
@@ -387,6 +392,28 @@ class Roles extends Component {
                 textField: "name",
                 valueField: "value",
                 data: this.state.leave_levels,
+              },
+              onChange: this.dropDownHandle.bind(this),
+            }}
+          />
+          <AlagehAutoComplete
+            div={{ className: "col-2 mandatory form-group" }}
+            label={{
+              forceLabel: "Finance Authorize Level",
+              isImp: true,
+            }}
+            selector={{
+              name: "finance_privilge",
+              className: "select-fld",
+              value: this.state.finance_authorize_privilege,
+              dataSource: {
+                textField: "name",
+                valueField: "value",
+                data: [
+                  { name: "Level 2", value: "2" },
+                  { name: "Level 1", value: "1" },
+                  { name: "None", value: "N" },
+                ],
               },
               onChange: this.dropDownHandle.bind(this),
             }}
@@ -664,6 +691,60 @@ class Roles extends Component {
                                 others: {
                                   errormessage:
                                     "LEAVE PRIVILEGE- cannot be blank",
+                                  required: true,
+                                },
+                              }}
+                            />
+                          );
+                        },
+                      },
+                      {
+                        fieldName: "finance_authorize_privilege",
+
+                        label: (
+                          <AlgaehLabel
+                            label={{
+                              forceLabel: "Finance Authorize",
+                            }}
+                          />
+                        ),
+                        displayTemplate: (row) => {
+                          let x =
+                            row.finance_authorize_privilege === "N"
+                              ? "None"
+                              : row.finance_authorize_privilege === "1"
+                              ? "LEVEL 1"
+                              : row.finance_authorize_privilege === "2"
+                              ? "LEVEL 2"
+                              : "--";
+                          return <span>{x}</span>;
+                        },
+                        editorTemplate: (row) => {
+                          return (
+                            <AlagehAutoComplete
+                              div={{ className: "col mandatory form-group" }}
+                              selector={{
+                                className: "txt-fld",
+                                name: "finance_authorize_privilege",
+                                value: row.finance_authorize_privilege,
+                                dataSource: {
+                                  textField: "name",
+                                  valueField: "value",
+                                  data: [
+                                    { name: "Level 2", value: "2" },
+                                    { name: "Level 1", value: "1" },
+                                    { name: "None", value: "N" },
+                                  ],
+                                },
+
+                                onChange: this.changeGridEditors.bind(
+                                  this,
+                                  row
+                                ),
+
+                                others: {
+                                  errormessage:
+                                    "Finance Privilage- cannot be blank",
                                   required: true,
                                 },
                               }}
