@@ -32,6 +32,126 @@
       { "name": "Net Amt", "mapping": "net_amount" }
     ]
   },
+  "nextcare": {
+    "referemce": "",
+    "type": "detail",
+    "column_starts": 0,
+    "columns": [
+      { "name": "SL NO.", "mapping": "sl_no" },
+      { "name": "ID Number.", "mapping": "patient_code" },
+      { "name": "Patient Name", "mapping": "full_name" },
+      { "name": "Invoice No.", "mapping": "invoice_number" },
+      { "name": "Diagnosis", "mapping": "icd_description" },
+      { "name": "Consultation", "mapping": "consultation" },
+      { "name": "Drug", "mapping": "pharmacy" },
+      { "name": "Lab", "mapping": "lab" },
+      { "name": "X-Ray & U/S", "mapping": "radiology" },
+      { "name": "Other Treatment", "mapping": "procedure" },
+      { "name": "Gross Total", "mapping": "gross_amount" },
+      { "name": "Deductable", "mapping": "" },
+      { "name": "Net Amt", "mapping": "net_amount" }
+    ]
+  },
+  "medgulf takaful": {
+    "referemce": "",
+    "type": "detail",
+    "column_starts": 0,
+    "columns": [
+      { "name": "SL NO.", "mapping": "sl_no" },
+      { "name": "ID Number.", "mapping": "patient_code" },
+      { "name": "Patient Name", "mapping": "full_name" },
+      { "name": "Invoice No.", "mapping": "invoice_number" },
+      { "name": "Diagnosis", "mapping": "icd_description" },
+      { "name": "Consultation", "mapping": "consultation" },
+      { "name": "Drug", "mapping": "pharmacy" },
+      { "name": "Lab", "mapping": "lab" },
+      { "name": "X-Ray & U/S", "mapping": "radiology" },
+      { "name": "Other Treatment", "mapping": "procedure" },
+      { "name": "Gross Total", "mapping": "gross_amount" },
+      { "name": "Deductable", "mapping": "" },
+      { "name": "Net Amt", "mapping": "net_amount" }
+    ]
+  },
+  "orient": {
+    "referemce": "",
+    "type": "detail",
+    "column_starts": 0,
+    "columns": [
+      { "name": "SL NO.", "mapping": "sl_no" },
+      { "name": "ID Number.", "mapping": "patient_code" },
+      { "name": "Patient Name", "mapping": "full_name" },
+      { "name": "Invoice No.", "mapping": "invoice_number" },
+      { "name": "Diagnosis", "mapping": "icd_description" },
+      { "name": "Consultation", "mapping": "consultation" },
+      { "name": "Drug", "mapping": "pharmacy" },
+      { "name": "Lab", "mapping": "lab" },
+      { "name": "X-Ray & U/S", "mapping": "radiology" },
+      { "name": "Other Treatment", "mapping": "procedure" },
+      { "name": "Gross Total", "mapping": "gross_amount" },
+      { "name": "Deductable", "mapping": "" },
+      { "name": "Net Amt", "mapping": "net_amount" }
+    ]
+  },
+  "arabia": {
+    "referemce": "",
+    "type": "detail",
+    "column_starts": 0,
+    "columns": [
+      { "name": "SL NO.", "mapping": "sl_no" },
+      { "name": "ID Number.", "mapping": "patient_code" },
+      { "name": "Patient Name", "mapping": "full_name" },
+      { "name": "Invoice No.", "mapping": "invoice_number" },
+      { "name": "Diagnosis", "mapping": "icd_description" },
+      { "name": "Consultation", "mapping": "consultation" },
+      { "name": "Drug", "mapping": "pharmacy" },
+      { "name": "Lab", "mapping": "lab" },
+      { "name": "X-Ray & U/S", "mapping": "radiology" },
+      { "name": "Other Treatment", "mapping": "procedure" },
+      { "name": "Gross Total", "mapping": "gross_amount" },
+      { "name": "Deductable", "mapping": "" },
+      { "name": "Net Amt", "mapping": "net_amount" }
+    ]
+  },
+  "solidaritynextcare": {
+    "referemce": "",
+    "type": "detail",
+    "column_starts": 0,
+    "columns": [
+      { "name": "SL NO.", "mapping": "sl_no" },
+      { "name": "ID Number.", "mapping": "patient_code" },
+      { "name": "Patient Name", "mapping": "full_name" },
+      { "name": "Invoice No.", "mapping": "invoice_number" },
+      { "name": "Diagnosis", "mapping": "icd_description" },
+      { "name": "Consultation", "mapping": "consultation" },
+      { "name": "Drug", "mapping": "pharmacy" },
+      { "name": "Lab", "mapping": "lab" },
+      { "name": "X-Ray & U/S", "mapping": "radiology" },
+      { "name": "Other Treatment", "mapping": "procedure" },
+      { "name": "Gross Total", "mapping": "gross_amount" },
+      { "name": "Deductable", "mapping": "" },
+      { "name": "Net Amt", "mapping": "net_amount" }
+    ]
+  },
+  "nextcare [ mjid al futtaim]": {
+    "referemce": "",
+    "type": "detail",
+    "column_starts": 0,
+    "columns": [
+      { "name": "SL NO.", "mapping": "sl_no" },
+      { "name": "ID Number.", "mapping": "patient_code" },
+      { "name": "Patient Name", "mapping": "full_name" },
+      { "name": "Invoice No.", "mapping": "invoice_number" },
+      { "name": "Diagnosis", "mapping": "icd_description" },
+      { "name": "Consultation", "mapping": "consultation" },
+      { "name": "Drug", "mapping": "pharmacy" },
+      { "name": "Lab", "mapping": "lab" },
+      { "name": "X-Ray & U/S", "mapping": "radiology" },
+      { "name": "Other Treatment", "mapping": "procedure" },
+      { "name": "Gross Total", "mapping": "gross_amount" },
+      { "name": "Deductable", "mapping": "" },
+      { "name": "Net Amt", "mapping": "net_amount" }
+    ]
+  },
   "snic": {
     "type": "detail",
     "column_starts": 0,
