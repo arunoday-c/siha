@@ -42,6 +42,7 @@ class Appointment extends PureComponent {
       patient_code: "",
       defaultStatus: {},
       patToEdit: {},
+      tel_code: null,
       openPatEdit: false,
       checkInId: null,
       sub_department_id: null,
@@ -273,6 +274,7 @@ class Appointment extends PureComponent {
       date_of_birth: null,
       age: null,
       contact_number: "",
+
       email: "",
       appointment_remarks: "",
       timeSlots: [],
@@ -319,6 +321,7 @@ class Appointment extends PureComponent {
               date_of_birth: this.state.date_of_birth,
               age: this.state.age,
               contact_number: this.state.contact_number,
+              tel_code: this.state.tel_code,
               email: this.state.email,
               send_to_provider: "N",
               gender: this.state.gender,
@@ -613,11 +616,16 @@ class Appointment extends PureComponent {
       provider_id: selector.value,
     });
   }
-
+  dropDownCountry(e) {
+    this.setState({
+      tel_code: e,
+    });
+  }
   dropDownHandle(value) {
     if (value.name === "title_id" || value === "title_id") {
       this.handleTitle(value);
     }
+
     this.setState({ [value.name]: value.value });
   }
 
@@ -852,6 +860,7 @@ class Appointment extends PureComponent {
       delete patient.age;
       delete patient.gender;
       delete patient.contact_number;
+      delete patient.tel_code;
       delete patient.email;
       delete patient.arabic_name;
       // return this.props.routeComponents(patient, this.state.checkInId);
@@ -918,6 +927,7 @@ class Appointment extends PureComponent {
           edit_appt_date: patient.appointment_date,
           edit_appt_time: patient.appointment_from_time,
           edit_contact_number: patient.contact_number,
+          edit_tel_code: patient.tel_code,
           edit_patient_name: patient.patient_name,
           edit_arabic_name: patient.arabic_name,
           edit_date_of_birth: patient.date_of_birth,
@@ -1018,6 +1028,7 @@ class Appointment extends PureComponent {
                 date_of_birth: this.state.edit_date_of_birth,
                 age: this.state.edit_age,
                 contact_number: this.state.edit_contact_number,
+                tel_code: this.state.tel_code,
                 email: this.state.edit_email,
                 send_to_provider: null,
                 gender: this.state.edit_gender,
@@ -1182,6 +1193,7 @@ class Appointment extends PureComponent {
         edit_appointment_status_id: pat.appointment_status_id,
         edit_appt_date: pat.appointment_date,
         edit_contact_number: pat.contact_number,
+        edit_tel_code: pat.tel_code,
         edit_patient_name: pat.patient_name,
         edit_arabic_name: pat.arabic_name,
         edit_date_of_birth: pat.date_of_birth,
@@ -1271,6 +1283,7 @@ class Appointment extends PureComponent {
                 age: this.state.edit_age,
                 title_id: this.state.edit_title_id,
                 contact_number: this.state.edit_contact_number,
+                tel_code: this.state.tel_code,
                 email: this.state.edit_email,
                 send_to_provider: null,
                 gender: this.state.edit_gender,
@@ -1516,6 +1529,8 @@ class Appointment extends PureComponent {
               >
                 <span>
                   {_firstPatient.patient_name} <br />
+                  {_firstPatient.tel_code}
+                  &nbsp;
                   {_firstPatient.contact_number}
                 </span>
               </div>
@@ -1528,6 +1543,8 @@ class Appointment extends PureComponent {
                 <span>
                   {_firstPatient.patient_name}
                   <br />
+                  {_firstPatient.tel_code}
+                  &nbsp;
                   {_firstPatient.contact_number}
                 </span>
 
@@ -1704,7 +1721,9 @@ class Appointment extends PureComponent {
                       draggable={false}
                     >
                       <span>
-                        {patient.patient_name} <br /> {patient.contact_number}
+                        {patient.patient_name} <br />
+                        {patient.tel_code}
+                        &nbsp; {patient.contact_number}
                       </span>
                     </div>
                   ) : (
@@ -1720,6 +1739,8 @@ class Appointment extends PureComponent {
                       >
                         {patient.patient_name}
                         <br />
+                        {patient.tel_code}
+                        &nbsp;
                         {patient.contact_number}
                       </span>
 
@@ -1953,6 +1974,9 @@ class Appointment extends PureComponent {
           editDateHandler={(selectedDate) => this.editDateHandler(selectedDate)}
           editDateValidate={this.editDateValidate}
           dropDownHandle={(e) => this.dropDownHandle(e)}
+          dropDownCountry={(e) => {
+            this.dropDownCountry(e);
+          }}
           nullifyState={(name) => this.nullifyState(name)}
           updatePatientAppointment={(data) =>
             this.updatePatientAppointment(data)

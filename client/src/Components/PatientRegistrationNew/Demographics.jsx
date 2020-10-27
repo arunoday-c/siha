@@ -61,9 +61,8 @@ export function Demographics({
   incomeByOp,
   incomeByPoint,
   inModal = false,
-  isEmpIdRequired
+  isEmpIdRequired,
 }) {
-  debugger
   const queryParams = useQueryParams();
   const patient_code = queryParams.get("patient_code");
   const { savedPatient } = useContext(FrontdeskContext);
@@ -73,7 +72,7 @@ export function Demographics({
     state_id,
     date_of_birth,
     primary_id_no,
-    nationality_id
+    nationality_id,
   } = useWatch({
     control,
     name: [
@@ -81,7 +80,7 @@ export function Demographics({
       "state_id",
       "date_of_birth",
       "primary_id_no",
-      "nationality_id"
+      "nationality_id",
     ],
   });
 
@@ -234,17 +233,17 @@ export function Demographics({
                                 tabIndex: "2",
                               }}
 
-                            // target={{
-                            //   tElement: (arabicText) => {
-                            //     const arabic_name = this.state.arabic_name;
-                            //     this.setState({
-                            //       arabic_name:
-                            //         arabic_name !== "" || arabic_name !== undefined
-                            //           ? `${arabic_name} ${arabicText}`
-                            //           : arabicText,
-                            //     });
-                            //   },
-                            // }}
+                              // target={{
+                              //   tElement: (arabicText) => {
+                              //     const arabic_name = this.state.arabic_name;
+                              //     this.setState({
+                              //       arabic_name:
+                              //         arabic_name !== "" || arabic_name !== undefined
+                              //           ? `${arabic_name} ${arabicText}`
+                              //           : arabicText,
+                              //     });
+                              //   },
+                              // }}
                             />
                           )}
                         />
@@ -620,7 +619,7 @@ export function Demographics({
                                   className: "col-3 form-group",
                                 }}
                                 label={{
-                                  fieldName: "employee_id"
+                                  fieldName: "employee_id",
                                 }}
                                 error={errors}
                                 textBox={{

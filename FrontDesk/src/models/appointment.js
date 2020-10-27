@@ -1234,7 +1234,7 @@ export default {
                     .executeQuery({
                       query:
                         "select hims_f_patient_appointment_id, patient_id, title_id, patient_code, provider_id, sub_department_id,number_of_slot, appointment_date, appointment_from_time,\
-                          appointment_to_time, appointment_status_id, patient_name, arabic_name, date_of_birth, age, contact_number, email, send_to_provider,\
+                          appointment_to_time, appointment_status_id, patient_name, arabic_name, date_of_birth, age, contact_number,tel_code, email, send_to_provider,\
                           gender, confirmed, confirmed_by,comfirmed_date, cancelled, cancelled_by, cancelled_date, cancel_reason,\
                           appointment_remarks, visit_created,is_stand_by  from hims_f_patient_appointment where record_status='A' and   cancelled<>'Y' and sub_department_id=?\
                           and appointment_date=? and provider_id=? ",
@@ -2071,7 +2071,7 @@ export default {
     ) {
       strQry = `and  patient_id=${input.patient_id} `;
     } else if (req.userIdentity.unique_id_for_appointmt == "MOB") {
-      strQry = `and contact_number='${input.contact_number}' `;
+      strQry = `and contact_number='${input.contact_number}' and tel_code='${input.tel_code}' `;
     }
 
     _mysql
@@ -2129,9 +2129,9 @@ export default {
             .executeQuery({
               query:
                 "INSERT INTO `hims_f_patient_appointment` (patient_id,title_id,patient_code,provider_id,sub_department_id,number_of_slot,appointment_date,appointment_from_time,appointment_to_time,\
-              appointment_status_id,patient_name,arabic_name,date_of_birth,age,contact_number,email,send_to_provider,gender,appointment_remarks,is_stand_by,\
+              appointment_status_id,patient_name,arabic_name,date_of_birth,age,contact_number,tel_code,email,send_to_provider,gender,appointment_remarks,is_stand_by,\
               created_date, created_by, updated_date, updated_by,hospital_id)\
-              VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+              VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
               values: [
                 input.patient_id,
                 input.title_id,
@@ -2148,6 +2148,7 @@ export default {
                 input.date_of_birth,
                 input.age,
                 input.contact_number,
+                input.tel_code,
                 input.email,
                 input.send_to_provider,
                 input.gender,
@@ -2226,7 +2227,7 @@ export default {
             .executeQuery({
               query:
                 "UPDATE `hims_f_patient_appointment` SET patient_id=?, title_id=? ,provider_id=?,sub_department_id=?,number_of_slot=?,appointment_date=?,appointment_from_time=?,appointment_to_time=?,\
-              appointment_status_id=?,patient_name=?,arabic_name=?,date_of_birth=?,age=?,contact_number=?,email=?,\
+              appointment_status_id=?,patient_name=?,arabic_name=?,date_of_birth=?,age=?,contact_number=?,tel_code=?,email=?,\
               send_to_provider=?,gender=?,confirmed=?,confirmed_by=?,comfirmed_date=?,cancelled=?,cancelled_by=?,\
               cancelled_date=?,cancel_reason=?,appointment_remarks=?,is_stand_by=?,\
               updated_date=?, updated_by=? ,`record_status`=? WHERE  `record_status`='A' and  cancelled<>'Y' and `hims_f_patient_appointment_id`=?;",
@@ -2245,6 +2246,7 @@ export default {
                 input.date_of_birth,
                 input.age,
                 input.contact_number,
+                input.tel_code,
                 input.email,
                 input.send_to_provider,
                 input.gender,
@@ -2309,7 +2311,7 @@ export default {
       .executeQuery({
         query: `select hims_f_patient_appointment_id,patient_id,title_id,patient_code,provider_id,sub_department_id,number_of_slot,appointment_date,\
         appointment_from_time,appointment_to_time,appointment_status_id,patient_name,arabic_name,date_of_birth,age,\
-    contact_number,email,send_to_provider,gender,confirmed,visit_created,\
+    contact_number,tel_code,email,send_to_provider,gender,confirmed,visit_created,\
     confirmed_by,comfirmed_date,cancelled,cancelled_by,cancelled_date,appointment_remarks,cancel_reason,is_stand_by\
     from hims_f_patient_appointment where record_status='A'  and hospital_id=? ${selectQry}`,
         values: [req.userIdentity.hospital_id],
@@ -2603,7 +2605,7 @@ export function getPatientDetailsWithAppNo(req, res, next) {
     _mysql
       .executeQuery({
         query: `select patient_id, patient_code, PA.provider_id, PA.sub_department_id, PA.title_id, 
-        patient_name, PA.arabic_name, PA.date_of_birth, PA.age, PA.contact_number, PA.email, 
+        patient_name, PA.arabic_name, PA.date_of_birth, PA.age, PA.contact_number,PA.tel_code, PA.email, 
         PA.gender,E.services_id,SD.department_type, SD.department_id,S.service_type_id from hims_f_patient_appointment as PA 
        inner join hims_d_employee as E on E.hims_d_employee_id = PA.provider_id
      inner join hims_d_sub_department as SD on PA.sub_department_id =SD.hims_d_sub_department_id
