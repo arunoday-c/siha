@@ -6,7 +6,7 @@ import moment from "moment";
 export function generateExcelDilyTrans(req, res, next) {
   const _mysql = new algaehMysql();
   try {
-    console.log("req.query", req.query);
+    // console.log("req.query", req.query);
     const { date } = req.query;
 
     _mysql
@@ -17,7 +17,8 @@ export function generateExcelDilyTrans(req, res, next) {
         E.employee_code ,BH.bill_number as bill_invoice,V.insured,BH.hims_f_billing_header_id,BD.service_type_id,ST.service_type ,ST.arabic_service_type,
         S.arabic_service_name,S.service_name,if(S.procedure_type ='GN','General','Dental') as procedure_type,
         BD.hims_f_billing_details_id ,BD.quantity,BD.net_amout ,BD.company_payble,BD.patient_payable,BD.discount_amout,IP.insurance_provider_name,
-        IP.arabic_provider_name,COALESCE(BH.advance_amount,0)as advance_amount,COALESCE(BH.advance_adjust,0) as advance_adjust,case BD.service_type_id when 1 then 'Y' else 'N'  end new_visit_patient
+        IP.arabic_provider_name,COALESCE(BH.advance_amount,0)as advance_amount,COALESCE(BH.advance_adjust,0) as advance_adjust,case BD.service_type_id when 1 then 'Y' else 'N'  end new_visit_patient,
+        RD.amount as receipt_amount,RD.pay_type
         from hims_f_patient as P inner join hims_f_patient_visit as V on P.hims_d_patient_id = V.patient_id
         inner join hims_f_billing_header as BH on V.hims_f_patient_visit_id  = BH.visit_id  and V.patient_id = BH.patient_id
         and BH.cancelled ='N'
@@ -28,6 +29,8 @@ export function generateExcelDilyTrans(req, res, next) {
         left join hims_d_services as S on S.hims_d_services_id  = BD.services_id
         left join hims_m_patient_insurance_mapping as PIM on V.patient_id  = PIM.patient_id  and V.hims_f_patient_visit_id =PIM.patient_visit_id 
         left join hims_d_insurance_provider as IP on PIM.primary_insurance_provider_id  = IP.hims_d_insurance_provider_id 
+        left join hims_f_receipt_header as RH on BH.receipt_header_id  = RH.hims_f_receipt_header_id left join hims_f_receipt_details as RD 
+        on RH.hims_f_receipt_header_id  = RD.hims_f_receipt_header_id 
         where
          date(BH.bill_date)=date(?);select hims_d_service_type_id,service_type from hims_d_service_type where record_status='A' and hims_d_service_type_id not in(3,6,8,9,10,12,13);`,
         values: [date],
@@ -82,7 +85,12 @@ export function generateExcelDilyTrans(req, res, next) {
             bold: true,
           },
           { header: "Patient Name", key: "pat_name", width: 30, bold: true },
-          {header:"Billing Type",key:"billing_type",width:20,bold:true},
+          {
+            header: "Billing Type",
+            key: "billing_type",
+            width: 20,
+            bold: true,
+          },
           { header: "Invoice Time", key: "bill_time", width: 15, bold: true },
           {
             header: "Cash Invoice No.",
@@ -96,7 +104,36 @@ export function generateExcelDilyTrans(req, res, next) {
             width: 20,
             bold: true,
           },
-          { header: "Amount", key: "net_amout", width: 15, bold: true },
+          {
+            header: "Patient Amount",
+            key: "patient_amount",
+            width: 15,
+            bold: true,
+          },
+          {
+            header: "Insurance Amount",
+            key: "insurance_amount",
+            width: 15,
+            bold: true,
+          },
+          {
+            header: "Cash Amount",
+            key: "cash_amount",
+            width: 15,
+            bold: true,
+          },
+          {
+            header: "Card Amount",
+            key: "card_amount",
+            width: 15,
+            bold: true,
+          },
+          // {
+          //   header: "Cheque Amount",
+          //   key: "cheque_amount",
+          //   width: 15,
+          //   bold: true,
+          // },
         ];
 
         for (let i = 0; i < servceTypes.length; i++) {
@@ -105,34 +142,38 @@ export function generateExcelDilyTrans(req, res, next) {
               header: servceTypes[i]["service_type"],
               key: servceTypes[i]["hims_d_service_type_id"] + "_amount",
               bold: true,
-              width: 18
+              width: 18,
             },
             {
               header: servceTypes[i]["service_type"] + " Discount",
               key: servceTypes[i]["hims_d_service_type_id"] + "_desc_amount",
               bold: true,
-              width: 18
+              width: 18,
             }
           );
         }
-        generalColumns.push({ header: "Advance", key: "advance_amount", width: 18 });
+        generalColumns.push({
+          header: "Advance",
+          key: "advance_amount",
+          width: 18,
+        });
         generalColumns.push({
           header: "Advance Adjust",
           key: "advance_adjust",
           bold: true,
-          width: 18
+          width: 18,
         });
         generalColumns.push({
           header: "New Visit",
           key: "new_visit",
           bold: true,
-          width: 18
+          width: 18,
         });
         generalColumns.push({
           header: "Follow Up Visit",
           key: "followup_visit",
           bold: true,
-          width: 18
+          width: 18,
         });
         worksheet.columns = generalColumns;
         let lastRow = worksheet.rowCount;
@@ -164,28 +205,57 @@ export function generateExcelDilyTrans(req, res, next) {
             const { patient_code, pat_name, details } = patients[p];
             _.chain(details)
               .groupBy((g) => g.hims_f_billing_header_id)
-              .forEach((billGroup) => {
+              .forEach((billGroup, billKey) => {
                 const {
                   bill_invoice,
                   insured,
                   bill_date,
                   new_visit_patient,
-                  insurance_provider_name
+                  insurance_provider_name,
                 } = _.head(billGroup);
-                // console.log("insured", insured, bill_invoice);
+
                 let serviceObject = {
                   [insured === "Y"
                     ? "crd_bill_invoice"
                     : "csh_bill_invoice"]: bill_invoice,
                 };
+
                 _.chain(billGroup)
                   .groupBy((g) => g.service_type_id)
                   .forEach((services, sKey) => {
+                    let billing_type = {};
+                    _.chain(services)
+                      .groupBy((ig) => ig.pay_type)
+                      .forEach((bill, bKey) => {
+                        const billH = _.head(bill);
+                        billing_type = {
+                          ...billing_type,
+                          [bKey === "CA"
+                            ? "cash_amount"
+                            : bKey === "CD"
+                            ? "card_amount"
+                            : "cheque_amount"]: billH.receipt_amount,
+                        };
+                      })
+                      .value();
+                    let dualPayType = 0;
+                    const recordsDtl = _.chain(billGroup)
+                      .groupBy((sg) => sg.pay_type)
+                      .map((hItem) => {
+                        const { patient_payable } = _.head(hItem);
+                        dualPayType = patient_payable;
+                        return hItem;
+                      })
+                      .value();
                     serviceObject = {
                       ...serviceObject,
-                      [sKey + "_amount"]: _.sumBy(services, (s) =>
-                        parseFloat(s.net_amout)
-                      ),
+                      ...billing_type,
+                      [sKey + "_amount"]:
+                        recordsDtl.length === 1
+                          ? _.sumBy(services, (s) =>
+                              parseFloat(s.patient_payable)
+                            )
+                          : dualPayType,
                       [sKey + "_desc_amount"]: _.sumBy(services, (s) =>
                         parseFloat(s.discount_amout)
                       ),
@@ -198,18 +268,37 @@ export function generateExcelDilyTrans(req, res, next) {
                     };
                   })
                   .value();
-
+                let dualPayType = 0;
+                const recordsDtl = _.chain(billGroup)
+                  .groupBy((sg) => sg.pay_type)
+                  .map((hItem) => {
+                    const { patient_payable } = _.head(hItem);
+                    dualPayType = patient_payable;
+                    return hItem;
+                  })
+                  .value();
                 worksheet.addRow({
                   slno: counter,
                   patient_code,
                   pat_name,
                   bill_time: moment(bill_date).format("hh:mm:ss"),
-                  net_amout: _.sumBy(billGroup, (s) => {
-                    return insured === "Y"
-                      ? parseFloat(s.company_payble)
-                      : parseFloat(s.patient_payable);
-                  }),
-                  billing_type:insured === "N" ? "Cash" : insurance_provider_name,
+                  // net_amout: _.sumBy(billGroup, (s) => {
+                  //   return insured === "Y"
+                  //     ? parseFloat(s.company_payble)
+                  //     : parseFloat(s.patient_payable);
+                  // }),
+                  patient_amount:
+                    recordsDtl.length === 1
+                      ? _.sumBy(billGroup, (s) => parseFloat(s.patient_payable))
+                      : dualPayType,
+                  // patient_amount: _.sumBy(billGroup, (s) =>
+                  //   parseFloat(s.patient_payable)
+                  // ),
+                  insurance_amount: _.sumBy(billGroup, (s) =>
+                    parseFloat(s.company_payble)
+                  ),
+                  billing_type:
+                    insured === "N" ? "Cash" : insurance_provider_name,
                   ...serviceObject,
                   new_visit: new_visit_patient === "Y" ? 1 : 0,
                   followup_visit: new_visit_patient !== "Y" ? 1 : 0,
