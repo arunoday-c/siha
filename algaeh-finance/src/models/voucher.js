@@ -211,6 +211,7 @@ export default {
                     "YYYY"
                   );
 
+
                   /* added by noor for detail level costcenters */
                   const cost_center_type = resul[0]["cost_center_type"];
                   const cost_center_required = resul[0]["cost_center_required"];
@@ -227,15 +228,15 @@ export default {
                     const typeSel =
                       cost_center_type === "P"
                         ? {
-                            project_id: cost_center_id,
-                            sub_department_id: null
-                          }
-                        : cost_center_type === "S"
-                        ? {
+                          project_id: cost_center_id,
+                          sub_department_id: null
+                        }
+                        : cost_center_type === "SD"
+                          ? {
                             project_id: null,
                             sub_department_id: cost_center_id
                           }
-                        : {};
+                          : {};
 
                     return {
                       ...rest,
@@ -354,7 +355,7 @@ export default {
                           })
                           .then(resultsubheader => {
                             //Done.....
-                            console.log("Subdetails are inserted");
+                            // console.log("Subdetails are inserted");
                           })
                           .catch(error => {
                             _mysql.rollBackTransaction(() => {
@@ -365,7 +366,7 @@ export default {
                       } else {
                         arrCounter = newDetails;
                       }
-                      console.log("arrCounter", arrCounter);
+                      // console.log("arrCounter", arrCounter);
                       _mysql
                         .executeQueryWithTransaction({
                           query:
@@ -843,7 +844,7 @@ export default {
                             next(error);
                           });
                       }).then(res => {
-                        console.log("res:", res);
+                        // console.log("res:", res);
                         //ST-profit and loss calculation
                         result.forEach(m => {
                           if (m.root_id == 4) {
@@ -1380,7 +1381,7 @@ export default {
                             });
                         }
                       }).then(res => {
-                        console.log("res:", res);
+                        // console.log("res:", res);
                         //ST-profit and loss calculation
                         result.forEach(m => {
                           if (m.root_id == 4) {
@@ -1497,9 +1498,9 @@ export default {
                                   .then(BalanceInvoice => {
                                     if (
                                       result[0]["voucher_type"] ==
-                                        "credit_note" ||
+                                      "credit_note" ||
                                       result[0]["voucher_type"] ==
-                                        "debit_note" ||
+                                      "debit_note" ||
                                       result[0]["voucher_type"] == "payment" ||
                                       result[0]["voucher_type"] == "receipt"
                                     ) {
@@ -1555,7 +1556,7 @@ export default {
                                           "YYYY-MM-DD"
                                         )}',updated_by=${
                                           req.userIdentity.algaeh_d_app_user_id
-                                        } where finance_voucher_header_id=${finance_voucher_header_id};`;
+                                          } where finance_voucher_header_id=${finance_voucher_header_id};`;
                                       }
 
                                       // if (hasMultiple === "M") {
