@@ -17,7 +17,7 @@ export async function generateInsuranceStatement(req, res, next) {
     //inner join hims_f_insurance_statement as ins on ins.insurance_provider_id  =ih.insurance_provider_id
     const filesList = fs
       .readdirSync(path.join(process.cwd(), "insurance_templates"))
-      .filter(f => f.includes(".xl"));
+      .filter((f) => f.includes(".xl"));
     _mysql
       .executeQuery({
         query: `  select  p.patient_code,p.full_name,ih.invoice_number,micd.icd_description,st.service_type,MAX(isb.insurance_sub_name)as file_name,
@@ -47,11 +47,11 @@ export async function generateInsuranceStatement(req, res, next) {
         values: [
           insurance_statement_id,
           insurance_statement_id,
-          insurance_statement_id
+          insurance_statement_id,
         ],
-        printQuery: true
+        printQuery: true,
       })
-      .then(result => {
+      .then((result) => {
         if (result.length === 0) {
           next(new Error("No records funds"));
           return;
@@ -60,13 +60,15 @@ export async function generateInsuranceStatement(req, res, next) {
         let slno = 1;
         const fileName = result.length > 0 ? result[0]["file_name"] : "";
         const update_date = result.length > 0 ? result[0]["update_date"] : "";
+        console.log("fileName", fileName.toLowerCase().replace(/ /g, ""));
         const requireMetaData = rest[fileName.toLowerCase().replace(/ /g, "")];
+        console.log("requireMetaData", requireMetaData);
         const { combineservices } = requireMetaData;
         _.chain(result)
-          .groupBy(g => g.visit_id)
+          .groupBy((g) => g.visit_id)
           .forEach((patients, idx) => {
             _.chain(patients)
-              .groupBy(g => g.icd_description)
+              .groupBy((g) => g.icd_description)
               .forEach((items, key) => {
                 //{ full_name, invoice_number, patient_code }
                 const firstRecords = _.head(items);
@@ -74,32 +76,37 @@ export async function generateInsuranceStatement(req, res, next) {
                   ...firstRecords,
                   sl_no: slno,
                   icd_description: key === "null" ? undefined : key,
-                  company_resp: _.sumBy(items, s => parseFloat(s.company_resp)),
-                  company_tax_amount: _.sumBy(items, s =>
+                  company_resp: _.sumBy(items, (s) =>
+                    parseFloat(s.company_resp)
+                  ),
+                  company_tax_amount: _.sumBy(items, (s) =>
                     parseFloat(s.company_tax_amount)
                   ),
-                  comp_tax_percent: _.sumBy(items, s =>
+                  comp_tax_percent: _.sumBy(items, (s) =>
                     parseFloat(s.comp_tax_percent)
                   ),
-                  company_payable: _.sumBy(items, s =>
+                  company_payable: _.sumBy(items, (s) =>
                     parseFloat(s.company_payable)
                   ),
-                  net_amount: _.sumBy(items, s => parseFloat(s.net_amount)),
-                  gross_amount: _.sumBy(items, s => parseFloat(s.gross_amount))
+                  net_amount: _.sumBy(items, (s) => parseFloat(s.net_amount)),
+                  gross_amount: _.sumBy(items, (s) =>
+                    parseFloat(s.gross_amount)
+                  ),
                 };
 
                 _.chain(items)
-                  .groupBy(g => g.service_type)
+                  .groupBy((g) => g.service_type)
                   .forEach((service, sKey) => {
-                    const amountSum = _.sumBy(service, s =>
+                    const amountSum = _.sumBy(service, (s) =>
                       parseFloat(s.company_payable)
                     );
 
                     if (combineservices) {
                       const appendName = combineservices?.service_type?.name;
                       if (patObj[appendName]) {
-                        patObj[appendName] += `${combineservices?.service_type
-                          ?.delimiter ?? ","}${sKey}`;
+                        patObj[appendName] += `${
+                          combineservices?.service_type?.delimiter ?? ","
+                        }${sKey}`;
                       } else {
                         patObj[appendName] = sKey;
                       }
@@ -116,7 +123,7 @@ export async function generateInsuranceStatement(req, res, next) {
           .value();
 
         if (requireMetaData) {
-          const filePath = filesList.find(f =>
+          const filePath = filesList.find((f) =>
             f.toLowerCase().includes(fileName.toLowerCase())
           );
           if (filePath) {
@@ -142,7 +149,7 @@ export async function generateInsuranceStatement(req, res, next) {
                 ? moment(update_date).format(date_format)
                 : "";
               worksheet.eachRow({ includeEmpty: false }, (row, rowNumber) => {
-                row.eachCell(cell => {
+                row.eachCell((cell) => {
                   if (typeof cell.value === "string") {
                     cell.value = String(cell.value)
                       .replace("#CLINICNAME", clinincNameMapping)
@@ -164,7 +171,7 @@ export async function generateInsuranceStatement(req, res, next) {
                 for (let i = 0; i < columnStart; i++) {
                   cols.push(undefined);
                 }
-                columns.forEach(column => {
+                columns.forEach((column) => {
                   const { mapping } = column;
 
                   cols.push(
@@ -185,7 +192,7 @@ export async function generateInsuranceStatement(req, res, next) {
                 "Content-Disposition",
                 `attachment; filename=${fileName}${update_date}-${update_date}.xlsx`
               );
-              await workbook.xlsx.write(res).then(function() {
+              await workbook.xlsx.write(res).then(function () {
                 res.end();
               });
             })();
@@ -196,7 +203,7 @@ export async function generateInsuranceStatement(req, res, next) {
           next(new Error("No metadata found for " + fileName.toLowerCase()));
         }
       })
-      .catch(error => {
+      .catch((error) => {
         _mysql.releaseConnection();
         next(error);
       });
