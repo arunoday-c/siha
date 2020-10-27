@@ -1,6 +1,6 @@
 import { Router } from "express";
 import utlities from "algaeh-utilities";
-import voucher from "../models/voucher";
+import voucher, { verifyInvoicePenForAuth } from "../models/voucher";
 
 const {
   addVoucher,
@@ -138,6 +138,14 @@ export default () => {
         .end();
     }
   });
-
+  api.post("/verifyInvoicePenForAuth", verifyInvoicePenForAuth, (req, res) => {
+    res
+      .status(utlities.AlgaehUtilities().httpStatus().internalServer)
+      .json({
+        success: true,
+        message: "Can Proceed..",
+      })
+      .end();
+  });
   return api;
 };
