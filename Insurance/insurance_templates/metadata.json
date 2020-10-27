@@ -154,8 +154,7 @@
       { "name": "Net Amt", "mapping": "company_payable" }
     ]
   },
-    "solidarity": {
-
+  "solidarity": {
     "type": "overview",
     "column_starts": 0,
     "combineservices": {
@@ -221,7 +220,7 @@
       { "name": "Net Amt", "mapping": "company_payable" }
     ]
   },
-  
+
   "KFH TAKAFUL": {
     "type": "overview",
     "column_starts": 0,
@@ -254,5 +253,5 @@
       { "name": "VAT Amount", "mapping": "company_tax_amount" },
       { "name": "Net Amt", "mapping": "company_payable" }
     ]
-  },
-},
+  }
+}
