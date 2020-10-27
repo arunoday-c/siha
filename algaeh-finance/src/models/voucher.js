@@ -354,7 +354,7 @@ export default {
                           })
                           .then((resultsubheader) => {
                             //Done.....
-                            console.log("Subdetails are inserted");
+                            // console.log("Subdetails are inserted");
                           })
                           .catch((error) => {
                             _mysql.rollBackTransaction(() => {
@@ -365,7 +365,7 @@ export default {
                       } else {
                         arrCounter = newDetails;
                       }
-                      console.log("arrCounter", arrCounter);
+                      // console.log("arrCounter", arrCounter);
                       _mysql
                         .executeQueryWithTransaction({
                           query:

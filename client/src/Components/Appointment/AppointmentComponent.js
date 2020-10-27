@@ -1,4 +1,4 @@
-import React, { useLayoutEffect } from "react";
+import React, { useLayoutEffect, useContext } from "react";
 import moment from "moment";
 import {
   AlagehAutoComplete,
@@ -13,8 +13,17 @@ import { getLabelFromLanguage } from "../../utils/GlobalFunctions";
 import GlobalVariables from "../../utils/GlobalVariables";
 import "./appointment.scss";
 import spotlightSearch from "../../Search/spotlightSearch.json";
-import { AlgaehAutoComplete } from "algaeh-react-components";
+import {
+  AlgaehAutoComplete,
+  MainContext,
+  // AlgaehLabel,
+  // AlgaehAutoComplete,
+  // AlgaehDateHandler,
+  Input,
+  Select,
+} from "algaeh-react-components";
 function AppointmentComponent(props) {
+  const { countries = [] } = useContext(MainContext);
   useLayoutEffect(() => {
     const getAllTables = document.getElementsByTagName("table");
     for (let i = 0; i < getAllTables.length; i++) {
@@ -444,7 +453,7 @@ function AppointmentComponent(props) {
                   </div>
 
                   <div className="row">
-                    <AlagehFormGroup
+                    {/* <AlagehFormGroup
                       div={{
                         className: "col-6 form-group mandatory",
                       }}
@@ -464,7 +473,85 @@ function AppointmentComponent(props) {
                           onChange: props.texthandle,
                         },
                       }}
-                    />
+                    /> */}
+                    {!!countries?.length && (
+                      <div className="col-lg-4 algaehInputGroup">
+                        <label className="style_Label">
+                          Contact Number<span className="imp">&nbsp;*</span>
+                        </label>
+                        <Input.Group compact>
+                          <>
+                            <Select
+                              value={props.state.tel_code}
+                              onChange={props.dropDownCountry}
+                              virtual={true}
+                              // disabled={disabled}
+                              showSearch
+                              filterOption={(input, option) => {
+                                return (
+                                  option.value
+                                    .toLowerCase()
+                                    .indexOf(input.toLowerCase()) >= 0
+                                );
+                              }}
+                              options={countries
+                                ?.map((item) => item.tel_code)
+                                .filter((v, i, a) => a.indexOf(v) === i)
+                                .map((item) => ({
+                                  label: item,
+                                  value: item,
+                                }))}
+                            >
+                              {/* {countries?.map((item) => (
+                                      <Option
+                                        value={item.tel_code}
+                                        key={item.tel_code}
+                                      >
+                                        {item.tel_code}
+                                      </Option>
+                                    ))} */}
+                            </Select>
+                          </>
+                          <AlagehFormGroup
+                            // div={{
+                            //   className: "col-6 form-group mandatory",
+                            // }}
+                            // label={{
+                            //   fieldName: "contact_number",
+                            //   isImp: true,
+                            // }}
+                            textBox={{
+                              className: "txt-fld",
+                              name: "contact_number",
+                              others: {
+                                type: "number",
+                                disabled: props.state.fromSearch || false,
+                              },
+                              value: props.state.contact_number,
+                              events: {
+                                onChange: props.texthandle,
+                              },
+                            }}
+                          />
+                          {/* <Controller
+                            control={control}
+                            name="contact_number"
+                            rules={{
+                              required: "Please Enter Contact Number",
+                              minLength: {
+                                message: "Please Enter Valid Number",
+                                value: 6,
+                              },
+                            }}
+                            render={(props) => (
+                              <>
+                                <Input {...props} disabled={disabled} />
+                              </>
+                            )}
+                          /> */}
+                        </Input.Group>
+                      </div>
+                    )}
 
                     <AlagehFormGroup
                       div={{
