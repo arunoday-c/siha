@@ -227,15 +227,15 @@ export default {
                     const typeSel =
                       cost_center_type === "P"
                         ? {
-                            project_id: cost_center_id,
-                            sub_department_id: null,
-                          }
-                        : cost_center_type === "S"
-                        ? {
+                          project_id: cost_center_id,
+                          sub_department_id: null,
+                        }
+                        : cost_center_type === "SD"
+                          ? {
                             project_id: null,
                             sub_department_id: cost_center_id,
                           }
-                        : {};
+                          : {};
 
                     return {
                       ...rest,
@@ -1499,9 +1499,9 @@ export default {
                                   .then((BalanceInvoice) => {
                                     if (
                                       result[0]["voucher_type"] ==
-                                        "credit_note" ||
+                                      "credit_note" ||
                                       result[0]["voucher_type"] ==
-                                        "debit_note" ||
+                                      "debit_note" ||
                                       result[0]["voucher_type"] == "payment" ||
                                       result[0]["voucher_type"] == "receipt"
                                     ) {
@@ -1557,7 +1557,7 @@ export default {
                                           "YYYY-MM-DD"
                                         )}',updated_by=${
                                           req.userIdentity.algaeh_d_app_user_id
-                                        } where finance_voucher_header_id=${finance_voucher_header_id};`;
+                                          } where finance_voucher_header_id=${finance_voucher_header_id};`;
                                       }
 
                                       // if (hasMultiple === "M") {
