@@ -77,7 +77,7 @@
 
         <br />
         <section>
-            <table class="tableForLabel labelBlock" cell-padding="0">
+            {{!-- <table class="tableForLabel labelBlock" cell-padding="0">
                 <tr>
 
                     <td><label class="textEnLft">Leave Start Date: </label><span class="valueText">{{leave_start_date}}
@@ -86,31 +86,35 @@
                             class="valueText">{{leave_end_date}}</span>
                    
                 </tr>
-            </table>
+            </table> --}}
             <table class="tableForData">
+                <tr class="footerTotalUp">
+                    <td class="numberFld">Leave Period</td>
+                    <td class="numberFld" width="29.5%" colspan="3">{{leave_start_date}} to {{leave_end_date}}</td>
+                </tr>
                 <tr class="footerTotalUp">
                     <td class="numberFld">Leave Salary Paid Days</td>
                     <td class="numberFld" width="29.5%" colspan="3">{{leave_period}} Days</td>
                 </tr>
                 <tr class="footerTotalUp">
-                    <td class="numberFld">Total Leave Salary </td>
-                    <td class="numberFld" width="29.5%" colspan="3">{{leave_amount}}</td>
+                    <td class="numberFld">Net Leave Salary </td>
+                    <td class="numberFld" width="29.5%" colspan="3"><b>{{leave_amount}}</b></td>
                 </tr>
                 <tr class="footerTotalUp">
                     <td class="numberFld">Normal Salary Paid Days</td>
                     <td class="numberFld" width="29.5%" colspan="3">{{total_paid_days}} Days</td>
                 </tr>
                 <tr class="footerTotalUp">
-                    <td class="numberFld">Total Normal Salary</td>
-                    <td class="numberFld" colspan="3">{{net_salary}}</td>
+                    <td class="numberFld">Net Normal Salary <small style="display: block;font-style:italic">(Excluding Loan Due)</small></td>
+                    <td class="numberFld" colspan="3"><b>{{finalNetSalary}}</b></td>
                 </tr>
                 <tr class="footerTotalUp">
                     <td class="numberFld">Airfare Amt</td>
                     <td class="numberFld" colspan="3">{{airfare_amount}}</td>
                 </tr>
                 <tr class="footerTotalUp">
-                    <td class="numberFld">Loan Due Amt</td>
-                    <td class="numberFld" colspan="3">(-) {{loan_due_amount}}</td>
+                    <td class="numberFld">Net Loan Due Amt <small style="display: block;font-style:italic">(Sum of all Loan Due)</small></td>
+                    <td class="numberFld" colspan="3">(-) <b>{{final_loan_amount}}</b></td>
                 </tr>
                 <tr class="footerTotalDown">
                     <td class="numberFld">Net Pay</td>
