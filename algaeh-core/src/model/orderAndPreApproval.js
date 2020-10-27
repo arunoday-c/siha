@@ -1074,7 +1074,7 @@ let getVisitConsumable = (req, res, next) => {
     _mysql
       .executeQuery({
         query:
-          "SELECT  OS.`hims_f_ordered_inventory_id`, OS.`patient_id`, OS.`visit_id`, OS.`doctor_id`, OS.`service_type_id`, \
+          "SELECT  OS.`hims_f_ordered_inventory_id`, OS.`patient_id`, OS.`visit_id`, OS.`doctor_id`, OS.`inventory_item_id` as item_id, OS.`service_type_id`, \
         OS.`services_id`, OS.`insurance_yesno`, OS.`insurance_provider_id`, OS.`insurance_sub_id`, \
         OS.`network_id`, OS.`insurance_network_office_id`, OS.`policy_number`, OS.`pre_approval`, OS.`apprv_status`, \
         OS.`billed`, OS.`quantity`, OS.`unit_cost`, OS.`gross_amount`, OS.`discount_amout`, OS.`discount_percentage`, \
@@ -1083,13 +1083,16 @@ let getVisitConsumable = (req, res, next) => {
         OS.`comapany_resp`, OS.`company_payble`, OS.`sec_company`, OS.`sec_deductable_percentage`, OS.`sec_deductable_amount`,\
         OS.`sec_company_res`, OS.`sec_company_tax`, OS.`sec_company_paybale`, OS.`sec_copay_percntage`, OS.`sec_copay_amount`,\
         OS.`created_by`, OS.`created_date`, OS.`updated_by`, OS.`updated_date`, OS.`record_status`,\
-        OS.item_notchargable,OS.instructions, \
+        OS.item_notchargable,OS.instructions, OS.batchno, OS.batchno as barcode, purchase_uom_id as uom_id, \
+        sales_uom_id as sales_uom, category_id as item_category_id, group_id as item_group_id, \
+        (patient_resp+comapany_resp) as extended_cost,(patient_payable+company_payble) as net_total,\
         S.`hims_d_services_id`, S.`service_code`, S.`cpt_code`, S.`service_name`, S.`arabic_service_name`, \
         S.`service_desc`, S.`sub_department_id`, S.`hospital_id`, S.`service_type_id`, S.`procedure_type`, \
         S.`standard_fee`, S.`followup_free_fee`, S.`followup_paid_fee`, S.`discount`, S.`vat_applicable`, \
-        S.`vat_percent`, S.`service_status`, ST.service_type FROM `hims_f_ordered_inventory` OS \
+        S.`vat_percent`, S.`service_status`, ST.service_type, '+' as operation FROM `hims_f_ordered_inventory` OS \
         inner join  `hims_d_services` S on OS.services_id = S.hims_d_services_id \
         inner join  `hims_d_service_type` ST on OS.service_type_id = ST.hims_d_service_type_id \
+        inner join  `hims_d_inventory_item_master` IM on OS.inventory_item_id = IM.hims_d_inventory_item_master_id \
         WHERE OS.`record_status`='A'  " +
           _stringData,
         values: inputValues,
@@ -2288,14 +2291,34 @@ let deleteInvOrderedItems = (req, res, next) => {
     _mysql
       .executeQuery({
         query:
-          "DELETE FROM hims_f_ordered_inventory where hims_f_ordered_inventory_id=?;",
+          "SELECT * FROM hims_f_inventory_consumption_detail where ordered_inventory_id=?",
         values: [req.body.hims_f_ordered_inventory_id],
         printQuery: true,
       })
       .then((result) => {
-        _mysql.releaseConnection();
-        req.records = result;
-        next();
+        console.log("result", result)
+        let strQuery = ""
+        if (result.length === 0) {
+          strQuery = `UPDATE hims_f_inventory_consumption_header SET cancelled ='Y' where hims_f_inventory_consumption_header_id = ${result[0].inventory_consumption_header_id};`
+        }
+        _mysql
+          .executeQuery({
+            query:
+              "DELETE FROM hims_f_ordered_inventory where hims_f_ordered_inventory_id=?;\
+              DELETE FROM hims_f_inventory_consumption_detail where ordered_inventory_id=?;\
+              SELECT consumption_number, hims_f_inventory_consumption_header_id FROM hims_f_inventory_consumption_header where hims_f_inventory_consumption_header_id = ?"+ strQuery,
+            values: [req.body.hims_f_ordered_inventory_id, req.body.hims_f_ordered_inventory_id, result[0].inventory_consumption_header_id],
+            printQuery: true,
+          })
+          .then((res_result) => {
+            _mysql.releaseConnection();
+            req.records = res_result[2];
+            next();
+          })
+          .catch((error) => {
+            _mysql.releaseConnection();
+            next(error);
+          });
       })
       .catch((error) => {
         _mysql.releaseConnection();
@@ -2436,5 +2459,5 @@ export default {
   deleteOrderService,
   insertPhysiotherapyServices,
   deleteInvOrderedItems,
-  deleteOrderedPackage,
+  deleteOrderedPackage
 };
