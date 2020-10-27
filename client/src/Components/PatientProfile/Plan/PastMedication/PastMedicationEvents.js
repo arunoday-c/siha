@@ -4,6 +4,7 @@ import Enumerable from "linq";
 import Options from "../../../../Options.json";
 import _ from "lodash";
 import extend from "extend";
+import swal from "sweetalert2";
 
 //Text Handaler Change
 
@@ -61,7 +62,46 @@ const genericnamehandle = ($this, ctrl, e) => {
     itemlist: items,
   });
 };
+const clearInputState = ($this) => {
+  const {
+    current_patient,
+    encounter_id,
+    visit_id,
+    provider_id,
+    episode_id,
+  } = Window.global;
+  $this.setState({
+    patient_id: current_patient,
+    encounter_id: encounter_id,
+    visit_id: visit_id,
+    provider_id: provider_id,
+    episode_id: episode_id,
+    // vat_applicable: $this.props.vat_applicable,
+    instructions: "",
 
+    start_date: moment(new Date())._d,
+    saveMedicationEnable: true,
+    uom_id: null,
+    item_category_id: null,
+    item_group_id: null,
+    // addItemEnable: true,
+    item_id: null,
+    generic_id: null,
+    dosage: 1,
+    med_units: null,
+    frequency: null,
+    no_of_days: 0,
+    dispense: 0,
+    generic_name_item_description: "",
+    service_id: null,
+    total_quantity: 0,
+    frequency_type: null,
+    frequency_time: null,
+    frequency_route: null,
+    generic_name: "",
+    item_description: "",
+  });
+};
 const itemhandle = ($this, item) => {
   if (item.service_id === null || item.service_id === undefined) {
     swalMessage({
@@ -73,31 +113,33 @@ const itemhandle = ($this, item) => {
       generic_id: null,
     });
   } else {
-    $this.setState(
-      {
-        generic_name_item_description:
-          item.generic_name_item_description !== undefined
-            ? item.generic_name_item_description.replace(/\w+/g, _.capitalize)
-            : item.generic_name_item_description,
-        generic_name:
-          item.generic_name !== undefined
-            ? item.generic_name.replace(/\w+/g, _.capitalize)
-            : item.generic_name,
-        item_description:
-          item.item_description !== undefined
-            ? item.item_description.replace(/\w+/g, _.capitalize)
-            : item.item_description,
-        item_id: item.hims_d_item_master_id,
-        generic_id: item.generic_id,
-        service_id: item.service_id,
-        uom_id: item.sales_uom_id,
-        item_category_id: item.category_id,
-        item_group_id: item.group_id,
-        addItemEnable: false,
-        total_quantity: 0,
-      });
+    $this.setState({
+      generic_name_item_description:
+        item.generic_name_item_description !== undefined
+          ? item.generic_name_item_description.replace(/\w+/g, _.capitalize)
+          : item.generic_name_item_description,
+      generic_name:
+        item.generic_name !== undefined
+          ? item.generic_name.replace(/\w+/g, _.capitalize)
+          : item.generic_name,
+      item_description:
+        item.item_description !== undefined
+          ? item.item_description.replace(/\w+/g, _.capitalize)
+          : item.item_description,
+      item_id: item.hims_d_item_master_id,
+      generic_id: item.generic_id,
+      service_id: item.service_id,
+      uom_id: item.sales_uom_id,
+      item_category_id: item.category_id,
+      item_group_id: item.group_id,
+      addItemEnable: false,
+      total_quantity: 0,
+    });
   }
 };
+// const AddItemsOrUpdate = ($this) => {
+
+// };
 
 const AddItems = ($this) => {
   if (
@@ -131,21 +173,20 @@ const AddItems = ($this) => {
 
   let validate =
     $this.state.item_id !== null &&
-      $this.state.generic_id !== null &&
-      $this.state.dosage !== null &&
-      $this.state.med_units !== null &&
-      $this.state.frequency !== null &&
-      $this.state.no_of_days !== null &&
-      $this.state.frequency_type !== null &&
-      $this.state.frequency_time !== null &&
-      $this.state.frequency_route !== null &&
-      $this.state.uom_id !== null &&
-      $this.state.service_id !== null &&
-      $this.state.item_category_id !== null &&
-      $this.state.item_group_id !== null
+    $this.state.generic_id !== null &&
+    $this.state.dosage !== null &&
+    $this.state.med_units !== null &&
+    $this.state.frequency !== null &&
+    $this.state.no_of_days !== null &&
+    $this.state.frequency_type !== null &&
+    $this.state.frequency_time !== null &&
+    $this.state.frequency_route !== null &&
+    $this.state.uom_id !== null &&
+    $this.state.service_id !== null &&
+    $this.state.item_category_id !== null &&
+    $this.state.item_group_id !== null
       ? true
       : false;
-
   if (validate) {
     const inputObj = extend({}, $this.state);
     algaehApiCall({
@@ -154,13 +195,14 @@ const AddItems = ($this) => {
       method: "POST",
       onSuccess: (response) => {
         if (response.data.success) {
-          getPastMedication($this, $this.state.patient_id)
+          getPastMedication($this, $this.state.patient_id);
+          clearInputState($this);
           swalMessage({
             title: "Added Successfully.",
             type: "success",
           });
         }
-      }
+      },
     });
   } else {
     swalMessage({
@@ -183,13 +225,36 @@ const dateFormater = (value) => {
 };
 
 const deleteItems = ($this, row) => {
-  let medicationitems = $this.state.medicationitems;
-  medicationitems.splice(row.rowIdx, 1);
-  let saveMedicationEnable = medicationitems.length > 0 ? false : true;
+  swal({
+    title: "Are you sure you want to delete past medication of The patient?",
+    type: "warning",
+    showCancelButton: true,
+    confirmButtonText: "Yes",
+    confirmButtonColor: "#44b8bd",
+    cancelButtonColor: "#d33",
+    cancelButtonText: "No",
+  }).then((willDelete) => {
+    if (willDelete.value) {
+      let data = {
+        hims_f_past_medication_id: row.hims_f_past_medication_id,
+      };
+      algaehApiCall({
+        uri: "/orderMedication/deletePastMedication",
 
-  $this.setState({
-    medicationitems: medicationitems,
-    saveMedicationEnable: saveMedicationEnable,
+        data: data,
+        method: "DELETE",
+        onSuccess: (response) => {
+          if (response.data.success) {
+            swalMessage({
+              title: "Record deleted successfully . ",
+              type: "success",
+            });
+            getPastMedication($this, $this.state.patient_id);
+          }
+        },
+        onFailure: (error) => {},
+      });
+    }
   });
 };
 
@@ -201,12 +266,12 @@ const getPastMedication = ($this, patient_id) => {
     onSuccess: (response) => {
       if (response.data.success) {
         $this.setState({
-          medicationitems: response.data.records
+          medicationitems: response.data.records,
         });
       }
-    }
+    },
   });
-}
+};
 
 export {
   texthandle,
@@ -217,5 +282,5 @@ export {
   deleteItems,
   dateFormater,
   numberhandle,
-  getPastMedication
+  getPastMedication,
 };

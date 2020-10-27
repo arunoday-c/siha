@@ -10,18 +10,21 @@ const {
   getPatientPrescription,
   getPatientMedications,
   addPastMedication,
-  getPastMedication
+  deletePastMedication,
+  getPastMedication,
 } = orderModels;
 
 export default ({ config, db }) => {
   let api = Router();
   // created by irfan: to  addPatientPrescription
   api.post(
-    "/addPatientPrescription", addPatientPrescription, (req, res, next) => {
+    "/addPatientPrescription",
+    addPatientPrescription,
+    (req, res, next) => {
       let result = req.records;
       res.status(httpStatus.ok).json({
         success: true,
-        records: result
+        records: result,
       });
       next();
     },
@@ -29,17 +32,31 @@ export default ({ config, db }) => {
   );
 
   api.post(
-    "/addPastMedication", addPastMedication, (req, res, next) => {
+    "/addPastMedication",
+    addPastMedication,
+    (req, res, next) => {
       let result = req.records;
       res.status(httpStatus.ok).json({
         success: true,
-        records: result
+        records: result,
       });
       next();
     },
     releaseConnection
   );
-
+  api.delete(
+    "/deletePastMedication",
+    deletePastMedication,
+    (req, res, next) => {
+      let results = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: results,
+      });
+      next();
+    },
+    releaseConnection
+  );
   // created by irfan: to  getPatientPrescription
   api.get(
     "/getPatientPrescription",
@@ -48,7 +65,7 @@ export default ({ config, db }) => {
       let result = req.records;
       res.status(httpStatus.ok).json({
         success: true,
-        records: result
+        records: result,
       });
       next();
     },
@@ -58,7 +75,7 @@ export default ({ config, db }) => {
   api.get("/getPatientMedications", getPatientMedications, (req, res, next) => {
     res.status(httpStatus.ok).json({
       success: true,
-      records: req.records
+      records: req.records,
     });
     next();
   });
@@ -66,7 +83,7 @@ export default ({ config, db }) => {
   api.get("/getPastMedication", getPastMedication, (req, res, next) => {
     res.status(httpStatus.ok).json({
       success: true,
-      records: req.records
+      records: req.records,
     });
     next();
   });
