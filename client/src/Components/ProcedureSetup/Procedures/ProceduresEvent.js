@@ -128,6 +128,18 @@ export default function ProceduresEvent() {
       AlgaehValidation({
         alertTypeIcon: "warning",
         onSuccess: () => {
+          const item_code_exit = _.filter(
+            $this.props.all_procedures,
+            f => f.procedure_code === $this.state.procedure_code
+          );
+
+          if (item_code_exit.length > 0) {
+            swalMessage({
+              type: "warning",
+              title: "Item Code Already Exist."
+            });
+            return
+          }
           $this.state.service_code = $this.state.procedure_code;
           $this.state.service_type_id = "2";
           $this.state.service_name = $this.state.procedure_desc;

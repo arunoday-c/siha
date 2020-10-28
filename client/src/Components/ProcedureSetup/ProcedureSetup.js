@@ -66,6 +66,7 @@ export default class ProcedureSetup extends Component {
                 show={this.state.isOpen}
                 onClose={this.CloseModel.bind(this)}
                 ProceduresPop={this.state.ProceduresPop}
+                all_procedures={this.state.all_procedures}
               />
             </div>
           </div>
