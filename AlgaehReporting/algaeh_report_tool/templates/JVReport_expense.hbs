@@ -53,6 +53,7 @@
                     <tr>
                         <th>Sl No.</th>
                         <th>Cost Center</th>
+                        <th>Ledger Code</th>
                         <th>Ledger</th>
                         <th>Ledger Arabic</th>
                         <th>Debit Amount</th>
@@ -67,6 +68,7 @@
                  <tr>
                         <td>{{inc @index}}</td>
                         <td>{{cost_center_name}}</td>
+                        <td>{{ledger_code}}</td>
                         <td>{{account_name}} > {{child_name}}</td>
                         <td>{{arabic_account_name}} > {{arabic_child_name}}</td>
                         <td>{{numberFormating debit_amount ../currency}}</td>

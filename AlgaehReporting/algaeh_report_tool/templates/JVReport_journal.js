@@ -22,7 +22,7 @@ const executePDF = function executePDFMethod(options) {
         .executeQuery({
           query: `SELECT VD.voucher_no,VD.voucher_type,VD.voucher_no,FD.sub_department_id,FD.project_id,PR.project_desc,SD.sub_department_name, 
           CASE WHEN cost_center_type ='P' THEN project_desc ELSE sub_department_name END as cost_center_name,
-          AD.account_name, AD.arabic_account_name, CD.child_name,CD.arabic_child_name, FD.debit_amount, FD.credit_amount,VD.amount,
+          AD.account_name, AD.arabic_account_name, CD.child_name,CD.arabic_child_name,CD.ledger_code,FD.debit_amount, FD.credit_amount,VD.amount,
           FD.payment_type, FD.payment_date, FD.narration as narration_detail, VD.narration as narration_head, FO.cost_center_type
           FROM finance_voucher_details as FD
           inner join finance_account_head AD on FD.head_id = AD.finance_account_head_id
