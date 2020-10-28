@@ -93,11 +93,11 @@ class OrderedList extends PureComponent {
     });
   }
 
-  // UNSAFE_componentWillReceiveProps(nextProps) {
-  //   if (nextProps.openData !== undefined) {
-  //     this.setState({ openData: nextProps.openData });
-  //   }
-  // }
+  UNSAFE_componentWillReceiveProps(nextProps) {
+    if (nextProps.inventory_location_id !== undefined) {
+      this.setState({ inventory_location_id: nextProps.inventory_location_id });
+    }
+  }
 
   ShowModel(e) {
     if (this.props.chief_complaint === true) {

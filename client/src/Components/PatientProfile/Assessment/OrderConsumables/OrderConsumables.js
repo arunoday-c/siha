@@ -342,10 +342,9 @@ class OrderConsumables extends Component {
                 />
 
                 <AlagehFormGroup
-                  div={{ className: "col-2 mandatory" }}
+                  div={{ className: "col-2" }}
                   label={{
-                    forceLabel: "Instructions",
-                    isImp: true,
+                    forceLabel: "Instructions"
                   }}
                   textBox={{
                     className: "txt-fld",

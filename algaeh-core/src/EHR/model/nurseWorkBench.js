@@ -855,11 +855,15 @@ let getNurseMyDay = (req, res, next) => {
     _mysql
       .executeQuery({
         query:
-          "select  E.hims_f_patient_encounter_id,P.patient_code,P.full_name,P.gender,P.age,E.patient_id ,V.appointment_patient,V.new_visit_patient,E.provider_id,E.`status`,E.nurse_examine,E.checked_in,\
-          E.payment_type,E.episode_id,E.encounter_id,E.`source`,E.updated_date as encountered_date,E.visit_id ,sub_department_id, visit_type_desc from hims_f_patient_encounter E\
+          "select  E.hims_f_patient_encounter_id,P.patient_code,P.full_name,P.gender,P.age,E.patient_id, \
+          V.appointment_patient,V.new_visit_patient,E.provider_id,E.`status`,E.nurse_examine,E.checked_in,\
+          E.payment_type,E.episode_id,E.encounter_id,E.`source`,E.updated_date as encountered_date,E.visit_id, \
+          sub_department_id, visit_type_desc, inventory_location_id \
+          from hims_f_patient_encounter E\
           INNER JOIN hims_f_patient P ON E.patient_id=P.hims_d_patient_id \
           inner join hims_f_patient_visit V on E.visit_id=V.hims_f_patient_visit_id  \
           inner join hims_d_visit_type VT on V.visit_type=VT.hims_d_visit_type_id  \
+          inner join hims_d_sub_department SD on V.sub_department_id = SD.hims_d_sub_department_id  \
           where E.cancelled='N' and E.record_status='A' AND  V.record_status='A' and V.hospital_id=? AND " +
           _query,
         values: [req.userIdentity.hospital_id],
