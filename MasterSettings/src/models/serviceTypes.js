@@ -666,22 +666,23 @@ export default {
   },
 
   updateProcedures: (req, res, next) => {
-    const _mysql = new algaehMysql();
+    const _options = req.connection == null ? {} : req.connection;
+    const _mysql = new algaehMysql(_options);
     try {
       let input = req.body;
+
+      console.log("input", input)
       _mysql
         .executeQueryWithTransaction({
           query:
-            "UPDATE `hims_d_procedure` SET `procedure_code`=?, `procedure_desc`=?, `procedure_desc_arabic`=?, `service_id`=?,\
+            "UPDATE `hims_d_procedure` SET `procedure_code`=?, `procedure_desc`=?, `procedure_desc_arabic`=?,\
           `procedure_type`=?,`updated_date`=?, `updated_by`=? \
           WHERE record_status='A' and `hims_d_procedure_id`=?",
           values: [
             input.procedure_code,
             input.procedure_desc,
             input.procedure_desc_arabic,
-            input.service_id,
             input.procedure_type,
-
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
             input.hims_d_procedure_id,

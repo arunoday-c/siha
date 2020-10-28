@@ -14,6 +14,8 @@ export default {
       try {
         const input = req.query;
         const month_number = parseInt(input.month);
+        const previous_month = parseInt(input.month) == 1 ? 12 : parseInt(input.month) - 1;
+        const previous_month_year = parseInt(input.month) == 1 ? parseInt(input.year) - 1 : input.year;
         const year = input.year;
 
         const month_start = moment(year + "-" + month_number, "YYYY-M")
@@ -205,7 +207,8 @@ export default {
               select hims_f_salary_id, employee_id, year, month from hims_f_salary S \
               inner join hims_f_salary_contributions SC on SC.salary_header_id = S.hims_f_salary_id \
               inner join hims_d_earning_deduction ED on SC.contributions_id = ED.hims_d_earning_deduction_id \
-              where employee_id in (?) and year=? and month=? and salary_type='LS' and ED.component_type='EEP' and amount>0;"
+              where employee_id in (?) and year=? and month=? and salary_type='LS' and ED.component_type='EEP' and amount>0;\
+              select hims_f_salary_id from hims_f_salary where `year`=? and month=? and salary_paid = 'N';"
             _mysql
               .executeQueryWithTransaction({
                 query:
@@ -283,11 +286,27 @@ export default {
                   input.month,
                   _myemp,
                   input.year,
-                  input.month
+                  input.month,
+                  previous_month_year,
+                  previous_month,
+                  _myemp
                 ],
                 printQuery: true,
               })
               .then((Salaryresults) => {
+                const previous_month_Salary = Salaryresults[20]
+                if (previous_month_Salary.length > 0) {
+                  console.log("previous_month_Salary", previous_month_Salary.length)
+                  // _mysql.releaseConnection();
+                  req.records = {
+                    invalid_input: true,
+                    message: "Please pay previous salary",
+                  };
+                  next();
+                  resolve({});
+                  return;
+                }
+                console.log("test")
                 let _headerQuery = "";
 
                 // let basic_id = Salaryresults[8][0]["basic_earning_component"];
@@ -397,7 +416,7 @@ export default {
                                 f.employee_id == empResult[i]["employee_id"]
                               );
                             });
-                            const ls_con_applied = _.filter(results[18], (f) => {
+                            const ls_con_applied = _.filter(results[19], (f) => {
                               return f.employee_id == empResult[i]["employee_id"];
                             });
 
@@ -935,6 +954,10 @@ export default {
 
   getSalaryProcess: (req, res, next) => {
     try {
+      if (req.records.invalid_input == true) {
+        next();
+      }
+
       const _options = req.connection == null ? {} : req.connection;
       const _mysql = new algaehMysql(_options);
 
