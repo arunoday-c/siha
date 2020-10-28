@@ -237,10 +237,16 @@ class Dental extends Component {
       ],
     };
 
+    const settings = { header: undefined, footer: undefined };
     algaehApiCall({
       uri: "/orderAndPreApproval/insertOrderedServices",
-      data: inputObj,
       method: "POST",
+      header: {
+        "content-type": "application/octet-stream",
+        ...settings
+      },
+      skipParse: true,
+      data: Buffer.from(JSON.stringify(inputObj), "utf8"),
       onSuccess: (response) => {
         if (response.data.success) {
           algaehApiCall({
