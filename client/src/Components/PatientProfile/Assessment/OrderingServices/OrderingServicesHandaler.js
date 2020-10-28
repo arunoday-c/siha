@@ -595,10 +595,15 @@ const SaveOrdersServices = ($this, e) => {
     date_of_birth: $this.props.date_of_birth,
     gender: $this.props.gender,
   };
-
+  const settings = { header: undefined, footer: undefined };
   algaehApiCall({
     uri: "/orderAndPreApproval/insertOrderedServices",
-    data: inputObj,
+    header: {
+      "content-type": "application/octet-stream",
+      ...settings
+    },
+    skipParse: true,
+    data: Buffer.from(JSON.stringify(inputObj), "utf8"),
     method: "POST",
     onSuccess: (response) => {
       if (response.data.success) {

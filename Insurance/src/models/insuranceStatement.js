@@ -28,7 +28,8 @@ export async function generateInsuranceStatement(req, res, next) {
         SUM(id.company_resp) as company_resp,
         SUM(id.company_tax) as company_tax_amount,
         ROUND(COALESCE((SUM(id.company_tax) / SUM(id.company_payable))*100,0),2) as comp_tax_percent,
-         SUM(id.company_payable) as company_payable,SUM(id.patient_payable) as patient_payable
+         SUM(id.company_payable) as company_payable,SUM(id.patient_payable) as patient_payable,
+         MAX(ins.to_date) as to_date ,MAX(ins.from_date) as from_date
         from hims_f_invoice_header as ih inner join hims_f_invoice_details as id
         on ih.hims_f_invoice_header_id  = id.invoice_header_id
         left join hims_f_invoice_icd as icd on icd.invoice_header_id  = ih.hims_f_invoice_header_id
@@ -41,6 +42,8 @@ export async function generateInsuranceStatement(req, res, next) {
         inner join hims_f_patient_visit as v on ih.visit_id = v.hims_f_patient_visit_id
         inner join hims_d_employee as e on v.doctor_id = e.hims_d_employee_id
         inner join hims_d_title as t on  e.title_id  = t.his_d_title_id
+        inner join hims_f_insurance_statement as ins on ins.hims_f_insurance_statement_id = ih.insurance_statement_id  or 
+        ins.hims_f_insurance_statement_id = ih.insurance_statement_id_2 or ins.hims_f_insurance_statement_id  = ih.insurance_statement_id_3
         where (ih.insurance_statement_id =? or ih.insurance_statement_id_2=? or ih.insurance_statement_id_3=?)
          and (icd.hims_f_invoice_icd_id is null or icd.diagnosis_type ='p' )
         group by p.patient_code,p.full_name,ih.invoice_number,micd.icd_description,st.service_type,ih.visit_id ;`,
@@ -59,7 +62,8 @@ export async function generateInsuranceStatement(req, res, next) {
         let insurance = [];
         let slno = 1;
         const fileName = result.length > 0 ? result[0]["file_name"] : "";
-        const update_date = result.length > 0 ? result[0]["update_date"] : "";
+        const from_date = result.length > 0 ? result[0]["from_date"] : "";
+        const to_date = result.length > 0 ? result[0]["to_date"] : "";
         console.log("fileName", fileName.toLowerCase().replace(/ /g, ""));
         const requireMetaData = rest[fileName.toLowerCase().replace(/ /g, "")];
         console.log("requireMetaData", requireMetaData);
@@ -143,10 +147,10 @@ export async function generateInsuranceStatement(req, res, next) {
                 ? common["#FDATE"]["format"]
                 : "DD-MM-YYYY";
               const currentFDate = common["#FDATE"]
-                ? moment(update_date).format(date_format)
+                ? moment(from_date).format(date_format)
                 : "";
               const currentTDate = common["#TDATE"]
-                ? moment(update_date).format(date_format)
+                ? moment(to_date).format(date_format)
                 : "";
               worksheet.eachRow({ includeEmpty: false }, (row, rowNumber) => {
                 row.eachCell((cell) => {

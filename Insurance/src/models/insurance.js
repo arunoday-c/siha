@@ -1560,7 +1560,7 @@ export default {
 export function saveMultiStatement(req, res, next) {
   const _mysql = new algaehMysql();
   try {
-    const { invoiceList } = req.body;
+    const { invoiceList, from_date, to_date } = req.body;
     const { algaeh_d_app_user_id } = req.userIdentity;
     _mysql
       .executeQueryWithTransaction({
@@ -1614,7 +1614,7 @@ export function saveMultiStatement(req, res, next) {
               query: `insert into hims_f_insurance_statement(insurance_statement_number, total_gross_amount,
               total_company_responsibility, total_company_vat, total_company_payable, total_remittance_amount,
               total_balance_amount, insurance_provider_id, sub_insurance_id, created_by, created_date, updated_by,
-              updated_date, insurance_status)VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+              updated_date, insurance_status,from_date,to_date)VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
               values: [
                 invNum,
                 total_gross_amount,
@@ -1630,6 +1630,8 @@ export function saveMultiStatement(req, res, next) {
                 algaeh_d_app_user_id,
                 new Date(),
                 "P",
+                from_date,
+                to_date,
               ],
               printQuery: true,
             })

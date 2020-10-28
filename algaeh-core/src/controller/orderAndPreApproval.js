@@ -270,12 +270,14 @@ export default ({ config, db }) => {
     });
   });
 
-  api.delete("/deleteInvOrderedItems", deleteInvOrderedItems, (req, res, next) => {
-    res.status(httpStatus.ok).json({
-      success: true,
-      records: req.records
+  api.delete("/deleteInvOrderedItems",
+    deleteInvOrderedItems,
+    (req, res, next) => {
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: req.records
+      });
     });
-  });
 
   api.delete("/deleteOrderedPackage", deleteOrderedPackage, (req, res, next) => {
     if (req.records.invalid_input == true) {
