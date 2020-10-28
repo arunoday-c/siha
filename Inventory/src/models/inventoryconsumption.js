@@ -435,8 +435,11 @@ export default {
                     inner join hims_d_hospital H on D.division_id=H.hims_d_hospital_id where \
                     division_id= ${req.userIdentity.hospital_id} limit 1;`
                 }
-
-                const net_payable = _.sumBy(inputParam.inventory_stock_detail, s => parseFloat(s.extended_cost));
+                let waited_avg_cost =
+                  utilities.decimalPoints((inputParam.inventory_stock_detail[0].quantity) *
+                    parseFloat(item_waited_avg_cost[0].waited_avg_cost),
+                    decimal_places
+                  )
                 _mysql
                   .executeQuery({
                     query: "INSERT INTO finance_day_end_header (transaction_date, amount, \
@@ -444,12 +447,12 @@ export default {
                   narration, entered_date, entered_by) VALUES (?,?,?,?,?,?,?,?,?);" + strQuery,
                     values: [
                       new Date(),
-                      net_payable,
+                      waited_avg_cost,
                       "journal",
                       inputParam.hims_f_inventory_consumption_header_id,
                       "CN-" + inputParam.consumption_number,
                       inputParam.ScreenCode,
-                      "Consumption Cancel done for " + location_acc[0].location_description + "/" + net_payable,
+                      "Consumption Cancel done for " + location_acc[0].location_description + "/" + waited_avg_cost,
                       new Date(),
                       req.userIdentity.algaeh_d_app_user_id
                     ],
@@ -478,11 +481,7 @@ export default {
                       "hospital_id"
                     ];
 
-                    let waited_avg_cost =
-                      utilities.decimalPoints(
-                        parseFloat(item_waited_avg_cost[0].waited_avg_cost),
-                        decimal_places
-                      )
+
 
                     //COGS Entry
                     insertSubDetail.push({

@@ -107,6 +107,23 @@ class NurseWorkbench extends Component {
         });
       });
     }
+    if (
+      this.props.inventorylocations === undefined ||
+      this.props.inventorylocations.length === 0
+    ) {
+      this.props.getLocation({
+        uri: "/inventory/getInventoryLocation",
+        module: "inventory",
+        data: {
+          location_status: "A",
+        },
+        method: "GET",
+        redux: {
+          type: "LOCATIONS_GET_DATA",
+          mappingName: "inventorylocations",
+        },
+      });
+    }
   }
 
   openTab(e) {
@@ -687,6 +704,7 @@ class NurseWorkbench extends Component {
       visit_id: data.visit_id,
       encounter_id: data.hims_f_patient_encounter_id,
       provider_id: data.provider_id,
+      sub_department_id: data.sub_department_id
     });
 
     this.props.getOrderList({
@@ -732,7 +750,7 @@ class NurseWorkbench extends Component {
         episode_id: data.episode_id,
         encounter_id: data.hims_f_patient_encounter_id,
         patient_id: data.patient_id,
-        visit_id: data.visit_id,
+        visit_id: data.visit_id
       },
       () => {
         getPatientAllergies(this);
@@ -1180,273 +1198,273 @@ class NurseWorkbench extends Component {
               </div>
 
               <div className="portlet-body" id="vitals_recording">
-                
-            <AlgaehSecurityComponent componentCode="NUR_PAT_VIT">
-                {/* Vitals Start */}
-                <div
-                  className="row margin-bottom-15"
-                  data-validate="vitalsForm"
-                >
-                  {_department_viatals.map((item, index) => {
-                    const _className =
-                      item.hims_d_vitals_header_id === 1
-                        ? "col-3"
-                        : item.hims_d_vitals_header_id >= 3
-                          ? "col-3 vitalTopFld15"
-                          : item.hims_d_vitals_header_id === 5 ||
-                            item.hims_d_vitals_header_id === 6
-                            ? "col-3 vitalTopFld20"
-                            : "col-3";
-                    const _name = String(item.vitals_name)
-                      .replace(/" "/g, "_")
-                      .toLowerCase();
-                    const _disable = _name === "bmi" ? true : false;
-                    const _dependent =
-                      item.hims_d_vitals_header_id === 8 ||
-                        item.hims_d_vitals_header_id === 9
-                        ? { dependent: "bp_position" }
-                        : item.hims_d_vitals_header_id === 4
-                          ? { dependent: "temperature_from" }
-                          : {};
-                    return (
-                      <React.Fragment key={index}>
-                        {item.hims_d_vitals_header_id === 4 ? (
-                          <React.Fragment>
+
+                <AlgaehSecurityComponent componentCode="NUR_PAT_VIT">
+                  {/* Vitals Start */}
+                  <div
+                    className="row margin-bottom-15"
+                    data-validate="vitalsForm"
+                  >
+                    {_department_viatals.map((item, index) => {
+                      const _className =
+                        item.hims_d_vitals_header_id === 1
+                          ? "col-3"
+                          : item.hims_d_vitals_header_id >= 3
+                            ? "col-3 vitalTopFld15"
+                            : item.hims_d_vitals_header_id === 5 ||
+                              item.hims_d_vitals_header_id === 6
+                              ? "col-3 vitalTopFld20"
+                              : "col-3";
+                      const _name = String(item.vitals_name)
+                        .replace(/" "/g, "_")
+                        .toLowerCase();
+                      const _disable = _name === "bmi" ? true : false;
+                      const _dependent =
+                        item.hims_d_vitals_header_id === 8 ||
+                          item.hims_d_vitals_header_id === 9
+                          ? { dependent: "bp_position" }
+                          : item.hims_d_vitals_header_id === 4
+                            ? { dependent: "temperature_from" }
+                            : {};
+                      return (
+                        <React.Fragment key={index}>
+                          {item.hims_d_vitals_header_id === 4 ? (
+                            <React.Fragment>
+                              <AlagehAutoComplete
+                                div={{ className: "col-3" }}
+                                label={{
+                                  fieldName: "temp_frm",
+                                }}
+                                selector={{
+                                  name: "temperature_from",
+                                  className: "select-fld",
+                                  value: this.state.temperature_from,
+                                  dataSource: {
+                                    textField: "name",
+                                    valueField: "value",
+                                    data: GlobalVariables.TEMP_FROM,
+                                  },
+
+                                  onChange: this.dropDownHandle.bind(this),
+                                }}
+                              />
+                            </React.Fragment>
+                          ) : item.hims_d_vitals_header_id === 8 ? (
                             <AlagehAutoComplete
                               div={{ className: "col-3" }}
                               label={{
-                                fieldName: "temp_frm",
+                                fieldName: "bp",
+                                // fieldName: "BP_type"
                               }}
                               selector={{
-                                name: "temperature_from",
+                                name: "bp_position",
                                 className: "select-fld",
-                                value: this.state.temperature_from,
+                                value: this.state.bp_position,
                                 dataSource: {
                                   textField: "name",
                                   valueField: "value",
-                                  data: GlobalVariables.TEMP_FROM,
+                                  data: GlobalVariables.BP_POSITION,
                                 },
-
                                 onChange: this.dropDownHandle.bind(this),
                               }}
                             />
-                          </React.Fragment>
-                        ) : item.hims_d_vitals_header_id === 8 ? (
-                          <AlagehAutoComplete
-                            div={{ className: "col-3" }}
-                            label={{
-                              fieldName: "bp",
-                              // fieldName: "BP_type"
-                            }}
-                            selector={{
-                              name: "bp_position",
-                              className: "select-fld",
-                              value: this.state.bp_position,
-                              dataSource: {
-                                textField: "name",
-                                valueField: "value",
-                                data: GlobalVariables.BP_POSITION,
-                              },
-                              onChange: this.dropDownHandle.bind(this),
-                            }}
-                          />
-                        ) : null}
+                          ) : null}
 
-                        <AlagehFormGroup
-                          div={{
-                            className: _className,
-                            others: { key: index },
-                          }}
-                          label={{
-                            forceLabel:
-                              item.uom === "C"
-                                ? "°C"
-                                : item.uom === "F"
-                                  ? "°F"
-                                  : item.vital_short_name +
-                                  " (" +
-                                  String(item.uom).trim() +
-                                  ")",
-                            isImp: item.mandatory === 0 ? false : true,
-                          }}
-                          textBox={{
-                            className: "txt-fld",
-                            name: _name,
-                            others: {
-                              type: "number",
-                              min: 0,
-                              disabled: _disable,
-                              vitalid: item.hims_d_vitals_header_id,
-                              formula_value: String(item.uom).trim(),
-                              ..._dependent,
-                            },
-                            value: this.state[_name],
-                            events: {
-                              onChange: this.texthandle.bind(this),
-                            },
-                          }}
-                        />
-
-                        {item.hims_d_vitals_header_id === 4 ? (
                           <AlagehFormGroup
-                            div={{ className: "col-3" }}
+                            div={{
+                              className: _className,
+                              others: { key: index },
+                            }}
                             label={{
-                              forceLabel: item.uom === "C" ? "°F" : "°C",
+                              forceLabel:
+                                item.uom === "C"
+                                  ? "°C"
+                                  : item.uom === "F"
+                                    ? "°F"
+                                    : item.vital_short_name +
+                                    " (" +
+                                    String(item.uom).trim() +
+                                    ")",
+                              isImp: item.mandatory === 0 ? false : true,
                             }}
                             textBox={{
                               className: "txt-fld",
-                              disabled: true,
-                              value: temperatureConvertion(
-                                this.state[_name],
-                                item.uom
-                              ),
+                              name: _name,
+                              others: {
+                                type: "number",
+                                min: 0,
+                                disabled: _disable,
+                                vitalid: item.hims_d_vitals_header_id,
+                                formula_value: String(item.uom).trim(),
+                                ..._dependent,
+                              },
+                              value: this.state[_name],
+                              events: {
+                                onChange: this.texthandle.bind(this),
+                              },
                             }}
                           />
-                        ) : null}
-                        {/* {item.hims_d_vitals_header_id === 8 ? " / " : null} */}
-                      </React.Fragment>
-                    );
-                  })}
 
-                  <AlgaehDateHandler
-                    div={{ className: "col-3" }}
-                    label={{ fieldName: "rec_date", isImp: true }}
-                    textBox={{
-                      className: "txt-fld",
-                      name: "recorded_date",
-                    }}
-                    maxDate={new Date()}
-                    events={{
-                      onChange: (selectedDate) => {
-                        this.setState({ recorded_date: selectedDate });
-                      },
-                    }}
-                    value={this.state.recorded_date}
-                  />
+                          {item.hims_d_vitals_header_id === 4 ? (
+                            <AlagehFormGroup
+                              div={{ className: "col-3" }}
+                              label={{
+                                forceLabel: item.uom === "C" ? "°F" : "°C",
+                              }}
+                              textBox={{
+                                className: "txt-fld",
+                                disabled: true,
+                                value: temperatureConvertion(
+                                  this.state[_name],
+                                  item.uom
+                                ),
+                              }}
+                            />
+                          ) : null}
+                          {/* {item.hims_d_vitals_header_id === 8 ? " / " : null} */}
+                        </React.Fragment>
+                      );
+                    })}
 
-                  <AlagehFormGroup
-                    div={{ className: "col-3" }}
-                    label={{
-                      isImp: true,
-                      fieldName: "rec_time",
-                    }}
-                    textBox={{
-                      others: {
-                        type: "time",
-                      },
-                      className: "txt-fld",
-                      name: "recorded_time",
-                      value: this.state.recorded_time,
-                      events: {
-                        onChange: this.texthandle.bind(this),
-                      },
-                    }}
-                  />
-                </div>
-                {/* Vitals End */}
-                <hr />
-                
-            </AlgaehSecurityComponent>
-            
-            <AlgaehSecurityComponent componentCode="NUR_PAT_ALRGY">
-                <h6>Enter Patient Allergies</h6>
-                <div className="row">
-                  <div className="col-8">
-                    <div className="row">
-                      <AlagehAutoComplete
-                        div={{ className: "col-lg-6" }}
-                        label={{
-                          forceLabel: "Allergy Type",
-                          fieldName: "sample",
-                        }}
-                        selector={{
-                          name: "allergy_value",
-                          className: "select-fld",
-                          value: this.state.allergy_value,
-                          dataSource: {
-                            textField: "name",
-                            valueField: "value",
-                            data: GlobalVariables.ALLERGY_TYPES,
-                          },
-                          onChange: this.allergyDropdownHandler.bind(this),
-                        }}
-                      />
+                    <AlgaehDateHandler
+                      div={{ className: "col-3" }}
+                      label={{ fieldName: "rec_date", isImp: true }}
+                      textBox={{
+                        className: "txt-fld",
+                        name: "recorded_date",
+                      }}
+                      maxDate={new Date()}
+                      events={{
+                        onChange: (selectedDate) => {
+                          this.setState({ recorded_date: selectedDate });
+                        },
+                      }}
+                      value={this.state.recorded_date}
+                    />
 
-                      <AlagehAutoComplete
-                        div={{ className: "col-lg-6" }}
-                        label={{
-                          forceLabel: "Select an Allergy",
-                          fieldName: "sample",
-                        }}
-                        selector={{
-                          name: "hims_d_allergy_id",
-                          className: "select-fld",
-                          value: this.state.hims_d_allergy_id,
-                          dataSource: {
-                            textField: "allergy_name",
-                            valueField: "hims_d_allergy_id",
-                            data: this.state.allSpecificAllergies,
-                          },
-                          onChange: this.dropDownHandle.bind(this),
-                        }}
-                      />
+                    <AlagehFormGroup
+                      div={{ className: "col-3" }}
+                      label={{
+                        isImp: true,
+                        fieldName: "rec_time",
+                      }}
+                      textBox={{
+                        others: {
+                          type: "time",
+                        },
+                        className: "txt-fld",
+                        name: "recorded_time",
+                        value: this.state.recorded_time,
+                        events: {
+                          onChange: this.texthandle.bind(this),
+                        },
+                      }}
+                    />
+                  </div>
+                  {/* Vitals End */}
+                  <hr />
 
-                      <AlagehAutoComplete
-                        div={{ className: "col-lg-6 margin-top-15" }}
-                        label={{
-                          forceLabel: "Onset",
-                        }}
-                        selector={{
-                          name: "allergy_onset",
-                          className: "select-fld",
-                          value: this.state.allergy_onset,
-                          dataSource: {
-                            textField: "name",
-                            valueField: "value",
-                            data: GlobalVariables.ALLERGY_ONSET,
-                          },
-                          onChange: this.dropDownHandle.bind(this),
-                        }}
-                      />
+                </AlgaehSecurityComponent>
 
-                      {this.state.allergy_onset === "O" ? (
-                        <AlgaehDateHandler
+                <AlgaehSecurityComponent componentCode="NUR_PAT_ALRGY">
+                  <h6>Enter Patient Allergies</h6>
+                  <div className="row">
+                    <div className="col-8">
+                      <div className="row">
+                        <AlagehAutoComplete
+                          div={{ className: "col-lg-6" }}
+                          label={{
+                            forceLabel: "Allergy Type",
+                            fieldName: "sample",
+                          }}
+                          selector={{
+                            name: "allergy_value",
+                            className: "select-fld",
+                            value: this.state.allergy_value,
+                            dataSource: {
+                              textField: "name",
+                              valueField: "value",
+                              data: GlobalVariables.ALLERGY_TYPES,
+                            },
+                            onChange: this.allergyDropdownHandler.bind(this),
+                          }}
+                        />
+
+                        <AlagehAutoComplete
+                          div={{ className: "col-lg-6" }}
+                          label={{
+                            forceLabel: "Select an Allergy",
+                            fieldName: "sample",
+                          }}
+                          selector={{
+                            name: "hims_d_allergy_id",
+                            className: "select-fld",
+                            value: this.state.hims_d_allergy_id,
+                            dataSource: {
+                              textField: "allergy_name",
+                              valueField: "hims_d_allergy_id",
+                              data: this.state.allSpecificAllergies,
+                            },
+                            onChange: this.dropDownHandle.bind(this),
+                          }}
+                        />
+
+                        <AlagehAutoComplete
                           div={{ className: "col-lg-6 margin-top-15" }}
                           label={{
-                            forceLabel: "Onset Date",
+                            forceLabel: "Onset",
                           }}
-                          textBox={{
-                            className: "txt-fld",
-                            name: "allergy_onset_date",
+                          selector={{
+                            name: "allergy_onset",
+                            className: "select-fld",
+                            value: this.state.allergy_onset,
+                            dataSource: {
+                              textField: "name",
+                              valueField: "value",
+                              data: GlobalVariables.ALLERGY_ONSET,
+                            },
+                            onChange: this.dropDownHandle.bind(this),
                           }}
-                          maxDate={new Date()}
-                          events={{
-                            onChange: datehandle.bind(this, this),
-                          }}
-                          value={this.state.allergy_onset_date}
                         />
-                      ) : null}
 
-                      <AlagehAutoComplete
-                        div={{ className: "col-lg-6 margin-top-15" }}
-                        label={{
-                          forceLabel: "Severity",
-                          fieldName: "sample",
-                        }}
-                        selector={{
-                          name: "allergy_severity",
-                          className: "select-fld",
-                          value: this.state.allergy_severity,
-                          dataSource: {
-                            textField: "name",
-                            valueField: "value",
-                            data: GlobalVariables.PAIN_SEVERITY,
-                          },
-                          onChange: this.dropDownHandle.bind(this),
-                        }}
-                      />
+                        {this.state.allergy_onset === "O" ? (
+                          <AlgaehDateHandler
+                            div={{ className: "col-lg-6 margin-top-15" }}
+                            label={{
+                              forceLabel: "Onset Date",
+                            }}
+                            textBox={{
+                              className: "txt-fld",
+                              name: "allergy_onset_date",
+                            }}
+                            maxDate={new Date()}
+                            events={{
+                              onChange: datehandle.bind(this, this),
+                            }}
+                            value={this.state.allergy_onset_date}
+                          />
+                        ) : null}
 
-                      {/* <AlagehFormGroup
+                        <AlagehAutoComplete
+                          div={{ className: "col-lg-6 margin-top-15" }}
+                          label={{
+                            forceLabel: "Severity",
+                            fieldName: "sample",
+                          }}
+                          selector={{
+                            name: "allergy_severity",
+                            className: "select-fld",
+                            value: this.state.allergy_severity,
+                            dataSource: {
+                              textField: "name",
+                              valueField: "value",
+                              data: GlobalVariables.PAIN_SEVERITY,
+                            },
+                            onChange: this.dropDownHandle.bind(this),
+                          }}
+                        />
+
+                        {/* <AlagehFormGroup
                         div={{ className: "col-lg-12 margin-top-15" }}
                         label={{
                           fieldName: "comments",
@@ -1465,406 +1483,406 @@ class NurseWorkbench extends Component {
                           }
                         }}
                       /> */}
+                      </div>
                     </div>
-                  </div>
-                  <div className="col-4">
-                    <div className="row">
-                      <AlagehFormGroup
-                        div={{ className: "col-12" }}
-                        label={{
-                          isImp: false,
-                          fieldName: "comments",
-                        }}
-                        textBox={{
-                          others: {
-                            multiline: true,
-                            rows: "2",
-                          },
-                          className: "txt-fld",
-                          name: "allergy_comment",
-                          value: this.state.allergy_comment,
-                          events: {
-                            onChange: this.texthandle.bind(this),
-                          },
-                        }}
-                      />
-                      <div className="col-12 margin-top-15">
-                        <button
-                          className="btn btn-primary"
-                          onClick={this.addAllergyToPatient.bind(this)}
-                        >
-                          ADD ALLERGY
+                    <div className="col-4">
+                      <div className="row">
+                        <AlagehFormGroup
+                          div={{ className: "col-12" }}
+                          label={{
+                            isImp: false,
+                            fieldName: "comments",
+                          }}
+                          textBox={{
+                            others: {
+                              multiline: true,
+                              rows: "2",
+                            },
+                            className: "txt-fld",
+                            name: "allergy_comment",
+                            value: this.state.allergy_comment,
+                            events: {
+                              onChange: this.texthandle.bind(this),
+                            },
+                          }}
+                        />
+                        <div className="col-12 margin-top-15">
+                          <button
+                            className="btn btn-primary"
+                            onClick={this.addAllergyToPatient.bind(this)}
+                          >
+                            ADD ALLERGY
                         </button>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-                <hr />
-                <div className="row">
-                  <div
-                    className="col-12 patientAllergyGrid_Cntr"
-                    id="hpi-grid-cntr"
-                  >
-                    <AlgaehDataGrid
-                      id="patient-allergy-grid"
-                      columns={[
-                        {
-                          fieldName: "allergy_type",
-                          label: (
-                            <AlgaehLabel
-                              label={{ forceLabel: "Allergy Type" }}
-                            />
-                          ),
+                  <hr />
+                  <div className="row">
+                    <div
+                      className="col-12 patientAllergyGrid_Cntr"
+                      id="hpi-grid-cntr"
+                    >
+                      <AlgaehDataGrid
+                        id="patient-allergy-grid"
+                        columns={[
+                          {
+                            fieldName: "allergy_type",
+                            label: (
+                              <AlgaehLabel
+                                label={{ forceLabel: "Allergy Type" }}
+                              />
+                            ),
 
-                          displayTemplate: (data) => {
-                            return (
-                              <span>
-                                {data.allergy_type === "F" ? (
-                                  <span> Food</span>
-                                ) : data.allergy_type === "A" ? (
-                                  <span>Airborne </span>
-                                ) : data.allergy_type === "AI" ? (
-                                  <span>Animal and Insect </span>
-                                ) : data.allergy_type === "C" ? (
-                                  <span>Chemical and Others </span>
-                                ) : data.allergy_type === "N" ? (
-                                  <span>NKA </span>
-                                ) : data.allergy_type === "D" ? (
-                                  <span>Drug </span>
-                                ) : null}
-                              </span>
-                            );
+                            displayTemplate: (data) => {
+                              return (
+                                <span>
+                                  {data.allergy_type === "F" ? (
+                                    <span> Food</span>
+                                  ) : data.allergy_type === "A" ? (
+                                    <span>Airborne </span>
+                                  ) : data.allergy_type === "AI" ? (
+                                    <span>Animal and Insect </span>
+                                  ) : data.allergy_type === "C" ? (
+                                    <span>Chemical and Others </span>
+                                  ) : data.allergy_type === "N" ? (
+                                    <span>NKA </span>
+                                  ) : data.allergy_type === "D" ? (
+                                    <span>Drug </span>
+                                  ) : null}
+                                </span>
+                              );
+                            },
+                            editorTemplate: (data) => {
+                              return (
+                                <span>
+                                  {data.allergy_type === "F" ? (
+                                    <span> Food</span>
+                                  ) : data.allergy_type === "A" ? (
+                                    <span>Airborne </span>
+                                  ) : data.allergy_type === "AI" ? (
+                                    <span>Animal and Insect </span>
+                                  ) : data.allergy_type === "C" ? (
+                                    <span>Chemical and Others </span>
+                                  ) : data.allergy_type === "N" ? (
+                                    <span>NKA </span>
+                                  ) : data.allergy_type === "D" ? (
+                                    <span>Drug </span>
+                                  ) : null}
+                                </span>
+                              );
+                            },
                           },
-                          editorTemplate: (data) => {
-                            return (
-                              <span>
-                                {data.allergy_type === "F" ? (
-                                  <span> Food</span>
-                                ) : data.allergy_type === "A" ? (
-                                  <span>Airborne </span>
-                                ) : data.allergy_type === "AI" ? (
-                                  <span>Animal and Insect </span>
-                                ) : data.allergy_type === "C" ? (
-                                  <span>Chemical and Others </span>
-                                ) : data.allergy_type === "N" ? (
-                                  <span>NKA </span>
-                                ) : data.allergy_type === "D" ? (
-                                  <span>Drug </span>
-                                ) : null}
-                              </span>
-                            );
+                          {
+                            fieldName: "allergy_name",
+                            label: (
+                              <AlgaehLabel
+                                label={{ forceLabel: "Allergy Name" }}
+                              />
+                            ),
+                            disabled: true,
+                            editorTemplate: (data) => {
+                              return <span>{data.allergy_name}</span>;
+                            },
                           },
-                        },
-                        {
-                          fieldName: "allergy_name",
-                          label: (
-                            <AlgaehLabel
-                              label={{ forceLabel: "Allergy Name" }}
-                            />
-                          ),
-                          disabled: true,
-                          editorTemplate: (data) => {
-                            return <span>{data.allergy_name}</span>;
-                          },
-                        },
-                        {
-                          fieldName: "onset",
-                          label: (
-                            <AlgaehLabel label={{ forceLabel: "Onset" }} />
-                          ),
-                          displayTemplate: (data) => {
-                            return data.onset === "A" ? (
-                              <span>Adulthood</span>
-                            ) : data.onset === "T" ? (
-                              <span>Teenage</span>
-                            ) : data.onset === "P" ? (
-                              <span>Pre Terms</span>
-                            ) : data.onset === "C" ? (
-                              <span>Childhood</span>
-                            ) : data.onset === "O" ? (
-                              <span>Onset Date</span>
-                            ) : (
-                                        ""
-                                      );
-                          },
-                          editorTemplate: (data) => {
-                            return (
-                              <AlagehAutoComplete
-                                div={{}}
-                                selector={{
-                                  name: "onset",
-                                  className: "select-fld",
-                                  value: data.onset,
-                                  dataSource: {
-                                    textField: "name",
-                                    valueField: "value",
-                                    data: GlobalVariables.ALLERGY_ONSET,
-                                  },
-                                  others: {
-                                    disabled: true,
-                                  },
+                          {
+                            fieldName: "onset",
+                            label: (
+                              <AlgaehLabel label={{ forceLabel: "Onset" }} />
+                            ),
+                            displayTemplate: (data) => {
+                              return data.onset === "A" ? (
+                                <span>Adulthood</span>
+                              ) : data.onset === "T" ? (
+                                <span>Teenage</span>
+                              ) : data.onset === "P" ? (
+                                <span>Pre Terms</span>
+                              ) : data.onset === "C" ? (
+                                <span>Childhood</span>
+                              ) : data.onset === "O" ? (
+                                <span>Onset Date</span>
+                              ) : (
+                                          ""
+                                        );
+                            },
+                            editorTemplate: (data) => {
+                              return (
+                                <AlagehAutoComplete
+                                  div={{}}
+                                  selector={{
+                                    name: "onset",
+                                    className: "select-fld",
+                                    value: data.onset,
+                                    dataSource: {
+                                      textField: "name",
+                                      valueField: "value",
+                                      data: GlobalVariables.ALLERGY_ONSET,
+                                    },
+                                    others: {
+                                      disabled: true,
+                                    },
 
-                                  onChange: this.changeOnsetEdit.bind(
-                                    this,
-                                    data
-                                  ),
-                                }}
-                              />
-                            );
-                          },
-                        },
-                        {
-                          fieldName: "onset_date",
-                          label: (
-                            <AlgaehLabel label={{ forceLabel: "Onset Date" }} />
-                          ),
-                          displayTemplate: (data) => {
-                            return (
-                              <span>
-                                {this.changeDateFormat(data.onset_date)}
-                              </span>
-                            );
-                          },
-                          editorTemplate: (data) => {
-                            return (
-                              <AlgaehDateHandler
-                                div={{}}
-                                textBox={{
-                                  className: "txt-fld hidden",
-                                  name: "onset_date",
-                                }}
-                                minDate={new Date()}
-                                events={{
-                                  onChange: datehandle.bind(this, this, data),
-                                }}
-                                // disabled={data.onset === "O" ? false : true}
-                                disabled={true}
-                                value={data.onset_date}
-                              />
-                            );
-                          },
-                        },
-                        {
-                          fieldName: "severity",
-                          label: (
-                            <AlgaehLabel label={{ forceLabel: "Severity" }} />
-                          ),
-                          displayTemplate: (data) => {
-                            return data.severity === "MI" ? (
-                              <span>Mild</span>
-                            ) : data.severity === "MO" ? (
-                              <span>Moderate</span>
-                            ) : data.severity === "SE" ? (
-                              <span>Severe</span>
-                            ) : (
-                                    ""
-                                  );
-                          },
-                          editorTemplate: (data) => {
-                            return (
-                              <AlagehAutoComplete
-                                div={{}}
-                                selector={{
-                                  name: "severity",
-                                  className: "select-fld",
-                                  value: data.severity,
-                                  dataSource: {
-                                    textField: "name",
-                                    valueField: "value",
-                                    data: GlobalVariables.PAIN_SEVERITY,
-                                  },
-                                  onChange: texthandle.bind(this, this, data),
-                                }}
-                              />
-                            );
-                          },
-                        },
-                        {
-                          fieldName: "comment",
-                          label: (
-                            <AlgaehLabel label={{ forceLabel: "Comment" }} />
-                          ),
-                          editorTemplate: (data) => {
-                            return (
-                              <AlagehFormGroup
-                                div={{}}
-                                textBox={{
-                                  className: "txt-fld",
-                                  name: "comment",
-                                  value: data.comment,
-                                  events: {
-                                    onChange: texthandle.bind(this, this, data),
-                                  },
-                                }}
-                              />
-                            );
-                          },
-                        },
-                      ]}
-                      keyId="hims_f_patient_allergy_id"
-                      dataSource={{
-                        data: this.state.allPatientAllergies,
-                      }}
-                      isEditable={true}
-                      paging={{ page: 0, rowsPerPage: 10 }}
-                      events={{
-                        onDelete: this.deleteAllergy.bind(this),
-                        onEdit: (row) => { },
-                        onDone: this.updatePatientAllergy.bind(this),
-                      }}
-                    />
-                  </div>
-                </div>
-                <hr /></AlgaehSecurityComponent>
-                
-            <AlgaehSecurityComponent componentCode="NUR_PAT_CHF_COM">
-                <div className="row">
-                  <div className="col-12">
-                    <h6>Enter Chief Complaints</h6>
-                    <div className="portlet portlet-bordered margin-bottom-15">
-                      <div className="portlet-body">
-                        <div className="row">
-                          <div className="col-12">
-                            <div className="row">
-                              <div className="col-12">
-                                <textarea
-                                  value={this.state.chief_complaint}
-                                  name="chief_complaint"
-                                  onChange={this.textAreaEvent.bind(this)}
-                                  maxLength={this.chiefComplaintMaxLength}
-                                >
-                                  {this.state.chief_complaint}
-                                </textarea>
-                                <small className="float-right">
-                                  Max Char.{" "}
-                                  {maxCharactersLeft(
-                                    this.chiefComplaintMaxLength,
-                                    this.state.chief_complaint
-                                  )}
-                                  /{this.chiefComplaintMaxLength}
-                                </small>
-                              </div>
-                            </div>
-                          </div>
-                          <div className="col-12">
-                            <div className="row">
-                              <AlgaehDateHandler
-                                div={{ className: "col-8" }}
-                                label={{
-                                  forceLabel: "Onset Date",
-                                }}
-                                textBox={{
-                                  className: "txt-fld",
-                                  name: "onset_date",
-                                }}
-                                maxDate={new Date()}
-                                events={{
-                                  onChange: this.datehandle.bind(this),
-                                }}
-                                value={this.state.onset_date}
-                              />
-
-                              <AlagehAutoComplete
-                                div={{ className: "col-4" }}
-                                label={{ forceLabel: "Interval", isImp: false }}
-                                selector={{
-                                  name: "interval",
-                                  className: "select-fld",
-                                  value: this.state.interval,
-                                  dataSource: {
-                                    textField: "name",
-                                    valueField: "value",
-                                    data: GlobalVariables.PAIN_DURATION,
-                                  },
-                                  onChange: this.dataLevelUpdate.bind(this),
-                                }}
-                              />
-
-                              <AlagehFormGroup
-                                div={{ className: "col-4" }}
-                                label={{
-                                  forceLabel: "Duration",
-                                  isImp: false,
-                                }}
-                                textBox={{
-                                  number: {
-                                    allowNegative: false,
-                                  },
-                                  dontAllowKeys: ["-", "e"],
-                                  className: "txt-fld",
-                                  name: "duration",
-                                  value: this.state.duration,
-                                  events: {
-                                    onChange: this.dataLevelUpdate.bind(this),
-                                  },
-                                  others: {
-                                    min: 0,
-                                  },
-                                }}
-                              />
-                              <AlagehAutoComplete
-                                div={{ className: "col-4" }}
-                                label={{
-                                  forceLabel: "Complaint Type",
-                                  isImp: false,
-                                }}
-                                selector={{
-                                  name: "complaint_type",
-                                  className: "select-fld",
-                                  value: this.state.complaint_type,
-                                  dataSource: {
-                                    textField: "name",
-                                    valueField: "value",
-                                    data: this.complaintType,
-                                  },
-                                  onChange: this.dropDownHandler.bind(this),
-                                }}
-                              />
-
-                              {this.isMale ? null : (
-                                <AlagehFormGroup
-                                  div={{ className: "col-4" }}
-                                  label={{
-                                    forceLabel: "LMP (Days)",
-                                    isImp: false,
+                                    onChange: this.changeOnsetEdit.bind(
+                                      this,
+                                      data
+                                    ),
                                   }}
+                                />
+                              );
+                            },
+                          },
+                          {
+                            fieldName: "onset_date",
+                            label: (
+                              <AlgaehLabel label={{ forceLabel: "Onset Date" }} />
+                            ),
+                            displayTemplate: (data) => {
+                              return (
+                                <span>
+                                  {this.changeDateFormat(data.onset_date)}
+                                </span>
+                              );
+                            },
+                            editorTemplate: (data) => {
+                              return (
+                                <AlgaehDateHandler
+                                  div={{}}
+                                  textBox={{
+                                    className: "txt-fld hidden",
+                                    name: "onset_date",
+                                  }}
+                                  minDate={new Date()}
+                                  events={{
+                                    onChange: datehandle.bind(this, this, data),
+                                  }}
+                                  // disabled={data.onset === "O" ? false : true}
+                                  disabled={true}
+                                  value={data.onset_date}
+                                />
+                              );
+                            },
+                          },
+                          {
+                            fieldName: "severity",
+                            label: (
+                              <AlgaehLabel label={{ forceLabel: "Severity" }} />
+                            ),
+                            displayTemplate: (data) => {
+                              return data.severity === "MI" ? (
+                                <span>Mild</span>
+                              ) : data.severity === "MO" ? (
+                                <span>Moderate</span>
+                              ) : data.severity === "SE" ? (
+                                <span>Severe</span>
+                              ) : (
+                                      ""
+                                    );
+                            },
+                            editorTemplate: (data) => {
+                              return (
+                                <AlagehAutoComplete
+                                  div={{}}
+                                  selector={{
+                                    name: "severity",
+                                    className: "select-fld",
+                                    value: data.severity,
+                                    dataSource: {
+                                      textField: "name",
+                                      valueField: "value",
+                                      data: GlobalVariables.PAIN_SEVERITY,
+                                    },
+                                    onChange: texthandle.bind(this, this, data),
+                                  }}
+                                />
+                              );
+                            },
+                          },
+                          {
+                            fieldName: "comment",
+                            label: (
+                              <AlgaehLabel label={{ forceLabel: "Comment" }} />
+                            ),
+                            editorTemplate: (data) => {
+                              return (
+                                <AlagehFormGroup
+                                  div={{}}
                                   textBox={{
                                     className: "txt-fld",
-                                    name: "lmp_days",
-                                    number: true,
-                                    value: this.state.lmp_days,
-                                    disabled: this.state.isPregnancy,
+                                    name: "comment",
+                                    value: data.comment,
                                     events: {
-                                      onChange: this.ChangeEventHandler.bind(
-                                        this
-                                      ),
+                                      onChange: texthandle.bind(this, this, data),
                                     },
                                   }}
                                 />
-                              )}
+                              );
+                            },
+                          },
+                        ]}
+                        keyId="hims_f_patient_allergy_id"
+                        dataSource={{
+                          data: this.state.allPatientAllergies,
+                        }}
+                        isEditable={true}
+                        paging={{ page: 0, rowsPerPage: 10 }}
+                        events={{
+                          onDelete: this.deleteAllergy.bind(this),
+                          onEdit: (row) => { },
+                          onDone: this.updatePatientAllergy.bind(this),
+                        }}
+                      />
+                    </div>
+                  </div>
+                  <hr /></AlgaehSecurityComponent>
 
-                              <div className="col-12 margin-top-15">
-                                <button
-                                  className="btn btn-primary"
-                                  onClick={this.addChiefComplainToPatient.bind(
-                                    this
-                                  )}
-                                >
-                                  ADD
+                <AlgaehSecurityComponent componentCode="NUR_PAT_CHF_COM">
+                  <div className="row">
+                    <div className="col-12">
+                      <h6>Enter Chief Complaints</h6>
+                      <div className="portlet portlet-bordered margin-bottom-15">
+                        <div className="portlet-body">
+                          <div className="row">
+                            <div className="col-12">
+                              <div className="row">
+                                <div className="col-12">
+                                  <textarea
+                                    value={this.state.chief_complaint}
+                                    name="chief_complaint"
+                                    onChange={this.textAreaEvent.bind(this)}
+                                    maxLength={this.chiefComplaintMaxLength}
+                                  >
+                                    {this.state.chief_complaint}
+                                  </textarea>
+                                  <small className="float-right">
+                                    Max Char.{" "}
+                                    {maxCharactersLeft(
+                                      this.chiefComplaintMaxLength,
+                                      this.state.chief_complaint
+                                    )}
+                                  /{this.chiefComplaintMaxLength}
+                                  </small>
+                                </div>
+                              </div>
+                            </div>
+                            <div className="col-12">
+                              <div className="row">
+                                <AlgaehDateHandler
+                                  div={{ className: "col-8" }}
+                                  label={{
+                                    forceLabel: "Onset Date",
+                                  }}
+                                  textBox={{
+                                    className: "txt-fld",
+                                    name: "onset_date",
+                                  }}
+                                  maxDate={new Date()}
+                                  events={{
+                                    onChange: this.datehandle.bind(this),
+                                  }}
+                                  value={this.state.onset_date}
+                                />
+
+                                <AlagehAutoComplete
+                                  div={{ className: "col-4" }}
+                                  label={{ forceLabel: "Interval", isImp: false }}
+                                  selector={{
+                                    name: "interval",
+                                    className: "select-fld",
+                                    value: this.state.interval,
+                                    dataSource: {
+                                      textField: "name",
+                                      valueField: "value",
+                                      data: GlobalVariables.PAIN_DURATION,
+                                    },
+                                    onChange: this.dataLevelUpdate.bind(this),
+                                  }}
+                                />
+
+                                <AlagehFormGroup
+                                  div={{ className: "col-4" }}
+                                  label={{
+                                    forceLabel: "Duration",
+                                    isImp: false,
+                                  }}
+                                  textBox={{
+                                    number: {
+                                      allowNegative: false,
+                                    },
+                                    dontAllowKeys: ["-", "e"],
+                                    className: "txt-fld",
+                                    name: "duration",
+                                    value: this.state.duration,
+                                    events: {
+                                      onChange: this.dataLevelUpdate.bind(this),
+                                    },
+                                    others: {
+                                      min: 0,
+                                    },
+                                  }}
+                                />
+                                <AlagehAutoComplete
+                                  div={{ className: "col-4" }}
+                                  label={{
+                                    forceLabel: "Complaint Type",
+                                    isImp: false,
+                                  }}
+                                  selector={{
+                                    name: "complaint_type",
+                                    className: "select-fld",
+                                    value: this.state.complaint_type,
+                                    dataSource: {
+                                      textField: "name",
+                                      valueField: "value",
+                                      data: this.complaintType,
+                                    },
+                                    onChange: this.dropDownHandler.bind(this),
+                                  }}
+                                />
+
+                                {this.isMale ? null : (
+                                  <AlagehFormGroup
+                                    div={{ className: "col-4" }}
+                                    label={{
+                                      forceLabel: "LMP (Days)",
+                                      isImp: false,
+                                    }}
+                                    textBox={{
+                                      className: "txt-fld",
+                                      name: "lmp_days",
+                                      number: true,
+                                      value: this.state.lmp_days,
+                                      disabled: this.state.isPregnancy,
+                                      events: {
+                                        onChange: this.ChangeEventHandler.bind(
+                                          this
+                                        ),
+                                      },
+                                    }}
+                                  />
+                                )}
+
+                                <div className="col-12 margin-top-15">
+                                  <button
+                                    className="btn btn-primary"
+                                    onClick={this.addChiefComplainToPatient.bind(
+                                      this
+                                    )}
+                                  >
+                                    ADD
                                 </button>
+                                </div>
                               </div>
                             </div>
                           </div>
                         </div>
                       </div>
+                      {/* Chief Complaint End */}
                     </div>
-                    {/* Chief Complaint End */}
                   </div>
-                </div>
-                  </AlgaehSecurityComponent>
-                
-            <AlgaehSecurityComponent componentCode="NUR_PAT_NOTE">
-               <div className="row">   <div className="col-12">
+                </AlgaehSecurityComponent>
+
+                <AlgaehSecurityComponent componentCode="NUR_PAT_NOTE">
+                  <div className="row">   <div className="col-12">
                     {/* Notes Start */}
                     {this.state.patient_id ? (
                       <NursesNotes
@@ -1882,85 +1900,85 @@ class NurseWorkbench extends Component {
                       )}
                   </div>
                   </div>
-                  </AlgaehSecurityComponent>
-            <AlgaehSecurityComponent componentCode="NUR_ORD_SERV">
-                <h6>Nurse Order Service</h6>
-                {this.state.patient_id !== null ? (
-                  <div className="row">
-                    <div className="col-12">
-                      <div className="tab-container toggle-section">
-                        <ul className="nav">
-                          <li
-                            algaehtabs={"Orders"}
-                            className={"nav-item tab-button active"}
-                            onClick={this.openTab.bind(this)}
-                          >
-                            {
-                              <AlgaehLabel
-                                label={{
-                                  forceLabel: "Order Investigation",
-                                }}
-                              />
-                            }
-                          </li>
+                </AlgaehSecurityComponent>
+                <AlgaehSecurityComponent componentCode="NUR_ORD_SERV">
+                  <h6>Nurse Order Service</h6>
+                  {this.state.patient_id !== null ? (
+                    <div className="row">
+                      <div className="col-12">
+                        <div className="tab-container toggle-section">
+                          <ul className="nav">
+                            <li
+                              algaehtabs={"Orders"}
+                              className={"nav-item tab-button active"}
+                              onClick={this.openTab.bind(this)}
+                            >
+                              {
+                                <AlgaehLabel
+                                  label={{
+                                    forceLabel: "Order Investigation",
+                                  }}
+                                />
+                              }
+                            </li>
 
-                          <li
-                            algaehtabs={"OrderConsumable"}
-                            className={"nav-item tab-button"}
-                            onClick={this.openTab.bind(this)}
-                          >
-                            {
-                              <AlgaehLabel
-                                label={{
-                                  forceLabel: "Order Consumable",
-                                }}
-                              />
-                            }
-                          </li>
+                            <li
+                              algaehtabs={"OrderConsumable"}
+                              className={"nav-item tab-button"}
+                              onClick={this.openTab.bind(this)}
+                            >
+                              {
+                                <AlgaehLabel
+                                  label={{
+                                    forceLabel: "Order Consumable",
+                                  }}
+                                />
+                              }
+                            </li>
 
-                          <li
-                            algaehtabs={"OrderPackage"}
-                            className={"nav-item tab-button"}
-                            onClick={this.openTab.bind(this)}
-                          >
-                            {
-                              <AlgaehLabel
-                                label={{
-                                  forceLabel: "Order Package",
-                                }}
-                              />
-                            }
-                          </li>
-                        </ul>
-                      </div>
+                            <li
+                              algaehtabs={"OrderPackage"}
+                              className={"nav-item tab-button"}
+                              onClick={this.openTab.bind(this)}
+                            >
+                              {
+                                <AlgaehLabel
+                                  label={{
+                                    forceLabel: "Order Package",
+                                  }}
+                                />
+                              }
+                            </li>
+                          </ul>
+                        </div>
 
-                      <div className="grid-section">
-                        {this.state.pageDisplay === "Orders" ? (
-                          <OrderedList
-                            vat_applicable={this.props.vat_applicable}
-                            openData="Investigation"
-                            key="Investigation"
-                          />
-                        ) : this.state.pageDisplay === "OrderConsumable" ? (
-                          <OrderedList
-                            vat_applicable={this.props.vat_applicable}
-                            openData="Consumable"
-                            key="Consumable"
-                          />
-                        ) : this.state.pageDisplay === "OrderPackage" ? (
-                          <OrderedList
-                            vat_applicable={this.props.vat_applicable}
-                            openData="Package"
-                            key="Package"
-                          />
-                        ) : null}
+                        <div className="grid-section">
+                          {this.state.pageDisplay === "Orders" ? (
+                            <OrderedList
+                              vat_applicable={this.props.vat_applicable}
+                              openData="Investigation"
+                              key="Investigation"
+                            />
+                          ) : this.state.pageDisplay === "OrderConsumable" ? (
+                            <OrderedList
+                              vat_applicable={this.props.vat_applicable}
+                              openData="Consumable"
+                              key="Consumable"
+                            />
+                          ) : this.state.pageDisplay === "OrderPackage" ? (
+                            <OrderedList
+                              vat_applicable={this.props.vat_applicable}
+                              openData="Package"
+                              key="Package"
+                            />
+                          ) : null}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ) : (
-                    <p>Please select a patient first</p>
-                  )}
-                  </AlgaehSecurityComponent>
+                  ) : (
+                      <p>Please select a patient first</p>
+                    )}
+                </AlgaehSecurityComponent>
               </div>
             </div>
           </div>
@@ -1993,6 +2011,7 @@ function mapStateToProps(state) {
     consumableorderedList: state.consumableorderedList,
     pakageList: state.pakageList,
     orderedList: state.orderedList,
+    inventorylocations: state.inventorylocations,
   };
 }
 
@@ -2008,6 +2027,7 @@ function mapDispatchToProps(dispatch) {
       getConsumableOrderList: AlgaehActions,
       getPakageList: AlgaehActions,
       getPatientProfile: AlgaehActions,
+      getLocation: AlgaehActions,
     },
     dispatch
   );
@@ -2016,3 +2036,4 @@ function mapDispatchToProps(dispatch) {
 export default withRouter(
   connect(mapStateToProps, mapDispatchToProps)(NurseWorkbench)
 );
+
