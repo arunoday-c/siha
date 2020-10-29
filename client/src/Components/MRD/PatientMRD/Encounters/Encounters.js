@@ -5,6 +5,8 @@ import algaehLoader from "../../../Wrapper/fullPageLoader";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import moment from "moment";
 import Enumerable from "linq";
+// import NursesNotes from "../../../PatientProfile/Examination/NursesNotes";
+import Options from "../../../../Options.json";
 // import Summary from "../Summary/Summary";
 import { Dimmer, Loader } from "semantic-ui-react";
 class Encounters extends Component {
@@ -16,6 +18,9 @@ class Encounters extends Component {
       patientDiagnosis: [],
       patientMedications: [],
       patientInvestigations: [],
+      patientPakages: [],
+      consumableorderedList: [],
+      nursingNotes: [],
       patientProcedures: [],
       patientVital: [],
       loaderChiefComp: false,
@@ -33,6 +38,9 @@ class Encounters extends Component {
     this.getPatientDiagnosis(episode_id);
     this.getPatientMedication(row.encounter_id);
     this.getPatientInvestigation(visit_id);
+    this.getPatientPakages(visit_id, Window.global["mrd_patient"]);
+    this.getConsumableorderedList(visit_id);
+    this.getNursingNotes(visit_id, Window.global["mrd_patient"]);
     this.getPatientVitals(Window.global["mrd_patient"], visit_id);
     this.getEncounterDetails(row.encounter_id);
 
@@ -240,7 +248,83 @@ class Encounters extends Component {
       },
     });
   }
-
+  getConsumableorderedList(visit_id) {
+    algaehApiCall({
+      uri: "/orderAndPreApproval/getVisitConsumable",
+      method: "GET",
+      data: {
+        visit_id: visit_id, //Window.global["visit_id"]
+      },
+      // cancelRequestId: "getPatientInvestigation",
+      onSuccess: (response) => {
+        algaehLoader({ show: false });
+        if (response.data.success) {
+          this.setState({ consumableorderedList: response.data.records });
+        }
+      },
+      onFailure: (error) => {
+        algaehLoader({ show: false });
+        swalMessage({
+          title: error.message,
+          type: "error",
+        });
+      },
+    });
+  }
+  getNursingNotes(visit_id, patient_id) {
+    algaehApiCall({
+      uri: "/doctorsWorkBench/getNurseNotes",
+      data: { patient_id, visit_id },
+      method: "GET",
+      // cancelRequestId: "getPatientInvestigation",
+      onSuccess: (response) => {
+        algaehLoader({ show: false });
+        if (response.data.success) {
+          this.setState({ nursingNotes: response.data.records });
+        }
+      },
+      onFailure: (error) => {
+        algaehLoader({ show: false });
+        swalMessage({
+          title: error.message,
+          type: "error",
+        });
+      },
+    });
+  }
+  getPatientPakages(visit_id, patient_id) {
+    algaehApiCall({
+      uri: "/orderAndPreApproval/getPatientPackage",
+      method: "GET",
+      data: {
+        package_visit_type: "ALL",
+        patient_id: patient_id,
+      },
+      // cancelRequestId: "getPatientInvestigation",
+      onSuccess: (response) => {
+        getPatientPakages;
+        algaehLoader({ show: false });
+        if (response.data.success) {
+          this.setState({ patientPakages: response.data.records });
+        }
+      },
+      onFailure: (error) => {
+        algaehLoader({ show: false });
+        swalMessage({
+          title: error.message,
+          type: "error",
+        });
+      },
+    });
+  }
+  dateFormater(value) {
+    if (value !== null) {
+      return moment(value).format(Options.dateFormat);
+    }
+  }
+  // uri: "/doctorsWorkBench/getNurseNotes",
+  // data: { patient_id, visit_id },
+  // method: "GET",
   getPatientEncounterDetails() {
     algaehLoader({ show: true });
 
@@ -334,7 +418,10 @@ class Encounters extends Component {
       },
     });
   }
-
+  // uri: "/orderAndPreApproval/getPatientPackage",
+  // method: "GET",
+  // data: {
+  //   hims_f_package_header_id: this.state.hims_f_package_header_id,
   render() {
     return (
       <div className="encounters">
@@ -717,6 +804,279 @@ class Encounters extends Component {
                     </div>
                   </div>
                 ) : null}
+                {this.state.patientPakages.length !== 0 ? (
+                  <div className="row investigation">
+                    <div className="col-lg-12">
+                      <h6 className="smallh6">Pakages</h6>
+                      <div className="row">
+                        <div className="col-lg-12">
+                          <AlgaehDataGrid
+                            id="Package_list"
+                            columns={[
+                              {
+                                fieldName: "billed",
+                                label: (
+                                  <AlgaehLabel
+                                    label={{ fieldName: "Billed" }}
+                                  />
+                                ),
+                                displayTemplate: (row) => {
+                                  return row.billed === "N" ? "No" : "Yes";
+                                },
+                              },
+                              {
+                                fieldName: "created_date",
+                                label: (
+                                  <AlgaehLabel
+                                    label={{ fieldName: "created_date" }}
+                                  />
+                                ),
+                                displayTemplate: (row) => {
+                                  return (
+                                    <span>
+                                      {this.dateFormater(row.created_date)}
+                                    </span>
+                                  );
+                                },
+                              },
+
+                              {
+                                fieldName: "service_type",
+                                label: (
+                                  <AlgaehLabel
+                                    label={{ fieldName: "service_type_id" }}
+                                  />
+                                ),
+                                others: {
+                                  minWidth: 100,
+                                  maxWidth: 500,
+                                },
+
+                                disabled: true,
+                              },
+                              {
+                                fieldName: "service_name",
+                                label: (
+                                  <AlgaehLabel
+                                    label={{ fieldName: "services_id" }}
+                                  />
+                                ),
+                                others: {
+                                  minWidth: 200,
+                                  maxWidth: 400,
+                                },
+                                disabled: true,
+                              },
+                              {
+                                fieldName: "insurance_yesno",
+                                label: (
+                                  <AlgaehLabel
+                                    label={{ fieldName: "insurance" }}
+                                  />
+                                ),
+                                displayTemplate: (row) => {
+                                  return row.insurance_yesno === "Y"
+                                    ? "Covered"
+                                    : "Not Covered";
+                                },
+                                disabled: true,
+                              },
+                              {
+                                fieldName: "pre_approval",
+                                label: (
+                                  <AlgaehLabel
+                                    label={{ fieldName: "pre_approval" }}
+                                  />
+                                ),
+                                displayTemplate: (row) => {
+                                  return (
+                                    <span>
+                                      {row.pre_approval === "Y"
+                                        ? "Required"
+                                        : "Not Required"}
+                                    </span>
+                                  );
+                                },
+                                disabled: true,
+                              },
+                              {
+                                fieldName: "patient_payable",
+                                label: (
+                                  <AlgaehLabel
+                                    label={{ fieldName: "patient_payable" }}
+                                  />
+                                ),
+                                disabled: true,
+                              },
+                              {
+                                fieldName: "company_payble",
+                                label: (
+                                  <AlgaehLabel
+                                    label={{ fieldName: "company_payble" }}
+                                  />
+                                ),
+                                disabled: true,
+                              },
+                            ]}
+                            keyId="list_type_id"
+                            dataSource={{
+                              data: this.state.patientPakages,
+                            }}
+                            paging={{ page: 0, rowsPerPage: 10 }}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ) : null}
+                {this.state.consumableorderedList.length !== 0 ? (
+                  <div className="row investigation">
+                    <div className="col-lg-12">
+                      <h6 className="smallh6">consumables</h6>
+                      <div className="row">
+                        <div className="col-lg-12">
+                          <AlgaehDataGrid
+                            id="Package_list"
+                            columns={[
+                              {
+                                fieldName: "billed",
+                                label: (
+                                  <AlgaehLabel
+                                    label={{ fieldName: "Billed" }}
+                                  />
+                                ),
+                                displayTemplate: (row) => {
+                                  return row.billed === "N" ? "No" : "Yes";
+                                },
+                              },
+                              {
+                                fieldName: "created_date",
+                                label: (
+                                  <AlgaehLabel
+                                    label={{ fieldName: "created_date" }}
+                                  />
+                                ),
+                                displayTemplate: (row) => {
+                                  return (
+                                    <span>
+                                      {this.dateFormater(row.created_date)}
+                                    </span>
+                                  );
+                                },
+                              },
+
+                              {
+                                fieldName: "service_type",
+                                label: (
+                                  <AlgaehLabel
+                                    label={{ fieldName: "service_type_id" }}
+                                  />
+                                ),
+                                others: {
+                                  minWidth: 100,
+                                  maxWidth: 500,
+                                },
+
+                                disabled: true,
+                              },
+                              {
+                                fieldName: "service_name",
+                                label: (
+                                  <AlgaehLabel
+                                    label={{ fieldName: "services_id" }}
+                                  />
+                                ),
+                                others: {
+                                  minWidth: 200,
+                                  maxWidth: 400,
+                                },
+                                disabled: true,
+                              },
+                              {
+                                fieldName: "item_notchargable",
+                                label: (
+                                  <AlgaehLabel
+                                    label={{ forceLabel: "Chargable" }}
+                                  />
+                                ),
+                                displayTemplate: (row) => {
+                                  return row.item_notchargable === "N"
+                                    ? "Yes"
+                                    : "No";
+                                },
+                                disabled: true,
+                              },
+                              {
+                                fieldName: "instructions",
+                                label: (
+                                  <AlgaehLabel
+                                    label={{ forceLabel: "Instructions" }}
+                                  />
+                                ),
+                              },
+                              {
+                                fieldName: "insurance_yesno",
+                                label: (
+                                  <AlgaehLabel
+                                    label={{ fieldName: "insurance" }}
+                                  />
+                                ),
+                                displayTemplate: (row) => {
+                                  return row.insurance_yesno === "Y"
+                                    ? "Covered"
+                                    : "Not Covered";
+                                },
+                                disabled: true,
+                              },
+                              {
+                                fieldName: "pre_approval",
+                                label: (
+                                  <AlgaehLabel
+                                    label={{ fieldName: "pre_approval" }}
+                                  />
+                                ),
+                                displayTemplate: (row) => {
+                                  return (
+                                    <span>
+                                      {row.pre_approval === "Y"
+                                        ? "Required"
+                                        : "Not Required"}
+                                    </span>
+                                  );
+                                },
+                                disabled: true,
+                              },
+                              {
+                                fieldName: "patient_payable",
+                                label: (
+                                  <AlgaehLabel
+                                    label={{ fieldName: "patient_payable" }}
+                                  />
+                                ),
+                                disabled: true,
+                              },
+                              {
+                                fieldName: "company_payble",
+                                label: (
+                                  <AlgaehLabel
+                                    label={{ fieldName: "company_payble" }}
+                                  />
+                                ),
+                                disabled: true,
+                              },
+                            ]}
+                            keyId="Cons_type_id"
+                            dataSource={{
+                              data: this.state.consumableorderedList,
+                            }}
+                            paging={{ page: 0, rowsPerPage: 10 }}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ) : null}
+
                 {this.state.patientMedications.length !== 0 ? (
                   <div className="row medication">
                     <div className="col-lg-12">
@@ -832,9 +1192,57 @@ class Encounters extends Component {
                     </div>
                   </div>
                 ) : null}
+                {this.state.nursingNotes.length !== 0 ? (
+                  <div className="row investigation">
+                    <div className="col-lg-12">
+                      <h6 className="smallh6">Nursing Notes</h6>
+                      <div className="row">
+                        <div className="col-lg-12">
+                          <AlgaehDataGrid
+                            id="Package_list"
+                            columns={[
+                              {
+                                fieldName: "nursing_notes",
+                                label: "Notes",
+                                disabled: true,
+                              },
+                              {
+                                fieldName: "created_date",
+                                label: "Entered by & Date",
+                                disabled: true,
+                              },
+                            ]}
+                            // keyId="_type_id"
+                            dataSource={{
+                              data: this.state.nursingNotes,
+                            }}
+                            paging={{ page: 0, rowsPerPage: 10 }}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ) : null}
               </div>
             </div>
           </div>
+        </div>
+        <div className="portlet portlet-bordered margin-bottom-15">
+          <div className="portlet-title">
+            <div className="caption">
+              <h3 className="caption-subject">Nurse Notes</h3>
+            </div>
+          </div>
+          {/* <div className="portlet-body">
+            <div className="row">
+              <div className="col-lg-12" id="PaymentHistoryGrid_Cntr">
+                <NursesNotes
+                  patient_id={Window?.global?.mrd_patient}
+                  viewOnly={true}
+                />
+              </div>
+            </div>
+          </div> */}
         </div>
       </div>
     );
