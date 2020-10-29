@@ -5,6 +5,7 @@ import {
   getPreferences,
   AlgaehModal,
   Input,
+  AlgaehButton,
 } from "algaeh-react-components";
 import { MainContext } from "algaeh-react-components";
 import { setItem, clearItem, removeItem } from "algaeh-react-components";
@@ -599,100 +600,115 @@ function Login(props) {
                             title="Verify PIN"
                             visible={pinPopup}
                             centered={true}
-                            destroyOnClose={true}
-                            cancelText="Re-Send PIN"
-                            okText="Verify"
-                            cancelButtonProps={{ type: "primary" }}
-                            onCancel={resetPassWord}
-                            closable={false}
-                            onOk={onClickOK}
+                            // destroyOnClose={true}
+                            // cancelText=""
+                            // okText="Verify"
+                            // cancelButtonProps={{ type: "primary" }}
+                            onCancel={() => {
+                              setPinPopup(false);
+                            }}
+                            closable={true}
+                            // onOk={onClickOK}
+                            footer={[
+                              <AlgaehButton
+                                type="default"
+                                onClick={resetPassWord}
+                              >
+                                Re-Send PIN
+                              </AlgaehButton>,
+                              <AlgaehButton type="primary" onClick={onClickOK}>
+                                Verify
+                              </AlgaehButton>,
+                            ]}
                             okButtonProps={{ loading: vPinloading }}
                             className={`row resetPinPop`}
                           >
-                            <div className="col-12">  <div className="row">
-                              <AlagehFormGroup
-                                div={{ className: "col form-group pinInput" }}
-                                textBox={{
-                                  className: "txt-fld",
-                                  name: "pinOne",
-                                  value: pinNo.pinOne,
-                                  events: {
-                                    onChange: onChangePIN,
-                                  },
-                                  others: {
-                                    next: "pinTwo",
-                                    ref: pinOneRef,
-                                    maxLength: "1",
-                                    onKeyDown: onOnlyNumber,
-                                  },
-                                }}
-                              />
-                              <AlagehFormGroup
-                                div={{ className: "col form-group pinInput" }}
-                                textBox={{
-                                  className: "txt-fld",
-                                  name: "pinTwo",
-                                  value: pinNo.pinTwo,
-                                  events: {
-                                    onChange: onChangePIN,
-                                  },
-                                  others: {
-                                    next: "pinThree",
-                                    maxLength: "1",
-                                    onKeyPress: onOnlyNumber,
-                                  },
-                                }}
-                              />
+                            <div className="col-12">
+                              {" "}
+                              <div className="row">
+                                <AlagehFormGroup
+                                  div={{ className: "col form-group pinInput" }}
+                                  textBox={{
+                                    className: "txt-fld",
+                                    name: "pinOne",
+                                    value: pinNo.pinOne,
+                                    events: {
+                                      onChange: onChangePIN,
+                                    },
+                                    others: {
+                                      next: "pinTwo",
+                                      ref: pinOneRef,
+                                      maxLength: "1",
+                                      onKeyDown: onOnlyNumber,
+                                    },
+                                  }}
+                                />
+                                <AlagehFormGroup
+                                  div={{ className: "col form-group pinInput" }}
+                                  textBox={{
+                                    className: "txt-fld",
+                                    name: "pinTwo",
+                                    value: pinNo.pinTwo,
+                                    events: {
+                                      onChange: onChangePIN,
+                                    },
+                                    others: {
+                                      next: "pinThree",
+                                      maxLength: "1",
+                                      onKeyPress: onOnlyNumber,
+                                    },
+                                  }}
+                                />
 
-                              <AlagehFormGroup
-                                div={{ className: "col form-group pinInput" }}
-                                textBox={{
-                                  className: "txt-fld",
-                                  name: "pinThree",
-                                  value: pinNo.pinThree,
-                                  events: {
-                                    onChange: onChangePIN,
-                                  },
-                                  others: {
-                                    next: "pinFour",
-                                    maxLength: "1",
-                                    onKeyPress: onOnlyNumber,
-                                  },
-                                }}
-                              />
+                                <AlagehFormGroup
+                                  div={{ className: "col form-group pinInput" }}
+                                  textBox={{
+                                    className: "txt-fld",
+                                    name: "pinThree",
+                                    value: pinNo.pinThree,
+                                    events: {
+                                      onChange: onChangePIN,
+                                    },
+                                    others: {
+                                      next: "pinFour",
+                                      maxLength: "1",
+                                      onKeyPress: onOnlyNumber,
+                                    },
+                                  }}
+                                />
 
-                              <AlagehFormGroup
-                                div={{ className: "col form-group pinInput" }}
-                                textBox={{
-                                  className: "txt-fld",
-                                  name: "pinFour",
-                                  value: pinNo.pinFour,
-                                  events: {
-                                    onChange: onChangePIN,
-                                  },
-                                  others: {
-                                    next: "pinFive",
-                                    maxLength: "1",
-                                    onKeyDown: onOnlyNumber,
-                                  },
-                                }}
-                              />
-                              <AlagehFormGroup
-                                div={{ className: "col form-group pinInput" }}
-                                textBox={{
-                                  className: "txt-fld",
-                                  name: "pinFive",
-                                  value: pinNo.pinFive,
-                                  events: {
-                                    onChange: onChangePIN,
-                                  },
-                                  others: {
-                                    maxLength: "1",
-                                    onKeyPress: onOnlyNumber,
-                                  },
-                                }}
-                              />
-                            </div>
+                                <AlagehFormGroup
+                                  div={{ className: "col form-group pinInput" }}
+                                  textBox={{
+                                    className: "txt-fld",
+                                    name: "pinFour",
+                                    value: pinNo.pinFour,
+                                    events: {
+                                      onChange: onChangePIN,
+                                    },
+                                    others: {
+                                      next: "pinFive",
+                                      maxLength: "1",
+                                      onKeyDown: onOnlyNumber,
+                                    },
+                                  }}
+                                />
+                                <AlagehFormGroup
+                                  div={{ className: "col form-group pinInput" }}
+                                  textBox={{
+                                    className: "txt-fld",
+                                    name: "pinFive",
+                                    value: pinNo.pinFive,
+                                    events: {
+                                      onChange: onChangePIN,
+                                    },
+                                    others: {
+                                      maxLength: "1",
+                                      onKeyPress: onOnlyNumber,
+                                    },
+                                  }}
+                                />
+                              </div>
                             </div>
                           </AlgaehModal>
                           <AlgaehModal
@@ -703,8 +719,7 @@ function Login(props) {
                             onCancel={() => {
                               setShowChangePassword(false);
                             }}
-                            
-        className={`row algaehNewModal resetPasswordPop`}
+                            className={`row algaehNewModal resetPasswordPop`}
                           >
                             <div className="col-12 form-group">
                               <label className="style_Label ">
@@ -826,14 +841,16 @@ function Login(props) {
                                 Another User? <b>Click Here</b>
                               </p>
                               <p className="frgtPass">
-                                Forgot Password? | 
+                                Forgot Password? |
                                 {rspLoader === true ? (
-                                   <p className="badge badge-pill badge-warning saving pinReqMsg">Please wait! Preparing your request<span>.</span>
-                                   <span>.</span>
-                                   <span>.</span></p>
-                                  
+                                  <p className="badge badge-pill badge-warning saving pinReqMsg">
+                                    Please wait! Preparing your request
+                                    <span>.</span>
+                                    <span>.</span>
+                                    <span>.</span>
+                                  </p>
                                 ) : (
-                                  <a href="#request" onClick={resetPassWord} >
+                                  <a href="#request" onClick={resetPassWord}>
                                     Request New Password
                                   </a>
                                 )}
