@@ -296,17 +296,16 @@ export default {
               .then((Salaryresults) => {
                 const previous_month_Salary = Salaryresults[20]
                 if (previous_month_Salary.length > 0) {
-                  console.log("previous_month_Salary", previous_month_Salary.length);
-                  // _mysql.releaseConnection();
-                  req.records = {
-                    invalid_input: true,
-                    message: "Previous month salary payment is pending for the assigned filter.",
-                  };
-                  next();
-                  resolve({});
+                  _mysql.commitTransaction(() => {
+                    _mysql.releaseConnection();
+                    req.records = {
+                      invalid_input: true,
+                      message: "Previous month salary payment is pending for the assigned filter.",
+                    };
+                    next();
+                  });
                   return;
                 }
-                console.log("test");
                 let _headerQuery = "";
 
                 // let basic_id = Salaryresults[8][0]["basic_earning_component"];
@@ -954,19 +953,8 @@ export default {
 
   getSalaryProcess: (req, res, next) => {
     try {
-      
-
       const _options = req.connection == null ? {} : req.connection;
       const _mysql = new algaehMysql(_options);
-
-      // if (req.records.invalid_input == true) {
-      //   // next();
-      //   _mysql.commitTransaction(() => {
-      //     _mysql.releaseConnection();
-      //     // req.records = salary_process;
-      //     next();
-      //   });
-      // }
 
       let inputParam = req.query;
 
