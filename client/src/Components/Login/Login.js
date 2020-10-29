@@ -466,7 +466,7 @@ function Login(props) {
 
         swalMessage({
           type: "success",
-          title: "please check your email",
+          title: "Please check your registered email address inbox",
         });
         //For the error focus of undefned.
         if (pinOneRef.current) pinOneRef.current.focus();
@@ -595,7 +595,7 @@ function Login(props) {
                       {showPassword === true ? (
                         <div className="col-12 passwordSec">
                           <AlgaehModal
-                            width={350}
+                            width={300}
                             title="Verify PIN"
                             visible={pinPopup}
                             centered={true}
@@ -607,10 +607,11 @@ function Login(props) {
                             closable={false}
                             onOk={onClickOK}
                             okButtonProps={{ loading: vPinloading }}
+                            className={`row resetPinPop`}
                           >
-                            <div className="row">
+                            <div className="col-12">  <div className="row">
                               <AlagehFormGroup
-                                div={{ className: "col-2 form-group" }}
+                                div={{ className: "col form-group pinInput" }}
                                 textBox={{
                                   className: "txt-fld",
                                   name: "pinOne",
@@ -627,7 +628,7 @@ function Login(props) {
                                 }}
                               />
                               <AlagehFormGroup
-                                div={{ className: "col-2 form-group" }}
+                                div={{ className: "col form-group pinInput" }}
                                 textBox={{
                                   className: "txt-fld",
                                   name: "pinTwo",
@@ -644,7 +645,7 @@ function Login(props) {
                               />
 
                               <AlagehFormGroup
-                                div={{ className: "col-2 form-group" }}
+                                div={{ className: "col form-group pinInput" }}
                                 textBox={{
                                   className: "txt-fld",
                                   name: "pinThree",
@@ -661,7 +662,7 @@ function Login(props) {
                               />
 
                               <AlagehFormGroup
-                                div={{ className: "col-2 form-group" }}
+                                div={{ className: "col form-group pinInput" }}
                                 textBox={{
                                   className: "txt-fld",
                                   name: "pinFour",
@@ -677,7 +678,7 @@ function Login(props) {
                                 }}
                               />
                               <AlagehFormGroup
-                                div={{ className: "col-2 form-group" }}
+                                div={{ className: "col form-group pinInput" }}
                                 textBox={{
                                   className: "txt-fld",
                                   name: "pinFive",
@@ -692,6 +693,7 @@ function Login(props) {
                                 }}
                               />
                             </div>
+                            </div>
                           </AlgaehModal>
                           <AlgaehModal
                             title="Change Password"
@@ -701,6 +703,8 @@ function Login(props) {
                             onCancel={() => {
                               setShowChangePassword(false);
                             }}
+                            
+        className={`row algaehNewModal resetPasswordPop`}
                           >
                             <div className="col-12 form-group">
                               <label className="style_Label ">
@@ -822,11 +826,14 @@ function Login(props) {
                                 Another User? <b>Click Here</b>
                               </p>
                               <p className="frgtPass">
-                                Forgot Password? |{" "}
+                                Forgot Password? | 
                                 {rspLoader === true ? (
-                                  <label>Please wait generating request</label>
+                                   <p className="badge badge-pill badge-warning saving pinReqMsg">Please wait! Preparing your request<span>.</span>
+                                   <span>.</span>
+                                   <span>.</span></p>
+                                  
                                 ) : (
-                                  <a href="#request" onClick={resetPassWord}>
+                                  <a href="#request" onClick={resetPassWord} >
                                     Request New Password
                                   </a>
                                 )}

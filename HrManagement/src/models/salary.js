@@ -208,7 +208,7 @@ export default {
               inner join hims_f_salary_contributions SC on SC.salary_header_id = S.hims_f_salary_id \
               inner join hims_d_earning_deduction ED on SC.contributions_id = ED.hims_d_earning_deduction_id \
               where employee_id in (?) and year=? and month=? and salary_type='LS' and ED.component_type='EEP' and amount>0;\
-              select hims_f_salary_id from hims_f_salary where `year`=? and month=? and salary_paid = 'N';"
+              select hims_f_salary_id from hims_f_salary where `year`=? and month=? and salary_paid = 'N' and employee_id in (?);"
             _mysql
               .executeQueryWithTransaction({
                 query:
@@ -296,17 +296,17 @@ export default {
               .then((Salaryresults) => {
                 const previous_month_Salary = Salaryresults[20]
                 if (previous_month_Salary.length > 0) {
-                  console.log("previous_month_Salary", previous_month_Salary.length)
+                  console.log("previous_month_Salary", previous_month_Salary.length);
                   // _mysql.releaseConnection();
                   req.records = {
                     invalid_input: true,
-                    message: "Please pay previous salary",
+                    message: "Previous month salary payment is pending for the assigned filter.",
                   };
                   next();
                   resolve({});
                   return;
                 }
-                console.log("test")
+                console.log("test");
                 let _headerQuery = "";
 
                 // let basic_id = Salaryresults[8][0]["basic_earning_component"];
@@ -954,12 +954,19 @@ export default {
 
   getSalaryProcess: (req, res, next) => {
     try {
-      if (req.records.invalid_input == true) {
-        next();
-      }
+      
 
       const _options = req.connection == null ? {} : req.connection;
       const _mysql = new algaehMysql(_options);
+
+      // if (req.records.invalid_input == true) {
+      //   // next();
+      //   _mysql.commitTransaction(() => {
+      //     _mysql.releaseConnection();
+      //     // req.records = salary_process;
+      //     next();
+      //   });
+      // }
 
       let inputParam = req.query;
 
