@@ -142,7 +142,7 @@ export default {
             visit_id: req.body.visit_id,
             service_id: s.services_id,
             billed: req.body.billed,
-            ordered_date: s.created_date,
+            ordered_date: new Date(),
             ordered_by: s.ordered_by,
             test_type: s.test_type,
           };
@@ -339,7 +339,7 @@ export default {
           (w) =>
             w.hims_f_ordered_services_id != null &&
             w.service_type_id ==
-              appsettings.hims_d_service_type.service_type_id.Radiology
+            appsettings.hims_d_service_type.service_type_id.Radiology
         )
         .Select((s) => {
           return {

@@ -22,7 +22,16 @@ export default () => {
       next();
     },
     newProcessSalary,
-    getSalaryProcess,
+    (req, res, next) => {
+      if (req.records.invalid_input == true) {
+        res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+          success: false,
+          result: req.records,
+        });
+      } else {
+        getSalaryProcess(req, res, next);
+      }
+    },
     (req, res, next) => {
       if (req.records.invalid_input == true) {
         res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
@@ -36,6 +45,7 @@ export default () => {
         });
       }
     }
+
   );
 
   api.get("/getSalaryProcess", getSalaryProcess, (req, res, next) => {
