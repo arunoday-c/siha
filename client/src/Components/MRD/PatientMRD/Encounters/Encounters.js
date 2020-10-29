@@ -302,7 +302,6 @@ class Encounters extends Component {
       },
       // cancelRequestId: "getPatientInvestigation",
       onSuccess: (response) => {
-        getPatientPakages;
         algaehLoader({ show: false });
         if (response.data.success) {
           this.setState({ patientPakages: response.data.records });
