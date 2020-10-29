@@ -506,12 +506,19 @@ const SaveOrdersServices = ($this, e) => {
     method: "POST",
     onSuccess: (response) => {
       if (response.data.success === true) {
+        // debugger
+        if (response.data.records.ResultOfFetchOrderIds.length > 1) {
+          const splice_data = response.data.records.ResultOfFetchOrderIds.length - $this.state.orderconsumabledata.length
+          response.data.records.ResultOfFetchOrderIds.splice(0, splice_data)
+        }
         for (let i = 0; i < $this.state.orderconsumabledata.length; i++) {
 
           const service_data = response.data.records.ResultOfFetchOrderIds.find((f) => {
             return f.services_id == $this.state.orderconsumabledata[i].services_id;
           });
 
+          const index = response.data.records.ResultOfFetchOrderIds.indexOf(service_data);
+          response.data.records.ResultOfFetchOrderIds.splice(index, 1)
           $this.state.orderconsumabledata[i].ordered_inventory_id = service_data.hims_f_ordered_inventory_id
         }
         let inputOb = $this.state;
