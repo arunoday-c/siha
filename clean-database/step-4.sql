@@ -537,3 +537,8 @@ INSERT INTO `algaeh_d_app_component` (`screen_id`, `component_code`, `component_
 ALTER TABLE `hims_f_inventory_consumption_header` 
 ADD COLUMN `patient_id` INT NULL AFTER `provider_id`,
 ADD COLUMN `cancelled` ENUM('N', 'Y') NULL DEFAULT 'N' AFTER `patient_id`;
+
+
+-- Insurance StateMent
+alter table hims_f_insurance_statement add column from_date date after sub_insurance_id,
+add column to_date date after from_date;

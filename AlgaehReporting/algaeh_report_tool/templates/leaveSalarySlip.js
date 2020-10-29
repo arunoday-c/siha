@@ -13,12 +13,14 @@ const executePDF = function executePDFMethod(options) {
       });
       console.log("INPUT:", input);
       const month = moment(input.month, "M").format("MMMM");
+      const startMonth = moment( input.leave_start_date, "YYYY-MM-DD").format("MM");
+      console.log(startMonth);
       options.mysql
         .executeQuery({
           query: `select hims_f_salary_id ,S.employee_id, S.year,S.month,ED.hims_d_earning_deduction_id as earning_id,
-          ED.earning_deduction_description as earning_description , S.net_salary,S.total_days,\
+          ED.earning_deduction_description as earning_description , S.net_salary,  S.total_days,\
           S.display_present_days,S.absent_days,S.total_work_days,S.total_weekoff_days,S.total_holidays,S.total_leave,\
-          S.paid_leave,S.unpaid_leave, S.total_paid_days,S.pending_unpaid_leave,S.loan_due_amount,\
+          S.paid_leave,S.unpaid_leave, S.total_paid_days,S.pending_unpaid_leave,S.loan_due_amount, sum(S.loan_due_amount) as final_loan_amount,
           SE.amount as earning_amount,EDD.hims_d_earning_deduction_id as deduction_id,\
           EDD.earning_deduction_description as deduction_description,SD.amount as deduction_amount,\
           S.total_earnings,S.total_deductions,SDP.sub_department_name, D.department_name,\
@@ -40,8 +42,8 @@ const executePDF = function executePDFMethod(options) {
           left join hims_f_end_of_service GP on S.employee_id = GP.employee_id\
           left join hims_f_employee_leave_salary_header LS on S.employee_id = LS.employee_id\
           left join hims_f_leave_encash_header LE on S.employee_id = LE.employee_id and 'APR' = LE.authorized and 'N' = LE.posted\
-          where S.salary_type="LS" and S.employee_id in(?) and S.hims_f_salary_id=?;`,
-          values: [input.employee_id, input.hims_f_salary_id],
+          where S.salary_type="LS" and S.employee_id = ? and S.month >=? group by S.employee_id;`,
+          values: [input.employee_id,startMonth],
           printQuery: true,
         })
         .then((result) => {
@@ -120,6 +122,13 @@ const executePDF = function executePDFMethod(options) {
                   options.args.crypto
                 ),
 
+                finalNetSalary: options.currencyFormat(
+                  employe[0].total_earnings - employe[0].total_deductions,
+                  options.args.crypto
+                ),
+
+                // finalNetSalary:employe[0].total_earnings - employe[0].total_deductions,
+
                 sub_department_name: employe[0].sub_department_name,
                 department_name: employe[0].department_name,
                 employee_code: employe[0].employee_code,
@@ -127,11 +136,11 @@ const executePDF = function executePDFMethod(options) {
                 arabic_name: employe[0].arabic_name,
 
                 DOJ: moment(employe[0].date_of_joining, "YYYY-MM-DD").format(
-                  "DD-MM-YYYY"
+                  "DD/MM/YYYY"
                 ),
 
                 DOE: moment(employe[0].exit_date, "YYYY-MM-DD").format(
-                  "DD-MM-YYYY"
+                  "DD/MM/YYYY"
                 ),
                 designation: employe[0].designation,
                 hospital_name: employe[0].hospital_name,
@@ -149,6 +158,7 @@ const executePDF = function executePDFMethod(options) {
                 total_paid_days: employe[0].total_paid_days,
                 pending_unpaid_leave: employe[0].pending_unpaid_leave,
                 loan_due_amount: employe[0].loan_due_amount,
+                final_loan_amount: employe[0].final_loan_amount,
                 gratuity_amount: employe[0].gratuity_amount,
                 acc_gratuity: employe[0].acc_gratuity,
                 annual_leave_days: employe[0].annual_leave_days,
@@ -168,12 +178,12 @@ const executePDF = function executePDFMethod(options) {
                 leave_start_date: moment(
                   input.leave_start_date,
                   "YYYY-MM-DD"
-                ).format("DD-MM-YYYY"),
+                ).format("DD/MM/YYYY"),
 
                 leave_end_date: moment(
                   input.leave_end_date,
                   "YYYY-MM-DD"
-                ).format("DD-MM-YYYY"),
+                ).format("DD/MM/YYYY"),
 
                 total_amount: options.currencyFormat(
                   input.total_amount,

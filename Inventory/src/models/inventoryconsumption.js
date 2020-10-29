@@ -125,7 +125,8 @@ export default {
                 "qtyhand",
                 "quantity",
                 "unit_cost",
-                "extended_cost"
+                "extended_cost",
+                "ordered_inventory_id"
               ];
 
               _mysql
@@ -180,6 +181,8 @@ export default {
       });
     }
   },
+
+
 
   // location_id
 
@@ -365,6 +368,201 @@ export default {
 
           } else {
             next();
+          }
+        })
+        .catch(error => {
+          _mysql.rollBackTransaction(() => {
+            next(error);
+          });
+        });
+
+    } catch (error) {
+      _mysql.rollBackTransaction(() => {
+        next(error);
+      });
+    }
+  },
+  generateAccountingEntryCancel: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    try {
+      let inputParam = req.body;
+      const decimal_places = req.userIdentity.decimal_places;
+      const utilities = new algaehUtilities();
+      // console.log("generateAccountingEntryCancel", inputParam)
+
+
+      req.body.year = moment().format("YYYY");
+      req.body.period = moment().format("MM");
+      _mysql
+        .executeQuery({
+          query: "select product_type from hims_d_organization where hims_d_organization_id=1 limit 1;",
+          printQuery: true
+        })
+        .then(org_data => {
+
+          if (
+            org_data[0]["product_type"] == "HIMS_ERP" ||
+            org_data[0]["product_type"] == "FINANCE_ERP"
+          ) {
+            _mysql
+              .executeQuery({
+                query:
+                  "select * from finance_accounts_maping;\
+                  SELECT hims_d_inventory_item_master_id, waited_avg_cost FROM hims_d_inventory_item_master \
+                  where hims_d_inventory_item_master_id = ?; \
+                  SELECT location_type,location_description, head_id, child_id, hospital_id FROM hims_d_inventory_location \
+                  where hims_d_inventory_location_id=?;\
+                  select hims_d_sub_department_id from hims_d_sub_department where inventory_location_id=?;\
+                  select hims_d_sub_department_id from hims_d_sub_department where department_type='I';\
+                  select cost_center_type, cost_center_required from finance_options limit 1;",
+                values: [inputParam.item_id, inputParam.location_id, inputParam.location_id],
+                printQuery: true
+              })
+              .then(result => {
+
+                const cogs_acc_data = result[0].find(f => f.account === "INVNT_COGS")
+                const item_waited_avg_cost = result[1];
+                const location_acc = result[2];
+                const sub_department_id = result[3].length > 0 ? result[3][0].hims_d_sub_department_id :
+                  result[4].length > 0 ? result[4][0].hims_d_sub_department_id : null
+
+                req.body.inventory_stock_detail[0].location_type = location_acc[0].location_type
+                let strQuery = "";
+
+                if (result[5][0].cost_center_required === "Y" && result[5][0].cost_center_type === "P") {
+                  strQuery = `select  hims_m_division_project_id, project_id from hims_m_division_project D \
+                    inner join hims_d_project P on D.project_id=P.hims_d_project_id \
+                    inner join hims_d_hospital H on D.division_id=H.hims_d_hospital_id where \
+                    division_id= ${req.userIdentity.hospital_id} limit 1;`
+                }
+                let waited_avg_cost =
+                  utilities.decimalPoints((inputParam.inventory_stock_detail[0].quantity) *
+                    parseFloat(item_waited_avg_cost[0].waited_avg_cost),
+                    decimal_places
+                  )
+                _mysql
+                  .executeQuery({
+                    query: "INSERT INTO finance_day_end_header (transaction_date, amount, \
+                  voucher_type, document_id, document_number, from_screen, \
+                  narration, entered_date, entered_by) VALUES (?,?,?,?,?,?,?,?,?);" + strQuery,
+                    values: [
+                      new Date(),
+                      waited_avg_cost,
+                      "journal",
+                      inputParam.hims_f_inventory_consumption_header_id,
+                      "CN-" + inputParam.consumption_number,
+                      inputParam.ScreenCode,
+                      "Consumption Cancel done for " + location_acc[0].location_description + "/" + waited_avg_cost,
+                      new Date(),
+                      req.userIdentity.algaeh_d_app_user_id
+                    ],
+                    printQuery: true
+                  })
+                  .then(header_result => {
+                    let project_id = null;
+                    let day_end_header = []
+                    if (header_result.length > 1) {
+                      day_end_header = header_result[0]
+                      project_id = header_result[1][0].project_id
+                    } else {
+                      day_end_header = header_result
+                    }
+
+                    let insertSubDetail = []
+                    const month = moment().format("M");
+                    const year = moment().format("YYYY");
+                    const IncludeValuess = [
+                      "payment_date",
+                      "head_id",
+                      "child_id",
+                      "debit_amount",
+                      "payment_type",
+                      "credit_amount",
+                      "hospital_id"
+                    ];
+
+
+
+                    //COGS Entry
+                    insertSubDetail.push({
+                      payment_date: new Date(),
+                      head_id: cogs_acc_data.head_id,
+                      child_id: cogs_acc_data.child_id,
+                      debit_amount: 0,
+                      payment_type: "CR",
+                      credit_amount: waited_avg_cost,
+                      hospital_id: location_acc[0].hospital_id
+                    });
+
+                    //Location Wise
+                    insertSubDetail.push({
+                      payment_date: new Date(),
+                      head_id: location_acc[0].head_id,
+                      child_id: location_acc[0].child_id,
+                      debit_amount: waited_avg_cost,
+                      payment_type: "DR",
+                      credit_amount: 0,
+                      hospital_id: location_acc[0].hospital_id
+                    });
+
+
+
+                    // console.log("insertSubDetail", insertSubDetail)
+                    _mysql
+                      .executeQuery({
+                        query:
+                          "INSERT INTO finance_day_end_sub_detail (??) VALUES ? ;",
+                        values: insertSubDetail,
+                        includeValues: IncludeValuess,
+                        bulkInsertOrUpdate: true,
+                        extraValues: {
+                          day_end_header_id: day_end_header.insertId,
+                          year: year,
+                          month: month,
+                          project_id: project_id,
+                          sub_department_id: sub_department_id
+                        },
+                        printQuery: true
+                      })
+                      .then(subResult => {
+                        next();
+                      })
+                      .catch(error => {
+                        _mysql.rollBackTransaction(() => {
+                          next(error);
+                        });
+                      });
+                  })
+                  .catch(error => {
+                    _mysql.rollBackTransaction(() => {
+                      next(error);
+                    });
+                  });
+              })
+              .catch(error => {
+                _mysql.rollBackTransaction(() => {
+                  next(error);
+                });
+              });
+
+          } else {
+            _mysql
+              .executeQuery({
+                query:
+                  "SELECT location_type FROM hims_d_inventory_location where hims_d_inventory_location_id=?;",
+                values: [inputParam.location_id],
+                printQuery: true
+              })
+              .then(location_data => {
+                req.body.inventory_stock_detail[0].location_type = location_data[0].location_type
+                next();
+              })
+              .catch(error => {
+                _mysql.rollBackTransaction(() => {
+                  next(error);
+                });
+              });
+
           }
         })
         .catch(error => {

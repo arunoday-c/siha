@@ -26,6 +26,7 @@ import {
   AlgaehModal,
   // AlgaehButton,
 } from "algaeh-react-components";
+// import { parse } from "handlebars";
 
 class OrderedList extends PureComponent {
   constructor(props) {
@@ -92,11 +93,11 @@ class OrderedList extends PureComponent {
     });
   }
 
-  // UNSAFE_componentWillReceiveProps(nextProps) {
-  //   if (nextProps.openData !== undefined) {
-  //     this.setState({ openData: nextProps.openData });
-  //   }
-  // }
+  UNSAFE_componentWillReceiveProps(nextProps) {
+    if (nextProps.inventory_location_id !== undefined) {
+      this.setState({ inventory_location_id: nextProps.inventory_location_id });
+    }
+  }
 
   ShowModel(e) {
     if (this.props.chief_complaint === true) {
@@ -529,25 +530,54 @@ class OrderedList extends PureComponent {
           method: "delete",
           data: {
             hims_f_ordered_inventory_id: row.hims_f_ordered_inventory_id,
+            item_id: row.item_id
           },
           onSuccess: (response) => {
             if (response.data.success === true) {
-              const { visit_id } = Window.global;
-              this.props.getConsumableOrderList({
-                uri: "/orderAndPreApproval/getVisitConsumable",
-                method: "GET",
-                data: {
-                  visit_id: visit_id, //Window.global["visit_id"]
-                },
-                redux: {
-                  type: "ORDER_SERVICES_GET_DATA",
-                  mappingName: "consumableorderedList",
-                },
-              });
+              row.location_id = this.state.inventory_location_id;
+              let inputOb = this.state;
+              inputOb.transaction_type = "CSN";
+              inputOb.item_id = row.item_id
+              inputOb.location_id = this.state.inventory_location_id;
+              inputOb.consumption_number = response.data.records[0].consumption_number;
+              inputOb.hims_f_inventory_consumption_header_id = response.data.records[0].hims_f_inventory_consumption_header_id;
+              inputOb.transaction_id = response.data.records[0].hims_f_inventory_consumption_header_id;
+              inputOb.inventory_stock_detail = [row];
+              inputOb.provider_id = Window.global["provider_id"];
+              inputOb.transaction_date = new Date();
+              inputOb.ScreenCode = "INV0007/C";
 
-              swalMessage({
-                title: "Deleted Succesfully",
-                type: "success",
+              algaehApiCall({
+                uri: "/inventoryconsumption/cancelConsumtion",
+                module: "inventory",
+                data: inputOb,
+                onSuccess: (response) => {
+                  if (response.data.success === true) {
+                    const { visit_id } = Window.global;
+                    this.props.getConsumableOrderList({
+                      uri: "/orderAndPreApproval/getVisitConsumable",
+                      method: "GET",
+                      data: {
+                        visit_id: visit_id, //Window.global["visit_id"]
+                      },
+                      redux: {
+                        type: "ORDER_SERVICES_GET_DATA",
+                        mappingName: "consumableorderedList",
+                      },
+                    });
+
+                    swalMessage({
+                      title: "Deleted Succesfully",
+                      type: "success",
+                    });
+                  }
+                },
+                onFailure: (error) => {
+                  swalMessage({
+                    title: error.message,
+                    type: "error",
+                  });
+                },
               });
             }
           },

@@ -173,6 +173,9 @@ class Procedures extends PureComponent {
                         events: {
                           onChange: this.eventHandaler.bind(this),
                         },
+                        others: {
+                          disabled: this.state.hims_d_procedure_id === null ? false : true
+                        }
                       }}
                     />
 
@@ -400,15 +403,15 @@ class Procedures extends PureComponent {
                                   this.props.inventoryitemlist === undefined
                                     ? []
                                     : this.props.inventoryitemlist.filter(
-                                        (f) =>
-                                          f.hims_d_inventory_item_master_id ===
-                                          row.item_id
-                                      );
+                                      (f) =>
+                                        f.hims_d_inventory_item_master_id ===
+                                        row.item_id
+                                    );
 
                                 return (
                                   <span>
                                     {display !== undefined &&
-                                    display.length !== 0
+                                      display.length !== 0
                                       ? display[0].item_description
                                       : ""}
                                   </span>
@@ -482,8 +485,8 @@ class Procedures extends PureComponent {
                       {this.state.hims_d_procedure_id === null ? (
                         <AlgaehLabel label={{ forceLabel: "Save" }} />
                       ) : (
-                        <AlgaehLabel label={{ forceLabel: "Update" }} />
-                      )}
+                          <AlgaehLabel label={{ forceLabel: "Update" }} />
+                        )}
                     </button>
                     <button
                       onClick={(e) => {

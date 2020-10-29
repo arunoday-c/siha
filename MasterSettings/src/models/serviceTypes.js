@@ -388,8 +388,8 @@ export default {
           "INSERT INTO `hims_d_services` (service_code,cpt_code,service_name,arabic_service_name,service_desc,\
             sub_department_id, hospital_id,service_type_id,procedure_type,standard_fee,followup_free_fee,\
             followup_paid_fee, discount,vat_applicable,vat_percent,service_status,effective_start_date, \
-            effectice_end_date,created_by,created_date,updated_by,updated_date, hospital_id) \
-            values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+            effectice_end_date,created_by,created_date,updated_by,updated_date ) \
+            values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
         values: [
           input.service_code,
           input.cpt_code,
@@ -397,7 +397,7 @@ export default {
           input.arabic_service_name,
           input.service_desc,
           input.sub_department_id,
-          input.hospital_id,
+          req.userIdentity.hospital_id,
           input.service_type_id,
           input.procedure_type,
           input.standard_fee,
@@ -412,8 +412,7 @@ export default {
           req.userIdentity.algaeh_d_app_user_id,
           new Date(),
           req.userIdentity.algaeh_d_app_user_id,
-          new Date(),
-          req.userIdentity.hospital_id,
+          new Date()
         ],
 
         printQuery: true,
@@ -667,22 +666,23 @@ export default {
   },
 
   updateProcedures: (req, res, next) => {
-    const _mysql = new algaehMysql();
+    const _options = req.connection == null ? {} : req.connection;
+    const _mysql = new algaehMysql(_options);
     try {
       let input = req.body;
+
+      console.log("input", input)
       _mysql
         .executeQueryWithTransaction({
           query:
-            "UPDATE `hims_d_procedure` SET `procedure_code`=?, `procedure_desc`=?, `procedure_desc_arabic`=?, `service_id`=?,\
+            "UPDATE `hims_d_procedure` SET `procedure_code`=?, `procedure_desc`=?, `procedure_desc_arabic`=?,\
           `procedure_type`=?,`updated_date`=?, `updated_by`=? \
           WHERE record_status='A' and `hims_d_procedure_id`=?",
           values: [
             input.procedure_code,
             input.procedure_desc,
             input.procedure_desc_arabic,
-            input.service_id,
             input.procedure_type,
-
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
             input.hims_d_procedure_id,

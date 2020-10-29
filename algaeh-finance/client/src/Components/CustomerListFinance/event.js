@@ -7,14 +7,14 @@ export function LoadCustomerReceivables() {
         uri: "/finance_customer/getCustomerReceivables",
         method: "GET",
         module: "finance",
-        onSuccess: response => {
+        onSuccess: (response) => {
           if (response.data.success === true) {
             resolve(response.data.result);
           }
         },
-        onCatch: error => {
+        onCatch: (error) => {
           reject(error);
-        }
+        },
       });
     } catch (error) {
       reject(error);

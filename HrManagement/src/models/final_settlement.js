@@ -158,7 +158,7 @@ export default {
             _mysql
               .executeQuery({
                 query:
-                  "select L.hims_f_final_settle_loan_details_id, M.loan_description,L.balance_amount as pending_loan \
+                  "select L.hims_f_final_settle_loan_details_id, M.loan_description,L.balance_amount as pending_loan,A.hims_f_loan_application_id \
                   from hims_f_final_settle_loan_details as L inner join hims_f_loan_application as A on L.loan_application_id =A.hims_f_loan_application_id \
                   inner join hims_d_loan as M on M.hims_d_loan_id =A.loan_id \
                   where L.final_settlement_header_id=?; \

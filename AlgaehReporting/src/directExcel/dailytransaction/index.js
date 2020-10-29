@@ -239,14 +239,17 @@ export function generateExcelDilyTrans(req, res, next) {
                       })
                       .value();
                     let dualPayType = 0;
+
                     const recordsDtl = _.chain(billGroup)
                       .groupBy((sg) => sg.pay_type)
                       .map((hItem) => {
                         const { patient_payable } = _.head(hItem);
                         dualPayType = patient_payable;
+
                         return hItem;
                       })
                       .value();
+
                     serviceObject = {
                       ...serviceObject,
                       ...billing_type,
@@ -269,11 +272,13 @@ export function generateExcelDilyTrans(req, res, next) {
                   })
                   .value();
                 let dualPayType = 0;
+                let dualPayInsurance = 0;
                 const recordsDtl = _.chain(billGroup)
                   .groupBy((sg) => sg.pay_type)
                   .map((hItem) => {
-                    const { patient_payable } = _.head(hItem);
+                    const { patient_payable, company_payble } = _.head(hItem);
                     dualPayType = patient_payable;
+                    dualPayInsurance = company_payble;
                     return hItem;
                   })
                   .value();
@@ -294,9 +299,10 @@ export function generateExcelDilyTrans(req, res, next) {
                   // patient_amount: _.sumBy(billGroup, (s) =>
                   //   parseFloat(s.patient_payable)
                   // ),
-                  insurance_amount: _.sumBy(billGroup, (s) =>
-                    parseFloat(s.company_payble)
-                  ),
+                  insurance_amount:
+                    recordsDtl.length === 1
+                      ? _.sumBy(billGroup, (s) => parseFloat(s.company_payble))
+                      : dualPayInsurance,
                   billing_type:
                     insured === "N" ? "Cash" : insurance_provider_name,
                   ...serviceObject,

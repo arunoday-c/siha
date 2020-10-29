@@ -128,6 +128,7 @@ export default function ProceduresEvent() {
       AlgaehValidation({
         alertTypeIcon: "warning",
         onSuccess: () => {
+
           $this.state.service_code = $this.state.procedure_code;
           $this.state.service_type_id = "2";
           $this.state.service_name = $this.state.procedure_desc;
@@ -135,6 +136,18 @@ export default function ProceduresEvent() {
           $this.state.service_status = "A";
           $this.state.standard_fee = $this.state.procedure_amount;
           if ($this.state.hims_d_procedure_id === null) {
+            const item_code_exit = _.filter(
+              $this.props.all_procedures,
+              f => f.procedure_code === $this.state.procedure_code
+            );
+
+            if (item_code_exit.length > 0) {
+              swalMessage({
+                type: "warning",
+                title: "Procedure Code Already Exist."
+              });
+              return
+            }
             algaehApiCall({
               uri: "/serviceType/addProcedure",
               module: "masterSettings",

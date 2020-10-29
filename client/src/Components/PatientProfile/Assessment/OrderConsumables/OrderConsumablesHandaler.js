@@ -506,6 +506,14 @@ const SaveOrdersServices = ($this, e) => {
     method: "POST",
     onSuccess: (response) => {
       if (response.data.success === true) {
+        for (let i = 0; i < $this.state.orderconsumabledata.length; i++) {
+
+          const service_data = response.data.records.ResultOfFetchOrderIds.find((f) => {
+            return f.services_id == $this.state.orderconsumabledata[i].services_id;
+          });
+
+          $this.state.orderconsumabledata[i].ordered_inventory_id = service_data.hims_f_ordered_inventory_id
+        }
         let inputOb = $this.state;
         inputOb.transaction_type = "CS";
         inputOb.location_id = $this.state.inventory_location_id;

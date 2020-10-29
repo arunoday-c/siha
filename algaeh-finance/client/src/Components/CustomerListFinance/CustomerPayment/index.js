@@ -7,7 +7,10 @@ import {
 } from "algaeh-react-components";
 import { InfoBar } from "../../../Wrappers";
 import { LedgerReport } from "../../InvoiceCommon";
-import { getInvoicesForCustomer } from "./CusPaymentEvents";
+import {
+  getInvoicesForCustomer,
+  VerifyAuthorization,
+} from "./CusPaymentEvents";
 import { Button, Spin, Checkbox, Modal } from "antd";
 import _ from "lodash";
 import { getAmountFormart } from "../../../utils/GlobalFunctions";
@@ -61,12 +64,23 @@ export default memo(function (props) {
       <Button
         disabled={row.invoice_status === "closed"}
         type="link"
-        onClick={() =>
-          history.push("/JournalVoucher", {
-            data: { ...row, disabled: true },
-            type: "customer",
-          })
-        }
+        onClick={() => {
+          setLoading(true);
+          VerifyAuthorization(row)
+            .then(() => {
+              history.push("/JournalVoucher", {
+                data: { ...row, disabled: true },
+                type: "customer",
+              });
+            })
+            .catch((error) => {
+              setLoading(false);
+              AlgaehMessagePop({
+                type: "Error",
+                display: error,
+              });
+            });
+        }}
       >
         Receive Payment
       </Button>
@@ -261,7 +275,7 @@ export default memo(function (props) {
                                   })}
                                 </span>
                               );
-                            }
+                            },
                           },
                           {
                             fieldName: "settled_amount",
@@ -276,7 +290,7 @@ export default memo(function (props) {
                                   })}
                                 </span>
                               );
-                            }
+                            },
                           },
                           {
                             fieldName: "balance_amount",
@@ -291,7 +305,7 @@ export default memo(function (props) {
                                   })}
                                 </span>
                               );
-                            }
+                            },
                           },
                           {
                             fieldName: "invoice_status",
@@ -337,9 +351,11 @@ export default memo(function (props) {
                   <label className="style_Label ">
                     Selected Invoice Amount
                   </label>
-                  <h6>{getAmountFormart(selectAmount, {
-                    appendSymbol: false,
-                  })}</h6>
+                  <h6>
+                    {getAmountFormart(selectAmount, {
+                      appendSymbol: false,
+                    })}
+                  </h6>
                 </div>
               </div>
             </div>
