@@ -833,11 +833,11 @@
         "label": "Gratuity No."
       },
       {
-        "fieldName": "status",
+        "fieldName": "gratuity_status",
         "label": "PAYMENT STATUS"
       },
       {
-        "fieldName": "exit_status",
+        "fieldName": "employee_status",
         "label": "Type Of Exit"
       }
     ],
@@ -901,11 +901,11 @@
         "label": "SETTLEMENT NO."
       },
       {
-        "fieldName": "status",
+        "fieldName": "final_settlement_status",
         "label": "Status"
       },
       {
-        "fieldName": "exit_status",
+        "fieldName": "employee_status",
         "label": "Type Of Exit"
       }
     ],

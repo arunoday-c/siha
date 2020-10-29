@@ -315,6 +315,13 @@ class LoanRequest extends Component {
   }
 
   applyLoan() {
+    if (this.state.loan_id === undefined) {
+      swalMessage({
+        title: "Loan descrition Cannot be blank",
+        type: "warning",
+      });
+      return;
+    }
     const {
       employee_name: full_name,
       reporting_to_id,

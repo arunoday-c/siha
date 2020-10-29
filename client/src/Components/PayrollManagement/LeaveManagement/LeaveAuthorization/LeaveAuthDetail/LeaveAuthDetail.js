@@ -466,7 +466,7 @@ class LeaveAuthDetail extends Component {
                             />
                             {/* <h6>DD/MM/YYYY</h6> */}
                             <h6>
-                              {moment(this.state.data.to_date).format(
+                              {moment(this.state.data.actual_to_date).format(
                                 "DD-MM-YYYY"
                               )}
                               <small>

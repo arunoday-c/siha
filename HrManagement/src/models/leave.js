@@ -1453,7 +1453,7 @@ export default {
       _mysql
         .executeQuery({
           query:
-            "select hims_f_leave_application_id,leave_application_code,employee_id,application_date,\
+            "select hims_f_leave_application_id,leave_application_code,employee_id,application_date,actual_to_date,\
               leave_id,from_date,to_date,from_leave_session,to_leave_session,  \
               total_applied_days, total_approved_days,status,authorized3,authorized2,authorized1, \
               remarks,L.leave_code, L.leave_description, E.employee_code, E.full_name from hims_f_leave_application LA \
@@ -1463,7 +1463,7 @@ export default {
             status +
             " order by hims_f_leave_application_id desc",
           values: [req.query.employee_id],
-          printQuery: false,
+          printQuery: true,
         })
         .then((result) => {
           _mysql.releaseConnection();
@@ -1970,7 +1970,7 @@ export default {
                 query:
                   "SELECT hims_f_leave_application_id,LA.leave_application_code,LA.hospital_id,LA.employee_id,\
             LA.application_date,LA.sub_department_id,LA.leave_id,LA.from_leave_session,L.document_mandatory,\
-            LA.from_date,LA.to_date,LA.to_leave_session,EAL.from_normal_salary,\
+            LA.from_date,LA.to_date,LA.actual_to_date,LA.to_leave_session,EAL.from_normal_salary,\
             LA.total_applied_days,LA.leave_from,LA.absent_id,LA.total_approved_days,LA.status,LA.is_projected_leave \
             ,L.leave_code,L.leave_description,L.leave_type,L.leave_category,E.employee_code,\
             E.full_name as employee_name,E.religion_id,SD.sub_department_code,SD.sub_department_name, DE.designation,remarks,E.nationality \

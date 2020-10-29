@@ -427,8 +427,8 @@ let algaehSearchConfig = (searchName, req) => {
         searchName: "exit_employees_final_settlement",
         searchQuery: `select SQL_CALC_FOUND_ROWS hims_d_employee_id, employee_code, title_id, full_name, E.arabic_name, 
         S.sub_department_name,E.sub_department_id,D.designation,FSH.final_settlement_number,CASE WHEN FSH.final_settlement_status = 'PEN' 
-        THEN 'Pending' WHEN FSH.final_settlement_status = 'AUT' THEN 'Authorised' WHEN FSH.final_settlement_status = 'SET' THEN 'Settled' else '' END as status,
-        CASE WHEN E.employee_status ='T' THEN 'Terminated' WHEN E.employee_status ='R' THEN 'Resigned' else 'Retirement' END as exit_status
+        THEN 'Pending' WHEN FSH.final_settlement_status = 'AUT' THEN 'Authorised' WHEN FSH.final_settlement_status = 'SET' THEN 'Settled' else '' END as final_settlement_status,
+        CASE WHEN E.employee_status ='T' THEN 'Terminated' WHEN E.employee_status ='R' THEN 'Resigned' else 'Retirement' END as employee_status
         from hims_d_employee as E
         left join hims_f_final_settlement_header as FSH on FSH.employee_id=E.hims_d_employee_id
         inner join hims_d_sub_department as S on S.hims_d_sub_department_id =E.sub_department_id
@@ -442,8 +442,8 @@ let algaehSearchConfig = (searchName, req) => {
                      S.sub_department_name,E.sub_department_id,D.designation,EOS.end_of_service_number,CASE WHEN EOS.gratuity_status = 'PEN' 
                      THEN 'Pending' WHEN EOS.gratuity_status = 'PRO' THEN 'Processed'
                      WHEN EOS.gratuity_status = 'PAI' THEN 'Paid' WHEN EOS.gratuity_status = 'FOR' THEN 'Forfiett' WHEN EOS.gratuity_status = 'PEF' THEN 'Pending Forfiett' else
-                     '' END as status,
-                     CASE WHEN employee_status ='T' THEN 'Terminated' WHEN employee_status ='R' THEN 'Resigned' else 'Retirement' END as exit_status
+                     '' END as gratuity_status,
+                     CASE WHEN employee_status ='T' THEN 'Terminated' WHEN employee_status ='R' THEN 'Resigned' else 'Retirement' END as 'employee_status'
                      from hims_d_employee as E
                      left join hims_f_end_of_service as EOS on EOS.employee_id=E.hims_d_employee_id
                      inner join hims_d_sub_department as S on S.hims_d_sub_department_id =E.sub_department_id
