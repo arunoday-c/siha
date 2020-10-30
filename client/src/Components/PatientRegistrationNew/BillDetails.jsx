@@ -558,6 +558,8 @@ export function BillDetails({
                                 state.gross_total - state.sheet_discount_amount;
                               state.receiveable_amount =
                                 state.gross_total - state.sheet_discount_amount;
+                              state.cash_amount =
+                                state.gross_total - state.sheet_discount_amount;
                               return { ...state };
                             });
                           }
