@@ -496,6 +496,21 @@ class Encounters extends Component {
                 <div className="caption">
                   <h3 className="caption-subject">OP Encounter Details </h3>
                 </div>
+                
+                {this.state.generalInfo !== 0 ? (
+                <div className="actions">
+                  {" "}
+                  <button
+                    className="btn btn-default" style={{marginRight:10}}
+                  >
+                   Sick Leave Report
+                  </button>
+                  <button
+                    className="btn btn-default" 
+                  >
+                   Prescription
+                  </button>
+                </div>    ) : null}
               </div>
 
               <div className="portlet-body encounterDetailCntr">
@@ -1225,23 +1240,6 @@ class Encounters extends Component {
               </div>
             </div>
           </div>
-        </div>
-        <div className="portlet portlet-bordered margin-bottom-15">
-          <div className="portlet-title">
-            <div className="caption">
-              <h3 className="caption-subject">Nurse Notes</h3>
-            </div>
-          </div>
-          {/* <div className="portlet-body">
-            <div className="row">
-              <div className="col-lg-12" id="PaymentHistoryGrid_Cntr">
-                <NursesNotes
-                  patient_id={Window?.global?.mrd_patient}
-                  viewOnly={true}
-                />
-              </div>
-            </div>
-          </div> */}
         </div>
       </div>
     );
