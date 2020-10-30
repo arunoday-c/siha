@@ -849,7 +849,7 @@ let algaehSearchConfig = (searchName, req) => {
         searchQuery:
           "select SQL_CALC_FOUND_ROWS item_code,item_description,generic_id,category_id,group_id,form_id,sfda_code,S.storage_description,\
           item_uom_id,sales_price , \
-	        IM.service_id, \
+	        IM.service_id,IM.item_route, \
 	        IM.sales_uom_id,IM.hims_d_item_master_id , G.generic_name ,concat(G.generic_name,' => ',item_description) as generic_name_item_description \
           from hims_d_item_master as IM  inner join hims_d_item_generic as G  \
           on G.hims_d_item_generic_id = IM.generic_id left join \
