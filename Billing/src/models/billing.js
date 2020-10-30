@@ -2416,6 +2416,7 @@ export default {
                     : servicesDetails.preapp_limit_amount;
                 // insurance_price_list
                 let policydtls = {};
+
                 if (insured == "Y") {
                   let prices;
                   const cur_policy = allPolicy.find((p) => {
@@ -2425,6 +2426,7 @@ export default {
                     );
                   });
 
+                  // console.log("allCompany_price", allCompany_price)
                   if (
                     cur_policy != undefined &&
                     cur_policy["price_from"] == "S"
@@ -2437,6 +2439,7 @@ export default {
                       );
                     });
                   }
+                  // console.log("prices", prices)
 
                   if (
                     cur_policy != undefined &&
@@ -2482,26 +2485,21 @@ export default {
                     : records.cpt_code;
 
                 if (insured == "Y" && policydtls.covered == "Y") {
+
                   if (FollowUp === true) {
                     ser_net_amount = 0;
                     ser_gross_amt = 0;
                     unit_cost = 0;
                   } else {
+                    // console.log("insurance_provider_ids", policydtls)
                     ser_net_amount = policydtls.net_amount;
                     ser_gross_amt = policydtls.gross_amt;
                     if (policydtls.company_service_price_type == "N") {
-                      unit_cost =
-                        unit_cost != 0
-                          ? unit_cost
-                          : parseFloat(policydtls.net_amount);
+                      unit_cost = parseFloat(policydtls.net_amount);
                     } else {
-                      unit_cost =
-                        unit_cost != 0
-                          ? unit_cost
-                          : parseFloat(policydtls.gross_amt);
+                      unit_cost = parseFloat(policydtls.gross_amt);
                     }
                   }
-
                   // if (conversion_factor != 0) {
                   //   unit_cost = unit_cost * conversion_factor;
                   // }
@@ -2782,7 +2780,6 @@ export default {
 
                   //If primary and secondary exists
                 } else {
-                  // console.log("insurance_provider_ids", is_insurance.length)
                   if (FollowUp === true) {
                     unit_cost =
                       unit_cost != 0
@@ -2794,10 +2791,7 @@ export default {
                       policydtls.insurance_type === "C"
                     ) {
                       if (policydtls.company_service_price_type == "N") {
-                        unit_cost =
-                          unit_cost != 0
-                            ? unit_cost
-                            : parseFloat(policydtls.net_amount);
+                        unit_cost = parseFloat(policydtls.net_amount);
                       } else {
                         unit_cost =
                           unit_cost != 0

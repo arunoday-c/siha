@@ -1,6 +1,7 @@
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import _ from "lodash";
 import { AlgaehValidation } from "../../../utils/GlobalFunctions";
+import algaehLoader from "../../Wrapper/fullPageLoader";
 
 export default function ProceduresEvent() {
   return {
@@ -148,6 +149,7 @@ export default function ProceduresEvent() {
               });
               return
             }
+            algaehLoader({ show: true });
             algaehApiCall({
               uri: "/serviceType/addProcedure",
               module: "masterSettings",
@@ -180,10 +182,12 @@ export default function ProceduresEvent() {
                       $this.props.onClose && $this.props.onClose(true);
                     }
                   );
+                  algaehLoader({ show: false });
                 }
               },
             });
           } else {
+            algaehLoader({ show: true });
             algaehApiCall({
               uri: "/serviceType/updateProcedures",
               module: "masterSettings",
@@ -218,6 +222,7 @@ export default function ProceduresEvent() {
                       $this.props.onClose && $this.props.onClose(true);
                     }
                   );
+                  algaehLoader({ show: false });
                 }
               },
             });
