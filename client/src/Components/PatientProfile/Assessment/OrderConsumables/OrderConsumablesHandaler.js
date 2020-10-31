@@ -506,7 +506,6 @@ const SaveOrdersServices = ($this, e) => {
     method: "POST",
     onSuccess: (response) => {
       if (response.data.success === true) {
-        // debugger
         if (response.data.records.ResultOfFetchOrderIds.length > 1) {
           const splice_data = response.data.records.ResultOfFetchOrderIds.length - $this.state.orderconsumabledata.length
           response.data.records.ResultOfFetchOrderIds.splice(0, splice_data)
@@ -529,6 +528,7 @@ const SaveOrdersServices = ($this, e) => {
         inputOb.provider_id = Window.global["provider_id"];
         inputOb.transaction_date = new Date();
         inputOb.ScreenCode = "INV0007";
+
         algaehApiCall({
           uri: "/inventoryconsumption/addInventoryConsumption",
           module: "inventory",

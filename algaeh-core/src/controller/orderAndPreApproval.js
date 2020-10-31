@@ -7,10 +7,14 @@ import onpModels from "../model/orderAndPreApproval";
 // import labModels from "../model/laboratory";
 import labModels from "algaeh-laboratory/src/models/laboratory";
 import radModels from "algaeh-radiology/src/models/radiology";
+import inventoryConModels from "algaeh-inventory/src/models/inventoryconsumption";
+import inventoryComModels from "algaeh-inventory/src/models/commonFunction";
 
 const { releaseConnection } = utils;
 const { insertLadOrderedServices } = labModels;
 const { insertRadOrderedServices } = radModels;
+const { addInvConsumptionCancel, generateAccountingEntry } = inventoryConModels;
+const { updateIntoInvItemLocation } = inventoryComModels;
 const {
   insertOrderedServices,
   getPreAprovalList,
@@ -272,6 +276,9 @@ export default ({ config, db }) => {
 
   api.delete("/deleteInvOrderedItems",
     deleteInvOrderedItems,
+    addInvConsumptionCancel,
+    generateAccountingEntry,
+    updateIntoInvItemLocation,
     (req, res, next) => {
       res.status(httpStatus.ok).json({
         success: true,
