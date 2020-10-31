@@ -30,7 +30,7 @@ import {
   getPatientAllergies,
   texthandle,
   getAllAllergies,
-  getPatientProfile,
+  getPatientProfile,printPrescription,printSickleave,
 } from "./NurseWorkbenchEvents";
 import swal from "sweetalert2";
 import Options from "../../Options.json";
@@ -209,6 +209,7 @@ class NurseWorkbench extends Component {
       nurse_notes: null,
       episode_id: null,
       patient_id: null,
+      patient_code: null,
       patient_name: null,
       hims_d_hpi_header_id: null,
       onset_date: null,
@@ -746,6 +747,7 @@ class NurseWorkbench extends Component {
     this.setState(
       {
         patient_name: data.full_name,
+        patient_code: data.patient_code,
         current_patient: data.patient_id,
         episode_id: data.episode_id,
         encounter_id: data.hims_f_patient_encounter_id,
@@ -1022,7 +1024,7 @@ class NurseWorkbench extends Component {
 
               <div className="row">
                 <AlagehAutoComplete
-                  div={{ className: "col" }}
+                  div={{ className: "col-6" }}
                   label={{
                     fieldName: "department_name",
                     isImp: false,
@@ -1052,7 +1054,7 @@ class NurseWorkbench extends Component {
                   }}
                 />
                 <AlagehAutoComplete
-                  div={{ className: "col" }}
+                  div={{ className: "col-6" }}
                   label={{
                     fieldName: "doctor_name",
                   }}
@@ -1083,54 +1085,6 @@ class NurseWorkbench extends Component {
               <div className="portlet-body">
                 <div className="opPatientList">
                   <ul className="opList">
-                    {/* {Enumerable.from(this.state.data)
-                      .where(w => w.status === "V" && w.nurse_examine === "N")
-                      .toArray().length !== 0 ? (
-                        Enumerable.from(this.state.data)
-                          .where(w => w.status === "V" && w.nurse_examine === "N")
-                          .toArray()
-                          .map((data, index) => (
-                            <li
-                              nursing_pat={index}
-                              key={index}
-                              onClick={this.moveToStation.bind(this, data)}
-                            >
-                              <span className="op-sec-1">
-                                <i
-                                  className={
-                                    data.appointment_patient === "Y"
-                                      ? "appointment-icon"
-                                      : "walking-icon"
-                                  }
-                                />
-                                <span className="opTime">
-                                  {moment(data.encountered_date).format(
-                                    "HH:mm A"
-                                  )}
-                                </span>
-                              </span>
-                              <span className="op-sec-2">
-                                <span className="opPatientName">
-                                  {data.full_name}
-                                </span>
-                                <span className="opStatus nursing">
-                                  {data.nurse_examine === "Y"
-                                    ? "Nursing Done"
-                                    : "Nursing Pending"}
-                                </span>
-                              </span>
-                              <span className="op-sec-3">
-                                <span className="opPatientStatus newVisit">
-                                  New Visit
-                              </span>
-                              </span>
-                            </li>
-                          ))
-                      ) : (
-                        <div className="col noPatientDiv">                          
-                          <p>No Patients Available</p>
-                        </div>
-                      )} */}
                     {this.state.data.length !== 0 ? (
                       this.state.data.map((data, index) => (
                         <li
@@ -1151,7 +1105,10 @@ class NurseWorkbench extends Component {
                             </span>
                           </span>
                           <span className="op-sec-2">
+                         
                             <span className="opPatientName">
+                              
+                            <small style={{display:"block"}}> {data.patient_code}</small>
                               {data.full_name}
                             </span>
                             <span className="opStatus nursing">
@@ -1184,22 +1141,38 @@ class NurseWorkbench extends Component {
           </div>
           <div className="col-8 opPatientDetails">
             <div className="portlet portlet-bordered margin-bottom-15">
-              <div className="portlet-title">
-                <div className="caption">
-                  <h3 className="caption-subject">
-                    {/* <AlgaehLabel
-                      label={{
-                        forceLabel: this.state.patient_name,
-                        returnText: "true"
-                      }}
-                    /> */}
-                    <span>Patient Name : {this.state.patient_name}</span>
-                  </h3>
-                </div>
-                {/* <div className="actions rightLabelCount">Station</div> */}
-              </div>
 
               <div className="portlet-body" id="vitals_recording">
+
+            <div className="row">
+                <div className="col">
+                <AlgaehLabel label={{ forceLabel: "Patient Code", }}/>
+                  <h6>  {this.state.patient_code !== undefined ?   <span>{this.state.patient_code}</span> : "----------"}</h6>
+                </div>
+
+                <div className="col">
+                <AlgaehLabel label={{ forceLabel: "Patient Name", }}/>
+                  <h6>  {this.state.patient_name !== undefined ?   <span>{this.state.patient_name}</span> : "----------"}</h6>
+                </div>
+          
+
+
+                {this.state.patient_code !== undefined ?
+                <div className="col-5" style={{textAlign:"right", marginTop:10}}>
+                  <button className="btn btn-small btn-default" style={{marginRight:10}}  onClick={printSickleave.bind(this, this)}>
+                   Print Sick Leave
+                  </button>
+                  <button className="btn btn-small btn-default"   onClick={printPrescription.bind(this, this)}>
+                  Print Prescription
+                  </button>
+                
+                </div> : null}
+
+
+
+          </div>
+          <hr></hr>
+
 
                 <AlgaehSecurityComponent componentCode="NUR_PAT_VIT">
                   {/* Vitals Start */}
