@@ -142,45 +142,40 @@ const itemhandle = ($this, item) => {
 // };
 
 const AddItems = ($this) => {
-  if (
-    $this.state.no_of_days === "" ||
-    parseInt($this.state.no_of_days, 10) < 1
-  ) {
-    swalMessage({
-      title: "Duration can't be zero",
-      type: "info",
-    });
-    return;
-  }
+  // if (
+  //   $this.state.no_of_days === "" ||
+  //   parseInt($this.state.no_of_days, 10) < 1
+  // ) {
+  //   swalMessage({
+  //     title: "Duration can't be zero",
+  //     type: "info",
+  //   });
+  //   return;
+  // }
 
-  if (
-    !$this.state.start_date ||
-    moment($this.state.start_date).isBefore(moment(), "day")
-  ) {
-    $this.setState(
-      {
-        start_date: moment().format("YYYY-MM-DD"),
-      },
-      () => {
-        swalMessage({
-          title: "Start date must not in the past",
-          type: "error",
-        });
-      }
-    );
-    return;
-  }
+  // if (
+  //   !$this.state.start_date ||
+  //   moment($this.state.start_date).isBefore(moment(), "day")
+  // ) {
+  //   $this.setState(
+  //     {
+  //       start_date: moment().format("YYYY-MM-DD"),
+  //     },
+  //     () => {
+  //       swalMessage({
+  //         title: "Start date must not in the past",
+  //         type: "error",
+  //       });
+  //     }
+  //   );
+  //   return;
+  // }
 
   let validate =
     $this.state.item_id !== null &&
     $this.state.generic_id !== null &&
     $this.state.dosage !== null &&
-    $this.state.med_units !== null &&
-    $this.state.frequency !== null &&
     $this.state.no_of_days !== null &&
-    $this.state.frequency_type !== null &&
-    $this.state.frequency_time !== null &&
-    $this.state.frequency_route !== null &&
     $this.state.uom_id !== null &&
     $this.state.service_id !== null &&
     $this.state.item_category_id !== null &&

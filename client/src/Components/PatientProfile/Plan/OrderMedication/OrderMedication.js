@@ -293,9 +293,9 @@ class OrderMedication extends Component {
           <div className="col-4">
             <div className="popLeftDiv">
               {" "}
-              <div className="row">
+              <div className="row medicationSearchCntr">
                 <AlgaehAutoSearch
-                  div={{ className: "col-12 form-group" }}
+                  div={{ className: "col-12 form-group medicationSearchFld" }}
                   label={{ forceLabel: "Generic Name / Item Name" }}
                   title="Search by generic name / item name"
                   name="generic_name_item_description"
@@ -319,13 +319,8 @@ class OrderMedication extends Component {
                     generic_name,
                   }) => {
                     return (
-                      <div className="col-12 padd-10">
-                        <h6>
-                          {_.startCase(_.toLower(generic_name))} &rArr;{" "}
-                          <small>
-                            {_.startCase(_.toLower(item_description))}
-                          </small>
-                        </h6>
+                      <div className="medicationSearchList">
+                        <h6>{_.startCase(_.toLower(item_description))} <small>{_.startCase(_.toLower(generic_name))}</small></h6>
                         {storage_description !== null &&
                         storage_description !== "" ? (
                           <small>
@@ -757,7 +752,7 @@ class OrderMedication extends Component {
                             ? "Intramuscular Inj"
                             : row.frequency_route === "IT"
                             ? "Intrathecal Inj"
-                            : row.frequency_route === "IR"
+                            : row.frequency_route === "IV"
                             ? "Intravenous Inj"
                             : row.frequency_route === "NL"
                             ? "Nasal"
@@ -777,6 +772,20 @@ class OrderMedication extends Component {
                             ? "Topical"
                             : row.frequency_route === "TD"
                             ? "Transdermal"
+                            : row.frequency_route === "VL"
+                            ? "Vaginal"
+                            : row.frequency_route === "IN"
+                            ? "Intravitreal"
+                            : row.frequency_route === "VR"
+                            ? "Various"
+                            : row.frequency_route === "IP"
+                            ? "Intraperitoneal"
+                            : row.frequency_route === "ID"
+                            ? "Intradermal"
+                            : row.frequency_route === "INV"
+                            ? "Intravesical"
+                            : row.frequency_route === "EP"
+                            ? "Epilesional"
                             : null;
                         },
                         // editorTemplate: (row) => {

@@ -14,8 +14,8 @@ import {
   AlagehFormGroup,
   AlgaehDataGrid,
   AlgaehLabel,
-  AlagehAutoComplete,
-  AlgaehDateHandler,
+  // AlagehAutoComplete,
+  // AlgaehDateHandler,
 } from "../../../Wrapper/algaehWrapper";
 
 import {
@@ -23,8 +23,8 @@ import {
   itemhandle,
   AddItems,
   deleteItems,
-  datehandle,
-  dateFormater,
+  // datehandle,
+  // dateFormater,
   numberhandle,
   getPastMedication,
 } from "./PastMedicationEvents";
@@ -254,7 +254,7 @@ class PastMedication extends Component {
       <div>
         <div className="row popupInner">
           <div className="col-4">
-            <div className="popLeftDiv">
+            <div className="popLeftDiv" style={{minHeight:"50vh"}}>
               <div className="row">
                 <AlgaehAutoSearch
                   div={{ className: "col-12 form-group" }}
@@ -301,7 +301,7 @@ class PastMedication extends Component {
                   onClear={this.clearItemCodeHandler.bind(this)}
                   onClick={this.itemChangeHandle.bind(this)}
                 />
-                <AlagehAutoComplete
+                {/* <AlagehAutoComplete
                   div={{ className: "col-6  form-group" }}
                   label={{ forceLabel: "Frequency" }}
                   selector={{
@@ -364,7 +364,7 @@ class PastMedication extends Component {
                     onChange: texthandle.bind(this, this),
                     autoComplete: "off",
                   }}
-                />
+                /> */}
                 <AlagehFormGroup
                   div={{ className: "col-3  form-group" }}
                   label={{
@@ -427,33 +427,10 @@ class PastMedication extends Component {
                     },
                   }}
                 />
-                <AlgaehDateHandler
-                  div={{ className: "col-6 form-group" }}
-                  label={{ forceLabel: "Start Date" }}
-                  textBox={{ className: "txt-fld", name: "start_date" }}
-                  minDate={new Date()}
-                  events={{
-                    onChange: datehandle.bind(this, this),
-                  }}
-                  value={this.state.start_date}
-                />
-                <div className="col-12">
-                  <label className="style_Label ">Instruction</label>
-                  <textarea
-                    name="instructions"
-                    className="txt-fld"
-                    rows="4"
-                    onChange={this.onInstructionsTextHandler.bind(this)}
-                    value={this.state.instructions}
-                  />
-                </div>
                 <div
                   className="col-12"
                   style={{ paddingTop: 9, textAlign: "right" }}
                 >
-                  <span style={{ float: "left" }}>
-                    Pharmacy Stock: <b>{this.state.total_quantity}</b>
-                  </span>
                   <button
                     className="btn btn-primary btn-sm"
                     type="button"
@@ -509,158 +486,6 @@ class PastMedication extends Component {
                         ),
                       },
                       {
-                        fieldName: "frequency",
-                        label: <AlgaehLabel label={{ forceLabel: "Freq." }} />,
-                        displayTemplate: (row) => {
-                          return row.frequency === "0"
-                            ? "1-0-1"
-                            : row.frequency === "1"
-                            ? "1-0-0"
-                            : row.frequency === "2"
-                            ? "0-0-1"
-                            : row.frequency === "3"
-                            ? "0-1-0"
-                            : row.frequency === "4"
-                            ? "1-1-0"
-                            : row.frequency === "5"
-                            ? "0-1-1"
-                            : row.frequency === "6"
-                            ? "1-1-1"
-                            : row.frequency === "7"
-                            ? "Once only"
-                            : row.frequency === "8"
-                            ? "Once daily (q24h)"
-                            : row.frequency === "9"
-                            ? "Twice daily (Bid)"
-                            : row.frequency === "10"
-                            ? "Three times daily (tid)"
-                            : row.frequency === "11"
-                            ? "Five times daily"
-                            : row.frequency === "12"
-                            ? "Every two hours (q2h)"
-                            : row.frequency === "13"
-                            ? "Every three hours (q3h)"
-                            : row.frequency === "14"
-                            ? "Every four hours (q4h)"
-                            : row.frequency === "15"
-                            ? "Every six hours (q6h)"
-                            : row.frequency === "16"
-                            ? "Every eight hours (q8h)"
-                            : row.frequency === "17"
-                            ? "Every twelve hours (q12h)"
-                            : row.frequency === "18"
-                            ? "Four times daily (qid)"
-                            : row.frequency === "19"
-                            ? "Other (As per need)"
-                            : null;
-                        },
-                        others: {
-                          minWidth: 150,
-                        },
-                      },
-                      {
-                        fieldName: "frequency_type",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "Freq. Type" }} />
-                        ),
-                        displayTemplate: (row) => {
-                          return row.frequency_type === "PD"
-                            ? "Per Day"
-                            : row.frequency_type === "PH"
-                            ? "Per Hour"
-                            : row.frequency_type === "PW"
-                            ? "Per Week"
-                            : row.frequency_type === "PM"
-                            ? "Per Month"
-                            : row.frequency_type === "AD"
-                            ? "Alternate Day"
-                            : row.frequency_type === "2W"
-                            ? "Every 2 weeks"
-                            : row.frequency_type === "2M"
-                            ? "Every 2 months"
-                            : row.frequency_type === "3M"
-                            ? "Every 3 months"
-                            : row.frequency_type === "4M"
-                            ? "Every 4 months"
-                            : row.frequency_type === "6M"
-                            ? "Every 6 months"
-                            : null;
-                        },
-                        others: {
-                          minWidth: 150,
-                        },
-                      },
-                      {
-                        fieldName: "frequency_time",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "Freq. Time" }} />
-                        ),
-                        displayTemplate: (row) => {
-                          return row.frequency_time === "BM"
-                            ? "Before Meals"
-                            : row.frequency_time === "AM"
-                            ? "After Meals"
-                            : row.frequency_time === "WF"
-                            ? "With Food"
-                            : row.frequency_time === "EM"
-                            ? "Early Morning"
-                            : row.frequency_time === "BB"
-                            ? "Before Bed Time"
-                            : row.frequency_time === "AB"
-                            ? "At Bed Time"
-                            : row.frequency_time === "NN"
-                            ? "None"
-                            : null;
-                        },
-                        others: {
-                          minWidth: 100,
-                        },
-                      },
-                      {
-                        fieldName: "frequency_route",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "Freq. Route" }} />
-                        ),
-                        displayTemplate: (row) => {
-                          return row.frequency_route === "BL"
-                            ? "Buccal"
-                            : row.frequency_route === "EL"
-                            ? "Enteral"
-                            : row.frequency_route === "IL"
-                            ? "Inhalation"
-                            : row.frequency_route === "IF"
-                            ? "Infusion"
-                            : row.frequency_route === "IM"
-                            ? "Intramuscular Inj"
-                            : row.frequency_route === "IT"
-                            ? "Intrathecal Inj"
-                            : row.frequency_route === "IR"
-                            ? "Intravenous Inj"
-                            : row.frequency_route === "NL"
-                            ? "Nasal"
-                            : row.frequency_route === "OP"
-                            ? "Ophthalmic"
-                            : row.frequency_route === "OR"
-                            ? "Oral"
-                            : row.frequency_route === "OE"
-                            ? "Otic (ear)"
-                            : row.frequency_route === "RL"
-                            ? "Rectal"
-                            : row.frequency_route === "ST"
-                            ? "Subcutaneous"
-                            : row.frequency_route === "SL"
-                            ? "Sublingual"
-                            : row.frequency_route === "TL"
-                            ? "Topical"
-                            : row.frequency_route === "TD"
-                            ? "Transdermal"
-                            : null;
-                        },
-                        others: {
-                          minWidth: 100,
-                        },
-                      },
-                      {
                         fieldName: "dosage",
                         label: <AlgaehLabel label={{ forceLabel: "Dosage" }} />,
                         others: {
@@ -683,46 +508,6 @@ class PastMedication extends Component {
                         ),
                         others: {
                           minWidth: 90,
-                        },
-                      },
-                      {
-                        fieldName: "start_date",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "Start Date" }} />
-                        ),
-                        displayTemplate: (row) => {
-                          return <span>{dateFormater(row.start_date)}</span>;
-                        },
-                        // editorTemplate: (row) => {
-                        //   return <span>{dateFormater(row.start_date)}</span>;
-                        // },
-                        others: {
-                          minWidth: 100,
-                        },
-                      },
-                      {
-                        fieldName: "pre_approval",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "Pre Approval" }} />
-                        ),
-                        displayTemplate: (row) => {
-                          return row.pre_approval === "Y"
-                            ? "Required"
-                            : "Not Required";
-                        },
-                        // editorTemplate: (row) => {
-                        //   return row.pre_approval === "Y"
-                        //     ? "Required"
-                        //     : "Not Required";
-                        // },
-                      },
-                      {
-                        fieldName: "instructions",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "Instruction" }} />
-                        ),
-                        others: {
-                          minWidth: 200,
                         },
                       },
                     ]}

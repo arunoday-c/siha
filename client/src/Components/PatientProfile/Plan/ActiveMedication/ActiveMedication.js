@@ -187,6 +187,20 @@ class ActiveMedication extends Component {
                       ? "Topical"
                       : row.frequency_route === "TD"
                       ? "Transdermal"
+                      : row.frequency_route === "VL"
+                      ? "Vaginal"
+                      : row.frequency_route === "IN"
+                      ? "Intravitreal"
+                      : row.frequency_route === "VR"
+                      ? "Various"
+                      : row.frequency_route === "IP"
+                      ? "Intraperitoneal"
+                      : row.frequency_route === "ID"
+                      ? "Intradermal"
+                      : row.frequency_route === "INV"
+                      ? "Intravesical"
+                      : row.frequency_route === "EP"
+                      ? "Epilesional"
                       : null;
                   },
 
