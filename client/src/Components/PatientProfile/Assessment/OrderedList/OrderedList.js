@@ -95,7 +95,10 @@ class OrderedList extends PureComponent {
 
   UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps.inventory_location_id !== undefined) {
-      this.setState({ inventory_location_id: nextProps.inventory_location_id });
+      this.setState({
+        inventory_location_id: nextProps.inventory_location_id,
+        location_type: nextProps.location_type,
+      });
     }
   }
 
@@ -239,6 +242,7 @@ class OrderedList extends PureComponent {
                   isConsOpen: !this.state.isConsOpen,
                   inventory_location_id:
                     Departmant_Location[0].inventory_location_id,
+                  location_type: Departmant_Location[0].location_type,
                   approval_amt: response.data.records[0].ins_services_amount,
                   approval_limit_yesno:
                     response.data.records[0].approval_limit_yesno,
@@ -310,6 +314,7 @@ class OrderedList extends PureComponent {
             isPackUtOpen: !this.state.isPackUtOpen,
             package_detail: row,
             inventory_location_id: Departmant_Location[0].inventory_location_id,
+            location_type: Departmant_Location[0].location_type
           });
         }
       },
@@ -399,6 +404,7 @@ class OrderedList extends PureComponent {
                     hims_d_procedure_id: data[0].hims_d_procedure_id,
                     inventory_location_id:
                       Departmant_Location[0].inventory_location_id,
+                    location_type: Departmant_Location[0].location_type
                   });
                 }
               },
@@ -525,60 +531,93 @@ class OrderedList extends PureComponent {
       cancelButtonText: "No",
     }).then((willDelete) => {
       if (willDelete.value) {
+
+        row.location_id = this.state.inventory_location_id;
+        row.location_type = this.state.location_type;
+        let inputOb = this.state;
+
+        inputOb.inventory_stock_detail = []
+
+        inputOb.transaction_type = "CSN";
+        inputOb.location_id = this.state.inventory_location_id;
+        inputOb.location_type = this.state.location_type;
+        inputOb.inventory_stock_detail.push(row);
+        inputOb.provider_id = Window.global["provider_id"];
+        inputOb.transaction_date = new Date();
+        inputOb.ScreenCode = "INV0011";
+        inputOb.cancelled = "Y";
+        inputOb.hims_f_ordered_inventory_id = row.hims_f_ordered_inventory_id;
+
         algaehApiCall({
           uri: "/orderAndPreApproval/deleteInvOrderedItems",
           method: "delete",
-          data: {
-            hims_f_ordered_inventory_id: row.hims_f_ordered_inventory_id,
-            item_id: row.item_id
-          },
+          data: inputOb,
           onSuccess: (response) => {
             if (response.data.success === true) {
-              row.location_id = this.state.inventory_location_id;
-              let inputOb = this.state;
-              inputOb.transaction_type = "CSN";
-              inputOb.item_id = row.item_id
-              inputOb.location_id = this.state.inventory_location_id;
-              inputOb.consumption_number = response.data.records[0].consumption_number;
-              inputOb.hims_f_inventory_consumption_header_id = response.data.records[0].hims_f_inventory_consumption_header_id;
-              inputOb.transaction_id = response.data.records[0].hims_f_inventory_consumption_header_id;
-              inputOb.inventory_stock_detail = [row];
-              inputOb.provider_id = Window.global["provider_id"];
-              inputOb.transaction_date = new Date();
-              inputOb.ScreenCode = "INV0007/C";
-
-              algaehApiCall({
-                uri: "/inventoryconsumption/cancelConsumtion",
-                module: "inventory",
-                data: inputOb,
-                onSuccess: (response) => {
-                  if (response.data.success === true) {
-                    const { visit_id } = Window.global;
-                    this.props.getConsumableOrderList({
-                      uri: "/orderAndPreApproval/getVisitConsumable",
-                      method: "GET",
-                      data: {
-                        visit_id: visit_id, //Window.global["visit_id"]
-                      },
-                      redux: {
-                        type: "ORDER_SERVICES_GET_DATA",
-                        mappingName: "consumableorderedList",
-                      },
-                    });
-
-                    swalMessage({
-                      title: "Deleted Succesfully",
-                      type: "success",
-                    });
-                  }
+              const { visit_id } = Window.global;
+              this.props.getConsumableOrderList({
+                uri: "/orderAndPreApproval/getVisitConsumable",
+                method: "GET",
+                data: {
+                  visit_id: visit_id, //Window.global["visit_id"]
                 },
-                onFailure: (error) => {
-                  swalMessage({
-                    title: error.message,
-                    type: "error",
-                  });
+                redux: {
+                  type: "ORDER_SERVICES_GET_DATA",
+                  mappingName: "consumableorderedList",
                 },
               });
+
+              swalMessage({
+                title: "Deleted Succesfully",
+                type: "success",
+              });
+              // row.location_id = this.state.inventory_location_id;
+              // row.location_type = this.state.location_type;
+              // let inputOb = this.state;
+
+              // inputOb.inventory_stock_detail = []
+              // inputOb.consumption_header_id = response.data.records[0].inventory_consumption_header_id
+              // inputOb.transaction_type = "CSN";
+              // inputOb.location_id = this.state.inventory_location_id;
+              // inputOb.location_type = this.state.location_type;
+              // inputOb.inventory_stock_detail.push(row);
+              // inputOb.provider_id = Window.global["provider_id"];
+              // inputOb.transaction_date = new Date();
+              // inputOb.ScreenCode = "INV0011";
+              // inputOb.cancelled = "Y";
+
+              // algaehApiCall({
+              //   uri: "/inventoryconsumption/addInvConsumptionCancel",
+              //   module: "inventory",
+              //   data: inputOb,
+              //   onSuccess: (response) => {
+              //     if (response.data.success === true) {
+              //       const { visit_id } = Window.global;
+              //       this.props.getConsumableOrderList({
+              //         uri: "/orderAndPreApproval/getVisitConsumable",
+              //         method: "GET",
+              //         data: {
+              //           visit_id: visit_id, //Window.global["visit_id"]
+              //         },
+              //         redux: {
+              //           type: "ORDER_SERVICES_GET_DATA",
+              //           mappingName: "consumableorderedList",
+              //         },
+              //       });
+
+              //       swalMessage({
+              //         title: "Deleted Succesfully",
+              //         type: "success",
+              //       });
+              //     }
+              //   },
+              //   onFailure: (error) => {
+              //     swalMessage({
+              //       title: error.message,
+              //       type: "error",
+              //     });
+              //   },
+              // });
             }
           },
           onFailure: (error) => {

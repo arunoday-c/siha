@@ -751,7 +751,8 @@ class NurseWorkbench extends Component {
         encounter_id: data.hims_f_patient_encounter_id,
         patient_id: data.patient_id,
         visit_id: data.visit_id,
-        inventory_location_id: data.inventory_location_id
+        inventory_location_id: data.inventory_location_id,
+        location_type: data.location_type
       },
       () => {
         getPatientAllergies(this);
@@ -1964,6 +1965,7 @@ class NurseWorkbench extends Component {
                             <OrderedList
                               vat_applicable={this.props.vat_applicable}
                               inventory_location_id={this.state.inventory_location_id}
+                              location_type={this.state.location_type}
                               openData="Consumable"
                               key="Consumable"
                             />

@@ -2507,6 +2507,10 @@
       "value": "CS"
     },
     {
+      "name": "Consumption Cancel",
+      "value": "CSN"
+    },
+    {
       "name": "Receipt Entry",
       "value": "REC"
     },

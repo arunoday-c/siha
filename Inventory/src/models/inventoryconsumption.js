@@ -61,6 +61,7 @@ export default {
       let input = { ...req.body };
       let document_number = "";
 
+      console.log("input", input)
       _mysql
         .generateRunningNumber({
           user_id: req.userIdentity.algaeh_d_app_user_id,
@@ -89,9 +90,9 @@ export default {
             .executeQuery({
               query:
                 "INSERT INTO `hims_f_inventory_consumption_header` (consumption_number, consumption_date, `year`, \
-                period, location_type, location_id, provider_id, patient_id, created_date, created_by, updated_date,\
-                updated_by, hospital_id) \
-              VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                period, location_type, location_id, provider_id, patient_id, cancelled, created_date, created_by, \
+                updated_date, updated_by, hospital_id) \
+              VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
               values: [
                 document_number,
                 today,
@@ -101,6 +102,7 @@ export default {
                 input.location_id,
                 input.provider_id,
                 input.patient_id,
+                input.cancelled,
                 new Date(),
                 req.userIdentity.algaeh_d_app_user_id,
                 new Date(),
@@ -182,7 +184,132 @@ export default {
     }
   },
 
+  addInvConsumptionCancel: (req, res, next) => {
+    const _options = req.connection == null ? {} : req.connection;
+    const _mysql = new algaehMysql(_options);
+    try {
+      let input = { ...req.body };
+      let document_number = "";
 
+      console.log("input", input)
+      _mysql
+        .generateRunningNumber({
+          user_id: req.userIdentity.algaeh_d_app_user_id,
+          numgen_codes: ["INV_CON_CAN_NUM"],
+          table_name: "hims_f_inventory_numgen"
+        })
+        .then(generatedNumbers => {
+          req.connection = {
+            connection: _mysql.connection,
+            isTransactionConnection:
+              _mysql.isTransactionConnection,
+            pool: _mysql.pool
+          };
+
+          req.body.cancelled = "Y"
+
+          document_number = generatedNumbers.INV_CON_CAN_NUM;
+
+          let year = moment().format("YYYY");
+
+          let today = moment().format("YYYY-MM-DD");
+
+          let month = moment().format("MM");
+
+          let period = month;
+
+          _mysql
+            .executeQuery({
+              query:
+                "INSERT INTO `hims_f_inventory_can_consumption_header` (can_consumption_number, can_consumption_date, `year`, \
+                period, location_type, location_id, provider_id, patient_id, consumption_header_id, created_date, created_by, \
+                updated_date, updated_by, hospital_id) \
+              VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+              values: [
+                document_number,
+                today,
+                year,
+                period,
+                input.location_type,
+                input.location_id,
+                input.provider_id,
+                input.patient_id,
+                input.consumption_header_id,
+                new Date(),
+                req.userIdentity.algaeh_d_app_user_id,
+                new Date(),
+                req.userIdentity.algaeh_d_app_user_id,
+                req.userIdentity.hospital_id
+              ],
+              printQuery: true
+            })
+            .then(headerResult => {
+              req.body.consumption_number = document_number
+              req.body.hims_f_inventory_can_consumption_header_id = headerResult.insertId
+
+              let IncludeValues = [
+                "item_id",
+                "barcode",
+                "expiry_date",
+                "batchno",
+                "uom_id",
+                "qtyhand",
+                "quantity",
+                "unit_cost",
+                "extended_cost"
+              ];
+
+              _mysql
+                .executeQuery({
+                  query:
+                    "INSERT INTO hims_f_inventory_can_consumption_detail(??) VALUES ?",
+                  values: input.inventory_stock_detail,
+                  includeValues: IncludeValues,
+                  extraValues: {
+                    inventory_can_consumption_header_id: headerResult.insertId
+                  },
+                  bulkInsertOrUpdate: true,
+                  printQuery: true
+                })
+                .then(detailResult => {
+                  // _mysql.commitTransaction(() => {
+                  //   _mysql.releaseConnection();
+                  req.body.transaction_id = headerResult.insertId;
+                  req.body.year = year;
+                  req.body.period = period;
+                  period;
+                  req.records = {
+                    can_consumption_number: document_number,
+                    hims_f_inventory_can_consumption_header_id: headerResult.insertId,
+                    year: year,
+                    period: period
+                  };
+                  next();
+                  // });
+                })
+                .catch(error => {
+                  _mysql.rollBackTransaction(() => {
+                    next(error);
+                  });
+                });
+            })
+            .catch(e => {
+              _mysql.rollBackTransaction(() => {
+                next(e);
+              });
+            });
+        })
+        .catch(e => {
+          _mysql.rollBackTransaction(() => {
+            next(e);
+          });
+        });
+    } catch (e) {
+      _mysql.rollBackTransaction(() => {
+        next(e);
+      });
+    }
+  },
 
   // location_id
 
@@ -252,7 +379,7 @@ export default {
                       new Date(),
                       net_payable,
                       "journal",
-                      inputParam.hims_f_inventory_consumption_header_id,
+                      inputParam.transaction_id,
                       inputParam.consumption_number,
                       inputParam.ScreenCode,
                       "Consumption done for " + location_acc[0].location_description + "/" + net_payable,
@@ -304,28 +431,54 @@ export default {
                           decimal_places
                         )
 
-                      //COGS Entry
-                      insertSubDetail.push({
-                        payment_date: new Date(),
-                        head_id: cogs_acc_data.head_id,
-                        child_id: cogs_acc_data.child_id,
-                        debit_amount: waited_avg_cost,
-                        payment_type: "DR",
-                        credit_amount: 0,
-                        hospital_id: location_acc[0].hospital_id
-                      });
+                      console.log("inputParam.cancelled", inputParam.cancelled)
+                      if (inputParam.cancelled === "Y") {
+                        console.log("1")
+                        //COGS Entry
+                        insertSubDetail.push({
+                          payment_date: new Date(),
+                          head_id: cogs_acc_data.head_id,
+                          child_id: cogs_acc_data.child_id,
+                          debit_amount: 0,
+                          payment_type: "CR",
+                          credit_amount: waited_avg_cost,
+                          hospital_id: location_acc[0].hospital_id
+                        });
 
-                      //Location Wise
-                      insertSubDetail.push({
-                        payment_date: new Date(),
-                        head_id: location_acc[0].head_id,
-                        child_id: location_acc[0].child_id,
-                        debit_amount: 0,
-                        payment_type: "CR",
-                        credit_amount: waited_avg_cost,
-                        hospital_id: location_acc[0].hospital_id
-                      });
+                        //Location Wise
+                        insertSubDetail.push({
+                          payment_date: new Date(),
+                          head_id: location_acc[0].head_id,
+                          child_id: location_acc[0].child_id,
+                          debit_amount: waited_avg_cost,
+                          payment_type: "DR",
+                          credit_amount: 0,
+                          hospital_id: location_acc[0].hospital_id
+                        });
+                      } else {
+                        console.log("2")
+                        //COGS Entry
+                        insertSubDetail.push({
+                          payment_date: new Date(),
+                          head_id: cogs_acc_data.head_id,
+                          child_id: cogs_acc_data.child_id,
+                          debit_amount: waited_avg_cost,
+                          payment_type: "DR",
+                          credit_amount: 0,
+                          hospital_id: location_acc[0].hospital_id
+                        });
 
+                        //Location Wise
+                        insertSubDetail.push({
+                          payment_date: new Date(),
+                          head_id: location_acc[0].head_id,
+                          child_id: location_acc[0].child_id,
+                          debit_amount: 0,
+                          payment_type: "CR",
+                          credit_amount: waited_avg_cost,
+                          hospital_id: location_acc[0].hospital_id
+                        });
+                      }
                     }
 
                     // console.log("insertSubDetail", insertSubDetail)

@@ -220,19 +220,20 @@ export default {
         query =
           "select hims_d_sub_department_id, sub_department_code,sub_department_name, arabic_sub_department_name,\
             inventory_location_id,sub_department_desc, department_id, SD.effective_start_date, SD.effective_end_date, \
-            SD.department_type, sub_department_status,vitals_mandatory, D.department_name  from  hims_d_sub_department SD, \
-            hims_d_department D where SD.record_status='A' and D.hims_d_department_id = SD.department_id \
-            and department_id=? order by hims_d_sub_department_id desc";
+            SD.department_type, sub_department_status,vitals_mandatory, D.department_name, L.location_type from  hims_d_sub_department SD \
+            inner join  hims_d_department D on D.hims_d_department_id = SD.department_id \
+            left join hims_d_inventory_location L on SD.inventory_location_id = L.hims_d_inventory_location_id \
+            where SD.record_status='A' and department_id=? order by hims_d_sub_department_id desc";
 
         values.push(input.department_id);
       } else {
         query =
           "select hims_d_sub_department_id, sub_department_code,sub_department_name, arabic_sub_department_name,\
             inventory_location_id,sub_department_desc, department_id, SD.effective_start_date, SD.effective_end_date, \
-            SD.department_type, sub_department_status, vitals_mandatory, D.department_name from  \
-            hims_d_sub_department SD, hims_d_department D\
-            where SD.record_status='A' and D.hims_d_department_id = SD.department_id \
-            order by hims_d_sub_department_id desc";
+            SD.department_type, sub_department_status, vitals_mandatory, D.department_name, L.location_type from  \
+            hims_d_sub_department SD inner join  hims_d_department D on D.hims_d_department_id = SD.department_id \
+            left join hims_d_inventory_location L on SD.inventory_location_id = L.hims_d_inventory_location_id \
+            where SD.record_status='A' order by hims_d_sub_department_id desc";
       }
 
       _mysql

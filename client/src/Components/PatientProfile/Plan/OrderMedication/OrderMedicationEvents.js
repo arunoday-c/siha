@@ -293,6 +293,7 @@ const itemhandle = ($this, item) => {
         item_group_id: item.group_id,
         addItemEnable: false,
         total_quantity: 0,
+        frequency_route: item.item_route ? item.item_route : "OR",
       },
       () => {
         getItemStock($this);

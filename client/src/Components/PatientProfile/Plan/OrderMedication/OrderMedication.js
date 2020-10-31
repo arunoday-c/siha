@@ -79,8 +79,8 @@ class OrderMedication extends Component {
       item_id: null,
       generic_id: null,
       dosage: 1,
-      med_units:"",
-      frequency:"0",
+      med_units: "",
+      frequency: "0",
       no_of_days: 0,
       dispense: 0,
 
@@ -88,7 +88,7 @@ class OrderMedication extends Component {
       rowDetails: [],
 
       frequency_type: "PD",
-      frequency_time: "AM" ,
+      frequency_time: "AM",
       frequency_route: "OR",
       total_quantity: 0,
       ...storedState,
@@ -122,6 +122,7 @@ class OrderMedication extends Component {
       addItemEnable: true,
       instructions: "",
       total_quantity: 0,
+      frequency_route: "OR",
     });
   }
   itemChangeHandle(item) {

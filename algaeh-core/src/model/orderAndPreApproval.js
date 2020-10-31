@@ -2297,36 +2297,25 @@ let deleteInvOrderedItems = (req, res, next) => {
   const _mysql = new algaehMysql({ path: keyPath });
   try {
     _mysql
-      .executeQuery({
+      .executeQueryWithTransaction({
         query:
-          "SELECT * FROM hims_f_inventory_consumption_detail where ordered_inventory_id=?",
-        values: [req.body.hims_f_ordered_inventory_id],
+          "SELECT inventory_consumption_header_id FROM hims_f_inventory_consumption_detail where ordered_inventory_id=?; \
+          DELETE FROM hims_f_ordered_inventory where hims_f_ordered_inventory_id=?;\
+          UPDATE hims_f_inventory_consumption_detail SET cancelled='Y' where ordered_inventory_id=?;",
+        values: [req.body.hims_f_ordered_inventory_id, req.body.hims_f_ordered_inventory_id, req.body.hims_f_ordered_inventory_id],
         printQuery: true,
       })
-      .then((result) => {
-        console.log("result", result)
-        let strQuery = ""
-        if (result.length === 0) {
-          strQuery = `UPDATE hims_f_inventory_consumption_header SET cancelled ='Y' where hims_f_inventory_consumption_header_id = ${result[0].inventory_consumption_header_id};`
-        }
-        _mysql
-          .executeQuery({
-            query:
-              "DELETE FROM hims_f_ordered_inventory where hims_f_ordered_inventory_id=?;\
-              DELETE FROM hims_f_inventory_consumption_detail where ordered_inventory_id=?;\
-              SELECT consumption_number, hims_f_inventory_consumption_header_id FROM hims_f_inventory_consumption_header where hims_f_inventory_consumption_header_id = ?"+ strQuery,
-            values: [req.body.hims_f_ordered_inventory_id, req.body.hims_f_ordered_inventory_id, result[0].inventory_consumption_header_id],
-            printQuery: true,
-          })
-          .then((res_result) => {
-            _mysql.releaseConnection();
-            req.records = res_result[2];
-            next();
-          })
-          .catch((error) => {
-            _mysql.releaseConnection();
-            next(error);
-          });
+      .then((res_result) => {
+        req.connection = {
+          connection: _mysql.connection,
+          isTransactionConnection: _mysql.isTransactionConnection,
+          pool: _mysql.pool,
+          path: keyPath,
+        };
+        req.body.consumption_header_id = res_result[0][0].inventory_consumption_header_id
+        // _mysql.releaseConnection();
+        // req.records = res_result[0];
+        next();
       })
       .catch((error) => {
         _mysql.releaseConnection();
