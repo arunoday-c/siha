@@ -837,12 +837,12 @@
   ],
   "PRESCRIPTION_FREQ_TIME": [
     {
-      "name": "Alternate Day",
-      "value": "AD"
-    },
-    {
       "name": "Per Day",
       "value": "PD"
+    },
+    {
+      "name": "Alternate Day",
+      "value": "AD"
     },
     {
       "name": "Per Hour",
@@ -909,6 +909,10 @@
   ],
   "PRESCRIPTION_FREQ_ROUTE": [
     {
+      "name": "Oral",
+      "value": "OR"
+    },
+    {
       "name": "Buccal",
       "value": "BL"
     },
@@ -943,10 +947,6 @@
     {
       "name": "Ophthalmic",
       "value": "OP"
-    },
-    {
-      "name": "Oral",
-      "value": "OR"
     },
     {
       "name": "Otic (ear)",

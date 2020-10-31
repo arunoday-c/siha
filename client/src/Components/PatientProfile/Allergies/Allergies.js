@@ -297,7 +297,7 @@ class Allergies extends Component {
                     <AlagehAutoComplete
                       div={{ className: "col-lg-12 margin-top-15" }}
                       label={{
-                        forceLabel: "Select a Alergy",
+                        forceLabel: "Select an Allergen",
                         fieldName: "sample",
                         isImp: true,
                       }}

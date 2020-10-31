@@ -98,9 +98,28 @@
             right: 0;
             display: none;
           }
+
+          .deletePresItem {
+            position: absolute;
+            text-align: center;
+            width: 36px;
+            bottom: 0;
+            background: #8d8d8d;
+            padding: 5px;
+            color: #fff;
+            height: 36px;
+            font-size: 1.4rem;
+            right: 0;
+            display: none;
+          }
           &:hover {
             .reOrderOnHover {
               display: none;
+              cursor: pointer;
+              background: #009182;
+            }
+            .deletePresItem {
+              // display: none;
               cursor: pointer;
               background: #009182;
             }

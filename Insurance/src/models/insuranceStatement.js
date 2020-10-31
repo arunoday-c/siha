@@ -194,7 +194,7 @@ export async function generateInsuranceStatement(req, res, next) {
               );
               res.setHeader(
                 "Content-Disposition",
-                `attachment; filename=${fileName}${update_date}-${update_date}.xlsx`
+                `attachment; filename=${fileName}${new Date()}-${new Date()}.xlsx`
               );
               await workbook.xlsx.write(res).then(function () {
                 res.end();

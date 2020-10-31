@@ -79,17 +79,17 @@ class OrderMedication extends Component {
       item_id: null,
       generic_id: null,
       dosage: 1,
-      med_units: null,
-      frequency: null,
+      med_units: "",
+      frequency: "0",
       no_of_days: 0,
       dispense: 0,
 
       updateButton: false,
       rowDetails: [],
 
-      frequency_type: null,
-      frequency_time: null,
-      frequency_route: null,
+      frequency_type: "PD",
+      frequency_time: "AM",
+      frequency_route: "OR",
       total_quantity: 0,
       ...storedState,
     };
@@ -122,6 +122,7 @@ class OrderMedication extends Component {
       addItemEnable: true,
       instructions: "",
       total_quantity: 0,
+      frequency_route: "OR",
     });
   }
   itemChangeHandle(item) {
@@ -191,7 +192,7 @@ class OrderMedication extends Component {
     );
     if (frequency !== undefined && frequencyType !== undefined) {
       this.setState({
-        instructions: `${this.state.dosage}${this.state.med_units}, ${
+        instructions: `${this.state.dosage}-${this.state.med_units}, ${
           frequency.name
         }, ${frequencyType.name}, ${
           consume !== undefined ? consume.name : ""
@@ -216,7 +217,7 @@ class OrderMedication extends Component {
       item_id: null,
       generic_id: null,
       dosage: 1,
-      med_units: null,
+      med_units: "",
       frequency: null,
       no_of_days: 0,
       dispense: null,
@@ -343,6 +344,7 @@ class OrderMedication extends Component {
                   div={{ className: "col-6  form-group" }}
                   label={{ forceLabel: "Frequency" }}
                   selector={{
+                    sort: "off",
                     name: "frequency",
                     className: "select-fld",
                     value: this.state.frequency,
@@ -359,6 +361,7 @@ class OrderMedication extends Component {
                   div={{ className: "col-6  form-group" }}
                   label={{ forceLabel: "Freq. Type" }}
                   selector={{
+                    sort: "off",
                     name: "frequency_type",
                     className: "select-fld",
                     value: this.state.frequency_type,
@@ -375,6 +378,7 @@ class OrderMedication extends Component {
                   div={{ className: "col-6  form-group" }}
                   label={{ forceLabel: "Consume" }}
                   selector={{
+                    sort: "off",
                     name: "frequency_time",
                     className: "select-fld",
                     value: this.state.frequency_time,
@@ -391,6 +395,7 @@ class OrderMedication extends Component {
                   div={{ className: "col-6  form-group" }}
                   label={{ forceLabel: "Route" }}
                   selector={{
+                    sort: "off",
                     name: "frequency_route",
                     className: "select-fld",
                     value: this.state.frequency_route,

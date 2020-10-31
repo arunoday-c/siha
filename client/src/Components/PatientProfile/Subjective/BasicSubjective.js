@@ -901,9 +901,9 @@ class BasicSubjective extends Component {
                                           "DD dddd MMMM YYYY"
                                         )}
                                       </small>
-                                      {/* <div className="reOrderOnHover">
-                                        <i className="fas fa-retweet" />
-                                      </div> */}
+                                      <div className="deletePresItem">
+                                        <i className="fas fa-trash" />
+                                      </div>
                                     </li>
                                   ))}
                                 </ul>
