@@ -1453,7 +1453,7 @@ export default {
       _mysql
         .executeQuery({
           query:
-            "select hims_f_leave_application_id,leave_application_code,employee_id,application_date,actual_to_date,\
+            "select hims_f_leave_application_id,employee_joined,leave_application_code,employee_id,application_date,actual_to_date,\
               leave_id,from_date,to_date,from_leave_session,to_leave_session,  \
               total_applied_days, total_approved_days,status,authorized3,authorized2,authorized1, \
               remarks,L.leave_code, L.leave_description, E.employee_code, E.full_name from hims_f_leave_application LA \
@@ -3357,8 +3357,8 @@ function saveF(_mysql, req, next, input, msg) {
               query:
                 "INSERT INTO `hims_f_leave_application` (leave_application_code,employee_id,hospital_id,application_date,sub_department_id,leave_id,leave_type,\
             from_date,to_date,actual_to_date,from_leave_session,to_leave_session,total_applied_days,remarks,weekoff_included,holiday_included,\
-            weekoff_days,holidays,leave_from,absent_id,is_projected_leave,is_across_year_leave,from_year_applied_days,to_year_applied_days, created_date, created_by, updated_date, updated_by)\
-            VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+            weekoff_days,holidays,leave_from,absent_id,is_projected_leave,is_across_year_leave,employee_joined,from_year_applied_days,to_year_applied_days, created_date, created_by, updated_date, updated_by)\
+            VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
               values: [
                 generatedNumbers.EMPLOYEE_LEAVE,
                 input.employee_id,
@@ -3382,6 +3382,7 @@ function saveF(_mysql, req, next, input, msg) {
                 input.absent_id,
                 input.is_projected_leave,
                 input.is_across_year_leave ? input.is_across_year_leave : "N",
+                input.employee_joined,
                 input.from_year_calculatedLeaveDays,
                 input.to_year_calculatedLeaveDays,
                 new Date(),

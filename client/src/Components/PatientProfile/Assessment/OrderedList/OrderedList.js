@@ -19,7 +19,7 @@ import Options from "../../../../Options.json";
 import OrderProcedureItems from "../OrderProcedureItems/OrderProcedureItems";
 import PackageUtilize from "../../PackageUtilize/PackageUtilize";
 import swal from "sweetalert2";
-import _ from "lodash";
+// import _ from "lodash";
 import { newAlgaehApi } from "../../../../hooks";
 import {
   // AlgaehDataGrid,
@@ -99,6 +99,31 @@ class OrderedList extends PureComponent {
         inventory_location_id: nextProps.inventory_location_id,
         location_type: nextProps.location_type,
       });
+    } else {
+      if (this.props.patient_profile !== undefined) {
+        algaehApiCall({
+          uri: "/department/get/subdepartment",
+          method: "GET",
+          module: "masterSettings",
+          data: { location_wise: "Y", hims_d_sub_department_id: this.props.patient_profile[0].sub_department_id },
+          onSuccess: (response) => {
+            if (response.data.success === true) {
+              const Departmant_Location = response.data.records;
+
+              this.setState({
+                inventory_location_id: Departmant_Location[0].inventory_location_id,
+                location_type: Departmant_Location[0].location_type
+              });
+            }
+          },
+          onFailure: (error) => {
+            swalMessage({
+              title: error.message,
+              type: "error",
+            });
+          },
+        });
+      }
     }
   }
 
@@ -218,9 +243,10 @@ class OrderedList extends PureComponent {
       uri: "/department/get/subdepartment",
       method: "GET",
       module: "masterSettings",
+      data: { location_wise: "Y", hims_d_sub_department_id: this.props.patient_profile[0].sub_department_id },
       onSuccess: (response) => {
         if (response.data.success === true) {
-          let Depat_data = response.data.records;
+          let Departmant_Location = response.data.records;
           const { visit_id } = Window.global;
           algaehApiCall({
             uri: "/patientRegistration/getVisitServiceAmount",
@@ -231,13 +257,6 @@ class OrderedList extends PureComponent {
             },
             onSuccess: (response) => {
               if (response.data.success) {
-                const Departmant_Location = _.filter(Depat_data, (f) => {
-                  return (
-                    f.hims_d_sub_department_id ===
-                    this.props.patient_profile[0].sub_department_id
-                  );
-                });
-
                 this.setState({
                   isConsOpen: !this.state.isConsOpen,
                   inventory_location_id:
@@ -301,14 +320,10 @@ class OrderedList extends PureComponent {
       uri: "/department/get/subdepartment",
       method: "GET",
       module: "masterSettings",
+      data: { location_wise: "Y", hims_d_sub_department_id: this.props.patient_profile[0].sub_department_id },
       onSuccess: (response) => {
         if (response.data.success === true) {
-          const Departmant_Location = _.filter(response.data.records, (f) => {
-            return (
-              f.hims_d_sub_department_id ===
-              this.props.patient_profile[0].sub_department_id
-            );
-          });
+          const Departmant_Location = response.data.records;
 
           this.setState({
             isPackUtOpen: !this.state.isPackUtOpen,
@@ -386,17 +401,19 @@ class OrderedList extends PureComponent {
 
               method: "GET",
               module: "masterSettings",
+              data: { location_wise: "Y", hims_d_sub_department_id: this.props.patient_profile[0].sub_department_id },
               onSuccess: (response) => {
                 if (response.data.success === true) {
-                  const Departmant_Location = _.filter(
-                    response.data.records,
-                    (f) => {
-                      return (
-                        f.hims_d_sub_department_id ===
-                        this.props.patient_profile[0].sub_department_id
-                      );
-                    }
-                  );
+                  const Departmant_Location = response.data.records;
+                  // const Departmant_Location = _.filter(
+                  //   response.data.records,
+                  //   (f) => {
+                  //     return (
+                  //       f.hims_d_sub_department_id ===
+                  //       this.props.patient_profile[0].sub_department_id
+                  //     );
+                  //   }
+                  // );
                   this.setState({
                     ...this.state,
                     isOpenItems: !this.state.isOpenItems,
@@ -531,7 +548,6 @@ class OrderedList extends PureComponent {
       cancelButtonText: "No",
     }).then((willDelete) => {
       if (willDelete.value) {
-
         row.location_id = this.state.inventory_location_id;
         row.location_type = this.state.location_type;
         let inputOb = this.state;

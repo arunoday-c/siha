@@ -84,12 +84,12 @@ class BasicSubjective extends Component {
 
     value.value === "PREGNANCY"
       ? this.setState({
-          isPregnancy: true,
-        })
+        isPregnancy: true,
+      })
       : this.setState({
-          isPregnancy: false,
-          lmp_days: "",
-        });
+        isPregnancy: false,
+        lmp_days: "",
+      });
   }
   datehandle(e) {
     SubjectiveHandler().datehandle(this, e);
@@ -114,6 +114,11 @@ class BasicSubjective extends Component {
   dataLevelUpdate(e) {
     SubjectiveHandler().dataLevelUpdate(this, e);
   }
+
+  deletePrecription(medicine) {
+    SubjectiveHandler().deletePrecription(this, medicine);
+  }
+
   openTab(e) {
     const err = Validations(this);
     if (!err) {
@@ -535,7 +540,7 @@ class BasicSubjective extends Component {
                             <textarea
                               value={
                                 this.state.chief_complaint === null ||
-                                this.state.chief_complaint === undefined
+                                  this.state.chief_complaint === undefined
                                   ? ""
                                   : this.state.chief_complaint
                               }
@@ -545,11 +550,11 @@ class BasicSubjective extends Component {
                             />
 
                             <small className="float-right">
-                              Max Char.{" "}
+                              Max Char.
                               {maxCharactersLeft(
-                                this.chiefComplaintMaxLength,
-                                this.state.chief_complaint
-                              )}
+                              this.chiefComplaintMaxLength,
+                              this.state.chief_complaint
+                            )}
                               /{this.chiefComplaintMaxLength}
                             </small>
                           </div>
@@ -668,7 +673,7 @@ class BasicSubjective extends Component {
                         <textarea
                           value={
                             this.state.significant_signs === null ||
-                            this.state.significant_signs === undefined
+                              this.state.significant_signs === undefined
                               ? ""
                               : this.state.significant_signs
                           }
@@ -677,11 +682,11 @@ class BasicSubjective extends Component {
                           maxLength={this.significantSignsLength}
                         />
                         <small className="float-right">
-                          Max Char.{" "}
+                          Max Char.
                           {maxCharactersLeft(
-                            this.significantSignsLength,
-                            this.state.significant_signs
-                          )}
+                          this.significantSignsLength,
+                          this.state.significant_signs
+                        )}
                           /{this.significantSignsLength}
                         </small>
                       </div>
@@ -703,7 +708,7 @@ class BasicSubjective extends Component {
                         <textarea
                           value={
                             this.state.other_signs === null ||
-                            this.state.other_signs === undefined
+                              this.state.other_signs === undefined
                               ? ""
                               : this.state.other_signs
                           }
@@ -712,11 +717,11 @@ class BasicSubjective extends Component {
                           maxLength={this.otherConditionMaxLength}
                         />
                         <small className="float-right">
-                          Max Char.{" "}
+                          Max Char.
                           {maxCharactersLeft(
-                            this.otherConditionMaxLength,
-                            this.state.other_signs
-                          )}
+                          this.otherConditionMaxLength,
+                          this.state.other_signs
+                        )}
                           / {this.otherConditionMaxLength}
                         </small>
                       </div>
@@ -824,7 +829,7 @@ class BasicSubjective extends Component {
                           paging={{ page: 0, rowsPerPage: 5 }}
                           events={{
                             onDelete: this.deleteFinalDiagnosis.bind(this),
-                            onEdit: (row) => {},
+                            onEdit: (row) => { },
 
                             onDone: this.updateDiagnosis.bind(this),
                           }}
@@ -839,11 +844,10 @@ class BasicSubjective extends Component {
                 <div className="portlet portlet-bordered margin-bottom-15">
                   <div className="portlet-title">
                     <div className="caption">
-                      <h3 className="caption-subject">Under Medication</h3>
+                      <h3 className="caption-subject">Prescription & Medication</h3>
                     </div>
 
                     <div className="actions">
-                      {" "}
                       <button
                         className="btn btn-circle"
                         onClick={printPrescription.bind(this, this)}
@@ -869,49 +873,50 @@ class BasicSubjective extends Component {
                           <Loader inline="centered">Loading</Loader>
                         </Dimmer>
                       ) : (
-                        <React.Fragment>
-                          {recentMediction.map((item, index) => (
-                            <div key={index} className="activeMedDateList">
-                              <div className="medcineDate">
-                                <span>{item.month}</span>
-                                <h3>{item.day}</h3>
-                                <span>{item.year}</span>
+                          <React.Fragment>
+                            {recentMediction.map((item, index) => (
+                              <div key={index} className="activeMedDateList">
+                                <div className="medcineDate">
+                                  <span>{item.month}</span>
+                                  <h3>{item.day}</h3>
+                                  <span>{item.year}</span>
 
-                                {/* <div className="printOnHover">
-                                  <i className="fas fa-print" />
-                                </div> */}
-                              </div>
-                              <div className="medcineList">
-                                <ul>
-                                  {item.details.map((medicine, indexD) => (
-                                    <li key={indexD}>
-                                      <b>
-                                        {medicine.item_description !== undefined
-                                          ? medicine.item_description.replace(
+                                  {/* <div className="printOnHover">
+                                    <i className="fas fa-trash-alt" />
+                                  </div> */}
+                                </div>
+                                <div className="medcineList">
+                                  <ul>
+                                    {item.details.map((medicine, indexD) => (
+                                      <li key={indexD}>
+                                        <b>
+                                          {medicine.item_description !== undefined
+                                            ? medicine.item_description.replace(
                                               /\w+/g,
                                               _.capitalize
                                             )
-                                          : medicine.item_description}
-                                      </b>
-                                      {/* <small><span>4 ml</span> - <span>12 hourly (1-1-1)</span> * <span>5 days</span></small>*/}
-                                      <small>{medicine.instructions}</small>
-                                      <small>
-                                        Medicine end date :{" "}
-                                        {moment(medicine.enddate).format(
+                                            : medicine.item_description}
+                                        </b>
+                                        {/* <small><span>4 ml</span> - <span>12 hourly (1-1-1)</span> * <span>5 days</span></small>*/}
+                                        <small>{medicine.instructions}</small>
+                                        <small>
+                                          Medicine end date :
+                                          {moment(medicine.enddate).format(
                                           "DD dddd MMMM YYYY"
                                         )}
-                                      </small>
-                                      <div className="deletePresItem">
-                                        <i className="fas fa-trash" />
-                                      </div>
-                                    </li>
-                                  ))}
-                                </ul>
+                                        </small>
+                                        <div className="deletePresItem">
+                                          <i onClick={this.deletePrecription.bind(this, medicine)}
+                                            className="fas fa-trash" />
+                                        </div>
+                                      </li>
+                                    ))}
+                                  </ul>
+                                </div>
                               </div>
-                            </div>
-                          ))}
-                        </React.Fragment>
-                      )}
+                            ))}
+                          </React.Fragment>
+                        )}
                     </div>
                   </div>
                 </div>
@@ -999,13 +1004,13 @@ class BasicSubjective extends Component {
                       openData="Investigation"
                       chief_complaint={
                         this.state.chief_complaint === null ||
-                        this.state.chief_complaint.length < 4
+                          this.state.chief_complaint.length < 4
                           ? true
                           : false
                       }
                       significant_signs={
                         this.state.significant_signs === null ||
-                        this.state.significant_signs.length < 4
+                          this.state.significant_signs.length < 4
                           ? true
                           : false
                       }
