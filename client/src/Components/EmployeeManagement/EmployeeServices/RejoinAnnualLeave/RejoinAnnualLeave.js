@@ -10,7 +10,7 @@ import {
 
 import moment from "moment";
 import Options from "../../../../Options.json";
-import { AlgaehButton, MainContext } from "algaeh-react-components";
+import {  MainContext } from "algaeh-react-components";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import swal from "sweetalert2";
 
@@ -155,15 +155,64 @@ export default class RejoinAnnualLeave extends Component {
     });
   }
 
+  
+
+
+  generateRejoinReport() {
+    // const { episode_id, current_patient, visit_id } = Window.global;
+    algaehApiCall({
+      uri: "/report",
+      method: "GET",
+      module: "reports",
+      headers: {
+        Accept: "blob",
+      },
+      others: { responseType: "blob" },
+      data: {
+        report: {
+          reportName: "rejoinReport",
+          pageSize: "A4",
+          pageOrentation: "portrait",
+          reportParams: [
+            {
+              name: "hospital_id",
+              value: this.state.hospital_id, // Window.global["episode_id"]
+            },
+          ],          
+        outputFileType: "PDF",
+        },
+      },
+      onSuccess: (res) => {
+        const urlBlob = URL.createObjectURL(res.data);
+        const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Rejoin Report`;
+        window.open(origin);
+        // window.document.title = "";
+      },
+
+      onFailure: (error) => {
+        swalMessage({
+          title: error.message,
+          type: "error",
+        });
+      },
+    });
+  }
+
+
+
+
   render() {
     return (
-      <div className="hims_hospitalservices">
-        <div
-          className="portlet portlet-bordered margin-bottom-15"
-          style={{ marginTop: 15 }}
+      <div className="hims_hospitalservices" 
+      style={{ marginTop: -12 }}>
+
+
+<div
+          className="row inner-top-search"
+          style={{ paddingBottom: 10 }}
         >
-          <div className="row">
-            <AlagehAutoComplete
+
+<AlagehAutoComplete
               div={{ className: "col-3 form-group mandatory" }}
               label={{
                 forceLabel: "Select Branch",
@@ -186,15 +235,39 @@ export default class RejoinAnnualLeave extends Component {
                 },
               }}
             />
-            <AlgaehButton
-              className="btn btn-primary"
-              onClick={() => {
+          
+
+
+            <div className="col">
+            <button
+               onClick={() => {
                 this.getAnnualLeaveEmployees();
               }}
+              style={{ marginTop: 21 }}
+              className="btn btn-primary"
             >
-              LOAD
-            </AlgaehButton>
+              Load
+            </button>{" "}
           </div>
+
+
+          <div className="col" style={{textAlign:"right"}}>
+            <button
+              onClick={this.generateRejoinReport.bind(this)}
+              style={{ marginTop: 21 }}
+              className="btn btn-default"
+            >
+              Download Report
+            </button>{" "}
+          </div>
+
+        </div>
+
+
+        <div
+          className="portlet portlet-bordered margin-bottom-15"
+          style={{ marginTop: 15 }}
+        >
 
           <div className="portlet-body">
             <div className="row">
@@ -247,6 +320,7 @@ export default class RejoinAnnualLeave extends Component {
                               className: "txt-fld",
                               name: "last_salary_process_date",
                             }}
+                            // others={{ disabled:true }}
                             events={{
                               onChange: this.gridOndateHandler.bind(this, row),
                             }}
@@ -277,11 +351,21 @@ export default class RejoinAnnualLeave extends Component {
                     //   },
                     // },
                     {
-                      fieldName: "early_rejoin",
-                      label: <AlgaehLabel label={{ forceLabel: "Rejoined" }} />,
+                      fieldName: "employee_joined",
+                      label: (
+                        <AlgaehLabel
+                          label={{ forceLabel: "Rejoined" }}
+                        />
+                      ),
                       displayTemplate: (row) => {
                         return (
-                          <span>{row.early_rejoin === "Y" ? "YES" : "NO"}</span>
+                          <span>
+                            {row.employee_joined === "Y" ? <span className="badge badge-success">
+                          Yes
+                        </span> : <span className="badge badge-warning">
+                          No
+                        </span>}
+                          </span>
                         );
                       },
                       others: {
@@ -291,17 +375,15 @@ export default class RejoinAnnualLeave extends Component {
                       },
                     },
                     {
-                      fieldName: "employee_joined",
-                      label: (
-                        <AlgaehLabel
-                          label={{ forceLabel: "Employee early rejoined" }}
-                        />
-                      ),
+                      fieldName: "early_rejoin",
+                      label: <AlgaehLabel label={{ forceLabel: "Early rejoined" }} />,
                       displayTemplate: (row) => {
                         return (
-                          <span>
-                            {row.employee_joined === "Y" ? "YES" : "NO"}
-                          </span>
+                          <span>{row.early_rejoin === "Y" ?   <span className="badge badge-success">
+                          Yes
+                        </span> : <span className="badge badge-warning">
+                          No
+                        </span>}</span>
                         );
                       },
                       others: {
