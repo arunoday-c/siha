@@ -508,7 +508,7 @@ export default {
           short_desc,component_category,calculation_method,component_frequency,calculation_type, specific_nationality, nationality_id,\
           component_type,shortage_deduction_applicable, miscellaneous_component, overtime_applicable,min_limit_applicable,min_limit_amount,limit_applicable,limit_amount,\
           process_limit_required,process_limit_days,general_ledger,allow_round_off,round_off_type,\
-          round_off_amount,formula, print_report, print_order_by, annual_salary_comp,head_id,child_id,li_head_id,li_child_id, \
+          round_off_amount,formula, print_report, print_order_by, annual_salary_comp,early_join_comp,head_id,child_id,li_head_id,li_child_id, \
           direct_head_id, direct_child_id, min_limit_applicable, min_limit_amount from hims_d_earning_deduction where record_status='A'" +
           _stringData +
           " order by hims_d_earning_deduction_id desc",
@@ -536,9 +536,9 @@ export default {
             shortage_deduction_applicable,overtime_applicable,min_limit_applicable,min_limit_amount,limit_applicable,limit_amount,\
             process_limit_required,process_limit_days,general_ledger,allow_round_off,round_off_type,\
             round_off_amount, specific_nationality, nationality_id, print_report, print_order_by, \
-            annual_salary_comp, head_id, child_id, li_head_id, li_child_id, direct_head_id, direct_child_id, \
+            annual_salary_comp,early_join_comp, head_id, child_id, li_head_id, li_child_id, direct_head_id, direct_child_id, \
             created_date,created_by,updated_date,updated_by) \
-            values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+            values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
         values: [
           input.earning_deduction_code,
           input.earning_deduction_description,
@@ -567,6 +567,7 @@ export default {
           input.print_report,
           input.print_order_by,
           input.annual_salary_comp,
+          input.early_join_comp,
           input.head_id,
           input.child_id,
           input.li_head_id,
@@ -601,7 +602,7 @@ export default {
           component_type=?,shortage_deduction_applicable=?,overtime_applicable=?,min_limit_applicable=?,min_limit_amount=?,limit_applicable=?,\
           limit_amount=?,process_limit_required=?,process_limit_days=?,general_ledger=?,\
           allow_round_off=?,round_off_type=?,formula=?,round_off_amount=?,specific_nationality=?, nationality_id=?, \
-          print_report=?,print_order_by=?,annual_salary_comp=?, \
+          print_report=?,print_order_by=?,annual_salary_comp=?, early_join_comp=?, \
           head_id = ?, child_id=?, li_head_id=?, li_child_id=?, direct_head_id=?, direct_child_id=?,\
           record_status=?,updated_date=?, updated_by=?  WHERE  hims_d_earning_deduction_id = ?",
         values: [
@@ -632,6 +633,7 @@ export default {
           input.print_report,
           input.print_order_by,
           input.annual_salary_comp,
+          input.early_join_comp,
           input.head_id,
           input.child_id,
           input.li_head_id,

@@ -14,6 +14,7 @@ import Enumerable from "linq";
 import moment from "moment";
 import AlgaehSearch from "../../../Wrapper/globalSearch";
 import spotlightSearch from "../../../../Search/spotlightSearch.json";
+import { generateLoanEmiReport } from "./LoanAuthorizationEvent.js";
 
 class LoanAuthorization extends Component {
   constructor(props) {
@@ -199,6 +200,10 @@ class LoanAuthorization extends Component {
       hospital_id: userToken.hims_d_hospital_id,
     });
   }
+
+
+
+
 
   render() {
     return (
@@ -395,8 +400,16 @@ class LoanAuthorization extends Component {
                         ),
                         displayTemplate: (row) => {
                           return row.loan_authorized === "APR" ? (
-                            <i className="fas fa-thumbs-up" />
-                          ) : (
+                            <i className="fas fa-eye" onClick={() => {
+                              this.setState({
+                                selRow: row,
+                                openAuth: true,
+                              });
+                            }}/>
+                          ) : 
+                          row.loan_authorized === "IS" ? 
+                          (<i className="fas fa-print" onClick={generateLoanEmiReport.bind(this,this, row)}/>) : 
+                          (
                             <i
                               className="fas fa-file-signature"
                               onClick={() => {
@@ -437,6 +450,25 @@ class LoanAuthorization extends Component {
                                 </span>
                               ) : (
                                 "------"
+                              )}
+                            </span>
+                          );
+                        },
+                      },
+                      {
+                        fieldName: "loan_closed",
+                        label: <AlgaehLabel label={{ forceLabel: "Status" }} />,
+                        displayTemplate: (row) => {
+                          return (
+                            <span>
+                              {row.loan_closed === "Y" ? (
+                                <span className="badge badge-success">
+                                  Closed
+                                </span>
+                              ) : (
+                                <span className="badge badge-warning">
+                                  Open
+                                </span>
                               )}
                             </span>
                           );
