@@ -717,20 +717,20 @@ let getPatientMedications = (req, res, next) => {
       .then((result) => {
         _mysql.releaseConnection();
         let latest_mediction = [];
-        // let all_mediction = result;
-        const getPrescriptionDate = result[0]["prescription_date"];
-        let all_mediction = new LINQ(result)
-          .Where(
-            (w) =>
-              moment(w.prescription_date).format("YYYYMMDD") !=
-              moment(getPrescriptionDate).format("YYYYMMDD")
-          )
-          .Select((s) => {
-            return s;
-          })
-          .ToArray();
-        if (result.length > 0) {
+        let all_mediction = [];
 
+        if (result.length > 0) {
+          const getPrescriptionDate = result[0]["prescription_date"];
+          all_mediction = new LINQ(result)
+            .Where(
+              (w) =>
+                moment(w.prescription_date).format("YYYYMMDD") !=
+                moment(getPrescriptionDate).format("YYYYMMDD")
+            )
+            .Select((s) => {
+              return s;
+            })
+            .ToArray();
           latest_mediction = new LINQ(result)
             .Where(
               (w) =>
