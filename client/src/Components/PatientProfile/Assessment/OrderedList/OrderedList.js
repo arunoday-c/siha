@@ -99,6 +99,35 @@ class OrderedList extends PureComponent {
         inventory_location_id: nextProps.inventory_location_id,
         location_type: nextProps.location_type,
       });
+    } else {
+      algaehApiCall({
+        uri: "/department/get/subdepartment",
+        method: "GET",
+        module: "masterSettings",
+        onSuccess: (response) => {
+          if (response.data.success === true) {
+            let Depat_data = response.data.records;
+
+            const Departmant_Location = _.filter(Depat_data, (f) => {
+              return (
+                f.hims_d_sub_department_id ===
+                this.props.patient_profile[0].sub_department_id
+              );
+            });
+
+            this.setState({
+              inventory_location_id: Departmant_Location[0].inventory_location_id,
+              location_type: Departmant_Location[0].location_type
+            });
+          }
+        },
+        onFailure: (error) => {
+          swalMessage({
+            title: error.message,
+            type: "error",
+          });
+        },
+      });
     }
   }
 
@@ -531,7 +560,6 @@ class OrderedList extends PureComponent {
       cancelButtonText: "No",
     }).then((willDelete) => {
       if (willDelete.value) {
-
         row.location_id = this.state.inventory_location_id;
         row.location_type = this.state.location_type;
         let inputOb = this.state;
