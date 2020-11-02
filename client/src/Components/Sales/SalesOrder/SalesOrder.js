@@ -908,7 +908,7 @@ class SalesOrder extends Component {
                     onChange: texthandle.bind(this, this),
                   },
                   others: {
-                    disabled: this.state.dataExists,
+                    disabled: this.state.is_posted === "Y" ? true : false,
                     multiline: true,
                     rows: "3",
                   },

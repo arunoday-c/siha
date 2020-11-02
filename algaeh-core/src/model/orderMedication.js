@@ -83,8 +83,8 @@ let addPatientPrescriptionOLD = (req, res, next) => {
 
               connection.query(
                 "INSERT INTO hims_f_prescription_detail(" +
-                  insurtColumns.join(",") +
-                  ",`prescription_id`) VALUES ?",
+                insurtColumns.join(",") +
+                ",`prescription_id`) VALUES ?",
                 [
                   jsonArrayToObject({
                     sampleInputObject: insurtColumns,
@@ -137,7 +137,7 @@ let addPatientPrescriptionOLD = (req, res, next) => {
                                 ...s,
                                 prescription_detail_id:
                                   detail_res[i][
-                                    "hims_f_prescription_detail_id"
+                                  "hims_f_prescription_detail_id"
                                   ],
                               };
                             })
@@ -161,8 +161,8 @@ let addPatientPrescriptionOLD = (req, res, next) => {
 
                           connection.query(
                             "INSERT INTO hims_f_medication_approval(" +
-                              insurtCols.join(",") +
-                              ",created_by,updated_by,created_date,updated_date,insurance_provider_id,\
+                            insurtCols.join(",") +
+                            ",created_by,updated_by,created_date,updated_date,insurance_provider_id,\
                               sub_insurance_id, network_id, insurance_network_office_id, patient_id, visit_id,\
                                hospital_id) VALUES ?",
                             [
@@ -340,6 +340,40 @@ let addPastMedication = (req, res, next) => {
           input.instructions,
         ],
         printQuery: false,
+      })
+      .then((result) => {
+        _mysql.commitTransaction(() => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        });
+      })
+      .catch((error) => {
+        _mysql.rollBackTransaction(() => {
+          next(error);
+        });
+      });
+  } catch (e) {
+    _mysql.releaseConnection();
+    next(e);
+  }
+};
+
+let deletePatientPrescription = (req, res, next) => {
+  const _mysql = new algaehMysql({ path: keyPath });
+  try {
+    let input = req.body;
+
+    _mysql
+      .executeQueryWithTransaction({
+        query:
+          "DELETE FROM hims_f_prescription_detail  WHERE hims_f_prescription_detail_id=?; \
+          DELETE FROM hims_f_medication_approval where prescription_detail_id=?",
+        values: [
+          input.hims_f_prescription_id,
+          input.hims_f_prescription_id
+        ],
+        printQuery: true,
       })
       .then((result) => {
         _mysql.commitTransaction(() => {
@@ -581,7 +615,7 @@ let getPatientPrescriptionOLD = (req, res, next) => {
         H.prescription_date,H.prescription_status,H.cancelled,D.hims_f_prescription_detail_id, D.prescription_id, D.item_id, D.generic_id, D.dosage,D.med_units,\
         D.frequency, D.no_of_days,D.dispense, D.frequency_type, D.frequency_time,D.frequency_route, D.start_date, D.item_status \
         from hims_f_prescription H,hims_f_prescription_detail D ,hims_f_patient P WHERE H.hims_f_prescription_id = D.prescription_id and P.hims_d_patient_id=H.patient_id and " +
-          where.condition,
+        where.condition,
         where.values,
 
         (error, result) => {
@@ -665,7 +699,7 @@ let getPatientMedications = (req, res, next) => {
           //   req.query.patient_id,
           //   req.query.patient_id
           // ],
-          " select P.episode_id,P.prescription_date,P.prescription_status,P.cancelled,\
+          " select P.hims_f_prescription_id,P.episode_id,P.prescription_date,P.prescription_status,P.cancelled,\
  PD.item_id,IM.item_description,IM.item_code,PD.item_category_id,PD.generic_id,\
  PD.item_id,PD.item_category_id,PD.item_group_id,PD.dosage,PD.med_units,PD.frequency,\
  PD.no_of_days,PD.dispense,PD.frequency_type,PD.frequency_time,PD.frequency_route,PD.start_date,\
@@ -683,9 +717,20 @@ let getPatientMedications = (req, res, next) => {
       .then((result) => {
         _mysql.releaseConnection();
         let latest_mediction = [];
-        let all_mediction = result;
+        // let all_mediction = result;
+        const getPrescriptionDate = result[0]["prescription_date"];
+        let all_mediction = new LINQ(result)
+          .Where(
+            (w) =>
+              moment(w.prescription_date).format("YYYYMMDD") !=
+              moment(getPrescriptionDate).format("YYYYMMDD")
+          )
+          .Select((s) => {
+            return s;
+          })
+          .ToArray();
         if (result.length > 0) {
-          const getPrescriptionDate = result[0]["prescription_date"];
+
           latest_mediction = new LINQ(result)
             .Where(
               (w) =>
@@ -708,9 +753,9 @@ let getPatientMedications = (req, res, next) => {
               enddate: endDate,
               active:
                 parseInt(moment().format("YYYYMMDD")) <=
-                parseInt(
-                  moment(endDate, "YYYY-MM-DD HH:mm:ss").format("YYYYMMDD")
-                )
+                  parseInt(
+                    moment(endDate, "YYYY-MM-DD HH:mm:ss").format("YYYYMMDD")
+                  )
                   ? true
                   : false,
             };
@@ -744,4 +789,5 @@ export default {
   addPastMedication,
   getPastMedication,
   deletePastMedication,
+  deletePatientPrescription
 };

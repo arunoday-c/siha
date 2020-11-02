@@ -273,6 +273,58 @@ export default function SubjectiveHandler() {
     getPatientChiefComplaints: ($this) => {
       getPatientChiefComplaints($this);
     },
+    deletePrecription: ($this, medicine) => {
+      swal({
+        title: "Are you sure you want to delete this Item " + medicine.item_description + " ?",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes",
+        cancelButtonText: "Cancel",
+      }).then((willDelete) => {
+        if (willDelete.value) {
+          algaehApiCall({
+            uri: "/orderMedication/deletePatientPrescription",
+            data: { hims_f_prescription_id: medicine.hims_f_prescription_id },
+            method: "DELETE",
+            onSuccess: (response) => {
+              if (response.data.success) {
+                algaehApiCall({
+                  uri: "/orderMedication/getPatientMedications",
+                  data: { patient_id: Window?.global?.current_patient }, //Window.global["current_patient"] },
+                  method: "GET",
+                  onSuccess: (response) => {
+                    const data = { loadingUnderMedication: false };
+                    if (response.data.success) {
+                      data["recent_mediction"] = response.data.records.latest_mediction;
+                      data["all_mediction"] = response.data.records.all_mediction;
+                      data["active_medication"] =
+                        response.data.records.active_medication;
+                    }
+                    $this.setState({
+                      ...data,
+                    });
+                  },
+                  onFailure: (error) => {
+                    swalMessage({
+                      title: error.message,
+                      type: "error",
+                    });
+                  }
+                });
+              }
+            },
+            onFailure: (error) => {
+              swalMessage({
+                title: error.message,
+                type: "error",
+              });
+            }
+          });
+        }
+      });
+    }
   };
 }
 

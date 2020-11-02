@@ -30,7 +30,9 @@ import {
   getPatientAllergies,
   texthandle,
   getAllAllergies,
-  getPatientProfile,printPrescription,printSickleave,
+  getPatientProfile,
+  printPrescription,
+  printSickleave,
 } from "./NurseWorkbenchEvents";
 import swal from "sweetalert2";
 import Options from "../../Options.json";
@@ -1105,10 +1107,10 @@ class NurseWorkbench extends Component {
                             </span>
                           </span>
                           <span className="op-sec-2">
-                         
+
                             <span className="opPatientName">
-                              
-                            <small style={{display:"block"}}> {data.patient_code}</small>
+
+                              <small style={{ display: "block" }}> {data.patient_code}</small>
                               {data.full_name}
                             </span>
                             <span className="opStatus nursing">
@@ -1144,34 +1146,34 @@ class NurseWorkbench extends Component {
 
               <div className="portlet-body" id="vitals_recording">
 
-            <div className="row">
-                <div className="col">
-                <AlgaehLabel label={{ forceLabel: "Patient Code", }}/>
-                  <h6>  {this.state.patient_code !== undefined ?   <span>{this.state.patient_code}</span> : "----------"}</h6>
-                </div>
+                <div className="row">
+                  <div className="col">
+                    <AlgaehLabel label={{ forceLabel: "Patient Code", }} />
+                    <h6>  {this.state.patient_code !== undefined ? <span>{this.state.patient_code}</span> : "----------"}</h6>
+                  </div>
 
-                <div className="col">
-                <AlgaehLabel label={{ forceLabel: "Patient Name", }}/>
-                  <h6>  {this.state.patient_name !== undefined ?   <span>{this.state.patient_name}</span> : "----------"}</h6>
-                </div>
-          
+                  <div className="col">
+                    <AlgaehLabel label={{ forceLabel: "Patient Name", }} />
+                    <h6>  {this.state.patient_name !== undefined ? <span>{this.state.patient_name}</span> : "----------"}</h6>
+                  </div>
 
 
-                {this.state.patient_code !== undefined ?
-                <div className="col-5" style={{textAlign:"right", marginTop:10}}>
-                  <button className="btn btn-small btn-default" style={{marginRight:10}}  onClick={printSickleave.bind(this, this)}>
-                   Print Sick Leave
+
+                  {this.state.patient_code !== undefined ?
+                    <div className="col-5" style={{ textAlign: "right", marginTop: 10 }}>
+                      <button className="btn btn-small btn-default" style={{ marginRight: 10 }} onClick={printSickleave.bind(this, this)}>
+                        Print Sick Leave
                   </button>
-                  <button className="btn btn-small btn-default"   onClick={printPrescription.bind(this, this)}>
-                  Print Prescription
+                      <button className="btn btn-small btn-default" onClick={printPrescription.bind(this, this)}>
+                        Print Prescription
                   </button>
-                
-                </div> : null}
+
+                    </div> : null}
 
 
 
-          </div>
-          <hr></hr>
+                </div>
+                <hr></hr>
 
 
                 <AlgaehSecurityComponent componentCode="NUR_PAT_VIT">
