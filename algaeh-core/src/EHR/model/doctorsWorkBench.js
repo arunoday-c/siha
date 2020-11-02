@@ -1060,7 +1060,7 @@ let getPatientProfile = (req, res, next) => {
         PV.age_in_years,PV.age_in_months,PV.age_in_days, PV.sub_department_id, PE.payment_type,PE.updated_date as Encounter_Date \
         from ( (hims_f_patient P inner join hims_f_patient_encounter PE  on P.hims_d_patient_id=PE.patient_id)\
         inner join hims_d_nationality N on N.hims_d_nationality_id=P.nationality_id ) inner join hims_f_patient_visit PV on \
-        PV.hims_f_patient_visit_id=PE.visit_id  where P.hims_d_patient_id=? and PE.episode_id=?;",
+        PV.hims_f_patient_visit_id=PE.visit_id  where P.hims_d_patient_id=? and PE.episode_id=? order by PE.updated_date desc limit 1;",
         values: [inputData.patient_id, inputData.episode_id],
       })
       .then((result) => {
