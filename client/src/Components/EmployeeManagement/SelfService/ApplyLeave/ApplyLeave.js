@@ -249,6 +249,7 @@ class ApplyLeave extends Component {
         religion_id: this.state.religion_id,
         leave_id: this.state.leave_id,
         employee_id: this.state.employee_id,
+        hospital_id: this.state.hospital_id,
       },
       onSuccess: (res) => {
         if (res.data.success) {
@@ -510,6 +511,7 @@ class ApplyLeave extends Component {
             leave_from: this.state.leave_from ? this.state.leave_from : "SS",
             hospital_id: this.state.hospital_id,
             employee_branch: this.state.employee_branch,
+            employee_joined: "N",
             ...this.state.extra,
           },
           onSuccess: (res) => {
