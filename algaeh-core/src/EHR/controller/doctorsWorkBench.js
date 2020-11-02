@@ -390,7 +390,7 @@ export default () => {
     },
     releaseConnection
   );
-  getChiefComplaints;
+  // getChiefComplaints;
 
   // created by irfan : to  getChiefComplaints
   api.get(

@@ -350,6 +350,96 @@ class Encounters extends Component {
     });
   }
 
+
+
+  printSickleave() {
+    // const { episode_id, current_patient, visit_id } = Window.global;
+    algaehApiCall({
+      uri: "/report",
+      method: "GET",
+      module: "reports",
+      headers: {
+        Accept: "blob",
+      },
+      others: { responseType: "blob" },
+      data: {
+        report: {
+          reportName: "sickLeave",
+          reportParams: [
+            {
+              name: "patient_id",
+              value: this.state.generalInfo.patient_id, //Window.global["current_patient"]
+            },
+            {
+              name: "visit_id",
+              value: this.state.generalInfo.visit_id, //Window.global["visit_id"]
+            },
+            {
+              name: "episode_id",
+              value: this.state.generalInfo.episode_id, // Window.global["episode_id"]
+            },
+          ],
+          outputFileType: "PDF",
+        },
+      },
+      onSuccess: (res) => {
+        const urlBlob = URL.createObjectURL(res.data);
+        const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Sick Leave`;
+        window.open(origin);
+        // window.document.title = "";
+      },
+
+      onFailure: (error) => {
+        swalMessage({
+          title: error.message,
+          type: "error",
+        });
+      },
+    });
+  }
+
+
+
+    printPrescription() {
+    algaehApiCall({
+      uri: "/report",
+      method: "GET",
+      module: "reports",
+      headers: {
+        Accept: "blob"
+      },
+      others: { responseType: "blob" },
+      data: {
+        report: {
+          reportName: "prescription",
+          reportParams: [
+            {
+              name: "hims_d_patient_id",
+              value: this.state.generalInfo.patient_id, //Window.global["current_patient"]
+            },
+            {
+              name: "visit_id",
+              value: this.state.generalInfo.visit_id, //Window.global["visit_id"]
+            },
+            {
+              name: "visit_code",
+              value: null
+            }
+          ],
+          outputFileType: "PDF"
+        }
+      },
+      onSuccess: res => {
+        const urlBlob = URL.createObjectURL(res.data);
+        
+        const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Prescription`;
+        window.open(origin);
+        // window.document.title = "";
+      }
+    });
+  };
+
+
   generateReport(row, report_type) {
     let inputObj = {};
     if (report_type === "RAD") {
@@ -496,21 +586,25 @@ class Encounters extends Component {
                 <div className="caption">
                   <h3 className="caption-subject">OP Encounter Details </h3>
                 </div>
+
                 
-                {this.state.generalInfo !== 0 ? (
+
+                  {/* {this.state.generalInfo !== undefined
+                            ? moment(
+                                this.state.generalInfo.encountered_date
+                              ).format("DD-MM-YYYY HH:mm A")
+                            : "----------"} */}
+                
+                {this.state.generalInfo !== undefined ?
                 <div className="actions">
-                  {" "}
-                  <button
-                    className="btn btn-default" style={{marginRight:10}}
-                  >
-                   Sick Leave Report
+                  <button className="btn btn-default" style={{marginRight:10}} onClick={this.printSickleave.bind(this)}>
+                   Print Sick Leave
                   </button>
-                  <button
-                    className="btn btn-default" 
-                  >
-                   Prescription
+                  <button className="btn btn-default" style={{marginRight:10}} onClick={this.printPrescription.bind(this)}>
+                  Print Prescription
                   </button>
-                </div>    ) : null}
+                
+                </div> : null}
               </div>
 
               <div className="portlet-body encounterDetailCntr">

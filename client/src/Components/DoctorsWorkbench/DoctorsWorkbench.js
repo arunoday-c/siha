@@ -192,16 +192,16 @@ class DoctorsWorkbench extends Component {
       localStorage.getItem("workbenchDateRange") !== null
         ? JSON.parse(localStorage.getItem("workbenchDateRange"))
         : {
-          fromDate: this.state.fromDate,
-          toDate: this.state.toDate,
-          activeDateHeader: this.state.fromDate,
-        };
+            fromDate: this.state.fromDate,
+            toDate: this.state.toDate,
+            activeDateHeader: this.state.fromDate,
+          };
 
     algaehApiCall({
       uri: "/doctorsWorkBench/getMyDay",
       data: {
-        fromDate: dateRange.fromDate,
-        toDate: dateRange.toDate,
+        fromDate: moment(dateRange.fromDate).format("YYYY-MM-DD"),
+        toDate: moment(dateRange.toDate).format("YYYY-MM-DD"),
       },
       method: "GET",
       cancelRequestId: "getMyDay",
@@ -338,8 +338,8 @@ class DoctorsWorkbench extends Component {
                           ? " activeDate CurrentDate"
                           : " activeDate"
                         : _currDate === moment().format("YYYYMMDD")
-                          ? " CurrentDate"
-                          : ""
+                        ? " CurrentDate"
+                        : ""
                     }
                     onClick={this.onSelectedDateHandler.bind(this)}
                   >
@@ -525,12 +525,12 @@ class DoctorsWorkbench extends Component {
                         </li>
                       ))
                     ) : (
-                        <li className="col noPatientDiv">
-                          {/* <h4>Relax</h4> */}
-                          <i className="fas fa-calendar-alt" />
-                          <p>No Appointment Available</p>
-                        </li>
-                      )}
+                      <li className="col noPatientDiv">
+                        {/* <h4>Relax</h4> */}
+                        <i className="fas fa-calendar-alt" />
+                        <p>No Appointment Available</p>
+                      </li>
+                    )}
                   </ul>
                 </div>
               </div>
@@ -560,70 +560,70 @@ class DoctorsWorkbench extends Component {
                     {Enumerable.from(this.state.data)
                       .where((w) => w.status === "V")
                       .toArray().length !== 0 ? (
-                        Enumerable.from(this.state.data)
-                          .where((w) => w.status === "V")
-                          .toArray()
-                          .map((data, index) => (
-                            <li
-                              key={index}
-                              data-encounterid={String(
-                                data.hims_f_patient_encounter_id
+                      Enumerable.from(this.state.data)
+                        .where((w) => w.status === "V")
+                        .toArray()
+                        .map((data, index) => (
+                          <li
+                            key={index}
+                            data-encounterid={String(
+                              data.hims_f_patient_encounter_id
+                            )}
+                            data-patientid={String(data.patient_id)}
+                            onClick={this.moveToEncounterList.bind(this, data)}
+                          >
+                            <span className="op-sec-1">
+                              {/* <i className="appointment-icon" /> */}
+                              <i
+                                className={
+                                  data.appointment_patient === "Y"
+                                    ? "appointment-icon"
+                                    : "walking-icon"
+                                }
+                              />
+                              <span className="opTime">
+                                {moment(data.encountered_date).format(
+                                  "HH:mm A"
+                                )}
+                              </span>
+                            </span>
+                            <span className="op-sec-2">
+                              <span className="opPatientName">
+                                {data.full_name}
+                              </span>
+
+                              {data.nurse_examine === "Y" ? (
+                                <span className="opStatus nursing">
+                                  Nursing Done ({data.visit_type_desc})
+                                </span>
+                              ) : (
+                                <span className="opStatus nursing">
+                                  Nursing Pending ({data.visit_type_desc})
+                                </span>
                               )}
-                              data-patientid={String(data.patient_id)}
-                              onClick={this.moveToEncounterList.bind(this, data)}
-                            >
-                              <span className="op-sec-1">
-                                {/* <i className="appointment-icon" /> */}
-                                <i
-                                  className={
-                                    data.appointment_patient === "Y"
-                                      ? "appointment-icon"
-                                      : "walking-icon"
-                                  }
-                                />
-                                <span className="opTime">
-                                  {moment(data.encountered_date).format(
-                                    "HH:mm A"
-                                  )}
-                                </span>
-                              </span>
-                              <span className="op-sec-2">
-                                <span className="opPatientName">
-                                  {data.full_name}
-                                </span>
 
-                                {data.nurse_examine === "Y" ? (
-                                  <span className="opStatus nursing">
-                                    Nursing Done ({data.visit_type_desc})
-                                  </span>
-                                ) : (
-                                    <span className="opStatus nursing">
-                                      Nursing Pending ({data.visit_type_desc})
-                                    </span>
-                                  )}
-
-                                {data.new_visit_patient === "Y" ? (
-                                  <span className="opPatientStatus newVisit">
-                                    New Visit
-                                  </span>
-                                ) : data.new_visit_patient === "P" ? (
-                                  <span className="opPatientStatus packageVisit">
-                                    Package Utilize Visit
-                                  </span>
-                                ) : (
-                                      <span className="opPatientStatus followUp">
-                                        Follow Up Visit
-                                      </span>
-                                    )}
-                              </span>
-                            </li>
-                          ))
-                      ) : (
-                        <li className="col noPatientDiv">
-                          <i className="fas fa-user-injured" />
-                          <p>No Patients Available</p>
-                        </li>
-                      )}
+                              {data.new_visit_patient === "Y" ? (
+                                <span className="opPatientStatus newVisit">
+                                  New Visit
+                                </span>
+                              ) : data.new_visit_patient === "P" ? (
+                                <span className="opPatientStatus packageVisit">
+                                  Package Utilize Visit
+                                </span>
+                              ) : (
+                                <span className="opPatientStatus followUp">
+                                  Follow Up Visit
+                                </span>
+                              )}
+                            </span>
+                          </li>
+                        ))
+                    ) : (
+                      <li className="col noPatientDiv">
+                        <i className="fas fa-user-injured" />
+                        <p>No Patients Available</p>
+                      </li>
+                    )}
                   </ul>
                 </div>
               </div>
@@ -795,9 +795,9 @@ class DoctorsWorkbench extends Component {
                       filter={true}
                       paging={{ page: 0, rowsPerPage: 20 }}
                       events={{
-                        onDelete: (row) => { },
-                        onEdit: (row) => { },
-                        onDone: (row) => { },
+                        onDelete: (row) => {},
+                        onEdit: (row) => {},
+                        onDone: (row) => {},
                       }}
                     />
                   </div>

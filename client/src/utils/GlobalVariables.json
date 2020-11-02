@@ -1011,7 +1011,7 @@
     },
     {
       "name": "Intravenous Inj",
-      "value": "IR"
+      "value": "IV"
     },
     {
       "name": "Nasal",
@@ -1044,6 +1044,34 @@
     {
       "name": "Transdermal",
       "value": "TD"
+    },
+    {
+      "name": "Vaginal",
+      "value": "VL"
+    },
+    {
+      "name": "Intravitreal",
+      "value": "IN"
+    },
+    {
+      "name": "Various",
+      "value": "VR"
+    },
+    {
+      "name": "Intraperitoneal",
+      "value": "IP"
+    },
+    {
+      "name": "Intradermal",
+      "value": "ID"
+    },
+    {
+      "name": "Intravesical",
+      "value": "INV"
+    },
+    {
+      "name": "Epilesional",
+      "value": "EP"
     }
   ],
   "SEARCH_BY_ICD": [
