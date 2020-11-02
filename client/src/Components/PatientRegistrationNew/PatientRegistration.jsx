@@ -633,6 +633,8 @@ export function PatientRegistration() {
       visit_type: default_visit_type?.hims_d_visit_type_id,
       tel_code: currentCountry?.tel_code,
       promo_code: "",
+      discount_percentage: 0,
+      discount_amount: 0
     });
     clearState();
     setConsultationInfo(default_visit_type);

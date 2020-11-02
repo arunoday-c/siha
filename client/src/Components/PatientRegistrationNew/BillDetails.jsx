@@ -32,8 +32,11 @@ const getBillDetails = async (
     prevVisits,
     consultation,
     promo_code,
+    discount_percentage,
+    discount_amout
   }
 ) => {
+  debugger
   let zeroBill = false,
     FollowUp = false;
 
@@ -63,6 +66,8 @@ const getBillDetails = async (
         vat_applicable:
           default_nationality == nationality_id ? local_vat_applicable : "Y",
         promo_code: promo_code || null,
+        discount_amout: discount_amout,
+        discount_percentage: discount_percentage
       },
     ],
   });
@@ -105,6 +110,8 @@ export function BillDetails({
   const [enableCash, setEnableCash] = useState(true);
   const [enableCard, setEnableCard] = useState(false);
   const [promoCode, setPromoCode] = useState(null);
+  const [discount_amout, setDiscountAmount] = useState(0);
+  const [discount_percentage, setDiscountPerc] = useState(0);
   const [visible, setVisible] = useState(false);
   const { userToken } = useContext(MainContext);
   const {
@@ -171,6 +178,8 @@ export function BillDetails({
         prevVisits,
         consultation: consultationInfo?.consultation,
         promo_code: promoCode,
+        discount_percentage: discount_percentage,
+        discount_amout: discount_amout
       },
     ],
     getBillDetails,
@@ -203,6 +212,10 @@ export function BillDetails({
       setCardData(null);
       setPromoCode(null);
       setValue("promo_code", "");
+      setValue("discount_amout", "0");
+      setValue("discount_percentage", "0");
+      setDiscountAmount(0);
+      setDiscountPerc(0);
     }
     //eslint-disable-next-line
   }, [services_id]);
@@ -210,6 +223,7 @@ export function BillDetails({
   function calculateBillDetails(billData = {}) {
     const sendingObject = { ...billData };
 
+    debugger
     // Sheet Level Discount Nullify
     sendingObject.sheet_discount_amount = 0;
     sendingObject.sheet_discount_percentage = 0;
@@ -502,66 +516,70 @@ export function BillDetails({
 
                 <Controller
                   control={control}
-                  name="sheet_discount_percentage"
+                  name="discount_percentage"
                   render={({ onChange, ...props }) => (
                     <AlgaehFormGroup
                       div={{ className: "col" }}
                       label={{
-                        fieldName: "sheet_discount",
+                        fieldName: "discount_percentage",
                       }}
                       textBox={{
                         // defaultValue: billData?.sheet_discount_percentage,
                         className: "txt-fld",
                         disabled:
                           !parseInt(service_dis_percentage, 10) || disabled,
-                        name: "sheet_discount_percentage",
+                        name: "discount_percentage",
                         type: "number",
                         ...props,
                         max: 100,
-                        value: billData?.sheet_discount_percentage,
+                        value: billData?.discount_percentage,
                         onChange: (e) => {
+
                           let perc = parseFloat(e.target.value);
                           if (perc > 100) {
                             perc = 99;
                           }
 
+
                           if (perc > 0) {
-                            setBillData((sendingObject) => {
-                              sendingObject.sheet_discount_percentage = perc;
-                              sendingObject.sheet_discount_amount =
-                                (sendingObject.gross_total * perc) / 100;
-                              sendingObject.net_amount =
-                                sendingObject.gross_total -
-                                sendingObject.sheet_discount_amount;
-                              sendingObject.discount_amount =
-                                sendingObject.sheet_discount_amount;
-                              sendingObject.receiveable_amount =
-                                sendingObject.gross_total -
-                                sendingObject.sheet_discount_amount;
-                              sendingObject.cash_amount = (
-                                sendingObject.gross_total -
-                                sendingObject.sheet_discount_amount
-                              ).toFixed(3);
-                              sendingObject.unbalanced_amount = (
-                                sendingObject.receiveable_amount -
-                                sendingObject.cash_amount
-                              ).toFixed(3);
-                              return { ...sendingObject };
-                            });
+                            setDiscountPerc(perc)
+                            // setBillData((sendingObject) => {
+                            //   sendingObject.sheet_discount_percentage = perc;
+                            //   sendingObject.sheet_discount_amount =
+                            //     (sendingObject.gross_total * perc) / 100;
+                            //   sendingObject.net_amount =
+                            //     sendingObject.gross_total -
+                            //     sendingObject.sheet_discount_amount;
+                            //   sendingObject.discount_amount =
+                            //     sendingObject.sheet_discount_amount;
+                            //   sendingObject.receiveable_amount =
+                            //     sendingObject.gross_total -
+                            //     sendingObject.sheet_discount_amount;
+                            //   sendingObject.cash_amount = (
+                            //     sendingObject.gross_total -
+                            //     sendingObject.sheet_discount_amount
+                            //   ).toFixed(3);
+                            //   sendingObject.unbalanced_amount = (
+                            //     sendingObject.receiveable_amount -
+                            //     sendingObject.cash_amount
+                            //   ).toFixed(3);
+                            //   return { ...sendingObject };
+                            // });
                           } else {
-                            setBillData((state) => {
-                              state.sheet_discount_percentage = 0;
-                              state.sheet_discount_amount = 0;
-                              state.discount_amount =
-                                state.sheet_discount_amount;
-                              state.net_amount =
-                                state.gross_total - state.sheet_discount_amount;
-                              state.receiveable_amount =
-                                state.gross_total - state.sheet_discount_amount;
-                              state.cash_amount =
-                                state.gross_total - state.sheet_discount_amount;
-                              return { ...state };
-                            });
+                            setDiscountPerc(0)
+                            // setBillData((state) => {
+                            //   state.sheet_discount_percentage = 0;
+                            //   state.sheet_discount_amount = 0;
+                            //   state.discount_amount =
+                            //     state.sheet_discount_amount;
+                            //   state.net_amount =
+                            //     state.gross_total - state.sheet_discount_amount;
+                            //   state.receiveable_amount =
+                            //     state.gross_total - state.sheet_discount_amount;
+                            //   state.cash_amount =
+                            //     state.gross_total - state.sheet_discount_amount;
+                            //   return { ...state };
+                            // });
                           }
                         },
 
@@ -573,41 +591,43 @@ export function BillDetails({
 
                 <Controller
                   control={control}
-                  name="sheet_discount_amount"
+                  name="discount_amount"
                   render={(props) => (
                     <AlgaehFormGroup
                       div={{ className: "col" }}
                       label={{
-                        fieldName: "sheet_discount_amount",
+                        fieldName: "discount_amount",
                       }}
                       textBox={{
                         className: "txt-fld",
                         disabled:
                           !parseInt(service_dis_percentage, 10) || disabled,
-                        name: "sheet_discount_amount",
+                        name: "discount_amount",
                         type: "number",
                         ...props,
+                        value: billData?.discount_amout,
                         onChange: (e) => {
                           const amount = parseFloat(e.target.value);
 
                           if (amount > 0) {
                             if (amount > billData?.patient_payable) {
-                              setBillData((state) => {
-                                state.sheet_discount_percentage = 0;
-                                state.sheet_discount_amount = 0;
-                                state.net_amount =
-                                  state.gross_total -
-                                  state.sheet_discount_amount;
-                                state.discount_amount =
-                                  state.sheet_discount_amount;
-                                state.receiveable_amount =
-                                  state.gross_total -
-                                  state.sheet_discount_amount;
-                                state.cash_amount =
-                                  state.gross_total -
-                                  state.sheet_discount_amount;
-                                return { ...state };
-                              });
+                              setDiscountAmount(amount)
+                              // setBillData((state) => {
+                              //   state.sheet_discount_percentage = 0;
+                              //   state.sheet_discount_amount = 0;
+                              //   state.net_amount =
+                              //     state.gross_total -
+                              //     state.sheet_discount_amount;
+                              //   state.discount_amount =
+                              //     state.sheet_discount_amount;
+                              //   state.receiveable_amount =
+                              //     state.gross_total -
+                              //     state.sheet_discount_amount;
+                              //   state.cash_amount =
+                              //     state.gross_total -
+                              //     state.sheet_discount_amount;
+                              //   return { ...state };
+                              // });
 
                               AlgaehMessagePop({
                                 type: "warning",
@@ -615,43 +635,45 @@ export function BillDetails({
                                   "Entered Amount Cannot be Greater than Receivable Amount ",
                               });
                             } else {
-                              setBillData((sendingObject) => {
-                                sendingObject.sheet_discount_percentage = (
-                                  (amount / sendingObject.gross_total) *
-                                  100
-                                ).toFixed(3);
+                              setDiscountAmount(amount)
+                              // setBillData((sendingObject) => {
+                              //   sendingObject.sheet_discount_percentage = (
+                              //     (amount / sendingObject.gross_total) *
+                              //     100
+                              //   ).toFixed(3);
 
-                                sendingObject.sheet_discount_amount = amount;
-                                sendingObject.discount_amount =
-                                  sendingObject.sheet_discount_amount;
-                                sendingObject.net_amount =
-                                  sendingObject.gross_total -
-                                  sendingObject.sheet_discount_amount;
+                              //   sendingObject.sheet_discount_amount = amount;
+                              //   sendingObject.discount_amount =
+                              //     sendingObject.sheet_discount_amount;
+                              //   sendingObject.net_amount =
+                              //     sendingObject.gross_total -
+                              //     sendingObject.sheet_discount_amount;
 
-                                sendingObject.receiveable_amount =
-                                  sendingObject.gross_total -
-                                  sendingObject.sheet_discount_amount;
-                                sendingObject.cash_amount =
-                                  sendingObject.gross_total -
-                                  sendingObject.sheet_discount_amount;
+                              //   sendingObject.receiveable_amount =
+                              //     sendingObject.gross_total -
+                              //     sendingObject.sheet_discount_amount;
+                              //   sendingObject.cash_amount =
+                              //     sendingObject.gross_total -
+                              //     sendingObject.sheet_discount_amount;
 
-                                return { ...sendingObject };
-                              });
+                              //   return { ...sendingObject };
+                              // });
                             }
                           } else {
-                            setBillData((state) => {
-                              state.sheet_discount_percentage = 0;
-                              state.sheet_discount_amount = 0;
-                              state.net_amount =
-                                state.gross_total - state.sheet_discount_amount;
-                              state.discount_amount =
-                                state.sheet_discount_amount;
-                              state.receiveable_amount =
-                                state.gross_total - state.sheet_discount_amount;
-                              state.cash_amount =
-                                state.gross_total - state.sheet_discount_amount;
-                              return { ...state };
-                            });
+                            setDiscountAmount(0)
+                            // setBillData((state) => {
+                            //   state.sheet_discount_percentage = 0;
+                            //   state.sheet_discount_amount = 0;
+                            //   state.net_amount =
+                            //     state.gross_total - state.sheet_discount_amount;
+                            //   state.discount_amount =
+                            //     state.sheet_discount_amount;
+                            //   state.receiveable_amount =
+                            //     state.gross_total - state.sheet_discount_amount;
+                            //   state.cash_amount =
+                            //     state.gross_total - state.sheet_discount_amount;
+                            //   return { ...state };
+                            // });
                           }
                         },
                         placeholder: "0.00",
