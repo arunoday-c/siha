@@ -116,14 +116,17 @@ const onvalidate = ($this) => {
   console.time("valid");
   let test_analytes = $this.state.test_analytes;
 
+  let strTitle = "Are you sure want to Validate?"
+
   for (let k = 0; k < test_analytes.length; k++) {
     if (test_analytes[k].confirm === "N") {
-      swalMessage({
-        type: "warning",
-        title: "Please confirm result for all the Analytes",
-      });
+      strTitle = "Are you sure want to Validate, for few Analytes no Result Entered?"
+      // swalMessage({
+      //   type: "warning",
+      //   title: "Please confirm result for all the Analytes",
+      // });
 
-      return;
+      // return;
     } else {
       test_analytes[k].status = "V";
       test_analytes[k].validate = "Y";
@@ -133,7 +136,7 @@ const onvalidate = ($this) => {
   }
 
   swal({
-    title: "Are you sure want to Validate?",
+    title: strTitle,
     type: "warning",
     showCancelButton: true,
     confirmButtonText: "Yes",
@@ -263,59 +266,63 @@ const onchangegridcol = ($this, row, e) => {
 
 const resultEntryUpdate = ($this) => {
   let test_analytes = $this.state.test_analytes;
-  let enterResult = true;
-  let enterRemarks = true;
+  // let enterResult = true;
+  // let enterRemarks = true;
   for (let k = 0; k < test_analytes.length; k++) {
     if (test_analytes[k].result !== null) {
-      if (
-        test_analytes[k].remarks === null &&
-        test_analytes[k].amended === "Y"
-      ) {
-        enterRemarks = false;
-      } else {
-        test_analytes[k].status = "E";
-        if (test_analytes[k].confirm !== "N") {
-          test_analytes[k].status = "C";
-        }
-
-        if (test_analytes[k].validate !== "N") {
-          test_analytes[k].status = "V";
-        }
+      // if (
+      //   test_analytes[k].remarks === null &&
+      //   test_analytes[k].amended === "Y"
+      // ) {
+      //   enterRemarks = false;
+      // } else {
+      test_analytes[k].status = "E";
+      if (test_analytes[k].confirm !== "N") {
+        test_analytes[k].status = "C";
       }
-    } else {
-      enterResult = false;
+
+      if (test_analytes[k].validate !== "N") {
+        test_analytes[k].status = "V";
+      }
     }
+    // } else {
+    //   enterResult = false;
+    // }
     test_analytes[k].isre_run = false;
     test_analytes[k].comments = $this.state.comments;
   }
-  if (enterResult === true && enterRemarks === true) {
-    test_analytes.push({ runtype: $this.state.run_type });
-    UpdateLabOrder($this, test_analytes, "E");
-  } else {
-    if (enterResult === false) {
-      swalMessage({
-        type: "warning",
-        title: "Please enter result for all the Analytes.",
-      });
-    } else if (enterRemarks === false) {
-      swalMessage({
-        type: "warning",
-        title: "Please enter Remarks for Amended..",
-      });
-    }
-  }
+  test_analytes.push({ runtype: $this.state.run_type });
+  UpdateLabOrder($this, test_analytes, "E");
+  // if (enterResult === true && enterRemarks === true) {
+  //   test_analytes.push({ runtype: $this.state.run_type });
+  //   UpdateLabOrder($this, test_analytes, "E");
+  // } else {
+  //   if (enterResult === false) {
+  //     swalMessage({
+  //       type: "warning",
+  //       title: "Please enter result for all the Analytes.",
+  //     });
+  //   } else if (enterRemarks === false) {
+  //     swalMessage({
+  //       type: "warning",
+  //       title: "Please enter Remarks for Amended..",
+  //     });
+  //   }
+  // }
 };
 
 const onconfirm = ($this) => {
   let test_analytes = $this.state.test_analytes;
 
+  let strTitle = "Are you sure want to Confirm?"
   for (let k = 0; k < test_analytes.length; k++) {
     if (test_analytes[k].result === null || test_analytes[k].result === "") {
-      swalMessage({
-        type: "warning",
-        title: "Please enter result for all the Analytes.",
-      });
-      return;
+      strTitle = "Are you sure want to Confirm, for few Analytes no Result Entered?"
+      // swalMessage({
+      //   type: "warning",
+      //   title: "Please enter result for all the Analytes.",
+      // });
+      // return;
     } else {
       test_analytes[k].status = "C";
       test_analytes[k].confirm = "Y";
@@ -325,7 +332,7 @@ const onconfirm = ($this) => {
   }
 
   swal({
-    title: "Are you sure want to Confirm?",
+    title: strTitle,
     type: "warning",
     showCancelButton: true,
     confirmButtonText: "Yes",
