@@ -7,6 +7,7 @@ const {
   getItemMoment,
   getItemLocationStock,
   getInvExpItemsDash,
+  getDashboardData,
   getUserLocationPermission,
   getItemandLocationStock,
   getConsumptionSelectedMonth,
@@ -46,6 +47,12 @@ export default () => {
     });
   });
   api.get("/getInvExpItemsDash", getInvExpItemsDash, (req, res, next) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: req.records,
+    });
+  });
+  api.get("/getDashboardData", getDashboardData, (req, res, next) => {
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
       success: true,
       records: req.records,

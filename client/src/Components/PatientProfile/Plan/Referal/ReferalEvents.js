@@ -1,4 +1,7 @@
-import { successfulMessage } from "../../../../utils/GlobalFunctions";
+import {
+  AlgaehValidation,
+  successfulMessage,
+} from "../../../../utils/GlobalFunctions";
 import { algaehApiCall } from "../../../../utils/algaehApiCall";
 
 const texthandle = ($this, e) => {
@@ -6,63 +9,70 @@ const texthandle = ($this, e) => {
   let value = e.value || e.target.value;
 
   $this.setState({
-    [name]: value
+    [name]: value,
   });
 };
 
-const addReferal = $this => {
-  const { current_patient, episode_id } = Window.global;
-  if (
-    $this.state.referral_type === "I" &&
-    $this.state.doctor_id === undefined
-  ) {
-    successfulMessage({
-      message: "Please select Doctor",
-      title: "Warning",
-      icon: "warning"
-    });
-  } else {
-    let inputObj = {
-      patient_id: current_patient, //Window.global["current_patient"],
-      episode_id: episode_id, //Window.global["episode_id"],
-      referral_type: $this.state.referral_type,
-      sub_department_id: $this.state.sub_department_id,
-      doctor_id: $this.state.doctor_id,
-      hospital_name: $this.state.hospital_name,
-      reason: $this.state.reason,
-      external_doc_name: $this.state.external_doc_name
-    };
-    algaehApiCall({
-      uri: "/doctorsWorkBench/addReferalDoctor",
-      data: inputObj,
-      method: "POST",
-      onSuccess: response => {
-        if (response.data.success) {
-          successfulMessage({
-            message: "Added Succesfully...",
-            title: "Success",
-            icon: "success"
-          });
-        }
-
-        $this.setState({
-          doctor_id: undefined,
-          sub_department_id: undefined,
-          hospital_name: "",
-          reason: "",
-          external_doc_name: "",
-          doctor_department: ""
-        });
-      },
-      onFailure: error => {
+const addReferal = ($this) => {
+  // e.preventDefault();
+  AlgaehValidation({
+    querySelector: "data-validate='referalValidate'",
+    alertTypeIcon: "warning",
+    onSuccess: () => {
+      const { current_patient, episode_id } = Window.global;
+      if (
+        $this.state.referral_type === "I" &&
+        $this.state.doctor_id === undefined
+      ) {
         successfulMessage({
-          message: error.message,
-          title: "Error",
-          icon: "error"
+          message: "Please select Doctor",
+          title: "Warning",
+          icon: "warning",
+        });
+      } else {
+        let inputObj = {
+          patient_id: current_patient, //Window.global["current_patient"],
+          episode_id: episode_id, //Window.global["episode_id"],
+          referral_type: $this.state.referral_type,
+          sub_department_id: $this.state.sub_department_id,
+          doctor_id: $this.state.doctor_id,
+          hospital_name: $this.state.hospital_name,
+          reason: $this.state.reason,
+          external_doc_name: $this.state.external_doc_name,
+        };
+        algaehApiCall({
+          uri: "/doctorsWorkBench/addReferalDoctor",
+          data: inputObj,
+          method: "POST",
+          onSuccess: (response) => {
+            if (response.data.success) {
+              successfulMessage({
+                message: "Added Succesfully...",
+                title: "Success",
+                icon: "success",
+              });
+            }
+
+            $this.setState({
+              doctor_id: undefined,
+              sub_department_id: undefined,
+              hospital_name: "",
+              reason: "",
+              external_doc_name: "",
+              doctor_department: "",
+            });
+          },
+          onFailure: (error) => {
+            successfulMessage({
+              message: error.message,
+              title: "Error",
+              icon: "error",
+            });
+          },
         });
       }
-    });
-  }
+    },
+  });
 };
 
 const radioChange = ($this, e) => {
@@ -79,7 +89,7 @@ const radioChange = ($this, e) => {
     hospital_name: "",
     reason: "",
     doctor_department: "",
-    ..._external_doc_name
+    ..._external_doc_name,
   });
 };
 export { texthandle, addReferal, radioChange };

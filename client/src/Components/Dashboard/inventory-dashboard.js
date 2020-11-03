@@ -417,10 +417,14 @@ export default function Dashboard() {
   );
   const [itemLOcationStock, setItemLOcationStock] = useState([]);
   const [location_id, setLocation_id] = useStateWithCallbackLazy(null);
+  // const [dataTotal, setDataTotal] = useState([]);
   const [dateRange, setDateRange] = useStateWithCallbackLazy([
     moment().startOf("month"),
     moment().endOf("month"),
   ]);
+  const [stock_value, setStock_value] = useState("");
+  const [expiredItemsCount, setExpiredItemsCount] = useState("");
+  const [lowStockItemsCount, setLowStockItemsCount] = useState("");
   const [invExpItem, setInvExpItem] = useState([]);
   const { data } = useQuery("dashboard-data", getDashboardData, {
     initialData: {
@@ -453,6 +457,7 @@ export default function Dashboard() {
       })
       .catch((e) => AlgaehMessagePop({ type: "error", display: e.message }));
     getInvExpItemsDash(dateRange);
+    getDashboardDataNumber(dateRange);
     // eslint-disable-next-line
   }, []);
   const loadInvStockDetail = async (data) => {
@@ -501,6 +506,33 @@ export default function Dashboard() {
       });
     }
   };
+  const getDashboardDataNumber = async (data) => {
+    let from_date = moment(data[0]._d).format("YYYY-MM-DD");
+    let to_date = moment(data[1]._d).format("YYYY-MM-DD");
+    try {
+      const res = await newAlgaehApi({
+        uri: "/inventoryGlobal/getDashboardData",
+        module: "inventory",
+        method: "GET",
+        data: {
+          from_date: from_date,
+          to_date: to_date,
+        },
+      });
+      if (res.data.success) {
+        // setDataTotal(res.data.records);
+        setStock_value(res.data.records[0][0].stock_value);
+        setExpiredItemsCount(res.data.records[1][0].total);
+        setLowStockItemsCount(res.data.records[2][0].total);
+      }
+    } catch (e) {
+      // setLoading(false);
+      AlgaehMessagePop({
+        type: "error",
+        display: e.message,
+      });
+    }
+  };
   //   const onChangeInvLocation=(e)=>{
   // setLocation_id(e.value)
   //   }
@@ -515,6 +547,7 @@ export default function Dashboard() {
 
   // render() {
   // let margin = this.state.sidBarOpen ? "" : "";
+
   return (
     <div className="dashboard inv-dash">
       <div className="row card-deck">
@@ -529,277 +562,269 @@ export default function Dashboard() {
               <div className="col-8">
                 <div className="numbers">
                   <p>Expired Items</p>
-                  124
+                  {expiredItemsCount}
                 </div>
               </div>
             </div>
           </div>
         </div>
-         <div className="card animated fadeInUp faster">
-            <div className="content">
-              <div className="row">
-                <div className="col-3">
-                  <div className="icon-big text-center">
-                    <i className="fas fa-coins" />
-                  </div>
-                </div>
-                <div className="col-8">
-                  <div className="numbers">
-                    <p>Inventory Total Value</p>
-                   INR 0.00
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="card animated fadeInUp faster">
-            <div className="content">
-              <div className="row">
-                <div className="col-3">
-                  <div className="icon-big text-center">
-                    <i className="fas fa-hand-holding-usd" />
-                  </div>
-                </div>
-                <div className="col-8">
-                  <div className="numbers">
-                    <p>Low Stock Items</p>
-                    40
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="row">
-          <div className="col-12">
+        <div className="card animated fadeInUp faster">
+          <div className="content">
             <div className="row">
-              
-              
-            <div className="col-6">
-                <div className="card animated fadeInUp faster">
-                  <h6>Item Expiry</h6>
-                  <div className="row dashboardGridCntr">
-                    <div className="col">
-                      {" "}
-                      <div className="col">
-                        <div className="row">
-                          {" "}
-                          <AlgaehDateHandler
-type={"range"}
-div={{
-  className: "col-6 form-group",
-}}
-label={{
-  forceLabel: "Select Date Range",
-}}
-textBox={{
-  name: "selectRange",
-  value: dateRange,
-}}
-// maxDate={new date()}
-events={{
-  onChange: (dateSelected) => {
-    setDateRange(dateSelected, () => {
-      getInvExpItemsDash(dateSelected);
-    });
-  },
-}}
-// others={{
-//   ...format,
-// }}
-/>
-                          <div className="col-12">
-                           
-<AlgaehDataGrid
-  className="dashboardGrd"
-  columns={[
-    {
-      fieldName: "item_description",
-      label: "Item Description",
-    },
-    {
-      fieldName: "batchno",
-      label: "Batch No",
-    },
-    {
-      fieldName: "expirydt",
-      label: "Expiry Date",
-    },
-    {
-      fieldName: "inventory_location",
-      label: "Inventory Location",
-    },
-    {
-      fieldName: "item_code",
-      label: "Item Code",
-    },
-
-    {
-      fieldName: "qtyhand",
-      label: "Quantity In Hand",
-    },
-  ]}
-  // height="40vh"
-  rowUnique="finance_voucher_id"
-  data={invExpItem ? invExpItem : []}
-/>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+              <div className="col-3">
+                <div className="icon-big text-center">
+                  <i className="fas fa-coins" />
                 </div>
               </div>
-
-
-
-              <div className="col-6">
-                <div className="card animated fadeInUp faster">
-                  <h6>Order Soon Items</h6>
-                  <div className="row dashboardGridCntr">
-                    <div className="col">
-                      {" "}
-                      <div className="col">
-                        <div className="row">
-                          {" "}
-                          <AlgaehAutoComplete
-div={{ className: "col form-group" }}
-label={{ forceLabel: "By Location" }}
-selector={{
-  name: "location_id",
-  className: "select-fld",
-  value: location_id,
-  dataSource: {
-    textField: "location_description",
-    valueField: "hims_d_inventory_location_id",
-    data: inventoryLocations,
-  },
-
-  onChange: (e) => {
-    //
-    setLocation_id(
-      e.hims_d_inventory_location_id,
-      (currentLocation) => {
-        loadInvStockDetail(currentLocation);
-      }
-    );
-  },
-  // onClear: () => {
-
-  // },
-  autoComplete: "off",
-}}
-/>
-
-                          <div className="col-12">
-                       
-<AlgaehDataGrid
-className="dashboardGrd"
-columns={[
-  {
-    fieldName: "location_description",
-    label: "Location",
-    others: { filterable: true },
-  },
-  {
-    fieldName: "item_code",
-    label: "Item Code",
-    others: { filterable: true },
-  },
-
-  {
-    fieldName: "item_description",
-    label: "Item Name",
-  },
-  {
-    fieldName: "stocking_uom_id",
-    label: "Stocking UOM",
-
-    displayTemplate: (row) => {
-      let display =
-        invUom === undefined
-          ? []
-          : invUom.filter(
-              (f) =>
-                f.hims_d_inventory_uom_id ===
-                row.stocking_uom_id
-            );
-
-      return (
-        <span>
-          {display !== null && display.length !== 0
-            ? display[0].uom_description
-            : ""}
-        </span>
-      );
-    },
-    others: { filterable: false },
-  },
-  {
-    fieldName: "sales_uom",
-    label: "Sales UOM",
-    displayTemplate: (row) => {
-      let display =
-        invUom === undefined
-          ? []
-          : invUom.filter(
-              (f) => f.hims_d_inventory_uom_id === row.sales_uom
-            );
-
-      return (
-        <span>
-          {display !== null && display.length !== 0
-            ? display[0].uom_description
-            : ""}
-        </span>
-      );
-    },
-    others: { filterable: false },
-  },
-
-  {
-    fieldName: "qtyhand",
-    label: "Quantity",
-    displayTemplate: (row) => {
-      return row.reorder === "R" ? (
-        <div className="orderNow">
-          <span>{parseFloat(row.qtyhand)}</span>
-          <span className="orderSoon">Order Soon</span>
+              <div className="col-8">
+                <div className="numbers">
+                  <p>Inventory Total Value</p>
+                  {stock_value}
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-      ) : (
-        parseFloat(row.qtyhand)
-      );
-    },
-    disabled: true,
-    others: { filterable: true },
-  },
-  {
-    fieldName: "reorder_qty",
-    label: "Reorder Quantity",
-    disabled: true,
-    others: { filterable: false },
-  },
-]}
-// height="40vh"
-rowUnique="finance_voucher_id"
-data={itemLOcationStock ? itemLOcationStock : []}
-/>
-                          </div>
+        <div className="card animated fadeInUp faster">
+          <div className="content">
+            <div className="row">
+              <div className="col-3">
+                <div className="icon-big text-center">
+                  <i className="fas fa-hand-holding-usd" />
+                </div>
+              </div>
+              <div className="col-8">
+                <div className="numbers">
+                  <p>Low Stock Items</p>
+                  {lowStockItemsCount}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="row">
+        <div className="col-12">
+          <div className="row">
+            <div className="col-6">
+              <div className="card animated fadeInUp faster">
+                <h6>Item Expiry</h6>
+                <div className="row dashboardGridCntr">
+                  <div className="col">
+                    {" "}
+                    <div className="col">
+                      <div className="row">
+                        {" "}
+                        <AlgaehDateHandler
+                          type={"range"}
+                          div={{
+                            className: "col-6 form-group",
+                          }}
+                          label={{
+                            forceLabel: "Select Date Range",
+                          }}
+                          textBox={{
+                            name: "selectRange",
+                            value: dateRange,
+                          }}
+                          // maxDate={new date()}
+                          events={{
+                            onChange: (dateSelected) => {
+                              setDateRange(dateSelected, () => {
+                                getInvExpItemsDash(dateSelected);
+                              });
+                            },
+                          }}
+                          // others={{
+                          //   ...format,
+                          // }}
+                        />
+                        <div className="col-12">
+                          <AlgaehDataGrid
+                            className="dashboardGrd"
+                            columns={[
+                              {
+                                fieldName: "item_description",
+                                label: "Item Description",
+                              },
+                              {
+                                fieldName: "batchno",
+                                label: "Batch No",
+                              },
+                              {
+                                fieldName: "expirydt",
+                                label: "Expiry Date",
+                              },
+                              {
+                                fieldName: "inventory_location",
+                                label: "Inventory Location",
+                              },
+                              {
+                                fieldName: "item_code",
+                                label: "Item Code",
+                              },
+
+                              {
+                                fieldName: "qtyhand",
+                                label: "Quantity In Hand",
+                              },
+                            ]}
+                            // height="40vh"
+                            rowUnique="finance_voucher_id"
+                            data={invExpItem ? invExpItem : []}
+                          />
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
+            </div>
 
+            <div className="col-6">
+              <div className="card animated fadeInUp faster">
+                <h6>Order Soon Items</h6>
+                <div className="row dashboardGridCntr">
+                  <div className="col">
+                    {" "}
+                    <div className="col">
+                      <div className="row">
+                        {" "}
+                        <AlgaehAutoComplete
+                          div={{ className: "col form-group" }}
+                          label={{ forceLabel: "By Location" }}
+                          selector={{
+                            name: "location_id",
+                            className: "select-fld",
+                            value: location_id,
+                            dataSource: {
+                              textField: "location_description",
+                              valueField: "hims_d_inventory_location_id",
+                              data: inventoryLocations,
+                            },
 
-              </div></div></div>
+                            onChange: (e) => {
+                              //
+                              setLocation_id(
+                                e.hims_d_inventory_location_id,
+                                (currentLocation) => {
+                                  loadInvStockDetail(currentLocation);
+                                }
+                              );
+                            },
+                            // onClear: () => {
 
+                            // },
+                            autoComplete: "off",
+                          }}
+                        />
+                        <div className="col-12">
+                          <AlgaehDataGrid
+                            className="dashboardGrd"
+                            columns={[
+                              {
+                                fieldName: "location_description",
+                                label: "Location",
+                                others: { filterable: true },
+                              },
+                              {
+                                fieldName: "item_code",
+                                label: "Item Code",
+                                others: { filterable: true },
+                              },
 
+                              {
+                                fieldName: "item_description",
+                                label: "Item Name",
+                              },
+                              {
+                                fieldName: "stocking_uom_id",
+                                label: "Stocking UOM",
 
+                                displayTemplate: (row) => {
+                                  let display =
+                                    invUom === undefined
+                                      ? []
+                                      : invUom.filter(
+                                          (f) =>
+                                            f.hims_d_inventory_uom_id ===
+                                            row.stocking_uom_id
+                                        );
 
+                                  return (
+                                    <span>
+                                      {display !== null && display.length !== 0
+                                        ? display[0].uom_description
+                                        : ""}
+                                    </span>
+                                  );
+                                },
+                                others: { filterable: false },
+                              },
+                              {
+                                fieldName: "sales_uom",
+                                label: "Sales UOM",
+                                displayTemplate: (row) => {
+                                  let display =
+                                    invUom === undefined
+                                      ? []
+                                      : invUom.filter(
+                                          (f) =>
+                                            f.hims_d_inventory_uom_id ===
+                                            row.sales_uom
+                                        );
 
+                                  return (
+                                    <span>
+                                      {display !== null && display.length !== 0
+                                        ? display[0].uom_description
+                                        : ""}
+                                    </span>
+                                  );
+                                },
+                                others: { filterable: false },
+                              },
+
+                              {
+                                fieldName: "qtyhand",
+                                label: "Quantity",
+                                displayTemplate: (row) => {
+                                  return row.reorder === "R" ? (
+                                    <div className="orderNow">
+                                      <span>{parseFloat(row.qtyhand)}</span>
+                                      <span className="orderSoon">
+                                        Order Soon
+                                      </span>
+                                    </div>
+                                  ) : (
+                                    parseFloat(row.qtyhand)
+                                  );
+                                },
+                                disabled: true,
+                                others: { filterable: true },
+                              },
+                              {
+                                fieldName: "reorder_qty",
+                                label: "Reorder Quantity",
+                                disabled: true,
+                                others: { filterable: false },
+                              },
+                            ]}
+                            // height="40vh"
+                            rowUnique="finance_voucher_id"
+                            data={itemLOcationStock ? itemLOcationStock : []}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

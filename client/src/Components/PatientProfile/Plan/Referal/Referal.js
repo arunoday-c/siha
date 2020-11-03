@@ -37,7 +37,7 @@ class Referal extends PureComponent {
   }
   render() {
     return (
-      <div className="hptl-referal-doctor-form">
+      <div className="hptl-referal-doctor-form" data-validate="referalValidate">
         <div className="col-lg-12">
           <div className="row">
             <div className="customRadio">
@@ -67,8 +67,8 @@ class Referal extends PureComponent {
         <div className="row" style={{ paddingBottom: "10px" }}>
           {this.state.radio ? (
             <AlgaehAutoSearch
-              div={{ className: "col-lg-10" }}
-              label={{ forceLabel: "Physician / Department" }}
+              div={{ className: "col-lg-10 form-group mandatory" }}
+              label={{ forceLabel: "Physician / Department", isImp: true }}
               title="Search by physician / department"
               name="doctor_department"
               searchName="DepartmentAndDoctors"
@@ -118,9 +118,10 @@ class Referal extends PureComponent {
             />
           ) : (
             <AlagehFormGroup
-              div={{ className: "col-lg-10" }}
+              div={{ className: "col-lg-10 form-group mandatory" }}
               label={{
                 forceLabel: "Physician Details",
+                isImp: true,
               }}
               textBox={{
                 className: "txt-fld",
@@ -146,9 +147,10 @@ class Referal extends PureComponent {
 
         <div className="row">
           <AlagehFormGroup
-            div={{ className: "col" }}
+            div={{ className: "col form-group mandatory" }}
             label={{
               forceLabel: "Hospital Name",
+              isImp: true,
             }}
             textBox={{
               className: "txt-fld",
@@ -163,9 +165,10 @@ class Referal extends PureComponent {
             }}
           />
           <AlagehFormGroup
-            div={{ className: "col" }}
+            div={{ className: "col form-group mandatory" }}
             label={{
               forceLabel: "Reason",
+              isImp: true,
             }}
             textBox={{
               className: "txt-fld",
