@@ -20,6 +20,9 @@ const onEditHandler = ($this, row) => {
   edit_data.miscellaneous_component =
     row.miscellaneous_component === "Y" ? true : false;
   edit_data.annual_salary_comp = row.annual_salary_comp === "Y" ? true : false;
+  edit_data.early_join_comp = row.early_join_comp === "Y" ? true : false;
+
+  
 
   edit_data.selected_account =
     row.child_id !== null ? row.head_id + "-" + row.child_id : null;
@@ -151,6 +154,13 @@ const changeChecks = ($this, e) => {
         annual_salary_comp: !$this.state.annual_salary_comp,
       });
       break;
+      case "early_join_comp":
+        $this.setState({
+          early_join_comp: !$this.state.early_join_comp,
+        });
+        break;
+
+      
     default:
       break;
   }
@@ -235,6 +245,7 @@ const clearState = ($this) => {
     nationality_id: null,
     hims_d_earning_deduction_id: null,
     annual_salary_comp: false,
+    early_join_comp: false,
     on_edit: false,
     child_id: null,
     head_id: null,
@@ -398,6 +409,7 @@ const addEarningsDeductions = ($this) => {
         print_report: $this.state.print_report,
         print_order_by: $this.state.print_order_by,
         annual_salary_comp: $this.state.annual_salary_comp === true ? "Y" : "N",
+        early_join_comp: $this.state.early_join_comp === true ? "Y" : "N",
         child_id:
           gl_selected_account.length > 0 ? gl_selected_account[1] : undefined,
         head_id:
