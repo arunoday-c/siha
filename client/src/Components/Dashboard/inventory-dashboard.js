@@ -1,14 +1,24 @@
-import React, { Component } from "react";
+import React, { useEffect, useState } from "react";
 import "./dashboard.scss";
+import moment from "moment";
 // import { Bar } from "react-chartjs-2";
 // import { HorizontalBar } from "react-chartjs-2";
 // import { Doughnut } from "react-chartjs-2";
-import { withRouter } from "react-router-dom";
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
-import { AlgaehActions } from "../../actions/algaehActions";
+// import { withRouter } from "react-router-dom";
+// import { connect } from "react-redux";
+// import { bindActionCreators } from "redux";
+// import { AlgaehActions } from "../../actions/algaehActions";
+import {
+  AlgaehDataGrid,
+  AlgaehDateHandler,
+  AlgaehMessagePop,
+  AlgaehAutoComplete,
+} from "algaeh-react-components";
+import { newAlgaehApi } from "../../hooks";
+import { useStateWithCallbackLazy } from "use-state-with-callback";
+
 // import { getCookie } from "../../utils/algaehApiCall.js";
-import { GetAmountFormart } from "../../utils/GlobalFunctions";
+// import { GetAmountFormart } from "../../utils/GlobalFunctions";
 
 // const AdmissionsReadmissionData = {
 //   datasets: [
@@ -376,75 +386,230 @@ import { GetAmountFormart } from "../../utils/GlobalFunctions";
 //   ]
 // };
 
-class Dashboard extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      sidBarOpen: true,
-      showDetails: "d-none"
-    };
-  }
+// class Dashboard extends Component {
+//   constructor(props) {
+//     super(props);
+//     this.state = {
+//       sidBarOpen: true,
+//       showDetails: "d-none",
 
-  showDetailHandler(event) {
-    this.setState({
-      showDetails: this.state.showDetails === "d-block" ? "d-none" : "d-block"
-    });
-  }
+//     };
+//   }
+import { useQuery } from "react-query";
 
-  // componentDidMount() {
-  //   let HospitalId =
-  //     getCookie("HospitalId") !== undefined ? getCookie("HospitalId") : "";
-  //   this.props.getHospitalDetails({
-  //     uri: "/organization/getOrganization",
-  //     method: "GET",
-  //     data: {
-  //       hims_d_hospital_id: HospitalId
-  //     },
-  //     redux: {
-  //       type: "HOSPITAL_DETAILS_GET_DATA",
-  //       mappingName: "hospitaldetails"
-  //     },
-  //     afterSuccess: data => {
-  //       if (data.length > 0) {
-  //         sessionStorage.removeItem("CurrencyDetail");
-  //         sessionStorage.setItem(
-  //           "CurrencyDetail",
-  //           AlgaehCloseContainer(JSON.stringify(data[0]))
-  //         );
-  //       }
-  //     }
+// import { Controller } from "react-hook-form";
+const getDashboardData = async () => {
+  const result = await Promise.all([
+    newAlgaehApi({
+      uri: "/inventory/getInventoryUom",
+      module: "inventory",
+      method: "GET",
+    }),
+  ]);
+  return {
+    // inventoryLocations: result[0]?.data?.records,
+    invUom: result[0]?.data?.records,
+  };
+};
+export default function Dashboard() {
+  const [inventoryLocations, setInventoryLocations] = useStateWithCallbackLazy(
+    []
+  );
+  const [itemLOcationStock, setItemLOcationStock] = useState([]);
+  const [location_id, setLocation_id] = useStateWithCallbackLazy(null);
+  const [dateRange, setDateRange] = useStateWithCallbackLazy([
+    moment().startOf("month"),
+    moment().endOf("month"),
+  ]);
+  const [invExpItem, setInvExpItem] = useState([]);
+  const { data } = useQuery("dashboard-data", getDashboardData, {
+    initialData: {
+      inventoryLocations: [],
+      // itemLOcationStock: [],
+      invUom: [],
+    },
+    refetchOnMount: false,
+    initialStale: true,
+    cacheTime: Infinity,
+  });
+  const { invUom } = data;
+  // showDetailHandler(event) {
+  //   this.setState({
+  //     showDetails: this.state.showDetails === "d-block" ? "d-none" : "d-block"
   //   });
   // }
-  SideMenuBarOpen(sidOpen) {
-    this.setState({
-      sidBarOpen: sidOpen
-    });
-  }
+  useEffect(() => {
+    newAlgaehApi({
+      uri: "/inventory/getInventoryLocation",
+      module: "inventory",
+      method: "GET",
+    })
+      .then((res) => {
+        setInventoryLocations(res.data.records, () => {
+          loadInvStockDetail(res.data.records[0].hims_d_inventory_location_id);
+        });
 
-  render() {
-    // let margin = this.state.sidBarOpen ? "" : "";
-    return (
-      <div className="dashboard ">
-        <div className="row card-deck">
-          <div className="card animated fadeInUp faster">
-            <div className="content">
-              <div className="row">
-                <div className="col-3">
-                  <div className="icon-big text-center">
-                    <i className="fas fa-users" />
-                  </div>
+        setLocation_id(res.data.records[0].hims_d_inventory_location_id);
+      })
+      .catch((e) => AlgaehMessagePop({ type: "error", display: e.message }));
+    getInvExpItemsDash(dateRange);
+    // eslint-disable-next-line
+  }, []);
+  const loadInvStockDetail = async (data) => {
+    try {
+      const res = await newAlgaehApi({
+        uri: "/inventoryGlobal/getItemLocationStock",
+        module: "inventory",
+        method: "GET",
+        data: {
+          inventory_location_id: data,
+          reorder_qty: "Y",
+        },
+      });
+      if (res.data.success) {
+        setItemLOcationStock(res.data.records);
+      }
+    } catch (e) {
+      // setLoading(false);
+      AlgaehMessagePop({
+        type: "error",
+        display: e.message,
+      });
+    }
+  };
+  const getInvExpItemsDash = async (data) => {
+    let from_date = moment(data[0]._d).format("YYYY-MM-DD");
+    let to_date = moment(data[1]._d).format("YYYY-MM-DD");
+    try {
+      const res = await newAlgaehApi({
+        uri: "/inventoryGlobal/getInvExpItemsDash",
+        module: "inventory",
+        method: "GET",
+        data: {
+          from_date: from_date,
+          to_date: to_date,
+        },
+      });
+      if (res.data.success) {
+        setInvExpItem(res.data.records);
+      }
+    } catch (e) {
+      // setLoading(false);
+      AlgaehMessagePop({
+        type: "error",
+        display: e.message,
+      });
+    }
+  };
+  //   const onChangeInvLocation=(e)=>{
+  // setLocation_id(e.value)
+  //   }
+  // componentDidMount() {
+
+  // }
+  // SideMenuBarOpen(sidOpen) {
+  //   this.setState({
+  //     sidBarOpen: sidOpen
+  //   });
+  // }
+
+  // render() {
+  // let margin = this.state.sidBarOpen ? "" : "";
+  return (
+    <div className="dashboard ">
+      <div className="row card-deck">
+        <div className="card animated fadeInUp faster">
+          <div className="content">
+            <div className="row">
+              <div className="col-3">
+                <div className="icon-big text-center">
+                  <i className="fas fa-users" />
                 </div>
-                <div className="col-8">
-                  <div className="numbers">
-                    <p>Expired Items</p>
-                    124
+              </div>
+              <div className="col-8">
+                <div className="numbers">
+                  <p>Expired Items</p>
+                  124
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="col-6">
+          <div className="card animated fadeInUp faster">
+            <h6>Expired Items</h6>
+            <div className="row dashboardGridCntr">
+              <div className="col">
+                {" "}
+                <div className="col">
+                  <div className="row">
+                    {" "}
+                    <AlgaehDateHandler
+                      type={"range"}
+                      div={{
+                        className: "col-6 form-group",
+                      }}
+                      label={{
+                        forceLabel: "Select Date Range",
+                      }}
+                      textBox={{
+                        name: "selectRange",
+                        value: dateRange,
+                      }}
+                      // maxDate={new date()}
+                      events={{
+                        onChange: (dateSelected) => {
+                          setDateRange(dateSelected, () => {
+                            getInvExpItemsDash(dateSelected);
+                          });
+                        },
+                      }}
+                      // others={{
+                      //   ...format,
+                      // }}
+                    />
+                    <div className="col-12">
+                      <AlgaehDataGrid
+                        className="dashboardGrd"
+                        columns={[
+                          {
+                            fieldName: "item_description",
+                            label: "Item Description",
+                          },
+                          {
+                            fieldName: "batchno",
+                            label: "Batch No",
+                          },
+                          {
+                            fieldName: "expirydt",
+                            label: "Expiry Date",
+                          },
+                          {
+                            fieldName: "inventory_location",
+                            label: "Inventory Location",
+                          },
+                          {
+                            fieldName: "item_code",
+                            label: "Item Code",
+                          },
+
+                          {
+                            fieldName: "qtyhand",
+                            label: "Quantity In Hand",
+                          },
+                        ]}
+                        // height="40vh"
+                        rowUnique="finance_voucher_id"
+                        data={invExpItem ? invExpItem : []}
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-
-          <div className="card animated fadeInUp faster">
+        </div>
+        {/* <div className="card animated fadeInUp faster">
             <div className="content">
               <div className="row">
                 <div className="col-3">
@@ -548,12 +713,132 @@ class Dashboard extends Component {
                 </table>
               </div>
             </div>
-          </div>
-          <div className="col-6">
-            <div className="card animated fadeInUp faster">
-              <h6>Product with low Stock</h6>
-              <div className="dashboardChartsCntr">
-                <table className="table  table-bordered table-sm table-striped">
+          </div> */}
+        <div className="col-6">
+          <div className="card animated fadeInUp faster">
+            <h6>Product with low Stock</h6>
+            <div className="dashboardChartsCntr">
+              <AlgaehAutoComplete
+                div={{ className: "col form-group" }}
+                label={{ forceLabel: "By Location" }}
+                selector={{
+                  name: "location_id",
+                  className: "select-fld",
+                  value: location_id,
+                  dataSource: {
+                    textField: "location_description",
+                    valueField: "hims_d_inventory_location_id",
+                    data: inventoryLocations,
+                  },
+
+                  onChange: (e) => {
+                    //
+                    setLocation_id(
+                      e.hims_d_inventory_location_id,
+                      (currentLocation) => {
+                        loadInvStockDetail(currentLocation);
+                      }
+                    );
+                  },
+                  // onClear: () => {
+
+                  // },
+                  autoComplete: "off",
+                }}
+              />
+              <AlgaehDataGrid
+                className="dashboardGrd"
+                columns={[
+                  {
+                    fieldName: "location_description",
+                    label: "Location",
+                    others: { filterable: true },
+                  },
+                  {
+                    fieldName: "item_code",
+                    label: "Item Code",
+                    others: { filterable: true },
+                  },
+
+                  {
+                    fieldName: "item_description",
+                    label: "Item Name",
+                  },
+                  {
+                    fieldName: "stocking_uom_id",
+                    label: "Stocking UOM",
+
+                    displayTemplate: (row) => {
+                      let display =
+                        invUom === undefined
+                          ? []
+                          : invUom.filter(
+                              (f) =>
+                                f.hims_d_inventory_uom_id ===
+                                row.stocking_uom_id
+                            );
+
+                      return (
+                        <span>
+                          {display !== null && display.length !== 0
+                            ? display[0].uom_description
+                            : ""}
+                        </span>
+                      );
+                    },
+                    others: { filterable: false },
+                  },
+                  {
+                    fieldName: "sales_uom",
+                    label: "Sales UOM",
+                    displayTemplate: (row) => {
+                      let display =
+                        invUom === undefined
+                          ? []
+                          : invUom.filter(
+                              (f) => f.hims_d_inventory_uom_id === row.sales_uom
+                            );
+
+                      return (
+                        <span>
+                          {display !== null && display.length !== 0
+                            ? display[0].uom_description
+                            : ""}
+                        </span>
+                      );
+                    },
+                    others: { filterable: false },
+                  },
+
+                  {
+                    fieldName: "qtyhand",
+                    label: "Quantity",
+                    displayTemplate: (row) => {
+                      return row.reorder === "R" ? (
+                        <div className="orderNow">
+                          <span>{parseFloat(row.qtyhand)}</span>
+                          <span className="orderSoon">Order Soon</span>
+                        </div>
+                      ) : (
+                        parseFloat(row.qtyhand)
+                      );
+                    },
+                    disabled: true,
+                    others: { filterable: true },
+                  },
+                  {
+                    fieldName: "reorder_qty",
+                    label: "Reorder Quantity",
+                    disabled: true,
+                    others: { filterable: false },
+                  },
+                ]}
+                // height="40vh"
+                rowUnique="finance_voucher_id"
+                data={itemLOcationStock ? itemLOcationStock : []}
+              />
+
+              {/* <table className="table  table-bordered table-sm table-striped">
                   <thead>
                     <tr>
                       <th>Item Name</th>
@@ -594,11 +879,11 @@ class Dashboard extends Component {
                       <td>Sachet</td>
                     </tr>
                   </tbody>
-                </table>
-              </div>
+                </table> */}
             </div>
           </div>
-          {/* <div className={"col-4"}>
+        </div>
+        {/* <div className={"col-4"}>
             <div className="card animated fadeInUp faster">
               <h6>Fast Moving Item</h6>
               <div className="dashboardChartsCntr">
@@ -628,27 +913,27 @@ class Dashboard extends Component {
               </div>
             </div>
           </div> */}
-        </div>
       </div>
-    );
-  }
-}
-
-function mapStateToProps(state) {
-  return {
-    hospitaldetails: state.hospitaldetails
-  };
-}
-
-function mapDispatchToProps(dispatch) {
-  return bindActionCreators(
-    {
-      getHospitalDetails: AlgaehActions
-    },
-    dispatch
+    </div>
   );
 }
+// }
 
-export default withRouter(
-  connect(mapStateToProps, mapDispatchToProps)(Dashboard)
-);
+// function mapStateToProps(state) {
+//   return {
+//     hospitaldetails: state.hospitaldetails
+//   };
+// }
+
+// function mapDispatchToProps(dispatch) {
+//   return bindActionCreators(
+//     {
+//       getHospitalDetails: AlgaehActions
+//     },
+//     dispatch
+//   );
+// }
+
+// export default withRouter(
+//   connect(mapStateToProps, mapDispatchToProps)(Dashboard)
+// );

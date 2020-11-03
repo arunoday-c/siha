@@ -233,7 +233,7 @@ export default {
             SD.department_type, sub_department_status,vitals_mandatory, D.department_name ${strType} from  hims_d_sub_department SD \
             inner join  hims_d_department D on D.hims_d_department_id = SD.department_id` +
           strQuery
-          + `where SD.record_status='A' and department_id=? ${strSubDept} order by hims_d_sub_department_id desc`;
+          + ` where SD.record_status='A' and department_id=? ${strSubDept} order by hims_d_sub_department_id desc`;
 
         values.push(input.department_id);
       } else {
@@ -243,7 +243,7 @@ export default {
             SD.department_type, sub_department_status, vitals_mandatory, D.department_name ${strType} from  
             hims_d_sub_department SD inner join  hims_d_department D on D.hims_d_department_id = SD.department_id ` +
           strQuery
-          + `where SD.record_status = 'A' ${strSubDept} order by hims_d_sub_department_id desc`;
+          + ` where SD.record_status = 'A' ${strSubDept} order by hims_d_sub_department_id desc`;
       }
 
       _mysql
