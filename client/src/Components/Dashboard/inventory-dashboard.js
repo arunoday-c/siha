@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import "./dashboard.scss";
 import moment from "moment";
 // import { Bar } from "react-chartjs-2";
@@ -397,6 +397,8 @@ import { useStateWithCallbackLazy } from "use-state-with-callback";
 //   }
 import { useQuery } from "react-query";
 
+import { MainContext } from "algaeh-react-components";
+
 // import { Controller } from "react-hook-form";
 const getDashboardData = async () => {
   const result = await Promise.all([
@@ -437,6 +439,8 @@ export default function Dashboard() {
     cacheTime: Infinity,
   });
   const { invUom } = data;
+  const { userToken } = useContext(MainContext);
+  const { currency_symbol } = userToken;
   // showDetailHandler(event) {
   //   this.setState({
   //     showDetails: this.state.showDetails === "d-block" ? "d-none" : "d-block"
@@ -521,7 +525,7 @@ export default function Dashboard() {
       });
       if (res.data.success) {
         // setDataTotal(res.data.records);
-        setStock_value(res.data.records[0][0].stock_value);
+        setStock_value(parseInt(res.data.records[0][0].stock_value).toFixed(2));
         setExpiredItemsCount(res.data.records[1][0].total);
         setLowStockItemsCount(res.data.records[2][0].total);
       }
@@ -579,7 +583,7 @@ export default function Dashboard() {
               <div className="col-8">
                 <div className="numbers">
                   <p>Inventory Total Value</p>
-                  {stock_value}
+                  {`${currency_symbol} ${stock_value}`}
                 </div>
               </div>
             </div>
