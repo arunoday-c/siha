@@ -18,6 +18,8 @@ app.use(
     limit: keys.bodyLimit
   })
 );
+app.use(express.urlencoded({ limit: '50mb' }));
+app.use(bodyParser.urlencoded({ limit: "50mb", extended: true, parameterLimit: 50000 }));
 process.env.MYSQL_KEYS = JSON.stringify(keys);
 app.use(compression());
 
