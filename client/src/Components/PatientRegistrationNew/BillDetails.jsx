@@ -416,7 +416,7 @@ export function BillDetails({
               </div>
               <hr style={{ margin: "0.3rem 0rem" }} />
               <div className="row primary-box-container">
-                <div className="col">
+                <div className="col-6">
                   <AlgaehLabel
                     label={{
                       fieldName: "gross_total",
@@ -425,12 +425,22 @@ export function BillDetails({
                   <h6>{amountWithCur(billData?.gross_total)}</h6>
                 </div>
 
+
+                <div className="col-6">
+                  <AlgaehLabel
+                    label={{
+                      fieldName: "patient_payable",
+                    }}
+                  />
+                  <h6>{amountWithCur(billData?.patient_payable)}</h6>
+                </div>
+                
                 <Controller
                   control={control}
                   name="discount_percentage"
                   render={({ onChange, ...props }) => (
                     <AlgaehFormGroup
-                      div={{ className: "col" }}
+                      div={{ className: "col-6 form-group" }}
                       label={{
                         fieldName: "discount_percentage",
                       }}
@@ -469,7 +479,7 @@ export function BillDetails({
                   name="discount_amount"
                   render={(props) => (
                     <AlgaehFormGroup
-                      div={{ className: "col" }}
+                      div={{ className: "col-6 form-group" }}
                       label={{
                         fieldName: "discount_amount",
                       }}
@@ -504,15 +514,6 @@ export function BillDetails({
                     />
                   )}
                 />
-
-                <div className="col">
-                  <AlgaehLabel
-                    label={{
-                      fieldName: "patient_payable",
-                    }}
-                  />
-                  <h6>{amountWithCur(billData?.patient_payable)}</h6>
-                </div>
               </div>
               <hr style={{ margin: "0.3rem 0rem" }} />
               <div className="row primary-box-container">
@@ -1107,43 +1108,6 @@ export function BillDetails({
 
                 <hr style={{ margin: "0.3rem 0rem" }} />
                 <div className="row secondary-box-container">
-                <Controller
-                  control={control}
-                  name="promo_code"
-                  render={(props) => (
-                    <AlgaehFormGroup
-                      div={{ className: "col" }}
-                      label={{
-                        forceLabel: "Enter Promo Code",
-                        isImp: false,
-                      }}
-                      textBox={{
-                        className: "txt-fld",
-                        ...props,
-                        disabled,
-                        type: "text",
-                      }}
-                    />
-                  )}
-                />
-
-                <div className="col">
-                  <button
-                    type="button"
-                    className="btn btn-default"
-                    style={{ marginTop: "21px" }}
-                    disabled={disabled || !promo_code}
-                    onClick={() => setPromoCode(promo_code)}
-                  >
-                    <AlgaehLabel
-                      label={{
-                        forceLabel: "Apply",
-                        align: "ltr",
-                        returnText: true,
-                      }}
-                    />
-                  </button>
-                </div>
                   <div className="col" style={{ textAlign: "right" }}>
                     <AlgaehLabel
                       label={{
