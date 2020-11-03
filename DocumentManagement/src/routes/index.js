@@ -16,6 +16,11 @@ import {
   getReceiptEntryDoc,
   saveReceiptEntryDoc,
 } from "../Controller/receiptEntryDoc";
+import {
+  deleteRadiologyDoc,
+  getRadiologyDoc,
+  saveRdiologyDoc,
+} from "../Controller/radiologyDoc";
 import { setUserPreference, getUserPreferences } from "../Model/userPreference";
 import { getLogs } from "../Model/loggers";
 const router = express();
@@ -32,6 +37,10 @@ initializedDb((db) => {
   router.get("/getInvoiceDoc", getInvoiceDoc);
   router.delete("/deleteInvoiceDoc", deleteInvoiceDoc);
   router.post("/saveReceiptEntryDoc", saveReceiptEntryDoc);
+
+  router.get("/getRadiologyDoc", getRadiologyDoc);
+  router.delete("/deleteRadiologyDoc", deleteRadiologyDoc);
+  router.post("/saveRdiologyDoc", saveRdiologyDoc);
 
   router.get("/getReceiptEntryDoc", getReceiptEntryDoc);
   router.delete("/deleteReceiptEntryDoc", deleteReceiptEntryDoc);

@@ -21,14 +21,17 @@ import {
   AlgaehLabel,
   AlgaehDateHandler,
 } from "../../Wrapper/algaehWrapper";
-
+import { newAlgaehApi } from "../../../hooks";
+import { swalMessage } from "../../../utils/algaehApiCall";
 import { algaehApiCall } from "../../../utils/algaehApiCall";
-
+import { Upload, Modal } from "antd";
+import { AlgaehModal } from "algaeh-react-components";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import moment from "moment";
 import Options from "../../../Options.json";
 import _ from "lodash";
-
+const { Dragger } = Upload;
+const { confirm } = Modal;
 class RadScheduledList extends Component {
   constructor(props) {
     super(props);
@@ -50,6 +53,11 @@ class RadScheduledList extends Component {
       proiorty: null,
       status: null,
       radtestlist: [],
+      openUploadModal: false,
+      attached_files: [],
+      attached_docs: [],
+      hims_f_rad_order_id: null,
+      visit_id: null,
     };
   }
 
@@ -91,7 +99,121 @@ class RadScheduledList extends Component {
       },
     });
   }
+  getDocuments(e) {
+    newAlgaehApi({
+      uri: "/getRadiologyDoc",
+      module: "documentManagement",
+      method: "GET",
+      data: {
+        hims_f_rad_order_id: this.state.hims_f_rad_order_id,
+      },
+    })
+      .then((res) => {
+        if (res.data.success) {
+          let { data } = res.data;
+          this.setState({
+            attached_docs: data,
+            attached_files: [],
+            // saveEnable: $this.state.saveEnable,
+            // docChanged: false,
+          });
+        }
+      })
+      .catch((e) => {
+        // AlgaehLoader({ show: false });
+        swalMessage({
+          title: e.message,
+          type: "error",
+        });
+      });
+  }
+  saveDocument = (files = [], number, id) => {
+    if (this.state.hims_f_rad_order_id) {
+      const formData = new FormData();
+      formData.append(
+        "hims_f_rad_order_id",
+        number || this.state.hims_f_rad_order_id
+      );
+      formData.append("visit_id", id || this.state.visit_id);
+      if (files.length) {
+        files.forEach((file, index) => {
+          formData.append(`file_${index}`, file, file.name);
+        });
+      } else {
+        this.state.attached_files.forEach((file, index) => {
+          formData.append(`file_${index}`, file, file.name);
+        });
+      }
+      newAlgaehApi({
+        uri: "/saveRdiologyDoc",
+        data: formData,
+        extraHeaders: { "Content-Type": "multipart/form-data" },
+        method: "POST",
+        module: "documentManagement",
+      })
+        .then((value) => this.getDocuments(this))
+        .catch((e) => console.log(e));
+    } else {
+      swalMessage({
+        title: "Can't upload attachments for unsaved Receipt Entry",
+        type: "error",
+      });
+    }
+  };
+  downloadDoc(doc, isPreview) {
+    const fileUrl = `data:${doc.filetype};base64,${doc.document}`;
+    const link = document.createElement("a");
+    if (!isPreview) {
+      link.download = doc.filename;
+      link.href = fileUrl;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } else {
+      fetch(fileUrl)
+        .then((res) => res.blob())
+        .then((fblob) => {
+          const newUrl = URL.createObjectURL(fblob);
+          window.open(newUrl);
+        });
+    }
+  }
 
+  deleteDoc = (doc) => {
+    const self = this;
+    confirm({
+      title: `Are you sure you want to delete this file?`,
+      content: `${doc.filename}`,
+      icon: "",
+      okText: "Yes",
+      okType: "danger",
+      cancelText: "No",
+      onOk() {
+        self.onDelete(doc);
+      },
+      onCancel() {
+        console.log("Cancel");
+      },
+    });
+  };
+
+  onDelete = (doc) => {
+    newAlgaehApi({
+      uri: "/deleteRadiologyDoc",
+      method: "DELETE",
+      module: "documentManagement",
+      data: { id: doc._id },
+    }).then((res) => {
+      if (res.data.success) {
+        this.setState((state) => {
+          const attached_docs = state.attached_docs.filter(
+            (item) => item._id !== doc._id
+          );
+          return { attached_docs };
+        });
+      }
+    });
+  };
   ShowCollectionModel(row, e) {
     this.setState({
       isOpen: !this.state.isOpen,
@@ -145,6 +267,121 @@ class RadScheduledList extends Component {
     //   this.state.billdetails === null ? [{}] : this.state.billdetails;
     return (
       <React.Fragment>
+        <AlgaehModal
+          title="Attach Report"
+          visible={this.state.openUploadModal}
+          mask={true}
+          maskClosable={false}
+          onCancel={() => {
+            this.setState({
+              openUploadModal: false,
+              attached_files: [],
+              attached_docs: [],
+              hims_f_rad_order_id: null,
+              visit_id: null,
+            });
+          }}
+          footer={[
+            <div className="col-12">
+              <button
+                onClick={this.saveDocument.bind(this)}
+                className="btn btn-primary btn-sm"
+              >
+                Attach Document
+              </button>
+              <button
+                onClick={() => {
+                  this.setState({
+                    openUploadModal: false,
+                    attached_files: [],
+                    attached_docs: [],
+                  });
+                }}
+                className="btn btn-default btn-sm"
+              >
+                Cancel
+              </button>
+            </div>,
+          ]}
+          className={`algaehNewModal investigationAttachmentModal`}
+        >
+          <div className="portlet-body">
+            <div className="col-12">
+              <div className="row">
+                <div className="col-3 investigationAttachmentDrag">
+                  {" "}
+                  <Dragger
+                    accept=".doc,.docx,application/msword,.jpg,.png,.pdf"
+                    name="attached_files"
+                    onRemove={(file) => {
+                      this.setState((state) => {
+                        const index = state.attached_files.indexOf(file);
+                        const newFileList = [...state.attached_files];
+                        newFileList.splice(index, 1);
+                        return {
+                          attached_files: newFileList,
+                          // saveEnable: state.dataExists && !newFileList.length,
+                        };
+                      });
+                    }}
+                    beforeUpload={(file) => {
+                      this.setState((state) => ({
+                        attached_files: [...state.attached_files, file],
+                        // saveEnable: false,
+                      }));
+                      return false;
+                    }}
+                    // disabled={this.state.dataExists && !this.state.editMode}
+                    fileList={this.state.attached_files}
+                  >
+                    <p className="upload-drag-icon">
+                      <i className="fas fa-file-upload"></i>
+                    </p>
+                    <p className="ant-upload-text">
+                      {this.state.attached_files
+                        ? `Click or Drag a file to replace the current file`
+                        : `Click or Drag a file to this area to upload`}
+                    </p>
+                  </Dragger>
+                </div>
+                <div className="col-3"></div>
+                <div className="col-6">
+                  <div className="row">
+                    <div className="col-12">
+                      <ul className="investigationAttachmentList">
+                        {this.state.attached_docs.length ? (
+                          this.state.attached_docs.map((doc) => (
+                            <li>
+                              <b> {doc.filename} </b>
+                              <span>
+                                <i
+                                  className="fas fa-download"
+                                  onClick={() => this.downloadDoc(doc)}
+                                ></i>
+                                <i
+                                  className="fas fa-eye"
+                                  onClick={() => this.downloadDoc(doc, true)}
+                                ></i>
+                                <i
+                                  className="fas fa-trash"
+                                  onClick={() => this.deleteDoc(doc)}
+                                ></i>
+                              </span>
+                            </li>
+                          ))
+                        ) : (
+                          <div className="col-12 noAttachment" key={1}>
+                            <p>No Attachments Available</p>
+                          </div>
+                        )}
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </AlgaehModal>
         <div className="hptl-phase1-rad-work-list-form">
           <div
             className="row inner-top-search"
@@ -279,15 +516,45 @@ class RadScheduledList extends Component {
                         label: <AlgaehLabel label={{ forceLabel: "Action" }} />,
                         displayTemplate: (row) => {
                           return (
-                            <i
-                              style={{
-                                pointerEvents:
-                                  row.status === "RA" ? "" : "none",
-                                opacity: row.status === "RA" ? "" : "0.1",
-                              }}
-                              className="fas fa-print"
-                              onClick={this.generateReport.bind(this, row)}
-                            />
+                            <>
+                              <i
+                                style={{
+                                  pointerEvents:
+                                    row.status === "RA" ? "" : "none",
+                                  opacity: row.status === "RA" ? "" : "0.1",
+                                }}
+                                className="fas fa-print"
+                                onClick={this.generateReport.bind(this, row)}
+                              />
+                              <span>
+                                <i
+                                  // style={{
+                                  //   pointerEvents:
+                                  //     row.status === "O"
+                                  //       ? ""
+                                  //       : row.sample_status === "N"
+                                  //       ? "none"
+                                  //       : "",
+                                  // }}
+                                  className="fas fa-paperclip"
+                                  aria-hidden="true"
+                                  onClick={(e) => {
+                                    this.setState(
+                                      {
+                                        openUploadModal: true,
+                                        visit_id: row.visit_id,
+                                        hims_f_rad_order_id:
+                                          row.hims_f_rad_order_id,
+                                      },
+
+                                      () => {
+                                        this.getDocuments();
+                                      }
+                                    );
+                                  }}
+                                />
+                              </span>
+                            </>
                           );
                         },
                         others: {

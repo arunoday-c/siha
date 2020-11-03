@@ -13,7 +13,7 @@
     "run-prod": "cross-env  PORT=3006 NODE_ENV=production  pm2 start  --max-memory-restart 850M -i 1 build/app.js --name 'document-management'",
     "run-docker": "cross-env PORT=3006 NODE_ENV=production node build/app.js",
     "start": "run-s build run-prod",
-    "run-dev": "cross-env PORT=3006 NODE_ENV=development nodemon --exec 'node build/app.js'"
+    "run-dev": "cross-env PORT=3006 NODE_ENV=development nodemon --exec 'node --inspect=localhost:2006 build/app.js'"
   },
   "author": "Algaeh technologies private limited.",
   "license": "ISC",
