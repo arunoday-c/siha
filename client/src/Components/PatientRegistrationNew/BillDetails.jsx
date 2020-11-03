@@ -681,43 +681,7 @@ export function BillDetails({
                     />
                   )}
                 />
-                <Controller
-                  control={control}
-                  name="promo_code"
-                  render={(props) => (
-                    <AlgaehFormGroup
-                      div={{ className: "col" }}
-                      label={{
-                        forceLabel: "Enter Promo Code",
-                        isImp: false,
-                      }}
-                      textBox={{
-                        className: "txt-fld",
-                        ...props,
-                        disabled,
-                        type: "text",
-                      }}
-                    />
-                  )}
-                />
-
-                <div className="col">
-                  <button
-                    type="button"
-                    className="btn btn-default"
-                    style={{ marginTop: "19px" }}
-                    disabled={disabled || !promo_code}
-                    onClick={() => setPromoCode(promo_code)}
-                  >
-                    <AlgaehLabel
-                      label={{
-                        forceLabel: "Apply Promo",
-                        align: "ltr",
-                        returnText: true,
-                      }}
-                    />
-                  </button>
-                </div>
+               
               </div>
 
               <hr />
@@ -982,82 +946,7 @@ export function BillDetails({
                       }));
                     }}
                   />
-                  {/* <AlgaehAutoComplete
-                    div={{ className: "col-3  mandatory" }}
-                    label={{
-                      forceLabel: "Select Card Type",
-                      isImp: true,
-                    }}
-                    error={errors}
-                    selector={{
-                      name: "",
-                      className: "select-fld",
-                      dataSource: {
-                        textField: "",
-                        valueField: "",
-                        data: [],
-                      },
-                    }}
-                  />
-                  <Controller
-                    control={control}
-                    name="card_number"
-                    rules={{
-                      required: {
-                        value: enableCard,
-                        message: "Required",
-                      },
-                    }}
-                    render={(props) => (
-                      <AlgaehFormGroup
-                        div={{
-                          className: "col no-padding-left-right  mandatory",
-                        }}
-                        label={{
-                          fieldName: "card_check_number",
-                          isImp: enableCard,
-                        }}
-                        textBox={{
-                          disabled: disabled || !enableCard,
-                          className: "txt-fld",
-                          name: "card_number",
-                          ...props,
-                        }}
-                      />
-                    )}
-                  /> */}
-                  {/* <Controller
-                    control={control}
-                    name="card_date"
-                    render={({ onBlur, onChange, value }) => (
-                      <AlgaehDateHandler
-                        div={{ className: "col" }}
-                        label={{
-                          fieldName: "expiry_date",
-                          isImp: enableCard,
-                        }}
-                        textBox={{
-                          className: "txt-fld",
-                          name: "card_date",
-                        }}
-                        others={{
-                          disabled: disabled || !enableCard,
-                        }}
-                        minDate={new Date()}
-                        events={{
-                          onChange: (mdate) => {
-                            if (mdate) {
-                              onChange(mdate._d);
-                            } else {
-                              onChange(undefined);
-                            }
-                          },
-                          onClear: () => onChange(undefined),
-                        }}
-                        value={value}
-                      />
-                    )}
-                  />{" "} */}
+                  
                   <Controller
                     control={control}
                     name="card_amount"
@@ -1103,6 +992,43 @@ export function BillDetails({
 
                 <hr style={{ margin: "0.3rem 0rem" }} />
                 <div className="row secondary-box-container">
+                <Controller
+                  control={control}
+                  name="promo_code"
+                  render={(props) => (
+                    <AlgaehFormGroup
+                      div={{ className: "col" }}
+                      label={{
+                        forceLabel: "Enter Promo Code",
+                        isImp: false,
+                      }}
+                      textBox={{
+                        className: "txt-fld",
+                        ...props,
+                        disabled,
+                        type: "text",
+                      }}
+                    />
+                  )}
+                />
+
+                <div className="col">
+                  <button
+                    type="button"
+                    className="btn btn-default"
+                    style={{ marginTop: "21px" }}
+                    disabled={disabled || !promo_code}
+                    onClick={() => setPromoCode(promo_code)}
+                  >
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Apply",
+                        align: "ltr",
+                        returnText: true,
+                      }}
+                    />
+                  </button>
+                </div>
                   <div className="col" style={{ textAlign: "right" }}>
                     <AlgaehLabel
                       label={{
