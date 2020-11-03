@@ -516,7 +516,7 @@ export default function Dashboard() {
   // render() {
   // let margin = this.state.sidBarOpen ? "" : "";
   return (
-    <div className="dashboard ">
+    <div className="dashboard inv-dash">
       <div className="row card-deck">
         <div className="card animated fadeInUp faster">
           <div className="content">
@@ -535,81 +535,7 @@ export default function Dashboard() {
             </div>
           </div>
         </div>
-        <div className="col-6">
-          <div className="card animated fadeInUp faster">
-            <h6>Expired Items</h6>
-            <div className="row dashboardGridCntr">
-              <div className="col">
-                {" "}
-                <div className="col">
-                  <div className="row">
-                    {" "}
-                    <AlgaehDateHandler
-                      type={"range"}
-                      div={{
-                        className: "col-6 form-group",
-                      }}
-                      label={{
-                        forceLabel: "Select Date Range",
-                      }}
-                      textBox={{
-                        name: "selectRange",
-                        value: dateRange,
-                      }}
-                      // maxDate={new date()}
-                      events={{
-                        onChange: (dateSelected) => {
-                          setDateRange(dateSelected, () => {
-                            getInvExpItemsDash(dateSelected);
-                          });
-                        },
-                      }}
-                      // others={{
-                      //   ...format,
-                      // }}
-                    />
-                    <div className="col-12">
-                      <AlgaehDataGrid
-                        className="dashboardGrd"
-                        columns={[
-                          {
-                            fieldName: "item_description",
-                            label: "Item Description",
-                          },
-                          {
-                            fieldName: "batchno",
-                            label: "Batch No",
-                          },
-                          {
-                            fieldName: "expirydt",
-                            label: "Expiry Date",
-                          },
-                          {
-                            fieldName: "inventory_location",
-                            label: "Inventory Location",
-                          },
-                          {
-                            fieldName: "item_code",
-                            label: "Item Code",
-                          },
-
-                          {
-                            fieldName: "qtyhand",
-                            label: "Quantity In Hand",
-                          },
-                        ]}
-                        // height="40vh"
-                        rowUnique="finance_voucher_id"
-                        data={invExpItem ? invExpItem : []}
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        {/* <div className="card animated fadeInUp faster">
+         <div className="card animated fadeInUp faster">
             <div className="content">
               <div className="row">
                 <div className="col-3">
@@ -620,7 +546,7 @@ export default function Dashboard() {
                 <div className="col-8">
                   <div className="numbers">
                     <p>Inventory Total Value</p>
-                    {GetAmountFormart("3.33")}M
+                   INR 0.00
                   </div>
                 </div>
               </div>
@@ -643,297 +569,237 @@ export default function Dashboard() {
               </div>
             </div>
           </div>
-          <div className="card animated fadeInUp faster">
-            <div className="content">
-              <div className="row">
-                <div className="col-3">
-                  <div className="icon-big text-center">
-                    <i className="fas fa-hand-holding-usd" />
-                  </div>
-                </div>
-                <div className="col-8">
-                  <div className="numbers">
-                    <p>Open Purchase Order</p>
-                    33
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
 
         <div className="row">
-          <div className="col-6">
-            <div className="card animated fadeInUp faster">
-              <h6>Items Near Expiry </h6>
-              <div className="dashboardChartsCntr">
-                <table className="table  table-bordered table-sm table-striped">
-                  <thead>
-                    <tr>
-                      <th>Item Name</th>
-                      <th>Batch</th>
-                      <th>Expiry Date</th>
-                      <th>Days Left</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>Vozet</td>
-                      <td>78546</td>
-                      <td>05/05/2019</td>
-                      <td>
-                        <span class="badge badge-light">15 days</span>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>Dextrose 10% Solution For Infusion (500 ml)</td>
-                      <td>23232</td>
-                      <td>29/04/2019</td>
-                      <td>
-                        <span class="badge badge-light">10 days</span>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>Actifed Tablets 24'S</td>
-                      <td>57566</td>
-                      <td>24/04/2019</td>
-                      <td>
-                        <span class="badge badge-warning">8 days</span>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>Abelcet 5 mg/ml Vial (20 ml)</td>
-                      <td>5222</td>
-                      <td>05/04/2019</td>
-                      <td>
-                        <span class="badge badge-danger">Expired</span>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div> */}
-        <div className="col-6">
-          <div className="card animated fadeInUp faster">
-            <h6>Product with low Stock</h6>
-            <div className="dashboardChartsCntr">
-              <AlgaehAutoComplete
-                div={{ className: "col form-group" }}
-                label={{ forceLabel: "By Location" }}
-                selector={{
-                  name: "location_id",
-                  className: "select-fld",
-                  value: location_id,
-                  dataSource: {
-                    textField: "location_description",
-                    valueField: "hims_d_inventory_location_id",
-                    data: inventoryLocations,
-                  },
+          <div className="col-12">
+            <div className="row">
+              
+              
+            <div className="col-6">
+                <div className="card animated fadeInUp faster">
+                  <h6>Item Expiry</h6>
+                  <div className="row dashboardGridCntr">
+                    <div className="col">
+                      {" "}
+                      <div className="col">
+                        <div className="row">
+                          {" "}
+                          <AlgaehDateHandler
+type={"range"}
+div={{
+  className: "col-6 form-group",
+}}
+label={{
+  forceLabel: "Select Date Range",
+}}
+textBox={{
+  name: "selectRange",
+  value: dateRange,
+}}
+// maxDate={new date()}
+events={{
+  onChange: (dateSelected) => {
+    setDateRange(dateSelected, () => {
+      getInvExpItemsDash(dateSelected);
+    });
+  },
+}}
+// others={{
+//   ...format,
+// }}
+/>
+                          <div className="col-12">
+                           
+<AlgaehDataGrid
+  className="dashboardGrd"
+  columns={[
+    {
+      fieldName: "item_description",
+      label: "Item Description",
+    },
+    {
+      fieldName: "batchno",
+      label: "Batch No",
+    },
+    {
+      fieldName: "expirydt",
+      label: "Expiry Date",
+    },
+    {
+      fieldName: "inventory_location",
+      label: "Inventory Location",
+    },
+    {
+      fieldName: "item_code",
+      label: "Item Code",
+    },
 
-                  onChange: (e) => {
-                    //
-                    setLocation_id(
-                      e.hims_d_inventory_location_id,
-                      (currentLocation) => {
-                        loadInvStockDetail(currentLocation);
-                      }
-                    );
-                  },
-                  // onClear: () => {
-
-                  // },
-                  autoComplete: "off",
-                }}
-              />
-              <AlgaehDataGrid
-                className="dashboardGrd"
-                columns={[
-                  {
-                    fieldName: "location_description",
-                    label: "Location",
-                    others: { filterable: true },
-                  },
-                  {
-                    fieldName: "item_code",
-                    label: "Item Code",
-                    others: { filterable: true },
-                  },
-
-                  {
-                    fieldName: "item_description",
-                    label: "Item Name",
-                  },
-                  {
-                    fieldName: "stocking_uom_id",
-                    label: "Stocking UOM",
-
-                    displayTemplate: (row) => {
-                      let display =
-                        invUom === undefined
-                          ? []
-                          : invUom.filter(
-                              (f) =>
-                                f.hims_d_inventory_uom_id ===
-                                row.stocking_uom_id
-                            );
-
-                      return (
-                        <span>
-                          {display !== null && display.length !== 0
-                            ? display[0].uom_description
-                            : ""}
-                        </span>
-                      );
-                    },
-                    others: { filterable: false },
-                  },
-                  {
-                    fieldName: "sales_uom",
-                    label: "Sales UOM",
-                    displayTemplate: (row) => {
-                      let display =
-                        invUom === undefined
-                          ? []
-                          : invUom.filter(
-                              (f) => f.hims_d_inventory_uom_id === row.sales_uom
-                            );
-
-                      return (
-                        <span>
-                          {display !== null && display.length !== 0
-                            ? display[0].uom_description
-                            : ""}
-                        </span>
-                      );
-                    },
-                    others: { filterable: false },
-                  },
-
-                  {
-                    fieldName: "qtyhand",
-                    label: "Quantity",
-                    displayTemplate: (row) => {
-                      return row.reorder === "R" ? (
-                        <div className="orderNow">
-                          <span>{parseFloat(row.qtyhand)}</span>
-                          <span className="orderSoon">Order Soon</span>
+    {
+      fieldName: "qtyhand",
+      label: "Quantity In Hand",
+    },
+  ]}
+  // height="40vh"
+  rowUnique="finance_voucher_id"
+  data={invExpItem ? invExpItem : []}
+/>
+                          </div>
                         </div>
-                      ) : (
-                        parseFloat(row.qtyhand)
-                      );
-                    },
-                    disabled: true,
-                    others: { filterable: true },
-                  },
-                  {
-                    fieldName: "reorder_qty",
-                    label: "Reorder Quantity",
-                    disabled: true,
-                    others: { filterable: false },
-                  },
-                ]}
-                // height="40vh"
-                rowUnique="finance_voucher_id"
-                data={itemLOcationStock ? itemLOcationStock : []}
-              />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
 
-              {/* <table className="table  table-bordered table-sm table-striped">
-                  <thead>
-                    <tr>
-                      <th>Item Name</th>
-                      <th>Quanity Left</th>
-                      <th>UOM</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>Abelcet 5 mg/ml Vial (20 ml)</td>
 
-                      <td>
-                        <span class="badge badge-light">123</span>
-                      </td>
-                      <td>Capsule</td>
-                    </tr>
-                    <tr>
-                      <td>Dermovate 0.05% Scalp Solution (25 ml)</td>
 
-                      <td>
-                        <span class="badge badge-warning">18</span>
-                      </td>
-                      <td>Bottle</td>
-                    </tr>
-                    <tr>
-                      <td>Canesten 1% Cream (20 g)</td>
+              <div className="col-6">
+                <div className="card animated fadeInUp faster">
+                  <h6>Order Soon Items</h6>
+                  <div className="row dashboardGridCntr">
+                    <div className="col">
+                      {" "}
+                      <div className="col">
+                        <div className="row">
+                          {" "}
+                          <AlgaehAutoComplete
+div={{ className: "col form-group" }}
+label={{ forceLabel: "By Location" }}
+selector={{
+  name: "location_id",
+  className: "select-fld",
+  value: location_id,
+  dataSource: {
+    textField: "location_description",
+    valueField: "hims_d_inventory_location_id",
+    data: inventoryLocations,
+  },
 
-                      <td>
-                        <span class="badge badge-warning">10</span>
-                      </td>
-                      <td>Tablet</td>
-                    </tr>
-                    <tr>
-                      <td>Imodium 2 mg Capsules 6'S</td>
-                      <td>
-                        <span class="badge badge-danger">Out of Stock</span>
-                      </td>
-                      <td>Sachet</td>
-                    </tr>
-                  </tbody>
-                </table> */}
-            </div>
-          </div>
+  onChange: (e) => {
+    //
+    setLocation_id(
+      e.hims_d_inventory_location_id,
+      (currentLocation) => {
+        loadInvStockDetail(currentLocation);
+      }
+    );
+  },
+  // onClear: () => {
+
+  // },
+  autoComplete: "off",
+}}
+/>
+
+                          <div className="col-12">
+                       
+<AlgaehDataGrid
+className="dashboardGrd"
+columns={[
+  {
+    fieldName: "location_description",
+    label: "Location",
+    others: { filterable: true },
+  },
+  {
+    fieldName: "item_code",
+    label: "Item Code",
+    others: { filterable: true },
+  },
+
+  {
+    fieldName: "item_description",
+    label: "Item Name",
+  },
+  {
+    fieldName: "stocking_uom_id",
+    label: "Stocking UOM",
+
+    displayTemplate: (row) => {
+      let display =
+        invUom === undefined
+          ? []
+          : invUom.filter(
+              (f) =>
+                f.hims_d_inventory_uom_id ===
+                row.stocking_uom_id
+            );
+
+      return (
+        <span>
+          {display !== null && display.length !== 0
+            ? display[0].uom_description
+            : ""}
+        </span>
+      );
+    },
+    others: { filterable: false },
+  },
+  {
+    fieldName: "sales_uom",
+    label: "Sales UOM",
+    displayTemplate: (row) => {
+      let display =
+        invUom === undefined
+          ? []
+          : invUom.filter(
+              (f) => f.hims_d_inventory_uom_id === row.sales_uom
+            );
+
+      return (
+        <span>
+          {display !== null && display.length !== 0
+            ? display[0].uom_description
+            : ""}
+        </span>
+      );
+    },
+    others: { filterable: false },
+  },
+
+  {
+    fieldName: "qtyhand",
+    label: "Quantity",
+    displayTemplate: (row) => {
+      return row.reorder === "R" ? (
+        <div className="orderNow">
+          <span>{parseFloat(row.qtyhand)}</span>
+          <span className="orderSoon">Order Soon</span>
         </div>
-        {/* <div className={"col-4"}>
-            <div className="card animated fadeInUp faster">
-              <h6>Fast Moving Item</h6>
-              <div className="dashboardChartsCntr">
-                <Doughnut
-                  data={PieData}
-                  //options={AdmissionsReadmissionDataOptions}
-                />
+      ) : (
+        parseFloat(row.qtyhand)
+      );
+    },
+    disabled: true,
+    others: { filterable: true },
+  },
+  {
+    fieldName: "reorder_qty",
+    label: "Reorder Quantity",
+    disabled: true,
+    others: { filterable: false },
+  },
+]}
+// height="40vh"
+rowUnique="finance_voucher_id"
+data={itemLOcationStock ? itemLOcationStock : []}
+/>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
-          <div className={"col-4"}>
-            <div className="card animated fadeInUp faster">
-              <h6>Top 5 Sales Person - Distribution</h6>
-              <div className="dashboardChartsCntr">
-                <HorizontalBar data={DistributionbySales} />
-              </div>
-            </div>
-          </div>
-          <div className={"col-4"}>
-            <div className="card animated fadeInUp faster">
-              <h6>Sales Overview</h6>
-              <div className="dashboardChartsCntr">
-                <Bar
-                  data={AdmissionsReadmissionData}
-                  options={AdmissionsReadmissionDataOptions}
-                />
-              </div>
-            </div>
-          </div> */}
-      </div>
+
+
+              </div></div></div>
+
+
+
+
+
     </div>
   );
 }
-// }
-
-// function mapStateToProps(state) {
-//   return {
-//     hospitaldetails: state.hospitaldetails
-//   };
-// }
-
-// function mapDispatchToProps(dispatch) {
-//   return bindActionCreators(
-//     {
-//       getHospitalDetails: AlgaehActions
-//     },
-//     dispatch
-//   );
-// }
-
-// export default withRouter(
-//   connect(mapStateToProps, mapDispatchToProps)(Dashboard)
-// );

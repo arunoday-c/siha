@@ -416,7 +416,7 @@ export function BillDetails({
               </div>
               <hr style={{ margin: "0.3rem 0rem" }} />
               <div className="row primary-box-container">
-                <div className="col">
+                <div className="col-6">
                   <AlgaehLabel
                     label={{
                       fieldName: "gross_total",
@@ -425,12 +425,22 @@ export function BillDetails({
                   <h6>{amountWithCur(billData?.gross_total)}</h6>
                 </div>
 
+
+                <div className="col-6">
+                  <AlgaehLabel
+                    label={{
+                      fieldName: "patient_payable",
+                    }}
+                  />
+                  <h6>{amountWithCur(billData?.patient_payable)}</h6>
+                </div>
+                
                 <Controller
                   control={control}
                   name="discount_percentage"
                   render={({ onChange, ...props }) => (
                     <AlgaehFormGroup
-                      div={{ className: "col" }}
+                      div={{ className: "col-6 form-group" }}
                       label={{
                         fieldName: "discount_percentage",
                       }}
@@ -469,7 +479,7 @@ export function BillDetails({
                   name="discount_amount"
                   render={(props) => (
                     <AlgaehFormGroup
-                      div={{ className: "col" }}
+                      div={{ className: "col-6 form-group" }}
                       label={{
                         fieldName: "discount_amount",
                       }}
@@ -504,15 +514,6 @@ export function BillDetails({
                     />
                   )}
                 />
-
-                <div className="col">
-                  <AlgaehLabel
-                    label={{
-                      fieldName: "patient_payable",
-                    }}
-                  />
-                  <h6>{amountWithCur(billData?.patient_payable)}</h6>
-                </div>
               </div>
               <hr style={{ margin: "0.3rem 0rem" }} />
               <div className="row primary-box-container">
@@ -1061,82 +1062,7 @@ export function BillDetails({
                       }));
                     }}
                   />
-                  {/* <AlgaehAutoComplete
-                    div={{ className: "col-3  mandatory" }}
-                    label={{
-                      forceLabel: "Select Card Type",
-                      isImp: true,
-                    }}
-                    error={errors}
-                    selector={{
-                      name: "",
-                      className: "select-fld",
-                      dataSource: {
-                        textField: "",
-                        valueField: "",
-                        data: [],
-                      },
-                    }}
-                  />
-                  <Controller
-                    control={control}
-                    name="card_number"
-                    rules={{
-                      required: {
-                        value: enableCard,
-                        message: "Required",
-                      },
-                    }}
-                    render={(props) => (
-                      <AlgaehFormGroup
-                        div={{
-                          className: "col no-padding-left-right  mandatory",
-                        }}
-                        label={{
-                          fieldName: "card_check_number",
-                          isImp: enableCard,
-                        }}
-                        textBox={{
-                          disabled: disabled || !enableCard,
-                          className: "txt-fld",
-                          name: "card_number",
-                          ...props,
-                        }}
-                      />
-                    )}
-                  /> */}
-                  {/* <Controller
-                    control={control}
-                    name="card_date"
-                    render={({ onBlur, onChange, value }) => (
-                      <AlgaehDateHandler
-                        div={{ className: "col" }}
-                        label={{
-                          fieldName: "expiry_date",
-                          isImp: enableCard,
-                        }}
-                        textBox={{
-                          className: "txt-fld",
-                          name: "card_date",
-                        }}
-                        others={{
-                          disabled: disabled || !enableCard,
-                        }}
-                        minDate={new Date()}
-                        events={{
-                          onChange: (mdate) => {
-                            if (mdate) {
-                              onChange(mdate._d);
-                            } else {
-                              onChange(undefined);
-                            }
-                          },
-                          onClear: () => onChange(undefined),
-                        }}
-                        value={value}
-                      />
-                    )}
-                  />{" "} */}
+                  
                   <Controller
                     control={control}
                     name="card_amount"
