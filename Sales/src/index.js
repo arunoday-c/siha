@@ -15,7 +15,7 @@ const port = process.env.PORT;
 const keys = algaehKeys.default;
 app.use(
   bodyParser.json({
-    limit: keys.bodyLimit
+    limit: "50MB"
   })
 );
 app.use(express.urlencoded({ limit: '50mb' }));
