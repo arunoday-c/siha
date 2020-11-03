@@ -36,7 +36,6 @@ const getBillDetails = async (
     discount_amout
   }
 ) => {
-  debugger
   let zeroBill = false,
     FollowUp = false;
 
@@ -236,7 +235,7 @@ export function BillDetails({
     sendingObject.cash_amount = sendingObject.net_amount;
     sendingObject.total_amount = sendingObject.net_amount;
     sendingObject.sub_total_amount = sendingObject.gross_amount;
-    sendingObject.gross_total = sendingObject.patient_payable;
+    sendingObject.gross_total = billData?.gross_amount;
 
     sendingObject.net_total = sendingObject.net_amout;
 
@@ -426,6 +425,86 @@ export function BillDetails({
                   <h6>{amountWithCur(billData?.gross_total)}</h6>
                 </div>
 
+                <Controller
+                  control={control}
+                  name="discount_percentage"
+                  render={({ onChange, ...props }) => (
+                    <AlgaehFormGroup
+                      div={{ className: "col" }}
+                      label={{
+                        fieldName: "discount_percentage",
+                      }}
+                      textBox={{
+                        className: "txt-fld",
+                        disabled:
+                          !parseInt(service_dis_percentage, 10) || disabled,
+                        name: "discount_percentage",
+                        type: "number",
+                        ...props,
+                        max: 100,
+                        value: billData?.discount_percentage,
+                        onChange: (e) => {
+
+                          let perc = parseFloat(e.target.value);
+                          if (perc > 100) {
+                            perc = 99;
+                          }
+
+
+                          if (perc > 0) {
+                            setDiscountPerc(perc)
+                          } else {
+                            setDiscountPerc(0)
+                          }
+                        },
+
+                        placeholder: "0.00",
+                      }}
+                    />
+                  )}
+                />
+
+                <Controller
+                  control={control}
+                  name="discount_amount"
+                  render={(props) => (
+                    <AlgaehFormGroup
+                      div={{ className: "col" }}
+                      label={{
+                        fieldName: "discount_amount",
+                      }}
+                      textBox={{
+                        className: "txt-fld",
+                        disabled:
+                          !parseInt(service_dis_percentage, 10) || disabled,
+                        name: "discount_amount",
+                        type: "number",
+                        ...props,
+                        value: billData?.discount_amout,
+                        onChange: (e) => {
+                          const amount = parseFloat(e.target.value);
+                          if (amount > 0) {
+                            if (amount > billData?.gross_amount) {
+                              setDiscountAmount(0)
+
+                              AlgaehMessagePop({
+                                type: "warning",
+                                display:
+                                  "Entered Amount Cannot be Greater than Gross Total.",
+                              });
+                            } else {
+                              setDiscountAmount(amount)
+                            }
+                          } else {
+                            setDiscountAmount(0)
+                          }
+                        },
+                        placeholder: "0.00",
+                      }}
+                    />
+                  )}
+                />
+
                 <div className="col">
                   <AlgaehLabel
                     label={{
@@ -514,7 +593,7 @@ export function BillDetails({
                   )}
                 />
 
-                <Controller
+                {/* <Controller
                   control={control}
                   name="discount_percentage"
                   render={({ onChange, ...props }) => (
@@ -608,10 +687,10 @@ export function BillDetails({
                         value: billData?.discount_amout,
                         onChange: (e) => {
                           const amount = parseFloat(e.target.value);
-
                           if (amount > 0) {
-                            if (amount > billData?.patient_payable) {
-                              setDiscountAmount(amount)
+                            // const g_amount = (parseFloat(billData?.gross_amount) - parseFloat(billData?.net_amout)) + parseFloat(billData?.patient_payable)
+                            if (amount > billData?.gross_amount) {
+                              setDiscountAmount(0)
                               // setBillData((state) => {
                               //   state.sheet_discount_percentage = 0;
                               //   state.sheet_discount_amount = 0;
@@ -632,7 +711,7 @@ export function BillDetails({
                               AlgaehMessagePop({
                                 type: "warning",
                                 display:
-                                  "Entered Amount Cannot be Greater than Receivable Amount ",
+                                  "Entered Amount Cannot be Greater than Gross Amount please check Bill Details.",
                               });
                             } else {
                               setDiscountAmount(amount)
@@ -680,7 +759,7 @@ export function BillDetails({
                       }}
                     />
                   )}
-                />
+                /> */}
                 <Controller
                   control={control}
                   name="promo_code"
