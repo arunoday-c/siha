@@ -303,6 +303,140 @@ const selectToGeneratePaySlip = ($this, row, e) => {
   });
 };
 
+
+
+
+const generateLoanReconilationReport = ($this) => {
+  algaehApiCall({
+    uri: "/report",
+    method: "GET",
+    module: "reports",
+    headers: {
+      Accept: "blob",
+    },
+    others: { responseType: "blob" },
+    data: {
+      report: {
+        reportName: "loanReconcileReport",
+        pageOrentation: "landscape",
+        reportParams: [
+          {
+            name: "hospital_id",
+            value:  $this.state.inputs.hospital_id,
+          },
+          {
+            name: "year",
+            value: $this.state.inputs.year,
+          },
+          {
+            name: "month",
+            value:  $this.state.inputs.month,
+          },
+          {
+            name: "department_id",
+            value:  $this.state.inputs.department_id,
+          },
+          {
+            name: "sub_department_id",
+            value: $this.state.inputs.sub_department_id,
+          },
+          {
+            name: "designation_id",
+            value:  $this.state.inputs.designation_id,
+          },
+          {
+            name: "group_id",
+            value:  $this.state.inputs.group_id,
+          },
+          {
+            name: "hims_d_employee_id",
+            value:  $this.state.inputs.hims_d_employee_id,
+          },
+        ],
+        outputFileType: "EXCEL" //"EXCEL", //"PDF",
+      },
+    },
+    onSuccess: (res) => {
+      const urlBlob = URL.createObjectURL(res.data);
+      // const documentName="Salary Slip"
+      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Loan Reconciliation Report - ${$this.state.month}/${$this.state.year}`;
+      window.open(origin);
+    },
+  });
+};
+
+
+
+const generateLeaveGratuityReconilationReport = ($this) => {
+  algaehApiCall({
+    uri: "/report",
+    method: "GET",
+    module: "reports",
+    headers: {
+      Accept: "blob",
+    },
+    others: { responseType: "blob" },
+    data: {
+      report: {
+        reportName: "leave_gratuity_reconcil_Report",
+        pageOrentation: "landscape",
+        reportParams: [
+          {
+            name: "hospital_id",
+            value: $this.state.inputs.hospital_id,
+          },
+          {
+            name: "year",
+            value: $this.state.inputs.year,
+          },
+          {
+            name: "month",
+            value: $this.state.inputs.month,
+          },
+          {
+            name: "department_id",
+            value: $this.state.inputs.department_id,
+          },
+          {
+            name: "sub_department_id",
+            value: $this.state.inputs.sub_department_id,
+          },
+          {
+            name: "designation_id",
+            value: $this.state.inputs.designation_id,
+          },
+          {
+            name: "group_id",
+            value:$this.state.inputs.group_id,
+          },
+          {
+            name: "hims_d_employee_id",
+            value: $this.state.inputs.hims_d_employee_id,
+          },
+        ],
+        outputFileType: "EXCEL" //"EXCEL", //"PDF",
+      },
+    },
+    onSuccess: (res) => {
+
+      // let blob = new Blob([res.data], {
+      //   type: "application/octet-stream",
+      // });
+      // const fileName = `EmployeeMaster.xlsx`;
+      // var objectUrl = URL.createObjectURL(blob);
+      // var link = document.createElement("a");
+      // link.setAttribute("href", objectUrl);
+      // link.setAttribute("download", fileName);
+      // link.click();
+
+
+      const urlBlob = URL.createObjectURL(res.data);
+      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Leave-Gratuity-Airfare Reconciliation - ${$this.state.month}/${$this.state.year}`;
+      window.open(origin);
+    },
+  });
+};
+
 export {
   LoadSalaryPayment,
   ClearData,
@@ -311,5 +445,5 @@ export {
   selectAll,
   generatePaySlip,
   selectToGeneratePaySlip,
-  selectAllPaySlip,
+  selectAllPaySlip,generateLoanReconilationReport,generateLeaveGratuityReconilationReport,
 };

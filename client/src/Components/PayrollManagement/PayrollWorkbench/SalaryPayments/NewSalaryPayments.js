@@ -13,7 +13,7 @@ import {
   selectAll,
   generatePaySlip,
   selectToGeneratePaySlip,
-  selectAllPaySlip,
+  selectAllPaySlip,generateLoanReconilationReport,generateLeaveGratuityReconilationReport,
 } from "./NewSalaryPaymentsEvents.js";
 import moment from "moment";
 import { GetAmountFormart } from "../../../../utils/GlobalFunctions";
@@ -375,6 +375,48 @@ class NewSalaryPayment extends Component {
                   >
                     Generate Payslip PDF
                   </button>
+
+
+                  <button
+                    type="button"
+                    className="btn btn-other"
+                    onClick={generateLoanReconilationReport.bind(this, this)}
+                    disabled={
+                      this.state.salary_payment.length === 0
+                        ? true
+                        : false
+                    }
+                  >
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Loan Reconciliation Report",
+                        returnText: true,
+                      }}
+                    />
+                  </button>
+                  <button
+                    type="button"
+                    className="btn btn-other"
+                    onClick={generateLeaveGratuityReconilationReport.bind(this, this)}
+                    disabled={
+                      this.state.salary_payment.length === 0
+                        ? true
+                        : false
+                    }
+                  >
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Leave Gratuity & Airfare Reconilation Report",
+                        returnText: true,
+                      }}
+                    />
+                  </button>
+
+
+
+
+
+
                 </div>
               </div>
             </div>
