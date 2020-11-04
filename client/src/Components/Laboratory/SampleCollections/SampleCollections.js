@@ -68,6 +68,21 @@ class SampleCollectionPatient extends PureComponent {
     }
 
     if (
+      this.props.labcontainer === undefined ||
+      this.props.labcontainer.length === 0
+    ) {
+      this.props.getLabContainer({
+        uri: "/labmasters/selectContainer",
+        module: "laboratory",
+        method: "GET",
+        redux: {
+          type: "CONTAINER_GET_DATA",
+          mappingName: "labcontainer"
+        }
+      });
+    }
+
+    if (
       this.props.userdrtails === undefined ||
       this.props.userdrtails.length === 0
     ) {
@@ -328,6 +343,56 @@ class SampleCollectionPatient extends PureComponent {
                                 },
                               },
                               {
+                                fieldName: "container_id",
+                                label: (
+                                  <AlgaehLabel
+                                    label={{ fieldName: "Container" }}
+                                  />
+                                ),
+                                displayTemplate: (row) => {
+                                  let display =
+                                    this.props.labcontainer === undefined
+                                      ? []
+                                      : this.props.labcontainer.filter(
+                                        (f) =>
+                                          f.hims_d_lab_container_id ===
+                                          row.container_id
+                                      );
+                                  return row.collected === "Y" ||
+                                    row.billed === "N" ? (
+                                      <span>
+                                        {display !== null && display.length !== 0
+                                          ? display[0].ConDescription
+                                          : ""}
+                                      </span>
+                                    ) : (
+                                      <AlagehAutoComplete
+                                        div={{ className: "noLabel" }}
+                                        selector={{
+                                          name: "container_id",
+                                          className: "select-fld",
+                                          value: row.container_id,
+                                          dataSource: {
+                                            textField: "ConDescription",
+                                            valueField: "hims_d_lab_container_id",
+                                            data: this.props.labcontainer,
+                                          },
+                                          onChange: onchangegridcol.bind(
+                                            this,
+                                            this,
+                                            row
+                                          ),
+                                        }}
+                                      />
+                                    );
+                                },
+                                others: {
+                                  maxWidth: 200,
+                                  resizable: false,
+                                  style: { textAlign: "center" },
+                                },
+                              },
+                              {
                                 fieldName: "send_out_test",
                                 label: (
                                   <AlgaehLabel
@@ -506,6 +571,7 @@ function mapStateToProps(state) {
     deptanddoctors: state.deptanddoctors,
     labspecimen: state.labspecimen,
     userdrtails: state.userdrtails,
+    labcontainer: state.labcontainer
   };
 }
 
@@ -515,6 +581,7 @@ function mapDispatchToProps(dispatch) {
       getDepartmentsandDoctors: AlgaehActions,
       getLabSpecimen: AlgaehActions,
       getUserDetails: AlgaehActions,
+      getLabContainer: AlgaehActions
     },
     dispatch
   );

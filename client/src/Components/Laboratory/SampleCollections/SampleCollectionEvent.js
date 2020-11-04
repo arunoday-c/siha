@@ -3,6 +3,7 @@ import Options from "../../../Options.json";
 import moment from "moment";
 
 const CollectSample = ($this, context, row) => {
+  debugger
   let inputobj = {
     hims_f_lab_order_id: row.hims_f_lab_order_id,
     hims_d_lab_sample_id: row.hims_d_lab_sample_id,
@@ -13,7 +14,8 @@ const CollectSample = ($this, context, row) => {
     hims_d_hospital_id: $this.state.hospital_id,
     service_id: row.service_id,
     service_code: row.service_code,
-    send_out_test: row.send_out_test
+    send_out_test: row.send_out_test,
+    container_id: row.container_id
   };
 
   algaehApiCall({
