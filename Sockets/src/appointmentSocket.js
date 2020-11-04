@@ -17,7 +17,7 @@ const apsock = (socket) => {
       title: "FrontDesk",
     });
     frontDeskNot.save().then((doc) => {
-      console.log("saved");
+      console.log("saved---refresh_appointment");
       socket.broadcast.to("ftdsk").emit("refresh_appointment", doc);
     });
 
@@ -32,21 +32,24 @@ const apsock = (socket) => {
       title: "FrontDesk",
     });
     docNoti.save().then((doc) => {
-      console.log("saved");
+      console.log("saved---patient_added", doc);
       socket.broadcast.to(`${patient.provider_id}`).emit("patient_added", doc);
     });
   });
   socket.on("patient_checked", (patient) => {
-    const docMsg = `${patient.full_name} checked in for consultaion on ${moment(
-      patient.visit_date
-    ).format("hh:mm A")}`;
+    const docMsg = `${
+      patient.full_name
+    } checked in for consultation on ${moment(patient.visit_date).format(
+      "hh:mm A"
+    )}`;
+
     const docNoti = new notifiModel({
       user_id: patient.provider_id,
       message: docMsg,
-      title: "FrontDesk",
+      title: "Front Desk",
     });
     docNoti.save().then((doc) => {
-      console.log("saved");
+      console.log("saved----Here IM--patient_added", doc);
       socket.broadcast.to(`${patient.provider_id}`).emit("patient_added", doc);
     });
   });

@@ -145,7 +145,10 @@ db.once("open", function () {
     socket.on("seen", (doc) => {
       seen(socket);
     });
-
+    socket.on("patient_updated", (doc) => {
+      console.log("Here inside patient_update", doc);
+      socket.broadcast.to(`${patient.provider_id}`).emit("patient_added", doc);
+    });
     appsock(socket);
     labsock(socket);
     selfServiceSocket(socket);

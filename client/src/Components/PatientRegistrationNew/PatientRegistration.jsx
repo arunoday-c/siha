@@ -23,6 +23,7 @@ import { VisitDetails } from "./VisitDetail";
 import { BillDetails } from "./BillDetails";
 import { AdvanceModal } from "./AdvanceRefundModal";
 import { algaehApiCall } from "../../utils/algaehApiCall";
+import sockets from "../../sockets";
 
 export const getPatient = async (key, { patient_code }) => {
   const result = await newAlgaehApi({
@@ -527,7 +528,17 @@ export function PatientRegistration() {
         existing_plan: "N",
         incharge_or_provider: parseInt(doctor_id, 10),
         receiptdetails,
-      }).then(async (data) => await uploadAfterSubmit({ ...data, ...input }));
+      }).then(async (data) => {
+        await uploadAfterSubmit({ ...data, ...input });
+        if (sockets.connected) {
+          sockets.emit("patient_checked", {
+            ...data,
+            provider_id: doctor_id,
+            visit_date: new Date(),
+            full_name: input?.full_name,
+          });
+        }
+      });
     } else {
       const {
         advance_adjust,
@@ -583,7 +594,18 @@ export function PatientRegistration() {
         existing_plan: "N",
         incharge_or_provider: parseInt(doctor_id, 10),
         receiptdetails,
-      }).then(async (data) => await uploadAfterSubmit({ ...data, ...input }));
+      }).then(async (data) => {
+        // console.log("In update", data);
+        await uploadAfterSubmit({ ...data, ...input });
+        if (sockets.connected) {
+          sockets.emit("patient_checked", {
+            ...data,
+            provider_id: doctor_id,
+            visit_date: new Date(),
+            full_name: input?.full_name,
+          });
+        }
+      });
     }
   };
 
@@ -718,27 +740,27 @@ export function PatientRegistration() {
           printArea={
             !!patient_code || !!savedPatient
               ? {
-                menuitems: [
-                  {
-                    label: "ID Card",
-                    events: {
-                      onClick: () => {
-                        generateIdCard(
-                          patientData?.patientRegistration || savedPatient
-                        );
+                  menuitems: [
+                    {
+                      label: "ID Card",
+                      events: {
+                        onClick: () => {
+                          generateIdCard(
+                            patientData?.patientRegistration || savedPatient
+                          );
+                        },
                       },
                     },
-                  },
-                  {
-                    label: "Advance/Refund Receipt",
-                    events: {
-                      onClick: () => {
-                        setShowAdvModal(true);
+                    {
+                      label: "Advance/Refund Receipt",
+                      events: {
+                        onClick: () => {
+                          setShowAdvModal(true);
+                        },
                       },
                     },
-                  },
-                ],
-              }
+                  ],
+                }
               : ""
           }
           selectedLang={userLanguage}
@@ -848,7 +870,7 @@ export function PatientRegistration() {
                           history.replace(location.pathname);
                           history.push(
                             `/OPBilling?patient_code=${
-                            patient_code || savedPatient?.patient_code
+                              patient_code || savedPatient?.patient_code
                             }`
                           );
                         }}
@@ -1008,18 +1030,18 @@ export function PatientRegistration() {
             inputsparameters={
               patient_code
                 ? {
-                  patient_code: patient_code,
-                  full_name: patientData?.patientRegistration?.full_name,
-                  hims_f_patient_id:
-                    patientData?.patientRegistration?.hims_d_patient_id,
-                }
+                    patient_code: patient_code,
+                    full_name: patientData?.patientRegistration?.full_name,
+                    hims_f_patient_id:
+                      patientData?.patientRegistration?.hims_d_patient_id,
+                  }
                 : !!savedPatient
-                  ? {
+                ? {
                     patient_code: savedPatient?.patient_code,
                     full_name: savedPatient?.full_name,
                     hims_f_patient_id: savedPatient?.hims_d_patient_id,
                   }
-                  : {}
+                : {}
             }
           />
         </>
