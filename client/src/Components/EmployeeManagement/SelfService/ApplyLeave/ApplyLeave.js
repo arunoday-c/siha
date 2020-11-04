@@ -249,6 +249,7 @@ class ApplyLeave extends Component {
         religion_id: this.state.religion_id,
         leave_id: this.state.leave_id,
         employee_id: this.state.employee_id,
+        hospital_id: this.state.hospital_id,
       },
       onSuccess: (res) => {
         if (res.data.success) {
@@ -411,6 +412,7 @@ class ApplyLeave extends Component {
               available_balance: value.selected.close_balance,
               document_mandatory: myObj.document_mandatory === "Y",
               leave_type: myObj !== undefined ? myObj.leave_type : null,
+              leave_category: myObj.leave_category,
               projected_leave_enable:
                 myObj.leave_category === "A" &&
                 myObj.avail_if_no_balance === "Y"
@@ -490,6 +492,7 @@ class ApplyLeave extends Component {
             return;
           }
         }
+
         // AlgaehLoader({ show: true });
         algaehApiCall({
           uri: "/leave/applyEmployeeLeave",
@@ -510,6 +513,8 @@ class ApplyLeave extends Component {
             leave_from: this.state.leave_from ? this.state.leave_from : "SS",
             hospital_id: this.state.hospital_id,
             employee_branch: this.state.employee_branch,
+            employee_joined: "N",
+            leave_category: this.state.leave_category,
             ...this.state.extra,
           },
           onSuccess: (res) => {

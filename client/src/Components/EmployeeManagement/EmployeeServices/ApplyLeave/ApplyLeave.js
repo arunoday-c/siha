@@ -462,6 +462,7 @@ class ApplyLeave extends Component {
               available_balance: value.selected.close_balance,
               document_mandatory: myObj.document_mandatory === "Y",
               leave_type: myObj !== undefined ? myObj.leave_type : null,
+              leave_category: myObj.leave_category,
               projected_leave_enable:
                 myObj.leave_category === "A" &&
                 myObj.avail_if_no_balance === "Y"
@@ -545,6 +546,8 @@ class ApplyLeave extends Component {
             absent_id: this.state.absent_id,
             leave_from: this.state.leave_from ? this.state.leave_from : "SS",
             hospital_id: this.state.hospital_id,
+            employee_joined: "N",
+            leave_category: this.state.leave_category,
             ...this.state.extra,
           },
           onSuccess: (res) => {

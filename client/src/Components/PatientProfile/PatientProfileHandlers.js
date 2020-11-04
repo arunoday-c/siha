@@ -1,21 +1,22 @@
 import Enumerable from "linq";
-import {  algaehApiCall } from "../../utils/algaehApiCall";
+import { algaehApiCall } from "../../utils/algaehApiCall";
 
 const getPatientProfile = $this => {
-  const { current_patient, episode_id } = Window.global;
+  const { current_patient, episode_id, visit_id } = Window.global;
   $this.props.getPatientProfile({
     uri: "/doctorsWorkBench/getPatientProfile",
     method: "GET",
     data: {
       patient_id: current_patient, //Window.global["current_patient"],
-      episode_id: episode_id //Window.global["episode_id"]
+      episode_id: episode_id, //Window.global["episode_id"]
+      visit_id: visit_id //Window.global["episode_id"]
     },
     cancelRequestId: "getPatientProfile",
     redux: {
       type: "PATIENT_PROFILE",
       mappingName: "patient_profile"
     },
-    afterSuccess: data => {}
+    afterSuccess: data => { }
   });
 };
 
@@ -59,12 +60,12 @@ const getPatientAllergies = ($this, noFunctionCall) => {
                 k === "F"
                   ? "Food"
                   : k === "A"
-                  ? "Airborne"
-                  : k === "AI"
-                  ? "Animal  &  Insect"
-                  : k === "C"
-                  ? "Chemical & Others"
-                  : "",
+                    ? "Airborne"
+                    : k === "AI"
+                      ? "Animal  &  Insect"
+                      : k === "C"
+                        ? "Chemical & Others"
+                        : "",
               allergyList: g.getSource()
             };
           })
@@ -177,7 +178,7 @@ const printPrescription = (that, e) => {
     },
     onSuccess: res => {
       const urlBlob = URL.createObjectURL(res.data);
-      
+
       const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Prescription`;
       window.open(origin);
       // window.document.title = "";

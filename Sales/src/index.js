@@ -15,9 +15,11 @@ const port = process.env.PORT;
 const keys = algaehKeys.default;
 app.use(
   bodyParser.json({
-    limit: keys.bodyLimit
+    limit: "50MB"
   })
 );
+app.use(express.urlencoded({ limit: '50mb' }));
+app.use(bodyParser.urlencoded({ limit: "50mb", extended: true, parameterLimit: 50000 }));
 process.env.MYSQL_KEYS = JSON.stringify(keys);
 app.use(compression());
 

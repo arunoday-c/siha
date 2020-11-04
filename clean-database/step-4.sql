@@ -487,7 +487,7 @@ CHANGE COLUMN `advice_light_duty` `advice_light_duty` ENUM('Y', 'N') NULL DEFAUL
 CHANGE COLUMN `pat_need_emp_care` `pat_need_emp_care` ENUM('Y', 'N') NULL DEFAULT 'N' ;
 update algaeh_d_reports set report_query = null where report_name = 'sickLeave';
 
--- =================================  Start Oct 23 2020 =======================================
+-- =================================  Start Oct 24 2020 =======================================
 -- ******** Security Added for Nursing Section
 INSERT INTO`algaeh_d_app_component` (`screen_id`, `component_code`, `component_name`, `created_date`, `updated_date`, `record_status`) VALUES ('31', 'NUR_PAT_VIT', 'Capture Patient Vitals', '2020-10-24 12:17:22', '2020-10-24 12:17:22', 'A');
 INSERT INTO`algaeh_d_app_component` (`screen_id`, `component_code`, `component_name`, `created_date`, `updated_date`, `record_status`) VALUES ('31', 'NUR_PAT_ALRGY', 'Capture Patient Allergy', '2020-10-24 12:17:52', '2020-10-24 12:17:52', 'A');
@@ -532,13 +532,120 @@ CHANGE COLUMN `frequency_time` `frequency_time` ENUM('BM', 'AM', 'WF', 'EM', 'BB
 INSERT INTO `algaeh_d_app_component` (`screen_id`, `component_code`, `component_name`, `created_date`, `updated_date`, `record_status`) VALUES ('64', 'OP_CAL_MAIN', 'Maintenance', '2020-10-23 16:38:47', '2020-10-23 16:38:47', 'A');
 INSERT INTO `algaeh_d_app_component` (`screen_id`, `component_code`, `component_name`, `created_date`, `updated_date`, `record_status`) VALUES ('64', 'OP_CAL_CON', 'Cancel If Consultant', '2020-10-23 16:39:06', '2020-10-23 16:39:06', 'A');
 
--- =================================  Start Oct 23 2020 =======================================
+-- =================================  Start Oct 26 2020 =======================================
 -- ******** Consumption Patient Id Added
 ALTER TABLE `hims_f_inventory_consumption_header` 
 ADD COLUMN `patient_id` INT NULL AFTER `provider_id`,
 ADD COLUMN `cancelled` ENUM('N', 'Y') NULL DEFAULT 'N' AFTER `patient_id`;
 
+-- ******** Appointment Number Change
+alter table hims_f_patient_appointment add column tel_code varchar(10) after contact_number;
+
+
+
+-- =================================  Start Oct 27 2020 =======================================
+-- ******** Consumption changes
+ALTER TABLE `hims_f_inventory_consumption_detail` ADD COLUMN `ordered_inventory_id` INT NULL AFTER `item_group_id`;
+ALTER TABLE `hims_f_inventory_consumption_detail` ADD COLUMN `cancelled` ENUM('N', 'Y') NULL AFTER `extended_cost`;
+ALTER TABLE `hims_f_inventory_trans_history` CHANGE COLUMN `transaction_type` `transaction_type` ENUM('MR', 'CSN' ,'PO', 'DN', 'DNA', 'REC', 'INV', 'PR', 'CN', 'DBN', 'AD', 'ST', 'CS', 'POS', 'SRT', 'INT', 'OP', 'ACK', 'SDN') CHARACTER SET 'utf8' COLLATE 'utf8_latvian_ci' NULL DEFAULT NULL COMMENT 'MR\',=MATERIAL REQUISITION\\n\'MRA1\',= MATERIAL REQUISITION AUTHORIZATION1\\n\'MRA2\',= MATERIAL REQUISITION AUTHORIZATION2\\n\'MRA3\',= MATERIAL REQUISITION AUTHORIZATION3\\n\'PO\',=PURCHASE ORDER\\n\'POA1\',= PURCHASE ORDER AUTHORIZATION1\\n\'POA2\',= PURCHASE ORDER AUTHORIZATION2\\n\'POA3\',= PURCHASE ORDER AUTHORIZATION3\\n\'DN\',= DELIVERY NOTE \\n\'DNA\',=DELIVERY NOTE AUTHORIZATION\\n\'REC\',=RECIEPTS\\n\'INV\',= INOVICES\\n\'PR\',= PURCHASE RETURN\\n\'CN\',= CREDIT NOTE\\n\'DBN\',=DEBIT NOTE\\n\'AD\',= ADJUSTMENT\\n\'ST\',=STOCK TRANSFER\\n\'CS\',=CONSUMPTION\\n\'POS\'=POINT OF SALE\\n\'SRT\',=SALES RETURN\\n\'INT\',= INITIAL STOCK\\n\'OP\' = OPBILL\\n’ACK’,= TRANSFER ACKNOWLEDGE\' \\n ’SDN’ = SALES DISPATCH NOTE \\n \'CSN\' = Consumption Cancel \n' ;
+
 
 -- Insurance StateMent
-alter table hims_f_insurance_statement add column from_date date after sub_insurance_id,
-add column to_date date after from_date;
+alter table hims_f_insurance_statement add column from_date date after sub_insurance_id, add column to_date date after from_date;
+
+
+-- =================================  Start Oct 30 2020 =======================================
+-- ******** Added Item Route
+ALTER TABLE `hims_d_item_master` 
+ADD COLUMN `item_route` ENUM('BL', 'EL', 'IL', 'IF', 'IM', 'IT', 'IR', 'NL', 'OP', 'OR', 'OE', 'RL', 'ST', 'SL', 'TL', 'TD') CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_0900_ai_ci' NULL DEFAULT 'OR' COMMENT 'BL = Buccal\\\\\\\\nEL = Enteral\\\\\\\\nIL = Inhalation\\\\\\\\nIF = Infusion\\\\\\\\nIM = Intramuscular Inj\\\\\\\\nIT = Intrathecal Inj\\\\\\\\nR = Intravenous Inj\\\\\\\\nNL = Nasal\\\\\\\\nOP = Ophthalmic\\\\\\\\nOR = Oral\\\\\\\\nOE = Otic (ear)\\\\\\\\nRL = Rectal\\\\\\\\nST = Subcutaneous\\\\\\\\nSL = Sublingual\\\\\\\\nTL = Topical\\\\\\\\nTD = Transdermal' AFTER `addl_information`;
+
+ALTER TABLE `hims_d_item_master` 
+CHANGE COLUMN `item_route` `item_route` ENUM('BL', 'EL', 'IL', 'IF', 'IM', 'IT', 'IV', 'NL', 'OP', 'OR', 'OE', 'RL', 'ST', 'SL', 'TL', 'TD', 'VL', 'IN', 'VR', 'IP', 'ID', 'INV', 'EP') CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_0900_ai_ci' NULL DEFAULT 'OR' COMMENT 'BL = Buccal\\\\nEL = Enteral\\\\nIL = Inhalation\\\\nIF = Infusion\\\\nIM = Intramuscular Inj\\\\nIT = Intrathecal Inj\\\\nIV = Intravenous Inj\\\\nNL = Nasal\\\\nOP = Ophthalmic\\\\nOR = Oral\\\\nOE = Otic (ear)\\\\nRL = Rectal\\\\nST = Subcutaneous\\\\nSL = Sublingual\\\\nTL = Topical\\\\nTD = Transdermal\\\\nVL = Vaginal\\\\nIN = Intravitreal\\\\nVR = Various\\\\nIP= Intraperitoneal\\\\nID= Intradermal\\\\nINV=Intravesical \\\\nEP=Epilesional\n' ;
+
+-- ******** Inventory Consumption Cancel
+INSERT INTO `hims_f_inventory_numgen` (`numgen_code`, `module_desc`, `prefix`, `intermediate_series`, `postfix`, `length`, `increment_by`, `numgen_seperator`, `postfix_start`, `postfix_end`, `current_num`, `pervious_num`, `preceding_zeros_req`, `intermediate_series_req`, `reset_slno_on_year_change`, `created_by`, `updated_by`, `record_status`) VALUES ('INV_CON_CAN_NUM', 'INV_CON_CAN_NUM', 'COA', '20', '0', '13', '1', '-', '0', '9999999', '0000000', '0000000', 'Y', 'Y', 'Y', '1', '1', 'A');
+
+
+-- =================================  Start Oct 31 2020 =======================================
+
+-- ******** Consumption Cancel
+CREATE TABLE `hims_f_inventory_can_consumption_header` (
+  `hims_f_inventory_can_consumption_header_id` int NOT NULL AUTO_INCREMENT,
+  `consumption_header_id` int DEFAULT NULL,
+  `can_consumption_number` varchar(20) DEFAULT NULL,
+  `location_type` enum('WH','MS','SS') DEFAULT 'SS',
+  `location_id` int DEFAULT NULL,
+  `can_consumption_date` datetime DEFAULT CURRENT_TIMESTAMP,
+  `year` varchar(4) CHARACTER SET utf8 COLLATE utf8_latvian_ci DEFAULT NULL,
+  `period` enum('1','2','3','4','5','6','7','8','9','10','11','12') CHARACTER SET utf8 COLLATE utf8_latvian_ci DEFAULT NULL COMMENT '''1''=JAN\\\\n''2''=FEB\\\\n''3''=MAR\\\\n''4'',=APR\\\\n''5'',=MAY\\\\n''6'',=JUN\\\\n''7'',=JUL\\\\n''8'',=AUG\\\\n''9'',=SEP\\\\n''10'',=OCT\\\\n''11'',=NOV\\\\n''12''=DEC',
+  `provider_id` int DEFAULT NULL,
+  `patient_id` int DEFAULT NULL,
+  `cancelled` enum('N','Y') DEFAULT 'N',
+  `created_date` datetime DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int DEFAULT NULL,
+  `updated_date` datetime DEFAULT CURRENT_TIMESTAMP,
+  `updated_by` int DEFAULT NULL,
+  `hospital_id` int DEFAULT NULL,
+  PRIMARY KEY (`hims_f_inventory_can_consumption_header_id`),
+  KEY `hims_f_inventory_can_consumption_header_fk1_idx` (`consumption_header_id`),
+  KEY `hims_f_inventory_can_consumption_header_fk2_idx` (`location_id`),
+  KEY `hims_f_inventory_can_consumption_header_fk4_idx` (`created_by`),
+  KEY `hims_f_inventory_can_consumption_header_fk5_idx` (`updated_by`),
+  KEY `hims_f_inventory_can_consumption_header_fk6_idx` (`hospital_id`),
+  CONSTRAINT `hims_f_inventory_can_consumption_header_fk1` FOREIGN KEY (`consumption_header_id`) REFERENCES `hims_f_inventory_consumption_header` (`hims_f_inventory_consumption_header_id`),
+  CONSTRAINT `hims_f_inventory_can_consumption_header_fk2` FOREIGN KEY (`location_id`) REFERENCES `hims_d_inventory_location` (`hims_d_inventory_location_id`),
+  CONSTRAINT `hims_f_inventory_can_consumption_header_fk3` FOREIGN KEY (`created_by`) REFERENCES `algaeh_d_app_user` (`algaeh_d_app_user_id`),
+  CONSTRAINT `hims_f_inventory_can_consumption_header_fk4` FOREIGN KEY (`updated_by`) REFERENCES `algaeh_d_app_user` (`algaeh_d_app_user_id`),
+  CONSTRAINT `hims_f_inventory_can_consumption_header_fk5` FOREIGN KEY (`hospital_id`) REFERENCES `hims_d_hospital` (`hims_d_hospital_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
+CREATE TABLE `hims_f_inventory_can_consumption_detail` (
+  `hims_f_inventory_can_consumption_detail_id` int NOT NULL AUTO_INCREMENT,
+  `inventory_can_consumption_header_id` int DEFAULT NULL,
+  `item_id` int DEFAULT NULL,
+  `barcode` varchar(30) CHARACTER SET utf8 COLLATE utf8_latvian_ci DEFAULT NULL,
+  `expiry_date` date DEFAULT NULL,
+  `batchno` varchar(30) CHARACTER SET utf8 COLLATE utf8_latvian_ci DEFAULT NULL,
+  `uom_id` int DEFAULT NULL,
+  `qtyhand` decimal(10,3) DEFAULT NULL,
+  `quantity` decimal(5,2) DEFAULT NULL,
+  `unit_cost` decimal(10,6) DEFAULT NULL,
+  `extended_cost` decimal(20,6) DEFAULT NULL,
+  PRIMARY KEY (`hims_f_inventory_can_consumption_detail_id`),
+  KEY `hims_f_inventory_can_consumption_detail_fk1_idx` (`inventory_can_consumption_header_id`),
+  KEY `hims_f_inventory_can_consumption_detail_fk2_idx` (`item_id`),
+  CONSTRAINT `hims_f_inventory_can_consumption_detail_fk1` FOREIGN KEY (`inventory_can_consumption_header_id`) REFERENCES `hims_f_inventory_can_consumption_header` (`hims_f_inventory_can_consumption_header_id`),
+  CONSTRAINT `hims_f_inventory_can_consumption_detail_fk2` FOREIGN KEY (`item_id`) REFERENCES `hims_d_inventory_item_master` (`hims_d_inventory_item_master_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
+ALTER TABLE `hims_f_inventory_can_consumption_detail` 
+ADD COLUMN `cancelled` ENUM('Y', 'N') NULL DEFAULT 'N' AFTER `extended_cost`;
+
+
+-- ******** Cancel consumption Num gen
+INSERT INTO `hims_f_inventory_numgen` (`hims_f_inventory_numgen_id`, `numgen_code`, `module_desc`, `prefix`, `intermediate_series`, `postfix`, `length`, `increment_by`, `numgen_seperator`, `postfix_start`, `postfix_end`, `current_num`, `pervious_num`, `preceding_zeros_req`, `intermediate_series_req`, `reset_slno_on_year_change`, `created_by`, `created_date`, `updated_by`, `updated_date`, `record_status`) VALUES ('8', 'INV_CON_CAN_NUM', 'INV_CON_CAN_NUM', 'COA', '20', '8', '13', '1', '-', '0', '9999999', '0000000', 'COA-20-000008', 'Y', 'Y', 'Y', '1', '2020-10-30 18:46:03', '1', '2020-10-31 10:38:24', 'A');
+
+
+-- =================================  Start Nov 02 2020 =======================================
+
+-- ******** Employee Joined Flag - Yes/No
+ALTER TABLE `hims_f_leave_application` 
+ADD COLUMN `employee_joined` ENUM('N', 'Y') NULL DEFAULT 'N' AFTER `actual_to_date`;
+
+-- ******** Early Rejoin Component Flags
+ALTER TABLE `hims_d_earning_deduction` 
+ADD COLUMN `early_join_comp` ENUM('N', 'Y') NULL DEFAULT 'N' AFTER `round_off_amount`;
+
+-- ******** Loan EMI Slip
+INSERT INTO `algaeh_d_reports` (`report_id`, `report_name`, `report_name_for_header`, `report_input_series`, `report_header_file_name`, `status`, `created_datetime`, `update_datetime`) VALUES ('152', 'loanEmiSlip', 'Loan Request Slip', '[\"hims_f_loan_application_id\"]', 'reportHeader', 'A', '2020-09-05 10:22:55', '2020-09-05 10:22:55');
+
+-- ******** Added Leave Category in Leave Application
+ALTER TABLE `hims_f_leave_application` 
+ADD COLUMN `leave_category` ENUM('O', 'A', 'M') NULL DEFAULT 'O' COMMENT 'O =OTHER\\\\\\\\\\\\\\\\nA = ANNUAL\\\\\\\\\\\\\\\\nM = MATERNITY\\\\\\\\n' AFTER `leave_id`;
+
+-- ******** Employee Rejoin Report
+INSERT INTO `algaeh_d_reports` (`report_id`, `report_name`, `report_name_for_header`, `report_input_series`, `report_header_file_name`, `status`, `created_datetime`, `update_datetime`) VALUES ('153', 'rejoinReport', 'Employee Rejoin Report', '[\"hospital_id\"]', 'reportHeader', 'A', '2020-09-05 10:22:55', '2020-09-05 10:22:55');
+
+-- =================================  Start Nov 03 2020 =======================================

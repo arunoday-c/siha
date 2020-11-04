@@ -1,0 +1,43 @@
+{{{importStyle 'css/algaehReportStyles.css'}}}
+
+<body>
+    <div class="print-body" style="page-break-before: always; page-break-after: always; margin-right:15px">
+            <table class="tableForData" cell-padding="0">
+                <thead>
+                    <tr>
+                        <th>Sl No.</th>
+                        <th>Employee Code</th>
+                        <th>Employee Name</th>
+                        <th>Leave Application No.</th>
+                        <th>Leaving Date</th>
+                        <th>Rejoining</th>
+                        <th>Early Join</th>
+                        <th>Payment Date</th>
+                        <th>Branch</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                    {{#hasElement result}}
+                    {{#each result}}
+                    <tr>
+                        <td>{{inc @index}}</td>
+                        <td>{{employee_code}}</td>
+                        <td  class="txtFld">{{full_name}}</td>
+                        <td>{{leave_application_code}}</td>
+                        <td>{{from_date}}</td>
+                        <td>{{to_date}}</td>
+                        <td>{{early_rejoin}}</td>
+                        <td>{{payment_date}}</td>
+                        <td>{{hospital_name}}</td>
+                    </tr>
+                    {{/each }}
+                       {{else}}
+                    <tr>
+                        <td colspan="7" class="noResultTextReport">No Records Found</td>
+                    </tr>{{/hasElement }}
+                </tbody>
+            </table>
+        </section>
+    </div>
+</body>

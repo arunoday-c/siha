@@ -358,24 +358,100 @@ export default {
       next(e);
     }
   },
+  getDashboardData: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    try {
+      _mysql
+        .executeQuery({
+          query: `SELECT (sum(ILM.qtyhand*IM.waited_avg_cost)) as stock_value
+           FROM hims_m_inventory_item_location as ILM
+           inner join hims_d_inventory_item_master IM on ILM.item_id = IM.hims_d_inventory_item_master_id
+           where ILM.hospital_id= ?;
+           
+           SELECT count(*) as total
+            from hims_m_inventory_item_location IL inner join  hims_d_inventory_item_master IM on IL.item_id=IM.hims_d_inventory_item_master_id
+            inner join hims_d_inventory_location PL on IL.inventory_location_id=PL.hims_d_inventory_location_id
+            where IL.record_status='A' and date(expirydt) between date(?) and date(?);
+            SELECT count(*) as total  
+            from hims_d_inventory_item_master IM  left join hims_m_inventory_item_location IL on IM.hims_d_inventory_item_master_id=IL.item_id 
+            inner join hims_d_inventory_location ILO on ILO.hims_d_inventory_location_id=IL.inventory_location_id 
+            left join hims_d_inv_location_reorder ILR on ILR.item_id=IL.item_id    
+            left join hims_d_inventory_uom IU on IU.hims_d_inventory_uom_id = IM.stocking_uom_id             
+            where qtyhand> 0 ;
+            `,
+          values: [
+            req.userIdentity.hospital_id,
+
+            req.query.from_date,
+            req.query.to_date,
+            req.userIdentity.hospital_id,
+          ],
+          printQuery: true,
+        })
+        .then((result) => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch((error) => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
+  getInvExpItemsDash: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    try {
+      _mysql
+        .executeQuery({
+          query: `select hims_m_inventory_item_location_id,IL.item_id,IL.expirydt,IL.inventory_location_id,IL.qtyhand,
+            PL.location_description as inventory_location,IM.item_description,IM.item_code,IL.batchno
+            from hims_m_inventory_item_location IL inner join  hims_d_inventory_item_master IM on IL.item_id=IM.hims_d_inventory_item_master_id
+            inner join hims_d_inventory_location PL on IL.inventory_location_id=PL.hims_d_inventory_location_id
+            where IL.record_status='A' and PL.hospital_id=? and date(expirydt) between date(?) and date(?) order by expirydt;`,
+          values: [
+            req.userIdentity.hospital_id,
+            req.query.from_date,
+            req.query.to_date,
+          ],
+          printQuery: true,
+        })
+        .then((result) => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch((error) => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
   getItemLocationStock: (req, res, next) => {
     const _mysql = new algaehMysql();
     try {
       let intValues = [];
-      let strAppend = "", strOrder = "", strGroup = "";
+      let strAppend = "",
+        strOrder = "",
+        strGroup = "";
       if (req.query.item_id != null) {
         strAppend += " and IL.item_id=?";
         intValues.push(req.query.item_id);
-        strGroup = " group by inventory_location_id"
+        strGroup = " group by inventory_location_id";
       }
       if (req.query.inventory_location_id != null) {
-
         strOrder = ` and location_id=${req.query.inventory_location_id} `;
 
         strAppend += " and inventory_location_id=?";
         intValues.push(req.query.inventory_location_id);
 
-        strGroup = " group by item_id"
+        strGroup = " group by item_id";
       }
       _mysql
         .executeQuery({
@@ -388,24 +464,22 @@ export default {
             from hims_d_inventory_item_master IM \
             left join hims_m_inventory_item_location IL on IM.hims_d_inventory_item_master_id=IL.item_id \
             inner join hims_d_inventory_location ILO on ILO.hims_d_inventory_location_id=IL.inventory_location_id \
-            left join hims_d_inv_location_reorder ILR on ILR.item_id=IL.item_id " + strOrder +
+            left join hims_d_inv_location_reorder ILR on ILR.item_id=IL.item_id " +
+            strOrder +
             " left join hims_d_inventory_uom IU on IU.hims_d_inventory_uom_id = IM.stocking_uom_id \
             where qtyhand> 0" +
-            strAppend + strGroup +
+            strAppend +
+            strGroup +
             " order by date(expirydt)",
           values: intValues,
           printQuery: true,
         })
         .then((result) => {
-          let final_result = result
+          let final_result = result;
           if (req.query.reorder_qty == "Y") {
-
-            final_result = _.filter(
-              result,
-              (f) => {
-                return (f.reorder === "R");
-              }
-            );
+            final_result = _.filter(result, (f) => {
+              return f.reorder === "R";
+            });
           }
           _mysql.releaseConnection();
           req.records = final_result;

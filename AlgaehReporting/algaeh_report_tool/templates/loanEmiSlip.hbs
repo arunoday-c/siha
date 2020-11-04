@@ -1,0 +1,89 @@
+{{{importStyle 'css/algaehReportStyles.css'}}}
+
+<body>
+    <div class="print-body" style="page-break-before: always; page-break-after: always; margin-right:15px">
+        <section>
+            <table class="tableForLabel labelBlock" cell-padding="0">
+                <tr>
+                    <td><label class="textEnLft">Branch: </label><span class="valueText">{{header.hospital_name}}</span></td>
+                    <td><label class="textEnLft">Employee Code:</label><span class="valueText">{{header.employee_code}}</span>
+                    </td>
+                    <td colspan="2"><label class="textEnLft">Employee Name:</label><span
+                            class="valueText">{{header.full_name}}</span></td>
+                </tr>
+            </table>
+        </section>
+  <section>
+            <table class="tableForLabel labelBlock" cell-padding="0">
+                
+                <tr>
+                    <td><label class="textEnLft">Loan Status</label><span class="valueText">{{header.loan_status}} </span></td>
+
+                    <td><label class="textEnLft">Loan Type: </label><span class="valueText">
+                            {{header.loan_description}}</span></td>
+                    <td ><label class="textEnLft">Loan Issues Date: </label><span class="valueText">
+                            {{header.payment_date}}</span></td>
+
+                </tr>
+        
+                <tr>
+                    <td><label class="textEnLft">Request No:</label><span class="valueText">{{header.loan_application_number}}</span></td>
+
+                    <td><label class="textEnLft">Request Date: </label><span class="valueText">
+                            {{header.loan_application_date}}</span></td>
+                    <td><label class="textEnLft">Requested Amount:</label><span class="valueText"> {{numberFormating header.loan_amount currencyheader}}</span>
+                </tr>
+                <tr>
+                    <td><label class="textEnLft">Loan Start Month & Year</label><span class="valueText">{{start_month}}-{{header.year}} </span></td>
+
+                    <td><label class="textEnLft">Approved Amount: </label><span class="valueText">
+                            {{numberFormating header.approved_amount currencyheader}}</span></td>
+                    <td><label class="textEnLft">Installment Amount:</label><span class="valueText">{{numberFormating header.installment_amount currencyheader}}</span>
+
+                </tr>
+                
+                <tr>
+
+                    <td colspan="3"><label class="textEnLft">Loan Reason: </label><span class="valueText">
+                            {{header.application_reason}}</span></td>
+
+                </tr>
+
+            </table>
+        </section>
+        <h3>Installment Details:-</h3>
+            <table class="tableForData" cell-padding="0">
+                <thead>
+                    <tr>
+                        <th>Sl No.</th>
+                        <th>Deducted Month & Year</th>
+                        <th>Salary Number</th>
+                        <th>Deduction Status</th>
+                        <th>Opening Balance</th>
+                        <th>Deducted Amount</th>
+                        <th>Closing Balance</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                    {{#hasElement result}}
+                    {{#each result}}
+                    <tr>
+                        <td>{{inc @index}}</td>
+                        <td>{{month_name}}-{{year}}</td>
+                        <td>{{salary_number}}</td>
+                        <td>{{loan_skipped}}</td>
+                        <td  class="numberFld">{{numberFormating balance_amount ../currency}}</td>
+                        <td  class="numberFld">{{numberFormating loan_due_amount ../currency}}</td>
+                        <td  class="numberFld">{{numberFormating closing_balance ../currency}}</td>
+                    </tr>
+                    {{/each }}
+                       {{else}}
+                    <tr>
+                        <td colspan="7" class="noResultTextReport">No Records Found</td>
+                    </tr>{{/hasElement }}
+                </tbody>
+            </table>
+        </section>
+    </div>
+</body>

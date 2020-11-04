@@ -6,10 +6,12 @@ const {
   getUomLocationStock,
   getItemMoment,
   getItemLocationStock,
+  getInvExpItemsDash,
+  getDashboardData,
   getUserLocationPermission,
   getItemandLocationStock,
   getConsumptionSelectedMonth,
-  getListUomSelectedItem
+  getListUomSelectedItem,
 } = invModels;
 
 export default () => {
@@ -17,27 +19,43 @@ export default () => {
   api.get("/getUomLocationStock", getUomLocationStock, (req, res, next) => {
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
       success: true,
-      records: req.records
+      records: req.records,
     });
   });
 
-  api.get("/getListUomSelectedItem", getListUomSelectedItem, (req, res, next) => {
-    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
-      success: true,
-      records: req.records
-    });
-  });
+  api.get(
+    "/getListUomSelectedItem",
+    getListUomSelectedItem,
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records,
+      });
+    }
+  );
 
   api.get("/getItemMoment", getItemMoment, (req, res, next) => {
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
       success: true,
-      records: req.records
+      records: req.records,
     });
   });
   api.get("/getItemLocationStock", getItemLocationStock, (req, res, next) => {
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
       success: true,
-      records: req.records
+      records: req.records,
+    });
+  });
+  api.get("/getInvExpItemsDash", getInvExpItemsDash, (req, res, next) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: req.records,
+    });
+  });
+  api.get("/getDashboardData", getDashboardData, (req, res, next) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: req.records,
     });
   });
   api.get(
@@ -46,7 +64,7 @@ export default () => {
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
-        records: req.records
+        records: req.records,
       });
     }
   );
@@ -56,7 +74,7 @@ export default () => {
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
-        records: req.records
+        records: req.records,
       });
     }
   );
@@ -67,7 +85,7 @@ export default () => {
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
-        records: req.records
+        records: req.records,
       });
     }
   );

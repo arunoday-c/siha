@@ -712,32 +712,38 @@ class PatientProfile extends Component {
           </div>
           <div className="patientDemographic">
             <span>
-              DOB:
-              <b>{moment(_pat_profile.date_of_birth).format("DD-MM-YYYY")}</b>
+              DOB:{""}<b>{moment(_pat_profile.date_of_birth).format("DD-MM-YYYY")}</b>
             </span>
 
             <span>
-              Nationality:
-              <b patient_nationality="true">{_pat_profile.nationality}</b>
+              Nationality:{""}<b patient_nationality="true">{_pat_profile.nationality}</b>
             </span>
-            <span>
-              Payment:
-              <b>
+          <span>
+            {_pat_profile.identity_document_name}:{""}<b>{_pat_profile.primary_id_no}           </b>
+          </span>
+            {/* <span>
+              Payment:{""}<b>
                 {_pat_profile.payment_type === "I"
                   ? "Insurance"
                   : _pat_profile.payment_type === "S"
                   ? "Self"
                   : ""}
               </b>
-            </span>
+            </span> */}
           </div>
           <div className="patientHospitalDetail">
             <span>
-              MRN: <b>{_pat_profile.patient_code}</b>
+              MRN:{""}<b>{_pat_profile.patient_code}</b>
             </span>
             <span>
-              Encounter:
-              <b>
+              Previous Encounter:{""}<b> 
+                {moment(_pat_profile.Encounter_Date).format(
+                  "DD-MM-YYYY | hh:mm a"
+                )}
+              </b>
+            </span>
+            <span>
+              Current Encounter:{""}<b> 
                 {moment(_pat_profile.Encounter_Date).format(
                   "DD-MM-YYYY | hh:mm a"
                 )}
@@ -876,7 +882,7 @@ class PatientProfile extends Component {
                   algaehsoap="mrd"
                   className="nav-link"
                 >
-                  MRD
+                  Previous Encounters
                 </span>
               </li>
               <ul className="float-right patient-quick-info">

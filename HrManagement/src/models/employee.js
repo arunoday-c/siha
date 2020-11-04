@@ -1462,8 +1462,8 @@ export default {
         .add(-1, "days")
         .format("YYYY-MM-DD");
       strQry += mysql.format(
-        "UPDATE hims_f_leave_application SET `early_rejoin` = 'Y', `to_date` = ? where hims_f_leave_application_id =? ; ",
-        [to_date, input.hims_f_leave_application_id]
+        `UPDATE hims_f_leave_application SET early_rejoin = ?,employee_joined='Y', to_date = ? where hims_f_leave_application_id =? ; `,
+        [input.early_rejoin, to_date, input.hims_f_leave_application_id]
       );
     }
     _mysql

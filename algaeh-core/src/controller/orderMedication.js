@@ -12,6 +12,7 @@ const {
   addPastMedication,
   deletePastMedication,
   getPastMedication,
+  deletePatientPrescription
 } = orderModels;
 
 export default ({ config, db }) => {
@@ -47,6 +48,19 @@ export default ({ config, db }) => {
   api.delete(
     "/deletePastMedication",
     deletePastMedication,
+    (req, res, next) => {
+      let results = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: results,
+      });
+      next();
+    },
+    releaseConnection
+  );
+  api.delete(
+    "/deletePatientPrescription",
+    deletePatientPrescription,
     (req, res, next) => {
       let results = req.records;
       res.status(httpStatus.ok).json({

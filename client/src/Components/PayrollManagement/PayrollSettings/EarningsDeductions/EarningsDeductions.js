@@ -64,6 +64,7 @@ class EarningsDeductions extends Component {
       on_edit: false,
       hims_d_earning_deduction_id: null,
       annual_salary_comp: false,
+      early_join_comp: false,
       finance_account: [],
       laibility_finance_account: [],
       child_id: null,
@@ -733,6 +734,21 @@ class EarningsDeductions extends Component {
                           value="yes"
                           name="annual_salary_comp"
                           checked={this.state.annual_salary_comp}
+                          onChange={changeChecks.bind(this, this)}
+                        />
+                        <span>Yes</span>
+                      </label>
+                    </div>
+                  </div>
+                  <div className="col-4">
+                    <label>Early Join Comp.</label>
+                    <div className="customCheckbox">
+                      <label className="checkbox inline">
+                        <input
+                          type="checkbox"
+                          value="yes"
+                          name="early_join_comp"
+                          checked={this.state.early_join_comp}
                           onChange={changeChecks.bind(this, this)}
                         />
                         <span>Yes</span>

@@ -26,6 +26,8 @@ export default {
           .endOf("month")
           .format("YYYY-MM-DD");
 
+        console.log("month_start", month_start)
+        console.log("month_end", month_end)
         let inputValues = [input.year, input.month];
         let _stringData = "";
 
@@ -208,13 +210,14 @@ export default {
               inner join hims_f_salary_contributions SC on SC.salary_header_id = S.hims_f_salary_id \
               inner join hims_d_earning_deduction ED on SC.contributions_id = ED.hims_d_earning_deduction_id \
               where employee_id in (?) and year=? and month=? and salary_type='LS' and ED.component_type='EEP' and amount>0;\
-              select hims_f_salary_id from hims_f_salary where `year`=? and month=? and salary_paid = 'N' and employee_id in (?);"
+              select hims_f_salary_id from hims_f_salary where `year`=? and month=? and salary_paid = 'N' and employee_id in (?);\
+              select employee_id,actual_to_date,to_date, DATEDIFF(actual_to_date, to_date) AS early_join_days from hims_f_leave_application where  early_rejoin='Y' and employee_id in (?) and  date(to_date) BETWEEN date(?) and date(?);"
             _mysql
               .executeQueryWithTransaction({
                 query:
                   "select hims_d_employee_earnings_id,employee_id,earnings_id,amount,ED.formula,allocate,\
               ED.calculation_method,ED.calculation_type,ED.component_frequency,ED.overtime_applicable,ED.component_type,\
-              ED.annual_salary_comp,ED.limit_applicable, ED.limit_amount from hims_d_employee_earnings EE inner join hims_d_earning_deduction ED\
+              ED.annual_salary_comp,ED.limit_applicable, ED.limit_amount, ED.early_join_comp from hims_d_employee_earnings EE inner join hims_d_earning_deduction ED\
               on EE.earnings_id=ED.hims_d_earning_deduction_id and ED.record_status='A'\
               where ED.component_frequency='M' and ED.component_category='E' and EE.employee_id in (?);\
             select hims_d_employee_deductions_id,employee_id,deductions_id,amount,ED.formula,\
@@ -289,12 +292,16 @@ export default {
                   input.month,
                   previous_month_year,
                   previous_month,
-                  _myemp
+                  _myemp,
+                  _myemp,
+                  month_start,
+                  month_end
                 ],
                 printQuery: true,
               })
               .then((Salaryresults) => {
                 const previous_month_Salary = Salaryresults[20]
+                // const early_join_employee = Salaryresults[21]
                 if (previous_month_Salary.length > 0) {
                   _mysql.commitTransaction(() => {
                     _mysql.releaseConnection();
@@ -350,10 +357,9 @@ export default {
                         return f.employee_id == empResult[i]["employee_id"];
                       });
 
-                      // if (results[8][0].salary_calendar == "F") {
-                      //   empResult[i]["total_days"] =
-                      //     results[8][0].salary_calendar_fixed_days;
-                      // }
+                      const _earlyJoin = _.filter(results[21], (f) => {
+                        return f.employee_id == empResult[i]["employee_id"];
+                      });
 
                       getEarningComponents({
                         earnings: _earnings,
@@ -362,6 +368,7 @@ export default {
                         _mysql: _mysql,
                         input: input,
                         _LeaveRule: _LeaveRule,
+                        _earlyJoin: _earlyJoin,
                         hrms_option: results[8],
                         next: next,
                         decimal_places: req.userIdentity.decimal_places,
@@ -3595,6 +3602,7 @@ function getEarningComponents(options) {
       const empResult = options.empResult;
       const leave_salary = options.leave_salary;
       const _LeaveRule = options._LeaveRule;
+      const _earlyJoin = options._earlyJoin;
 
       let final_earning_amount = 0;
       let current_earning_amt_array = [];
@@ -3678,14 +3686,16 @@ function getEarningComponents(options) {
 
           let annual_per_day_sal = 0;
 
+          // console.log("obj", obj["amount"]);
+          // console.log("total_paid_days", empResult["total_paid_days"]);
           // console.log("total_days", empResult["total_days"]);
-          // console.log("leave_salary", leave_salary);
+          const early_join_days = _earlyJoin.length > 0 && obj["early_join_comp"] === "Y" ? _earlyJoin[0].early_join_days : 0
           if (leave_salary == null || leave_salary == undefined) {
+
+            // console.log("leave_period", leave_period)
             let total_paid_days =
-              parseFloat(empResult["total_paid_days"]) - leave_period;
-            current_earning_per_day_salary = parseFloat(
-              obj["amount"] / empResult["total_days"]
-            );
+              parseFloat(empResult["total_paid_days"]) - leave_period - early_join_days;
+            current_earning_per_day_salary = parseFloat(obj["amount"]) / parseFloat(empResult["total_days"]);
             if (
               empResult["from_normal_salary"] === "Y" &&
               obj.annual_salary_comp === "Y"
@@ -3693,6 +3703,8 @@ function getEarningComponents(options) {
               annual_per_day_sal =
                 current_earning_per_day_salary * leave_period;
             }
+
+            // console.log("current_earning_per_day_salary", current_earning_per_day_salary)
             current_earning_amt =
               current_earning_per_day_salary * total_paid_days;
 

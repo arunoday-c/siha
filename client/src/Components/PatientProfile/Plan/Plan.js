@@ -122,7 +122,7 @@ class Plan extends Component {
                   {
                     <AlgaehLabel
                       label={{
-                        forceLabel: "Medication History"
+                        forceLabel: "Past Medication History"
                       }}
                     />
                   }
@@ -135,7 +135,7 @@ class Plan extends Component {
                   {
                     <AlgaehLabel
                       label={{
-                        forceLabel: "Past Medication"
+                        forceLabel: "Extrenal Medication"
                       }}
                     />
                   }
