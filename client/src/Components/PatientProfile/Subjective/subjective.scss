@@ -75,12 +75,15 @@
   }
 }
 .algaeh-col-3 {
-  width: 27%;
+  width: 32%;
   margin-right: 15px;
   margin-left: 15px;
 }
+.chiefComplaintFld{
+  min-height: 30vh !important;
+}
 .algaeh-col-8 {
-  width: calc(70% - 65px);
+  width: calc(70% - 130px);
   margin-right: 10px;
 }
 .algaeh-fixed-right-menu {
